@@ -1,0 +1,49 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text-html; ">
+<TITLE>(b)xegetdv</TITLE>
+<STYLE TYPE="text/css">a:hover{font-weight:bold;}</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">     (b)xegetdv
+
+       Called from sample stating shell xekt,xext and xegt to get distribution ID.
+       from /etc/issue.
+       DistributionID is used as suffix of env-data-file like as xelnxkey.rh9.
+
+       0001|########################################################################
+       0002|# get Linux Distribution id and version from /etc/issue
+       0003|# and set it to $DISTVER
+       0004|########################################################################
+       0005|DVER=`grep release /etc/issue` # like as "Red Hat Linux release 9 (Shrike)"
+       0006|if [ x"$DVER" = x ]; then      #not found
+       0007|    echo "xegetdv:No distribution ID Line found from /etc/issue, assumed \"sw3\"."
+       0008|    DID=sw3                    #my Slackware
+       0009|else
+       0010|#   declare -a DVWORDS             # define array
+       0011|#   DVWORDS=($DVER)                # assign to array
+       0012|#sw3 dose not support array
+       0013|    DVER=`echo $DVER`              #reduce space,drop top and tail space
+       0014|    DIST=${DVER%% *}               #get distribution id(top word)
+       0015|    VER=${DVER#*release }          #cut top "*release "
+       0016|    VER=${VER%% *}                 #get ver(top word)
+       0017|#   echo $DIST
+       0018|#   echo $VER
+       0019|#   case ${DVWORDS[0]} in
+       0020|    case $DIST         in
+       0021|#     Red*)    DID=rh${DVWORDS[4]}  ;;     #Red Hat
+       0022|      Red*)    DID=rh$VER           ;;     #Red Hat
+       0023|#     Turbo*)  DID=tb${DVWORDS[2]}  ;;     #TurboLinux release 6.0 WorkStation (Shiga)
+       0024|      Turbo*)  DID=tb$VER           ;;     #TurboLinux release 6.0 WorkStation (Shiga)
+       0025|      *)      echo "xegetdv:No distribution ID found from /etc/issue ( " $DVER " ),assumed \"rh9\"."
+       0026|              sleep 2
+       0027|              DID=rh9
+       0028|    esac
+       0029|fi
+       0030|DISTVER=$DID
+       0031|#echo $DID
+</SPAN></DIV>
+</PRE>
+</BODY>
+</HTML>

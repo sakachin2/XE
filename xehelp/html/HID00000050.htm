@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>(A-4)キー割り当て変更</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">   *******************
+  * 0.2 キー割当変更*
+  *******************
+          0        1         2         3           6         7         8
+          12345678901234567890123456789012      789012345678901234567890
+
+     1行  KEY----|XE OPT0.2                .... ------ 001-(001)-075Rep
+     2行  ===&gt;                             ....                ===&gt;PAGE
+     3行  ****|*** Top of Key Assign,ent List .... *********************
+     4行  0001|Execute+Next-Line   *  10KEY-Enter//実行+改行
+     5行  0002|Execute+Next-Line   *  Enter      //実行+改行
+     6行  0003|Next-Line           :A+Enter      //次行
+
+     基本的に編集画面と同じ操作です.
+     タブキーでキー名入力欄にカーソルを移動しそこでキー名を入力するか
+     設定したいキーを押します
+     次のキーは固定的に割り当てられており割り当て変更できません
+       Enter,10キーEnter,Esc,Ins,Del,BackspaceUp/Down/Left/Right cursor,
+       Tab,Backtab,Home,Page-Up,Page-Down
+       (これらのキーはShift,Alt,Ctrlのシフトキーとの組み合わせたときは
+        Backtab(S+Tab)以外は固定されていません)
+     Alt+, Ctrl+, Shift+ALt+, Shift+Ctrl+ の組み合わせが使用できます
+     Shift+ALt+, Shift+Ctrl+ は Fn, Ins, Del, 方向キーとのみ組み合わせが使用できます
+     Linux の場合 ショートカット キーとして設定されている場合もあるので
+     その場合 これらのキーを利用する場合は Linux の設定の変更が必要になります
+     Shiftキー無し(A+Fn,C+Fn)がショートカットキー設定されている場合
+     そちらもソートカットキーを無効にする必要があるかもしれません
+     またコマンドオペランドを必要とする機能はコマンドのみで操作され
+     キーを割り当てることは出来ません.
+     終了時に変更が保存(::xe!save!)され次回から有効になります.
+     <A href="HID00000197.htm">INI ファイル</A>を使用している場合(::xe.ini ファイルが存在する場合)
+     INI ファイルの方が優先されます(INIファイルのその機能の割り当てキーの
+     数だけxe!save!の保存を上書きします）
+     リスタート後の <A href="HID00000089.htm">INI コマンド</A>で INI ファイルを更新できます
+</SPAN></PRE>
+</BODY>
+</HTML>

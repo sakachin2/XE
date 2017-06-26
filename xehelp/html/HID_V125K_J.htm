@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>V125K-J</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">v125K *** 2011/01/03
+
+.(BUG)
+
+   -&quot;=&quot;(比較) 行コマンドが UTF8 コードファイル vs Locale コードファイルのとき TAB(0x09)でアンマッチとなる。
+   -EBCDIC 関連。
+     .Repモードキー入力のときSI+SOの位置へのDBCS入力が不正
+
+.機能追加修正
+
+   -wxe/gxeのファイル印刷。
+     .変換エラーで印刷不能文字表示されることを避けるため、EBCDICファイルはロケールコードに変換せずユニコードで印刷する。
+     .縦３段ダンプ表示中の wxp ** コマンドで、行幅による分割継続行は CHAR/HEX1/HEX2 の対応を取って印刷する。
+     .(BUG)DBCS環境で 2ページ/シート印刷の時 行分割があると文字化けする。
+     .wxp **/*** のワークファイル編集画面は印刷終了したら閉じる。
+   -EBCDIC DBCS 関連。
+     .Cut &amp; Paste
+       -DBCSの位置にあわせてSO/SIを適切に設定する。
+     .SORt コマンド                                
+       -DBCSのBNDs境界跨りはスペース置換する。&quot;SBCS&quot;オプション指定の場合はさにあらず。
+     .SPLit/TFLow コマンド                                   
+       -隣接するDBCS文字列の間のSI+SOを取り除く、BNDS境界跨りの考慮など。
+.ユーティリティー                                             
+  .xprint                                                     
+   -(BUG)UTF8コードが行幅で分割される時、縦３段ダンプのヘキサコード表示を誤る
+   -(BUG)間接ファイル名指定オプション(-Yi)のとき &quot;Invalid Name format&quot; のエラーになる。
+   -縦３段ダンプのヘキサコードをUCSコードとするオプション追加。
+      /Y8 : UTF8コード表示（省略値), /N8 : UCSコード表示
+    /N8 の時のUCSは固定長ではなく先行 00 は印刷しない。
+        例) xprint utf8-file -mtxu -n8
+  .xds
+   -(BUG)フリースペースパーセンテージの表示の誤り
+
+
+
+
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

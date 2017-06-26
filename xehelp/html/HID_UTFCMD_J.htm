@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>UTF cmd-J</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+#if defined(UTF8) &amp;&amp; (defined(W32)||defined(LNX))
+
+   = <A href="HID_UTF8_J.htm">UTF8</A>関連設定
+
+        UTF { {ALTCPLC | NOALTCPLC } | SWKBD | FILE | FN } [ CPU8 | CPLC | CPAS ]
+
+              ALTCPLC / NOALOTCPLC : プロファイルの記録も含めてCPU8指定のない場合
+                                     UTF8変換エラーのときCPLCでリロードするかしないか。
+
+              SWKBD:KBD Input変換を切り替える(Locale code&lt;--&gt;UTF8)
+
+                Alt+u は &quot;UTF SWKBD&quot; を実行しキーボード入力をLocaleCode&lt;-&gt;UTF-8変換します。
+                コマンド入力行の &quot;===&gt;&quot; が &quot;=u=&gt;&quot;に変化します
+                  =u=:キーボード入力はUTF8文字扱いです。
+
+              FILE/FN:ファイルの中身/ファイル名のエンコーデングの省略値を設定。
+                      CPAS は設定をリセットする時に指定します
+                      設定は iniファイル に保存されます。
+                      コマンドラインの /U オプションの指定があればそちらが優先します。
+
+              UTF8とLocaleコードをコマンド行、ファイル名入力画面でミックスことも出来ます。
+              デレクトリー名、ファイル名にロケールコード、UTF8コードが混在する場合に使用します。
+              但しこの場合UTF8コードロケールコードは間にASCIIコード(0x00&lt;-&gt;0x7f)を
+              置かないと境界が区別できません。
+              ファイルへ内への入力はいずれにしろロケールコードになります。
+
+              コマンドラインパラメータで -Nm を指定するとUTF8環境でも
+              UTF8コードを1バイトづつ処理します。
+           -これらの変更はiniファイルに保存され、次のセッションでも有効です。
+
+#endif
+
+</SPAN></PRE>
+</BODY>
+</HTML>

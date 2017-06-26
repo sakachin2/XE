@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>Use of other applications such as Excel/OpenOffice</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">
+   .Use of other applications such as Excel/OpenOffice.
+      "<a href="HID00000691.htm">#</a>" dirlist line command is used to execute the file with
+      parameters specified in the rename field.
+
+      "<a href="HID00000389.htm">%</a>&quot; dirlist line command is used to pass the file name to
+      the application specified in the rename field with
+      other parameters.
+      &quot;<A href="HID00000389.htm">%</A>&quot; lcmd is a way of word replacing at once for all file in the directory.
+
+#if defined(WIN) || defined(XXE)
+
+      If assosiation with filename extension is defined,
+      no application name input is required.
+      ex) xxx.xls is opened by excel.
+      Directory is associated with Explorer.
+      Enter <a href="HID00000388.htm">"!" line command</a> on the panel <a href="HID00000250.htm">file-name-list</a> or <a href="HID00000252.htm">dir-list</a>.
+
+  #if defined(WXE) || defined(XXE)
+      OR select OpenWith item of popup menu by R-button down.
+      Association is used also by L-button double click on left edge of screen.
+      Col.1-5 for dirlist,col.1-3 for filename history list screen.
+  #endif
+      And <a href="HID00000676.htm">ASSociate command</a> is also prepared.
+
+  #ifdef WXE
+      wxe may start explorer or DOS prompt by ICON menu.
+  #endif
+  #ifdef XXE
+      gxe may start Nortilus or Terminal window by ICON menu.
+  #endif
+
+#endif
+</SPAN></PRE>
+</BODY>
+</HTML>

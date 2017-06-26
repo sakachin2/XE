@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>(A-3)コマンドキー</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">   *******************
+  * 0.1 コマンドキー*
+  *******************
+
+          0        1         2         3           6         7         8
+          12345678901234567890123456789012      789012345678901234567890
+
+     1行  KEY----|XE OPT0.1                .... ------ 001-(001)-075Rep
+     2行  ===&gt;                             ....                ===&gt;PAGE
+     3行  ****|*** Top of Fn-cmd List * .... ***************************
+     4行  0001|A+F1 :=6;grep %1 *.c
+     5行  0002|C+F1 :
+     :
+    17行  0017|sc,0 :xx;i 'S ' 12 all;i 'R ' 12 all;i ru 12 &amp; 861001 all;
+    18行  0018|sc,1 :xx;i s 12 &amp; ru 12 -d2 all;i r 12 &amp; ru 12 -d2 all;
+     :
+    75行  0075|Alias:ch1 S %1;c Old New all;end;
+    76行  0076|Alias:ex e %1 /mtx %2 %3 %4
+     :
+
+     基本的に編集画面と同じ操作です.
+     14 桁目からこのキーに割り当てるコマンドを入力します
+     コマンドの連結は&quot;;&quot;.コマンド入力行を越える長さも可能(最大240).
+     最後に&quot;;&quot;があれば全コマンドを連続実行し,なければ文字列が
+     単にコマンド行に表示されるだけ.
+     コマンド文字列に % 置換文字を指定することにより予めコマンド行に
+     入力したパラメータでの置換もサポート.
+     また、ショートカットキー(上の例では17行目以降)が使用できます.
+     同じ目的で、上の例では75行目ですがショートカットキー(sc,x:)に続いて
+     別名コマンドを定義できます。
+     75行の例では DirListで &quot;ch1 memb1&quot; とコマンド入力することが想定されます。
+     76行の例は ファイルをHex３段表示で開くコマンドを設定しています。
+     追加は行を反復して修正してください。
+     尚コマンドの１桁目を&quot;*&quot;にすることでコメント化できます。
+
+     <A href="HID00000033.htm">ユーザーコマンド</A>も参照
+
+</SPAN></PRE>
+</BODY>
+</HTML>

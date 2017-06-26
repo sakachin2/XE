@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>OPT LIGATURE-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;">
+
+#if defined(LNX) || defined(W32)
+
+          -Ligature setting.
+
+             OPT LIGATURE [ON | OFF]
+
+              -Ligature checkbox is added to also gxe Setup dialog.
+              -Alt+&quot;;&quot; is also assiged to toggle ON/OFF.
+               Alt+&quot;;&quot; is temporary for GUI version and checkbox status is saved.
+               For Console version, A+&quot;;&quot; status is saved to ini file.
+               Command format: (reposrts current status if operand missong)
+
+              -When Ligature is ON, character spacing depends to background(Windows,GTK,pango,ncurses).
+               If On,keep monospacing.
+               Try not only for European font ligature such as ff/fi,  but also RTL langauge such as Arabic.
+               Combination mode by &quot;OPT UNICOMB&quot;(or Alt+&quot;:&quot;) may be required also additionally to Ligature ON.
+              -For Editor's characteristic, Character at the byte position of the cursor is displayed at there even when Ligature ON.
+               For Backspace operation, also the previous position is displayed at the point.
+               When cursor is on the HEX line, corresponding position on character line is kept the byte position.
+               So, for RTL(RightToLeft) language such as Hevrew,arabic...  It seems that line is split by the cyrsor.
+               Though I could not read nor understand it.
+              -Ligature option is ignored in the following case.
+               Binary file, horizontal hex disply(EH cmd), HEX line of vertical HEX display mode, command input line.
+              -Cmd input line(2nd line) is always Ligature:OFF.
+
+#endif
+</SPAN></PRE>
+</BODY>
+</HTML>

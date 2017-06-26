@@ -1,0 +1,232 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html;>
+<META http-equiv=" Content-Style-Type">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>V125D-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:font 12pt;">***** V125F ***** 2010/07/01
+
+.(BUG)
+   -(wxe/gxe) wxp cmd ABEND when Horizontal and vertical HEX display mode.
+   -NUM setr/setr cmd did not check margin overflow.
+   -Shift line cmd hove to consider COBOL lineno column(col.1-6)
+   -Word search cmd(FWF/FWB/IWF/IWB).
+      When delimiter is multibyte string( xxx of &quot;(xxx&quot; ),
+      if xxx is not found on the cursor line, word to be searched is from top of the line.
+      It should be up to next/previous default delimiter such as space.
+   -TC cmd
+      Constanst string of copy cmd(like as TC 1-10=&quot;AsciiString&quot;) should be translated for UTF8 file.
+      &quot;N&quot; (Numeric field check) option of TC FMT cmd was ignored if the file is not UTF8 file.
+   -SPLit cmd
+      delimiter of STRDELM option was ignored for UTF8 file if it is DBCS string.
+   -ABEND if CHARSET option is missing with  CONVERTER=1 (ICU)
+
+.<A href="HID_RECORD_E.htm">RECORD Mode</A> Edit cmd option.
+  -EndOfLineID(LF/NL) is not usualy used on mainframe world.
+   Line is split by record length associated to each file.
+   This option is used to edit the file downloaded from mainframe host.
+  -E filename /M[m|p|u|t|R][m|p|u|R] /Fn[-m]
+      R:record modeÅi1st &quot;R&quot; is read option, 2nd &quot;R&quot; is write option)
+         p:EOL-ID=0x0d0a, u:EOL-ID=0x0a, m:EOL-ID=0x0d
+      Fn[-m]:Record length and margin.
+        ex). F80-72.  record length:80, Col.73-80 is righ margin
+   ex). &quot;e file1 /Mr /F80-72 P0&quot;
+  -Record mode read each lines by fixed length specified on Fn[-m] option, write no EOL-ID.
+   Record mode option and record length parameter is registered to profile.
+   To write EOLID to each lines open the file with /Mr[p|u|m] option.
+   To remove EOLID from non-record mode file open the file with /M[p|u|m]r
+   and after saved re-open it with /Mr Fxx.
+   To reset record mode register on profile, specify /M option.
+   /F0 option will also reset is.
+  -Change of record size.
+    EDIt cmd with new /F option will override lrecl on profile.
+    You can change it at REPlace/CREate/SAVE cmd.
+      REPlace/CREate/SAVe  filename  [/M[p|u|m|r]]  [/Fn[-m]]
+    /M option changes record mode&lt;--&gt;Linefeed by EOLID mode
+    /F option changes record size.
+    (For SAVe cmd, this is effective only when filename parameter is specified. 
+     Without filename parameter, you can change record mode by /M option of EDIt cmd.
+     Record size will not be changed).
+
+      ex.1)  cre file1 cpeb /mr /f80
+            create EBCDIC 80 byte record mode file from usual PC text file.
+      ex.2)  s   file2 cplc /mp
+            reverse operation of ex.1)
+  -/M write option is effective for REP cmd for the file if no /M, /F option specified.
+    For ex, &quot;rep file2 cplc&quot; for the file opened by &quot;e file1 cpeb /mr f80&quot;,
+    short record is expnded to the LRECL, record mode and LREC are registered to file2's profile record.
+    If file1 is opened by &quot;e file1 cpeb /mrp&quot;, EOLid is appended to all lines.
+  -Record mode is assumed for EBCDIC file opened by E8 cmd.
+  -Inserting character into the line could not expand the line over the record length.
+  -TAB counter is forced to 1 at open.
+   TAB is relaced to a spce if &quot;NOTC&quot; option is not specified.
+  -Record mode is not proper for UTF8 file because UTF8-code size is valiable.
+
+.<A href="HID_EBCF_E.htm">EBCDIC file support</A>.
+
+  -EBCDIC encoded file is maintained as it is without translation to locale codepage.
+   Hex display mode displays EBCDIC code.
+   Use this function for the file downloaded from mainframe with no translation option
+   or NFS mounted with no translation option.
+   Unicode is used to display code, it enable to dispaly wider range of printable character.
+
+  -CPEB option is used for EDIt/SAVe/REPlace/CREate/APPend/CUT/END/COPy/MOVe/PASte cmd.
+   IE option may be required if invalid EBCDIC code is contained.
+   Indicater on header line is &quot;=E&quot; , and &quot;=e&quot; when binary mode.
+     ex). &quot;e file1 cpeb&quot;
+   COPy/MOVe/PASte cmd inserts lines after translated from specified codepage to the encoding of th opened file.
+   SAVe/REPlace/CREate/APPend/CUT/END cmd write lines after translated to the specified codepage.
+     ex). &quot;rep file2 cpeb nx ie&quot;
+   Specified option on output cmd is registered to profile. 
+   COPy/MOVe/PASte cmd checks profile, so you may not be required to specify CPxx option.
+   Option specified to a directory is default for the file in the directory.
+   To reset profile specify explicuitly other(CPLC/CPU8/CPAS) encoding option at open.
+
+  -Cmd for write dose not update profile if translation error is detected,
+   file is written upto EOF replacing those error character to substitution character.
+   Substitution character depends to the codepage, you can change it by cfg parameter.
+   Sometimes DBCS subchar is not defined, xe try to translate u-fffd, u-ff1f(DBCS &quot;?&quot;),u-3000(DBCS space)
+   in this sequence the use it if available.
+
+  -About DBCS
+   Double Byte Character is indicated by SO(ShiftOut:0x0e) and SI(ShiftIn:0x0f) in EBCDIC.
+   SO and SI enclose DBCS string. ex). 0e-40-40-0f is DBCS space.
+   In other than EBCDIC, specific leading byte and some following bytes is combination of DBCS.
+   Display width of DBCS is 2 column and it may be consists by 3 byte (EUC-SS3) or 3 byte(GB18030).
+   ex). DBCS space is 81-40 in MS932.
+   Accordingly translation between EBCDIC and Locale code changes line length if DBCS is contained. 
+   Option of treatement of SO/SI is prepared on translation cmd.
+   Set default to cfg file.
+   cfg option is applied to &quot;C&quot;opy line cmd which has no parameter for SI/SI option.
+     ex).  COPy     file1 cpeb -sd       :Delete SO/SI from EBCDIC copy source file. Line length will shrink.
+           COPy     file1 cpeb -sr       :SO/SI is replaced to one space.
+           REPlace  file1 cpeb -sr       :SO/SI is inserted at translation to EBCDIC,
+                                          but replace both side of space if avail.
+           REPlace  file1 cpeb -si       :SO/SI is inserted simply. Line length will expand.
+   Define default action on cfg file.
+       SOSI_A2E      REP (=&quot;-sr&quot;) or INS (&quot;=-si&quot;)
+       SOSI_E2A      DEL (=&quot;-sd&quot;) or REP (&quot;=-sr&quot;) 
+
+  -Codepage and translation option by cfg file.
+     Specify cfg filename on INI file. Default is ::xeebc.cfg.
+       EBCDIC_cfg        =&quot;&quot; #(&quot;::xeebc.map&quot;)# EBCDIC translation config filename
+     Syntax is same as previously used for 3270 connection.
+       Following option is added for non-3270 as alternative of option in xehosts file.
+       This is for Windows/Japanese user with no external converter option only.
+        SJIS_OPT  ENG_EXT      # Japanese English-Extension(CP939=CP1027)
+        SJIS_OPT  KANA_EXT     # Japanese Katakana-Extension(CP930=CP290)
+     -MF:mapfile option of CV cmd for B2M/M2B was discarded, 
+     CV cmd share mapping option specified on INI file.
+     Default option when missing cfg file is as following.
+       (Windows)
+         Japanese :Codepage=CP930(Internal mapping table equivalent to Japanese-Katakana Extension), JIS83.
+         else     :Codepage=CP037, No DBCS(SO/SI) consideration.
+       (Linux)
+         Japanese :Codepage=EUC-JP(Internal mapping table equivalent to Japanese-Katakana Extension), JIS83.
+         else     :Codepage=CP037, No DBCS(SO/SI) consideration.
+       Above default is used when CONVERTER=0 on cfg file, you can specify additional option 
+       such as SOSI,SJIS option.
+       SOSI option is effective for CV cmd only, ignored for EDIt operation.
+       it is forced to INS for SOSI_A2E, REP for SOSI_E2A.
+
+     (ex) sample to use External(ICU/iconv) converter, Windows codepage.
+           On Windows, you may have to add the EBCDIC codepage using 
+             Control-Panel--&gt;Region and Languages
+           WindowsXP currently have no EBCDIC codepage supporting DBCS.
+           So, CJK user may have to install ICU to use DBCS EBCDIC. (COVERTER=0 supports Japanese)
+           To use ICU you may have to PATH for DLL/so. Set LIBPATH or LD_LIBRARY_PATH.
+
+           Codepage value on CHARSET statement varies by ICU/Windows/LinuxICONV.
+           Confirm it using &quot;uconv -l&quot; (ICU) or &quot;iconv -l&quot;.
+           For codepage on Windows, check it by Control-panel--&gt;Region and Language.
+
+           -Use ICU SBCS. 
+              CONVERTER          1
+              ICU_DLL_SUFFIX    44
+              ICU_API_SUFFIX   _44  
+              SBCS_CHARSET     cp1047          //EBCDIC Latin/1 Open System(iso-8859-1)
+
+           -Use ICU DBCS. 
+              CONVERTER          1
+              ICU_DLL_SUFFIX    44
+              ICU_API_SUFFIX   _44  
+              DBCS_CHARSET     cp1388          //chinese simplified. superset of cp935
+
+           -Use Windows MultiByteToWideChar/WideCharToMultibute API.
+              CONVERTER          2
+              SBCS_CHARSET       20924        //EBCDIC Latin/1 Open System(1047+Euro)
+
+           -Use Linux iconv API.
+              CONVERTER          1
+              SBCS_CHARSET       cp1047
+
+     Translation of EndOfLine ID may not be preferable.
+         EBCDIC NL(x15)--&gt;u0085, LF(x25)--&gt;u000a 
+         ASCII  LF(0x0a)--&gt;EBC-15/EBC-25
+     You can remap it as following.
+         MAP_E2A  0x15: 0x0a   # EBCDIC 0x15(NL) -&gt; ASCII 0a(LF)
+         MAP_E2A  0x25: 0x3b   # EBCDIC 0x25(LF) -&gt; ASCII &quot;?&quot;
+         MAP_A2E  0x0a: 0x15   # EBCDIC 0x15(NL) &lt;- ASCII 0a(LF)
+         
+
+  -CV cmd B2M/M2B option is for CPLC(Locale code)file only.
+   To translate the file opened by CPEB option, use REP cmd.
+   Cfg file is shared with EDIt cmd, -MFcfgfile option is discarded.
+   xe display the file translated by CV cmd width B2M by the locale code,
+   The file opened by CPEB option is displayed by Unicode.
+   There may be difference in looks.
+
+  -0x09 is not TAB (0x05:EBC-HT also is  not treated as TAB skip character).
+   When Tab Key is pressed, TAB char(0x09,0x05) is not inserted into the line,
+   but jump some columns even when INS mode.
+  -HEX input mode(Ctrl+F11) send byte by byte(no DBCS consideration)
+  -SO(0x0e)/SI(0x0f)(DBCS encloser) is displayed by alternative char &quot;?&quot;.
+   SO/SI is inserted when DBCS kbd input.
+   For Cut&amp;Paste DBCS re-evaluation is done each time.
+   DBCS is even byte string enclosed by SO and SI.
+   For ex, when paste EBCDIC line into UTF8/Locale code file,
+   Translation will be done but unless SO/SI is not included in the pasteing data
+   DBCS translation is not done and SBCS translation is done.
+   When Joined 2 line split at DBCS position, DBCS may revive.
+   TFLow cmd also join line but insert single space between the line joined,
+   so DBCS may not revive.
+   Invalid DBCS-EBCDIC is displayed by &quot;:;&quot;, confirm the code by vertical hex line.
+  -Binary mode by EB cmd or by the reason that file contains too may control char
+   dose not consider DBCS. Use ET cmd for later case.
+  -Find/Change cmd.
+     Regardless of kbd mode is UTF8 or not, search and replace by EBCDI Code on EBCDIC file.
+     No DBCS consideration for the file opened by binary mode.
+     -g (Grep), P'.' option is not supported.
+  - &quot;#&quot; line cmd(Execute cmd descripted on the line) is not supported.
+
+.Other miscellanious.
+  -END/SAVe/REPlace/CREate cmd.
+   register CPxxÅifile encoding)option to profile.
+  -&quot;p&quot;(Print) directory list line cmd get encoding from profile.
+  -supports delimiter string by UTF8 code.
+   TC FMT, SPLit, TFLow cmd
+  -P[0|1] (margin area protection) option of EDIt cmd is registered to profile.
+  -When UCS mapping table(internal table to display unicode by 1 coulmn width)
+   is overflowed (depends your LANG env) following error msg is issued and
+   those unicode is displayed by 2 column. 
+      &quot;UCS map tbl overflow....&quot;
+   You can use INI file option (mapping file name on UnicodeTbl/UnicodeTbl_Console option)
+   to change some unicode range to DBCS area to bypass this situation.
+   For ex,
+      &quot;2  e000-f8ff          # 1:SBCS,2:DBCS; move Private User Area to DBCS range from SBCS range&quot;
+   This allows all SBCS unicode is displayed by 1 column width.
+  -UCS4 ( 4 byte unicode) option is added for F2U, U2F translation by CV cmd. 
+  -gxe/wxe accects ligature option also to locale code file.(wxe is for utf8 file only).
+  -Compare(<A href="HID00000600.htm">&quot;=&quot;</A>) line cmd supports compare between files with differrent encoding.
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

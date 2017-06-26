@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>XIN(HexInputMode)</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    = Hex input mode
+
+        XIN
+
+            -exchange Hex digit input mode and normal input mode.
+             default function key is Ctrl+F11.
+            -After entered Hex input mode,&quot;x&quot; appear at top-left corner.
+            -Hex digit input is accepted on the area file lines diplayed.
+            -Char is transfered to cursor pos at end of 2byte input
+             for <a href="HID00000217.htm">DBCS</a>,but by "x" key only 1st byte of DBCS is transfered.
+             But for <a href="HID00000219.htm">binary file</a>,No DBCS check is done,and Input-inhibit-
+             char check is not done.
+             For <A href="HID_EBCF_E.htm">EBCDIC file</A>, it will be sent byte by byte.
+
+            -&quot;u&quot; and &quot;v&quot; key is for unicode input.
+             &quot;u&quot; key start UCS2 input and &quot;v&quot; key start UCS4 input.
+             Remaining prematured hex code is transfered to file text area by also
+             &quot;u&quot; or &quot;v&quot; key.
+             &quot;u&quot; or &quot;v&quot; is required to each unicode char.
+
+            -Command input line accept <A href="HID_UTF8_E.htm">UTF8</A> code by this HexInputMode.
+             When started by &quot;u&quot; or &quot;v&quot;, unicode is translated to UTF8 code.
+             Without &quot;u&quot; or &quot;v&quot;, the char itself is sent.
+             To input &quot;u&quot; or &quot;v&quot; itself, duplicate it.
+             UTF8 code is accepted at command input line, dirlist rename input field,
+             FileNameList panel(=1, =2) and Utility panel(=3.12, =3.14).
+
+</SPAN></PRE>
+</BODY>
+</HTML>

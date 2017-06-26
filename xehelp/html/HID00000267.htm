@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>COPy</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    = Copy file into the edit screen.
+
+        {COPy | PASte}  [filename]  [ CPLC | CPU8 | CPEB[:codepage] ] [IE]
+                    [/M{T|P|U|M|E|R|V}] [/F{nn|vfmt}] [-S{r|i|d}]
+
+            <A href="HID_UTF8_E.htm">CPU8</A>/CPLC: Copy/Move &quot;source-file&quot; after tarnslated if required.
+             /<A href="HID_EBCF_E.htm">CPEB</A>     Copy the file after translating from specified encoding to encoding of current file.
+                       Profile is checked for copy source file, so you may not be required to specify CPxx option.
+                       For PASte,codepage at CUT is applied using profile.
+
+                       You can other codepage than specified on cfg file using CPEB:codepage format.
+                       When you don't want to translate by the codepage registered on profile,
+                       use &quot;B&quot; option to &quot;A&quot;(After) or &quot;B&quot;(Before) line cmd specifing copy target position.
+                          ex)  COP ebcf1
+                               :
+                               AB
+
+            IE       : continue copy operation ignoring translation error.
+                       those char are copied as it is and dispalyed by &quot;?&quot;.
+                       This option is not required when target file is opened by with &quot;IE&quot; option.
+            /M       :EOL-ID of copy source file.
+                      P:0d0a(PC file)
+                      U:0a  (Unix file)
+                      T:Both 0a and 0d0a
+                      M:0d  (Mac file)
+                      E:15  (<A href="HID_EBCF_E.htm">EBCDIC file</A>)
+                      R:fixed length record mode. Specify LRECL by /Fnn option.
+                      V:variable length record mode. Specify record header type by /Fvfmt.
+            /Fnn     :LRECL
+            /Fvfmt   :VariableLengthRecord file record header formt. See Edit command.
+            -S{r|i|d}: SO/SI option
+                       r : When current screen is EBCDIC file and cmd option is CPLC/CPU8,
+                           replace both side of space, if available, to SO/SI.
+                           When current screen is not EBCDIC and cmd option is CPEB,
+                           replace SO/SI to a space.
+                       i : Inserte SO/SI when translation to EBCDIC.
+                       d : Delete SO/SI when translation from EBCDIC.
+
+            -PASte cmd ignores CPxx options.
+
+            -Copy all line of the file onto the specified position
+             of line command such as <a href="HID00000340.htm">a(After)</a>,<a href="HID00000341.htm">b(Before)</a>,<a href="HID00000349.htm">o(On)</a>,<a href="HID00000350.htm">p(Paste)</a>.
+             Use &quot;Line Insert Copy&quot;(Alt+i) to specify
+             destination line under line-no not displayed.
+             Destination line cmd is not required when null file.
+             If it is unique for the wildcard,wildcard path name is
+             accepted.
+             For PASte cmd, source file is fixed to ::CB2 saved by <A href="HID00000268.htm">CUT</A> cmd,
+             file-name is ignored even if you specified.
+
+       (note)Use <a href="HID00000329.htm">XCOpy</a> or <a href="HID00000255.htm">DOS command</a> &gt;COPY to copy file to file.
+             COPy command is treated as XCOpy on the screen except
+             <a href="HID00000251.htm">BROWSE/EDIT</a>.
+
+</SPAN></PRE>
+</BODY>
+</HTML>

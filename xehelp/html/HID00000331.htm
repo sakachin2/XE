@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>XMOve/MOV</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">   = {XMOve/MOVe} source target [/s] [/t] [/y[-]] [/r[-]] [/b]
+                                [/L{-|M-}]
+
+       /s   copy sub directory.(This is effective only when wild card
+            source. If not,directory containing sub-directory is fully
+            moved.)
+            target is destination directory name.
+            if you want rename simultaniously,specify also new-name.
+       /y   replace if same name file already exist.
+            stop copy with no /y if same name file already exist.
+            time stamp is not copyed for the subdirectory with the same name.
+       /y-  skip copy when same name file exist and continue process.
+       /r   same as /y
+       /r-  same as /y-
+       /b   TSO file transfer without conversion.
+
+#if defined(W32)||defined(UNX)
+       /t   Text mode. for remote&lt;--&gt;local copy only.
+            LF(0x0a)&lt;--&gt;CRLF(0x0d0a)conversion may occur.
+       /L{-}|M-} : Symbolic Link option, for also Junction point and Mount point on NTFS drive of Windows
+                   Effective only when inter drive move,else simply renamed.
+            /L-   :bypass copy link entry
+                   From Vista, copy(create new link entry) requirs Administrator privilege for symlink.
+                   Open command prompt with administrator previlege.)
+            /LM-  :no symbolic link err msg is issued.
+#endif
+
+#ifdef UNX
+#else
+     (note)-additional to OS/2 MOVE cmd is support for inter-drive
+            movement(XCOPY and DEL).
+           -additional to DOS MOVE cmd is support for inter-directory
+            file and directory movement(XCOPY and DEL).
+#endif
+           -MOVe command on the BROWSE/EDIT panel is of <a href="HID00000296.htm">Edit Command.</a>
+</SPAN></PRE>
+</BODY>
+</HTML>

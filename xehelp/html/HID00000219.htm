@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>Binary file</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    .Binary file.
+      File is treated as bynary file which is opened by <a href="HID00000277.htm">EB</a>/<a href="HID00000260.htm">BB</a>/<a href="HID00000313.htm">SB</a> cmd.
+      When it is opened by normal E/B cmd,first 1024 byte is checked.
+      It is binary when number of char less than 0x1f(except 0x0d,0x0a)
+      is over 30%.
+      For binary file,line seperator(0x0d0a,0x0a) is one of data,and
+      line is displayed as split by length of width(/Mnn,default is
+      nn=72).
+      Line number column is displayed by offset value,<a href="HID00000298.htm">NUM cmd</a> may change
+      the line number column type from hex to decimal number.
+      A char may be input by 2 HEX digit changing input mode by &quot;<A href="HID00000284.htm">XIN</A>&quot; cmd(Ctrl+F11).
+      Under HEX input mode,No Input-inhibit-char check and DBCS chk is done for binary file.
+      Tab char(0x0d) is also data char and no tab expansion is done.
+      2 HEX display mode is available.
+      Using<a href="HID00000277.htm">EH/BH/SH cmd</a> file is displayed by dump format,
+      Using /Mx optio or <a href="HID00000703.htm">HEX</a>(Ctrl+F10) cmd each file line is displayed as
+      vertical hex display(3 line of char,hex first digit and hex 2nd digit).
+      On <a href="HID00000252.htm">dir-list</a> and <a href="HID00000250.htm">history list</a>,use line cmd <a href="HID00000386.htm">"1"</a>(browse),<a href="HID00000387.htm">"2"</a>(edit)
+      and<a href="HID00000367.htm">h/H(Hex mode)</a>. Lowercase-h is for browse or edit that is
+      determined by the screen mode. Uppercase-H is opposite of that.
+
+      Alt+g is used to jump cursor between Char-part and Hex-part
+      when horizontal/vertical HEX display mode.
+
+      HEX 3-line display sample
+        ****|********** TOP OF FILE *****************************************************
+        0001|G:\src\xe&gt;h:\tool\lha.exe v k:\xe117\xegcc117
+            |43577657636357666566626762726357633357666633322222222
+            |7ac323c85e8ac4ffccc81e585060bac85117c8573311700000000
+        0002|Listing of archive : k:/xe117/xegcc117.LZH
+            |467766626626766676232632763332766663332454
+            |c9349e70f6012389650a0baf85117f85733117eca8
+        0003|  Name          Original    Packed  Ratio   Date     Time   Attr Type  CRC
+            |22466622222222224766666622225666662256766222467622222566622247772577622454
+            |00e1d50000000000f2979e1c0000013b54002149f00041450000049d500014420490500323
+
+      dump format HEX display sample.
+        ****|********** TOP OF FILE *********************************************
+        0000|G:\src\xe&gt;h:\tool\lh|  473a5c73 72635c78 653e683a 5c746f6f 6c5c6c68
+        0014|a.exe v k:\xe117\xeg|  612e6578 65207620 6b3a5c78 65313137 5c786567
+        0028|cc117        Listi|  63633131 37202020 20202020 200d0a4c 69737469
+        003c|ng of archive : k:/x|  6e67206f 66206172 63686976 65203a20 6b3a2f78
+        0050|e117/xegcc117.LZH |  65313137 2f786567 63633131 372e4c5a 480d0a20
+        0064| Name          Origi|  204e616d 65202020 20202020 2020204f 72696769
+        0078|nal    Packed  Ratio|  6e616c20 20202050 61636b65 64202052 6174696f
+        008c|   Date     Time   A|  20202044 61746520 20202020 54696d65 20202041
+        00a0|ttr Type  CRC-----|  74747220 54797065 20204352 430d0a2d 2d2d2d2d
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

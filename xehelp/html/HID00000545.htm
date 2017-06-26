@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>About Cut and Paste</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    .About Cut and Paste.
+        -See <A href="HID00000595.htm">xewxee.txt</A> for mouse operation.
+         Followings are of using keyboard.
+        -There are 3 modes to specify Cut/Copy range.
+         Region mode is same as Windows standard cut and paste.
+         Using Alt+F6,region is from the latter half of the start line to
+         the first half of the end line.
+         Alt+F6 is also used to specify target range,so you should
+         explicitly copy to clipboard by A+F9 when closed copy source range.
+         After A+F7,A+F9 is implicit for the case pasting by A+F8,A+Ins.
+         Block mode is by using &quot;Block Start/End&quot;(Alt+F7,Alt+b),
+         and range is square box diagonal by start and end point.
+         Line mode is by using &quot;Line Marking&quot;(Alt+h),
+         and range is all full lines start to end.
+         If you press block mode key on the line-no field or column 1 of file
+         it is also line mode.
+         Alt+w is one of block mode and copy the word delimited by space.
+         Ctl+w copy the word to clipboard then paste on at end of cmd line text.
+        -There are 4 copy mode.
+         Ctrl+v paste like as Windows standard,replace range if exist or
+         insert region at the cursor position.
+         (Notes) When target region is not specified and copy source range is specified by block mode(Alt+F7),
+                 taget line is split like as source lines have EOL.
+                 With Ctrl+v, use region mode(Alt+F6) to specify source data.
+         Insertion by &quot;Block Insert&quot;(Alt+Ins,Alt+c),
+         override paste by &quot;Block Copy Over&quot;(Alt+F8,Alt+p) and
+         override space char only by &quot;Block Over Space&quot;(Alt+o).
+         &quot;Block Cut Move&quot;(Alt+m) and &quot;Block Clear Move&quot;(Alt+n) do
+         insertion.
+        -There are 2 block mode insert operation,right shift and line insertion.
+         It takes line insertion in the following case.
+         (You can also insert line under block mode)
+         .&quot;Line Insert Copy&quot;(Alt+i),&quot;Line Insert Cut Move&quot;(Alt+j),
+          &quot;Line Insert Clear Move&quot;(Alt+k)
+         .&quot;Block Insert&quot;(Alt+Ins,Alt+c),&quot;Block Cut Move&quot;(Alt+m) and
+          &quot;Block Clear Move&quot;(Alt+n) if cursor is on line-no filed.
+        -There are 3 delete operation;box cut,box space clear and line
+         deletion.
+         &quot;Block Clear&quot;(Alt+End) and &quot;Block Clear Move&quot;(Alt+n) leave
+         space block or space lines.
+         &quot;Block Cut&quot;(Alt+Del,Alt+d) and &quot;Block Cut Move&quot;(Alt+m) delete
+         lines under line mode,cut and shift to left under block mode.
+         Unlike windows Del/BackSpace is not effective for Ctrl+v region,
+         use Alt+Del.
+        -Block/lines are copied to clipboard,it can be used to copy
+         repeatedly any times. It is also available across sessions.
+         Block is copied to ClipBoard at the time copy/del(move) is done.
+         To cut the block from the file which will be close(End/Cancel),
+         use &quot;Block Save&quot;(Alt+F9) to save block to ClipBoard.
+         And then execute copy/del(move) function.
+         Consecutive &quot;Block Save&quot; is avail until copy/del(move) is done.
+        -&quot;Line Insert Copy&quot;(Alt+i) may be used to copy a file into the
+         current edit file under line-no not displayed mode.
+         (ex. <a href="HID00000253.htm">command result screen</a>)
+         By using Execute key after entered <a href="HID00000267.htm">COPy</a> or <a href="HID00000296.htm">MOVe</a> command,
+         message is displayed requesting to specify destination line.
+         In this situation move cursor to the desitination line then
+         use "Line Insert Copy"(Alt+i) to copy file after the line.
+        -"Line Marking"(Alt+h) may be used to create/replace a file
+         from the current edit file under line-no not displayed mode.
+         By using Execute key after entered <a href="HID00000268.htm">CREate</a> or <a href="HID00000305.htm">REPlace</a> cmd,
+         message is displayed requesting to specify copy source range.
+         In this situation use &quot;Line Marking&quot; to specify copy range,
+         then lines of the range is written to the file when range is
+         closed by 2nd &quot;Line Marking&quot; key.
+        -See also &quot;<a href="HID00000338.htm">[Table 3]</a> Alternative operation by Cut &amp; Paste&quot;.
+
+        -Cut&amp;Paste using mouse use system clipboard, so copied text is immediately available
+         to another session. On the other hands Cut&amp;Paste by Function key save the text at end
+         of session. So console version user have to use CUT/PASte cmd to pass text between
+         two xe session. CUT/PASte write to/read from the 2nd CB file(::CB2) each time.
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

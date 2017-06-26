@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>(F1)3.12J</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+******************************
+*(F-1) ユーティリティー:比較 *
+******************************
+
+          ------ File / Directory Compare ----------------------------------------------=Rep
+          ===&gt;
+
+           Options  =&gt;  [ -nolist:display rc only.  Enter ? or --help for Help]
+
+           Curr Dir --g:\src\xe
+
+           FileSpec1=&gt;  [ Try InsertLine key (default:F5) after partial path input. ]
+
+           FileSpec2=&gt;  [ Then use Send keys (defualt:A+i/r/d/Up/Down) or &quot;^&quot; lcmd. ]
+
+
+       .実行キーで &quot;比較ツール Options FileSpec1 FileSpec2&quot; を実行し、
+        結果を編集画面に表示する。
+        &quot;比較ツール&quot; の省略値はファイル比較は xfc,ディレクトリー比較はxdc。
+        xfc/xdcはパッケージに同梱しています。
+        diff などに変更したい場合は<A href="HID00000197.htm">iniファイル</A>で設定する。
+             CompareFile_Cmd   =&quot;xfc&quot;  #(&quot;xfc&quot;)# File compare cmd.
+             CompareDir_Cmd    =&quot;xdc&quot;  #(&quot;xdc&quot;)# Directory compare cmd.
+
+       .Options    : 比較ツールのオプションを指定する。
+                     ?を指定すると オペランド指定無しで比較ツールを実行する
+                     diffを使用している場合は --helpを指定するとHelpが表示される。
+        Curr Dir   : 現行Dirを表示。
+#ifndef UNX
+                     FileSpec1/2にドライブIDを入力するとそのドライブの現行Dirを表示
+#endif
+        FileSpec1/2: 比較する２つのファイル/ディレクトリーを入力する。
+                     ワイルドカード、経路を入力したあと探索キー(省略値:F5)を使用すると
+                     入力を元にdir-listを分割画面で開く。
+                     入力がない場合は現行Dirを開く。
+                     画面分割してdir-list画面からファイル名を設定するキー操作は、
+                     Alt+i(挿入)/r(置換)/d(削除)/Up(上の行に移動)/Down(下の行に移動)。
+                     &quot;^&quot;行コマンドはキーの挿入/置換モードにしたがってファイル名を送る。
+                     挿入は未入力の行に設定し、置換、削除は反転行を設定する。
+#ifndef WXE/XXE
+                     マウスのDrag&amp;Dropで設定することも可能。
+                     dir-list画面、Explorer/NautilusでDragし入力したい行にDropする。
+#endif
+　　　　　　　　　　 全ての入力は<A href="HID00000108.htm">RESetコマンド</A>あるいはEscキー２回でクリアーされます。
+
+</SPAN></PRE>
+</BODY>
+</HTML>

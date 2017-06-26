@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>j(Join)</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;"></SPAN><SPAN STYLE="color:#000000;font-size:12pt;font-family:‚l‚r ƒSƒVƒbƒN">    = j command
+        .concatenate the lines.
+
+      (1) x[n][,b][,s] pattern
+
+        .repeat 5 times to concatenate each 2 lines
+
+            j5     |  A
+            0002000|  B
+            0003000|  C
+            0004000|  D
+            0005000|  E
+            0006000|  F
+            0007000|  G
+            0008000|  H
+            0009000|  I
+            0010000|  J
+            0011000|  K
+            0012000|  L
+        ===&gt;
+            0001000*  A  B
+            0003000*  C  D
+            0005000*  E  F
+            0007000*  G  H
+            0009000*  I  J
+            0011000|  K
+            0012000|  L
+
+        .repeat 4 times to repeat 3 times concatenation of 2 lines
+         and to skip 1 line.
+
+            j4,3.1 |  A
+            0002000|  B
+            0003000|  C
+            0004000|  D
+            0005000|  E
+            0006000|  F
+            0007000|  G
+            0008000|  H
+            0009000|  I
+            0010000|  J
+            0011000|  K
+            0012000|  L
+            0013000|  M
+            0014000|  N
+            0015000|  O
+            0016000|  P
+            0017000|  Q
+            0018000|  R
+            0019000|  S
+            0020000|  T
+            0021000|  U
+            0022000|  V
+            0023000|  W
+            0024000|  X
+            0025000|  Y
+            0027000|  0
+            0028000|  1
+            0029000|  2
+            0030000|  3
+        ===&gt;
+      r1 b1 0001000*  A  B
+         b2 0003000*  C  D
+         b3 0005000*  E  F
+         s1 0007000|  G
+      r2 b1 0008000*  H  I
+         b2 0010000*  J  K
+         b3 0012000*  L  M
+         s1 0014000|  N
+      r3 b1 0015000*  O  P
+         b2 0017000*  Q  R
+         b3 0019000*  S  T
+         s1 0021000|  U
+      r4 b1 0022000*  V  W
+         b2 0024000*  X  Y
+         b3 0026000*  Z  0
+            0028000|  1
+            0029000|  2
+            0030000|  3
+
+      (2) xx-xx[n][,b][.s] pattern
+
+        .repeat in the range to concatenate each 2 lines
+
+            jj     |  A
+            0002000|  B
+            0003000|  C
+            0004000|  D
+            jj     |  E
+            0006000|  F
+            0007000|  G
+            0008000|  H
+        ===&gt;
+            0001000*  A  B
+            0003000*  C  D
+            0005000|  E
+            0006000|  F
+            0007000|  G
+            0008000|  H
+
+        .repeat in the range to repeat 3 times concatenation of 2 lines
+         and to skip 1 line.
+
+            jj,3   |  A
+            0002000|  B
+            0003000|  C
+            0004000|  D
+            0005000|  E
+            0006000|  F
+            0007000|  G
+            0008000|  H
+            0009000|  I
+            0010000|  J
+            0011000|  K
+            0012000|  L
+            0013000|  M
+            0014000|  N
+            0015000|  O
+            0016000|  P
+            0017000|  Q
+            jj.1   |  R
+            0019000|  S
+            0020000|  T
+        ===&gt;
+      rr b1 0001000*  A  B
+         b2 0003000*  C  D
+         b3 0005000*  E  F
+         s1 0007000|  G
+      rr b1 0008000*  H  I
+         b2 0010000*  J  K
+         b3 0012000*  L  M
+         s1 0014000|  N
+      rr b1 0015000*  O  P
+         b2 0017000*  Q  R
+            0019000|  S
+            0020000|  T
+
+        .repeat in the range to repeat 2 times concatenation of 3 lines
+         and to skip 1 line.
+
+            jj3    |  A
+            0002000|  B
+            0003000|  C
+            0004000|  D
+            0005000|  E
+            0006000|  F
+            0007000|  G
+            0008000|  H
+            0009000|  I
+            0010000|  J
+            0011000|  K
+            0012000|  L
+            0013000|  M
+            0014000|  N
+            0015000|  O
+            0016000|  P
+            0017000|  Q
+            jj,2.1 |  R
+            0019000|  S
+        ===&gt;
+      rr b1 0001000*  A  B  C
+         b2 0004000*  D  E  F
+         s1 0007000|  G
+      rr b1 0008000*  H  I  J
+         b2 0011000*  K  L  M
+         s1 0014000|  N
+      rr b1 0015000*  O  P  Q
+            0018000|  R
+            0019000|  S
+
+</SPAN></PRE>
+</BODY>
+</HTML>

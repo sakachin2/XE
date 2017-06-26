@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>%(apply command)</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">      % (appcmd):apply command entered in the field of rename field.
+                In the cmd string,% is used to specify position of filename
+                parm. Without %,filename is appended to the string.
+                Set delimiter &quot;;&quot; between multiple cmd.
+                If &quot;;&quot; is part of parameter specify like as &quot;\;&quot;.
+                $(Async execution) will be required for Linux not to wait xe's processing.
+                Command result is redirected to the file &quot;#.cfso_n&quot;(n:1,2,...).
+                ex)
+                   To change string in the file,enter on rename field as following.
+                   sed s/fromstring/tostring/g % &gt; wkd\%.new
+                   Cmd result is browsed by &quot; ::cfso&quot;.(::#.cmd contains executed cmd).
+                   &quot;sed&quot; unix tool. Search on web for Windows version.
+                   (Note) Don't specify the original file name as redirection target.
+                          You will get corrupted file.
+                   To apply a cmd to all wildcard selected file in the dir,
+                   xdig cmd in this package will be used.
+                   ex)
+                      Windows version: xdig /L1 /Nh % *.c &quot;//sed s/from/to/g \%\%fp\%\% &gt; \%\%fp\%\%.new&quot;
+                                       ( \%\%fp\%\% is passed to cmd prompt as %%fp%%, xdig accept it as %fp%.
+                                       D-quote is required to pass &quot;&gt;&quot; (redirection) to xdig.
+                      Linux version  : xdig /L1 /Nh % *.c &quot;//sed s/from/to/g \%fp\% &gt; \%fp\%.new&quot;
+
+                      Some shell script will help you abridge keyboard typing.
+
+                      <A href="HID00000280.htm">EXE cmd</A> redirect function is little bit slow but more convenient.
+
+</SPAN></PRE>
+</BODY>
+</HTML>

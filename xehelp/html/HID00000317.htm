@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>SUBmit</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    = Submit file.
+
+        SUBmit  [* | file-name [*] ] [parms,...]
+                        [&lt;input-redirect-file-name] [&gt;output-redirect-file-name]
+
+            -Specify filename to submit file other than currently editting.
+             If PATH environment variable is not properly setup,it should be
+             contain path information. *\ , ^*\ , :: is available in these case.
+
+            -The 1st &quot;*&quot; parameter means the file currently editting is executed,
+             use when parms is also required.
+             If no additional parm required enter &quot;SUB&quot; simply.
+             For <A href="HID_TSOE_E.htm">TSO file</A>,&quot;SUB&quot; execute the JCL file on the remote system.
+
+            -The 2st &quot;*&quot; parameter means the file currently editting is passed to
+             the 1st parameter file.(&quot;*&quot; is replaced by the file name).
+             To pass the character &quot;*&quot;,enclose it by quotation.
+             When the opened file is updated,the contents are saved to a temporary file,
+             then the temporary file name is passed to the 1st operand file.
+             This is convenient in the case of repeated submit with a little update
+             and finaly cancel update.
+             ex.) &quot;SUB subtool *&quot;.
+             To pass the original filename use &quot;**&quot; as parameter.
+             ex.) &quot;SUB subtool * **&quot;
+             To pass &quot;**&quot; itself enclose it by quotation.
+
+            -If the file is (member of) remote <A href="HID_TSOE_E.htm">TSO dataset</A>,parameters except filename
+             is ignored.
+             Enter &quot;SUB&quot; on the panel the file opened.
+             Or on any panel, enter &quot;SUB filename&quot;.
+             Filename format is dest:'DSN(MEMB)'.
+             If the opened file is updated,the contents are send to TSO dataset,
+             'XE3270.TEMP.SUBMIT' as default, the TSO SUBMIT cmd is issued.
+             Allocate this Sequential Dataset beforehand.
+             Or you can specify other Dataset(Member) by SUBMITWORK= statement on ::xe3270cfg
+
+            -To protect HUNG by stdin input wait issued by submitted file,
+             there are some case &quot;&lt;NUL&quot; (&quot;&lt;/dev/null under UNX) is appended as default
+             when input redirect is not specified.
+             Those cases are output redirect is specified or SUB on =6 screen etc.
+
+</SPAN></PRE>
+</BODY>
+</HTML>

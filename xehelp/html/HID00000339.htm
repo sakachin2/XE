@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>Command Table(DirectoryListpanel)</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;"> *********************
+ (B) Directory List *
+*********************
+
+[Table 4] Directory List Line command.
+ +---+-------+------------------------------------------------------+
+ |cmd|func   | description                                          |
+ +---+-------+------------------------------------------------------+
+ | <a href="HID00000361.htm">a</a> |Attrib |set file attribute                                    |
+ | <a href="HID00000362.htm">b</a> |Browse |browse the file                                       |
+ | <a href="HID00000363.htm">c</a> |Copy   |copy file or directory                                |
+ | <a href="HID00000364.htm">d</a> |Delete |delete file or directory.                             |
+ | <a href="HID00000365.htm">e</a> |Edit   |display the file to edit                              |
+ | <a href="HID00000366.htm">f</a> |Free   |free(End) view screen,update is saved.                |
+ | <a href="HID_DLCG_E.htm">g</a> |Grep   |grep search in the file or directory.                 |
+ |<a href="HID00000367.htm">h/H</a>|Hex    |Open file by Hex mode.                                |
+ |<a href="HID00000368.htm">i/I</a>|ECN(EI)|Open <a href="HID00000037.htm">SPF</a> <a href="HID00000226.htm">COBOL</a> file as COL.1-6 is lineno.            |
+ |<a href="HID00000369.htm">j/J</a>|EKN(EJ)|Open SPF COBOL file as COL.1-6 is space.              |
+ |<a href="HID00000370.htm">k/K</a>|EK     |Open COBOL file as COL.1-6 is space.                  |
+ |<a href="HID00000371.htm">l/L</a>|EC(EL) |Open COBOL file as COL.1-6 is lineno.                 |
+ | <a href="HID00000372.htm">m</a> |Move   |move file or directory                                |
+ |<a href="HID00000373.htm">n/N</a>|EN     |Open SPF file(col.73-80 is lineno).                   |
+ |<a href="HID00000374.htm">o/O</a>|Open   |Open with parm of <a href="HID00000277.htm">Edit</a>/<a href="HID00000260.htm">Browse</a> cmd..                   |
+ | <a href="HID00000375.htm">p</a> |Print  |file print,specify print command in INI file.         |
+ | <a href="HID00000376.htm">r</a> |Rename |rename file or directory                              |
+ | <a href="HID00000377.htm">s</a> |Select |Browse or Edit                                        |
+ | <a href="HID00000601.htm">t</a> |Text   |Browse or Edit with text mode forced.                 |
+ | <a href="HID00000378.htm">u</a> |Undo   |Undo for Renamed/Deleted/Moved lines.                 |
+ | <a href="HID00000379.htm">v</a> |View   |split and browse file(end by f command)               |
+ | <a href="HID00000380.htm">w</a> |vieW   |split and edit file(end by f command,update is saved) |
+ | <a href="HID00000381.htm">x</a> |eXcude |hide member of the directory(Use &quot;y&quot; to uncover)      |
+ | <a href="HID00000382.htm">y</a> |Yield  |re-display hidden member of the directory             |
+ | <a href="HID00000383.htm">z</a> |Zero   |Delete without undeletability                         |
+ | <a href="HID00000385.htm">0</a> |Zero   |Delete without undeletability(force to Read-only)     |
+ | <a href="HID00000386.htm">1</a> |BrowseB|browse the file.Binary file mode.                     |
+ | <a href="HID00000387.htm">2</a> |EditB  |display the file to edit.binar file mode              |
+ | <a href="HID_DLC3_E.htm">3</a> |E/B-B  |Binary mode,Edit or Browse depends on the screen mode.|
+ | <a href="HID_DLC8_E.htm">8</a> |E/B-8  |FixedLRECL=80, E or B depends on the screen mode.     |
+#ifdef UTF8SUPP
+ | [ |O-CPLC |Open the file with option CPLC                        |
+ | ] |O-CPU8 |Open the file with option CPU8                        |
+#endif
+ | <a href="HID_DLCEQ_E.htm">=</a> |Compare|compare two files using tool xfc,xdc.                 |
+ | <a href="HID00000384.htm">/</a> |slash  |Delete force to Read-only                             |
+ | <a href="HID00000392.htm">-</a> |expand |refresh and expand the directory listing its member.  |
+ | <a href="HID00000393.htm">&gt;</a> |expall |expand all tree nodes and leafs under the directory   |
+ | <a href="HID00000394.htm">+</a> |reduce |delete members of the directory from the list.        |
+ | <a href="HID00000391.htm">:</a> |path   |for equal or upper level of the directory,remain only |
+ |   |       |the directory of on the path of the directory.        |
+ | <a href="HID00000390.htm">.</a> |chdir  |set current drive and current directory from the line.|
+ | <a href="HID00000389.htm">%</a> |appcmd |apply command to the file/dir of the line.            |
+ | <a href="HID00000388.htm">!</a> |assoc  |pass to application associated by ext name.           |
+ | <a href="HID00000691.htm">#</a> |execute|execute local(<a href="HID00000317.htm">SUBmit</a>) or remote(<a href="HID00000690.htm">RSH</a>) file.            |
+ | <a href="HID00000718.htm">&amp;</a> |spawn  |file asynchronous execution.                          |
+ | <A href="HID_DLCSND_E.htm">^</A> |send   |send filename.                                        |
+ +---+-------+------------------------------------------------------+
+
+
+   - Enter 1 byte command on line cmd input field.
+     You can duplicate Attrib/Copy/Move/Rename/Open/%(appcmd) cmd
+     using function key.
+     See #9 on (1).Function-Key default assignment ...description of
+     <a href="HID00000244.htm">[Table 1]</a>.
+   - Line command is processed by reverse sequence(from last to top).
+     Accordingly when commands are entered on multiple lines,
+     for Browse/Edit command file which has smallest lineno is displayed
+     on top of screen and subsequent files are stacked under that.
+     If err is occured,commands BEFORE the line are not processed.
+   - Lower/Upper case is distinguished for the cmd h,i,j,k,L,n and o.
+     When lower case,Browse or Edit is determined by the directory
+     open mode. Uppercase means opposite.
+   - To delete file/directory 4 types (&quot;d&quot;,&quot;/&quot;,&quot;z&quot;,&quot;0&quot;) command is
+     prepared. The difference comes from operation for Read-only file/
+     directory and undeletability.
+     +---+-------+---------------+
+     |cmd|undo   | For ReadOnly  |
+     +---+-------+---------------+
+     | d |Avail  | Error         |
+     | / |Avail  | Deleted       |
+     | z |N/A    | Error         |
+     | 0 |N/A    | Deleted       |
+     +---+-------+---------------+
+     In all case,if directory is not empty,confirmation required.
+     The screen of deleted is closed which is opened by View command
+     typed on the same directory list line.
+   - For target of Copy/Move/Rename cmd *\, **\ and ^*\ are useful.
+       *\  : id of directory containing source file/directory.
+       **\ : id of parent directory of *\,also avail **\**\ etc.
+       ^*\ : id of dir or filename path of file on the other side of screen
+             when screen split.
+     Wild card is avail for target name(not effective to pathname).
+     If target name contains space,enclose whole target name by quotation.
+
+    (note).file with extension &quot;. SF&quot; on root directory except on A:,
+           B: is prohibitted to rename or to reset read-only attr.
+           It is to prevent important file for OS/2,for example
+           &quot;EA DATA. SF&quot;,to be deleted carelessfully on DOS.
+           To delete these files in DOS,use attrib/delete DOS native
+           command with wild card filename specification.
+    (note)DOS6.3 make difference to OS/2 and Windows about wild card.
+          For example,x* is same as x*.* under OS/2 and Windows,but under
+          DOS 6.3 x1.c is not one of x*.
+</SPAN></PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>Keytab J</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+
+<PRE><SPAN style="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">          
+(j) xe.keytab
+
+      (以下はKubuntu6のケースです)
+
+        konsoleのもとでxeが理解できるEsc文字列を発生させるには、
+        例えば XE.keytab というファイルを ~/.kde/share/apps/konsole/に作成します。
+        (/usr/share/apps/konsele/ に置くと全ユーザーに有効になります)
+        konsoleのメニュー Settins-&gt;Keyboard のリストからこの設定を選択します。
+        リスト上の名前は keytabファイルのkeyboard 文から取られます。
+        省略値の keytab を設定するのは,Settings-&gt;Configure Konsoleで開いたダイアログの
+        Sessionタブの左の欄で&quot;Shell&quot;を選び右側のkeytabドロップダウンリストから
+        設定します。
+        新しい keytab ファイルをテストするには 例えば &quot;konsole --keytab XE&quot;打ちます。
+        この &quot;XE&quot; も keyboard 文のIDです。メニューのSettingsを選択した時に
+        読み込まれてチェックされます。
+
+        keytab設定キー組み合わせは他のshortcutキー設定を解除しないと有効になりません。
+        Konsole のshortcutキーは Settings-&gt;Configure Shortcutsで、
+        グローバル shortcut は SystemSettings-&gt;Computer Administration
+        -&gt;Keyboard &amp; Mouse-&gt;Keyboard Shortcuts でカスタマイズできます。.
+        keytab設定が尚も有効にならない時 &quot;grep -irl&quot; で ~/.kde/share/config を探してください。
+        例えば Shift+F12は [Voice] に shortcut=Shift+F12 とありました。
+        ( ~/.kde/share/config/khotkeysrc)
+        この設定は次のようにリセットしてください。
+        SystemSettings-&gt;Accessibilityで左の欄からInputActionsを選択しGlobal Settingsの
+        ボタンを押すと Voice settingタブが Shift+F12の設定を示しています。
+        これをnoneにしてください。keytabのShift+F12設定が効くようになります。
+
+        (注e)./usr/share/doc/konsole/README.KeyTab がコーディングのヘルプです。
+             .例えばShiftの有り無し両方を定義する時は &quot;-Shift&quot;の記述が必要です。
+              無いと &quot;already assigned&quot; のエラーが出ます。
+              (&quot;konsole --keytab xxx.keytab&quot;でテストします)
+             .+AnyModのある行のEsc文字列の&quot;*&quot;は Modifierキーで置き換わります。
+                2:Shift,3:Alt,5:Control
+
+        0001|# [xe.keytab] Konsole Keyboard Table (xe console keys)
+        0002|#
+        0003|# --------------------------------------------------------------
+        0004|
+        0005|keyboard &quot;XE&quot;
+        0006|
+        0007|# --------------------------------------------------------------
+        0008|#
+        0009|# This configuration table allows to customize the
+        0010|# meaning of the keys.
+        0011|#
+        0012|# The syntax is that each entry has the form :
+        0013|#
+        0014|#   &quot;key&quot; Keyname { (&quot;+&quot;|&quot;-&quot;) Modename } &quot;:&quot; (String|Operation)
+        0015|#
+        0016|# Keynames are those defined in &lt;qnamespace.h&gt; with the
+        0017|# &quot;Qt::Key_&quot; removed. (We'd better insert the list here)
+        0018|#
+        0019|# Mode names are :
+        0020|#
+        0021|# - Shift
+        0022|# - Alt
+        0023|# - Control
+        0024|#
+        0025|#   The VT100 emulation has two modes that can affect the
+        0026|#   sequences emitted by certain keys. These modes are
+        0027|#   under control of the client program.
+        0028|#
+        0029|# - Newline     : effects Return and Enter key.
+        0030|# - Application : effects Up and Down key.
+        0031|#
+        0032|# - Ansi        : effects Up and Down key (This is for VT52, really).
+        0033|#
+        0034|# Operations are
+        0035|#
+        0036|# - scrollUpLine
+        0037|# - scrollUpPage
+        0038|# - scrollDownLine
+        0039|# - scrollDownPage
+        0040|#
+        0041|# - emitSelection
+        0042|#
+        0043|# If the key is not found here, the text of the
+        0044|# key event as provided by QT is emitted, possibly
+        0045|# preceeded by ESC if the Alt key is pressed.
+        0046|#
+        0047|# --------------------------------------------------------------
+        0048|
+        0049|key Escape : &quot;\E&quot;
+        0050|key Tab           : &quot;\t&quot;
+        0051|key Backtab+Shift : &quot;\E[Z&quot;
+        0052|
+        0053|# VT100 can add an extra \n after return.
+        0054|# The NewLine mode is set by an escape sequence.
+        0055|
+        0056|key Return-NewLine : &quot;\r&quot;
+        0057|key Return+NewLine : &quot;\r\n&quot;
+        0058|
+        0059|# Some desperately try to save the ^H.
+        0060|
+        0061|key Backspace : &quot;\x7f&quot;
+        0062|
+        0063|
+        0064|key Up   -AnyMod : &quot;\E[A&quot;
+        0065|key Down -AnyMod : &quot;\E[B&quot;
+        0066|key Right-AnyMod : &quot;\E[C&quot;
+        0067|key Left -AnyMod : &quot;\E[D&quot;
+        0068|
+        0069|key Up   +AnyMod : &quot;\E[1;*A&quot;
+        0070|key Down +AnyMod : &quot;\E[1;*B&quot;
+        0071|key Left +AnyMod : &quot;\E[1;*D&quot;
+        0072|key Right+AnyMod : &quot;\E[1;*C&quot;
+        0073|
+        0074|# linux functions keys F1-F5 differ from xterm
+        0075|
+        0076|key F1 -Shift-Alt-Control : &quot;\E[[A&quot;
+        0077|key F2 -Shift-Alt-Control : &quot;\E[[B&quot;
+        0078|key F3 -Shift-Alt-Control : &quot;\E[[C&quot;
+        0079|key F4 -Shift-Alt-Control : &quot;\E[[D&quot;
+        0080|key F5 -Shift-Alt-Control : &quot;\E[[E&quot;
+        0081|key F6 -AnyMod            : &quot;\E[17~&quot;
+        0082|key F7 -AnyMod            : &quot;\E[18~&quot;
+        0083|key F8 -AnyMod            : &quot;\E[19~&quot;
+        0084|key F9 -AnyMod            : &quot;\E[20~&quot;
+        0085|key F10-AnyMod            : &quot;\E[21~&quot;
+        0086|key F11-AnyMod            : &quot;\E[23~&quot;
+        0087|key F12-AnyMod            : &quot;\E[24~&quot;
+        0088|
+        0089|key F1 +Shift-Alt-Control : &quot;\EO2P&quot;
+        0090|key F2 +Shift-Alt-Control : &quot;\EO2Q&quot;
+        0091|key F3 +Shift-Alt-Control : &quot;\EO2R&quot;
+        0092|key F4 +Shift-Alt-Control : &quot;\EO2S&quot;
+        0093|key F5 +Shift-Alt-Control : &quot;\E[15;2~&quot;
+        0094|
+        0095|key F6  +AnyMod    : &quot;\E[17;*~&quot;
+        0096|key F7  +AnyMod    : &quot;\E[18;*~&quot;
+        0097|key F8  +AnyMod    : &quot;\E[19;*~&quot;
+        0098|key F9  +AnyMod    : &quot;\E[20;*~&quot;
+        0099|key F10 +AnyMod    : &quot;\E[21;*~&quot;
+        0100|key F11 +AnyMod    : &quot;\E[23;*~&quot;
+        0101|key F12 +AnyMod    : &quot;\E[24;*~&quot;
+        0102|
+        0103|key Home  -AnyMod : &quot;\E[H&quot;
+        0104|key End   -AnyMod : &quot;\E[F&quot;
+        0105|key Prior -AnyMod : &quot;\E[5~&quot;
+        0106|key Next  -AnyMod : &quot;\E[6~&quot;
+        0107|key Insert-AnyMod : &quot;\E[2~&quot;
+        0108|key Delete-AnyMod : &quot;\E[3~&quot;
+        0109|
+        0110|key Home  +AnyMod : &quot;\E[1;*H&quot;
+        0111|key End   +AnyMod : &quot;\E[1;*F&quot;
+        0112|key Prior +AnyMod : &quot;\E[5;*~&quot;
+        0113|key Next  +AnyMod : &quot;\E[6;*~&quot;
+        0114|key Insert+AnyMod : &quot;\E[2;*~&quot;
+        0115|key Delete+AnyMod : &quot;\E[3;*~&quot;
+        0116|
+        0117|# Keypad-Enter. See comment on Return above.
+        0118|
+        0119|key Enter+NewLine : &quot;\r\n&quot;
+        0120|key Enter-NewLine : &quot;\r&quot;
+        0121|
+        0122|key Space +Control : &quot;\x00&quot;
+        0123|key 2 -Control : &quot;2&quot;
+        0124|key 2 +Control : &quot;\x00&quot;
+        0125|
+        0126|# some of keys are used by konsole.
+        0127|
+        0128|
+        0129|key ScrollLock     : scrollLock
+        0130|
+        0131|#----------------------------------------------------------
+        0132|
+        0133|# keypad characters as offered by Qt
+        0134|# cannot be recognized as such.
+        0135|
+        0136|#----------------------------------------------------------
+        0137|
+        0138|# Following other strings as emitted by konsole.
+
+</SPAN></PRE>
+</BODY>
+</HTML>

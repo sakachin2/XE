@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>NUMber</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    = Line number display
+
+        NUM {on | off | xon | xoff | seti | setr
+            (nn) | reset | renum | clear | ?} [s|f|k]
+        REN [{setr|seti} [col1[-col2] ['delmchar'|S|B]]]
+
+             on      :display 7 digits line number.
+                     line number format is nnnnmmm
+                                          nnnn:line number at open
+                                          mmm :post-fix by line insert
+                      nnnnnmm format if file contain over   10,000 lines
+                      nnnnnnm format if file contain over  100,000 lines
+                      nnnnnnn format if file contain over 1000,000 lines
+            off     :no line number field displayed
+            (nn)    :number of line number digit
+                     only line update flag is displayed if 0;
+                     no post-fix if 1 through 4(5 for over 10,000 line).
+                     post-fix is from top digit when 5 or 6.
+                     7 is same meaning as on.
+             (note).Change is applied to screen of current and opened
+                    after this time.
+                   .Line number digit is ajusted for each file at open
+                    when this default value is too small.
+                   .value is hold for browse/edit/cmd output screen each.
+                   .For line-numbered file,7 is user at each open time
+                    regardless this setting.
+
+            xon/xoff:Attr of line number column display, offset or lineno.
+            s       :Change default value for binary file.
+                     (for text file default is always line number type).
+            reset/renum:re-number line-number.(reset sub line number to 0)
+                        For <a href="HID00000037.htm">SPF</a>(line-numbered) file,all line length is set to
+                        the fixed length,and line number column is set.
+                        renum set on col 1-6 for <a href="HID00000226.htm">COBOL</a> file.
+            clear   :space clear line number field.
+            f       :force re-number for line-numbered file with error
+                     of line-no or line-length.
+            k       :clear/renum col 1-6 of cobk type file.
+            ?       :display current default value for browse/edit/
+                     command output screen.
+
+            SETR/SETI :set line number into the file area by insert or replace mode.
+            col1,col2 :column position to set.
+                       field width is specified up to 8 byte by col2.
+                       same width as left most line number column
+                       if col2 is not specified.
+            delmchar  :delimiter inserted after line number.
+                       enclose by quotation or use S or B for space.
+            ex) ren seti 12'|' ,  ren setr 1-8:
+</SPAN></PRE>
+</BODY>
+</HTML>

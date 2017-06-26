@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>TAB</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = タブ
+
+        TAB { on [altch] | off | clear | =default | 桁数 [asdefault] }
+            on      :タブ文字/全角スペースを表示
+                     表示に使用する文字は<a href="HID00000197.htm">.INI ファイル</a>で変更できます
+                     省略値は  タブ文字    :上矢印文字
+                               タブスキップ:右矢印文字
+                               全角スペース:2桁シャドー
+            off     :タブ文字/全角スペースを非表示
+                     表示不能な文字を表示する特殊文字の表示は
+                     このコマンドにかかわらず表示されます.
+            clear   :タブを取り除く
+                     後はスペースに置き変わります
+            =default:nn asdefault で設定した省略値に設定
+
+            桁数    :<a href="HID00000016.htm">タブの桁位置の間隔</a>を指定する，省略値は 4 です
+                     asdefault を共に指定すると省略値を設定、
+                     asdefault を指定しないと開いているファイルの設定となり
+                     プロファイルに保存されます。
+                     省略値を0 と設定するとタブ入力は次の欄へのカーソル移動と
+                     なります(タブ挿入は機能しません)
+                     その場合個別に設定していないファイルのタブ表示は1桁になります。
+                     最大値は12.
+                     <A href="HID_RECORD_J.htm">RECORD モード</A>で開いたファイルの場合は 桁数は 1 とされます。
+            altch   :TAB/DBCS空白 表示文字を変更
+                     Windows コマンドプロンプトは Property--&gt;Font の設定によっては
+                     TAB表示文字の字幅が異なり桁位置が不正になることがあります
+                     表示文字に ASCII 文字を設定すれば桁ずれの問題はなくなりますが
+                     適切なユニコードを使用したい場合に altch オプションを使用してください
+                     wxe,gxe,Linux xe では桁ずれは起こらないと思います
+                     省略値は U-21be(TAB:0x09 の表示用), U-21c0(TABで飛んだ空きスペース表示用),
+                     U-2591(DBCS空白 表示用) です
+                     <A href="HID00000197.htm">INI file</A> の下記の指定を上書きします
+                       (J)Tab_disp_char  =FFFF #(FFFF)# Tab display char for Japanese mode. (FFFF means U-21be &amp; U-21c0)
+                       (E)Tab_disp_char  =FFFF #(FFFF)# Tab display char for English  mode. (FFFF means U-21be &amp; U-21c0)
+                       DBCSspace_dispchar=FF #(FF)# DBCS space display char. (FF means U-2591)
+                     &quot;tab on 000&quot; で省略値あるいは INI 設定に戻ります
+                     例)  tab on &quot;^-&quot; ,   tab on u25b8-25b9 ,  tab on &quot;^-!&quot; ,  tab on u25b8-25b9-21be.
+                     altch に ASCII でない文字を指定したとき &quot;xpr -tabon&quot; コマンドの TAB 印刷文字は
+                     CPU8 ファイルではその altch が使用されますが、そうでない場合は 0x18 と 0x1a が
+                     使用されます
+
+</SPAN></PRE>
+</BODY>
+</HTML>

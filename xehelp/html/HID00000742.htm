@@ -1,0 +1,514 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>TextFlow cmd -E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN style="color:#000000;font-size:12pt;">
+   = Text Flow
+
+       {TFL | TF} [width] [SBCS] [TOL] [STRDELM] [SPACE1]
+                  [In] [ALL|EACH] [Pn|NOP] [BASE1] [AWORD|SWORD]
+                  ['delm-chars'} [.lab1 .lab2]
+
+            width   :right boundary after re-flowed.
+            SBCS    :split DBCS on left/right boundary into 2 SBCSs.
+                     If SBCS option is not specified,split DBCS is
+                     replaced by 2 space.
+                     This option is invalid for UTF8 file.
+            STRDELM :treat 'delm-chars' as a string to split line.
+            SPACE1  :shrink continued space chars into a space char.
+            In      :Output indentation(preceding space count).
+            ALL     :Process all paragraphs if Pn is not specified.
+                     Overflowed data by narrow width parameter may override
+                     the line of the next paragraph.
+            EACH    :Process all paragraphs if Pn is not specified.
+                     Do not over flow to the next paragraph but insert lines
+                     between each paragraph for the case narrow width
+                     parameter is specified.
+            Pn      :Specify the paragraph count to be processed. n=0 means all.
+            NOP     :Ignore paragraph(Assume all lines are in a paragraph
+                     after the end of line is determined by Pn option if specified)
+                     All the following lines are re-flowed with the 1st line's
+                     indentation if In is not specified.
+            BASE1   :Paragraph indentation base is of the 1st line.
+                     The paragraph contains the following lines of the same
+                     indentation as the 1st line.
+                     If BASE1 is not specified, paragraph contains
+                     1st line and 2nd line, and the following lines of same
+                     indentation as 2nd line that may not be same as 1st line.
+            AWORD   :(After Word) If space is not contained on source data
+                     in the range of target field width,split the line
+                     at the point of 1st space beyond the width.
+            SWORD   :(Split Word) If space is not contained on source data
+                     in the range of target field width,split the line
+                     at the point of the width.
+           'delm-chars':Line is split at the delimiter searched.
+                        SPLit cmd width width parameter split only once
+                        just before the boundary of the width parameter.
+                        TFlow cmd split each time at the point delimiter found.
+                        Hex notation is avalable like as \x0d.
+                        Multiple character like as \x8140 is allowed but
+                        no DBCS consideration.
+                        In this case this is treated as 2 SBCS charcter is specified.
+           .lab1/.lab2 :line range to be re-flowed.
+                        If not specified label range,start from the line
+                        cursor is placed.
+                        If cursor is on the command input line start line
+                        is the top of file.
+
+        (ex.01) Cursor position is spcecified by '_' on lineno field.
+                <A href="HID00000740.htm">Bounds</A> is not set,but option=f80 on the <A href="HID00000237.htm">CID header</A> line(line-0001000)
+                means right boundary is col.80.
+                (Without CID header line,you can specify margin by Fxx option of <A href="HID00000277.htm">Edit command</A>
+                ,&quot;e file-name f80&quot;.)
+
+            ===&gt;tf
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....
+            *******|********** TOP OF FILE *************************************************************
+            0001000|//*CID://+NONER~:    option=(f80,p0) update#=    3;
+            _002000|        added this part to test the behavior of the bnds
+            0003000|        cmommand for
+            0004000|        xe. i use bnds to format paragraphs
+            0005000|     so the breakes are nice.
+            0006000|     *                                                                 *   CL114
+            0007000|     *   JOB stream:   job name  proc name  program run frequency      *   CL114
+            0008000|     *                 --------  aaaaaa     weekly.                    *   CL114
+            0009000|     *=================================================================*   CL114
+
+         ==&gt;process one paragraph.
+            Line-0005000 is of next paragraph by the indentation changed.
+
+            3 line(s) processed,0 err line,delm=&quot;&quot;.1:17) ------------------------------------------------
+            ===&gt;
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....
+            *******|********** TOP OF FILE ***********************************************************
+            0001000|//*CID://+NONER~:    option=(f80,p0) update#=    3;
+            0002000*        added this part to test the behavior of the bnds cmommand for xe. i use
+            0003000*        bnds to format paragraphs
+            0005000|     so the breakes are nice.
+            0006000|     *                                                                 *   CL114||
+            0007000|     *   JOB stream:   job name  proc name  program run frequency      *   CL114||
+            0008000|     *                 --------  aaaaaa     weekly.                    *   CL114||
+            0009000|     *=================================================================*   CL114||
+
+        (ex.02) For <A href="HID00000239.htm">Line-Numbered-file</A>,bounds is col.1-72 as default.
+                &quot;option=(m72,n)&quot; on CID header line indicate that.
+                 (en command is for open line-numbered-file. &quot;en file-name&quot;).
+
+            ===&gt;tf
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8
+            *******|********** TOP OF FILE *********************************************************
+            0001000|//*CID://+NONER~:    option=(m72,n,p0) update#=   11;                   00010001
+            _002000| ws-ini-key                  w  64  a                                   00020002
+            0003000|    ws-ini-key-tag  ws-ini-key       4 a value 'key:'                   00030002
+            0003010|    ws-ini-key-data ws-ini-key  .4  60 a                                00031002
+            0003020|       field-name      w 60  a                                          00032002
+            0003030|       field1-value    w 60  a                                          00033002
+
+         ==&gt;col.73-80 is out of re-flowing area.
+            Line-0003000 is 2nd line of 1st paragraph and the indentation is of the paragraph.
+            The following line with same indentation(Line-0003010) as 2nd line are contained
+            in the paragraph. Line-0003020 is the 1st line of the 2nd paragraph.
+
+            3 line(s) processed,0 err line,delm=&quot;&quot;.9:26) -----------------------------------------------
+            ===&gt;
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....
+            *******|********** TOP OF FILE *************************************************************
+            0001000|//*CID://+NONER~:    option=(m72,n,p0) update#=   11;                   00010001
+            0002000* ws-ini-key                  w  64  a ws-ini-key-tag  ws-ini-key        00020002
+            0003000*    4 a value 'key:' ws-ini-key-data ws-ini-key  .4  60 a               00030002
+            0003020|       field-name      w 60  a                                          00032002
+            0003030|       field1-value    w 60  a                                          00033002
+            *******|********** END OF FILE *************************************************************
+
+        (ex.03) When Bounds is set different from the margin.
+                Boundary is indicated by the difference of color(This document can not show that).
+                BND command in this example is to show bounds setting and need not enter each time.
+
+            ===&gt;bnds;bnds 9 70;tf
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8...
+            *******|********** TOP OF FILE ************************************************************
+            _002000*        added this part to test the behavior of the bnds              aaaaaaaaaa
+            0003000*        command for                                                   aaaaaaaaaa
+            0004000*        xe. i use bnds to format paragraphs                           aaaaaaaaaa
+            0005000*          so the breakes are nice.                                    aaaaaaaaaa
+            0006000|      *                                                                *   CL114
+            0007000|      *  JOB stream:  job name  proc name  program run frequency       *   CL114
+            0008000|      *               --------  ---------  --------------------------- *   CL114
+
+         ==&gt;Just before the right boundary at least one space is required after re-flowed.
+
+            3 line(s) processed,0 err line,delm=&quot;&quot;.1:19) --------------------------------------------------
+            ===&gt;
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8...
+            *******|********** TOP OF FILE ************************************************************
+            0002000*        added this part to test the behavior of the bnds command for   aaaaaaaaa
+            0003000*        xe. i use bnds to format paragraphs                            aaaaaaaaa
+            0004000*                                                                       aaaaaaaaa
+            0005000*          so the breakes are nice.                                     aaaaaaaaa
+            0006000|      *                                                                *   CL114
+            0007000|      *  JOB stream:  job name  proc name  program run frequency       *   CL114
+            0008000|      *               --------  ---------  --------------------------- *   CL114
+
+        (ex.04) When width parameter used.
+
+            ===&gt;bnd ;bnd 1 28;tf 24 all
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8..
+            *******|********** TOP OF FILE ***********************************************************
+            0002000|file rep2 fb(80 27920)printer
+            0003000|file rep3 fb(80 27920)printer
+            0004000|file rep4 fb(80 27920)printer
+            0005000|file rep5 fb(80 27920)printer
+            0006000|file rep6 fb(80 27920)printer
+            0007000|file rep7 fb(80 27920)printer
+            0008000|file rep8 fb(80 27920)printer
+            0009000|file rep9 printer
+            0010000|file repa printer
+            0011000|job input ini finish print-tot
+            0012000|    ws-ini-key-data = ini-key
+            0013000|    ws-ini-key-field-name = ini-field-name
+            0014000*  aaaaaaaaaaa bbbbbbbbbbbbbbCCCCCCCCCCCCCCCCCCC
+
+         ==&gt;ALL option is to process all paragraph.
+
+            18 line(s) processed,1 err line,delm=&quot;&quot;.:36) -----------------------------------------------
+            ===&gt;
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....
+            *******|********** TOP OF FILE *************************************************************
+            0002000*file rep2 fb(80             r
+            0003000*27920)printe file rep3      r
+            0004000*fb(80 27920)printe file     r
+            0005000*rep4 fb(80 27920)printe     r
+            0006000*file rep5 fb(80             r
+            0007000*27920)printe file rep6      r
+            0008000*fb(80 27920)printe file     r
+            0009000*rep7 fb(80 27920)printe
+            0010000*file rep8 fb(80
+            0011000*27920)printe file rep9      ot
+            0012000*printer file repa           y
+            0013000*printer job input ini       ini-field-name
+            0014000*finish print-t              CCCCCCCCCCCCCCCCCCC
+            0015000*    ws-ini-key-data =
+            0016000*    ini-ke
+            0017000*    ws-ini-key-field-name =
+            0018000*  aaaaaaaaaaa
+            0019000*  bbbbbbbbbbbbbb
+            *******|********** END OF FILE *************************************************************
+
+        (ex.05) effect of EACH option.
+
+            ===&gt;bnd 1 28;tf 24 p3 each
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8
+            *******|********** TOP OF FILE *********************************************************
+            0001000|file rep2 fb(80 27920)printer
+            0002000|file rep3 fb(80 27920)printer
+            0003000|file rep4 fb(80 27920)printer
+            0004000|file rep5 fb(80 27920)printer
+            0005000|file rep6 fb(80 27920)printer
+            0006000|file rep7 fb(80 27920)printer
+            0007000|file rep8 fb(80 27920)printer
+            0008000|file rep9 printer
+            0009000|file repa printer
+            0010000|job input ini finish print-tot
+            0011000|    ws-ini-key-data = ini-key
+            0012000|    ws-ini-key-field-name = ini-field-name
+            0013000|  aaaaaaaaaaa bbbbbbbbbbbbbbCCCCCCCCCCCCCCCCCCC
+            0014000|DDD
+            0015000| EEE
+            *******|********** END OF FILE *********************************************************
+
+         ==&gt;Different with ALL,overflowed data are inserted after the each paragraph.
+            See Line-0011000,&quot;y&quot;(outside of the right boundary) and &quot;ws-ini-key-data =&quot;(inside of the right boundary)
+            remains in the same line after re-flowed.
+            By the parameter &quot;P3&quot;,Line-0015000(4'th paragraph) is out of process.
+            (p1:00010000-0010000,p2:0011000-0012000,p3:0013000-0014000)
+
+            14 line(s) processed,1 err line,delm=&quot;&quot;.:43) -------------------------------------------
+            ===&gt;
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8
+            *******|********** TOP OF FILE *********************************************************
+            0001000*file rep2 fb(80             r
+            0002000*27920)printe file rep3      r
+            0003000*fb(80 27920)printe file     r
+            0004000*rep4 fb(80 27920)printe     r
+            0005000*file rep5 fb(80             r
+            0006000*27920)printe file rep6      r
+            0007000*fb(80 27920)printe file     r
+            0008000*rep7 fb(80 27920)printe
+            0009000*file rep8 fb(80
+            0010000*27920)printe file rep9      ot
+            0010100*printer file repa
+            0010200*printer job input ini
+            0010300*finish print-t
+            0011000*    ws-ini-key-data =       y
+            0012000*    ini-ke                  ini-field-name
+            0012100*    ws-ini-key-field-name =
+            0013000*  aaaaaaaaaaa               CCCCCCCCCCCCCCCCCCC
+            0014000*  bbbbbbbbbbbbbb DDD
+            0015000| EEE
+            *******|********** END OF FILE *********************************************************
+
+        (ex.06) effect of NOP option.
+
+            ===&gt;bnds;bnds 1 40;tf p3 i4 nop
+            col    |....+....1....+....2....+....3....+....4.
+            *******|********** TOP OF FILE ******************
+            0001000* p1       a                             A
+            0002000*  p1       b                            A
+            0003000*   p2        c                          A
+            0004000*    p2        d                         A
+            0005000*     p3         e                       A
+            0006000*      p3         f                      A
+            0007000*       p4                               A
+            0008000*        p4                              A
+            *******|********** END OF FILE ******************
+
+         ==&gt;p3 limits the line range to be processed to 3 paragraph.
+            re-flowing process ignore the paragraph boundary.
+            Indentation after re-flowed can be changed by &quot;In&quot; option.
+
+            6 line(s) processed,0 err line,delm=&quot;&quot;.4:55) ----
+            ===&gt;
+            col    |....+....1....+....2....+....3....+....4.
+            *******|********** TOP OF FILE ******************
+            0001000*    p1       a p1       b p2        c   A
+            0002000*    p2        d p3         e p3         A
+            0003000*    f                                   A
+            0004000*                                        A
+            0005000*                                        A
+            0006000*                                        A
+            0007000*       p4                               A
+            0008000*        p4                              A
+            *******|********** END OF FILE ******************
+
+            Result of without NOP option.
+
+            ===&gt;bnds;bnds 1 40;tf p3 i4
+            col    |....+....1....+....2....+....3....+....4.
+            *******|********** TOP OF FILE ******************
+            0001000* p1       a                             A
+            0002000*  p1       b                            A
+            0003000*   p2        c                          A
+            0004000*    p2        d                         A
+            0005000*     p3         e                       A
+            0006000*      p3         f                      A
+            0007000*       p4                               A
+            0008000*        p4                              A
+            *******|********** END OF FILE ******************
+
+         ==&gt;
+
+            6 line(s) processed,0 err line,delm=&quot;&quot;.4:55) ----
+            ===&gt;
+            col    |....+....1....+....2....+....3....+....4.
+            *******|********** TOP OF FILE ******************
+            0001000*    p1       a p1       b               A
+            0002000*    p2        c p2        d             A
+            0003000*    p3         e p3         f           A
+            0004000*                                        A
+            0005000*                                        A
+            0006000*                                        A
+            0007000*       p4                               A
+            0008000*        p4                              A
+            *******|********** END OF FILE ******************
+
+        (ex.07) effect of BASE1 option.
+
+            ===&gt;bnds 1 40;tf p3 base1
+            *******|********** TOP OF FILE ******************
+            0001000|   p0-----aa                            A
+            0002000|   p0-----bb                            A
+            0003000| p1       a                             A
+            0004000|  p1       b                            A
+            0005000|   p2        c                          A
+            0006000|    p2        d                         A
+            0007000|     p3         e                       A
+            0008000|      p3         f                      A
+            0009000|       p4                               A
+            0010000|        p4                              A
+            *******|********** END OF FILE ******************
+
+         ==&gt;Line-002000 and Line-003000 is in the different paragraph by BASE1 option.
+
+            4 line(s) processed,0 err line,delm=&quot;&quot;.5:21) ----
+            ===&gt;
+            *******|********** TOP OF FILE ******************
+            0001000*   p0-----aa p0-----bb                  A
+            0002000* p1       a                             A
+            0003000*  p1       b                            A
+            0004000*                                        A
+            0005000|   p2        c                          A
+            0006000|    p2        d                         A
+            0007000|     p3         e                       A
+            0008000|      p3         f                      A
+            0009000|       p4                               A
+            0010000|        p4                              A
+            *******|********** END OF FILE ******************
+
+        (ex.08) effect of AWORD/SWORD option.
+
+            ===&gt;tf 20
+            col    |....+....1....+....2....+....3....+....4.
+            *******|********** TOP OF FILE ******************
+            0001000* aaaaaaaaaaaaaaaaaa AAAAAAAAAAAAAAAAAAAAA
+            0002000| bbbbbbbbbbbbbbbbbbb BBBBBBBBBBBBBBBBBBBA
+            0003000| cccccccccccccccccccc CCCCCCCCCCCCCCCCCCA
+            0004000| dddddddddddddddddddddDDDDDDDDDDDDDDDDDDA
+            0005000| eeeeeeeeeeeeeeeeeeeeee EEEEEEEEEEEEEEEEA
+            0006000*    FF
+            *******|********** END OF FILE ******************
+
+         ==&gt;Without AWORD nor BWORD,the long line(no space in the width) is not split.
+
+            5 line(s) processed,5 err line,delm=&quot;&quot;.5:33) ----
+            ===&gt;
+            col    |....+....1....+....2....+....3....+....4.
+            *******|********** TOP OF FILE ******************
+            0001000* aaaaaaaaaaaaaaaaaa
+            0001100* AAAAAAAAAAAAAAAAAAAAA
+            0002000* bbbbbbbbbbbbbbbbbbb BBBBBBBBBBBBBBBBBBBA
+            0003000* cccccccccccccccccccc CCCCCCCCCCCCCCCCCCA
+            0004000* dddddddddddddddddddddDDDDDDDDDDDDDDDDDDA
+            0005000* eeeeeeeeeeeeeeeeeeeeee EEEEEEEEEEEEEEEEA
+            0006000*    FF
+            *******|********** END OF FILE ******************
+
+         ==&gt;With AWORD option(&quot;tf 20 aword&quot;),the line is split at the space
+            just after the right boundary if exist.
+
+            5 line(s) processed,4 err line,delm=&quot;&quot;.5:33) ----
+            ===&gt;
+            col    |....+....1....+....2....+....3....+....4.
+            *******|********** TOP OF FILE ******************
+            0001000* aaaaaaaaaaaaaaaaaa
+            0001100* AAAAAAAAAAAAAAAAAAAAA
+            0002000* bbbbbbbbbbbbbbbbbbb
+            0002100* BBBBBBBBBBBBBBBBBBBA
+            0003000* cccccccccccccccccccc
+            0003100* CCCCCCCCCCCCCCCCCCA
+            0004000* dddddddddddddddddddddDDDDDDDDDDDDDDDDDDA
+            0005000* eeeeeeeeeeeeeeeeeeeeee
+            0005100* EEEEEEEEEEEEEEEEA
+            0006000*    FF
+            *******|********** END OF FILE ******************
+
+         ==&gt;With SWORD option(&quot;tf 20 sword&quot;),the line is split by the width.
+
+            ===&gt;
+            col    |....+....1....+....2....+....3....+....4.
+            *******|********** TOP OF FILE ******************
+            0001000* aaaaaaaaaaaaaaaaaa
+            0001100* AAAAAAAAAAAAAAAAAAA
+            0001200* AA
+            0002000* bbbbbbbbbbbbbbbbbbb
+            0002100* BBBBBBBBBBBBBBBBBBB
+            0002200* A
+            0003000* ccccccccccccccccccc
+            0003100* c
+            0003200* CCCCCCCCCCCCCCCCCCA
+            0004000* ddddddddddddddddddd
+            0004100* ddDDDDDDDDDDDDDDDDD
+            0004200* DA
+            0005000* eeeeeeeeeeeeeeeeeee
+            0005100* eee
+            0005200* EEEEEEEEEEEEEEEEA
+            0006000|    FF
+            *******|********** END OF FILE ******************
+
+        (ex.09) &quot;delm-char&quot; and related options.
+            ===&gt;bnds 1 40
+            *******|********** TOP OF FILE ******************
+            0001000| aaaaaaaa=aaaaaaaaa AAAAAAAA===AAAAAAAAA|
+            0002000* bbbbbbbb=: bbbbbbbb BBBBB :   BBBBBBBB |
+            0003000* cccccccc:=cccccc := CCCCC :   CCCCCCCCC|
+            0004000|    FF                                  |
+            *******|********** END OF FILE ******************
+
+         ==&gt;tf &quot;:=&quot;
+              all of &quot;:&quot; and  &quot;=&quot; split the line.
+
+            *******|********** TOP OF FILE ******************
+            0001000* aaaaaaaa=                              |
+            0002000* aaaaaaaaa AAAAAAAA=                    |
+            0003000* =                                      |
+            0003100* =
+            0003200* AAAAAAAAA bbbbbbbb=
+            0003300* :
+            0003400* bbbbbbbb BBBBB :
+            0003500* BBBBBBBB cccccccc:
+            0003600* =
+            0003700* cccccc :
+            0003800* =
+            0003900* CCCCC :
+            0003910* CCCCCCCCC
+            0004000|    FF                                  |
+            *******|********** END OF FILE ******************
+
+         ==&gt;tf &quot;:=&quot; tol
+              TOL means split just before the delimiter.
+
+            *******|********** TOP OF FILE ******************
+            0001000* aaaaaaaa                               |
+            0002000* =aaaaaaaaa AAAAAAAA                    |
+            0003000* =                                      |
+            0003100* =
+            0003200* =AAAAAAAAA bbbbbbbb
+            0003300* =
+            0003400* : bbbbbbbb BBBBB
+            0003500* :   BBBBBBBB cccccccc
+            0003600* :
+            0003700* =cccccc
+            0003800* :
+            0003900* = CCCCC
+            0003910* :   CCCCCCCCC
+            0004000|    FF                                  |
+            *******|********** END OF FILE ******************
+
+         ==&gt;tf &quot;:=&quot; strdelm
+              &quot;del-chars&quot; parameter is used as string to split the line.
+
+            *******|********** TOP OF FILE ******************
+            0001000* aaaaaaaa=aaaaaaaaa                     |
+            0002000* AAAAAAAA===AAAAAAAAA bbbbbbbb=:        |
+            0003000* bbbbbbbb BBBBB :   BBBBBBBB cccccccc:= |
+            0003100* cccccc :=
+            0003200* CCCCC :   CCCCCCCCC
+            0004000|    FF                                  |
+
+        (ex.10) effect of SPACE1.
+
+            ===&gt;tf space1 all
+            *******|********** TOP OF FILE *********************************************************
+            0001000|//*CID://+NONER~:    option=(m72,n,p0) update#=   11;                   00010001
+            0002000| ws-ini-key                  w  64  a                                   00020002
+            0003000|    ws-ini-key-tag  ws-ini-key       4 a value 'key:'                   00030002
+            0003010|    ws-ini-key-data ws-ini-key  .4  60 a                                00031002
+            0003020|       field-name      w 60  a                                          00032002
+            0003030|       field1-value    w 60  a                                          00033002
+            *******|********** END OF FILE *********************************************************
+
+         ==&gt;shrink continued spaces between the word to one space.
+
+            6 line(s) processed,0 err line,delm=&quot;&quot;.9:26) -------------------------------------------
+            ===&gt;
+            *******|********** TOP OF FILE *********************************************************
+            0001000*//*CID://+NONER~: option=(m72,n,p0) update#= 11; ws-ini-key w 64 a      00010001
+            0002000*    ws-ini-key-tag ws-ini-key 4 a value 'key:' ws-ini-key-data          00020002
+            0003000*    ws-ini-key .4 60 a                                                  00030002
+            0003010*       field-name w 60 a field1-value w 60 a                            00031002
+            *******|********** END OF FILE *********************************************************
+
+
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

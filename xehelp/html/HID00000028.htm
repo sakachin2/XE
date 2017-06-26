@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>COBOLファイル</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    .COBOLファイル。
+      <a href="HID00000039.htm">CID Header行</a>で option=(..,cob,..) を指定するか或いは EC,BC,SC
+      コマンドでファイルを開くことでCOBOLファイルとみなす。
+      COBOLファイルはカラム1-6が行番号欄(4桁行番号+2桁枝番)とする。
+      挿入行には保存時に行番号が設定され,<a href="HID00000105.htm">RENum</a>コマンドもこの欄を設定。
+      カラム1-6をコメント扱いとしたい場合は　CID Header行で
+　　　option=(..,cobk,..) を指定するか或いは EK,BK,SK コマンドで
+      ファイルを開く。
+      カラム73-80は option=(..,n,..)か ECN,BCN,SCN,EKN,BKN,SKNコマンド
+      の時,COBOL以外の<a href="HID00000398.htm">SPFファイル</a>と同様に行番号(4+2)＋2桁更新番号とする。
+      カラム73-80を行番号としない場合はそこに8桁<a href="HID00000039.htm">CID</a>を設定可能。
+      表示左端、行挿入時のインデンテーションはカラム 7。
+      (タブ停止位置はCOLコマンドで設定可能)
+      cobファイルは同時にSPFファイルだがcobkファイル(私のかってなNaming)は
+　　　option=(n)の指定が無い限りは単にマージン付きファイルで行長=80固定の
+　　　制約も無いが、&quot;num clear k&quot;コマンドでcol1-6がスペースクリアーされる。
+      cobkファイルの省略時のCID位置はカラム73。
+ Summary
+ +-----------+------------+----------+-----------+----------+---------+
+ |CIDヘッダー|編集コマンド|行コマンド|Col.1-6    |Col.73-80 |行長     |
+ +-----------+------------+----------+-----------+----------+---------+
+ |cob,n      |BCN/ECN/SCN/|i/I       |COBOL行番号|SPF行番号 |80桁固定 |
+ |           |Bi/Ei/Si    |          |           |          |         |
+ |cobk,n     |BKN/EKN/SKN/|j/J       |any        |SPF行番号 |80桁固定 |
+ |           |BJ/EJ/SJ    |          |           |          |         |
+ |cobk       |BK/EK/SK    |k/K       |any        |any       |any      |
+ |cob        |BC/EC/SC/   |l/L       |COBOL行番号|any       |80桁固定 |
+ |           |BL/EL/SL    |          |           |          |         |
+ |n          |BN/EN/SN    |n/N       |any        |SPF行番号 |80桁固定 |
+ f80        B8/E8/S8    8         any        any       80桁固定 
+ +-----------+------------+----------+-----------+----------+---------+
+      行コマンドはファイル名指定画面とディレクトリー画面とで同じ。
+
+
+      入力を大文字固定するには <a href="HID00000727.htm">CAP</a> コマンド、EDIt コマンドCAPオプションがある。
+      また<a href="HID00000729.htm">&quot;U&quot;</a> 英大文字変換 編集行コマンドも参照。
+</SPAN>
+</PRE>
+</BODY>
+</HTML>

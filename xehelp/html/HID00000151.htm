@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>o(On)</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"></SPAN><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = o 行コマンド.
+         .上書き方式の違いと&quot;o&quot;コマンドには挿入モードはない点を除けば
+          &quot;p&quot;行コマンドと同じです。
+          &quot;p&quot;行コマンドでは複写元の内容がすべて複写されますが
+          &quot;o&quot;行コマンドでは宛先行のスペース文字のみが上書きされます。
+          (&quot;n&quot;行コマンドでは複写元のスペース以外の文字を全て複写します。)
+
+            c      |  :  :  :
+            oo     |02/11/05
+            0003000|01 23 51 123
+            0004000|01 23 55 228
+            0005000|01 24 12 560
+            0006000|02 13 01 125
+            0007000|02/11/06
+            0008000|01 14 12 160
+            oo     |02 16 01 225
+        ===&gt;
+            0001000|  :  :  :
+            0002000*02/11/05:
+            0003000*01:23:51:123
+            0004000*01:23:55:228
+            0005000*01:24:12:560
+            0006000*02:13:01:125
+            0007000*02/11/06:
+            0008000*01:14:12:160
+            0009000*02:16:01:225
+            0007000*03:03:34.970
+
+</SPAN></PRE>
+</BODY>
+</HTML>

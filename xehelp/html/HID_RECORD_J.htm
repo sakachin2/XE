@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>Record Mode-J</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+   .固定長レコードファイル。
+
+     -メインフレームのファイルは通常改行コードを使用しません。
+      行長はファイルの属性として定義します。
+      行長が固定長のファイルを PC に ダウンロードして編集する場合に使用します
+     -<A href="HID00000079.htm">E</A>  filename /M[m|p|u|t|R][m|p|u|e|R] /Fn[-m]
+         R:レコードモード（前はReadオプション、後はWriteオプション)
+            p:改行文字が 0x0d0a, u:改行文字が 0x0a m:改行文字が 0x0d
+            e:EBCDIC-NL(0x15)が改行文字
+         Fn[-m]:レコード長、マージン
+           F80-72 で レコード長:80, 右マージンが col.73-80
+           右マージンを非保護域とするには P0 を指定してくださ
+        例） &quot;e file1 /Mr /F80-72 P0&quot;
+     -レコードモードReadは改行文字を無視し /Fn 指定の レコード長で読み込み
+      レコードモードWriteは改行文字を出力しません。
+        レコードモード、レコード長はプロファイルに保存されます。
+        レコードモードファイルに改行文字を挿入するには /Mrp などとします。
+        非レコードモードファイルから改行文字を取り去るには /Mpr などとし、保存後
+        /mr Fxx で開き直します。
+        プロファイルのレコードモードをリセットしたい時は R 以外の/Mオプションを指定します
+        /F0 指定の時もプロファイルのレコードモードをリセットします。
+     -レコードサイズの変更。
+      <A href="HID00000079.htm">EDIt</A> コマンドで新たに /F オプションを指定することでプロファイルは上書きされますが
+      <A href="HID00000070.htm">REPlace/CREate</A>/<A href="HID00000113.htm">SAVe</A>/<A href="HID00000080.htm">END</A> コマンドで出力時に変更できます。
+        REPlace/CREate/SAVe/END  [filename]  [/M[p|u|m|e|r]]  [/Fn[-m]]
+      行長は出力前に SPLit コマンドでレコード長以内に収まるように調整してください
+      /M で レコードモード(改行コード無し)&lt;--&gt;通常の改行モード の変更が出来ます。
+      /F で レコードモードの行長を指定あるいは変更出来ます。
+      (SAVe コマンドではファイル名したときのみ /M, /F が有効です、単に保存する場合は
+       EDItコマンドの /M でレコードモード&lt;--&gt;改行モードのみ変更できますが、
+       レコード長の変更は出来ません。)
+
+        例1)  rep file1 cpeb /mr /f80
+               改行モードで開いたファイルから EBCDIC 80 桁レコードモードファイルを作成
+        例2)  s   file2 cplc /mp
+               例1の逆の操作になります。
+     -REPlace/CREate コマンドで /M /F を指定しなかった場合
+      開く時の出力モードオプション指定が適用されます。
+        例えば &quot;e file1 cbep /mr f80&quot; で ファイルを開き
+               &quot;rep file2 cplc&quot; とすると短い行はレコード長まで拡張され
+               file2 のプロファイルに CPLC, LRECL=80, レコードモードが記録されます
+               &quot; e file1 cpeb /mrp f80&quot; で開き
+               &quot;rep file2 cplc&quot; とすると各行には改行コードが追加されます。
+               UTF8 ファイルの場合 LRECL/レコードモードはプロファイルに記録されません。
+     -<A href="HID_EBCF_J.htm">EBC ファイル</A>を <A href="HID00000079.htm">E8 コマンド</A>で開くとレコードモードとみなします。
+     -レコード長を超えた挿入は出来ません、短い行は保存時にレコード長まで拡張されます。
+     -TABカウンターはオープン時は 1 に設定します。
+      /Mr なしの /Fxx のみ指定の固定長ファイル(改行文字あり)と異なり
+      /Mr /Fxx 指定のの固定長ファイル(改行文字なし)では保存時にTAB(0x09)は
+      SPACE(0x20)に置換されません
+      置換は TC|NOTC オプションで変更できます
+     -<A href="HID_UTF8_J.htm">UTF8ファイル</A>で固定長レコードのファイルの表示幅はUTF8コードの性格上固定ではありません
+      レコード長はUTF8コードでの長さです。画面の行長はASCII以外の文字が含まれていると
+      短く表示され、桁数==レコード長まで拡張できますが保存時にUTF8コード長==レコード長で
+      分割されます。(固定長テキストファイル(改行文字あり)では分割されません)
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

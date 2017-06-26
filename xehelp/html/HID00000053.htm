@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>(C)ファイル内容</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> ********************
+*(C) 編集/表示画面 *
+********************
+
+          0        1         2         3           6         7         8
+          12345678901234567890123456789012      789012345678901234567890
+
+     1行  EDIT---|G:\X1.C (95-05-13 10:44) .... ------ 001-(012)-072Rep
+     2行  ===&gt;                             ....                ===&gt;HALF
+     3行  *******|*e*rw*fd** TOP OF FILE * .... ************************
+     4行  0001000*int main(int argc,char *p....   //main        //~5513R
+     5行  0002000|{
+     :
+
+       1 行目    :ヘッダー行,メッセージ表示行
+           1 桁目: (EDIT) 又は (BROWSE)
+                   カーソルがファイルの行上にある時はその位置の文字を
+                   次のようにヘキサで表示します.
+                   E---31- (SBCSの場合)  ,  E-81A0-  (DBCSの場合)
+                   <a href="HID00000699.htm">HEX 入力モード</a>の時は x_ そして1文字入力の後は
+                   例えば xA_ と表示されます(DBCSのときは3文字まで)
+           8 桁目: (|) 未更新, (*) 変更行あり
+           9 桁目: ファイル名
+          64 桁目: 画面左端のレコード桁位置(1から)
+          69 桁目: カーソル位置のレコード桁位置
+          74 桁目: 画面右端のレコード桁位置
+          77 桁目: () 横書モード, () <a href="HID00000071.htm">縦書モード</a>
+          78 桁目: (Rep) 上書きモード, (Ins) <a href="HID00000090.htm">挿入モード</a>
+                   (DOS版ではそれぞれ REP,INSと表示,
+                    GCC版ではそれぞれ rep,insと表示)
+
+       2 行目    :コマンド行
+           5 桁目: コマンド入力欄
+          76 桁目: スクロール量表示/入力欄
+                   P(age),C(sr),nn(行数)などを上書きしてスクロール量を
+                   変更できます
+
+       3 行目以降:ファイル表示行
+           1 桁目: 行番号
+                   1 桁目高輝度は <a href="HID00000124.htm">UNDO</a> コマンドによる UNDOの対象行を示す
+                   行番号表示欄の桁数は <a href="HID00000100.htm">NUM</a> コマンドで変更可能です
+           8 桁目: (|) 未更新, (*) 変更行
+                   (-) <a href="HID00000042.htm">長文</a>分割表示先頭行未更新行, (+) 同変更行
+                   (.) 長文分割表示後続行未更新行, (:) 同変更行
+                   (32760桁(DOS版は999桁)超の行を長文とし、1行32760桁で
+                    複数行表示)
+                   高輝度表示は 現変更レベルの行を示す,
+                   (レベルは機能キー入力でアップする,文字キーだけの場合
+                    実行キーでアップする)
+           9 桁目: ファイル内容表示欄
+                   タブ(0x09)の表示は<a href="HID00000121.htm">TABコマンド</a>を参照.またタブは
+                   <a href="HID00000084.htm">Find</a>コマンドに対してはスペースの扱いと同じです.
+                   タブ以外の,対応する表示文字のない文字にたいしては
+                   行番号欄と同じ表示属性で特殊文字が表示されます.
+                   対象文字は 日本語環境では0x00,0x08,0x0a,0x0c,0x0d,
+                   0x11,0x13,0x18,0x7f,0x80,0xa0,0xfd,0xfe,0xff.
+                   英語環境では0x00,0xffのみです.
+                   非表示文字は<a href="HID00000197.htm">INIファイル</a>で設定変更可能です。
+</SPAN>
+            &quot;TOP OF LINE&quot; に表示される ファイル情報は以下のとおりです
+
+                *******|*e*rw*fd** TOP OF FILE * .... ************************
+
+             e: encoding
+                E:EBCDIC
+                e:EBCDIC binary
+                b:binary
+                U:UTF8 コード, CPU8 オプション指定で開いた
+                u:UTF8, 親ディレクトリーが CPU8 指定で開かれた
+                L:Locale コード, CPLC 指定で開いた
+                l:上記以外
+             r: /Mオプションの読み込みモード指定
+                v:/Mv, 可変長レコード
+                r:/Mr, 固定長レコード
+                p:/Mp, PCファイル, 改行コードが 0x0d0a
+                t:/Mt指定か /Mp,/Muいずれの指定もない, 改行コードは 0x0a か 0x0d0a
+                u:/Mu, Unixファイル, 改行コードが 0x0a
+                m:/Mm, Macファイル, 改行コードが0x0d
+                e:/Me, EBCDIC, 改行コードが0x15
+                b:/Mb, binary
+             w: 読み込みモードと異なる出力モード指定があるとき
+                前記に準じて表示
+             f: ファイル名encoding
+              (Linux)
+                U:UTF8, FNU8 指定あり
+                u:UTF8, FNU8 指定なし, デバイスのマウントオプションがUTF-8
+                  あるいは、親ディレクトリがFNU8で開かれた
+                L:FNLCl 指定あり
+                l:上記以外
+              (Windows)
+                U:Localeコードで表示できない, FNU8 指定あり
+                u:Localeコードで表示できない, FNU8 指定なし
+                L:FNLCl 指定あり
+                l:上記以外
+
+             d: dirmode(Linux のみ)
+                u:デバイスのマウントオプション IOCHARSETがUTF-8
+</PRE>
+</BODY>
+</HTML>

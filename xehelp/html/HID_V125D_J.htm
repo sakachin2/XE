@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>V125D-J</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">***** V125D ********************** 2010/03/23
+
+.(BUG)
+   -(wxe/gxe) C&amp;P:UTF8ファイル上の、ダブルクリックによる 行 または 語 クリップボード複写で複写長が短くなる。
+   -(WinCon) RGB値は変更できませんのmsgがでてパレットを変更できない。
+   -=0(色設定)画面で編集画面と表示画面のパレット番号を同じにしてしまうとFind/C&amp;Pなどの反転表示がされない。
+    (Report from Jason@us)
+   -(wxe) C&amp;P:UTF8ファイルの行番号欄をダブルクリックした時変換ミスする。
+   -UTF8ファイル上のFindで行の両端にある文字が見つからない。
+   -(LNX)CJKの環境変数LANGがUTF8でない時UTF8文字が印刷不能表示文字になる。
+   -(LNX)環境変数LANGがUTF8でない時UTF8ファイルへの3/4バイトDBCSの入力が出来ない
+   -(gxe)DBCSスペースがTAB ON の時Tab表示に変わらない。
+   -Hex入力モード表示がカーソル移動で消える。
+   -UTF8 ファイルに大文字小文字区別無しを指定するとSORTコマンドが正しく機能しない。
+   -DirList上のIFInd がDBCS第２バイトも評価して不正なマッチとなる。
+
+.UTF8のサポート範囲をBMP(16ビットUCS2:0x0000--&gt;0xffff)から21ビットUCS4(0x10000-&gt;0x10ffff)までに拡張。
+
+  -制約。
+     Windows版はUCS2までです。UCS4は変換エラー(?表示)としてUTF8コードは保持されます
+     0x20000 以降はフォント幅にかかわらず表示幅は２カラム。
+     cfgファイル(iniファイルのUnicodeTblパラメータ)で0x20000 以降は設定できません。
+  -縦Hex表示のHEX行でのUCSコード化はUCS2(２バイト結合は) &quot;u&quot;キー、UCS4(３バイト結合は) &quot;v&quot;キーを使用してください。
+  -ユニコードのHexコード入力(省略値 C+F11でHex入力モード切替)
+   Hex入力モードのとき &quot;u&quot;,&quot;v&quot;,&quot;x&quot;キーは特殊です
+     &quot;u&quot;:UCS2入力の開始, &quot;v&quot;:UCS4入力の開始, &quot;x&quot;: &quot;u&quot;/&quot;v&quot;設定のリセット。
+   HEX文字を何文字か入力した状態でこれらのキーを押すとファイル表示部に転送されます。
+   &quot;u&quot;/&quot;v&quot; 設定をしない場合はファイルがUTF8か否かでHexコードはUCS2かロケールコードかが決まります
+   尚４バイトDBCSをHex入力する時は2バイトづつ２回入力してください。
+  -コマンド入力行へのUTF8コード入力。
+   コマンド行、ファイル名リスト画面(=1, =2 画面), ユーティリティー画面(=3.12, =3.14 画面）,
+   DirList画面の改名欄にHexでUTF8コード入力できます
+   Hexコード入力(C+F11)モードに切替えて一文字ごとに&quot;u&quot;/&quot;v&quot;キーで始めてHexでユニコードを入力します。
+   &quot;u&quot;/&quot;v&quot;を打たないと入力はそのまま転送されます。ロケールコードをHex入力することは出来ません。
+   Hex入力モードのとき&quot;u&quot;や&quot;v&quot;を入力したい時は２回連続してキーを押してください。
+  -UTF8ファイル上のChange コマンドの Hex指定はUCS4の場合それを明示する必要があります。(3の倍数桁)
+     例.  C abc  \x10fffd   u4
+   U4を指定しない場合はUTF8ファイル上の置換はUCS2指定とみなします(2の倍数桁)
+     例.  C abc  \x30203021
+  -RAW CODE 入力対応。
+   但し、Linuxコンソール版はLANG環境変数がUTF8でないとロケールコードに変換できない文字は入力できません。
+   Windowsコンソール版は RAW CODE 入力出来ません(xeではA+&quot;+&quot;(NumPad)が無効なので)
+   その場合xeのHexコード入力を使用してください
+   (参考)ユニコードをHEX文字入力する方法
+      (Linux) SCIMで IMEを その他-&gt;RAW CODE に変更する。  
+              NumPadキーを使用する場合はNumLock ON にします。
+      (Windows)-Altキーを押したまま NumPadキーの&quot;+&quot;を押して続けてHEXコード入力。
+                レジストリーの設定が必要かもしれません。
+                regedit で HKEY_CURRENT\Control Panel\Input Method に  
+                EnableHexNumpad を追加ないし値の変更をしてください。
+                タイプは文字列(REG_SZ)で値は&quot;1&quot;に設定。
+               -日本語IME(Microsoft IME standard 2002)では 変換モードのときに
+                U3042 などと入力して F5 を押します。
+                DOS窓では効かないようです。
+.その他。
+  -SORt コマンド
+   UTF8ファイルのSortで D[S|I|X]オプション追加
+   SORTキーカラム指定がDBCSを分割する時
+     S:スペースみなす、 I:分割無しのDBCS値で比較、X:その桁は除いて比較
+   尚UTF8ファイルの照合順序はユニコード値です。
+  -&quot;S&quot;(split) 行コマンドはDBCSが分割される場合スペース２桁に置換するが
+   カーソル位置が縦Hex表示行にある場合はShift+Enterによる行分割と同様スペース置換しない
+  -HEX コマンド、千鳥足カーソル移動モードオプション追加
+     HEX [ On | Off | YZ | NZ ]
+       YZ:カーソルが縦Hex表示のHex行にあるときHex文字入力後のカーソル位置が
+          上段-&gt;下段-&gt;次の桁の上段と移動する。
+          また文字挿入モードでも下段にある場合は置換する
+       NZ:通常モードに戻る
+
+</SPAN></PRE>
+</BODY>
+</HTML>

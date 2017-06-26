@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>CAP-J</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+
+<PRE><SPAN style="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> = 英大文字固定
+
+
+        CAP [ON|OFF] [TSO|DEFAULT|CMD]
+
+            TSO     :<A href="HID_TSOE_J.htm">TSOファイル</A>の省略値を設定する。
+            DEFAULT :TSOファイル以外のファイルの省略値を設定する。
+            CMD     :CAP ON の効果をコマンド入力行などファイル内容以外の
+                     フィールドにも適用する。
+                     但しファイルがCAP ON のときにのみコマンド行入力を大文字変換する。
+
+            -ファイル画面入力を大文字固定する。
+             英小文字入力するにはShiftキーを使用する。
+             CapsLockキーの状況は無視されます。
+             CapsLockキーはファイル内容以外の場所で効果を持ちます。
+             (注)Linuxコンソール版ではシフトキーが判定できないので
+                 大文字小文字の反転機能になります。
+                 すなわちCAP ONの効果は、CapsLocksオフのときはその他のバージョンと
+                 おなじですが、CapsLocksオンのときはシフトキーなしで小文字入力、
+                 シフトキーを使うと大文字入力になります
+            -TSO,DEFAULTどちらの指定もない場合は現在開いているファイルに対する一時的な設定。
+             オペランド指定無しは現在開いているファイルの状態を反転させる。
+            -省略値は TSO:ON, DEFAULT:OFF CMD:OFF です。
+
+
+       -<a href="HID00000079.htm">EDIt</a>コマンドのCAPオプションも参照。
+</SPAN></PRE>
+</BODY>
+</HTML>

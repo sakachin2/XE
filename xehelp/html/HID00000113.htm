@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>SAVe/S</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = 保存
+
+        SAVe    [ファイル名]  [/M{T|P|U|M|E|R|V}] [-x | -nx] [-NB|-BK] [-F{n[-m]|vfmt}]
+                [-CPU8|-CPLC|-CPEB[:codepage]] [-IE] [-S{r|i|d}]
+
+            ファイル名:ワイルドカード指定もOK.
+                 (注)  ファイル名を指定しない場合は他のオプションには ファイル名と間違わないように
+                       &quot;-&quot; ないし &quot;/&quot; のプレフィックスが必要です。
+
+            /M      :改行コードを変えて保存することの指定。
+                     T:textモードwrite. Linux:0a, Windows:0d0a.
+                       Windows では 単独 0a も 0d0a に変換される。
+                     P:0d0a(PCファイル）
+                     U:0a  (Unix ファイル)
+                     M:0d  (Macファイル)
+                     E:15  (EBCDICファイル)
+                     R:固定長レコードモード。 ファイル名指定のときのみ有効
+                       /Fn[-m] でレコード長を指定する。
+                     V:可変長レコードモード。vfmt で可変長レコード形式を指定する
+            -x      :非表示行のみ対象とする。
+            -nx     :表示行のみ対象とする。
+            -NB     :ファイル保存時の一時バックアップを取らない。
+                     更新ファイル保存時のABENDでファイルが壊れるのを避けるために
+                     フロッピーDisk以外のローカルファイルに対しては、保存直前で元ファイルを
+                     同じDirで複写保存し出力完了後削除するが、パフォーマンス、
+                     Diskスペースの関係でそうしたくない場合に指定する。
+            -BK     :Editコマンドの-NBオプションを否定して一時バックアップを取る。
+            /Fn[-m] :レコードサイズ、マージン
+                     <A href="HID_RECORD_J.htm">固定長レコードモード</A>に変更する時、レコードサイズを変更する時に指定
+            /Fvfmt  :<A href="HID_RECFMV_J.htm">可変長レコード</A>形式。EDItコマンド参照
+
+#ifdef UTF8SUPP
+            -<A href="HID_UTF8_J.htm">CPU8</A>/CPLC: 出力ファイルのEncoding指定。
+               /<A href="HID_EBCF_J.htm">CPEB</A>    必要なら指定のEncodingに変換の、書き出される。
+                        CPEB:codepage 形式では任意の EBCDIC コードページが指定可能。
+            -IE      : UTF8--&gt;各国語変換で変換エラーを無視して出力。
+                       エラー文字は&quot;?&quot;に置換されている。
+            -S{r|i|d}: SO/SI オプション
+                       r : 画面のファイルが EBCDIC で CPLC/CPU8 を指定した時
+                           SO/SI をスペースに置換する
+                           画面のファイルが EBCDIC でなく CPEB を指定した時
+                           SO/SI の時可能であれば前後のスペースを置換する
+                       i : EBCDIC への変換の時 SO/SI を挿入する
+                       d : EBCDIC から変換の時 SO/SI を削除する
+#endif
+
+            -編集画面は終了せずに表示ファイルの全行を出力します
+            -ファイル名指定はディスク フルなどで保存できない時などに
+             使えます.ファイル名を指定し一旦別のディレクトリーにSAVeし
+             編集画面は<a href="HID00000063.htm">CANcel</a>で終了しディスクを掃除した後コピーし戻す
+            -ファイル名を指定した時既存ファイルなら確認応答を要求します
+            -BROWSEモードの時ファイル名を指定したコマンドのみ受付けます
+            -<a href="HID00000070.htm">CREate</a>/<a href="HID00000107.htm">REPlace</a> との違いは SAVe はファイル全体が対象です。
+</SPAN></PRE>
+</BODY>
+</HTML>

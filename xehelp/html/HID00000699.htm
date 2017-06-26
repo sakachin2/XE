@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text-html; charset=shift-jis">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>XIN(HexInputMode)</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = HEX 入力モード
+
+        XIN
+            -HEX 入力モード &lt;--&gt; 通常入力モード の切り換え。
+             省略時割り当てはCtrl+F11。
+            -HEX 入力モードの時,編集画面の左上隅が x に変わります。
+            -HEX 入力は編集画面のファイル表示エリア上でのみ受付けます
+            -DBCSの時 2 バイト入力するまではカーソル位置への転送は
+             行われませんが &quot;x&quot; キーでDBCS第一文字のみを転送します。
+             但し<a href="HID00000021.htm">バイナリーファイル</a>の場合DBCSチェックは行いません，
+             また<a href="HID00000197.htm">入力禁止文字</a>チェックも行いません.
+             <A href="HID_EBCF_J.htm">EBCDIC ファイル</A>の場合1バイト2桁入力ごとに転送されます
+
+            -&quot;u&quot;,&quot;v&quot;キーは<A href="HID_UTF8_J.htm">ユニコード入力</A>に使用します。
+             &quot;u&quot;キーは2バイト、&quot;v&quot;キーは3バイトユニコード入力の開始を指定します
+             未転送のデータがあるときは転送されます。
+             1文字ごとに指定が必要です。
+
+            -コマンド入力行などはHexコード入力出来ませんがユニコード入力は出来ます。
+             UTF8コードに変換されます。
+             Hexユニコード入力は他にもDirList改名欄、ユーティリティー画面(=3.12,=3.14)、
+             ファイル名リスト画面(=1,=2)で可能です。
+             &quot;u&quot;/&quot;v&quot;を打たないと入力はそのまま転送されます。ロケールコードをHex入力することは出来ません。
+             Hex入力モードのとき&quot;u&quot;や&quot;v&quot;を入力したい時は２回連続してキーを押してください。
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>OSの違い</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> (3)。XE Linuxコンソール版と他のDOS系の版との違い。
+
+     XE Linuxコンソール版と他のDOS系の版との違いを述べる前に、
+     移植作業で気のついた UNIX系 と DOS系 の 違いを整理しておきます。
+
+  - ファイル名。
+    . A:などのドライブIDを含まない 。
+    . 経路の分離文字。 &quot;\&quot; と &quot;/&quot;。
+    . 大文字/小文字が区別される。
+      コマンドは小文字が普通。
+    . &quot;.&quot;や &quot;..&quot; もファイル名として許されるが(WindowsでもOK)、
+      &quot;!&quot; は bash が解釈するので使用できない。
+    . &quot;*&quot;や &quot;?&quot; もファイル名として許されるがコマンドで指定すると
+      シェルが展開するので注意が必要。ファイルを rm したつもりが
+      すべてのファイルを削除してしまうことにもなる。
+    . &quot;~&quot; は ホーム Dir を指し示す。
+    . ワイルドカード &quot;*.*&quot; は 間に &quot;.&quot; を含まないファイルとは一致しない。
+  - ファイル操作。
+    . 0x1a(Ctrl+z)はEOFIDの意味を持たない(以降も読める)。
+    . ファイル、ディレクトリーはパーミッションフラグで保護される 。
+        更に t ビットオンのディレクトリーでは root か所有者以外が
+        ファイルを rename/unlinkできない。
+        x ビットオフのディレクトリーの中は見れない。
+        mkdirの mode パラメータ指定は umask 設定により修正を受けるので
+        改めて chmod が必要になることがある。
+        マウントされたDOSパーティションのファイルは属性変更できない。
+    . ファイルのタイムスタンプが秒単位。DOSは2秒単位。
+    . cd コマンドのオペランド無しは &quot;cd ~&quot; の意味になる。
+#ifdef XXE
+      (gxe では 以下のキーボード関連説明は関係ありません)
+#else
+  - キーボード。
+    . DOS系では スキャンコード/文字コードの組み合わせを受け取るが、
+      UNIX系では F1、Insなどの拡張キーの時コンソールアプリケーションは
+      エスケープシーケンス文字列を受け取る。
+      (X-Applは別ですが、xtermなどのTerminalエミュレーターを使用すれば
+      エスケープシーケンス文字列を受け取ることが出来る。)
+      例えば Ins キーなら \x1b[2~ 等。
+
+      以下は全画面コンソールモードの場合でX(TerminalEmulator上で動かす)の場合は<a href="HID00000454.htm">（４）の章</a>を見て下さい。
+
+      Esc文字列はTERM 環境変数から決定されたTerminfoデータベース
+      (/usr/lib/terminfo)に示されていますが、TerminfoはStringを
+      シェルなどが解釈する方法を定義しているだけでキーとのマッピングは
+      loadkeysで設定されます。
+      loadkeys のデータは /usr/lib/kbd/keytablesにあります。
+      通常は Terminfo に示された文字列が発生しますがこれを
+      loadkeys コマンドで変更することができます。
+    . loadkeys では左右の Alt キーを区別して設定できる。
+    . 現在のマッピングの設定は dumpkeys コマンドで見ることができます。
+      (この形式はそのまま loadkeys の入力にできます。)
+      dumpkeys の出力の見方をサンプルで簡単に説明します。
+      (私の理解で正しいかどうかは保証の限りではありません。)
+
+       1) keymaps 0-2,4-6,8-9,12
+       2) alt_is_meta
+       3) keycode   1 = Escape           F83
+       4)     control keycode   1 = F84
+       5)     shift   alt keycode   1 = Meta_Escape
+       6)     keycode  60 = F2               F14              Console_14       F2
+       7)     alt      keycode  60 = Console_2
+       8)     control   alt keycode  60 = Console_2
+              :
+              :
+              :
+       9) string F1 = "\033[[A"
+          string F2 = "\033[[B"
+          string F3 = "\033[[C"
+              :
+
+       1) マップIndexを指定します。keycode nn = の右側の各欄がどの
+          シフトキーに対応するかを指定しています。
+          数字は 0:Normal, 1:Shift, 2:AltGR(Alt-R), 4:Ctrl, 8:Alt(Alt-L),
+          16:Shift-L, 32:Shift-R, 64:Ctrl-L, 128:Ctrl-Rの組み合わせです。
+          したがって "keymaps 0-2,4-6,8-9,12" は
+          Normal(0),Shift(1),AltGR(2),Ctrl(4),Shift+Ctrl(5),AltGR+Ctrl(6),
+          Alt(8),Shift+Alt(9),Ctrl+Alt(12) の時の機能が "="の右に順に
+          指定されていることを意味します。
+       2) Alt+x(文字キー)で Meta-x を生成することを指定します。
+          Meta-xが生成するコードは setmetamode コマンドで決まります。
+          Esc+x か x|0x80 です。例えば Alt+a なら 0x1b61 か 0xe1 です。
+       3) キーコードに割り当てられた機能を表示しています。
+          キーコードは showkey コマンドで見ることができます。
+          この例は keycode 1 はシフトなしで Escape,Shift+ で F83 と
+          なります。Ｆ83 が具体的に何の機能かはアプリケーションが
+          決めます。マッピングファイルでは 発生する文字列を定義する
+          だけです。 9) 以降が文字列を定義した例です。
+       4),5),7),8).
+          各シフトキーとの組み合わせの機能指定は 1)で指定された欄に
+          指定する以外に直接シフトキー名付きで指定できるようです。
+       6) Shift+F2 に F14 が割り当てられています。
+          AltGR(右Alt)+F2 が Console 14 になっていますがサポートされる
+          コンソールの数は別途制限があります。
+       7) Alt(左Alt)+F2 が Console 2 とあり Alt+F2で コンソール 2 の
+          画面に切り替わります。
+       9) Fxx が生成する文字列が表示されます。
+
+    . Windowsでもそうですが Altキーとの組み合わせはシェルなどが先取り
+      することがある。
+
+
+    . xe は loadkeysコマンドでできることを初期化時にAPIを使用して設定します。
+      Esc文字列の割り当ては 機能キー Fnn にしか出来ません。
+      キーとShift/Ctrl/Altとの組み合わせで、xeが使用するものをにFnnを
+      割り当ます。Fnnが生成する文字列は PCDOS で定義されたスキャンコード+
+      文字コード＋シフトIDに設定します。
+      キーとScan+Charコードの対応は<a href="HID00000437.htm">(9)-(a)表</a>参照。
+      例えば  F48 を Alt+キーコード 88（F12) に割り当て、
+      Alt+F12 の PCDOSのScan+Charは0x8C00 なので F48 に Esc文字列
+      0x1b~8C003を割り当てます。xe は Esc文字列をReadしたとき、
+      先頭が 0x1b7e(^[~) なので xe 用に設定したの文字列と判断し、
+      Scan+Char 0x8c00を取りだし、それから押されたキーを判定します。
+      最後の一文字はシフトIDでSiftキー有り無しでScan+Charが同じ場合が
+      あるのでシフトキーを判別するのに使用します。
+      シフトIDは 0:なし、1:Shift、2:Ctrl、3:Alt です。
+
+      kon(Kanji ON console)のもとで xe を実行する時はAPIによる内部的な
+　　　設定ができないので添付のファイルで設定する必要があります。
+      kon に入る前に "loadkeys xej106.map" としてください。
+      但しとなりのConsoleでxeを揚げておけばAPIによる設定は効いているので
+      loadkeyする必要はありませんが最後のxeが終了する時に設定は戻します。
+
+      尚 F1 等 他の アプリケーションでも使う可能性のあるキーについては
+      xe 独自の設定は避けて Terminfo で設定された 割り当て文字ストリング
+      を解釈するようにしています。
+      Terminfo ライブラリー(/usr/lib/terminfo)にはキーボードタイプごとの
+      定義が置かれていますが、linux(/usr/lib/terminfo/l/linux)では
+      例えば F1 は "^[[[A" と設定されています。
+      xeの解釈するEsc文字列については<a href="HID00000438.htm">(9)-(b)表</a> を参照してください
+#endif
+
+  - 画面。
+#ifdef XXE
+    . gxe 背景色はプルダウンSetupメニューからカラーダイアログで設定します。
+      前景色はgxeのトップメニュー オプション 0 から設定変更します。
+#else
+    . curses ライブラリールーチンを利用すれば 画面の色を制御できますが
+      Linuxでは背景色の高輝度がサポートされてないようです。
+    . curses ライブラリールーチンではカーソルの形を変更できません。
+#endif
+
+  - その他。
+    . コマンドパラメータのフラグとして "/" でなく "-" を使用する。
+      また値を持つパラメータの場合UNIX系の場合、例えば "-o fnm1" でも
+      "-ofnm1" でも受け入れられることが多い。
+  - フロッピードライブのファイルに対するAPIはなく mtools コマンド使用。
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>TSO cmd E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN style="color:#000000;font-size:12pt;">#if defined(LNX) || defined(W32)
+
+   = TSO  hostid { Quit | Logon [FS|FS3|FST] | Logoff | Cancel | {Reply|TSO|Action} [&quot;text...&quot;]
+                          | { Alloc|Free|SPF } DataSet [alloc/SPF options] }
+
+       quit  :terminate xe3270.
+              If this command is not effective,kill it by tool xkp.exe.
+       Logon :TSO Logon.
+              This is not needed at normal case,Logon is automaticaly done
+              at first Edit/Browse command to the destination.
+              When used on =6 panel,the panel switches to TSO mode.
+              With FS option,output of TSO command is displayed by full screen mode.
+       Logoff:Do TSO logoff and termination of 3270 session.
+              Use this to release TSO UserID and 3270 session.
+              When used on =6 panel,the panel switches to local mode.
+                FS :output of TSO command is displayed by full screen mode.
+                FS3:3270 keyboard mode fullscreen.
+                FST:TSO  keyboard mode fullscreen.
+       Cancel:Use this to release 3270 thread waiting response from 3270
+              emulator. 3270 emulator process is killed.
+              Or use to free thread entry when system+UserID count reached
+              to maximum 10.
+       Reply :Use to write on the TSO screen when &quot;REENTER-&quot; is issued.
+              (xe automaticaly reply to REENTER caused by DSName format error)
+              Note) Ensure &quot;\n&quot; at the end of string for Enter key.
+                    S3270 accepts other special string such as
+                    \t(TAB), \r(Newline), \f(Clear).
+       TSO   :To enter any other TSO cmd. (Jump to cmdline then enter strings with last Enter)
+              TSO SUBMIT cmd is supported by xe's SUB cmd.
+                ex) TSO h01: TSO &quot;call 'HERC01.TEST.CLIST(FOO)'&quot;
+       Action:Use to write 3270 command.
+              ex) PA1 key:Action &quot;PA 1&quot;. Enter key: Action Enter.
+       Alloc :Allocate DataSet using TSO ALLOCATE command.
+              Use to control exclusive access.
+              Default option of TSO is DISP=OLD.
+              NEW,CYL,.. option is also passed to TSO,but LRECL may not
+              be supported by Turnkey MVS TSO.
+       Free  :Release DataSet allocation.
+       SPF   :update SPF information
+              DataSet parameter is requied to specify member(wild card is accepted).
+              option format is as following
+
+               [V=xx] [M=xx] [DT0=yymmdd] [DTM=[yymmdd[hhtmss]]] [LC] [LC0[=xx]] [UID[=userid]]
+
+               V  :Version number(&lt;100)
+               M  :Modification number(&lt;100)
+               DT0:Creation date.
+               DTM:Update date and time
+               LC :current line count. set by reading the member.
+               LC0:initial line count. if =xx is missing,current count is set.
+               UID:UserID. if =userid is missing,set userid of hostid parameter.
+                 ex) TSO h01: spf 'herc01.jcl.asm(memb1)' &quot;DTM=081231101230 lc&quot;
+
+       - support <A href="HID_TSOE_E.htm">TSO file access</A>.
+       - Same command is available from xe3270 shell screen.
+       - logon cmd on =6 panel changes the panel to TSO mode.
+         You can enter native MVS TSO command itself without xe TSO command prefix
+         like as &quot;listalc&quot; and result is displayed on the screen.
+           =6.h01
+         is same effect as logon to remote then open the panel shows 3270 screen.
+         logoff command switches back to local command mode.
+         For the case of duplcation of TSO command and xe cmd,
+         use &gt;(DOS cmd prefix) like as
+           &gt;LISTA\n
+             \n appended at end of the line means Enter key.
+             Do not forget to append \n.
+             Or follow by string \n at next.
+             ex)  On =6 TSO mode panel
+                  ===&gt;LISTDS\N
+                       ---&gt;ENTER DATA SET NAME -
+                  ===&gt;'SAMP.PDS'
+                       ---&gt;No response
+                  ===&gt;\N
+                       ---&gt;(D/S Info)
+                           READY
+         If you want to execute local command in TSO mode,put &quot;:&quot; as
+         prefix like as &quot;:grep ABC *.c&quot;.
+#endif
+
+</SPAN></PRE>
+</BODY>
+</HTML>

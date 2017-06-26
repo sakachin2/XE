@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>XPRint/PR</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> #ifdef UNX
+   = XPRint {入力ファイル | * | ** | ***} [-tabon] [-XPRINTオプション -...]
+
+       <a href="HID00000197.htm">INI ファイル</a>の Xprint_Command_LNX にコマンドを指定する必要が
+       あります。このコマンドはそれを呼び出すだけです。
+
+#else
+   = XPRint {入力ファイル | * | ** | ***} [出力ファイル(PRN)] [-tabon]
+              [/XPRINTオプション /...]
+#endif
+
+       XPRINT.EXE が PATH 上になければなりません
+       PATHの設定は<a href="HID00000684.htm">SET</a>コマンドを参照。
+       XPRINTオプションはコマンドプロンプトで"xprint"と打鍵することで
+       helpが見られます。詳細は XPJ.DOC を参照
+
+       オプション等,詳細は <a href="HID00000467.htm">xpj.txt</a> を参照
+       表示/編集画面ではファイル名として次のものが使用できます。
+        *   :現表示ファイルの印刷。
+        **  :現表示ファイルの印刷。非表示行、行番号表示欄も画面と同じ,
+             形式で印刷します。Hex表示もそのまま印刷。
+             桁ゲージが表示されていればこれも印刷。
+             <a href="HID00000021.htm">HEX2段表示</a>印刷をするときは **ないし***を指定します。
+        *** :現表示画面を画面印刷の要領で1ページだけ印刷します。
+
+        * と ** では 行ラベルによる範囲指定ができます。
+        注）** と *** では Tab コマンドで TAB 表示ONにしていると、
+　　　　　　TAB表示文字がプリンターでサポートされてない場合、
+　　　　　　行が縮んで印刷されます。その場合"Tab off"コマンドでTAB表示
+            モードをOffにした後にXPRint コマンドを使用してください。
+        -tabon:画面印刷("XPR **"あるいは"XPR ***")では画面に表示した
+               文字をそのままプリンターに送ります。
+               <a href="HID00000121.htm">タブ表示モードON</a>の時、表示されているタブ(0x09)、DBCS空白文字に
+               対する代替表示文字をそのままプリンターに送ると行が縮んで
+               印刷されることが多いので、画面印刷のときでもTAB、DBCS空白文字は
+               SBCSスペース出力する。従来通り画面表示文字を出力したいときは
+               -tabonオプション指定する。
+               尚、<a href="HID00000021.htm">バイナリーファイルモード</a>で開いた場合、画面印刷は制御文字を
+               "."に置換して印刷。(画面印刷でない場合は/mdオプションを指定すると
+               <a href="HID00000018.htm">制御文字</a>を"."で印刷します）。
+        <a href="HID00000020.htm">リモートファイル</a>はローカルプリントされます。
+</SPAN></PRE>
+</BODY>
+</HTML>

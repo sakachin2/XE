@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>(g)Stating shell</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">     (g)Stating shell.
+       xext/xekt/xegt starts xe under xterm/kterm/gnome-terminal each.
+       Setup for X mode is done once after boot.
+       So,use native command when you changed X resource file.
+       For X resource for kterm/xterm,
+       enter &quot;xrdb -merge res-filename&quot;,then restart terminal emulator.
+       For key binding for gnome-terminal,
+       enter &quot;xmodmap modmapfile&quot;,then restart terminal emulator.
+
+       Usage:
+
+         {xext|xekt|xegt} [pgm=[xxx]]
+
+       For ex., &quot;xext pgm=xekbchk&quot; start xekbchk after setup xterm for xe.
+       &quot;xext pgm=&quot; means start of xterm only.
+       You may split this shell function to start of terminal emulator
+       and start of xe.
+       Use xlsfonts to check valid font size for xekt.
+       Screen is corrupted if font size of SBCS and DBCS is mismatched.
+
+       xext
+       0001|## kick xe under xterm
+       0002|. xegetdv        #get distribution id to XEDISTID
+       0003|. xesetxenv $1   #setup environment variable
+       0004|
+       0005|SW1ST=`xrdb -query|grep xext`
+       0006|if [ x&quot;$SW1ST&quot; = x ]; then
+       0007|    xrdb -merge $XRES
+       0008|fi
+       0009|if [ $DISTVER != sw3 ]; then
+       0010|    FONTSZ=&quot;-fn 10x20&quot;
+       0011|fi
+       0012|if [ x&quot;$PGMP&quot; != x ]; then  #pgm= parm detected at xsetxenv
+       0013|    shift                   #drop parm1
+       0014|fi
+       0015|if [ x&quot;$PGM&quot; != x ]; then
+       0016|    echo xterm  -name xext -title xterm-xe $FONTSZ -e $PGM --k$KEYF &quot;$@&quot;
+       0017|    xterm  -name xext -title xterm-xe $FONTSZ -e $PGM --k$KEYF &quot;$@&quot; &amp;
+       0018|else
+       0019|    xterm  -name xext -title xterm-xe $FONTSZ &amp;
+       0020|fi
+
+       xekt
+       0001|## kick xe under kterm
+       0002|. xegetdv        #get distribution id to XEDISTID
+       0003|. xesetxenv $1   #setup environment variable
+       0004|#
+       0005|SW1ST=`xrdb -query|grep xekt`
+       0006|if [ x&quot;$SW1ST&quot; = x ]; then
+       0007|    xrdb -merge $XRES
+       0008|fi
+       0009|if [ $DISTVER != sw3 ]; then
+       0010|#see chk supported font by &quot;xlsfonts&quot; cmd
+       0011|    FONTSZ=&quot;-fn 8x16kana -fr rk16 -fk kanji16&quot;          #small
+       0012|#   FONTSZ=&quot;-fn 9x18kana -fr rk18 -fk kanji18&quot;          #medium
+       0013|#   FONTSZ=&quot;-fn 12x24kana -fr rk24 -fk kanji24&quot;         #large
+       0014|fi
+       0015|if [ x&quot;$PGMP&quot; != x ]; then  #pgm= parm detected at xsetxenv
+       0016|    shift                   #drop parm1
+       0017|fi
+       0018|if [ x&quot;$PGM&quot; != x ]; then
+       0019|    echo kterm  -name xekt -title kterm-xe $FONTSZ -e $PGM --k$KEYF &quot;$@&quot;
+       0020|    kterm  -name xekt -title kterm-xe $FONTSZ -e $PGM --k$KEYF &quot;$@&quot; &amp;
+       0021|else
+       0022|    kterm  -name xekt -title kterm-xe $FONTSZ &amp;
+       0023|fi
+
+       xegt
+       0001|# kick xe under gnome-terminal
+       0002|. xegetdv        #get distribution id to DISTVER
+       0003|. xesetxenv $1   #setup environment variable
+       0004|#
+       0005|CHKMAP=`xmodmap -pke|grep Return|grep F1`
+       0006|if [ x&quot;$CHKMAP&quot; = x ]; then
+       0007|    xmodmap $KEYMAP
+       0008|fi
+       0009|CURDIR=`pwd`
+       0010|CHKOPT=`gnome-terminal --help|grep working-directory`
+       0011|if [ x&quot;$CHKOPT&quot; != x ]; then
+       0012|    WKDIR=&quot;--working-directory=$CURDIR&quot;   #for RedHat8/9
+       0013|fi
+       0014|if [ x&quot;$PGMP&quot; != x ]; then  #pgm= parm detected at xsetxenv
+       0015|    shift                   #drop parm1
+       0016|fi
+       0017|if [ x&quot;$PGM&quot; != x ]; then
+       0018|    echo gnome-terminal -t xe-gt $WKDIR -x $PGM --k$KEYF &quot;$@&quot;
+       0019|    gnome-terminal -t xe-gt $WKDIR -x $PGM --k$KEYF &quot;$@&quot;
+       0020|else
+       0021|    gnome-terminal -t xe-gt $WKDIR
+       0022|fi
+       0023|#xmodmap $KEYMAPRESTORE
+
+     Recently,I'm using following simple shell.
+       xegt
+       0001|xmodmap /h/objlinux/sample/xexmap.rh9
+       0002|xe --k/h/objlinux/sample/xelnxkey.rh9 $1 $2 $3 $4
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

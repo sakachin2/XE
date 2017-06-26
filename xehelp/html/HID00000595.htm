@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>1.Mouse operation</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;">1.Mouse operation.
+
+  -Drag &amp; Drop is supported.
+
+   .Drag into xe from Explorer etc.
+    XE may be ICON or opened panel.
+      The file is opened by edit command except on <a href="HID00000252.htm">dir-list panel,</a>
+      on dir-list panel files are copied in to the dir line selected.
+      If target dir line is not selected,that dir is the target dir.
+    <A href="HID00000545.htm">Using paste</a>, replace option can be selected on popup menu by right button click.
+      PasteIns(Insert Mode):confirmation issued by popup dialog
+                            if same name file exist on the target dir.
+      PasteRep(ReplaceMode):same bname file is replaced without confirmation msg.
+    Except on dir-list panel, only Paste(V) menu-item is enabled if files to be dropped
+      exist on clipboard.
+      (if text is on clipboard all of PasteIns,PasteRep and Paste(V)
+       area enabled)
+
+   .Drag out from xe.
+    Select files on dir-list panel then drag.
+      File selection is done by left button click(See Button operation)
+    Drag out is copy operation only. Move operation is not supported.
+    Drag out using Cut &amp; Paste function is also available.
+      After selected files, do copy and paste by floation menu.
+    A bit longer time may be requied until mouse shape change for <A href="HID00000218.htm">remote file</A>.
+    Excel may not accept drag and drop,use association(double click around the lineno
+      field of the line).
+   .Drag &amp; drop between splitted screens is available.
+
+  -Button operation.
+   .Left button:
+         -set text cursor(caret) position.
+         -move cursor with button pushed(dragging) to specify range of Cut&amp;Paste.
+          Drag with Alt or Shift+Control is for block mode (box type) range
+          specification, without any modifier key is region mode(Windows standard).
+          But,on directory-list screen drag &amp; drop is executed when lines are selected.
+          File selection is done by mouse left button.
+            +Shift:range specification. +Ctrl:additional file selection.
+         -set paste postion of Cut&amp;Paste.
+          2 paste mode,insert and replace,are supported.
+          Shift+left button:Insert mode
+          Ctrl +left button:Replace mode
+          At insert mode,insert lines when text cursor is on
+          the Line-Number column,insert the block into the
+          position shifting right half of the line to the right.
+         -If pushed while the 3 times of scroll interval at the
+          edge of screen,scroll starts.
+   .Right button:
+         -popup floating menu containing Cut&amp;Paste,Save,End,Discard
+          and OpenWith.(TextCursor is also set to the clicked pos)
+          (OpenWith:kick application associated by filename extension.)
+         -On dialog box,help topic is popup.
+   .Middle button:
+         -use to scroll up/down.
+          (File panel,dir-list panel,filename history panel)
+          Scroll count is set by setup dialog.
+          Shift+Middle button wheel scroll horizontaly.
+          Ctrl+Middle button wheel jump to Top/End of file.
+#ifdef WXE
+          Horizontal scroll by tilt wheel mouse is also supported.
+#endif
+#ifdef XXE
+          By middle button click,gxe do standard paste the text on PRIMARY clipboard(See note bellow).
+          Support only paste in from other process.
+#endif
+
+   .Left Button Double Click:
+         -Save and exit when double click on the title area.
+          Cancel and exit by Shift+Left Button Double Click.
+         -On <A href="HID00000245.htm">Menu panel</A>
+          jump to the selected panel.
+         -On <A href="HID00000250.htm">Filename list panel</A>.
+          .Open the file by edit or browse mode according to the mode
+           displayed at top-left of the panel.
+          .With shift key pressed,opened by the opposite mode.
+          .If cursor is at the left end(col.1-3 on this panel),
+           the file is opened by the <A href="HID00000674.htm">extension-assosiated application</A> if exist.
+           For directory,that is explorer.
+#ifdef WXE
+          .Open the current dir if drive letter on the DRIVE line is double clicked.
+#endif
+         -On Dir list panel
+          .Open the file like as on Filename list panel.
+           Position to request open by assosiated application is col.1-5.
+          .Doubleclick on left and right &quot;===&gt;&quot;of 2nd line  means DPU or DPD command.
+           (Up or Down on the file path).
+         -On <A href="HID00000251.htm">File text panel</A>
+          .Doubleclick on left and right &quot;===&gt;&quot;of 2nd line  means DPU or DPD command.
+           (Up or Down on the file path).
+          .Copy to Cut&amp;Paste board.
+           If cursor is on the line-number column the line is copied,
+           else word at the cursor is copied to clipboard for cut &amp; paste.
+#ifdef WXE
+   .Forward/Backward Button of 5 button mouse:
+         -Use as <a href="HID00000275.htm">DPU</a>/<a href="HID00000274.htm">DPD</a>(file path Up/Down) command.
+#endif
+#ifdef XXE
+  (Note)
+   .On Linux there are 3 clipboard named PRIMARY,SECONDAY and CLIPBOARD.
+    gnome-terminal use PRIMARY by Shift+Insert and use CLIPBOARD by menu selection.
+    xe and gedit etc. use CLIPBOARD only.
+    gnome-terminal pastes just selected range,xe pastes explicitly copied/cut range.
+    So the lines copied on xe is pasted by menu selection on gnome-terminal not by S+Insert.
+    See <a href="http://standards.freedesktop.org//clipboards-spec/clipboards-0.1.txt">http://standards.freedesktop.org//clipboards-spec/clipboards-0.1.txt.</a>
+#endif
+
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

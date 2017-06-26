@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>TC(TableCalc)</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    = Table Calculation.
+
+        TC  expression [options] [NX] [Zero] [.lab1 .lab2] [.lab3 .lab4]
+
+        (Not supported by DOS version)
+
+            expression:[[opd3=]opd1]opc[opd2][{/key[/grade]|//count}]
+
+              .5 format type
+                -unary operation except summary.
+                    TC [opd1]{++|--|=/conv-type}
+                -unary operation summary.
+                    TC [opd1]+[{/break-key[/grade]|//count}] [option]
+                    especially to count lines,use &quot;1&quot; to opd1.
+                    ex) tc 1+/10-16!.
+                -binary operation.
+                     TC [opd1]{+= | -= | *= | /= | %= | == | ~= | =}[opd2]
+                -binary operation with target.
+                    TC opd3=opd1{+ | - | * | / | % | ~ | ==}opd2
+                -table formatting.
+                    TC FMT [[fieldno[-fieldno]]{R|L|P}[C][N][O] ...]
+                            [D[delimiter]] [C][N][O] [S[R]outdelm] [H] [Q[d][s]]
+
+              opd1/2/3:[type]{column1-column2|constant-value} or [type]:fieldno
+                  type:data type.
+                       d(decimal), x(hexadecimal), o(octal), t(time),
+                       z(comma seperated decimal string)
+                       Time should be by the fmt of hhmmss,hh:mm:ss or
+                       hh.mm.ss.
+                       If type missing,it is assumed as time when fmt is
+                       hh:mm:ss or hh.mm.ss,else it is assumed as decimal.
+                            timestamp constant is hh:mm:ss.xxx fmt and
+                            string constant used for copy(=) or compare(==)
+                            should be enclosed by double quotation.
+                        ex) tc 1-10*=60 tc 1-10+=01:10:29  tc 1-2=10-14==&quot;abcde&quot;
+                  fieldno  :1 digit field seqno.Use a-z for over 10.
+                            Before use fieldno,fieldno guide line have
+                            to be inserted by &quot;TC FMT H&quot; cmd.
+              opc     :operation code applied to operands.
+                      + :Summary.Average,min and max value is optionally
+                         displayed.
+                         Sub-total line is set by placing '=' on the
+                         top byte of data field, or inserted by
+                         specifying break-key or count option.
+                         Sub-total line position is controled by option.
+                      = :-When operand3 is missing.
+                            This command set operand1 table. It is used
+                            after table is set by <a href="HID00000545.htm">Cut&amp;Paste</a> key.
+                            (ex) TC =
+                         -When operand3 is specified.
+                            It specify left of = is 3rd operand
+                            and result is set to.
+                            (ex) TC t10-19=t30-39+50-55
+                            If no operand at the right of &quot;=&quot; it set the opd1.
+                            (ex) TC 10-20=
+                         -Copy operation.
+                            opd3=opd2 [INS] [RJust]
+                            Without datatype for opd2,opd2 string is copied
+                            to opd3 trimming both side space char.
+                            With datatype for opd2,numeric assignment done
+                            and data type conversion may occur.
+                            String constant for opd2 is specified by
+                            double quotation.
+                            ex)  tc 1-8=&quot;total=&quot; ins;  tc 20-30=&quot;&quot;;
+                                tc z1-8=x10-18;
+                      ++:Set summary up to the each lines.
+                          (ex) TC x10-19++
+                      --:Set each difference value from the previous line.
+                          (ex) TC o10-19--
+                      +=,-=,*=,/=,%=,~=
+                        :Operand 1 is ovrrided by calculated result.
+                          (ex) TC 10-19*=20-21
+                      ~ :count &quot;ACTIVE&quot; lines
+                         use in the case all log record has start and end time
+                         and you want to count how many record is exist
+                         at each start time.
+                         coutEQ option is to count 1up for the line
+                         starttime==endtime.
+                         If opd1 datatype is &quot;T&quot; opd2 may interval second.
+                         If no data type is specified,opd1 compared with
+                         opd2 as string case-sensitively.
+                         ex) TC 10-13=30-41~50-51
+                      ==:Compare.
+                         If no datatype for both operand,
+                         case sensitive string compare is done.
+                         When opd1==opd2 fmt, unmatch line is tagged
+                         and can be searched by &quot;f *L&quot;.
+                         When opd3=opd1==opd2 fmt,result(-1,0,1) is set
+                         to opd3.
+                         To set 1 for true and 0 for false,use TF option.
+                         To set 0 for true and 1 for false,use FT option.
+                      /conv type:O:octal, X:hex, T:Clock, D:decimal,
+                                 Z:FMT(comma seperated)decimal,
+                                 U:unsigned D, UZ:unsigned Z, L:TimeStamp--&gt;Clock
+                      FMT:table column alignment by space delimiter.
+                          R :Right justified. Default unless attended to fieldNo.
+                          L :left  justified.
+                          P :align by decimal point.
+                          R/L/P not attended to fieldNo is effective as default
+                          until O specification.
+                          As a result,fields with no R/L/P specification
+                          are left space between them.
+                          ex)
+                               tc fmt                ==&gt; r r r r r
+                               tc fmt  r l r o       ==&gt; r l r - -
+                               tc fmt  r 3l          ==&gt; r r l r r
+                               tc fmt  r 3l l        ==&gt; r r l l l
+                               tc fmt  3r            ==&gt; - - r - -
+                          N :Numeric FieldSearch is to align at numeric
+                             field. the numric field and all fields before
+                             the numeric field is treated as a field.
+                          A :reset &quot;N&quot; flag
+                          C :compress intermediate spaces of all following
+                             fields to a space. NC means combine until
+                             the numeric field.
+                          O :do not align from this field.
+                          H :fieldno guide line is inserted.
+                          D[delimiter]:input field seperator. default is &quot; &quot;.
+                                       &quot;D&quot; means D&quot;,&quot;.
+                                       multiple char is avail like as D&quot; ,&quot;
+                          S[R][outdelm]:field seperator to be set after formatted.
+                                        R      :delete input delimiter.
+                                        outdelm:string to be inserted.
+                                                default is &quot; &quot;.
+                break-key:[type]column1-column2[&gt;|!|&lt;]
+                          For opcode=+(Summary),specify break point to
+                          set sub-total.Table should be sorted by this
+                          field when &quot;&gt;&quot;(Ascending:default) or &quot;&lt;&quot;(descending)
+                          &quot;!&quot; mean break when not same.
+                          Column is key field column.
+                          Type is of key field type for grade.
+                          Without grade option,sub-total is displayed
+                          when key value changed.
+                      (ex) TC 10-19+/1-4      TC10-19/1-4!
+                grade    :For each grade of key value(key field should
+                          be numeric type data),sub-total is displayed.
+                      (ex) TC 10-19+/1-4/1000
+                              : subtotal for each grade, col.1-4 is reached to 1000, 2000, 3000 and so on.
+                count    :Sub-total is displayed each lines of the count.
+                      (ex) TC 10-19+//100
+                              : subtotal for each 100 lines.
+                filedno  :Rigit or Left justification with filedno.
+                          Fieldno start from 1.Default is L.
+                          When Fieldno missing,apply to following all.
+                      (ex) TC FMT 3L ; TC FMT R L;  TC FMT 1-4L 5-6L;
+            options   :
+                ign : Ignore existing sub-total field(prefixed by &quot;=&quot;).
+                aft|bef|top|end|las :Position of sub-total line to be
+                                     inserted.
+                                     default is control-break point.
+                -Ofilename          :output sub/grand total lines to the file.
+                                     wild card is used to get output file name
+                                     from current filename.
+                ave|minmax|maxmin|amm:Additional to summary,average or
+                                      min/max value is displayed.
+                                      Amm is for both.
+            NX        :calculation for displayed lines only.
+            Zero      :&quot;0&quot; padding in the preceding space.
+            V[n]R     :out decimal fraction precision.
+                       R:round. (5up,4cut).
+            INS       :Not replace but Insert result at the opd3 position
+                       by the width specified.
+            RJ        :opd3 alignment=Right justification.
+                       default is LeftJustify.
+            countEQ   :For &quot;~&quot;(count ACTIVE line) operation,
+                       count 1 up for the line starttime==endtime.
+                       Without countEQ,these line are assumed as INACTIVE.
+            Q[d][s]   :consideration of quotation.
+                        d:double(&quot;), s:single(').
+                        treat as Qds when both d and s are omitted.
+            TF        :result of ==(compare) is 1 for true,0 for false.
+            FT        :result of ==(compare) is 0 for true,1 for false.
+            .lab1/2/3/4:Start and End line of table.
+                        .lab1 and .lab2 is for opd2,.lab3 and .lab4 is
+                        for opd2. If .lab3 and .lab4 is missing,
+                        .lab1 and .lab2 is for both opd1/2.
+                       corresponding label is to be set on lineno columns.
+                       If label is all numeric,it is treated as lineno.
+                      (ex) TC 10-19+ .a .b ; TC 10-19+ .100 .200
+
+            -Sub-total line of summary operation(for opcode is +).
+              -With break-key or count.
+               Existing sub-total line(data field stating with char '=')
+               is deleted without &quot;ign&quot; option,ignored with &quot;ign&quot; option.
+               New sub-total line is insered according to the break.
+               Inserting position is optionally specified. If no insert
+               position,it is inserted into the break position.
+              -Without break-key nor count.
+               By placing &quot;=&quot; at the top of opd1 field,
+               subtotal is gotten at that place.
+               Insert position option is for the grand total line.
+            -Operand specification using Cut&amp;Paste function.
+              When operand 1 and operand 2 is not on the different
+              file,specify table block using Cut&amp;Paste.
+              Operand 1 is fixed by one mode Alt+F7 just after block
+              fixed. &quot;TC =&quot; command is alternative.
+              Then next,operand 2 is specified one more block specification.
+              Calculation is done by TC command without operand column
+              specification. For ex, &quot;TC +=&quot;, &quot;TC 1-9=+&quot;.
+              Other option,like as data type is specified. For ex,
+              &quot;TC t+=t/4-5&quot;.
+              This is not used for &quot;=&quot;(Copy) operation.
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>XCV cmd J</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">2013/06/06  v1.06
+**********************************************************************
+(1)アンドロイド移植版は IS01+Android2.3.1/Nexus7+Android4.2 でインプリしました
+
+        設定と詳細ヘルプは&quot;Menu&quot;から入ります
+        ヘルプ: &quot;Menu&quot;ボタン--&gt;&quot;メニュー&quot;--&gt;&quot;ヘルプ&quot;.
+            Axe ヘルプ:アンドロイド版のヘルプ
+            XE ヘルプ :PC版と共通のヘルプ
+                       現在以下の機能はアンドロイド版ではサポートされません
+                         印刷、リモートファイルアクセス
+            ヘルプの各国語サポート
+              sdcard に以下のような UTF-8 ファイルを置けば表示されます
+              (/sdcardフォルダーは/mnt/sdcardなど機種によって異なります)
+                /sdcard/Axe/nls/nls/subject.txt.&quot;
+                    ここで subject はヘルプ表示のタイトルと同じ名前（スペースは下線に置換）
+                    例) &quot;About_Axe&quot;
+               複数の言語を使用する場合は言語ごとのフォルダーを置いてください
+                /sdcard/Axe/nls/nls_xx/subject.txt
+                    ここで xx 例えば &quot;de&quot; や &quot;ja&quot; とします
+        設定: &quot;Menu&quot; ボタン--&gt;&quot;メニュー&quot;--&gt;&quot;設定&quot;
+
+        下端のボタン列について
+
+          Usb/Bluetoothキーボードを用意したほうが良いですが手元にない場合でも
+          このボタン列でファンクションキーが利用できます。
+
+          Kbd:xe 固有のqwerty ソフトキーボードを表示。PCのキーボード、マウス操作が出きます
+              キーボード操作は &quot;Axeヘルプ&quot;を参照
+              ソフトキーボード表示中も背後の画面タッチは有効ですが
+              オプションで背後の画面タッチでソフトキーボードを下ろす設定にも出来ます
+          IM :アンドロイドデフォルトの Input Method キーボードを表示
+              デフォルトは &quot;設定&quot;--&gt;&quot;アンドロイド関連&quot;--&gt;&quot;現在の Input Method&quot;:変更
+          S.C:ショートカット
+              デフォルトの設定では、例えば &quot;S.C&quot;ボタンにタッチした後
+              ハードウェアーキーボードの&quot;1&quot;を押すと&quot;F1&quot;が押されたことになります
+              注. &quot;Shift+F1&quot;などモディファイヤーキーを使用するときは順番に注意
+                  &quot;S.C&quot;,&quot;Shift&quot;,&quot;1&quot; は S.C+&quot;@&quot;   &quot;Shift&quot;,&quot;S.C&quot;,&quot;1&quot; は Shift+&quot;F1&quot;.
+              (&quot;設定&quot;--&gt;&quot;ボタン設定&quot;--&gt;&quot;ショートカットキー&quot;)
+              端末ボタン（&quot;Search&quot;, &quot;Camera&quot;など）もショートカットに利用できます
+              (&quot;ボタン設定&quot;--&gt;&quot;端末ボタン使用&quot;)
+          Shift/AltG:Shift/AltG モディファイヤーキーを使用したときのマッピングは設定変更できます.
+              (&quot;ボタン設定&quot;--&gt;&quot;Shift マッピング&quot;/&quot;AltGr マッピング&quot;)
+          ...
+          ボタンの配置は設定変更できます
+              (&quot;ボタン設定&quot;--&gt;&quot;ボタン配置&quot;)
+            ボタンを長押しするとボタンの機能割り当て変更ができます
+            但し方向キーの場合は&quot;S.C&quot;をオンにしてから長押ししてください
+
+(2)他バージョンとの相違点
+
+        キーボード:
+          拡張キーへの機能の割り当てはPC版と同じです
+          (トップメニューパネルで &quot;A&quot;, Enter と入力すると キー:機能 の対応が表示されます
+          この割り当ての変更は ini ファイルで設定します
+          &quot;ini&quot; コマンドでデフォルト値を出力、&quot;e ::xe.ini&quot;で編集。 &quot;XE Help&quot;を参照)
+          使用する端末が Qwerty ハードウェアーキーボードを備えていない場合
+          下端の &quot;Kbd&quot; ボタンで PC のキーボードと同様に機能キーを入力できるソフトキーボードが表示されます
+          このキーボードのは &quot;Menu&quot;--&gt;&quot;Settings&quot;--&gt;&quot;Kbd Layout&quot; でカスタマイズできます
+          １つのキーに４個(Shift/Symbol/Shift+AltGr)までの追加割り当てができます
+          それらはフリック操作（左/右/上/下跳ねに対応）で入力できます
+          リピータブルキー以外はキーの長押しで表示されるミニキーボードからも選択できます
+          リピータブルキーでないのは &quot;Shift&quot; &quot;Alt&quot; &quot;Ctrl&quot; &quot;IM&quot; &quot;Esc&quot; です
+          リピータブルキーの場合は&quot;Pop&quot;モードにするとミニキーボードが表示されます
+          &quot;Pop&quot;モードにするには &quot;IM&quot;を長押しして &quot;Pop&quot;を選択、
+          &quot;Pop&quot;を再タッチすると&quot;IM&quot;に戻ります
+
+          &quot;IM&quot;はデフォルトの各国語を入力するために&quot;Input Method&quot;を表示します
+          ショートカットを使用するには&quot;IM&quot;ボタンを右フリックするか長押しミニキーボードから&quot;S.C&quot;を選択
+          ショートカットはキー入力ごとにセットが必要です
+          &quot;Alt&quot; 上でのフリック右/上で AltGr/Shift+AltGr で入力される文字が各キーのラベルに表示されます
+          &quot;Shift&quot; 上でのフリック上で &quot;Caps&quot;文字、フリック右で&quot;SYM&quot;文字をラベルに表示
+          &quot;SYM&quot;(Symbol)文字とは&quot;Caps&quot;、但し追加の2番め(右フリック)にASCIIシンボル文字が定義されていればその文字です
+
+        マウス:
+          クリック/ダブルクリック/ドラッグ/右ボタンクリックは指操作も可能ですが
+          小さな画面でカーソル位置を正確に位置付けることが難しい場合
+          代わりにこれらのマウス操作をキーボード操作に設定して使用できます
+          ショートカットに割り当てます。例）S.C+&quot;w&quot;:ダブルクリック
+          (&quot;ボタン設定&quot;--&gt;&quot;ショートカットキー&quot;)
+          あるいは&quot;サーチ&quot; &quot;カメラ&quot;など端末ボタンに割り当てる
+          (&quot;ボタン設定&quot;--&gt;&quot;端末ボタン使用&quot;).
+          注。ダブルクリックをキー操作でする場合はカーソル位置に注意、
+              xe ではダブルクリック位置で実行される機能が変わってきます
+
+        ルーラー:
+          カーソル位置が確認しやすいようにオプションでルーラー（縦線、横線、十字線)を表示できます
+          (&quot;設定&quot;--&gt;&quot;その他 XE 設定&quot;--&gt;&quot;ルーラータイプ&quot;)
+        フォント:
+          新しいフォントをインストールした場合は一度フォントダイアログを開き&quot;閉じる&quot;を押してください
+          xe を再立ち上げするときフォントグリフ幅の内部情報が再作成されます
+          フォントスタイルを変更すると次回立ち上げに多少時間がかかります
+        HomeDir: &quot;~/&quot; そして HOME 環境変数は以下に設定されます
+                   /data/data/com.xe.Axe/files/myhome
+                  &quot;cd&quot;コマンドでHomeDirが現行Dirになります
+                  &quot;cd&quot; コマンドの効果は次のセッションでも有効です
+        WorkDir: &quot;e ::filename&quot; のように &quot;::&quot; で参照される xe のワークディレクトリーは以下になります
+                 /data/data/com.xe.Axe/files/xewd
+        インテント:-他のアプリからの次のようなインテントをうけいれます
+                      Action:ACTION_VIEW and ACTION_EDIT
+                      filter:scheme=&quot;file:&quot;, mimeType=&quot;*/*&quot; not-specified
+                      (即ち &quot;file://....&quot;の形式のデータ)
+                   -&quot;ase&quot; コマンドでメーラーが処理することを期待して&quot;ACTION_SEND&quot;インテントを出します
+                      ase [*|-|text-file] [attachement-file|@attachment-filelist-file]
+                        text-file にこの順で以下の指定を入れることもできます
+                    　  To:宛先(複数行可)
+                        Subject:タイトル
+                        File:添付ファイル(複数行可)
+                        Text:(本文の開始の指定)
+                      デレクトリー画面では添付ファイルをタッチで指定できます
+                      &quot;ase&quot; コマンドをコマンド行に&quot;ase -&quot;のように入力後え&quot;Enter&quot;を押さずに
+                      ファイル名をタッチ、複数選択する場合はCtrl+タッチでそのファイルを追加
+                      Shift+タッチでそれまでの範囲のファイルを追加
+                      &quot;Enter&quot;で実行
+                      タッチ操作も出来ます。ファイル選択後タイトル行までドラッグしてください
+                      タッチ操作も出来ます。ファイル選択後タイトル行までドラッグしてください
+                   -行コマンド&quot;!&quot; はファイルの拡張子からMIMEタイプを判定して&quot;ACTION_SEND&quot;インテントを出します
+                    そのMIMEタイプの受け入れを宣言したアプリがあればそのファイルを渡します
+
+        環境変数:
+           &quot;env&quot; コマンドのかわりに&quot;set&quot;を使用してください
+           PATH には次のパスが追加されます。シェルスクリプト、追加のPGMを入れてください
+             files/sh:files/bin:/data/busybox
+           (
+            xeのユーテリティーはAxeAsset.zipを/data/data/com.xe.Axe/filesでunzipすることでfiles/bin導入されます
+            インストール:Menu--&gt;設定--&gt;追加のAssetダウンロード.
+           )
+           何かユーティリティーコマンドを導入しそれを =6 画面で使用する場合は
+           アンドロイド関連オプションダイアログのPATH環境変数で設定してください
+           尚、&quot;busybox&quot; は grep など Linux必須のプログラムが含まれています、是非導入してください
+
+           エンコーディングは UTF8 のようなのでロケール言語でファイルを編集する場合は
+           &quot;e file1 CPLC&quot;のように各ファイル、最初に開く時 CPLC 指定してください
+
+        ICU サポート
+           .cnv ファイルを持ち込めばEBCDIC変換も可能になります
+            以下のコンバーターはデフォルトで含んであります
+              ibm37,ibm930(jp),ibm939(jp),ibm1047(Latin1/OpenSystem)
+              1141(Germany-Euro),1144(Italy-Euro),1145(Spain-Euro)
+              1146(UK-Euro),1147(France-Euro),1148(International-Euro)
+           .android3.0でのICUの導入状況は以下のようです
+             data: /system/usr/icu/icudt44l.dat
+             lib : /system/lib/libicui18n.so
+           .新しい変換テーブルを利用する場合
+             ICUのHomePageを参照してxxx.cnvファイルを作成
+             端末にコピー(adb push)。
+               /data/data/com.xe.Axe/files/icu/icudt__l  (__はICUバージョン)
+             上記デフォルト以外の場所に置いた時は EBCDIC cfg ファイルでフォルダーを指定
+               ICU_DATA=/system/usr/icu:/data/data/...
+
+           (Linux環境でも同様の手法で変換テーブルを導入できます。
+            /usr/local/shareなどにicuのdataがあるようでそこにコピーします。
+            (androidでは/system/usr/icuは保護されているようです)
+            但しICUの導入パッケージがwith-data-packagingの指定でdataがdll(so)になっている場合は
+            data-dirはありません。その場合でもdata-dirを作成しICU_DATAで指定すれば
+            利用できます。サポートされているコンバーターは uconv --list で確認
+           )
+
+        シンタックスハイライト
+           .Andre Simon氏のhighlight-2.16が使用できます(AxeAsset.zipを導入してください)
+            表示に多少時間がかかりますが、利用する場合は ::xesyna.cfg を変更してください
+                OPEN = n --&gt; OPEN = y
+
+        ダウンロード
+           .Menu--&gt;ファイル--&gt;ダウンロードで指定のＵＲＬからファイルをダウンロードできます。
+            zipファイルなら指定のダウンロード場所で解凍します。
+
+        クラッシュレポート
+           .クラッシュが発生すると 開発者あてにメールする仕組みになっています
+            メール内容をみて出来れば送信ボタンを押してください
+
+
+
+
+
+
+
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

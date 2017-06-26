@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>%(apply command)</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">     % (appcmd) / $(appcmdAsync)
+               :改名欄に入力した任意のコマンドをこの行のファイル/
+                ディレクトリーをパラメータとして実行。
+                コマンド文字列中で % をファイル名パラメータを置く位置を
+                指定する為に使用できる。% が含まれてない場合は後に
+                追加される。
+                複数行コマンドは&quot;;&quot;で区切ります。 &quot;;&quot; が パラメータの一部の場合は
+                &quot;\;&quot; としてください。
+                $(非同期実行)はLinuxでxeをwaitさせないために必要になります
+                結果は &quot;::#.cfso_n&quot; (n:1,2,...)にリダイレクトされます
+
+            例)
+               ファイルの特定の文字を置換するには
+               改名欄に sed s/fromstring/tostring/g % &gt; wkd\%.new を入力すると
+               置換された結果をwkd\thefile.new に出力します。
+               結果は e ::cfso で確認します。(実行コマンドは e ::#.cmdで確認)
+               尚 sed コマンドは unix のツールです。 Webで探してください
+               (注)リダイレクト先に元のファイルを指定しないでください、ファイルが壊れます。
+
+               dir内のファイルにコマンドを適用するには添付のxdigツールが利用できます
+               例えば
+               Windows版では xdig /L1 /Nh % *.c &quot;//sed s/from/to/g \%\%fp\%\% &gt; \%\%fp\%\%.new&quot;、
+               ( \%\%fp\%\% は シェルに%%fp%%でわたりxdigに %fp%でわたります。
+                引用符は&quot;&gt;&quot;リダイレクトを xdigのパラメータとするためです。
+                xdigの構文はxdigで出力されるヘルプを参照)
+               Linux版では xdig /L1 /Nh % *.c &quot;//sed s/from/to/g \%fp\% &gt; \%fp\%.new&quot;、
+
+              パラメータ入力が多い場合は専用のシェルを作成して入力量を
+              へらすように工夫してください。
+
+              <A href="HID00000082.htm">EXE</A> コマンドのリダイレクトパラメータを利用すれば
+              パフォーマンスを犠牲にChangeコマンドの感覚でもう少し簡単に
+              ディレクトリー内の全ファイルの文字列置換が出来ます。
+
+</SPAN></PRE>
+</BODY>
+</HTML>

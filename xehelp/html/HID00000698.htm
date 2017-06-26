@@ -1,0 +1,26 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text-html; charset=shift-jis">
+<TITLE>VisualC++との連携</TITLE>
+<STYLE TYPE="text/css">a:hover{font-weight:bold;}</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    .VisualC++との連携。
+
+      <a href="HID00000198.htm">コマンドラインパラメータ</a>で ファイル名とともに/Lnnを指定すると
+      ファイルを開いた後、<a href="HID00000096.htm">LOC</a> nn コマンドを発行し nn 行目を表示する。
+
+#ifdef WIN
+      VC++デバッガーで次のような設定すると、設定したキーを押すとVC++の
+      カーソルのある行をxeで開いて表示できます。
+      VC++ v6 では Tool-->Customize-->Toolタブで xeを登録し
+      引数に "$(FilePath) /L$(CurLine)"を指定します。
+      実行時Dirは$(CurDir)にするとよいでしょう。
+      呼び出しキーは同じDialogでKeyboardタブを開きCategory:Toolの
+      UserToolxに新しいショートカットを与えます。
+#endif
+</SPAN></DIV>
+</PRE>
+</BODY>
+</HTML>

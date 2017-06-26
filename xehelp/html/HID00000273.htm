@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>DOS/&gt;</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    = DOS command.
+
+#ifdef LNX
+        [ DOS | &gt; ]  [dos-command-string | sh  [terminal options] ] ]
+#else
+        [ DOS | &gt; ]  [dos-command-string | CMD [ row [col] ] ]
+#endif
+
+             You can enter DOS,OS/2 command from command input line.
+             Sub shell screen is displayed if dos-command-string is
+             omitted.(it end by EXIT command).
+             *\ , **\ , ^*\ , :: is avalable for special path notation.
+             Enclose by double quotation if it is required as not path
+             but command parameter.
+#ifdef LNX
+  #ifdef XXE
+             Especially,specify sh to open async terminal window.
+             Terminal emulator gnome-terminal and konsole is searched
+             in this sequence. If found select it or else use xterm.
+             That is customized by <A href="HID00000209.htm">ini file</A>.
+             If with no operand or operand is &quot;sh&quot;,child window is
+             opened synchronously.
+             Terminal program is determined same way.
+  #else
+             Especially,specify sh to open async terminal window.
+             Same emulator is selected as gxe started.
+             If triger is not terminal,gnome-terminal is selected.
+             If with no operand or operand is &quot;sh&quot;,child window override
+             the current window.
+             With no operand case(back to the parent by exit cmd),
+             the child shell pgm is set on ini file.
+             Default is bash if dash found,else sh.
+             Dash is slinked from sh at kubuntu,bash is target on RH9 and FC5.
+  #endif
+#else
+             Especially,specify CMD to create async DOS prompt process,
+             and buffsize(row and col) parm is avail under windows2000.
+#endif
+              DOS(&gt;) can be omitted on the <a href="HID00000253.htm">Command Rresult Edit screen</a>.
+             see <a href="HID00000255.htm">(5).DOS command</a>.
+</SPAN></PRE>
+</BODY>
+</HTML>

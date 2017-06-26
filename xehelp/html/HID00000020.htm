@@ -1,0 +1,246 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>リモートファイルアクセス</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> #if defined(W32) || defined(UNX)
+   .リモートファイルアクセス。
+
+   #if defined(W32)
+
+      .Windows間で共有ファイルをアクセスする場合はUNC表記が利用出来ます。
+
+       例えば \\{サーバー名/IPアドレス}\{共有フォルダー}\...\{ファイル名}
+         但しlogin パスワードが必要な場合はあらかじめ explorerでlogin するか
+         net use \\ip-addr コマンドでログインしてください。
+         ex) net use \\server1\folder1 password /user:domainname\userid
+       また、接続はアイドルタイムアウト、最大接続ユーザー数があります。
+       &quot;net config server&quot; で確認してください。
+       接続が切れるとネーワーク探索が入り時間がかかります。
+       省略値１５分、&quot;net config server /autodisconnect:&quot;で変更可能
+       最大ユーザー数(XP-Home:5,XP-Professional:10)を超えると接続できません。
+       サーバー名は &quot;net view&quot;で確認できます。
+       共有名は &quot;net view \\サーバー名&quot;でリストされます。
+
+       尚、接続に時間がかかる場合はWebClientサービスを無効にしてください。
+       (共有名がドライブＩＤなど１文字だと起こらない?)
+       このサービスが有効の場合これを使ってHTTP(port:80)通信を試みるので
+       サーバーFirewallがport:80を無視する場合時間がかかるそうです。
+       (コントロールパネル--&gt;管理--&gt;サービス、Webclientを選択して右クリックし
+       無効を設定する。)
+       サーバー側でport:80の許可を設定をする方法もあります。
+
+       共有ファイルの場合の特殊処理。
+         cd コマンド, dir-list 行コマンド &quot;.&quot; で現行ドライブ、現行dirを
+         共有ファイルに設定することもできます。
+           例えば cd \\server\dir とすると
+           \:abc は \\server\dir\abc,
+           \:\abc は \\server\abc となります。
+           現行ドライブが \:の場合(&quot;.&quot;行コマンドはドライブとパスの両方を設定します)
+           xyz は \\server\dir\xyz になります。
+         現行ドライブは保存されませんが、
+         共有ファイルに対する現行Dir設定は保存され、次のセッションでも有効です。
+         現行ドライブが共有ファイルの状態でxe を終了すると、
+         xe /R で次のセッションでこの設定を復元できます
+
+         OPT UNDEL が ON の設定の時、
+         dirlist上で復元可能削除コマンド(&quot;d&quot;または&quot;/&quot;行コマンド)による削除では
+         &quot;u&quot;(Undo)行コマンドに備えて同じdir内でrenameで保存されます。
+         これらは セッション終了時に実際に削除されます。
+
+    #endif //W32
+
+      .ホスツファイル(省略値は::xehosts(ワークディレクトリーのxehost))に
+       登録したリモートIDを使用してリモートファイルをアクセスします。
+       たとえばホスツファイルに次の行をCodingし
+         a1 192.168.2.15  user001 pswdpswd
+       &quot;e a1:file1.txt&quot;で192.168.2.15のホームDirのfile1.txt を編集
+       できます。
+
+    #ifdef LNX
+
+        権限がなく共有資源をmount出来ない場合に xehostsにshare=パラメータ指定で登録すれば
+        WindowsあるいはSambaサーバーの共有資源にアクセスできます。
+        (Linux版はsmbclient,Android版はJCIFSを利用)
+          登録例  &quot;w764  192.168.8.22 usrskt pswd  share=sharename&quot;
+        Android版では password指定無しの<A href="HID_NODE_J.htm">NODe</A>コマンドで別スレッドで接続テストをします
+        Sambaの方がftpより格段に速いようです
+        まず最初に Samba サーバーと接続できるか次のコマンドで確認
+          smbclient -L hostname hostname: ip-address or name on /etc/hosts
+        問題がある場合は ::xeftplog を調べてください
+          ::xeftplogは &quot;xe -ftpw&quot; で立ち上げると出力されます
+
+    #endif //LNX
+
+      .ホスツファイルをxeで編集するとパスワードは一応暗号化されますが
+       より安全のためにはNODeコマンドで毎回パスワードを設定してください。
+       NODeコマンドで設定したパスワードは::xehostsには保存されません、セッションでのみ有効です。
+        コマンド: NODe host-ID password (例. &quot;nod ftpsvr1 CabZyx&quot;)
+
+      .ディレクトリーリストのundoは<A href="HID_TSOE_J.htm">TSO</A>以外では未サポート。
+      .リモートとしてWindowsはLinuxからはSambaクライアント(smbclient)でサポート
+       (xehostsファイルで SHARE= を指定する)
+       あるいは
+         Windows 共有名を次のようにマウントすれば
+           mkdir /WinDriveE
+           mount -t cifs //192.168.1.12/E /WinDriveE -o username=yourname
+         &quot;xe /WinDriveE&quot; でアクセスできます
+      .リモートファイルを<a href="HID00000119.htm">SUBmit</a>するとローカル実行。
+      .リモートファイルを<a href="HID00000134.htm">XPRint</a>するとローカルで印刷。
+       但し<A href="HID_TSOE_J.htm">TSOファイル</A>の場合はリモート(MVS)実行。
+      .<a href="HID00000198.htm">コマンドラインパラメータ</a>でFTPサポートを選択する。
+            /Fx[t][:hosts]  :x=0:FTP 不使用, x=1:FTP 使用(log無し)
+                             x=w:ftplog 出力, x=a:追加モード ftplog
+                            :t:一時ファイルを削除しないDebug用オプション
+                            :hosts: xe 用のホストファイル名。
+            省略値は /F1:xehosts(xehostsはワークディレクトリー)
+      .ホスツファイルの形式。
+       -コメントは # の後に書く
+        但し puTTY の PSFTPのパラメータは次のように指定します
+        #@PSFTP=  : psftp がPATH上にない時は PSFTP のコマンドを指定します。
+        #@SSH=all : この行以降の SSH=指定の省略値を SSH=Y とする指定です。
+        この行をコメントにするには次のようにします。
+           ##@PSFTP=~/psftp
+           ##@SSH=all
+       -リモートID リモートアドレス ユーザーID パスワードの順に
+        スペースで区切って書く。
+       -リモートID は2&lt;--&gt;8桁。リモートがTSO以外では大文字小文字区別あり
+       -リモートアドレスはIPアドレスかNativeのホスツファイル定義の
+        ホスト名を書く。URL も使用できる
+       -パスワードが不要のときは &quot;&quot; と書いておく。
+       -パスワードの後はオプションで次のパラメータを指定する。
+        HOME=/xxx/yyy    :ホームDir、~/で参照可能。
+        TZ=[-]hhmm       :時刻表示調整値。ex) TZ=-0900
+                          ファイル日付はGMTで送られるのでクライアントと
+                          ホストのTimeZoneが異なっても問題ないがAIXの
+                          場合GMT=JSTが設定されているのでホストがAIXの
+                          時はTZ=0000を指定する必要がある。
+        DBCS={EUC|SJIS|  :lsコマンド出力が日本語表示のときのCodePage指定
+             cp930|cp939| リモートがTSOで日本語の場合cp930かcp939を指定する。
+             OTHER}       ICUなどの外部コンバータを使用する。(&quot;<A href="HID_EBC_J.htm">EBCDIC変換</A>&quot;を参照)
+        TSO=portNo[opts] :リモートが<A href="HID_TSOE_J.htm">TSO</A>のときポート番号を指定
+                          TurnkeyMVSでは3270, tn3270の場合は23
+                          opts には
+                           R:宛先がTurnkeyMVS でない実際のメインフレーム
+                           S:TurnkeyMVS の場合でその submit ツールを使用せず
+                             TSOのSUBMITコマンドでJOBをSUBMITする。
+                          例)  TSO=23R  TSO=3270S
+
+        LS=&quot;xx&quot;/NLST     :specify FTP sub cmd correspond to unlix cmd &quot;ls -la&quot;.
+                          defailt is &quot;dir&quot;. use this option when FTP server dose not support dir subcmd.
+                          LS=NLST means LS=&quot;ls -la&quot;.
+                          (I heard RFC defines that ls subcmd returns file name only.)
+        ICMD=&quot;cmds&quot;      :specify FTP subcmds issued just after login.
+                          insert &quot;\n&quot; if the string contains multiple commands.
+                          When the case FTP server is configured to reject passive mode
+                          and FTP client default is passive mode,
+                          you can login successfully but transfer cmd such as ls will fail
+                          with &quot;no route to host&quot;.
+                          ICMD=passive toggles passive and active mode.
+        SSH={Y|N}        :FTPクライアントにPSFTP を使用する(Y) か 否か(N)
+        SHARE=shraename  :共有資源名。リモートがSambaサーバーまたはWindowsの時指定
+
+例）
+
+    ###################################################################
+    #sample hosts file for xe
+    #
+    #format
+    #
+    #@PSFTP=g:\src\putty060\psftp.exe   #specify PSFTP command string if psftp.exe is not on %PATH%
+    ##@PSFTP=/home3/putty-0.62/unix/psftp #(Linux sample)
+    ##@PSFTP=~/psftp                    #This is comment because this line data dose not start by &quot;#@xxx&quot; patern.
+    #@SSH=all                           #specify to use PSFTP as default for the following destionation after this lins.
+    ##@SSH=all                          #This is a sample of comment out of #@xxx statement
+    #
+    # RemoteID  RemoteAddress UserID  Password [option] #Comment
+    #   option:HomeDir     :ex. HOME=/tmp/myhome
+    #                           HOME='herc01.source.asm' (default Dataset of MVS)
+    #         :TimeZone    :ex. TZ=-0900
+    #         :DBCS        :ex. DBCS=EUC     :Remote codepage=JapaneseEUC
+    #                           DBCS=SJIS    :Remote codepage=ShiftJIS(Japanese)
+    #                           DBCS=CP930   :Remote is TSO and use Japanese katakana extension
+    #                           DBCS=CP939   :Remote is TSO and use Japanese English lower case letter extension
+    #                           DBCS=OTHER   :Remote is TSO and use the converter other than CP939/CP930.
+    #                                         (specify charset by CHARSET_CFG parm on xe3270.cfg)
+    #         :TSO=portno  :ex. TSO=3270       TurnkeyMVS destination port may be 3270
+    #                           TSO=3270S      &quot;S&quot; is submit option(use TSO SUBMIT cmd)
+    #                                          without &quot;S&quot;,use sub tool of TurnkeyMVS
+    #                           TSO=23R        R means target is Real MVS(TSO/E through tn3270))
+    #                                          (use TSO SUBMIT cmd.)
+    #         :LS=&quot;xx&quot;/NLST:ex. LS=NLST        specify any &quot;list directory&quot; cmd string(max 12 byte).
+    #                                          default is dir,NLST means &quot;ls -la&quot;.
+    #         :ICMD=&quot;cmds&quot; :ex. ICMD=&quot;passive&quot; specify cmd to be issued after opened session
+    #                                          insert &quot;\n&quot; between commands when multiple.
+    #         :SSH={Y|N}   :ex. SSH=Y          use PSFTP for this destination. &quot;N&quot;:use FTP.
+    #         :SHARE=name  :ex. SHARE=disk1    use smbclient to this destination(SAMBA server/Windows).
+    #Sample
+    # a1 192.168.2.5  mizumaki machi TZ=0900
+    # hm localhost    herc01   &quot;&quot;        TSO=3270 home='herc01.maclib.asm'
+    # t6 S390T6       PURPLE   PSWDPSWD  TSO=23R  home='SAK01.TEST.ASM',DBCS=CP939
+    # h390  Linux390  user1    PSWD1     SSH=Y
+    # w64   SmbSvr      user1    &quot;&quot;      SHARE=d
+    # w7p   192.168.2.12 w7user pswd     share=p
+    # gcty  ftp.geocities.jp ybbusr pswd SSH=N
+    ###################################################################
+
+    (注)ftpを利用するので接続するための適切な環境設定が必要です。
+        また、ftpサーバーは接続元のipアドレスでDNS逆引きをしていると、
+        DNS参照が遅いと接続に時間がかかります。(xeは毎回sessionをcloseしています）
+        DNS参照はftpサーバーの/etc/hostsに接続元を登録し/etc/host.confが
+        order hosts,bind
+        となっていると避けることができます。(DNSより先にhostsを参照する設定)
+
+        vsftpd について。(FC12の場合)
+          /homeをリストしようとすると次のメッセージで失敗することがあります
+            226 Transfer done (but failed to open directory).&quot;
+          SELinuxによって保護されている可能性があります。 Syslog(/var/log/messages)を確認してください。
+             ... avc: denied { read } for ... comm=&quot;vsftpd&quot; name=&quot;home&quot; ...
+          SELinuxの現在値は &quot;getsebool -a&quot;で表示されます。
+          &quot;setsebool -P ftp_home_dir 1&quot; で /home が読めるようになります。
+          ftp_home_dirがoffの場合でも,xehostでLS=NLSTを指定すると
+          /homeのサブDirの属性を表示できます(ls -la が &quot;.&quot;(現Dir)を返す場合)
+          /etc などホームDirの外に出る場合は cfg ファイルの chroot パラメータを
+          設定する必要があるかもしれません
+
+
+        Tiny FTP v0.52d(By H.Nomura氏)がFTP daemonの場合、次の設定をチェックしてください。
+          .設定-&gt;システム設定-&gt;再接続で&quot;接続間隔チェックを行う&quot;のチェックをはずす
+          .設定-&gt;ユーザー設定-&gt;禁止の&quot;デレクトリーの操作&quot;は全てチェックをはずす。
+          .設定-&gt;ユーザー設定-&gt;名前の&quot;パスワードの使用&quot;はオンにする。
+          .設定-&gt;ユーザー設定-&gt;ファイルの&quot;全てのファイルを許可&quot;にすると
+           設定したホームディレクトリーの外にもアクセスできます。
+          .ファイル名は &quot;e hostname:/&quot;で設定されたHomeDirをさすようです
+
+        puTTYのPSFTP(SSH2)に対応。(v063でテストしました)
+            #@PSFTP=g:\src\putty060\psftp.exe
+                PATHが通ってない場合 &quot;#@PSFTP=&quot;でコマンド名を指定。
+                追加のオプションがあれば指定可能。省略値は ::xeftplog に表示される。
+                (::xeftplogは -ftpw オプションで立ち上げると出力される)
+            #@SSH=all
+                この行以降の接続先の省略値としてPSFTPを使用することの指定
+            dest1 192.168.2.5  user pswd  ssh=Y
+                各接続先ごとにPSFTP(ssh=Y)か FTP(ssh=N)を選択設定する。
+                指定がなければ #@SSH=の指定の有無に従う。
+         (注).#@___をコメントアウトするには例えば##@PSFTP=...のようにする。
+             .PSFTPを使用する場合は最初一度にコンソール窓からPSFTPコマンドで
+              接続しcacheにhost-keyを記録するようにしてください。(psftp -l USER -pw PSWD)
+              (SSH key を キャッシュに保存する為のyes/no 応答が必要なのでxe外で一度実行してください)
+              -batch オプションを使用していますがWindows版はcacheにhost-key
+              がないとハングします。Linux版は接続失敗でPSFTPが制御を戻すので
+              SSH失敗のエラーメッセージを表示します。
+             .現在のところpsftpではDir-Listでslinkが表示されません。
+             .::xehostsの変更は次回から有効です
+#endif
+</SPAN></PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,26 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text-html; charset=shift-jis">
+<TITLE>(4)Linuxからtelnet して使用する場合の設定</TITLE>
+<STYLE TYPE="text/css">a:hover{font-weight:bold;}</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> (4)。Linuxからtelnet して使用する場合の設定。
+
+  - Linux の DistributionIDを調べる。
+    実際は 環境変数 XETERM と変換ファイル 内の [section] のセクション名の
+    対応を取るだけなのでなんでもよい。
+  - 変換ファイル を適当な dir に作成し、例えば [RH9] のセクションを作り
+    Linuxが拡張キーのHitで生成する文字列とそのキーの対応を記述する。
+    ほとんどの対応はDefaultで解釈するので必要なのは(8)の<a href="HID00000450.htm">xeaixkey.rh9</a>
+    に記述されている。
+    <a href="HID00000453.htm">Defaultは(9)-(b)</a>にある。
+  - xe を起動する前に "export XETERM=RH9" の様に変換ファイルの
+    セクション名との対応を設定しファイルをパラメータ指定して起動する。
+     ==>(8)の <a href="HID00000449.htm">xelt</a> を参照。
+
+</SPAN></DIV>
+</PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>END</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    = Termination
+
+        {END | RETurn | QUIt | EXIt | CANcel}  [-NB|-BK] [CPU8|CPLC|CPEB] [IE]
+                   [/M{T|P|U|M|E|R|V}] [/F{n[-m]|vfmt}] [-S{r|i|d}]
+
+            EXI   :terminate current screen hierarchy(half of split)
+            RET   :return to command prompt(Update is saved)
+            QUI   :return to command prompt(Update is abandoned)
+            END   :terminate current screen(Update is saved)
+            CAN   :terminate current screen(Update is abondaned)
+
+            -NB   :(END cmd only)skip temporarily backup at file save.
+                   To protect from file corruption by ABEND at file write,
+                   original file(local file except on floppy drive only) is copied
+                   on the directory just before writeback,then deleted after
+                   write completed. Specify NB if you worry about disk space
+                   or performance.
+            -BK   :(END cmd only)deny NB option of Edit cmd.
+
+#ifdef UTF8SUPP
+
+            (END cmd only)
+              <A href="HID_UTF8_E.htm">CPU8</A>/CPLC:specifies output file encoding.
+               /<A href="HID_EBCF_E.htm">CPEB</A>    translation will be done, then write back.
+              IE       : ignore translation error, error code is replaced by &quot;?&quot;.
+              /M       :request to change eol char.
+                        T:Text mode. Linux:0a, Windows:0d0a, single 0a is replaced by 0d0a on Windows.
+                        P:0d0a(PC file)
+                        U:0a  (Unix file)
+                        M:0d  (Mac file)
+                        E:15  (<A href="HID_EBCF_E.htm">EBCDIC file</A>)
+                        R:<A href="HID_RECORD_E.htm">Fixed Length Record mode</A>. Specify LRECL by /Fn[-m] option.
+                        V:<A href="HID_RECFMV_E.htm">Variable Length Record mode</A>. Specify record header type by /Fvfmt.
+              -Fn[-m]  :record mode record size and margin.
+                        Use to change to record mode or change record size.
+                        F0 resets record mode.
+              -Fvfmt   :VariableLengthRecord file record header formt. See Edit command.
+              -S{r|i|d}: SO/SI option
+                         r : When current screen is EBCDIC file and cmd option is CPLC/CPU8,
+                             replace SO/SI to a space.
+                             When current screen is not EBCDIC and cmd option is CPEB,
+                             replace both side of space, if available, to SO/SI.
+                         i : Inserte SO/SI when translation to EBCDIC.
+                         d : Delete SO/SI when translation from EBCDIC.
+
+#endif
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

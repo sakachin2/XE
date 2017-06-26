@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>ターミナルエミュレータJ</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+
+<PRE><SPAN style="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">   .ターミナルエミュレータ
+
+     PuTTY, TeraTerm などを通しても xe(コンソール版)でリモートのファイルを
+     ファイル転送をせずに編集することが出来ます
+     エミュレータはFunctionキーなどは ^[11~ などの Esc文字列をリモートに送りますが
+     Shift/Control+Fnの全ての組み合わせをサポートしているわけではありません。
+     VT100, Linux など Terminal タイプによっても Esc 文字列は変わります。
+     PuTTYで SCO を選択すると Shift/Control+Fnは全て利用できますが
+     (
+        この設定を無効にするには--NOSCO オプションを指定
+        またSCOでは ^[Z が S+F2 に割り当てられていて従来のS+Tabへの割り当てと重複します
+        --Z2 オプション指定で S+F2 割り当てとします
+     )
+     &quot;The Backspace key&quot;オプションは &quot;Control-H(0x08)&quot;を選択しないとDelキー(0x7f)と
+     重複して判別できなくなります。又 0x7f をDelキーとみなす為には
+     xeでも &quot;xe  --7d&quot; と指定する必要があります。
+     xekbchkも --7 オプションがあります。xekbchkで確認してください。
+     xekbchk のヘルプは &quot;xekbchk --h&quot; です。
+
+     xe は xelnxj.txt (9)-(b)&quot;X-モードのときDefaultで解釈するEsc文字列&quot;
+     受け付ける設定にしてあります
+     (&quot;xekbchk --smapfilename&quot;で mapfilenameに書き出されます)
+     これ以外のキーを使用したい場合は追加のキーマップを与えてください
+     &quot;サンプル キーマップファイル&quot;を参考にしてください。
+     コマンドラインパラメータで &quot;xe --k::addfuncmapfile&quot; のように指定するか
+     ini ファイルの LNX_Keymap パラメータで指定してください
+     ( LNX_Keymap = ::addfucmapfile)
+     作成したファイルが正しいかどうかは
+     &quot;xekbchk --stmpf --kaddfuncmapfile&quot; などとし tmpf を確認してください
+
+     *****
+     &quot;サンプル キーマップファイル&quot;
+
+        #start of file
+        [common]
+          KeyString:F1       =^[[1Z~
+          KeyString:S+f1     =^[aa
+          KeyString:C+f1     =^[bbb
+        # KeyString:A+f3     =^[^[[13~
+        # KeyString:A+f3     =^[&#91;13~
+        #end of file
+
+        Note. &quot;^[&quot; は 0x1b の表記です
+              PuTTY は 例えば Alt+F3 は  0x1b.1b.5b.31.33.7e を生成しますが
+              これは 0x1b(Alt)+F3の形式になっているので登録は不要です
+              また xe は C+A+ のように複数Modifierには対応していません
+
+
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

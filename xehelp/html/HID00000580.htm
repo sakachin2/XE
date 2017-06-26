@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>(1)How to start</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;"> (1) How to start.
+
+  .Melt xeaix___.tgz file on PC(___:version). ex) "tar -xvzf xeaix107.tgz".
+  .Move files in the directory bin to a directory in the PATH.
+  .Setup environment.
+     For Windows user,see <a href="HID00000582.htm">(3) TeraTerm setup</a>.
+     (puTTY is free and open-source telnet client program by Mr. Simon Tstham.
+      My patch to puTTY is to enable key remapping for xe.
+      All key combination is utilized.(TeraTerm has limit of max 99 for user defined key)
+      See documentation of <a href="HID00000334.htm">Linux version(xelnxe.doc)</a> for more information such as download URL.)
+
+     For the case telnet from Linux,see <a href="HID00000583.htm">(4)</a>.
+     When you use xe on dtterm or aixterm,see <a href="HID00000584.htm">(5)</a>.
+  .Start xe by "xe [filename]".
+   See sample shell in <a href="HID00000586.htm">(8)</a>,xelt for Linux user,atm or dtm for X user.
+   Command line parm is displayed by &quot;xe --h&quot;(help only for AIX)
+   or &quot;xe -h&quot;(common help).
+
+
+      xe [--bcdhmrtx1] [--7{B|D|C}] [--kfilename] [cps]
+        b :Blink when insert key mode.
+           This is ignored when X mode.
+        c :Clear all line of screen before draw when full screen draw
+           case,for ex PgUp.
+        d :re-draw only the line updated.
+        m :Mono color mode.
+        r :Reverse when insert key mode.
+        t :Force Esc string translation of TeraTerm.
+        x :Force key binding as under X even if env-var TERM=vt100.
+        1 :draw dbcs line by one write API.
+        7 :tarnslation of 0x7f. B:BackSpace D:Delete C:char-0x7f
+           Use when telnet from Linux.
+        k :keymap file.
+           mapping file specify translation Esc string to key combination.
+
+       cps:common parms with other platforms.
+           these are displayed by &quot;xe -h&quot;.
+
+  (Note)
+   -There are some case that,DBCS(japanese) drawing may not be stable.
+    So,2 options are prepared for DBCS mode.
+    First is to clear whole screen before draw, and second is to write
+    line once without DBCS and next write DBCS only.
+    DBCS mode means LANG=Ja_JP(SJIS).
+    Default is
+    &quot;Clear whole screen at full screen re-write case(ex. PgUp) if
+    screen is not splitted. Else draw DBCS line twice&quot;.
+    Following option modifies default.
+    &quot;--c&quot;:Clear all line at full screen write even if screen is splitted.
+          Another screen may flicker for old CPUs.
+    &quot;--d&quot;:Draw updated lines only,no whole line clear.
+    &quot;--1&quot;:Draw DBCS line by one write API.
+
+   -<a href="HID00000236.htm">Work directory</a> xe_wdnnnnn and xe_undel_nnnnn(nnnnn:UserID)
+         are created in ~/(HOME) or /tmp if HOME is / (root).
+         Work directory is set to any name if you need ,specifying it
+         by env-variable(export xe=xxxx) or -wxxx command line parameter.
+         Or env-variable(export xe_undel=xxxx for <a href="HID00000378.htm">undo linecmd</a> on dir-
+         list.
+   -AIX private data segment size has limit of 256MB as default.
+    Xe need virtual memory about 2-3 times of file size depending on
+    display line width. When memory shoratage occured xe will issue warning msg,
+    but sometime xe abend with no warning msg.
+    A method to expand private data area size is to set environment variable.
+    export LDR_CNTRL=MAXDATA=0xn0000000   (n:1,2,...8)
+    Data area size is expanded by 256MB for each n.
+    (Check also ulimit setting)
+    You shoud consider about system overhead when increasing virtual memory size
+    expansion.
+
+</SPAN></PRE>
+</BODY>
+</HTML>

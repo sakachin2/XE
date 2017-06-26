@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>MOVe</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    = Move file into the edit screen(delete the file).
+
+        MOVe    (file-name) [ CPLC | CPU8 | CPEB[:codepage] ] [IE]
+                    [/M{T|P|U|M|E|R}] [/Fnn] [-S{r|i|d}]  [-S{r|i}d}]
+
+#ifdef UTF8SUPP
+
+            <A href="HID_UTF8_E.htm">CPU8</A>/CPLC:encoding of source file.
+             /<A href="HID_EBCF_E.htm">CPEB</A>    Copy/Move &quot;source-file&quot; after tarnslated.
+                      Profile is checked, so you may not be required to specify CPxx option.
+
+                      You can other codepage than specified on cfg file using CPEB:codepage format.
+                      When you don't want to translate by the codepage registered on profile,
+                      use &quot;B&quot; option to &quot;A&quot;(After) or &quot;B&quot;(Before) line cmd specifing copy target position.
+                          ex)  MOV ebcf1
+                               :
+                               BB
+            IE       : continue copy operation ignoring translation error.
+                       those char are copied as it is and dispalyed by &quot;?&quot;.
+                       This option is not required when target file is opened by with &quot;IE&quot; option.
+            /M       :EOL-ID of copy source file.
+                      P:0d0a(PC file)
+                      U:0a  (Unix file)
+                      T:Both 0a and 0d0a
+                      M:0d  (Mac file)
+                      E:15  (EBCDIC file)
+                      R:record mode. Specify LRECL by /Fnn option.
+            /Fnn     :LRECL
+            -S{r|i|d}: SO/SI option
+                       r : When current screen is EBCDIC file and cmd option is CPLC/CPU8,
+                           replace both side of space, if available, to SO/SI.
+                           When current screen is not EBCDIC and cmd option is CPEB,
+                           replace SO/SI to a space.
+                       i : Inserte SO/SI when translation to EBCDIC.
+                       d : Delete SO/SI when translation from EBCDIC.
+#endif
+            -Copy all line of the file onto the specified position
+             of line cmd such as <a href="HID00000340.htm">a(After)</a>,<a href="HID00000341.htm">b(Before)</a>,<a href="HID00000349.htm">o(On)</a>,<a href="HID00000350.htm">p(Paste)</a>.,
+             and then delete the file.
+             Use &quot;Line Insert Copy&quot;(Alt+i) to specify the destination
+             line under line-no not displayed mode.
+             Destination line cmd is not required when null file.
+             Wild card path name is accepted if the path is uniquely
+             determined.
+
+       (note)Use <a href="HID00000331.htm">XMOve</a> or <a href="HID00000273.htm">DOS command &gt;</a>MOVE to move file.
+             MOVe command is treated as <a href="HID00000331.htm">XMOve</a> on the screen except
+             <a href="HID00000251.htm">BROWSE/EDIT</a>.
+
+</SPAN></PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>LINECH-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN style="color:#000000;font-size:12pt;">    -Line Drawing Character setting
+
+             OPT LINECH [on | off | filename | reload ]
+
+#if defined(LNX) || !defined(XXE)
+            on/off  :Selection of output string xxxx of yyyy of ini file.(See <A href="HID00000215.htm">LineDrawingChar</A>)
+                      if both specified by the ini file(xelch__.ini[.locale]).
+                      select output string xxxx(ON) or yyyy(OFF).
+                      (on other than linux console version,xxxx or yyyy
+                      selection is done by +Shiftkey. linux console
+                      version cannot detect complex +Shift key combination)
+                      default is off.
+                      And if ON and xxxx is 1 byte character,that byte is
+                      displayed as Line-Drawing-Character.(use ACS function)
+
+                      Set off if your language use codepoint &gt;0xa0 e.g. ISO8859-1.
+#endif
+             filename:temporarily setup from this file.
+           reload  :re-read the default file.
+
+           you can see the result of ini file process on =0.2 panel.
+</SPAN></PRE>
+</BODY>
+</HTML>

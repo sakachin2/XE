@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>UTF cmd-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">
+#ifdef UTF8SUPP
+
+   = <A href="HID_UTF8_E.htm">UTF8</A> relaterd.
+
+       -UTF related setting.
+
+           - UTF { {ALTCPLC | NOALTCPLC } | SWKBD | FILE | FN } [ CPU8 | CPLC | CPAS ]
+
+              ALTCPLC / NOALOTCPLC : When without CPU8 option including registered on profile,
+                                     reload by CPLC or not if UTF8 translation err occured.
+
+              SWKBD:KBD Input translation(Locale code&lt;--&gt;UTF8)
+
+                Alt+u is shortcut of &quot;UTF SWKBD&quot; cmd.
+                &quot;===&gt;&quot; of cmd input line is changed to &quot;=u=&gt;&quot;.
+                =u=&gt;:keyboard input is interpreted as UTF8.
+              FILE/FN:Set default of text of file/filename encoding.
+                      Use CPAS to reset it.
+                      Option setting is save to ini file.
+                      -U option of cmdline override this temporarily.
+
+              You can mix UTF8 and locale code on command input line, filename input(=1 or =2) panel
+              and utility panel(=3.12 or =3.14).
+              Use this shortcut key when file pathename is mix of UTF8 and locale code.
+              (Note) If the mix is in a path, UTF8 detection may fail.
+                     (Intermediate ASCII code may help as UTF8 encoding seperator)
+              Input to the file contents is, anyway, by locale code.
+
+              Cmd line parameter -Nm is used to process UTF8 code byte by byte.
+
+
+              -These change is save to inifile,effective also at next session.
+#endif
+
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>ユーザーコマンド</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">   .ユーザーコマンド
+      <a href="HID00000047.htm">メニュー画面</a>の<a href="HID00000049.htm">=0.1(2)章-(A-3)</a> で設定します.
+
+      先頭部分は見割り当てのファンクションキーが表示されています
+      コマンド文字列を設定してそのファンクションキーに割り当てます(ユーザーコマンドキー)
+      ショートカットキー割り当てがそれに続きます
+      ショートカットキーは設定された文字列をカーソル位置に出力します
+      設定した文字列は２キー操作で呼び出します
+      例えば sc,0 は &quot;Alt+a&quot; の後 &quot;0&quot; キーを押します
+      ユーザーコマンド定義がそれに続きます
+
+      コマンドの連結は&quot;;&quot;.コマンド入力行を越える長さも可能(最大240).
+
+      ユーザーコマンドキー
+        最後に&quot;;&quot;があれば全コマンドを連続実行し,なければ文字列が
+        単にコマンド行に表示されるだけ.
+#ifdef LNX
+        Alt+F1--&gt;Alt+F6 はコンソール切り替えに残してあります。
+        使用しないでください。
+#endif
+
+      ショートカットキー
+        Alt+qのあとは文字列が1行目に表示されるので内容確認の後、
+        同じ1文字キーを再度押した時に入力される。(例えば &quot;A+q&quot;,&quot;0&quot;,&quot;0&quot;)
+        カーソルがコマンド入力行にあるとき、Alt+aの直後に1文字入力すると
+        対応する文字列がカーソル位置に入力され,次のEnterで実行される。
+
+      別名コマンド
+        3桁コマンドと実行されるコマンド文字列を定義します
+        例えば ac1 e %1;c word1 word2 all;end
+        で &quot;ac1 fnm1&quot; の入力でl 定義された３コマンドが実行されます
+
+      コマンド文字列には %n, %*, %^, %@ のパラメータ置換ができます
+        %1-%9:パラメータはコマンド入力行に入力しておきます。
+              別名コマンドではコマンドのパラメータで指定します
+        %*   :現在開いているファイルのフルパス名
+        %^   :画面分割で他方の画面で開いているファイルのフルパス名
+        %@   :その位置までで未使用（%nで使用されなかった）のパラメータ
+        %* and %^ は 該当画面がファイル/デレクトリーリストでない場合はスペースになります
+        例) grep %1 %^&gt;::tmp; e ::tmp;
+
+      カーソルの移動には <A href="HID00000102.htm">POS</A>/<A href="HID00000414.htm">HOM</A> コマンドを使用して下さい.
+      最初の位置はコマンド入力欄の先頭です
+      文字入力には <A href="HID00000094.htm">KEY</A> コマンドを使用します.
+      但しコマンド入力欄への文字入力は無効です.
+      行番号欄へ文字入力した行コマンドを実行するにはKEY コマンドに続け
+      <A href="HID00000419.htm">ENT</A>コマンドを設定して下さい.
+        例  <A href="HID00000102.htm">pos</A> 3,1;<A href="HID00000094.htm">key</A> d3;<A href="HID00000419.htm">ent</A>;
+        　  <A href="HID00000102.htm">pos</A> 10,<A href="HID00000087.htm">hsp</A>;=6;grep %1 *.c;
+
+      <a href="HID00000082.htm">EXE</a>コマンドも同様の用途で利用できます。
+      合計240桁の制限がありません
+      一連のコマンドをファイルに記述してEXE コマンドで実行します。
+      EXEコマンド用のファイルの編集には::clを利用することもできます。
+      コマンドはオプション(OPT CMDLOG [ON|OFF])で::clにロギングされます。
+      (GCC,OS/2では一旦&quot;<a href="HID00000701.htm">OPT CMDLOG</a> OFF&quot;にしてから開いてください）
+    
+　　　開いたファイルの内容から行のコマンドの実行には<a href="HID00000702.htm">&quot;#/##&quot;編集行コマンド</a>が使えます。
+</SPAN></PRE>
+</BODY>
+</HTML>

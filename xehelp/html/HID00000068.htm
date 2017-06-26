@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>COLumns</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = 桁定規
+
+        COLs [on | off] [type]
+
+            - 桁定規の表示.on/offの入力がない場合は現況の反転。
+            - type には 省略時の定規以外を使用する時に指定する.
+              対応する定規ファイルを<a href="HID00000038.htm">ワークディレクトリー</a>に作成して置く.
+              省略時の定規に戻す時は単にonのみを指定する。
+#ifdef UNX
+              ファイル名は &quot;xe_col_.type&quot;.省略時の定規を変更したい時は
+              xe_col_.col を作成すればよい.
+#else
+              ファイル名は &quot;xe!col!.type&quot;.省略時の定規を変更したい時は
+              xe!col!.col を作成すればよい.
+#endif
+              定規上に文字 &quot;*&quot; を設定すると最大20個までの<a href="HID00000016.htm">タブ停止位置</a>が設定できます。
+              例えば、次のような行を定規ファイルに設定します。
+              ......*..1.........2.........3.........4*........5.....
+
+            - ALLを指定すると全てのファイルをCOL on で開く。
+            - プロファイルに記録されるのでそれをリセットするには 単に&quot;COL ON&quot; とする。
+</SPAN><BR></PRE>
+</BODY>
+</HTML>

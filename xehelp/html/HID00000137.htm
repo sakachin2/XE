@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>(1)起動方法</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">(1) 起動方法
+
+(1-A) ソースパッケージからインストールする場合。
+
+  . gxe-v.rr.tar.gzをPC上で解凍(v.rrはバージョン) 例えば &quot;tar -xvzf gxe-1.23.tar.gz&quot;.
+    展開されたサブDirに入り、
+      ./configure        (Makefileの作成)
+      make               (コンパイル)
+        (configure,make のトラブルについてはtopdirの<A href="HID_SRCRME_J.htm">README</a>を参照してください)
+      ファイルは以下のような構造で配置されています
+        topdir--README
+               +src-                           gxe,gxeDebug
+                   +--xe                       xe,xeDebug,xe3270,xe3270Debug
+                   +--xsub                     xfcなどコマンドラインツール
+                   +--xp                       xprint
+                   +--sample
+               +--doc-
+                   +--en                       フラットファイル文書(英語)
+                   +--jp                       フラットファイル文書(日本語,sjis and euc)
+                   +--xehelp                   ヘルプコマンド、ヘルプメニューで使用するHtml文書
+                                               wxe.pngもここにあります。
+        (docファイルなど個別のファイルについては<A href="HID00000139.htm">(2)</A>を見て下さい）
+  .次のwxe.pngも含めて特定のbinファイルとxehelpは &quot;make install&quot; で既定のDirへコピーすることが出来ます。
+    (root ユーザー権限が必要です)
+     gxe,xe,xprint,xfc --&gt;/usr/local/bin                     (但し make の --bindirで変更可能)
+     xehelp            --&gt;/usr/local/share/gnome/help/gxe    (configure.in の packagehelpdir)
+     wxe.png           --&gt;/usr/local/share/pixmaps/gxe
+     Debugのついたものは -g オプションでコンパイルしたものです。
+     xsub内の他のbinファイルは必要に応じてPATH の通ったディレクトリーに移動する。
+
+(1-B) バイナリーパッケージからインストールする場合
+
+        バイナリーパッケージはv1.27以降提供されなくなりました
+
+(1-C) 実行.
+
+
+#ifdef XXE
+
+    Terminal emulator から gxe [ファイル名] で起動する。
+    あるいはデスクトップ上にアイコン登録してダブルクリックでメニューから
+    開始します。
+
+#else
+
+  ．xe [ファイル名] で起動する
+
+    <a href="HID00000423.htm">コマンドライン パラメータ</a>の説明は "xe --h"(Linux版独自のヘルプ)、
+    または "xe -h"(共通ヘルプ)で表示されます。
+
+  (注)-コンソールモード(run-level=3)でも X(run-level=5)のターミナルエミュレータ-
+       上でも使用できますが X では設定が必要です。<a href="HID00000424.htm">(4)参照</a>、マウス操作は<a href="HID00000427.htm">(5)参照</a>。
+       X からコンソールにスイッチするには Ctrl+Alt+Fn(n:1--&gt;6)キーを
+       使用します。但し ランレベル=3 から startx した場合そのコンソール
+       (通常は Console 1) はふさがっているので F2--&gt;F6 が使える。
+       Ctrl+Alt+F7 で X に戻る。
+       コンソールモードと違ってターミナルエミュレータのkey-bindingsは限定されています。
+       xeに必要な機能キーを有効にするにはXのkey-bindingsなどの設定が必要です。
+       (4)X モードの為の設定と,マウス操作は(5)制約 を見て下さい。
+
+      -puTTY(**)上で実行する時はキーマップパッチ版を使用してください。
+       Xの設定やターミナルエミュレータを意識しなくて良くなります。
+       (**) puTTY:Simon TathamさんによるTelnetクライアントです。
+            フリーでソースも公開されています。
+            xeで使用するShift/Ctrl/Altキーとの組み合わが利用できるように
+            keyへのEsc文字列割り当てを変更できるパッチを作成しました。
+            puttykm.tgzが //www.geocities.jp/sakachin2/index.htmからDownload出来ます。
+            Linux版は telnet 先をLocalにして使用することも出来ます。
+            このほうが、xelnxkey.xxxを使用するよりより簡単(Xの設定不要、
+            これ以外の設定ファイルは必要がありません)で
+            全てのキーの組み合わせが利用できます。
+            <a href="HID00000737.htm">(6)サンプルファイル-(i) puTTY.xekeymap</a> の説明もお読みください
+#endif
+
+  (注)
+      -~/(HOMEディレクトリー)にカット＆ペースト等の為の<a href="HID00000038.htm">ワークディレクトリー</a>
+       xe_wdnnnnn、ディレクトリーリストでのUndo用の
+       保存用ディレクトリ xe_undel_nnnnn (nnnnnはユーザーID)が,
+       作成されます。但しHOMEが /(ROOT)の場合は /tmp になります。
+       必要なら前者は,環境変数 xe または -w コマンドラインパラメータで
+       変更できます。後者は環境変数 xe_undel で変更できます。
+
+      -KDE環境ではerror while loading shared libraries:...
+       で libgnomevfs や libgnomeprint が見つからないため起動できないことがあります。
+       これを解消するにはinstallerで何か他のgnomeアプリケーションを導入してください。
+       Kubuntu 6.10では Adept installerで Any suiteを選択し&quot;GNU Paint&quot;/Gladeを
+       導入することで解決しました。
+
+      -xe,gxeがハングした場合の対処。
+       Ctl+Alt+Fn (nは2から6)でコンソールモードに移行しプロセスをkillする。
+       X の画面に戻るには Ctl+Alt+F7を使用。
+       プロセスをkillするには
+          ps -ef |grep xe
+       で xe または gxe のプロセス番号を得て
+          kill -9 nnnn
+       でプロセスを落とす(nnnnはプロセス番号)
+
+      -キーボードの反応が遅いとき。
+       キーボードレートを変更する。
+       Consoleでの変更は &quot;kbdrate -r 6 -d 250&quot; を/etc/rc.localにいれる。
+       (6:Repeat時の1秒間の文字数。250:押し続けが250ms経過するとRepeatとみなす。)
+       X(gtermなど)での変更はFC4ではデスクトップ-&gt;個人設定-&gt;キーボード
+       の画面のキーのリピートで調整する。(下部に確認用のTextBoxがある)
+
+      -キー操作でWindowManagerが反応したり何も反応しない場合、
+       システムのショートカットキーとxeのキー割り当てを調整してください。
+       Kubuntu edgyの場合ですが特に多くのデフォルト定義がされているようです。
+       システムのショートカットキーの定義変更は例えば
+       FC5では
+           デスクトップー＞設定ー＞キーボードショートカット.
+       Kubuntu edgyでは
+           SystemSettings-&gt;ComputerAdministrations-&gt;Keyboard&amp;Mouse-&gt;KeyboardShortcut.
+       openSUSE10では
+           Configure Desktop Personal Settings-&gt;Regional &amp; Accessibility
+           -&gt;keyboard Shortcuts.
+           F12 はデフォルトで Kerry Beagle Search を起動するようになっているかもしれません。
+           この設定を解除するには,&quot;Open configuration dislaog&quot;を押します。
+           &quot;Show Search Dialog&quot; を選び&quot;Custom&quot; ラジオボタンを押します.
+           リブートが必要です.
+
+</SPAN>
+</PRE>
+</BODY>
+</HTML>

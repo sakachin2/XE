@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>(d)xelnxres.xxx</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">     (d)xelnxres.xxx
+       X resource file for xterm,kterm.
+       xe requires more key combination over default shown at (9)-(b).
+       This file setup to generate Esc string correspond to key combination
+       which xe use.
+       Set up like as "xrdb -merge xnlsres.xxx".(See also xekt,xext)
+       String "xext" and "xekt" is application  name which correspond to
+       -name option of xterm,kterm command.
+       For ex., xterm started by "xterm -name xext" command is effected
+       X resource definition in the line "xext*...".
+       These are not for gnome-terminal which dose not chk X resource.
+
+       All key definition xe use as default is showed in xelnxres.full.
+       Copy the line from it to your X resource file.
+       Format of Esc string for xe is following.
+          0x1b~xxyyz   xx:DOS-Scan Code yy:DOS-Char Code
+                       z:Shift ID  0:No shift  , 1:Shift+
+                                   2:Ctrl+       3:Alt+
+          See <a href="HID00000578.htm">(9)-(a)</a> for DOS Scan/Char code.
+       You may change fg,bg and cursor color.
+       It is required for kterm to set EightBitInput:true to accept DBCS input.
+
+       xelnxres.rh9
+       0001|!*******************************************************************
+       0002|!****** xelnxres.rh9 ***** resource file for xe under xterm/kterm **
+       0003|!****** usage under RedHat v9
+       0004|!****** (1) merge keyboard translation to X-resource
+       0005|!******     (1-1) merge this file into ~/.Xresources or /etc/X11/Xresources
+       0006|!******     or
+       0007|!******     (1-2) add the line into /etc/X11/xinit/xinitrc
+       0008|!******           XERES=/h/objlinux/sample/xelnxres.rh9
+       0009|!******           &quot;xrdb -merge $XERES&quot;
+       0010|!****** (2) open terminal emulator specifying application name
+       0011|!******     &quot;xterm -name xext&quot;           for xterm
+       0012|!******     &quot;kterm -name xekt&quot;           for kterm
+       0013|!*****      (gnome-terminal dose not support -name)
+       0014|!****** (3) start xe with native key translation file
+       0015|!******     XEKEY=xelnxkey.xxx
+       0020|!******     &quot;xe --k$XEKEY&quot;
+       0021|!***********************************************************************************
+       0022|!***********************************************************************************
+       0023|!** xterm
+       0024|!***********************************************************************************
+       0025|!                    &lt;Key&gt;Prior:    string(\033~49000)\n\
+       0026|!                    &lt;Key&gt;Next:     string(\033~51000)\n\
+       0027|! continued line
+       0028|xext*background: Black
+       0029|xext*foreground: Wheat
+       0030|xext*cursorColor: blue
+       0031|xext*reverseVideo: false
+       0032|xext*scrollBar: true
+       0033|xext*reverseWrap: true
+       0034|xext*font: fixed
+       0035|xext*fullCursor: true
+       0036|xext*scrollTtyOutput: off
+       0037|xext*scrollKey: on
+       0038|xext*titleBar: true
+       0039|xext*vt100.Translations:    #override \n\
+       0040|            Shift&lt;Key&gt;Prior:    string(\033~49001)\n\
+       0041|            Shift&lt;Key&gt;Next:     string(\033~51001)\n\
+       0042|            Shift&lt;Key&gt;Insert:   string(\033~52001)\n\
+       0043|            Shift&lt;Key&gt;Escape:   string(\033~011B1)\n\
+       0044|            Shift&lt;Key&gt;BackSpace:string(\033~0E081)\n\
+       0045|            Shift&lt;Key&gt;Return:   string(\033~1C0D1)\n\
+       0046|                 &lt;Key&gt;KP_Enter: string(\033~E00D0)\n\
+       0047|            Shift&lt;Key&gt;KP_Enter: string(\033~E00D1)\n\
+       0048|            Ctrl&lt;Key&gt;KP_Enter:  string(\033~E00A2)
+       0049|!***********************************************************************************
+       0050|!** kterm
+       0051|!***********************************************************************************
+       0052|!               Shift&lt;Key&gt;Home: string(\033~47001)\n\
+       0053|!                    &lt;Key&gt;End:  string(\033~4F000)\n\
+       0054|! continued line
+       0055|xekt*EightBitInput: True
+       0056|xekt*background: Black
+       0057|xekt*foreground: Wheat
+       0058|xekt*cursorColor: blue
+       0059|xekt*reverseVideo: false
+       0060|xekt*scrollBar: true
+       0061|xekt*reverseWrap: true
+       0062|xekt*font: fixed
+       0063|xekt*fullCursor: true
+       0064|xekt*scrollTtyOutput: off
+       0065|xekt*scrollKey: on
+       0066|xekt*titleBar: true
+       0067|xekt*vt100.Translations:    #override \n\
+       0068|    Shift&lt;Key&gt;space:     begin-conversion(_JAPANESE_CONVERSION)\n\
+       0069|            Shift&lt;Key&gt;F1:       string(\033~54001)\n\
+       0070|            Shift&lt;Key&gt;F2:       string(\033~55001)\n\
+       0071|            Shift&lt;Key&gt;F3:       string(\033~56001)\n\
+       0072|            Shift&lt;Key&gt;F4:       string(\033~57001)\n\
+       0073|            Shift&lt;Key&gt;F5:       string(\033~58001)\n\
+       0074|            Shift&lt;Key&gt;F6:       string(\033~59001)\n\
+       0075|            Shift&lt;Key&gt;F7:       string(\033~5A001)\n\
+       0076|            Shift&lt;Key&gt;F8:       string(\033~5B001)\n\
+       0077|            Shift&lt;Key&gt;F9:       string(\033~5C001)\n\
+       0078|            Shift&lt;Key&gt;F10:      string(\033~5D001)\n\
+       0079|            Shift&lt;Key&gt;F11:      string(\033~87001)\n\
+       0080|            Shift&lt;Key&gt;F12:      string(\033~88001)\n\
+       0081|            Ctrl&lt;Key&gt;F7:        string(\033~64002)\n\
+       0082|            Ctrl&lt;Key&gt;F8:        string(\033~65002)\n\
+       0083|            Ctrl&lt;Key&gt;F9:        string(\033~66002)\n\
+       0084|            Ctrl&lt;Key&gt;F10:       string(\033~67002)\n\
+       0085|            Ctrl&lt;Key&gt;F11:       string(\033~89002)\n\
+       0086|            Ctrl&lt;Key&gt;F12:       string(\033~8a002)\n\
+       0087|            Shift&lt;Key&gt;Prior:    string(\033~49001)\n\
+       0088|            Shift&lt;Key&gt;Next:     string(\033~51001)\n\
+       0089|            Shift&lt;Key&gt;Insert:   string(\033~52001)\n\
+       0090|            Ctrl&lt;Key&gt;Insert:    string(\033~92002)\n\
+       0091|            Shift&lt;Key&gt;Delete:   string(\033~53001)\n\
+       0092|            Ctrl&lt;Key&gt;Delete:    string(\033~93002)\n\
+       0093|            Shift&lt;Key&gt;Up:       string(\033~48001)\n\
+       0094|            Shift&lt;Key&gt;Down:     string(\033~50001)\n\
+       0095|            Shift&lt;Key&gt;Left:     string(\033~4B001)\n\
+       0096|            Shift&lt;Key&gt;Right:    string(\033~4D001)\n\
+       0097|                 &lt;Key&gt;Home:     string(\033~47000)\n\
+       0098|            Shift&lt;Key&gt;End:      string(\033~4F001)\n\
+       0099|            Shift&lt;Key&gt;Escape:   string(\033~011B1)\n\
+       0100|            Shift&lt;Key&gt;BackSpace:string(\033~0E081)\n\
+       0101|            Shift&lt;Key&gt;Tab:      string(\033~0F001)\n\
+       0102|            Shift&lt;Key&gt;Return:   string(\033~1C0D1)\n\
+       0103|                 &lt;Key&gt;KP_Enter: string(\033~E00D0)\n\
+       0104|            Shift&lt;Key&gt;KP_Enter: string(\033~E00D1)\n\
+       0105|            Ctrl&lt;Key&gt;KP_Enter:  string(\033~E00A2)
+</SPAN></PRE>
+</BODY>
+</HTML>

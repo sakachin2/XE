@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>XCOpy/CP</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">   = {XCOpy|COPy} source target [/y[-]] [/r[-]] [/d] [/t] [/+] [/:]
+                            [/s] [/s-] [/n] [/b]
+                            [/L{-|[T]M-}]
+
+        source がディレクトリーで target が存在しない時 target
+        ディレクトリーが作成されます。target が存在するとき
+        /c オプションを指定すれば source が　target(存在していること)
+        内にディレクトリごとコピーされ、
+        /c オプションがなければメンバーコピーになります
+
+        ディレクトリーからファイルへのコピーは出来ません。
+        (ネィティブのCOPYとは異なります, COPY コマンドは XCOPY と考えます)。
+        target が読み取り専用のときコピー不可
+        隠しファイル,空サブディレクトリーも複写．
+        /r を指定しても target がシステム(S) あるいは隠しファイル(H)の
+        時 source が 同じ属性値を持っていない場合はコピーできない。
+        /+ でない時、元ファイルのタイムスタンプなどは複写されます。
+#ifdef UNX
+        これを望まない場合あるいは コピーはできるが権限エラーと
+        なる場合 -n オプションでファイル属性の複写を省略できます。
+#endif
+
+       /y   同名ファイルがある時置換，指定しないと同一ファイル名があると
+            複写は停止。
+       /y-  同名ファイルがある時置換せず処理を続行。
+       /r   /y に同じ
+       /r-  /y- に同じ
+       /b   TSOファイルで無変換転送をします。
+       /c   複写元がDirかWildCardのとき、複写元Dir名と同名のDirが
+            宛先Dir内になければ、複写元Dirを作成した後にMemberを複写する。
+            sourceがDirでtargetがワイルドカードのときワイルドカードに従った改名で
+            得られた宛先がなければ改名宛先を作成してsourceのメンバーを複写する(改名コピー)
+       /d   (OS/2では無効)ソースの日付が新しいファイルのみ対象とする。
+            <a href="HID00000020.htm">リモートファイル</a>のuploadでは時間設定できず、upload先の
+　　　　　　TimeStampは現時刻になるので注意が必要。
+       /+   同名ファイルがある時既存ファイルに連結複写
+       /:   ルートディレクトリー間複写の時に指定する事
+       /s   サブディレクトリーもコピー
+       /s-  サブディレクトリーを除いてコピー(省略値)
+
+#if defined(W32)||defined(UNX)
+       /t   リモート&lt;--&gt;ローカル コピーの時 Textモードでコピーする。
+            Textモードのとき LF(0x0a)&lt;--&gt;CRLF(0x0d0a)の変換が行われる。
+#endif
+
+#ifdef UNX
+       /n   ファイル属性の複写をバイパス。
+#endif
+
+        target が読み取り専用のときコピー不可
+        隠しファイル,空サブディレクトリーも複写．
+        /r を指定しても target がシステム(S) あるいは隠しファイル(H)の
+        時 source が 同じ属性値を持っていない場合はコピーできない。
+        source がディレクトリーで target が存在しない時 target
+        ディレクトリーが作成されます。ディレクトリーからファイルへの
+        コピーは出来ません。(ネィティブのCOPYとは異なります,
+        COPY コマンドは XCOPY と考えます)。
+        /+ でない時、元ファイルのタイムスタンプなどは複写されます。
+#ifdef UNX
+        これを望まない場合あるいは コピーはできるが権限エラーと
+        なる場合 -n オプションでファイル属性の複写を省略できます。
+#endif
+
+#if defined(W32)||defined(UNX)
+     /L{-}|[T]M-} :シンボリックリンクオプション(Windowsではジャンクション、マウントポイントも)
+            /L-   :シンボリックリンクは複写しない
+                   (Vista以降, シンボリックリンクの作成は管理者権限が必要。
+                   コマンドプロンプトを開く時、右クリック-&gt;&quot;管理者として実行&quot;を選ぶ)
+            /LT   :リンク先を複写
+            /LM-  :リンクエラー(相手無し、ループなど)メッセージを表示しない
+            /LTM- :/LT かつ /LM-
+#endif
+
+   (注)-OS/2, Window9x, DOS の XCOPY コマンドに比べて
+        (1).サブディレクトリーのタイムスタンプ/属性も複写
+            トップディレクトーについては target が 無くて /s 指定の時に
+            限ってタイムスタンプ/属性を複写する
+          (但しDOS版,WIN版では ディレクトリーのタイムスタンプは複写
+           されない)
+        (2).隠しファイル/システムファイルは無条件複写．
+       -COPy コマンドは表示/編集画面では (3).編集コマンドの <a href="HID00000069.htm">COPy</a>
+        コマンドになります
+</SPAN></PRE>
+</BODY>
+</HTML>

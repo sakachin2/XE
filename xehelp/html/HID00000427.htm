@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>制約</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> (5)制約。
+#ifdef XXE
+    . gxeでのマウス操作などについては xewxej.txt を参照してください。
+#else
+   . コンソールモードの場合マウスは利用できません。
+      X terminal emulator上でのマウス操作は<a href="HID00000411.htm">WXE版</a>と多少の違いがあります。
+      (全画面コンソールモードの場合マウスは利用できません。)
+      600msの間にボタンをDown/Releaseをした時にクリックとみなします。
+      600ms押したままで同じ位置で離すことを&quot;PUSH&quot;とします。
+      200msの間に再クリックするとダブルクリックとみなします。
+        600,200は コマンドラインパラメータ --Mで変更できます。
+        例。 xe --M10-3
+      &quot;Ctrlキー+&quot;は検知できるが&quot;Shiftキー+&quot;が検知できない。
+
+       .左ボタン  ：-カーソル(キャレット)位置設定。
+                    -ファイル内容画面での&quot;PUSH&quot;でカット＆ペーストの範囲指定。
+                     貼り付けはLinuxでは中ボタンを使用。
+       .右ボタン  ：使用しません。
+                    (XXE版ではフローティングメニューのポップアップ。)
+       .中ボタン  ：- カット＆ペーストの貼り付けに使用。
+                      貼り付けには挿入(Paste)と上書き(PasteOn)がある。
+                      中ボタンで挿入、Ctrl+中ボタンで上書き。
+                      挿入の場合、キャレットが左端の行番号欄にあるとき行挿入で
+                      テキストエリアにあるときブロック挿入(右シフト)になる
+                      (XXE版ではShift+左ボタンで挿入、Ctrl+左ボタンで上書き。)
+                      回転で上下スクロール。
+                      Shift+回転で左右スクロール、
+                      Ctrl+回転でファイルの最初/最後のページにジャンプ。
+                      スクロール 行/桁 数は 3 で固定です。
+       .左ボタンダブルクリック
+                  ：-全ての画面でタイトル行をダブルクリックすると保存終了する。
+                     &quot;Ctrlキー+&quot;で破棄終了する。
+                    -<a href="HID00000047.htm">メニュー画面</a>、<a href="HID00000052.htm">ファイル名選択画面</a>、<a href="HID00000054.htm">ディレテクトリーリスト</a>
+                     画面では行選択に使用可能。"Ctrlキー+"でファイル名選択と
+                     Dirリスト画面で、画面の表示/編集モードと反対のモードで
+                     ファイルを開く。
+                    (XXEでは"Shift+"ではなく"Ctrl+"を使用。)
+                    -<a href="HID00000053.htm">表示/編集</a>ではカーソルが行番号欄のときは行、ファイル内容
+                     欄ではワードをクリップボードにCopyする。
+
+    . コンソール起動の場合キーボード設定は最後のセッションの終了時に
+      戻すようにしていますが、何かのトラブルで戻らない場合は
+      /tmp/lockfile_ukbdlnxc(最初にxeが起動した時のキー割り当てを
+      保存したファイル)を削除してrebootしてください。
+
+    . 或いは &quot;loadkeys defkeymap&quot; で デフォルトに戻りますが、
+      defaultを使用しない設定になっている可能性もあるので、
+      リブート後の最初のloginの時に &quot;dumpkeys &gt; ~/dumpkeys.org&quot; 等
+      として設定を保存したほうがよいかもしれません。最初に戻る時は
+      &quot;loadkeys ~/dumpkeys.org&quot; とします。
+      設定はセッション単位ではなくシステムで 1つなので、マルチコンソール
+      の時は他のセッションに影響します。
+      特に kon が最後のセッションの時戻せないので注意してください。
+
+    . 日本語kon 上で動かす時 キー割り当て変更できません。
+      (pty (疑似端末)での key 設定の方法を知りません。)
+      kon を抜けて &quot;loadkeys xej106.map&quot; でキー割り当てを変更後
+      kon を起動してください。
+      或いは別のコンソール(Alt+Fn;n=1--6)で コンソールを切り替え
+      そこで xe を上げたままにしておいて戻ってkon上でxe をたち上げる。
+      この設定をしないとShift+PgDnなどXEとシェルの動作が矛盾して
+      表示が乱れることがあります。
+    . X モードの設定をしても尚、Linuxのバージョンによっていくつか
+    　利用できないキーがあります。
+      xe機能の省略時割り当てキーで使用できないのは以下の組み合わせです。
+
+      TuboLinux-V6.0
+        gnome-terminal.
+          S+F1--&gt;S+F12,S+Up/Down/Left/Rightm,C+Ins,C+Del,C+F7--&gt;C+F9
+      RedHat-v8.0
+        gnome-terminal.
+          S+F1--&gt;S+F12,S+Up/Down/Left/Rightm,C+Ins,C+Del,C+F7--&gt;C+F9
+      RedHat-v9
+        gnome-terminal.
+          S+BackSpace
+
+
+      v1.15からCtrl+文字キーも機能割り当てできるようになりました。
+      省略値は以下の割り当てです。
+          C_t=S_TAB,C_b=S_BS,C_x=S_ENTER,C_a=S_INS,
+          C_d=S_DEL,C_e=S_END,C_p=S_PGUP,C_n=S_PGDN,
+          C_u=S_UP,C_f=S_DOWN,C_l=S_LEFT,C_r=S_RIGHT
+      OPTコマンドで<a href="HID00000406.htm">OPT CCFUNC</a> ONと設定することにより利用できます。
+      これらのキーを使用すれば問題はいくつか解消されることになる。
+      RedHat9のgnome-terminal用のX-setup(xmodmap ファイル)も不要。
+#endif
+</SPAN></PRE>
+</BODY>
+</HTML>

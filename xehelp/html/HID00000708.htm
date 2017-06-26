@@ -1,0 +1,26 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text-html; ">
+<TITLE>kick xe from VisualC++</TITLE>
+<STYLE TYPE="text/css">a:hover{font-weight:bold;}</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    .kick xe from VisualC++.
+      /Lnn on xe <a href="HID00000210.htm">cmd line parameter</a> is to jump to the line nn just
+      after the file is opened.
+#ifdef WIN
+      This is for VC++ debugger to open by xe the file in question.
+      To use this function,setup VC++ as following.
+           Register xe as tool.(Tool-->Customize-->Tool tab)
+           Set argument like as "$(FilePath) /L$(CurLine)"
+           and also current dir as "$(CurDir)".
+           Shortcut key is registered by Keyboard tab selecting
+           UserTool_ of Category:Tool.
+      /L is also a parameter of <a href="HID00000277.htm">edit</a>/<a href="HID00000260.htm">browse</a> cmd.
+#endif
+
+</SPAN></DIV>
+</PRE>
+</BODY>
+</HTML>

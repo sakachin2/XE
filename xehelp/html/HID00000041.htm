@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>SPFファイル（行番号付80桁ファイル）</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    - SPF(行番号付き80桁)ファイル.
+     .<a href="HID00000040.htm">マージン</a>指定ファイルの特殊ケースとして行末(右マージン)に行番号を
+      保持する全行同じ長さのファイルをサポート.
+      <a href="HID00000039.htm">CID</a>ヘッダー行でoption=(N)を指定します.
+      メインフレームの80桁ファイルをPCでメインテナンスするのに便利です.
+      <a href="HID00000079.htm">EN</a>/<a href="HID00000062.htm">BN</a>/<a href="HID00000115.htm">SN</a> コマンドを使えばCIDヘッダーがないファイルを行番号付き
+      ファイルとして取り扱えます。
+     .8桁行番号はnnnnssuu形式.
+      nnnn:行番号 ss:枝番号 uu:更新レベル番号
+      全行中の最大更新レベル番号がファイルの更新レベル番号となり
+      更新行にはファイルの更新レベル番号+1が保存時にセットされます
+      画面左の行番号表示欄はファイルを開く時 7 に設定されnnnnsssで
+      表示されます
+     .ファイル読み込み時に行番号付きファイルとして正しくない行(行長,
+      行番号欄の数字,番号の順序の誤り)がある時は<a href="HID00000105.htm">RENum</a>コマンドで
+      正しい行番号付きファイルとすることができます.
+      (全行一定の長さに切り捨て/スペース追加され連番を振り直します.
+      枝番は0に設定)
+     .<a href="HID00000069.htm">COPY</a> コマンド/行コマンドによるファイルの複写では正しくない行が
+      あると右マージンの入力保護は解除されます.
+     .<a href="HID00000126.htm">VERコマンド</a>でファイル更新レベル番号の表示/変更ができます.
+      更新レベルが下げられると各行の更新レベル番号はコマンド入力の
+      更新レベル番号を最大(最小は1)とした相対値がセットされます.
+      更新レベルが上げた時は更新行のみに新しい更新レベル番号がセット
+      されます.
+      VERコマンドはUNDO対象となります.
+     .タブは保存時にはすべてスペースに置換されます.
+     .行番号欄とは別にCIDも左マージンに付与することもできます.
+     .<a href="HID00000028.htm">COBOL</a>ファイルは特殊な行番号付きファイルです。
+      COL1-6が行番号でCOL73-80を行番号とするか(option=(n)),
+      CID設定にするかはオプションです。
+      COL1-6をすべてスペースとするオプションもあります。
+      COBOLの時RENUM,NUM CLEAR,インデンテーション、表示開始桁で考慮
+      されます。
+</SPAN></PRE>
+</BODY>
+</HTML>

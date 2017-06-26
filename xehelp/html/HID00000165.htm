@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>c(Copy)</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">      c (Copy  ):ファイルまたはディレクトリーの複写
+                改名欄に 複写先とオプションを入力する。
+                複写元がディレクトリーで複写先が存在しないとき
+                複写先指定のディレクトリーが作成され、存在するときは
+                /cオプション指定があれば複写先ディレクトリー(存在していること)
+                に複写元ディレクトリを作成して複写、/c 指定がなければ
+                複写元ディレクトリーのメンバーを複写先デレクトリーに複写。
+
+                ワイルドカードマスク指定で開いたディレクトリーは
+                ワイルドカードに該当するメンバーの複写になります。
+                複写先がワイルドカードのときその親ディレクトリーに
+                複写元のディレクトリーのメンバーがワイルドカードに
+                したがって改名され複写される。
+
+                省略値で /s は付加されるのでサブディレクトリーを
+                除く場合は /s- を指定すること
+                既存ファイルを上書き(/r,/y)などのオプションは XCOpy と
+                同様です。宛先ファイル名の後ろにつけてください。
+                /+ でない時、元ファイルのタイムスタンプなどは複写されます。
+#ifdef UNX
+                これを望まない場合あるいは コピーはできるが権限エラーと
+                なる場合 -n オプションでファイル属性の複写を省略できます。
+#endif
+</SPAN></PRE>
+</BODY>
+</HTML>

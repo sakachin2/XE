@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>Profile-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">
+   .Profile.
+
+     Following status is saved to profile record and used at next open.||+124LI~,
+        BNDS,CAPS,TABCLEAR,<A href="HID00000037.htm">SPF</A>,<A href="HID00000226.htm">COBOL</A>,P0/P1(margin protection),Fxx-mm(FixedLengthRecord),
+        FixLengthRecord mode(/Mr, /Flrecl), VariableLengthRecord mode(/Mv, /Fvfmt),
+        SyntaxHighlight options(LangType,OPEN,ENTER).       ||+124LI~,
+     Profile is saved on a profile record on <A href="HID00000236.htm">work-dir</A>(::profile) corresponding to each file.
+        Profile record file name is derived from the file name replacing &quot;\&quot;(/),&quot;:&quot; to
+        &quot;_&quot;, &quot; &quot; to &quot;=&quot; and &quot;.&quot; to &quot;~&quot;.
+#ifdef GCC
+        GCC version write all recotd into a file profile.G because DOS is 8.3 filename.
+#endif
+#ifdef OS2
+        OS2 version write all recotd into a file profile.2 if work-dir is not HPFS.
+#endif
+        Profile record for the directory or the extension name is written by PROfile cmd,
+        and used as default record for the file in the directory or the file with same
+        extension name. The directory record at first then extension record is applyed.
+     Profile record is written by the following cmd.
+        <A href="HID00000740.htm">BNDS</A>:
+             BND [ [* | 0 | col1] [* | 0 | col2] | RESET ] [EXT]
+                RESET:reset BNDS of current file,the write to profile record.
+                EXT  :write BNDS profile to profile record of extension type.
+             BNDS cmd is accepted on dir-list panel, and write profile as default
+             of the file in the dir/
+             Now,INI cmd dose not write BNDS setting to ini file.
+             But Bounds statement of INI file is yet effective.
+        <A href="HID00000728.htm">CAPS</A>:
+             CAP [on|off|RESET] [default|tso|cmd|EXT]
+                RESET:Set CAPS OFF, the write to profile record.
+                EXT  :write CAPS profile to profile record of extension type.
+             CAPS cmd is accepted on dir-list panel, and write profile as default
+             of the file in the dir.
+        <A href="HID_SYNH_E.htm">SyntaxHighlight</A> options:
+             <A href="HID_SYNCMD_E.htm">SYN</A> [all|reset|enter|entera|on [lang-type]|off]
+
+               ENTER/ENTERA option(syntax re-evaluation by Enter key),
+               ON/OFF at open the file and lang-type is written to the profile record.
+             SYN cmd is not accepted on the dir-list panel.
+             Use PROfile cmd to write dir/ext default.
+             OPEN,OPEN_EXT,_EXT option on .cfg file can be used
+             to set default for the directory or extension.
+
+#ifdef UTF8SUPP
+        Encoding of file:
+             Edit/Browse/Select [CPU8|CPLC|CPAS]
+           CPxx option to directory is default for the file in the directory.
+#endif
+
+     <A href="HID_PROFCMD_E.htm">PROfile</A> cmd is for displaying or writing the profile record.
+
+        For ex,
+           To set SPF(80 byte fixed length width line number on col 73-80) profile to dir1,
+           open a file in the dir by &quot;EN dir1\samp1&quot; then enter &quot;PRO path save&quot;.
+           The &quot;E dir1\samp2&quot; is same as &quot;EN dir1\samp2&quot;.
+           This is applyed also to Select line cmd on dir-list panel.
+           To set COBOL(80 byte fixed length with COBOL line number on col.1-6) profile to
+           all file with extension name &quot;cob&quot;, open a file with extension &quot;cob(&quot;EC samp3.cob&quot;)
+           then enter &quot;PRO ext save&quot;.
+           To confirm current profile, use &quot;PROfile&quot;.
+           To confirm contents of profile record, use &quot;PRO {*|path|ext}&quot;.
+
+     To clear directry profile, use &quot;PROfile reset&quot; on the dirlist screen.
+
+     To ignore profile record.
+             SPF related optios are ignored for <A href="HID00000277.htm">Ex cmd</A> such as Et,ec,en....
+             Other options are overrided by following cmd option specification.
+               NONUM : Ignore SPF related options.
+               Fxx-mm: All lines are fixed length and margin width.
+               NOCAP : CAPS off
+               NOTC  : TABCLEAR off
+               P{0|1}: right margin protection.
+
+#ifdef UTF8SUPP
+             New dir-list line cmd is added to specify codepage option explicitly,
+             &quot;<A href="HID_DLCLC_E.htm">[</A>&quot; (CPLC)  and  &quot;<A href="HID_DLCU8_E.htm">]</A>&quot; (CPU8).
+#endif
+
+      <A href="HID00000237.htm">CID header</A> line options.
+          n,cob and cobk option on the CID header line is effective
+          only when it is addtional to the profile record.
+          For ex, option=(cob) on CID header is effective when profile is NUMSTD.
+          But option=(n) dose not reset COB option by pthe profile record.
+
+
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

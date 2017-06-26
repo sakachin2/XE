@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>(A-2)Color</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">   **************
+  * 0.0 Color  *
+  **************
+
+          0        1         2         3         4         5           8
+          12345678901234567890123456789012345678901234567890....34567890
+     1    OPTION - 1 ---- COLOR ----------------------------....----Rep
+     2    ===&gt;
+     3
+     4    *Palette number assign (0 to 15) ****************....********
+     5       Part of screen  palette no.             sample
+     6                       FG / BG (curr.,default)
+     7       Title-Line      __ / __ (15/ 1, 15/ 1 ) ------- MENU -------
+     8       Panel-Frame     __ / __ ( 7/ 0,  7/ 0 ) ===&gt;command line etc
+     9       Browse-Lineno   __ / __ ( 2/ 0,  2/ 0 ) 0001000| Browse  scr
+    10       Browse-File     __ / __ ( 7/ 0,  7/ 0 )
+    11       Edit-Lineno     __ / __ ( 2/ 0,  2/ 0 ) 0001000| Edit    scr
+    12       Edit-File       __ / __ (14/ 0, 14/ 0 )
+    13       DirList-Linecmd __ / __ (14/ 0, 14/ 0 ) 003|||. DIRLIST  EXE
+    14       DirList-Lineno  __ / __ ( 2/ 0,  2/ 0 )
+    15       DirList-File    __ / __ ( 7/ 0,  7/ 0 )
+    16       CmdOut-Lineno   __ / __ ( 2/ 0,  2/ 0 ) 19:55 ===&gt;&gt; dir
+    17       CmdOut-Result   __ / __ (15/ 8, 15/ 8 )  Volume in drive G h
+    18
+    19    *Palette color (0 to 3 for R G B each). MAXCOLOR=16. *********
+    20       Palette  --&gt;  0   1   2   3   4   5   6   7   8.... 14  15
+    21       color    --&gt;
+    22       RGB value--&gt;000 ___ ___ ___ ___ ___ ___ ___ ___....___ __
+    23       current  --&gt;000 002 020 022 200 202 210 222 111....220 333
+    24       standard --&gt;000 002 020 022 200 202 210 222 111....331 333
+
+#ifdef AIX
+        AIX version is mono-color,colors is not set.
+#endif
+
+       row 1     :Header,message display line
+       row 2     :Command input line
+       row 4-17  :Palette number assign part
+       row 7-17  :palette number input line
+                 -Assign a palette number from 0 to 15 to each part
+                  of panel.
+                 -Duplication is allowed.
+                 -Color actualy displayed by the palette-no is changed
+                  by RGB color level specified in &quot;Palette color&quot; part.
+                 -Screen part ID list.
+                  Specify FG and BG for each part,FG is for color of
+                  character,BG is for background color.
+                  .Title-Line     :title line(1st line,1st line of
+                                   active if screen split)
+                  .Panel-Frame    :other than else.
+                  .Browse-Lineno  :line-no field of browse screen.
+                  .Browse-File    :file contents field of browse screen
+                  .Edit-Lineno    :line-no field of edit screen.
+                  .Edit-File      :file contents field of edit screen
+                  .DirList-Linecmd:line command input field of dir list
+                                   screen(It is also used for input
+                                   directive of this panel)
+                  .DirList-Lineno :line-no field of dir list screen
+                  .DirList-File   :file list field of dir list screen
+                  .CmdOut-Lineno  :line-no field and command echo line of
+                                   command result edit screen
+                  .CmdOut-Result  :command output lines of cmd result
+                                   edit screen
+           col 20-21 :foreground color input field
+           col 25-26 :background color input field
+#ifdef LNX
+                      PaletteNo&gt;=8 may not be used for background color.
+#endif
+           col 29-33 :palette number when opened this panel.
+           col 36-40 :default value.
+           col 43-   :sample display lines.
+                      Change takes effect at first when Execute key is
+                      entered after input palette number.
+                      F3(End) propagate the change,F1(Cancel) reset
+                      the change and restore the value before panel open
+                      (it is diplayed on column 29-33).
+       row 19-24 :Palette color part.
+#ifdef UNX
+    #ifdef LNX
+       row 21    :0-7:color is displayed on background.
+                 :8-15:color is displayed on foreground.
+    #endif
+#else
+       row 21    :color display line for all palette number( 0 to 15).
+#endif
+       row 22    :Palette color RGB level input fields.
+                 -3 digit(R(ed),G(reen),B(lue) from left) color level,
+                  4 level(0 to 3) for each color.
+                  Color register value for each level is
+                  0:00H, 1:15H, 2:2aH, 3:3fH.
+                 -RGB=000(Black) is fixed to palette number 0,
+                  it is not allowed to input to palette number 0 and
+                  to assign RGB=000 to palette number 1 to 15.
+                 -Pressing execute key after input RGB level take effect
+                  imediately not only to color display on row 21 but also
+                  to all panel.
+                 -&quot;Next Value&quot;(Shift + Down-arrow)/&quot;Prev Value&quot;(Shift +
+                  Up-arrow) take same effect as increasing/decreasing RGB
+                  level then pressing Execute key.
+                 -F3(End) leave change,F1(Cancel) restore RGB value
+                  before opened this panel(values on row 23).
+       row 23    :RGB level value at opened this panel.
+       row 24    :default RGB level.
+#ifdef UNX
+   (note).Delete file xe_save_ on work directory if screen had become to
+          hard to see. It reset to default color.
+          gxe use xe_save_.xxe as save file.
+#else
+   (note).Delete file XE!SAVE! on work directory if screen had become to
+          hard to see.It reset to default color.
+#endif
+          Default color of each palette-no is as following.
+           palette  color-no color     : palette  color-no color
+               0     0(000)  black     :     8    56(111)  grey
+               1     1(002)  blue      :     9    57(113)  pale blue
+               2     2(020)  green     :    10    58(131)  pale green
+               3     3(022)  light blue:    11    59(133)  pale light blue
+               4     4(200)  red       :    12    60(311)  pale red
+               5     5(202)  purple    :    13    61(313)  pale purple
+               6    20(210)  brown     :    14    62(331)  pale yellow
+               7     7(222)  white     :    15    63(333)  brightend white
+         .Light blue is used by MKK(Japanese Front End Processor of PCDOS),
+          it is hard to see text if you use that as FG color.
+         .Palette color change is not effective under OS/2 window mode,
+          Setting color RGB level cause different color displaying
+          between full-screen-mode and window-mode.
+          Palette color change is not available for also WIN version.
+         .RGB level of each color register number is as following.
+          (4 level for each RGB. 0:00H, 1:15H, 2:2aH, 3:3fH)
+          color-no                    RGB level
+          00-03: 000(black)    002(blue)    020(green)      022(l-blue)
+          04-07: 200(red)      202(purple)  220(yellow)     222(white)
+          08-11: 001(d-blue)   003(b-blue)  021             023(greenblue)
+          12-15: 201           203          221             223
+          16-19: 010(d-green)  012          030(b-green)    032(sky blue)
+          20-23: 210(brown)    212          230             232
+          24-27: 011(d-l-blue) 013          031(bluegreen)  033(b-l-blue)
+          28-31: 211           213          231             233
+          32-35: 100(d-red)    102          120(yellowgreen)122
+          36-39: 300(b-red)    302(d-pink)  320(gold)       322
+          40-43: 101(d-purple) 103(violet)  121             123
+          44-47: 301(purplered)303(b-purple)321             323
+          48-51: 110(d-yellow) 112          130             132
+          52-55: 310           312          330(b-yellow)   332
+          56-59: 111(grey)     113(p-blue)  131(p-green)    133(p-l-blue)
+          60-63: 311(p-red)    313(p-purple)331(p-yellow)   333(b-white)
+                   p-:pale, d-:dark, l-:light, b-:brightened
+</SPAN></PRE>
+</BODY>
+</HTML>

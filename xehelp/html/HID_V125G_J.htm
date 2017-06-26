@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>V125G-J</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">*** v125G 2010/07/25 ***
+.(BUG)
+   -EDIt コマンドのパラメータエラーのときしばしば &quot;Invalid name format&quot;のエラーMsgがでる。
+   -Alt+&quot;[&quot; と Alt+&quot;]&quot; (カーソル位置のワード探索) で ワードの前後のTAB 文字(0x09) を区切り文字と認識しない。
+   -バイナリモード のとき TAB offモード でも DBCSが代替文字表示される。 
+   -grep コマンドが 式に &quot;&amp;&quot; を 含むとき Hung する。
+   -&quot;xe *&quot;(前回最後に閉じたファイルを開く)コマンドが /Mx オプションを指定していたとき失敗する。
+   -Mxオプション指定のCREate/REPlace/SAVe コマンドが失敗する。
+   -(Linux)環境変数 LANG の UTF8 判定の誤り。（utf-8 以外に utf8 も含める必要がある)
+   -制御文字(&lt;0x20)が全て印刷不能表示される。
+   -Ligature:ONか結合文字の結合表示モードのとき、行挿入で縦HEX表示行更新されない。
+   -EBCDICファイルサポート。
+    .制御文字の割合によるバイナリーファイル判定の誤り。
+    .(日本語環境)cfg ファイルで &quot;CONVERTER=0&quot; を指定すると CP47 が使用されて日本語返還できない。
+    .(DBCS環境)外部コンバーターがDBCSのSUBCHAR(代替文字)を持たない時locale-&gt;EBCDIC変換で
+     DBCS が抜けてしまう。
+    .(DBCS環境)UTF8ファイルをEBCDICファイル内にCOPyコマンドで複写すると表示が文字化けする。
+    .(LinuxConsole版)リガチャーONのとき印刷不能文字が 0xff(y-Umlaut) で表示される。
+    .ini ファイルの &quot;Valid_Ctrl_char&quot; オプションが効かなくなっていた。
+     また 0x1a は 省略値:有効に変更した。xeはバイナリーモードのAPIを使うので問題はないが
+     0x1a は type コマンドなどではEOF 扱いになるので注意してください。
+
+.<A href="HID_EBCF_J.htm">EBCDICファイルサポート</A>の追加。
+   -EB(バイナリ編集)コマンドで CPLC/CPEB オプション指定可能。バイナリーファイルのEBCDIC変換表示の指定
+   -cfgファイルの改行コードの変換指定はREPlaceコマンドなどで変換出力
+    するときに適用されますが、編集表示ではファイルは省略時解釈で
+    0x15 を 行末文字として行分割されます。
+    行末文字とレコードモードのLRECL指定を以下のコマンドでサポート。
+    LRECLの変更も可能。
+      EDIt/BROwse, END, CREate/REPlace, SAVe, COPy/MOVe。
+    但しSAVeはファイル名指定のときのみ指定可能
+    COPy/MOVe コマンドの Fxx は コピー元のLRECLの指定になります。
+    尚 レコードモードのON/OFF, LRECL はプロファイルに保存しますが
+    行末文字の指定は省略値以外は毎回指定が必要です。
+
+        /M{t|p|u|m|e|r} /Fnn[-mm]
+          e:EBCDIC-NL(0x15), r;RecordMode, nn:LRECL
+    例。
+        e ebcf1 CPEB                        : EBCDIC ファイルテキストモード(行末文字=0x15)
+        e ebcf1 CPEB  /mp                   : EBCDIC ファイルテキストモード(行末文字=0x0d0a)
+        e ebcf1 CPEB  /mr /F72              : EBCDIC ファイル固定長レコードモード(LRECL=72)
+                                              LRECLの省略地は80.
+        end /mu                             : 行末文字を 0x0a に変更。
+        end /mr /f80                        : LRECL=80の固定長ファイル(行末文字無し)として保存。
+        s ebcf1 CPEB /mr /F80               : (PC ファイルから) EBCDIC ファイルに変換。
+                                              出力はLRECL=80の固定長ファイル。
+        rep u8f1 nx CPU8 /mp                : (固定長EBCDICファイルから) UTF8 ファイルに変換。
+                                              各行に行末文字0x0d0a追加されます。
+   -xcv ツール。
+    行末文字の指定オプションの追加
+        /mASCEOL: EBCDIC ファイルの行末コードが Windows:0x0d0a, Linux 0x0a。省略値:0x15。
+        /mSETEOL: 出力各行にEOL-IDを追加出力。x2B と レコードモード B2x用。
+    尚、固定長LRECL は /F オプションで指定します
+        /F[nn][N]:EBCDIC ファイルが固定長。nn:LRECL(省略値=80)。
+                  B2x(入力) 又は x2B(出力) EBCDIC ファイルのLRECL。
+                  N: 行末8桁が行番号欄。SO/SI挿入で行長を調整する。
+                     &quot;N&quot; は m2b でのみ有効。
+    例。
+     xcv /cm2b ms932 ibm939.txt  /mf:sjisebc.map /F80 /Mseteol /Masceol
+         (locale--&gt;ebcdic, output LRECL=80, set ASCII-EOL-ID)
+     xcv /cm2b ms932 ibm939.txt /mf:sjisebc.map  /Masceol /Mseteol
+         (locale--&gt;ebcdic, output line with appened ASCII-EOL-ID)
+     xcv /cb2m ebcf1 ascf2 /mf:sjisebc.map /F80 /Mseteol
+         (locale&lt;--ebcdic, input LRECL=80, output line with appened ASCII-EOL-ID)
+     xcv /cb2m ebcf1 ascf2 /mf:sjisebc.map /Masceol
+         (locale&lt;--ebcdic, input line with ASCII-EOL-ID
+.その他
+    -Linux 印刷。
+       .(gxe)印刷ダイアロゴのプリンターリストはCUPSのプリンターを表示。
+             用紙マージンもCUPSから得る。
+       .(gxp)CUPSのプリンター指定を受け付ける。
+             -q パラメータは部分指定でもよい。最初に一致したプリンターが選択される。
+             例。 xprint file1 -qEpson-LP1400
+    -日本語環境のwxe/gxeの印刷不能文字の省略値の変更。
+     gxeでは0x01--&gt;0x1f は全て印刷可能
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

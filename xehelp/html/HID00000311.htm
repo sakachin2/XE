@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>SAVe/S</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    =  Save file
+
+        SAVe    [file-name] [/M{T|P|U|M|E|R|V}] [-x | -nx] [-NB] [-F{n[-m]|vfmt}]
+                [-CPU8|-CPLC|-CPEB[:codepage]] [IE] [-S{r|i}d}]
+
+          file-name : wild card avail to rename.
+            (Note) When save to itself, file-name parameter is not requited.
+                   In that case specify option prefix &quot;-&quot; is required for all option.
+
+          /M     :Save with the specified EndOfLine char.
+                   T:Linux:0a, Windows:0d0a, single 0a is replaced by 0d0a on Windows.
+                   P:0d0a(PC file)
+                   U:0a  (Unix file)
+                   M:0d  (Mac file)
+                   E:15  (<A href="HID_EBCF_E.htm">EBCDIC file</A>)
+                   R:<A href="HID_RECORD_E.htm">Fixed Length Record mode</A>.  Available only when file-name is specified.
+                     Specify LRECL by /Fn[-m] option.
+                   V:<A href="HID_RECFMV_E.htm">Variable Length Record mode</A>. Specify record header type by /Fvfmt.
+          -x     :save excluded lines only
+          -nx    :save not excluded lines only
+          -NB    :skip temporarily backup at file save.
+                  To protect from file corruption by ABEND at file write,
+                  original file(local file except on floppy drive only) is copied
+                  on the directory just before writeback,then deleted after
+                  write completed. Specify NB if you worry about disk space
+                  or performance.
+          -BK    :deny NB option of Edit cmd.
+          -Fn[-m]:<A href="HID_RECORD_E.htm">record mode</A> record size and margin.
+                  effective only when file-name is specified.
+                  Use to change to record moed or change record size.
+          -Fvfmt :VariableLengthRecord file record header formt. See Edit command.
+
+#ifdef UTF8SUPP
+            <A href="HID_UTF8_E.htm">CPU8</A>/CPLC:specifies output file encoding.
+             /<A href="HID_EBCF_E.htm">CPEB</A>    translation will be done, then write back.
+                      You can other codepage than specified on cfg file using CPEB:codepage format.
+
+            IE       : ignore translation error, error code is replaced by &quot;?&quot;.
+            -S{r|i|d}: SO/SI option
+                       r : When current screen is EBCDIC file and cmd option is CPLC/CPU8,
+                           replace SO/SI to a space.
+                           When current screen is not EBCDIC and cmd option is CPEB,
+                           replace both side of space, if available, to SO/SI.
+                       i : Inserte SO/SI when translation to EBCDIC.
+                       d : Delete SO/SI when translation from EBCDIC.
+
+#endif
+
+            -Without terminating edit screen,write all line to the file.
+            -Use file-name operand when it cannnot be saved because disk
+             full etc. Once saved to another dir,then end edit screen
+             by <a href="HID00000261.htm">CANcel</a>. Copy back to original file after disk clean up.
+            -It may be optionally required confirmation when existing
+             filename is specified.
+             (<a href="HID00000268.htm">CREate</a>/<a href="HID00000305.htm">REPlace</a> need line range specification by Line
+              commnad <a href="HID00000342.htm">c(Copy)</a> or <a href="HID00000348.htm">m(Move)</a>,but SAVe write whole lines of the file)
+            -In BROWSE mode filename operand required.
+            -all lines are processed,in the other hand CRE/REP process
+             specified range.
+</SPAN></PRE>
+</BODY>
+</HTML>

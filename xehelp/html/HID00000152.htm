@@ -1,0 +1,478 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>p(Paste)</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"></SPAN><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = p 行コマンド.
+        .m(Move),c(Copy)行コマンドと組み合わせて使用
+        .外部ファイルの複写(COPy,MOVe)コマンドの宛先先指定としては使用できません。
+        .Insertキーで文字列上書き/挿入モードをスイッチします
+        .宛先指定行でカーソーを行データ上におくとその位置からの上書き/挿入になります
+        .xn,b,sの扱いは以下の通りです。
+         pn     : 複写もとの全行をn回上書き/挿入する
+         pn.s   : 複写もとの全行をs行おきに上書き/挿入をn回繰り返す
+         p,b.s  : 複写元からb行づつ取り出しs行おきに上書き/挿入を
+                  複写元がなくなるまで繰り返す。
+         pn,b.s : 複写元からb行づつ取り出しs行おきに上書き/挿入をn回繰り返す
+                  複写元がなくなれば繰り返しは停止
+        .x[n][,b][.s]形式では複写元の行が尽きれば複写は終わりですが
+         xx-xx[,b][.s]形式では複写元の最初に戻って宛先の範囲の全行に
+         複写します。(xx-xxでnは指定できません）
+        .xx-xxnは形式はありません
+
+      (1) x[n]形式
+
+        .カーソルがファイル内容エリア以外にあるとき
+            cc     |    a
+            0002000|   bbb
+            0003000|  ccccc
+            cc     | ddddddd
+            0005000|
+            p      |AAAAAAAAAAAA
+            0007000|BBBBBBBBBBBB
+            0008000|CCCCCCCCCCCC
+            0009000|DDDDDDDDDDDD
+            0010000|EEEEEEEEEEEE
+        ===&gt;
+
+          上書きモードのときの結果
+
+            0001000|    a
+            0002000|   bbb
+            0003000|  ccccc
+            0004000| ddddddd
+            0005000|
+            0006000*    aAAAAAAA
+            0007000*   bbbBBBBBB
+            0008000*  cccccCCCCC
+            0009000* dddddddDDDD
+            0010000|EEEEEEEEEEEE
+
+          挿入モードのときの結果
+
+            0001000|    a
+            0002000|   bbb
+            0003000|  ccccc
+            0004000| ddddddd
+            0005000|
+            0006000*    aAAAAAAAAAAAA
+            0007000*   bbbBBBBBBBBBBBB
+            0008000*  cccccCCCCCCCCCCCC
+            0009000* dddddddDDDDDDDDDDDD
+            0010000|EEEEEEEEEEEE
+
+        .カーソルがファイル内容エリア内にあるとき
+
+            cc     |    a
+            0002000|   bbb
+            0003000|  ccccc
+            cc     | ddddddd
+            0005000|
+            0006000|AAAAAAAAAAAA
+            p      |BBBBBBBBxBBB
+            0008000|CCCCCCCCCCCC
+            0009000|DDDDDDDDDDDD
+            0010000|EEEEEEEEEEEE
+        ===&gt;
+
+          上書きモードのときの結果
+
+            0001000|    a
+            0002000|   bbb
+            0003000|  ccccc
+            0004000| ddddddd
+            0005000|
+            0006000|AAAAAAAAAAAA
+            0007000*BBBBBBBB    a
+            0008000*CCCCCCCC   bbb
+            0009000*DDDDDDDD  ccccc
+            0010000*EEEEEEEE ddddddd
+            0011000|FFFFFFFFFFFF
+
+          挿入モードのときの結果
+
+            0001000|    a
+            0002000|   bbb
+            0003000|  ccccc
+            0004000| ddddddd
+            0005000|
+            0006000|AAAAAAAAAAAA
+            0007000*BBBBBBBB    axBBB
+            0008000*CCCCCCCC   bbbCCCC
+            0009000*DDDDDDDD  cccccDDDD
+            0010000*EEEEEEEE dddddddEEEE
+            0011000|FFFFFFFFFFFF
+
+      (以降は上書きモード、カーソルは行番号欄にある場合の結果のみを例示します）
+
+        .繰り返し数指定のケース
+
+            cc     |    a
+            0002000|   bbb
+            cc     |  ccccc
+            0004000|
+            p3     |AAAAAAAAAAAA
+            0006000|BBBBBBBBBBBB
+            0007000|CCCCCCCCCCCC
+            0008000|DDDDDDDDDDDD
+            0009000|EEEEEEEEEEEE
+            0010000|FFFFFFFFFFFF
+            0011000|GGGGGGGGGGGG
+            0012000|HHHHHHHHHHHH
+            *******|********** END OF FILE ************************
+        ===&gt;
+            0001000|    a
+            0002000|   bbb
+            0003000|  ccccc
+            0004000|
+      r1    0005000*    aAAAAAAA
+            0006000*   bbbBBBBBB
+            0007000*  cccccCCCCC
+      r2    0008000*    aDDDDDDD
+            0009000*   bbbEEEEEE
+            0010000*  cccccFFFFF
+      r3    0011000*    aGGGGGGG
+            0012000*   bbbHHHHHH
+            *******|********** END OF FILE ************************
+
+      (2) xn.s形式
+
+        .複写元全体を２行おきに上書き３回複写する
+
+            cc     | 1
+            0002000| 2
+            0003000| 3
+            cc     | 4
+            0005000| 5
+            0006000| 6
+            0007000| 7
+            0008000| 8
+            0009000| 9
+            0010000| 0
+            p3.2   |AAAAAAAAAAAA
+            0012000|BBBBBBBBBBBB
+            0013000|CCCCCCCCCCCC
+            0014000|DDDDDDDDDDDD
+            0015000|EEEEEEEEEEEE
+            0016000|FFFFFFFFFFFF
+            0017000|GGGGGGGGGGGG
+            0018000|HHHHHHHHHHHH
+            0019000|IIIIIIIIIIII
+            0020000|JJJJJJJJJJJJ
+            0021000|KKKKKKKKKKKK
+            0022000|LLLLLLLLLLLL
+            0023000|MMMMMMMMMMMM
+            0024000|NNNNNNNNNNNN
+            0025000|OOOOOOOOOOOO
+            0026000|PPPPPPPPPPPP
+            0027000|QQQQQQQQQQQQ
+        ===&gt;
+            0001000| 1
+            0002000| 2
+            0003000| 3
+            0004000| 4
+            0005000| 5
+            0006000| 6
+            0007000| 7
+            0008000| 8
+            0009000| 9
+            0010000| 0
+      r1    0011000* 1AAAAAAAAAA
+            0012000* 2BBBBBBBBBB
+            0013000* 3CCCCCCCCCC
+            0014000* 4DDDDDDDDDD
+         s1 0015000|EEEEEEEEEEEE
+         s2 0016000|FFFFFFFFFFFF
+      r2    0017000* 1GGGGGGGGGG
+            0018000* 2HHHHHHHHHH
+            0019000* 3IIIIIIIIII
+            0020000* 4JJJJJJJJJJ
+         s1 0021000|KKKKKKKKKKKK
+         s2 0022000|LLLLLLLLLLLL
+      r3    0023000* 1MMMMMMMMMM
+            0024000* 2NNNNNNNNNN
+            0025000* 3OOOOOOOOOO
+            0026000* 4PPPPPPPPPP
+            0027000|QQQQQQQQQQQQ
+
+      (3) x,b.s形式
+
+        .複写元から複写元が尽きるまで３行づつ取り出し２行おきに上書き複写する
+
+            cc     | 1
+            0002000| 2
+            0003000| 3
+            0004000| 4
+            0005000| 5
+            0006000| 6
+            0007000| 7
+            0008000| 8
+            0009000| 9
+            cc     | 0
+            p,3.2  |AAAAAAAAAAAA
+            0012000|BBBBBBBBBBBB
+            0013000|CCCCCCCCCCCC
+            0014000|DDDDDDDDDDDD
+            0015000|EEEEEEEEEEEE
+            0016000|FFFFFFFFFFFF
+            0017000|GGGGGGGGGGGG
+            0018000|HHHHHHHHHHHH
+            0019000|IIIIIIIIIIII
+            0020000|JJJJJJJJJJJJ
+            0021000|KKKKKKKKKKKK
+            0022000|LLLLLLLLLLLL
+            0023000|MMMMMMMMMMMM
+            0024000|NNNNNNNNNNNN
+            0025000|OOOOOOOOOOOO
+            0026000|PPPPPPPPPPPP
+            0027000|QQQQQQQQQQQQ
+        ===&gt;
+            0001000| 1
+            0002000| 2
+            0003000| 3
+            0004000| 4
+            0005000| 5
+            0006000| 6
+            0007000| 7
+            0008000| 8
+            0009000| 9
+            0010000| 0
+      rr b1 0011000* 1AAAAAAAAAA
+         b2 0012000* 2BBBBBBBBBB
+         b3 0013000* 3CCCCCCCCCC
+         s1 0014000|DDDDDDDDDDDD
+         s2 0015000|EEEEEEEEEEEE
+      rr b1 0016000* 4FFFFFFFFFF
+         b2 0017000* 5GGGGGGGGGG
+         b3 0018000* 6HHHHHHHHHH
+         s1 0019000|IIIIIIIIIIII
+         s2 0020000|JJJJJJJJJJJJ
+      rr b1 0021000* 7KKKKKKKKKK
+         b2 0022000* 8LLLLLLLLLL
+         b3 0023000* 9MMMMMMMMMM
+         s1 0024000|NNNNNNNNNNNN
+         s2 0025000|OOOOOOOOOOOO
+      rr b1 0026000* 0PPPPPPPPPP
+            0027000|QQQQQQQQQQQQ
+
+      (4) xn,b.s形式
+
+        .複写元から２行づつ取り出し１行おきに３回上書き複写する
+
+            cc     | 1
+            0002000| 2
+            0003000| 3
+            0004000| 4
+            0005000| 5
+            0006000| 6
+            0007000| 7
+            0008000| 8
+            0009000| 9
+            cc     | 0
+            p3,2.1 |AAAAAAAAAAAA
+            0012000|BBBBBBBBBBBB
+            0013000|CCCCCCCCCCCC
+            0014000|DDDDDDDDDDDD
+            0015000|EEEEEEEEEEEE
+            0016000|FFFFFFFFFFFF
+            0017000|GGGGGGGGGGGG
+            0018000|HHHHHHHHHHHH
+            0019000|IIIIIIIIIIII
+            0020000|JJJJJJJJJJJJ
+            0021000|KKKKKKKKKKKK
+            0022000|LLLLLLLLLLLL
+            0023000|MMMMMMMMMMMM
+            0024000|NNNNNNNNNNNN
+            0025000|OOOOOOOOOOOO
+            0026000|PPPPPPPPPPPP
+            0027000|QQQQQQQQQQQQ
+        ===&gt;
+            0001000| 1
+            0002000| 2
+            0003000| 3
+            0004000| 4
+            0005000| 5
+            0006000| 6
+            0007000| 7
+            0008000| 8
+            0009000| 9
+            0010000| 0
+      r1 b1 0011000* 1AAAAAAAAAA
+         b2 0012000* 2BBBBBBBBBB
+         s1 0013000|CCCCCCCCCCCC
+      r2 b1 0014000* 3DDDDDDDDDD
+         b2 0015000* 4EEEEEEEEEE
+         s1 0016000|FFFFFFFFFFFF
+      r3 b1 0017000* 5GGGGGGGGGG
+         b2 0018000* 6HHHHHHHHHH
+            0019000|IIIIIIIIIIII
+            0020000|JJJJJJJJJJJJ
+
+      (5) xx-xx形式
+
+        .宛先の範囲の全行に複写するまで複写元を繰り返し使用する
+
+            cc     | 1
+            0002000| 2
+            0003000| 3
+            cc     | 4
+            0005000| 5
+            0006000| 6
+            0007000| 7
+            0008000| 8
+            0009000| 9
+            0010000| 0
+            pp     |AAAAAAAAAAAA
+            0012000|BBBBBBBBBBBB
+            0013000|CCCCCCCCCCCC
+            0014000|DDDDDDDDDDDD
+            0015000|EEEEEEEEEEEE
+            0016000|FFFFFFFFFFFF
+            0017000|GGGGGGGGGGGG
+            0018000|HHHHHHHHHHHH
+            pp     |IIIIIIIIIIII
+            0020000|JJJJJJJJJJJJ
+        ===&gt;
+            0001000| 1
+            0002000| 2
+            0003000| 3
+            0004000| 4
+            0005000| 5
+            0006000| 6
+            0007000| 7
+            0008000| 8
+            0009000| 9
+            0010000| 0
+      rr c1 0011000* 1AAAAAAAAAA
+         c2 0012000* 2BBBBBBBBBB
+         c3 0013000* 3CCCCCCCCCC
+         c4 0014000* 4DDDDDDDDDD
+      rr c1 0015000* 1EEEEEEEEEE
+         c2 0016000* 2FFFFFFFFFF
+         c3 0017000* 3GGGGGGGGGG
+         c4 0018000* 4HHHHHHHHHH
+      rr c1 0019000* 1IIIIIIIIII
+            0020000|JJJJJJJJJJJJ
+
+      (6) xx-xx.s形式
+
+        .宛先の範囲の全行に複写するまで複写元全行を２行おきにを繰り返し複写する
+
+            cc     | 1
+            0002000| 2
+            0003000| 3
+            cc     | 4
+            0005000| 5
+            0006000| 6
+            0007000| 7
+            0008000| 8
+            0009000| 9
+            0010000| 0
+            pp.2   |AAAAAAAAAAAA
+            0012000|BBBBBBBBBBBB
+            0013000|CCCCCCCCCCCC
+            0014000|DDDDDDDDDDDD
+            0015000|EEEEEEEEEEEE
+            0016000|FFFFFFFFFFFF
+            0017000|GGGGGGGGGGGG
+            0018000|HHHHHHHHHHHH
+            0019000|IIIIIIIIIIII
+            0020000|JJJJJJJJJJJJ
+            0021000|KKKKKKKKKKKK
+            0022000|LLLLLLLLLLLL
+            pp     |MMMMMMMMMMMM
+            0024000|NNNNNNNNNNNN
+        ===&gt;
+            0001000| 1
+            0002000| 2
+            0003000| 3
+            0004000| 4
+            0005000| 5
+            0006000| 6
+            0007000| 7
+            0008000| 8
+            0009000| 9
+            0010000| 0
+      rr c1 0011000* 1AAAAAAAAAA
+         c2 0012000* 2BBBBBBBBBB
+         c3 0013000* 3CCCCCCCCCC
+         c4 0014000* 4DDDDDDDDDD
+         s1 0015000|EEEEEEEEEEEE
+         s2 0016000|FFFFFFFFFFFF
+      rr c1 0017000* 1GGGGGGGGGG
+         c2 0018000* 2HHHHHHHHHH
+         c3 0019000* 3IIIIIIIIII
+         c4 0020000* 4JJJJJJJJJJ
+         s1 0021000|KKKKKKKKKKKK
+         s2 0022000|LLLLLLLLLLLL
+      rr c1 0023000* 1MMMMMMMMMM
+            0024000|NNNNNNNNNNNN
+
+      (7) xx-xx,b.s形式
+
+        .宛先の範囲の全行に複写するまで複写から３行ずつ取り出し２行おきにを繰り返し複写する
+         複写元が尽きれば先頭に戻って取り出す
+
+            cc     | 1
+            0002000| 2
+            0003000| 3
+            cc     | 4
+            0005000| 5
+            0006000| 6
+            0007000| 7
+            0008000| 8
+            0009000| 9
+            0010000| 0
+            pp,3   |AAAAAAAAAAAA
+            0012000|BBBBBBBBBBBB
+            0013000|CCCCCCCCCCCC
+            0014000|DDDDDDDDDDDD
+            0015000|EEEEEEEEEEEE
+            0016000|FFFFFFFFFFFF
+            0017000|GGGGGGGGGGGG
+            0018000|HHHHHHHHHHHH
+            0019000|IIIIIIIIIIII
+            0020000|JJJJJJJJJJJJ
+            0021000|KKKKKKKKKKKK
+            0022000|LLLLLLLLLLLL
+            pp.2   |MMMMMMMMMMMM
+            0024000|NNNNNNNNNNNN
+        ===&gt;
+            0001000| 1
+            0002000| 2
+            0003000| 3
+            0004000| 4
+            0005000| 5
+            0006000| 6
+            0007000| 7
+            0008000| 8
+            0009000| 9
+            0010000| 0
+      rr b1 0011000* 1AAAAAAAAAA
+         b2 0012000* 2BBBBBBBBBB
+         b3 0013000* 3CCCCCCCCCC
+         s1 0014000|DDDDDDDDDDDD
+         s2 0015000|EEEEEEEEEEEE
+      rr b1 0016000* 4FFFFFFFFFF
+         b2 0017000* 1GGGGGGGGGG
+         b3 0018000* 2HHHHHHHHHH
+         s1 0019000|IIIIIIIIIIII
+         s2 0020000|JJJJJJJJJJJJ
+      rr b1 0021000* 3KKKKKKKKKK
+         b2 0022000* 4LLLLLLLLLL
+         b3 0023000* 1MMMMMMMMMM
+            0024000|NNNNNNNNNNNN
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

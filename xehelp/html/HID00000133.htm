@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>XMOve/MV</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">   = XMOve/MOVe source target [/s] [/t] [/y[-]] [/r[-]] [/b]
+                              [/L{-|M-}]
+
+       /s   サブディレクトリーもコピー
+            source にワイルドカード指定の時にのみ意味がある,
+            ディレクトリー名指定の時はサブディレクトリーも含む全体の
+            移動になる.
+       /y   同名ファイルがある時置換，指定しないと同一ファイル名があると
+            複写は停止。
+            同名のサブディレクトリーがある場合ディレクトリーのタイムスタンプは
+            複写されません
+       /y-  同名ファイルがある時置換せず処理続行。
+       /r   /y に同じ
+       /r-  /y- に同じ
+       /b   TSOファイルで無変換転送をします。
+
+#if defined(W32)||defined(UNX)
+       /t   <a href="HID00000020.htm">リモート</a>&lt;--&gt;ローカル コピーの時 Textモードでコピーする。
+            Textモードのとき LF(0x0a)&lt;--&gt;CRLF(0x0d0a)の変換が行われる。
+ 　    /L{-}|M-} :シンボリックリンクオプション(Windowsではジャンクション、マウントポイントも)
+   　             ドライブ内移動の時は改名処理なので無視される、ドライブ間移動の時にのみ有効
+           /L-   :シンボリックリンクは複写しない
+                  (Vista以降, シンボリックリンクの作成は管理者権限が必要。
+                  コマンドプロンプトを開く時、右クリック-&gt;&quot;管理者として実行&quot;を選ぶ)
+           /LM-  :リンクエラー(相手無し、ループなど)メッセージを表示しない
+#endif
+
+        target には移動先ディレクトリー名を指定する．同時に改名する時は
+        新しい名前も付加する．
+
+#ifdef UNX
+#else
+   (注)-OS/2 の MOVE コマンドに比べて ドライブ間移動をサポート.
+        (XCOPY and DEL)
+       -DOS の MOVE コマンドに比べて ファイルのドライブ間移動,
+        ディレクトリーのディレクトリー間移動をサポート.
+        (XCOPY and DEL)
+#endif
+       -MOVe コマンドは表示/編集画面では (3).編集コマンドの <a href="HID00000098.htm">MOVe</a>
+        コマンドになります
+</SPAN></PRE>
+</BODY>
+</HTML>

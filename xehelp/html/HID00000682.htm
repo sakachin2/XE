@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>RSH</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> #if defined(UNX) || defined(W32)
+
+   = リモートシェル
+
+        RSH [-{e2s|s2e}] [-L username] * cmd-parm
+        RSH [-{e2s|s2e}] {hostid:|*:|hostname|ipaddr}
+                             [-L username] [cmd-string]
+
+            最初の形式は編集画面で開いているリモートファイルをリモート実行
+            する時に使用。
+
+            -e2s/s2e :出力のEUC&lt;-&gt;SJIS変換指定。
+                      ホスト名が hostid:, *: 指定のときは::xehost内に
+                      DBCS=を指定することで省略可能。
+            hostid:  :&quot;<a href="HID00000020.htm">::xehost</a>&quot;に定義したリモートホストIDを指定する形式。
+                      コマンド出力画面では&quot;rsh host1:&quot;のようにcmd-stringを
+                      指定せず、hostid: のみの指定するとこの画面は&quot;rsh :&quot;
+                      でリセットされるまでそのホスト向け専用となり
+                      あとのコマンドは直接cmd-string入力で良くなる。
+                      この状態でローカルコマンドを実行したい時は
+                      &quot;:grep ABC *c&quot; のようにローカルコマンドの先頭に&quot;:&quot;をつける。
+            *:       :現在開いているリモートファイルのあるホストで実行する。
+            hostname :UNIXでは/etc/hosts,WinXPでは windows Dir 内の
+                      system32\drivers\etc\hosts,などのhostsファイルに
+                      定義されたホスト名を指定する形式。
+            ipaddr   :hostsに定義がないホストを192.168.2.5の様に直接
+                      アドレス指定する形式。
+                      ipaddrはLocalのhostsに定義されていなければならない。
+            -L user  :どのUserとしてLoginするかを指定。
+                      rshの権限許可に.rhostsを使用する方法の場合
+                      このUserのホームDirの&quot;.rhosts&quot;ファイルに
+                      ログイン元ホスト名とログイン元User名ペアを定義
+                      する。
+            cmd-string: コマンド内の&quot;(二重引用符)は \&quot; の様に指定する
+      (注) permission denyが出る場合はsyslogを見てください
+           Linuxの場合(/etc/syslog.confで定義した)/var/log/messagesに
+           denyの理由が出ていると思います。
+           linuxでは.rhostsのPermissionは600でないといけないようです。
+
+#endif
+</SPAN></PRE>
+</BODY>
+</HTML>

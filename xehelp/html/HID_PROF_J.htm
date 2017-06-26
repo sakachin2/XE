@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>Profile-J</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+  .ファイルプロファイルの保存。
+
+      以下のファイルプロフィール(属性)が保存され同じファイルの次回オープン時に適用されます
+        BNDS, CAPS, TABCLEAR, <A href="HID00000398.htm">SPF</A>/<A href="HID00000028.htm">COBOL</A>行番号欄の有無と書き込み保護, 固定長ファイル(行長,マージン)
+        固定長ファイルモード(/Mr, /Flrecl),可変長ファイル形式(/Mv, /Fvfmt),
+        シンタックスハイライト関連(言語タイプ, オープン時ON/OFF, ENTERキー処理)
+      プロファイルは<A href="HID00000038.htm">ワークディレクトリー</A>のprofile サブディレクトリーに保存されます。
+        各ファイルのフルパス名を &quot;\&quot;(&quot;/&quot;), &quot;:&quot;--&gt;&quot;_&quot;, &quot; &quot;--&gt;&quot;=&quot;,  &quot;.&quot;--&gt;&quot;~&quot; に変えた
+        ファイル名がそのファイルのプロファイル・ファイルです。
+#ifdef GCC
+        GCC版では、DOSは8.3ファイル名形式なのでprofile.Gという1つのファイルの中に
+        その名前のレコードを保存します。
+#endif
+#ifdef OS2
+        OS2版では、ワークディレクトリーがHPFS出ない場合はGCC版と同じになります。
+#endif
+        デイレクトリー名対応、拡張子対応のプロファイル・ファイルも作成可能で、
+        ファイル対応の属性指定がない場合に省略値属性とされます。
+        適用優先順位は拡張子プロフィールが後になります。
+      プロフィールは以下のコマンドで出力されます。
+        <A href="HID00000739.htm">BNDS</A>:
+             BND [ [* | 0 | col1] [* | 0 | col2] | RESET ] [EXT]
+                RESET:BNDS を 解除した上で、プロファイルをクリアー。
+                      次回から親デレクトリー、拡張子プロファイルがあればそちらの指定が適用されます。
+                      そうしたくない場合は 0を指定してください
+                EXT  :そのファイルのBNDSプロファイルをそのファイルの拡張子の省略値プロファイルとします。
+             ディレクトリーリスト画面で入力するとディレクトリー内のファイルの省略値となります。
+             INI コマンドで BNDS属性を .ini ファイルに書き込むことはなくなりましたが
+             ini ファイルでの Bounds指定は有効ですがプロファイルに指定がない場合に適用されます
+        <A href="HID00000727.htm">CAPS</A>:
+             CAP [on|off|RESET] [default|tso|cmd|EXT]
+                RESET:CAPS OFF とした上でプロファイルをクリアー。
+                      次回から親デレクトリー、拡張子プロファイルがあればそちらの指定が適用されます。
+                      そちらの指定が適用されます。そうしたくない場合は off を指定してください
+                EXT  :そのファイルのCAPSプロファイルをそのファイルの拡張子の省略値プロファイルとします。
+             ディレクトリーリスト画面で入力するとディレクトリー内のファイルの省略値となります。
+        <A href="HID_SYNH_J.htm">シンタックスハイライト関連</A>:
+             <A href="HID_SYNCMD_J.htm">SYN</A> [all|reset|enter|entera|on [lang-type]|off]
+
+             ENTERキーで再評価する範囲(ENTER:変更行のみ,ENTERA:全行),
+             ファイルを開く時にシンタックス評価をするか否か(on/off)とlang-typeが
+             プロファイルとして保存されます。
+             ディレクトリーリスト画面では入力できません。
+             デレクトリー、拡張子のの省略値は xesyn_.cfgの
+             OPEN,OPEN_EXT,_EXTオプション指定も有効です。
+#ifdef UTF8SUPP
+        ファイルのエンコーディング
+             Edit/Browse/Select [CPU8|CPLC|CPAS|CPEB]
+
+             ディレクトリーリストに指定するととディレクトリー内のファイルの省略値となります。
+#endif
+
+      プロフィールの表示、保存用には <A href="HID_PROFCMD_J.htm">PROfile</A> コマンドを使用します。
+           例えば
+             ディレクトリー dir1 内のファイルの省略値をSPFファイル(80桁固定長行番号付ファイル)としたい場合
+             そのディレクトリー内のファイルを1つ開き(&quot;EN dir1\samp1&quot;) &quot;PRO path save&quot;と入力します。
+             そのディレクトリー内のファイルはそのファイル固有のプロファイルレコードがなければ
+             &quot;E dir1\samp2&quot;で&quot;EN dir1\samp2&quot;と同じになります。
+             これはデレクトリーリストからSelectした場合にも適用されます。
+             拡張子 cob のファイルをCOBOLファイル(80桁固定長col.1-6はCOBOL行番号)としたい場合は
+             cobを拡張子にもつファイルを開き(&quot;EC samp3.cob&quot;) &quot;PRO ext save&quot;と入力します。
+             プロファイルを確認するには ファイルを開いた画面で &quot;PROfile&quot;
+             プロファイルレコードの内容を確認するには &quot;PROfile {*|path|ext}&quot; を使用。
+
+      ディレクトリーのプロファイルをクリアーするときはそのディレクトリーリスト画面で
+         &quot;PROfile RESET&quot; コマンドを使用
+
+      プロファイル設定の無視。
+             Et,En,Ec などの<A href="HID00000079.htm">Exコマンド</A>ではprofileのNUMSTD,COB,Fxx オプションは無視されます。
+             その他個別には次のようなオプションを指定してください。
+               NONUM : E コマンドでprofile の NUMSTD,COB,Fxx オプションを無視する。
+               Fxx-mm: 固定長ファイルの行長とマージン幅
+               NOCAP : CAPS off
+               NOTC  : TABCLEAR off
+               P{0|1}: 右マージン保護
+
+#ifdef UTF8SUPP
+             デレクトリーリストで行コマンドコードページを明示する行コマンドを追加しました。
+             &quot;<A href="HID_DLCLC_J.htm">[</A>&quot; (CPLC) と &quot;<A href="HID_DLCU8_J.htm">]</A>&quot; (CPU8) です。
+#endif
+
+      1行目の<A href="HID00000039.htm">CIDヘッダー行</A>でのオプション n,cob,cobkの指定は
+      プロファイルへの追加の場合のみ効果を持ちます。
+      例えばプロファイルがNUMSTDの時CIDヘッダーの cob は有効ですが
+      プロファイルがNUBSTD,COBの時 n のみ指定ははCOBをリセットしません。
+
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

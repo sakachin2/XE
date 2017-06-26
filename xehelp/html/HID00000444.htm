@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>(6)制約</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> (6)。制約。
+
+  - AIXではフロッピードライブのファイルを処理するためにdosdir,
+    dosdel,dosread,doswrite等が有りますがmkdir,rmdirに対応するものが
+    有りません。またタイムスタンプ、属性も変更できません。
+    ファイルの移動、削除はできますがディレクトリーの作成、削除はできま
+    せん。従ってFDのディレクトリーの削除、FDからの移動では
+    メンバーのみ削除されディレクトリー自身は残ります。
+    また経路設定はできず常にルートからの絶対パスとみなされます。
+    AIXのFD処理は遅い。
+  - X リソース設定を行っても処理できないキーの組み合わせがあります。
+    dttermでは Shift+Insertは使えません。
+  - AIX では BackSpace は 0x08 で Linux は 0x08 か 0x7f です。
+    Linux から telnet する場合は Linux では 0x08 をBackSpace とする
+    設定の方が便利で、RedHat v9 では gnome-terminal は BackSpace に
+    0x08 か 0x7f を割り当てるか設定できます。
+    しかし Linux の他のアプリケーション、例えば ftp 等は 0x7f を
+    BackSpace としているようです。
+    xe に 0x7f をBackSpace とするか Delete とするかは <a href="HID00000439.htm">--7</a> オプションを
+    使用。
+</SPAN></PRE>
+</BODY>
+</HTML>

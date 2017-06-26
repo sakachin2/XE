@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html;  charset=shift-jis">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>SPFファイル（行番号欄付80桁ファイル）</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    .SPFファイル(行番号付きファイル).
+      ファイルの 1 行目 の CID ヘッダー行で option=(m72,n) を指定.
+      例えば  //CID://+DATE~R:#63 option=(m72,n) を 1 行目にいれます.
+      これはタグの形式が //~yymdd~ で 63 桁目にセットする,そして
+      マージンが72(1-72桁にのみ入力可能),n が行番号付きファイルを示します
+      この指定がある時全行80桁固定長で73-78桁が行番号,79-80桁が
+      バージョン番号の<a href="HID00000041.htm">SPFファイル</a>として扱います.SPFファイルは
+      固定長/行番号の保持,バージョン番号の自動更新を行います
+      CID挿入位置がデフォルトでよければ Fn[-m]オプションを指定した
+      <a href="HID00000079.htm">EDIt</a>/<a href="HID00000062.htm">BROwse</a>/<a href="HID00000115.htm">SELect</a>コマンドを使えばヘッダー行は不用になります。
+      またEN/BN/SNコマンドはそれぞれ &quot;F80-72 p0&quot;つきの
+      Edit/Browse/Selectと同等。
+      Col73-80をデータ扱いするには CID ヘッダー行でoption=(F80)指定するか
+      e8コマンドを使用してください。
+
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

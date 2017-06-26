@@ -1,0 +1,92 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text-html; charset=shift-jis">
+<TITLE>(3)TeraTerm* の設定</TITLE>
+<STYLE TYPE="text/css">a:hover{font-weight:bold;}</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> (3)。TeraTerm* の設定。(WindowsからTeraTermでtelnetする場合）
+     (*) TeraTerm は T.Teranisi(寺西 高)氏作のフリーウェアーです。
+         Tera Teram Pro version 2.3 でテストしました。
+
+  - 実行モジュールは AIX に導入し TeraTerm から起動します。
+
+  - teraterm.ini をカスタマイズします。
+    - Alt キーが使用できるように設定する。
+        MetaKey=on
+      この設定は Alt+Fn や Alt+文字キー(Esc+文字キーを生成)を利用する
+      ために必要です。
+    - DBCS 1バイト目と2バイト目の間に制御文字がある時DBCSを無視する。
+        CtrlInKanji=off
+      AIX が 制御文字を挿入することがあるので画面が乱れないように念の為
+      (補足)
+        日本語表示安定のため行中に日本語があるとき一度DBCS部を
+        スペースクリアーした後その行を再度書き直しています。
+        全画面再描画のときは --c を指定して立ち上げた方が書き直しが早いが
+        画面分割しているときはもう一方の画面もちらつくことがあります。
+        画面が乱れたときはEscキーを押してください。全画面クリアー後、
+　　　　再描画します。
+    　　尚<a href="HID00000021.htm">バイナリーファイル</a>の表示ではAIX版ではコードが0x80以上の文字は
+    　　表示しない設定になっています。バイナリーファイルでの日本語表示を
+　　　　したい場合は"<a href="HID00000400.htm">opt ascii,off</a>"コマンドを使用してください。
+    - その他は以下の設定項目を検討してください詳細はTeraTermのヘルプを
+      見てください。
+        CursorShape=horizontal       カーソルの形状
+        Accept8BitCtrl=off           8ビット制御文字
+        NonblinkingCursor=on         カーソルブリンク
+
+  - キーボード設定をカスタマイズします。
+    メニューから Setup --> Load key map で リストされた .CNF ファイル
+    から添付の xett106a.cnf を選択します。
+    (予め TeraTerm のディレクトリーに添付ファイルをコピーしておく)
+    .cnf ファイルのカスタマイズについては次章を参照。
+    キーボード設定ファイルは /K=xxx.cnf のようにコマンドラインパラメータ
+    でも指定することができます。TeraTermのショートカットを作成し
+    プロパティーでパラメータを設定すれば毎回メニュー設定する手間を
+　　省けます。
+
+  以下は cnf ファイルの設定方法です。
+  TeraTerm ディレクトリーの keycodej.txt も参照してください。
+
+  - TeraTerm の UserKey 設定機能を使用して キーを押したときに
+    xe が解釈できる文字列を送るように設定する必要があります。
+
+  - キーボード設定ファイルの [User keys] セクションは次のような形式で
+    キーコードに転送する文字列を割り当てます。
+    例) User1=571,0,$1B$7E$54$00$01
+    Userキー番号は User1 から User99 までです。
+    571 は Shift+F1 のキーコードです。キーコードの値は TeraTerm 付属の
+    keycode.exe で確認できます。
+    $1B$7E$54$00$01 は転送する文字列を Hex 指定したものです。
+
+  - xe は x1B7E を xe 宛とみなし次に PCDOS で定義された スキャンコード+
+    文字コード+シフトID が続くことを期待します。
+　　Scan+Charコードは(9)-(a)を参照。
+　　シフトIDは $00:シフトなし, $01:Shift, $02:Ctrl, $03:Alt。
+    DOS のマニュアルでは、F1,Ins キーなどの拡張キーの文字コードは 00 か
+    E0 ですが $00 を使用します。
+
+  - TeraTerm 自身も 自身のためにキー入力をインターセプトしています。
+    キーボード設定ファイルの [User keys] セクションの指定とその他の
+    セクションの指定が重複していると "Load key map" が失敗します。
+    この場合エラーメッセージがでるので、TeraTerm のヘルプを参照して
+    TeraTerm の指定を off に変更するか、 xe のキー割り当てを変更して下さい。
+    抜番、指定の誤りなどエラーメッセージが出ずに無視される場合もあるので
+    注意してください。
+
+  - TeraTerm がインターセプトしないキーの場合でも xe のためのキー設定で
+    他のソフトに対するキーが効かなくなることを避けるためと、Userkey の
+    最大が 99 であることから、一部のキーは TeraTerm が生成する文字列を
+    そのまま利用します。
+    それらは(9)-(b)の表のTeraTermの場合に示しています。
+    それが自分の環境と合わないときは 変換ファイルを指定して立ち上げます。
+    例えば "xe -kxeaixkey.rh9" のように指定します。
+    変換ファイルの例は(8)を参照してください。
+    <a href="HID00000450.htm">xeaixkey.rh9</a> は Linux からのtelnet の例ですがAIXでも同じ形式です。
+
+
+</SPAN></DIV>
+</PRE>
+</BODY>
+</HTML>

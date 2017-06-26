@@ -1,0 +1,291 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>FINd/F</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    = Search string
+
+        {FINd | IFInd | EXClude | IX | FNX | INX}
+                 [!] {string | * | *e | *ec | *g | *L | *u | *=[n] | *=Mn | \esc | P'pics'}
+                     [-g]
+                     [U[B|L|8|4]]
+                     [col-range] [&amp; [!] string2 [col-range2] [-d[&lt;|&gt;]n]
+                     [all | next | + | prev | - | first | last]
+                     [.lab1 .lab2] [l-column | LM | RM [r-column]]
+                     [-a[-]n] [-b[-]n] [-c[{L|R}m][{T|B}n]] [-j|-je]
+                     [-Llcmd] -m[n] [-nx] [.lab1 .lab2]
+                     [-{PSP|PSF}[X|R|D]]
+
+                    ( &quot;\&quot; = 0x5c = backslash )
+
+            col-range:[left-column | LM | RM [right-column] | eol | maxeol]
+
+            FIN     :Case sensitive search
+            IFI     :Case Insensitive search
+            EXC     :Find string and then exclude the line.
+            IX      :IFind string and then exclude the line.
+            FNX     :FINd excluding excluded line.
+            INX     :IFInd excluding excluded line.
+
+            !       :search lines not containing the search word.
+            string  :use quotation for space embedded or for special
+                     string as following.
+                     For ex, &quot;F '.exe'&quot;, &quot;F 'set up'&quot;.
+                     To exclude all lines,specify simply &quot;EXC ALL&quot;.
+                     Word followed by &quot;\n&quot; means matching at EndOfLine.
+                     ex.) &quot;F word\n&quot;.
+                     'F &quot;a b&quot;\n' is invalid, 'F &quot;a b&quot; eol' is valid.
+                     'F *\n' search EndOfLine position.
+                     'F &quot;*&quot;\n' search &quot;*&quot; at the eol position.
+            &amp;       :search line containing 2 word. ex). word1 &amp; word2.
+            *       :search same string as previous search command
+                     Use it to search changing direction like as
+                     f * last.
+                     search range is not inherited.
+                     No effect for 2nd word of &amp;(AND) search.
+            *u      :search updated line.
+            *e      :search error line.
+                     shift err,line cmd err etc.
+                     &quot;.&quot; label cmd can be used as marks.
+                     set any label on lineno culmn and search by &quot;f *e&quot; cmd.
+            *ec     :search UTF8 translation error code position for the file opened with CPU8 option.
+                     *e is also avail for the line containing translation error until the line is updated.
+            *g      :search grep'ed line by current screen <a href="HID00000711.htm">grep</a>.
+                     After -g option support,GREp cmd will not be used to serach on currently opend screen.
+                     But this option yet remains.
+            *L      :search matched(unmatched if combined with !) line
+                     of the result by line cmd &quot;=&quot; or result of TC cmd &quot;==&quot;
+                     operation.
+                      ex) after compare by &quot;=&quot; line cmd,
+                            &quot;x *l all; del x all&quot; will delete all matched line
+            *=[n]   :exclude repeated lines over n+1 lines.
+                     column to be compared may be spefified.
+                     pattern &quot;x *= all&quot; is just avail. Default n is 1.
+                     you can deduce file size by &quot;dro x all&quot; after
+                     exclude cmd with this option.
+                     &quot;x *= all&quot; leave 1st line of each same line block
+                     displayed,to exclude also 1st line,use /b0 option.
+                     specifying minus on -a parm bottom line may be
+                     remain as not excluded.
+                     ex, &quot;x *= -a-1&quot; 2 line of top and bottom remain
+                     as not excluded.
+            *=Mn    :key matching of 2 file on the split screen.
+                     check the word is exist or not on the file of the other side.
+                     n:key position of the file of the other side
+                     key position of the current file is specified by search
+                     range column parameter.
+                     key is highlightened when search sucessed.
+                     On the other side, matched key is flagged as error line
+                     Lineno field is highlightened and can be searched by &quot;f *e&quot;.
+                     ex) &quot;x *=M6 10 18; del x all&quot;
+                         search the line column 10-18 of this file match to the column 6-14
+                         of any line of the file of another panel.
+                         &quot;x&quot; then &quot;del&quot; cmd will delete all matched lines.
+            \esc    :Following 1 byte escape sequence and hex notation
+                     is available.
+                     \a (bell=0x07),<B> </B>(BS=0x08),\t (H-tab=0x09)<B>
+                   </B>\n (LF=0x0a),\v (V-tab=0x0b),</SPAN><SPAN STYLE="color:#000000;font-size:12pt;font-family:‚l‚r ƒSƒVƒbƒN"> (FF=0x0c)
+                     \r (CR=0x0d),\x(even number of hex notation)
+                     ex of hex notation. \x8281 , \x09 , \x0c ,
+                     \a or \x0d0a cannnot be found if it is treated as
+                     line terminator at file load.
+                     It cannot be used with other char like as \aX
+                     Tab(x09) is not allowed with others like as \x0920
+                     for text file.
+                     IFInd is treated as FINd(case sensitive).
+
+              (Note) Character boundary is considered for \x__ notation of search/replace
+                     string for UTF8 file. it should be 4 bytes multiple.
+                     aa of \xaabb dose not match to yy of u-xxyy.
+                     it may match to xx of u-xxyy.
+                     ex) c \x30003000 \x20202020
+
+            P'pics' :specifys char-class for each byte.
+                     Other than special character is searched itself.
+                     Lower/Upper specification has no meaning for IFInd cmd.
+                     Tab(0x09) match to space(searches in the line after tab expanded).
+
+                     Char-class specification.
+                       =  any character
+                       .  non-displayable characters([^[:cntrl:]] by regular expression; 0x00-0x1f,0x7f,0x80 except 0x09.)
+                       @  alphabetic characters     ( [[:alpha:]]  )
+                          Uses [A-Za-z] on Japanese environment.
+                       -  non-numeric characters    ( [^[:digit:]] )
+                       #  numeric characters        ( [[:digit:]]  )
+                       &lt;  lower case alphabetics    ( [[:lower:]]  )
+                       $  special characters        ( [[:punct:]]  )
+                       &gt;  upper case alphabetics    ( [[:upper:]]  )
+                       ^  non-blank characters(alternative of EBCDIC &quot;NOT&quot; sign)
+                          0xac (Not sign of ISO Latin1) is also OK.
+                                                    ( [^[:space:]] )
+
+                     ex). P'x.@#'
+                          Enclose pattern by quotation to search space, comma or semicolon like as &quot;P'ABC== ###'&quot;
+                          Use &quot;\&quot; as escape to search class specification char itself like as P'ABC\=\=##\.##\\'.
+
+            -g      :specifies string is regular expression.(grep search)
+                     This is applyed to string2 of AND search,but both is not necessary to be
+                     regular expressions.
+                     Tab(0x09) match to space(searches in the line after tab expanded).
+                     ex) &quot;f abcd|efg -g&quot; searches word &quot;abcd&quot; or &quot;efg&quot;.
+
+              (Note) For UTF8 file,it may not work correctly by the reason of
+                     internal data structure for non ASCII character.
+                     Use this option being aware this facts.
+                     There may be no problem if whole line contains only ascii character.
+
+                     xe uses GNU API(re_compile_pattern and re_search) with following syntax options.
+                     (Windows version extracted sources from GNU regex v2.7)
+
+                       RE_BACKSLASH_ESCAPE_IN_LISTS :off: backslash is backslash in [ ]
+                       RE_BK_PLUS_QM                :off: not \+ or \*  but + or *
+                       RE_CHAR_CLASSES              :on : use character class such as [:alpha:]
+                       RE_CONTEXT_INDEP_ANCHORS     :off: ^, $ has meaning if at proper position
+                       RE_CONTEXT_INDEP_OPS         :off: +, * has meaning if at proper position
+                       RE_CONTEXT_INVALID_OPS       :off: +, * is normal char if at not proper position
+                       RE_DOT_NEWLINE               :on : . match to newline
+                       RE_DOT_NOT_NULL              :off: . match to null
+                       RE_HAT_LISTS_NOT_NEWLINE     :on : [^...] unmatch with newline
+                       RE_INTERVALS                 :on : use interval { and }
+                       RE_LIMITED_OPS               :off: use + * |
+                       RE_NEWLINE_ALT               :off: newline is normal char
+                       RE_NO_BK_BRACES              :on : use { and } not \{ and \}
+                       RE_NO_BK_PARENS              :on : use ( and ) not \( and \)
+                       RE_NO_BK_REFS                :on : no use bkwd ref \n(digit)
+                       RE_NO_BK_VBAR                :on : use | not \|
+                       RE_NO_EMPTY_RANGES           :on : invalid when range list seq down in [ ]
+                       RE_UNMATCHED_RIGHT_PAREN_ORD :on : unmatched ) is treated as normal char
+
+                       RE_ICASE(case insesnsitive) is used for IFInd cmd.
+#ifdef UTF8SUPP
+
+            U[B|L|8|4]:search UCS2/UCS4/UTF8 code on binary file.
+                       Case-Sensitive even if IFInd cmd.
+             U   : option prefix.
+             B/L : Search UCS2 by BigEndian/LittleEndian mode. default depends on the O/S(&quot;L&quot; for 80x86 strings).
+                   ex) &quot;F 123 UB&quot; searchs 0x'003100320033',
+                       &quot;F 123 UL&quot; searchs 0x'310032003300'.
+             8   : Search UTF8 code.
+                   Keyboard input code depends on A+u status indicated by cmdline prefix.
+                   &quot;=u=&gt;&quot;  means UTF8, &quot;===&gt;&quot; means locale code.
+                   Search UTF8 code by U8 option when locale code mode.
+                   Use &quot;U8&quot; option to search UTF8 code on the file opened with CPLC
+                   and keyboard is locale mode.
+                     ex). F x U8
+                      Assuem &quot;x&quot; is locale code, 0xa0 as a example,
+                      this cmd search 0xc2a0 (UTF8 code correspondingto 0xa0).
+             4   : FINd cmd:search not 2 byte ucs but 4 byte ucs.
+                   Specify for each word when &amp;(AND) search.
+                      (ex) f Micro U4 UL &amp; Vender U4 UL
+                   CHAnge cmd:hex notaion of replacing string is UCS4.
+                     ex).  C abc  \x10fffd   u4
+                   If missing U4 on CHAnge cmd on UTF8 file, replacing string is assumed as UCS2
+                     ex).  C abc  \x30203021
+#endif
+
+            all     :search all lines of the file
+            allkx   :all without revealing found word on excluded line.
+            next    :search forward from cursor position.
+            +       :same as next
+            prev    :search backward from cursor position.
+            -       :same as prev
+            first   :search forward from start of file.
+            last    :search backward from end of file.
+            .lab1/2 :Limit search line range using a pair of label
+                     on lineno column. line number may be used so as to
+                     limit line range with no label on lineno column.
+            l-column:left-most column of search range.
+            r-column:right-most column of search range.
+            LM      :search Left <a href="HID00000238.htm">margin</a> only.
+            RM      :search Reft margin only.
+            eol     :search EndOfLine only.
+                     ex) F &quot;a b&quot; eol (F &quot;a b&quot;\n is err)
+            -a[-]n  :display/exclude n lines after the line of the word.
+                     For &amp; search,base is the line containing the 2nd word.
+                     &quot;-&quot; means &quot;before the line&quot; and -b option is also
+                     required.
+            -b[-]n  :display/exclude n lines before the line of the word.
+                     For &amp; search,base is the line containing the 1st word.
+                     &quot;-&quot; means &quot;after the line&quot; and -a option is also
+                     required.
+            -c[{L|R}m][{T|B}n]:scroll option.
+                     scroll page to display found word on the specified place.
+                     Column is by L(from Left)/R(from Right),
+                     line is by T(from Top)/B(from Bottom).
+                     &quot;-c&quot; means &quot;-cR&quot;(word is right-most position).
+                     Without -c option,no scroll is done when word is found
+                     in the current page,else scroll to display the line
+                     in the middle.
+            -d[&lt;|&gt;]n:distance of 2 word of &amp; search. n:line count.
+                     -dn :word2 is on the next n'th line.
+                     -d&gt;n:distance is over than n lines.
+                     -d&lt;n:distance is lower than n lines.
+                     without -d option or -d0,&amp; search 2nd word only
+                     on the line 1st word found.
+            -j      :join lines between -a and -b or -d range for &amp;(and)search.
+            -je     :join up to EndOfFile.
+                     if 1st word found and 2nd word is not found,
+                     joins from 1st word line to end-of-file line.
+                     ex.) i StartID &amp; StartID -d&gt;1 -a-1 -j.
+                     this cmd remains not joined line at EndOfFile,
+                     but -je option dose not.
+            -Llcmd  :set line cmd on the line-no field of the found line.
+                     ex) f StartLineID -Lcc;f EndLineID -Lcc;rep partialcopyfile
+                     create partialcopyfile from the line contains &quot;StartLineID&quot;
+                     to the line contains &quot;EndLineID&quot;.
+                     this is for cmd in the <a href="HID00000280.htm">EXE cmd</a> file.
+            -m[n]   :not reset previous found word reverse display.
+                     it is effective for next r-find(PF5)
+                     n:do that from next r-find(PF5).
+            -nx     :search on displayed lines only(same as INX/FNX)
+
+            .Use function key(F5/Shift+F5) to re-search same word.
+             Searching re-start from top/bottom when same function key is
+             hit after reached to bottom/top.
+            .Entering operand only and press function key,it start
+             case insensitive search(F5) or case insensitive reverse
+             search(Shift+F5).If command verb(only abrigement is allowed)
+             is also input,case sensitivity depend on the command verb.
+            .Tab and its following space is assumed same as space char.
+            .Refer <a href="HID00000254.htm">"About word"</a> for how to specify string.
+
+            -{PSP|PSF}[X|R|D]
+
+              . PSP:applyed to the split screen, applyed also to not split screen.
+                PSF:applyed to the Edit/Browse file/directory panel.
+                X:specify -PSPX/-PSFX alone, excecute latest PSP/PSF command.
+                R:specify -PSPX/-PSFX alone, set latest PSP/PSF command to cmd line.
+                D:specify -PSPX/-PSFX alone, display PSP/PSF command effective now.
+              . Use <A href="HID_PSDCMD_E.htm">PSD</A> cmd to display PSP/PSF command effective now.
+
+              . Ctrl+F5 (re)find using PSP cmd, Alt+F5 (re)find using PSF cmd.
+                Ctrl+Shift+F5, Alt+Shift+F5 switches search direction.
+                If find cmd operand is set on cmd line,
+                PSP/-PSF option is selected from cmd line regardress function key used(F5, C+F5 or A+F5).
+                PSF cmd saved is lost when the file is closed.
+                Latest two PSP cmds saved are recovered at restart as for SPLIT(1) and SPLIT(2).
+              . On Linux, Alt+F5 may be assinged as default shortcut key.
+                Inactivate it by Linux Settings--&gt;Shortcut, chnage Function-Key assignmeny on xe =0.2 panel.
+
+              . This function enable 3 pattern's search on a file.
+                After followings
+                  F abcS
+                  F abcP -psp
+                  F abcF -psf
+                F5 searches &quot;abcS&quot;, Ctrl+F5 searches &quot;abcP&quot; and Alt+F5 searches &quot;abcF&quot;.
+                To continue search same pattern, use same key.
+                (ex) &quot;F abcP -psp&quot;, C+F5, C+F5, S+C+F5
+              . Change cmd is not supported.
+              . Enclose by quotation to search &quot;-PSP&quot; itself. (ex) F &quot;-PSP&quot;.
+</SPAN></PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>(2)パッケージ内容</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> (2) xelnx___.tgz (___はバージョン)には次のファイルが含まれています
+
+      バイナリーパッケージはv1.27以降提供されなくなりました
+
+      以下は sample ディレクトリー。
+      . xprint.sh   印刷ツール:gxp を呼び出す様に修正しました
+      . xpesc       xprint で Escプリンターを使用するサンプルシェル
+        (注) xeで使用するのは省略値はxprint.shですが、xe.iniファイルで
+             設定変更できます。
+               XPrint_Command_LNX=&quot;xpesc&quot; #(&quot;&quot;)# XP command
+      . XE4S001Z.asm <A href="HID_TSOE_J.htm">TSOアクセス</a>で使用する、HOST ASSEMBLER ファイル。
+
+#ifdef XXE
+      (gxe では 以下のファイルは関係ありません)
+#else
+      V128E(2016/09)から Shift+Alt+, Shift+Ctrl+ の組み合わせも利用できるようになったので
+      以下の対応は不要だと思います
+      これらの組み合わせキーは Linux のショートカット キーとして設定されている場合もあるので
+      これらのキーを利用する場合は Linux の設定の変更が必要になることがあります
+      Shiftキー無し(A+Fn,C+Fn)がショートカットキー設定されている場合
+      そちらもソートカットキーを無効にする必要があるかもしれません
+
+      (F1,Ins などの機能キーとShift,Altなど修飾キーの組み合わせををより多く利用できる様に       )
+      (するための設定ですが、よくわからない場合はこの対応はやめて　　　　　　　　　　　　　　　 )
+      (Shift+F1は&quot;UNDo&quot; などコマンドを使用するようにしてください　　　　　　　　　　　　　　　　)
+
+      . xej106.map   全画面コンソールモード用の日本語キーボード対応のxe用キーMapping設定サンプル。
+      　　　　　　　 通常はkonを使用するとき以外は使用しない。
+      以下、3種のファイルのxxxはリナックスディストリビューションIDで
+          tb6 :TurboLinux v6.0
+          rh8.0 :RedHat v8.0     rh9 :RedHat v9
+      をサンプル提供しています。
+        . <a href="HID00000432.htm">xelnxres.xxx</a> xterm,kterm 用 Xリソースファイル。
+                       xelnxres.fullはxeで使用できるすべてのキーについて
+                       記述してあります。環境に合わせて必要なキーの行を
+                       対応するファイルにコピーしてください。
+        . <a href="HID00000433.htm">xelnxkey.xxx</a> xeキーマッピング指定ファイル。
+                       キー入力で発生するEsc文字列の解釈をxeの省略値から
+                       変更するときに使用するファイル。
+                       xe の省略値は(9)-(b)参照。
+　                     --kオプションで指定。ex) "xe --kxelnxkey.xxx"
+        . <a href="HID00000434.htm">xexmap.xxx</a>   Xキーバインディング設定ファイル。
+                       gnome-terminalで足らないキーの組み合わせを
+                       補う為に使用する。
+                       xmodmap でXのキーバインディング設定を変更する。
+                       ex) "xmodmap xexmap.xxx"
+                       但し,<a href="HID00000406.htm">OPT CCFUNCコマンド</a>でCtrl+文字キーも利用できるので
+                       その省略時割り当てでよければ不要。<a href="HID00000427.htm">(5)制約</a>の項参照。
+
+      . <a href="HID00000435.htm">xegt,xekt,xext</a> それぞれ xe 用の設定をしてgnome-terminal,xterm,
+                       kterm を起動しその上でxeを起動するサンプルShell。
+      . <a href="HID00000430.htm">xegetdv</a>      サンプル起動シェルから呼び出され、DistributionIDを
+                     判定するシェル。
+      . <a href="HID00000431.htm">xesetxenv</a>    サンプル起動シェルから呼び出され、xe のX環境を
+                     設定するシェル。設定ファイルの場所など環境に
+                     合わせて変更して下さい。
+      .<A href="HID00000737.htm">puTTY.xekeyma</A>p 私のキーマッピングパッチを当てた puTTY で使用するキーマッピングファイル。
+      .<A href="HID_KEYTAB_J.htm">xe.keytab</A>     KDE の konsole で使用するキーマッピングファイル。
+#endif
+
+</SPAN></PRE>
+</BODY>
+</HTML>

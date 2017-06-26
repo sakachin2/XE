@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>Keys &amp; Funstions</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;"> [Table 1-R] Function-Key default assignment/by key sequence
+ +-------+--------------+--------------+--------------+--------------+
+ |  Key  |     Base     |    Shift     |     Alt      |    Ctrl      |
+ +-------+--------------+--------------+--------------+--------------+
+ |Esc    |Reset         |              |              |              |
+ |Tab    |Next Tab      |Prev Tab      |              |              |
+ |BS     |Backspace     |Erase TOL     |Toggle Csr Dn |              |
+ |Enter  |Exec+Next Line|Split Line    |Next Line     |              |
+ |Ins    |Insert Toggle |Insert Line   |Block Insert  |SameAsLeft(*4)|
+ |Del    |Delete Char   |Delete Line   |Block Cut     |SameAsLeft(*4)|
+ |Home   |Cursor Home   |              |              | (*4)         |
+ |End    |Erase EOL     |Clear TOL     |Block Clear   | (*4)         |
+ |PgUp   |Page Up       |Top of File   |              | (*4)         |
+ |PgDn   |Page Down     |End of File   |              | (*4)         |
+ |Up     |Up            |Scroll Up 1 Ln|              | (*1) (*4)    |
+ |       |              |Next Value    |              | (*1)         |
+ |       |              |              |SendFName-Up  |              | (*6)
+ |Down   |Down          |Scroll Dn 1 Ln|              | (*2) (*4)    |
+ |       |              |Prev Value    |              | (*2)         |
+ |       |              |Next Value    |SendFName-Down|              | (*6)
+ |Left   |Left          |Top of Line   |Path Up       | (*4)         |
+ |Right  |Right         |End of Line   |Path Down     | (*4)         |
+ |F1     |Cancel        |Undo          |              | (*3)         |
+ |F1     |Cancel        |Refresh       |              | (*3)         |
+ |F2     |HSplit        |VSplit        |              |              |
+ |F3     |End           |Save          |              |              |
+ |F4     |Return        |Quit          |              |              |
+ |F5     |Re-Find (*5)  |Re-Find(rev)  |              |              |
+ |F6     |Re-Change     |Re-Chng(rev)  |RgnStart/End  | (*3)         |
+ |       |Size option   |              |              | (*3)         |
+ |F7     |Page Up       |Prev Panel    |BlockStart/End|SameAsLeft    |
+ |F8     |Page Down     |Next Panel    |BlockCopy Over|SameAsLeft    |
+ |F9     |Swap          |Exit          |BlockSave     |SameAsLeft    |
+ |F10    |Scroll Left   |Repeat Line   |              |Hex Vertical  | (*3)
+ |       |Linecmd Cut   |FileDescript'n|              |              | (*3)
+ |F11    |Scroll Right  |Column gauge  |              | HexInputMode | (*3)
+ |       |Linecmd Paste |LongFileName  |              |              | (*3)
+ |F12    |Retrieve      |Retrieve(rev) |Retrieve(Scr) |Repeat cmd    |
+ |       |              |              |              |              |
+ |a      |              |              |Input Shortcut|              |
+ |b      |              |              |BLK Start/End |              |
+ |c      |              |              |BLK Insert    |              |
+ |d      |              |              |BLK Cut       |              |
+ |       |              |              |SendFName-Del |              | (*6)
+ |e      |              |              |BLK Clear     |              |
+ |f      |              |              |Line Inc 1st  |              |
+ |g      |              |              |JumpToHexPart |              |
+ |h      |              |              |Line Marking  |              |
+ |i      |              |              |Line Ins Copy |              |
+ |       |              |              |SendFName-Ins |              | (*6)
+ |j      |              |              |Line Ins CutMv|              |
+ |k      |              |              |Line Ins ClrMv|              |
+ |l      |              |              |Line Inc Last |              |
+ |m      |              |              |BLK Cut Move  |              |
+ |n      |              |              |BLK Clear Move|              |
+ |o      |              |              |BLK Over Space|              |
+ |p      |              |              |BLK Copy Over |              |
+ |q      |              |              |Disp. Shortcut|              |
+ |r      |              |              |Repeat Line   |              |
+ |       |              |              |SendFName-Rep |              | (*6)
+ |s      |              |              |Split Line    |              |
+ |t      |              |              |Erase EOL     |              |
+ |u      |              |              |<A href="HID_UTFCMD_E.htm">UTF SWKBD</A>     |              |
+ |v      |              |              |StandardPaste |              |
+ |w      |              |              |WordCopyToCB  |thenPasteToCmd|
+ |x      |              |              |Line Exclude  |              |
+ |y      |              |              |Line Include  |              |
+ |z      |              |              |3270 Hotkey   |              |
+ |.      |              |              |Pair search   |              |
+ |,      |              |              |Pair search-NX|              |
+ |[      |              |              |<A href="HID_WORDS_E.htm">FwdSrch-NoCase</A>|<A href="HID_WORDS_E.htm">FwdSrch-Case</a>  |
+ |]      |              |              |<A href="HID_WORDS_E.htm">BwdSrch-NoCase</a>|<A href="HID_WORDS_E.htm">BwdSrch-Case</a>  |
+ |:      |              |              |<A href="HID_UNICOMB_E.htm">Combining Char</A>|              |
+ |;      |              |              |<A href="HID_LIGATURE_E.htm">Allow Ligature</A>|              |
+ |1      |              |              |Graph Char BL |              |
+ |2      |              |              |Graph Char BT |Null char,0x00|
+ |3      |              |              |Graph Char BR |              |
+ |4      |              |              |Graph Char LT |              |
+ |5      |              |              |Graph Char CX |              |
+ |6      |              |              |Graph Char RT |              |
+ |7      |              |              |Graph Char TL |              |
+ |8      |              |              |Graph Char TT |              |
+ |9      |              |              |Graph Char TR |              |
+ |-      |              |              |Graph Char HL |              |
+ |^      |              |              |Graph Char VL |              |
+ |=      |              |              |Graph Char VL |              |
+ +-------+--------------+--------------+--------------+--------------+
+ |10Key  |              |              |              |              |
+ |  0    | (Ins  ) (*4) |              |              |Graph Char HL |
+ |  1    | (End  ) (*4) |              |              |Graph Char BL |
+ |  2    | (Down ) (*4) |              |              |Graph Char BT |
+ |  3    | (PgDn ) (*4) |              |              |Graph Char BR |
+ |  4    | (Left ) (*4) |              |              |Graph Char LT |
+ |  5    |              |              |              |Graph Char CX |
+ |  6    | (Right) (*4) |              |              |Graph Char RT |
+ |  7    | (Home ) (*4) |              |              |Graph Char TL |
+ |  8    | (Up   ) (*4) |              |              |Graph Char TT |
+ |  9    | (PgUp ) (*4) |              |              |Graph Char TR |
+ |  -    |              |              |              |Graph Char HL |
+ |  +    |              |              |              |Graph Char VL |
+ |  .    | (Del  ) (*4) |              |              |Graph Char VL |
+ |  Enter|Exec+Next Line|Split Line    |              |              |
+ +-------+--------------+--------------+--------------+--------------+
+
+    BL:BottomLeftCorner  BT:BottomTee    BR:BottomRightCorner
+    LT:LeftTee           CX:CenterCross  RT:RightTee
+    TL:TopLeftCorner     TT:TopTee       TR:TopRightCorner
+    HL:HorizontalLine    VL:VerticalLine
+
+(*1)Up-arrow
+    Lower row for Color setting screen,Upper for others.
+(*2)Down-arrow
+    Lower row for Color setting screen,Upper for others.
+(*3)F1,F6,F10,F11
+    Lower row for <a href="HID00000252.htm">directory list screen</a>,Upper for <a href="HID00000251.htm">BROwse/EDIt screen</a>.
+    (Ctrl+10key is not avail for AIX version)
+(*4)10key generate same code as specified in ( ) without NumLock.
+    Ctrl+10key generate same code as specified in ( ) regardless NumLock.
+    So,for ex,"Ctrl+Ins" is same as "Ctrl+10key-0" and horizontal line
+    char is produced.
+    <a href="HID00000460.htm">AIX</a> version dose not support 10key,use Ctrl+Ins etc.
+(*5)On utility panel <A href="HID_U312_E.htm">3.12</A> and <A href="HID_U314_E.htm">3.14</A>,splits screen then open the dir-list panel
+    according to input (wildcard)path on the line.
+(*6)These keys are used to send filename from dir-list panel to utility panel.
+
+
+</SPAN>
+
+</PRE>
+</BODY>
+</HTML>

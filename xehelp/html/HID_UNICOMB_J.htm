@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>OPT UNICOMB-J</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+
+
+#if define(LNX) || defined(W32)
+
+          - ユニコード結合文字表示
+
+             OPT UNICOMB [ COMB | SPLIT | UNPR ] [ SHADOW | ITSELF | PADDING | U-xxxx ]
+
+               COMB, SPLIT, UNPR : それぞれ 結合表示、単独表示、代替文字表示に設定します
+
+               次の３オペランドはLinuxコンソール版のみで単独表示モードのときの表示方法です
+                 SHADOW : 左の文字との合字を表示
+                 ITSELF : 結合文字を単独で出力します。見えるか見えないかはLinuxしだいです。
+                 PADDING: tab 表示文字を表示。TAB OFF コマンドで非表示になります
+               U-xxxx : 適当なユニコードを指定します。
+               U-00 は省略値(':'(u-3a))に戻します
+               オペランド指定無しで現況をレポートします
+
+              -コマンド入力行(2行目)ではキーボードで修正できるように常にSPLIT モード(２桁で別々に表示)扱いとする
+              -表示幅=0の文字の結合表示。結合の正当性はNoChk。
+               (Linuxコンソール版は結合文字はmax4文字まで)
+              -Alt+&quot;:&quot; でも 結合表示--&gt;単独表示--&gt;代替文字表示を切り替える事ができる。
+              -Linuxの古いDistributionでは結合をうまく表示できないこともあるようです。
+               単独表示の指定を変えて分離表示して見て下さい。
+               Edit/Browse 画面ではカーソル位置の結合文字は単独表示するので
+               表示位置がカーソル位置によって移動することがあります。
+              -LinuxGUI版(gxe)の印刷は Wysiwig チェックボックスがOffなら結合印刷する。
+
+#endif
+
+</SPAN></PRE>
+</BODY>
+</HTML>

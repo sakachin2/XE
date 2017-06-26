@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>TF :(colon)-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;">    = : command (TextFlow)
+
+        .:[n][,m][.i]
+         n is line count, no xx-xx[n] format.
+         m is width after re-flowed(same as width parameter of <A href="HID00000742.htm">TFLow command</A>),
+         i is indentation after re-flowed used to make all line the same indentation(same as In of TFLow command)
+        .re-flow in the range of n lines or lines in the range of ::-::.
+        .difference between &quot;:&quot; and <A href="HID00000748.htm">&quot;;&quot;</A> is NOP(NoParagraph) option of TFLow command. (&quot;;&quot;=&quot;:&quot;+NOP).
+
+        .(ex.01) without line-count
+
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8
+            *******|********** TOP OF FILE *********************************************************
+            0001000|//*CID://+NONER~:    option=(f80,p0) update#=    3;
+            :      |      added this part to test the behavior of the bnds
+            0003000|        cmommand for
+            0004000|        xe. i use bnds to format paragraphs
+            0005000|     so the breakes are nice.
+            0006000|     *                                                                 *   CL114
+            0007000|     *   JOB stream:   job name  proc name  program run frequency      *   CL114
+            0008000*     *                 --------  AAAAAA     weekly.                    *   CL114
+            0009000|     *=================================================================*   CL114
+
+        ===&gt; process one paragraph
+
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8
+            *******|********** TOP OF FILE *********************************************************
+            0001000|//*CID://+NONER~:    option=(f80,p0) update#=    3;
+            0002000*      added this part to test the behavior of the bnds cmommand for xe. i use
+            0003000*        bnds to format paragraphs
+            0005000|     so the breakes are nice.
+            0006000|     *                                                                 *   CL114
+            0007000|     *   JOB stream:   job name  proc name  program run frequency      *   CL114
+            0008000*     *                 --------  AAAAAA     weekly.                    *   CL114
+            0009000|     *=================================================================*   CL114
+
+        .(ex.02) with line count,without width option
+
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8
+            *******|********** TOP OF FILE *********************************************************
+            0001000|//*CID://+NONER~:    option=(f80,p0) update#=    3;
+            :6     |      added this part to test the behavior of the bnds
+            0003000|        cmommand for
+            0004000|        xe. i use bnds to format paragraphs
+            0005000|     so the breakes are nice.
+            0006000|     *                                                                 *   CL114
+            0007000|     *   JOB stream:   job name  proc name  program run frequency      *   CL114
+            0008000|     *                 --------  AAAAAA     weekly.                    *   CL114
+            0009000|     *=================================================================*   CL114
+
+        ===&gt; re-flow in the specified line count,in the original line width(set by option=f80.
+
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8
+            *******|********** TOP OF FILE *********************************************************
+            0001000|//*CID://+NONER~:    option=(f80,p0) update#=    3;
+            0002000*      added this part to test the behavior of the bnds cmommand for xe. i use
+            0003000*        bnds to format paragraphs
+            0004000*     so the breakes are nice.  *
+            0005000*     *   CL114 *   JOB stream:   job name  proc name  program run frequency
+            0006000*     *   CL114
+            0008000|     *                 --------  AAAAAA     weekly.                    *   CL114
+            0009000|     *=================================================================*   CL114
+
+        .(ex.03) width line-count and width option.
+
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8
+            *******|********** TOP OF FILE *********************************************************
+            0001000|//*CID://+NONER~:    option=(f80,p0) update#=    3;
+            :6,40  |      added this part to test the behavior of the bnds
+            0003000|        cmommand for
+            0004000|        xe. i use bnds to format paragraphs
+            0005000|     so the breakes are nice.
+            0006000|     *                                                                 *   CL114
+            0007000|     *   JOB stream:   job name  proc name  program run frequency      *   CL114
+            0008000|     *                 --------  AAAAAA     weekly.                    *   CL114
+            0009000|     *=================================================================*   CL114
+
+        ===&gt; re-flow into the specified width.
+
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8
+            *******|********** TOP OF FILE *********************************************************
+            0001000|//*CID://+NONER~:    option=(f80,p0) update#=    3;
+            0002000*      added this part to test the
+            0003000*      behavior of the bnds cmommand for
+            0004000*        xe. i use bnds to format
+            0005000*        paragraphs
+            0006000*     so the breakes are nice.  *
+            0007000*     *   CL114 *   JOB stream:   job
+            0007100*     name  proc name  program run
+            0007200*     frequency      *   CL114
+            0008000|     *                 --------  AAAAAA     weekly.                    *   CL114
+            0009000|     *=================================================================*   CL114
+
+        .(ex.04) width Indentation option.
+
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8
+            *******|********** TOP OF FILE *********************************************************
+            0001000|//*CID://+NONER~:    option=(f80,p0) update#=    3;
+            i6,40.2|      added this part to test the behavior of the bnds
+            0003000|        cmommand for
+            0004000|        xe. i use bnds to format paragraphs
+            0005000|     so the breakes are nice.
+            0006000|     *                                                                 *   CL114
+            0007000|     *   JOB stream:   job name  proc name  program run frequency      *   CL114
+            0008000*     *                 --------  AAAAAA     weekly.                    *   CL114
+
+        ===&gt; make all the line the same indentation.
+             &quot;:&quot; command consider paragraph boundary differently from &quot;;&quot; command.
+
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8
+            *******|********** TOP OF FILE *********************************************************
+            0001000|//*CID://+NONER~:    option=(f80,p0) update#=    3;
+            0002000*  added this part to test the behavior
+            0003000*  of the bnds cmommand for xe. i use
+            0004000*  bnds to format paragraphs
+            0005000*  so the breakes are nice.  *
+            0006000*  *   CL114 *   JOB stream:   job name
+            0007000*  proc name  program run frequency
+            0007100*  *   CL114
+            0008000*     *                 --------  AAAAAA     weekly.                    *   CL114
+            0009000|     *=================================================================*   CL114
+
+        .(ex.05). xx-xx format
+
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8
+            *******|********** TOP OF FILE *********************************************************
+            0001000|//*CID://+NONER~:    option=(f80,p0) update#=    3;
+            ::,40.2|      added this part to test the behavior of the bnds
+            0003000|        cmommand for
+            0004000|        xe. i use bnds to format paragraphs
+            0005000|     so the breakes are nice.
+            0006000|     *                                                                 *   CL114
+            0007000|     *   JOB stream:   job name  proc name  program run frequency      *   CL114
+            ::     *     *                 --------  AAAAAA     weekly.                    *   CL114
+            0009000|     *=================================================================*   CL114
+
+        ===&gt;
+
+            col    |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8
+            *******|********** TOP OF FILE *********************************************************
+            0001000|//*CID://+NONER~:    option=(f80,p0) update#=    3;
+            0002000*  added this part to test the behavior
+            0003000*  of the bnds cmommand for xe. i use
+            0004000*  bnds to format paragraphs
+            0005000*  so the breakes are nice.  *
+            0006000*  *   CL114 *   JOB stream:   job name
+            0007000*  proc name  program run frequency
+            0008000*  *   CL114 *                 --------
+            0008100*  AAAAAA     weekly.
+            0008200*  *   CL114
+            0009000|     *=================================================================*   CL114
+
+
+
+
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

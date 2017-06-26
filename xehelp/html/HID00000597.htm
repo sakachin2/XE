@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>3.Preview dialog (Setup print) operation</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;"> 3.Preview dialog (Setup print)
+  -Popup help support by right button.
+  -Form
+   .Size        :select form size
+   .Landscape   :use form as landscape.
+   .Margin      :Left,Right,Top,Bottom margin, unit is mm.
+#ifdef XXE
+                 0 means default value displayed lower part.
+                 Default is shown bellow of this widget.
+                 For the case printing on papersize:B5 without changing printer setting,
+                 Shift amount can be specified like as 3510.
+                 ex) Top:3510 means shifting 35mm upward with 10mm:top margin.
+#endif
+  -Font
+   check page on the preview area.
+#ifdef WXE
+   .Style       :font face name
+   .H           :font height
+   .W           :font width
+#else   //XXE
+   .FontStyle/FontHeight/FontWidth
+                :Result of selection by FontDialog is displayed,
+                 push FontChange button to change screen font.
+#endif
+   .Col/Row by Cell-H/W:determine max columns and max lines of print
+                        page by width and height of text box(cell).
+   .Cell-H      :height of text box
+   .Cell-W      :width of text box
+   .MaximumCell-H:limit the cell height for the case Col and Row is 0
+                  to protect too large font is used for the file
+                  all line is short.
+                  Effective only when Col?Row by Cell-H/W is off.
+  -Pagesetup
+   .Col         :max column of the page
+                 use length of the longest line of the file if 0 specified.
+                 If &quot;Col/Row by Cell-H/W&quot; is checked on,this value is
+                 effective when that is smaller than it.
+   .Row         :max line of the page.
+                 If 0 is specified,it is determined by form size,
+                 form orientation and font height-width rate.
+                 If &quot;Col/Row by Cell-H/W&quot; is checked on,this value is
+                 effective when that is smaller than it.
+   .LineNumber  :print line number on the left.
+   .2p          :print 2 page per 1 sheet. Intermediate column can be set.
+   .Header      :print header line(file name)
+   .FileTime    :print file time stamp on the header line.
+   .Footer      :print footer line(page seq number).
+   .Systime     :print current time on the footer line.
+   .WWScrPrt    :For PrtScr(HardCopy),keep the rate of application
+                 window size and screen size on paper.
+                 If WWScrPrt is off,vertical or horizontal size is expanded
+                 to paper boundary.
+                 For fileprint, insert DBCS padding space.
+                 (for GB18030 4 byte dbcs or EUC 3 byte DBCS)
+   .FullPage    :Ignore font height-width rate and fill whole page,
+                 for file print or hardcopy with WWScrPrt off.  -Preview
+#ifdef XXE
+   .Ligature    :gxe accept printing with ligature option.
+#endif
+  -Preview
+   .page        :Enter page number to be previewed.
+                 When Preview-Print is pushed, file name,page count,
+                 file line count,column of the longest line,
+                 max column and lines of page are displayed.
+   .Print       :start preview.
+   .NP          :preview next page.
+   .PP          :preview previous page.
+   .PrtScr      :preview hardcopy.
+  -Submit
+   .Print       :Print file
+#ifdef XXE
+                 Specify print page number on Edit box if not print all page.
+                 ex) 4,8,10-14,18-
+#endif
+   .PrtScr      :print hardcopy
+   .OK          :Save setup value without print.
+   .Cancel      :Exit without saving setup value,print is not done.
+</SPAN></PRE>
+</BODY>
+</HTML>

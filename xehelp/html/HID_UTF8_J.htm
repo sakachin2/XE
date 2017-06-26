@@ -1,0 +1,286 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>UTF8 サポート</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+#if defined(W32)||defined(LNX)
+
+   .UTF8サポート
+     .UTF8エンコーデッドファイルを表示/編集できます
+      Linuxの場合、UTFエンコーデッドファイル名を処理できます
+      言語環境がUTF8である必要があります。LANG=xx_yy.utf8, 例えば en_US.utf8。
+      Windowsの場合、内部的にはファイル名はUTF16ですがサロゲートペアもＯＫです。
+      Linux版/Windows版とも21ビットUCS4(0x10000-&gt;0x10ffff)まで。
+
+     .UTF8文字は緑色で表示。
+#ifdef W32
+      ディレクトリーリストのファイル名は現在の言語環境では表示できない文字を含むファイル名は
+      緑色で表示されます
+      リモート(共有でなく,FTP)のデレクトリーリストのファイル名は LNX の場合に準じます
+#endif
+#ifdef LNX
+      ディレクトリーリストのファイル名はUTF8エンコーデッドの場合緑色で表示されます
+      ファイル名がUTF8としても、ロケールコードとしても正しい場合に
+      どちらを取るかを指定する手段は優先順 高-&gt;低 の順に以下の通り。
+            EDItコマンド :  e xxx FN{U8|LC|AS}
+            コマンドラインパラメータ :  xe  -UN{8|L}
+            UTF コマンド : UTF FN CP{U8|LC|AS}
+            Linux の場合 LANG 環境変数, Windows:リモートFTPの場合UTF8,ローカルはロケール
+#endif
+
+     .キーボード入力は Alt+u または &quot;UTF SWKBD&quot; コマンド で UTF8か各国語か モードを変更します
+      Alt-u キーを押して2行目の &quot;===&gt;&quot; が &quot;=u=&gt;&quot;になっている時はUTF8コード入力になります。
+      キーボード入力モード:UTF8が効果するのは次の場合です
+        -Ctrl+w で UTF8またはEBC ファイルからコマンド入力行にカーソル位置のワードを複写する
+        -クリップボードがUTF8またはEBCのときこれをファイル編集内容エリア以外にペーストする
+
+     .UTF8エンコードファイルの表示/編集。
+
+       -ファイル内容への入力はA+uの状態とは無関係にUnicodeになります。
+        出力時はUTF8に変換。
+
+       -印刷不能文字は &quot;:;&quot;で表示、無効なUTF8コードは&quot;?&quot;で表示。
+        いずれの場合も、もとのバイト値は残されていて、そのままファイルに書き戻しされます。
+
+       -バイナリーファイルは常に無変換。
+        eb/ehコマンドでのバイナリー表示では全てバイト列は各国語解釈です。
+
+       -Hex コマンドによる縦Hex表示はUnicodeのHex表示です。
+        ASCIIは文字部、Hex部とも1桁表示。ASCII以外はHex部はUCS(2ないし3桁)表示なので、
+        SBCS(文字部1桁、Hex部2桁)により文字部とHex部と行長が異なる事があります。
+        Alt+g(カーソルジャンプ)キーで対応を取ることが出来ます。
+
+       -Unicode入力。
+        IMEによるかHex入力モード(Ctrl+F11)を使用します。
+        Ctrl+F11でHex入力モードにするとUTF8ファイルの場合Hex文字を4桁
+        入力した時点でカーソル位置へUCS2が転送されます。
+        カーソルがファイルテキスト上以外にあるときは通常入力になります。
+        u-00a0--&gt;u00ffは2桁入力後&quot;x&quot;キーで転送することも出来ます。
+        6桁数字入力が必要なUCS4を入力する時は先に&quot;v&quot;キーを押してから
+        Hex数字を続けてください。
+        &quot;u&quot;や&quot;v&quot;キーを押した時も未転送の数字があると転送されます
+
+        また、縦Hex表示の場合、Hex行で&quot;u&quot;キーを使用すると
+        隣接する2文字(アスキー文字または開く時に無効なUTF8コードと判断された文字)から
+        UCS2を合成することも出来ます。
+        例えば、スペース(0x20)が2文字ある位置で上下いずれかのHex行上で
+        &quot;u&quot;キーを押すと u-2020(十字架?)に変わります。
+        &quot;v&quot;キーを使用すると後続の3桁からUCS4を合成します。
+
+        コマンド入力行へのUTF8コード入力。
+          コマンド行、ファイル名リスト画面(=1, =2 画面), ユーティリティー画面(=3.12, =3.14 画面）,
+          DirList画面の改名欄にHexでUTF8コード入力できます
+          Hexコード入力(C+F11)モードに切替えて一文字ごとに&quot;u&quot;/&quot;v&quot;キーで始めてHexでユニコードを入力します。
+          &quot;u&quot;/&quot;v&quot;を打たないと入力はそのまま転送されます。ロケールコードをHex入力することは出来ません。
+          Hex入力モードのとき&quot;u&quot;や&quot;v&quot;を入力したい時は２回連続してキーを押してください。
+          UTF8ファイルを開いてカット＆ペーストないしはCtrl+wを利用したほうが便利なこともあります
+
+        RAW CODE 入力対応。
+          但し、Linuxコンソール版はLANG環境変数がUTF8でないとロケールコードに変換できない文字は入力できません。
+                Windowsコンソール版は RAW CODE 入力出来ません(xeではA+&quot;+&quot;(NumPad)が無効なので)。
+          その場合xeのHexコード入力を使用してください
+          (参考)ユニコードをHEX文字入力する方法
+             (Linux) SCIMで IMEを その他-&gt;RAW CODE に変更する。
+                     NumPadキーを使用する場合はNumLock ON にします。
+             (Windows)-Altキーを押したまま NumPadキーの&quot;+&quot;を押して続けてHEXコード入力。
+                       レジストリーの設定が必要かもしれません。
+                       regedit で HKEY_CURRENT\Control Panel\Input Method に
+                       EnableHexNumpad を追加ないし値の変更をしてください。
+                       タイプは文字列(REG_SZ)で値は&quot;1&quot;に設定。
+                      -日本語IME(Microsoft IME standard 2002)では 変換モードのときに
+                       U3042 などと入力して F5 を押します。
+                       DOS窓では効かないようです。
+                      -ロケールコードに変換できない場合は&quot;?&quot;入力になるようです。
+                       その場合は上記 xe の<A href="HID00000699.htm">Hex コード入力</A>機能を使用してください
+
+       -UTF8用追加のコマンドオプション。
+
+           -Edit/Browse/Select  [CPU8|CPLC|CPAS] [IE]
+              CPU8: UTF8ファイルとして開く
+              CPLC: 各国語ファイルとして開く
+              CPAS: 環境変数に従う。(省略値)
+
+                指定されたオプションはプロファイルに保存されます。
+                同じファイルでは二度目以降は指定不要です。
+                省略値はCPASですが、ディレクトリーに指定した場合はその中のファイルの省略値となります。
+                ヘッダー行のファイル名の後ろの =U/=u/=L/=l/=b がそのファイルのコードページを示しています。
+                大文字はコマンドパラメータで指定したか、以前の指定がプロファイルに保存されていたかのいずれかです。
+                &quot;b&quot;はバイナリーモードオープンを示します。
+                無効なUTF8文字を含む場合、CPU8を指定するか、そのファイルに対し過去に指定した(プロファイルの記録)
+                のでなければCPLCでロードし直します。
+                UTF コマンドで省略値、CPLCリロードオプションを変更できます
+
+              IE  : CPU8のとき無効なUTF8コードのファイルは編集で開けません
+                    エラーを無視して開く場合&quot;IE&quot;を指定する。
+                    表示オープンでは&quot;IE&quot;の指定は不要。エラーは&quot;?&quot;で表示されている。
+                    コードは無変換ままロードされている。
+                    エラー位置は &quot;f *ec&quot; コマンドで探索できる。
+
+
+           -End/Save/Replaxe/Create/Append [CPLC | CPU8 [IE]]
+              CPU8/CPLC: 出力ファイルのEncoding指定。
+                         必要ならUTF8&lt;--&gt;各国語変換の後、書き出される。
+              IE       : UTF8--&gt;各国語変換で変換エラーを無視して出力。
+                         エラー文字は&quot;?&quot;に置換されている。
+
+           -Copy/Move source-file [CPLC | CPU8 [IE]]
+              CPU8/CPLC: &quot;source-file&quot;のEncoding。
+                         必要ならUTF8&lt;--&gt;各国語変換の後、編集画面にCopy/Moveする。
+              IE       : 変換エラーを無視。エラー文字はそのまま複写され、&quot;?&quot;で表示される。
+                         (バイト値はそのまま保持される)
+                         指定がないとエラー発生行で複写は停止。
+                         ファイルが IE オプションで開かれている時は不要。
+
+           -Find/Change コマンド
+
+             .Find/Ifind [U[B|L|8]]
+              Change     [U[B|L|8|4]]
+                 U   : オプションプレフィックス。
+                 B/L : BigEndian/LittleEndian UCS探索。省略値はOSに従う(80x86系は&quot;L&quot;)。
+                       例えば 0x'003100320033' を探す時 &quot;F 123 UB&quot;、
+                              0x'310032003300' を探す時 &quot;F 123 UL&quot; とする。
+                 8   : UTF8 コードで探します。
+                       コマンド行の入力は A+u キーでどちらのコードでも入力できます。
+                       すなわち、コマンド行が &quot;=u=&gt;&quot; で表示されていればUTF8、
+                       そうでなければロケールコード入力状態です。
+                       ロケールコード入力状態で U8を指定すればUTF8コードで探します。
+                       UTF8ファイルが無変換で開かれている時などに使用します。
+                         例.  F xx  U8
+                         ここで xx は ロケールコード、例えばその値が 0xa0 とすると
+                         0xa0 の UTF8 コード値 0xc2a0 を探します。
+
+                 4   : 置換文字をHex指定した時それがUCS4であることの指定。
+                       3バイトUCSの文字列とみなします。
+                         例.  C abc  \x10fffd   u4
+                       UTF8ファイル上の置換で U4 の指定がないとUCS2とみなします
+                         例.  C abc  \x30203021
+             .Find *ec
+                 *ec : CPU8 で開いた時の変換エラー文字位置を探します
+                       変換エラー行は 更新でエラーがリセットするまでの間は　*e で探せます。
+             .Change *ec  *
+                 *   : CPU8 で開いた時の変換エラー文字を1文字づつ変更します
+                       置換巻文字 &quot;*&quot; はもとの値のままエラー解除します。
+                       解除されないままの文字はそのままファイルに書き戻されますが
+                       解除すると書き戻しの時ロケールコード--&gt;UTF8変換の対象になります。
+
+                       * 以外ににも任意の文字列が指定できます。
+             .UTF8ファイルでは \x__指定の場合文字境界を意識します
+              \x 指定は探索文字列も置換文字列も4桁の倍数です。
+              \xaabbのaaは u-xxyy の yyとはマッチしません。xxとのみマッチします。
+              例) c \x30003000 \x20202020
+
+           -Sort コマンド
+            UTF8ファイルのSortで D[S|I|X]オプション追加
+            SORTキーカラム指定がDBCSを分割する時
+              S:スペースみなす、 I:分割無しのDBCS値で比較、X:その桁は除いて比較
+            尚UTF8ファイルの照合順序はユニコード値です。
+
+           -DirList画面でCPU8/CPLCを指定する場合は&quot;O&quot;行コマンドを使用してください。
+            Selectコマンドに同じく改名欄にCPxxを指定する。
+            行コマンド &quot;[&quot; と &quot;]&quot; はそれぞれ CPLC,CPU8 をつけて開きます。
+
+
+
+       -::xe___.ini.xxx ファイル(___はos type,xxxはロケールID)による罫線文字の設定はロケールコードで指定する。
+
+       -UTF8関連の設定コマンド。
+
+           - <A href="HID_UTFCMD_J.htm">UTF</A> { {ALTCPLC | NOALTCPLC } | SWKBD | FILE | FN } [ CPU8 | CPLC | CPAS ]
+
+              ALTCPLC / NOALOTCPLC : プロファイルの記録も含めてCPU8指定のない場合
+                                     UTF8変換エラーのときCPLCでリロードするかしないか。
+
+              SWKBD:KBD Input変換を切り替える(Locale code&lt;--&gt;UTF8)
+
+                Alt+u は &quot;UTF SWKBD&quot; を実行しキーボード入力をLocaleCode&lt;-&gt;UTF-8変換します。
+                コマンド入力行の &quot;===&gt;&quot; が &quot;=u=&gt;&quot;に変化します
+                  =u=:キーボード入力はUTF8文字扱いです。
+                キーボード入力モード:UTF8が効果するのは次の場合です
+                    -Ctrl+W で UTF8またはEBC ファイルからコマンド入力行にカーソル位置のワードを複写する
+                    -クリップボードがUTF8またはEBCのときこれをファイル編集内容エリア以外にペーストする
+
+              FILE/FN:ファイルの中身/ファイル名のエンコーデングの省略値を設定。
+                      CPAS は設定をリセットする時に指定します
+                      設定は iniファイル に保存されます。
+                      コマンドラインの /U オプションの指定があればそちらが優先します。
+
+              UTF8とLocaleコードをコマンド行、ファイル名入力画面, 3.12/3.14 ユーテリティー画面 でミックスことも出来ます。
+              デレクトリー名、ファイル名にロケールコード、UTF8コードが混在する場合に使用します。
+              但しこの場合UTF8コードロケールコードは間にASCIIコード(0x00&lt;-&gt;0x7f)を
+              置かないと境界が区別できません。
+              ファイルへ内への入力はいずれにしろロケールコードになります。
+
+              コマンドラインパラメータで -Nm を指定するとUTF8環境でも
+              UTF8コードを1バイトづつ処理します。
+
+           -  <A href="HID_UNICOMB_J.htm">OPT UNICOMB</A> [ COMB | SPLIT | UNPR ] [ SHADOW | ITSELF | PADDING | U-xxxx ]
+
+              結合文字の表示方法を設定します。
+              Alt+&quot;:&quot; キーも COMB--&gt;SPLIT--&gt;UNPR をスイッチするのに使用できます
+
+       -コマンドラインオプション
+
+            xe [/U{F|N}{8|L}]
+              UF  : ファイル内容のエンコーディングの省略値の指定。
+              UN  : ファイル名のエンコーディング解釈の省略値指定。
+
+             -省略値はUTF コマンドでも設定できます、個々での指定がUTFコマンドより優先します。
+
+             -ファイル内容のエンコーディグについて。
+              File/Dir を開く時のCPU8/CPLCを指定するとプロファイルに保存されます
+              優先順位は コマンドオプション-&gt;プロファイル-&gt;コマンドラインオプション-&gt;UTF8コマンド設定
+              その後がLinuxの場合LANG環境変数に依存します。
+
+       -iniファイルで印刷可能/倍角の定義は変更することが出来ます。
+
+          .フォントの表示幅は言語環境で異なると思います
+           文字入力した位置と違う場所が変更されたりします。
+           sample dirの utf8data.0000-ffff を表示確認してください
+           問題がある場合は以下の手段を使ってください。
+          .ini ファイルでユニコードテーブルファイル名を指定。
+           Console版(DOS窓/Terminal Emulatorで動くxe)とGUI版(wxe,gxe)とで
+           フォント表示幅が異なる場合があるので別々に指定してください。
+
+           SBCS(1カラム)表示コードは内部的コードにマッピングしていますがSBCSの数が許容値を超えた場合
+           DBCS(2カラム)表示されます。
+           次の様な警告が出た場合はこの指定で、使用してないユニコードの範囲をDBCSとしてください
+           例)　&quot;2 e000-f8ff&quot;
+             &quot;Warning:UCS map tbl overflow. Treate this range as DBCS(adjustable by ini file).&quot;
+
+               UnicodeTbl=&quot;::xeuctb&quot; #(&quot;&quot;)# Unicode Codepoint File:SBCS/DBCS/Unprintable specification
+               UnicodeTbl_Console=&quot;::xeuctb.cons&quot; #(&quot;&quot;)# Unicode Codepoint File for console version
+
+          .ユニコードテーブルファイルの例。(sample/xeuctb)
+
+               #################################################
+               # Unicode character type specification file
+               #   Specify file name on ini file
+               #   You need specify only to change default
+               ## Line Format ##################################
+               # unicode character type specification file
+               # type start-end
+               # type     : 0:Unprintable, 1:printable single column character, 2:printable wide(double column) character,
+               #            #:comment
+               # start-end: unicode range by hex digit notation. Lines should be accendant sequence.
+               # Ex) 2 01cb-01e3
+
+       -その他。
+          .sort は UCS2 順です
+          .CV 各国語ファイルでのみサポートされます。UTF8ファイルでは使用できません。
+          .コマンド(=6)画面はCPAS,ショートカットキー編集(=0.1)画面はCPLCです。
+
+#endif
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

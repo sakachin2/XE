@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>xprint</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;">||*CID:||+v927R~:  2014/02/14                        update#=  138;
+**********************************************************************
+*File print utility : XPRINT
+**********************************************************************
+
+This is a file print utility with following characteristic.
+    (related option parameter is in parenthesis)
+  - Multiple file print
+      support directory or wildcard file specification using *,?(hidden file
+      will be printed),indirect file which contain file name to be printed(Yi),
+      or stdin input is available.
+      File print sequence control(/O),file selection by timestamp(/D)
+      is available. You can select updated file only using file archived
+      attribute.(/Ym,/Ya).
+      To save paper use option of no page eject at end of file(/Yv)
+      for print directory with many small files.
+      Under OS/2;output may be multiple job(/Yj),document name is set
+      (/Yd).You can delete or change priority etc. on printer object folder.
+  - File time stamp and total page-number on page header.
+  - Char pitch and Line pitch(/C,/L,/E).
+      Char pitch is determined by max column(/C) and form type(/E).
+      When /C is not specified,it is determined by the longest line of
+      the file and form type selecting the smallest pitch in order to
+      print the longest in a line.(see also discription of parm /E)
+      You can also control line pitch(/L) or Font style(/F).
+      Use printer command file when pitch control is not appropriate for
+      your printer.
+      For Win version,any value is avail for CPI/LPI,and CPI/LPI is cal-
+      culated from chars per line and lines per page if no CPI/LPI is
+      specified.
+  - Double page(2 pages per a sheet) print support.
+  - Output page range,print restart file name(/P).
+      Useful when paper jammed.
+  - Input range by line-No(/I) or offset(/Ix).
+      Use for file partial print.
+  - Descendant page sequence print(/Yp).
+      Useful for printer which put page on stack with face up.
+  - DBCS control(/M).
+      Check validity of DBCS second byte.
+      Always print second byte on same line as first byte.
+      Kanji code of file must be Shift-JIS code set.
+  - Dump mode print(/M).
+      Print replacing unprintable char by &quot;.&quot; under the specified char
+      set.
+  - Skim mode print(/M).
+      Print skimmed printable char only to check binary file.
+  - Fixed Record Length fil print(/R).
+      Line feed not by CRLF but by record-size specified.
+  - Variable Record Length file print(/V).
+      Record header format supported is as following.
+      2 byte/2 byte(containing header length or not),RDW(4 byte LLZZ),
+      Microfocus(2 byte/4 byte is determined by top record of the file).
+      Record header is printed by /Mtx option,
+      or by /EOLPRINT when text mode.
+  - Hex dump print(/M,/Y6,/R).
+      32/16 byte width(horizontal)
+      or record-size width(3 line virtical).
+  - Print UTF8 encoded file.
+  - Print EBCDIC encoded file by codepage parameter..
+
+  -------
+      There are 2 binaries for Linux.
+        xprint:Text output. Use xprint.sh to enq to printer-Q.
+               UTF8 is converted the locale code page.
+        gxp   :Gnome print. Enq to default printer.
+               Pitch is not fixed,Color Density is changable.
+
+
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>
