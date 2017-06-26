@@ -1,0 +1,2107 @@
+||*CID:||+v128R~:  2016/09/09                update#=  202;           ||+v128R~
+######################################################################
+[Japanese-SJIS]  v1.27 (See xelnxe.txt for English)                   ||~v127R~
+######################################################################
+GTK(X-windows)版 gxe と                                               ||~v127R~
+TerminalEmulatorあるいは全画面Console(ランレベル:3)上で稼動する xe の ||~v127R~
+２つの実行ファイルがあります。
+以下 gxeにのみ該当する部分は "#ifdef XXE" で囲んであります。
+
+(1) 起動方法
+
+(1-A) ソースパッケージからインストールする場合。
+
+  . gxe-v.rr.tar.gzをPC上で解凍(v.rrはバージョン) 例えば "tar -xvzf gxe-1.23.tar.gz".
+    展開されたサブDirに入り、
+      ./configure        (Makefileの作成)
+      make               (コンパイル)
+        (configure,make のトラブルについてはtopdirのREADMEを参照してください)
+      ファイルは以下のような構造で配置されています
+        topdir--README
+               +src-                           gxe,gxeDebug
+                   +--xe                       xe,xeDebug,xe3270,xe3270Debug
+                   +--xsub                     xfcなどコマンドラインツール
+                   +--xp                       xprint
+                   +--sample
+               +--doc-
+                   +--en                       フラットファイル文書(英語)
+                   +--jp                       フラットファイル文書(日本語,sjis and euc)
+                   +--xehelp                   ヘルプコマンド、ヘルプメニューで使用するHtml文書
+                                               wxe.pngもここにあります。
+        (docファイルなど個別のファイルについては(2)を見て下さい）
+  .次のwxe.pngも含めて特定のbinファイルとxehelpは "make install" で既定のDirへコピーすることが出来ます。
+    (root ユーザー権限が必要です)
+     gxe,xe,xprint,xfc -->/usr/local/bin                     (但し make の --bindirで変更可能)
+     xehelp            -->/usr/local/share/gnome/help/gxe    (configure.in の packagehelpdir)
+     wxe.png           -->/usr/local/share/pixmaps/gxe
+
+     xsub内の他のbinファイルは必要に応じてPATH の通ったディレクトリーに移動する。
+
+(1-B) バイナリーパッケージからインストールする場合
+
+        バイナリーパッケージはv1.27以降提供されなくなりました         ||~v127R~
+
+(1-C) 実行.
+
+  . GUI版 gxe
+
+    Terminal emulator から gxe [ファイル名] で起動する。
+    あるいはデスクトップ上にアイコン登録してダブルクリックでメニューから
+    開始します。
+
+
+  ．コンソール版 xe
+
+    Terminal emulator から xe [ファイル名] で起動する。
+    コマンドライン パラメータの説明は "xe --h"(Linux版独自のヘルプ)、
+    または "xe -h"(共通ヘルプ)で表示されます。
+
+  (注)-全画面コンソールモード(run-level=3)でも X(run-level=5)のターミナルエミュレータ
+       上でも使用できますが X では設定が必要です。(4)参照、マウス操作は(5)参照。
+       X からコンソールにスイッチするには Ctrl+Alt+Fn(n:1-->6)キーを
+       使用します。但し ランレベル=3 から startx した場合そのコンソール
+       (通常は Console 1) はふさがっているので F2-->F6 が使える。
+       Ctrl+Alt+F7 で X に戻る。
+       コンソールモードと違ってターミナルエミュレータのkey-bindingsは限定されています。
+       xeに必要な機能キーを有効にするにはXのkey-bindingsなどの設定が必要です。
+       (4)X モードの為の設定と,マウス操作は(5)制約 を見て下さい。
+
+      -puTTY(**)上で実行する時はキーマップパッチ版を使用してください。
+       Xの設定やターミナルエミュレータを意識しなくて良くなります。
+       (**) puTTY:Simon TathamさんによるTelnetクライアントです。
+            フリーでソースも公開されています。
+            xeで使用するShift/Ctrl/Altキーとの組み合わが利用できるように
+            keyへのEsc文字列割り当てを変更できるパッチを作成しました。
+            puttykm.tgzが //www.geocities.jp/sakachin2/index.htmからDownload出来ます。
+            Linux版は telnet 先をLocalにして使用することも出来ます。
+            このほうが、xelnxkey.xxxを使用するよりより簡単(Xの設定不要、
+            これ以外の設定ファイルは必要がありません)で
+            全てのキーの組み合わせが利用できます。
+            (6)サンプルファイル-(i) puTTY.xekeymap の説明もお読みください
+
+            PuTTYで v0.63 で terminal typ=SCO を選択すると
+            Shift/Control+Fnは全て利用できこのパッチは必要ありませんが
+            "The Backspace key"オプションは "Control-H(0x08)"を選択しないとDelキー(0x7f)と
+            重複して判別できなくなります。又 0x7f をDelキーとみなす為には
+            xeでも "xe  --7d" と指定する必要があります。
+            xekbchkも --7 オプションがあります。xekbchkで確認してください。
+            xekbchk のヘルプは "xekbchk --h" です。
+#endif
+
+  (注)
+      -~/(HOMEディレクトリー)にカット＆ペースト等の為のワーク
+       ディレクトリー xe_wdnnnnn、ディレクトリーリストでのUndo用の
+       保存用ディレクトリ xe_undel_nnnnn (nnnnnはユーザーID)が,
+       作成されます。但しHOMEが /(ROOT)の場合は /tmp になります。
+       必要なら前者は,環境変数 xe または -w コマンドラインパラメータで
+       変更できます。後者は環境変数 xe_undel で変更できます。
+
+      -KDE環境ではerror while loading shared libraries:...
+       で libgnomevfs や libgnomeprint が見つからないため起動できないことがあります。
+       これを解消するにはinstallerで何か他のgnomeアプリケーションを導入してください。
+       Kubuntu 6.10では Adept installerで Any suiteを選択し"GNU Paint"/Gladeを
+       導入することで解決しました。
+
+      -xe,gxeがハングした場合の対処。
+       Ctl+Alt+Fn (nは2から6)でコンソールモードに移行しプロセスをkillする。
+       X の画面に戻るには Ctl+Alt+F7を使用。
+       プロセスをkillするには
+          ps -ef |grep xe
+       で xe または gxe のプロセス番号を得て
+          kill -9 nnnn
+       でプロセスを落とす(nnnnはプロセス番号)
+
+      -キーボードの反応が遅いとき。
+       キーボードレートを変更する。
+       Consoleでの変更は "kbdrate -r 6 -d 250" を/etc/rc.localにいれる。
+       (6:Repeat時の1秒間の文字数。250:押し続けが250ms経過するとRepeatとみなす。)
+       X(gtermなど)での変更はFC4ではデスクトップ->個人設定->キーボード
+       の画面のキーのリピートで調整する。(下部に確認用のTextBoxがある)
+
+      -キー操作でWindowManagerが反応したり何も反応しない場合、
+       システムのショートカットキーとxeのキー割り当てを調整してください。
+       Kubuntu edgyの場合ですが特に多くのデフォルト定義がされているようです。
+       システムのショートカットキーの定義変更は例えば
+       FC5では
+           デスクトップー＞設定ー＞キーボードショートカット.
+       Kubuntu edgyでは
+           SystemSettings->ComputerAdministrations->Keyboard&Mouse->KeyboardShortcut.
+       openSUSE10では
+           Configure Desktop Personal Settings->Regional & Accessibility
+           ->keyboard Shortcuts.
+           F12 はデフォルトで Kerry Beagle Search を起動するようになっているかもしれません。
+           この設定を解除するには,"Open configuration dislaog"を押します。
+           "Show Search Dialog" を選び"Custom" ラジオボタンを押します.
+           リブートが必要です.
+
+(2) xelnx___.tgz (___はバージョン)には次のファイルが含まれています
+
+      バイナリーパッケージはv1.27以降提供されなくなりました           ||~v127R~
+
+      以下は sample ディレクトリー。
+
+      . xprint.sh   印刷ツール:gxp を呼び出す様に修正しました         ||~v127R~
+      . xpesc       xprint で Escプリンターを使用するサンプルシェル
+        (注) xeで使用するのは省略値はxprint.shですが、xe.iniファイルで
+             設定変更できます。
+               XPrint_Command_LNX="xpesc" #("")# XP command
+      . XE4S001Z.asm Turnkey-MVSアクセスで使用する、HOST ASSEMBLER ファイル。
+
+#ifdef XXE
+      (gxe では 以下のファイルは関係ありません)
+#else
+      V128E(2016/09)から Shift+Alt+, Shift+Ctrl+ の組み合わせも利用できるようになったので||~v128I~
+      以下の対応は不要だと思います                                    ||~v128I~
+      これらの組み合わせキーは Linux のショートカット キーとして設定されている場合もあるので||~v128I~
+      これらのキーを利用する場合は Linux の設定の変更が必要になることがあります||~v128I~
+      Shiftキー無し(A+Fn,C+Fn)がショートカットキー設定されている場合  ||~v128I~
+      そちらもソートカットキーを無効にする必要があるかもしれません    ||~v128I~
+                                                                      ||~v128I~
+      (F1,Ins などの機能キーとShift,Altなど修飾キーの組み合わせををより多く利用できる様に       )||~v127R~
+      (するための設定ですが、よくわからない場合はこの対応はやめて　　　　　　　　　　　　　　　 )||~v127R~
+      (Shift+F1は"UNDo" などコマンドを使用するようにしてください　　　　　　　　　　　　　　　　)||~v127R~
+
+      . xej106.map   全画面コンソールモード用の日本語キーボード対応のxe用キーMapping設定サンプル。||~v127R~
+      　　　　　　　 通常はkonを使用するとき以外は使用しない。
+      以下、3種のファイルのxxxはリナックスディストリビューションIDで
+          tb6 :TurboLinux v6.0
+          rh8.0 :RedHat v8.0     rh9 :RedHat v9
+      をサンプル提供しています。
+        . xelnxres.xxx xterm,kterm 用 Xリソースファイル。
+                       xelnxres.fullはxeで使用できるすべてのキーについて
+                       記述してあります。環境に合わせて必要なキーの行を
+                       対応するファイルにコピーしてください。
+        . xelnxkey.xxx xeキーマッピング指定ファイル。
+                       キー入力で発生するEsc文字列の解釈をxeの省略値から
+                       変更するときに使用するファイル。
+                       xe の省略値は(9)-(b)参照。
+        . xexmap.xxx   Xキーバインディング設定ファイル。
+                       gnome-terminalで足らないキーの組み合わせを
+                       補う為に使用する。
+                       xmodmap でXのキーバインディング設定を変更する。
+                       ex) "xmodmap xexmap.xxx"
+                       但し,OPT CCFUNCコマンドでCtrl+文字キーも利用できるので
+                       その省略時割り当てでよければ不要。(5)制約の項参照。
+
+      . xegt,xekt,xext それぞれ xe 用の設定をしてgnome-terminal,xterm,
+                       kterm を起動しその上でxeを起動するサンプルShell。
+      . xegetdv      サンプル起動シェルから呼び出され、DistributionIDを
+                     判定するシェル。
+      . xesetxenv    サンプル起動シェルから呼び出され、xe のX環境を
+                     設定するシェル。設定ファイルの場所など環境に
+                     合わせて変更して下さい。
+      .puTTY.xekeymap 私のキーマッピングパッチを当てた puTTY で使用するキーマッピングファイル。
+      .xe.keytab     KDE の konsole で使用するキーマッピングファイル。
+
+#endif
+######################################################################
+
+(3)。XE Linuxコンソール版と他のDOS系の版との違い。
+
+     XE Linuxコンソール版と他のDOS系の版との違いを述べる前に、
+     移植作業で気のついた UNIX系 と DOS系 の 違いを整理しておきます。
+
+  - ファイル名。
+    . A:などのドライブIDを含まない 。
+    . 経路の分離文字。 "\" と "/"。
+    . 大文字/小文字が区別される。
+      コマンドは小文字が普通。
+    . "."や ".." もファイル名として許されるが(WindowsでもOK)、
+      "!" は bash が解釈するので使用できない。
+    . "*"や "?" もファイル名として許されるがコマンドで指定すると
+      シェルが展開するので注意が必要。ファイルを rm したつもりが
+      すべてのファイルを削除してしまうことにもなる。
+    . "~" は ホーム Dir を指し示す。
+    . ワイルドカード "*.*" は 間に "." を含まないファイルとは一致しない。
+  - ファイル操作。
+    . 0x1a(Ctrl+z)はEOFIDの意味を持たない(以降も読める)。
+    . ファイル、ディレクトリーはパーミッションフラグで保護される 。
+        更に t ビットオンのディレクトリーでは root か所有者以外が
+        ファイルを rename/unlinkできない。
+        x ビットオフのディレクトリーの中は見れない。
+        mkdirの mode パラメータ指定は umask 設定により修正を受けるので
+        改めて chmod が必要になることがある。
+        マウントされたDOSパーティションのファイルは属性変更できない。
+    . ファイルのタイムスタンプが秒単位。DOSは2秒単位。
+    . cd コマンドのオペランド無しは "cd ~" の意味になる。
+#ifdef XXE
+      (gxe では 以下のキーボード関連説明は関係ありません)
+#else
+  - キーボード。
+    . DOS系では スキャンコード/文字コードの組み合わせを受け取るが、
+      UNIX系では F1、Insなどの拡張キーの時コンソールアプリケーションは
+      エスケープシーケンス文字列を受け取る。
+      (X-Applは別ですが、xtermなどのTerminalエミュレーターを使用すれば
+      エスケープシーケンス文字列を受け取ることが出来る。)
+      例えば Ins キーなら \x1b[2~ 等。
+
+      以下は全画面コンソールモードの場合で X(TerminalEmulator上で動かす)場合は（４）の章を見て下さい。||~v127R~
+
+      Esc文字列はTERM 環境変数から決定されたTerminfoデータベース
+      (/usr/lib/terminfo)に示されていますが、TerminfoはStringを
+      シェルなどが解釈する方法を定義しているだけでキーとのマッピングは
+      loadkeysで設定されます。
+      loadkeys のデータは /usr/lib/kbd/keytablesにあります。
+      通常は Terminfo に示された文字列が発生しますがこれを
+      loadkeys コマンドで変更することができます。
+    . loadkeys では左右の Alt キーを区別して設定できる。
+    . 現在のマッピングの設定は dumpkeys コマンドで見ることができます。
+      (この形式はそのまま loadkeys の入力にできます。)
+      dumpkeys の出力の見方をサンプルで簡単に説明します。
+      (私の理解で正しいかどうかは保証の限りではありません。)
+
+       1) keymaps 0-2,4-6,8-9,12
+       2) alt_is_meta
+       3) keycode   1 = Escape           F83
+       4)     control keycode   1 = F84
+       5)     shift   alt keycode   1 = Meta_Escape
+       6)     keycode  60 = F2               F14              Console_14       F2
+       7)     alt      keycode  60 = Console_2
+       8)     control   alt keycode  60 = Console_2
+              :
+              :
+              :
+       9) string F1 = "\033[[A"
+          string F2 = "\033[[B"
+          string F3 = "\033[[C"
+              :
+
+       1) マップIndexを指定します。keycode nn = の右側の各欄がどの
+          シフトキーに対応するかを指定しています。
+          数字は 0:Normal, 1:Shift, 2:AltGR(Alt-R), 4:Ctrl, 8:Alt(Alt-L),
+          16:Shift-L, 32:Shift-R, 64:Ctrl-L, 128:Ctrl-Rの組み合わせです。
+          したがって "keymaps 0-2,4-6,8-9,12" は
+          Normal(0),Shift(1),AltGR(2),Ctrl(4),Shift+Ctrl(5),AltGR+Ctrl(6),
+          Alt(8),Shift+Alt(9),Ctrl+Alt(12) の時の機能が "="の右に順に
+          指定されていることを意味します。
+       2) Alt+x(文字キー)で Meta-x を生成することを指定します。
+          Meta-xが生成するコードは setmetamode コマンドで決まります。
+          Esc+x か x|0x80 です。例えば Alt+a なら 0x1b61 か 0xe1 です。
+       3) キーコードに割り当てられた機能を表示しています。
+          キーコードは showkey コマンドで見ることができます。
+          この例は keycode 1 はシフトなしで Escape,Shift+ で F83 と
+          なります。Ｆ83 が具体的に何の機能かはアプリケーションが
+          決めます。マッピングファイルでは 発生する文字列を定義する
+          だけです。 9) 以降が文字列を定義した例です。
+       4),5),7),8).
+          各シフトキーとの組み合わせの機能指定は 1)で指定された欄に
+          指定する以外に直接シフトキー名付きで指定できるようです。
+       6) Shift+F2 に F14 が割り当てられています。
+          AltGR(右Alt)+F2 が Console 14 になっていますがサポートされる
+          コンソールの数は別途制限があります。
+       7) Alt(左Alt)+F2 が Console 2 とあり Alt+F2で コンソール 2 の
+          画面に切り替わります。
+       9) Fxx が生成する文字列が表示されます。
+
+    . Windowsでもそうですが Altキーとの組み合わせはシェルなどが先取り
+      することがある。
+
+
+    . xe は loadkeysコマンドでできることを初期化時にAPIを使用して設定します。
+      Esc文字列の割り当ては 機能キー Fnn にしか出来ません。
+      キーとShift/Ctrl/Altとの組み合わせで、xeが使用するものをにFnnを
+      割り当ます。Fnnが生成する文字列は PCDOS で定義されたスキャンコード+
+      文字コード＋シフトIDに設定します。
+      キーとScan+Charコードの対応は(9)-(a)表参照。
+      例えば  F48 を Alt+キーコード 88（F12) に割り当て、
+      Alt+F12 の PCDOSのScan+Charは0x8C00 なので F48 に Esc文字列
+      0x1b~8C003を割り当てます。xe は Esc文字列をReadしたとき、
+      先頭が 0x1b7e(^[~) なので xe 用に設定したの文字列と判断し、
+      Scan+Char 0x8c00を取りだし、それから押されたキーを判定します。
+      最後の一文字はシフトIDでSiftキー有り無しでScan+Charが同じ場合が
+      あるのでシフトキーを判別するのに使用します。
+      シフトIDは 0:なし、1:Shift、2:Ctrl、3:Alt です。
+
+      kon(Kanji ON console)のもとで xe を実行する時はAPIによる内部的な
+　　　設定ができないので添付のファイルで設定する必要があります。
+      kon に入る前に "loadkeys xej106.map" としてください。
+      但しとなりのConsoleでxeを揚げておけばAPIによる設定は効いているので
+      loadkeyする必要はありませんが最後のxeが終了する時に設定は戻します。
+
+      尚 F1 等 他の アプリケーションでも使う可能性のあるキーについては
+      xe 独自の設定は避けて Terminfo で設定された 割り当て文字ストリング
+      を解釈するようにしています。
+      Terminfo ライブラリー(/usr/lib/terminfo)にはキーボードタイプごとの
+      定義が置かれていますが、linux(/usr/lib/terminfo/l/linux)では
+      例えば F1 は "^[[[A" と設定されています。
+      xeの解釈するEsc文字列については(9)-(b)表 を参照してください
+#endif
+
+  - 画面。
+#ifdef XXE
+    . gxe 背景色はプルダウンSetupメニューからカラーダイアログで設定します。
+      前景色はgxeのトップメニュー オプション 0 から設定変更します。
+#else
+    . curses ライブラリールーチンを利用すれば 画面の色を制御できますが
+      Linuxでは背景色の高輝度がサポートされてないようです。
+    . curses ライブラリールーチンではカーソルの形を変更できません。
+#endif
+  - その他。
+    . コマンドパラメータのフラグとして "/" でなく "-" を使用する。
+      また値を持つパラメータの場合UNIX系の場合、例えば "-o fnm1" でも
+      "-ofnm1" でも受け入れられることが多い。
+  - フロッピードライブのファイルに対するAPIはなく mtools コマンド使用。
+
+----------------------------------------------------------------------
+
+     前述に従い XE Linuxコンソール版は他のDOS系の版と次のような点で
+     相違があります。
+
+  - ファイル名。
+    . 内部的に使用するファイル名の "!" を "_" に変更。
+    . "*"、"?" を含むファイル名、Dir名は処理できません。
+    . DOSコマンドでファイル名が "*" のとき確認を取る。
+      ("xprint *" の "*"は現表示ファイルの意味であり混同を配慮)
+  - ファイル操作。
+    . cd コマンドはオペランド無しの時 ホームDirに設定します。
+    . Textモードの時も最後の0x1a(Ctrl+z)を表示する。
+      0x1a(Ctrl+z)は 省略値では入力禁止文字としない。
+      したがって、INIファイルはDOS系とは共用できない。
+      ( 省略値を出力するには "xe -i" で立ち上げ "ini" コマンドを入力)。
+    . WorkDir及びDirリストの Undo用の保存ディレクトリーはユーザーID毎に
+        作成する。(環境変数 XE は不要)。
+    . chmod コマンド追加。
+        mkdir コマンドにモードパラメータ(パーミッション指定)追加。
+        attr DOSコマンド/行コマンドの属性値もパーミッション値を指定する。
+        s ビット(Setuid/Setgid), t ビット(Stickey)も設定可能。
+        oooo 或いは oooxx の形式。
+        oooo の時 最初の o が setuid(4),setgid(2),sticky(1).
+        残りが通常の 8進数のパーミッション。
+        oooxx の時 ooo は 8進数のパーミッション、xx にはsSgtを指定。
+        ここで、u:setuid, S:setuid+setgid, g:setgid, t:stickey.       
+        attr コマンドオペランド無しの時ヘルプ表示。
+        尚、DOS領域をmountしている場合、DOS領域のファイルの属性変更、
+　　　　ファイル名の大文字小文字変更はできません。
+    . フロッピードライブのファイルはa:,b:で判断しmtoolsコマンドを
+      使用して処理しますがその標準出力、標準エラーをチェックしているので
+      mtools のバージョンによってはうまく行かない可能性も有ります。
+      ファイル名がa:,b:で始まる場合は "OPT FD OFF" コマンドでFDオプション
+　　　をOFF にしてください。
+
+  - キーボード。
+#ifdef XXE
+    . Alt キーは左右どちらも使用できます。
+#else
+    . Alt キーは原則 左 Alt を使用してください。
+      文字キーには右 Alt キーとの組み合わせは設定していません。
+    . キーヒットで発生する文字列と xe での解釈は xekbchk ツールで
+　　　チェックしてください。
+#endif
+  - 画面。
+#ifdef XXE
+#else
+    . 8 色 か モノクロモードをサポートします。(色数は0.0の画面に表示)
+      前景のみ高輝度（+7色）にできます。
+    . 文字入力のInsモード/Repモードのカーソル形状のはブリンク(--b)か
+      反転(--r)かをパラメータ指定します(省略値は反転)。
+#endif
+    . Dirリスト画面にUserid/Groupid或いはUser名/Group名をできます。   
+      ファイルサイズ表示との切り替えは F6/S+F6 を使用する。
+      (リモートファイルではIDか名前かは固定で、変えられません)
+      ファイルサイズ表示 ー－－＞S+F6ー－－＞Userid/Groupid表示
+                                                    ^
+                                                    |
+                                                  S+F6
+                                                    |
+                                                    v
+      ファイルサイズ表示 ＜－－ー F6 ー－－ーUserid/Groupid表示
+  - その他。
+    . コマンドパラメータのフラグとして 原則 "-" を使用するが、
+      "/"がファイル名パラメータの位置以外のところで使用された場合は
+      フラグパラメータとして認める場合もある。
+      値を持つパラメータの場合フラグと値を離した形式はサポートしない。
+      例えば "-ofnm" はOKだが "-o fnm" は受け付けない。               
+#ifdef XXE
+#else
+    . Linux 版特有のコマンドラインパラメータは "--" をフラグIDとする。
+      xe --h でヘルプ表示。その形式は
+      xe [--bcdhmru1] [--7{B|D|C}] [--kfilename] [cps]
+        b :挿入モードのときカーソルブリンクする。
+        B :高輝度カラー表示のための curses A_BOLD フラグの使用。
+           黄色表示は茶色+A_BOLDとしているがLinuxの版によってはA_BOLDが
+           悪影響をだすことがあるのでオプションとした。
+           省略値は CONSOLE モードでは不使用、ターミナルエミュレーターでは使用。
+           --B を指定するとこの省略値の否定となる。
+        c :PgUpなど全画面再描画の時、画面を全クリアーの後描画する。
+           これも --1と同様にDBCS残像対応ですが全画面描写の場合は
+           全画面クリアー後描画も指定したほうが描画が早い場合もある。
+        d :DBCSモードのとき画面分割している時は更新行のみ再描画する。
+           省略値はRedhat9版はOn, FC5版はOFF。
+        m :モノカラーモード。
+        Mi-j:マウスのクリック、ダブルクリック判定間隔を0.1秒単位で指定する。
+             i:Down-->Up間隔、以内はクリック、以上はドラッグ。
+             j:Up-->Down間隔、以内はダブルクリック、以上はクリックが2回。
+             省略値は --M6-2.
+        r :挿入モードの時カーソル反転する。(VT-Consoleでの省略値)
+        u :挿入モードの時アンダーラインを表示する。(Xのterminalの省略値)
+        1 :Redhat9版：DBCS行でも2度書き描画しない。
+           FC5版    ：DBCS行は2度書き描画する。
+           CursesのバージョンによってはDBCSが残像の原因になることがあるが
+           その場合は2度書きを試して見て下さい
+        7 :発生した文字 0x7f の扱いを指定するオプション。
+        　　B:BackSpace, D:Delete, C:文字 0x7f
+            省略値はTerminfoに従う
+        k :Keymapファイル（Esc文字列のキーへの対応表）
+
+       cps:DOS系と共通のパラメータ、"-" 一つの形式。
+           それらについては "xe -h" で表示されます。
+  (注)
+     kon,ktermで日本語表示が不安定になることがあるため、DBCSモードのとき
+     描画前に画面全体をクリアーするオプションと、日本語を含む行では
+     日本語抜きで1回目、日本語のみで2回目の2度書きをするオプションを
+     設けています。
+     DBCSモードとはコンソール画面ではkonのとき、Xではxterm以外のときです。
+     省略値は、
+     "分割画面でないときの全画面描画(PgUpを押したときなど)は
+     画面全体クリアーし、そうでないときは日本語を含む行の二度書き"
+     です。それに対し
+     "--c" は分割画面のときでも一方が全画面描画の時は画面全体クリアー、
+           遅いハードでは画面分割していると他方がちらつくことがあります。
+     "--d" はどんな場合も画面全体クリアーをしない、更新行のみ描画。
+     "--1" は日本語を含む行の2度書きをしない。
+
+     最近のgnome-terminalでは --1 --d でも問題はない様です。
+#endif
+
+######################################################################
+
+#ifdef XXE
+#else
+
+(4)。X モードの為の設定。
+
+(4A) KDE 環境.
+
+    . konsoleのショートカット設定は メニュから Settings->Configure shortcuts です。
+      Shift+InsertのPasteへの割り当てもここから解除します。
+      xeの機能キーを十分利用できるようにするには keytabファイルを設定する必要があります
+      (8)-(j) xe.keytab を見てください。
+
+(4B) GNOME 環境.
+
+    . X では xmodmap コマンドで キーコードと機能の割り当てを設定できますが
+     キーに文字列を設定できません。代わりに xterm,kterm 等のターミナル
+     エミュレーターが文字列を発生します。ターミナルエミュレーターの
+　　 生成する文字列の種類は限られていて xe には十分ではないので 、
+     Shiftキーとの組み合わせなどは X のリソースとして追加設定する必要が
+     あります。
+
+     以下はxterm,ktermの場合でgnome-terminal,konsoleの場合は
+     ".gnome-terminalの場合" へ進んでください
+
+     添付の ファイル xelnxres.xxx を xrdb コマンドで Xリソースに
+     マージしてください。xxxはディストリビュションID。
+　　 このファイルはxterm,kterm で動く他のApplと干渉しないように
+     アプリケーション名をxeとして作成しているので、
+     それを 次のようにxterm/ktermに通知する必要があります。
+     例えば、 "kterm -name xe -e xe"の
+     -name はアプリケーション名で -e は起動するプルログラム名です。
+     -name の "xe" が 次に示すようにxelnxres.xxx の中の xeに対応しています。
+        xe*cursorColor: blue
+        xe*vt100.Translations:	#override \n\
+            Shift<Key>F1:	string(0x1b)	string("~54001")\n\
+            :
+            :
+     次のような xe 起動シェル を作っておくと良いでしょう。
+
+        xrdb -merge /g/src/xe/xelnxres.xxx
+        kterm -name xe -e xe $1 $2 $3
+     ==>(6)章のサンプル xekt,xextを参照してください。
+
+     xe 専用の設定をするには次の様な方法もあります。
+     プログラム名ktermのコピー、例えば ktermxe を作成し、
+     xelnxres.xxx のアプリケーション名を ktermxe に変更し
+     kterm をその ktermxe で起動する。
+     コピー先のプログラム名の一部にはxterm,ktermを残してください。
+     xeがターミナルエミュレーターを判断するときに実行モジュール名に
+     xterm,kterm等の文字列があるかをChkしています。
+
+     他のアプリケーションとの干渉が問題とならない場合、
+     次のようにすることも出来ます。
+     アプリケーション名を KTerm*vt100.Translations .. の様に
+     (KTermはアプリケーションクラス名でketrmはアプリケーション名です、
+     linuxの版によっては一方のみ有効のものもあるようです）変更すれば
+     kterm を起動したときにリソースの設定は終っているので kterm 上で
+     単に プログラム名 xe を入力するだけで全ての機能キーを使用できます。
+     KTermと修正したものをxelnxres.xxx とした場合、xe 起動シェルを
+        xrdb -merge /g/src/xe/xelnxres.xxx
+        xe $1 $2 $3
+
+     尚、xekbchk --sfnm で xe が認識するキー入力文字列を表示しますが
+     ^[~xxyyz (DOS scan+char+shiftid)形式の文字列はxekbchkの出力に
+     なくても認識します。^[~xxyyz 形式以外の他のアプリケーションと
+     共用できる文字列でxeが認識できるものが表示されます。
+     ==>(9)-(b)表参照
+
+
+    . gnome-terminalの場合。
+
+     gnome-terminalはXリソースを見てないのでこのような設定はできません。
+     F1はHelpキーに割り当てられているので、メニューの Edit-->Keybindings
+     で Help を Disableにしてください。
+     F10のメニューショートカット割り当ても無効にしてください
+     FedoraCore4ではShift+F10でポップアップメニューがでますが、
+     これはGTKにhardcodeされていてgnome-terminalがそのまま使っているので
+     変更できないようです。
+     更に、gnome-terminalはvteに依存しています。
+     vteはいくつかのキーの組み合わせを自分で処理します。(vte SRPMのvte.cを参照)
+     例えばShift+InsertはPRIMARYクリップボードからペーストします。
+     Shift+PgDb/PgUp/Home/Endも自前の処理をしています。
+     これを回避するにはxmodmapで別の割り当てをしてください。
+     sample file (e)xelnxkey.xxx を参照。
+
+#endif
+
+######################################################################
+
+(5)。制約。
+
+#ifdef XXE
+	. gxeでのマウス操作などについては xewxej.txt を参照してください。
+#else
+    . マウス操作。
+      X terminal emulator上でのマウス操作は gxe版 と多少の違いがあります。
+      (全画面コンソールモードの場合マウスは利用できません。)          ||~v127R~
+                                                                      ||~v127R~
+      600msの間にボタンをDown/Releaseをした時にクリックとみなします。
+      600ms押したままで同じ位置で離すことを"PUSH"とします。
+      200msの間に再クリックするとダブルクリックとみなします。
+        600,200は コマンドラインパラメータ --Mで変更できます。
+        例。 xe --M10-3
+      "Ctrlキー+"は検知できるが"Shiftキー+"が検知できない。
+
+       .左ボタン  ：-カーソル(キャレット)位置設定。
+                    -ファイル内容画面での"PUSH"でカット＆ペーストの範囲指定。
+                     貼り付けはLinuxでは中ボタンを使用。
+       .右ボタン  ：使用しません。
+                    (XXE版ではフローティングメニューのポップアップ。)
+       .中ボタン  ：- カット＆ペーストの貼り付けに使用。
+                      貼り付けには挿入(Paste)と上書き(PasteOn)がある。
+                      中ボタンで挿入、Ctrl+中ボタンで上書き。
+                      挿入の場合、キャレットが左端の行番号欄にあるとき行挿入で
+                      テキストエリアにあるときブロック挿入(右シフト)になる
+                      (XXE版ではShift+左ボタンで挿入、Ctrl+左ボタンで上書き。)
+                      回転で上下スクロール。
+                      Shift+回転で左右スクロール、
+                      Ctrl+回転でファイルの最初/最後のページにジャンプ。
+                      スクロール 行/桁 数は 3 で固定です。
+       .左ボタンダブルクリック
+                  ：-全ての画面でタイトル行をダブルクリックすると保存終了する。
+                     "Ctrlキー+"で破棄終了する。
+                    -メニュー画面、ファイル名選択画面、ディレテクトリーリスト
+                     画面では行選択に使用可能。"Ctrlキー+"でファイル名選択と
+                     Dirリスト画面で、画面の表示/編集モードと反対のモードで
+                     ファイルを開く。
+                    (XXEでは"Shift+"ではなく"Ctrl+"を使用。)
+                    -表示/編集ではカーソルが行番号欄のときは行、ファイル内容
+                     欄ではワードをクリップボードにCopyする。
+
+
+    . コンソール起動の場合キーボード設定は最後のセッションの終了時に
+      戻すようにしていますが、何かのトラブルで戻らない場合は
+      /tmp/lockfile_ukbdlnxc(最初にxeが起動した時のキー割り当てを
+      保存したファイル)を削除してrebootしてください。
+
+    . 或いは "loadkeys defkeymap" で デフォルトに戻りますが、
+      defaultを使用しない設定になっている可能性もあるので、
+      リブート後の最初のloginの時に "dumpkeys > ~/dumpkeys.org" 等
+      として設定を保存したほうがよいかもしれません。最初に戻る時は
+      "loadkeys ~/dumpkeys.org" とします。
+      設定はセッション単位ではなくシステムで 1つなので、マルチコンソール
+      の時は他のセッションに影響します。
+      特に kon が最後のセッションの時戻せないので注意してください。
+
+    . 日本語kon 上で動かす時 キー割り当て変更できません。             ||~v127R~
+      (pty (疑似端末)での key 設定の方法を知りません。)
+      kon を抜けて "loadkeys xej106.map" でキー割り当てを変更後
+      kon を起動してください。
+      或いは別のコンソール(Alt+Fn;n=1--6)で コンソールを切り替え
+      そこで xe を上げたままにしておいて戻ってkon上でxe をたち上げる。
+      この設定をしないとShift+PgDnなどXEとシェルの動作が矛盾して
+      表示が乱れることがあります。
+    . X モードの設定をしても尚、Linuxのバージョンによっていくつか
+    　利用できないキーがあります。
+      xe機能の省略時割り当てキーで使用できないのは以下の組み合わせです。
+      TuboLinux-V6.0
+        gnome-terminal.
+          S+F1-->S+F12,S+Up/Down/Left/Rightm,C+Ins,C+Del,C+F7-->C+F9
+      RedHat-v8.0
+        gnome-terminal.
+          S+F1-->S+F12,S+Up/Down/Left/Rightm,C+Ins,C+Del,C+F7-->C+F9
+      RedHat-v9
+        gnome-terminal.
+          S+BackSpace
+
+      v1.15からCtrl+文字キーも機能割り当てできるようになりました。
+      省略値は以下の割り当てです。
+          C_t=S_TAB,C_b=S_BS,C_x=S_ENTER,C_a=S_INS,
+          C_d=S_DEL,C_e=S_END,C_p=S_PGUP,C_n=S_PGDN,
+          C_u=S_UP,C_f=S_DOWN,C_l=S_LEFT,C_r=S_RIGHT
+      OPTコマンドでOPT CCFUNC ONと設定することにより利用できます。
+      これらのキーを使用すれば問題はいくつか解消されることになる。
+      RedHat9のgnome-terminal用のX-setup(xmodmap ファイル)も不要。
+#endif
+
+(6) サンプルファイル。
+
+#ifdef XXE
+      (gxe では xprint.sh 以外のファイルは関係ありません)
+#else
+    (a)xej106.map
+      コンソールモードキーバインディングファイル。
+      "loadkeys xej106.map" の様に使用。
+
+      0001|keymaps 0-2,4-6,8-9,12
+      0002|alt_is_meta
+      0003|keycode   1 = Escape           F83
+      0004|    control keycode   1 = F84
+      0005|    shift   alt keycode   1 = Meta_Escape
+      0006|keycode   2 = one              exclam
+      0007|keycode   3 = two              at               at               nul              nul
+      0008|keycode   4 = three            numbersign
+      0009|    control keycode   4 = Escape
+      0010|keycode   5 = four             dollar           dollar           Control_backslash
+      0011|keycode   6 = five             percent
+      0012|    control keycode   6 = Control_bracketright
+      0013|keycode   7 = six              asciicircum
+      0014|    control keycode   7 = Control_asciicircum
+      0015|keycode   8 = seven            ampersand        braceleft        Control_underscore
+      0016|keycode   9 = eight            asterisk         bracketleft      Delete
+      0017|keycode  10 = nine             parenleft        bracketright
+      0018|keycode  11 = zero             parenright       braceright
+      0019|keycode  12 = minus            underscore       backslash        Control_underscore Control_underscore
+      0020|keycode  13 = equal            plus
+      0021|keycode  14 = Delete           F86              Meta_BackSpace   F87
+      0022|    shift   alt keycode  14 = Meta_Delete
+      0023|keycode  15 = Tab              F88
+      0024|    control keycode  15 = F89
+      0025|    shift   alt keycode  15 = Meta_Tab
+      0026|keycode  16 = q
+      0027|keycode  17 = w
+      0028|keycode  18 = e
+      0029|keycode  19 = r
+      0030|keycode  20 = t
+      0031|keycode  21 = y
+      0032|keycode  22 = u
+      0033|keycode  23 = +i                +I                +i                F97              Tab              Tab
+      0034|    control alt keycode  23 = Meta_Tab
+      0035|keycode  24 = o
+      0036|keycode  25 = p
+      0037|keycode  26 = bracketleft      braceleft
+      0038|    control keycode  26 = F99
+      0039|    control alt keycode  26 = Meta_Escape
+      0040|keycode  27 = bracketright     braceright       asciitilde       Control_bracketright
+      0041|keycode  28 = Return
+      0042|    shift   keycode  28 = F90
+      0043|    control keycode  28 = F91
+      0044|    alt keycode  28 = Meta_Control_m
+      0045|keycode  29 = Control
+      0046|keycode  30 = a
+      0047|keycode  31 = s
+      0048|keycode  32 = d
+      0049|keycode  33 = f
+      0050|keycode  34 = g
+      0051|keycode  35 = +h                +H                +h                F96              BackSpace        BackSpace
+      0052|    control alt keycode  35 = Meta_BackSpace
+      0053|keycode  36 = j
+      0054|keycode  37 = k
+      0055|keycode  38 = l
+      0056|keycode  39 = semicolon        colon
+      0057|keycode  40 = apostrophe       quotedbl
+      0058|    control keycode  40 = Control_g
+      0059|keycode  41 = grave            asciitilde
+      0060|    control keycode  41 = nul
+      0061|keycode  42 = Shift
+      0062|keycode  43 = backslash        bar
+      0063|    control keycode  43 = Control_backslash
+      0064|keycode  44 = z
+      0065|keycode  45 = x
+      0066|keycode  46 = c
+      0067|keycode  47 = v
+      0068|keycode  48 = b
+      0069|keycode  49 = n
+      0070|keycode  50 = +m                +M                +m                F98              Control_m        Control_m
+      0071|    control alt keycode  50 = Meta_Control_m
+      0072|keycode  51 = comma            less
+      0073|keycode  52 = period           greater
+      0074|keycode  53 = slash            question
+      0075|    control keycode  53 = Delete
+      0076|keycode  54 = Shift
+      0077|keycode  55 = KP_Multiply
+      0078|    control keycode  55 = F114
+      0079|keycode  56 = Alt
+      0080|keycode  57 = space            space
+      0081|    control keycode  57 = nul
+      0082|keycode  58 = Caps_Lock
+      0083|    alt keycode  58 = dead_grave
+      0084|keycode  59 = F1               F13              Console_13       F1
+      0085|    alt keycode  59 = Console_1
+      0086|    control alt keycode  59 = Console_1
+      0087|keycode  60 = F2               F14              Console_14       F2
+      0088|    alt keycode  60 = Console_2
+      0089|    control alt keycode  60 = Console_2
+      0090|keycode  61 = F3               F15              Console_15       F3
+      0091|    alt keycode  61 = Console_3
+      0092|    control alt keycode  61 = Console_3
+      0093|keycode  62 = F4               F16              Console_16       F4
+      0094|    alt keycode  62 = Console_4
+      0095|    control alt keycode  62 = Console_4
+      0096|keycode  63 = F5               F17              Console_17       F5
+      0097|    alt keycode  63 = Console_5
+      0098|    control alt keycode  63 = Console_5
+      0099|keycode  64 = F6               F18              Console_18       F6
+      0100|    alt keycode  64 = Console_6
+      0101|    control alt keycode  64 = Console_6
+      0102|keycode  65 = F7               F19              F43              F7
+      0103|    alt keycode  65 = F43
+      0104|    control alt keycode  65 = Console_7
+      0105|keycode  66 = F8               F20              F44              F8
+      0106|    alt keycode  66 = F44
+      0107|    control alt keycode  66 = Console_8
+      0108|keycode  67 = F9               F21              F45              F9
+      0109|    alt keycode  67 = F45
+      0110|    control alt keycode  67 = Console_9
+      0111|keycode  68 = F10              F22              Console_22       F10
+      0112|    alt keycode  68 = Console_10
+      0113|    control alt keycode  68 = Console_10
+      0114|keycode  69 = Num_Lock
+      0115|keycode  70 = Scroll_Lock      Show_Memory      Show_Registers   Show_State
+      0116|    alt keycode  70 = Scroll_Lock
+      0117|keycode  71 = KP_7
+      0118|    control keycode  71 = F108
+      0119|    alt keycode  71 = Ascii_7
+      0120|keycode  72 = KP_8
+      0121|    control keycode  72 = F109
+      0122|    alt keycode  72 = Ascii_8
+      0123|keycode  73 = KP_9
+      0124|    control keycode  73 = F110
+      0125|    alt keycode  73 = Ascii_9
+      0126|keycode  74 = KP_Subtract
+      0127|    control keycode  74 = F112
+      0128|keycode  75 = KP_4
+      0129|    control keycode  75 = F105
+      0130|    alt keycode  75 = Ascii_4
+      0131|keycode  76 = KP_5
+      0132|    control keycode  76 = F106
+      0133|    alt keycode  76 = Ascii_5
+      0134|keycode  77 = KP_6
+      0135|    control keycode  77 = F107
+      0136|    alt keycode  77 = Ascii_6
+      0137|keycode  78 = KP_Add
+      0138|    control keycode  78 = F111
+      0139|keycode  79 = KP_1
+      0140|    control keycode  79 = F102
+      0141|    alt keycode  79 = Ascii_1
+      0142|keycode  80 = KP_2
+      0143|    control keycode  80 = F103
+      0144|    alt keycode  80 = Ascii_2
+      0145|keycode  81 = KP_3
+      0146|    control keycode  81 = F104
+      0147|    alt keycode  81 = Ascii_3
+      0148|keycode  82 = KP_0
+      0149|    control keycode  82 = F101
+      0150|    alt keycode  82 = Ascii_0
+      0151|keycode  83 = KP_Period
+      0152|    control keycode  83 = F116
+      0153|    altgr   control keycode  83 = Boot
+      0154|    control alt keycode  83 = Boot
+      0155|keycode  84 = Last_Console
+      0156|keycode  85 =
+      0157|keycode  86 = less             greater          bar
+      0158|keycode  87 = F11              F23              Console_23       F11
+      0159|    alt keycode  87 = Console_11
+      0160|    control alt keycode  87 = Console_11
+      0161|keycode  88 = F12              F24              F48              F12
+      0162|    alt keycode  88 = F48
+      0163|    control alt keycode  88 = Console_12
+      0164|keycode  89 =
+      0165|keycode  90 =
+      0166|keycode  91 =
+      0167|keycode  92 =
+      0168|keycode  93 =
+      0169|keycode  94 =
+      0170|keycode  95 =
+      0171|keycode  96 = F92
+      0172|    shift   keycode  96 = F93
+      0173|    altgr   keycode  96 = F95
+      0174|    control keycode  96 = F94
+      0175|    shift   control keycode  96 = KP_Enter
+      0176|    altgr   control keycode  96 = KP_Enter
+      0177|    alt keycode  96 = F95
+      0178|    shift   alt keycode  96 = KP_Enter
+      0179|    control alt keycode  96 = KP_Enter
+      0180|keycode  97 = Control
+      0181|keycode  98 = KP_Divide
+      0182|    control keycode  98 = F115
+      0183|keycode  99 = Control_backslash
+      0184|    control keycode  99 = Control_backslash
+      0185|keycode 100 = AltGr
+      0186|keycode 101 = Break
+      0187|keycode 102 = Find
+      0188|    shift   keycode 102 = F49
+      0189|    altgr   keycode 102 = F51
+      0190|    control keycode 102 = F50
+      0191|    alt keycode 102 = F51
+      0192|keycode 103 = Up
+      0193|    shift   keycode 103 = F68
+      0194|    altgr   keycode 103 = F70
+      0195|    control keycode 103 = F69
+      0196|    alt keycode 103 = F70
+      0197|keycode 104 = Prior
+      0198|    shift   keycode 104 = F61
+      0199|    altgr   keycode 104 = F63
+      0200|    control keycode 104 = F62
+      0201|    alt keycode 104 = F63
+      0202|keycode 105 = Left
+      0203|    shift   keycode 105 = F76
+      0204|    altgr   keycode 105 = F78
+      0205|    control keycode 105 = F77
+      0206|    alt keycode 105 = F78
+      0207|keycode 106 = Right
+      0208|    shift   keycode 106 = F80
+      0209|    altgr   keycode 106 = F82
+      0210|    control keycode 106 = F81
+      0211|    alt keycode 106 = F82
+      0212|keycode 107 = Select
+      0213|    shift   keycode 107 = F52
+      0214|    altgr   keycode 107 = F54
+      0215|    control keycode 107 = F53
+      0216|    alt keycode 107 = F54
+      0217|keycode 108 = Down
+      0218|    shift   keycode 108 = F72
+      0219|    altgr   keycode 108 = F74
+      0220|    control keycode 108 = F73
+      0221|    alt keycode 108 = F74
+      0222|keycode 109 = Next
+      0223|    shift   keycode 109 = F64
+      0224|    altgr   keycode 109 = F66
+      0225|    control keycode 109 = F65
+      0226|    alt keycode 109 = F66
+      0227|keycode 110 = Insert
+      0228|    shift   keycode 110 = F55
+      0229|    altgr   keycode 110 = F57
+      0230|    control keycode 110 = F56
+      0231|    alt keycode 110 = F57
+      0232|keycode 111 = Remove
+      0233|    shift   keycode 111 = F58
+      0234|    altgr   keycode 111 = F60
+      0235|    control keycode 111 = F59
+      0236|    altgr   control keycode 111 = Boot
+      0237|    alt keycode 111 = F60
+      0238|    control alt keycode 111 = Boot
+      0239|keycode 112 =
+      0240|keycode 113 =
+      0241|keycode 114 =
+      0242|keycode 115 =
+      0243|keycode 116 =
+      0244|keycode 117 =
+      0245|keycode 118 =
+      0246|keycode 119 =
+      0247|keycode 120 =
+      0248|keycode 121 =
+      0249|keycode 122 =
+      0250|keycode 123 =
+      0251|keycode 124 =
+      0252|keycode 125 =
+      0253|keycode 126 =
+      0254|keycode 127 =
+      0255|string F1 = "\033[[A"
+      0256|string F2 = "\033[[B"
+      0257|string F3 = "\033[[C"
+      0258|string F4 = "\033[[D"
+      0259|string F5 = "\033[[E"
+      0260|string F6 = "\033[17~"
+      0261|string F7 = "\033[18~"
+      0262|string F8 = "\033[19~"
+      0263|string F9 = "\033[20~"
+      0264|string F10 = "\033[21~"
+      0265|string F11 = "\033[23~"
+      0266|string F12 = "\033[24~"
+      0267|string F13 = "\033[25~"
+      0268|string F14 = "\033[26~"
+      0269|string F15 = "\033[28~"
+      0270|string F16 = "\033[29~"
+      0271|string F17 = "\033[31~"
+      0272|string F18 = "\033[32~"
+      0273|string F19 = "\033[33~"
+      0274|string F20 = "\033[34~"
+      0275|string Find = "\033[1~"
+      0276|string Insert = "\033[2~"
+      0277|string Remove = "\033[3~"
+      0278|string Select = "\033[4~"
+      0279|string Prior = "\033[5~"
+      0280|string Next = "\033[6~"
+      0281|string Macro = "\033[M"
+      0282|string Pause = "\033[P"
+      0283|string F21 = "\033~5C001"
+      0284|string F22 = "\033~5D001"
+      0285|string F23 = "\033~87001"
+      0286|string F24 = "\033~88001"
+      0287|string F43 = "\033~6E003"
+      0288|string F44 = "\033~6F003"
+      0289|string F45 = "\033~70003"
+      0290|string F48 = "\033~8C003"
+      0291|string F49 = "\033~47001"
+      0292|string F50 = "\033~77002"
+      0293|string F51 = "\033~97003"
+      0294|string F52 = "\033~4F001"
+      0295|string F53 = "\033~75002"
+      0296|string F54 = "\033~9F003"
+      0297|string F55 = "\033~52001"
+      0298|string F56 = "\033~92002"
+      0299|string F57 = "\033~A2003"
+      0300|string F58 = "\033~53001"
+      0301|string F59 = "\033~93002"
+      0302|string F60 = "\033~A3003"
+      0303|string F61 = "\033~49001"
+      0304|string F62 = "\033~84002"
+      0305|string F63 = "\033~99003"
+      0306|string F64 = "\033~51001"
+      0307|string F65 = "\033~76002"
+      0308|string F66 = "\033~A1003"
+      0309|string F68 = "\033~48001"
+      0310|string F69 = "\033~8D002"
+      0311|string F70 = "\033~98003"
+      0312|string F72 = "\033~50001"
+      0313|string F73 = "\033~91002"
+      0314|string F74 = "\033~A0003"
+      0315|string F76 = "\033~4B001"
+      0316|string F77 = "\033~73002"
+      0317|string F78 = "\033~9B003"
+      0318|string F80 = "\033~4D001"
+      0319|string F81 = "\033~74002"
+      0320|string F82 = "\033~9D003"
+      0321|string F83 = "\033~011B1"
+      0322|string F84 = "\033~011B2"
+      0323|string F86 = "\033~0E081"
+      0324|string F87 = "\033~0E7F2"
+      0325|string F88 = "\033~0F001"
+      0326|string F89 = "\033~94002"
+      0327|string F90 = "\033~1C0D1"
+      0328|string F91 = "\033~1C0A2"
+      0329|string F92 = "\033~E00D0"
+      0330|string F93 = "\033~E00D1"
+      0331|string F94 = "\033~E00A2"
+      0332|string F95 = "\033~A6003"
+      0333|string F96 = "\033~23082"
+      0334|string F97 = "\033~17092"
+      0335|string F98 = "\033~320D2"
+      0336|string F99 = "\033~1B1B2"
+      0337|string F101 = "\033~92002"
+      0338|string F102 = "\033~75002"
+      0339|string F103 = "\033~91002"
+      0340|string F104 = "\033~76002"
+      0341|string F105 = "\033~73002"
+      0342|string F106 = "\033~8F002"
+      0343|string F107 = "\033~74002"
+      0344|string F108 = "\033~77002"
+      0345|string F109 = "\033~8D002"
+      0346|string F110 = "\033~84002"
+      0347|string F111 = "\033~90002"
+      0348|string F112 = "\033~8E002"
+      0349|string F114 = "\033~96002"
+      0350|string F115 = "\033~95002"
+      0351|string F116 = "\033~93002"
+      0352|compose '`' '1' to 'ﾇ'
+      0353|compose '`' '2' to 'ﾌ'
+      0354|compose '`' '3' to 'ｱ'
+      0355|compose '`' '#' to 'ｧ'
+      0356|compose '`' '4' to 'ｳ'
+      0357|compose '`' '$' to 'ｩ'
+      0358|compose '`' '5' to 'ｴ'
+      0359|compose '`' '%' to 'ｪ'
+      0360|compose '`' '6' to 'ｵ'
+      0361|compose '`' '&' to 'ｫ'
+      0362|compose '`' '7' to 'ﾔ'
+      0363|compose '`' '\'' to 'ｬ'
+      0364|compose '`' '8' to 'ﾕ'
+      0365|compose '`' '(' to 'ｭ'
+      0366|compose '`' '9' to 'ﾖ'
+      0367|compose '`' ')' to 'ｮ'
+      0368|compose '`' '0' to 'ﾜ'
+      0369|compose '`' '-' to 'ﾎ'
+      0370|compose '`' '^' to 'ﾍ'
+      0371|compose '`' 'q' to 'ﾀ'
+      0372|compose '`' 'w' to 'ﾃ'
+      0373|compose '`' 'e' to 'ｲ'
+      0374|compose '`' 'E' to 'ｨ'
+      0375|compose '`' 'r' to 'ｽ'
+      0376|compose '`' 't' to 'ｶ'
+      0377|compose '`' 'y' to 'ﾝ'
+      0378|compose '`' 'u' to 'ﾅ'
+      0379|compose '`' 'i' to 'ﾆ'
+      0380|compose '`' 'o' to 'ﾗ'
+      0381|compose '`' 'p' to 'ｾ'
+      0382|compose '`' 'a' to 'ﾁ'
+      0383|compose '`' 's' to 'ﾄ'
+      0384|compose '`' 'd' to 'ｼ'
+      0385|compose '`' 'f' to 'ﾊ'
+      0386|compose '`' 'g' to 'ｷ'
+      0387|compose '`' 'h' to 'ｸ'
+      0388|compose '`' 'j' to 'ﾏ'
+      0389|compose '`' 'k' to 'ﾉ'
+      0390|compose '`' 'l' to 'ﾘ'
+      0391|compose '`' ';' to 'ﾚ'
+      0392|compose '`' ':' to 'ｹ'
+      0393|compose '`' ']' to 'ﾑ'
+      0394|compose '`' 'z' to 'ﾂ'
+      0395|compose '`' 'Z' to 'ｯ'
+      0396|compose '`' 'x' to 'ｻ'
+      0397|compose '`' 'c' to 'ｿ'
+      0398|compose '`' 'v' to 'ﾋ'
+      0399|compose '`' 'b' to 'ｺ'
+      0400|compose '`' 'n' to 'ﾐ'
+      0401|compose '`' 'm' to 'ﾓ'
+      0402|compose '`' ',' to 'ﾈ'
+      0403|compose '`' '.' to 'ﾙ'
+      0404|compose '`' '/' to 'ﾒ'
+      0405|compose '`' '\\' to 'ﾛ'
+
+    (b)xegetdv
+
+       サンプル起動シェル xekt,xext,xegt から呼び出され、DistributionID
+       を/etc/issueから判定する。
+       Dist-IDは設定ファイルのファイル名サフィックスを決定する。
+
+       0001|########################################################################
+       0002|# get Linux Distribution id and version from /etc/issue
+       0003|# and set it to $DISTVER
+       0004|########################################################################
+       0005|DVER=`grep release /etc/issue` # like as "Red Hat Linux release 9 (Shrike)"
+       0006|if [ x"$DVER" = x ]; then      #not found
+       0007|    echo "xegetdv:No distribution ID Line found from /etc/issue, assumed \"sw3\"."
+       0008|    DID=sw3                    #my Slackware
+       0009|else
+       0010|#   declare -a DVWORDS             # define array
+       0011|#   DVWORDS=($DVER)                # assign to array
+       0012|#sw3 dose not support array
+       0013|    DVER=`echo $DVER`              #reduce space,drop top and tail space
+       0014|    DIST=${DVER%% *}               #get distribution id(top word)
+       0015|    VER=${DVER#*release }          #cut top "*release "
+       0016|    VER=${VER%% *}                 #get ver(top word)
+       0017|#   echo $DIST
+       0018|#   echo $VER
+       0019|#   case ${DVWORDS[0]} in
+       0020|    case $DIST         in
+       0021|#     Red*)    DID=rh${DVWORDS[4]}  ;;     #Red Hat
+       0022|      Red*)    DID=rh$VER           ;;     #Red Hat
+       0023|#     Turbo*)  DID=tb${DVWORDS[2]}  ;;     #TurboLinux release 6.0 WorkStation (Shiga)
+       0024|      Turbo*)  DID=tb$VER           ;;     #TurboLinux release 6.0 WorkStation (Shiga)
+       0025|      *)      echo "xegetdv:No distribution ID found from /etc/issue ( " $DVER " ),assumed \"rh9\"."
+       0026|              sleep 2
+       0027|              DID=rh9
+       0028|    esac
+       0029|fi
+       0030|DISTVER=$DID
+       0031|#echo $DID
+
+    (c)xesetxenv
+
+       サンプル起動シェル xekt,xext,xegt から呼び出され、
+       xe のX環境を設定するシェル。
+       15行目、設定ファイルの場所など環境に合わせて変更して下さい。
+
+       0001|#####################################################
+       0002|# called from xegt,xekt,xext
+       0003|# input:parm1:optional exec pgmname specification(pgm=xxxx)
+       0004|# setup variable for xegt.xxx ,xekt.xxx, xext.xxx
+       0005|#####################################################
+       0006|
+       0007|PGM=${1#*pgm=}            #chk pgm name parm
+       0008|if [ x"$PGM" = x"$1" ]; then #no pgmname parm
+       0009|     PGM=xe
+       0010|    #PGM=xekbchk
+       0011|else
+       0012|    PGMP=1                #id of shift out parm1
+       0013|fi
+       0014|VER=$DISTVER
+       0015|DATADIR=/h/objlinux/sample  <====== Change This Line
+       0016|#BINDIR=/h/objlinux/bin
+       0017|
+       0018|XRES=$DATADIR/xelnxres.$VER
+       0019|KEYF=$DATADIR/xelnxkey.$VER
+       0020|KEYMAP=$DATADIR/xexmap.$VER                 #for xegt
+       0021|KEYMAPRESTORE=$DATADIR/xexmap.restore.$VER  #for xegt
+
+    (d)xelnxres.xxx
+       xterm,kterm 用 Xリソースファイル。
+       xeでは(9)-(b)で示した以外のキーを必要としています。
+       それらについてxe専用のEsc文字列を発するように定義するファイルです。
+       "xrdb -merge xnlsres.xxx" の様に設定する。(xekt,xext参照）
+       "xext*"や"xekt*"はアプリケーション名で xterm,kterm の　-name
+       オプションと対応しています。例えば "xterm -name xext" でxtermを
+       起動したxtermは"xext*..."で記述したリソース定義に支配されます。
+       gnome-terminalはXリソースを見てないのでこのような設定はできません。
+
+       xelnxres.fullはxeで使用できるすべてのキーについて
+       記述してあります。環境に合わせて必要なキーの行を対応するファイルに
+       コピーしてください。
+       xe 用Esc文字列の形式は
+          0x1b~xxyyz   xx:DOS-Scanコード yy:DOS-Charコード
+                       z:シフトID  0:シフト無し, 1:Shift+
+                                   2:Ctrl+       3:Alt+
+          DOS Scan/Charについては(9)-(a)を参照。
+       前景、背景、カーソルの色は好みで変えてください。
+       ktermではEightBitInputをtrueにしないと漢字入力できません。
+
+       xelnxres.rh9
+       0001|!*******************************************************************
+       0002|!****** xelnxres.rh9 ***** resource file for xe under xterm/kterm **
+       0003|!****** usage under RedHat v9
+       0004|!****** (1) merge keyboard translation to X-resource
+       0005|!******     (1-1) merge this file into ~/.Xresources or /etc/X11/Xresources
+       0006|!******     or
+       0007|!******     (1-2) add the line into /etc/X11/xinit/xinitrc
+       0008|!******           XERES=/h/objlinux/sample/xelnxres.rh9
+       0009|!******           "xrdb -merge $XERES"
+       0010|!****** (2) open terminal emulater specifying application name
+       0011|!******     "xterm -name xext"           for xterm
+       0012|!******     "kterm -name xekt"           for kterm
+       0013|!*****      (gnome-terminal dose not support -name)
+       0014|!****** (3) start xe with native key translation file
+       0015|!******     XEKEY=xelnxkey.xxx
+       0020|!******     "xe --k$XEKEY"
+       0021|!***********************************************************************************
+       0022|!***********************************************************************************
+       0023|!** xterm
+       0024|!***********************************************************************************
+       0025|!                    <Key>Prior:    string(\033~49000)\n\
+       0026|!                    <Key>Next:     string(\033~51000)\n\
+       0027|! continued line
+       0028|xext*background: Black
+       0029|xext*foreground: Wheat
+       0030|xext*cursorColor: blue
+       0031|xext*reverseVideo: false
+       0032|xext*scrollBar: true
+       0033|xext*reverseWrap: true
+       0034|xext*font: fixed
+       0035|xext*fullCursor: true
+       0036|xext*scrollTtyOutput: off
+       0037|xext*scrollKey: on
+       0038|xext*titleBar: true
+       0039|xext*vt100.Translations:    #override \n\
+       0040|            Shift<Key>Prior:    string(\033~49001)\n\
+       0041|            Shift<Key>Next:     string(\033~51001)\n\
+       0042|            Shift<Key>Insert:   string(\033~52001)\n\
+       0043|            Shift<Key>Escape:   string(\033~011B1)\n\
+       0044|            Shift<Key>BackSpace:string(\033~0E081)\n\
+       0045|            Shift<Key>Return:   string(\033~1C0D1)\n\
+       0046|                 <Key>KP_Enter: string(\033~E00D0)\n\
+       0047|            Shift<Key>KP_Enter: string(\033~E00D1)\n\
+       0048|            Ctrl<Key>KP_Enter:  string(\033~E00A2)
+       0049|!***********************************************************************************
+       0050|!** kterm
+       0051|!***********************************************************************************
+       0052|!               Shift<Key>Home: string(\033~47001)\n\
+       0053|!                    <Key>End:  string(\033~4F000)\n\
+       0054|! continued line
+       0055|xekt*EightBitInput: True
+       0056|xekt*background: Black
+       0057|xekt*foreground: Wheat
+       0058|xekt*cursorColor: blue
+       0059|xekt*reverseVideo: false
+       0060|xekt*scrollBar: true
+       0061|xekt*reverseWrap: true
+       0062|xekt*font: fixed
+       0063|xekt*fullCursor: true
+       0064|xekt*scrollTtyOutput: off
+       0065|xekt*scrollKey: on
+       0066|xekt*titleBar: true
+       0067|xekt*vt100.Translations:    #override \n\
+       0068|    Shift<Key>space:     begin-conversion(_JAPANESE_CONVERSION)\n\
+       0069|            Shift<Key>F1:       string(\033~54001)\n\
+       0070|            Shift<Key>F2:       string(\033~55001)\n\
+       0071|            Shift<Key>F3:       string(\033~56001)\n\
+       0072|            Shift<Key>F4:       string(\033~57001)\n\
+       0073|            Shift<Key>F5:       string(\033~58001)\n\
+       0074|            Shift<Key>F6:       string(\033~59001)\n\
+       0075|            Shift<Key>F7:       string(\033~5A001)\n\
+       0076|            Shift<Key>F8:       string(\033~5B001)\n\
+       0077|            Shift<Key>F9:       string(\033~5C001)\n\
+       0078|            Shift<Key>F10:      string(\033~5D001)\n\
+       0079|            Shift<Key>F11:      string(\033~87001)\n\
+       0080|            Shift<Key>F12:      string(\033~88001)\n\
+       0081|            Ctrl<Key>F7:        string(\033~64002)\n\
+       0082|            Ctrl<Key>F8:        string(\033~65002)\n\
+       0083|            Ctrl<Key>F9:        string(\033~66002)\n\
+       0084|            Ctrl<Key>F10:       string(\033~67002)\n\
+       0085|            Ctrl<Key>F11:       string(\033~89002)\n\
+       0086|            Ctrl<Key>F12:       string(\033~8a002)\n\
+       0087|            Shift<Key>Prior:    string(\033~49001)\n\
+       0088|            Shift<Key>Next:     string(\033~51001)\n\
+       0089|            Shift<Key>Insert:   string(\033~52001)\n\
+       0090|            Ctrl<Key>Insert:    string(\033~92002)\n\
+       0091|            Shift<Key>Delete:   string(\033~53001)\n\
+       0092|            Ctrl<Key>Delete:    string(\033~93002)\n\
+       0093|            Shift<Key>Up:       string(\033~48001)\n\
+       0094|            Shift<Key>Down:     string(\033~50001)\n\
+       0095|            Shift<Key>Left:     string(\033~4B001)\n\
+       0096|            Shift<Key>Right:    string(\033~4D001)\n\
+       0097|                 <Key>Home:     string(\033~47000)\n\
+       0098|            Shift<Key>End:      string(\033~4F001)\n\
+       0099|            Shift<Key>Escape:   string(\033~011B1)\n\
+       0100|            Shift<Key>BackSpace:string(\033~0E081)\n\
+       0101|            Shift<Key>Tab:      string(\033~0F001)\n\
+       0102|            Shift<Key>Return:   string(\033~1C0D1)\n\
+       0103|                 <Key>KP_Enter: string(\033~E00D0)\n\
+       0104|            Shift<Key>KP_Enter: string(\033~E00D1)\n\
+       0105|            Ctrl<Key>KP_Enter:  string(\033~E00A2)
+
+    (e)xelnxkey.xxx
+       xeキーマッピング指定ファイル。
+       キー入力で発生するEsc文字列の解釈を環境に合わせて変更したいときに
+       使用するファイル。
+       --kオプションで "xe --kxelnxkey.rh9" の様に指定。
+       iniファイルで指定することも出来ます
+
+ 		  LNX_Keymap = ::xelnxkey.xxx  ##(Linux Console Version Only) Keymap file to detect remapping by xmodmap cmd
+
+       kterm の Endキーのときの 0x1b[0x00 は kterm のBUGと思われるので
+　　　 (9)-(b)グループに入れずに --k　オプションで指定変更することとした。
+
+　　　 gnome-terminalはXリソース設定は効かないので
+       xmodmapコマンドで空いているkeysymを使用出来るようにします。
+       xmodmapで設定できるシンボルは /usr/include/X11/keysymdef.h で見ることが出来ます。
+       キーコード番号 xmodmap -pk で確認してください。
+       他のキーのコンビネーションで同じ文字列が生成されても区別は出来ないので
+       お使いのロケールで使用しない文字コードを探してください。
+
+       サンプルファイルの設定では次のようなコマンドをブートごとに1度だけ入力する必要があります
+       "="の次がシフト無し、次がShift+の割り当て位置です。
+       BackSpaceのxmodmapによる割り当て変更はなぜか効かないようです
+       (f)xexmap.xxx も参照
+
+         xmodmap -e "keycode 109 = yacute Control_R"
+        #xmodmap -e "keycode  22 = BackSpace eth"
+         xmodmap -e "keycode  36 = Return    ntilde"
+         xmodmap -e "keycode 106 = Insert    ograve"
+         xmodmap -e "keycode 103 = End       oacute"
+         xmodmap -e "keycode  99 = Prior     ocircumflex"
+         xmodmap -e "keycode 105 = Next      otilde"
+
+       [section] で適用する環境を定義する。例えば [kterm] のセクション
+       には kterm でのみ有効な変更のみを定義する。
+       セクション名はTerminalエミュレータ名に対応。
+       Terminalエミュレータ-名による設定とは異なる設定を適用したい時は
+       環境変数 XTERM を例えば XETERM=mytermと設定し[myterm]セクションに
+       必要な定義をする。
+       [common]はすべての環境に適用される。
+
+       xelnxkey.rh9
+            ##########################################################################
+            # xelnxkey.rh9
+            # Key & EscString mapping table for xe under "RedHat v9"
+            #        Usage: xe --kthis.file
+            #   for Console
+            #       xe chk terminfo Key,so specify only required.
+            #       chk terminfo assignment by xekbchk utility.
+            #   for X
+            #       xe defines default for gnome-terminal/xterm/kterm.
+            #       see it by xekbchk utility,then specify additional key-string combination.
+            #       for the key terminal emulator dose not generate,
+            #       setup by xrdb linux utility .for xterm/kterm(see xelnxe.txt or xelnxj.txt for Japanese)
+            #   [section]:section is terminal emulator name,[common] is for all type.
+            #             XETERM environment valiable is used if it is set.
+            #             Or,emulator anme is checked,gnome-terminal/xterm/kterm is supported.
+            #             for others,it use terminal name of TERM environment variable
+            #   Keyname: F1<-->F12, Home, End, Insert, Delete, PageUp, PageDown,
+            #            Up, Down, Left, Right, Esc, BackSpace, Tab, Enter, 2, KP_Enter
+            ##########################################################################
+            [common]
+            ##########################################################################
+            [gnome-terminal]
+            # xmodmap issued for gnome-terminal to detect Shift+
+            # KeyString:S+BackSpace =^[[28;2~    #assigned F15 to S+BackSpace by xmodmap
+            # KeyString:S+Enter     =^[[29;2~    #assigned F16 to S+Return    by xmodmap
+            # KeyString:S+Insert    =^[[34;2~    #assigned F20 to S+Insert    by xmodmap
+            # KeyString:S+End       =^[[32;2~    #assigned F18 to S+End       by xmodmap
+            # KeyString:S+PageUp    =^[[31;2~    #assigned F17 to S+Prior     by xmodmap
+            # KeyString:S+PageDown  =^[[33;2~    #assigned F19 to S+Next      by xmodmap
+              KeyString:R-Ctl       =\x8f\xab\xf2   #string by yacute
+              KeyString:R-Ctl       =\xc3\xbd       #UTF8 string for yacute
+              KeyString:R-Ctl       =\xfd           #ISo-8859-1  for yacute
+              KeyString:S+Enter     =\x8f\xab\xd0 #by EUC_JP for xmodmap -e "keycode  36 = Return    ntilde"
+              KeyString:S+Enter     =\xc3\xb1     #by UTF8
+              KeyString:S+Enter     =\xf1         #by ISO-8859-1
+              KeyString:S+Insert    =\x8f\xab\xd2 #by EUC_JP for xmodmap -e "keycode 106 = Insert    ograve"
+              KeyString:S+Insert    =\xc3\xb2     #by UTF8
+              KeyString:S+Insert    =\xf2         #by ISO-8859-1
+              KeyString:S+End       =\x8f\xab\xd1 #by EUC_JP for xmodmap -e "keycode 103 = End       oacute"
+              KeyString:S+End       =\xc3\xb3     #by UTF8
+              KeyString:S+End       =\xf3         #by ISO-8859-1
+              KeyString:S+PageUp    =\x8f\xab\xd4 #by EUC_JP for xmodmap -e "keycode  99 = Prior     ocircumflex"
+              KeyString:S+PageUp    =\xc3\xb4     #by UTF8
+              KeyString:S+PageUp    =\xf4         #by ISO-8859-1
+              KeyString:S+PageDown  =\x8f\xab\xd8 #by EUC_JP for xmodmap -e "keycode 105 = Next      otilde"
+              KeyString:S+PageDown  =\xc3\xb5     #by UTF8
+              KeyString:S+PageDown  =\xf5         #by ISO-8859-1
+            ##########################################################################
+            [xterm]
+              KeyString:S+End       =^[[32;2~    #assigned F18 to S+End       by xmodmap
+            ##########################################################################
+            [kterm]
+              KeyString:End         =^[[\x00     #kterm generate,string assign by xrdb is effect on both w/o and with Shift+
+            ##########################################################################
+            [xeterm]          # e.g for XETERM=xeterm case
+            ##########################################################################
+
+    (f)xexmap.xxx
+       Xキーマッピング設定ファイル。
+       "xmodmap xexmap.xxx"の様にしてXのキーマッピングを変更する。
+       gnome-terminalは XリソースファイルDBを使用しないのでxmodmapで
+       キーBindingを変更するのに使用する。
+       例えば
+       "keysym Insert    = Insert    F20"
+　　　 は Insertキーを シフト無しは Insert,Shift+Insertは F20に結びつける。
+       F20の生成するEsc文字列はxelnxkey.xxxで解釈する。
+       Fxxの最大はF20なのでF13-F20の８個しか残っていない。
+       Fxxの生成するEsc文字列はxekbchkで調べた。
+       例えば RedHat v9 では F20 は "0x1b[34;2~"。
+
+       右Ctrlキーを実行キーにするには次の行を記述する
+       但し、これで右Ctrlは実行キーになりますがEnterキーは改行キーにはなりません||~v127I~
+         keycode 109 = Return
+
+  (注) OPT CCFUNCコマンドでCtrl+文字キーも利用できるので              ||~v127R~
+       その省略時割り当てでよければ不要。(5)制約の項参照。
+
+       xexmap.rh9
+            !***********************************************************************************
+            !****** xexmap.rh9 ***** xmodmap input to assing string to key event
+            !****** usage under RedHat v9
+            !******    "xmodmap xexmap.rh9"
+            !***********************************************************************************
+            !
+            !keycode  22 = BackSpace F15
+            !keycode  36 = Return    F16
+            !keycode  99 = Prior     F17
+            !keycode 103 = End       F18
+            !keycode 105 = Next      F19
+            !keycode 106 = Insert    F20
+            !keysym BackSpace = BackSpace F15
+            !keysym Return    = Return    F16
+            !keysym Prior     = Prior     F17
+            !keysym End       = End       F18
+            !keysym Next      = Next      F19
+            !keysym Insert    = Insert    F20
+             keysym Control_R = yacute Control_R
+             keysym BackSpace = BackSpace eth
+             keysym Return    = Return    ntilde
+             keysym Insert    = Insert    ograve
+             keysym End       = End       oacute
+             keysym Prior     = Prior     ocircumflex
+             keysym Next      = Next      otilde
+
+    (g)起動シェル。
+       xext/xekt/xegtはそれぞれxterm/kterm/gnome-terminal上で、
+       xe用に環境を設定してxeを起動する。
+       環境設定はBoot毎に一回しか行わないので xterm/ktermでは
+       xe用Xリソースを変更した場合はシェル上で
+       "xrdb -merge res-filename"を実行しTerminalエミュレーターを再起動する。
+       gnome-terminalでは xmodmap を変更した場合は
+       "xmodmap modmapfile"を実行する。
+
+       使用方法：
+         {xext|xekt|xegt} [pgm=[xxx]]
+
+       例えば "xext pgm=xekbchk" とすると環境設定後xekbchkを起動
+       "xext pgm=" とすると xtermを非同期起動するだけ。
+       xektではフォントサイズはxlsfontsコマンドで調べる。
+       SBCSとDBCSのサイズが適合していないと画面表示が乱れる。
+
+       xext
+       0001|## kick xe under xterm
+       0002|. xegetdv        #get distribution id to XEDISTID
+       0003|. xesetxenv $1   #setup environment variable
+       0004|
+       0005|SW1ST=`xrdb -query|grep xext`
+       0006|if [ x"$SW1ST" = x ]; then
+       0007|    xrdb -merge $XRES
+       0008|fi
+       0009|if [ $DISTVER != sw3 ]; then
+       0010|    FONTSZ="-fn 10x20"
+       0011|fi
+       0012|if [ x"$PGMP" != x ]; then  #pgm= parm detected at xsetxenv
+       0013|    shift                   #drop parm1
+       0014|fi
+       0015|if [ x"$PGM" != x ]; then
+       0016|    echo xterm  -name xext -title xterm-xe $FONTSZ -e $PGM --k$KEYF "$@"
+       0017|    xterm  -name xext -title xterm-xe $FONTSZ -e $PGM --k$KEYF "$@" &
+       0018|else
+       0019|    xterm  -name xext -title xterm-xe $FONTSZ &
+       0020|fi
+
+       xekt
+       0001|## kick xe under kterm
+       0002|. xegetdv        #get distribution id to XEDISTID
+       0003|. xesetxenv $1   #setup environment variable
+       0004|#
+       0005|SW1ST=`xrdb -query|grep xekt`
+       0006|if [ x"$SW1ST" = x ]; then
+       0007|    xrdb -merge $XRES
+       0008|fi
+       0009|if [ $DISTVER != sw3 ]; then
+       0010|#see chk supported font by "xlsfonts" cmd
+       0011|    FONTSZ="-fn 8x16kana -fr rk16 -fk kanji16"          #small
+       0012|#   FONTSZ="-fn 9x18kana -fr rk18 -fk kanji18"          #medium
+       0013|#   FONTSZ="-fn 12x24kana -fr rk24 -fk kanji24"         #large
+       0014|fi
+       0015|if [ x"$PGMP" != x ]; then  #pgm= parm detected at xsetxenv
+       0016|    shift                   #drop parm1
+       0017|fi
+       0018|if [ x"$PGM" != x ]; then
+       0019|    echo kterm  -name xekt -title kterm-xe $FONTSZ -e $PGM --k$KEYF "$@"
+       0020|    kterm  -name xekt -title kterm-xe $FONTSZ -e $PGM --k$KEYF "$@" &
+       0021|else
+       0022|    kterm  -name xekt -title kterm-xe $FONTSZ &
+       0023|fi
+
+       xegt
+       0001|# kick xe under gnome-terminal
+       0002|. xegetdv        #get distribution id to DISTVER
+       0003|. xesetxenv $1   #setup environment variable
+       0004|#
+       0005|CHKMAP=`xmodmap -pke|grep Return|grep F1`
+       0006|if [ x"$CHKMAP" = x ]; then
+       0007|    xmodmap $KEYMAP
+       0008|fi
+       0009|CURDIR=`pwd`
+       0010|CHKOPT=`gnome-terminal --help|grep working-directory`
+       0011|if [ x"$CHKOPT" != x ]; then
+       0012|    WKDIR="--working-directory=$CURDIR"   #for RedHat8/9
+       0013|fi
+       0014|if [ x"$PGMP" != x ]; then  #pgm= parm detected at xsetxenv
+       0015|    shift                   #drop parm1
+       0016|fi
+       0017|if [ x"$PGM" != x ]; then
+       0018|    echo gnome-terminal -t xe-gt $WKDIR -x $PGM --k$KEYF "$@"
+       0019|    gnome-terminal -t xe-gt $WKDIR -x $PGM --k$KEYF "$@"
+       0020|else
+       0021|    gnome-terminal -t xe-gt $WKDIR
+       0022|fi
+       0023|#xmodmap $KEYMAPRESTORE
+
+     最近は次の簡単なものを使用しています
+
+       xegt
+       0001|xmodmap /h/objlinux/sample/xexmap.rh9
+       0002|xe --k/h/objlinux/sample/xelnxkey.rh9 $1 $2 $3 $4
+
+#endif
+
+    (h)xprint.sh
+
+            |# gxp is recomended ***********091215                    ||~v127R~
+            |gxp $1 $2 $3 $4 $5 $6 $7 $8 $9                           ||~v127R~
+            |exit                                                     ||~v127R~
+        0001|#sample shell to format and print text-file using xprint
+        0002|#########################
+        0003|#  xprint parm          #
+        0004|#-ne:skip output escape sequence cmd
+        0005|#-nu:skip output formfeed cmd
+        0006|#-q-:output to stdout
+        0007|#-l :line count/page
+        0008|#-c :char count/line
+        0009|#########################
+        0010|#  mpage  parm          #
+        0011|#-1 :1 page/sheet
+        0012|#-b :paper type
+        0013|#-o :toggle draw outline box(check current setting by "mpage -x")
+        0014|#-L :line count/page
+        0015|#-W :char count/line
+        0016|#-m30b:bottom margin is 30 point
+        0017|#########################
+        0018|qopt=0
+        0019|for parm in $@
+        0020|do
+        0021|    case "$parm" in
+        0022|    -[Qq]*)    qopt=1;;
+        0023|    esac
+        0024|done
+        0025|#########################
+        0026|COLXP=105
+        0027|LINEXP=60
+        0028|COLMPAGE=`expr $COLXP + 7`          #for lineno field width
+        0029|LINEMPAGE=`expr $LINEXP + 3`        #for header/trailer lines
+        0030|#########################
+        0031|if  [ $qopt -eq 1 ]
+        0032|then
+        0033|    xprint -ne -nu -l$LINEXP -c$COLXP $1 $2 $3 $4 $5 $6 $7 $8 $9
+        0034|else
+        0035|    xprint -ne -q- -nu -l$LINEXP -c$COLXP $1 $2 $3 $4 $5 $6 $7 $8 $9 | mpage -1 -bA4 -o -m30b -W$COLMPAGE -L$LINEMPAGE | lpr
+        0036|fi
+
+#ifdef XXE
+#else
+    (i) puTTY.xekeymap
+
+        私のキーマッピングパッチを当てた puTTY で使用するキーマッピングファイル。||~v127R~
+        puTTY v0.63 で terminal type:SCO を使用すればこのパッチをあてたpuTTYは不用でしょう||~v127R~
+
+        [puTTY]セクションはpuTTYが使用します。[common]セクションはpuTTYとxeに適用されます。
+        [common]セクションを読ませるためにはxeには--kパラメータでファイル名を与えます。
+        puTTYが送出する文字列は "(9）付表の(b) X-モードのときDefaultで解釈するEsc文字列"
+        にあるものから、puTTY上で動かす他のアプリケーションと矛盾の少ないものを選んでください。
+        ^[~xxyyz (DOS scan+char+shiftid)形式の文字列はxe専用でxeは定義無しで理解します。
+        [common]に定義するする必要はありません。
+        このファイルの  "KeyString:C+H         =^[~23082"がそれです。
+        putTTYがこのファイルの定義に従いCtrl+Hで 文字列"0x1b~23082"を送り
+        xeはCtrl+Hを認識し0x08の入力処理をします。但しローカルで稼動するxeは
+        ターミナルエミュレータがBackSpaceとCtrl+Hを区別しないのでCtrl+Hは
+        BackSpace処理となり動作に違いが出ます。
+        puTTYが送出する文字列の確認はpuTTYコンソール上でxekbchkを動かしてください。
+        xekbchkも--kパラメータに従った解釈を表示します。
+
+
+        0001|##########################################################################
+        0002|# puTTY.xekeymap
+        0003|# Key & EscString mapping table for xe under puTTY
+        0004|### This is for xe under puTTY; For other application, see help of xeputty
+        0005|### (In this DOC,"puTTY" means customized version to accept user key mapping)
+        0006|### Widthout modifier key,Esc string generated is almost common to all terminal emulator.
+        0007|### This file complement for the following case.
+        0008|###   No string generated by the key pressed.
+        0009|###   With modifier key string generated is same as ones of without modifier key.
+        0010|###   puTTY do its own action by the key which your application utilize.
+        0011|###   Your application dose not understand the string puTTY generated.
+        0012|### Customized puTTY generate string according this file.
+        0013|### See xelnxe.txt for the Esc string xe understand,those are requred for puTTY only.
+        0014|### (See xeaixe.txt for Esc string AIX version accept)
+        0015|### Define those keya in [common] section.
+        0016|#        Usage:
+        0017|#           Linux:
+        0018|#              start putty; put puTTY.xekymap on ~/ (home directory)
+        0019|#                           Or specify the file by env-var using "export PUTTY_KEYMAP=puTTY.xekeymap"
+        0020|#                           Then start putty.
+        0021|#              start xe on puTTY; export XETERM=puTTY (This is not require when use [puTTY] section only)
+        0022|#                               ; xe --kpuTTY.xekeymap
+        0023|#           Windows:
+        0024|#              start putty; put puTTY.xekymap on c:\
+        0025|#                           Or specify the file by env-var using "set PUTTY_KEYMAP=puTTY.xekeymap"
+        0026|#                           Then start putty.
+        0027|#              start xe on puTTY; export XETERM=puTTY (This is not require when use [puTTY] section only)
+        0028|#                               ; xe --kpuTTY.xekeymap
+        0029|#   [section]:section is terminal emulator name,[common] is for all type and xe use.
+        0030|#             [puTTY] is for the emulator puTTY only.
+        0031|#   Keyname: F1<-->F12, Home, End, Insert, Delete, PageUp, PageDown,
+        0032|#            Up, Down, Left, Right, Esc, BackSpace, Tab, Enter, 2, KP_Enter  
+        0033|#            (Character key is available only for puTTY; xe dose not understand such definition as "C+a")
+        0034|#Warning:Syntax check logic of xe is not same as ones of xeputty.
+        0035|#        Followings are not allowed for xe.
+        0036|#          Multiple modifier, Char key definition, String should start by "^["(null not allowed)
+        0037|#          For current AIX version,do not insert space between modifier and keyname specification.
+        0038|##########################################################################
+        0039|###############  xe use
+        0040|[common]
+        0041|###############  puTTY use
+        0042|[puTTY]
+        0043|KeyString:F11         =^[[23~
+        0044|KeyString:F12         =^[[24~
+        0045|
+        0046|KeyString:S+F1        =^[O2P
+        0047|KeyString:C+F1        =^[O5P
+        0048|KeyString:A+F1        =^[O3P
+        0049|KeyString:S+F2        =^[O2Q
+        0050|KeyString:C+F2        =^[O5Q
+        0051|KeyString:A+F2        =^[O3Q
+        0052|KeyString:S+F3        =^[O2R
+        0053|KeyString:C+F3        =^[O5R
+        0054|KeyString:A+F3        =^[O3R
+        0055|KeyString:S+F4        =^[O2S
+        0056|KeyString:C+F4        =^[O5S
+        0057|KeyString:A+F4        =^[O3S
+        0058|KeyString:S+F5        =^[[15;2~
+        0059|KeyString:C+F5        =^[[15;5~
+        0060|KeyString:A+F5        =^[[15;3~
+        0061|KeyString:S+F6        =^[[17;2~
+        0062|KeyString:C+F6        =^[[17;5~
+        0063|KeyString:A+F6        =^[[17;3~
+        0064|KeyString:S+F7        =^[[18;2~
+        0065|KeyString:C+F7        =^[[18;5~
+        0066|KeyString:A+F7        =^[[18;3~
+        0067|KeyString:S+F8        =^[[19;2~
+        0068|KeyString:C+F8        =^[[19;5~
+        0069|KeyString:A+F8        =^[[19;3~
+        0070|KeyString:S+F9        =^[[20;2~
+        0071|KeyString:C+F9        =^[[20;5~
+        0072|KeyString:A+F9        =^[[20;3~
+        0073|KeyString:S+F10       =^[[21;2~
+        0074|KeyString:C+F10       =^[[21;5~
+        0075|KeyString:A+F10       =^[[21;3~
+        0076|KeyString:S+F11       =^[[23;2~
+        0077|KeyString:C+F11       =^[[23;5~
+        0078|KeyString:A+F11       =^[[23;3~
+        0079|KeyString:S+F12       =^[[24;2~
+        0080|KeyString:C+F12       =^[[24;5~
+        0081|KeyString:A+F12       =^[[24;3~
+        0082|
+        0083|KeyString:S+Home      =^[[1;2H
+        0084|KeyString:C+Home      =^[[1;5H
+        0085|KeyString:A+Home      =^[[1;3H
+        0086|KeyString:S+End       =^[[1;2F
+        0087|KeyString:C+End       =^[[1;5F
+        0088|KeyString:A+End       =^[[1;3F
+        0089|KeyString:S+Insert    =^[[2;2~
+        0090|KeyString:C+Insert    =^[[2;5~
+        0091|KeyString:A+Insert    =^[[2;3~
+        0092|KeyString:S+Delete    =^[[3;2~
+        0093|KeyString:C+Delete    =^[[3;5~
+        0094|KeyString:A+Delete    =^[[3;3~
+        0095|KeyString:S+PageUp    =^[[5;2~
+        0096|KeyString:C+PageUp    =^[[5;5~
+        0097|KeyString:A+PageUp    =^[[5;3~
+        0098|KeyString:S+PageDown  =^[[6;2~
+        0099|KeyString:C+PageDown  =^[[6;5~
+        0100|KeyString:A+PageDown  =^[[6;3~
+        0101|
+        0102|KeyString:S+Up        =^[[1;2A
+        0103|KeyString:C+Up        =^[[1;5A
+        0104|KeyString:A+Up        =^[[1;3A
+        0105|KeyString:S+Down      =^[[1;2B
+        0106|KeyString:C+Down      =^[[1;5B
+        0107|KeyString:A+Down      =^[[1;3B
+        0108|KeyString:S+Left      =^[[1;2D
+        0109|KeyString:C+Left      =^[[1;5D
+        0110|KeyString:A+Left      =^[[1;3D
+        0111|KeyString:S+Right     =^[[1;2C
+        0112|KeyString:C+Right     =^[[1;5C
+        0113|KeyString:A+Right     =^[[1;3C
+        0114|
+        0115|KeyString:S+Tab       =^[[Z
+        0116|
+        0117|#for XE only (^[~xxyyz fmt xx:scancode,yy:charcode,z:shiftid(1:shift,2:ctl,3:alt))
+        0118|KeyString:C+H         =^[~23082
+        0119|KeyString:C+I         =^[~17092
+        0120|KeyString:C+M         =^[~320D2
+        0121|KeyString:S+Esc       =^[~011B1
+        0122|KeyString:S+BackSpace =^[~0E081
+        0123|KeyString:S+Enter     =^[~1C0D1
+        0124|
+        0125|### end of [puTTY] ###
+        0126|##########################################################################
+
+    (j) xe.keytab
+
+      (以下はKubuntu6のケースです)
+
+        konsoleのもとでxeが理解できるEsc文字列を発生させるには、
+        例えば XE.keytab というファイルを ~/.kde/share/apps/konsole/に作成します。
+        (/usr/share/apps/konsele/ に置くと全ユーザーに有効になります)
+        konsoleのメニュー Settins->Keyboard のリストからこの設定を選択します。
+        リスト上の名前は keytabファイルのkeyboard 文から取られます。
+        省略値の keytab を設定するのは,Settings->Configure Konsoleで開いたダイアログの
+        Sessionタブの左の欄で"Shell"を選び右側のkeytabドロップダウンリストから
+        設定します。
+        新しい keytab ファイルをテストするには 例えば "konsole --keytab XE"打ちます。
+        この "XE" も keyboard 文のIDです。メニューのSettingsを選択した時に
+        読み込まれてチェックされます。
+
+        keytab設定キー組み合わせは他のshortcutキー設定を解除しないと有効になりません。
+        Konsole のshortcutキーは Settings->Configure Shortcutsで、
+        グローバル shortcut は SystemSettings->Computer Administration
+        ->Keyboard & Mouse->Keyboard Shortcuts でカスタマイズできます。.
+        keytab設定が尚も有効にならない時 "grep -irl" で ~/.kde/share/config を探してください。
+        例えば Shift+F12は [Voice] に shortcut=Shift+F12 とありました。
+        ( ~/.kde/share/config/khotkeysrc)
+        この設定は次のようにリセットしてください。
+        SystemSettings->Accessibilityで左の欄からInputActionsを選択しGlobal Settingsの
+        ボタンを押すと Voice settingタブが Shift+F12の設定を示しています。
+        これをnoneにしてください。keytabのShift+F12設定が効くようになります。
+
+        (注e)./usr/share/doc/konsole/README.KeyTab がコーディングのヘルプです。
+             .例えばShiftの有り無し両方を定義する時は "-Shift"の記述が必要です。
+              無いと "already assigned" のエラーが出ます。
+              ("konsole --keytab xxx.keytab"でテストします)
+             .+AnyModのある行のEsc文字列の"*"は Modifierキーで置き換わります。
+                2:Shift,3:Alt,5:Control
+
+        0001|# [xe.keytab] Konsole Keyboard Table (xe console keys)
+        0002|#
+        0003|# --------------------------------------------------------------
+        0004|
+        0005|keyboard "XE"
+        0006|
+        0007|# --------------------------------------------------------------
+        0008|#
+        0009|# This configuration table allows to customize the
+        0010|# meaning of the keys.
+        0011|#
+        0012|# The syntax is that each entry has the form :
+        0013|#
+        0014|#   "key" Keyname { ("+"|"-") Modename } ":" (String|Operation)
+        0015|#
+        0016|# Keynames are those defined in <qnamespace.h> with the
+        0017|# "Qt::Key_" removed. (We'd better insert the list here)
+        0018|#
+        0019|# Mode names are :
+        0020|#
+        0021|# - Shift
+        0022|# - Alt
+        0023|# - Control
+        0024|#
+        0025|#   The VT100 emulation has two modes that can affect the
+        0026|#   sequences emitted by certain keys. These modes are
+        0027|#   under control of the client program.
+        0028|#
+        0029|# - Newline     : effects Return and Enter key.
+        0030|# - Application : effects Up and Down key.
+        0031|#
+        0032|# - Ansi        : effects Up and Down key (This is for VT52, really).
+        0033|#
+        0034|# Operations are
+        0035|#
+        0036|# - scrollUpLine
+        0037|# - scrollUpPage
+        0038|# - scrollDownLine
+        0039|# - scrollDownPage
+        0040|#
+        0041|# - emitSelection
+        0042|#
+        0043|# If the key is not found here, the text of the
+        0044|# key event as provided by QT is emitted, possibly
+        0045|# preceeded by ESC if the Alt key is pressed.
+        0046|#
+        0047|# --------------------------------------------------------------
+        0048|
+        0049|key Escape : "\E"
+        0050|key Tab           : "\t"
+        0051|key Backtab+Shift : "\E[Z"
+        0052|
+        0053|# VT100 can add an extra \n after return.
+        0054|# The NewLine mode is set by an escape sequence.
+        0055|
+        0056|key Return-NewLine : "\r"
+        0057|key Return+NewLine : "\r\n"
+        0058|
+        0059|# Some desperately try to save the ^H.
+        0060|
+        0061|key Backspace : "\x7f"
+        0062|
+        0063|
+        0064|key Up   -AnyMod : "\E[A"
+        0065|key Down -AnyMod : "\E[B"
+        0066|key Right-AnyMod : "\E[C"
+        0067|key Left -AnyMod : "\E[D"
+        0068|
+        0069|key Up   +AnyMod : "\E[1;*A"
+        0070|key Down +AnyMod : "\E[1;*B"
+        0071|key Left +AnyMod : "\E[1;*D"
+        0072|key Right+AnyMod : "\E[1;*C"
+        0073|
+        0074|# linux functions keys F1-F5 differ from xterm
+        0075|
+        0076|key F1 -Shift-Alt-Control : "\E[[A"
+        0077|key F2 -Shift-Alt-Control : "\E[[B"
+        0078|key F3 -Shift-Alt-Control : "\E[[C"
+        0079|key F4 -Shift-Alt-Control : "\E[[D"
+        0080|key F5 -Shift-Alt-Control : "\E[[E"
+        0081|key F6 -AnyMod            : "\E[17~"
+        0082|key F7 -AnyMod            : "\E[18~"
+        0083|key F8 -AnyMod            : "\E[19~"
+        0084|key F9 -AnyMod            : "\E[20~"
+        0085|key F10-AnyMod            : "\E[21~"
+        0086|key F11-AnyMod            : "\E[23~"
+        0087|key F12-AnyMod            : "\E[24~"
+        0088|
+        0089|key F1 +Shift-Alt-Control : "\EO2P"
+        0090|key F2 +Shift-Alt-Control : "\EO2Q"
+        0091|key F3 +Shift-Alt-Control : "\EO2R"
+        0092|key F4 +Shift-Alt-Control : "\EO2S"
+        0093|key F5 +Shift-Alt-Control : "\E[15;2~"
+        0094|
+        0095|key F6  +AnyMod    : "\E[17;*~"
+        0096|key F7  +AnyMod    : "\E[18;*~"
+        0097|key F8  +AnyMod    : "\E[19;*~"
+        0098|key F9  +AnyMod    : "\E[20;*~"
+        0099|key F10 +AnyMod    : "\E[21;*~"
+        0100|key F11 +AnyMod    : "\E[23;*~"
+        0101|key F12 +AnyMod    : "\E[24;*~"
+        0102|
+        0103|key Home  -AnyMod : "\E[H"
+        0104|key End   -AnyMod : "\E[F"
+        0105|key Prior -AnyMod : "\E[5~"
+        0106|key Next  -AnyMod : "\E[6~"
+        0107|key Insert-AnyMod : "\E[2~"
+        0108|key Delete-AnyMod : "\E[3~"
+        0109|
+        0110|key Home  +AnyMod : "\E[1;*H"
+        0111|key End   +AnyMod : "\E[1;*F"
+        0112|key Prior +AnyMod : "\E[5;*~"
+        0113|key Next  +AnyMod : "\E[6;*~"
+        0114|key Insert+AnyMod : "\E[2;*~"
+        0115|key Delete+AnyMod : "\E[3;*~"
+        0116|
+        0117|# Keypad-Enter. See comment on Return above.
+        0118|
+        0119|key Enter+NewLine : "\r\n"
+        0120|key Enter-NewLine : "\r"
+        0121|
+        0122|key Space +Control : "\x00"
+        0123|key 2 -Control : "2"
+        0124|key 2 +Control : "\x00"
+        0125|
+        0126|# some of keys are used by konsole.
+        0127|
+        0128|
+        0129|key ScrollLock     : scrollLock
+        0130|
+        0131|#----------------------------------------------------------
+        0132|
+        0133|# keypad characters as offered by Qt
+        0134|# cannot be recognized as such.
+        0135|
+        0136|#----------------------------------------------------------
+        0137|
+        0138|# Following other strings as emitted by konsole.
+#endif
+
+#ifdef XXE
+      (gxe では 以下の説明は関係ありません)
+#else
+
+(9）付表
+
+
+　　(a) DOSでのキー<-->Scan+CharコードMapping
+
+        キー                 Shift+  Ctrl+   Alt+
+        -----------  ------  ------  ------  ------
+        F1           0x3b00  0x5400  0x5e00  0x6800
+        F2           0x3c00  0x5500  0x5f00  0x6900
+        F3           0x3d00  0x5600  0x6000  0x6a00
+        F4           0x3e00  0x5700  0x6100  0x6b00
+        F5           0x3f00  0x5800  0x6200  0x6c00
+        F6           0x4000  0x5900  0x6300  0x6d00
+        F7           0x4100  0x5a00  0x6400  0x6e00
+        F8           0x4200  0x5b00  0x6500  0x6f00
+        F9           0x4300  0x5c00  0x6600  0x7000
+        F10          0x4400  0x5d00  0x6700  0x7100
+        F11          0x8500  0x8700  0x8900  0x8b00
+        F12          0x8600  0x8800  0x8a00  0x8c00
+
+        Home         0x4700  0x4700  0x7700  0x9700
+        End          0x4f00  0x4f00  0x7500  0x9f00
+        Insert       0x5200  0x5200  0x9200  0xa200
+        Delete       0x5300  0x5300  0x9300  0xa300
+        PageUp       0x4900  0x4900  0x8400  0x9900
+        PageDown     0x5100  0x5100  0x7600  0xa100
+        Up           0x4800  0x4800  0x8d00  0x9800
+        Down         0x5000  0x5000  0x9100  0xa000
+        Left         0x4b00  0x4b00  0x7300  0x9b00
+        Right        0x4d00  0x4d00  0x7400  0x9d00
+
+        Esc          0x011b  0x011b  0x011b  0x0100
+        BackSpace    0x0e08  0x0e08  0x0e7f  0x0e00
+        Tab          0x0f09  0x0f00  0x9400  0xa500
+        Enter        0x1c0d  0x1c0d  0x1c0a  0x1c00
+        10キーEnter  0xe00d  0xe00d  0xe00a  0xa600
+
+        10キー0      0x5230  0x5200  0x9200  *1 (JIS8BitCode入力用)
+        10キー1      0x4f31  0x4f00  0x7500  *1
+        10キー2      0x5032  0x5000  0x9100  *1
+        10キー3      0x5133  0x5100  0x7600  *1
+        10キー4      0x4b34  0x4b00  0x7300  *1
+        10キー5      0x4c35  0x4c00  0x8f00  *1
+        10キー6      0x4d36  0x4d00  0x7400  *1
+        10キー7      0x4737  0x4700  0x7700  *1
+        10キー8      0x4838  0x4800  0x8d00  *1
+        10キー9      0x4939  0x4900  0x8400  *1
+        10キー.      0x532e  0x5300  0x9300  *1
+        10キー+      0x4e2b  0x4e2b  0x9000  0x4e00
+        10キー-      0x4a2d  0x4a2d  0x8e00  0x4a00
+        10キー*      0x372a  0x372a  0x9600  0x3700
+        10キー/      0x352f  0x342f  0x9500  0xa400
+
+    (b) X-モードのときDefaultで解釈するEsc文字列。
+        (全画面コンソールモードでは Terminfo で設定されたEsc文字列のみを解釈します。)||~v127R~
+
+        注) "^[" は 0x1b の表記です                                   ||~v127R~
+            "*SCO"(^[[M-->^[[Z,^[[a-->^[[v) とあるのは PuTTY:キーボードタイプ=SCO 用で||~v127R~
+            これを無効にするには--NOSCO オプションを指定              ||~v127I~
+            またSCOでは ^[Z が S+F2 に割り当てられていて従来のS+Tabへの割り当てと重複します||~v127I~
+            --Z2 オプション指定で S+F2 割り当てとします               ||~v127I~
+
+        キー     Modifier  Esc文字列
+        -------  --------  -------------
+        F1                 ^[OP
+        F1                 ^[[[A
+        F1                 ^[[11~
+        F1                 ^[[M             *SCO                      ||~v127R~
+        F1        Shift    ^[O2P
+        F1        Shift    ^[O1;2P
+        F1        Shift    ^[[Y             *SCO                      ||~v127R~
+        F1        Ctrl     ^[O5P
+        F1        Ctrl     ^[[k             *SCO                      ||~v127R~
+        F1        Alt      ^[O3P
+        F2                 ^[OQ
+        F2                 ^[[[B
+        F2                 ^[[12~
+        F2                 ^[[N             *SCO                      ||~v127R~
+        F2        Shift    ^[O2Q
+        F2        Shift    ^[O1;2Q
+        F2        Shift    ^[[Z             *SCO *DUP with S+Tab      ||~v127R~
+        F2        Ctrl     ^[O5Q
+        F2        Ctrl     ^[[l             *SCO                      ||~v127R~
+        F2        Alt      ^[O3Q
+        F3                 ^[OR
+        F3                 ^[[[C
+        F3                 ^[[13~
+        F3                 ^[[O             *SCO                      ||~v127R~
+        F3        Shift    ^[O2R
+        F3        Shift    ^[O1;2R
+        F3        Shift    ^[[a             *SCO                      ||~v127R~
+        F3        Ctrl     ^[O5R
+        F3        Ctrl     ^[[m             *SCO                      ||~v127R~
+        F3        Alt      ^[O3R
+        F4                 ^[OS
+        F4                 ^[[[D
+        F4                 ^[[14~
+        F4                 ^[[P             *SCO                      ||~v127R~
+        F4        Shift    ^[O2S
+        F4        Shift    ^[O1;2S
+        F4        Shift    ^[[b             *SCO                      ||~v127R~
+        F4        Ctrl     ^[O5S
+        F4        Ctrl     ^[[n             *SCO                      ||~v127R~
+        F4        Alt      ^[O3S
+        F5                 ^[OT
+        F5                 ^[[[E
+        F5                 ^[[15~
+        F5                 ^[[Q             *SCO                      ||~v127R~
+        F5        Shift    ^[[15;2~
+        F5        Shift    ^[[c             *SCO                      ||~v127R~
+        F5        Ctrl     ^[[15;5~
+        F5        Ctrl     ^[[o             *SCO                      ||~v127R~
+        F5        Alt      ^[[15;3~
+        F6                 ^[OU
+        F6                 ^[[17~
+        F6                 ^[[R             *SCO                      ||~v127R~
+        F6        Shift    ^[[17;2~
+        F6        Shift    ^[[d             *SCO                      ||~v127R~
+        F6        Ctrl     ^[[17;5~
+        F6        Ctrl     ^[[p             *SCO                      ||~v127R~
+        F6        Alt      ^[[17;3~
+        F7                 ^[OV
+        F7                 ^[[18~
+        F7                 ^[[S             *SCO                      ||~v127R~
+        F7        Shift    ^[[18;2~
+        F7        Shift    ^[[e             *SCO                      ||~v127R~
+        F7        Ctrl     ^[[18;5~
+        F7        Ctrl     ^[[q             *SCO                      ||~v127R~
+        F7        Alt      ^[[18;3~
+        F8                 ^[OW
+        F8                 ^[[19~
+        F8                 ^[[T             *SCO                      ||~v127R~
+        F8        Shift    ^[[19;2~
+        F8        Shift    ^[[f             *SCO                      ||~v127R~
+        F8        Ctrl     ^[[19;5~
+        F8        Ctrl     ^[[r             *SCO                      ||~v127R~
+        F8        Alt      ^[[19;3~
+        F9                 ^[OX
+        F9                 ^[[20~
+        F9                 ^[[U             *SCO                      ||~v127R~
+        F9        Shift    ^[[20;2~
+        F9        Shift    ^[[g             *SCO                      ||~v127R~
+        F9        Ctrl     ^[[20;5~
+        F9        Ctrl     ^[[s             *SCO                      ||~v127R~
+        F9        Alt      ^[[20;3~
+        F10                ^[OY
+        F10                ^[[21~
+        F10                ^[[V             *SCO                      ||~v127R~
+        F10       Shift    ^[[21;2~
+        F10       Shift    ^[[h             *SCO                      ||~v127R~
+        F10       Ctrl     ^[[21;5~
+        F10       Ctrl     ^[[t             *SCO                      ||~v127R~
+        F10       Alt      ^[[21;3~
+        F11                ^[OZ
+        F11                ^[[23~
+        F11                ^[[W             *SCO                      ||~v127R~
+        F11       Shift    ^[[23;2~
+        F11       Shift    ^[[i             *SCO                      ||~v127R~
+        F11       Ctrl     ^[[23;5~
+        F11       Ctrl     ^[[u             *SCO                      ||~v127R~
+        F11       Alt      ^[[23;3~
+        F12                ^[O[
+        F12                ^[[24~
+        F12       Shift    ^[[24;2~
+        F12       Shift    ^[[X             *SCO                      ||~v127R~
+        F12       Shift    ^[[j             *SCO                      ||~v127R~
+        F12       Ctrl     ^[[24;5~
+        F12       Ctrl     ^[[v             *SCO                      ||~v127R~
+        F12       Alt      ^[[24;3~
+
+        Home               ^[[1~
+        Home               ^[[H
+        Home               ^[OH
+        Home      Shift    ^[[2H
+        Home      Shift    ^[[1;2H
+        Home      Ctrl     ^[[5H
+        Home      Ctrl     ^[[1;5H
+        Home      Alt      ^[[3H
+        Home      Alt      ^[[1;3H
+        End                ^[[4~
+        End                ^[[F
+        End                ^[OF
+        End       Shift    ^[[2F
+        End       Shift    ^[[1;2F
+        End       Ctrl     ^[[5F
+        End       Ctrl     ^[[1;5F
+        End       Alt      ^[[3F
+        End       Alt      ^[[1;3F
+        Insert             ^[[2~
+        Insert             ^[[L
+        Insert             ^[[L~            *SCO                      ||~v127R~
+        Insert    Shift    ^[[2;2~
+        Insert    Ctrl     ^[[2;5~
+        Insert    Alt      ^[[2;3~
+        Delete             ^[[3~
+        Delete    Shift    ^[[3;2~
+        Delete    Ctrl     ^[[3;5~
+        Delete    Alt      ^[[3;3~
+        PageUp             ^[[5~
+        PageUp             ^[[I             *SCO                      ||~v127R~
+        PageUp    Shift    ^[[5;2~
+        PageUp    Ctrl     ^[[5;5~
+        PageUp    Alt      ^[[5;3~
+        PageDown           ^[[6~
+        PageDown           ^[[G             *SCO                      ||~v127R~
+        PageDown  Shift    ^[[6;2~
+        PageDown  Ctrl     ^[[6;5~
+        PageDown  Alt      ^[[6;3~
+        Up                 ^[OA
+        Up                 ^[[A
+        Up        Shift    ^[[2A
+        Up        Shift    ^[[1;2A
+        Up        Ctrl     ^[[5A
+        Up        Ctrl     ^[[1;5A
+        Up        Alt      ^[[3A
+        Up        Alt      ^[[1;3A
+        Down               ^[OB
+        Down               ^[[B
+        Down      Shift    ^[[2B
+        Down      Shift    ^[[1;2B
+        Down      Ctrl     ^[[5B
+        Down      Ctrl     ^[[1;5B
+        Down      Alt      ^[[3B
+        Down      Alt      ^[[1;3B
+        Left               ^[OD
+        Left               ^[[D
+        Left      Shift    ^[[2D
+        Left      Shift    ^[[1;2D
+        Left      Ctrl     ^[[5D
+        Left      Ctrl     ^[[1;5D
+        Left      Alt      ^[[3D
+        Left      Alt      ^[[1;3D
+        Right              ^[OC
+        Right              ^[[C
+        Right     Shift    ^[[2C
+        Right     Shift    ^[[1;2C
+        Right     Ctrl     ^[[5C
+        Right     Ctrl     ^[[1;5C
+        Right     Alt      ^[[3C
+        Right     Alt      ^[[1;3C
+
+        Tab       Shift    ^[[Z             *DUP with SCO:S+F2        ||~v127R~
+        P5                 ^[[E
+#endif
+
+[EOF]

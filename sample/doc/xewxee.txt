@@ -1,0 +1,326 @@
+||*CID:||+v127R~:  2013/11/20                 update#=   60;          ||~v127R~
+**********************************************************************
+This is for wxe.exe(xe Windows GUI version:WXE) and gxe(Linux X-windows version:XXE)||~v127R~
+Refer xee.txt for common to all version.                              ||~v124R~
+    In the following description,read "Explorer" as "Nortilus" for gxe.
+**********************************************************************
+
+1.Mouse operation.
+
+  -Drag & Drop is supported.
+
+   .Drag into xe from Explorer etc.
+    XE may be ICON or opened panel.                                   ||~v124R~
+      The file is opened by edit command except on dir-list panel,
+      on dir-list panel the files are copied in to the dir line selected.
+      If target dir line is not selected,that dir is the target dir.
+    Using paste, replace option can be selected on popup menu by right button click.
+      PasteIns(Insert Mode):confirmation issued by popup dialog
+                            if same name file exist on the target dir.
+      PasteRep(ReplaceMode):same bname file is replaced without confirmation msg.
+    Except on dir-list panel, only Paste(V) menu-item is enabled if files to be dropped
+      exist on clipboard.
+      (if text is on clipboard all of PasteIns,PasteRep and Paste(V)
+       area enabled)
+
+   .Drag out from xe.
+    Select files on dir-list panel then drag.
+      File selection is done by left button click(See Button operation)
+    Drag out is copy operation only. Move operation is not supported.
+    Drag out using Cut & Paste function is also available.
+      After selected files, do copy and paste by floation menu.       ||~v124R~
+    A bit longer time may be requied until mouse shape change for remote file.
+    Excel may not accept drag and drop,use association(double click around the lineno
+      field of the line).
+   .Drag & drop between splitted screens is available.
+
+  -Button operation.
+   .Left button:
+         -set text cursor(caret) position.
+         -move cursor with button pushed(dragging) to specify range of Cut&Paste.
+          Drag with Alt or Shift+Control is for block mode (box type) range
+          specification, without any modifier key is region mode(Windows standard).
+          But,on directory-list screen drag & drop is executed when lines are selected.
+          File selection is done by mouse left button.
+            +Shift:range specification. +Ctrl:additional file selection.
+         -set paste postion of Cut&Paste.
+          2 paste mode,insert and replace,are supported.
+          Shift+left button:Insert mode
+          Ctrl +left button:Replace mode
+          At insert mode,insert lines when text cursor is on
+          the Line-Number column,insert the block into the
+          position shifting right half of the line to the right.
+         -If pushed while the 3 times of scroll interval at the
+          edge of screen,scroll starts.
+   .Right button:
+         -popup floating menu containing Cut&Paste,Save,End,Discard
+          and OpenWith.(TextCursor is also set to the clicked pos)
+          (OpenWith:kick application associated by filename extension.)
+         -On dialog box,help topic is popup.
+   .Middle button:
+         -use to scroll up/down.
+          (File panel,dir-list panel,filename history panel)
+          Scroll count is set by setup dialog.
+          Shift+Middle button wheel scroll horizontaly.
+          Ctrl+Middle button wheel jump to Top/End of file.
+#ifdef WXE
+          Horizontal scroll by tilt wheel mouse is also supported.
+#endif
+#ifdef XXE
+          By middle button click,gxe do standard paste the text on PRIMARY clipboard(See note bellow).
+          Support only paste in from other process.
+#endif
+
+   .Left Button Double Click:
+         -Save and exit when double click on the title area.
+          Cancel and exit by Shift+Left Button Double Click.
+         -On Menu panel
+          jump to the selected panel.
+         -On Filename list panel
+          .Open the file by edit or browse mode according to the mode ||~v124R~
+           displayed at top-left of the panel.
+          .With shift key pressed,opened by the opposite mode.        ||~v124R~
+          .If cursor is at the left end(col.1-3 on this panel),       ||~v124R~
+           the file is opened by the extension-assosiated application if exist.
+           For directory,that is explorer.
+#ifdef WXE
+          .Open the current dir if drive letter on the DRIVE line is double clicked.
+#endif
+         -On Dir list panel
+          .Open the file like as on Filename list panel.
+           Position to request open by assosiated application is col.1-5.
+          .Doubleclick on left and right "===>"of 2nd line  means DPU or DPD command.
+           (Up or Down on the file path).
+         -On File text panel
+          .Doubleclick on left and right "===>"of 2nd line  means DPU or DPD command.
+           (Up or Down on the file path).
+          .Copy to Cut&Paste board.
+           If cursor is on the line-number column the line is copied,
+           else word at the cursor is copied to clipboard for cut & paste.
+
+#ifdef WXE
+   .Forward/Backward Button of 5 button mouse:
+         -Use as DPU/DPD(file path Up/Down) command.
+#endif
+#ifdef XXE
+  (Note)
+   .On Linux there are 3 clipboard named PRIMARY,SECONDAY and CLIPBOARD.
+    gnome-terminal use PRIMARY by Shift+Insert and use CLIPBOARD by menu selection.
+    xe and gedit etc. use CLIPBOARD only.
+    gnome-terminal pastes just selected range,xe pastes explicitly copyed/cut range.
+    So the lines copyed on xe is pasted by menu selection on gnome-terminal not by S+Insert.
+    See http://standards.freedesktop.org//clipboards-spec/clipboards-0.1.txt.
+#endif
+
+2.Setup dialog.
+
+#ifdef WXE
+  -Popup help support by right button.
+#endif
+  -Font
+#ifdef WXE
+   .FontStyle   :font face name
+   .Font-H      :Font height
+   .Font-W      :Font width
+#else	//XXE
+   .FontStyle/FontHeight/FontWidth
+                :Result of selection by FontDialog is displayed,
+                 push FontChange button to change screen font.
+#endif
+     Check combination of Fontstyle and Charset on the sample screen.
+   .Row-H       :height of text box
+   .Col-W       :width of text box
+                                                                      ||~v125I~
+#ifdef XXE                                                            ||~v125I~
+   .Ligature    :Selected Font may supports Ligature.                 ||~v125I~
+                 Ligature means to combine two glyph to one glyph for some combination such as "fi", "ff".||~v125I~
+                 If this chkbox is Off, keep mono-spacing.            ||~v125I~
+                 If On, cursor position is unmatch with display postion.||~v125I~
+                 But,I heared, in some language glyphs split are un-readble without ligature.||~v125R~
+#endif                                                                ||~v125I~
+                                                                      ||~v125I~
+#ifdef WXE
+   .TrueTypeFont:TrueType is used if the fontface has it.
+   .CharSet     :Font charset                                         ||~v125R~
+                 Use Deafult or SJIS for Japanese.                    ||~v125I~
+                 If Japanese DOS line-drawing char(0x01 etc) is used, try Other-254.||~v125I~
+                 ACP may be proper for Western-Europe language.       ||~v125I~
+                 Select from other listbox for the other foreign language.||~v125I~
+                 Restart wxe when changed charset between DBCS and SBCS language.||~v125I~
+                                                                      ||~v124I~
+                 wingdi.h defines as following.                       ||~v124I~
+                 Select from combo-box after set chkbox "Other" on.   ||~v125I~
+                                                                      ||~v125I~
+                    #define ANSI_CHARSET            0                 ||~v124I~
+                    #define DEFAULT_CHARSET         1                 ||~v124I~
+                    #define SYMBOL_CHARSET          2                 ||~v124I~
+                    #define SHIFTJIS_CHARSET        128               ||~v124I~
+                    #define HANGEUL_CHARSET         129               ||~v124I~
+                    #define HANGUL_CHARSET          129               ||~v124I~
+                    #define GB2312_CHARSET          134               ||~v124I~
+                    #define CHINESEBIG5_CHARSET     136               ||~v124I~
+                    #define OEM_CHARSET             255               ||~v124I~
+                                                                      ||~v124I~
+                    #define JOHAB_CHARSET           130               ||~v124I~
+                    #define HEBREW_CHARSET          177               ||~v124I~
+                    #define ARABIC_CHARSET          178               ||~v124I~
+                    #define GREEK_CHARSET           161               ||~v124I~
+                    #define TURKISH_CHARSET         162               ||~v124I~
+                    #define VIETNAMESE_CHARSET      163               ||~v124I~
+                    #define THAI_CHARSET            222               ||~v124I~
+                    #define EASTEUROPE_CHARSET      238               ||~v124I~
+                    #define RUSSIAN_CHARSET         204               ||~v124I~
+                                                                      ||~v124I~
+                    #define MAC_CHARSET             77                ||~v124I~
+                    #define BALTIC_CHARSET          186               ||~v124I~
+#endif
+  -Backgrounf color
+#ifdef WXE
+   .R/G/B       :value is 0 to 255.
+                 check effect on the sample display area.
+                 To change ruler color,set "Ruler" CheckBox on.       ||~v124R~
+#else	//XXE
+   .sample window display selected color,push ColorChange button to
+    popup ColorSelectionDialog.
+    To change ruler color push "Ruler" button.
+#endif
+
+  -RulerKey
+    Specify 3 letters used with Shift+Ctrl+ to display CrossHairs.    ||~v124R~
+    To erase press twice. Default is "F1F2F3".
+#ifdef WXE
+    ex). F1F2F3   QWE   123
+#else	//XXE
+    ex). F1F2F3   QWE   !"#(upper symbol of numeric key)
+#endif
+
+  -Scroll
+   .Ctr         :scroll line count by mouse middle button.
+   .Intvl       :scroll start when mouse left button is pushed while
+                 3 times of this interval.
+                 scroll is done at each time of this interval.
+                 unit is 1/10 sec.
+  -Shortcut key
+   .effective only when chcked on at setup dialog.
+   .Accelerator :short cut of pull down menu.
+     Reset check when you want to use function key by "OPT CCFUNC ON".
+     Shift+Ctrk+char combination reaches to xe even if Accelerator check is ON,
+     and follows on CCFUNC option.
+                  Ctrl+"A":SaveAs
+                  Ctrl+"C":Copy(Cut&Paste)
+                  Ctrl+"E":start Explorer
+                  Ctrl+"H":PrtScr(Hardcopy)
+                  Ctrl+"I":Paste(Cut&Paste Insert mode)
+                  Ctrl+"L":Clear(Cut&Paste)
+                  Ctrl+"M":open DOS prompt screen
+                  Ctrl+"N":New file
+                  Ctrl+"O":Open file
+                  Ctrl+"P":Print file
+                  Ctrl+"R":Paste(Cut&PAste Replace mode)
+                  Ctrl+"S":Save
+                  Ctrl+"T":Cut(Cut&Paste)
+                  Ctrl+"V":Preview(PageSetup)
+                  Ctrl+"X":Exit
+                  Ctrl+"Z":About
+   .MenuKey     :Select menu by conbination with Alt Key
+                  Alt+"F":File
+                  Alt+"E":Edit
+                  Alt+"S":Setup
+                  Alt+"P":Preview
+                  Alt+"H":Help
+   .R-Ctrl      :Use Right-Ctrl as execute key.
+                 When checked,Enter key act as CRLF function.
+   .FreeCursor  :Scroll(check off) or Wrap(check on) when cursor reached to||~v124R~
+                 edge of screen.
+   .Beep        :Beep when error.
+   .QuietExit   :Bypass confirmation dialog "Exit xe?".
+
+3.Preview dialog (Setup print)
+
+  -Form
+   .Size        :select form size
+   .Landscape   :use form as landscape.
+   .Margin      :Left,Right,Top,Bottom margin, unit is mm.            ||~v124R~
+#ifdef XXE
+                 0 means default value displayed lower part.
+                 Default is shown bellow of this widget.              ||~v127I~
+                 For the case printing on papersize:B5 without changing printer setting,||~v127I~
+                 Shift amount can be specified like as 3510.          ||~v127I~
+                 ex) Top:3510 means shifting 35mm upward with 10mm:top margin.||~v127I~
+#endif
+  -Font
+   check page on the preview area.
+#ifdef WXE
+   .Style       :font face name
+   .H           :font height
+   .W           :font width
+#else	//XXE
+   .FontStyle/FontHeight/FontWidth
+                :Result of selection by FontDialog is displayed,
+                 push FontChange button to change screen font.
+#endif
+   .Col/Row by Cell-H/W:determine max columns and max lines of print
+                        page by width and height of text box(cell).
+   .Cell-H      :height of text box
+   .Cell-W      :width of text box
+   .MaximumCell-H:limit the cell height for the case Col and Row is 0
+                  to protect too large font is used for the file
+                  all line is short.
+                  Effective only when Col?Row by Cell-H/W is off.
+
+  -Pagesetup
+   .Col         :max column of the page
+                 use length of the longest line of the file if 0 specified.
+                 If "Col/Row by Cell-H/W" is checked on,this value is
+                 effective when that is smaller than it.
+   .Row         :max line of the page.
+                 If 0 is specified,it is determined by form size,
+                 form orientation and font height-width rate.
+                 If "Col/Row by Cell-H/W" is checked on,this value is
+                 effective when that is smaller than it.
+   .LineNumber  :print line number on the left.
+   .2p          :print 2 page per 1 sheet. Intermediate column can be set.
+   .Header      :print header line(file name)
+   .FileTime    :print file time stamp on the header line.
+   .Footer      :print footer line(page seq number).
+   .Systime     :print current time on the footer line.
+   .WWScrPrt    :For PrtScr(HardCopy),keep the rate of application
+                 window size and screen size on paper.                ||~v124R~
+                 If WWScrPrt is off,vertical or horizontal size is expanded
+                 to paper boundary.
+                 For fileprint, insert DBCS padding space.            ||~v125I~
+                 (for GB18030 4 byte dbcs or EUC 3 byte DBCS)         ||~v125I~
+   .FullPage    :Ignore font height-width rate and fill whole page,
+                 for file print or hardcopy with WWScrPrt off.
+#ifdef XXE                                                            ||~v127I~
+   .Ligature    :gxe accept printing with ligature option.            ||~v127I~
+#endif                                                                ||~v127I~
+  -Preview
+   .page        :Enter page number to be previewed.
+                 When Preview-Print is pushed, file name,page count,
+                 file line count,column of the longest line,
+                 max column and lines of page are displayed.
+   .Print       :start preview.
+   .NP          :preview next page.
+   .PP          :preview previous page.
+   .PrtScr      :preview hardcopy.
+  -Submit
+   .Print       :Print file
+#ifdef XXE
+                 Specify print page number on Edit box if not print all page.
+                 ex) 4,8,10-14,18-
+#endif
+   .PrtScr      :print hardcopy
+   .OK          :Save setup value without print.
+   .Cancel      :Exit without saving setup value,print is not done.
+
+4. Others.
+
+  -PrintScreen key.
+#ifdef WXE
+   .PrtScr:wxe   screen print, Shift+PrtScr:file print, Ctrl+PrtScr:wxe hardcopy.
+#else 	//XXE
+   .PrtScr:gnome screen print, Shift+PrtScr:file print, Ctrl+PrtScr:gxe hardcopy.
+#endif
+
+//EOF

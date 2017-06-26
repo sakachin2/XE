@@ -1,0 +1,691 @@
+||*CID:||+v927R~:  2014/02/14                        update#=  153;   ||~v927R~
+**********************************************************************
+*File print utility : XPRINT
+**********************************************************************
+
+This is a file print utility with following characteristic.
+    (related option parameter is in parenthesis)
+  - Multiple file print
+      support directory or wildcard file specification using *,?(hidden file||~v9.7R~
+      will be printed),indirect file which contain file name to be printed(Yi),||~v9.7I~
+      or stdin input is available.
+      File print sequence control(/O),file selection by timestamp(/D)
+      is available. You can select updated file only using file archived||~v912R~
+      attribute.(/Ym,/Ya).
+      To save paper use option of no page eject at end of file(/Yv)
+      for print directory with many small files.
+      Under OS/2;output may be multiple job(/Yj),document name is set
+      (/Yd).You can delete or change priority etc. on printer object folder.||~v912R~
+  - File time stamp and total page-number on page header.
+  - Char pitch and Line pitch(/C,/L,/E).
+      Char pitch is determined by max column(/C) and form type(/E).
+      When /C is not specified,it is determined by the longest line of
+      the file and form type selecting the smallest pitch in order to
+      print the longest in a line.(see also discription of parm /E)   ||~v912R~
+      You can also control line pitch(/L) or Font style(/F).
+      Use printer command file when pitch control is not appropriate for
+      your printer.
+      For Win version,any value is avail for CPI/LPI,and CPI/LPI is cal-
+      culated from chars per line and lines per page if no CPI/LPI is
+      specified.
+  - Double page(2 pages per a sheet) print support.                   ||~v9.7R~
+  - Output page range,print restart file name(/P).
+      Useful when paper jammed.                                       ||~v912R~
+  - Input range by line-No(/I) or offset(/Ix).
+      Use for file partial print.
+  - Descendant page sequence print(/Yp).
+      Useful for printer which put page on stack with face up.        ||~v912R~
+  - DBCS control(/M).
+      Check validity of DBCS second byte.
+      Always print second byte on same line as first byte.
+      Kanji code of file must be Shift-JIS code set.
+  - Dump mode print(/M).
+      Print replacing unprintable char by "." under the specified char
+      set.
+  - Skim mode print(/M).
+      Print skimmed printable char only to check binary file.
+  - Fixed Record Length fil print(/R).                                ||~v925R~
+      Line feed not by CRLF but by record-size specified.
+  - Variable Record Length file print(/V).                            ||~v925I~
+      Record header format supported is as following.                 ||~v925I~
+      2 byte/2 byte(containing header length or not),RDW(4 byte LLZZ),||~v925I~
+      Microfocus(2 byte/4 byte is determined by top record of the file).||~v925I~
+      Record header is printed by /Mtx option,                        ||~v925I~
+      or by /EOLPRINT when text mode.                                 ||~v925I~
+  - Hex dump print(/M,/Y6,/R).
+      32/16 byte width(horizontal)
+      or record-size width(3 line virtical).
+  - Print UTF8 encoded file.                                          ||~v9.9I~
+  - Print EBCDIC encoded file by codepage parameter..                 ||~v919I~
+                                                                      ||~v9.9I~
+  -------                                                             ||~v9.9I~
+      There are 2 binaries for Linux.                                 ||~v9.9R~
+        xprint:Text output. Use xprint.sh to enq to printer-Q.        ||~v9.9I~
+               UTF8 is converted the locale code page.                ||~v9.9I~
+        gxp   :Gnome print. Enq to default printer.                   ||~v9.9I~
+               Pitch is not fixed,Color Density is changable.         ||~v9.9I~
+
+**********************************************************************
+*Parameters
+**********************************************************************
+
+ -parameter is case insensitive,later is effective if duplicated.
+ -parameter in the [ ] is optional.
+ 
+format       : XPRINT [/option /...] filespec [filespec..]            ||~v9.7R~
+
+in-file      :multiple specification allowed.                         ||~v9.7R~
+             :directory or wildcard is avail.                         ||~v9.7R~
+             :use option /Yi when indirect file name specification.
+             :(in-file is name of indirect file which contain file name
+             :to be printed)
+             :to enter file name from standard input,specify stdin.
+             :if you want to print file stdin,use /N0 option.
+             :"," is abredgement of stdin.
+             :   ex. f01???.*
+             :       *.c *.h                (*.c and *.h)             ||~v9.7R~
+             :       stdin                  (input from standard input)
+             :       ,                      (input from standard input)
+
+------------------------------------------------------------------------
+option       :(use "-" for preceding "/" for AIX/Linux version)       ||~v9.7R~
+  /?         ;help msg
+  /ASCEOL    ;Not 0x15 but (0x0d)0x0a is EOL of EBCDIC file           ||~v919I~
+  /BCfilenm  ;EBCIDC translation cfg filename. shares with xe.        ||~v925I~
+             ;/ICU is alternative when using ICU                      ||~v925I~
+  /CPEB      ;EBCDIC codepage.                                        ||~v919I~
+             ; ex) xprint ebcfile /Me /CPEB=CP1047 /ICU               ||~v926R~
+  /C[-]nn[/p];max 'C'olumn per line and char pitch.
+    nn       ;max column per line,input line is splitted if over max.
+             ;Default is,for form A4,65 to 105 step by 5 depending on file||~v926R~
+             ;if maximum column of the file is lower or equal than 105.
+             ;if over 105 it is set to 105.(see also /E)
+             ;(for /Ew,cpi is calc by this maxcol when no cpi,font specified.||~v914I~
+             ; /Cmax means maxcol is of the longest line.)            ||~v914I~
+             ;"-" means up to the nn column step by 5 depending on max column,||~v926R~
+             ;without "-",char pitch is fixed to the nn.              ||~v926R~
+    p        ;Char Pitch(cpi);use if you want to be unrelated to max column.
+             ;Following is valid value for each printer type.
+             ;(value is of by DBCS,that is 75 for 15cpi)
+             ;        /Ei : 5, 6, 67,     75
+             ;        /Ee : 5, 6,         75
+             ;        /Ec : 5, 6, 67, 72, 75
+             ;        /Ew : any value,if >=15 it is trated as unit 1/10.
+             ;Use printer command file(/E@) for other than else.
+             ;If no CPI is specified,it is determined from chars per line.
+             ;For /Ew,CPI is calculated by page width and chars per line.
+             ;ex.  /C90     -90 column per line for all file.
+             ;     /C110/5  -110 column per line and 10 cpi.
+             ;     /C/75    -15 cpi(SBCS),column is by default.
+  /Dccts     ;file selection by 'D'ate and time.
+    [-|+ccts];"-" for AND "+" for OR condition
+    cc       ;condition:one of EQ,NE,GT,GE,LT or LE
+    ts       ;date and time,format is  yymmdd[[:]hhmm],yy=00 for 2000 year.
+             ;ex. /DGE940610 , /DLT931210:1230
+             ;    /dgt951021:2200-le951101 , /dle950910+ge951120
+  /EBCEOL    ;EBCDIC file EndOfLine ID is 0x15                        ||~v919I~
+  /EOLPRINT=fmt;printf format to print record length of recfm=V file. ||~v925I~
+             ;    ex) /EOLPRINT=::  "/EOLPRINT=:% 7d"                 ||~v925I~
+  /E[x]/form[L][/[M]{{T|B}|{L|R}}[ss[P]]];PaperSize[Landscape].       ||~v927I~
+    x:i      ;IBM5575 etc.(default,"ESX 02 00 01 nn").
+     :e      ;ESC/P (BJ-15v etc.)("ESC P","ESC M","ESC g").
+     :c      ;Canon(LASER SHOT series)(LIPS III control command).
+     :w      ;Win version  :Windows printer(default of Win version)   ||~v9.9R~
+             ;gxp accept "w" only.                                    ||~v925R~
+    form     ;(For printer type=w,pitch is calculated by column and line||~v912R~
+               count for the form.)
+             ;paper type, A4,A4L,B4,B4L,B5,B5L (L mean landscape).
+             ;default is A4.
+             ;table of char pitch and print line width.
+             ; ( ) is for the case without line-number prefix(/Nn).
+    +-----+----------+----------+----------+----------+----------+----+||~v9.7I~||~v917R~
+    |     |  10 cpi  |  12 cpi  |  13  cpi |  14.4cpi |  15 cpi  |cols|||~v9.7I~||~v917R~
+    +-----+----------+----------+----------+----------+----------+----+||~v9.7I~||~v917R~
+    | A4  |  65 ( 75)|  85 ( 90)|  95 (100)| 100 (110)| 105 (115)| 60 |||~v9.7I~||~v917R~
+    | A4L | 100 (110)| 125 (130)| 140 (145)| 145 (155)| 155 (165)| 42 |||~v9.7I~||~v917R~
+    | B4  |  85 ( 95)| 105 (110)| 120 (125)| 125 (130)| 135 (140)| 75 |||~v9.7I~||~v917R~
+    | B4L | 130 (135)| 155 (160)| 175 (180)| 180 (185)| 195 (205)| 53 |||~v9.7I~||~v917R~
+    | B5  |  55 ( 65)|  70 ( 75)|  80 ( 85)|  85 ( 90)|  90 ( 95)| 53 |||~v9.7I~||~v917R~
+    | B5L |  85 ( 95)| 105 (110)| 120 (125)| 125 (130)| 135 (140)| 35 |||~v9.7I~||~v917R~
+    +-----+----------+----------+----------+----------+----------+----+||~v9.7I~||~v917R~
+    | A42 |  30 ( 35)|  35 ( 40)|  40 ( 45)|  45 ( 50)|  50 ( 55)| 60 |||~v9.7I~||~v917R~
+    | A4L2|  45 ( 50)|  55 ( 65)|  65 ( 70)|  70 ( 75)|  75 ( 80)| 42 |||~v9.7I~||~v917R~
+    | B42 |  40 ( 45)|  45 ( 55)|  55 ( 60)|  60 ( 65)|  60 ( 70)| 75 |||~v9.7I~||~v917R~
+    | B4L2|  60 ( 65)|  70 ( 80)|  80 ( 85)|  85 ( 90)|  95 (100)| 53 |||~v9.7I~||~v917R~
+    | B52 |  25 ( 30)|  30 ( 35)|  35 ( 40)|  40 ( 45)|  40 ( 45)| 53 |||~v9.7I~||~v917R~
+    | B5L2|  40 ( 45)|  45 ( 55)|  55 ( 60)|  60 ( 65)|  60 ( 70)| 35 |||~v9.7I~||~v917R~
+    +-----+----------+----------+----------+----------+----------+----+||~v9.7I~||~v917R~
+             ; For example,for paper type A4.
+             ;  13 cpi for /C95, 15 cpi for /C96.
+             ;  If /C is not specified,the smallest pitch is selected
+             ;  in order to include in a line the longest line of the
+             ;  file. 10 cpi if the longest line <=70 column, 12 cpi
+             ;  for <=85, 13 cpi for <=95, 14.4 cpi for <=100 and
+             ;  15 cpi for >100.And split line into multiple print lines
+             ;  if >105.
+             ;  If only char pitch is specified,line width is set to
+             ;  bellow the allowable max column of the pitch and form.
+             ;  For /C/6, 10 cpi when the longest line column <=70,
+             ;  12 cpi when >70 and line is splitted when >85.
+             ;  "cols" column shows default line numbers per page
+             ;  for each type.
+             ;  ex. /Ei/B4,  /Ee/a4l, /ee
+             ;note.-For ESC/P printer 13 and 14.4 cpi is not available.
+             ;      For A4, 15 cpi if >=85.
+             ;    .-For IBM printer 14.4 cpi is not available.
+             ;      For A4, 15 cpi if >=100.
+             ;     -Katakana(a set of Japanese code) may be ignored   ||~v912R~
+             ;      if 15 cpi is specified for ESC/P.
+             ;     -To use ESCP printer with driver setting of ESC/P,
+             ;      /Ee should not be used.
+             ;      /Ee force Kanji code conversion from Shift-JIS to JIS.
+             ;     -for ESCP,LIPS printer,font corresponding to control
+             ;      char(x'00'-0'1f') may not be prepared.
+             ;      '/' may printed as alternative.
+             ;      See discription of /K.
+#ifdef GXP                                                            ||~v926R~
+             ;? for form is used to list available paper size,        ||~v927I~
+             ;partial string may be OK if uniquely match(gxp version only).||~v927I~
+             ;M:following parameter is margin width.                  ||~v927I~
+             ;Without "M",expand papersize to avoid printers warning of||~v927I~
+             ;invalid papersize.                                      ||~v927I~
+             ;{T|B}|{L|R}:direction(Top/Bottom/Left/Right of portrait form).||~v927I~
+             ;ss[P]:shift/margin amount by mm or points with "P" parameter.||~v927I~
+             ;Try shift parameter without "M"                         ||~v927I~
+             ;if paper folder position is not valid for other than papersize=A4.||~v927I~
+             ;For ex,1st line printed is not top of B5,               ||~v926R~
+             ;"-E/B5/T" shifts 1st line position toward top of paper. ||~v926R~
+             ;without ss,it means to adjust edge on A4 paper.         ||~v927I~
+             ;ex) -Ew/A4 -/B5 -E/A4L -E/LegalL/T10 -E/b5jis/br        ||~v927I~
+             ;    -E/A4/ML18P -E//ML10B10L10R10 -E/B5L/r10b10Mr10t10  ||~v927I~
+#endif                                                                ||~v926R~
+#ifdef GXP                                                            ||~v926R~
+#else                                                                 ||~v926R~
+  /E@cmdf    ;cmdf=ESC command file name
+             ;ex. /E@i4208.esc
+             ;(note)if char or line pitch setting is not fit to your  ||~v912R~
+             ;      printer,use command file.
+             ;cmd file record format(specify for each max column size)
+             ;   "nnn(decimal) esccmd(hex-decimal notation)"
+             ;    ex.  95  1B7E02000143
+             ;         999 1B7E0200014B
+             ;   if you want to set line pitch etc.,specify any printer||~v912R~
+             ;   command after char pitch command without intermediate
+             ;   space.
+#endif   //!GXP                                                       ||~v926R~
+  /FFXxx     ;char replacing FormFeed(0x'0c').
+    xx       ;Hex digit from 00 to 7f.
+             ;use to save paper avoiding page eject by FF char.
+#ifdef GXP                                                            ||~v926R~
+  /Fhhh      ;set 'F'ont name.                                        ||~v926R~
+             ; ? for hhh is used to list font name.                   ||~v926R~
+             ; ex)"-F?abc" lists font names containing string "abc".  ||~v926R~
+             ;ex) -FSans -F"Monospace;Italic Bold".                   ||~v926R~
+#else                                                                 ||~v926R~
+  /Fhhh[/zzz];set 'F'ont style by printer command.
+    hhh      ;SBCS font type.
+             ;IBM   :0(default),GOT(gothic),ELI(elite),COU(courier),
+             ;       MIN(mincho),OCB(OCR-B),ORE.
+             ;ESC/P :0(default),ROM(Roman),SAN,COU(Courier),PRE(Prestige),||~v912R~
+             ;       SCR(script),OCB(OCR-B),OCA(OCR-A)
+             ;Canon :LIN(line printer),COU(courier),SWI(Swiss),
+             ;       DUT(Dutch),MIN(mincho),GOT(gothic)
+             ;Win   :Win version  :SYS,COU,ROM,MIN,GOT,"font-name".   ||~v9.9R~
+             ;       Gnome version:"font-name".  ex. -f"Sans regular" ||~v9.9R~
+             ;                     Font size may be included in fontname.||~v9.9R~
+             ;                     If not, font size is determined by ||~v9.9R~
+             ;                     form size, /c and /l option.       ||~v9.9I~
+             ;       "?" for hhh means query for available font.      ||~v9.9I~
+             ;       "?xxxx" means fontname partialy contains xxxx.   ||~v9.9I~
+    zzz      ;DBCS font type,ESC/P only.
+             ;ESC/P:GOT(gothic),MIN(mincho).
+             ;(note). a font style may not match with char pitch.
+             ;        a printer may not have all font style.
+#endif   //!GXP                                                       ||~v925I~
+  /H         ;'H'elp msg.
+  /ICU       ;Use ICU for EBCDIC translation                          ||~v925I~
+  /I[n]-[m][/pp];'I'nput range to be printed by file line number.
+      n,m    ;line-No(Use for other than Skim-dump,Non-record-mode
+             ;Hex-dump).
+      pp     ;restart page-no.(default=1).
+             ;Use at the case restart changing form(line count per page).
+             ;ex. /I150-300 , /I200- , /I-420 , /I180-/4
+  /Ix[s]-[e][/pp];'I'nput range to be printed by file offset for not text mode.
+      s,e    ;offset value(start/end offset byte which is printed).
+             ;ex. /Ixfc00-fcff , /Ix2ac- , /Ix-ffff
+  /Jjobname  ;(Win,OS/2 version only) Jobname to be set on output queue.
+             ;default is set from input filename.
+  /Kx        ;code conv for graphic char of Japanese DOS(0x01,..).
+             ;x=0:no conversion
+             ;x=g:conv to ASCII graphic char(0xb9,..)
+             ;x=k:to graphic char of KATAKANA set(0x8f,..).(depend on cpi)
+             ;x=L:to ASCII narrow line char(0xb3,0xb4,...)            ||~v912R~
+             ;x=(any other 1 byte char than 'f')
+             ;default:/Ei and /Ew is /K0;else /K0 for /Mx,/Mta,else /K/.
+  /KFfilenm  ;256 byte Code Translation Table filename.
+             ;Setup char conversion table corresponding to fro 0x00 to 0xff.||~v912R~
+             ;Value NULL(0x00) is used for no conversion id. Non NULL value
+             ;also reset ID of non-printable/SBCS/DBCS to SBCS on char set
+             ;table specified by /M option or as default value.
+             ;This option may be more flexible alternative of /Kx option.
+  /Lnn[x][/p];max 'L'ine per page / line pitch
+    nn       ;line number per page,default is 60 for A4.(see also /E)
+    x:d      ;double space line advancing
+     :t      ;triple space line advancing
+    p        ;line pitch(lpi).For IBM,ESC/P or Canon use one of 2, 3, 4, 5, 6,
+             ;75 or 8,default is 6-lpi.
+             ;For /Ew,any value is valid and if >=15 it is treated as unit
+             ;of 1/10.If lpi and Form is not specified,lpi is calculated
+             ;from page height and lines per page.
+             ;Use printer command file for other than else.
+  /Mm[c][e][n];print 'M'ode
+    m:t      ;text mode(no translation,default)
+     :d      ;dump mode(text mode replacing unprintable char by ".")
+     :x      ;hex dump mode(print hex code and printable char)
+     :tx     ;text mode 3 line virical hex dump print.     ||~v9.8R~  ||~v926R~
+             ; ex) xprint ebcf /mxe /R80                              ||~v926I~
+             ;     xprint utf8file /Mtxu                              ||~v926I~
+    c:       ;character set.
+             ;Default depends to environments.                           ||~v916I~||~v927R~
+     :d      ;DBCS(IBM Japanese DOS) char set.                        ||~v916R~
+     :s      ;SBCS char set(treat DBCS char as unprintable).          ||~v912R~
+     :a      ;ASCII(7 bit) char set.(x20-x7E is printable char)
+     :j      ;same as DBCS except control char(x00-x1F) is unprintable.
+             ;(default for /Mx)
+     :e      ;EBCDIC char set.
+     :u      ;File is UTF-8 encoded.                                  ||~v9.9I~
+    e        ;subtype if EBCDIC. use only when c=e.                   ||~v912R~
+     :c      ; using cfg file(Default).                               ||~v919R~
+             ;    /BC or /CPEB option is required                     ||~v925I~
+             ;    ex) xprint ebcfile /Me /bcEbcmap.cfg                ||~v916I~
+     :i      ;same as /ICU. /CPEB is required.                        ||~v925I~
+             ;    ex) xprint ebcfile /Mei /CPEB=cp930                 ||~v925I~
+     :k      ;Japanese. Katakana-Ext, Default.                        ||~v916R~
+     :e      ;Japanese. English-Ext.                                  ||~v916R~
+    n        ;minimum printable string length of skim dump mode.
+             ;(ignore continuous printable string which length is
+             ;shorter than n,and print only max 3 dot(...) with other
+             ;unprintable char. Use to read binaly file)              ||~v912R~
+             ; ex) xprint ebcf /mtxe /R80                             ||~v925I~
+             ;     xprint utf8file /Mu /N8                            ||~v925I~
+  /O[[-]x]   ;file output 'O'rder.
+             ;assume /Ob when none was specified.                     ||~v9.7R~
+    -        ;reverse order
+    x:b      ;order by Base-Name without pathname and then Extension.(Default).
+     :e      ;order by Extension and then Name without pathname.
+     :d      ;order by Date and Time
+     :n      ;order by filename without pathname.
+     :l(L)   ;order by input file specification.                      ||~v9.7R~
+             ;sequence of directory member is unpredictable.          ||~v9.7R~
+             ;Without /O option,default is /Ob if input specification contains||~v9.7R~
+             ;directory or wildcard,else /Ol.                         ||~v9.7I~
+             ;(note)Under AIX/Linux,wild card is expanded by shell program.||~v9.7I~
+             ;So,use double quotation like as "*.c" to reorder.       ||~v9.7R~
+  /Pnn[-mm]  ;'P'rint page range.
+             :effective for all input file if multiple input file.
+             :allow multiple pages specification conbined by "+".
+             ;ex. /P5-   /P-6   /P1-5+8+19-
+  /P[n]/[f]  ;'P'rint restart file and its restart page.
+             ;(use same in-file specification as before)
+    nn       ;restart page mean -nn if /Yp(page descending order print),
+             ;nn- if /Np.you can specify explicitly -nn or nn-.
+    f        ;restart file name when multiple file is specified.
+             ;specify member name if wild card is used.
+             ;ex. xprint dir1\*.c /P15/xyz.c
+             ;                       restart from page 15 of xyz.c
+             ;specify member name with pathname of filename parm
+             ;if that member is duplicated on both of concatenate by "/".||~v912R~
+             ;(member name is merged and sorted if concatenated by "/".)||~v912R~
+             ;ex. xprint dir1\*.c/dir2\*.c /P/xyz.c
+             ;specify same name as of filename parm if filename is
+             ;concatenate by "/".                                     ||~v912R~
+             ;ex. xprint dir1\*.c/f:\abc.d/dir2\*.c /P/f:abc.d
+             ;(all member name is merged and sorted if concatenated by "/".)||~v912R~
+             ;and no confirmation for filename specification)
+  /Qdest     ;output destination                                      ||~v9.7R~
+             ;specify LPTx or file name if you want. Default is prn.  ||~v912R~
+             ;prn means default printer for OS/2,Win version,LPT1 for  ||~v9.7I~||~v926R~
+             ;DOS version.(filename prn for AIX/Linux version).       ||~v9.7I~
+             ;use NUL(or /dev/null for Unix)to check line-no,page-no etc.||~v912R~
+             ;(output is discarded).                                  ||~v9.7I~
+             ;Printer name or Queue name is also avail for OS/2 and gxp.||~v927R~
+             ;/Q- and /Q-- means stdout. Output process complete MSG to||~v912R~
+             ;stderr when /Q-,stdout when /Q--.
+             ;(gxp)You can specify CUPS printer. Substring of printer-ID may be OK.||~v926R~
+             ;     ex) -qlp1400. (substring is OK for CUPS-printer if unique.)||~v926R~
+             ;(gxp) -Q? lists available printers.                     ||~v926R~
+  /R[recsz]  ;'R'ecord mode
+     recsz   ;Record size,set to max column(/Cnn) if omitted
+  /RGB=rrggbb;(Gnome version only) Text color, default is 404040.     ||~v9.9I~
+             ;Adjust darkness.                                        ||~v9.9I~
+  /Tnn       ;'T'ab column interval,default is 4.
+  /Wdir      ;'W'ork dir-name used for page descending order print
+    dir      ;directory name. Default is from environment variable XP=.||~v912R~
+             ;if no environment set,/Wc:\ is used.
+             ;  ex. d:\ , c:\dir1
+  /WN=nn     ;indentation column for splitted line(overflow line by page width).||~v9.7I~
+  /ZHnn      ;(Win/Gnome version only)Page height zoom rate, nn %.(default=100).||~v912R~
+  /ZWnn      ;(Win/Gnome version only)Page width zoom rate, nn %.(default=100).||~v9.9R~
+              (nn=L means nn=94 for Letter size).
+              Use when non-standard form which driver dose not support.
+              Or when you want to leave space on right or bottom of page.
+  /Yx,/Nx    ;option Y(set) or N(reset),last is effective if duplicated
+    x:       ;specify following options. Both /Ya /Yb and /Yab is accepted.(except Unix)||~v912R~
+      a      ;select 'A'rchived attribute file only(default=/Na)
+             ;Using /Yam option,It is always printed updated file only.
+      b      ;'B'ackground process.(Skip keyboard interface.
+             ;no wild card confirmation,error if stdin specified.)
+             ;Use when execute as child process.
+      c      ;'C'onfirm print for each file when wild card filespec.
+             ;No confirmation for file specification even if that is
+             ;concatenated with wild card by "/".                     ||~v912R~
+             ;(default is /Nc when background mode,else /Yc)
+#ifdef GXE                                                            ||~v926R~
+      d      ;popup Dialog for Printer/Paper selection(-Nd).          ||~v926R~
+#else                                                                 ||~v926R~
+      d      ;(OS/2)set 'D'ocument name to output print job.          ||~v9.7R~
+             ;      default=/Yd. You must use /Nd when SPOOLER inactive.||~v912R~
+             ;(Win )request form type,form orientation setting to driver.||~v9.7R~
+#endif                                                                ||~v926R~
+      e      ;write 'E'sc cmd for char/line pitch.(default=/Ye)
+             ;PostScript is most common to Linux,see following sample of||~v9.7I~
+             ;combination of xe with /Ne option and mpage utility.    ||~v9.7I~
+                                                                      ||~v9.7I~
+                                                                      ||~v9.7I~
+#ifndef GXE                                                           ||~v926R~
+      f      ;'F'ast path mode(lack of total page-No on header line and
+             ;char pitch set by max column is not avail).(default=/Nf)
+#endif                                                                ||~v926R~
+      g      ;write column 'G'auge line(2nd header line).(default=/Yg)||~v912R~||~v926R~
+      h      ;write 'H'eader(1st line).(default=/Yh)
+      i      ;in-file is of 'I'ndirect file name specification file(/Ni)
+             ;or of to be printed.(default=/Ni)
+                ex) xprint /yi indirectf                              ||~v919I~
+                    --indirectf---                                    ||~v919I~
+                      g:\src\xe\x1ebc2 /me /bcp:\xewd\xeebc.mapo    /cpeb:cp930||~v919I~
+                      g:\src\xe\x1ebc2 /me  /bcp:\xewd\xeebc.mapo   /cpeb:cp939||~v919I~
+                      #g:\src\xe\x1ebc2 /me  /bcp:\xewd\xeebc.mapo   this is comment||~v919I~
+                                                                      ||~v919I~
+      j      ;output to  multiple or single print-'J'ob.
+             ;  default is /Yj for PRN/LPTn,/Nj for other than else.
+             ;  Effective for OS/2 version and DOS version under MVDM.
+      l      ;cr and lf by 0x0d0a even if Dump mode(default is /Yl)
+             ;It is forced to /Nl when record or hexdump mode.
+             ;line-no of line prefix is 1 up by CRLF when /Yl.
+             ;record mode is assumed when /Nl is used under dump mode,
+             ;it means newline by record size.
+      m      ;'M'odify(clear) archived attribute after print completed.
+             ;(default is /Nm). for not Unix only.                    ||~v9.7R~
+      n      ;set line 'N'umber prefix(line-no/offset).(default is /Yn)
+      p      ;'P'age descending order print(default is /Np)
+      r      ;Font restore required between page for old Windows version.
+             ;Windows95 is one of them and it loss printing time.(Yr).
+             ;Try /Nr under WindowsNt.
+      s      ;for hex dump, process --'S'same as above--.             ||~v912R~
+             ;(default is /Ns for record mode with record size over
+             ;line width,else /Ys)
+      u      ;insert formfeed command (0x0c) at the end of page.(/Yu) ||~v9.7I~
+      v      ;Saving is 'V'irtue. Use /Yv to save paper when print directory||~v912R~
+             ;containing many short files.(Default is /Nv)
+      0      ;when stdin is specified for input file name,get file name
+             ;from standard input(/Y0) or print file "stdin"(/N0).
+             ;(default is /Y0.(stdin is handle '0'))
+      1      ;Write FormFeed before 1st page(/Y1) or not(/N1).
+             ;Use for the case 1st FF is not ignored and white page is
+             ;inserted before each file.
+             ;(default is /N1 for Canon(/Ec),/Y1 for other than else.)
+      2      ;Double page print.(2 pages per a sheet).(/N2)           ||~v912R~
+             ;Available when printer type is "w".
+             ;Landscape or Portrait is to be set on printer driver's  ||~v912R~
+             ;property. When /Y2 and no /L,line-count per page is
+             ;120 for Portrait and 60 for landscape form setting.     ||~v912R~
+#ifdef LNX                                                            ||~v910R~
+      3      ;For display Japanese EUC code.                          ||~v912R~
+             ;Accept 0x8f(SS3:single shift 3:extension of kanji code) or Not.(/N3)||~v910R~
+             ;Send "?" for those code if N3. Y3 may cause line feed error.||~v910R~
+#endif                                                                ||~v910R~
+      6      ;1'6' byte width hex dump.
+             ;(default is /N6,That is 32 byte width)
+      8      ;vertical HEX dump is by UTF-8 for UTF-8 file,           ||~v920I~
+             ;by UCS when /N8.(/Y8)                                   ||~v920I~
+      9      ;force SBCS(/N9) or DBCS(/Y9) environment used for err-msg.
+             ;default is determined by session environment.(code page '9'32)
+             ;Use when DBCS msg is not displayed on screen.
+------------------------------------------------------------------------
+ (ex)  XPRINT abcdefgh.ijk
+       XPRINT /Nc /C80 dir1\abc???.* /l25d /P1-10 /On /Ee outf
+
+//**********************************************************************
+//* change history
+//**********************************************************************
+v7.0  :-First opened. 1994/07/28                                      ||~v9.7R~
+       -Test environment.
+           PS/55, AT-compatible, IBM5575-H02, Canon BJ-15V.
+           IBM DOS J5.0/V, OS/2 2.11.
+v7.1  :-Option which output separate print job for each input file.
+        (for OS/2 version and Dos version under MVDM session).
+       -OS/2 version,Option which set document name to print job.
+       -OS/2 version,Bug of DosFindFirst err when multi-input file
+        option used.
+       -for JDOS 4.0(about display line count).
+       -allow multiple option for a /Y or a /N toggle option parm.
+       -Option which erase header line,column gage line,line-No prefix.
+v7.2  :-Option which allow select file using file archived attribute.
+       -Option which allow partial file print by offset value or line-No
+        range.
+       -Bug of line-No presentation when record mode specified.
+       -Option which bypass "same as above" process under hex-dump mode.
+       -To set line-No,Assume Record mode when /Nl(NO CRLF) option used.
+       -Option which display version update history(/V).
+       -two type help./?(abridge) and /h(detail).
+       -char pitch(/Cn/p),line pitch(/Ln/p),font style(/F) option.
+       -Fast path option(/Yf) added.
+       -Change /= parm key to /E,because "=" is ignored for batch file
+        parm.
+v7.3  :1995/02/08                                                     ||~v9.7I~
+       -(BUG) abend when no ending value for /i (input range)         ||~v9.7I~
+v7.4  :-move help,general description and change history to .DOC file
+        to reduce module size.
+        drop /V,/G option and abridged help msg by /? and /H
+       -support file name from standard input(stdin)
+       -indirect file name specification(/Yi)
+       -process sequence option when multiple file name specified.(/Ol)
+       -background option(protect keyboard interface)(/Yb)
+       -printable also hidden file.
+       -fullpath filename on header.
+       -multiple page range on /P option.
+       -available max column option(/C-nn).
+       -AND/OR condition for /D.
+       -form type specification on /E option.
+       -(BUG)open error when file name specification is like as \aaa.
+v7.5  :1996/02/10                                                     ||~v9.7I~
+       -modify err msg when input file name is directory.             ||~v9.7R~
+v7.8  :1996/08/24                                                     ||~v9.7I~
+       -(BUG)when used DBCS(double byte char set) for filename.       ||~v9.7R~
+       -Add A(all) option to print file confirmation.
+       -Add /FXXxx option of replacing FormFeed char to specified one.
+        (avoid redundant page eject)
+       -shorten file path name of header line when path is too long.
+v7.9  :1996/09/18                                                     ||~v9.7I~
+       -(BUG)print position error of 8 byte delimiter '-' for 16 byte ||~v912R~
+        long hex dump.
+v8.0  :1996/12/17                                                     ||~v9.7I~
+       -(BUG)Kanji font style parameter is rejected for ESCP.         ||~v9.7R~
+       -For ESCP,convert MS-KANJI to JIS-KANJI and print KEISEN char
+        (Graphic char to draw line or box) replacing by '/'.
+       -Add Roman font style for ESCP ANK font style.
+       -Add support for Canon printer(LIPS III control command).
+        tested by Canon LASER SHOT
+       -Add option which bypass FormFeed command before 1st page.
+       -LPI set command change to 1/180 from 1/360 inches unit for ESCP.||~v912R~
+        1/180 is more applicable.
+       -Add 14.4 CPI for IBM PAGES and Canon.
+        For some Canon printer,CPI is changable for ANK char but it is
+        fixed to 72CPI for DBCS font.
+        100 column per line for 14.4cpi for example for A4 form.      ||~v912R~
+v8.2  :-/Yv(No page eject at end of each file) option is added.
+       -'E'(End-up) is available to request to ignore the file after this
+        for print confirmation msg.
+       -(BUG) Erroneous shortening filename on header line for long file||~v912R~
+        name when /Yf(fast path mode).
+       -Default value change for file order from /Oe(by extention order)
+        to /On(by name order)
+       -Print stop by Esc key at page end.
+       -(BUG)File name cut on header line when it contains space.
+       -Display all filename selected when replyed 'A' for confirmation.
+v8.3  :1997/10/01                                                     ||~v9.7I~
+       -(BUG)Drive id ignored in the case "\" is missing in print file||~v9.7R~
+        specification.
+       -(BUG)Restart file is rejected if path is specified in wild-card
+        print file specification.
+v8.4  :1997/12/21                                                     ||~v9.7I~
+       -Windows95,GCC version is newly added.                         ||~v9.7R~
+       -Long File Name support for W95,GCC and OS/2 version.
+       -/Q new option to specify output destination.
+        It is alternative of 2nd positional parameter,useful for .BAT ||~v912R~
+        file.
+       -over 2000 year consideration for /D parm(file selection by
+        timestamp).
+v8.5  :1998/12/01                                                     ||~v9.7I~
+       -(Win version)When printer type=/Ew(default for Win version),  ||~v9.7R~
+        it is windows print application. Any value up to 14 is avail for||~v912R~
+        CPI/LPI.If no CPI/LPI is specified,CPI/LPI is calculated from
+        chars per line and lines per page.
+        Any font name may be specified,and available font name is queried
+        by /F?.
+       -(OS/2)Set document name of job on remote printer by specifying
+        queue name or printer name for destination other than assinged
+        port name(LPTx).If default printer is set,no destination required.
+        Arbitrary document name(=jobname) may be set by new /J option.||~v912R~
+        If performance or other trouble occur,use /Nd option to change
+        to usual Base print apprication.
+       -7.2 CPI is not avail now for /Ei.
+        Some printer may not support that CPI.
+       -Add IBM KEISEN(graphic) char conversion option(/K)            ||~v912R~
+        If <0x20 graphic char used for draw line is not printed,
+        it is converted to any printable char.                        ||~v912R~
+       -Use katakana-code or extended-graphic-code by ASCII option on /M.
+        Special char for western language is printed as is base by
+        using extended-graphic-code(not as Japanese KATAKANA).        ||~v912R~
+       -Charset default change /Mxd to /Mxj for hex dump print.       ||~v912R~
+       -(BUG)Conversion SJIS to JIS is require for ES/P printer.
+       -(BUG)CPI set err when /C/75 is specified for /Ec,/Ei.
+       -(BUG)/N1 option is ignored when restart print.
+v8.6  :1999/04/25                                                     ||~v9.7I~
+       -(Win Version).Adjust left margin.                             ||~v912R~
+v8.7  :1999/08/22 xe-v1.03                                            ||~v9.7I~
+       -(Win Version:BUG).Header line err when print width is over 150 col.||~v9.7R~
+       -ABEND when width is over 500.
+       -Filename on page header change option(/W=).
+v8.8  :-EBCDIC char set support(/M).
+       -Char Set translation table file option support(/K)
+       -(BUG of Win/DOS version)Read stop at EOFID(0x1a) if text mode.
+       -(BUG)doubly page printed when last byte before EOF is 1st byte
+             of DBCS.
+v8.9  :2000/01/15                                                     ||~v9.7I~
+       -(BUG)Y2K. Year 2000 displayed as year 100.                    ||~v9.7R~
+v9.0  :2000/12/10                                                     ||~v9.7I~
+       -New file print sequence.(ignore basename or extention).       ||~v9.7R~
+v9.1  :2001/10/08 xe-v1.08                                            ||~v9.7I~
+       -function of 2 page print per sheet.                           ||~v9.7R~
+       -/Nr option added(performance up by not settting font on each page).||~v9.7R~
+       -No wildcard required for print all member in the dir.         ||~v9.7R~
+       -UNX:seperator of multiple file specification is ":".          ||~v912R~
+         (for PC version it is "/")                                   ||~v9.7R~
+v9.2  :2001/12/31 xe-v1.09                                            ||~v9.7I~
+       -Use -q- or -q-- option to output to stdout,then redirect to   ||~v9.7R~
+        enq AIX cmd etc.                                              ||~v9.7R~
+        -q- means to use stderr for process completed msg.            ||~v9.7R~
+       -(BUG)DOS version hung.                                        ||~v9.7R~
+       -(BUG)/K(line char conversion) parm ignored when /Ei.          ||~v9.7R~
+       -/KL(converst to single line char) option is added.            ||~v9.7R~
+v9.3  :2002/06/08 xe-v1.11                                            ||~v9.7I~
+        .(Win Version)reduce rate support.                            ||~v9.7R~
+         For the case using paper of printer driver not supported,    ||~v9.7R~
+         or to leave space on the right or bottom of paper.           ||~v9.7R~
+        .(Win Version)Support formid on /E parm also for Win version. ||~v9.7R~
+v9.4  :2003/01/19 xe-v1.12                                            ||~v9.7I~
+       -(BUG)Not full page printed when reverse print(/Yp) for the    ||~v9.7R~
+        file containing EOF(0x1a) in the middle of the file.          ||~v9.7R~
+       -start page specification option is added.                     ||~v9.7R~
+        ex)/i180-/4 means re-print from 180'th line of input file     ||~v9.7R~
+        and set start page to 4.                                      ||~v9.7R~
+       -2page/1form support on form parameter.                        ||~v9.7R~
+        ex) /Ei/A42, /Ec/B4L2.    ("2" is appended to form name)      ||~v9.7R~
+        print column width is half of the specification of w/o 2.     ||~v9.7R~
+        page is set for each form.                                    ||~v9.7R~
+        priviously supported 2page/1form specification /Y2 is         ||~v9.7R~
+        for the printer with reduced print function, page column width is||~v9.7R~
+        same as of the form type and page advance by 2 for each page. ||~v9.7R~
+        for hex dump mode,only /Y2 is supported.                      ||~v9.7R~
+       -little a bit adjust of page width col and height row for each ||~v912R~
+        form type.                                                    ||~v9.7R~
+       -(WIN)change driver setting of paper orientation and paper size.||~v9.7R~
+v9.7  :2005/06/06 xe-v1.18                                            ||~v9.7I~
+       -destination parameter is by -q parameter only.                ||~v9.7R~
+        Now,all parameter not flagged by / (- for unix) is input specification.||~v9.7R~
+        For convenience of multiple file specification and to avoid file override||~v9.7R~
+        accident.                                                     ||~v9.7R~
+       -New /Nu option to bypass output formfeed command(0x0c) at end of page.||~v9.7R~
+        with /Ne,it is for usage under linux to redirect output to linux||~v9.7R~
+        print tool.                                                   ||~v9.7R~
+       -delete /Yo option which functionaly overwraps to /O option.   ||~v9.7I~
+        multiple not dir/wildcard input is sorted by /O option.       ||~v9.7I~
+v9.8  :2007/19/06                                                     ||~v9.8I~
+       -Text mode 3 line virtical hex dump print by /Mtx.             ||~v9.8I~
+v9.9  :2007/19/06                                                     ||~v9.9I~
+       -(Lnx version)gxp(Gnome print version) was added.(xprint.sh is not required).||~v910R~
+       -(Win/Gnome version only)UTF-8 enncoded file print.(CharSet parm of /M.)||~v9.9I~
+v9.10 :2007/10/25                                                     ||~v910I~
+       -(Lnx version)xprint support UTF-8 file.                       ||~v910I~
+       -(Lnx version)Option to control SS3(0x8f:extended Japanese-Kanji).||~v910I~
+v9.11 :2008/01/23                                                     ||~v911I~
+       -Bug when print UTF8 encoded file with HEX dump mode.          ||~v911I~
+v9.12 :2008/01/29                                                     ||~v912R~
+       -Correct Help message.                                         ||~v912R~
+v9.13 :2008/02/07                                                     ||~v913R~
+       -HEX dump ABEND except for UTF8 file.                          ||~v913R~
+v9.14 :2008/07/28                                                     ||~v914I~
+       -"-Cmax" option was added. Adjusr Column pitch by "max line width"||~v914I~
+        of the file.  "max line width" is limited by 512.             ||~v914I~
+v9.15 :2009/12/15                                                     ||~v915R~
+       -Unicode file vertical HEX print support(used from xe only)    ||~v915R~
+v9.16 :2010/04/28                                                     ||~v916R~
+       -EBCDIC file support.                                          ||~v916R~
+v9.17 :2010/07/23                                                     ||~v917I~
+       -Horizontal and Vertical HEX print fail.                       ||~v917I~
+       -CUPS printer support.                                         ||~v917I~
+v9.18 :2010/08/11                                                     ||~v918I~
+       .(BUG)UTF8 file print may fail sometimes.                      ||~v918I~
+v9.19 :2010/09/08                                                     ||~v919I~
+       .EBCDIC /CPEB=codepage parameter support.                      ||~v919I~
+       .0x15 is default EOL of EBCDIC file.                           ||~v919I~
+        Use /ASCEOL for 0x0a,0x0d0a EOL.                              ||~v919I~
+v9.20 :2010/10/04                                                     ||~v920I~
+       .(BUG)Hex code is not valid if UTF8 code was splitted by line width||~v920I~
+             when vertical hex dump mode.                             ||~v920I~
+       .UCS code option for utf8 vertical hex dump mode.              ||~v920I~
+          /Y8 : display UTF8 code(Default) , /N8 : display UCS code   ||~v920I~
+        UCS code is not fixed length but preceding 00 is dropped.     ||~v920I~
+        ex) xprint utf8-file -mtxu -n8                                ||~v920I~
+v9.25 :2013/08/08                                                     ||~v925I~
+       .Variable Record Length file support.                          ||~v925I~
+       .Translation of EBCDIC using ICU without cfg file(/ICU option) ||~v925I~
+       .Support Hex Dump print of FixedRecordLengthFile by /Mx.       ||~v925I~
+        (Vertical 2 line hex dump is by /Mtx)                         ||~v925I~
+v9.26 :2013/11/20                                                     ||~v926I~
+        .(gxe)Changed API for print to use not gnomeprint but GTKprint.||~v926I~
+        .(gxp)Shift parameter support. ex). -E/B5/T40.                ||~v926I~
+        .(gxp)Destination parameter:"-q?" lists printers.             ||~v926I~
+        .(gxp:BUG)Crash when wildcard filename is not enclosed by double quotation.||~v926I~
+        .(gxp:BUG)Line was cut if it contains null(x00).              ||~v926I~
+        .(gxp:BUG)Japanes EUC code was not printed.                   ||~v926I~
+                                                                      ||~v926I~
+        .(BUG)UCS 2nd byte was not printed for utf8 file with -n8 and -mtx options.||~v926I~
+        .(BUG)For EBCDIC file,2nd line was invalid when the line is split.||~v926I~
+v9.27 :2014/02/14                                                     ||~v927I~
+        .(LNX:BUG)It could not change option such as PaperSize/Orientation on print dialog by -Yd option.||+v927R~
+        .(LNX:BUG)A4 was assumed as default paper for all printer.(ignored printer setting)||+v927R~
+        .(LNX:BUG)Printer specification by -Q option may fail by error of multiple printer match with the parameter.||+v927R~
+        .(LNX)gtk3 support.                                           ||+v927R~
+        .(LNX)margin parameter is added. -E/form/M{T|B|L|R}ss[P].     ||+v927R~

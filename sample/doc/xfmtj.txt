@@ -1,0 +1,312 @@
+xfmt : V1.3=(W)= ファイル行フォーマッティング。
+形式  :xfmt [/options] filename [fieldspec ...]
+  options    :
+    /D"delms"  :追加の入力ファイルフィールド分離文字。
+                  省略値は" \t"(スペースとタブ)。
+    /L[n]x[str]:行選択文字列指定。n:カラム(行頭が 1)。x:S/E/I/X。
+                 S:この文字列を含む行から抽出開始。
+                 E:この文字列を含む行で抽出終了。
+                 I:(Include)この文字列を含む行は抽出。
+                 X:(eXclude)この文字列を含む行は抽出しない。
+                 +:前の 条件の AND 連結条件。
+                I と X は指定された順にチェックされる。
+                最初が X なら全行抽出、最初が I なら全行非選択が仮定される。
+                例) /L8S"12:00:00" /L8E"13:00:00"
+                    (８桁目が"12:00:00"の行から
+                     ８桁目が"13:00:00"までを抽出する)
+                    /LX"Normal" /L20I"Overridden"
+                    (1桁目が"Normal"で20桁目が"Overridden"でない行は
+                     選択しない)
+                    /L5I"RC" /L9+"Ok"
+                    (5桁目が"RC"で9桁目が"Ok"のを抽出)
+    /Ooutfile  :出力ファイル名。省略値は標準出力。
+    /Q[s][d]   :引用符の考慮。引用符内の分離文字は無視。
+                 s:一重引用符、d:二重引用符。/Q のみは両方考慮。
+    /Rnn       :改行文字を持たないファイルにnnバイトごとに改行文字を挿入。
+    /S[R]"seps":出力用フィールド分離挿入文字列。省略値は" "(1桁スペース)。
+                R:入力ファイルの分離文字は残さずにこの指定文字列で置換する。
+    /Xoutfile2 :選択されなかった行の出力先ファイル名。省略値は出力なし。
+    /Yx,/Nx    :その他のフラグオプション。
+                Na:フィールド整列をしない。Ys 指定がなければコピー出力。
+                   Ys 指定があればスペース圧縮出力。
+                Nc:出力ファイル上書きのとき確認Msgを出さない。
+                Ys:fieldspec指定のフィールドだけを出力する。
+  fieldspec: fieldno[-fieldno]][O][R|L|P][N|A][C][:col-spec]
+            col-spec: [X]{start-substr|[-]cols}[:{end-substr|[-]cols|Llength}]
+            start/end-substr: [T|E][-]{A|B}fldstr
+        filedno:分離文字(省略値はスペースとタブ)によるフィールド番号。max=99。
+        O      :このフィールド番号以降は１フィールドとみなす。
+        R      :右詰整列。/Na指定がないときの省略値
+        L      :左詰整列。
+        P      :小数点をあわせて右詰整列。
+        N      :数値フィールドを探してそこで右詰整列。
+        A      :N と C の効果を後続フィールドに対し一旦リセットする。
+        C      :以降の全フィールドのその間のスペースを１スペースに圧縮。
+                Nと一緒に指定すると数値フィールドが見つかるまでを圧縮。
+                例) l 5r  (第５項以外は左寄せ)
+                    1-5p (第1項から第５項まで小数点数値には"P"を適用)
+                    r l 4c (右,左,左 第4項以降はすべて圧縮して左詰)
+        X      :部分文字列を削除の意味。
+        T|E    :fldstrを含まない行の部分文字列開始/終了位置、T:行頭,E:行末。
+                開始文字列指定では省略値は X指定(文字列削除)の場合 "e"、
+                以外は "t"。終了文字列指定では Xに関係なく"e"。
+        [-]A|B :開始/終了位置はfldstr指定の文字列の後(A)か前(B)かを指定。
+                "-" はfldstr文字列を後ろから探す。
+        fldstr :部分文字列取出し開始/終了位置を決めるための文字列。
+                ":"を含む時は１重引用符(')で囲む。
+                例) 3:xb"time out"
+                    (第3項が"time out"を含むならその前を削除)
+                    4:a'Time:':bElapsed
+                    ("Time"の後から"Elapsed"の前まで取り出す)
+        [-]cols:入力フィールド部分文字列開始/終了位置."-"は後からの位置。
+                例) 3:3:5    (第3項からは 3-5 桁を取り出す)
+                    6:x-5:-2 (第6項からは 後ろから 5桁目から2桁目を取り除く)
+        Llength:部分文字列の長さ。指定なしは項末まで。
+                例) 3:3:L5   (第3項からは 3桁目から5 桁を取り出す)
+        (注)    Pタイプの場合の桁位置は整列後のイメージを想定すること。
+      fieldspec指定がないと/Ys,/Na指定がなければ全フィールドを右詰で出力。
+      フィールド番号なしの整列指定オプションはその指定位置に対応する
+      フィールド以降の全フィールドに適用される。
+    例) xfmt /L5S"10:00:00" /L5E"11:59:59" /LIexcept /LXNullPo file1 r 5l
+        xfmt /Q /S"," /Na /Ys file2 5:x4 6:-3:L2 1 3:t-a?:4 7:b"x y":a"x z"
+        xfmt file3 nc:999:l1
+
+以下は実行例です。
+
+**********************************************************************
+14:39:09 ===>> cat inp1
+2005/01/22  10:19    <DIR>          .
+    2005/01/22  10:19    <DIR>          ..
+2007/05/18  17:23                80 @
+  2000/07/08  18:08             1,302 @0
+2001/09/08  08:38            22,440 @1
+2001/09/08  08:38            22,440 @2
+2000/07/08  09:47                80 @3
+2000/07/23  06:51             8,661 @@
+2000/07/08  19:36             1,410 @@0
+2001/08/30  12:55               521 @@1
+
+(*** fields alignment-1:: l:次の指定項までは左寄せ, 3:項番号, r:次の指定項(最後)まで右寄せ***)
+14:39:44 ===>> xfmt inp1 l 3r
+ 2005/01/22  10:19   <DIR>  .  
+ 2005/01/22  10:19   <DIR>  .. 
+ 2007/05/18  17:23      80  @  
+ 2000/07/08  18:08   1,302  @0 
+ 2001/09/08  08:38  22,440  @1 
+ 2001/09/08  08:38  22,440  @2 
+ 2000/07/08  09:47      80  @3 
+ 2000/07/23  06:51   8,661  @@ 
+ 2000/07/08  19:36   1,410  @@0
+ 2001/08/30  12:55     521  @@1
+xfmt:V1.1(W): *** Done *** inp1 --> stdout , null  *** 
+    read:10, write:10, excluded:0, short-line:0
+
+(*** fields alignment-2::***)
+14:40:29 ===>> xfmt inp1 l 3r 4r
+ 2005/01/22  10:19   <DIR>    .
+ 2005/01/22  10:19   <DIR>   ..
+ 2007/05/18  17:23      80    @
+ 2000/07/08  18:08   1,302   @0
+ 2001/09/08  08:38  22,440   @1
+ 2001/09/08  08:38  22,440   @2
+ 2000/07/08  09:47      80   @3
+ 2000/07/23  06:51   8,661   @@
+ 2000/07/08  19:36   1,410  @@0
+ 2001/08/30  12:55     521  @@1
+xfmt:V1.1(W): *** Done *** inp1 --> stdout , null  *** 
+    read:10, write:10, excluded:0, short-line:0
+
+**********************************************************************
+14:58:04 ===>> cat inp2
+2005/01/22  10:19    <DIR>          .
+    2005/01/22  10:19    <DIR>          ..
+2007/05/18  17:23                80 @
+  2000/07/08  18:08             1.302 @0
+2001/09/08  08:38            22.440 @1
+2001/09/08  08:38            22.440 @2
+2000/07/08  09:47                80 @3
+2000/07/23  06:51             8.661 @@
+2000/07/08  19:36             1.410 @@0
+2001/08/30  12:55               521 @@1
+
+(*** fields alignment-3:: p:小数点で位置取り(全項) ***)
+14:58:23 ===>> xfmt inp2 p
+ 2005/01/22  10:19    <DIR>    .
+ 2005/01/22  10:19    <DIR>   ..
+ 2007/05/18  17:23   80        @
+ 2000/07/08  18:08    1.302   @0
+ 2001/09/08  08:38   22.440   @1
+ 2001/09/08  08:38   22.440   @2
+ 2000/07/08  09:47   80       @3
+ 2000/07/23  06:51    8.661   @@
+ 2000/07/08  19:36    1.410  @@0
+ 2001/08/30  12:55  521      @@1
+xfmt:V1.1(W): *** Done *** inp2 --> stdout , null  *** 
+    read:10, write:10, excluded:0, short-line:0
+
+**********************************************************************
+15:04:27 ===>> cat inp3
+2005/01/22  10:19    <DIR>          .
+    2005/01/22  10:19    <DIR>          ..
+2007/05/18  17:23       1  a     80 @
+  2000/07/08  18:08   2    a    1.302 @0
+2001/09/08 A08:38      2   a 22.440 @1
+2001/09/08  08:38       4  a 22.440 @2
+2000/07/08  09:47B       5 a     80 @3
+2000/07/23  06:51      99  a  8.661 @@
+2000/07/08  19:36   9      a  1.410 @@0
+2001/08/30  12:55      999 a   521 @@1
+
+(*** fields alignment-4:: n:数値項のみ整列(数値以外の部分はまとめて1項扱い) ***)
+15:05:13 ===>> xfmt inp3  n
+  2005/01/22  10:19    <DIR>          .
+ 2005/01/22  10:19    <DIR>          ..
+                      2007/05/18  17:23    1  a      80    @
+                      2000/07/08  18:08    2  a   1.302   @0
+                      2001/09/08 A08:38    2  a  22.440   @1
+                      2001/09/08  08:38    4  a  22.440   @2
+                     2000/07/08  09:47B    5  a      80   @3
+                      2000/07/23  06:51   99  a   8.661   @@
+                      2000/07/08  19:36    9  a   1.410  @@0
+                      2001/08/30  12:55  999  a     521  @@1
+xfmt:V1.1(W): *** Done *** inp3 --> stdout , null  *** 
+    read:10, write:10, excluded:0, short-line:0
+
+(*** fields alignment-5:: c:連続スペースは1スペースに圧縮***)
+15:06:22 ===>> xfmt inp3  3c
+  2005/01/22  10:19         <DIR> 
+  2005/01/22  10:19        <DIR> .
+  2007/05/18  17:23        1 a 80 
+  2000/07/08  18:08    2 a 1.302 @
+  2001/09/08 A08:38   2 a 22.440 @
+  2001/09/08  08:38   4 a 22.440 @
+  2000/07/08  09:47B      5 a 80 @
+  2000/07/23  06:51   99 a 8.661 @
+  2000/07/08  19:36   9 a 1.410 @@
+  2001/08/30  12:55   999 a 521 @@
+xfmt:V1.1(W): *** Done *** inp3 --> stdout , null  *** 
+    read:10, write:10, excluded:0, short-line:0
+
+(*** 項の選択:: -Ys:指定の項のみを選択出力***)
+16:08:28 ===>> xfmt inp3 /ys 2 3 5
+  10:19  <DIR> 
+  10:19  <DIR> 
+  17:23      1      80 
+  18:08      2   1.302 
+ A08:38      2  22.440 
+  08:38      4  22.440 
+ 09:47B      5      80 
+  06:51     99   8.661 
+  19:36      9   1.410 
+  12:55    999     521 
+xfmt:V1.1(W): *** Done *** inp3 --> stdout , null  *** 
+    read:10, write:10, excluded:0, short-line:2
+
+**********************************************************************
+16:50:30 ===>> cat inp4
+ NAME=angel  AGE:60  f  Addr-Stockholm
+ NAME=sky    AGE:60  m  Addr-Tokyo
+ NAME=erth   AGE:600  f  Addr-LosAngels
+ NAME=moon   AGE:6000 m   Addr-another world
+
+(*** 文字列削除 :: 1l:第1項 左寄せ, a: "NAME="を含んでいればその後(After)を取り出す ***)
+(                  4l:a"Addr-" 第4項は"After-" を含んでいる場合はその後ろを取り出し左寄せ ***)
+16:50:35 ===>> xfmt inp4 r 1l:a"NAME=" 4l:a"Addr-"
+ angel    AGE:60  f  Stockholm
+ sky      AGE:60  m  Tokyo    
+ erth    AGE:600  f  LosAngels
+ moon   AGE:6000  m  another    world
+xfmt:V1.1(W): *** Done *** inp4 --> stdout , null  *** 
+    read:4, write:4, excluded:0, short-line:0
+
+(*** 文字列削除 :: 4l:a"-" :第4項は "-" の後ろを取り出す ***)
+23:13:10 ===>> xfmt  x2 4l:a"-"
+  NAME=angel  AGE:60  f   Stockholm
+  NAME=sky    AGE:60  m   Tokyo    
+  NAME=erth   AGE:600  f  LosAngels
+  NAME=moon   AGE:6000 m  another    world
+xfmt:V1.1(W): *** Done *** x2 --> stdout , null  *** 
+    read:4, write:4, excluded:0, short-line:0
+
+(*** 文字列削除 :: 4l:xa"-" :第4項は"-"を含めばその後を削除する ***)
+23:13:29 ===>> xfmt  x2 4l:xa"-"
+  NAME=angel  AGE:60  f   Addr-
+  NAME=sky    AGE:60  m   Addr-
+  NAME=erth   AGE:600  f  Addr-
+  NAME=moon   AGE:6000 m  Addr-  world
+xfmt:V1.1(W): *** Done *** x2 --> stdout , null  *** 
+    read:4, write:4, excluded:0, short-line:0
+
+(*** スペース以外の分離文字:: /d"=-" 項間分離文字は "=" と "-" と " " ***)
+17:01:24 ===>> xfmt inp4 /d"=-"
+ NAME=   angel  AGE:60  f  Addr-     Stockholm
+ NAME=   sky    AGE:60  m  Addr-         Tokyo
+ NAME=  erth   AGE:600  f  Addr-     LosAngels
+ NAME= moon   AGE:6000 m   Addr- another world
+xfmt:V1.1(W): *** Done *** inp4 --> stdout , null  *** 
+    read:4, write:4, excluded:0, short-line:0
+
+(*** 分離文字の置き換え:: /SR":": 分離文字 "=" と "-" を ":" に置き換えて出力***)
+17:01:38 ===>> xfmt inp4 /d"=-" /SR":"
+ NAME:  angel  AGE:60  f  Addr:    Stockholm
+ NAME:  sky    AGE:60  m  Addr:        Tokyo
+ NAME: erth   AGE:600  f  Addr:    LosAngels
+ NAME:moon   AGE:6000 m   Addr:another world
+xfmt:V1.1(W): *** Done *** inp4 --> stdout , null  *** 
+    read:4, write:4, excluded:0, short-line:0
+
+(*** 分離文字の置き換え:: /SR":": 分離文字 "=" と "-" を " " に置き換えて出力***)
+17:02:10 ===>> xfmt inp4 /d"=-" /SR" "
+ NAME   angel  AGE:60  f  Addr     Stockholm
+ NAME   sky    AGE:60  m  Addr         Tokyo
+ NAME  erth   AGE:600  f  Addr     LosAngels
+ NAME moon   AGE:6000 m   Addr another world
+xfmt:V1.1(W): *** Done *** inp4 --> stdout , null  *** 
+    read:4, write:4, excluded:0, short-line:0
+
+(*** 行選択:: /lsangel: "angel"を含む行から抽出開始 ***)
+(             /leLos  : "Los"  を含む行で抽出終了 ***)
+17:04:36 ===>> xfmt inp4 /lsangel /leLos
+ NAME=angel   AGE:60  f  Addr-Stockholm
+   NAME=sky   AGE:60  m      Addr-Tokyo
+  NAME=erth  AGE:600  f  Addr-LosAngels
+xfmt:V1.1(W): *** Done *** inp4 --> stdout , null  *** 
+    read:4, write:3, excluded:1, short-line:0
+
+(*** 行選択:: /lxsky  : "sky" を含む行は出力しない***)
+17:05:43 ===>> xfmt inp4 /lsangel /leLos /lxsky
+ NAME=angel   AGE:60  f  Addr-Stockholm
+  NAME=erth  AGE:600  f  Addr-LosAngels
+xfmt:V1.1(W): *** Done *** inp4 --> stdout , null  *** 
+    read:4, write:2, excluded:2, short-line:0
+
+(*** 行選択:: /lxm  : "m" を含む行は出力しない***)
+17:09:31 ===>> xfmt inp4 /lxm
+ NAME=erth  AGE:600  f  Addr-LosAngels
+xfmt:V1.1(W): *** Done *** inp4 --> stdout , null  *** 
+    read:4, write:1, excluded:3, short-line:0
+
+**********************************************************************
+16:57:24 ===>> cat inp5
+ 'NAME angel'  AGE:60  f   Addr Stockholm                 1
+ 'NAME sky'  AGE:60  m   Addr Tokyo                     2
+ 'NAME   erth'  AGE:600  f   Addr "Los Angels"             3
+ 'NAME moon'  AGE:6000 m   Addr "another world"          4
+
+(*** 引用符の指定  :: 省略値では引用符は考慮されない ***)
+16:57:28 ===>> xfmt inp5 l
+ 'NAME  angel'  AGE:60    f  Addr  Stockholm  1      
+ 'NAME  sky'    AGE:60    m  Addr  Tokyo      2      
+ 'NAME  erth'   AGE:600   f  Addr  "Los       Angels"  3
+ 'NAME  moon'   AGE:6000  m  Addr  "another   world"   4
+xfmt:V1.1(W): *** Done *** inp5 --> stdout , null  *** 
+    read:4, write:4, excluded:0, short-line:0
+
+(*** 引用符の指定  :: /q: /q のみでは1重・2重引用符とも考慮する ***)
+16:57:37 ===>> xfmt inp5 l /q
+ 'NAME angel'   AGE:60    f  Addr  Stockholm        1
+ 'NAME sky'     AGE:60    m  Addr  Tokyo            2
+ 'NAME   erth'  AGE:600   f  Addr  "Los Angels"     3
+ 'NAME moon'    AGE:6000  m  Addr  "another world"  4
+xfmt:V1.1(W): *** Done *** inp5 --> stdout , null  *** 
+    read:4, write:4, excluded:0, short-line:0
