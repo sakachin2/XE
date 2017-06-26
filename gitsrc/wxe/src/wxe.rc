@@ -1,0 +1,735 @@
+//*CID://+@@@@R~:                             update#=   10;       //~@@@@I~
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+// Generated Help ID header file
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "resource.hm"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+//#include "afxres.h"                                              //~@@@@R~
+#include <atlres.h>              //for WTL                         //~@@@@I~
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// “ú–{Œê resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+#ifdef _WIN32
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 17, 1\r\n"
+    "#pragma code_page(932)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\wxe.rc2""  // Microsoft resource wditted out of Visual C++r\n"
+    "#include ""l.jpn\\afxres.rc""          // Standard component\r\n"
+    "#include ""l.jpn\\afxprint.rc""        // Print/Preview resource\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAINFRAME           ICON    DISCARDABLE     "res\\wxe.ico"
+IDR_WXETYPE             ICON    DISCARDABLE     "res\\wxeDoc.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP  MOVEABLE PURE   "res\\Toolbar.bmp"
+IDB_HALFBOX             BITMAP  DISCARDABLE     "res\\halfbox.bmp"
+IDB_HBAR                BITMAP  DISCARDABLE     "res\\bitmap1.bmp"
+IDB_BITMAP1             BITMAP  DISCARDABLE     "res\\bmp00001.bmp"
+IDB_PASTEV              BITMAP  DISCARDABLE     "res\\PasteV.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR DISCARDABLE  16, 15
+BEGIN
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_EDIT_CUT
+    SEPARATOR
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      ID_FILE_PRINT
+    SEPARATOR
+    BUTTON      ID_APP_ABOUT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_FLOATING MENU DISCARDABLE 
+BEGIN
+    POPUP "Floating"
+    BEGIN
+        MENUITEM "Cut(&T)",                     ID_EDIT_CUT
+        MENUITEM "Copy(&C)",                    ID_EDIT_COPY
+        MENUITEM "Clear(&L)",                   ID_EDIT_CLEAR
+        MENUITEM "Paste(&V)",                   ID_EDIT_PASTE_STD
+        MENUITEM "PasteIns(&I)",                ID_EDIT_PASTE
+        MENUITEM "PasteRep(&R)",                ID_EDIT_PASTE_REP
+        MENUITEM SEPARATOR
+        MENUITEM "Save(&S)",                    ID_FILE_SAVE
+        MENUITEM "End(&E)",                     ID_EDIT_END
+        MENUITEM "Discard(&D)",                 ID_EDIT_CANCEL
+        MENUITEM "OpenWithA(&A)",               ID_FILE_OPENWITH
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "wxe version"
+FONT 10, "Microsoft Sans Serif"
+BEGIN
+    ICON            IDI_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "wxe Version 1.28",IDC_STATIC,40,10,119,8,SS_NOPREFIX//+@@@@R~
+    LTEXT           "Copyright (C) 2005",IDC_STATIC,40,25,119,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
+END
+
+IDD_SETUP DIALOGEX 0, 0, 206, 225
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Setup Dialog (R-button for Help)"
+FONT 9, "Microsoft Sans Serif"
+BEGIN
+    CONTROL         "Spin2",IDC_SPIN_HEIGHT,"msctls_updown32",
+                    UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_ARROWKEYS,52,2,9,
+                    14
+    CONTROL         "Spin3",IDC_SPIN_WIDTH,"msctls_updown32",UDS_SETBUDDYINT | 
+                    UDS_ALIGNRIGHT | UDS_ARROWKEYS,52,19,9,14
+    EDITTEXT        IDC_EDIT_HEIGHT,35,1,27,14,ES_RIGHT | ES_AUTOHSCROLL,
+                    WS_EX_RIGHT
+    LTEXT           "Font-H",IDC_STATIC_FONTH,7,5,26,13,0,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_WIDTH,35,18,27,14,ES_RIGHT | ES_AUTOHSCROLL,
+                    WS_EX_RIGHT
+    LTEXT           "Font-W",IDC_STATIC_FONTW,7,21,23,8
+    CONTROL         "Spin2",IDC_SPIN_COLW,"msctls_updown32",UDS_SETBUDDYINT | 
+                    UDS_ALIGNRIGHT | UDS_ARROWKEYS,107,2,9,14
+    CONTROL         "Spin1",IDC_SPIN_ROWH,"msctls_updown32",UDS_SETBUDDYINT | 
+                    UDS_ALIGNRIGHT | UDS_ARROWKEYS,107,19,9,14
+    EDITTEXT        IDC_EDIT_ROWH,89,1,27,14,ES_RIGHT | ES_AUTOHSCROLL,
+                    WS_EX_RIGHT
+    EDITTEXT        IDC_EDIT_COLW,89,18,27,14,ES_RIGHT | ES_AUTOHSCROLL,
+                    WS_EX_RIGHT
+    COMBOBOX        IDC_COMBO_STYLE,128,18,71,174,CBS_DROPDOWNLIST | 
+                    CBS_AUTOHSCROLL | CBS_SORT | CBS_NOINTEGRALHEIGHT | 
+                    CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "TrueTypeFont",IDC_CHECK_TTFONT,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,128,35,57,10
+    CONTROL         "Deafult",IDC_RADIO_DEFAULT,"Button",BS_AUTORADIOBUTTON,
+                    132,127,37,10
+    CONTROL         "ANSI",IDC_RADIO_ANSI,"Button",BS_AUTORADIOBUTTON,132,
+                    141,31,10
+    CONTROL         "ShiftJIS",IDC_RADIO_SJIS,"Button",BS_AUTORADIOBUTTON,
+                    132,155,39,10
+    CONTROL         "Other",IDC_RADIO_OTHER,"Button",BS_AUTORADIOBUTTON,132,
+                    169,32,10
+    EDITTEXT        IDC_EDIT_OTHER,171,168,20,12,ES_AUTOHSCROLL,WS_EX_RIGHT
+    LTEXT           "Col-W",IDC_STATIC_COLW,65,21,21,8
+    LTEXT           "Row-H",IDC_STATIC_ROWH,65,5,22,8
+    LTEXT           "Red",IDC_STATIC_RED,9,48,12,8
+    LTEXT           "Green",IDC_STATIC_GREEN,9,69,20,14
+    LTEXT           "Blue",IDC_STATIC_BLUE,9,90,14,8
+    CONTROL         "Slider1",IDC_SLIDER_RED,"msctls_trackbar32",
+                    TBS_AUTOTICKS | TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,26,
+                    44,68,21
+    CONTROL         "Slider2",IDC_SLIDER_GREEN,"msctls_trackbar32",
+                    TBS_AUTOTICKS | TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,26,
+                    65,68,21
+    CONTROL         "Slider3",IDC_SLIDER_BLUE,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,26,86,68,21
+    EDITTEXT        IDC_EDIT_RED,95,44,18,14,ES_RIGHT | ES_READONLY | NOT 
+                    WS_TABSTOP
+    EDITTEXT        IDC_EDIT_GREEN,95,64,18,14,ES_RIGHT | ES_READONLY | NOT 
+                    WS_TABSTOP
+    EDITTEXT        IDC_EDIT_BLUE,95,86,18,14,ES_RIGHT | ES_READONLY | NOT 
+                    WS_TABSTOP
+    LTEXT           "FontStyle",IDC_STATIC_FONTSTYLE,127,5,29,9
+    GROUPBOX        "FontCharSet",IDC_STATIC_CHARSET,128,118,71,80,
+                    WS_GROUP
+    GROUPBOX        "BackGroundColor",IDC_STATIC_BGCOLOR,6,35,110,94,0,
+                    WS_EX_TRANSPARENT
+    CONTROL         "",IDC_STATIC_COLORBOX,"Static",SS_BLACKFRAME,49,108,61,
+                    17
+    CONTROL         "",IDC_STATIC_FONTBOX,"Static",SS_BLACKFRAME | SS_SUNKEN,
+                    128,60,71,52
+    CONTROL         "Spin1",IDC_SPIN_SCROLLCTR,"msctls_updown32",
+                    UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_ARROWKEYS,55,149,
+                    9,14
+    EDITTEXT        IDC_EDIT_SCROLLCTR,37,148,26,13,ES_RIGHT | 
+                    ES_AUTOHSCROLL,WS_EX_RIGHT
+    EDITTEXT        IDC_EDIT_SCROLLTIMER,80,150,24,12,ES_RIGHT | 
+                    ES_AUTOHSCROLL,WS_EX_RIGHT
+    CONTROL         "Spin1",IDC_SPIN_SCROLLTIMER,"msctls_updown32",
+                    UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_ARROWKEYS,94,148,
+                    9,14
+    CONTROL         "Accelerator",IDC_CHECK_USEACT,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,7,164,50,10,0,HIDC_CHECK_USEACT
+    CONTROL         "Menu key",IDC_CHECK_USEMK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,7,179,44,10,0,HIDC_CHECK_USEMK
+    CONTROL         "R-Ctrl",IDC_CHECK_RCTL,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,7,194,35,10,0,HIDC_CHECK_RCTL
+    CONTROL         "FreeCursor",IDC_CHECK_FREECSR,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,7,208,49,10,0,HIDC_CHECK_FREECSR
+    CONTROL         "Beep",IDC_CHECK_BEEP,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,67,164,31,10
+    DEFPUSHBUTTON   "OK",IDOK,119,203,35,14
+    PUSHBUTTON      "CANCEL",IDCANCEL,164,203,35,14
+    LTEXT           "Scroll Ctr",IDC_STATIC_SCROLLCTR,7,151,29,8
+    LTEXT           "Intvl",IDC_STATIC_INTVL,66,151,14,8
+    LTEXT           "0.1s",IDC_STATIC_SECOND,105,151,14,8
+    LTEXT           "Use ""OPT"" cmd\nfor other options",IDC_STATIC,60,200,
+                    52,18
+    CONTROL         "Ruler",IDC_CHECK_RULER,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,11,107,33,10
+    CONTROL         "QuietExit",IDC_CHECK_QEXIT,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,67,179,44,10
+    LTEXT           "RulerKey:S+C+",IDC_STATIC_RULERKEY,7,135,48,8
+    EDITTEXT        IDC_EDIT_RULERKEY,55,133,42,12,ES_AUTOHSCROLL
+    COMBOBOX        IDC_COMBO_CHARSET,140,181,59,85,CBS_DROPDOWNLIST | 
+                    CBS_SORT | CBS_NOINTEGRALHEIGHT | WS_VSCROLL | 
+                    WS_TABSTOP
+    CONTROL         "Ligature",IDC_CHECK_LIGATURE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,128,46,42,10
+END
+
+IDD_PAGE_SETUP DIALOGEX 0, 0, 227, 275
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Print Page Setup"
+FONT 9, "Microsoft Sans Serif", 0, 0, 0x1
+BEGIN
+    GROUPBOX        "Form",IDC_STATIC_FORM,7,3,94,91
+    LTEXT           "Size",IDC_STATIC_SIZE,10,19,13,8
+    COMBOBOX        IDC_COMBO_FORM,24,17,29,87,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Landscape",IDC_CHECK_LANDSCAPE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,56,19,43,10
+    CONTROL         "",IDC_STATIC_PREVIEW,"Static",SS_BLACKFRAME | SS_SUNKEN,
+                    105,7,113,125
+    EDITTEXT        IDC_EDIT_LEFT,31,46,17,14,ES_AUTOHSCROLL,
+                    WS_EX_ACCEPTFILES | WS_EX_RIGHT
+    EDITTEXT        IDC_EDIT_RIGHT,75,46,17,14,ES_AUTOHSCROLL,WS_EX_RIGHT
+    EDITTEXT        IDC_EDIT_TOP,31,67,17,14,ES_AUTOHSCROLL,WS_EX_RIGHT
+    EDITTEXT        IDC_EDIT_BOTTOM,75,67,17,14,ES_AUTOHSCROLL,WS_EX_RIGHT
+    COMBOBOX        IDC_COMBO_FONTSTYLE,29,105,70,114,CBS_DROPDOWNLIST | 
+                    CBS_AUTOHSCROLL | CBS_SORT | CBS_NOINTEGRALHEIGHT | 
+                    CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_EDIT_PFONTSZH,20,122,17,14,ES_RIGHT | ES_AUTOHSCROLL,
+                    WS_EX_RIGHT
+    CONTROL         "Spin1",IDC_SPIN_PFONTSZH,"msctls_updown32",
+                    UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ARROWKEYS,37,122,9,
+                    14
+    EDITTEXT        IDC_EDIT_PFONTSZW,20,138,17,14,ES_RIGHT | ES_AUTOHSCROLL,
+                    WS_EX_RIGHT
+    CONTROL         "Spin1",IDC_SPIN_PFONTSZW,"msctls_updown32",
+                    UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ARROWKEYS,37,138,9,
+                    14
+    EDITTEXT        IDC_EDIT_CELLSZH,72,122,17,14,ES_RIGHT | ES_AUTOHSCROLL
+    CONTROL         "Spin1",IDC_SPIN_CELLSZH,"msctls_updown32",
+                    UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ARROWKEYS,89,122,
+                    10,14
+    EDITTEXT        IDC_EDIT_CELLSZW,72,138,17,14,ES_RIGHT | ES_AUTOHSCROLL
+    CONTROL         "Spin2",IDC_SPIN_CELLSZW,"msctls_updown32",
+                    UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ARROWKEYS,89,138,9,
+                    14
+    LTEXT           "MaximumCell-H",IDC_STATIC_MAXCELLH,22,200,48,8
+    EDITTEXT        IDC_EDIT_CELLSZH_MAX,72,198,17,14,ES_RIGHT | 
+                    ES_AUTOHSCROLL
+    CONTROL         "Spin1",IDC_SPIN_CELLSZH_MAX,"msctls_updown32",
+                    UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ARROWKEYS,89,198,9,
+                    14
+    CONTROL         "Row/Col by Cell-H/W",IDC_CHECK_PFONTSZ,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,8,170,78,10
+    EDITTEXT        IDC_EDIT_COLUMN,20,182,17,14,ES_AUTOHSCROLL,WS_EX_RIGHT
+    CONTROL         "Spin2",IDC_SPIN_COL,"msctls_updown32",UDS_SETBUDDYINT | 
+                    UDS_AUTOBUDDY | UDS_ARROWKEYS,37,182,9,14
+    EDITTEXT        IDC_EDIT_ROW,72,182,17,14,ES_AUTOHSCROLL,WS_EX_RIGHT
+    CONTROL         "Spin3",IDC_SPIN_ROW,"msctls_updown32",UDS_SETBUDDYINT | 
+                    UDS_AUTOBUDDY | UDS_ARROWKEYS,89,182,9,14
+    LTEXT           "Col",IDC_STATIC_COL,9,185,11,8
+    LTEXT           "Row",IDC_STATIC_ROW,57,185,14,8
+    GROUPBOX        "Margin(mm)",IDC_STATIC_MARGIN,12,35,84,54
+    LTEXT           "Left",IDC_STATIC_LEFT,15,48,12,8
+    LTEXT           "Right",IDC_STATIC_RIGHT,54,48,16,8
+    LTEXT           "Top",IDC_STATIC_TOP,15,69,12,8
+    LTEXT           "Bottom",IDC_STATIC_BOTTOM,53,69,22,8
+    CONTROL         "LineNumber",IDC_CHECK_LINENUMBER,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,8,218,48,10
+    CONTROL         "2p",IDC_CHECK_2P,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    57,218,23,10
+    EDITTEXT        IDC_EDIT_2P,83,217,14,12,ES_AUTOHSCROLL,WS_EX_RIGHT
+    CONTROL         "Header",IDC_CHECK_HEADER,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,232,37,10
+    CONTROL         "FileTime",IDC_CHECK_FILETIME,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,57,232,41,10
+    CONTROL         "Footer",IDC_CHECK_FOOTER,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,246,35,10
+    CONTROL         "Systime",IDC_CHECK_SYSTIME,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,57,246,39,10
+    CONTROL         "WW ScrPrt",IDC_CHECK_WWSCRPRT,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,260,47,10
+    CONTROL         "FullPage",IDC_CHECK_FULLPAGE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,57,260,41,10
+    EDITTEXT        IDC_EDIT_CURPAGE,104,145,16,12,ES_RIGHT | ES_AUTOHSCROLL
+    PUSHBUTTON      "Print",IDC_PREVIEW,107,181,32,14
+    PUSHBUTTON      "NP",IDC_PREVIEW_NEXTPAGE,144,181,14,14
+    PUSHBUTTON      "PP",IDC_PREVIEW_PREVPAGE,162,181,14,14
+    PUSHBUTTON      "PrtScr",IDC_PREVIEWPRTSCR,182,181,32,14
+    DEFPUSHBUTTON   "Print",IDC_PRINT,133,231,32,14
+    PUSHBUTTON      "PrtScr",IDC_PRTSCR,178,231,32,14
+    PUSHBUTTON      "Save",IDOK,133,253,32,14
+    PUSHBUTTON      "Cancel",IDCANCEL,178,253,32,14
+    EDITTEXT        IDC_EDIT_MAXLRECL,121,147,97,12,ES_AUTOHSCROLL | 
+                    ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
+    EDITTEXT        IDC_EDIT_MAXCOLROW,121,159,97,12,ES_AUTOHSCROLL | 
+                    ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
+    EDITTEXT        IDC_EDIT_FILENAME,105,134,113,12,ES_AUTOHSCROLL | 
+                    ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
+    GROUPBOX        "Font",IDC_STATIC_FONT,7,95,94,60
+    GROUPBOX        "Preview",IDC_STATIC_PREVIEWGRP,103,169,115,34
+    LTEXT           "W",IDC_STATIC_FONTW,11,142,8,8
+    LTEXT           "Style",IDC_STATIC_STYLE,11,107,16,8,0,0,
+                    HIDC_STATIC_STYLE
+    LTEXT           "H",IDC_STATIC_FONTH,11,124,8,8
+    LTEXT           "Cell-H",IDC_STATIC_CELLH,49,126,22,8,0,0,
+                    HIDC_STATIC_CELLH
+    LTEXT           "Cell-W",IDC_STATIC_CELLW,50,142,21,8
+    GROUPBOX        "Row && Column",IDC_STATIC_FONT2,7,160,94,54
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041104B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "wxe MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "wxe\0"
+            VALUE "LegalCopyright", "Copyright (C) 2002\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "wxe.EXE\0"
+            VALUE "ProductName", "wxe Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x411, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_SETUP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 199
+        TOPMARGIN, 1
+        BOTTOMMARGIN, 224
+    END
+
+    IDD_PAGE_SETUP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 218
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 271
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME_DYN ACCELERATORS PRELOAD MOVEABLE PURE 
+BEGIN
+    "A",            ID_FILE_SAVE_AS,        VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "E",            ID_FILE_EXPLORER,       VIRTKEY, CONTROL
+    "H",            ID_FILE_SCRPRT,         VIRTKEY, CONTROL
+    "I",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    "L",            ID_EDIT_CLEAR,          VIRTKEY, CONTROL
+    "M",            ID_FILE_DOS,            VIRTKEY, CONTROL
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
+    "R",            ID_EDIT_PASTE_REP,      VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE_STD,      VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "T",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "X",            ID_APP_EXIT,            VIRTKEY, CONTROL
+    "Z",            ID_APP_ABOUT,           VIRTKEY, ALT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+//  IDR_MAINFRAME           "wxe\n\nWxe.new\n\n\nWxe.Document\nWxe.new"//~@@@@R~
+    IDR_MAINFRAME           "Wxe"                                  //~@@@@I~
+END
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "wxe"                                  //~@@@@R~
+//    AFX_IDS_IDLEMESSAGE     "Ready"                              //~@@@@R~
+    ATL_IDS_IDLEMESSAGE     "Ready"                                //~@@@@I~
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OvrW"
+    ID_INDICATOR_REC        "Record"
+    ID_INDICATOR_KANA       "Kana"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_NEW             "Open New File"
+    ID_FILE_OPEN            "Open File"
+    ID_FILE_CLOSE           "Close File\nClose"
+    ID_FILE_SAVE            "Save Replacing"
+    ID_FILE_SAVE_AS         "Save by New Name"
+    ID_FILE_PAGE_SETUP      "Print option change\nSetup PageLayout"
+    ID_FILE_PRINT_SETUP     "Printer/PrintOptionChange\nSetupPrint"
+    ID_FILE_PRINT           "Print File"
+    ID_FILE_PRINT_PREVIEW   "Preview"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_APP_ABOUT            "Version,Auth"
+    ID_APP_EXIT             "Exit XE"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_MRU_FILE1       "Open The File"
+    ID_FILE_MRU_FILE2       "Open The File"
+    ID_FILE_MRU_FILE3       "Open The File"
+    ID_FILE_MRU_FILE4       "Open The File"
+    ID_FILE_MRU_FILE5       "Open The File"
+    ID_FILE_MRU_FILE6       "Open The File"
+    ID_FILE_MRU_FILE7       "Open The File"
+    ID_FILE_MRU_FILE8       "Open The File"
+    ID_FILE_MRU_FILE9       "Open The File"
+    ID_FILE_MRU_FILE10      "Open The File"
+    ID_FILE_MRU_FILE11      "Open The File"
+    ID_FILE_MRU_FILE12      "Open The File"
+    ID_FILE_MRU_FILE13      "Open The File"
+    ID_FILE_MRU_FILE14      "Open The File"
+    ID_FILE_MRU_FILE15      "Open The File"
+    ID_FILE_MRU_FILE16      "Open The File"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_NEXT_PANE            "Next Pane\nNext Pane"
+    ID_PREV_PANE            "Previous Pane\nPrevious Pane"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_WINDOW_SPLIT         "Split Window\nSplit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_EDIT_CLEAR           "SpaceClear and Copy to Clipboard"
+    ID_EDIT_CLEAR_ALL       "Clear All\nClear All"
+    ID_EDIT_COPY            "Copy to Clipboard"
+    ID_EDIT_CUT             "Cut and Copy to Clipboard"
+    ID_EDIT_FIND            "Find String\nFind"
+    ID_EDIT_PASTE           "Block Insert Paste from Clipboard"
+    ID_EDIT_REPEAT          "Repeat Action\nRepeat"
+    ID_EDIT_REPLACE         "Replace String\nreplace"
+    ID_EDIT_SELECT_ALL      "Select All\nSelect All"
+    ID_EDIT_UNDO            "Undo\nUndo"
+    ID_EDIT_REDO            "Redo\nRedo"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_VIEW_TOOLBAR         "ToolBar "
+    ID_VIEW_STATUS_BAR      "StatusBAr "
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+//    AFX_IDS_SCSIZE          "Resize Screen"                      //~@@@@R~
+//    AFX_IDS_SCMOVE          "Move Screen"                        //~@@@@R~
+//    AFX_IDS_SCMINIMIZE      "Minimize Screen"                    //~@@@@R~
+//    AFX_IDS_SCMAXIMIZE      "Maximize Screen"                    //~@@@@R~
+//    AFX_IDS_SCNEXTWINDOW    "Next Window"                        //~@@@@R~
+//    AFX_IDS_SCPREVWINDOW    "Previous Window"                    //~@@@@R~
+//    AFX_IDS_SCCLOSE         "Close window Saving modified files" //~@@@@R~
+    ATL_IDS_SCSIZE          "Resize Screen"                        //~@@@@I~
+    ATL_IDS_SCMOVE          "Move Screen"                          //~@@@@I~
+    ATL_IDS_SCMINIMIZE      "Minimize Screen"                      //~@@@@I~
+    ATL_IDS_SCMAXIMIZE      "Maximize Screen"                      //~@@@@I~
+    ATL_IDS_SCNEXTWINDOW    "Next Window"                          //~@@@@I~
+    ATL_IDS_SCPREVWINDOW    "Previous Window"                      //~@@@@I~
+    ATL_IDS_SCCLOSE         "Close window Saving modified files"   //~@@@@I~
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+//    AFX_IDS_SCRESTORE       "Restore Screen Size"                //~@@@@R~
+//    AFX_IDS_SCTASKLIST      "TaskList"                           //~@@@@R~
+    ATL_IDS_SCRESTORE       "Restore Screen Size"                  //~@@@@I~
+    ATL_IDS_SCTASKLIST      "TaskList"                             //~@@@@I~
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_PREVIEW_CLOSE   "Close Preview\nCancel Preview"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDC_FONT                "optional configuration"
+    ID_EDIT_PASTE_REP       "Block Replace Paste by Clipboard"
+    ID_FILE_SCRPRT          "Screen HardCopy"
+    ID_PAGE_SETUP           "Open Preview Dialog"
+    ID_EDIT_CANCEL          "Exit w/o Save"
+    ID_EDIT_END             "Save and Exit"
+    ID_FILE_DOS             "Start MS-DOS prompt"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_SAVE2           "Save"
+    ID_FILE_PRINT2          "Print"
+    ID_EDIT_COPY2           "Copy"
+    ID_EDIT_CUT2            "Cut"
+    ID_EDIT_PASTE2          "Paste(Insert)"
+    ID_FILE_EXPLORER        "Start Explorer"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_EDIT_PASTE_STD       "Standard Paste from Clipboard"
+END
+
+#endif    // “ú–{Œê resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// ‰pŒê (±ÒØ¶) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+BEGIN
+    POPUP "File"
+    BEGIN
+        MENUITEM "NewFile(&N)",                 ID_FILE_NEW
+        MENUITEM "Open(&O)",                    ID_FILE_OPEN
+        MENUITEM "Save(&S)",                    ID_FILE_SAVE
+        MENUITEM "Save as(&A)...",              ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "Print(&P)",                   ID_FILE_PRINT
+        MENUITEM "PrtScr(&H)",                  ID_FILE_SCRPRT
+        MENUITEM SEPARATOR
+        MENUITEM "Explorer(&E)",                ID_FILE_EXPLORER
+        MENUITEM "MS-DOS(&M)",                  ID_FILE_DOS
+        MENUITEM "Exit(&X)",                    ID_APP_EXIT
+        MENUITEM SEPARATOR
+        MENUITEM "Recently Used",               ID_FILE_MRU_FILE1, GRAYED
+    END
+    POPUP "Edit"
+    BEGIN
+        MENUITEM "Cut(&T)",                     ID_EDIT_CUT
+        MENUITEM "Copy(&C)",                    ID_EDIT_COPY
+        MENUITEM "Clear(&L)",                   ID_EDIT_CLEAR
+        MENUITEM "Paste(&V)",                   ID_EDIT_PASTE_STD
+        MENUITEM "PasteIns(&I)",                ID_EDIT_PASTE
+        MENUITEM "PasteRep(&R)",                ID_EDIT_PASTE_REP
+    END
+    MENUITEM "Setup",                       IDC_FONT
+    MENUITEM "Preview",                     ID_PAGE_SETUP
+    POPUP "Help"
+    BEGIN
+        MENUITEM "Help(&H)",                    ID_HELPXE
+        MENUITEM "wxe Version(&A)...",          ID_APP_ABOUT
+    END
+END
+
+#endif    // ‰pŒê (±ÒØ¶) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// ‰pŒê (²·ÞØ½) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_COPY                BITMAP  DISCARDABLE     "res\\Copy.bmp"
+IDB_CUT                 BITMAP  DISCARDABLE     "res\\Cut.bmp"
+IDB_PASTE_INS           BITMAP  DISCARDABLE     "res\\Paste.bmp"
+IDB_SAVE                BITMAP  DISCARDABLE     "res\\Save.bmp"
+IDB_PRINT               BITMAP  DISCARDABLE     "res\\Print.bmp"
+IDB_END                 BITMAP  DISCARDABLE     "res\\savex.bmp"
+IDB_PASTE_REP           BITMAP  DISCARDABLE     "res\\paste_re.bmp"
+IDB_CANCEL              BITMAP  DISCARDABLE     "res\\Discnet.bmp"
+IDB_CLEAR               BITMAP  DISCARDABLE     "res\\Lft.bmp"
+IDB_EXPLORER            BITMAP  DISCARDABLE     "res\\Explorer.bmp"
+IDB_DOS                 BITMAP  DISCARDABLE     "res\\Exe.bmp"
+#endif    // ‰pŒê (²·ÞØ½) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+#ifdef _WIN32
+LANGUAGE 17, 1
+#pragma code_page(932)
+#endif //_WIN32
+#include "res\wxe.rc2"  // Microsoft resource wditted out of Visual C++r
+//#include "l.jpn\afxres.rc"          // Standard component        //~@@@@R~
+//#include "l.jpn\afxprint.rc"        // Print/Preview resource    //~@@@@R~
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

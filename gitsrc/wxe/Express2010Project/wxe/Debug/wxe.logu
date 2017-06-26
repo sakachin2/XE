@@ -1,0 +1,906 @@
+﻿2012/06/26 21:10:58 にビルドを開始しました。
+     1>_PrepareForClean:
+         ファイル "Debug\wxe.lastbuildstate" を削除しています。
+       InitializeBuildStatus:
+         "Debug\wxe.unsuccessfulbuild" のタッチ タスクを実行しています。
+       CustomBuild:
+         Compiling Ribbon.xml
+         Header file generation successful: 'Ribbon.h'.
+         Ribbon markup file validation successful: 'Ribbon.xml'.
+         Ribbon resource file generation successful: 'Ribbon.rc'.
+       ClCompile:
+         W:\msvs2010\VC\bin\x86_amd64\CL.exe /c /Zi /nologo /W4 /WX- /Od /Oy- /D TRACE /D WIN32 /D _WINDOWS /D STRICT /D _DEBUG /D W32 /D _CRT_SECURE_NO_DEPRECATE /D WXE /D UTF8SUPPH /D UTF8UCS2 /D UTF8EBCD /D NOMT_TRACE /D VC10EXP /D _MBCS /D _ATL_STATIC_REGISTRY /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"StdAfx.h" /Fp"Debug\wxe.pch" /Fo"Debug\\" /Fd"Debug\vcWindows7.1SDK.pdb" /Gd /TP /errorReport:prompt stdafx.cpp /J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210 /wd4210 /wd4244 /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131  
+         stdafx.cpp
+         wxe.cpp
+     1>w:\wtl81\Include\atlframe.h(425): warning C4189: 'rc' : local variable is initialized but not referenced
+                 w:\wtl81\Include\atlframe.h(408) : while compiling class template member function 'HWND WTL::CFrameWindowImplBase<>::Create(HWND,ATL::_U_RECT,LPCTSTR,DWORD,DWORD,ATL::_U_MENUorID,ATOM,LPVOID)'
+                 w:\wtl81\Include\atlframe.h(1280) : see reference to class template instantiation 'WTL::CFrameWindowImplBase<>' being compiled
+         wxeview.cpp
+         wxescr.cpp
+         wxeprt.cpp
+         Wxepage.cpp
+         wxemain.cpp
+         wxefile.cpp
+         wxedoc.cpp
+         wxedlg.cpp
+         MainFrm.cpp
+         Generating Code...
+         wxemouse.cpp
+         wxekbd.cpp
+         Generating Code...
+         xeutf2.c
+         xeutf.c
+         xeundo.c
+         xetso2.c
+         xetso.c
+         xesyscmd.c
+         xesyn2.c
+         xesyn.c
+         xesub2.c
+         xesub.c
+         xescr2.c
+         xescr.c
+         xepan3.c
+         xepan24.c
+         xepan23.c
+         xepan22.c
+         xepan2.c
+         xepan.c
+         xeopt2.c
+         xeopt.c
+         Generating Code...
+         Compiling...
+         xelcmd5.c
+         xelcmd4.c
+         xelcmd3.c
+         xelcmd2.c
+         xelcmd.c
+         xekbd.c
+         xeini3.c
+         xeini2.c
+         xeini.c
+         xegbl.c
+         xefunct2.c
+         xefunct.c
+         xefunc2.c
+         xefunc.c
+         xeftp.c
+         xefsub.c
+         xefile7.c
+         xefile6.c
+         xefile5.c
+         xefile43.c
+         Generating Code...
+         Compiling...
+         xefile42.c
+         xefile4.c
+         xefile3.c
+         xefile23.c
+         xefile22.c
+         xefile2.c
+         xefile15.c
+         xefile14.c
+         xefile13.c
+         xefile12.c
+         xefile.c
+         xefcmd6.c
+         xefcmd5.c
+         xefcmd43.c
+         xefcmd42.c
+         xefcmd4.c
+         xefcmd3.c
+         xefcmd27.c
+         xefcmd26.c
+         xefcmd25.c
+         Generating Code...
+         Compiling...
+         xefcmd24.c
+         xefcmd23.c
+         xefcmd22.c
+         xefcmd2.c
+         xefcmd.c
+         xeerr.c
+         xeebc.c
+         xedlcmd6.c
+         xedlcmd5.c
+         xedlcmd4.c
+         xedlcmd3.c
+         xedlcmd2.c
+         xedlcmd.c
+         xedir4.c
+         xedir3.c
+         xedir2.c
+         xedir.c
+         xedcmd4.c
+         xedcmd3.c
+         xedcmd2.c
+         Generating Code...
+         Compiling...
+         xedcmd.c
+         xecsr.c
+         xechar2.c
+         xechar13.c
+         xechar12.c
+         xechar.c
+         xecap2.c
+         xecap.c
+         xecalc3.c
+         xecalc22.c
+         xecalc21.c
+         xecalc2.c
+         xecalc.c
+         xe.c
+         uwinsub.c
+     1>g:\src\ulib\uwinsub.c(75): warning C4267: 'function' : conversion from 'size_t' to 'DWORD', possible loss of data
+         uviom.c
+     1>g:\src\ulib\uviom.c(187): warning C4306: 'type cast' : conversion from 'ULONG' to 'HANDLE' of greater size
+         uvio2.c
+         uvio.c
+         utrace.c
+     1>g:\src\ulib\utrace.c(771): warning C4295: 'trt' : array is too small to include a terminating null character
+     1>g:\src\ulib\utrace.c(789): warning C4295: 'Sebc2asc' : array is too small to include a terminating null character
+         utf4.c
+         Generating Code...
+         Compiling...
+         utf3.c
+     1>g:\src\ulib\utf3.c(761): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\utf3.c(831): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+         utf22.c
+     1>g:\src\ulib\utf22.c(2370): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\utf22.c(2407): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\utf22.c(2434): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+         utf2.c
+     1>g:\src\ulib\utf2.c(1786): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\utf2.c(1812): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\utf2.c(1874): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\utf2.c(1917): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\utf2.c(1960): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\utf2.c(2001): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\utf2.c(2799): warning C4306: 'type cast' : conversion from 'ULONG' to 'ULONG *' of greater size
+     1>g:\src\ulib\utf2.c(3002): warning C4306: 'type cast' : conversion from 'ULONG' to 'ULONG *' of greater size
+     1>g:\src\ulib\utf2.c(3783): warning C4306: 'type cast' : conversion from 'ULONG' to 'ULONG *' of greater size
+     1>g:\src\ulib\utf2.c(3810): warning C4028: formal parameter 3 different from declaration
+     1>g:\src\ulib\utf2.c(3830): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+     1>g:\src\ulib\utf2.c(3838): warning C4133: 'function' : incompatible types - from 'ULPTR [2]' to 'ULONG *'
+         utf.c
+         ustring.c
+     1>g:\src\ulib\ustring.c(125): warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(158): warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(311): warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(312): warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(317): warning C4305: 'type cast' : truncation from 'const unsigned char *' to 'ULONG'
+     1>g:\src\ulib\ustring.c(317): warning C4306: 'type cast' : conversion from 'ULONG' to 'unsigned char *' of greater size
+     1>g:\src\ulib\ustring.c(366): warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(367): warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(432): warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(433): warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(486): warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(487): warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(517): warning C4267: 'function' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(606): warning C4306: 'type cast' : conversion from 'int' to 'unsigned char *' of greater size
+     1>g:\src\ulib\ustring.c(644): warning C4267: 'function' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(664): warning C4306: 'type cast' : conversion from 'int' to 'unsigned char *' of greater size
+     1>g:\src\ulib\ustring.c(697): warning C4306: 'type cast' : conversion from 'int' to 'unsigned char *' of greater size
+     1>g:\src\ulib\ustring.c(736): warning C4267: 'function' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(757): warning C4306: 'type cast' : conversion from 'int' to 'unsigned char *' of greater size
+     1>g:\src\ulib\ustring.c(819): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\ustring.c(852): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\ustring.c(897): warning C4267: 'function' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(912): warning C4267: 'function' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(927): warning C4267: 'function' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(942): warning C4267: 'function' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(1154): warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\ustring.c(1347): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ustring.c(1393): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ustring.c(1421): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+         uregex.c
+     1>g:\src\ulib\gnuregex\regex_internal.c(1445): warning C4267: 'return' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\gnuregex\regcomp.c(767): warning C4267: 'function' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\gnuregex\regcomp.c(1538): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\gnuregex\regcomp.c(2425): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\gnuregex\regcomp.c(2528): warning C4306: 'type cast' : conversion from 'long' to 'void *' of greater size
+     1>g:\src\ulib\gnuregex\regcomp.c(3742): warning C4305: 'type cast' : truncation from 'void *' to 'long'
+     1>g:\src\ulib\gnuregex\regexec.c(251): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\gnuregex\regexec.c(468): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\gnuregex\regexec.c(661): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\gnuregex\regexec.c(691): warning C4267: 'function' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\gnuregex\regexec.c(1448): warning C4267: 'function' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\gnuregex\regexec.c(1467): warning C4267: 'function' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\gnuregex\regexec.c(1480): warning C4267: 'function' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\gnuregex\regexec.c(1494): warning C4267: 'function' : conversion from 'size_t' to 'int', possible loss of data
+         uque.c
+         uproc4.c
+     1>g:\src\ulib\uproc4.c(234): warning C4305: 'type cast' : truncation from 'unsigned char *' to 'ULONG'
+     1>g:\src\ulib\uproc4.c(237): warning C4305: 'type cast' : truncation from 'unsigned char *' to 'ULONG'
+     1>g:\src\ulib\uproc4.c(350): warning C4267: 'function' : conversion from 'size_t' to 'unsigned int', possible loss of data
+     1>g:\src\ulib\uproc4.c(432): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uproc4.c(444): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uproc4.c(497): warning C4306: 'type cast' : conversion from 'ULONG' to 'void *' of greater size
+     1>g:\src\ulib\uproc4.c(498): warning C4306: 'type cast' : conversion from 'ULONG' to 'void *' of greater size
+         uproc3.c
+     1>g:\src\ulib\uproc3.c(647): warning C4028: formal parameter 4 different from declaration
+     1>g:\src\ulib\uproc3.c(712): warning C4306: 'type cast' : conversion from 'ULONG' to 'HANDLE' of greater size
+     1>g:\src\ulib\uproc3.c(721): warning C4028: formal parameter 1 different from declaration
+     1>g:\src\ulib\uproc3.c(728): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uproc3.c(754): warning C4306: 'type cast' : conversion from 'ULONG' to 'HANDLE' of greater size
+         uproc22.c
+     1>W:\mssdkw71\include\vdmdbg.h(279): warning C4121: '<unnamed-tag>' : alignment of a member was sensitive to packing
+     1>g:\src\ulib\uproc22.c(146): warning C4028: formal parameter 1 different from declaration
+     1>g:\src\ulib\uproc22.c(165): warning C4305: 'type cast' : truncation from 'void *' to 'ULONG'
+     1>g:\src\ulib\uproc22.c(165): warning C4306: 'type cast' : conversion from 'ULONG' to 'ULONG *' of greater size
+     1>g:\src\ulib\uproc22.c(188): warning C4306: 'type cast' : conversion from 'ULONG' to 'HANDLE' of greater size
+     1>g:\src\ulib\uproc22.c(229): warning C4306: 'type cast' : conversion from 'ULONG' to 'void *' of greater size
+     1>g:\src\ulib\uproc22.c(249): warning C4028: formal parameter 3 different from declaration
+     1>g:\src\ulib\uproc22.c(306): warning C4306: 'type cast' : conversion from 'ULONG' to 'HANDLE' of greater size
+     1>g:\src\ulib\uproc22.c(315): warning C4306: 'type cast' : conversion from 'ULONG' to 'HANDLE' of greater size
+     1>g:\src\ulib\uproc22.c(333): warning C4306: 'type cast' : conversion from 'ULONG' to 'CRITICAL_SECTION *' of greater size
+         uproc2.c
+     1>g:\src\ulib\uproc2.c(482): warning C4028: formal parameter 4 different from declaration
+     1>g:\src\ulib\uproc2.c(541): warning C4028: formal parameter 2 different from declaration
+     1>g:\src\ulib\uproc2.c(541): warning C4028: formal parameter 5 different from declaration
+     1>g:\src\ulib\uproc2.c(608): warning C4306: 'type cast' : conversion from 'ULONG' to 'HINSTANCE' of greater size
+     1>g:\src\ulib\uproc2.c(641): warning C4133: 'function' : incompatible types - from 'ULONG *' to 'ULPTR *'
+     1>g:\src\ulib\uproc2.c(646): warning C4133: 'function' : incompatible types - from 'ULONG *' to 'ULPTR *'
+         uproc.c
+     1>g:\src\ulib\uproc.c(782): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\uproc.c(799): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\uproc.c(1894): warning C4305: 'type cast' : truncation from 'unsigned char *' to 'ULONG'
+     1>g:\src\ulib\uproc.c(1897): warning C4305: 'type cast' : truncation from 'unsigned char *' to 'ULONG'
+     1>g:\src\ulib\uproc.c(2020): warning C4267: 'function' : conversion from 'size_t' to 'unsigned int', possible loss of data
+         uparse.c
+     1>g:\src\ulib\uparse.c(198): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\uparse.c(252): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\uparse.c(313): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\uparse.c(363): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+         umiscf.c
+         ukbdw.c
+         ukbd.c
+         uftp3.c
+     1>g:\src\ulib\uftp3.c(101): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp3.c(263): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp3.c(270): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp3.c(317): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp3.c(388): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp3.c(389): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp3.c(508): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp3.c(879): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp3.c(1066): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp3.c(1113): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp3.c(1154): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp3.c(1281): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp3.c(2177): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp3.c(2201): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp3.c(2252): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+         uftp2.c
+     1>g:\src\ulib\uftp2.c(294): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp2.c(1212): warning C4306: 'type cast' : conversion from 'int' to 'UCHAR *' of greater size
+         uftp.c
+     1>g:\src\ulib\uftp.c(572): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp.c(752): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp.c(1261): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp.c(1375): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp.c(1386): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp.c(1402): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp.c(1415): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp.c(1454): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp.c(1471): warning C4267: 'function' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp.c(1501): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp.c(1529): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp.c(1565): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp.c(1674): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp.c(1716): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp.c(1746): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp.c(1803): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uftp.c(1828): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+         ufile5.c
+     1>g:\src\ulib\ufile5.c(369): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\ufile5.c(752): warning C4267: 'return' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile5.c(820): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\ufile5.c(1395): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\ufile5.c(1403): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\ufile5.c(1501): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\ufile5.c(1502): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\ufile5.c(1574): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\ufile5.c(1575): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\ufile5.c(1597): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+         Generating Code...
+         Compiling...
+         ufile4.c
+     1>g:\src\ulib\ufile4.c(839): warning C4306: 'type cast' : conversion from 'int' to 'unsigned char *' of greater size
+         ufile3f.c
+     1>g:\src\ulib\ufile3f.c(344): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile3f.c(458): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile3f.c(600): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile3f.c(841): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile3f.c(986): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile3f.c(1042): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile3f.c(1099): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile3f.c(1204): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile3f.c(1274): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile3f.c(1302): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile3f.c(1383): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile3f.c(1387): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile3f.c(1822): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+         ufile3.c
+         ufile2f.c
+         ufile2.c
+         ufile1f.c
+     1>g:\src\ulib\ufile1f.c(144): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile1f.c(145): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile1f.c(205): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\ufile1f.c(314): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\ufile1f.c(417): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+         ufile12.c
+         ufile.c
+     1>g:\src\ulib\ufile.c(323): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile.c(935): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile.c(943): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile.c(1213): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ufile.c(1671): warning C4305: 'type cast' : truncation from 'HDIR' to 'ULONG'
+     1>g:\src\ulib\ufile.c(1672): warning C4305: 'type cast' : truncation from 'HDIR' to 'int'
+     1>g:\src\ulib\ufile.c(2396): warning C4305: 'type cast' : truncation from 'FILE *' to 'ULONG'
+         ufemsg.c
+         uerr.c
+     1>g:\src\ulib\uerr.c(642): warning C4267: 'function' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uerr.c(797): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+     1>g:\src\ulib\uerr.c(804): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uerr.c(806): warning C4133: 'function' : incompatible types - from 'ULPTR [7]' to 'ULONG *'
+     1>g:\src\ulib\uerr.c(814): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uerr.c(816): warning C4133: 'function' : incompatible types - from 'ULPTR [7]' to 'ULONG *'
+     1>g:\src\ulib\uerr.c(1245): warning C4267: 'function' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\uerr.c(1511): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+         uedit2.c
+         uedit.c
+         udos2.c
+     1>g:\src\ulib\udos2.c(332): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+         udos.c
+         udbcsck2.c
+         udbcschk.c
+     1>g:\src\ulib\udbcschk.c(1081): warning C4306: 'type cast' : conversion from 'ULONG' to 'ULONG *' of greater size
+     1>g:\src\ulib\udbcschk.c(1916): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+         ucvucst.c
+         ucvucs.c
+         ucvext2.c
+     1>g:\src\ulib\ucvext2.c(149): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvext2.c(385): warning C4306: 'type cast' : conversion from 'ULONG' to 'UCHAR *' of greater size
+     1>g:\src\ulib\ucvext2.c(719): warning C4267: 'function' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvext2.c(897): warning C4267: 'function' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvext2.c(1253): warning C4306: 'type cast' : conversion from 'ULONG' to 'UCHAR *' of greater size
+     1>g:\src\ulib\ucvext2.c(1519): warning C4133: 'function' : incompatible types - from 'ULPTR [7]' to 'ULONG *'
+     1>g:\src\ulib\ucvext2.c(1535): warning C4133: 'function' : incompatible types - from 'ULPTR [7]' to 'ULONG *'
+     1>g:\src\ulib\ucvext2.c(1587): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\ucvext2.c(1600): warning C4133: 'function' : incompatible types - from 'ULPTR [7]' to 'ULONG *'
+     1>g:\src\ulib\ucvext2.c(1603): warning C4133: 'function' : incompatible types - from 'ULPTR [7]' to 'ULONG *'
+     1>g:\src\ulib\ucvext2.c(1605): warning C4133: 'function' : incompatible types - from 'ULPTR [7]' to 'ULONG *'
+     1>g:\src\ulib\ucvext2.c(1609): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvext2.c(1620): warning C4133: 'function' : incompatible types - from 'ULPTR [7]' to 'ULONG *'
+     1>g:\src\ulib\ucvext2.c(1636): warning C4028: formal parameter 6 different from declaration
+     1>g:\src\ulib\ucvext2.c(1642): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+     1>g:\src\ulib\ucvext2.c(1654): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+         ucvext12.c
+     1>g:\src\ulib\ucvext12.c(93): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvext12.c(94): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvext12.c(127): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext12.c(208): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext12.c(285): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext12.c(387): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext12.c(469): warning C4306: 'type cast' : conversion from 'ULONG' to 'UCHAR *' of greater size
+     1>g:\src\ulib\ucvext12.c(470): warning C4306: 'type cast' : conversion from 'ULONG' to 'UCHAR *' of greater size
+     1>g:\src\ulib\ucvext12.c(613): warning C4306: 'type cast' : conversion from 'ULONG' to 'UCHAR *' of greater size
+     1>g:\src\ulib\ucvext12.c(614): warning C4306: 'type cast' : conversion from 'ULONG' to 'UCHAR *' of greater size
+     1>g:\src\ulib\ucvext12.c(1216): warning C4267: '=' : conversion from 'size_t' to 'UINT', possible loss of data
+     1>g:\src\ulib\ucvext12.c(1237): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvext12.c(1381): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvext12.c(1402): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvext12.c(1447): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext12.c(1507): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext12.c(1524): warning C4306: 'type cast' : conversion from 'ULONG' to 'unsigned char *' of greater size
+     1>g:\src\ulib\ucvext12.c(1524): warning C4306: 'type cast' : conversion from 'ULONG' to 'unsigned char *' of greater size
+     1>g:\src\ulib\ucvext12.c(1610): warning C4306: 'type cast' : conversion from 'ULONG' to 'UCHAR *' of greater size
+     1>g:\src\ulib\ucvext12.c(1673): warning C4306: 'type cast' : conversion from 'ULONG' to 'UCHAR *' of greater size
+     1>g:\src\ulib\ucvext12.c(1797): warning C4306: 'type cast' : conversion from 'ULONG' to 'UCHAR *' of greater size
+     1>g:\src\ulib\ucvext12.c(1897): warning C4028: formal parameter 6 different from declaration
+     1>g:\src\ulib\ucvext12.c(1907): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+     1>g:\src\ulib\ucvext12.c(1953): warning C4306: 'type cast' : conversion from 'ULONG' to 'UCVUCS_FERR (__cdecl *)' of greater size
+     1>g:\src\ulib\ucvext12.c(1956): warning C4306: 'type cast' : conversion from 'ULONG' to 'UCHAR *' of greater size
+     1>g:\src\ulib\ucvext12.c(2042): warning C4133: 'function' : incompatible types - from 'ULPTR [2]' to 'ULONG *'
+         Generating Code...
+         Compiling...
+         ucvext.c
+     1>g:\src\ulib\ucvext.c(912): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvext.c(939): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvext.c(1025): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvext.c(1402): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+     1>g:\src\ulib\ucvext.c(1417): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+     1>g:\src\ulib\ucvext.c(1434): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+     1>g:\src\ulib\ucvext.c(1449): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+     1>g:\src\ulib\ucvext.c(1450): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+     1>g:\src\ulib\ucvext.c(1459): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+     1>g:\src\ulib\ucvext.c(1465): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+     1>g:\src\ulib\ucvext.c(1512): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+     1>g:\src\ulib\ucvext.c(1537): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+     1>g:\src\ulib\ucvext.c(1836): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_UERRNAME' of greater size
+     1>g:\src\ulib\ucvext.c(1839): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_SETDATADIR' of greater size
+     1>g:\src\ulib\ucvext.c(1842): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_GETDATADIR' of greater size
+     1>g:\src\ulib\ucvext.c(1852): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_OPEN' of greater size
+     1>g:\src\ulib\ucvext.c(1858): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_CLOSE' of greater size
+     1>g:\src\ulib\ucvext.c(1862): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_RESET' of greater size
+     1>g:\src\ulib\ucvext.c(1866): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_TOUCS' of greater size
+     1>g:\src\ulib\ucvext.c(1872): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_FROMUCS' of greater size
+     1>g:\src\ulib\ucvext.c(1878): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_SETFALLBACK' of greater size
+     1>g:\src\ulib\ucvext.c(1882): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_USESFALLBACK' of greater size
+     1>g:\src\ulib\ucvext.c(1886): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_GETSUBCHARS' of greater size
+     1>g:\src\ulib\ucvext.c(1890): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_SETSUBCHARS' of greater size
+     1>g:\src\ulib\ucvext.c(1894): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_GETNAME' of greater size
+     1>g:\src\ulib\ucvext.c(1898): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_GETSTARTER' of greater size
+     1>g:\src\ulib\ucvext.c(1902): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_GETDEFNAME' of greater size
+     1>g:\src\ulib\ucvext.c(1966): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_ENUMCTR' of greater size
+     1>g:\src\ulib\ucvext.c(1970): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_ENUMNAME' of greater size
+     1>g:\src\ulib\ucvext.c(1974): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_ENUMCTRA' of greater size
+     1>g:\src\ulib\ucvext.c(1978): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_ENUMNAMEA' of greater size
+     1>g:\src\ulib\ucvext.c(2226): warning C4133: 'function' : incompatible types - from 'ULONG *' to 'ULPTR *'
+     1>g:\src\ulib\ucvext.c(2271): warning C4306: 'type cast' : conversion from 'ULONG' to 'ICUFUNC_GETTYPE' of greater size
+     1>g:\src\ulib\ucvext.c(2273): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext.c(2276): warning C4306: 'type cast' : conversion from 'ULONG' to 'unsigned char *' of greater size
+     1>g:\src\ulib\ucvext.c(2281): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext.c(2336): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext.c(2339): warning C4306: 'type cast' : conversion from 'ULONG' to 'unsigned char *' of greater size
+     1>g:\src\ulib\ucvext.c(2343): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext.c(2393): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext.c(2396): warning C4306: 'type cast' : conversion from 'ULONG' to 'unsigned char *' of greater size
+     1>g:\src\ulib\ucvext.c(2400): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext.c(2443): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext.c(2446): warning C4306: 'type cast' : conversion from 'ULONG' to 'unsigned char *' of greater size
+     1>g:\src\ulib\ucvext.c(2450): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext.c(2604): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext.c(2762): warning C4306: 'type cast' : conversion from 'ULONG' to 'UCHAR *' of greater size
+     1>g:\src\ulib\ucvext.c(2768): warning C4306: 'type cast' : conversion from 'ULONG' to 'UCHAR *' of greater size
+     1>g:\src\ulib\ucvext.c(3017): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+     1>g:\src\ulib\ucvext.c(3050): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+     1>g:\src\ulib\ucvext.c(3249): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvext.c(3252): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvext.c(3271): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext.c(3286): warning C4306: 'type cast' : conversion from 'ULONG' to 'UConverter *' of greater size
+     1>g:\src\ulib\ucvext.c(3297): warning C4028: formal parameter 3 different from declaration
+     1>g:\src\ulib\ucvext.c(3346): warning C4028: formal parameter 3 different from declaration
+     1>g:\src\ulib\ucvext.c(3376): warning C4133: 'function' : incompatible types - from 'ULONG *' to 'ULPTR *'
+     1>g:\src\ulib\ucvext.c(3383): warning C4133: 'function' : incompatible types - from 'ULONG *' to 'ULPTR *'
+         ucvebct.c
+         ucvebc4.c
+     1>g:\src\ulib\ucvebc4.c(113): warning C4306: 'type cast' : conversion from 'ULONG' to 'unsigned char *' of greater size
+     1>g:\src\ulib\ucvebc4.c(407): warning C4133: 'function' : incompatible types - from 'ULPTR *' to 'ULONG *'
+         ucvebc32.c
+     1>g:\src\ulib\ucvebc32.c(45): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvebc32.c(660): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvebc32.c(687): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvebc32.c(771): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvebc32.c(798): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+         ucvebc3.c
+     1>g:\src\ulib\ucvebc3.c(177): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\ucvebc3.c(469): warning C4028: formal parameter 2 different from declaration
+     1>g:\src\ulib\ucvebc3.c(593): warning C4306: 'type cast' : conversion from 'ULONG' to 'UCHAR *' of greater size
+     1>g:\src\ulib\ucvebc3.c(594): warning C4306: 'type cast' : conversion from 'ULONG' to 'UCHAR *' of greater size
+         ucvebc2.c
+         ucvebc.c
+     1>g:\src\ulib\ucvebc.c(196): warning C4295: 'SebcCP290' : array is too small to include a terminating null character
+     1>g:\src\ulib\ucvebc.c(241): warning C4295: 'SebcCP1027' : array is too small to include a terminating null character
+         ucalc2.c
+         ucalc.c
+         ualloc.c
+     1>g:\src\ulib\ualloc.c(430): warning C4267: '=' : conversion from 'size_t' to 'long', possible loss of data
+     1>g:\src\ulib\ualloc.c(453): warning C4267: '+=' : conversion from 'size_t' to 'unsigned long', possible loss of data
+     1>g:\src\ulib\ualloc.c(567): warning C4267: '=' : conversion from 'size_t' to 'long', possible loss of data
+     1>g:\src\ulib\ualloc.c(588): warning C4267: '+=' : conversion from 'size_t' to 'unsigned long', possible loss of data
+         uabend.c
+     1>g:\src\ulib\uabend.c(75): warning C4133: 'function' : incompatible types - from 'DWORD [15]' to 'const ULONG_PTR *'
+         u32703.c
+     1>g:\src\ulib\u32703.c(159): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+         u32702.c
+         u3270.c
+     1>g:\src\ulib\u3270.c(277): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\u3270.c(484): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\u3270.c(530): warning C4267: 'return' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\u3270.c(568): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\u3270.c(612): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\u3270.c(622): warning C4267: 'return' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\u3270.c(704): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\u3270.c(729): warning C4267: 'return' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\u3270.c(825): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\u3270.c(986): warning C4267: 'return' : conversion from 'size_t' to 'int', possible loss of data
+     1>g:\src\ulib\u3270.c(1027): warning C4305: 'type cast' : truncation from 'PPIPERESPDATA' to 'ULONG'
+     1>g:\src\ulib\u3270.c(1027): warning C4306: 'type cast' : conversion from 'ULONG' to 'PPDSMEMBLIST' of greater size
+     1>g:\src\ulib\u3270.c(1029): warning C4305: 'type cast' : truncation from 'PPIPERESPDATA' to 'ULONG'
+     1>g:\src\ulib\u3270.c(1029): warning C4306: 'type cast' : conversion from 'ULONG' to 'PDSNLIST' of greater size
+     1>g:\src\ulib\u3270.c(1173): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+         wxexei3.c
+         wxexei2.c
+         wxexei.c
+         wxecsub2.c
+         wxecsub.c
+         Generating Code...
+       ResourceCompile:
+         w:\mssdkw71\bin\rc.exe /D _DEBUG /l"0x0409" /IDebug\ /nologo /fo"Debug\wxe.res" wxe.rc 
+       ManifestResourceCompile:
+         w:\mssdkw71\bin\rc.exe /nologo /fo"Debug\wxe.exe.embed.manifest.res" Debug\wxe_manifest.rc 
+       Link:
+         Debug\wxe.exe.embed.manifest.res
+         Debug\MainFrm.obj
+         Debug\wxedlg.obj
+         Debug\wxedoc.obj
+         Debug\wxefile.obj
+         Debug\wxekbd.obj
+         Debug\wxemain.obj
+         Debug\wxemouse.obj
+         Debug\Wxepage.obj
+         Debug\wxeprt.obj
+         Debug\wxescr.obj
+         Debug\wxeview.obj
+         Debug\stdafx.obj
+         Debug\wxe.obj
+         Debug\wxecsub.obj
+         Debug\wxecsub2.obj
+         Debug\wxexei.obj
+         Debug\wxexei2.obj
+         Debug\wxexei3.obj
+         Debug\u3270.obj
+         Debug\u32702.obj
+         Debug\u32703.obj
+         Debug\uabend.obj
+         Debug\ualloc.obj
+         Debug\ucalc.obj
+         Debug\ucalc2.obj
+         Debug\ucvebc.obj
+         Debug\ucvebc2.obj
+         Debug\ucvebc3.obj
+         Debug\ucvebc32.obj
+         Debug\ucvebc4.obj
+         Debug\ucvebct.obj
+         Debug\ucvext.obj
+         Debug\ucvext12.obj
+         Debug\ucvext2.obj
+         Debug\ucvucs.obj
+         Debug\ucvucst.obj
+         Debug\udbcschk.obj
+         Debug\udbcsck2.obj
+         Debug\udos.obj
+         Debug\udos2.obj
+         Debug\uedit.obj
+         Debug\uedit2.obj
+         Debug\uerr.obj
+         Debug\ufemsg.obj
+         Debug\ufile.obj
+         Debug\ufile12.obj
+         Debug\ufile1f.obj
+         Debug\ufile2.obj
+         Debug\ufile2f.obj
+         Debug\ufile3.obj
+         Debug\ufile3f.obj
+         Debug\ufile4.obj
+         Debug\ufile5.obj
+         Debug\uftp.obj
+         Debug\uftp2.obj
+         Debug\uftp3.obj
+         Debug\ukbd.obj
+         Debug\ukbdw.obj
+         Debug\umiscf.obj
+         Debug\uparse.obj
+         Debug\uproc.obj
+         Debug\uproc2.obj
+         Debug\uproc22.obj
+         Debug\uproc3.obj
+         Debug\uproc4.obj
+         Debug\uque.obj
+         Debug\uregex.obj
+         Debug\ustring.obj
+         Debug\utf.obj
+         Debug\utf2.obj
+         Debug\utf22.obj
+         Debug\utf3.obj
+         Debug\utf4.obj
+         Debug\utrace.obj
+         Debug\uvio.obj
+         Debug\uvio2.obj
+         Debug\uviom.obj
+         Debug\uwinsub.obj
+         Debug\xe.obj
+         Debug\xecalc.obj
+         Debug\xecalc2.obj
+         Debug\xecalc21.obj
+         Debug\xecalc22.obj
+         Debug\xecalc3.obj
+         Debug\xecap.obj
+         Debug\xecap2.obj
+         Debug\xechar.obj
+         Debug\xechar12.obj
+         Debug\xechar13.obj
+         Debug\xechar2.obj
+         Debug\xecsr.obj
+         Debug\xedcmd.obj
+         Debug\xedcmd2.obj
+         Debug\xedcmd3.obj
+         Debug\xedcmd4.obj
+         Debug\xedir.obj
+         Debug\xedir2.obj
+         Debug\xedir3.obj
+         Debug\xedir4.obj
+         Debug\xedlcmd.obj
+         Debug\xedlcmd2.obj
+         Debug\xedlcmd3.obj
+         Debug\xedlcmd4.obj
+         Debug\xedlcmd5.obj
+         Debug\xedlcmd6.obj
+         Debug\xeebc.obj
+         Debug\xeerr.obj
+         Debug\xefcmd.obj
+         Debug\xefcmd2.obj
+         Debug\xefcmd22.obj
+         Debug\xefcmd23.obj
+         Debug\xefcmd24.obj
+         Debug\xefcmd25.obj
+         Debug\xefcmd26.obj
+         Debug\xefcmd27.obj
+         Debug\xefcmd3.obj
+         Debug\xefcmd4.obj
+         Debug\xefcmd42.obj
+         Debug\xefcmd43.obj
+         Debug\xefcmd5.obj
+         Debug\xefcmd6.obj
+         Debug\xefile.obj
+         Debug\xefile12.obj
+         Debug\xefile13.obj
+         Debug\xefile14.obj
+         Debug\xefile15.obj
+         Debug\xefile2.obj
+         Debug\xefile22.obj
+         Debug\xefile23.obj
+         Debug\xefile3.obj
+         Debug\xefile4.obj
+         Debug\xefile42.obj
+         Debug\xefile43.obj
+         Debug\xefile5.obj
+         Debug\xefile6.obj
+         Debug\xefile7.obj
+         Debug\xefsub.obj
+         Debug\xeftp.obj
+         Debug\xefunc.obj
+         Debug\xefunc2.obj
+         Debug\xefunct.obj
+         Debug\xefunct2.obj
+         Debug\xegbl.obj
+         Debug\xeini.obj
+         Debug\xeini2.obj
+         Debug\xeini3.obj
+         Debug\xekbd.obj
+         Debug\xelcmd.obj
+         Debug\xelcmd2.obj
+         Debug\xelcmd3.obj
+         Debug\xelcmd4.obj
+         Debug\xelcmd5.obj
+         Debug\xeopt.obj
+         Debug\xeopt2.obj
+         Debug\xepan.obj
+         Debug\xepan2.obj
+         Debug\xepan22.obj
+         Debug\xepan23.obj
+         Debug\xepan24.obj
+         Debug\xepan3.obj
+         Debug\xescr.obj
+         Debug\xescr2.obj
+         Debug\xesub.obj
+         Debug\xesub2.obj
+         Debug\xesyn.obj
+         Debug\xesyn2.obj
+         Debug\xesyscmd.obj
+         Debug\xetso.obj
+         Debug\xetso2.obj
+         Debug\xeundo.obj
+         Debug\xeutf.obj
+         Debug\xeutf2.obj
+     1>atlsd.lib(atlcommodule.obj) : warning LNK4078: multiple 'ATL' sections found with different attributes (40401040)
+     1>MainFrm.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxedlg.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxedoc.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxefile.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxekbd.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxemain.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxemouse.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>Wxepage.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxeprt.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxescr.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxeview.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>stdafx.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxe.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>atlsd.lib(atltrace.obj) : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>atlsd.lib(externs.obj) : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>atlsd.lib(atldebugapi.obj) : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>atlsd.lib(atlbase.obj) : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>atlsd.lib(atlfuncs.obj) : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>atlsd.lib(atlcommodule.obj) : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>atlsd.lib(stdafx.obj) : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>atlsd.lib(allocate.obj) : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>atlsd.lib(atltracemodulemanager.obj) : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+       Manifest:
+         ファイル "Debug\wxe.exe.embed.manifest" を削除しています。
+         w:\mssdkw71\bin\mt.exe /nologo /verbose /out:"Debug\wxe.exe.embed.manifest" /manifest Debug\wxe.exe.intermediate.manifest
+         w:\mssdkw71\bin\rc.exe /nologo /fo"Debug\wxe.exe.embed.manifest.res" Debug\wxe_manifest.rc 
+       LinkEmbedManifest:
+         Debug\wxe.exe.embed.manifest.res
+         Debug\MainFrm.obj
+         Debug\wxedlg.obj
+         Debug\wxedoc.obj
+         Debug\wxefile.obj
+         Debug\wxekbd.obj
+         Debug\wxemain.obj
+         Debug\wxemouse.obj
+         Debug\Wxepage.obj
+         Debug\wxeprt.obj
+         Debug\wxescr.obj
+         Debug\wxeview.obj
+         Debug\stdafx.obj
+         Debug\wxe.obj
+         Debug\wxecsub.obj
+         Debug\wxecsub2.obj
+         Debug\wxexei.obj
+         Debug\wxexei2.obj
+         Debug\wxexei3.obj
+         Debug\u3270.obj
+         Debug\u32702.obj
+         Debug\u32703.obj
+         Debug\uabend.obj
+         Debug\ualloc.obj
+         Debug\ucalc.obj
+         Debug\ucalc2.obj
+         Debug\ucvebc.obj
+         Debug\ucvebc2.obj
+         Debug\ucvebc3.obj
+         Debug\ucvebc32.obj
+         Debug\ucvebc4.obj
+         Debug\ucvebct.obj
+         Debug\ucvext.obj
+         Debug\ucvext12.obj
+         Debug\ucvext2.obj
+         Debug\ucvucs.obj
+         Debug\ucvucst.obj
+         Debug\udbcschk.obj
+         Debug\udbcsck2.obj
+         Debug\udos.obj
+         Debug\udos2.obj
+         Debug\uedit.obj
+         Debug\uedit2.obj
+         Debug\uerr.obj
+         Debug\ufemsg.obj
+         Debug\ufile.obj
+         Debug\ufile12.obj
+         Debug\ufile1f.obj
+         Debug\ufile2.obj
+         Debug\ufile2f.obj
+         Debug\ufile3.obj
+         Debug\ufile3f.obj
+         Debug\ufile4.obj
+         Debug\ufile5.obj
+         Debug\uftp.obj
+         Debug\uftp2.obj
+         Debug\uftp3.obj
+         Debug\ukbd.obj
+         Debug\ukbdw.obj
+         Debug\umiscf.obj
+         Debug\uparse.obj
+         Debug\uproc.obj
+         Debug\uproc2.obj
+         Debug\uproc22.obj
+         Debug\uproc3.obj
+         Debug\uproc4.obj
+         Debug\uque.obj
+         Debug\uregex.obj
+         Debug\ustring.obj
+         Debug\utf.obj
+         Debug\utf2.obj
+         Debug\utf22.obj
+         Debug\utf3.obj
+         Debug\utf4.obj
+         Debug\utrace.obj
+         Debug\uvio.obj
+         Debug\uvio2.obj
+         Debug\uviom.obj
+         Debug\uwinsub.obj
+         Debug\xe.obj
+         Debug\xecalc.obj
+         Debug\xecalc2.obj
+         Debug\xecalc21.obj
+         Debug\xecalc22.obj
+         Debug\xecalc3.obj
+         Debug\xecap.obj
+         Debug\xecap2.obj
+         Debug\xechar.obj
+         Debug\xechar12.obj
+         Debug\xechar13.obj
+         Debug\xechar2.obj
+         Debug\xecsr.obj
+         Debug\xedcmd.obj
+         Debug\xedcmd2.obj
+         Debug\xedcmd3.obj
+         Debug\xedcmd4.obj
+         Debug\xedir.obj
+         Debug\xedir2.obj
+         Debug\xedir3.obj
+         Debug\xedir4.obj
+         Debug\xedlcmd.obj
+         Debug\xedlcmd2.obj
+         Debug\xedlcmd3.obj
+         Debug\xedlcmd4.obj
+         Debug\xedlcmd5.obj
+         Debug\xedlcmd6.obj
+         Debug\xeebc.obj
+         Debug\xeerr.obj
+         Debug\xefcmd.obj
+         Debug\xefcmd2.obj
+         Debug\xefcmd22.obj
+         Debug\xefcmd23.obj
+         Debug\xefcmd24.obj
+         Debug\xefcmd25.obj
+         Debug\xefcmd26.obj
+         Debug\xefcmd27.obj
+         Debug\xefcmd3.obj
+         Debug\xefcmd4.obj
+         Debug\xefcmd42.obj
+         Debug\xefcmd43.obj
+         Debug\xefcmd5.obj
+         Debug\xefcmd6.obj
+         Debug\xefile.obj
+         Debug\xefile12.obj
+         Debug\xefile13.obj
+         Debug\xefile14.obj
+         Debug\xefile15.obj
+         Debug\xefile2.obj
+         Debug\xefile22.obj
+         Debug\xefile23.obj
+         Debug\xefile3.obj
+         Debug\xefile4.obj
+         Debug\xefile42.obj
+         Debug\xefile43.obj
+         Debug\xefile5.obj
+         Debug\xefile6.obj
+         Debug\xefile7.obj
+         Debug\xefsub.obj
+         Debug\xeftp.obj
+         Debug\xefunc.obj
+         Debug\xefunc2.obj
+         Debug\xefunct.obj
+         Debug\xefunct2.obj
+         Debug\xegbl.obj
+         Debug\xeini.obj
+         Debug\xeini2.obj
+         Debug\xeini3.obj
+         Debug\xekbd.obj
+         Debug\xelcmd.obj
+         Debug\xelcmd2.obj
+         Debug\xelcmd3.obj
+         Debug\xelcmd4.obj
+         Debug\xelcmd5.obj
+         Debug\xeopt.obj
+         Debug\xeopt2.obj
+         Debug\xepan.obj
+         Debug\xepan2.obj
+         Debug\xepan22.obj
+         Debug\xepan23.obj
+         Debug\xepan24.obj
+         Debug\xepan3.obj
+         Debug\xescr.obj
+         Debug\xescr2.obj
+         Debug\xesub.obj
+         Debug\xesub2.obj
+         Debug\xesyn.obj
+         Debug\xesyn2.obj
+         Debug\xesyscmd.obj
+         Debug\xetso.obj
+         Debug\xetso2.obj
+         Debug\xeundo.obj
+         Debug\xeutf.obj
+         Debug\xeutf2.obj
+       FinalizeBuildStatus:
+         ファイル "Debug\wxe.unsuccessfulbuild" を削除しています。
+         "Debug\wxe.lastbuildstate" のタッチ タスクを実行しています。
+
+ビルドに成功しました。
+
+経過時間 00:00:53.80

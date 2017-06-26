@@ -1,0 +1,410 @@
+﻿2017/06/25 15:33:42 にビルドを開始しました。
+     1>ノード 2 上のプロジェクト "W:\msvs2010Projects\wxe\wxe\wxe.vcxproj" (rebuild ターゲット)。
+     1>_PrepareForClean:
+         ファイル "Release\wxe.lastbuildstate" を削除しています。
+       InitializeBuildStatus:
+         "AlwaysCreate" が指定されたため "Release\wxe.unsuccessfulbuild" を作成しています。
+       ClCompile:
+         W:\msvs2010\VC\bin\x86_amd64\CL.exe /c /nologo /W4 /WX- /Od /Oy- /D NOTRACE /D WIN32 /D _WINDOWS /D STRICT /D W32 /D _CRT_SECURE_NO_DEPRECATE /D WXE /D UTF8SUPPH /D UTF8UCS2 /D UTF8EBCD /D NOMT_TRACE /D VC10EXP /D NDEBUG /D WIN10 /D _MBCS /D _ATL_STATIC_REGISTRY /Gm- /EHsc /MT /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vcWindows7.1SDK.pdb" /Gd /TC /errorReport:prompt g:\src\ulib\u3270.c g:\src\ulib\u32702.c g:\src\ulib\u32703.c g:\src\ulib\uabend.c g:\src\ulib\ualloc.c g:\src\ulib\ucalc.c g:\src\ulib\ucalc2.c g:\src\ulib\ucvebc.c g:\src\ulib\ucvebc2.c g:\src\ulib\ucvebc3.c g:\src\ulib\ucvebc32.c g:\src\ulib\ucvebc4.c g:\src\ulib\ucvebct.c g:\src\ulib\ucvext.c g:\src\ulib\ucvext12.c g:\src\ulib\ucvext2.c g:\src\ulib\ucvucs.c g:\src\ulib\ucvucst.c g:\src\ulib\udbcschk.c g:\src\ulib\udbcsck2.c g:\src\ulib\udos.c g:\src\ulib\udos2.c g:\src\ulib\uedit.c g:\src\ulib\uedit2.c g:\src\ulib\uerr.c g:\src\ulib\ufemsg.c g:\src\ulib\ufile.c g:\src\ulib\ufile12.c g:\src\ulib\ufile1f.c g:\src\ulib\ufile2.c g:\src\ulib\ufile2f.c g:\src\ulib\ufile3.c g:\src\ulib\ufile3f.c g:\src\ulib\ufile4.c g:\src\ulib\ufile5.c g:\src\ulib\uftp.c g:\src\ulib\uftp2.c g:\src\ulib\uftp3.c g:\src\ulib\ukbd.c g:\src\ulib\ukbdw.c g:\src\ulib\umiscf.c g:\src\ulib\uparse.c g:\src\ulib\uproc.c g:\src\ulib\uproc2.c g:\src\ulib\uproc22.c g:\src\ulib\uproc3.c g:\src\ulib\uproc4.c g:\src\ulib\uque.c g:\src\ulib\uregex.c g:\src\ulib\ustring.c g:\src\ulib\utf.c g:\src\ulib\utf2.c g:\src\ulib\utf22.c g:\src\ulib\utf3.c g:\src\ulib\utf4.c g:\src\ulib\utrace.c g:\src\ulib\uvio.c g:\src\ulib\uvio2.c g:\src\ulib\uviom.c g:\src\ulib\uwinsub.c g:\src\xe\xe.c g:\src\xe\xecalc.c g:\src\xe\xecalc2.c g:\src\xe\xecalc21.c g:\src\xe\xecalc22.c g:\src\xe\xecalc3.c g:\src\xe\xecap.c g:\src\xe\xecap2.c g:\src\xe\xechar.c g:\src\xe\xechar12.c g:\src\xe\xechar13.c g:\src\xe\xechar2.c g:\src\xe\xecsr.c g:\src\xe\xedcmd.c g:\src\xe\xedcmd2.c g:\src\xe\xedcmd3.c g:\src\xe\xedcmd4.c g:\src\xe\xedir.c g:\src\xe\xedir2.c g:\src\xe\xedir3.c g:\src\xe\xedir4.c g:\src\xe\xedlcmd.c g:\src\xe\xedlcmd2.c g:\src\xe\xedlcmd3.c g:\src\xe\xedlcmd4.c g:\src\xe\xedlcmd5.c g:\src\xe\xedlcmd6.c g:\src\xe\xeebc.c g:\src\xe\xeerr.c g:\src\xe\xefcmd.c g:\src\xe\xefcmd2.c g:\src\xe\xefcmd22.c g:\src\xe\xefcmd23.c g:\src\xe\xefcmd24.c g:\src\xe\xefcmd25.c g:\src\xe\xefcmd26.c g:\src\xe\xefcmd27.c g:\src\xe\xefcmd3.c g:\src\xe\xefcmd4.c g:\src\xe\xefcmd42.c g:\src\xe\xefcmd43.c g:\src\xe\xefcmd5.c g:\src\xe\xefcmd6.c g:\src\xe\xefile.c g:\src\xe\xefile12.c g:\src\xe\xefile13.c g:\src\xe\xefile14.c g:\src\xe\xefile15.c g:\src\xe\xefile2.c g:\src\xe\xefile22.c g:\src\xe\xefile23.c g:\src\xe\xefile3.c g:\src\xe\xefile4.c g:\src\xe\xefile42.c g:\src\xe\xefile43.c g:\src\xe\xefile5.c g:\src\xe\xefile6.c g:\src\xe\xefile7.c g:\src\xe\xefsub.c g:\src\xe\xeftp.c g:\src\xe\xefunc.c g:\src\xe\xefunc2.c g:\src\xe\xefunct.c g:\src\xe\xefunct2.c g:\src\xe\xegbl.c g:\src\xe\xeini.c g:\src\xe\xeini2.c g:\src\xe\xeini3.c g:\src\xe\xekbd.c g:\src\xe\xelcmd.c g:\src\xe\xelcmd2.c g:\src\xe\xelcmd3.c g:\src\xe\xelcmd4.c g:\src\xe\xelcmd5.c g:\src\xe\xeopt.c g:\src\xe\xeopt2.c g:\src\xe\xepan.c g:\src\xe\xepan2.c g:\src\xe\xepan22.c g:\src\xe\xepan23.c g:\src\xe\xepan24.c g:\src\xe\xepan3.c g:\src\xe\xescr.c g:\src\xe\xescr2.c g:\src\xe\xesub.c g:\src\xe\xesub2.c g:\src\xe\xesyn.c g:\src\xe\xesyn2.c g:\src\xe\xesyscmd.c g:\src\xe\xetso.c g:\src\xe\xetso2.c g:\src\xe\xeundo.c g:\src\xe\xeutf.c g:\src\xe\xeutf2.c g:\src\mfc\wxe2010\wxecsub.c g:\src\mfc\wxe2010\wxecsub2.c g:\src\mfc\wxe2010\wxexei.c g:\src\mfc\wxe2010\wxexei2.c g:\src\mfc\wxe2010\wxexei3.c g:\src\ulib\ufilew.c g:\src\ulib\ustrcpy.c g:\src\xe\xefsubw.c /J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210  /wd4244 /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131  /wd4267 /wd4366 
+         u3270.c
+         u32702.c
+         u32703.c
+         uabend.c
+         ualloc.c
+         ucalc.c
+         ucalc2.c
+         ucvebc.c
+         ucvebc2.c
+         ucvebc3.c
+         ucvebc32.c
+         ucvebc4.c
+         ucvebct.c
+         ucvext.c
+         ucvext12.c
+         ucvext2.c
+         ucvucs.c
+         ucvucst.c
+         udbcschk.c
+         udbcsck2.c
+         Generating Code...
+         Compiling...
+         udos.c
+         udos2.c
+         uedit.c
+         uedit2.c
+         uerr.c
+         ufemsg.c
+         ufile.c
+         ufile12.c
+         ufile1f.c
+         ufile2.c
+         ufile2f.c
+         ufile3.c
+         ufile3f.c
+         ufile4.c
+         ufile5.c
+         uftp.c
+         uftp2.c
+         uftp3.c
+         ukbd.c
+         ukbdw.c
+         Generating Code...
+         Compiling...
+         umiscf.c
+         uparse.c
+         uproc.c
+         uproc2.c
+         uproc22.c
+     1>W:\mssdkw71\\include\vdmdbg.h(279): warning C4121: '<unnamed-tag>' : alignment of a member was sensitive to packing
+         uproc3.c
+         uproc4.c
+         uque.c
+         uregex.c
+         ustring.c
+         utf.c
+         utf2.c
+         utf22.c
+         utf3.c
+         utf4.c
+         utrace.c
+         uvio.c
+         uvio2.c
+         uviom.c
+         uwinsub.c
+         Generating Code...
+         Compiling...
+         xe.c
+         xecalc.c
+         xecalc2.c
+         xecalc21.c
+         xecalc22.c
+         xecalc3.c
+         xecap.c
+         xecap2.c
+         xechar.c
+         xechar12.c
+         xechar13.c
+         xechar2.c
+         xecsr.c
+         xedcmd.c
+         xedcmd2.c
+         xedcmd3.c
+         xedcmd4.c
+         xedir.c
+         xedir2.c
+         xedir3.c
+         Generating Code...
+         Compiling...
+         xedir4.c
+         xedlcmd.c
+         xedlcmd2.c
+         xedlcmd3.c
+         xedlcmd4.c
+         xedlcmd5.c
+         xedlcmd6.c
+         xeebc.c
+         xeerr.c
+         xefcmd.c
+         xefcmd2.c
+         xefcmd22.c
+         xefcmd23.c
+         xefcmd24.c
+         xefcmd25.c
+         xefcmd26.c
+         xefcmd27.c
+         xefcmd3.c
+         xefcmd4.c
+         xefcmd42.c
+         Generating Code...
+         Compiling...
+         xefcmd43.c
+         xefcmd5.c
+         xefcmd6.c
+         xefile.c
+         xefile12.c
+         xefile13.c
+         xefile14.c
+         xefile15.c
+         xefile2.c
+         xefile22.c
+         xefile23.c
+         xefile3.c
+         xefile4.c
+         xefile42.c
+         xefile43.c
+         xefile5.c
+         xefile6.c
+         xefile7.c
+         xefsub.c
+         xeftp.c
+         Generating Code...
+         Compiling...
+         xefunc.c
+         xefunc2.c
+         xefunct.c
+         xefunct2.c
+         xegbl.c
+         xeini.c
+         xeini2.c
+         xeini3.c
+         xekbd.c
+         xelcmd.c
+         xelcmd2.c
+         xelcmd3.c
+         xelcmd4.c
+         xelcmd5.c
+         xeopt.c
+         xeopt2.c
+         xepan.c
+         xepan2.c
+         xepan22.c
+         xepan23.c
+         Generating Code...
+         Compiling...
+         xepan24.c
+         xepan3.c
+         xescr.c
+         xescr2.c
+         xesub.c
+         xesub2.c
+         xesyn.c
+         xesyn2.c
+         xesyscmd.c
+         xetso.c
+         xetso2.c
+         xeundo.c
+         xeutf.c
+         xeutf2.c
+         wxecsub.c
+         wxecsub2.c
+         wxexei.c
+         wxexei2.c
+         wxexei3.c
+         ufilew.c
+         Generating Code...
+         Compiling...
+         ustrcpy.c
+         xefsubw.c
+         Generating Code...
+         W:\msvs2010\VC\bin\x86_amd64\CL.exe /c /nologo /W4 /WX- /Od /Oy- /D NOTRACE /D WIN32 /D _WINDOWS /D STRICT /D W32 /D _CRT_SECURE_NO_DEPRECATE /D WXE /D UTF8SUPPH /D UTF8UCS2 /D UTF8EBCD /D NOMT_TRACE /D VC10EXP /D NDEBUG /D WIN10 /D _MBCS /D _ATL_STATIC_REGISTRY /Gm- /EHsc /MT /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vcWindows7.1SDK.pdb" /Gd /TP /errorReport:prompt g:\src\mfc\wxe2010\MainFrm.cpp g:\src\mfc\wxe2010\stdafx.cpp g:\src\mfc\wxe2010\wxe.cpp g:\src\mfc\wxe2010\wxedlg.cpp g:\src\mfc\wxe2010\wxedoc.cpp g:\src\mfc\wxe2010\wxefile.cpp g:\src\mfc\wxe2010\wxekbd.cpp g:\src\mfc\wxe2010\wxemain.cpp g:\src\mfc\wxe2010\wxemouse.cpp g:\src\mfc\wxe2010\wxepage.cpp g:\src\mfc\wxe2010\wxeprt.cpp g:\src\mfc\wxe2010\wxescr.cpp g:\src\mfc\wxe2010\wxeview.cpp /J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210  /wd4244 /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131  /wd4267 /wd4366 
+         MainFrm.cpp
+         stdafx.cpp
+         wxe.cpp
+         wxedlg.cpp
+         wxedoc.cpp
+         wxefile.cpp
+         wxekbd.cpp
+         wxemain.cpp
+         wxemouse.cpp
+         wxepage.cpp
+         wxeprt.cpp
+         wxescr.cpp
+         wxeview.cpp
+         Generating Code...
+       ResourceCompile:
+         W:\mssdkw71\bin\rc.exe /D NDEBUG /l"0x0409" /IRelease\ /nologo /fo"Release\wxe.res" g:\src\mfc\wxe2010\wxe.rc 
+       Link:
+         W:\msvs2010\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"Release\wxe.exe" /INCREMENTAL:NO /NOLOGO Htmlhelp.Lib Imm32.Lib atlthunk.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\wxe.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /PDB:"W:\msvs2010Projects\wxe\wxe\Release\wxe.pdb" /MAP /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"Release\wxe.lib" /MACHINE:X64 Release\wxe.res
+         Release\u3270.obj
+         Release\u32702.obj
+         Release\u32703.obj
+         Release\uabend.obj
+         Release\ualloc.obj
+         Release\ucalc.obj
+         Release\ucalc2.obj
+         Release\ucvebc.obj
+         Release\ucvebc2.obj
+         Release\ucvebc3.obj
+         Release\ucvebc32.obj
+         Release\ucvebc4.obj
+         Release\ucvebct.obj
+         Release\ucvext.obj
+         Release\ucvext12.obj
+         Release\ucvext2.obj
+         Release\ucvucs.obj
+         Release\ucvucst.obj
+         Release\udbcschk.obj
+         Release\udbcsck2.obj
+         Release\udos.obj
+         Release\udos2.obj
+         Release\uedit.obj
+         Release\uedit2.obj
+         Release\uerr.obj
+         Release\ufemsg.obj
+         Release\ufile.obj
+         Release\ufile12.obj
+         Release\ufile1f.obj
+         Release\ufile2.obj
+         Release\ufile2f.obj
+         Release\ufile3.obj
+         Release\ufile3f.obj
+         Release\ufile4.obj
+         Release\ufile5.obj
+         Release\uftp.obj
+         Release\uftp2.obj
+         Release\uftp3.obj
+         Release\ukbd.obj
+         Release\ukbdw.obj
+         Release\umiscf.obj
+         Release\uparse.obj
+         Release\uproc.obj
+         Release\uproc2.obj
+         Release\uproc22.obj
+         Release\uproc3.obj
+         Release\uproc4.obj
+         Release\uque.obj
+         Release\uregex.obj
+         Release\ustring.obj
+         Release\utf.obj
+         Release\utf2.obj
+         Release\utf22.obj
+         Release\utf3.obj
+         Release\utf4.obj
+         Release\utrace.obj
+         Release\uvio.obj
+         Release\uvio2.obj
+         Release\uviom.obj
+         Release\uwinsub.obj
+         Release\xe.obj
+         Release\xecalc.obj
+         Release\xecalc2.obj
+         Release\xecalc21.obj
+         Release\xecalc22.obj
+         Release\xecalc3.obj
+         Release\xecap.obj
+         Release\xecap2.obj
+         Release\xechar.obj
+         Release\xechar12.obj
+         Release\xechar13.obj
+         Release\xechar2.obj
+         Release\xecsr.obj
+         Release\xedcmd.obj
+         Release\xedcmd2.obj
+         Release\xedcmd3.obj
+         Release\xedcmd4.obj
+         Release\xedir.obj
+         Release\xedir2.obj
+         Release\xedir3.obj
+         Release\xedir4.obj
+         Release\xedlcmd.obj
+         Release\xedlcmd2.obj
+         Release\xedlcmd3.obj
+         Release\xedlcmd4.obj
+         Release\xedlcmd5.obj
+         Release\xedlcmd6.obj
+         Release\xeebc.obj
+         Release\xeerr.obj
+         Release\xefcmd.obj
+         Release\xefcmd2.obj
+         Release\xefcmd22.obj
+         Release\xefcmd23.obj
+         Release\xefcmd24.obj
+         Release\xefcmd25.obj
+         Release\xefcmd26.obj
+         Release\xefcmd27.obj
+         Release\xefcmd3.obj
+         Release\xefcmd4.obj
+         Release\xefcmd42.obj
+         Release\xefcmd43.obj
+         Release\xefcmd5.obj
+         Release\xefcmd6.obj
+         Release\xefile.obj
+         Release\xefile12.obj
+         Release\xefile13.obj
+         Release\xefile14.obj
+         Release\xefile15.obj
+         Release\xefile2.obj
+         Release\xefile22.obj
+         Release\xefile23.obj
+         Release\xefile3.obj
+         Release\xefile4.obj
+         Release\xefile42.obj
+         Release\xefile43.obj
+         Release\xefile5.obj
+         Release\xefile6.obj
+         Release\xefile7.obj
+         Release\xefsub.obj
+         Release\xeftp.obj
+         Release\xefunc.obj
+         Release\xefunc2.obj
+         Release\xefunct.obj
+         Release\xefunct2.obj
+         Release\xegbl.obj
+         Release\xeini.obj
+         Release\xeini2.obj
+         Release\xeini3.obj
+         Release\xekbd.obj
+         Release\xelcmd.obj
+         Release\xelcmd2.obj
+         Release\xelcmd3.obj
+         Release\xelcmd4.obj
+         Release\xelcmd5.obj
+         Release\xeopt.obj
+         Release\xeopt2.obj
+         Release\xepan.obj
+         Release\xepan2.obj
+         Release\xepan22.obj
+         Release\xepan23.obj
+         Release\xepan24.obj
+         Release\xepan3.obj
+         Release\xescr.obj
+         Release\xescr2.obj
+         Release\xesub.obj
+         Release\xesub2.obj
+         Release\xesyn.obj
+         Release\xesyn2.obj
+         Release\xesyscmd.obj
+         Release\xetso.obj
+         Release\xetso2.obj
+         Release\xeundo.obj
+         Release\xeutf.obj
+         Release\xeutf2.obj
+         Release\MainFrm.obj
+         Release\stdafx.obj
+         Release\wxe.obj
+         Release\wxedlg.obj
+         Release\wxedoc.obj
+         Release\wxefile.obj
+         Release\wxekbd.obj
+         Release\wxemain.obj
+         Release\wxemouse.obj
+         Release\wxepage.obj
+         Release\wxeprt.obj
+         Release\wxescr.obj
+         Release\wxeview.obj
+         Release\wxecsub.obj
+         Release\wxecsub2.obj
+         Release\wxexei.obj
+         Release\wxexei2.obj
+         Release\wxexei3.obj
+         Release\ufilew.obj
+         Release\ustrcpy.obj
+         Release\xefsubw.obj
+     1>atls.lib(atlcommodule.obj) : warning LNK4078: multiple 'ATL' sections found with different attributes (40401040)
+     1>MainFrm.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>stdafx.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxe.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxedlg.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxedoc.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxefile.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxekbd.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxemain.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxemouse.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxepage.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxeprt.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxescr.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>wxeview.obj : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>atls.lib(atlbase.obj) : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>atls.lib(atlcommodule.obj) : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+     1>atls.lib(stdafx.obj) : warning LNK4254: section 'ATL' (50000040) merged into '.rdata' (40000040) with different attributes
+         wxe.vcxproj -> W:\msvs2010Projects\wxe\wxe\Release\wxe.exe
+       Manifest:
+         W:\mssdkw71\bin\mt.exe /nologo /verbose /outputresource:"Release\wxe.exe;#1" /manifest Release\wxe.exe.intermediate.manifest
+       FinalizeBuildStatus:
+         ファイル "Release\wxe.unsuccessfulbuild" を削除しています。
+         "Release\wxe.lastbuildstate" のタッチ タスクを実行しています。
+     1>プロジェクト "W:\msvs2010Projects\wxe\wxe\wxe.vcxproj" (rebuild ターゲット) のビルドが完了しました。
+
+ビルドに成功しました。
+
+経過時間 00:00:45.12
