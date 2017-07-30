@@ -1,0 +1,765 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Itanium">
+      <Configuration>Debug</Configuration>
+      <Platform>Itanium</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Itanium">
+      <Configuration>Release</Configuration>
+      <Platform>Itanium</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DA25B8C8-F54A-42CA-9E27-C7CF280105E4}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfAtl>Static</UseOfAtl>
+    <PlatformToolset>v141_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+    <UseOfAtl>Static</UseOfAtl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <UseOfAtl>Static</UseOfAtl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfAtl>Static</UseOfAtl>
+    <PlatformToolset>v141_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+    <UseOfAtl>Static</UseOfAtl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <UseOfAtl>Static</UseOfAtl>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IntDir>Debug\x86\</IntDir>
+    <OutDir>Debug\x86\</OutDir>
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SRCULIB);$(SRCULIB)\icu\include;$(SRCULIB)\gnuregex;$(SRCXE);$(SRCWXE2010);$(VC_IncludePath);$(WindowsSDK_IncludePath);$(WTL2017C)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_ATL_x86);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
+    <SourcePath />
+    <ExcludePath />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IntDir>Debug\x64\</IntDir>
+    <OutDir>Debug\x64\</OutDir>
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SRCULIB);$(SRCULIB)\icu\include;$(SRCULIB)\gnuregex;$(SRCXE);$(SRCWXE2010);$(VC_IncludePath);$(WindowsSDK_IncludePath);$(WTL2017C)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_ATL_x64);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(WINSDK)\bin;$(ExecutablePath)</ExecutablePath>
+    <LibraryWPath>$(WindowsSDK_LibraryPath_x64);$(LibraryWPath)</LibraryWPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'">
+    <IntDir>Debug\</IntDir>
+    <OutDir>Debug\</OutDir>
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SRCWXE2010);$(SRCULIB)\icu\include;$(SRCULIB)\gnuregex;$(IncludePath)</IncludePath>
+    <LibraryPath>$(WDK)\lib\win7\amd64;$(WDK)\lib\ATL\amd64;$(WDK)\lib\wnet\amd64;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(WINSDK)\bin;$(ExecutablePath)</ExecutablePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>Release\x86</IntDir>
+    <OutDir>Release\x86</OutDir>
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SRCULIB);$(SRCULIB)\icu\include;$(SRCULIB)\gnuregex;$(SRCXE);$(SRCWXE2010);$(VC_IncludePath);$(WindowsSDK_IncludePath);$(WTL2017C)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_ATL_x86);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
+    <SourcePath />
+    <ExcludePath />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>Release\x64\</IntDir>
+    <OutDir>Release\x64\</OutDir>
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SRCULIB);$(SRCULIB)\icu\include;$(SRCULIB)\gnuregex;$(SRCXE);$(SRCWXE2010);$(VC_IncludePath);$(WindowsSDK_IncludePath);$(WTL2017C)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPATH_ATL_x64);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'">
+    <IntDir>Release\</IntDir>
+    <OutDir>Release\</OutDir>
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SRCWXE2010);$(SRCULIB)\icu\include;$(SRCULIB)\gnuregex;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <MinimalRebuild>true</MinimalRebuild>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>TRACE;_DEBUG;WIN32;W32;WXE;WXE17C;UTF8SUPPH;UTF8UCS2;UTF8EBCD;NOMT_TRACE;VC10EXP;WIN10;_WINDOWS;STRICT;_ATL_ALLOW_CHAR_UNSIGNED</PreprocessorDefinitions>
+      <ShowIncludes>false</ShowIncludes>
+      <AdditionalOptions>/J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706  /wd4210 /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131 /wd4267 /wd4366 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <DelayLoadDLLs>
+      </DelayLoadDLLs>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>
+      </MapFileName>
+      <AdditionalDependencies>Imm32.lib;Htmlhelp.Lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <MergeSections>
+      </MergeSections>
+      <SectionAlignment>
+      </SectionAlignment>
+      <SpecifySectionAttributes>
+      </SpecifySectionAttributes>
+      <StackReserveSize>0x200000</StackReserveSize>
+      <OutputFile>$(IntDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Link>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <HeaderFileName>wxe.h</HeaderFileName>
+      <InterfaceIdentifierFileName>wxe_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>wxe_p.c</ProxyFileName>
+      <GenerateStublessProxies>true</GenerateStublessProxies>
+      <TypeLibraryName>$(IntDir)/wxe.tlb</TypeLibraryName>
+      <DllDataFileName>
+      </DllDataFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>TRACE;_DEBUG;WIN64;W32;WXE;WXE17C;UTF8SUPPH;UTF8UCS2;UTF8EBCD;NOMT_TRACE;VC10EXP;WIN10;_WINDOWS;STRICT;_ATL_ALLOW_CHAR_UNSIGNED</PreprocessorDefinitions>
+      <ShowIncludes>false</ShowIncludes>
+      <AdditionalOptions>/J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210 /wd4244 /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131 /wd4267 /wd4366 %(AdditionalOptions)</AdditionalOptions>
+      <OmitFramePointers>false</OmitFramePointers>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>
+      </MapFileName>
+      <AdditionalDependencies>Imm32.Lib;Htmlhelp.Lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(IntDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Link>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <HeaderFileName>wxe.h</HeaderFileName>
+      <InterfaceIdentifierFileName>wxe_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>wxe_p.c</ProxyFileName>
+      <GenerateStublessProxies>true</GenerateStublessProxies>
+      <TypeLibraryName>$(IntDir)/wxe.tlb</TypeLibraryName>
+      <DllDataFileName>
+      </DllDataFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;STRICT;_DEBUG;W32;_CRT_SECURE_NO_DEPRECATE;WXE;UTF8SUPPH;UTF8UCS2;UTF8EBCD;NOMT_TRACE;VC10EXP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ShowIncludes>false</ShowIncludes>
+      <AdditionalOptions>/J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210 /wd4244 /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131  %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>
+      </MapFileName>
+      <AdditionalDependencies>Htmlhelp.Lib;Imm32.Lib;atlthunk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <HeaderFileName>wxe.h</HeaderFileName>
+      <InterfaceIdentifierFileName>wxe_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>wxe_p.c</ProxyFileName>
+      <GenerateStublessProxies>true</GenerateStublessProxies>
+      <TypeLibraryName>$(IntDir)/wxe.tlb</TypeLibraryName>
+      <DllDataFileName>
+      </DllDataFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <PreprocessorDefinitions>NOTRACE;WIN32;W32;WXE;WXE17C;UTF8SUPPH;UTF8UCS2;UTF8EBCD;NOMT_TRACE;VC10EXP;WIN10;_WINDOWS;STRICT;_ATL_ALLOW_CHAR_UNSIGNED</PreprocessorDefinitions>
+      <AdditionalOptions>/J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706  /wd4210 /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131 /wd4267 /wd4366 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <ShowIncludes>false</ShowIncludes>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <DelayLoadDLLs>
+      </DelayLoadDLLs>
+      <AdditionalDependencies>HtmlHelp.lib;Imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateMapFile>true</GenerateMapFile>
+      <OutputFile>$(IntDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Link>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <HeaderFileName>wxe.h</HeaderFileName>
+      <InterfaceIdentifierFileName>wxe_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>wxe_p.c</ProxyFileName>
+      <GenerateStublessProxies>true</GenerateStublessProxies>
+      <TypeLibraryName>$(IntDir)/wxe.tlb</TypeLibraryName>
+      <DllDataFileName>
+      </DllDataFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <PreprocessorDefinitions>NOTRACE;WIN64;W32;WXE;WXE17C;UTF8SUPPH;UTF8UCS2;UTF8EBCD;NOMT_TRACE;VC10EXP;WIN10;_WINDOWS;STRICT;_ATL_ALLOW_CHAR_UNSIGNED;NDEBUG</PreprocessorDefinitions>
+      <AdditionalOptions>/J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210  /wd4244 /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131  /wd4267 /wd4366 %(AdditionalOptions)</AdditionalOptions>
+      <OmitFramePointers>false</OmitFramePointers>
+      <Optimization>Disabled</Optimization>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
+      <AdditionalDependencies>Htmlhelp.Lib;Imm32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateMapFile>true</GenerateMapFile>
+      <OutputFile>$(IntDir)$(TargetName)$(TargetExt)</OutputFile>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <HeaderFileName>wxe.h</HeaderFileName>
+      <InterfaceIdentifierFileName>wxe_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>wxe_p.c</ProxyFileName>
+      <GenerateStublessProxies>true</GenerateStublessProxies>
+      <TypeLibraryName>$(IntDir)/wxe.tlb</TypeLibraryName>
+      <DllDataFileName>
+      </DllDataFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;STRICT;W32;_CRT_SECURE_NO_DEPRECATE;WXE;UTF8SUPPH;UTF8UCS2;UTF8EBCD;NOMT_TRACE;VC10EXP;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <DelayLoadDLLs>propsys.dll;dwmapi.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+    </Link>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <HeaderFileName>wxe.h</HeaderFileName>
+      <InterfaceIdentifierFileName>wxe_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>wxe_p.c</ProxyFileName>
+      <GenerateStublessProxies>true</GenerateStublessProxies>
+      <TypeLibraryName>$(IntDir)/wxe.tlb</TypeLibraryName>
+      <DllDataFileName>
+      </DllDataFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(SRCULIB)\u3270.c" />
+    <ClCompile Include="$(SRCULIB)\u32702.c" />
+    <ClCompile Include="$(SRCULIB)\u32703.c" />
+    <ClCompile Include="$(SRCULIB)\uabend.c" />
+    <ClCompile Include="$(SRCULIB)\ualloc.c" />
+    <ClCompile Include="$(SRCULIB)\ucalc.c" />
+    <ClCompile Include="$(SRCULIB)\ucalc2.c" />
+    <ClCompile Include="$(SRCULIB)\ucvebc.c" />
+    <ClCompile Include="$(SRCULIB)\ucvebc2.c" />
+    <ClCompile Include="$(SRCULIB)\ucvebc3.c" />
+    <ClCompile Include="$(SRCULIB)\ucvebc32.c" />
+    <ClCompile Include="$(SRCULIB)\ucvebc4.c" />
+    <ClCompile Include="$(SRCULIB)\ucvebct.c" />
+    <ClCompile Include="$(SRCULIB)\ucvext.c" />
+    <ClCompile Include="$(SRCULIB)\ucvext12.c" />
+    <ClCompile Include="$(SRCULIB)\ucvext2.c" />
+    <ClCompile Include="$(SRCULIB)\ucvucs.c" />
+    <ClCompile Include="$(SRCULIB)\ucvucst.c" />
+    <ClCompile Include="$(SRCULIB)\udbcschk.c" />
+    <ClCompile Include="$(SRCULIB)\udbcsck2.c" />
+    <ClCompile Include="$(SRCULIB)\udos.c" />
+    <ClCompile Include="$(SRCULIB)\udos2.c" />
+    <ClCompile Include="$(SRCULIB)\uedit.c" />
+    <ClCompile Include="$(SRCULIB)\uedit2.c" />
+    <ClCompile Include="$(SRCULIB)\uerr.c" />
+    <ClCompile Include="$(SRCULIB)\ufemsg.c" />
+    <ClCompile Include="$(SRCULIB)\ufile.c" />
+    <ClCompile Include="$(SRCULIB)\ufile12.c" />
+    <ClCompile Include="$(SRCULIB)\ufile1f.c" />
+    <ClCompile Include="$(SRCULIB)\ufile2.c" />
+    <ClCompile Include="$(SRCULIB)\ufile2f.c" />
+    <ClCompile Include="$(SRCULIB)\ufile3.c" />
+    <ClCompile Include="$(SRCULIB)\ufile3f.c" />
+    <ClCompile Include="$(SRCULIB)\ufile4.c" />
+    <ClCompile Include="$(SRCULIB)\ufile5.c" />
+    <ClCompile Include="$(SRCULIB)\uftp.c" />
+    <ClCompile Include="$(SRCULIB)\uftp2.c" />
+    <ClCompile Include="$(SRCULIB)\uftp3.c" />
+    <ClCompile Include="$(SRCULIB)\ukbd.c" />
+    <ClCompile Include="$(SRCULIB)\ukbdw.c" />
+    <ClCompile Include="$(SRCULIB)\umiscf.c" />
+    <ClCompile Include="$(SRCULIB)\uparse.c" />
+    <ClCompile Include="$(SRCULIB)\uproc.c" />
+    <ClCompile Include="$(SRCULIB)\uproc2.c" />
+    <ClCompile Include="$(SRCULIB)\uproc22.c" />
+    <ClCompile Include="$(SRCULIB)\uproc3.c" />
+    <ClCompile Include="$(SRCULIB)\uproc4.c" />
+    <ClCompile Include="$(SRCULIB)\uque.c" />
+    <ClCompile Include="$(SRCULIB)\uregex.c" />
+    <ClCompile Include="$(SRCULIB)\ustring.c" />
+    <ClCompile Include="$(SRCULIB)\utf.c" />
+    <ClCompile Include="$(SRCULIB)\utf2.c" />
+    <ClCompile Include="$(SRCULIB)\utf22.c" />
+    <ClCompile Include="$(SRCULIB)\utf3.c" />
+    <ClCompile Include="$(SRCULIB)\utf4.c" />
+    <ClCompile Include="$(SRCULIB)\utrace.c" />
+    <ClCompile Include="$(SRCULIB)\uvio.c" />
+    <ClCompile Include="$(SRCULIB)\uvio2.c" />
+    <ClCompile Include="$(SRCULIB)\uviom.c" />
+    <ClCompile Include="$(SRCULIB)\uwinsub.c" />
+    <ClCompile Include="$(SRCXE)\xe.c" />
+    <ClCompile Include="$(SRCXE)\xecalc.c" />
+    <ClCompile Include="$(SRCXE)\xecalc2.c" />
+    <ClCompile Include="$(SRCXE)\xecalc21.c" />
+    <ClCompile Include="$(SRCXE)\xecalc22.c" />
+    <ClCompile Include="$(SRCXE)\xecalc3.c" />
+    <ClCompile Include="$(SRCXE)\xecap.c" />
+    <ClCompile Include="$(SRCXE)\xecap2.c" />
+    <ClCompile Include="$(SRCXE)\xechar.c" />
+    <ClCompile Include="$(SRCXE)\xechar12.c" />
+    <ClCompile Include="$(SRCXE)\xechar13.c" />
+    <ClCompile Include="$(SRCXE)\xechar2.c" />
+    <ClCompile Include="$(SRCXE)\xecsr.c" />
+    <ClCompile Include="$(SRCXE)\xedcmd.c" />
+    <ClCompile Include="$(SRCXE)\xedcmd2.c" />
+    <ClCompile Include="$(SRCXE)\xedcmd3.c" />
+    <ClCompile Include="$(SRCXE)\xedcmd4.c" />
+    <ClCompile Include="$(SRCXE)\xedir.c" />
+    <ClCompile Include="$(SRCXE)\xedir2.c" />
+    <ClCompile Include="$(SRCXE)\xedir3.c" />
+    <ClCompile Include="$(SRCXE)\xedir4.c" />
+    <ClCompile Include="$(SRCXE)\xedlcmd.c" />
+    <ClCompile Include="$(SRCXE)\xedlcmd2.c" />
+    <ClCompile Include="$(SRCXE)\xedlcmd3.c" />
+    <ClCompile Include="$(SRCXE)\xedlcmd4.c" />
+    <ClCompile Include="$(SRCXE)\xedlcmd5.c" />
+    <ClCompile Include="$(SRCXE)\xedlcmd6.c" />
+    <ClCompile Include="$(SRCXE)\xeebc.c" />
+    <ClCompile Include="$(SRCXE)\xeerr.c" />
+    <ClCompile Include="$(SRCXE)\xefcmd.c" />
+    <ClCompile Include="$(SRCXE)\xefcmd2.c" />
+    <ClCompile Include="$(SRCXE)\xefcmd22.c" />
+    <ClCompile Include="$(SRCXE)\xefcmd23.c" />
+    <ClCompile Include="$(SRCXE)\xefcmd24.c" />
+    <ClCompile Include="$(SRCXE)\xefcmd25.c" />
+    <ClCompile Include="$(SRCXE)\xefcmd26.c" />
+    <ClCompile Include="$(SRCXE)\xefcmd27.c" />
+    <ClCompile Include="$(SRCXE)\xefcmd3.c" />
+    <ClCompile Include="$(SRCXE)\xefcmd4.c" />
+    <ClCompile Include="$(SRCXE)\xefcmd42.c" />
+    <ClCompile Include="$(SRCXE)\xefcmd43.c" />
+    <ClCompile Include="$(SRCXE)\xefcmd5.c" />
+    <ClCompile Include="$(SRCXE)\xefcmd6.c" />
+    <ClCompile Include="$(SRCXE)\xefile.c" />
+    <ClCompile Include="$(SRCXE)\xefile12.c" />
+    <ClCompile Include="$(SRCXE)\xefile13.c" />
+    <ClCompile Include="$(SRCXE)\xefile14.c" />
+    <ClCompile Include="$(SRCXE)\xefile15.c" />
+    <ClCompile Include="$(SRCXE)\xefile2.c" />
+    <ClCompile Include="$(SRCXE)\xefile22.c" />
+    <ClCompile Include="$(SRCXE)\xefile23.c" />
+    <ClCompile Include="$(SRCXE)\xefile3.c" />
+    <ClCompile Include="$(SRCXE)\xefile4.c" />
+    <ClCompile Include="$(SRCXE)\xefile42.c" />
+    <ClCompile Include="$(SRCXE)\xefile43.c" />
+    <ClCompile Include="$(SRCXE)\xefile5.c" />
+    <ClCompile Include="$(SRCXE)\xefile6.c" />
+    <ClCompile Include="$(SRCXE)\xefile7.c" />
+    <ClCompile Include="$(SRCXE)\xefsub.c" />
+    <ClCompile Include="$(SRCXE)\xeftp.c" />
+    <ClCompile Include="$(SRCXE)\xefunc.c" />
+    <ClCompile Include="$(SRCXE)\xefunc2.c" />
+    <ClCompile Include="$(SRCXE)\xefunct.c" />
+    <ClCompile Include="$(SRCXE)\xefunct2.c" />
+    <ClCompile Include="$(SRCXE)\xegbl.c" />
+    <ClCompile Include="$(SRCXE)\xeini.c" />
+    <ClCompile Include="$(SRCXE)\xeini2.c" />
+    <ClCompile Include="$(SRCXE)\xeini3.c" />
+    <ClCompile Include="$(SRCXE)\xekbd.c" />
+    <ClCompile Include="$(SRCXE)\xelcmd.c" />
+    <ClCompile Include="$(SRCXE)\xelcmd2.c" />
+    <ClCompile Include="$(SRCXE)\xelcmd3.c" />
+    <ClCompile Include="$(SRCXE)\xelcmd4.c" />
+    <ClCompile Include="$(SRCXE)\xelcmd5.c" />
+    <ClCompile Include="$(SRCXE)\xeopt.c" />
+    <ClCompile Include="$(SRCXE)\xeopt2.c" />
+    <ClCompile Include="$(SRCXE)\xepan.c" />
+    <ClCompile Include="$(SRCXE)\xepan2.c" />
+    <ClCompile Include="$(SRCXE)\xepan22.c" />
+    <ClCompile Include="$(SRCXE)\xepan23.c" />
+    <ClCompile Include="$(SRCXE)\xepan24.c" />
+    <ClCompile Include="$(SRCXE)\xepan3.c" />
+    <ClCompile Include="$(SRCXE)\xescr.c" />
+    <ClCompile Include="$(SRCXE)\xescr2.c" />
+    <ClCompile Include="$(SRCXE)\xesub.c" />
+    <ClCompile Include="$(SRCXE)\xesub2.c" />
+    <ClCompile Include="$(SRCXE)\xesyn.c" />
+    <ClCompile Include="$(SRCXE)\xesyn2.c" />
+    <ClCompile Include="$(SRCXE)\xesyscmd.c" />
+    <ClCompile Include="$(SRCXE)\xetso.c" />
+    <ClCompile Include="$(SRCXE)\xetso2.c" />
+    <ClCompile Include="$(SRCXE)\xeundo.c" />
+    <ClCompile Include="$(SRCXE)\xeutf.c" />
+    <ClCompile Include="$(SRCXE)\xeutf2.c" />
+    <ClCompile Include="$(SRCWXE2010)\MainFrm.cpp" />
+    <ClCompile Include="$(SRCWXE2010)\stdafx.cpp" />
+    <ClCompile Include="$(SRCWXE2010)\wxe.cpp" />
+    <ClCompile Include="$(SRCWXE2010)\wxedlg.cpp" />
+    <ClCompile Include="$(SRCWXE2010)\wxedoc.cpp" />
+    <ClCompile Include="$(SRCWXE2010)\wxefile.cpp" />
+    <ClCompile Include="$(SRCWXE2010)\wxekbd.cpp" />
+    <ClCompile Include="$(SRCWXE2010)\wxemain.cpp" />
+    <ClCompile Include="$(SRCWXE2010)\wxemouse.cpp" />
+    <ClCompile Include="$(SRCWXE2010)\wxepage.cpp" />
+    <ClCompile Include="$(SRCWXE2010)\wxeprt.cpp" />
+    <ClCompile Include="$(SRCWXE2010)\wxescr.cpp" />
+    <ClCompile Include="$(SRCWXE2010)\wxeview.cpp" />
+    <ClCompile Include="$(SRCWXE2010)\wxecsub.c" />
+    <ClCompile Include="$(SRCWXE2010)\wxecsub2.c" />
+    <ClCompile Include="$(SRCWXE2010)\wxexei.c" />
+    <ClCompile Include="$(SRCWXE2010)\wxexei2.c" />
+    <ClCompile Include="$(SRCWXE2010)\wxexei3.c" />
+    <ClCompile Include="$(SRCULIB)\ufilew.c" />
+    <ClCompile Include="$(SRCULIB)\ustrcpy.c" />
+    <ClCompile Include="$(SRCXE)\xefsubw.c" />
+    <ClCompile Include="G:\src\xe\xefcmd7.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(SRCWXE2010)\AboutDlg.h" />
+    <ClInclude Include="$(SRCWXE2010)\DragOut.h" />
+    <ClInclude Include="$(SRCWXE2010)\MainFrm.h" />
+    <ClInclude Include="$(SRCWXE2010)\mfc.h" />
+    <ClInclude Include="$(SRCWXE2010)\resource.h" />
+    <ClInclude Include="$(SRCWXE2010)\wxe.h" />
+    <ClInclude Include="$(SRCWXE2010)\wxecsub.h" />
+    <ClInclude Include="$(SRCWXE2010)\wxedef.h" />
+    <ClInclude Include="$(SRCWXE2010)\Wxedlg.h" />
+    <ClInclude Include="$(SRCWXE2010)\wxeDoc.h" />
+    <ClInclude Include="$(SRCWXE2010)\wxefile.h" />
+    <ClInclude Include="$(SRCWXE2010)\wxehelp.h" />
+    <ClInclude Include="$(SRCWXE2010)\wxehelps.h" />
+    <ClInclude Include="$(SRCWXE2010)\wxemain.h" />
+    <ClInclude Include="$(SRCWXE2010)\Wxepage.h" />
+    <ClInclude Include="$(SRCWXE2010)\wxeView.h" />
+    <ClInclude Include="$(SRCWXE2010)\wxexei.h" />
+    <ClInclude Include="$(SRCWXE2010)\wxexei3.h" />
+    <ClInclude Include="$(SRCULIB)\os2.h" />
+    <ClInclude Include="$(SRCULIB)\u3270.h" />
+    <ClInclude Include="$(SRCULIB)\u32702.h" />
+    <ClInclude Include="$(SRCULIB)\uabend.h" />
+    <ClInclude Include="$(SRCULIB)\ualloc.h" />
+    <ClInclude Include="$(SRCULIB)\ucalc.h" />
+    <ClInclude Include="$(SRCULIB)\ucalc2.h" />
+    <ClInclude Include="$(SRCULIB)\ucurses.h" />
+    <ClInclude Include="$(SRCULIB)\ucvebc.h" />
+    <ClInclude Include="$(SRCULIB)\ucvebc2.h" />
+    <ClInclude Include="$(SRCULIB)\ucvext.h" />
+    <ClInclude Include="$(SRCULIB)\ucvext2.h" />
+    <ClInclude Include="$(SRCULIB)\ucvucs.h" />
+    <ClInclude Include="$(SRCULIB)\ucvucst.h" />
+    <ClInclude Include="$(SRCULIB)\udbcschk.h" />
+    <ClInclude Include="$(SRCULIB)\udos.h" />
+    <ClInclude Include="$(SRCULIB)\udos2.h" />
+    <ClInclude Include="$(SRCULIB)\uedit.h" />
+    <ClInclude Include="$(SRCULIB)\uedit2.h" />
+    <ClInclude Include="$(SRCULIB)\ueh.h" />
+    <ClInclude Include="$(SRCULIB)\uehdump.h" />
+    <ClInclude Include="$(SRCULIB)\uehmsg.h" />
+    <ClInclude Include="$(SRCULIB)\uerr.h" />
+    <ClInclude Include="$(SRCULIB)\ufemsg.h" />
+    <ClInclude Include="$(SRCULIB)\ufile.h" />
+    <ClInclude Include="$(SRCULIB)\ufile1f.h" />
+    <ClInclude Include="$(SRCULIB)\ufile2.h" />
+    <ClInclude Include="$(SRCULIB)\ufile3.h" />
+    <ClInclude Include="$(SRCULIB)\ufile4.h" />
+    <ClInclude Include="$(SRCULIB)\ufile5.h" />
+    <ClInclude Include="$(SRCULIB)\uftp.h" />
+    <ClInclude Include="$(SRCULIB)\uftp3.h" />
+    <ClInclude Include="$(SRCULIB)\ufuncmap.h" />
+    <ClInclude Include="$(SRCULIB)\ugcclib.h" />
+    <ClInclude Include="$(SRCULIB)\uicu.h" />
+    <ClInclude Include="$(SRCULIB)\ukbd.h" />
+    <ClInclude Include="$(SRCULIB)\ukbdsym.h" />
+    <ClInclude Include="$(SRCULIB)\ukbdw.h" />
+    <ClInclude Include="$(SRCULIB)\ulib.h" />
+    <ClInclude Include="$(SRCULIB)\ulibdef.h" />
+    <ClInclude Include="$(SRCULIB)\ulibdefc.h" />
+    <ClInclude Include="$(SRCULIB)\ulibdefu.h" />
+    <ClInclude Include="$(SRCULIB)\ulibos2.h" />
+    <ClInclude Include="$(SRCULIB)\umiscf.h" />
+    <ClInclude Include="$(SRCULIB)\uparse.h" />
+    <ClInclude Include="$(SRCULIB)\upopup.h" />
+    <ClInclude Include="$(SRCULIB)\uproc.h" />
+    <ClInclude Include="$(SRCULIB)\uproc2.h" />
+    <ClInclude Include="$(SRCULIB)\uproc4.h" />
+    <ClInclude Include="$(SRCULIB)\uque.h" />
+    <ClInclude Include="$(SRCULIB)\uregex.h" />
+    <ClInclude Include="$(SRCULIB)\ustring.h" />
+    <ClInclude Include="$(SRCULIB)\utf.h" />
+    <ClInclude Include="$(SRCULIB)\utf2.h" />
+    <ClInclude Include="$(SRCULIB)\utf22.h" />
+    <ClInclude Include="$(SRCULIB)\utils.h" />
+    <ClInclude Include="$(SRCULIB)\utrace.h" />
+    <ClInclude Include="$(SRCULIB)\uvio.h" />
+    <ClInclude Include="$(SRCULIB)\uvio2.h" />
+    <ClInclude Include="$(SRCULIB)\uviom.h" />
+    <ClInclude Include="$(SRCULIB)\uviow.h" />
+    <ClInclude Include="$(SRCULIB)\uwinsp.h" />
+    <ClInclude Include="$(SRCULIB)\uwinsub.h" />
+    <ClInclude Include="$(SRCULIB)\ucvebc4.h" />
+    <ClInclude Include="$(SRCULIB)\ucvext12.h" />
+    <ClInclude Include="$(SRCULIB)\ulibarm.h" />
+    <ClInclude Include="$(SRCXE)\xecalc21.h" />
+    <ClInclude Include="$(SRCXE)\xe.h" />
+    <ClInclude Include="$(SRCXE)\xe3270.h" />
+    <ClInclude Include="$(SRCXE)\xe3270s.h" />
+    <ClInclude Include="$(SRCXE)\xeacb.h" />
+    <ClInclude Include="$(SRCXE)\xecalc.h" />
+    <ClInclude Include="$(SRCXE)\xecalc2.h" />
+    <ClInclude Include="$(SRCXE)\xecalc3.h" />
+    <ClInclude Include="$(SRCXE)\xecap.h" />
+    <ClInclude Include="$(SRCXE)\xecap2.h" />
+    <ClInclude Include="$(SRCXE)\xechar.h" />
+    <ClInclude Include="$(SRCXE)\xechar12.h" />
+    <ClInclude Include="$(SRCXE)\xechar2.h" />
+    <ClInclude Include="$(SRCXE)\xecsr.h" />
+    <ClInclude Include="$(SRCXE)\xedcmd.h" />
+    <ClInclude Include="$(SRCXE)\xedcmd2.h" />
+    <ClInclude Include="$(SRCXE)\xedcmd3.h" />
+    <ClInclude Include="$(SRCXE)\xedcmd4.h" />
+    <ClInclude Include="$(SRCXE)\xedir.h" />
+    <ClInclude Include="$(SRCXE)\xedir2.h" />
+    <ClInclude Include="$(SRCXE)\xedir3.h" />
+    <ClInclude Include="$(SRCXE)\xedir4.h" />
+    <ClInclude Include="$(SRCXE)\xedlcmd.h" />
+    <ClInclude Include="$(SRCXE)\xedlcmd2.h" />
+    <ClInclude Include="$(SRCXE)\xedlcmd3.h" />
+    <ClInclude Include="$(SRCXE)\xedlcmd4.h" />
+    <ClInclude Include="$(SRCXE)\xedlcmd5.h" />
+    <ClInclude Include="$(SRCXE)\xedlcmd6.h" />
+    <ClInclude Include="$(SRCXE)\xeerr.h" />
+    <ClInclude Include="$(SRCXE)\xefcmd.h" />
+    <ClInclude Include="$(SRCXE)\xefcmd2.h" />
+    <ClInclude Include="$(SRCXE)\xefcmd22.h" />
+    <ClInclude Include="$(SRCXE)\xefcmd23.h" />
+    <ClInclude Include="$(SRCXE)\xefcmd24.h" />
+    <ClInclude Include="$(SRCXE)\xefcmd27.h" />
+    <ClInclude Include="$(SRCXE)\xefcmd3.h" />
+    <ClInclude Include="$(SRCXE)\xefcmd4.h" />
+    <ClInclude Include="$(SRCXE)\xefcmd5.h" />
+    <ClInclude Include="$(SRCXE)\xefcmd6.h" />
+    <ClInclude Include="$(SRCXE)\xefile.h" />
+    <ClInclude Include="$(SRCXE)\xefile12.h" />
+    <ClInclude Include="$(SRCXE)\xefile13.h" />
+    <ClInclude Include="$(SRCXE)\xefile14.h" />
+    <ClInclude Include="$(SRCXE)\xefile2.h" />
+    <ClInclude Include="$(SRCXE)\xefile22.h" />
+    <ClInclude Include="$(SRCXE)\xefile3.h" />
+    <ClInclude Include="$(SRCXE)\xefile4.h" />
+    <ClInclude Include="$(SRCXE)\xefile42.h" />
+    <ClInclude Include="$(SRCXE)\xefile43.h" />
+    <ClInclude Include="$(SRCXE)\xefile5.h" />
+    <ClInclude Include="$(SRCXE)\xefile6.h" />
+    <ClInclude Include="$(SRCXE)\xefile7.h" />
+    <ClInclude Include="$(SRCXE)\xefsub.h" />
+    <ClInclude Include="$(SRCXE)\xeftp.h" />
+    <ClInclude Include="$(SRCXE)\xefunc.h" />
+    <ClInclude Include="$(SRCXE)\xefunc2.h" />
+    <ClInclude Include="$(SRCXE)\xefunct.h" />
+    <ClInclude Include="$(SRCXE)\xegbl.h" />
+    <ClInclude Include="$(SRCXE)\xeini.h" />
+    <ClInclude Include="$(SRCXE)\xeini2.h" />
+    <ClInclude Include="$(SRCXE)\xeini3.h" />
+    <ClInclude Include="$(SRCXE)\xekbd.h" />
+    <ClInclude Include="$(SRCXE)\xelcmd.h" />
+    <ClInclude Include="$(SRCXE)\xelcmd2.h" />
+    <ClInclude Include="$(SRCXE)\xelcmd3.h" />
+    <ClInclude Include="$(SRCXE)\xelcmd4.h" />
+    <ClInclude Include="$(SRCXE)\xelcmd5.h" />
+    <ClInclude Include="$(SRCXE)\xeopt.h" />
+    <ClInclude Include="$(SRCXE)\xepan.h" />
+    <ClInclude Include="$(SRCXE)\xepan2.h" />
+    <ClInclude Include="$(SRCXE)\xepan22.h" />
+    <ClInclude Include="$(SRCXE)\xepan3.h" />
+    <ClInclude Include="$(SRCXE)\xescr.h" />
+    <ClInclude Include="$(SRCXE)\xescr2.h" />
+    <ClInclude Include="$(SRCXE)\xeshm.h" />
+    <ClInclude Include="$(SRCXE)\xeshms.h" />
+    <ClInclude Include="$(SRCXE)\xesub.h" />
+    <ClInclude Include="$(SRCXE)\xesub2.h" />
+    <ClInclude Include="$(SRCXE)\xesyn.h" />
+    <ClInclude Include="$(SRCXE)\xesyn2.h" />
+    <ClInclude Include="$(SRCXE)\xesyscmd.h" />
+    <ClInclude Include="$(SRCXE)\xetso.h" />
+    <ClInclude Include="$(SRCXE)\xeundo.h" />
+    <ClInclude Include="$(SRCXE)\xeutf.h" />
+    <ClInclude Include="$(SRCXE)\xeutf2.h" />
+    <ClInclude Include="$(SRCXE)\xeebc.h" />
+    <ClInclude Include="$(SRCXE)\xeacbdmy.h" />
+    <ClInclude Include="$(SRCXE)\xefcmd43.h" />
+    <ClInclude Include="$(SRCXE)\xearm.h" />
+    <ClInclude Include="$(SRCWXE2010)\stdafx.h" />
+    <ClInclude Include="$(SRCULIB)\ufilew.h" />
+    <ClInclude Include="$(SRCULIB)\ulibdefw.h" />
+    <ClInclude Include="$(SRCULIB)\ustrcpy.h" />
+    <ClInclude Include="$(SRCXE)\xefsubw.h" />
+    <ClInclude Include="G:\src\xe\xefcmd7.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(SRCWXE2010)\wxe.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\toolbar.bmp" />
+    <None Include="res\wxe.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

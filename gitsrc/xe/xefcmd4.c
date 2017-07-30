@@ -1,9 +1,10 @@
-//*CID://+vb30R~:                             update#=  413;       //+vb30R~
+//*CID://+vba6R~:                             update#=  414;       //~vb30R~//+vba6R~
 //*************************************************************
 //*xefcmd4.c*
 //**file cmd:SORT,COL,SPLIT,JOIN                                   //~v47iR~
 //*************************************************************
-//vb30:160411 (LNX)Compiler warning                                //+vb30I~
+//vba6:170716 (Bug)tc calc err when opdtype=x(requires word clear) //+vba6I~
+//vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vafk:120624 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  use ULPTR(unsigned __int64/ULONG)//~vafkI~
 //vafc:120607 C4701 warning(used uninitialized variable) by VC6    //~vafcI~
 //vaf9:120607 (WTL)Bug found by vs2010exp(used uninitialized variable),avoid warning C4701//~vaf9I~
@@ -546,8 +547,8 @@ int fcmdsortproc(PUCLIENTWE Ppcw,PUFILEH Ppfh,PULINEH Pplhs,PULINEH Pplhe)
 #endif                                                             //~va20I~
 //alloc sort work
 //  pswk0=pswk=umalloc((UINT)(SORTWKSZ*linectr));                  //~v571R~
-//  pswk0=pswk=umalloc((UINT)(SORTWKSZ*(linectr+contctr)));        //~v571I~//+vb30R~
-    pswk0=pswk=umalloc(SORTWKSZ*(size_t)(linectr+contctr));        //+vb30I~
+//  pswk0=pswk=umalloc((UINT)(SORTWKSZ*(linectr+contctr)));        //~v571I~//~vb30R~
+    pswk0=pswk=umalloc(SORTWKSZ*(size_t)(linectr+contctr));        //~vb30I~
     pswkc=pswk0+linectr;	//contline swk top                     //~v571R~
     UALLOCCHK(pswk,UALLOC_FAILED);
 	plh=Pplhs;
@@ -969,6 +970,7 @@ int sortlinecomp(const void *ent1,const void *ent2)
       if (opt & SOPT_NUMERIC)                                      //~v62EI~
       {                                                            //~v62EI~
         complen=min(reslen1,keylen);                               //~v62EI~
+        memset(lvt1,0,sizeof(lvt1));                               //+vba6I~
 #ifdef UTF8UCS2                                                    //~va20I~
 //*no handle required for numeric data(digit is common for all ebcdic translater)//~va50I~
 //  	getnumrc1=tc_getlinedata(0,&datatype,data1+keypos,dbcs1+keypos,complen,lvt1);//~va20I~//~va79R~
@@ -977,6 +979,7 @@ int sortlinecomp(const void *ent1,const void *ent2)
 		getnumrc1=tc_getlinedata(0,&datatype,data1+keypos,complen,lvt1);//~v62ER~
 #endif                                                             //~va20I~
         complen=min(reslen2,keylen);                               //~v62EI~
+        memset(lvt1,0,sizeof(lvt2));                               //+vba6I~
 #ifdef UTF8UCS2                                                    //~va20I~
 //  	getnumrc2=tc_getlinedata(0,&datatype,data2+keypos,data2+keypos,complen,lvt2);//~va20I~//~va79R~
     	getnumrc2=tc_getlinedata(0,0/*handle*/,&datatype,data2+keypos,data2+keypos,complen,lvt2);//~va79I~
@@ -1259,8 +1262,8 @@ static UCHAR *Sgaugepath=". . . . ";                               //~v446R~
 	}                                                              //~v11NI~
 //alloc line data                                                  //~v11NM~
 //  colsdata=umalloc((UINT)len);                                   //~v21rR~
-//  areasz=len+sizeof(tabstoppos)+1;//tabstop data after cols data //~v21rI~//+vb30R~
-    areasz=len+(int)sizeof(tabstoppos)+1;//tabstop data after cols data//+vb30I~
+//  areasz=len+sizeof(tabstoppos)+1;//tabstop data after cols data //~v21rI~//~vb30R~
+    areasz=len+(int)sizeof(tabstoppos)+1;//tabstop data after cols data//~vb30I~
     colsdata=umalloc((UINT)areasz);//tabstop data after cols data  //~v21rI~
     UALLOCCHK(colsdata,UALLOC_FAILED);                             //~v11NI~
     memset(colsdata,0,(UINT)areasz);                               //~v40bR~
@@ -1290,8 +1293,8 @@ static UCHAR *Sgaugepath=". . . . ";                               //~v446R~
         if (htop && htop<len)	//hex display has space            //~v446I~
         {                                                          //~v446I~
 //        	len2=(int)(htop-((ULONG)pc-(ULONG)colsdata));	//written len//~v45xR~//~vafkR~
-//      	len2=(int)(htop-((ULPTR)pc-(ULPTR)colsdata));	//written len//~vafkI~//+vb30R~
-        	len2=htop-PTRDIFF(pc,colsdata);	//written len          //+vb30I~
+//      	len2=(int)(htop-((ULPTR)pc-(ULPTR)colsdata));	//written len//~vafkI~//~vb30R~
+        	len2=htop-PTRDIFF(pc,colsdata);	//written len          //~vb30I~
             if (len2)                                              //~v44bI~
             {                                                      //~v44bI~
 //*cols line is not data line,no need to tarns to ebc              //~va50I~
@@ -1372,8 +1375,8 @@ static UCHAR *Sgaugepath=". . . . ";                               //~v446R~
             pc=pc2+1;                                              //~v21rI~
         }                                                          //~v21rI~
         tabstoppos[0]=tscnt;                                       //~v21rI~
-//      memcpy(colsdata+len+1,tabstoppos,(UINT)((tscnt+1)*sizeof(int)));//~v40bR~//+vb30R~
-        memcpy(colsdata+len+1,tabstoppos,(size_t)(tscnt+1)*sizeof(int));//+vb30I~
+//      memcpy(colsdata+len+1,tabstoppos,(UINT)((tscnt+1)*sizeof(int)));//~v40bR~//~vb30R~
+        memcpy(colsdata+len+1,tabstoppos,(size_t)(tscnt+1)*sizeof(int));//~vb30I~
 //  }//default or file                                             //~v44bR~
 //save to pfc                                                      //~v11NI~
     fcmdcolfree(Ppfc);	//free if previous exist                   //~v11NR~

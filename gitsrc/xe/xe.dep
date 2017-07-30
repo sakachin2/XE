@@ -50,6 +50,7 @@ $(OBJDIR)xe.obj:xe.c  \
                 xeutf.h  \
                 xeebc.h  \
                 xearm.h  \
+                xefcmd7.h  \
  
 #################
 $(OBJDIR)xe3270.obj:xe3270.c  \
@@ -1941,6 +1942,22 @@ $(OBJDIR)xefcmd6.obj:xefcmd6.c  \
                      xesyn.h  \
                      xechar12.h  \
                      xeebc.h  \
+ 
+#################
+$(OBJDIR)xefcmd7.obj:xefcmd7.c  \
+                     $(ULIB)ulib.h  \
+                     $(ULIB)uque.h  \
+                     $(ULIB)uerr.h  \
+                     $(ULIB)ufile.h  \
+                     $(ULIB)uftp.h  \
+                     $(ULIB)ualloc.h  \
+                     $(ULIB)utrace.h  \
+                     xe.h  \
+                     xescr.h  \
+                     xefile.h  \
+                     xesub.h  \
+                     xeerr.h  \
+                     xefcmd7.h  \
  
 #################
 $(OBJDIR)xefile.obj:xefile.c  \

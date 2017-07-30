@@ -1,8 +1,9 @@
-//*CID://+v6J0R~:                             update#=  823;       //~v6J0R~
+//*CID://+v6L3R~:                             update#=  827;       //~v6J0R~//~v6L3R~
 //*************************************************************
 //*ufile1f.c
 //* get remote file/dir info by ftp
 //*************************************************************
+//v6L3:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~v6L3I~
 //v6J0:170205 malloc udirlist filename to  allow more large number of fine in the dir//~v6J0I~
 //v6Di:160625 for compiler warning,-Wformat-security(not literal printf format)//~v6DiI~
 //v6D2:160423 LNX compiler warning for bitmask assignment(FDATE,FTIE)//~v6D2I~
@@ -604,8 +605,8 @@ int uftpgetslinkattr(PUFTPHOST Ppuftph,char *Pdirnm,PUDIRLIST Ppudl)//~v5afR~
 		Ppudl->srcattr=0;
     else                                                           //~v61pI~
 //  if (!*Ppudl->slink)		//PSFTP-v060 dosenot display slink target//~v61pI~//~v6qaR~
-//  if (Ppudl->pslink || !*Ppudl->pslink)		//PSFTP-v060 dosenot display slink target//~v6qaI~//+v6J0R~
-    if (!Ppudl->pslink || !*Ppudl->pslink)		//PSFTP-v060 dosenot display slink target//+v6J0I~
+//  if (Ppudl->pslink || !*Ppudl->pslink)		//PSFTP-v060 dosenot display slink target//~v6qaI~//~v6J0R~
+    if (!Ppudl->pslink || !*Ppudl->pslink)		//PSFTP-v060 dosenot display slink target//~v6J0I~
     {                                                              //~v61pI~
 		Ppudl->srcattr=0;                                          //~v61pI~
         if (!(Gufile_opt & GFILEOPT_NOSLINKERRMSG))                //~v61pI~
@@ -1546,6 +1547,13 @@ int uftpgethostsdata(int Popt,char *Pdata,int Plen,PUFTPHOST Ppufh)//~v6qeI~
                     pnode,FTP_HOSTNAMELEN);                        //~v59dR~
             break;
         }
+        if (!stricmp(pnode,FTP_SHORTPATH_ID))   //        "SP"     //~v6L3I~
+        {                                                          //~v6L3I~
+            uerrmsg("hostid(%s) is reserved for Short-Pathname prefix, this entry was ignored.",//~v6L3I~
+					"ホスト名(%s) は \"短縮パス名\"プレフィックスに\x97\\約されています、このエントリーは無視されました",//+v6L3R~
+                    pnode);                                        //~v6L3I~
+            break;                                                 //~v6L3I~
+        }                                                          //~v6L3I~
         memcpy(Ppufh->UFTPHhost,pnode,(UINT)len);
         Ppufh->UFTPHhostnmlen=len;                                 //~v5afI~
 //ipaddr

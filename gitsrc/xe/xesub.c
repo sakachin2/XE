@@ -1,7 +1,9 @@
-//*CID://+vb89R:                              update#=  611;       //~vb89R
+//*CID://+vba2R:                              update#=  624;       //~vba4R//+vba2R
 //************************************************************* //~5102I~
 //* xesub.c                                                      //~5102R~
 //************************************************************* //~5102I~
+//vba4:170715 msvs2017 warning;                                    //~vba4I
+//vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I
 //vb89:170217 create if not found. ::xehosts ::xesync_.cfg         //~vb89I
 //vb7q:170123 (Bug)Longname trated as Not found (New File)         //~vb7qI
 //vb7n:170117 move filename position to last on errmsg for longname//~vb7nI
@@ -241,6 +243,7 @@
 	#include "xechar12.h"                                          //~va00I~
 #endif                                                             //~v70zI~//~va00I~
 #include "xeebc.h"                                                 //~va50I~
+#include "xefcmd7.h"                                               //~va50I~//~vba2I
 //*******************************************************
 #ifndef AIX                                                        //~v45jR~
 static UCHAR Sdbcsid[2]={DBCS1STCHAR,DBCS2NDCHAR};                 //~v09YI~
@@ -536,22 +539,22 @@ FILE *fileopencreate(int Popt,UCHAR *Ppfile,UCHAR *Ppopt,UCHAR *Pdummyrecord)//~
 		    	fh=fopen(Ppfile,Ppopt);                            //~vb89I
 			    rc=errno;                                          //~vb89I
                 if (fh)                                            //~vb89I
-		        	uerrmsgcat(";%s:Dummy file was created",           //~v08qR~//+vb89R
-        		    	    ";%s:ダミーファイルを作成しました",    //+vb89R
+		        	uerrmsgcat(";%s:Dummy file was created",           //~v08qR~//~vb89R
+        		    	    ";%s:ダミーファイルを作成しました",    //~vb89R
 							Ppfile);//~v08qR~                      //~vb89I
                 else                                               //~vb89I
-		        	uerrmsgcat(";%s:(Dummy file) Open failed(errno=%d:%s)",           //~v08qR~//+vb89R
-        		    	    ";%s:作成したダミーファイルのオープンエラー(errno=%d:%s)",//+vb89R
+		        	uerrmsgcat(";%s:(Dummy file) Open failed(errno=%d:%s)",           //~v08qR~//~vb89R
+        		    	    ";%s:作成したダミーファイルのオープンエラー(errno=%d:%s)",//~vb89R
 							Ppfile,rc,strerror(rc));//~v08qR~      //~vb89I
             }                                                      //~vb89I
             else                                                   //~vb89I
-		    	uerrmsgcat(";%s: Dummy file Open failed(errno=%d:%s)",           //~v08qR~//+vb89R
-        		    	    ";%s:ダミーファイルを作成に失敗(errno=%d:%s)",//+vb89R
+		    	uerrmsgcat(";%s: Dummy file Open failed(errno=%d:%s)",           //~v08qR~//~vb89R
+        		    	    ";%s:ダミーファイルを作成に失敗(errno=%d:%s)",//~vb89R
 							Ppfile,rc,strerror(rc));//~v08qR~      //~vb89I
         }                                                          //~vb89I
         else                                                       //~vb89I
-        	uerrmsgcat(";%s(\"%s\") Open failed(errno=%d:%s)",           //~v08qR~//+vb89R
-            	    ";%s(\"%s\") オープンエラー(errno=%d:%s)",Ppfile,Ppopt,rc,strerror(rc));//~v08qR~//+vb89R
+        	uerrmsgcat(";%s(\"%s\") Open failed(errno=%d:%s)",           //~v08qR~//~vb89R
+            	    ";%s(\"%s\") オープンエラー(errno=%d:%s)",Ppfile,Ppopt,rc,strerror(rc));//~v08qR~//~vb89R
     }                                                              //~v08qI~//~vb89I
     if (Popt & FOCO_CLOSE)                                         //~vb89I
     {                                                              //~vb89I
@@ -759,8 +762,80 @@ int filefullpatha(int Popt,PUCLIENTWE Ppcw,char* Pfnm,char *Plocalfnm,char *Pfpa
 #endif                                                             //~v76pI~
     return 0;                                                      //~v76pI~
 }//filefullpatha                                                   //~v76pI~
+//*******************************************************       //~5318M~//~vba2I
+//*chek shortpath prefix                                           //~vba2I
+//*******************************************************       //~5318M~//~vba2I
+int isShortpath(int Popt,char *Ppfnm,char *Ppfpath,size_t Pbuffsz) //~vba2I
+{                                                                  //~vba2I
+	char *ppath,*pc;                                               //~vba2R
+	int namelen,pathlen;                                           //~vba2R
+	int namelen2;                                                  //~vba2I
+    char fpath[_MAX_PATH];                                         //+vba2R
+    char name[_MAX_PATH];                                          //+vba2R
+//**********************                                           //~vba2I
+    pc=strchr(Ppfnm,DIR_SEPC);                                     //~vba2R
+    if (pc)                                                        //~vba2I
+    	namelen=PTRDIFF(pc,Ppfnm);                                 //~vba2I
+    else                                                           //~vba2I
+    	namelen=(int)strlen(Ppfnm);                                //+vba2R
+#ifdef W32                                                         //~vba2I
+    pc=strchr(Ppfnm,FTP_DIR_SEPC);                                 //~vba2R
+    if (pc)                                                        //~vba2I
+    	namelen2=PTRDIFF(pc,Ppfnm);                                //~vba2I
+    else                                                           //~vba2I
+    	namelen2=strlen(Ppfnm);                                    //~vba2I
+    if (namelen2<namelen)                                          //~vba2I
+    	namelen=namelen2;                                          //~vba2I
+#endif                                                             //~vba2I
+	if (namelen>=(int)sizeof(fpath))                               //~vba2I
+    	return 4;                                                  //~vba2I
+    UmemcpyZ(name,Ppfnm,(size_t)namelen);                          //~vba2R
+    ppath=funcsp_search(0,name);                                   //~vba2R
+    if (!ppath)                                                    //~vba2R
+    	return 4;                                                  //~vba2I
+    pathlen=(int)strlen(ppath);                                    //~vba2I
+    namelen2=(int)strlen(Ppfnm)-namelen;                           //~vba2I
+//  if (pathlen+namelen2+1>Pbuffsz)                                //~vba2R//~vba4R
+    if (pathlen+namelen2+1>(int)Pbuffsz)                           //~vba4I
+    	return 8;                                                  //~vba2I
+    strcpy(Ppfpath,ppath);                                         //~vba2R
+    strcat(Ppfpath,Ppfnm+namelen);                                 //~vba2I
+    return 0;                                                      //~vba2I
+}//isShortpath                                                     //~vba2I
+////*******************************************************       //~5318M~//~vba2R
+////*chek curent pcw                                               //~vba2R
+////*******************************************************       //~5318M~//~vba2R
+//PUFILEH getCurrentPfh(int Popt)                                  //~vba2R
+//{                                                                //~vba2R
+//    PUCLIENTWE pcw;                                              //~vba2R
+////**********************                                         //~vba2R
+//    pcw=scrgetcw(0);    //curent pcw                             //~vba2R
+//    if (pcw && (pcw->UCWtype==UCWTFILE || pcw->UCWtype==UCWTDIR))//~v60yI~//~vba2R
+//    {                                                            //~vba2R
+//        return (PUFILEH)UGETPFHFROMPCW(pcw);                          //~v60yI~//~vba2R
+//    }                                                            //~vba2R
+//    return 0;                                                    //~vba2R
+//}//getCurrentPfh                                                 //~vba2R
+//*******************************************************       //~5318M~//~vba2R
+char *filefullpathsp(int Popt,char *Pfullpath,char *Pfilename,size_t Plen) //~5318M~//~vba2R
+{                                                               //~5318M~//~vba2I
+//    PUFILEH pfh;                                                 //~vba2R
+//    char *pfnm,*pc;                                              //~vba2R
+    char *pc;                                                      //~vba2I
+//***************************                                   //~5318M~//~vba2I
+//    pfh=getCurrentPfh(0);                                        //~vba2R
+//    if (pfh)                                                     //~vba2R
+//    {                                                            //~vba2R
+//        pfnm=pfh->UFHfilename;                                   //~vba2R
+//        pc=filefullpath2(Pfullpath,Pfilename,Plen,pfnm);//~v05OI~//~vba2R
+//    }                                                            //~vba2R
+//    else                                                         //~vba2R
+    	pc=filefullpath(Pfullpath,Pfilename,Plen);//~v05OI~        //~vba2R
+    return pc;                                                     //~vba2I
+}//filefullpathsp                                                  //~vba2I
 //*******************************************************       //~5318M~
 //*get file fullpath name                                       //~5318M~
+//* prefix ^*\, :: ,sp:                                            //~vba2R
 //*parm 1:output full pth mame                                  //~5318M~
 //*parm 2:input partial filename                                //~5318M~
 //*parm 3:output buff len                                       //~5318M~
@@ -772,11 +847,17 @@ char *filefullpath(char *Pfullpath,char *Pfilename,size_t Plen) //~5318M~
     PUFILEH    pfh;                                                //~v60yI~
     UCHAR *pc;                                                  //~5318M~
 	char fpathwk[_MAX_PATH];                                       //~v60yI~
+	char fpathsp[_MAX_PATH];                                       //~v60yI~//~vba2I
     int rc;                                                        //~v47HI~
     int len;                                                       //~v07pI~
     char sepc,*modifier;                                           //~v60yI~
     int optcp=0,cprc=0;                                            //~vb2eR
 //***************************                                   //~5318M~
+	if (USTRHEADIS_IC(Pfilename,FTP_SHORTPATH_PREFIX))             //~vba2R
+    {                                                              //~vba2I
+    	if (!isShortpath(0,Pfilename+sizeof(FTP_SHORTPATH_PREFIX)-1,fpathsp,sizeof(fpathsp)))//~vba2R
+        	return filefullpathsp(0,Pfullpath,fpathsp,Plen);//~v05OI~//~vba2R
+    }                                                              //~vba2I
 #ifdef LNX                                                         //~vb2eI
 	Gsubgblopt&=~(                                                 //~vb2eR
 			XESUB_GBLOPT_RC_MOUNTU8_FFP  //(Linux)ufullpath set mount option:iocharset is utf8 or not specified(default utf8)//~vb2eR
@@ -1008,7 +1089,7 @@ int filefullpath2ndedit(char *Pfullpath,PUFILEH Ppfh,char *Pmodifier)//~v60yI~
 	return 1;	//continue by modified filename                    //~v60yI~
 }//filefullpath2ndedit                                             //~v60yI~
 //*******************************************************       //~v05OI~
-//*get file fullpath name from source (chk *\/-\)               //~v05OI~
+//*get file fullpath name from source (chk *\/**\)               //~v05OI~//~vb89R//~vba2R
 //*parm 1:output full pth mame                                  //~v05OI~
 //*parm 2:input partial target filename                         //~v05OI~
 //*parm 3:output buff len                                       //~v05OI~

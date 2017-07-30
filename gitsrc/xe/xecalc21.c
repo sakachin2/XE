@@ -1,9 +1,10 @@
-//*CID://+vb2DR~:                                   update#=  117; //+vb2DR~
+//*CID://+vba6R~:                                   update#=  119; //~vb2DR~//~vba6R~
 //*************************************************************
 //*xecalc21.c                                                      //~va7aR~
 //* table calc(TC cmd) ft1                                         //~va7aR~
 //*************************************************************
-//vb2D:160221 LNX compiler warning                                 //+vb2DI~
+//vba6:170716 (Bug)tc calc err when opdtype=x(requires word clear) //~vba6I~
+//vb2D:160221 LNX compiler warning                                 //~vb2DI~
 //vaz8:150109 C4244 except ULPTR and ULONG                         //~vaz8I~
 //vauM:140319 (BUG)crash when tc fld+/keyfld with aft\bef option(access deleted sumline if exist)//~vauMR~
 //vap0:131215 (ARM)warning strict aliasing                         //~vao0I~
@@ -137,6 +138,7 @@ int tc_ft1(PUCLIENTWE Ppcw,int Pfunctype,XECALCPARM *Pparm,PULINEH *Plabplh)//~v
     for (plh=plht1,sw1strec=1;;sw1strec=0)
     {
         datatype=datatype0;
+        memset(lvt,0,sizeof(lvt));                                 //+vba6I~
 //  	rc=tc_getplhdata(sw1strec,&datatype,&plh,plht2,post1,post2,lvt,Pparm);//~v57JR~
     	rc=tc_getplhdata(GDO_DWUP,sw1strec,&datatype,&plh,plht2,post1,post2,lvt,Pparm);//~v57JI~
         if (rc==-1)	//eof
@@ -424,6 +426,7 @@ int tc_ft1sumnobreak(PUCLIENTWE Ppcw,
     for (plh=Pplh1,sw1strec=1;;sw1strec=0)
     {
         datatype=datatype0;
+        memset(lvt,0,sizeof(lvt));                                 //+vba6I~
 //  	rc=tc_getplhdata(sw1strec,&datatype,&plh,Pplh2,Ppos1,Ppos2,lvt,Pparm);//~v57JR~
     	rc=tc_getplhdata(GDO_DWUP,sw1strec,&datatype,&plh,Pplh2,Ppos1,Ppos2,lvt,Pparm);//~v57JI~
         if (rc==-1)	//eof
@@ -760,6 +763,7 @@ int tc_ft1sumkey(PUCLIENTWE Ppcw,
     for (plh=Pplh1,sw1strec=1,plhsum=0;;sw1strec=0,plho=plh)
     {
         datatype=datatype0;
+        memset(lvt,0,sizeof(lvt));                                 //+vba6I~
 //  	rc=tc_getplhdata(sw1strec,&datatype,&plh,Pplh2,Ppos1,Ppos2,lvt,Pparm);//~v57JR~
     	rc=tc_getplhdata(GDO_DWUP,sw1strec,&datatype,&plh,Pplh2,Ppos1,Ppos2,lvt,Pparm);//~v57JI~
         if (rc==-1)	//eof
@@ -834,6 +838,7 @@ int tc_ft1sumkey(PUCLIENTWE Ppcw,
                     if (tc_ft1sumdatatype(totcnt,plh,&cdatatype0,cdatatype,&skipno))
                         continue;
 
+					memset(numkeywk,0,sizeof(numkeywk));           //~vba6I~
 //                  rc=tc_getlinedata(&cdatatype,newkey,(int)strlen(newkey),numkeywk);//~v54DR~
 //                  rc=tc_getlinedata(&cdatatype,newkey,len,numkeywk);//~v57JR~
 #ifdef UTF8UCS2                                                    //~va20R~
@@ -1328,8 +1333,8 @@ int tc_ft1outsumline(PUCLIENTWE Ppcw,int *Pparm,int Popt,int Pkeypos1,int Pkeypo
 //      fprintf(fh,"%c%s%c%c%c",CHAR_EBC_SPACE,Pkey,CHAR_EBC_SPACE,EBC_A2B('='),CHAR_EBC_SPACE);//~va50R~//~va79R~
         fprintf(fh,"%c%s%c%c%c",CHAR_EBC_SPACE,Pkey,CHAR_EBC_SPACE,UCVEBCH_A2B(handle,'='),CHAR_EBC_SPACE);//~va79I~
       	sprintf(sumwk,"%*s",sumlen,sumdata);                       //~va50I~
-//      len=strlen(sumwk);                                         //~va50I~//+vb2DR~
-        len=(int)strlen(sumwk);                                    //+vb2DI~
+//      len=strlen(sumwk);                                         //~va50I~//~vb2DR~
+        len=(int)strlen(sumwk);                                    //~vb2DI~
 //      xeebc_ascii2b(0,sumwk,len,&pu8);                           //~va50R~//~va79R~
         xeebc_ascii2b(0,handle,sumwk,len,&pu8);                    //~va79I~
         *(pu8+len)=0;                                              //~va50R~
@@ -1352,8 +1357,8 @@ int tc_ft1outsumline(PUCLIENTWE Ppcw,int *Pparm,int Popt,int Pkeypos1,int Pkeypo
 //      fprintf(fh,"%c%c",EBC_A2B(sumopt),CHAR_EBC_SPACE);         //~va50I~//~va79R~
         fprintf(fh,"%c%c",UCVEBCH_A2B(handle,sumopt),CHAR_EBC_SPACE);//~va79R~
       	sprintf(sumwk,"%*s",sumlen,sumdata);                       //~va50I~
-//      len=strlen(sumwk);                                         //~va50I~//+vb2DR~
-        len=(int)strlen(sumwk);                                    //+vb2DI~
+//      len=strlen(sumwk);                                         //~va50I~//~vb2DR~
+        len=(int)strlen(sumwk);                                    //~vb2DI~
 //      xeebc_ascii2b(0,sumwk,len,&pu8);                           //~va50I~//~va79R~
         xeebc_ascii2b(0,handle,sumwk,len,&pu8);                    //~va79I~
         *(pu8+len)=0;                                              //~va50I~

@@ -1,9 +1,10 @@
-//*CID://+vb7eR~:                             update#=  646;       //+vb7eR~
+//*CID://+vba5R~:                             update#=  647;       //+vba5R~
 //************************************************************* //~v051I~
 //*xedcmd2.c                                                       //~v58JR~
 //* xprint,system,submit,spawn                                     //~v51XR~
 //************************************************************* //~v051I~
-//vb7e:170108 FTP crash by longname                                //+vb7eI~
+//vba5:170716 (Bug)did not chk spawn rc                            //+vba5I~
+//vb7e:170108 FTP crash by longname                                //~vb7eI~
 //vb72:161212 (Win10) missing error.h , use winerror.h             //~vb72I~
 //vb4u:160812 lineopt should be cleared when back to menu from file panel//~vb4uI~
 //vb3A:160625 for compiler warning,-Wformat-security(not literal printf format)//~vb3yI~
@@ -424,8 +425,8 @@ int dcmdxprlblerr(void);                                           //~v57sR~
 	int dcmdxxe1cmd(char *Pcmd);                                   //~v64fI~
 #endif                                                             //~v64fI~
 #ifdef FTPSUPP                                                     //~v57BI~
-//	int dcmdcpgetremotecopy(char *Prfnm,PUFTPHOST Ppuftph,char *Pltemp);//~v57BI~//+vb7eR~
-  	int dcmdcpgetremotecopy(char *Prfnm,PUFTPHOST Ppuftph,char *Pltemp,size_t Pbuffsz);//+vb7eI~
+//	int dcmdcpgetremotecopy(char *Prfnm,PUFTPHOST Ppuftph,char *Pltemp);//~v57BI~//~vb7eR~
+  	int dcmdcpgetremotecopy(char *Prfnm,PUFTPHOST Ppuftph,char *Pltemp,size_t Pbuffsz);//~vb7eI~
 #endif                                                             //~v57BI~
 //int dcmdredirectparmerr(void);                                   //~v593R~
 int dcmd_fpathredirect(PUCLIENTWE Ppcw,char *Pfnmstdo,char *Pfnmstde);//~v592I~
@@ -919,6 +920,7 @@ int dcmd_spawn(PUCLIENTWE Ppcw)                                    //~v51vI~
 //  uerrmsg("\"%s\" started,pid=%d",                               //~vazwR~
 //  		"\"%s\" ‹N“®,pid=%d",                                  //~vazwR~
 //          pc,rc);                                                //~vazwR~
+  if (rc>=0)                                                       //+vba5I~
     uerrmsg("\"%s\" started,pid=%d(0x%x)",                         //~vazwR~
     		"\"%s\" ‹N“®,pid=%d(0x%x)",                            //~vazwR~
             pc,pid,pid);                                           //~vazwR~
@@ -1916,8 +1918,8 @@ int dcmdxpfnmchk(PUCLIENTWE Ppcw,UCHAR *Pcmd,UCHAR  **Ppout)       //~v11MR~
         {                                                          //~v57sR~
 //          filefullpath(remotetemp,Scurfilesave,_MAX_PATH);//return fullpath//~v57BR~
 //      	if (rc=xeftpgetremotecopy(XEFTP_GRC_PARMFILE,fnm0,puftph,remotetemp),rc)//~v57BR~
-//      	if (rc=dcmdcpgetremotecopy(fnm0,puftph,remotetemp),rc) //~v57BI~//+vb7eR~
-        	if (rc=dcmdcpgetremotecopy(fnm0,puftph,remotetemp,sizeof(remotetemp)),rc)//+vb7eI~
+//      	if (rc=dcmdcpgetremotecopy(fnm0,puftph,remotetemp),rc) //~v57BI~//~vb7eR~
+        	if (rc=dcmdcpgetremotecopy(fnm0,puftph,remotetemp,sizeof(remotetemp)),rc)//~vb7eI~
             	return rc;                                         //~v57sR~
             fnm=remotetemp;                                        //~v57sR~
 //          addlen+=(int)strlen(fnm0)+4; //original file name by /N,4 is for " /W="//~v57BR~
@@ -2173,8 +2175,8 @@ int dcmdxpfnmchk(PUCLIENTWE Ppcw,UCHAR *Pcmd,UCHAR  **Ppout)       //~v11MR~
 //!dcmdgetremotecopy                                               //~v57BI~
 // copy remote file/dir to local xp tmpdir                         //~v57BI~
 //**************************************************************** //~v57BI~
-//int dcmdcpgetremotecopy(char *Prfnm,PUFTPHOST Ppuftph,char *Pltemp)//~v57BI~//+vb7eR~
-int dcmdcpgetremotecopy(char *Prfnm,PUFTPHOST Ppuftph,char *Pltemp,size_t Pbuffsz)//+vb7eI~
+//int dcmdcpgetremotecopy(char *Prfnm,PUFTPHOST Ppuftph,char *Pltemp)//~v57BI~//~vb7eR~
+int dcmdcpgetremotecopy(char *Prfnm,PUFTPHOST Ppuftph,char *Pltemp,size_t Pbuffsz)//~vb7eI~
 {                                                                  //~v57BI~
 	FILEFINDBUF3 ffb3;                                             //~v57BI~
     int wildcardsw,dirsw=0,rc,opt;                                 //~v57BR~
@@ -2203,8 +2205,8 @@ int dcmdcpgetremotecopy(char *Prfnm,PUFTPHOST Ppuftph,char *Pltemp,size_t Pbuffs
 		filefullpath(Pltemp,Scurfilesave,_MAX_PATH);//return fullpath//~v57BI~
         Gdcmdtempf|=GDCMDTEMPF_XPRINT; //del at term               //~v638I~
 //  	rc=xeftpgetremotecopy(XEFTP_GRC_PARMFILE,Prfnm,Ppuftph,Pltemp);//~v8@sR~
-//  	rc=xeftpgetremotecopy(XEFTP_GRC_PARMFILE|XEFTP_GRC_FFB3,Prfnm,Ppuftph,Pltemp,&ffb3);//~v8@sR~//+vb7eR~
-    	rc=xeftpgetremotecopy(XEFTP_GRC_PARMFILE|XEFTP_GRC_FFB3,Prfnm,Ppuftph,Pltemp,Pbuffsz,&ffb3);//+vb7eI~
+//  	rc=xeftpgetremotecopy(XEFTP_GRC_PARMFILE|XEFTP_GRC_FFB3,Prfnm,Ppuftph,Pltemp,&ffb3);//~v8@sR~//~vb7eR~
+    	rc=xeftpgetremotecopy(XEFTP_GRC_PARMFILE|XEFTP_GRC_FFB3,Prfnm,Ppuftph,Pltemp,Pbuffsz,&ffb3);//~vb7eI~
     }                                                              //~v57BI~
     else                                                           //~v57BI~
     {                                                              //~v57BI~
@@ -2213,8 +2215,8 @@ int dcmdcpgetremotecopy(char *Prfnm,PUFTPHOST Ppuftph,char *Pltemp,size_t Pbuffs
 		  	opt=XEFTP_GRC_PARMDIR;                                 //~v57BI~
             Sremotegetsw=1;                                        //~v57BR~
 //  		rc=xeftpgetremotecopy(opt,Prfnm,Ppuftph,Pltemp);       //~v8@sR~
-//			rc=xeftpgetremotecopy(opt,Prfnm,Ppuftph,Pltemp,0/*not yet now required for dir*/);//~v8@sR~//+vb7eR~
-  			rc=xeftpgetremotecopy(opt,Prfnm,Ppuftph,Pltemp,Pbuffsz,0/*not yet now required for dir*/);//+vb7eI~
+//			rc=xeftpgetremotecopy(opt,Prfnm,Ppuftph,Pltemp,0/*not yet now required for dir*/);//~v8@sR~//~vb7eR~
+  			rc=xeftpgetremotecopy(opt,Prfnm,Ppuftph,Pltemp,Pbuffsz,0/*not yet now required for dir*/);//~vb7eI~
             if (UFTPHISTSO(Ppuftph) && rc==DCPY_RC_NOTCOPY)//invalid membername//~v71gR~
                 rc=0;                                              //~v71gR~
             if (!rc)                                               //~v57BI~

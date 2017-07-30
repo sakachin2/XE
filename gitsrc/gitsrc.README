@@ -42,18 +42,29 @@ My build environment
           . xsubcom.mak           core of mkvcxsub.mak
           . xsub.dep              dependency file to make for Windows
    m:\
-      + vculib64                  64bit objects of sources of ulib compiled with TRACE:on
-          +rel                    64bit objects of sources of ulib compiled with TRACE:off
-      + vcobj64                   64bit objects of sources of xe,xsub,xp with TRACE:on
-          +rel                    64bit objects of sources of xe,xsub,xp with TRACE:off
+     (32bit)
       + vculib                    32bit objects of sources of ulib compiled with TRACE:on
-          +rel                    32bit objects of sources of ulib compiled with TRACE:off
+          +rel                    32bit objects of sources of ulib compiled with TRACE:off /DNDEBUG
       + vcobj                     32bit objects of sources of xe,xsub,xp with TRACE:on
-          +rel                    32bit objects of sources of xe,xsub,xp with TRACE:off
+          +rel                    32bit objects of sources of xe,xsub,xp with TRACE:off /DNDEBUG
+     (64bit)
+      + vculib17c64               64bit objects of sources of ulib compiled with TRACE:on
+          +rel                    64bit objects of sources of ulib compiled with TRACE:off /DNDEBUG
+      + vcobj17c64                64bit objects of sources of xe,xsub,xp with TRACE:on
+          +rel                    64bit objects of sources of xe,xsub,xp with TRACE:off /DNDEBUG
    w:\
-      + msvs2010Projects          C++ working set(64bit and 32bit is on different PC)
-          +wxe                    Project:wxe,
+     (32bit)
+      + msvs2010Projects          C++ working set
+          +wxe                    Project:wxe
       + msvs2010                  VS2010Express installation folder
       + mssdkw71                  Windows SDK for Windows 7
       + wdk710                    Windows Drivers Kit v7.1.0
       + wtl81                     Windows Template Library WTL v8.1
+     (64bit)
+      + msvs2017CProjects         C++ working set
+          +wxe                    Project:wxe
+      + wtl91                     Windows Template Library WTL v8.1
+   c:\
+     (64bit)
+      + Program Files (x86)\Microsoft Visual Studio\2017   Msvs2017Comunity 
+      + Program Files (x86)\Windows Kits                   Windows10 SDK

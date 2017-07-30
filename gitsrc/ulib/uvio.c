@@ -1,5 +1,6 @@
-//*CID://+v6EpR~:                             update#=  209;       //+v6EpR~
+//*CID://+v6L5R~:                             update#=  210;       //+v6L5R~
 //*************************************************************
+//v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//+v6L5I~
 //v6Eq:160812 lineopt should be cleared by USDFNCELL               //~v6EqI~
 //v6Ep:160812 (WXE)errmsg lineopt;strput called intermediate of errmsg string by attr change,it should not Col but msg len//~v6EpI~
 //v6Eo:160811 (XXE)v6ei for XXE(specify ligature on/off,combine on/of line by line(used for edit/filename  panel)//~v6EoI~
@@ -637,7 +638,8 @@ UTRACEP("Guviomopt=%x,Snullnasw=%d,Scellnasw=%d,Senglishsw=%d,Sforcentsw=%d,Snts
 	        	return rc16=4;                                     //~v252I~
             }                                                      //~v252I~
             if (!CloseHandle(temph))                               //~v252I~
-                printf("uviogetmode:CloseHandle(%08x) failed LastError=%d\n",//~v252I~
+//              printf("uviogetmode:CloseHandle(%08x) failed LastError=%d\n",//~v252I~//+v6L5R~
+                printf("uviogetmode:CloseHandle(%p) failed LastError=%d\n",//+v6L5I~
 						temph,GetLastError());                     //~v252R~
         }                                                          //~v252I~
 //      else                                                       //~v252R~
@@ -1128,7 +1130,7 @@ UINT uviowrtcellstr (int Popt,PCH pchCellStr,int Plen,int Prow,int Pcol)//~v6EiR
             	UVIO_LINEUPDATE(Prow);                             //~v570I~
 #endif                                                             //~v570I~
 //          	uvio_setbufflineopt(0,Prow,Popt);                  //~v6EpR~
-            	uvio_setbufflineopt(0,Prow,Popt,Pcol,reqctr);      //+v6EpR~
+            	uvio_setbufflineopt(0,Prow,Popt,Pcol,reqctr);      //~v6EpR~
                 UTRACEP("%s:save lineopt row=%d,opt=%04x\n",UTT,Prow,Popt);//~v6EiI~
                                                                    //~v6EiR~
                 wpch=&Sw95buffc[pos];                              //~v042I~

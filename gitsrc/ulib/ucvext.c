@@ -1,5 +1,6 @@
-//*CID://+v6ByR~:                                   update#=  930; //~v6ByR~
+//*CID://+v6L5R~:                                   update#=  931; //~v6ByR~//+v6L5R~
 //***********************************************************************
+//v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//+v6L5I~
 //v6By:160212 (W32)compiler warning at w7                          //~v6ByI~
 //v6Bt:160225 ICU api:ebc2ucs may return fffd for also sbcs if subchar1 was not defined//~v6BtI~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
@@ -875,7 +876,8 @@ int ucvext_setdefaultlocalcv(int Popt,PUCVEXTCFG Ppcfg)            //~v66wR~
 #else                                                              //~v66KI~
 		udbcschk_getbaseconverter(0,&pconverter,0/*dbcstbl*/);     //~v66KI~
     	pval=Ppcfg->UCECcsnamelocal;                               //~v66KR~
-        sprintf(pval,"%d",pconverter);                             //~v66KI~
+//      sprintf(pval,"%d",pconverter);                             //~v66KI~//+v6L5R~
+        sprintf(pval,"%d",(int)pconverter);                        //+v6L5I~
 #endif                                                             //~v66wI~//~v66KM~
     }                                                              //~v66wI~
 	return rc;                                                      //~v66wI~//~v66KR~
@@ -2666,7 +2668,7 @@ int ucvext_icugetconverter(int Popt,char *Pcharset,ULPTR *Ppconverter)//~v6hhI~
           {                                                        //~v6baI~
 //          uerrmsg("Cannot find ICU converter for %s,errc=%d",0,  //~v6ByR~
 //                  Pcharset,(int)uerrc);                          //~v6ByI~
-            uerrmsg("ICU converter open failed for \"%s\"(%s),chk %s parameter or environment variable",//+v6ByR~
+            uerrmsg("ICU converter open failed for \"%s\"(%s),chk %s parameter or environment variable",//~v6ByR~
                     "ICU コンバータ \"%s\" オープン失敗(%s),%s パラメータないし環境変数を確認",//~v6ByR~
                     Pcharset,ucvext_icuuerrname(uerrc),UCVEXTCFGPARM_ICUDATA);//~v6ByR~
             if (Popt & EBC2ASC_WINCPLIST)	//from xcv             //~v6baI~

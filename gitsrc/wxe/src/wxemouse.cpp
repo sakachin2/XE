@@ -1,6 +1,7 @@
-//*CID://+vb3wR~:                             update#=  437;       //+vb3wR~
+//*CID://+vba3R~:                             update#=  438;       //+vba3R~
 //******************************************************************************//~v003I~
-//vb3w:160621 w64 compiler warning                                 //+vb3wI~
+//vba3:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//+vba3I~
+//vb3w:160621 w64 compiler warning                                 //~vb3wI~
 //vb2N:160319 (Wxe)clipboard data may be translated CF_TEXT and CF_UNICODETEXT(copyed by CFTEXT is gotten as CF_UNICODETEXT)//~vb2NI~
 //            It dose not consider locale data by -Ccodepage parameter//~vb2NI~
 //vak7:130906 redirect memcpy to memmove when overlaped            //~vak7I~
@@ -577,11 +578,13 @@ int  CWxemain::cpcopypan(char *Pcbdata,int Prow1,int Pcol1,int Prow2,int Pcol2)/
       }                                                            //~va20R~
     }                                                              //~2A05I~
 #ifdef UTF8UCS2                                                    //~va20R~
-	totlen=(ULONG)pc-(ULONG)Pcbdata;                               //~va20R~
+//  totlen=(ULONG)pc-(ULONG)Pcbdata;                               //~va20R~//+vba3R~
+    totlen=PTRDIFF(pc,Pcbdata);                                    //+vba3I~
   if (swucs||swutf8data)                                           //~va20R~
   {                                                                //~va20R~
 	if (!swgetlen)                                                 //~va20R~
-		*((WUCS*)(ULONG)pc-2)=0;                                   //~va20R~
+//		*((WUCS*)(ULONG)pc-2)=0;                                   //~va20R~//+vba3R~
+  		*((WUCS*)(ULPTR)pc-2)=0;                                   //+vba3I~
 UTRACEP("cpcopypan totlen=%d\n",totlen);                           //~va20R~
 UTRACEDIFNZ("cpcopypan out\n",Pcbdata,totlen);                     //~va20R~
 	if (swucs)                                                     //~va20R~
@@ -711,8 +714,8 @@ UTRACEP("@@@@ GetClipboardData hdrop=%x\n",hdrop);                   //~v686R~//
   else                                                             //~v66iI~
   {                                                                //~v66iI~
 	pcg=(char *)GlobalLock(hGlobal);                               //~v003R~
-//  totlen=GlobalSize(hGlobal);                                    //~v003I~//+vb3wR~
-    totlen=(int)GlobalSize(hGlobal);                               //+vb3wI~
+//  totlen=GlobalSize(hGlobal);                                    //~v003I~//~vb3wR~
+    totlen=(int)GlobalSize(hGlobal);                               //~vb3wI~
 UTRACED("@@@@ GetClipboardData",pcg,totlen);                       //~v685R~
   }                                                                //~v66iI~
 #ifdef UTF8UCS2                                                    //~va20I~

@@ -1,7 +1,8 @@
-//*CID://+vb4AR~:                             update#=  454;       //~vb4AR~
+//*CID://+vba7R~:                             update#=  455;       //+vba7R~
 //***************************************************************************//~2818I~
 //* c subrtn for wxe                                               //~2818I~
 //***************************************************************************//~2818I~
+//vba7:170716 (Bug:64bit)upostmsg WPARAM is IntPtr(64bit!=ULONG)   //+vba7I~
 //vb4A:160815 if UNICOMB UNPR mode and LIGATURE ON, write altch just after base char using GetTextExtentPoint32W//~vb4zI~
 //vb4z:160815 if UNICOMB SPLIT mode and LIGATURE ON, write combining char just after base char using GetTextExtentPoint32W//~vb4zR~
 //vb4j:160806 (W32)OPT UNICOMP UNPR was effective only for file contents(chk at tabdisplay)//~vb4jI~
@@ -446,7 +447,8 @@ ULPTR usetfocus(void)                                              //~vaz7I~
 //**************************************************************** //~v53yI~
 //*rc:ret code                                                     //~v53yI~
 //**************************************************************** //~v53yI~
-int upostmsg(UINT Pmsg,ULONG Pwparm,ULONG Plparm)                  //~v53yR~
+//int upostmsg(UINT Pmsg,ULONG Pwparm,ULONG Plparm)                  //~v53yR~//+vba7R~
+int upostmsg(UINT Pmsg,ULPTR Pwparm,ULPTR Plparm)                  //+vba7I~
 {                                                                  //~v53yI~
 //********************************                                 //~v53yI~
 	if (PostMessage(Shwnd,Pmsg,(WPARAM)Pwparm,(LPARAM)Plparm))     //~v53yI~
@@ -456,7 +458,8 @@ int upostmsg(UINT Pmsg,ULONG Pwparm,ULONG Plparm)                  //~v53yR~
 //**************************************************************** //~v55DI~
 //*rc:ret code                                                     //~v55DI~
 //**************************************************************** //~v55DI~
-int upostmsgp(UINT Pmsg,ULONG Pwparm,ULONG Plparm)                 //~v55DI~
+//int upostmsgp(UINT Pmsg,ULONG Pwparm,ULONG Plparm)                 //~v55DI~//+vba7R~
+int upostmsgp(UINT Pmsg,ULPTR Pwparm,ULPTR Plparm)                 //+vba7I~
 {                                                                  //~v55DI~
 	HWND hwnd;                                                     //~v55DI~
 //********************************                                 //~v55DI~
@@ -1528,13 +1531,13 @@ int csubtextoutWcombining_notcombinemode(int Popt,HDC Phdc,int Pxx,int Pyy,WUCS 
     SetTextColor(Phdc,altchcolor);                                 //~vb4AI~
 	if (UTF_COMBINEMODE_NP() && Gutfcombaltch)                     //~vb4AI~
     {                                                              //~vb4AI~
-    	TextOutW(Phdc,Pxx,Pyy,&Gutfcombaltch,1);                   //+vb4AR~
+    	TextOutW(Phdc,Pxx,Pyy,&Gutfcombaltch,1);                   //~vb4AR~
 	    UTRACEP("%s: UNICOMB UNPR Gutfcombaltch=%04x\n",UTT,Gutfcombaltch);//~vb4AI~
     }                                                              //~vb4AI~
     else                                                           //~vb4AI~
     {                                                              //~vb4AI~
-    	TextOutW(Phdc,Pxx,Pyy,Pucs,Pucsctr);                       //+vb4AR~
-	    UTRACEP("%s: UNICOMB SPLIT ucs=%04x,ucsctr=%d\n",UTT,*Pucs,Pucsctr);//+vb4AR~
+    	TextOutW(Phdc,Pxx,Pyy,Pucs,Pucsctr);                       //~vb4AR~
+	    UTRACEP("%s: UNICOMB SPLIT ucs=%04x,ucsctr=%d\n",UTT,*Pucs,Pucsctr);//~vb4AR~
     }                                                              //~vb4AI~
     SetTextColor(Phdc,currentcolor);                               //~vb4AI~
     return 0;                                                      //~vb4AI~

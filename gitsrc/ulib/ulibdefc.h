@@ -1,7 +1,8 @@
-//*CID://+v6BkR:                              update#=  162;       //~v6BkR
+//*CID://+v6L5R:                              update#=  164;       //~v6L5R
 //*********************************************************************//~v131I~
 //* define --common to DOS/OS2/WIN95/UNX/LNX                       //~v321R~
 //*********************************************************************//~v131I~
+//v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~v6L5I
 //v6G3:161212 (Win10) missing error.h , use winerror.h             //~v6BkI
 //v6Bk:160220 (LNX)compiler warning                                //~v6xkI
 //v6xk:150115 (BUG:W32)spwanxx deplicated,use _spawnxx(return intptr_t, Linux returns int pid)//~v6xkI
@@ -82,6 +83,9 @@
 	typedef unsigned long long ULPTR;                              //~v6hhI~
 	typedef          long long SLPTR;                              //~v6hhI~
 	#define  	LONGHANDLE intptr_t         //64bit                //~v6xkR
+    #ifdef W32                                                     //~v6L5I
+    	#define  FMT_PTR(type)  "ll" type                          //+v6L5R
+    #endif                                                         //~v6L5I
 #else       //32bit or LP64(ptr:64,long:64                         //~v6hhI~
 	typedef unsigned long      ULPTR;                              //~v6hhI~
 	typedef          long      SLPTR;                              //~v6hhI~
@@ -90,6 +94,9 @@
     #else                                                          //~v6xkI
 		#define LONGHANDLE int 			//32bit                    //~v6xkR
     #endif                                                         //~v6xkI
+    #ifdef W32                                                     //~v6L5I
+    	#define  FMT_PTR(type)  "l"  type                          //+v6L5R
+    #endif                                                         //~v6L5I
 #endif                                                             //~v6hhI~
 //*"long" is 8 byte on 64bit                                       //~v6a0I~
 //  #define LLONG    long                                          //~v690I~//~v6hhR~

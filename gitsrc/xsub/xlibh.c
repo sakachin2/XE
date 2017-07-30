@@ -1,9 +1,9 @@
-//CID://+va66R~:             update#=    1                         //+va66R~
+//CID://+va66R~:             update#=    2                         //~va66R~
 //***********************************************************
 //* XLIBH.c : print ordinal and imported name                      //~v122R~
 //*           for MS-OMF and MS !<arch> LIB                        //~v122I~
 //***********************************************************
-//va66:120628 (AMD64) VC10(VS2010) LP64 support                    //+va66I~
+//va66:120628 (AMD64) VC10(VS2010) LP64 support                    //~va66I~
 //xlibh.c*v123 *050515 allow /s option as 1st parm                 //~v123I~
 //xlibh.c*v122 *000529 bug of OMF object lib                       //~v122I~
 //xlibh.c*v121 *000520 format option for xda parm file(/Fm____)    //~v121I~
@@ -288,7 +288,7 @@ void objproc(UCHAR *Ppllname,ULONG Poffs)                          //~9801I~
             else                                                   //~v122I~
             	pchk="==";                                         //~v122I~
         	printf ("    %-8.*s:%.*s %s\n",                        //~v122R~
-                	*plldll,plldll+1,*pllfunc,pllfunc+1,pchk,*pllfunc,pllfunc+1);//~v122R~
+                	*plldll,plldll+1,*pllfunc,pllfunc+1,pchk);//~v122R~//+va66R~
 	    }                                                          //~v122I~
     }                                                              //~v122I~
 }//objproc                                                         //~9801I~
@@ -380,8 +380,8 @@ int winarchproc(UCHAR *Pdllnm,int *Ppver)                          //~v121R~
         {                                                          //~v121I~
         	len=(int)strlen(data);                                 //~v121R~
             if (pc=umemmem(data,"@@",(UINT)len,2),pc)              //~v121R~
-//              len=(int)((ULONG)pc-(ULONG)data);                  //+va66R~
-                len=(int)((ULPTR)pc-(ULPTR)data);                  //+va66I~
+//              len=(int)((ULONG)pc-(ULONG)data);                  //~va66R~
+                len=(int)((ULPTR)pc-(ULPTR)data);                  //~va66I~
             pol=(PORDLIST)malloc(ORDLISTSZ+(UINT)len);             //~v121R~
             pol->OLnmlen=(UCHAR)len;                               //~v121I~
             pol->OLordno=afh.Ordinal;                              //~v121I~
@@ -432,8 +432,8 @@ DWORD winarchvc4(IMAGE_ARCHIVE_MEMBER_HEADER *Ppamh,               //~v1.2I~
 	pifh=(IMAGE_FILE_HEADER*)(void*)membdata;                      //~v1.2R~
 	*pifh=*(IMAGE_FILE_HEADER*)(void*)Ppafh;	//copy already read file hdr//~v1.2I~
 	seekread(-1,membdata+IFHSZ,0,(ULONG)(membdatalen-IFHSZ),"Member data");//top record is memb hdr ptr tbl//~v121R~
-//  pish=(IMAGE_SECTION_HEADER*)(ULONG)(membdata+IFHSZ+pifh->SizeOfOptionalHeader);//+va66R~
-    pish=(IMAGE_SECTION_HEADER*)(ULPTR)(membdata+IFHSZ+pifh->SizeOfOptionalHeader);//+va66I~
+//  pish=(IMAGE_SECTION_HEADER*)(ULONG)(membdata+IFHSZ+pifh->SizeOfOptionalHeader);//~va66R~
+    pish=(IMAGE_SECTION_HEADER*)(ULPTR)(membdata+IFHSZ+pifh->SizeOfOptionalHeader);//~va66I~
     sectno=(int)pifh->NumberOfSections;                            //~v1.2I~
     symindex=0;                                                    //~v121R~
     ordno=0;                                                       //~v121I~
@@ -448,8 +448,8 @@ DWORD winarchvc4(IMAGE_ARCHIVE_MEMBER_HEADER *Ppamh,               //~v1.2I~
                 		pish->Name,Ppamh);                         //~v1.2I~
             	break;                                             //~v1.2I~
 			}                                                      //~v1.2I~
-//          pir=(IMAGE_RELOCATION*)((ULONG)pifh+pish->PointerToRelocations);//+va66R~
-            pir=(IMAGE_RELOCATION*)((ULPTR)pifh+pish->PointerToRelocations);//+va66I~
+//          pir=(IMAGE_RELOCATION*)((ULONG)pifh+pish->PointerToRelocations);//~va66R~
+            pir=(IMAGE_RELOCATION*)((ULPTR)pifh+pish->PointerToRelocations);//~va66I~
             symindex=(int)pir->SymbolTableIndex;   //smbol tbl index(1 base)//~v121R~
         }                                                          //~v1.2I~
     	if (!memcmp(pish->Name,".idata",6))	                       //~v1.2I~
@@ -462,8 +462,8 @@ DWORD winarchvc4(IMAGE_ARCHIVE_MEMBER_HEADER *Ppamh,               //~v1.2I~
                 		pish->Name,Ppamh);                         //~v1.2I~
             	break;                                             //~v1.2I~
 			}                                                      //~v1.2I~
-//          thunkordno=*(ULONG*)(void*)((ULONG)pifh+pish->PointerToRawData);//+va66R~
-            thunkordno=*(ULONG*)(void*)((ULPTR)pifh+pish->PointerToRawData);//+va66I~
+//          thunkordno=*(ULONG*)(void*)((ULONG)pifh+pish->PointerToRawData);//~va66R~
+            thunkordno=*(ULONG*)(void*)((ULPTR)pifh+pish->PointerToRawData);//~va66I~
             if (!thunkordno & 0x80000000)	//not thunk chain      //~v1.2R~
             {                                                      //~v1.2I~
             	uerrmsg("import by funcname for %s",0,             //~v1.2I~
@@ -477,10 +477,10 @@ DWORD winarchvc4(IMAGE_ARCHIVE_MEMBER_HEADER *Ppamh,               //~v1.2I~
     if (!ordno)                                                    //~v1.2I~
     	return 0;                                                  //~v1.2I~
 //search funcname                                                  //~v1.2I~
-//  pisym=(IMAGE_SYMBOL*)((ULONG)pifh+pifh->PointerToSymbolTable); //+va66R~
-    pisym=(IMAGE_SYMBOL*)((ULPTR)pifh+pifh->PointerToSymbolTable); //+va66I~
-//  pistrt=(UCHAR*)(ULONG)(pisym+pifh->NumberOfSymbols);//to is len fld//+va66R~
-    pistrt=(UCHAR*)(ULPTR)(pisym+pifh->NumberOfSymbols);//to is len fld//+va66I~
+//  pisym=(IMAGE_SYMBOL*)((ULONG)pifh+pifh->PointerToSymbolTable); //~va66R~
+    pisym=(IMAGE_SYMBOL*)((ULPTR)pifh+pifh->PointerToSymbolTable); //~va66I~
+//  pistrt=(UCHAR*)(ULONG)(pisym+pifh->NumberOfSymbols);//to is len fld//~va66R~
+    pistrt=(UCHAR*)(ULPTR)(pisym+pifh->NumberOfSymbols);//to is len fld//~va66I~
 	pisym+=symindex;                                               //~v1.2R~
     if (pisym->N.Name.Short)	//top DWORD=0 means offset in string table//~v1.2R~
     {                                                              //~v1.2I~

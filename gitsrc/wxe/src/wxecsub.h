@@ -1,4 +1,4 @@
-//*CID://+vb4iR~:                             update#=  117;       //~vb4iR~
+//*CID://+vb4iR~:                             update#=  118;       //~vb4iR~
 //*********************************************************************//~2818I~
 //* wxecsub.h                                                      //~2818I~
 //*********************************************************************//~2818I~
@@ -79,8 +79,10 @@ extern  "C"                                                        //~2818I~
 	void wxefree(void *Paddr);                                     //~v53tI~
 //  ULONG usetfocus(void);                                         //~vaz7R~
     ULPTR usetfocus(void);                                         //~vaz7I~
-	int upostmsg(UINT Pmsg,ULONG Pwparm, ULONG Plparm);            //~v54yI~
-	int upostmsgp(UINT Pmsg,ULONG Pwparm, ULONG Plparm);           //~v55DI~
+//	int upostmsg(UINT Pmsg,ULONG Pwparm, ULONG Plparm);            //~v54yI~//+vb4iR~
+  	int upostmsg(UINT Pmsg,ULPTR Pwparm, ULPTR Plparm);            //+vb4iI~
+//  int upostmsgp(UINT Pmsg,ULONG Pwparm, ULONG Plparm);           //~v55DI~//+vb4iR~
+    int upostmsgp(UINT Pmsg,ULPTR Pwparm, ULPTR Plparm);           //+vb4iI~
 	int usettimer(UINT Ptimerid,int Pintvlms,void *Pcallback);     //~v55ZI~
 	int ukilltimer(UINT Ptimerid);                                 //~v560I~
 	int uopenwith(char *Pfname,HINSTANCE *Phi);                    //~v55uI~
@@ -95,8 +97,8 @@ extern  "C"                                                        //~2818I~
 #ifdef UTF8UCS2                                                    //~va20I~
 int csubgetcsrposbf(int Popt,char *Pdbcs,int Plen,int Ppos,int *Ppposb,int *Pposc,int *Ppposa);//~va30R~
 //int csubtextoutw(int Popt,HDC Phdc,int Px,int Py,char *Pddata,char *Pdbcs,int Plen,int Pcellw);//~va20R~//~vb4iR~
-//int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pddata,char *Pdbcs,int Plen,int Pcellw,int Pfgcolor,int Pbgcolor);//+vb4iR~
-int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pddata,char *Pdbcs,int Plen,int Pcellw);//+vb4iI~
+//int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pddata,char *Pdbcs,int Plen,int Pcellw,int Pfgcolor,int Pbgcolor);//~vb4iR~
+int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pddata,char *Pdbcs,int Plen,int Pcellw);//~vb4iI~
 #define CSTOWO_PRINT        0x01 //write a line at once            //~va20I~
 #define CSTOWO_COMBINECHK   0x02 //chk combine                     //~va30I~
 int csubtextoutw1(int Popt,HDC Phdc,int Pxx,int Pyy,char *Pdata,char *Pdbcs,int Plen);//~va20I~

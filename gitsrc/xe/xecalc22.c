@@ -1,9 +1,11 @@
-//*CID://+vb30R~:                                   update#=  112; //+vb30R~
+//*CID://+vba6R~:                                   update#=  121; //~vba6R~
 //*************************************************************
 //*xecalc2.c
-//* table calc(TC cmd)                                             //~va50R~
+//* table calc(TC cmd)                                             //~vba6R~
 //*************************************************************
-//vb30:160411 (LNX)Compiler warning                                //+vb30I~
+//vba6:170716 (Bug)tc calc err when opdtype=x(requires word clear) //~vba6I~
+//vba3:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit,size_t:64bit)//~vba3I~
+//vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vaz8:150109 C4244 except ULPTR and ULONG                         //~vaz8I~
 //vafk:120624 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  use ULPTR(unsigned __int64/ULONG)//~vafkI~
 //vafc:120607 C4701 warning(used uninitialized variable) by VC6    //~vafcI~
@@ -195,6 +197,7 @@ int tc_ft2(PUCLIENTWE Ppcw,int Pfunctype,XECALCPARM *Pparm,PULINEH *Plabplh)//~v
     {
     	len6sw=0;
     	skip1=0;
+        memset(lvtt,0,sizeof(lvtt));                               //~vba6I~
 //  	if ((rc=tc_getplhdata(sw1st,&datatype1,&plh,plht2,post1,post2,lvtt,Pparm))!=0)//~v56zR~
       	if (Pfunctype==CALC_COPY  	//not opd3=opd2 fmt            //~v56zI~
       	||  Pfunctype==CALC_COPYCV)	//not opd3=opd2 fmt            //~v56zI~
@@ -229,9 +232,12 @@ int tc_ft2(PUCLIENTWE Ppcw,int Pfunctype,XECALCPARM *Pparm,PULINEH *Plabplh)//~v
             rc=0;                                                  //~v53JI~
         }                                                          //~v53JI~
         else                                                       //~v53JI~
+        {                                                          //~vba6I~
+    	    memset(lvts,0,sizeof(lvts));                           //~vba6I~
 //  		rc=tc_getplhdata(sw1st,&datatype2,&plhs,plhs2,poss1,poss2,lvts,Pparm);//~v57JR~
 //  		rc=tc_getplhdata(0,sw1st,&datatype2,&plhs,plhs2,poss1,poss2,lvts,Pparm);//~v57YR~
     		rc=tc_getplhdata(GDO_DWUP,sw1st,&datatype2,&plhs,plhs2,poss1,poss2,lvts,Pparm);//~v57YI~
+        }                                                          //~vba6I~
     	if (rc!=0)                                                 //~v53JI~
         {
         	if (rc==-1)	//eof
@@ -472,12 +478,12 @@ int tc_ft2count(PUCLIENTWE Ppcw,int Pfunctype,XECALCPARM *Pparm,PULINEH *Plabplh
 	if (poss2==TC_CONSTSPECID)                                     //~v53JR~
     {                                                              //~v53JI~
 //  	lvts[0]=(long)Sconstaddr;        //strng data fmt          //~v53JR~//~va7aR~
-//    	lvts[0]=Pparm[PARM_CONSTADDR];        //strng data fmt     //~va7aI~//+vb30R~
-      	lvts[0]=(SLPTR)Pparm[PARM_CONSTADDR];        //strng data fmt//+vb30I~
+//    	lvts[0]=Pparm[PARM_CONSTADDR];        //strng data fmt     //~va7aI~//~vb30R~
+      	lvts[0]=(SLPTR)Pparm[PARM_CONSTADDR];        //strng data fmt//~vb30I~
 		lvts[1]=0;                                                 //~v53JI~
 //  	lvts[2]=(long)Sconstlen;                                   //~v53JI~//~va7aR~
-//  	lvts[2]=Pparm[PARM_CONSTLEN];                              //~va7aI~//+vb30R~
-    	lvts[2]=(SLPTR)Pparm[PARM_CONSTLEN];                       //+vb30I~
+//  	lvts[2]=Pparm[PARM_CONSTLEN];                              //~va7aI~//~vb30R~
+    	lvts[2]=(SLPTR)Pparm[PARM_CONSTLEN];                       //~vb30I~
     }                                                              //~v53JI~
 	if (!poss2)                                                    //~v533I~
     	if (cap_getcalccurinfo(Ppcw,&plhs1,&plhs2,&poss1,&poss2))  //~v533I~
@@ -530,6 +536,7 @@ int tc_ft2count(PUCLIENTWE Ppcw,int Pfunctype,XECALCPARM *Pparm,PULINEH *Plabplh
     {                                                              //~v533I~
     	datatype1=datatype1s;//may reset by getplhdata             //~v58wI~
     	datatype2=datatype2s;                                      //~v58wI~
+        memset(lvtt,0,sizeof(lvtt));                               //~vba6I~
 //  	if ((rc=tc_getplhdata(sw1st,&datatype1,&plh,plht2,post1,post2,lvtt,Pparm))!=0)//~v57JR~
 //  	if ((rc=tc_getplhdata(0,sw1st,&datatype1,&plh,plht2,post1,post2,lvtt,Pparm))!=0)//~va2bR~
     	if ((rc=tc_getplhdata(optgpd,sw1st,&datatype1,&plh,plht2,post1,post2,lvtt,Pparm))!=0)//~va2bI~
@@ -546,9 +553,12 @@ int tc_ft2count(PUCLIENTWE Ppcw,int Pfunctype,XECALCPARM *Pparm,PULINEH *Plabplh
             rc=0;                                                  //~v53JI~
         }                                                          //~v53JI~
         else                                                       //~v53JI~
+        {                                                          //+vba6I~
+        	memset(lvts,0,sizeof(lvts));                           //+vba6I~
 //  		rc=tc_getplhdata(sw1st,&datatype2,&plhs,plhs2,poss1,poss2,lvts,Pparm);//~v57JR~
 //  		rc=tc_getplhdata(0,sw1st,&datatype2,&plhs,plhs2,poss1,poss2,lvts,Pparm);//~va2bR~
     		rc=tc_getplhdata(optgpd,sw1st,&datatype2,&plhs,plhs2,poss1,poss2,lvts,Pparm);//~va2bR~
+        }                                                          //+vba6I~
     	if (rc!=0)                                                 //~v53JI~
         {                                                          //~v533I~
         	if (rc==-1)	//eof                                      //~v533I~
@@ -559,11 +569,11 @@ int tc_ft2count(PUCLIENTWE Ppcw,int Pfunctype,XECALCPARM *Pparm,PULINEH *Plabplh
         recno++;                                                   //~v533I~
 	}//all plh                                                     //~v533I~
 //alloc work                                                       //~v533I~
-//  prcw0=umalloc((UINT)(RCWSZ*recno));                                    //~v533I~//+vb30R~
-    prcw0=umalloc(RCWSZ*(size_t)recno);                            //+vb30I~
+//  prcw0=umalloc((UINT)(RCWSZ*recno));                                    //~v533I~//~vb30R~
+    prcw0=umalloc(RCWSZ*(size_t)recno);                            //~vb30I~
     UALLOCCHK(prcw0,UALLOC_FAILED);                                //~v533R~
-//  memset(prcw0,0,(UINT)(RCWSZ*recno));                                   //~v533R~//+vb30R~
-    memset(prcw0,0,RCWSZ*(size_t)recno);                           //+vb30I~
+//  memset(prcw0,0,(UINT)(RCWSZ*recno));                                   //~v533R~//~vb30R~
+    memset(prcw0,0,RCWSZ*(size_t)recno);                           //~vb30I~
 //fill work;                                                       //~v533I~
     sw1st=1;                                                       //~v533I~
     prcw=prcw0;                                                    //~v533I~
@@ -573,6 +583,7 @@ int tc_ft2count(PUCLIENTWE Ppcw,int Pfunctype,XECALCPARM *Pparm,PULINEH *Plabplh
     	datatype1=datatype1s;                                      //~v58wI~
     	datatype2=datatype2s;                                      //~v58wI~
     	skipsw=0;                                                  //~v533R~
+        memset(lvtt,0,sizeof(lvtt));                               //~vba6I~
 //  	if ((rc=tc_getplhdata(sw1st,&datatype1,&plh,plht2,post1,post2,lvtt,Pparm))!=0)//~v57JR~
 //    	if ((rc=tc_getplhdata(0,sw1st,&datatype1,&plh,plht2,post1,post2,lvtt,Pparm))!=0)//~va2bR~
       	if ((rc=tc_getplhdata(optgpd,sw1st,&datatype1,&plh,plht2,post1,post2,lvtt,Pparm))!=0)//~va2bI~
@@ -594,9 +605,12 @@ int tc_ft2count(PUCLIENTWE Ppcw,int Pfunctype,XECALCPARM *Pparm,PULINEH *Plabplh
             rc=0;                                                  //~v53JI~
         }                                                          //~v53JI~
         else                                                       //~v53JI~
+        {                                                          //+vba6I~
+        	memset(lvts,0,sizeof(lvts));                           //+vba6I~
 //  		rc=tc_getplhdata(sw1st,&datatype2,&plhs,plhs2,poss1,poss2,lvts,Pparm);//~v57JR~
 //   		rc=tc_getplhdata(0,sw1st,&datatype2,&plhs,plhs2,poss1,poss2,lvts,Pparm);//~va2bR~
      		rc=tc_getplhdata(optgpd,sw1st,&datatype2,&plhs,plhs2,poss1,poss2,lvts,Pparm);//~va2bR~
+        }                                                          //+vba6I~
 		if (rc!=0)                                                 //~v53JI~
         {                                                          //~v533I~
         	if (rc==-1)	//eof                                      //~v533I~
@@ -1121,8 +1135,8 @@ int tc_getlinedata(int Popt,int *Pdatatype,char *Pdata,int Plen,long *Pvalue)//~
         if (datatype!=CALC_STRINGDATA)      //'S'                  //~va50R~
         {                                                          //~va50R~
             len=min(Plen,MAX_DATA_WIDTH);                          //~va50R~
-//          UmemcpyZ(numworkebc,Pdata,len);                        //~va50R~//+vb30R~
-            UmemcpyZ(numworkebc,Pdata,(size_t)len);                //+vb30I~
+//          UmemcpyZ(numworkebc,Pdata,len);                        //~va50R~//~vb30R~
+            UmemcpyZ(numworkebc,Pdata,(size_t)len);                //~vb30I~
 //          ucvebc_b2afld(0,numworkebc,numworkebc,len); //confirmed all ascii if not "S"//~va50R~//~va79R~
             ucvebc_b2afld(0,Phandle,numworkebc,numworkebc,len); //confirmed all ascii if not "S"//~va79R~
             Pdata=numworkebc;                                      //~va50R~
@@ -1147,7 +1161,11 @@ int tc_getlinedata(int Popt,int *Pdatatype,char *Pdata,int Plen,long *Pvalue)//~
 //  	memcpy(numwork,Pdata,(UINT)len);                           //~v51nR~
 //  	numwork[len]=0;                                            //~v51nR~
 //      sscanf(Pdata,"%lx",Pvalue);                                //~v476R~
+#ifdef AAA                                                         //~vba3I~
         sscanf(numwork,"%lx",Pvalue);                              //~v476R~
+#else                                                              //~vba3I~
+        SSCANF_UL2L(numwork,"%lx",Pvalue);                         //~vba3I~
+#endif                                                             //~vba3I~
         break;
     case 'O':
 //*after ascii chk done                                            //~va20R~
@@ -1375,7 +1393,8 @@ int tc_setlinedata(PUCLIENTWE Ppcw,XECALCPARM *Pparm,PULINEH Pplh,int Pundopsw,i
             if (*(Pvalue+1))	//milisec or host time stamp       //~v51mR~
             	if (*(Pvalue+1)!=UCALC_DWORDID)	//!host time stamp //~v51mI~
                 {                                                  //~v51mI~
-                	sprintf(numdata,".%03ld",*(Pvalue+2));         //~v51mR~
+//              	sprintf(numdata,".%03ld",*(Pvalue+2));         //~v51mR~//~vba3R~
+                	sprintf(numdata,".%03ld",(long)(*(Pvalue+2))); //~vba3I~
                     strcat(rval,numdata);                          //~v51mI~
                 }                                                  //~v51mI~
         }                                                          //~v51mI~
@@ -1561,10 +1580,10 @@ int tc_setlinedatacopy(PUCLIENTWE Ppcw,XECALCPARM *Pparm,PULINEH Pplh,//~va70I~
                     }                                              //~va8bI~
                     if (len-addlen>0 && *(sdbcs+swidth-1)==UDBCSCHK_DBCS2ND)//~va8bI~
                     {                                              //~va8bI~
-//                      memcpy(strdata+len-addlen-1,strdata+len-addlen,swidth+addlen);//~va8bR~//+vb30R~
-                        memcpy(strdata+len-addlen-1,strdata+len-addlen,(size_t)(swidth+addlen));//+vb30I~
-//                      memcpy(strdbcs+len-addlen-1,strdbcs+len-addlen,swidth+addlen);//~va8bR~//+vb30R~
-                        memcpy(strdbcs+len-addlen-1,strdbcs+len-addlen,(size_t)(swidth+addlen));//+vb30I~
+//                      memcpy(strdata+len-addlen-1,strdata+len-addlen,swidth+addlen);//~va8bR~//~vb30R~
+                        memcpy(strdata+len-addlen-1,strdata+len-addlen,(size_t)(swidth+addlen));//~vb30I~
+//                      memcpy(strdbcs+len-addlen-1,strdbcs+len-addlen,swidth+addlen);//~va8bR~//~vb30R~
+                        memcpy(strdbcs+len-addlen-1,strdbcs+len-addlen,(size_t)(swidth+addlen));//~vb30I~
                         *(strdata+len+swidth-1)=CHAR_SI;           //~va8bI~
                         *(strdbcs+len+swidth-1)=0;                 //~va8bI~
                     }                                              //~va8bI~
@@ -1599,10 +1618,10 @@ int tc_setlinedatacopy(PUCLIENTWE Ppcw,XECALCPARM *Pparm,PULINEH Pplh,//~va70I~
                     }                                              //~va8bI~
                     if (len-addlen>0 && *sdbcs==UDBCSCHK_DBCS1ST)  //~va8bI~
                     {                                              //~va8bI~
-//                      memmove(strdata+1,strdata,swidth+addlen);  //~va8bI~//+vb30R~
-                        memmove(strdata+1,strdata,(size_t)(swidth+addlen));//+vb30I~
-//                      memmove(strdbcs+1,strdbcs,swidth+addlen);  //~va8bI~//+vb30R~
-                        memmove(strdbcs+1,strdbcs,(size_t)(swidth+addlen));//+vb30I~
+//                      memmove(strdata+1,strdata,swidth+addlen);  //~va8bI~//~vb30R~
+                        memmove(strdata+1,strdata,(size_t)(swidth+addlen));//~vb30I~
+//                      memmove(strdbcs+1,strdbcs,swidth+addlen);  //~va8bI~//~vb30R~
+                        memmove(strdbcs+1,strdbcs,(size_t)(swidth+addlen));//~vb30I~
                         *strdata=CHAR_SO;                          //~va8bI~
                         *strdbcs=0;                                //~va8bI~
                     }                                              //~va8bI~

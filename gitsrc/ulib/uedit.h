@@ -1,8 +1,9 @@
-//CID://+v6xkR~:        update#= 7                                 //+v6xkR~
+//CID://+v6L5R~:        update#=11                                 //~v6L5R~
 //*******************************************************
 //*uedit.h                                                         //~v57WR~
 //*******************************************************
-//v6xk:150115 (BUG:W32)spwanxx deplicated,use _spawnxx(return intptr_t, Linux returns int pid)//+v6xkI~
+//v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~v6L5I~
+//v6xk:150115 (BUG:W32)spwanxx deplicated,use _spawnxx(return intptr_t, Linux returns int pid)//~v6xkI~
 //v6x3:150106 add editFILESZ                                       //~v6x3I~
 //v6x0:150105 BUG:offset value is long long for fseek error msg    //~v6x0I~
 //v6qg:131209 support addtional parm;%0 for filename,%@ all remaining//~v6qgI~
@@ -23,6 +24,18 @@
 //v025:960901:add ugethex                                          //~v025I~
 //950702 add utimeedit                                          //~5702I~
 //*******************************************************       //~5625I~
+#ifdef W32                                                         //~v6L5I~
+	#define SSCANF_UL2L(str,fmt,pnum) \
+        do {                                                   \
+        		ULONG _ul;                                     \
+                sscanf(str,fmt,&_ul);                           \
+       			*pnum=(LONG)_ul;                                \
+		} while(0)                                                 //~v6L5I~
+#else                                                              //~v6L5I~
+	#define SSCANF_UL2L(str,fmt,pnum) \
+	sscanf(str,fmt,pnum);                                          //~v6L5I~
+#endif                                                             //~v6L5I~
+//*******************************************************          //~v6L5I~
 int unumedit(unsigned long Pnum,unsigned char *Ppatern,unsigned char *Pout);//~5702I~
 //******************************************************        //~5702I~
 void *utimeedit(unsigned char *Ppatern,void *Pout);             //~5702R~
@@ -97,5 +110,5 @@ int ugethexdump(int Popt,char *Phex,char *Pbin,int Plen,int *Pchklen);//~v57WI~
 //*******************************************************          //~v6x3I~
 char *ueditFILESZ(int Popt,char *Pout,int Pbuffsz,char *Pfmt,FILESZT Psz);//~v6x3R~
 #define UEFS_KMGT        0x01 //unit by decimal KB,MB,GB if avail  //~v6x3R~
-//*******************************************************          //+v6xkI~
-char *ueditLONGHANDLE(int Popt,char *Pout,int Pbuffsz,char *Pfmt,LONGHANDLE Phandle);//+v6xkI~
+//*******************************************************          //~v6xkI~
+char *ueditLONGHANDLE(int Popt,char *Pout,int Pbuffsz,char *Pfmt,LONGHANDLE Phandle);//~v6xkI~

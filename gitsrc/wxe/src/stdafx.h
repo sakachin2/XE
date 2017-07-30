@@ -1,6 +1,6 @@
-//*CID://+vak7R~:                             update#=   15;       //+vak7R~
-//vak7:130906 redirect memcpy to memmove when overlaped            //+vak7I~
-//            wxe2010\stdafx.h(warning C2732:diffrent linkage option for ustring_memcpy)//+vak7I~
+//*CID://+vak7R~:                             update#=   19;       //~vak7R~
+//vak7:130906 redirect memcpy to memmove when overlaped            //~vak7I~
+//            wxe2010\stdafx.h(warning C2732:diffrent linkage option for ustring_memcpy)//~vak7I~
 //@@64 120623 64bit                                                //~@@64I~
 // stdafx.h : include file for standard system include files,
 //  or project specific include files that are used frequently, but
@@ -80,4 +80,4 @@ extern CAppModule _Module;
                                                                    //~@@@@I~
 #include "mfc.h"                                                   //~@@@@I~
 #include <sys/timeb.h>   //for C4627                               //~@@@@I~
-//#include "ulib.h"                                                  //~@@64I~//+vak7R~
+//#include "ulib.h"                                                  //~@@64I~//~vak7R~

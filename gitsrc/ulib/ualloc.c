@@ -1,7 +1,8 @@
-//CID://+v6J0R~: update#=     64                                   //~v6J0R~
+//CID://+v6L6R~: update#=     65                                   //+v6L6R~
 //*************************************************************
 //*ualloc/ucalloc/ufree/umalloc16/ucalloc16/ufree16/uallocsz
 //************************************************************* //~5A01R~
+//v6L6:170715 msvs2017 warning                                     //+v6L6I~
 //v6J0:170205 malloc udirlist filename to  allow more large number of fine in the dir//~v6J0I~
 //v6Hu:170126 expand max allocsz for udirlist 16M-->32M            //~v6huI~
 //v6G6:161212 (Win10)compiler warning                              //~v6G6I~
@@ -869,8 +870,9 @@ static int Sfreeerr;
     #else                                                          //~v6hhI~
 //                              fprintf(Shfile,"free    :addr=%08lX,len=%08lX,cur-tot=%08lX\n",//~5827R~//~v6hBR~
 //                                             (unsigned long)Paddr,Ssizewk,Smaxlenwk+Smaxlenwk16);//~v053R~//~v6hBR~
-                                fprintf(Shfile,"free    :addr=%08lX,len=%08lX,cur-tot=%08lX,retaddr=%p,hra=%p\n",//~v6hBI~
-                                               (unsigned long)Paddr,Ssizewk,Smaxlenwk+Smaxlenwk16,retaddr,retaddr2);//~v6hBI~
+//                              fprintf(Shfile,"free    :addr=%08lX,len=%08lX,cur-tot=%08lX,retaddr=%p,hra=%p\n",//~v6hBI~//+v6L6R~
+                                fprintf(Shfile,"free    :addr=%08lX,len=%08lX,cur-tot=%08lX,retaddr=%p,hra=%p\n",//+v6L6I~
+                                               (unsigned long)Paddr,Ssizewk,Smaxlenwk+Smaxlenwk16,(void*)retaddr,(void*)retaddr2);//~v6hBI~//+v6L6R~
     #endif                                                         //~v6hhI~
                         }                                                   //~4C24I~
                         else
@@ -1164,7 +1166,7 @@ int ufreesz(void *Ppvoid)
   #if !(defined(ULIB64)||defined(ULIB64X))                         //~v6q9R~
 //  if (freesz>>24)                                                //~v099I~//~v6huR~
 //  if (freesz>>25)                                                //~v6huI~//~v6J0R~
-    if (freesz>MAX_MALLOC)                                         //+v6J0R~
+    if (freesz>MAX_MALLOC)                                         //~v6J0R~
         ufreesizeerr(Ppvoid);                                      //~v099I~
   #endif                                                           //~v6q9M~
     return freesz;                                                 //~v099I~

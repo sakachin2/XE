@@ -1,6 +1,7 @@
-//CID://+vb3wR~:        update#=    4                              //+vb3wR~
+//CID://+vba3R~:        update#=    5                              //+vba3R~
 //******************************************************************************//~v003I~
-//vb3w:160621 w64 compiler warning                                 //+vb3wI~
+//vba3:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//+vba3I~
+//vb3w:160621 w64 compiler warning                                 //~vb3wI~
 //vak7:130906 redirect memcpy to memmove when overlaped            //~vak7I~
 //vafh:120616 for VC10:/W4 warning except C4115,C4214,C4100,C4706,C4244,C4210,C4127,C4245//~vafhI~
 //vafa:120607 (WXE2010)C4700 warning(used uninitialized variable)  //~vafaI~
@@ -329,12 +330,12 @@ static int Srawunicodemode;                                        //~va3WI~
 //***************************                                      //~v003I~
 //  sstat=ugetkbdshiftstatus();                                    //~v55cR~
 UTRACEP("syskeyproc msg=%x,wp=%x,lp=%x\n",Pmessage,wParam,lParam); //~v79zI~
-//  uch=wParam;                                                    //~v003I~//+vb3wR~
-    uch=(UINT)wParam;                                              //+vb3wI~
+//  uch=wParam;                                                    //~v003I~//~vb3wR~
+    uch=(UINT)wParam;                                              //~vb3wI~
     sstat=ugetkbdshiftstatus(uch);                                 //~v55cI~
     rctr=(lParam & 0xffff);	//repeatctr                            //~v003I~
-//  flags=(lParam>>16);                                            //~v003R~//+vb3wR~
-    flags=(UINT)(lParam>>16);                                      //+vb3wI~
+//  flags=(lParam>>16);                                            //~v003R~//~vb3wR~
+    flags=(UINT)(lParam>>16);                                      //~vb3wI~
     if (uch==VK_MENU)                                              //~v003I~
     {                                                              //~va3DI~
         Maltkeyscancode=flags & 0xff;     //scancode for onchar to chk unicode raw code mode//~va3DR~
@@ -528,7 +529,8 @@ int CWxemain::kbdime_getchar(int Popt,HIMC Phimc,UINT Pmsgid,WPARAM wParam,LPARA
     {                                                              //~v79zI~
 	case WM_IME_COMPOSITION:      //conversion start               //~v79zI~
     	himc=(HIMC)Phimc;                                          //~v79zI~
-        pdata=(UCHAR*)(ULONG)Mwxeintf.WXEIimeucs;                  //~v79zI~
+//      pdata=(UCHAR*)(ULONG)Mwxeintf.WXEIimeucs;                  //~v79zI~//+vba3R~
+        pdata=(UCHAR*)(ULPTR)Mwxeintf.WXEIimeucs;                  //+vba3I~
         readlen=ImmGetCompositionStringW(himc,GCS_RESULTSTR,NULL,0);  //get requred len//~v79zR~
         ImmGetCompositionStringW(himc,GCS_RESULTSTR,pdata,readlen);//~v79zR~
     	Mwxeintf.WXEIimeucsctr=readlen/sizeof(USHORT);             //~v79zR~

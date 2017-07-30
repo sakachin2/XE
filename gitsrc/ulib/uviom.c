@@ -1,8 +1,9 @@
-//*CID://+v6K7R~:                             update#= 2011;       //+v6K7R~
+//*CID://+v6L4R~:                             update#= 2015;       //~v6L4R~
 //*************************************************************
-//v6K7:170327 (LNX)compiler warning;wcwidth not defined            //+v6K7I~
-//            wchar.h is included from stdio.h and features.h #undef __USE_XOPEN//+v6K7I~
-//            so #define _XOPEN_SOURCE before srdio.h              //+v6K7I~
+//v6L4:170711 dbcs errmsg corrupted,try outputcharcterw for outputw//~v6L4I~
+//v6K7:170327 (LNX)compiler warning;wcwidth not defined            //~v6K7I~
+//            wchar.h is included from stdio.h and features.h #undef __USE_XOPEN//~v6K7I~
+//            so #define _XOPEN_SOURCE before srdio.h              //~v6K7I~
 //v6Hk:170120 (BUG by 6G0) u-c1 is displayed as "A"(best fit) when noligatutre mode;apply 6G0 for only dbcs//~v6HkI~
 //v6H0:161224 Axe:compile err                                      //~v6H0I~
 //v6G1:161201 WCons:try japanese combineing char u3099,u309a by u309b,u309c-->no effect-->No effect//~v6G1R~
@@ -102,9 +103,9 @@
 //v5nj:081029 (LNX)set unprintable for also >=0x80 (Gpdbcstbl even if DBCS 1st)//~v5njI~
 //v5n8:080916 (CJK)IME support for CJK other than Japanese         //~v5n8I~
 //*************************************************************
-#ifdef LNX                                                         //+v6K7I~
-	#define _XOPEN_SOURCE       //for wcwidth                      //+v6K7I~
-#endif                                                             //+v6K7I~
+#ifdef LNX                                                         //~v6K7I~
+	#define _XOPEN_SOURCE       //for wcwidth                      //~v6K7I~
+#endif                                                             //~v6K7I~
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -117,7 +118,7 @@
 	#else                                //v3.6a                   //~v022M~
 		#include <iconv.h>	         //v1.3 add                    //~v5n8I~
     #ifdef UTF8SUPPH                                               //~v62XM~
-//  	#define __USE_XOPEN         //for wcwidth                  //~v62mM~//+v6K7R~
+//  	#define __USE_XOPEN         //for wcwidth                  //~v62mM~//~v6K7R~
 		#include <wchar.h>                                         //~v62mM~
     #endif                                                         //~v62XI~
 #define _XOPEN_SOURCE_EXTENDED		//ncurses define               //~v5n8I~
@@ -5138,6 +5139,26 @@ int uviowrtcellW1_NonLigatureLineCmd(int Popt,WUCS *Ppucs,int Pucsctr,char *Ppdb
     }                                                              //~v6E8I~
     return rc;                                                     //~v6E8I~
 }//uviowrtcellW1_NonLigatureLineCmd                                //~v6E8R~
+//*******************************************************************************//~v6L4I~
+int uviowrtcellW1_Errmsg(int Popt,PWUCS Ppucs,int Pucsctr,char *Ppdbcs,USHORT *Ppattr,int Plen,SMALL_RECT *Pptgtrect)//~v6L4I~
+{                                                                  //~v6L4I~
+	int ii,wrtlen;                                                 //~v6L4R~
+    USHORT *pattr,attr;                                            //~v6L4R~
+    COORD tgtpos;                                                  //~v6L4I~
+//*******************************                                  //~v6L4I~
+	UTRACEP("%s:ucsctr=%d,len=%d\n",UTT,Pucsctr,Plen);             //+v6L4R~
+	pattr=Ppattr;                                                  //~v6L4I~
+	attr=*pattr++;                                                 //~v6L4I~
+	for (ii=1;ii<Plen;ii++)                                        //~v6L4I~
+    	if (*pattr!=attr)                                          //~v6L4I~
+        	break;                                                 //~v6L4I~
+    if (ii<Plen)                                                   //~v6L4I~
+		return uviowrtcellW1_NonLigatureLineCmd(Popt,Ppucs,Pucsctr,Ppdbcs,Ppattr,Plen,Pptgtrect);//~v6L4I~
+    tgtpos.X=Pptgtrect->Left;                                      //~v6L4I~
+    tgtpos.Y=Pptgtrect->Top;                                       //~v6L4I~
+    uviom_clearlineW(UVIOMCLO_ATTRFILL,0/*data*/,&attr,Plen,tgtpos);//~v6L4I~
+	return uvioWriteConsoleOutputCharacterW(Shconout,Ppucs,Pucsctr,tgtpos,&wrtlen)==0;//+v6L4R~
+}//uviowrtcellW1_Errmsg                                            //~v6L4I~
 //*******************************************************          //~v6E8I~
 //*draw line by one OutputCharacterW if attr indicate printable,else Ligature//~v6E8I~
 //*because OutputCharacter 1 by 1 inserts space between each dbcs  //~v6E8I~
@@ -5218,8 +5239,9 @@ int uviowrtcellW1_NonLigatureLine(int Popt,PWUCS Ppucs,int Pucsctr,char *Ppdbcs,
     }                                                              //~v6EiI~
     if (Popt & UVIOO_ERRMSG)                                       //~v6EiI~
     {                                                              //~v6EiI~
-        UTRACEP("%s:uerrmsg\n",UTT);                               //~v6EiI~
-		return uviowrtcellW1_NonLigatureLineCmd(Popt,Ppucs,Pucsctr,Ppdbcs,pattr,Plen,Pptgtrect);//~v6EiI~
+        UTRACEP("%s:uerrmsg len=%d\n",UTT,Plen);                               //~v6EiI~//~v6L4R~
+//  	return uviowrtcellW1_NonLigatureLineCmd(Popt,Ppucs,Pucsctr,Ppdbcs,pattr,Plen,Pptgtrect);//~v6EiI~//~v6L4R~
+    	return uviowrtcellW1_Errmsg(Popt,Ppucs,Pucsctr,Ppdbcs,pattr,Plen,Pptgtrect);//~v6L4I~
     }                                                              //~v6EiI~
     if (swligature)                                                //~v6E8I~
     {                                                              //~v6EgI~

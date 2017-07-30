@@ -1,3 +1,18 @@
+//*********  20170321 v129Bj updated   ****************
+//vba7:170716 (Bug:Win64bit)upostmsg WPARAM/LPARAM is IntPtr(64bit!=ULONG)
+//            wxecsub.c wxefile.cpp 
+//vba6:170716 (Bug:Win64)tc calc err when opdtype=x(requires word clear)
+//            xecalc2.c xecalc21.c xcalc22.c xefcmd4.c
+//vba5:170716 (Bug)did not chk spawn rc
+//            xedcmd2.c
+//vba4:170715 msvs2017 warning;
+//            xesub.c 
+//vba3:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit,size_t:64bit)
+//            wxe:64bit D&D crash between split screen
+//            wxeview.cpp wxemouse.cpp wxekbd.cpp wxefile.cpp
+//            xecalc22.c xedumpp.c
+//vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx
+//            xe.c xefunct.c xefunc.h xefcmd7.c/h xesub.c xekbchk.c xe.inc (uftp.c/h) xekbchkl.h
 *** update history ******************************************************************
 //vba1:170625 (BUG) syntaxh,podelmtbl overflow crash for long record of xesynl.cfg; expand max cmdlen 256-->512
 //            xesyn2.c/h

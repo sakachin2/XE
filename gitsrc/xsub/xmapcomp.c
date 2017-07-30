@@ -19,7 +19,7 @@
 #include <ufuncmap.h>                                              //~6526I~
 //*******************************************************          //~6526I~
 #define VER "V1.0"   //version                                     //~6526I~
-#define PGM "XMAPCOMP"                                             //+6526R~
+#define PGM "XMAPCOMP"                                             //~6526R~
 //*******************************************************          //~6526I~
 #define USEDID    0x01                                             //~6526I~
 static 	UCHAR *Smapf1,*Smapf2;                                     //~6526I~
@@ -30,14 +30,14 @@ static 	int Sunmatchonly;                                          //~6526R~
 int main(int parmc,char *parmp[])                                  //~6526I~
 {                                                                  //~6526I~
 	PEPATBL  ptb1t,ptb2t,ptb1,ptb2;                                //~6526I~
-    void outp(int Psw,PEPATBL Pptb1,PEPATBL Pptb2);                //~6526I~
+    void printout(int Psw,PEPATBL Pptb1,PEPATBL Pptb2);                //~6526I~//+7727R~
     int ctr1=0,ctr2=0;                                             //~6526R~
 //******************                                               //~6526I~
 	if (parmc<3)                                                   //~6526I~
 	{                                                              //~6526I~
     	printf("%s:%s:size compare by map file\n",PGM,VER);        //~6526R~
     	printf("      %s mapf1 mapf2 [/u]\n",PGM);                 //~6526I~
-    	printf("        /u :display unmatch only\n",PGM);          //~6526I~
+    	printf("        /u :display unmatch only\n");          //~6526I~//+7727R~
 		exit(4);                                                   //~6526I~
 	}                                                              //~6526I~
 	if (parmc>=4)                                                  //~6526I~
@@ -60,18 +60,18 @@ int main(int parmc,char *parmp[])                                  //~6526I~
 		{                                                          //~6526I~
         	if (!stricmp(ptb1->funcname,ptb2->funcname))           //~6526I~
             {                                                      //~6526I~
-                outp(0,ptb1,ptb2);                                 //~6526I~
+                printout(0,ptb1,ptb2);                                 //~6526I~//+7727R~
 	        	*ptb2->funcname=USEDID;                            //~6526I~
                 break;                                             //~6526I~
             }                                                      //~6526I~
 		}                                                          //~6526I~
 		if (!*ptb2->funcname)	//not found                        //~6526I~
-        	outp(1,ptb1,0);                                        //~6526R~
+        	printout(1,ptb1,0);                                        //~6526R~//+7727R~
 	}                                                              //~6526I~
 	for(ptb2=ptb2t;*ptb2->funcname;ptb2++)                         //~6526I~
 	{                                                              //~6526I~
 		if (*ptb2->funcname!=USEDID)                               //~6526I~
-        	outp(2,0,ptb2);                                        //~6526R~
+        	printout(2,0,ptb2);                                        //~6526R~//+7727R~
 	}                                                              //~6526I~
 	printf("\n%s has %d,%s has %d, %d are same size\n",            //~6526R~
 			Smapf1,ctr1,Smapf2,ctr2,Ssamectr);                     //~6526I~
@@ -80,7 +80,7 @@ int main(int parmc,char *parmp[])                                  //~6526I~
 //***********************************************************      //~6526I~
 //***********************************************************      //~6526I~
 //***********************************************************      //~6526I~
-void outp(int Psw,PEPATBL Pptb1,PEPATBL Pptb2)                     //~6526I~
+void printout(int Psw,PEPATBL Pptb1,PEPATBL Pptb2)                     //~6526I~//+7727R~
 {                                                                  //~6526I~
 //************                                                     //~6526I~
 	if (!Psw)                                                      //~6526I~

@@ -1,9 +1,10 @@
-//*CID://+vb50R~:                             update#=  517;       //+vb50R~
+//*CID://+vba2R~:                             update#=  519;       //~vb50R~//~vba2R~
 //*************************************************************
 //*xekbchk.c                                                       //~0924R~//~van6R~
 //*	kbd scan/char chk                                              //~van6R~
 //*************************************************************
-//vb50:160827 accept S+A/C+extended key                            //+vb50I~
+//vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I~
+//vb50:160827 accept S+A/C+extended key                            //~vb50I~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
 //vb4k:160805 vb4f for LNX(specify ligature on/off,combine on/of line by line)//~vb4kI~
 //vb4j:160806 (W32)OPT UNICOMP UNPR was effective only for file contents(chk at tabdisplay)//~vb4jI~
@@ -1890,6 +1891,7 @@ void fcmd2term(void)                                               //~vbCBI~
 int func_findPSP(PUCLIENTWE Ppcw){return 0;}                       //~vbCBR~
 int func_findPSF(PUCLIENTWE Ppcw){return 0;}                       //~vbCBR~
 int func_displayPS(PUCLIENTWE Ppcw){return 0;}                     //~vbCBI~
-int func_revfindPSP(PUCLIENTWE Ppcw){return 0;}                    //+vb50I~
-int func_revfindPSF(PUCLIENTWE Ppcw){return 0;}                    //+vb50I~
+int func_revfindPSP(PUCLIENTWE Ppcw){return 0;}                    //~vb50I~
+int func_revfindPSF(PUCLIENTWE Ppcw){return 0;}                    //~vb50I~
+char *funcsp_search(int Popt,char *Ppname){return 0;}              //~vba2I~
 #endif//UTF8SUPPH                                                  //~va50I~

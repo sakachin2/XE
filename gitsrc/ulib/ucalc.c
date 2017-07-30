@@ -1,8 +1,10 @@
-//*CID://+v6K5R~:                             update#=  444;       //+v6K5R~
+//*CID://+v6L8R~:                             update#=  449;       //+v6L8R~
 //*************************************************************
 //*xecalc.c
 //* basic calc
 //*************************************************************
+//v6L8:170716 (Bug:64)O calc err(addr was set as numvalue)         //+v6L8I~
+//v6L7:170716 X calc err(need work clear)                          //~v6L7I~
 //v6K6:170320 (BUG)calc_time, hh>0x7fff was cut                    //~v6K6I~
 //v6K5:170320 output days when hour>24                             //~v6K5I~
 //v6K4:170319 (BUG)time dword calc crash(operand value was not init)//~v6K4I~
@@ -2665,6 +2667,7 @@ int bc_getvalueLL(int Popt,char *Popd,SLPTR *Pvalue,int *Pdatatype,int *Pdatatyp
 	int rc,ii;                                                     //~vafkI~//~v6hhI~
     long   lv[4];   //constant value                               //~vafkR~//~v6hhI~
 //****************                                                 //~vafkM~//~v6hhI~
+    memset(lv,0,sizeof(lv));                                       //~v6L7I~
 	rc=bc_getvalue(Popt,Popd,lv,Pdatatype,Pdatatyped);//0:no dwordup//~vafkR~//~v6hhI~
     for (ii=0;ii<4;ii++)                                           //~vafkM~//~v6hhI~
     {                                                              //~vafkM~//~v6hhI~
@@ -2678,6 +2681,7 @@ int bc_getxdwLL(char *Popd,SLPTR *Pvalue)                          //~v6hhI~
 	int rc,ii;                                                     //~v6hhI~
     long   lv[4];   //constant value                               //~v6hhI~
 //****************                                                 //~v6hhI~
+    memset(lv,0,sizeof(lv));                                       //~v6L7I~
 	rc=bc_getxdw(Popd,lv);//0:no dwordup                           //~v6hhI~
     for (ii=0;ii<4;ii++)                                           //~v6hhI~
     {                                                              //~v6hhI~
@@ -2747,7 +2751,8 @@ int ucalc_o2lLL(char *Pdata,SLPTR *Pldata,int Plen)                //~v6hhR~
     long   lv[4];   //constant value                               //~v6hhI~
 //****************                                                 //~v6hhI~
 	rc=ucalc_o2l(Pdata,lv,Plen);                                   //~v6hhI~
-    Pldata[0]=(SLPTR)lv;                                           //~v6hhR~
+//  Pldata[0]=(SLPTR)lv;                                           //~v6hhR~//+v6L8R~
+    Pldata[0]=(SLPTR)lv[0];                                        //+v6L8I~
     return rc;                                                     //~v6hhI~
 }//ucalc_o2lLL                                                     //~v6hhI~
 //*******************************************************          //~v6hhI~
@@ -2756,6 +2761,7 @@ int ucalc_gettimevalueLL(char *Pdata,int Plen,SLPTR *Pvalue)       //~v6hhI~
 	int rc,ii;                                                     //~v6hhI~
     long   lv[4];   //constant value                               //~v6hhI~
 //****************                                                 //~v6hhI~
+    memset(lv,0,sizeof(lv));                                       //~v6L7I~
 	rc=ucalc_gettimevalue(Pdata,Plen,lv);                          //~v6hhI~
     for (ii=0;ii<4;ii++)                                           //~v6hhI~
     {                                                              //~v6hhI~
@@ -2769,6 +2775,7 @@ int bc_getldLL(int Popt,char *Pdata,SLPTR *Pvalue)                    //~v5djR~/
 	int rc,ii;                                                     //~v6hhI~
     long   lv[4];   //constant value                               //~v6hhI~
 //****************                                                 //~v6hhI~
+    memset(lv,0,sizeof(lv));                                       //~v6L7I~
 	rc=bc_getld(Popt,Pdata,lv);                                    //~v6hhR~
     for (ii=0;ii<4;ii++)                                           //~v6hhI~
     {                                                              //~v6hhI~
@@ -2829,11 +2836,14 @@ int ucalc_editnumLL(int Popt,char *Pout,SLPTR *Pvalue)             //~v6hhI~
     return rc;                                                     //~v6hhI~
 }//ucalc_editnumLL                                                 //~v6hhI~
 //*******************************************************          //~v6hhI~
+//*no caller by datatype                                           //~v6L7I~
+//*******************************************************          //~v6L7I~
 int ucalc_getunderpointdataLL(int Popt,char *Pdata,int Plen,SLPTR *Pvalue)//~v6hhI~
 {                                                                  //~v6hhI~
 	int rc,ii;                                                     //~v6hhI~
     long   lv[4];   //constant value                               //~v6hhI~
 //****************                                                 //~v6hhI~
+    memset(lv,0,sizeof(lv));                                       //~v6L7I~
 	rc=ucalc_getunderpointdata(Popt,Pdata,Plen,lv);                //~v6hhI~
     for (ii=0;ii<4;ii++)                                           //~v6hhI~
     {                                                              //~v6hhI~

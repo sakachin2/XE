@@ -1,5 +1,6 @@
-//*CID://+vb3wR~:                             update#=  232;       //~vb3wR~
+//*CID://+vba3R~:                             update#=  234;       //+vba3R~
 //***************************************************************************//~v516I~
+//vba3:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit)     //~vba3I~
 //vb3w:160621 w64 compiler warning                                 //~vb3wI~
 //vavC:140430 change Dialog to modeal                              //~vak7I~
 //vak7:130906 redirect memcpy to memmove when overlaped            //~vak7I~
@@ -255,11 +256,11 @@ LRESULT CWxeView::DefWindowProcW(UINT message, WPARAM wParam, LPARAM lParam)//~@
 {                                                                  //~@@@@I~
     BOOL rc;                                                       //~@@@@I~
 //**************************                                       //~@@@@I~
-//  rc=CWxeView::DefWindowProc(message,wParam,lParam);             //~@@@@I~//+vb3wR~
-    rc=(BOOL)CWxeView::DefWindowProc(message,wParam,lParam);       //+vb3wI~
+//  rc=CWxeView::DefWindowProc(message,wParam,lParam);             //~@@@@I~//~vb3wR~
+    rc=(BOOL)CWxeView::DefWindowProc(message,wParam,lParam);       //~vb3wI~
     SetMsgHandled(rc);	//reset action by MESSAGE_RANGE_HANDLER_EX //~@@@@R~
-//  return rc;                                                     //~@@@@I~//+vb3wR~
-    return (LRESULT)rc;                                            //+vb3wI~
+//  return rc;                                                     //~@@@@I~//~vb3wR~
+    return (LRESULT)rc;                                            //~vb3wI~
 }                                                                  //~@@@@I~
 LRESULT CWxeView::DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
 {
@@ -281,7 +282,8 @@ LRESULT CWxeView::DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam)
     	UTRACEP("syskeyproc returned FALSE\n");                    //~v79zI~
     }                                                              //~v79zI~
 	if  (message==WM_MOUSEACTIVATE)                                //~2A13R~
-	 	if (wParam!=(ULONG)(Mpmainframewnd->m_hWnd))               //~2A13R~
+//   	if (wParam!=(ULONG)(Mpmainframewnd->m_hWnd))               //~2A13R~//~vba3R~
+     	if (wParam!=(ULPTR)(Mpmainframewnd->m_hWnd))               //~vba3I~
 //      	return MA_NOACTIVATE;                                  //~2A13R~
         	return MA_NOACTIVATEANDEAT;                            //~2A13R~
 	if  (message==WM_IME_STARTCOMPOSITION //open                   //~3104R~

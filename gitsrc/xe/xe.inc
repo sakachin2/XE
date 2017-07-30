@@ -356,6 +356,7 @@ $(OBJDIR)$(PGM1).LIB : \
   $(OBJDIR)xefcmd43.OBJ \
   $(OBJDIR)xefcmd5.OBJ \
   $(OBJDIR)xefcmd6.OBJ \
+  $(OBJDIR)xefcmd7.OBJ \
   $(OBJDIR)xefile.OBJ \
   $(OBJDIR)xefile12.OBJ \
   $(OBJDIR)xefile13.OBJ \
@@ -493,6 +494,7 @@ $(OBJDIR)$(PGM1).LIB : \
      $(OBJDIR)xefcmd43.OBJ $(CONCAT)
      $(OBJDIR)xefcmd5.OBJ $(CONCAT)
      $(OBJDIR)xefcmd6.OBJ $(CONCAT)
+     $(OBJDIR)xefcmd7.OBJ $(CONCAT)
      $(OBJDIR)xefile.OBJ $(CONCAT)
      $(OBJDIR)xefile12.OBJ $(CONCAT)
      $(OBJDIR)xefile13.OBJ $(CONCAT)

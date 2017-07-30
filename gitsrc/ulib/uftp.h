@@ -1,7 +1,8 @@
-//*CID://+v6J0R~:                             update#=  355;       //~v6J0R~
+//*CID://+v6L3R~:                             update#=  356;       //+v6L3R~
 //******************************************************
 //*uftp.h                                                          //~v5ncR~
 //******************************************************
+//v6L3:170710 add SP cmd to register shortcut path name and use by  sp:xxx//+v6L3I~
 //v6J0:170205 malloc udirlist filename to  allow more large number of fine in the dir//~v6J0I~
 //v6H5:170106 maxpath for ftp 512-->4096(same as linux)            //~v6H5I~
 //v6E5:160721 expand ::xehost file ipaddr field for addr by url    //~v6E5I~
@@ -62,6 +63,10 @@ typedef int (FTPCMD_CALLBACK)(FILE *,void *Ppvoid);	//uftpcmd callback func//~v5
                                                                    //~v59dI~
 #define FTP_WINDOWSZ  65536 	//default ftp windowsize           //~v5dzR~
 #define FTP_REMOTEID  ':'		//remote fine name seperater       //~v59dM~
+                                                                   //+v6L3I~
+#define FTP_SHORTPATH_ID        "SP"                               //+v6L3I~
+#define FTP_SHORTPATH_PREFIX    FTP_SHORTPATH_ID ":"               //+v6L3I~
+                                                                   //+v6L3I~
 #define FTP_ROOTUSER    "root"                                     //~v59dI~
 #define FTP_HDIRMASK    0xffffff00 	//hdir chk mask for FTP        //~v59dI~
 #define FTP_HDIRIDXMASK 0x000000ff 	//hdir table index mask for FTP//~v59dI~
@@ -373,5 +378,5 @@ int uftpgetpathname(char *Pfpath,char *Ppath,int Plen);            //~v6d1I~
 int uftp_udirlist_setname(int Popt,PUFTPHOST Ppuftph,PUDIRLIST Ppudl,char *Pname,size_t Pnamefldsz);//~v6H5R~
 //******************************************************           //~v6J0I~
 int uftpslinkcomp(const void *ent1,const void *ent2);              //~v6J0I~
-#define FTP_SORTTYPE_SLINK 'f'                                     //+v6J0I~
+#define FTP_SORTTYPE_SLINK 'f'                                     //~v6J0I~
 #endif //FTPSUPP                                                   //~v59dI~

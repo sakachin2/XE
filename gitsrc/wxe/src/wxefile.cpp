@@ -1,6 +1,8 @@
-//CID://+vb3wR~:      update#=      4                              //+vb3wR~
+//CID://+vba7R~:      update#=      7                              //~vba7R~
 //******************************************************************************//~v003I~
-//vb3w:160621 w64 compiler warning                                 //+vb3wI~
+//vba7:170716 (Bug:64bit)upostmsg WPARAM/LPARAM is IntPtr(64bit!=ULONG)//~vba7I~
+//vba3:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~vba3I~
+//vb3w:160621 w64 compiler warning                                 //~vb3wI~
 //vak7:130906 redirect memcpy to memmove when overlaped            //~vak7I~
 //v76j:070626 (WXEXXE)dnd by paste to utility panel                //~v76jI~
 //v76g:070620 utility panel(3.14:grep and 3.12:compare);f5:open dirlist, dlcmd "^":send//~v76gI~
@@ -237,7 +239,9 @@ int  CWxefile::filepostcopybydndmsg(int Popt,HDROP Phd,char *Ptarget)//~v686R~
 UTRACEP("dragdrop postmag fileno=%d,t=%s\n",fileno,Ptarget);       //~v685R~
     parm2=(1<<16)|fileno;	//seq & total                          //~v685R~
     parm2|=Popt;                                                   //~v686I~
-	return upostmsg(ID_FILE_DNDCOPY,(ULONG)pc0,parm2);             //~v685R~
+//  return upostmsg(ID_FILE_DNDCOPY,(ULONG)pc0,parm2);             //~v685R~//~vba3R~
+//  return upostmsg(ID_FILE_DNDCOPY,(ULPTR)pc0,parm2);             //~vba3I~//~vba7R~
+    return upostmsg(ID_FILE_DNDCOPY,(ULPTR)pc0,(ULPTR)parm2);      //~vba7I~
 }//filepostcopybydnd                                               //~v685I~
 //===============================================================================//~v685I~
 //execute copy by post msg                                         //~v685R~
@@ -253,8 +257,8 @@ BOOL  CWxefile::filecopybydnd(WPARAM Pcmdparm1,LPARAM Pcmdparm2)   //~v685R~
     Pcmdparm2 &= ~DROPFILE_FLAGMASK;                               //~v686R~
     if (flag & DROPFILE_REP)                                       //~v686I~
     	opt|=DNDCOPY_REP;                                          //~v686I~
-//  seq=Pcmdparm2>>16;                                             //~v685I~//+vb3wR~
-    seq=(int)(Pcmdparm2>>16);                                      //+vb3wI~
+//  seq=Pcmdparm2>>16;                                             //~v685I~//~vb3wR~
+    seq=(int)(Pcmdparm2>>16);                                      //~vb3wI~
     tot=Pcmdparm2&0xffff;                                          //~v685I~
 	tgt=(char*)Pcmdparm1;                                          //~v685I~
     src=tgt+strlen(tgt)+1;                                         //~v685R~
@@ -270,7 +274,8 @@ UTRACEP("@@@@dragdrop rc=%d\n",rc);                                //~v685I~
     	seq++;                                                     //~v685I~
         nextseq=(seq<<16)|tot;                                     //~v685I~
         nextseq|=flag;                                             //~v686I~
-		upostmsg(ID_FILE_DNDCOPY,(ULONG)Pcmdparm1,nextseq);        //~v685I~
+//  	upostmsg(ID_FILE_DNDCOPY,(ULONG)Pcmdparm1,nextseq);        //~v685I~//~vba7R~
+    	upostmsg(ID_FILE_DNDCOPY,(ULPTR)Pcmdparm1,(ULPTR)nextseq); //~vba7I~
     }                                                              //~v685I~
     invalidate();                                                  //~@@@@R~
 	return rc;                                                     //~v685I~

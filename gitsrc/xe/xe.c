@@ -1,8 +1,9 @@
-//*CID://+vb8aR~:                              update#=  406;      //+vb8aR~
+//*CID://+vba2R~:                              update#=  409;      //~vb8aR~//~vba2R~
 //*************************************************************
 //*XE.c*                                                           //~v641R~
 //*************************************************************
-//vb8a:170218 use xe_wd when /W option is for root dir(d:\xe_wd if /wd:)//+vb8aI~
+//vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I~
+//vb8a:170218 use xe_wd when /W option is for root dir(d:\xe_wd if /wd:)//~vb8aI~
 //vb7p:170119 no longname errmsg at dlcmdterm                      //~vb7pI~
 //vb2X:160404 display -Ccp value on optcombine help                //~vb2XI~
 //vb2V:160404 (Bug of vb2M) trace filename was changed by vb2M     //~vb2VI~
@@ -299,6 +300,7 @@
 #endif                                                             //~va00M~
 #include "xeebc.h"                                                 //~va50I~
 #include "xearm.h"                                                 //~va90I~
+#include "xefcmd7.h"                                               //~vba2I~
 //*******************************************************
 #define NULLCOMP 256                                            //~v01cI~
 //*******************************************************       //~4C19I~
@@ -782,6 +784,7 @@ if (Preqtype==WXE_REQ_INIT)                                        //~v501I~
     scrinit(Sscrparm);                                             //~v47rI~
     paninit();                                                  //~v032I~
     kbdinit();
+    funcsp_init(0);                                                //+vba2R~
     dcmdinit(0);                                                   //~v781R~
 #ifdef UNX                                                         //~v19FI~
     dlcmdundelinit();   //undel top dirname edit by userid         //~v19FI~
@@ -839,6 +842,7 @@ if (Preqtype==WXE_REQ_TERM)                                        //~v500I~
         func_ini(0);    //update write                             //~v0itI~
     dlcmdundelterm();   //undelete housekeeping                 //~v05uI~
     dcmdterm(); //clear temporary stdout redirect file          //~v06nI~
+    funcsp_term(0);                                                //~vba2I~
     fileterm(); //must before scrterm                           //~5224R~
 #ifdef FTPSUPP                                                     //~v53UI~
     xeftpterm();        //undel top dirname edit by userid         //~v53UI~
@@ -1489,10 +1493,10 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
 //**************************                                       //~v79zI~
             case 'W':                                              //~v79zI~
                 strcpy(Gworkdir,cptr);                             //~v79zI~
-#ifdef W32                                                         //+vb8aI~
-                if (ROOTDIR_LOCAL(Gworkdir))                       //+vb8aI~
-                    strcpy(Gworkdir+3,XE_WKDIR+3);                 //+vb8aI~
-#endif                                                             //+vb8aI~
+#ifdef W32                                                         //~vb8aI~
+                if (ROOTDIR_LOCAL(Gworkdir))                       //~vb8aI~
+                    strcpy(Gworkdir+3,XE_WKDIR+3);                 //~vb8aI~
+#endif                                                             //~vb8aI~
                 break;                                             //~v79zI~
 //**************************                                       //~v79zI~
 //* set option     */Y                                             //~v79zI~

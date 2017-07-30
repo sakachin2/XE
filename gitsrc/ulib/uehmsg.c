@@ -1,4 +1,4 @@
-//CID://+v6F1R~:     update#=     42                               //~v6F1R~
+//CID://+v6F1R~:     update#=     43                               //~v6F1R~
 // *******************************************************************
 // * uehmsg.c
 // * ‹@”\ŠT—v   : exception handler set/unset,exception handler itself
@@ -1125,7 +1125,7 @@ int uehstacktracemsg(int Popt,void *Pexceptionaddr,char *Pmsgout)  //~v6F1R~
         	break;                                                 //~v6F1I~
         UTRACEP("%s:SymFromAddress rc=%d,addr=%p,lasterr=%d\n",UTT,rc2,stack[ii],GetLastError());//~v6F1I~
         UTRACED("link addr symbol",symbol,(int)sizeof(IMAGEHLP_SYMBOL64)+SYM_MAX_NAMELEN);//~v6F1R~
-        len=sprintf(pc,"%2d: at %p called %p:%s\n",ii,stack[ii+1],symbol->Address,symbol->Name);//+v6F1R~
+        len=sprintf(pc,"%2d: at %p called %p:%s\n",ii,stack[ii+1],(void*)symbol->Address,symbol->Name);//+v6F1R~
         pc+=len;                                                   //~v6F1I~
         msglen+=len;                                               //~v6F1I~
     }                                                              //~v6F1I~

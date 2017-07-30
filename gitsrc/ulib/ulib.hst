@@ -1,4 +1,18 @@
 *** update history ******************************************************************
+//*********  20170321 v129Bj update d   ****************
+//v6L8:170716 (Bug:64)O calc err(addr was set as numvalue)
+//            ualloc.c
+//v6L7:170716 (Bug:64)X calc err(need work clear)
+//            ualloc.c
+//v6L6:170715 msvs2017 warning
+//            ualloc.c
+//v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)
+//            ulibdefc.h uedit.h ucvext.c uproc22.c ukbdw.c uvio.c
+//v6L4:170711 dbcs errmsg corrupted,try outputcharcterw for outputw
+//            uviom.c
+//v6L3:170710 add SP cmd to register shortcut path name and use by  sp:xxx
+//            uftp.c/h
+//*********  20170321 v129A released   ****************
 //v6L2:170624 (Win) add msi as executable
 //            uproc.c
 //v6L1:170624 (BUG:win64bit) "&" dirlist cmd 0c4(ptr size4 and 8)

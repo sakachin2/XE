@@ -1,9 +1,10 @@
-//*CID://+vb96R~:                             update#=  296;       //+vb96R~
+//*CID://+vba2R~:                             update#=  297;       //+vba2R~
 //*************************************************************
 //*xefunct.c                                                       //~v663R~
 //* func definition tbl                                         //~5216R~
 //************************************************************* //~v020I~
-//vb96:170305 regist cmd for A+";"=LIG, A+":"=CMB(that key combination is not effective on Axe usb kbd)//+vb96I~
+//vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//+vba2I~
+//vb96:170305 regist cmd for A+";"=LIG, A+":"=CMB(that key combination is not effective on Axe usb kbd)//~vb96I~
 //vb53:160903 add A+PGDN/A+PGUP to end_of_file and top_of_file     //~vb53R~
 //vb51:160827 (Bug)funct description have not to be space embedding(ini file proc err)//~vb51I~
 //vbCC:160825 (Bug)F5 with operand is missing chk INX cmd verb     //~vbCCI~
@@ -1415,6 +1416,11 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
 		"","",                                                     //~v48fI~
   		{KEY_A_q  	,0,0,0},                                       //~v48fI~
 		{FTDMYF,0,0,0},NULL_LAST	},                             //~v76gR~
+	{"Short-Path"    ,"短縮パス名"    ,                            //+vba2I~
+        FUNCID_SHORTPATH,                                          //+vba2I~
+        FTFCMDONLY,0,          //flag,char,                        //+vba2I~
+		{func_shortpath,func_shortpath,func_shortpath},            //+vba2I~
+		"SP","",NULL_CMDONLY},                                     //+vba2I~
 #ifdef FTPSUPP                                                     //~v78ZI~
 	{"3270-Hotkey"    ,"3270ホットキー"    ,                       //~v78ZR~
         FUNCID_TSOHOTKEY,                                          //~v78ZI~
@@ -1535,16 +1541,16 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
         FUNCID_COMBINE,                                            //~va30I~
         0,0,          //flag,char,                                 //~va30I~
 		{func_optcombine,func_optcombine,func_optcombine},         //~va30I~
-//  	"","",                                                     //~va30I~//+vb96R~
-    	"CMB","",                                                  //+vb96I~
+//  	"","",                                                     //~va30I~//~vb96R~
+    	"CMB","",                                                  //~vb96I~
 //  	{KEY_A_SLASH,0,0,0},NULL_NOFLAG},                          //~va3dR~
     	{KEY_A_COLON,0,0,0},NULL_NOFLAG},                          //~va3dI~
 	{"Temp-Ligature-Opt"       ,"Ligature-一時的変更",             //~va3dR~
         FUNCID_LIGATURE,                                           //~va3dI~
         0,0,          //flag,char,                                 //~va3dI~
 		{func_optligature,func_optligature,func_optligature},      //~va3dR~
-//  	"","",                                                     //~va3dI~//+vb96R~
-    	"LIG","",                                                  //+vb96I~
+//  	"","",                                                     //~va3dI~//~vb96R~
+    	"LIG","",                                                  //~vb96I~
     	{KEY_A_SEMICOLON,0,0,0},NULL_NOFLAG},                      //~va3dI~
 #endif                                                             //~va30I~
 	{"CapsLock"          ,"大文字固定" ,                           //~v69JI~

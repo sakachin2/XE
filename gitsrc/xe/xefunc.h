@@ -1,8 +1,9 @@
-//*CID://+vb55R~:                             update#=  145;       //+vb55R~
+//*CID://+vba2R~:                             update#=  146;       //+vba2R~
 //*********************************************************************
 //* xefunc.h
 //*********************************************************************
-//vb55:160904 old func-key def on ::xe.in reset new added default key of xefunct//+vb55I~
+//vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//+vba2I~
+//vb55:160904 old func-key def on ::xe.in reset new added default key of xefunct//~vb55I~
 //vb50:160827 accept S+A/C+extended key                            //~vb50I~
 //vbCC:160825 (Bug)F5 with operand is missing chk INX cmd verb     //~vbCCI~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
@@ -223,6 +224,7 @@ typedef int (FTFUNC)(FUNCPARMS);
 #define FUNCID_DISPLAYPS   132                                     //~vbCBI~
 #define FUNCID_REVRFINDPSP 133                                     //~vb50R~
 #define FUNCID_REVRFINDPSF 134                                     //~vb50R~
+#define FUNCID_SHORTPATH   135                                     //+vba2I~
 #define FUNCID_DOS         140                                  //~5521R~
 #define FUNCID_CSRSTEP     141                                  //~5521R~
 #define FUNCID_CID         142                                  //~5521R~
@@ -635,6 +637,7 @@ typedef int (FTFUNC)(FUNCPARMS);
 	FTFUNC func_revfindPSP;                                        //~vb50R~
 	FTFUNC func_revfindPSF;                                        //~vb50R~
 	FTFUNC func_displayPS;                                         //~vbCBI~
+	FTFUNC func_shortpath;                                         //+vba2I~
                                                                 //~5224I~
 //************************************                          //~5224M~
 //*function key asignment table                                 //~5224M~
@@ -677,7 +680,7 @@ typedef struct _FUNCTBL                                         //~5224M~
 #define FTCTLC			0x04		//Ctrl+char key(optional use)  //~v55jI~
 #define FTDUPER			0x80		//duplicated asign err      //~5224M~
 #define FTKEYER			0x40		//invalid key used          //~5224M~
-#define FTUPDATEINI		0x20		//control update by xe.ini file//+vb55I~
+#define FTUPDATEINI		0x20		//control update by xe.ini file//~vb55I~
 //  	char   FTcmdlen;			//command compair string len   //~v0iuR~
 //  	char   FTcmdalen;			//command compair string len   //~v0iuR~
 //      struct _FUNCTBL* FTdupnext;	//one of key duplicated assigned//~v76iR~

@@ -1,4 +1,4 @@
-//CID://+van0R~:         update#     =1                            //~van0R~
+//CID://+vba3R~:         update#     =1                            //~vba3R~
 // ******************************************************************
 // *: xedumpp.C                                         //~v1.4R~  //~vafcR~
 // *: batch program:edit print attic dump file                     //~vafcR~
@@ -17,6 +17,7 @@
 //#define VER    "V1.h"        //version                           //~v10hR~
 #define VER    "V2.2"        //version                             //~v10hI~//~van0R~
 // **********************************************/                 //~v1.4I~
+//vba3:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit,size_t:64bit)//~vba3I~
 //van0:131127 Assertion fails by %n on sprintf;                    //~van0I~
 //vafc:120607 C4701 warning(used uninitialized variable) by VC6    //~vafcI~
 //v79z:080916 DBCS tbl for C and K of CJK                          //~v10hI~
@@ -961,7 +962,8 @@ void printdmphdr(void)
 #else                                                              //~v1.4M~
   sprintf(Line,
           "\n%08X==TID=%s:\"%-16.16s\"  %02x-%02x-%02x %02x:%02x:%02x.%02x\
- A=%08X L=%08X\n",
+ A=%08p L=%08X\n",                                                 //~vba3I~
+//A=%08X L=%08X\n",                                                //+vba3M~
 #endif                                                             //~v1.4I~
 #ifdef DPMI					//DPMI version                         //~v1.7I~
           (UINT)Rechpos,                                           //~v1.7R~
@@ -1024,8 +1026,8 @@ void printdump(void* addr,ULONG len,void* area)
 #endif                                                             //~v1.4I~
   UCHAR *pcdata;            /*actual source  addr*/  
   UCHAR *ln1,*ln2;          /*line ptr*/        
-//static UCHAR trt[16]="0123456789ABCDEF";/*hex cnv tbl*/          //+van0R~
-  static UCHAR trt[17]="0123456789ABCDEF";/*hex cnv tbl*/ //avoid compiler warning "could not include null terminator"//+van0I~
+//static UCHAR trt[16]="0123456789ABCDEF";/*hex cnv tbl*/          //~van0R~
+  static UCHAR trt[17]="0123456789ABCDEF";/*hex cnv tbl*/ //avoid compiler warning "could not include null terminator"//~van0I~
 //*********************                   
 #ifdef DOS                                                         //~v1.4I~
     #ifdef DPMI					//DPMI version                     //~v1.7R~
@@ -1063,7 +1065,8 @@ void printdump(void* addr,ULONG len,void* area)
             Pudmphdr->UDMPlenparm);                                //~v1.4I~
     #endif                      //DPMI or not                      //~v1.7R~
 #else                                                              //~v1.4I~
-    sprintf(Line,"\n--------  TID=%s:\"%-16.16s\"   ADDR=%08X LEN=%08X ----\n",
+//  sprintf(Line,"\n--------  TID=%s:\"%-16.16s\"   ADDR=%08X LEN=%08X ----\n",//~vba3R~
+    sprintf(Line,"\n--------  TID=%s:\"%-16.16s\"   ADDR=%08p LEN=%08X ----\n",//~vba3I~
             Recthreadid,Rectitle,
             Pudmphdr->UDMPaddrparm,
             Pudmphdr->UDMPlenparm);
@@ -1109,7 +1112,8 @@ void printdump(void* addr,ULONG len,void* area)
               "%08x to %08x is same as above\n",                   //~v1.7R~
               (UINT)(Samestart+Dumpwidth),(UINT)(pc-1));           //~v1.7I~
 #else                       //not DPMI                             //~v1.7I~
-              "%08lX to %08lX is same as above\n",                 //~v1.4R~
+//            "%08lX to %08lX is same as above\n",                 //~v1.4R~//~vba3R~
+              "%08p to %08p is same as above\n",                   //~vba3I~
               Samestart+Dumpwidth,pc-1);
 #endif                      //DPMI or not                          //~v1.7M~
       putline(Sameline,0);

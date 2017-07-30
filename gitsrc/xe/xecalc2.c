@@ -1,8 +1,9 @@
-//*CID://+vb30R~:                                   update#=  109; //~vb30R~
+//*CID://+vba6R~:                                   update#=  111; //~vb30R~//+vba6R~
 //*************************************************************
 //*xecalc2.c
 //* table calc(TC cmd)                                             //~va50R~
 //*************************************************************
+//vba6:170716 (Bug)tc calc err when opdtype=x(requires word clear) //+vba6I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vaz8:150109 C4244 except ULPTR and ULONG                         //~vaz8I~
 //vafk:120624 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  use ULPTR(unsigned __int64/ULONG)//~vafkI~
@@ -397,7 +398,7 @@ static char *Sopcode="+-*/%=~";                                    //~v535I~
     memset(Pparm,0,sizeof(XECALCPARM)*PARM_TBLSZ);                 //~va70R~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
 //  Pparm[PARM_EBC_HANDLE]=pfh->UFHhandle;                         //~va79I~//~vb30R~
-    Pparm[PARM_EBC_HANDLE]=(XECALCPARM)pfh->UFHhandle;             //+vb30R~
+    Pparm[PARM_EBC_HANDLE]=(XECALCPARM)pfh->UFHhandle;             //~vb30R~
     if (PFH_ISEBC(pfh))                                            //~va50R~
     {                                                              //~va79I~
     	Pparm[PARM_OPTION]|=PARM_EBCFILE;	//implicit parm        //~va50I~
@@ -595,8 +596,8 @@ static char *Sopcode="+-*/%=~";                                    //~v535I~
 			if (ch!='L')                                           //~v51mI~
 				if (!(ch=tc_chkdatatype(ch)))                      //~v51mI~
 					return errinvalid(pc);                         //~v51mR~
-//          *(Pparm+PARM_KEYDATATYPE)=ch;  //target conversion type//~v51mI~//+vb30R~
-            *(Pparm+PARM_KEYDATATYPE)=(XECALCPARM)ch;  //target conversion type//+vb30I~
+//          *(Pparm+PARM_KEYDATATYPE)=ch;  //target conversion type//~v51mI~//~vb30R~
+            *(Pparm+PARM_KEYDATATYPE)=(XECALCPARM)ch;  //target conversion type//~vb30I~
             pc++;	//to chk next is null                          //~v51mM~
             break;                                                 //~v51mI~
         }
@@ -662,8 +663,8 @@ static char *Sopcode="+-*/%=~";                                    //~v535I~
 					errinvalid(pc);
             	pc++;
 			}
-//          *(Pparm+PARM_KEYDATATYPE)=cdatatype;   //distance      //+vb30R~
-            *(Pparm+PARM_KEYDATATYPE)=(XECALCPARM)cdatatype;   //distance//+vb30I~
+//          *(Pparm+PARM_KEYDATATYPE)=cdatatype;   //distance      //~vb30R~
+            *(Pparm+PARM_KEYDATATYPE)=(XECALCPARM)cdatatype;   //distance//~vb30I~
 //key column
 //      	if (tc_getnumrange(pc,&pos1,&pos2,&pc2)                //~v40RR~
         	if (tc_getnumrange_f(pc,&pos1,&pos2,&pc2))             //~v40RR~
@@ -671,10 +672,10 @@ static char *Sopcode="+-*/%=~";                                    //~v535I~
     			return errinvalid(pc);
             pckey=pc;		//for later err msg                    //~v40RR~
             *(Pparm+PARM_BREAKTYPE)=PARM_BREAK_KEY;  //subsum by key
-//          *(Pparm+PARM_KEYCOL1)=(int)pos1-1;     //offset        //+vb30R~
-            *(Pparm+PARM_KEYCOL1)=((XECALCPARM)pos1-1);     //offset//+vb30I~
-//          *(Pparm+PARM_KEYCOL2)=(int)pos2;   //next offset       //+vb30R~
-            *(Pparm+PARM_KEYCOL2)=(XECALCPARM)pos2;   //next offset//+vb30I~
+//          *(Pparm+PARM_KEYCOL1)=(int)pos1-1;     //offset        //~vb30R~
+            *(Pparm+PARM_KEYCOL1)=((XECALCPARM)pos1-1);     //offset//~vb30I~
+//          *(Pparm+PARM_KEYCOL2)=(int)pos2;   //next offset       //~vb30R~
+            *(Pparm+PARM_KEYCOL2)=(XECALCPARM)pos2;   //next offset//~vb30I~
             breakeqsw=1;    //default ascending key                //~v53DI~
             switch(*pc2)                                           //~v53DI~
             {                                                      //~v53DI~
@@ -709,6 +710,7 @@ static char *Sopcode="+-*/%=~";                                    //~v535I~
 
 					pc++;
 				}
+                memset(wkl,0,sizeof(wkl));                         //+vba6R~
 //      		if (tc_getlinedata(&gdatatype,pc,(int)strlen(pc),wkl)  //key value//~v57JR~
 #ifdef UTF8UCS2                                                    //~va20R~
 //*!ebc,cmd string                                                 //~va50I~
@@ -730,8 +732,8 @@ static char *Sopcode="+-*/%=~";                                    //~v535I~
               default:                                             //~v53DI~
                 *(Pparm+PARM_BREAKTYPE)=PARM_BREAK_KEYGRP;  //subsum by key
               }                                                    //~v53DI~
-//              *(Pparm+PARM_KEYBREAKVALUE)=(int)wkl[0];           //+vb30R~
-                *(Pparm+PARM_KEYBREAKVALUE)=(XECALCPARM)wkl[0];    //+vb30I~
+//              *(Pparm+PARM_KEYBREAKVALUE)=(int)wkl[0];           //~vb30R~
+                *(Pparm+PARM_KEYBREAKVALUE)=(XECALCPARM)wkl[0];    //~vb30I~
             }//key value
             break;
     	case 3:		//"+//nn"
@@ -741,8 +743,8 @@ static char *Sopcode="+-*/%=~";                                    //~v535I~
 			||  *pc2!=0)								//1 opd only
 	    		return errinvalid(pc);	//no opd2 required
             *(Pparm+PARM_BREAKTYPE)=PARM_BREAK_COUNT;		//subsum by count
-//          *(Pparm+PARM_COUNT)=pos1;                              //+vb30R~
-            *(Pparm+PARM_COUNT)=(XECALCPARM)pos1;                  //+vb30I~
+//          *(Pparm+PARM_COUNT)=pos1;                              //~vb30R~
+            *(Pparm+PARM_COUNT)=(XECALCPARM)pos1;                  //~vb30I~
             break;
         }// +/
         break;
@@ -988,15 +990,15 @@ static int Sopdparmno[]={PARM_OPD1POS1,PARM_OPD2POS1,PARM_OPD3POS1,PARM_KEYCOL1}
         		break;                                             //~v40RI~
             }                                                      //~v40RI~
 //  		*(Pparm+parmidx)=pfldtb[fldno];	//start offset         //~v62AR~
-//  		*(Pparm+parmidx)=pfldtb[fldno]+1;	//start offset,it is delm position//~v62AI~//+vb30R~
-    		*(Pparm+parmidx)=(XECALCPARM)pfldtb[fldno]+1;	//start offset,it is delm position//+vb30I~
+//  		*(Pparm+parmidx)=pfldtb[fldno]+1;	//start offset,it is delm position//~v62AI~//~vb30R~
+    		*(Pparm+parmidx)=(XECALCPARM)pfldtb[fldno]+1;	//start offset,it is delm position//~vb30I~
 //  		*(Pparm+parmidx+1)=pfldtb[fldno+1];                    //~v62CI~
 //          for (jj=fldno+1;jj<=pfldtb[0];jj++)                    //~v62LR~
             for (jj=fldno+1;jj<=pfldtb[0]+1;jj++)                  //~v62LI~
             	if (pfldtb[jj])                                    //~v62CI~
                 {                                                  //~v62CI~
-//					*(Pparm+parmidx+1)=pfldtb[jj];                 //~v62CI~//+vb30R~
-  					*(Pparm+parmidx+1)=(XECALCPARM)pfldtb[jj];     //+vb30I~
+//					*(Pparm+parmidx+1)=pfldtb[jj];                 //~v62CI~//~vb30R~
+  					*(Pparm+parmidx+1)=(XECALCPARM)pfldtb[jj];     //~vb30I~
                     break;                                         //~v62CI~
                 }                                                  //~v62CI~
 //        	if (jj>pfldtb[0])    //top is max fldno                //~v62LR~
@@ -1059,10 +1061,10 @@ int tc_getopd(int Pallowconstsw,char *Pstr,char *Pstrconst,XECALCPARM *Pparm,cha
          pc+=Sconstlen;                                            //~v56zI~
          pos1=1;                                                   //~v56zI~
          pos2=TC_CONSTSPECID;                                      //~v56zI~
-//       *(Pparm+1)=pos1-1;  //opd datatype                        //~v56zI~//+vb30R~
-         *(Pparm+1)=(XECALCPARM)pos1-1;  //opd datatype            //+vb30I~
-//       *(Pparm+2)=pos2;  //opd datatype                          //~v56zI~//+vb30R~
-         *(Pparm+2)=(XECALCPARM)pos2;  //opd datatype              //+vb30I~
+//       *(Pparm+1)=pos1-1;  //opd datatype                        //~v56zI~//~vb30R~
+         *(Pparm+1)=(XECALCPARM)pos1-1;  //opd datatype            //~vb30I~
+//       *(Pparm+2)=pos2;  //opd datatype                          //~v56zI~//~vb30R~
+         *(Pparm+2)=(XECALCPARM)pos2;  //opd datatype              //~vb30I~
 //      Sconstvalue[0]=(long)Sconstaddr;                           //~v59kI~//~vafkR~
         Sconstvalue[0]=(SLPTR)Sconstaddr;                          //~vafkI~
         Sconstvalue[2]=Sconstlen;                                  //~v59kI~
@@ -1073,8 +1075,8 @@ int tc_getopd(int Pallowconstsw,char *Pstr,char *Pstrconst,XECALCPARM *Pparm,cha
       if (ch!=TCHDR_FLDSEPID)                                      //~v40RR~
         if (!(ch>='0' && ch<='9'))  //not numeric
         {
-//          if (!(Pparm[0]=tc_chkdatatype(ch)))                    //+vb30R~
-            if (!(Pparm[0]=(XECALCPARM)tc_chkdatatype(ch)))        //+vb30I~
+//          if (!(Pparm[0]=tc_chkdatatype(ch)))                    //~vb30R~
+            if (!(Pparm[0]=(XECALCPARM)tc_chkdatatype(ch)))        //~vb30I~
                 return errinvalid(pc);
             datatype=ch;                                           //~v53JI~
             ch=*(++pc);
@@ -1105,10 +1107,10 @@ int tc_getopd(int Pallowconstsw,char *Pstr,char *Pstrconst,XECALCPARM *Pparm,cha
               if (rc)                                              //~v53JI~
                 return errinvalid(pc);
             }                                                      //~v53JI~
-//          *(Pparm+1)=pos1-1;  //opd datatype                     //+vb30R~
-            *(Pparm+1)=(XECALCPARM)pos1-1;  //opd datatype         //+vb30I~
-//          *(Pparm+2)=pos2;  //opd datatype                       //+vb30R~
-            *(Pparm+2)=(XECALCPARM)pos2;  //opd datatype           //+vb30I~
+//          *(Pparm+1)=pos1-1;  //opd datatype                     //~vb30R~
+            *(Pparm+1)=(XECALCPARM)pos1-1;  //opd datatype         //~vb30I~
+//          *(Pparm+2)=pos2;  //opd datatype                       //~vb30R~
+            *(Pparm+2)=(XECALCPARM)pos2;  //opd datatype           //~vb30I~
             pc=pc2;
         }
      }//not string const                                           //~v56zI~
@@ -1127,10 +1129,10 @@ int tc_getopd(int Pallowconstsw,char *Pstr,char *Pstrconst,XECALCPARM *Pparm,cha
             pc+=Sconstlen;                                         //~v59kI~
             pos1=1;                                                //~v59kI~
             pos2=TC_CONSTSPECID;                                   //~v59kI~
-//          *(Pparm+1)=pos1-1;  //opd datatype                     //~v59kI~//+vb30R~
-            *(Pparm+1)=(XECALCPARM)pos1-1;  //opd datatype         //+vb30I~
-//          *(Pparm+2)=pos2;  //opd datatype                       //~v59kI~//+vb30R~
-            *(Pparm+2)=(XECALCPARM)pos2;  //opd datatype           //+vb30I~
+//          *(Pparm+1)=pos1-1;  //opd datatype                     //~v59kI~//~vb30R~
+            *(Pparm+1)=(XECALCPARM)pos1-1;  //opd datatype         //~vb30I~
+//          *(Pparm+2)=pos2;  //opd datatype                       //~v59kI~//~vb30R~
+            *(Pparm+2)=(XECALCPARM)pos2;  //opd datatype           //~vb30I~
 //          Sconstvalue[0]=(long)Sconstaddr;                       //~v59kI~//~vafkR~
             Sconstvalue[0]=(SLPTR)Sconstaddr;                      //~vafkI~
             Sconstvalue[2]=Sconstlen;                              //~v59kI~
@@ -1244,10 +1246,10 @@ int tc_opdchk2(char *Popd2,XECALCPARM *Pparm)                      //~va70I~
         	opt|=PARM_ROUND;                                       //~v58vI~
         if (vprec!=-1)                                             //~v58vI~
             opt|=PARM_VPREC;                                       //~v58vR~
-//		Pparm[PARM_PRECNO]=vprec;                                  //~v58vR~//+vb30R~
-  		Pparm[PARM_PRECNO]=(XECALCPARM)vprec;                      //+vb30I~
-//  	Pparm[PARM_OPTION]|=opt;                                   //~v58vI~//+vb30R~
-    	Pparm[PARM_OPTION]|=(XECALCPARM)opt;                       //+vb30I~
+//		Pparm[PARM_PRECNO]=vprec;                                  //~v58vR~//~vb30R~
+  		Pparm[PARM_PRECNO]=(XECALCPARM)vprec;                      //~vb30I~
+//  	Pparm[PARM_OPTION]|=opt;                                   //~v58vI~//~vb30R~
+    	Pparm[PARM_OPTION]|=(XECALCPARM)opt;                       //~vb30I~
         return 0;                                                  //~v58vI~
     }                                                              //~v58vI~
 //  if (strlen(pc)<3)                                              //~v56zR~
@@ -1310,8 +1312,8 @@ int tc_opdchk2(char *Popd2,XECALCPARM *Pparm)                      //~va70I~
 		opt=PARM_FALSETRUE;     //set 0 if equal,1 if unequal for ==(compare)//~v62uR~
 	else                                                           //~v62uI~
     	return 4;
-//  Pparm[PARM_OPTION]|=opt;                                       //+vb30R~
-    Pparm[PARM_OPTION]|=(XECALCPARM)opt;                           //+vb30I~
+//  Pparm[PARM_OPTION]|=opt;                                       //~vb30R~
+    Pparm[PARM_OPTION]|=(XECALCPARM)opt;                           //~vb30I~
     return 0;
 }//tc_opdchk2
 //****************************************************************
