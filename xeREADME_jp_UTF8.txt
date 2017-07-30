@@ -1,13 +1,13 @@
-||*CID:||+v@@@R~:  2017/06/24                update#=  795;
+||*CID:||+129BR~:  2017/06/24                update#=  797;           ||+129BR~
 ######################################################################
-[Japanese]    v1.29A                                                  ||~v@@@R~
+[Japanese]    v1.29B                                                  ||+129BR~
 
 メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。
 ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。
 
     .Windows版、Linux版あり
     .改行コードなしの固定長レコード/可変長ファイルサポート。
-    .UTF8ファイル、EBCDIC(ICUの導入が必要)ファイル編集。              ||~v@@@R~
+    .UTF8ファイル、EBCDIC(ICUの導入が必要)ファイル編集。
     .バイナリーエディター(縦2段HEXか横HEX表示）
     .ファイラー(フォルダー表示、削除、改名、複写、実行...)
     .リモートアクセス。
@@ -20,7 +20,7 @@
 
                                    http://hp.vector.co.jp/authors/VA010562
                                    http://www.geocities.jp/sakachin2/index.htm
-                                   GitHub: sakachin2/XE               ||~v@@@I~
+                                   GitHub: sakachin2/XE
 
 WIN版はGUI版とWIN32コンソールアプリケーション版があります。
    Console版:xe.exe はコマンドプロンプトで動きマウスはサポートしていません。
@@ -60,78 +60,78 @@ Linux版はGUI版:gxe とTerminalEmulator版:xe があります。
 その他のフォルダーの内容
   xehelp:
     Browser用ヘルプファイル
-    ワークディレクトリーに置くか、xehelp環境変数                      ||~v@@@I~
-    あるいは/hdコマンドラインパラメータで位置指定する。               ||~v@@@I~
-    Linux版でのこれ以外の置き場所はxelnxj.txtを参照してください       ||~v@@@I~
-  sample\doc:                                                         ||~v@@@R~
+    ワークディレクトリーに置くか、xehelp環境変数
+    あるいは/hdコマンドラインパラメータで位置指定する。
+    Linux版でのこれ以外の置き場所はxelnxj.txtを参照してください
+  sample\doc:
     テキストファイル形式のマニュアル
       xej.txt/xee.txt
       xereadmj.txt/xereadme.txt
       xelnxj.txt/xelnxe.txt(Linux版用)
       xewxej.txt/xewxee.txt(GUI版:wxe/gxe用)
-  sample\data:                                                        ||~v@@@R~
-      xehosts      リモートファイルアクセス用サンプルホスツファイル。 ||~v@@@R~
-      xesynw.cfg   (Win)シンタックスハイライト用設定ファイル。        ||+v@@@R~
-      xeebc.map    EBCDIC 変換用設定ファイル                          ||~v@@@I~
-                                                                      ||~v@@@I~
-  sample\staff:外部ツールを用意できない場合は以下のものをお使いください||+v@@@R~
-                                                                      ||~v@@@I~
-      grep.exe     コマンド行の GREp コマンド、=3.14 画面で使用します ||+v@@@R~
-                                                                      ||~v@@@I~
-      シンタックスハイライトで使用します、次のどちらかを選んで xesynw.cfg で指定します||+v@@@R~
-        使い方は xej.txt や xesynw.cfg を見てください                 ||+v@@@R~
-        gnu-source-highlight.zip                                      ||~v@@@R~
-                     (Win)GNU source-highlight v2.9 を MinGW上でコンパイルしました。||~v@@@M~
-        WinHighlight31.copies2.zip                                    ||~v@@@R~
-                     andre simon's highlight v3.1                     ||~v@@@R~
-                     exe と dll のフォルダーを離さないでください      ||~v@@@I~
-      putty063.zip                                                    ||+v@@@I~
-                     リモートアクセスに putty を使用する場合に必要です||+v@@@I~
-                                                                      ||~v@@@I~
+  sample\data:
+      xehosts      リモートファイルアクセス用サンプルホスツファイル。
+      xesynw.cfg   (Win)シンタックスハイライト用設定ファイル。
+      xeebc.map    EBCDIC 変換用設定ファイル
+
+  sample\staff:外部ツールを用意できない場合は以下のものをお使いください
+
+      grep.exe     コマンド行の GREp コマンド、=3.14 画面で使用します
+
+      シンタックスハイライトで使用します、次のどちらかを選んで xesynw.cfg で指定します
+        使い方は xej.txt や xesynw.cfg を見てください
+        gnu-source-highlight.zip
+                     (Win)GNU source-highlight v2.9 を MinGW上でコンパイルしました。
+        WinHighlight31.copies2.zip
+                     andre simon's highlight v3.1
+                     exe と dll のフォルダーを離さないでください
+      putty063.zip
+                     リモートアクセスに putty を使用する場合に必要です
+
 
 起動方法
 
-  (Windows版)                                                         ||~v@@@R~
+  (Windows版)
 
-  ．ワークフォルダーを作成する、省略値はc:\xe_wdだが c:\は保護されている可能性があるので避けてください||+v@@@R~
-    例えば  "mkdir d:\xe_wd"                                          ||~v@@@I~
-  ．ワークフォルダーに zipファイルを置き,そこで解凍する               ||~v@@@R~
-      必要に応じて sample\data フォルダーからxehosts などの設定用ファイルをワークフォルダーにコピーし修正してください||~v@@@I~
-      それらの機能を使用しない場合は コメント行("#") 1行のファイルにしてください||~v@@@I~
-  . 実行可能ファイルに PATH を通す.                                   ||+v@@@R~
-      Windows10の場合、コントロールパネル-->システムとセキュリティ-->システム-->システムの詳細設定-->環境変数:PATH||~v@@@I~
-  . ワ－クディレクトリー名を環境変数:xe にセットする                  ||~v@@@R~
-      あるいは 任意に作成した xe 起動用コマンドファイルを作成する     ||~v@@@R~
-      例えば xe.bat                                                   ||~v@@@I~
-               set xe=d:\xe010                                        ||~v@@@R~
-               xe.exe                                                 ||~v@@@I~
-            あるは                                                    ||~v@@@I~
-               xe.exe /wd:\xe010                                      ||~v@@@I~
+  ．ワークフォルダーを作成する、省略値はc:\xe_wdだが c:\は保護されている可能性があるので避けてください
+    例えば  "mkdir d:\xe_wd"
+  ．ワークフォルダーに zipファイルを置き,そこで解凍する
+      必要に応じて sample\data フォルダーからxehosts などの設定用ファイルをワークフォルダーにコピーし修正してください
+      それらの機能を使用しない場合は コメント行("#") 1行のファイルにしてください
+  . 実行可能ファイルに PATH を通す.
+      Windows10の場合、コントロールパネル-->システムとセキュリティ-->システム-->システムの詳細設定-->環境変数:PATH
+  . ワ－クディレクトリー名を環境変数:xe にセットする
+      あるいは 任意に作成した xe 起動用コマンドファイルを作成する
+      例えば xe.bat
+               set xe=d:\xe010
+               xe.exe
+            あるは
+               xe.exe /wd:\xe010
   ．xe [ファイル名] で起動する
-      コマンドライン パラメータは  xe /? で表示されます               ||~v@@@R~
-  . wxe も同じです                                                    ||~v@@@I~
-                                                                      ||~v@@@I~
-  (Linux版)                                                           ||~v@@@I~
-  .ターミナルエミュレーターを開き、適当な場所で解凍しconfigure/make/install||~v@@@R~
-      tar -zxvf gxe-1.xx.tar.gz                                       ||~v@@@I~
-      cd                                                              ||~v@@@I~
-      ./configure                                                     ||~v@@@I~
-      make                                                            ||~v@@@I~
-      sudo make install   -->/usr/local/binにインストール             ||~v@@@R~
-    問題が発生したらsampleフォルダーの READMEj.txt を参照してください ||~v@@@I~
-    必要なら/usr/local/binにインストールされないコマンドラインツールは||~v@@@I~
-    src/xsub フォルダーから手動でコピーしてください                   ||~v@@@I~
-  .ワークフォルダーを home に作成                                     ||~v@@@I~
-      mkdir ~/xe_wdnnnnn     nnnnn は ユーザーID番号                  ||~v@@@I~
-    必要に応じて sample フォルダーからxehosts などの設定用ファイルをワークフォルダーにコピーし修正してください||~v@@@I~
-    それらの機能を使用しない場合は コメント行("#") 1行のファイルにしてください||~v@@@I~
-  ．xe [ファイル名] で起動する                                        ||~v@@@I~
-      コマンドライン パラメータは  xe -? で表示されます               ||+v@@@R~
-      F1、F10 や 修飾キー(Shift/Alt/Ctrl)との組み合わせはターミナルエミュレーターで||~v@@@I~
-      ショートカットキーに設定されている場合があります                ||~v@@@I~
-      xe で F1、F10 などを使用する場合ターミナルエミュレータの設定でショートカットを無効にする必要があります||+v@@@R~
-  . gxe はターミナルエミュレータのショートカットキーの影響はありません||~v@@@R~
-                                                                      ||~v@@@I~
+      コマンドライン パラメータは  xe /? で表示されます
+  . wxe も同じです
+
+  (Linux版)
+  .ターミナルエミュレーターを開き、適当な場所で解凍しconfigure/make/install
+      tar -zxvf gxe-1.xx.tar.gz
+      cd
+      ./configure
+      make
+      sudo make install   -->/usr/local/binにインストール
+    問題が発生したらsampleフォルダーの READMEj.txt を参照してください
+    必要なら/usr/local/binにインストールされないコマンドラインツールは
+    src/xsub フォルダーから手動でコピーしてください
+  .ワークフォルダーを home に作成
+      mkdir ~/xe_wdnnnnn     nnnnn は ユーザーID番号
+    必要に応じて sample フォルダーからxehosts などの設定用ファイルをワークフォルダーにコピーし修正してください
+    それらの機能を使用しない場合は コメント行("#") 1行のファイルにしてください
+  ．xe [ファイル名] で起動する
+      コマンドライン パラメータは  xe -? で表示されます
+      F1、F10 や 修飾キー(Shift/Alt/Ctrl)との組み合わせはターミナルエミュレーターで
+      ショートカットキーに設定されている場合があります
+      xe で F1、F10 などを使用する場合ターミナルエミュレータの設定でショートカットを無効にする必要があります
+  . gxe はターミナルエミュレータのショートカットキーの影響はありません
+
 ######################################################################
 修正履歴.
   .v010 (95/06/04)
@@ -145,3 +145,39 @@ Linux版はGUI版:gxe とTerminalEmulator版:xe があります。
 
      3.その他
        -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加
+
+  .v129B<--129A:(2017/07/10)
+
+     1.BUGs
+
+       -(Win64) データタイプ X(Hex),O(octal) の計算結果の誤り
+       -(Win64) 分割画面間のドラッグドロップ(ファイルのコピー)がクラッシュ
+
+     2.機能追加
+
+       -長いパス名に短縮名を定義
+        .SP { edit | refresh | add sp-name { file-spec | *\\ | ^*\\ } }
+            edit   : 定義ファイル(::xe.shortpath) を編集表示
+                     修正して保存すれば、次回から有効になる
+                     あるいは保存後 "refresh" すれば有効になります
+                     定義ファイルの各行は"短縮名 フルパス名" の形式
+                     コメント行は先頭に "#"
+                     例) srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test
+                         ecws  "c:\Program Files\Android\Android Studio\gradle"
+            refresh: 定義ファイルを修正した場合に、その修正を反映させる
+                     "sp edit" 画面で修正、保存後 あるいは直接 ::xe.shortpath ファイルを
+                     他のプロセスで修正した後に使用する
+            add    : 定義ファイルに sp-name:短縮名, file-spec:ターゲットファイル名 の行を追加
+                     この定義はすぐ使用できる
+                     *\ :現在開いているファイル/ディレクトリー,
+                     ^*\:分割画面の他方で現在開いているファイル/ディレクトリー
+                     も状況が適当ならば使用できる
+                     例) sp add srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test
+                         sp add ecws  "c:\Program Files\Android\Android Studio\gradle"
+        .短縮名は "sp:"プレフィックスで使用する
+         (sp:xxx の xxx が未定義の場合はそのまま "sp:xxx" として使用される)
+           例) e sp:srctest1\Main.java
+               e sp:ecws
+               e "sp:ecws\space embedded name"
+               xcopy sp:ecdir\x1 sp.ecdir\x2
+               cd sp:ecdir

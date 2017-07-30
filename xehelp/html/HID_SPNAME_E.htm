@@ -1,0 +1,32 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text-html; charset=shift-jis">
+<TITLE>SPNAME_E</TITLE>
+<STYLE TYPE="text/css">a:hover{font-weight:bold;}</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:�l�r �S�V�b�N">
+   .ShortPathName.
+
+       -You can use following abbreviation.
+          *\  : Same folder as currently opened on the panel.
+          ^*\ : Same folder as currently opened on the other panel of split.
+          ::  : Work directory.
+        e.g.)   e *\another.txt   e ^*\more.c   e ::xehosts
+
+       -ShortPathName
+            Define short path alias on the definition file(::xe.shortpath),
+            then use it by "sp:xxxx" format.
+            Edit definition file, or you can add line by <a href="HID_SPCMD_E.htm">SP command</a>.
+            e.g.)
+               Asuming following line in ::xe.shortpath
+                 srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test
+               "e sp:srctest1" command is replaced by
+               "e d:\eclipse-workspace\testproject1\src\com\debug\test".
+
+
+</SPAN></DIV>
+</PRE>
+</BODY>
+</HTML>
