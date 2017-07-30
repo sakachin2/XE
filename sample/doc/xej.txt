@@ -1,4 +1,4 @@
-CID:||+v@@@R~:   2017/03/29               update#= 1379               ||~v129R~||+v@@@R~
+CID:||+v@@@R~:   2017/07/27               update#= 1380               ||~v129R~||+v@@@R~
 **********************************************************************
 (目次)
     (0).はじめに.
@@ -17,6 +17,7 @@ CID:||+v@@@R~:   2017/03/29               update#= 1379               ||~v129R~|
            .EBCDICファイルサポート。                                              ||~v124R~||~v125R~
            .EBCDIC変換。                                              ||~v125R~
            .UTF8サポート。                                            ||~v124R~
+           .短縮ファイル名。                                          ||+v@@@I~
            .シンタックスハイライト。                                  ||~v124R~
            .リモートファイルアクセス。
            .リモートシェル(rsh)。
@@ -1698,6 +1699,22 @@ CID:||+v@@@R~:   2017/03/29               update#= 1379               ||~v129R~|
                                                                       ||~v125R~
 #endif  //WIN | LNX                                                   ||~v125R~
                                                                       ||~v124R~
+   .短縮ファイル名                                                    ||+v@@@I~
+       -ファイル名指定の箇所に以下の省略形が使用できます              ||+v@@@I~
+          *\  : 現在の画面で開いているファイル/フォルダーと同じフォルダー||+v@@@I~
+          ^*\ : 画面分割した状態でもう一方の画面で開いているファイル/フォルダーと同じフォルダー||+v@@@I~
+          ::  : ワークディレクトリー                                  ||+v@@@I~
+        例)   e *\another.txt   e ^*\more.c   e ::xehosts             ||+v@@@I~
+                                                                      ||+v@@@I~
+       -短縮名                                                        ||+v@@@I~
+            定義ファイル(::xe.shortpath) に短縮名を定義して sp:xxxx 形式で使用||+v@@@I~
+            定義ファイルは自分で編集するか SP コマンドで追加          ||+v@@@I~
+            例)                                                       ||+v@@@I~
+               定義ファイルに次行があるとした場合                     ||+v@@@I~
+                 srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+v@@@I~
+               e sp:srctest1 は                                       ||+v@@@I~
+               e d:\eclipse-workspace\testproject1\src\com\debug\test と解釈される||+v@@@I~
+                                                                      ||+v@@@I~
 #if defined(W32) || defined(LNX)                                      ||~v124R~
                                                                       ||~v124R~
    .シンタックスハイライト。                                          ||~v124R~
@@ -8443,6 +8460,34 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
                      限定する.行番号を使用しての範囲指定も可.
             -/ox[-] :x=N:名前順、x=T:時刻順、x=S:サイズ順、-：降順。
 
+   = 短縮ファイル名                                                   ||+v@@@I~
+                                                                      ||+v@@@I~
+        SP { edit | refresh | add sp-name { file-spec | *\\ | ^*\\ } }||+v@@@I~
+            edit   : 定義ファイル(::xe.shortpath) を編集表示          ||+v@@@I~
+                     修正して保存すれば、次回から有効になる           ||+v@@@I~
+                     あるいは保存後 "refresh" すれば有効になります    ||+v@@@I~
+                     定義ファイルの各行は"短縮名 フルパス名" の形式   ||+v@@@I~
+                     コメント行は先頭に "#"                           ||+v@@@I~
+                     例) srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+v@@@I~
+                         ecws  "c:\Program Files\Android\Android Studio\gradle"||+v@@@I~
+            refresh: 定義ファイルを修正した場合に、その修正を反映させる||+v@@@I~
+                     "sp edit" 画面で修正、保存後 あるいは直接 ::xe.shortpath ファイルを||+v@@@I~
+                     他のプロセスで修正した後に使用する               ||+v@@@I~
+            add    : 定義ファイルに sp-name:短縮名, file-spec:ターゲットファイル名 の行を追加||+v@@@I~
+                     この定義はすぐ使用できる                         ||+v@@@I~
+                     *\ :現在開いているファイル/ディレクトリー,       ||+v@@@I~
+                     ^*\:分割画面の他方で現在開いているファイル/ディレクトリー||+v@@@I~
+                     も状況が適当ならば使用できる                     ||+v@@@I~
+                     例) sp add srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+v@@@I~
+                         sp add ecws  "c:\Program Files\Android\Android Studio\gradle"||+v@@@I~
+        .短縮名は "sp:"プレフィックスで使用する                       ||+v@@@I~
+         (sp:xxx の xxx が未定義の場合はそのまま "sp:xxx" として使用される)||+v@@@I~
+           例) e sp:srctest1\Main.java                                ||+v@@@I~
+               e sp:ecws                                              ||+v@@@I~
+               e "sp:ecws\space embedded name"                        ||+v@@@I~
+               xcopy sp:ecdir\x1 sp.ecdir\x2                          ||+v@@@I~
+               cd sp:ecdir                                            ||+v@@@I~
+                                                                      ||+v@@@I~
    = コマンド非同期実行
 
         SPAwn cmd-name [args]

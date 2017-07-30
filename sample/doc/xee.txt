@@ -1,4 +1,4 @@
-CID:||+v@@@R~:  2017/06/24                 update#=  662;             ||~v129R~||+v@@@R~
+CID:||+v@@@R~:  2017/07/27                 update#=  663;             ||+v@@@R~
 ************************************************************************
 (Index)
     (0).Introduction.
@@ -17,6 +17,7 @@ CID:||+v@@@R~:  2017/06/24                 update#=  662;             ||~v129R~|
             .EBCDIC file support.                                     ||~v125R~
             .EBCDIC translation.                                      ||~v124R~
             .UTF8 support.                                            ||~v124R~
+            .ShortPathName.                                           ||+v@@@I~
             .SyntaxHighlight                                          ||~v124R~
             .Remote file access
             .Remote Shell(rsh)
@@ -1706,6 +1707,24 @@ CID:||+v@@@R~:  2017/06/24                 update#=  662;             ||~v129R~|
                                                                       ||~v125R~
 #endif  //WIN | LNX                                                   ||~v125R~
 
+   .ShortPathName.                                                    ||+v@@@I~
+                                                                      ||+v@@@I~
+       -You can use following abbreviation.                           ||+v@@@I~
+          *\  : Same folder as currently opened on the panel.         ||+v@@@I~
+          ^*\ : Same folder as currently opened on the other panel of split.||+v@@@I~
+          ::  : Work directory.                                       ||+v@@@I~
+        e.g.)   e *\another.txt   e ^*\more.c   e ::xehosts           ||+v@@@I~
+                                                                      ||+v@@@I~
+       -ShortPathName                                                 ||+v@@@I~
+            Define short path alias on the definition file(::xe.shortpath),||+v@@@I~
+            then use it by "sp:xxxx" format.                          ||+v@@@I~
+            Edit definition file, or you can add line by SP command.  ||+v@@@I~
+            e.g.)                                                     ||+v@@@I~
+               Asuming following line in ::xe.shortpath               ||+v@@@I~
+                 srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+v@@@I~
+               "e sp:srctest1" command is replaced by                 ||+v@@@I~
+               "e d:\eclipse-workspace\testproject1\src\com\debug\test".||+v@@@I~
+                                                                      ||+v@@@I~
 #if defined(W32) || defined(LNX)                                      ||~v124R~
                                                                       ||~v124R~
    .SyntaxHighlight.                                                  ||~v124R~
@@ -1736,14 +1755,14 @@ CID:||+v@@@R~:  2017/06/24                 update#=  662;             ||~v129R~|
          This one is easy to use.                                     ||~v124R~
          Install from Mr.andre-simon's homepage.(commandline "highlight" is included in sample directory of xe package)||~v126R~
          The windows version is installer.                            ||~v124R~
-         xe use command-line binary, leave GUI version even if its compilation failed.||~v124R~||+v@@@R~
+         xe use command-line binary, leave GUI version even if its compilation failed.||~v124R~||~v@@@R~
          This is not depend on boost package, installation is easy.   ||~v124R~
          It suport many variety of language such as COBOL, PLI. ||~v124R~||~v124R~
          To customize color, use CMAP option of xe's cfg file.        ||~v124R~
          This tool is relatively small and light.                     ||~v124R~
          So, it is open-source but I did not create resident mode version.||~v124R~
                                                                       ||~v125R~
-         xe Windows version package contains Highligh package in "sample" directory.||~v125R~||+v@@@R~
+         xe Windows version package contains Highligh package in "sample" directory.||~v125R~||~v@@@R~
          Put data directory at where the exe file existing or specify it||~v125R~
          by --data-dir= parameter.                                    ||~v125R~
          Linux version's default folder is /usr/share/highlight.      ||~v125R~
@@ -8365,6 +8384,34 @@ by screen expansion)
             -/ox[-] :x=N:nameSeq, x=T:timestampSeq, x=S:sizeSeq,
                      -:descending.                                    ||~v124R~
 
+   = ShortPathName                                                    ||+v@@@I~
+                                                                      ||+v@@@I~
+        .SP { edit | refresh | add sp-name { file-spec | *\\ | ^*\\ } }||+v@@@I~
+            edit   : show edit panel of Shortcut pathname definition file(::xe.shortpath).||+v@@@I~
+                     Update is enabled when restart xe,               ||+v@@@I~
+                     or enabled if "refresh" after saved.             ||+v@@@I~
+                     Format of the line of definition file is "Shortcut-pathname fullpath-name".||+v@@@I~
+                     Put "#" at top of line to comment out.           ||+v@@@I~
+                     e.g.) srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+v@@@I~
+                           ecws  "c:\Program Files\Android\Android Studio\gradle"||+v@@@I~
+            refresh: reload  definition file of ::xe.shortpath.       ||+v@@@I~
+                     Use after "sp edit", modify then saved or directly updated ::xe.shortpath by||+v@@@I~
+                     another process.                                 ||+v@@@I~
+            add    : add a line to definition file by sp-name:Shortcut pathname and file-spec:shortcut target fullpath name.||+v@@@I~
+                     This definition is enabled instantly.            ||+v@@@I~
+                     Following specifications are effective at proper situation.||+v@@@I~
+                       *\ :the file currently opened on this panel.   ||+v@@@I~
+                       ^*\:the file currently opened on another split panel.||+v@@@I~
+                     e.g.) sp add srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+v@@@I~
+                           sp add ecws  "c:\Program Files\Android\Android Studio\gradle"||+v@@@I~
+        .To utilize Shortcut pathname, add prefix "sp:" to file-spec. ||+v@@@I~
+         (If xxx of sp:xxx is not defined, "sp:xxx" is used as is.)   ||+v@@@I~
+           e.g.) e sp:srctest1\Main.java                              ||+v@@@I~
+                 e sp:ecws                                            ||+v@@@I~
+                 e "sp:ecws\space embedded name"                      ||+v@@@I~
+                 xcopy sp:ecdir\x1 sp.ecdir\x2                        ||+v@@@I~
+                 cd sp:ecdir                                          ||+v@@@I~
+                                                                      ||+v@@@I~
    = SPAwn
 
         SPAwn cmd-name [args]

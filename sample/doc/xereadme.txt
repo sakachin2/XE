@@ -1,6 +1,6 @@
-||*CID:||+v129R~:  2017/03/29              update#=  556;             ||+v129R~
+||*CID:||+v129R~:  2017/07/27              update#=  557;             ||+v129R~
 ######################################################################
-[English]    v1.29                                                    ||~v128R~||+v129R~
+[English]    v1.29                                                    ||~v128R~||~v129R~
 
 ##This editor is fit for programmers working on both main-frame and PC.
   Its operation is based on mainframe SPF editor,                     ||~v126R~
@@ -70,9 +70,9 @@
         xereadme.txt this file.                                       ||~124FR~
         xej.txt      Japanese manual.                                 ||~124FR~
         xee.txt      english manual.                                  ||~124FR~
- v1.29  xe.exe       executable binary file                           ||~127SR~||~v128R~||+v129R~
- v1.29  wxe.exe      Windows GUI version.                             ||~127SR~||~v128R~||+v129R~
- v1.29  gxe.exe      Linux Xwindows version.                          ||~127SR~||~v128R~||+v129R~
+ v1.29  xe.exe       executable binary file                           ||~127SR~||~v128R~||~v129R~
+ v1.29  wxe.exe      Windows GUI version.                             ||~127SR~||~v128R~||~v129R~
+ v1.29  gxe.exe      Linux Xwindows version.                          ||~127SR~||~v128R~||~v129R~
         xehelp\      Help file directory for Windows/Linux version.
                      Put o workdir or specify the place by env-var "xehelp"
                      or by /hd command line parameter.                ||~124FR~
@@ -115,10 +115,10 @@
  v1.2   xcvsjisc.exe Convert SJIS in xe's source file to Octal-notation.||~124FR~
  v2.28  xdc.exe      directory compare tool                           ||~127SR~||~v128R~
  v2.1   xdd.exe      directory delete tool                            ||~128FR~||~v128R~
- v1.12  xdig.exe     directory walk utility                           ||~124FR~||~127AR~||~127QR~||+v129R~
+ v1.12  xdig.exe     directory walk utility                           ||~124FR~||~127AR~||~127QR~||~v129R~
                      tool apply command to all sub-directory/files.
         xdig.txt     doc for xdig                                     ||~124FR~
- v1.11  xds.exe      Directory size display tool                      ||~124RR~||~126BR~||~127AR~||+v129R~
+ v1.11  xds.exe      Directory size display tool                      ||~124RR~||~126BR~||~127AR~||~v129R~
  v1.25  xfc.exe      File compare tool                                ||~127SR~||~v128R~
  v1.7   xff.exe      file search by size/timestamp/name.               ||~7B08R~||~127ER~
  v1.19  xfg.exe      Binary file string search & Recursive grep.      ||~127AR~||~128FR~||~v128R~
@@ -2193,9 +2193,9 @@ How to start.
    v128D <--v128C:                                        (2016/08/25)||~128EI~
    v128E <--v128D:                                        (2016/09/08)||~128EI~
    v128F <--v128E:                                        (2016/12/20)||~128FI~
-   v128G <--v128F:                                        (2017/02/02)||~v128R~||+v129R~
-   v128H <--v128G:                                        (2017/02/12)||+v129R~
-   v128K <--v128H:   =v129                                (2017/03/29)||+v129R~
+   v128G <--v128F:                                        (2017/02/02)||~v128R~||~v129R~
+   v128H <--v128G:                                        (2017/02/12)||~v129R~
+   v128K <--v128H:   =v129                                (2017/03/29)||~v129R~
      1.BUGs                                                           ||~v128R~
        -(Win)Copy command(XCOpy and "c" directory line command) failes||~v128R~
         if the directory contains special file name such as prn or com1.||~v128R~
@@ -2269,14 +2269,14 @@ How to start.
          .File could not be copyed out by Copy & Paste.               ||~v128R~
          .Mouse wheel did not scroll contents.                        ||~v128R~
        -(LNX)Dragging a file may cause dir-list scrolling.            ||~v128R~
-     (128H)                                                           ||+v129R~
-       -(64Bit) Error when update on =0.1(Define shortcut key) panel. ||+v129R~
-       -(Linux) Open remote file on Samba Server as New file when error was detected such as parmission error.||+v129R~
-       -(Linux) Err msg was issued when open remote file through FTP client if it is symbolic link.||+v129R~
-     (128K)                                                           ||+v129R~
-       -XBC cmd.                                                      ||+v129R~
-         .time calculation crash for large time value                 ||+v129R~
-         .cancellation of significant digits at time calculation if hours>0x7fff||+v129R~
+     (128H)                                                           ||~v129R~
+       -(64Bit) Error when update on =0.1(Define shortcut key) panel. ||~v129R~
+       -(Linux) Open remote file on Samba Server as New file when error was detected such as parmission error.||~v129R~
+       -(Linux) Err msg was issued when open remote file through FTP client if it is symbolic link.||~v129R~
+     (128K)                                                           ||~v129R~
+       -XBC cmd.                                                      ||~v129R~
+         .time calculation crash for large time value                 ||~v129R~
+         .cancellation of significant digits at time calculation if hours>0x7fff||~v129R~
                                                                       ||~v128I~
      2.Additional function.                                           ||~v128I~
        -Unicode input by Alt+n (n:1-9,h,v)                            ||~v128I~
@@ -2352,11 +2352,11 @@ How to start.
         ==>Ini file format was changed, you need to once delete ini file||~v128R~
            by this modification.                                      ||~v128R~
            (ini file: Win=::XE!SAVE!, Linux=::xe_save_)               ||~v128R~
-     (128K)                                                           ||+v129R~
-       -XBC accept multiple(Max 10) operator.                         ||+v129R~
-        e.g. xbc 200/3.3*35.7 , xbc 1+2+3+4+5+6+7+8+9+10              ||+v129R~
-       -command verb "LIG" to toggle ligature mode(A+";" key)         ||+v129R~
-        and "CMB" to toggle combine mode(A+":" key) was added.        ||+v129R~
+     (128K)                                                           ||~v129R~
+       -XBC accept multiple(Max 10) operator.                         ||~v129R~
+        e.g. xbc 200/3.3*35.7 , xbc 1+2+3+4+5+6+7+8+9+10              ||~v129R~
+       -command verb "LIG" to toggle ligature mode(A+";" key)         ||~v129R~
+        and "CMB" to toggle combine mode(A+":" key) was added.        ||~v129R~
                                                                       ||~v128I~
      3.Miscellaneous.                                                 ||~v128I~
        -On EDIt/BROwse/SELect cmd and "o" cmd on dirlist,             ||~v128I~
@@ -2403,11 +2403,11 @@ How to start.
         (A+F1,.. was not available on Debian previously)              ||~v128R~
      (128G)                                                           ||~v128R~
        -(LNX)For deprecated function under Gtk3.                      ||~v128R~
-     (128H)                                                           ||+v129R~
-       -Reduced memory allocation for directory list.                 ||+v129R~
-        Windows 9000->300 Byte, Linux 450->250 Byte about.            ||+v129R~
-     (128K)                                                           ||+v129R~
-       -XBC time calculation output days when hors>24.                ||+v129R~
+     (128H)                                                           ||~v129R~
+       -Reduced memory allocation for directory list.                 ||~v129R~
+        Windows 9000->300 Byte, Linux 450->250 Byte about.            ||~v129R~
+     (128K)                                                           ||~v129R~
+       -XBC time calculation output days when hors>24.                ||~v129R~
                                                                       ||~v128I~
      4.Tools.                                                         ||~v128I~
        -xfg v1.18                                                     ||~128FR~
@@ -2428,15 +2428,46 @@ How to start.
         ./r option is required to delete too long path name.          ||~v128R~
        -xprint v9.34                                                  ||~128ER~
         .(Win) support UCS4(unicode>u-ffff).                          ||~v128I~
-       -xdig v1.12                                                    ||+v129R~
-        .(Bug)64Bit version crashes.                                  ||+v129R~
-                                                                      ||+v129R~
-######################################################################||+v129R~
-  .v129A<--129:(2017/06/24)                                           ||+v129R~
-                                                                      ||+v129R~
-     1.BUGs                                                           ||+v129R~
-       -(Windows:64)"&"(spawn executable file) dir cmd crush.         ||+v129R~
-       -(64Bit) =3.14 crush                                           ||+v129R~
-                                                                      ||+v129R~
-     3.Miscellaneous.                                                 ||+v129R~
-       -(Windows) add "msi" as executable binary extension            ||+v129R~
+       -xdig v1.12                                                    ||~v129R~
+        .(Bug)64Bit version crashes.                                  ||~v129R~
+                                                                      ||~v129R~
+######################################################################||~v129R~
+  .v129B<--129:(2017/07/27)                                           ||+v129R~
+                                                                      ||~v129R~
+     1.BUGs                                                           ||~v129R~
+       -(Windows:64)"&"(spawn executable file) dir cmd crush.         ||~v129R~
+       -(64Bit) =3.14 crush                                           ||~v129R~
+       -(Win64) Erroneous calculation when Datatype is X(Hex),O(octal).||+v129I~
+       -(Win64) DragDrop between split panels(file copy) crashes.     ||+v129I~
+                                                                      ||~v129R~
+     2.Additional function.                                           ||+v129I~
+                                                                      ||+v129I~
+       -Shortcut pathname                                             ||+v129I~
+        .SP { edit | refresh | add sp-name { file-spec | *\\ | ^*\\ } }||+v129I~
+            edit   : show edit panel of Shortcut pathname definition file(::xe.shortpath).||+v129I~
+                     Update is enabled when restart xe,               ||+v129I~
+                     or enabled if "refresh" after saved.             ||+v129I~
+                     Format of the line of definition file is "Shortcut-pathname fullpath-name".||+v129I~
+                     Put "#" at top of line to comment out.           ||+v129I~
+                     e.g.) srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+v129I~
+                           ecws  "c:\Program Files\Android\Android Studio\gradle"||+v129I~
+            refresh: reload  definition file of ::xe.shortpath.       ||+v129I~
+                     Use after "sp edit", modify then saved or directly updated ::xe.shortpath by||+v129I~
+                     another process.                                 ||+v129I~
+            add    : add a line to definition file by sp-name:Shortcut pathname and file-spec:shortcut target fullpath name.||+v129I~
+                     This definition is enabled instantly.            ||+v129I~
+                     Following specifications are effective at proper situation.||+v129I~
+                       *\ :the file currently opened on this panel.   ||+v129I~
+                       ^*\:the file currently opened on another split panel.||+v129I~
+                     e.g.) sp add srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+v129I~
+                           sp add ecws  "c:\Program Files\Android\Android Studio\gradle"||+v129I~
+        .To utilize Shortcut pathname, add prefix "sp:" to file-spec. ||+v129I~
+         (If xxx of sp:xxx is not defined, "sp:xxx" is used as is.)   ||+v129I~
+           e.g.) e sp:srctest1\Main.java                              ||+v129I~
+                 e sp:ecws                                            ||+v129I~
+                 e "sp:ecws\space embedded name"                      ||+v129I~
+                 xcopy sp:ecdir\x1 sp.ecdir\x2                        ||+v129I~
+                 cd sp:ecdir                                          ||+v129I~
+                                                                      ||+v129I~
+     3.Miscellaneous.                                                 ||~v129R~
+       -(Windows) add "msi" as executable binary extension            ||~v129R~

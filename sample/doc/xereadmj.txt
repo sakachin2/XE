@@ -1,4 +1,4 @@
-||*CID:||+v@@@R~:  2017/03/29                update#=  783;           ||~v@@@R~
+||*CID:||+v@@@R~:  2017/03/29                update#=  784;           ||~v@@@R~
 ######################################################################
 [Japanese]    v1.29  (Refer xereadme.txt for English)                 ||~127SR~||~v128R~||~v@@@R~
 
@@ -2326,11 +2326,42 @@
         .(Bug)64Bit でクラッシュ                                      ||~v@@@I~
                                                                       ||~v@@@I~
 ######################################################################||~v@@@I~
-  .v129A<--129:(2017/06/24)                                           ||~v@@@I~
+  .v129B<--129:(2017/07/27)                                           ||+v@@@R~
                                                                       ||~128CI~
      1.BUGs                                                           ||~v@@@I~
        -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする||~v@@@I~
-       -(64Bit) =3.14 がクラッシュする                                ||+v@@@I~
+       -(64Bit) =3.14 がクラッシュする                                ||~v@@@I~
+       -(Win64) データタイプ X(Hex),O(octal) の計算結果の誤り         ||+v@@@I~
+       -(Win64) 分割画面間のドラッグドロップ(ファイルのコピー)がクラッシュ||+v@@@I~
                                                                       ||~v@@@I~
+     2.機能追加                                                       ||+v@@@I~
+                                                                      ||+v@@@I~
+       -長いパス名に短縮名を定義                                      ||+v@@@I~
+        .SP { edit | refresh | add sp-name { file-spec | *\\ | ^*\\ } }||+v@@@I~
+            edit   : 定義ファイル(::xe.shortpath) を編集表示          ||+v@@@I~
+                     修正して保存すれば、次回から有効になる           ||+v@@@I~
+                     あるいは保存後 "refresh" すれば有効になります    ||+v@@@I~
+                     定義ファイルの各行は"短縮名 フルパス名" の形式   ||+v@@@I~
+                     コメント行は先頭に "#"                           ||+v@@@I~
+                     例) srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+v@@@I~
+                         ecws  "c:\Program Files\Android\Android Studio\gradle"||+v@@@I~
+            refresh: 定義ファイルを修正した場合に、その修正を反映させる||+v@@@I~
+                     "sp edit" 画面で修正、保存後 あるいは直接 ::xe.shortpath ファイルを||+v@@@I~
+                     他のプロセスで修正した後に使用する               ||+v@@@I~
+            add    : 定義ファイルに sp-name:短縮名, file-spec:ターゲットファイル名 の行を追加||+v@@@I~
+                     この定義はすぐ使用できる                         ||+v@@@I~
+                     *\ :現在開いているファイル/ディレクトリー,       ||+v@@@I~
+                     ^*\:分割画面の他方で現在開いているファイル/ディレクトリー||+v@@@I~
+                     も状況が適当ならば使用できる                     ||+v@@@I~
+                     例) sp add srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+v@@@I~
+                         sp add ecws  "c:\Program Files\Android\Android Studio\gradle"||+v@@@I~
+        .短縮名は "sp:"プレフィックスで使用する                       ||+v@@@I~
+         (sp:xxx の xxx が未定義の場合はそのまま "sp:xxx" として使用される)||+v@@@I~
+           例) e sp:srctest1\Main.java                                ||+v@@@I~
+               e sp:ecws                                              ||+v@@@I~
+               e "sp:ecws\space embedded name"                        ||+v@@@I~
+               xcopy sp:ecdir\x1 sp.ecdir\x2                          ||+v@@@I~
+               cd sp:ecdir                                            ||+v@@@I~
+                                                                      ||+v@@@I~
      3.その他                                                         ||~v@@@I~
        -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加        ||~v@@@I~
