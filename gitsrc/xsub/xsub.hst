@@ -1,4 +1,6 @@
 *** update history ******************************************************************
+//*********  20170826 v129Cj updated   ****************
+//vag0:170825 xcv v1.20:create ebc mapfile if dll version was gotten by "uconv --version"
 //*********  20170321 v128H updated   ****************
 //vaf0:170316 xbc v1.6:support 3 operand by "reverse polish notation"
 //*********  20170212 v128H released  ****************

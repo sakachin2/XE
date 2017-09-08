@@ -1,4 +1,4 @@
-//*CID://+v118R~:  2012/05/07                 update#=    8;       //+v118R~
+//*CID://+v120R~:  2017/08/26                 update#=   12;       //~v118R~//~v120R~
 
 There are many options, most general usage is                      //~v116I~
   xcv -cm2m -f:cpfrom -t:-cpto inputfile -ooutputfile              //~v116I~
@@ -31,7 +31,7 @@ Other options are related to Japanese(Old/New JIS, IBM/NEC etc.)   //~v116I~
 **(Use "-" as alternative of "/" on Unix)
 *********************************************************************//~v116I~
 
-xcv:V1.18(W): Code conversion on SJIS,JIS,EUC,UCS,UTF-8,EBCDIC,    //+v118R~
+xcv:V1.20(W): Code conversion on SJIS,JIS,EUC,UCS,UTF-8,EBCDIC,    //~v118R~//~v120R~
               Any other iconv/WindowsCP/ICU.                       //~v116I~
 format:
  xcv  [/options] [ infile | - ] [outfile]
@@ -40,7 +40,7 @@ format:
   outfile  :Output File Name, stdout if missing.
   /options :See bellow. CaseInsensitive.
     /2errf :stderr redirect file forr errmsg.
-    /[C]x2y:x2y is following.
+    /[C]x2y:x2y is following. (Specify as first parameter.)        //~v120I~
             e2s/s2e: EUC<-->SJIS.
             j2s/s2j: JIS<-->SJIS.
             j2e/e2j: JIS<-->EUC.
@@ -73,8 +73,9 @@ format:
               Input(B2x) or Output(x2B) LRECL.
               N: last 8 byte is line-number-filed. adjust SO/SI insertion.
                  "N" is effective for m2b only.
-    /ICU     :for B2x/x2B(x:B/M/F), use ICU when mf: omitted.      //~v116I~
-              for M2M, use ICU.                                    //+v118I~
+    /ICU     :for B2x/x2B(x:B/M/F), specify use ICU when /MF: is omitted.//+v120I~
+              If /MF:mapfile option is not specified,              //~v120I~
+              set PATH to uconv.exe or ICU library(.dll)           //~v120I~
     /List  :list ICU converter(with /ICU option) or Windows Codepage.//~v116I~
 #ifdef LNX
     /Llocale:LocaleCode for m2f/f2m conversion.

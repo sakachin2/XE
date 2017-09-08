@@ -17,7 +17,7 @@ a:hover{font-weight:bold;}-->
         {CHAnge | CNX | IC | ICN} {(old-string) | * | \esc} {(new-string) | * | \esc | P'pics'}
                      [-g]
                      [all | next | + | prev | - | first | last]
-                     [-nx] [.lab1 .lab2] [l-column | LM | RM [r-column]]
+                     [-nx] [.lab1 .lab2] [c1 | LM | RM [c2]]
 
                     ( &quot;\&quot; = 0x5c = backslash )
 
@@ -76,8 +76,8 @@ a:hover{font-weight:bold;}-->
             .lab1/2 :Limit search line range using a pair of label
                      on lineno column. line number may be used so as to
                      limit line range with no label on lineno column.
-            l-column:left-most column of search range.
-            r-column:right-most column of search range.
+            c1      :left-most column of search range.
+            c2      :right-most column of search range.
             LM      :search Left <a href="HID00000238.htm">margin</a> only.
             RM      :search Reft margin only.
             -nx     :search on displayed lines only(same as CNX/ICN)

@@ -1,10 +1,10 @@
-//*CID://+v6BkR~:                             update#=   28;       //+v6BkR~
+//*CID://+v6BkR~:                             update#=   29;       //~v6BkR~
 //*************************************************************
 //*udos2.c
 //*************************************************************
 //*ugetdrivetype
 //*************************************************************
-//v6Bk:160220 (LNX)compiler warning                                //+v6BkI~
+//v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
 //v6n0:130816 compiler warning;set but not used                    //~v6n0I~
 //v6c1:120120 udos_setenv:to append to $PATH,specify explicit option(duplicated fpr ICUDATA)//~v6c1I~
 //v6bo:111214 putenv(dont free)/setenv(copyed, can be free)        //~v6boI~
@@ -337,8 +337,8 @@ int udos_setenv(int Popt,char *Pkey,char *Pvalue)                  //~v6boI~
     if (!old)                                                      //~v6boI~
     	oldlen=0;                                                  //~v6boI~
     else                                                           //~v6boI~
-//    	oldlen=strlen(old);                                        //~v6boI~//+v6BkR~
-      	oldlen=(int)strlen(old);                                   //+v6BkI~
+//    	oldlen=strlen(old);                                        //~v6boI~//~v6BkR~
+      	oldlen=(int)strlen(old);                                   //~v6BkI~
 #ifdef W32                                                         //~v6boI~
     new=malloc(oldlen+addlen+keylen+4);    //dont free for pputenv until exit//~v6boI~
     if (!old)                                                      //~v6boI~
@@ -353,8 +353,8 @@ int udos_setenv(int Popt,char *Pkey,char *Pvalue)                  //~v6boI~
     	new=Pvalue;                                                //~v6boI~
     else                                                           //~v6boI~
     {                                                              //~v6boI~
-//  	new=umalloc(oldlen+addlen+4);    //dont free for pputenv until exit//~v6boI~//+v6BkR~
-    	new=umalloc((size_t)(oldlen+addlen+4));    //dont free for pputenv until exit//+v6BkI~
+//  	new=umalloc(oldlen+addlen+4);    //dont free for pputenv until exit//~v6boI~//~v6BkR~
+    	new=umalloc((size_t)(oldlen+addlen+4));    //dont free for pputenv until exit//~v6BkI~
       if (Popt & UDSE_PREPEND)                                     //~v6c1I~
       {                                                            //~v6c1I~
 #ifdef UNX                                                         //~v6boI~
@@ -379,7 +379,7 @@ int udos_setenv(int Popt,char *Pkey,char *Pvalue)                  //~v6boI~
 	rc=setenv(Pkey,new,1/*override*/);                             //~v6boR~
     if (new!=Pvalue)                                               //~v6boI~
     	ufree(new);	//copyed to env                                //~v6boI~
-    UTRACEP("after setenv rc=%d,errno=%d,new=%s,getenv=%s\n",rc,errno,new,getenv(Pkey));//~v6boI~
+    UTRACEP("after setenv rc=%d,errno=%d,new=%p,Pvalue=%p,key=%s,getenv=%s\n",rc,errno,new,Pvalue,Pkey,getenv(Pkey));//~v6boI~//+v6BkR~
 #endif                                                             //~v6boI~
     return rc;                                                     //~v6boI~
 }//udos_setenv                                                     //~v6boI~

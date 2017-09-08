@@ -1,4 +1,4 @@
-CID:||+v@@@R~:   2017/07/27               update#= 1380               ||~v129R~||+v@@@R~
+CID:||+v129R~:   2017/07/27               update#= 1388               ||+v129R~
 **********************************************************************
 (目次)
     (0).はじめに.
@@ -17,7 +17,7 @@ CID:||+v@@@R~:   2017/07/27               update#= 1380               ||~v129R~|
            .EBCDICファイルサポート。                                              ||~v124R~||~v125R~
            .EBCDIC変換。                                              ||~v125R~
            .UTF8サポート。                                            ||~v124R~
-           .短縮ファイル名。                                          ||+v@@@I~
+           .短縮ファイル名。                                          ||~v129R~
            .シンタックスハイライト。                                  ||~v124R~
            .リモートファイルアクセス。
            .リモートシェル(rsh)。
@@ -890,6 +890,9 @@ CID:||+v@@@R~:   2017/07/27               update#= 1380               ||~v129R~|
      -EDIt/SAVe/REPlace/CREate/APPend/CUT/END/COPy/MOVe/PASte コマンドで CPEB オプションを指定||~v125R~
       不正なEBCDIC文字があるときこれを無視して開く時は IE オプションを指定する。||~v125R~
       ヘッダー行には "=E" , バイナリーモードの場合は "=e" で表示されます||~v125R~
+      (ある程度の印刷不能文字があるとバイナリーモードとみなしますが、バイナリーモードとなると||+v129R~
+      DBCSが表示されません、/Mt オプションを付けて強制的にテキストモードで開けばDBCSが表示されます)||+v129R~
+      改行コードは /Mp(0x0d0a) /Mu(0x0a) を指定しない場合 0x15 です   ||+v129R~
         例。 "e file1 cpeb"                                           ||~v125R~
       cfg無しの場合あるいはcfg以外のコードページを使用する場合は CPEB:codepage の形式を使用します||~v125R~
         例。 "e file1 cpeb:IBM1047"                                   ||~v125R~
@@ -1251,9 +1254,12 @@ CID:||+v@@@R~:   2017/07/27               update#= 1380               ||~v129R~|
 					#define        U_ICU_ENTRY_POINT_RENAME(x)  x ## _44||~v125R~
                                                                       ||~126DR~
            ICU_DATA       : 自分で .cnv ファイルを作成して省略値のフォルダー以外においた場合その場所を指定する||~126DR~
-                              例)(Linux)   ICU_DATA=/system/usr/icu:/data/data/yourcnvs||~126DR~||~v128R~
-                                 (Windows) ICU_DATA=w:\icu\icu562\icu\bin;w:\icu\icu481\icu\bin||~v128R~
+                              例)(Linux)   ICU_DATA /system/usr/icu:/data/data/yourcnvs||~126DR~||~v128R~||~v129R~
+                                 (Windows) ICU_DATA w:\icu\icu562\icu\bin;w:\icu\icu481\icu\bin||~v128R~||~v129R~
                                  yourcnvsにはicudt__l(例えば icudt56l)サブフォルダーを作成しその中にcnvファイルを置いてください||~126DR~||~v128R~
+                            Windows版ではICUライブラリー(dll)が見つからない時 ICU_DATA に指定したフォルダーのなかも調べます||+v129R~
+                            なければ 環境変数 ICU_DATA もしらべます   ||+v129R~
+                            LinuxではsoはLD_LIBRARY_PATHに通してください||+v129R~
                                                                       ||~v124R~
            DBCS_CHARSET   : UCS<-->EBCDIC 変換でDBCS をサポートする文字セットを指定する。||~v124R~||~v125R~
                             (文字セットのリストは "uconv -l" ないし "iconv -l" で得ることができます。)||~v125R~
@@ -1699,22 +1705,22 @@ CID:||+v@@@R~:   2017/07/27               update#= 1380               ||~v129R~|
                                                                       ||~v125R~
 #endif  //WIN | LNX                                                   ||~v125R~
                                                                       ||~v124R~
-   .短縮ファイル名                                                    ||+v@@@I~
-       -ファイル名指定の箇所に以下の省略形が使用できます              ||+v@@@I~
-          *\  : 現在の画面で開いているファイル/フォルダーと同じフォルダー||+v@@@I~
-          ^*\ : 画面分割した状態でもう一方の画面で開いているファイル/フォルダーと同じフォルダー||+v@@@I~
-          ::  : ワークディレクトリー                                  ||+v@@@I~
-        例)   e *\another.txt   e ^*\more.c   e ::xehosts             ||+v@@@I~
-                                                                      ||+v@@@I~
-       -短縮名                                                        ||+v@@@I~
-            定義ファイル(::xe.shortpath) に短縮名を定義して sp:xxxx 形式で使用||+v@@@I~
-            定義ファイルは自分で編集するか SP コマンドで追加          ||+v@@@I~
-            例)                                                       ||+v@@@I~
-               定義ファイルに次行があるとした場合                     ||+v@@@I~
-                 srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+v@@@I~
-               e sp:srctest1 は                                       ||+v@@@I~
-               e d:\eclipse-workspace\testproject1\src\com\debug\test と解釈される||+v@@@I~
-                                                                      ||+v@@@I~
+   .短縮ファイル名                                                    ||~v129R~
+       -ファイル名指定の箇所に以下の省略形が使用できます              ||~v129R~
+          *\  : 現在の画面で開いているファイル/フォルダーと同じフォルダー||~v129R~
+          ^*\ : 画面分割した状態でもう一方の画面で開いているファイル/フォルダーと同じフォルダー||~v129R~
+          ::  : ワークディレクトリー                                  ||~v129R~
+        例)   e *\another.txt   e ^*\more.c   e ::xehosts             ||~v129R~
+                                                                      ||~v129R~
+       -短縮名                                                        ||~v129R~
+            定義ファイル(::xe.shortpath) に短縮名を定義して sp:xxxx 形式で使用||~v129R~
+            定義ファイルは自分で編集するか SP コマンドで追加          ||~v129R~
+            例)                                                       ||~v129R~
+               定義ファイルに次行があるとした場合                     ||~v129R~
+                 srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||~v129R~
+               e sp:srctest1 は                                       ||~v129R~
+               e d:\eclipse-workspace\testproject1\src\com\debug\test と解釈される||~v129R~
+                                                                      ||~v129R~
 #if defined(W32) || defined(LNX)                                      ||~v124R~
                                                                       ||~v124R~
    .シンタックスハイライト。                                          ||~v124R~
@@ -6432,7 +6438,7 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
         {CHAnge | CNX | IC | ICN}  {探索文字列 | * | \esc}  {置換文字列 | * | \esc | P'pics'}||~v124R~
                      [-g]                                             ||~v124R~
                      [all | next | + | prev | - | first | last]
-                     [-nx] [.lab1 .lab2] [l-column | LM | RM [r-column]]||~v124R~
+                     [-nx] [.lab1 .lab2] [c1 | LM | RM [c2]]||~v124R~ ||+v129R~
 
             CHA     :非表示行を含む全行対象の置換。大文字小文字区別有り。
             CNX     :非表示行を除く置換.           大文字小文字区別有り。
@@ -6492,8 +6498,8 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
             last    :ファイルの最後から探索,一致する最初の文字列を置換
             .lab1/2 :行番号欄に設定したラベルを対で指定して探索行範囲を
                      限定する.行番号を使用しての範囲指定も可.
-            l-column:探索範囲の左端桁位置.
-            r-column:探索範囲の右端桁位置.
+            c1      :探索範囲の左端桁位置.                            ||+v129R~
+            c2      :探索範囲の右端桁位置.                            ||+v129R~
             LM      :探索範囲を左マージンに限定
             RM      :探索範囲を右マージンに限定
             -nx     :非表示行は対象外。(CNX/ICNに同じ)                
@@ -7265,7 +7271,7 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
                      [-Llcmd] -m[n] [-nx] [.lab1 .lab2]               
                      [-{PSP|PSF}[X|R|D]]                              ||~v128R~
 
-            探索位置:[l-column | LM | RM [r-column] | eol | maxeol]
+            探索位置:[c1 | LM | RM [c2] | eol | maxeol | ATTR]        ||+v129R~
 
             FIN     :大文字/小文字 区別有
             IFI     :大文字/小文字 区別無(case Insensitive)
@@ -7433,14 +7439,25 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
             last    :ファイルの最後から探索,見つかった所にカーソルを移動
             .lab1/2 :行番号欄に設定したラベルを対で指定して探索行範囲を
                      限定する.行番号を使用しての範囲指定も可.
-            l-column:探索範囲の左端桁位置.
-            r-column:探索範囲の右端桁位置.
+            c1      :探索範囲の左端桁位置.                            ||+v129R~
+            c2      :探索範囲の右端桁位置.                            ||+v129R~
             LM      :探索範囲を左マージンに限定
             RM      :探索範囲を右マージンに限定
             eol     :行末のみ探す。
                      探索文字がスペースを含むときに使用する。
                      ("a b"\n はエラーとなる)
             maxeol  :最長行（複数行ありうる)の行末のみ探す。
+            ATTR    :ディレクトリーリストでファイルの属性値を探索する ||+v129R~
+                     大文字小文字の区別はしません                     ||+v129R~
+                     属性欄には表示されていないが ディレクトリーには "d"、シンボリックリンクには "L" を指定する||+v129R~
+                     また "d" と "L" はそれぞれ単独で指定してください ||+v129R~
+                     それ以外の属性は Windowsでは 指定の一つ一つの属性すべてを含む行が一致行とし||+v129R~
+                     Linuxでは属性指定の文字列を含む行が一致行とする  ||+v129R~
+                     Linuxで特殊な属性欄の値は                        ||+v129R~
+                        u:setuid, g:setgid, S:setuid+setgid, t:stickey||+v129R~
+                        c:char device, b:block device, p:pipe, s:socket||+v129R~
+                     例) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr||+v129R~
+                         (Linux)   f 775 attr ; f u attr              ||+v129R~
             -a[-]   :探索文字列を含む行の後ｎ行を表示化/非表示化する。
                      & 探索の時は 2 番目の文字列を含む行を基準とする。
                      "-"は前のｎ行を意味する, このとき -b を指定し
@@ -8460,34 +8477,34 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
                      限定する.行番号を使用しての範囲指定も可.
             -/ox[-] :x=N:名前順、x=T:時刻順、x=S:サイズ順、-：降順。
 
-   = 短縮ファイル名                                                   ||+v@@@I~
-                                                                      ||+v@@@I~
-        SP { edit | refresh | add sp-name { file-spec | *\\ | ^*\\ } }||+v@@@I~
-            edit   : 定義ファイル(::xe.shortpath) を編集表示          ||+v@@@I~
-                     修正して保存すれば、次回から有効になる           ||+v@@@I~
-                     あるいは保存後 "refresh" すれば有効になります    ||+v@@@I~
-                     定義ファイルの各行は"短縮名 フルパス名" の形式   ||+v@@@I~
-                     コメント行は先頭に "#"                           ||+v@@@I~
-                     例) srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+v@@@I~
-                         ecws  "c:\Program Files\Android\Android Studio\gradle"||+v@@@I~
-            refresh: 定義ファイルを修正した場合に、その修正を反映させる||+v@@@I~
-                     "sp edit" 画面で修正、保存後 あるいは直接 ::xe.shortpath ファイルを||+v@@@I~
-                     他のプロセスで修正した後に使用する               ||+v@@@I~
-            add    : 定義ファイルに sp-name:短縮名, file-spec:ターゲットファイル名 の行を追加||+v@@@I~
-                     この定義はすぐ使用できる                         ||+v@@@I~
-                     *\ :現在開いているファイル/ディレクトリー,       ||+v@@@I~
-                     ^*\:分割画面の他方で現在開いているファイル/ディレクトリー||+v@@@I~
-                     も状況が適当ならば使用できる                     ||+v@@@I~
-                     例) sp add srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+v@@@I~
-                         sp add ecws  "c:\Program Files\Android\Android Studio\gradle"||+v@@@I~
-        .短縮名は "sp:"プレフィックスで使用する                       ||+v@@@I~
-         (sp:xxx の xxx が未定義の場合はそのまま "sp:xxx" として使用される)||+v@@@I~
-           例) e sp:srctest1\Main.java                                ||+v@@@I~
-               e sp:ecws                                              ||+v@@@I~
-               e "sp:ecws\space embedded name"                        ||+v@@@I~
-               xcopy sp:ecdir\x1 sp.ecdir\x2                          ||+v@@@I~
-               cd sp:ecdir                                            ||+v@@@I~
-                                                                      ||+v@@@I~
+   = 短縮ファイル名                                                   ||~v129R~
+                                                                      ||~v129R~
+        SP { edit | refresh | add sp-name { file-spec | *\\ | ^*\\ } }||~v129R~
+            edit   : 定義ファイル(::xe.shortpath) を編集表示          ||~v129R~
+                     修正して保存すれば、次回から有効になる           ||~v129R~
+                     あるいは保存後 "refresh" すれば有効になります    ||~v129R~
+                     定義ファイルの各行は"短縮名 フルパス名" の形式   ||~v129R~
+                     コメント行は先頭に "#"                           ||~v129R~
+                     例) srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||~v129R~
+                         ecws  "c:\Program Files\Android\Android Studio\gradle"||~v129R~
+            refresh: 定義ファイルを修正した場合に、その修正を反映させる||~v129R~
+                     "sp edit" 画面で修正、保存後 あるいは直接 ::xe.shortpath ファイルを||~v129R~
+                     他のプロセスで修正した後に使用する               ||~v129R~
+            add    : 定義ファイルに sp-name:短縮名, file-spec:ターゲットファイル名 の行を追加||~v129R~
+                     この定義はすぐ使用できる                         ||~v129R~
+                     *\ :現在開いているファイル/ディレクトリー,       ||~v129R~
+                     ^*\:分割画面の他方で現在開いているファイル/ディレクトリー||~v129R~
+                     も状況が適当ならば使用できる                     ||~v129R~
+                     例) sp add srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||~v129R~
+                         sp add ecws  "c:\Program Files\Android\Android Studio\gradle"||~v129R~
+        .短縮名は "sp:"プレフィックスで使用する                       ||~v129R~
+         (sp:xxx の xxx が未定義の場合はそのまま "sp:xxx" として使用される)||~v129R~
+           例) e sp:srctest1\Main.java                                ||~v129R~
+               e sp:ecws                                              ||~v129R~
+               e "sp:ecws\space embedded name"                        ||~v129R~
+               xcopy sp:ecdir\x1 sp.ecdir\x2                          ||~v129R~
+               cd sp:ecdir                                            ||~v129R~
+                                                                      ||~v129R~
    = コマンド非同期実行
 
         SPAwn cmd-name [args]

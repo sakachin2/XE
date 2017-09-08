@@ -1,8 +1,11 @@
-//*CID://+vb86R~:                             update#=  459;       //~vb86R~
+//*CID://+vbc3R~:                             update#=  469;       //~vbc3R~
 //*************************************************************
 //*xefcmd.c                                                     //~5504R~
 //*  find/change sub                                               //~v0ewR~
 //****************************************************************//~v013I~
+//vbc3:170822 delete vbc2(it is enough by normal find;reject TS parameter)//~vbc3I~
+//vbc2:170821 add TS   option for find cmd on dirlist              //~vbc2I~
+//vbc1:170820 add ATTR option for find cmd on dirlist              //~vbc1I~
 //vb86:170216 display cmdline ctr excluded(fcmd:x,xx; lcmd x)      //~vb86I~
 //vb84:170215 (BUG)line of status ULHFLINECMD on but not on UFHliencmd[], the line cmd input is ignored//~vb84I~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
@@ -125,6 +128,7 @@
 #include "xeerr.h"                                                 //~v0eBI~
 #include "xefunct.h"                                               //~vbCBI~
 //*******************************************************
+#define ATTRID           "ATTR"                                    //+vbc3I~
 #define MAXLABEL 2                                                 //~v0hxI~
 #define NONE_SAVED "None"                                          //~vbCBI~
                                                                    //~vbCBI~
@@ -180,6 +184,7 @@ int fcmdgetfindoptionPS(PUCLIENTWE Ppcw,char *Popd,UPODELMTBL* Ppodt);//~vbCBR~
 int fcmdgetfindoptionPSstd(PUCLIENTWE Ppcw);                       //~vbCBR~
 int fcmdcallrfind(int Popt,PUCLIENTWE Ppcw,int Pdest,int Ppstype); //~vbCBI~
 #define FCRFO_NEWOPD       0x01      //A+F5/C+F5 with new operand  //~vbCBI~
+int finderr_notdirlist(char *Pvalue);                              //~vbc1I~
 //**************************************************************** //~v437I~
 //!fcmdgetfindoption                                               //~v437I~
 //* parm1 :pcw                                                     //~v437I~
@@ -485,6 +490,8 @@ static char *S2ndmerginid="RM";                                    //~v0ePR~
 //static char *Smaxrightid ="MAX";                                 //~v551R~
 static char *Smaxrightid ="MAXEOL";                                //~v551R~
 static char *Seolid      ="EOL";                                   //~v54ZI~
+static char *Sattrid     =ATTRID;                                  //~vbc1I~//+vbc3R~
+//static char *Stsid       ="TS";                                    //~vbc2I~//~vbc3R~
     PUFILEH pfh;                                                   //~v0eBI~
 	int merginsw,mergin1sw,opdno,ii,len;                           //~v0eBR~
 	int rangesw,datasw,subcmdsw;                                   //~v0eBI~
@@ -654,7 +661,11 @@ static char *Seolid      ="EOL";                                   //~v54ZI~
             	continue;					//accepted             //~va0cI~
 #endif                                                             //~va1qI~
         	if (Ppcw->UCWtype==UCWTDIR)//no support for dir        //~v0eBI~
+            {                                                      //~vbc2I~
+        	  if (stricmp(opd,Sattrid))                            //~vbc1I~
+//      	   if (stricmp(opd,Stsid))                             //~vbc2I~//~vbc3R~
                 return errconflict(opd,0);//duplicate              //~v43mI~
+            }                                                      //~vbc2I~
         	if (subcmdsw)                                          //~v0eBI~
             	return errinvalid(opd);//subcmd data but data filled alre//~v0eBR~
         	if (!(mergin1sw=stricmp(opd,S1stmerginid))             //~v0eBI~
@@ -688,6 +699,26 @@ static char *Seolid      ="EOL";                                   //~v54ZI~
                 if (Pfindopt & FINDOPT_GREP)                       //~v78dI~
                     return errconflict(opd,"grep option");//duplicate//~v78dI~
 			}//mergin specified                                    //~v54ZI~
+            else					//not mergin                   //~vbc1I~
+        	if (!stricmp(opd,Sattrid))                             //~vbc1I~
+            {                                                      //~vbc1I~
+      	  		if (Ppcw->UCWtype!=UCWTDIR)     //on dir list      //~vbc1I~
+					return finderr_notdirlist(Sattrid);            //~vbc1I~
+            	if (pos1p)                                         //~vbc1I~
+	                return errtoomany();//duplicated               //~vbc1I~
+                pos1p=pos2p=opd;                                   //~vbc1I~
+                pos2=RANGEATTR;                                    //~vbc1I~
+			}//mergin specified                                    //~vbc1I~
+//            else                    //not mergin                   //~vbc2I~//~vbc3R~
+//            if (!stricmp(opd,Stsid))                               //~vbc2I~//~vbc3R~
+//            {                                                      //~vbc2I~//~vbc3R~
+//                if (Ppcw->UCWtype!=UCWTDIR)     //on dir list      //~vbc2I~//~vbc3R~
+//                    return finderr_notdirlist(Stsid);              //~vbc2I~//~vbc3R~
+//                if (pos1p)                                         //~vbc2I~//~vbc3R~
+//                    return errtoomany();//duplicated               //~vbc2I~//~vbc3R~
+//                pos1p=pos2p=opd;                                   //~vbc2I~//~vbc3R~
+//                pos2=RANGETS;                                      //~vbc2I~//~vbc3R~
+//            }//mergin specified                                    //~vbc2I~//~vbc3R~
             else					//not mergin                   //~v54ZI~
             {                                                      //~v0eBI~
             	len=(int)strlen(opd);                              //~v0eBI~
@@ -779,16 +810,14 @@ static char *Seolid      ="EOL";                                   //~v54ZI~
                                                                    //~v0eBI~
 //**************************************************************** //~v0eBI~
 //!fcmdsetrange                                                    //~v0eBI~
-//* parm1 :pcw                                                     //~v0eBI~
-//* parm2 :range no support sw                                     //~v0eBR~
-//* parm3 :search word length                                      //~v0eBI~
 //* parm4 :input pos1 by oerand rearange                           //~v0eBR~
 //* parm5 :input pos2 by oerand rearange                           //~v0eBR~
 //* parm6 :output pos1                                             //~v0eBR~
 //* parm7 :output pos2                                             //~v0eBR~
 //* return:rc                                                      //~v0eBR~
 //**************************************************************** //~v0eBI~
-int  fcmdsetrange(PUCLIENTWE Ppcw,int Pnorangeopt,int Pwordlen,    //~v0eBR~
+//int  fcmdsetrange(PUCLIENTWE Ppcw,int Pnorangeopt,int Pwordlen,    //~v0eBR~//~vbc1R~
+int  fcmdsetrange(PUCLIENTWE Ppcw,int Pnorangeopt,char *Psrchword,int Pwordlen,//~vbc1R~
 				SHORT Ppos1,SHORT Ppos2,SHORT *Prange1,SHORT *Prange2)//~v11oR~
 {                                                                  //~v0eBI~
     PUFILEH pfh;                                                   //~v0eBI~
@@ -839,6 +868,16 @@ int  fcmdsetrange(PUCLIENTWE Ppcw,int Pnorangeopt,int Pwordlen,    //~v0eBR~
 	    	return rc;                                             //~v54RI~
     	range1=range2-Pwordlen;  	//next of end                  //~v54RI~
     	break;                                                     //~v54RI~
+    case RANGEATTR:                                                //~vbc1I~
+    	if (Pwordlen>1 &&  strpbrk(Psrchword,"DdLl"))//other attr with dir/slink//~vbc1R~
+        {                                                          //~vbc1I~
+        	uerrmsg("Do not mix other ATTR with D(directory) and L(simbolic link).",//~vbc1I~
+                    "D(ディレクトリー) と L(シンボリックリンク)はそれぞれ単独で指定してください");//~vbc1R~
+        	return 4;                                              //~vbc1I~
+        }                                                          //~vbc1I~
+    	break;                                                     //~vbc1I~
+    case RANGETS:                                                  //~vbc2I~
+    	break;                                                     //~vbc2I~
     default:                //from to specified                    //~v0eBR~
     	range1=Ppos1;                                              //~v0eBI~
     	range2=Ppos2;     	//pos2 already +1                      //~v0eBR~
@@ -1687,7 +1726,7 @@ int fcmdxall(PUCLIENTWE Ppcw,PUFILEH Ppfh)                         //~v11pR~
 		UCBITON(plht->ULHflag,ULHFDRAW|ULHFLINECMD);		//req redraw//~vb86I~
 		Ppfh->UFHcmdline[Ppfh->UFHcmdlinectr++]=plht;              //~vb86R~
   	}                                                              //~vb86I~
-  	if (!UCBITCHK(plhe->ULHflag,ULHFLINECMD))		//req redraw   //+vb86R~
+  	if (!UCBITCHK(plhe->ULHflag,ULHFLINECMD))		//req redraw   //~vb86R~
   	{                                                              //~vb86I~
 		UCBITON(plhe->ULHflag,ULHFDRAW|ULHFLINECMD);		//req redraw//~vb86I~
 		Ppfh->UFHcmdline[Ppfh->UFHcmdlinectr++]=plhe;              //~vb86R~
@@ -1768,6 +1807,7 @@ static UCHAR *Sandopt="[& [!] " WORDandCOLS "2 [-d[[{<|>}]n]]]";   //~va1hI~//~v
 //static UCHAR *Swords=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|8]]|*|*u|*e|*L|*=[M][n]|*\\n|\\x..|P'pics'|regex -g}[{c1 [c2]}|eol|maxeol]";//~va28R~
 //static UCHAR *Swords=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|8]]|*|*u|*e|*ec|*L|*=[M][n]|*\\n|\\x..|P'pics'|regex -g}[{c1 [c2]}|eol|maxeol]";//~va28I~//~vax1R~
 static UCHAR *Swords=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|4|8]]|*|*u|*e|*ec|*L|*=[M][n]|*\\n|\\x..|P'pics'|regex -g}[{c1 [c2]}|eol|maxeol]";//~vax1I~
+static UCHAR *Swordsfind=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|4|8]]|*|*u|*e|*ec|*L|*=[M][n]|*\\n|\\x..|P'pics'|regex -g}[{c1 [c2]}|eol|maxeol" ATTRID "]";//+vbc3I~
 //#else                                                            //~v539R~
 //static UCHAR *Saround="[/a[-]n] [/b[-]n] [/c]";                  //~v539R~
 ////static UCHAR *Sandopt="[ & [!] word2[\\n] [/d[[{<|>}]n]]]";    //~v539R~
@@ -1842,7 +1882,8 @@ static UCHAR *Swords=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|4|8]]
 //    		uerrmsg("{F|I}[NX] [!] " WORDandCOLS " %s %s [-c[{R|L}n][{T|B}n] [-j] [-Llcmd] [-m[n]] [all|allkx|+|-] [-nx] [.l1 .l2]%s",0,//~vbCBR~
 //  				Sandopt,Saround,Swords);                       //~vbCBR~
       		uerrmsg("{F|I}[NX] [!] " WORDandCOLS " %s %s [-c[{R|L}n][{T|B}n] [-j] [-Llcmd] [-m[n]] [all|allkx|+|-] [-nx] [.l1 .l2] %s%s",0,//~vbCBR~
-    				Sandopt,Saround,pssopt,Swords);                //~vbCBR~
+//  				Sandopt,Saround,pssopt,Swords);                //~vbCBR~//+vbc3R~
+    				Sandopt,Saround,pssopt,Swordsfind);            //+vbc3I~
         }                                                          //~v40zI~
 	}                                                              //~v11kI~
 ////  uerrmsg("%s %s %s %s [all|+|-] [.l1 .l2] [c1 c2] %s",0,      //~v539R~
@@ -2385,3 +2426,11 @@ int fcmdPSinit(int Popt,void* /*PUSCMD*/ Ppsc)                     //~vbCBR~
     }                                                              //~vbCBI~
     return 0;                                                      //~vbCBI~
 }//fcmdPSinit                                                      //~vbCBR~
+//************************************************************************//~vbc1I~
+int finderr_notdirlist(char *Pvalue)                               //~vbc1I~
+{                                                                  //~vbc1I~
+	uerrmsg("%s is only for DirList",                              //~vbc1I~
+            "%s パラメータはディレクトリーリスト用です",           //~vbc1R~
+            Pvalue);                                               //~vbc1I~
+    return 4;                                                      //~vbc1I~
+}//finderr_notdirlist                                              //~vbc1I~

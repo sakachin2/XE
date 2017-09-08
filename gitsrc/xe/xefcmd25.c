@@ -1,9 +1,11 @@
-//*CID://+vb86R~:                             update#=  707;       //+vb86R~
+//*CID://+vbc1R~:                             update#=  712;       //+vbc1R~
 //*************************************************************
 //*xefcmd25.c                                                      //~v73dR~
 //*  find/change/exclude                                           //~v11kR~
 //****************************************************************////~v438R~
-//vb86:170216 display cmdline ctr excluded(fcmd:x,xx; lcmd x)      //+vb86I~
+//vbc2:170821 add TS   option for find cmd on dirlist              //~vbc2I~
+//vbc1:170820 add ATTR option for find cmd on dirlist              //~vbc1I~
+//vb86:170216 display cmdline ctr excluded(fcmd:x,xx; lcmd x)      //~vb86I~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vaza:150111 (BUG of vauG)F5/S+F5 cut 2 byte from end of search word//~vazaI~
@@ -449,16 +451,36 @@ static  UCHAR   *Scprev=" PreV";                                   //~v10VR~
     		offset=OFFS_TOP;        //id of search from the top line//~v41rR~
    }//ulsrchsw                                                     //~v54aI~
 //	return linesrchstring(Ppcw,&plh,&offset,1,Pchangeopt,Ssubcmdid);	//locate//~v09cR~
-	if (fcmdsetrange(Ppcw,Sulsrchsw,                               //~v0eBR~
+//  if (fcmdsetrange(Ppcw,Sulsrchsw,                               //~v0eBR~//+vbc1R~
+    if (fcmdsetrange(Ppcw,Sulsrchsw,Ssrch,                         //+vbc1I~
 		Ssrchlen,Srangeid1,Srangeid2,&Srange1,&Srange2))           //~v0eBI~
 		return 4;                                                  //~v0eBI~
+    Sfindopt&=~(FINDOPT_DIRATTR|FINDOPT_DIRATTRAND);               //~vbc1I~
+    Sfindopt&=~(FINDOPT_DIRTS|FINDOPT_DIRTSAND);                   //~vbc2I~
+    if (Srangeid2==RANGEATTR)                                      //~vbc1I~
+    {                                                              //~vbc1I~
+    	Sfindopt|=FINDOPT_DIRATTR;                                 //~vbc1I~
+    }                                                              //~vbc1I~
+    if (Srangeid2==RANGETS)                                        //~vbc2I~
+    {                                                              //~vbc2I~
+    	Sfindopt|=FINDOPT_DIRTS;                                   //~vbc2I~
+    }                                                              //~vbc2I~
 //  if (Ssrchlen2)             //*&                                //~v54zR~
 //  if (Ssrchlen2||Seolsrchsw2)//*&                                //~v62dR~
     if (Ssrchlen2||Seolsrchsw2)//*&                                //~v62fR~
     {                                                              //~v532I~
-		if (fcmdsetrange(Ppcw,Sulsrchsw,                           //~v532I~
+//  	if (fcmdsetrange(Ppcw,Sulsrchsw,                           //~v532I~//+vbc1R~
+    	if (fcmdsetrange(Ppcw,Sulsrchsw,Ssrch2,                    //+vbc1I~
 			Ssrchlen2,Srangeid1and,Srangeid2and,&Srange1and,&Srange2and))//~v532I~
 			return 4;                                              //~v532I~
+	    if (Srangeid2and==RANGEATTR)                               //~vbc1I~
+    	{                                                          //~vbc1I~
+    		Sfindopt|=FINDOPT_DIRATTRAND;                          //~vbc1I~
+    	}                                                          //~vbc1I~
+	    if (Srangeid2and==RANGETS)                                 //~vbc2I~
+    	{                                                          //~vbc2I~
+    		Sfindopt|=FINDOPT_DIRTSAND;                            //~vbc2I~
+    	}                                                          //~vbc2I~
     }                                                              //~v532I~
 //    Srangeplhs=0;       //clear range                            //~v0hxR~
 //    Srangeplhe=0;       //clear range                            //~v0hxR~
@@ -801,8 +823,8 @@ int fcmdfindsub(PUCLIENTWE Ppcw,int Pcasesw,int Pchangeopt,int Pbackward,int Pnx
         if (rc=fcmdothererrmsgcat(SUBCMD_ALL),rc)                  //~v614R~
             return rc;                                             //~v614I~
 	}
-    if (Sexcludesw)                                                //+vb86I~
-    	lcmdexcludedmsg(LCXMO_MSGCAT,pfh);                         //+vb86I~
+    if (Sexcludesw)                                                //~vb86I~
+    	lcmdexcludedmsg(LCXMO_MSGCAT,pfh);                         //~vb86I~
 //  else   //not all,but multi when *&                             //~v62bR~
 //      if (Smfwtindex>1)	//multiple found                       //~v43hR~
 //          if (fcmdcpymfwt(pfh))                                  //~v62bR~
@@ -1489,17 +1511,37 @@ int operandchk(PUCLIENTWE Ppcw,UCHAR *Popd,int Pchangeopt,int Pbackward,int Pcas
 //            return 4;                                              //~va3xI~//~vax1R~
 //        }                                                          //~va3xI~//~vax1R~
 #endif                                                             //~va1CI~//~va3xI~
-	if (fcmdsetrange(Ppcw,Sulsrchsw,	//*u or *e                 //~v0eBR~
+//  if (fcmdsetrange(Ppcw,Sulsrchsw,	//*u or *e                 //~v0eBR~//+vbc1R~
+    if (fcmdsetrange(Ppcw,Sulsrchsw,Ssrch,	//*u or *e             //+vbc1I~
 					Ssrchlen,rangeid1,rangeid2,&Srange1,&Srange2)) //~v0eHR~
     	return 4;                                                  //~v0eBI~
+    Sfindopt&=~(FINDOPT_DIRATTR|FINDOPT_DIRATTRAND);               //~vbc1I~
+    Sfindopt&=~(FINDOPT_DIRTS|FINDOPT_DIRTSAND);                   //~vbc2I~
+    if (rangeid2==RANGEATTR)                                       //~vbc1R~
+    {                                                              //~vbc1I~
+    	Sfindopt|=FINDOPT_DIRATTR;                                 //~vbc1I~
+    }                                                              //~vbc1I~
+    if (rangeid2==RANGETS)                                         //~vbc2I~
+    {                                                              //~vbc2I~
+    	Sfindopt|=FINDOPT_DIRTS;                                   //~vbc2I~
+    }                                                              //~vbc2I~
 //  if (Ssrchlen2)             //*&                                //~v54zR~
 //  if (Ssrchlen2||Seolsrchsw2)//*&                                //~v62dR~
     if (Ssrchlen2||Seolsrchsw2 //*&                                //~v62dI~
     ||  Sulsrchsw==LINE_SAMEMATCH)//matching                       //~v62dR~
     {                                                              //~v532I~
-        if (fcmdsetrange(Ppcw,Sulsrchsw,    //*u or *e             //~v532I~
+//      if (fcmdsetrange(Ppcw,Sulsrchsw,    //*u or *e             //~v532I~//+vbc1R~
+        if (fcmdsetrange(Ppcw,Sulsrchsw,Ssrch2,    //*u or *e      //+vbc1I~
                         Ssrchlen2,rangeid1and,rangeid2and,&Srange1and,&Srange2and))//~v532I~
             return 4;                                              //~v532I~
+	    if (rangeid2and==RANGEATTR)                                //~vbc1R~
+    	{                                                          //~vbc1I~
+    		Sfindopt|=FINDOPT_DIRATTRAND;                          //~vbc1I~
+    	}                                                          //~vbc1I~
+	    if (rangeid2and==RANGETS)                                  //~vbc2I~
+    	{                                                          //~vbc2I~
+    		Sfindopt|=FINDOPT_DIRTSAND;                            //~vbc2I~
+    	}                                                          //~vbc2I~
     }                                                              //~v532I~
     if (Sfindopt & FINDOPT_SETLABEL)                               //~v61hI~
     {                                                              //~v61hI~

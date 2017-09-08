@@ -1,8 +1,8 @@
-//*CID://+v9a1R~:                             update#=  119;       //+v9a1R~
+//*CID://+v9a1R~:                             update#=  121;       //+v9a1R~
 //***********************************************************   //~v742I~
 //* XPSUB1 : xprint sub1                                        //~v743R~
 //***********************************************************   //~v742I~
-//v9a1:160418 v9.33 LNX64 Compiler warning                         //+v9a1I~
+//v9a1:160418 v9.33 LNX64 Compiler warning                         //~v9a1I~
 //v9a0:160418 v9.33 LNX compiler warning                           //~v9a0I~
 //v998:160404 v9.32 W64 compiler warning                           //~v998I~
 //v990:140506 v9.30 (W32UNICODE) filename by UD fmt                //~v990I~
@@ -386,11 +386,11 @@ char *xpmult_indirectopt(int Popt,char *Precbuff,int Plen)         //~v942I~
 //  pc3=memchr(Precbuff,'\t',Plen);                                //~v954R~//~v9a0R~
     pc3=memchr(Precbuff,'\t',(size_t)Plen);                        //~v9a0I~
 //  pc=umemstr(Precbuff," /",Plen);                                //~v942I~//~v9a0R~
-//  pc=umemstr(Precbuff," /",(size_t)Plen);                        //~v9a0I~//+v9a1R~
-    pc=umemstr(Precbuff," /",(unsigned)Plen);                      //+v9a1I~
+//  pc=umemstr(Precbuff," /",(size_t)Plen);                        //~v9a0I~//~v9a1R~
+    pc=umemstr(Precbuff," /",(unsigned)Plen);                      //~v9a1I~
 //  pc2=umemstr(Precbuff," -",Plen);                               //~v942I~//~v9a0R~
-//  pc2=umemstr(Precbuff," -",(size_t)Plen);                       //~v9a0I~//+v9a1R~
-    pc2=umemstr(Precbuff," -",(unsigned)Plen);                     //+v9a1I~
+//  pc2=umemstr(Precbuff," -",(size_t)Plen);                       //~v9a0I~//~v9a1R~
+    pc2=umemstr(Precbuff," -",(unsigned)Plen);                     //~v9a1I~
     if (!pc)                                                       //~v942I~
     	if (!pc2)                                                  //~v942I~
         {                                                          //~v954I~
@@ -409,8 +409,8 @@ char *xpmult_indirectopt(int Popt,char *Precbuff,int Plen)         //~v942I~
 //    len=(ULPTR)pc-(ULPTR)Precbuff;                               //~v968I~//~v998R~
       len=(int)((ULPTR)pc-(ULPTR)Precbuff);                        //~v998I~
 //  pc-=umemrspnc(Precbuff,' ',len);                               //~v942I~//~v9a0R~
-//  pc-=umemrspnc(Precbuff,' ',(size_t)len);                       //~v9a0I~//+v9a1R~
-    pc-=umemrspnc(Precbuff,' ',(unsigned)len);                     //+v9a1I~
+//  pc-=umemrspnc(Precbuff,' ',(size_t)len);                       //~v9a0I~//~v9a1R~
+    pc-=umemrspnc(Precbuff,' ',(unsigned)len);                     //~v9a1I~
     return pc;                                                     //~v942I~
 }//xpmult_indirectopt                                              //~v942I~
 //**********************************************************************//~v942I~
@@ -583,7 +583,7 @@ static char *Ssvrecordszparm,*Ssvvfmtparm,*Ssvmodeparm;            //~v96eR~
     if (swusecfg)                                                  //~v953I~
     {                                                              //~v953I~
 		Gebcdictype=3;                                             //~v953I~//~v954M~
-		xpebc_init(0,pmapfnm);                                     //~v953I~
+    	xpebc_init(0,pmapfnm);                                     //~v953I~//+v9a1R~
     }                                                              //~v953I~
     return pc;                                                     //~v942I~
 }//xpmult_indirectopt                                              //~v942I~

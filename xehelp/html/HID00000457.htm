@@ -13,7 +13,8 @@ a:hover{font-weight:bold;}-->
 <BODY bgcolor="#FFFFE2">
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
 ######################################################################
-  .v129B<--129:(2017/07/30)
+  .v129B<--129 :(2017/07/27)
+  .v129C<--129B:(2017/09/04)
 
      1.BUGs
        -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする
@@ -49,9 +50,50 @@ a:hover{font-weight:bold;}-->
                e "sp:ecws\space embedded name"
                xcopy sp:ecdir\x1 sp.ecdir\x2
                cd sp:ecdir
+     (129C)
+       -Find コマンド
+          ディレクトリーリスト上で ATTR(属性)欄のみを探すオプションを追加
+          大文字小文字の区別はしません
+          属性欄には表示されていないが ディレクトリーには "d"、シンボリックリンクには "L" を指定する
+          また "d" と "L" はそれぞれ単独で指定してください
+          それ以外の属性は Windowsでは 指定の一つ一つの属性すべてを含む行が一致行とし
+          Linuxでは属性指定の文字列を含む行が一致行とする
+          Linuxで特殊な属性欄の値は
+            u:setuid, g:setgid, S:setuid+setgid, t:stickey
+            c:char device, b:block device, p:pipe, s:socket
+        例) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr
+            (Linux)   f 775 attr ; f u attr
 
      3.その他
        -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加
+     (129C)
+       -(Windows)ICU EBCDIC変換ライブラリー(libicuuc.dll)が見つからないとき
+        xeebc.mapに ICU_DATA の指定があればそのフォルダー内もチェックする
+        なければ 環境変数 ICU_DATA もチェックする
+        (Linux)/usr/lib など以外にある場合は LD_LIBRARY_PATH 環境変数に ICU の so のパスをしてしてください
+       -xeebc.map に ICU_DLL_SUFFIX, ICU_APP_SUFFIX が ないとき
+        ICU の uconv(.exe) で ICU のバージョンが分かればそれを補う
+       -CPU8(UTF8)ファイルではレコード長は不定なので/Mr(レコードモード)オプションは受け付けない
+     4.ツール。
+     (129C)
+       -xprint v9.38
+        ./Tabon: パラメータサポート追加
+           DBCSスペース、TAB(0x09)とそれに続く桁空けに表示する代替文字を指定する
+           /Tabon:x:y:z ;テキストモードのときのDBCSスペース,タブ文字,タブスキップの
+                        ;代替印刷文字。x,y,zは 文字、ヘキサ文字またはユニコード。
+                        ;例) /Tabon:x2020:x18:x1a  /Tabon::u2191:u2192 /Tabon::u25cb
+                        ;    /Tabon:u2750
+                        ;省略値は UTF8/EBCDICファイル /Tabon:u3000:x20:x20
+                        ;                        以外 /Tabon:x8140:x20:x20
+        .EBCDIC ファイルを ICU で変換して印刷するときで /BCfilename の指定がない場合
+         ICU の 共有ライブラリー(DLL または so)が PATH または LD_LIBRARY_PATH にあれば
+         探して ICU バージョンは uconv(.exe) を発行して それを補う
+           例) xprint x1ebc22 -cpeb=cp930 -me -icu
+       -xcv 1.20
+        .EBCDIC ファイルを ICU で変換するときで /BCfilename の指定がない場合
+         ICU の 共有ライブラリー(DLL または so)が PATH または LD_LIBRARY_PATH にあれば
+         探して ICU バージョンは uconv(.exe) を発行して それを補う
+           例) xcv x1ebc22 x1ebc22m -b2m -cpeb=cp930 -icu
 
 
 </SPAN></PRE>

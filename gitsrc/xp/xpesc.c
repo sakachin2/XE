@@ -1,7 +1,8 @@
-//*CID://+v98iR~:                             update#=  104;       //~v98iR~
+//*CID://+v9e6R~:                             update#=  107;       //~v9e6R~
 //**********************************************************************//~5A28I~
 //* xpesc.c                                                     //~5A29R~
 //**********************************************************************//~v74lI~
+//v9e6:170826 compiler warning samename parm and gbl               //~v9e6I~
 //v98i:140208 (BUG)Paper width/haight re-evaluation is required when orientation was changed by dialog//~v98iI~
 //v987:140201 (BUG)when papersize change by dialog,need to adjust maxcol/maxline//~v987I~
 //v977:131025 (gxp)other pagesize support by margin shift /E/pper/[T|B|L|R[nn]]//~v977I~
@@ -178,7 +179,7 @@ static int  fontid=0;        	//font style parm    v7.24a        //~v783R~
 static int  fontid2=0;        	//ESCP kanji         v7.28a        //~v783R~
 static int  fontsetreq=0;     	//setup font cmd                   //~v864I~
 static int Sformid;                                             //~v74lM~
-#ifdef GTKPRINT                                                   //~v980I~//~v977I~//+v98iR~
+#ifdef GTKPRINT                                                   //~v980I~//~v977I~//~v98iR~
 	static char *Sdialogpapersize;                                 //~v977I~
 #endif                                                             //~v980I~//~v977I~
 //#ifdef W32                                                       //~v90yR~
@@ -1127,7 +1128,8 @@ void canonfontset(int Pvmi,int Phmi)                               //~v864R~
 //*parm4  : output string length addr
 //*return : none
 //**********************************************/
-void getescdata(char *file,int colomn,char *esccmd,int *len)
+//void getescdata(char *file,int colomn,char *esccmd,int *len)     //~v9e6R~
+void getescdata(char *file,int colomn,char *Pesccmd,int *len)      //~v9e6I~
 {
     char buff[MAXESCCMD];
 	int fcol=0,fcolo=0;
@@ -1165,7 +1167,7 @@ int gethexvalue(char *,char *);
 		{
 			pc=buff+strspn(buff,"0123456789");	//skip max colomn field
 			pc+=strspn(pc," ");					//skip to first hex char
-			*len=gethexvalue(pc,esccmd);
+			*len=gethexvalue(pc,Pesccmd);                          //~v9e6R~
 			if (*len==-1)
 			{
 				if (dbcsenv)	//DBCS mode
@@ -1230,7 +1232,8 @@ int gethexvalue(char *hex,char *bin)
 //*  parm2 :fontid parm string                                     //~v783R~
 //*  return:none                                                   //~v783R~
 //*************************************                            //~v783R~
-void escfontchk(int prntyp,char *fontstyle)                        //~v783R~
+//void escfontchk(int prntyp,char *fontstyle)                        //~v783R~//+v9e6R~
+void escfontchk(int prntyp,char *Pfontstyle)                       //+v9e6I~
 {                                                                  //~v783R~
 	char *pc;                                                      //~v783R~
 //********************                                             //~v783R~
@@ -1239,10 +1242,10 @@ void escfontchk(int prntyp,char *fontstyle)                        //~v783R~
 	{
 	case PRINTER_ESCP:                  //ESC/P                    //~v783R~
 //kanji font style v7.28a start
-		if (fontstyle)
+		if (Pfontstyle)                                            //+v9e6R~
 		{
 //          pc=strpbrk(cptr,"/");		//search '/'               //~v782R~
-            pc=strpbrk(fontstyle,"/");		//search '/'           //~v782R~
+            pc=strpbrk(Pfontstyle,"/");		//search '/'           //~v782R~//+v9e6R~
 			if (pc)						//with kanji parm
 			{
 				pc++;
@@ -1253,99 +1256,99 @@ void escfontchk(int prntyp,char *fontstyle)                        //~v783R~
 		  		if (!fontid2)
                 {                                                  //~v91pI~
 					if (dbcsenv)	//DBCS mode
-        				optionerr("漢字フォントスタイル(ESC/P)",fontstyle-2);//errmsg and exit
+        				optionerr("漢字フォントスタイル(ESC/P)",Pfontstyle-2);//errmsg and exit//+v9e6R~
 					else			//SBCS mode
-			        	optionerr("DBCS Font Style(ESC/P)",fontstyle-2);  //errmsg and exit
+			        	optionerr("DBCS Font Style(ESC/P)",Pfontstyle-2);  //errmsg and exit//+v9e6R~
                 }                                                  //~v91pI~
 				*(--pc)=0;
-				if (!strlen(fontstyle))
-					fontstyle=NULL;
+				if (!strlen(Pfontstyle))                           //+v9e6R~
+					Pfontstyle=NULL;                               //+v9e6R~
 			}
 		}
 //kanji font style v7.28a end
-		if (fontstyle)
+		if (Pfontstyle)                                            //+v9e6R~
 		{
 			fontid=-1;
-			if (!stricmp(fontstyle,"0"))                        //~v742R~
+			if (!stricmp(Pfontstyle,"0"))                        //~v742R~//+v9e6R~
 	  			fontid=0;
-	  		if (!stricmp(fontstyle,"ROM"))                         //~v784I~
+	  		if (!stricmp(Pfontstyle,"ROM"))                         //~v784I~//+v9e6R~
 	  			fontid=0;                                          //~v784I~
-	  		if (!stricmp(fontstyle,"SAN"))                      //~v742R~
+	  		if (!stricmp(Pfontstyle,"SAN"))                      //~v742R~//+v9e6R~
 	  			fontid=1;
-	  		if (!stricmp(fontstyle,"COU"))                      //~v742R~
+	  		if (!stricmp(Pfontstyle,"COU"))                      //~v742R~//+v9e6R~
 	  			fontid=2;
-	  		if (!stricmp(fontstyle,"PRE"))                      //~v742R~
+	  		if (!stricmp(Pfontstyle,"PRE"))                      //~v742R~//+v9e6R~
 	  			fontid=3;
-	  		if (!stricmp(fontstyle,"SCR"))                      //~v742R~
+	  		if (!stricmp(Pfontstyle,"SCR"))                      //~v742R~//+v9e6R~
 	  			fontid=4;
-	  		if (!stricmp(fontstyle,"OCB"))                      //~v742R~
+	  		if (!stricmp(Pfontstyle,"OCB"))                      //~v742R~//+v9e6R~
 	  			fontid=5;
-	  		if (!stricmp(fontstyle,"OCA"))                      //~v742R~
+	  		if (!stricmp(Pfontstyle,"OCA"))                      //~v742R~//+v9e6R~
 	  			fontid=6;
 	  		if (fontid==-1)
             {                                                      //~v91pI~
 				if (dbcsenv)	//DBCS mode
-        			optionerr("フォントスタイル(ESC/P)",fontstyle-2);//errmsg and exit
+        			optionerr("フォントスタイル(ESC/P)",Pfontstyle-2);//errmsg and exit//+v9e6R~
 				else			//SBCS mode
-		        	optionerr("Font Style(ESC/P)",fontstyle-2);  //errmsg and exit
+		        	optionerr("Font Style(ESC/P)",Pfontstyle-2);  //errmsg and exit//+v9e6R~
             }                                                      //~v91pI~
 		}
 		break;
 	case PRINTER_IBM:                                              //~v783R~
-		if (fontstyle)
+		if (Pfontstyle)                                            //+v9e6R~
 		{
 			fontid=-1;
-			if (!stricmp(fontstyle,"0"))                        //~v742R~
+			if (!stricmp(Pfontstyle,"0"))                        //~v742R~//+v9e6R~
 	  			fontid=0;
-	  		if (!stricmp(fontstyle,"GOT"))                      //~v742R~
+	  		if (!stricmp(Pfontstyle,"GOT"))                      //~v742R~//+v9e6R~
 	  			fontid=1;
-	  		if (!stricmp(fontstyle,"ELI"))                      //~v742R~
+	  		if (!stricmp(Pfontstyle,"ELI"))                      //~v742R~//+v9e6R~
 	  			fontid=6;
-	  		if (!stricmp(fontstyle,"COU"))                      //~v742R~
+	  		if (!stricmp(Pfontstyle,"COU"))                      //~v742R~//+v9e6R~
 	  			fontid=7;
-	  		if (!stricmp(fontstyle,"MIN"))                      //~v742R~
+	  		if (!stricmp(Pfontstyle,"MIN"))                      //~v742R~//+v9e6R~
 	  			fontid=8;
-	  		if (!stricmp(fontstyle,"OCB"))                      //~v742R~
+	  		if (!stricmp(Pfontstyle,"OCB"))                      //~v742R~//+v9e6R~
 	  			fontid=0x11;
-	  		if (!stricmp(fontstyle,"ORE"))                      //~v742R~
+	  		if (!stricmp(Pfontstyle,"ORE"))                      //~v742R~//+v9e6R~
 	  			fontid=0x12;
 	  		if (fontid==-1)
             {                                                      //~v91pI~
 				if (dbcsenv)	//DBCS mode
-        			optionerr("フォントスタイル(IBM)",fontstyle-2);//errmsg and exit
+        			optionerr("フォントスタイル(IBM)",Pfontstyle-2);//errmsg and exit//+v9e6R~
 				else			//SBCS mode
-		        	optionerr("Font Style(IBM)",fontstyle-2);  //errmsg and exit
+		        	optionerr("Font Style(IBM)",Pfontstyle-2);  //errmsg and exit//+v9e6R~
             }                                                      //~v91pI~
 
 		}//font style parm exist
 		break;                                                     //~v783I~
 	case PRINTER_CANNON:                    //[ESC][[primary];<secondary>y//~v783R~
-		if (fontstyle)                                             //~v783I~
+		if (Pfontstyle)                                             //~v783I~//+v9e6R~
 		{                                                          //~v783I~
 			fontid=-1;                                             //~v783I~
-	  		if (!stricmp(fontstyle,"LIN"))                         //~v783I~
+	  		if (!stricmp(Pfontstyle,"LIN"))                         //~v783I~//+v9e6R~
 	  			fontid=0;                    //[ESC][0;y           //~v783I~
-	  		if (!stricmp(fontstyle,"COU"))                         //~v783I~
+	  		if (!stricmp(Pfontstyle,"COU"))                         //~v783I~//+v9e6R~
             {                                                      //~v864I~
                 fontsetreq=2;                //set char set name by cpi//~v864R~
 	  			fontid=3;                    //[ESC][3;y           //~v783I~
             }                                                      //~v864I~
-	  		if (!stricmp(fontstyle,"SWI"))   //swiss               //~v783I~
+	  		if (!stricmp(Pfontstyle,"SWI"))   //swiss               //~v783I~//+v9e6R~
             {                                                      //~v864I~
                 fontsetreq=1;                                      //~v864I~
 	  			fontid=4;                    //[ESC][4;y           //~v783I~
             }                                                      //~v864I~
-	  		if (!stricmp(fontstyle,"DUT"))   //dutch801            //~v783I~
+	  		if (!stricmp(Pfontstyle,"DUT"))   //dutch801            //~v783I~//+v9e6R~
             {                                                      //~v864I~
                 fontsetreq=1;                                      //~v864I~
 	  			fontid=5;                    //[ESC][5;y           //~v783I~
             }                                                      //~v864I~
-	  		if (!stricmp(fontstyle,"MIN"))                         //~v783I~
+	  		if (!stricmp(Pfontstyle,"MIN"))                         //~v783I~//+v9e6R~
 	  			fontid=80;                   //[ESC][80;y          //~v783I~
-	  		if (!stricmp(fontstyle,"GOT"))                         //~v783I~
+	  		if (!stricmp(Pfontstyle,"GOT"))                         //~v783I~//+v9e6R~
 	  			fontid=81;                   //[ESC][81;y          //~v783I~
                                                                    //~v864I~
-	  		if (!stricmp(fontstyle,"SYM"))   //dutch801            //~v864R~
+	  		if (!stricmp(Pfontstyle,"SYM"))   //dutch801            //~v864R~//+v9e6R~
             {                                                      //~v864I~
                 fontsetreq=1;                //set char set name   //~v864I~
                 fontid=99;                   //dummy(bypass [esc][n;y)//~v864I~
@@ -1354,9 +1357,9 @@ void escfontchk(int prntyp,char *fontstyle)                        //~v783R~
 	  		if (fontid==-1)                                        //~v783I~
             {                                                      //~v91pI~
 				if (dbcsenv)	//DBCS mode                        //~v783I~
-        			optionerr("フォントスタイル(Canon)",fontstyle-2);//errmsg and exit//~v864R~
+        			optionerr("フォントスタイル(Canon)",Pfontstyle-2);//errmsg and exit//~v864R~//+v9e6R~
 				else			//SBCS mode                        //~v783I~
-		        	optionerr("Font Style(Canon)",fontstyle-2);  //errmsg and exit//~v864R~
+		        	optionerr("Font Style(Canon)",Pfontstyle-2);  //errmsg and exit//~v864R~//+v9e6R~
             }                                                      //~v91pI~
                                                                    //~v783I~
 		}//font style parm exist                                   //~v783I~
@@ -1364,12 +1367,12 @@ void escfontchk(int prntyp,char *fontstyle)                        //~v783R~
                                                                    //~v844I~
 #ifdef W32                                                         //~v844I~
 	case PRINTER_WIN:   //windows                                  //~v844I~
-		win_setupfont(fontstyle);                                  //~v844R~
+		win_setupfont(Pfontstyle);                                  //~v844R~//+v9e6R~
         break;                                                     //~v844I~
 #endif                                                             //~v844I~
 #ifdef GXP                                                         //~v92dI~
 	case PRINTER_WIN:   //windows                                  //~v92dR~
-		lnx_setupfont(fontstyle);                                  //~v92dI~
+		lnx_setupfont(Pfontstyle);                                  //~v92dI~//+v9e6R~
         break;                                                     //~v92dI~
 #endif                                                             //~v92dI~
                                                                    //~v844I~
@@ -1467,7 +1470,8 @@ char *escprntyp(char *cptr,int *Ppprntyp,int *Ppskip1stff)         //~v785I~
 		if (dbcsenv)	//DBCS mode v4.9a                          //~v848I~
         	printf("\nプリンタータイプに Windows 以外が指定されました\n");//errmsg and exit v4.9a//~v848R~
 		else			//SBCS mode v4.9a                          //~v848I~
-        	printf("\n(Warning)Printer type is not Windows\n",cptr-2);//errmsg and exit v3.8r//~v848I~
+//      	printf("\n(Warning)Printer type is not Windows\n",cptr-2);//errmsg and exit v3.8r//~v848I~//~v9e6R~
+        	printf("\n(Warning)Printer type is not Windows\n");//errmsg and exit v3.8r//~v9e6I~
 #endif                                                             //~v848I~
 #ifdef GXP                                                         //~v92dI~
 	if (prntyp!=PRINTER_WIN)                                       //~v92dR~

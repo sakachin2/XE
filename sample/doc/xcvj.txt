@@ -1,4 +1,4 @@
-//*CID:||+v118R~:   2012/05/07                update#=   14;          ||+v118R~
+//*CID:||+v120R~:   2017/08/26                update#=   19;          ||~v118R~||~v120R~
 
 たくさんオプションがありますが一般的な使い方は                        ||~v116R~
   xcv -cm2m -f:cpfrom -t:-cpto inputfile -ooutputfile                 ||~v116I~
@@ -33,7 +33,7 @@ u2f/f2uでは\uxxxx表記のユニコードに対応します                         ||~v116R~
 **(Unix では "/" のではなく "-" を使用する)                           ||~v116R~
 ********************************************************************* ||~v116I~
                                                                       ||~v116I~
-xcv:V1.18(W): SJIS,JIS,EUC,UCS,UTF-8,EBCDIC                           ||+v118R~
+xcv:V1.20(W): SJIS,JIS,EUC,UCS,UTF-8,EBCDIC                           ||~v118R~||~v120R~
               任意のiconv/ICU文字セット/WindowsCP コード変換 PGM。    ||~v116R~
 format:
  xcv  [/options] [ infile | - ] [outfile]
@@ -42,7 +42,7 @@ format:
   outfile  :出力ファイル名。省略すると標準出力に出力。                ||~v116R~
   /options :以下、大文字小文字区別なし。                              ||~v116R~
     /2errf :標準エラー宛先ファイル。                                  ||~v116R~
-    /[C]x2y:x2y は以下。                                              ||~v116R~
+    /[C]x2y:x2y は以下。(オプションパラメータとして最初に指定すること)||~v120I~
             e2s/s2e: EUC<-->SJIS.
             j2s/s2j: JIS<-->SJIS.
             j2e/e2j: JIS<-->EUC.
@@ -63,7 +63,7 @@ format:
                      Windows Codepage, ICU では                       ||~v116R~
                      指定可能な値は "/List" でリストされます          ||~v116I~
             u2f,f2u: UCS2<-->UTF-8.
-    /CPEB:cp :EBCDIC コードページ。 B2M/M2B用。/MF:mapfile の代わり。 ||~v116R~
+    /CPEB:cp :EBCDIC コードページ。 B2M/M2B用。                       ||~v120I~
     /Enn   :変換エラーMSG最大出力。省略値=10。                        ||~v116R~
     /F:from:変換元コードページ。m2m/b2b で使用                        ||~v116R~
 #ifdef W32
@@ -76,7 +76,8 @@ format:
               N: 行末8桁が行番号欄。SO/SI挿入で行長を調整する。       ||~v116R~
                  "N" は m2b でのみ有効。                              ||~v116R~
     /ICU     :B2x/x2B(x:B/M/F)のとき mf:の指定無しで ICU 使用の指定。 ||~v116R~
-              M2M ICU 使用の指定。                                    ||+v118I~
+              /MF:mapfile を指定しない場合は                          ||~v120I~
+              uconv.exe, ICU library(.dll)にPATH を通すこと           ||~v120I~
     /List  :ICUコンバーター(/ICU指定時)またはWindowsコードページをリスト。||~v116I~
 #ifdef LNX
     /Llocale:m2f/f2mで使用するロケールコード。                        ||~v116R~
@@ -107,7 +108,7 @@ format:
     /MF:mapfile :B2M/M2B/B2B 用マッピングパラメータファイル。         ||~v116R~
                   (cv コマンドの説明(xej.txt内)を参照)                ||~v116R~
                  /CPEB:cp で EBCDIC コードページを指定しても良い      ||~v116R~
-                 但し、ICUの使用する場合は/ICUかこのファイル内で指定  ||~v116R~
+                 但し、ICUを使用する場合は/ICUかこのファイル内で指定  ||~v120I~
     /Ofnm  :outfile パラメータに同じ。                                ||~v116R~
     /Rx    :無効な変換不能文字を置きかえる文字。/r: /r'^' 等。        ||~v116R~
             省略値は '?'。u2s,f2s,B2x,x2B,m2m でのみ使用。            ||~v116R~

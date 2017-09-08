@@ -1,8 +1,12 @@
-//*CID://+v9d0R~:                             update#=  380;       //~v9a0R~//+v9d0R~
+//*CID://+v9e7R~:                             update#=  398;       //~v9e7R~
 //***********************************************************
 //* XPRINT : file print utility                                    //~v801R~
 //***********************************************************
-//v9d0:170218 v9.37 from xe,xpr ** total page number is not valid  //+v9d0I~
+//v9e7:170826 compiler warning                                     //~v9e7I~
+//v9e5:170826 get dll suffix by uconv --version                    //~v9e5I~
+//v9e4:170812 print params on trailer                              //~v9e4I~
+//v9e0:170807 v9.38 tabchar support(tabon:c/x__/u__)               //~v9e0I~
+//v9d0:170218 v9.37 from xe,xpr ** total page number is not valid  //~v9d0I~
 //v9a0:160418 v9.33 LNX compiler warning                           //~v9a0I~
 //v990:140506 v9.30 (W32UNICODE) filename by UD fmt                //~v990I~
 //v97H:131118 (BUG)vhexlinech initial clear missing                //~v97GI~
@@ -247,6 +251,7 @@ int Gtraceopt;                                                     //~v889I~
 int Gzoomh=100;     //zoom rate for page height                    //~v90vI~
 #define ZOOM_LETTER_H    94		//letter size                      //~v90vI~
 int Gzoomw=100;                                                    //~v90vI~
+char *Gcmdlineparms;                                               //~v9e4I~
 //*********************************************************************//~v745I~
 //* global to share with xpesc                                  //~v745I~
 //*********************************************************************//~v745I~
@@ -421,6 +426,8 @@ FILE *openoutput(char *,char *);	//v7.11a
 void archoff(void);			//v7.2a set archive attribute off
 //void printsubhdr(int Plinewidth);                                //~v830R~
 void parmprechk(int parmc,char **parmp);                           //~v972I~
+char *AllocCmdlineParmSave(int parmc,char *parmp[]);               //~v9e4I~
+void  SaveToCmdlineParmSave(char *Pparm);                          //~v9e4R~
 //*********************************************************************
 
 int main(int parmc,char *parmp[])                 //v1.3 rep
@@ -468,11 +475,13 @@ int main(int parmc,char *parmp[])                 //v1.3 rep
     char *pebccvname=0;                                            //~v953I~
     int swyn8=0;                                                   //~v960I~
     int swtabparm=0;                                               //~v96DI~
+    int swparmsave;                                                //~v9e4I~
 //*************************
 #ifdef W32UNICODE                                                  //~v990I~
     SET_UDMODE();  //filename by UD format                         //~v990I~
 //  getche();                                                      //~v990R~
 #endif                                                             //~v990I~
+    Gcmdlineparms=AllocCmdlineParmSave(parmc,parmp);                //v1.3 rep//~v9e4R~
     modeparm=" ";                                                  //~v96fR~
     parmprechk(parmc,parmp);                 //v1.3 rep            //~v972I~
 #ifdef WCSUPP	//W32,LNX                                          //~v941I~
@@ -519,6 +528,7 @@ int main(int parmc,char *parmp[])                 //v1.3 rep
 //#endif                                                           //~v920R~
 for (parmno=1;parmno<parmc;parmno++)  //v2.6add
 {                                     //v2.6add
+	swparmsave=1;                                                  //~v9e4I~
   cptr=parmp[parmno];                 //v2.6add
     UTRACEP("parmno=%d=%s\n",parmno,cptr);                         //~v96qI~
 #ifdef UNX                                                         //~v907I~
@@ -538,7 +548,8 @@ for (parmno=1;parmno<parmc;parmno++)  //v2.6add
     {                                                              //~v96iI~
         cptr+=sizeof(PARM_EOLPRINT)-1;                             //~v96iI~
         if (!*cptr)                                                //~v96iM~
-        	optionerr("EndOfLine print char option",parmp[parmno]);  //errmsg and exit v3.8r//~v96iM~
+//      	optionerr("EndOfLine print char option",parmp[parmno]);  //errmsg and exit v3.8r//~v96iM~//+v9e7R~
+        	optionerr("EndOfLine print char",parmp[parmno]);  //errmsg and exit v3.8r//+v9e7I~
         eolprintfmt=cptr;                                          //~v96iR~
         continue;                                                  //~v96iI~
     }                                                              //~v96iI~
@@ -591,7 +602,8 @@ for (parmno=1;parmno<parmc;parmno++)  //v2.6add
       		pebccfgfname=cptr+1;                                   //~v953I~
 	        break;                                                 //~v940I~
         default:                                                   //~v940I~
-        	optionerr("EBCDIC cfg filename option",parmp[parmno]);  //errmsg and exit v3.8r//~v940I~
+//      	optionerr("EBCDIC cfg filename option",parmp[parmno]);  //errmsg and exit v3.8r//~v940I~//+v9e7R~
+        	optionerr("EBCDIC cfg filename",parmp[parmno]);  //errmsg and exit v3.8r//+v9e7I~
         }                                                          //~v940I~
     break;                                                         //~v940I~
 #endif                                                             //~v940I~
@@ -1217,6 +1229,12 @@ for (parmno=1;parmno<parmc;parmno++)  //v2.6add
           swsw5|=SW5NOBYUCS;                                       //~v96nI~
           break;                                                   //~v96nI~
       }                                                            //~v96nI~
+      if (USTRHEADIS_IC(cptr,"abon:"))                             //~v9e0R~
+      {                                                            //~v9e0I~
+			if (getTabon(cptr+5))                                  //~v9e0R~
+        		optionerr("Tabon",parmp[parmno]);                  //~v9e0R~
+      		break;                                                 //~v9e0R~
+      }                                                            //~v9e0I~
       swtabparm=1;                                                 //~v96DI~
       tabskip=atoi(cptr);                //conv to int
       if (!isdigit(*cptr)||tabskip<0)//allow 0
@@ -1250,6 +1268,7 @@ for (parmno=1;parmno<parmc;parmno++)  //v2.6add
       {                                                            //~v90jI~
         Ghdrfnm=cptr+2;                                            //~v90jI~
         UCBITON(swsw3,SW3SCRPRT);                                  //~v90jI~
+		swparmsave=0;	//no output to trailer msg                 //~v9e4I~
       }                                                            //~v90jI~
       else                                                         //~v90jI~
       if (toupper(*cptr)=='N'                                      //~v90jR~
@@ -1378,6 +1397,7 @@ for (parmno=1;parmno<parmc;parmno++)  //v2.6add
 //* outfile name /Q                                                //~v836I~
 //**************************                                       //~v836I~
     case 'Q':                                                      //~v836I~
+		swparmsave=0;	//no output to trailer msg                 //~v9e4I~
         qfile=cptr;                                                //~v836I~
         if (!*qfile)                                               //~v920R~
 //          uerrexit("filename missing for %cq parameter",         //~v920I~//~v973R~
@@ -1716,6 +1736,8 @@ for (parmno=1;parmno<parmc;parmno++)  //v2.6add
       	printf("%s:%s:undefined option parm(%s)\n",pgmid,ver,parmp[parmno]);//v2.6addv3.8r
       uexit(4);                                                 //~v742R~
     }//switch  by first option byte                          //v2.0add
+	if (swparmsave)                                                //~v9e4I~
+		SaveToCmdlineParmSave(parmp[parmno]);                      //~v9e4I~
   }
   else
   {//positional parmno
@@ -1806,7 +1828,7 @@ for (parmno=1;parmno<parmc;parmno++)  //v2.6add
 #ifdef UTF8EBCD //EBCDIC dbcs support                              //~v941I~
     if (Gebcdictype==3)	//when cfg file,defaulkt by loacle env     //~v941I~
 //  	xpebc_init(0,0);                                             //~v941I~//~v942R~//~v953R~
-    	xpebc_init(0,pebccfgfname);                                //~v953R~
+    	xpebc_init(0,pebccfgfname);                                //~v9e5R~
     else                                                           //~v953I~
     {                                                              //~v953I~
         if (pebccfgfname || pebccvname||(swsw5 & SW5USEICU))                            //~v953R~//~v96hR~
@@ -2450,6 +2472,9 @@ for (parmno=1;parmno<parmc;parmno++)  //v2.6add
         	         "%cY8, %cN8 は UTF8ファイル縦３段ダンプ(%cMtxu)用です.",//~v960R~
             		CMDFLAG_PREFIX,CMDFLAG_PREFIX,CMDFLAG_PREFIX); //~v960R~
     }                                                              //~v960I~
+	if (chkTabon())                                                //~v9e0M~
+//    	return;                                                    //~v9e0M~//~v9e7R~
+      	return 4;                                                  //~v9e7I~
 //*****************************
 //* main loop                 *
 //*****************************
@@ -2535,14 +2560,14 @@ for (parmno=1;parmno<parmc;parmno++)  //v2.6add
                       }                                            //~v97wI~
                       else                                         //~v97wI~
                       {                                            //~v97wI~
-                        actualmaxc-=Gdatalinenosz;                 //+v9d0I~
-                        maxcoli-=Gdatalinenosz;                    //+v9d0I~
+                        actualmaxc-=Gdatalinenosz;                 //~v9d0I~
+                        maxcoli-=Gdatalinenosz;                    //~v9d0I~
 //        				actualmaxc=max(actualmaxc,COLMAX1);        //~v917R~
           				actualmaxc=max(actualmaxc,colmax1);        //~v917I~
         				actualmaxc=min(actualmaxc,maxcoli);	//v5.6add//~v74iR~
 		      			actualmaxc=((actualmaxc+4)/5)*5;
-                        actualmaxc+=Gdatalinenosz;                 //+v9d0I~
-                        maxcoli+=Gdatalinenosz;                    //+v9d0I~
+                        actualmaxc+=Gdatalinenosz;                 //~v9d0I~
+                        maxcoli+=Gdatalinenosz;                    //~v9d0I~
                       }                                            //~v97wI~
 			  			maxcol=actualmaxc+LINENOSZ+1;
                         UTRACEP("colomnspec=0:maxcol=%d,actualmaxc=%d,maxcoli=%d,colmax1=%d\n",maxcol,actualmaxc,maxcoli,colmax1);//~v97nR~
@@ -2894,3 +2919,20 @@ parmprechk(int parmc,char **parmp)                                 //~v972I~
     if (!utraceon)                                                 //~v972I~
 	    UTRACE_INIT(0/*tracefilename*/,0/*notrace*/);              //~v972I~
 }//parmprechk                                                      //~v972I~
+//*********************************************************        //~v9e4I~
+char *AllocCmdlineParmSave(int parmc,char *parmp[])                //~v9e4I~
+{                                                                  //~v9e4I~
+	int ii,len;                                                    //~v9e4I~
+    char *pc;                                                      //~v9e4I~
+//**********************                                           //~v9e4I~
+	for (ii=1,len=0;ii<parmc;ii++)                                 //~v9e4I~
+    	len+=(int)strlen(parmp[ii])+1;                             //~v9e4I~
+    pc=(char*)malloc((size_t)len+1);                               //~v9e4R~
+    *pc=0;                                                         //~v9e4I~
+    return pc;                                                     //~v9e4I~
+}//AllocCmdlineParmSave                                            //~v9e4I~
+//*********************************************************        //~v9e4I~
+void  SaveToCmdlineParmSave(char *Pparm)                           //~v9e4R~
+{                                                                  //~v9e4I~
+	sprintf(Gcmdlineparms+strlen(Gcmdlineparms)," %s",Pparm);      //~v9e4I~
+}//SaveToCmdlineParmSave                                           //~v9e4I~

@@ -17,7 +17,7 @@ a:hover{font-weight:bold;}-->
         {CHAnge | CNX | IC | ICN}  {探索文字列 | * | \esc}  {置換文字列 | * | \esc | P'pics'}
                      [-g]
                      [all | next | + | prev | - | first | last]
-                     [-nx] [.lab1 .lab2] [l-column | LM | RM [r-column]]
+                     [-nx] [.lab1 .lab2] [c1 | LM | RM [c2]]
 
             CHA     :非表示行を含む全行対象の置換。大文字小文字区別有り。
             CNX     :非表示行を除く置換.           大文字小文字区別有り。
@@ -77,8 +77,8 @@ a:hover{font-weight:bold;}-->
             last    :ファイルの最後から探索,一致する最初の文字列を置換
             .lab1/2 :行番号欄に設定したラベルを対で指定して探索行範囲を
                      限定する.行番号を使用しての範囲指定も可.
-            l-column:探索範囲の左端桁位置.
-            r-column:探索範囲の右端桁位置.
+            c1      :探索範囲の左端桁位置.
+            c2      :探索範囲の右端桁位置.
             LM      :探索範囲を左マージンに限定
             RM      :探索範囲を右マージンに限定
             -nx     :非表示行は対象外。(CNX/ICNに同じ)

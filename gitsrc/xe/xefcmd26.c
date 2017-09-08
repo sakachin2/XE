@@ -1,8 +1,10 @@
-//*CID://+vb5cR~:                             update#=  806;       //~vb5cR~
+//*CID://+vbc1R~:                             update#=  846;       //~vbc1R~
 //*************************************************************
 //*xefcmd2.c                                                       //~v53FR~
 //*  find/change/exclude                                           //~v11kR~
 //****************************************************************////~v438R~
+//vbc2:170821 add TS   option for find cmd on dirlist              //~vbc2I~
+//vbc1:170820 add ATTR option for find cmd on dirlist              //~vbc1I~
 //vb5c:160917 (Bug)"find all" loop when not lomg name mode and match with overriden part by attr fld.//~vb5cI~
 //vb40:160717 when LFN=OFF,invalid find position on dirlist        //~vb40I~
 //vb2E:160229 LNX64 compiler warning                               //~vb2EI~
@@ -42,6 +44,12 @@
 #include <ctype.h>
 #include <string.h>
 #include <ualloc.h>                                             //~5318I~
+#ifdef W32                                                         //~vbc1I~
+    #include <dos.h>                                               //~vbc1I~
+#endif                                                             //~vbc1I~
+#ifdef UNX                                                         //~vbc1I~
+	#include <sys/stat.h>                                          //~vbc1I~
+#endif                                                             //~vbc1I~
 
 //*******************************************************
 #include <ulib.h>
@@ -108,6 +116,8 @@
 //#ifdef LNX                                                         //~vauiI~//~vauFR~
 	int Sdirsrchlen;                                               //~vauiI~
 //#endif                                                             //~vauiI~//~vauFR~
+static int Sdirattr;                                               //~vbc1I~
+static int Sdirts;                                                 //~vbc2I~
 //****************************************************************
 int linesrchstringsub(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw,//~v73dI~
 					int Pchangeopt,int Psubcmdid);                 //~v73dI~
@@ -129,6 +139,8 @@ char *fcmdstrnstri(int Popt,char *Pdata,char *Pkey,int Pmaxlen);   //~va3QI~
 	#define  FCMDDDSSDO_NEXT   0x01                                //~vauiI~
 	#define  FCMDDDSSDO_PREV   0x02                                //~vauiI~
 //#endif                                                             //~vauiI~//~vauFR~
+int fcmdfind_dirattr(int Popt,int Psubcmdid,PUCLIENTWE Ppcw,PUDIRLH Ppdh,PUDIRLD Ppdd,int Pnameoffs,int Pexpandlen,char *Psrch,int *Ppoffset,int *Ppdirstep,int *Ppdirstepr);//~vbc1R~
+int fcmdfind_dirts(int Popt,int Psubcmdid,PUCLIENTWE Ppcw,PUDIRLH Ppdh,PUDIRLD Ppdd,int Pexpandlen,char *Psrch,int *Ppoffset,int *Ppdirstep,int *Ppdirstepr);//~vbc2I~
 //**************************************************************** //~va3QI~
 //!strnstri for dbcs                                               //~va3QI~
 //**************************************************************** //~va3QI~
@@ -266,7 +278,9 @@ int linesrchstring(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw,//
 #endif                                                             //~va20I~
 //    if (Ssrchlen2)             //*&                              //~v54zR~
       if (Ssrchlen2||Seolsrchsw2)//*&                              //~v54zI~
-      {                                                            //~v43eI~
+      {                                                            //~v43eI~S
+            Sdirattr=Sfindopt & FINDOPT_DIRATTR;                   //~vbc1I~
+            Sdirts=Sfindopt & FINDOPT_DIRTS;                       //~vbc2I~
       		Sandplh1=0;                                            //~v43eI~
             Sphasesw=1;                                            //~v43eI~
             notfound2=0;                                           //~v53FI~
@@ -359,6 +373,8 @@ int linesrchstring(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw,//
                     rc=4;                                              //~v43iI~
                 else                                                   //~v43iI~
                 {                                                      //~v43iI~
+            		Sdirattr=Sfindopt & FINDOPT_DIRATTRAND;        //~vbc1I~
+            		Sdirts=Sfindopt & FINDOPT_DIRTSAND;            //~vbc2I~
                     Sphasesw=2;                                        //~v43iI~
                     svulsrchsw=Sulsrchsw;                              //~v43qI~
 //                  Sulsrchsw=0;           //2nd word should not be *u/*e//~v634R~
@@ -411,6 +427,8 @@ int linesrchstring(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw,//
       }                                                            //~v43eI~
       else                                                         //~v43eI~
       {                                                            //~v54BI~
+            Sdirattr=Sfindopt & FINDOPT_DIRATTR;                   //~vbc1I~
+            Sdirts=Sfindopt & FINDOPT_DIRTS;                       //~vbc2I~
 		rc=linesrchstringsub(Ppcw,Ppplh,Ppoffset,Plocatesw,Pchangeopt,Psubcmdid);//~v43cI~
         if (rc==UALLOC_FAILED)                                     //~v54BI~
             return UALLOC_FAILED;                                  //~v54BI~
@@ -779,6 +797,12 @@ int linesrchstringsub(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw
 			            dirddsetup2(Ppcw,plh);     //dir data line setup//~v481I~
    	        		pdd=UGETPDD(plh);                               //~v05wI~
                     width=plh->ULHlen;                             //~v0fhI~
+                    if (Sdirts)   //timestamp srch                 //~vbc2I~
+                    {                                              //~vbc2I~
+                        if (fcmdfind_dirts(0,Psubcmdid,Ppcw,pdh,pdd,expandlen,Ssrch,&offset,&Sdirstep,&Sdirstepr))//~vbc2I~
+                        	continue;	//not found                //~vbc2I~
+                        break;                                     //~vbc2I~
+                    }                                              //~vbc2I~
                   	if (dirindentsw)                               //~v0fhI~
                   	{                                              //~v0fhI~
 						if ((level=pdh->UDHlevel)>UDDMAXLEVEL)	//over max//~v0fhI~
@@ -788,6 +812,12 @@ int linesrchstringsub(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw
                   	else                                           //~v0fhI~
                         boundary1=offsetof(UDIRLD,UDDname[0]);     //~v0fhI~
                     pc=pdd->UDDlvl+boundary1;                      //~v0fhI~
+                    if (Sdirattr)   //attr srch                    //~vbc1M~
+                    {                                              //~vbc1M~
+                        if (fcmdfind_dirattr(0,Psubcmdid,Ppcw,pdh,pdd,boundary1,expandlen,Ssrch,&offset,&Sdirstep,&Sdirstepr))//~vbc1I~
+                        	continue;	//not found                //~vbc1M~
+                        break;                                     //~vbc1M~
+                    }                                              //~vbc1M~
 //#ifdef LNX                                                         //~vauiI~//~vauFR~
                     if (pdh->UDHfnmlen)                            //~vauiR~
                     	boundary2=boundary1+pdh->UDHfnmlen;        //~vauiR~
@@ -1420,6 +1450,9 @@ int linesrchstringsub(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw
       	else                                                         //~v09eI~
       	  	if (Ppcw->UCWtype==UCWTDIR)     //on dir list           //~v05wI~
         	{                                                       //~v05wI~
+//********************                                             //~vbc1I~
+//*Next:Dir          *                                             //~vbc1I~
+//********************                                             //~vbc1I~
     			for (;plh;plh=UGETQNEXT(plh),offset=0)              //~v05wI~
     			{                                                   //~v05wI~
 	                if (plh==Srangeplhe2) //reached to end range of & search//~v51sI~
@@ -1433,6 +1466,12 @@ int linesrchstringsub(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw
 			            dirddsetup2(Ppcw,plh);     //dir data line setup//~v481R~
    	        		pdd=UGETPDD(plh);                               //~v05wI~
                     width=plh->ULHlen;                             //~v0fhI~
+                    if (Sdirts)   //timestamp srch                 //~vbc2I~
+                    {                                              //~vbc2I~
+                        if (fcmdfind_dirts(0,Psubcmdid,Ppcw,pdh,pdd,expandlen,Ssrch,&offset,&Sdirstep,&Sdirstepr))//~vbc2I~
+                        	continue;	//not found                //~vbc2I~
+                        break;                                     //~vbc2I~
+                    }                                              //~vbc2I~
                   if (dirindentsw)                                 //~v0f6I~
                   {                                                //~v0f6I~
 					if ((level=pdh->UDHlevel)>UDDMAXLEVEL)	//over max//~v05wI~
@@ -1446,6 +1485,12 @@ int linesrchstringsub(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw
 //          		ddsrchsw=(offset<=(int)(offsetof(UDIRLD,UDDname[0])+sizeof(pdd->UDDname)));	//search prev plh//~v0fhR~
 //          		ddsrchsw=(offset<=(int)(offsetof(UDIRLD,UDDname[0])+strlen(pdd->UDDname)));	//search prev plh//~v0fhR~
                     pc=pdd->UDDlvl+boundary1;                      //~v0fhI~
+                    if (Sdirattr)   //attr srch                    //~vbc1M~
+                    {                                              //~vbc1M~
+                        if (fcmdfind_dirattr(0,Psubcmdid,Ppcw,pdh,pdd,boundary1,expandlen,Ssrch,&offset,&Sdirstep,&Sdirstepr))//~vbc1I~
+                        	continue;	//not found                //~vbc1M~
+                        break;	                                   //~vbc1M~
+                    }                                              //~vbc1M~
 //#ifdef LNX                                                         //~vauiI~//~vauFR~
                     if (pdh->UDHfnmlen)                            //~vauiR~
                     {                                              //~vb40I~
@@ -2510,6 +2555,9 @@ int fcmdsetfindhighlight(PUFILEH Ppfh,PULINEH Pplh,int Plocatesw,int Plinesrchsw
         }                                                          //~v496I~
       	else                                                       //~v43fI~
 			Pplh->ULHrevoffs=(USHORT)Poffset;                      //~v43fI~
+      if (Sdirattr)                                                //~vbc1I~
+    	Pplh->ULHrevlen=1;		//highlight eolid                  //~vbc1I~
+      else                                                         //~vbc1I~
       if (Seolsrchsw&&!Pwordlen)                                   //~v54zI~
     	Pplh->ULHrevlen=1;		//highlight eolid                  //~v54zI~
       else                                                         //~v54zI~
@@ -3920,8 +3968,8 @@ char *fcmdddstrsrch_dirfnm(int Popt,PUDIRLH Ppdh,int Pboundary2,int *Ppoffs)//~v
                     offset=slinkoffs+ddoffs;                       //~vauiR~
                 	Sdirstep=boundary1-offset; //next find to prev plh,avoid null//~vauiI~
                 	Sdirstepr=boundary2-offset; //go to boundary1  //~vauiI~
-                    if (Sdirstepr<0)                               //+vb5cI~
-                        Sdirstepr=offset;                          //+vb5cI~
+                    if (Sdirstepr<0)                               //~vb5cI~
+                        Sdirstepr=offset;                          //~vb5cI~
                     break;                                         //~vauiI~
                 }                                                  //~vauiI~
             }                                                      //~vauiI~
@@ -3978,8 +4026,8 @@ char *fcmdddstrsrch_dirfnm(int Popt,PUDIRLH Ppdh,int Pboundary2,int *Ppoffs)//~v
                     offset=slinkoffs+ddoffs;                       //~vauiR~
                 	Sdirstep=boundary2-offset;//go to boundary2    //~vauiI~
                 	Sdirstepr=boundary1-offset; //go to fnm        //~vauiI~
-                    if (Sdirstep<0)                                //+vb5cI~
-                        Sdirstep=offset;                           //+vb5cI~
+                    if (Sdirstep<0)                                //~vb5cI~
+                        Sdirstep=offset;                           //~vb5cI~
                     break;                                         //~vauiI~
                 }                                                  //~vauiI~
             }                                                      //~vauiI~
@@ -3996,3 +4044,174 @@ char *fcmdddstrsrch_dirfnm(int Popt,PUDIRLH Ppdh,int Pboundary2,int *Ppoffs)//~v
 	return pc;                                                     //~vauiI~
 }//fcmdddstrsrch_dirfnm                                            //~vauiR~
 //#endif //LNX                                                       //~vauiI~//~vauFR~
+//**************************************************************** //~vbc1I~
+//dir list attr matching                                           //~vbc1I~
+//match if including all attr of Ssrch                             //~vbc1R~
+//**************************************************************** //~vbc1I~
+int fcmdfind_dirattr(int Popt,int Psubcmdid,PUCLIENTWE Ppcw,PUDIRLH Ppdh,PUDIRLD Ppdd,int Pnameoffs,int Pexpandlen,char *Psrch,int *Ppoffset,int *Ppdirstep,int *Ppdirstepr)//~vbc1R~
+{                                                                  //~vbc1I~
+	int rc=0,ii,len,step,offset,boundary1,boundary2;               //~vbc1R~
+    char *pcs,*pct;                                                //~vbc1I~
+//****************************                                     //~vbc1I~
+	offset=*Ppoffset;                                              //~vbc1I~
+    pcs=Psrch;                                                     //~vbc1I~
+    if (toupper(*pcs)=='L')                                        //~vbc1I~
+    {                                                              //~vbc1I~
+        if (!Ppdh->UDHslink)        //slink defined                //~vbc1I~
+        	return 4;                                              //~vbc1I~
+        if (Psubcmdid==SUBCMD_PREV)                                //~vbc1I~
+        {                                                          //~vbc1I~
+            if (offset<Pnameoffs-1)                                //~vbc1I~
+                return 4;                                          //~vbc1I~
+        }                                                          //~vbc1I~
+        else                                                       //~vbc1I~
+        {                                                          //~vbc1I~
+            if (offset>=Pnameoffs)                                 //~vbc1I~
+                return 4;                                          //~vbc1I~
+        }                                                          //~vbc1I~
+        *Ppoffset=Pnameoffs-1;                                     //~vbc1R~
+        if (Psubcmdid==SUBCMD_PREV)                                //~vbc1I~
+        {                                                          //~vbc1I~
+        	*Ppdirstep=-1;                                         //~vbc1I~
+        	*Ppdirstepr=1;                                         //~vbc1I~
+        }                                                          //~vbc1I~
+        else                                                       //~vbc1I~
+        {                                                          //~vbc1I~
+        	*Ppdirstep=1;                                          //~vbc1I~
+        	*Ppdirstepr=-1;                                        //~vbc1I~
+        }                                                          //~vbc1I~
+        return 0;                                                  //~vbc1I~
+    }                                                              //~vbc1I~
+    if (toupper(*pcs)=='D')                                        //~vbc1I~
+    {                                                              //~vbc1I~
+        if (!(Ppdh->UDHattr & FILE_DIRECTORY))                     //~vbc1I~
+        	return 4;                                              //~vbc1I~
+        if (Ppdh->UDHtype==UDHTPARENT)                             //+vbc1I~
+        	return 4;                                              //+vbc1I~
+        if (Psubcmdid==SUBCMD_PREV)                                //~vbc1I~
+        {                                                          //~vbc1I~
+            if (offset<Pnameoffs-2)                                //~vbc1I~
+                return 4;                                          //~vbc1I~
+        }                                                          //~vbc1I~
+        else                                                       //~vbc1I~
+        {                                                          //~vbc1I~
+            if (offset>=Pnameoffs-1)                               //~vbc1I~
+                return 4;                                          //~vbc1I~
+        }                                                          //~vbc1I~
+        *Ppoffset=Pnameoffs-2;                                     //~vbc1R~
+        if (Psubcmdid==SUBCMD_PREV)                                //~vbc1I~
+        {                                                          //~vbc1I~
+        	*Ppdirstep=-1;                                         //~vbc1I~
+        	*Ppdirstepr=1;                                         //~vbc1I~
+        }                                                          //~vbc1I~
+        else                                                       //~vbc1I~
+        {                                                          //~vbc1I~
+        	*Ppdirstep=1;                                          //~vbc1I~
+        	*Ppdirstepr=-1;                                        //~vbc1I~
+        }                                                          //~vbc1I~
+        return 0;                                                  //~vbc1I~
+    }                                                              //~vbc1I~
+    boundary1=(int)offsetof(UDIRLD,UDDattrflag)+Pexpandlen;        //~vbc1R~
+    boundary2=boundary1+UDDATTRSZ;                                 //~vbc1I~
+    if (Psubcmdid==SUBCMD_PREV)                                    //~vbc1I~
+    {                                                              //~vbc1I~
+    	if (offset<boundary1)                                      //~vbc1I~
+        	return 4;                                              //~vbc1I~
+    }                                                              //~vbc1I~
+    else                                                           //~vbc1I~
+    {                                                              //~vbc1I~
+    	if (offset>=boundary2)                                     //~vbc1I~
+        	return 4;                                              //~vbc1I~
+    }                                                              //~vbc1I~
+	pct=&(Ppdd->UDDattrflag)+Pexpandlen;                           //~vbc1R~
+    if (*pct)       //attr was overrided by filename               //~vbc1I~
+    {                                                              //~vbc1I~
+    	return 4;	//not found                                    //~vbc1I~
+    }                                                              //~vbc1I~
+    pct++;                                                         //~vbc1R~
+    for (ii=0,pcs=Psrch,len=(int)strlen(Psrch);ii<len;ii++,pcs++)  //~vbc1R~
+    {                                                              //~vbc1I~
+                                                                   //~vbc1I~
+#ifdef UNX                                                         //~vbc1I~
+    	if (!strstr(pct,pcs) //found if contains all               //~vbc1R~
+        &&  !ustrstri(pct,pcs))                                    //~vbc1R~
+        {                                                          //~vbc1I~
+        	rc=4;                                                  //~vbc1I~
+        	break;                                                 //~vbc1I~
+        }                                                          //~vbc1I~
+        else                                                       //~vbc1I~
+            break;  //rc=0                                         //~vbc1I~
+#else                                                              //~vbc1I~
+    	if (!strchr(pct,*pcs)) //found if contains all             //~vbc1I~
+        {                                                          //~vbc1I~
+    		if (!strchr(pct,toupper(*pcs))) //found if contains all//~vbc1I~
+            {                                                      //~vbc1I~
+        		rc=4;                                              //~vbc1R~
+        		break;                                             //~vbc1R~
+            }                                                      //~vbc1I~
+        }                                                          //~vbc1I~
+#endif                                                             //~vbc1I~
+    }                                                              //~vbc1I~
+    if (!rc)                                                       //~vbc1I~
+    {                                                              //~vbc1I~
+        *Ppoffset=boundary1;                                       //~vbc1I~
+        step=boundary2-boundary1;                                  //~vbc1I~
+        if (Psubcmdid==SUBCMD_PREV)                                //~vbc1I~
+        {                                                          //~vbc1I~
+        	*Ppdirstep=-1;                                         //~vbc1R~
+        	*Ppdirstepr=step;                                      //~vbc1R~
+        }                                                          //~vbc1I~
+        else                                                       //~vbc1I~
+        {                                                          //~vbc1I~
+        	*Ppdirstep=step;                                       //~vbc1R~
+        	*Ppdirstepr=-1;                                        //~vbc1R~
+        }                                                          //~vbc1I~
+    }                                                              //~vbc1I~
+    UTRACEP("%s:subcmd=%d,uddattr=%s,srch=%s,rc=%d,offset=%d->%d,step=%d,stepr=%d\n",UTT,Psubcmdid,pct,Psrch,rc,offset,*Ppoffset,*Ppdirstep,*Ppdirstepr);//~vbc1R~//~vbc2R~
+    return rc;                                                     //~vbc1I~
+}//fcmdfind_dirattr                                                //~vbc1I~
+//**************************************************************** //~vbc2I~
+//dir list timestamp matching                                      //~vbc2I~
+//**************************************************************** //~vbc2I~
+int fcmdfind_dirts(int Popt,int Psubcmdid,PUCLIENTWE Ppcw,PUDIRLH Ppdh,PUDIRLD Ppdd,int Pexpandlen,char *Psrch,int *Ppoffset,int *Ppdirstep,int *Ppdirstepr)//~vbc2I~
+{                                                                  //~vbc2I~
+	int rc=0,offset,boundary1,boundary2;                           //~vbc2R~
+    char *pct,*pc;                                                 //~vbc2R~
+//****************************                                     //~vbc2I~
+	offset=*Ppoffset;                                              //~vbc2I~
+    boundary1=(int)offsetof(UDIRLD,UDDdate)+Pexpandlen;            //~vbc2R~
+    boundary2=(int)offsetof(UDIRLD,UDDsize)+Pexpandlen;            //~vbc2R~
+    if (Psubcmdid==SUBCMD_PREV)                                    //~vbc2I~
+    {                                                              //~vbc2I~
+    	if (offset<boundary1)                                      //~vbc2I~
+        	return 4;                                              //~vbc2I~
+    }                                                              //~vbc2I~
+    else                                                           //~vbc2I~
+    {                                                              //~vbc2I~
+    	if (offset>=boundary2)                                     //~vbc2I~
+        	return 4;                                              //~vbc2I~
+    }                                                              //~vbc2I~
+	pct=Ppdd->UDDdate+Pexpandlen-1;                                //~vbc2R~
+    if (*pct)       //attr was overrided by filename               //~vbc2I~
+    {                                                              //~vbc2I~
+    	return 4;	//not found                                    //~vbc2I~
+    }                                                              //~vbc2I~
+    pct++;                                                         //~vbc2R~
+    pc=umemstr(pct,Psrch,(UINT)(boundary2-boundary1));             //~vbc2R~
+    if (!pc)                                                       //~vbc2I~
+    	return 4;	//not found                                    //~vbc2I~
+                                                                   //~vbc2I~
+    *Ppoffset=PTRDIFF(pc,Ppdd);                                    //~vbc2R~
+    if (Psubcmdid==SUBCMD_PREV)                                    //~vbc2R~
+    {                                                              //~vbc2R~
+        *Ppdirstep=boundary1-*Ppoffset;                            //~vbc2R~
+        *Ppdirstepr=boundary2-*Ppoffset;                           //~vbc2R~
+    }                                                              //~vbc2R~
+    else                                                           //~vbc2R~
+    {                                                              //~vbc2R~
+        *Ppdirstep=boundary2-*Ppoffset;                            //~vbc2R~
+        *Ppdirstepr=boundary1-*Ppoffset;                           //~vbc2R~
+    }                                                              //~vbc2R~
+    UTRACEP("%s:subcmd=%d,udddate=%s,srch=%s,rc=%d,offset=%d->%d,step=%d,stepr=%d\n",UTT,Psubcmdid,pct,Psrch,rc,offset,*Ppoffset,*Ppdirstep,*Ppdirstepr);//~vbc2R~
+    return rc;                                                     //~vbc2I~
+}//fcmdfind_dirattr                                                //~vbc2I~

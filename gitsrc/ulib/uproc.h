@@ -1,8 +1,10 @@
-//*CID://+v6H8R~:                             update#=  146;       //+v6H8R~
+//*CID://+v6M2R~:                             update#=  151;       //~v6M0R~//~v6M2R~
 //************************************************************* //~5825I~
 //*proc.h                                                       //~5A10R~
 //************************************************************* //~5825I~
-//v6H8:170109 (BUG)FTP del dir fail(remains subdir)                //+v6H8I~
+//v6M2:170824 (Bug)v6M0 faile if path is multiple devided by ";"/":"//~v6M2I~
+//v6M0:170808 err "LoadLibrary failed for icuucxx"-=>loaddll using ICU_DATA param//~v6M0I~
+//v6H8:170109 (BUG)FTP del dir fail(remains subdir)                //~v6H8I~
 //v6xk:150115 (BUG:W32)spwanxx deplicated,use _spawnxx(return intptr_t, Linux returns int pid)//~v6xkI~
 //v6hh:120623 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  defines ULPTR(unsigned long long)//~v6hhI~
 //v6g4:120512 ICU api suffix for 4.2 is also 4_2 like as 4.0(4_2)  //~v6g4I~
@@ -54,8 +56,8 @@
 #define UPROC_MAX_CMDSVRCMD  4096                                  //~v5ezR~
 #define UPROC_MAX_CMDSVRCMD2 (UPROC_MAX_CMDSVRCMD+32)	//overhead //~v5ezR~
 #define UPROC_MAX_CMDSVRBUF  (UPROC_MAX_CMDSVRCMD2+_MAX_PATH+_MAX_PATH)	//redirect specificatione//~v5ezR~
-//#define MAX_STDOREC    1024   //stdout max record length           //~v5adI~//+v6H8R~
-#define MAX_STDOREC    8448    //0x2100 for FTP_MAXPATH*2          //+v6H8I~
+//#define MAX_STDOREC    1024   //stdout max record length           //~v5adI~//~v6H8R~
+#define MAX_STDOREC    8448    //0x2100 for FTP_MAXPATH*2          //~v6H8I~
                                                                    //~v5adI~
 #define UPROC_LANGC    0x8000 //set LANG=C to get english responce msg//~v59tI~
 #define UPROC_NOOKMSG  0x4000                                      //~v50HI~
@@ -239,6 +241,10 @@ int uprocdisconnect(ULPTR *Phpipe,char *Ppipename);                //~v6hhI~
 //int uproc_loaddll(int Popt,char *Pdllname,char *Pversion,ULONG *Pphandle);//~v5mPI~//~v6hhR~
 int uproc_loaddll(int Popt,char *Pdllname,char *Pversion,ULPTR *Pphandle);//~v6hhI~
 #define UPLD_NOW      0x02         //RTLD_NOW                      //~v6f8I~
+#define UPLD_ALTPATH  0x04         //LoadLibraryEx with LOAD_WITH_ALTERED_SEARCH_PATH//~v6M0I~
+#define UPLD_DELEMSG  0x08         //ugeterrmsg to delete previous uerrmsg//~v6M2I~
+#define UPLD_SETICUDATAENV 0x10    //Linux:set also ICU_DATA env var//+v6M2R~
+int uproc_loaddllpath(int Popt,char *Ppath,char *Pdllname,char *Pversion,ULPTR *Pphandle);//~v6M0I~
 //*************************************************************************//~v5mPI~
 //int uproc_getdllproc(int Popt,ULONG Phandle,char *Pprocname,char *Pprocver,ULONG *Ppprocaddr);//~v5mPI~//~v6hhR~
 int uproc_getdllproc(int Popt,ULPTR Phandle,char *Pprocname,char *Pprocver,ULPTR *Ppprocaddr);//~v6hhI~

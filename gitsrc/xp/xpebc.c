@@ -1,8 +1,12 @@
-//*CID://+v9a1R~:                             update#=  354;       //+v9a1R~
+//*CID://+v9e7R~:                             update#=  365;       //~v9e7R~
 //***********************************************************
 //* xpebc.c : ebcdic print                                         //~v953R~
 //***********************************************************
-//v9a1:160418 v9.33 LNX64 Compiler warning                         //+v9a1I~
+//v9e7:170826 compiler warning                                     //~v9e7I~
+//v9e5:170826 get dll suffix by uconv --version                    //~v9e5I~
+//v9e2:170809 compiler warning(duplicate define in local variable) //~v9e0I~
+//v9e0:170807 v9.38 tabchar support(tabon:c/x__/u__)               //~v9e0I~
+//v9a1:160418 v9.33 LNX64 Compiler warning                         //~v9a1I~
 //v997:160309 v9.32 (LNX)compiler warning                          //~v997I~
 //v996:160309 v9.32 (BUG)utfdd2u buffsize parm is not ctr but size //~v996I~
 //v994:160308 v9.32 W32 compiler warning                           //~v994I~
@@ -52,6 +56,7 @@
 #include  "xp.h"
 #include  "xpebc.h"                                                //~0428I~
 #include  "xpsub1.h"                                               //~v96eR~
+#include  "xppf.h"                                                 //~v9e0I~
 //*********************************************************************
 #ifdef UTF8EBCD //EBCDIC dbcs support                              //~0428M~
 //*********************************************************************
@@ -90,6 +95,7 @@ int xpebc_b2m(int Popt,int Plen);                                  //~0428I~
 int xpebc_b2ddrecord(int Popt,UCHAR *Pebcbuff,int Pebclen); //full record translation//~v96mI~
 int xpebc_b2ddrecord_copy(int Popt,UCHAR *Pebc,int Plen);          //~v96mI~
 int xpebc_b2m_cmt(int Popt,char *Pbuff,int Plen);                  //~v96wI~
+int xpebc_setdbcsspacealtch(int Popt,UCHAR *Ppdddata,UCHAR *Ppdddbcs,int Pddlen);//~v9e0I~
 //**********************************************************************//~v953I~
 //* get convertername parameter                                    //~v953I~
 //**********************************************************************//~v953I~
@@ -112,7 +118,7 @@ int xpebc_getparmcvname(int Popt,char *Popd)                       //~v953I~
 //**********************************************************************
 //* date parm get
 //**********************************************************************
-int xpebc_init(int Popt,char *Pcfgfnm)                                           //~0428R~//~0429R~
+int xpebc_init(int Popt,char *Pcfgfnm)                                           //~0428R~//~0429R~//~v9e5R~
 {
     int rc=0,opt;                                                      //~0428R~//~v953R~
 //*****************                                                //~0428I~
@@ -126,9 +132,13 @@ int xpebc_init(int Popt,char *Pcfgfnm)                                          
 	if (!Pcfgfnm)                                                  //~0429I~
     {                                                              //~0429I~
     	if (Gebcdictype==3) //cfg file                                 //~0428I~//~0429R~
+        {                                                          //~v9e5I~
+		    if (swsw5 & SW5USEICU)    //use icu                    //+v9e7I~
+      			Gucvebc_stat|=UCVEBCS_CONVERTERCFG;	//create cfg by uconv --version//~v9e5I~//+v9e7R~
 //      	ucvebc3_init(opt,(ULONG*)(ULONG)Gebccfgfname);            //~0428R~//~0429R~//~0529R~//~v953R~
 //        	ucvebc3_init(opt,(ULONG*)(ULONG)"");                   //~v953I~//~v958R~
-        	ucvebc3_init(opt,(ULPTR*)(ULPTR)"");                   //~v958I~
+        	ucvebc3_init(opt,(ULPTR*)(ULPTR)"");                   //~v958I~//~v9e7R~
+        }                                                          //~v9e5I~
     }                                                              //~0429I~
     else                                                           //~0429I~
     {                                                              //~0429I~
@@ -254,8 +264,8 @@ int xpebc_fgets(int Popt,FILE *Pfh,char *Pbuff,int Pbuffsz,int *Ppreadlen)//~v95
     int optasciilineno=0;                                          //~v96wR~
 //*****************                                                //~v953I~
 //  rc=ufgets(Pbuff,Pbuffsz,Pfh,(UINT*)(&readlen),&eolid);                  //~v953I~//~v956R~//~v997R~
-//  rc=ufgets(Pbuff,(size_t)Pbuffsz,Pfh,(UINT*)(&readlen),&eolid); //~v997I~//+v9a1R~
-    rc=ufgets(Pbuff,(unsigned)Pbuffsz,Pfh,(UINT*)(&readlen),&eolid);//+v9a1I~
+//  rc=ufgets(Pbuff,(size_t)Pbuffsz,Pfh,(UINT*)(&readlen),&eolid); //~v997I~//~v9a1R~
+    rc=ufgets(Pbuff,(unsigned)Pbuffsz,Pfh,(UINT*)(&readlen),&eolid);//~v9a1I~
     UTRACEP("xpebc_fgets rc=%d,eolid=%02x\n",rc,eolid);            //~v956I~
     UTRACED("xpebc_fgets",Pbuff,readlen);                          //~v956I~
     switch (rc)        //0 or 4 is ok                              //~v953I~
@@ -464,7 +474,8 @@ static 	int Sreadlen,Seofsw;                                       //~v955I~
 //**********************************************************************//~0428I~
 int xpebc_fread(int Popt,char *Pbuff,int Preqlen,FILE *Pfh)        //~0428I~
 {                                                                  //~0428I~
-	int rmax;                                                      //~0428I~
+//  int rmax;                                                      //~0428I~//~v9e2R~
+    int rmx;                                                       //~v9e2R~
     int opt;                                                       //~0429I~
     int reslen,rcv;                                                //~v96eR~
     int vlensz,cvlen,opt2;                                         //~v96iR~
@@ -474,23 +485,27 @@ int xpebc_fread(int Popt,char *Pbuff,int Preqlen,FILE *Pfh)        //~0428I~
 	Gxpotheropt|=GOO_EBCFREAD;	//   	    0x00000008 //fread moed for record/hhex//~v955I~
   if (vfmt)	//openinput call sub1fredVinit(ufgetsinit)             //~v96eR~
   {                                                                //~v96eR~
-  	rcv=sub1freadV(0,Sebcbuff,Preqlen,Pfh,&rmax,&reslen); //rmax<=RBUFFSZ//~v96eR~
+//	rcv=sub1freadV(0,Sebcbuff,Preqlen,Pfh,&rmax,&reslen); //rmax<=RBUFFSZ//~v96eR~//~v9e2R~
+  	rcv=sub1freadV(0,Sebcbuff,Preqlen,Pfh,&rmx,&reslen); //rmx<=RBUFFSZ//~v9e2R~
     if (rcv==EOF)                                                  //~v96eR~
     	return EOF;                                                //~v96eR~
-    recordszV=rmax+reslen;	//EOL pos                              //~v96eR~
+//  recordszV=rmax+reslen;	//EOL pos                              //~v96eR~//~v9e2R~
+    recordszV=rmx+reslen;	//EOL pos                              //~v9e2R~
     vlensz=0;                                                      //~v96iI~
     if (!reslen)                                                   //~v96iI~
     	if (eolprintfmt)                                           //~v96iR~
         {                                                          //~v96iI~
             vlensz=sprintf(eolprint,eolprintfmt,recordszV0);       //~v96iR~
             opt2=EBC2ASC_A2E;                                      //~v96iR~
-            ucvasc2ebc(opt2,eolprint,0/*pdbcs*/,Sebcbuff+rmax,vlensz,'?',&cvlen);//~v96iR~
+//          ucvasc2ebc(opt2,eolprint,0/*pdbcs*/,Sebcbuff+rmax,vlensz,'?',&cvlen);//~v96iR~//~v9e2R~
+            ucvasc2ebc(opt2,eolprint,0/*pdbcs*/,Sebcbuff+rmx,vlensz,'?',&cvlen);//~v9e2R~
             vlensz=cvlen;                                          //~v96iI~
             recordszV+=vlensz;                                     //~v96iI~
-            rmax+=vlensz;                                          //~v96iI~
+//          rmax+=vlensz;                                          //~v96iI~//~v9e2R~
+            rmx+=vlensz;                                           //~v9e2R~
         }                                                          //~v96iI~
     recordszVEOL=recordszV0+vlensz;                                //~v96iI~
-	UTRACEP("xpebc freadV recordszV=%d,rmax=%d,reslen=%d,recordszVEOL=%d\n",recordszV,rmax,reslen,recordszVEOL);//~v96iI~
+	UTRACEP("xpebc freadV recordszV=%d,rmx=%d,reslen=%d,recordszVEOL=%d\n",recordszV,rmx,reslen,recordszVEOL);//~v96iI~//~v9e2R~
     opt=0;                                                         //~v96eR~
   }                                                                //~v96eR~
   else                                                             //~v96eR~
@@ -500,34 +515,42 @@ int xpebc_fread(int Popt,char *Pbuff,int Preqlen,FILE *Pfh)        //~0428I~
     if (recordsz && recordsz<Preqlen)                              //~v96mI~
     	reqlen=recordsz;                                           //~v96mI~
 //  rmax=(INT)fread(Sebcbuff,1,reqlen,Pfh); //read 1 block         //~v96mI~//~v997R~
-    rmax=(INT)fread(Sebcbuff,1,(size_t)reqlen,Pfh); //read 1 block //~v997I~
+//  rmax=(INT)fread(Sebcbuff,1,(size_t)reqlen,Pfh); //read 1 block //~v997I~//~v9e2R~
+    rmx=(INT)fread(Sebcbuff,1,(size_t)reqlen,Pfh); //read 1 block  //~v9e2R~
     if (recordsz)                                                  //~0429I~
         opt=0;                                                     //~0429I~
     else                                                           //~0429I~
         opt=XPEBCO_BIN;                                            //~0429I~
   }                                                                //~v96eR~
- if (rmax)                                                         //~v96eR~
+//if (rmax)                                                         //~v96eR~//~v9e2R~
+ if (rmx)                                                          //~v9e2R~
  {                                                                 //~v96eR~
   if (Gxpotheropt & GOO_EBCBYUCS)                                  //~v955I~
   {                                                                //~v96mI~
-	memcpy(Pbuff,Sebcbuff,(UINT)rmax);	//b2m will be done at print//~v955I~
+//  memcpy(Pbuff,Sebcbuff,(UINT)rmax);	//b2m will be done at print//~v955I~//~v9e2R~
+    memcpy(Pbuff,Sebcbuff,(UINT)rmx);	//b2m will be done at print//~v9e2R~
     if (recordsz || vfmt)   //no EOL concept for text mode,no dbcschk over 16/32 line width//~v96mI~
   	  if (!samechk)  //not delayed print                           //~v96sI~
-    	xpebc_b2ddrecord(opt,Sebcbuff,rmax); //full record translation to Sb2urecordbuff//~v96mR~
+//  	xpebc_b2ddrecord(opt,Sebcbuff,rmax); //full record translation to Sb2urecordbuff//~v96mR//~v9e2R~
+    	xpebc_b2ddrecord(opt,Sebcbuff,rmx); //full record translation to Sb2urecordbuff//~v9e2R~
   }                                                                //~v96mI~
   else                                                             //~v955I~
   {                                                                //~v955I~
-    xpebc_b2m(opt,rmax);                                    //~0428R~//~0429R~
-	memcpy(Pbuff,Sb2mbuff,(UINT)rmax);                             //~0428I~
+//  xpebc_b2m(opt,rmax);                                    //~0428R~//~0429R~//~v9e2R~
+    xpebc_b2m(opt,rmx);                                            //~v9e2R~
+//  memcpy(Pbuff,Sb2mbuff,(UINT)rmax);                             //~0428I~//~v9e2R~
+    memcpy(Pbuff,Sb2mbuff,(UINT)rmx);                              //~v9e2R~
   }                                                                //~v955I~
  }                                                                 //~v96eR~
  else                                                              //~v96eR~
  {                                                                 //~v96eR~
   if (!vfmt)	//openinput call sub1fredVinit(ufgetsinit)         //~v96eR~
-  	rmax=EOF;	//to getinput()                                    //~v96eR~
+//	rmax=EOF;	//to getinput()                                    //~v96eR~//~v9e2R~
+  	rmx=EOF;	//to getinput()                                    //~v9e2R~
  }                                                                 //~v96eR~
-	UTRACED("fread",Pbuff,rmax);                                   //~0429R~
-    return rmax;                                                   //~0428I~
+	UTRACED("fread",Pbuff,rmx);                                   //~0429R~//~v9e2R~
+//  return rmax;                                                   //~0428I~//~v9e2R~
+    return rmx;                                                    //~v9e2R~
 }//xpebc_fread                                                     //~0428I~//~v96eR~
 //**********************************************************************//~0429I~
 //*binary mode read ebcdic file input                              //~0429I~
@@ -594,6 +617,8 @@ int xpebc_b2dd(int Popt,UCHAR *Pebc,int Plen)                      //~v955R~
 	    opt|=UCVEBC3O_SOSI2SPACE;                                  //~v955I~
 //  rc=ucvebc3_b2dd(opt,Gxpebchandle,Pebc,Plen,pdddata,pdddbcs,buffsz,&ddlen);//~v955R~//~v96wR~
     rc=ucvebc3_b2dd(opt,Gxpebchandle,pebc,len,pdddata,pdddbcs,buffsz,&ddlen);//~v96wI~
+	if (UCBITCHK(swsw5,SW5TABONPRM))  //0x10	//tabon parameter specified//~v9e0I~
+        xpebc_setdbcsspacealtch(0,pdddata,pdddbcs,ddlen);          //~v9e0I~
 	UTRACED("xpebc_b2dd dddata",pdddata,ddlen);                    //~v955R~
 	UTRACED("xpebc_b2dd dddbcs",pdddbcs,ddlen);                    //~v955R~
     if (offs)                                                      //~v96wI~
@@ -956,4 +981,39 @@ int xpebc_b2ddrecord_copy(int Popt,UCHAR *Pebc,int Plen)           //~v96mI~
     UTRACED("xpebc_b2ddrecord_copy dbcs",Sb2mdbcstb2,Plen);        //~v96mR~
     return 0;                                                      //~v96nI~
 }                                                                  //~v96mI~
+//******************************************************************************//~v9e0I~
+//*replace dbcs space by /tabon: parm                              //~v9e0I~
+//*return replace count                                            //~v9e0I~
+//******************************************************************************//~v9e0I~
+int xpebc_setdbcsspacealtch(int Popt,UCHAR *Ppdddata,UCHAR *Ppdddbcs,int Pddlen)//~v9e0I~
+{                                                                  //~v9e0I~
+    UCHAR *pdddata,*pdddbcs,*pc;                                   //~v9e0I~
+    int reslen,rc=0,len,pos,altch;                                 //~v9e0I~
+//************************                                         //~v9e0I~
+	for (pdddata=Ppdddata,reslen=Pddlen;;)                         //~v9e0I~
+    {                                                              //~v9e0I~
+//  	pc=memchr(pdddata,0x30,reslen);                            //~v9e0R~//~v9e7R~
+    	pc=memchr(pdddata,0x30,(size_t)reslen);                    //~v9e7I~
+        if (!pc)                                                   //~v9e0I~
+        	break;                                                 //~v9e0I~
+        len=PTRDIFF(pc,pdddata);                                   //~v9e0I~
+        pos=PTRDIFF(pc,Ppdddata);	//from top                     //~v9e0I~
+        reslen-=len+1;                                             //~v9e0I~
+        pdddata=pc+1;        //next of x30                         //~v9e0I~
+        if (reslen<=0)                                             //~v9e0I~
+        	break;                                                 //~v9e0I~
+        if (*pdddata!=0x00)  //u-3000 dbcs space                   //~v9e0I~
+        	continue;                                              //~v9e0I~
+        pdddbcs=Ppdddbcs+pos;                                      //~v9e0I~
+        if (*pdddbcs!=UDBCSCHK_DBCS1STUCS)                         //~v9e0R~
+        	continue;                                              //~v9e0I~
+        altch=getTabonAltch(0,0);     //get dbcsspace altch        //~v9e0I~
+        *(pdddata-1)=(UCHAR)(altch>>8);                            //~v9e0I~
+        *pdddata=(UCHAR)(altch&255);                               //~v9e0I~
+        pdddata++;                                                 //~v9e0I~
+        reslen--;                                                  //~v9e0I~
+        rc++;                                                      //~v9e0I~
+    }                                                              //~v9e0I~
+    return rc;                                                     //~v9e0I~
+}//xpebc_setdbcsspacealtch                                         //~v9e0I~
 #endif          //EBCDIC dbcs support                              //~0428I~

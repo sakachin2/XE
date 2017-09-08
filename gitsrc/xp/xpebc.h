@@ -1,7 +1,8 @@
-//CID://+v996R~:    update#=  182221                               //~v996R~
+//CID://+v9e6R~:    update#=  182221                               //~v9e6R~
 //***********************************************************
 //* xpebc.h                                                        //~0428R~
 //***********************************************************
+//v9e6:170826 compiler warning samename parm and gbl               //~v9e6I~
 //v996:160309 v9.32 (BUG)utfdd2u buffsize parm is not ctr but size //~v996I~
 //v96w:130807 lineno field is by ascii from xe(xpr **/***) for english small letter translation//~v96wI~
 //100923 v956 v9.20 (BUG) "too long line" err msg when from xe(xpr ** for ebc vhex mode. /Me oprion ignored)//~v956I~
@@ -13,7 +14,7 @@
 #define PARM_CPEB                  "CPEB"                          //~v953I~
 #define EBC_READC_EOL              -2	//eol id                   //~v953I~
 //***********************************************************      //~0428I~
-int xpebc_init(int Popt,char *Pcfgfnm);                                          //~0428I~//~0429R~
+int xpebc_init(int Popt,char *Pcfgfnm);                                          //~0428I~//~0429R~//+v9e6R~
 //**********************************************************************//~v74jI~
 int xpebc_setupcp(int Popt,int **Pcharset,int **Ppcodepage,UCHAR **Pptrt);         //~0428R~//~0429R~
 //**********************************************************************//~0428I~
@@ -36,6 +37,6 @@ int xpebc_open(int Popt);                                          //~v953I~
 int xpebc_setucsline(int Popt,UCHAR *Pmbdata,WUCS *Ppucs,int Plen,int *Ppucsctr,int Pbuffsz);//~v996I~
 #define XPEBCSULO_HEX      0x01       //CHARDELM appended          //~v955I~
 //**********************************************************************//~v955I~
-//int xpebc_setucslinesamechk(int Popt,UCHAR *Pmbdata,int Plen,UCHAR *Pebcorg,int Pebclen,WUCS *Ppucs,int *Ppucsctr);//~v955I~//+v996R~
-int xpebc_setucslinesamechk(int Popt,UCHAR *Pmbdata,int Plen,UCHAR *Pebcorg,int Pebclen,WUCS *Ppucs,int *Ppucsctr,int Pbuffsz);//+v996I~
+//int xpebc_setucslinesamechk(int Popt,UCHAR *Pmbdata,int Plen,UCHAR *Pebcorg,int Pebclen,WUCS *Ppucs,int *Ppucsctr);//~v955I~//~v996R~
+int xpebc_setucslinesamechk(int Popt,UCHAR *Pmbdata,int Plen,UCHAR *Pebcorg,int Pebclen,WUCS *Ppucs,int *Ppucsctr,int Pbuffsz);//~v996I~
 //**********************************************************************//~v955I~

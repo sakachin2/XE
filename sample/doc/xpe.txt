@@ -1,4 +1,4 @@
-||*CID:||+v927R~:  2014/02/14                        update#=  153;   ||~v927R~
+||*CID:||+v938R~:  2017/08/23                        update#=  155;   ||~v938R~
 **********************************************************************
 *File print utility : XPRINT
 **********************************************************************
@@ -359,6 +359,15 @@ option       :(use "-" for preceding "/" for AIX/Linux version)       ||~v9.7R~
   /RGB=rrggbb;(Gnome version only) Text color, default is 404040.     ||~v9.9I~
              ;Adjust darkness.                                        ||~v9.9I~
   /Tnn       ;'T'ab column interval,default is 4.
+  /Tabon:x:y:z ;Text mode alternative char for DBCS space,Tab(0x09),Tab-skip.||~v938I~
+               ;For x,y,z each, specify Char itself, Unicode or Hex notation.||~v938I~
+               ;e.g.) /Tabon:x2020:x18:x1a  /Tabon::u2191:u2192 /Tabon::u25cb||~v938I~
+               ;      /Tabon:u2750                                    ||~v938I~
+               ;Default is /Tabon:u3000:x20:x20(UTF8/EBCDIC file)     ||~v938I~
+               ;       and /Tabon:x8140:x20:x20(other file).          ||~v938I~
+  /Vvfmt     ;Variable Length Record File format.                     ||+v938I~
+             ;vfmt:RDW,MF(MicroFocus),H(Halfword),HD(DataLength),F(Fullword),FD||+v938I~
+             ;  ex) xprint vrlfile /vh /Md /EOLPRINT=:                ||+v938I~
   /Wdir      ;'W'ork dir-name used for page descending order print
     dir      ;directory name. Default is from environment variable XP=.||~v912R~
              ;if no environment set,/Wc:\ is used.
@@ -668,6 +677,10 @@ v9.20 :2010/10/04                                                     ||~v920I~
           /Y8 : display UTF8 code(Default) , /N8 : display UCS code   ||~v920I~
         UCS code is not fixed length but preceding 00 is dropped.     ||~v920I~
         ex) xprint utf8-file -mtxu -n8                                ||~v920I~
+v9.23 :2013/05/21                                                     ||+v938I~
+       .(Win:BUG)Font size may be decreased gradually when multi-file print.||+v938I~
+       .(Win)Use not c: but %TMP for workfile for reverse page print(C: may be protected)||+v938I~
+       .(Linux:BUG)It may crash when cups is disabled.                ||+v938I~
 v9.25 :2013/08/08                                                     ||~v925I~
        .Variable Record Length file support.                          ||~v925I~
        .Translation of EBCDIC using ICU without cfg file(/ICU option) ||~v925I~
@@ -684,8 +697,46 @@ v9.26 :2013/11/20                                                     ||~v926I~
         .(BUG)UCS 2nd byte was not printed for utf8 file with -n8 and -mtx options.||~v926I~
         .(BUG)For EBCDIC file,2nd line was invalid when the line is split.||~v926I~
 v9.27 :2014/02/14                                                     ||~v927I~
-        .(LNX:BUG)It could not change option such as PaperSize/Orientation on print dialog by -Yd option.||+v927R~
-        .(LNX:BUG)A4 was assumed as default paper for all printer.(ignored printer setting)||+v927R~
-        .(LNX:BUG)Printer specification by -Q option may fail by error of multiple printer match with the parameter.||+v927R~
-        .(LNX)gtk3 support.                                           ||+v927R~
-        .(LNX)margin parameter is added. -E/form/M{T|B|L|R}ss[P].     ||+v927R~
+        .(LNX:BUG)It could not change option such as PaperSize/Orientation on print dialog by -Yd option.||~v927R~
+        .(LNX:BUG)A4 was assumed as default paper for all printer.(ignored printer setting)||~v927R~
+        .(LNX:BUG)Printer specification by -Q option may fail by error of multiple printer match with the parameter.||~v927R~
+        .(LNX)gtk3 support.                                           ||~v927R~
+        .(LNX)margin parameter is added. -E/form/M{T|B|L|R}ss[P].     ||~v927R~
+v9.30 :2015/03/10                                                     ||+v938I~
+          Use not xprint but gxp on Linux.                            ||+v938I~
+          Sample print cmd:xprint.sh(default on Linux) was changed to use gxp.||+v938I~
+                                                                      ||+v938I~
+        .Symbolic Link(JunctionPoint/MountPoint for Windows) consideration.||+v938I~
+        .RECFM=V support                                              ||+v938I~
+        ./ICU was added to enable to use ICU converter without /BC(cfg fiel for EBCDIC translation).||+v938I~
+        .(BUG:LINUX) miss-translated for EBCDIC and UTF8 files.       ||+v938I~
+        .(BUG)Line length error when RECFM=F file contains 0x15(EBCDIC newline).||+v938I~
+                                                                      ||+v938I~
+        .(gxe)Changed API for print to use not gnomeprint but GTKprint.||+v938I~
+        .(gxp)Shift parameter support. ex). -E/B5/T40.                ||+v938I~
+        .(gxp)Destination parameter:"-q?" lists printers.             ||+v938I~
+        .(gxp:BUG)Crash when wildcard filename is not enclosed by double quotation.||+v938I~
+        .(gxp:BUG)Line was cut if it contains null(x00).              ||+v938I~
+        .(gxp:BUG)Japanes EUC code was not printed.                   ||+v938I~
+                                                                      ||+v938I~
+        .(BUG)UCS 2nd byte was not printed for utf8 file with -n8 and -mtx options.||+v938I~
+        .(BUG)For EBCDIC file,2nd line was invalid when the line is split.||+v938I~
+                                                                      ||+v938I~
+        .(LNX:BUG)It could not change option such as PaperSize/Orientation on print dialog by -Yd option.||+v938I~
+        .(LNX:BUG)A4 was assumed as default paper for all printer.(ignored printer setting)||+v938I~
+        .(LNX:BUG)Printer specification by -Q option may fail by error of multiple printer match with the parameter.||+v938I~
+        .(LNX)gtk3 support.                                           ||+v938I~
+        .(LNX)margin parameter is added. -E/form/M{T|B|L|R}ss[P].     ||+v938I~
+                                                                      ||+v938I~
+        .(LNX)Japanese help text was corrupted on xterm.              ||+v938I~
+                                                                      ||+v938I~
+        .(Win)accept request from xe with parameter filename of not localecode(utf8 encoded).||+v938I~
+v9.34 :2017/03/29                                                     ||+v938I~
+        ./Tabon: new parameter added                                  ||+v938I~
+           Specify alternative char for DBCS space, TAB(0x09) and its following space.||+v938I~
+           /Tabon:x:y:z ;Text mode alternative char for DBCS space,Tab(0x09),Tab-skip.||+v938I~
+                        ;For x,y,z each, specify Char itself, Unicode or Hex notation.||+v938I~
+                        ;e.g.) /Tabon:x2020:x18:x1a  /Tabon::u2191:u2192 /Tabon::u25cb||+v938I~
+                        ;      /Tabon:u2750                           ||+v938I~
+                        ;Default is /Tabon:u3000:x20:x20(UTF8/EBCDIC file)||+v938I~
+                        ;       and /Tabon:x8140:x20:x20(other file). ||+v938I~

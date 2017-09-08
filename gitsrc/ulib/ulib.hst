@@ -1,5 +1,18 @@
 *** update history ******************************************************************
-//*********  20170321 v129Bj update d   ****************
+//*********  20170812 v129Cj update     ****************
+//v6M5:170825 for xcv,xprint;create EBC cfg by uconv output
+//            ucvext.c/h ucvebc3.c ucvebc.h
+//v6M4:170825 try get icu version by uconv cmd if ICU_DLL_SUFFIX,ICU_API_SUFFIX both are not specified
+//            ucvext.c
+//v6M3:170824 (Lnx) putenv to LD_LIRARY_PATH is not effective(loader chk it at pgm startup and ignore putenv after startup)
+//            ucvext.c uproc2.c
+//v6M2:170824 (Bug)v6M0 faile if path is multiple devided by ";"/":"
+//            ucvext.c uproc.h uproc2.c
+//v6M1:170812 (Bug)invalid name format at ucvext_getarmso(err at end of string chk of PATH env var)
+//            ucvext.c
+//v6M0:170808 err "LoadLibrary failed for icuucxx"-=>loaddll using ICU_DATA param
+//            ucvext.c uproc2.c uproc.h
+//*********  20170321 v129Bj update     ****************
 //v6L8:170716 (Bug:64)O calc err(addr was set as numvalue)
 //            ualloc.c
 //v6L7:170716 (Bug:64)X calc err(need work clear)

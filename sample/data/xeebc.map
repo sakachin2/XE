@@ -35,7 +35,7 @@
 #                    Or, check in the libicuuc.so(libicuuc.dll) by binary editor.
 #
 #   ICU_DATA       : Use when you installed your own converter(.cnv file)
-#                     ex)ICU_DATA=/system/usr/icu:/data/data/yourcnvs
+#                     ex)ICU_DATA /system/usr/icu:/data/data/yourcnvs
 #                    Put your cnv file into sub-folder yourcnvs/icudt__l  ; __ is version like as icudt44l.
 #
 #   DBCS_CHARSET   : Defines EBCDIC charset name to translate UCS<-->EBCDIC which supports DBCS.

@@ -1,7 +1,9 @@
-//*CID://+v98pR~:                             update#=  324;       //~v98pR~
+//*CID://+v9e5R~:                             update#=  335;       //~v9e5R~
 //***********************************************************
 //* xphlp.c : help sub                                          //~5A10R~//~v983R~
 //***********************************************************
+//v9e5:170826 get dll suffix by uconv --version                    //~v9e5I~
+//v9e0:170807 v9.38 tabchar support(tabon:c/x__/u__)               //~v9e0I~
 //v98p:140219 helpmsg print dbcs on xterm                          //~v98pI~
 //v98h:140208 v98g is no effect;add margin option because origin shift may cut opposit side.//~v98hI~
 //v98a:140206 simple shift parameter(previous shift function is expand papersize as custom paper size//~v98aI~
@@ -242,6 +244,15 @@ void helpabridge(void)
     hline((sprintf(buff,                                           //~v96eI~
           "              ;ICUを使用する場合は代わりに%cICUを指定しても良い\n",//~v96eI~
 							CMDFLAG_PREFIX),buff));                //~v96eI~
+#ifdef W32                                                         //~v9e5I~
+    hline((sprintf(buff,                                           //~v9e5I~
+          "              ;その場合は uconv.exe, ICU .dll にPATH を通すこと。\n"//+v9e5R~
+							              ),buff));                //+v9e5R~
+#else                                                              //~v9e5I~
+    hline((sprintf(buff,                                           //~v9e5I~
+          "              ;その場合は uconv に PATH  ICU .so に LD_LIBRARY_PATH を通す\n"//+v9e5R~
+							              ),buff));                //+v9e5R~
+#endif                                                             //~v9e5I~
     hline((sprintf(buff,                                           //~v953I~
           "   %c%s=cp   ;cp : EBCDIC コードページ\n",              //~v953R~
 							CMDFLAG_PREFIX,PARM_CPEB),buff));      //~v953I~
@@ -594,7 +605,30 @@ void helpabridge(void)
     hline((sprintf(buff,
           "   %cTnn       ;タブキーで進める桁位置。(%cT%d)\n",     //~v907R~
           					CMDFLAG_PREFIX,CMDFLAG_PREFIX,	       //~v907I~
-                                tabskip),buff));
+                                tabskip),buff));                   //~v9e0R~
+    hline((sprintf(buff,                                           //~v9e0I~
+          "   %cTabon:x:y:z ;テキストモードのときのDBCSスペース,タブ文字,タブスキップの\n",//~v9e0R~
+          					CMDFLAG_PREFIX),                       //~v9e0I~
+                                buff));                            //~v9e0I~
+    hline((sprintf(buff,                                           //~v9e0I~
+          "                ;代替印刷文字。x,y,zは 文字、ヘキサ文字またはユニコード。\n"),//~v9e0R~
+                                buff));                            //~v9e0I~
+    hline((sprintf(buff,                                           //~v9e0I~
+          "                ;例) %cTabon:x2020:x18:x1a  %cTabon::u2191:u2192 %cTabon::u25cb\n",//~v9e0I~
+          					CMDFLAG_PREFIX,CMDFLAG_PREFIX,CMDFLAG_PREFIX),//~v9e0I~
+                                buff));                            //~v9e0I~
+    hline((sprintf(buff,                                           //~v9e0I~
+          "                ;    %cTabon:u2750\n",                  //~v9e0R~
+          					CMDFLAG_PREFIX),                       //~v9e0I~
+                                buff));                            //~v9e0I~
+    hline((sprintf(buff,                                           //~v9e0I~
+          "                ;省略値は UTF8/EBCDICファイル %cTabon:u3000:x20:x20\n",//~v9e0R~
+          					CMDFLAG_PREFIX),                       //~v9e0I~
+                                buff));                            //~v9e0I~
+    hline((sprintf(buff,                                           //~v9e0I~
+          "                ;                        以外 %cTabon:x8140:x20:x20\n",//~v9e0R~
+          					CMDFLAG_PREFIX),                       //~v9e0I~
+                                buff));                            //~v9e0I~
     hline((sprintf(buff,                                           //~v96eI~
           "   %cVvfmt     ;可変長レコード形式。\n",                //~v96eR~
           					CMDFLAG_PREFIX),buff));                //~v96eR~
@@ -782,6 +816,15 @@ void helpabridge(void)
     hline((sprintf(buff,                                           //~v96eI~
           "             ;%cICU is alternative when using ICU\n",   //~v96eR~
 							CMDFLAG_PREFIX),buff));                //~v96eI~
+#ifdef W32                                                         //~v9e5I~
+    hline((sprintf(buff,                                           //~v9e5I~
+          "             ;set PATH to uconv.exe and ICU .dll if %cBCfilenm omitted.\n",//~v9e5I~
+							CMDFLAG_PREFIX),buff));                //~v9e5I~
+#else                                                              //~v9e5I~
+    hline((sprintf(buff,                                           //~v9e5I~
+          "              ;set PATH to uconv, LD_LIBRARY_PATH to ICU .so if %cBCfilenm omitted.\n",//~v9e5I~
+							CMDFLAG_PREFIX),buff));                //~v9e5I~
+#endif                                                             //~v9e5I~
     hline((sprintf(buff,                                           //~v953I~
           "  %c%s      ;EBCDIC codepage.\n",                       //~v953R~
 							CMDFLAG_PREFIX,PARM_CPEB),buff));      //~v953I~
@@ -1133,6 +1176,29 @@ void helpabridge(void)
           "  %cTnn       ;tab skip column.(%cT%d)\n",              //~v92tI~
           				CMDFLAG_PREFIX,CMDFLAG_PREFIX,             //~v907R~
                                 tabskip),buff));
+    hline((sprintf(buff,                                           //~v9e0I~
+          "  %cTabon:x:y:z ;Text mode alternative char for DBCS space,Tab(0x09),Tab-skip.\n",//~v9e0R~
+          					CMDFLAG_PREFIX),                       //~v9e0I~
+                                buff));                            //~v9e0I~
+    hline((sprintf(buff,                                           //~v9e0I~
+          "               ;For x,y,z each, specify Char itself, Unicode or Hex notation.\n"),//~v9e0I~
+                                buff));                            //~v9e0I~
+    hline((sprintf(buff,                                           //~v9e0I~
+          "               ;e.g.) %cTabon:x2020:x18:x1a  %cTabon::u2191:u2192 %cTabon::u25cb\n",//~v9e0I~
+          					CMDFLAG_PREFIX,CMDFLAG_PREFIX,CMDFLAG_PREFIX),//~v9e0I~
+                                buff));                            //~v9e0I~
+    hline((sprintf(buff,                                           //~v9e0I~
+          "               ;      %cTabon:u2750\n",                 //~v9e0R~
+          					CMDFLAG_PREFIX),                       //~v9e0I~
+                                buff));                            //~v9e0I~
+    hline((sprintf(buff,                                           //~v9e0I~
+          "               ;Default is %cTabon:u3000:x20:x20(UTF8/EBCDIC file)\n",//~v9e0R~
+          					CMDFLAG_PREFIX),                       //~v9e0I~
+                                buff));                            //~v9e0I~
+    hline((sprintf(buff,                                           //~v9e0I~
+          "               ;       and %cTabon:x8140:x20:x20(other file).\n",//~v9e0R~
+          					CMDFLAG_PREFIX),                       //~v9e0I~
+                                buff));                            //~v9e0I~
     hline((sprintf(buff,                                           //~v96eI~
           "  %cVvfmt     ;Variable Length Record File format.\n",  //~v96eR~
           					CMDFLAG_PREFIX),buff));                //~v96eR~
@@ -1305,16 +1371,16 @@ void hline(char *Phline)                                           //~v91kR~
 static int hlineno=0;
 static int hlinemax;                   //screen maxline size v6.9a v7.0m
 int    sline(void);                     //get screen size   v6.9a v7.0m
-  	int dbcsmode;                                                  //+v98pI~
+  	int dbcsmode;                                                  //~v98pI~
 //******************:
-#ifdef LNX                                                         //+v98pI~
-  if (UCBITCHK(Guerropt,GBL_UERR_FORCEENG))                        //+v98pI~
-	dbcsmode=0;                                                    //+v98pI~
-  else                                                             //+v98pI~
-    dbcsmode=UCBITCHK(Guerropt,GBL_UERR_DBCSMODE)!=0;              //+v98pI~
-#else                                                              //+v98pI~
-	dbcsmode=dbcsenv;					//same as xprint.c setting //+v98pI~
-#endif                                                             //+v98pI~
+#ifdef LNX                                                         //~v98pI~
+  if (UCBITCHK(Guerropt,GBL_UERR_FORCEENG))                        //~v98pI~
+	dbcsmode=0;                                                    //~v98pI~
+  else                                                             //~v98pI~
+    dbcsmode=UCBITCHK(Guerropt,GBL_UERR_DBCSMODE)!=0;              //~v98pI~
+#else                                                              //~v98pI~
+	dbcsmode=dbcsenv;					//same as xprint.c setting //~v98pI~
+#endif                                                             //~v98pI~
 //  if (dbcsenv)    //DBCS mode v6.9d
 //      hlinemax=22;            v6.9d
 //  else                        v6.9d
@@ -1325,8 +1391,8 @@ int    sline(void);                     //get screen size   v6.9a v7.0m
     if (hlineno++>=hlinemax   //v6.9r                           //~v74bR~
     &&  !UCBITCHK(swsw1,SW1NOKBD|SW1BACKG))                     //~v74bI~
     {
-//      if (dbcsenv)    //DBCS mode                                //+v98pR~
-        if (dbcsmode)   //DBCS mode                                //+v98pI~
+//      if (dbcsenv)    //DBCS mode                                //~v98pR~
+        if (dbcsmode)   //DBCS mode                                //~v98pI~
             fprintf(stderr,"--続き-- キーをどれか押して下さい．．．");//~v844R~
         else    
             fprintf(stderr,"continue--   Press Any Key(\"q\" to exit)"); //v7.0r//~v941R~

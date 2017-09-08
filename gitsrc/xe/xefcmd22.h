@@ -1,7 +1,9 @@
-//*CID://+vbCBR~:**               update#=  43                     //~vbCBR~
+//*CID://+vbc1R~:**               update#=  46                     //+vbc1R~
 //****************************************************************
 //*xefcmd22.h                                                      //~v437R~
 //****************************************************************//~v064I~
+//vbc2:170821 add TS   option for find cmd on dirlist              //~vbc2I~
+//vbc1:170820 add ATTR option for find cmd on dirlist              //~vbc1I~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
 //vax1:140625 (BUG:Win)find ucs2 failes(searchs ucs4), U4 is not only for change cmd repword but for search word//~vax1I~
 //vaw1:140523 (Win:UNICODE)dbcsid:overflow for ucs4 on Windows     //~vaw1I~
@@ -54,6 +56,8 @@
 #define  RANGENOPARM   -4   //specified not range but pos1 only    //~v0eBM~
 #define  RANGEMAX      -5   //specified not range but pos1 only    //~v54RI~
 #define  RANGEEOL      -6   //search at end of line only           //~v54ZI~
+#define  RANGEATTR     -7   //ATTR option for dir list             //~vbc1I~
+#define  RANGETS       -8   //TS   option for dir list             //~vbc2I~
                                                                    //~v41rI~
 #define STR_SEARCH_NOT "!"                                         //~v43uR~
 #define STR_SEARCH_AND "&"                                         //~v43tR~
@@ -100,6 +104,10 @@ int fcmdgetfindoption(PUCLIENTWE Ppcw,int Pexcludesw,int Pchangeopt,int *Popdno,
 #define FINDOPT_GREP          0x0800 //-e option for grep search   //~v78dI~
 #define FINDOPT_GREPP         0x1000 //P'.' patern                 //~v78eI~
 #define FINDOPT_GREPPTARGET   0x2000 //change target is P'.' patern//~v79LI~
+#define FINDOPT_DIRATTR       0x4000 //column range:ATTR specified //~vbc1I~
+#define FINDOPT_DIRATTRAND    0x8000 //column range:ATTR specified on 2nd of and search//~vbc1I~
+#define FINDOPT_DIRTS       0x010000 //column range:TS   specified //~vbc2I~
+#define FINDOPT_DIRTSAND    0x020000 //column range:TS   specified on 2nd of and search//~vbc2I~
 #define FINDOPT2_CSRLINEMASK   0x00ff //line position line ctr mask//~v59ZR~
 #define FINDOPT2_CSRCOLMASK    0xff00 //line position cols mask    //~v59ZI~
 #define FINDOPT2_CSRTOP      0x080000 //line position is from bottom//~v59ZR~
@@ -153,7 +161,8 @@ int fcmdoperandrearange(PUCLIENTWE Ppcw,int Pchangeopt,int *Popdno,//~v532I~
 #endif                                                             //~va1GI~
                                                                    //~vbCBI~
 //**************************************************************** //~v0eBI~
-int  fcmdsetrange(PUCLIENTWE Ppcw,int Pnorangeopt,int Pwordlen,    //~v0eBI~
+//int  fcmdsetrange(PUCLIENTWE Ppcw,int Pnorangeopt,int Pwordlen,    //~v0eBI~//+vbc1R~
+int  fcmdsetrange(PUCLIENTWE Ppcw,int Pnorangeopt,char *Psrchword,int Pwordlen,//+vbc1I~
 				SHORT Ppos1,SHORT Ppos2,SHORT *Prange1,SHORT *Prange2);//~v11oR~
 //****************************************************************//~5104I~
 int fcmdscrollpage(PUCLIENTWE Ppcw,PULINEH Pplh);               //~5104I~
@@ -197,5 +206,5 @@ int fcmdsrchPSP(int Popt,PUCLIENTWE Ppcw,int Pdest,int Pchangeopt);//~vbCBR~
 int fcmdsrchSTD(int Popt,PUCLIENTWE Ppcw,int Pdest,int Pchangeopt);//~vbCBI~
 //**************************************************               //~vbCBI~
 int fcmdPSinit(int Popt,void* /*PUSCMD*/ Ppsc);                    //~vbCBR~
-//**************************************************               //+vbCBI~
-void fcmddisplayPSall(PUCLIENTWE Ppcw);                            //+vbCBI~
+//**************************************************               //~vbCBI~
+void fcmddisplayPSall(PUCLIENTWE Ppcw);                            //~vbCBI~

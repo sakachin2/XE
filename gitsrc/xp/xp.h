@@ -1,8 +1,9 @@
-//*CID://+v9d0R~:                             update#=  192;       //+v9d0R~
+//*CID://+v9e0R~:                             update#=  194;       //~v9e0R~
 //***************************************************************//~5B03I~
 //* xp.h                                                           //~v91rR~
 //***************************************************************//~5B03I~
-//v9d0:170218 v9.37 from xe,xpr ** total page number is not valid  //+v9d0I~
+//v9e0:170807 v9.38 tabchar support(tabon:c/x__/u__)               //~v9e0I~
+//v9d0:170218 v9.37 from xe,xpr ** total page number is not valid  //~v9d0I~
 //v9a2:160623 v9.34 issue msg "-qfile is not supported by gxp"     //~v9a2I~
 //v993:160308 v9.32 ucs4 support                                   //~v993I~
 //v992:150529 v9.31 uerrmsg parm count err by xuerpck              //~v992I~
@@ -92,7 +93,7 @@
 //        #define OSTYPE 'G'                                         //~v945I~//~v950R~
 //    #endif                                                         //~v945I~//~v950R~
 #endif                                                             //~v945I~
-#define VER "V9.37"  //version                                     //+v9d0R~
+#define VER "V9.38"  //version                                     //~v9d0R~//~v9e0R~
 #ifdef UNX                                                         //~v907I~
   #ifdef GXP                                                       //~v950I~
 	#define PGMID   "gxp"                                          //~v950I~
@@ -299,6 +300,7 @@ EXT    char swsw5;			                                       //~v96hI~
 #define SW5USEICU 	0x80	//for ebc translation without cfg parm //~v96hI~
 #define SW5NOBYUCS  0x40	//not (EBC)BYUCS                       //~v96nI~
 #define SW5HHEXMODE 0x40	//from xe data is hhex                 //~v96sR~
+#define SW5TABONPRM 0x10	//tabon parameter specified            //+v9e0I~
 //***********************                                          //~v96hI~
 EXT     int Gxpotheropt;	//creared each time of indirect file   //~v955R~
 #define GOO_ASCEOL    	    0x00000001 //EBC file eol is 0a or 0d0a(else 0x15)//~v953I~

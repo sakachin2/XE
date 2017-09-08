@@ -32,6 +32,9 @@ a:hover{font-weight:bold;}-->
      -<A href="HID00000079.htm">EDIt</A>/<A href="HID00000113.htm">SAVe</A>/<A href="HID00000070.htm">REPlace/CREate/APPend/CUT</A>/<A href="HID00000080.htm">END</A>/<A href="HID00000069.htm">COPy</A>/<A href="HID00000098.htm">MOVe</A>/<A href="HID00000069.htm">PASte</A> コマンドで CPEB オプションを指定
       不正なEBCDIC文字があるときこれを無視して開く時は IE オプションを指定する。
       ヘッダー行には &quot;=E&quot; , バイナリーモードの場合は &quot;=e&quot; で表示されます
+      (ある程度の印刷不能文字があるとバイナリーモードとみなしますが、バイナリーモードとなると
+      DBCSが表示されません、/Mt オプションを付けて強制的にテキストモードで開けばDBCSが表示されます)   
+      改行コードは /Mp(0x0d0a) /Mu(0x0a) を指定しない場合 0x15 です
         例。 &quot;e file1 cpeb&quot;
 
       cfg無しの場合あるいはcfg以外のコードページを使用する場合は CPEB:codepage の形式を使用します

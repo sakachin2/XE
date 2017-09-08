@@ -1,14 +1,15 @@
-//CID://+vak7R~:                                                   //~vak7R~
-// ******************************************************************
+//CID://+vbc4R~:           update#=     1                          //+vbc4R~
+//******************************************************************//+vbc4R~
 //  malloc/free pair chk                                           //~v53sR~
 //    parm1 : input file spec(maaloc trace file)                   //~v53sR~
-// **********************************************/
+//******************************************************************//+vbc4I~
+//vbc4:170826 xemtrch for 64bit(return addr)                       //+vbc4I~
 //vak7:130906 redirect memcpy to memmove when overlaped            //~v53sI~
 //v1.3 v53s:031004 malloc trace opt to print 2 level return addr   //~v53sI~
 //v19N:000925 V1.2 LINUX support(xemtrchk.c:compiler warning;main parm UCHAR* -->char *)//~v1.2I~
 // 960709 v1.1 alloc/free size chk                                 //~v1.1I~
 // **********************************************/                 //~v1.1I~
-#define VER    "V1.4"        //version                             //~vak7R~
+#define VER    "V1.5"        //version                             //~vak7R~//+vbc4R~
 // *******************************************************************
 //#define UCHAR unsigned char                                      //~vak7R~
 //#define PVOID void *                                             //~vak7R~
@@ -29,6 +30,17 @@
 //*******************************************************************
 typedef  struct _ADDRLIST {                                     //~5C24R~
                              UQUEE  ALqe;//storage addr         //~5C24R~
+#if defined(ULIB64) || defined(ULIB64X)                            //~v6J6R~//+vbc4I~
+#define ADDRSTRSZ 16                                               //+vbc4I~
+                             UCHAR  ALaddr[ADDRSTRSZ];  //hex addr //+vbc4I~
+                             UCHAR  ALrsv1;                        //+vbc4I~
+                             UCHAR  ALlen[8];  //hex addr          //+vbc4I~
+                             UCHAR  ALrsv2;                        //+vbc4I~
+                             UCHAR  ALret[ADDRSTRSZ];  //hex addr  //+vbc4I~
+                             UCHAR  ALrsv3;                        //+vbc4I~
+                             UCHAR  ALret2[ADDRSTRSZ];  //hex addr //+vbc4I~
+#else                                                              //+vbc4I~
+#define ADDRSTRSZ  8                                               //+vbc4I~
                              UCHAR  ALaddr[8];  //hex addr      //~5C24R~
                              UCHAR  ALrsv1;                     //~5C24R~
                              UCHAR  ALlen[8];  //hex addr       //~5C24I~
@@ -36,6 +48,7 @@ typedef  struct _ADDRLIST {                                     //~5C24R~
                              UCHAR  ALret[8];  //hex addr          //~v53sI~
                              UCHAR  ALrsv3;                        //~v53sI~
                              UCHAR  ALret2[8];  //hex addr         //~v53sI~
+#endif                                                             //+vbc4I~
                              UCHAR  ALrsv4;                        //~v53sI~
                           } ADDRLIST;                           //~5C24R~
 typedef ADDRLIST* PADDRLIST;                                    //~5C24R~
@@ -74,14 +87,15 @@ static	UQUEH Sqh;                                              //~5C24I~
   	while (fgets(buff,sizeof(buff),fh))                         //~5C24R~
   	{                                                           //~5C24R~
     	linectr++;                                                 //~vak7I~
-//      printf("line=%d,buff=%s\n",linectr,buff);//@@@@test        //+vak7R~
+//      printf("line=%d,buff=%s\n",linectr,buff);//@@@@test        //~vak7R~
 		if (!(pc=strchr(buff,'=')))                             //~5C24R~
 		    putmsg(4,"data err 1,%s\n",buff);                      //~v1.1R~
 	    if (memcmp(buff,"free",4))	//not free                  //~5C24R~
         {                                                       //~5C24I~
         	if (!(pal=calloc(1,ADDRLISTSZ)))                    //~5C24I~
 			    putmsg(4,"malloc failed\n");                    //~5C24I~
-			memcpy(pal->ALaddr,pc+1,8);                         //~5C24I~
+//  		memcpy(pal->ALaddr,pc+1,8);                         //~5C24I~//+vbc4R~
+    		memcpy(pal->ALaddr,pc+1,ADDRSTRSZ);                    //+vbc4I~
 			pal->ALrsv1=0;                                      //~5C24R~
 			if (!(pc=strchr(pc+1,'=')))                         //~5C24I~
 			    putmsg(4,"data err 2,%s\n",buff);                  //~v1.1R~
@@ -89,14 +103,18 @@ static	UQUEH Sqh;                                              //~5C24I~
 			pal->ALrsv2=0;                                      //~5C24I~
 			pal->ALrsv3=0;                                         //~v53sI~
 			pal->ALrsv4=0;                                         //~v53sI~
-            memset(pal->ALret,' ',8);                              //~v53sI~
-            memset(pal->ALret2,' ',8);                             //~v53sI~
+//          memset(pal->ALret,' ',8);                              //~v53sI~//+vbc4R~
+            memset(pal->ALret,' ',ADDRSTRSZ);                      //+vbc4I~
+//          memset(pal->ALret2,' ',8);                             //~v53sI~//+vbc4R~
+            memset(pal->ALret2,' ',ADDRSTRSZ);                     //+vbc4I~
 			if (pc=strchr(pc+1,'='),pc)                            //~v53sR~
 				if (pc=strchr(pc+1,'='),pc)                        //~v53sR~
                 {                                                  //~v53sI~
-					memcpy(pal->ALret,pc+1,8);                     //~v53sI~
+//  				memcpy(pal->ALret,pc+1,8);                     //~v53sI~//+vbc4R~
+    				memcpy(pal->ALret,pc+1,ADDRSTRSZ);             //+vbc4I~
 					if (pc=strchr(pc+1,'='),pc)                    //~v53sR~
-						memcpy(pal->ALret2,pc+1,8);                //~v53sI~
+//  					memcpy(pal->ALret2,pc+1,8);                //~v53sI~//+vbc4R~
+    					memcpy(pal->ALret2,pc+1,ADDRSTRSZ);        //+vbc4I~
             	}                                                  //~v53sI~
             UENQ(UQUE_END,&Sqh,pal);                            //~5C24R~
             allocctr++;                                         //~5C24I~
@@ -140,7 +158,8 @@ static	UQUEH Sqh;                                              //~5C24I~
 int addrcomp(PUQUEE Ppfnqe,PVOID Ppfname)                       //~5C24R~
 {                                                               //~5C24I~
 //retrn 0 if match ,1 if unmatch                                //~5C24I~
-	return memcmp(Ppfname,((PADDRLIST)(PVOID)Ppfnqe)->ALaddr,8)!=0;//~5C24I~
+//  return memcmp(Ppfname,((PADDRLIST)(PVOID)Ppfnqe)->ALaddr,8)!=0;//~5C24I~//+vbc4R~
+    return memcmp(Ppfname,((PADDRLIST)(PVOID)Ppfnqe)->ALaddr,ADDRSTRSZ)!=0;//+vbc4I~
 }//addrcomp                                                     //~5C24R~
 //********************************************************************//~5C24I~
 //* error msg output and exit                                   //~5C24I~

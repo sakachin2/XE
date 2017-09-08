@@ -1,5 +1,6 @@
-//*CID://+v6BuR~:                                   update#=  359; //~v6BuR~
+//*CID://+v6M5R~:                                   update#=  366; //~v6M5R~
 //***********************************************************************
+//v6M5:170825 for xcv,xprint;create EBC cfg by uconv output        //~v6M5I~
 //v6Bu:160226 support ebc(0x00->oxff)->ucs4  mapping               //~v6BuI~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
 //v6Bj:160213 (W32:BUG)UCS4 was cut to UCS2                        //~v6BjI~
@@ -523,6 +524,7 @@ int ucvebc3_init(int Popt,ULPTR *Pcfg)                             //~v6hhI~
 //  UCVEBCH   *pucveh;                                             //~v6b9R~
     char *pfnm;
     int rc=0,opt;
+	UCVEXTCFG  convertercfg;                                       //~v6M5R~
 //*****************
     if (Gucvebc_stat & UCVEBCS_xcv)          //on xcv    process  to ucvext_mapinit//~va54I~//~v6bjI~
     {                                                              //~v6bjI~
@@ -542,7 +544,16 @@ int ucvebc3_init(int Popt,ULPTR *Pcfg)                             //~v6hhI~
         	opt&=~UCEIO_NOERRMSG;                                  //~v69wI~
         if (Popt & UCVEBC3O_USEICU)                                //~v6m3I~
         	opt|=UCEIO_USEICU;  //use icu if cfg err               //~v6m3I~
-                                                                   //~v69wI~
+    	if (Gucvebc_stat & UCVEBCS_CONVERTERCFG          //from xprint mapfile parameter missing case,parameter pfnm is convertername//~v6M5R~
+        && !ucvext_getConverterCfg(0,&convertercfg))	//pfnm is convertername//~v6M5I~
+        {                                                          //~v6M5R~
+        	UTRACEP("%s:convertername=%s\n",UTT,pfnm);             //~v6M5I~
+    		opt|=UCEIO_CONVERTERCFG; //parm-cfg is created by getConverterCfg//~v6M5R~
+        	pcfg=&convertercfg;    //ucvext_mapinit copy convertercfg then uodate it Scfg in ucvext//~v6M5R~
+			if (ucvext_mapinit(opt,"",&pcfg))    //pcfg will be replaced//~v6M5R~
+    			return 4;                                          //~v6M5R~
+        }                                                          //~v6M5R~
+        else                                                       //~v6M5R~
         if (ucvext_mapinit(opt,pfnm,&pcfg))
 			rc=4;
 //      else                                                       //~v66MR~
@@ -1360,8 +1371,8 @@ int ucvebc3_u2b1map(int Popt,int Phandle,UWUCS Pucs)               //~v6BjI~
 	int ebc=-1,ii;                                                 //~v66HR~
     PUCVEBCH pucveh;                                               //~v69cI~
 //*************                                                    //~v66HI~
-//  if (UTF_ISUCS4(Pucs))                                          //~v6BjI~//+v6BuR~
-//  	return -1;	//no map for ucs4                              //~v6BjI~//+v6BuR~
+//  if (UTF_ISUCS4(Pucs))                                          //~v6BjI~//~v6BuR~
+//  	return -1;	//no map for ucs4                              //~v6BjI~//~v6BuR~
 	pucveh=UCVEBC_GETPUCVEH(Phandle);                              //~v69cI~
     if (Pucs<0x100)                                                //~v66HI~
 //    	ebc=Su2bmap[(int)Pucs];                                    //~v66HI~//~v69cR~
@@ -1439,8 +1450,8 @@ UTRACEP("ucvebc3 u2b1 opt=%x,handle=%d,inp ucs=%x\n",Popt,Phandle,Pucs);//~v69cR
       	*Poutbuff=(UCHAR)ebc;                                      //~v6BiI~
         ebclen=1;
         rc2=0;
-//      if (!ebc && Pucs)                                          //+v6BuR~
-        if (!ebc && Pucs<0x100) //if >=0x100,explicitly map to 0x00 by UCVEHu2bffmap or UCVEHu2bnonasciimapucs//+v6BuI~
+//      if (!ebc && Pucs)                                          //~v6BuR~
+        if (!ebc && Pucs<0x100) //if >=0x100,explicitly map to 0x00 by UCVEHu2bffmap or UCVEHu2bnonasciimapucs//~v6BuI~
             rc2=4;
       }
       else

@@ -1,8 +1,9 @@
-//*CID://+v9a1R~:                             update#=  185;       //+v9a1R~
+//*CID://+v9e6R~:                             update#=  186;       //+v9e6R~
 //***********************************************************
 //* xpinp.c                                                     //~v74pR~
 //***********************************************************
-//v9a1:160418 v9.33 LNX64 Compiler warning                         //+v9a1I~
+//v9e6:170826 compiler warning samename parm and gbl               //+v9e6I~
+//v9a1:160418 v9.33 LNX64 Compiler warning                         //~v9a1I~
 //v990:140506 v9.30 (W32UNICODE) filename by UD fmt                //~v990I~
 //v97v:131114 (BUG)-nl(no crlf) was ignored(it is default for R/V). it CRLF should be unprintable for R/V.//~v97vI~
 //v97m:131104 (gxp)header print err for utf8 filename;chk utf8 encoding for filename//~v97mI~
@@ -169,7 +170,8 @@ int fullpathcomp(char *Pfname1,char *Pfname2);                     //~v822I~
 //**********************************************************************
 // create sorted file list          v4.6a
 //**********************************************************************
-FLIST *listgen(char *multifile[],char *parmfname) //v5.7r          //~v801R~
+//FLIST *listgen(char *multifile[],char *parmfname) //v5.7r          //~v801R~//+v9e6R~
+FLIST *listgen(char *Pmultifile[],char *parmfname) //v5.7r         //+v9e6I~
 {
     int i;  //v6.1a
     int pathlen,rc;                                                //~v822R~
@@ -195,10 +197,12 @@ FLIST *listgen(char *multifile[],char *parmfname) //v5.7r          //~v801R~
 
     for (infileno=0;;infileno++)                //v5.7a         //~v742R~
     {                                                           //v5.7a 
-        if (!multifile[infileno])           //end of list   v5.7a
+//      if (!multifile[infileno])           //end of list   v5.7a  //+v9e6R~
+        if (!Pmultifile[infileno])           //end of list   v5.7a //+v9e6I~
             break;                          //v5.7a 
 //      openrc=openinput(multifile[infileno]);     //find first v5.7r//~v91kR~
-        openrc=openinput(xpparsehdrfnm(multifile[infileno]));     //find first v5.7r//~v91kI~
+//      openrc=openinput(xpparsehdrfnm(multifile[infileno]));     //find first v5.7r//~v91kI~//+v9e6R~
+        openrc=openinput(xpparsehdrfnm(Pmultifile[infileno]));     //find first v5.7r//+v9e6I~
         if (openrc>=4)                                          //~v742I~
             uexit(8);                                           //~v742I~
         while(openrc<4)                   //all wild card file
@@ -258,7 +262,8 @@ FLIST *listgen(char *multifile[],char *parmfname) //v5.7r          //~v801R~
         for (flistw=flistt,i=0;i<filenumb;flistw++,i++) //v7.0r    //~v763I~
         {                                                          //~v763I~
 //          cptr=multifile[flistw->inpfindex];          //parm file name//~v91kR~
-            cptr=xpparsehdrfnm(multifile[flistw->inpfindex]);          //parm file name//~v91kI~
+//          cptr=xpparsehdrfnm(multifile[flistw->inpfindex]);          //parm file name//~v91kI~//+v9e6R~
+            cptr=xpparsehdrfnm(Pmultifile[flistw->inpfindex]);          //parm file name//+v9e6I~
             if (strpbrk(cptr,"*?"))                     //nonzero if "*" or "?" is used//~v763I~
             {                                                      //~v763I~
                 strcpy(inputfname+(pathlen=getpath(cptr,1)),flistw->name); //append file name//~v822R~
@@ -295,7 +300,8 @@ FLIST *listgen(char *multifile[],char *parmfname) //v5.7r          //~v801R~
         if (flistw->inpfindex==-1)  //id of no print               //~v763I~
             continue;   //skip confirm;                            //~v763I~
 //      cptr=multifile[flistw->inpfindex];          //parm file name//~v91kR~
-        cptr=xpparsehdrfnm(multifile[flistw->inpfindex]);          //parm file name//~v91kI~
+//      cptr=xpparsehdrfnm(multifile[flistw->inpfindex]);          //parm file name//~v91kI~//+v9e6R~
+        cptr=xpparsehdrfnm(Pmultifile[flistw->inpfindex]);          //parm file name//+v9e6I~
 #ifdef UNX          //confirm always for UNX(shell expand case)    //~v90fI~
 #else                                                              //~v90fI~
         if (strpbrk(cptr,"*?"))                     //nonzero if "*" or "?" is used
@@ -879,8 +885,8 @@ else                                                               //~v941I~
 if (UCBITCHK(swsw3,SW3CONJUNCT))                                   //~v801I~
 {                                                                  //~v801I~
 //databuffsw=(databufft && ((fstat3.cbFile+(ULONG)databuffc-(ULONG)databufft)<DATABUFFSZ)); //malloc ok and size is ok v5.8a//~v801R~//~v968R~
-//databuffsw=(databufft && ((fstat3.cbFile+(ULPTR)databuffc-(ULPTR)databufft)<DATABUFFSZ)); //malloc ok and size is ok v5.8a//~v968I~//+v9a1R~
-  databuffsw=(databufft && ((fstat3.cbFile+(FILESZT)PTRDIFF(databuffc,databufft))<DATABUFFSZ)); //malloc ok and size is ok v5.8a//+v9a1I~
+//databuffsw=(databufft && ((fstat3.cbFile+(ULPTR)databuffc-(ULPTR)databufft)<DATABUFFSZ)); //malloc ok and size is ok v5.8a//~v968I~//~v9a1R~
+  databuffsw=(databufft && ((fstat3.cbFile+(FILESZT)PTRDIFF(databuffc,databufft))<DATABUFFSZ)); //malloc ok and size is ok v5.8a//~v9a1I~
   if (databuffsw)                                                  //~v801I~
     if (phase2sw)                                                  //~v801I~
         databuffl=flistc->databuffl;    //eof pos                  //~v801I~

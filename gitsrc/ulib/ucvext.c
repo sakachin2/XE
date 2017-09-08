@@ -1,6 +1,12 @@
-//*CID://+v6L5R~:                                   update#=  931; //~v6ByR~//+v6L5R~
+//*CID://+v6M4R~:                                   update#=  999; //~v6M4R~
 //***********************************************************************
-//v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//+v6L5I~
+//v6M5:170825 for xcv,xprint;create EBC cfg by uconv output        //~v6M5I~
+//v6M4:170825 try get icu version by uconv cmd if ICU_DLL_SUFFIX,ICU_API_SUFFIX both are not specified//~v6M4I~
+//v6M3:170824 (Lnx) putenv to LD_LIRARY_PATH is not effective(loader chk it at pgm startup and ignore putenv after startup)//~v6M3I~
+//v6M2:170824 (Bug)v6M0 faile if path is multiple devided by ";"/":"//~v6M2I~
+//v6M1:170812 (Bug)invalid name format at ucvext_getarmso(err at end of string chk of PATH env var)//~v6M1I~
+//v6M0:170808 err "LoadLibrary failed for icuucxx"-=>loaddll using ICU_DATA param//~v6M0I~
+//v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~v6L5I~
 //v6By:160212 (W32)compiler warning at w7                          //~v6ByI~
 //v6Bt:160225 ICU api:ebc2ucs may return fffd for also sbcs if subchar1 was not defined//~v6BtI~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
@@ -456,6 +462,7 @@ static UCHAR SsubcharICUmblocal[MAX_MBCSLEN+1];                    //~v6f7R~
 static int SsubcharICUlocalDbcslen,SsubcharICUebcDbcslen;          //~v66DR~
 static PUCVEXTCFG Spcfg;	//for enumconverter                    //~v6baI~
 static char Sdllfpath[_MAX_PATH];                                  //~v6g2I~
+static char *Sicudataparm=0;                                       //~v6M0I~
 //*************************************************************************
 #ifdef UTF8EBCD                                                    //~v660I~
 int ucvext_mapinitsetdefault(int Popt,PUCVEXTCFG Ppcfg);           //~v660I~
@@ -476,6 +483,7 @@ void set_internal_CP037(int Popt,PUCVEXTCFG Ppcfg);
 //int ucvext_iculocal2ucs1(int Popt,ULONG Pconverter,char *Ppmbs,int Pinplen,int *Ppchklen,USHORT *Ppucs);//~v6x5R~
 //#endif                                                           //~v6x5R~
 int ucvext_setlocalconverter(int Popt,PUCVEXTCFG Ppcfg);           //~v6c4I~
+int chkicuversion(char *Ppdllsuffix,size_t Pdllsuffixsz,char *Ppapisuffix,size_t Papisuffixsz);//~v6M4I~
 //****************************************************************
 //*cfg data err msg
 //****************************************************************
@@ -669,6 +677,7 @@ UTRACEP("OPEN inp=%s,fh=%p\n",Pcfgfnm,fh);                         //~v6baR~
         {                                                          //~v6bnI~
 			udos_setenv(0,ICU_DATAENVNAME,pval);    //putenv should not free source string, setenv(not in Windows) copyed to env//~v6bnI~
 	        Ppcfg->UCECflag2|=UCECF2_ICUDATA;                      //~v6bpI~
+            Sicudataparm=strdup(pval);                             //~v6M0I~
         }                                                          //~v6bnI~
         else
         if (!stricmp(ppo,UCVEXTCFGPARM_API))
@@ -796,6 +805,14 @@ UTRACEP("OPEN inp=%s,fh=%p\n",Pcfgfnm,fh);                         //~v6baR~
         else                                                       //~v5mVI~
         	return ucvext_cfglineerr(Pcfgfnm,buff);
     }
+    if (!Sicudataparm || !*Sicudataparm)	//missing ICU_DATA parm//~v6M1R~
+    {                                                              //~v6M1I~
+    	Sicudataparm=getenv(ICU_DATAENVNAME);                      //~v6M1R~
+        UTRACEP("%s:ICU_DATA env=%s\n",UTT,Sicudataparm);          //~v6M1I~
+        if (Sicudataparm)                                          //~v6M1I~
+			Sicudataparm=strdup(Sicudataparm);                     //~v6M1I~
+        UTRACEP("%s:ICU_DATA env=%s\n",UTT,Sicudataparm);          //~v6M1I~
+	}                                                              //~v6M1I~
 //#ifdef LNX                                                       //~v66wR~
 //    if (!*Ppcfg->UCECcsnamelocal)   //no local                   //~v66wR~
 //    {                                                            //~v66wR~
@@ -822,6 +839,7 @@ UTRACEP("OPEN inp=%s,fh=%p\n",Pcfgfnm,fh);                         //~v6baR~
 	ucvext_setdefaultlocalcv(0,Ppcfg);                             //~v66wI~
 	fclose(fh);                                                    //~v5n1I~
     Ppcfg->UCECflag2|=UCECF2_CFGOK;                                //~v68cI~
+	chkicuversion(Ppcfg->UCECdllsuffix,sizeof(Ppcfg->UCECdllsuffix),Ppcfg->UCECapisuffix,sizeof(Ppcfg->UCECapisuffix));//~v6M4I~
     return 0;
 }//ucvext_getcfg
 //*************************************************************************//~v66wI~
@@ -876,8 +894,8 @@ int ucvext_setdefaultlocalcv(int Popt,PUCVEXTCFG Ppcfg)            //~v66wR~
 #else                                                              //~v66KI~
 		udbcschk_getbaseconverter(0,&pconverter,0/*dbcstbl*/);     //~v66KI~
     	pval=Ppcfg->UCECcsnamelocal;                               //~v66KR~
-//      sprintf(pval,"%d",pconverter);                             //~v66KI~//+v6L5R~
-        sprintf(pval,"%d",(int)pconverter);                        //+v6L5I~
+//      sprintf(pval,"%d",pconverter);                             //~v66KI~//~v6L5R~
+        sprintf(pval,"%d",(int)pconverter);                        //~v6L5I~
 #endif                                                             //~v66wI~//~v66KM~
     }                                                              //~v66wI~
 	return rc;                                                      //~v66wI~//~v66KR~
@@ -913,12 +931,14 @@ int ucvext_getarmso1(int Popt,char *Ppath,char *Psoname,char *Psuffix)//~v6baI~
     UTRACEP("getarmso1 dirlist %s ctr=%d\n",fpath,ctr);            //~v6baI~
     if (ctr<=0) //not found                                        //~v6baI~
         return intver;                                             //~v6baI~
+    *Psoname=0;                                                    //~v6M1I~
     for (pudirlist=pudl0,ii=0;ii<ctr;ii++,pudirlist++)             //~v6baI~
     {                                                              //~v6baI~
     	UTRACEP("getarmso1 %s/%s\n",fpath,pudirlist->name);	       //~v6baI~
 //      if (!ii)                                                   //~v6baI~//~v6g2R~
 //      	strcpy(Psoname,pudirlist->name);                       //~v6baI~//~v6g2R~
         sprintf(Psoname,"%s%c%s",Ppath,DIR_SEPC,pudirlist->name);  //~v6g2R~
+        UTRACEP("%s:Psoname=%s\n",UTT,Psoname);                    //~v6M1R~
 #ifdef W32                                                         //~v6bmI~
     	pc=strstr(pudirlist->name,ICU_DLLNAME);                    //~v6bmI~
 //    	pos=(ULONG)pc-(ULONG)pudirlist->name+sizeof(ICU_DLLNAME)-1;//~v6bmI~//~v6hhR~
@@ -954,6 +974,7 @@ int ucvext_getarmso(int Popt,char *Psoname,char *Psuffix)          //~v6baI~
     char fpath2[_MAX_PATH];                                        //~v6g3I~
 #endif                                                             //~v6g3I~
 //**********************************                               //~v6baI~
+	UTRACEP("%s:Psoname=%s\n",UTT,Psoname);                        //~v6M1I~
 #ifdef W32                                                         //~v6bmI~
 	plibpath=getenv("PATH");                                       //~v6bmI~
 #else                                                              //~v6bmI~
@@ -985,7 +1006,8 @@ int ucvext_getarmso(int Popt,char *Psoname,char *Psuffix)          //~v6baI~
 //    udos_setenv(0,"LD_LIBRARY_PATH",pc);  //ENV is required for dlopen//~v6fmI~//~v6g2R~
 //    pc2=getenv("LD_LIBRARY_PATH");                                 //~v6fmI~//~v6g2R~
 #endif                                                             //~v6bmI~
-    for (;;pc+=len+1)                                              //~v6baR~
+//  for (;;pc+=len+1)                                              //~v6baR~//~v6M1R~
+    for (;*pc;pc+=len+1)                                           //~v6M1I~
     {                                                              //~v6baI~
     	pc2=strchr(pc,ENV_SEPC);                                   //~v6bmI~//~v6bnR~
         if (pc2)                                                   //~v6baI~
@@ -996,7 +1018,10 @@ int ucvext_getarmso(int Popt,char *Psoname,char *Psuffix)          //~v6baI~
 //      	len=strlen(pc);                                        //~v6baI~//~v6BkR~
         	len=(int)strlen(pc);                                   //~v6BkI~
         if (!len)                                                  //~v6baI~
+        {                                                          //~v6M1I~
+          if (pc2)	//continued seperator	                       //~v6M1I~
         	continue;                                              //~v6baI~
+        }                                                          //~v6M1I~
 //      UmemcpyZ(fpath,pc,len);                                    //~v6baI~//~v6BkR~
         UmemcpyZ(fpath,pc,(size_t)len);                            //~v6BkI~
     	UTRACEP("getarmso libpath=%s\n",fpath);                    //~v6baI~
@@ -1068,7 +1093,8 @@ int ucvext_getarmdata(int Popt,int Pversion)                       //~v6baI~
     char fpath[_MAX_PATH];                                         //~v6baI~
 //**********************************                               //~v6baI~
 	pdatapath=getenv(ICU_DATAENVNAME);                                  //~v6baI~//~v6bnR~
-	UTRACEP("ucvext_getpardata env icu_data=%s\n",pdatapath);      //~v6baR~
+	UTRACEP("%s:env icu_data=%s\n",UTT,pdatapath);      //~v6baR~  //~v6M1R~
+    *fpath=0;                                                      //~v6M1I~
     if (!pdatapath)                                                //~v6baI~
 #ifdef W32                                                         //~v6bmI~
     	pdatapath="";                                              //~v6bmI~
@@ -1098,7 +1124,8 @@ int ucvext_getarmdata(int Popt,int Pversion)                       //~v6baI~
             break;                                                 //~v6baI~
     }                                                              //~v6baI~
     if (intver<0)                                                  //~v6baI~
-	    uerrmsg("Warning:ICU Data(icudtXXl.dat version=%d) not found on \"%s\"(env-var:ICU_DATA). No problem if (lib)icudtxx(.so/.dll) is prepared.",0,//~v6bmR~
+	    uerrmsg("Warning:ICU Data(icudtXXl.dat version=%d) not found. chk env-var:ICU_DATA(=\"%s\") of cfg file setting.",//~v6M1R~
+	            "Warning:ICU Data(icudtXXl.dat version=%d) が見つかりません。環境変数:ICU_DATA(=\"%s\") あるいは cfg ファイルを確認",//~v6M1I~
     	            Pversion,pdatapath);                           //~v6baI~
     UTRACEP("getarmdata ver=%d,so=%s\n",intver,fpath);               //~v6baR~//~v6bnR~
     return intver;                                                 //~v6baI~
@@ -1373,9 +1400,14 @@ int ucvext_mapinit(int Popt,char *Pcfgfnm,PUCVEXTCFG *Ppcfg)
 	Sextflag|=SEXTF_NOICULOCAL;    //local converter is not ICU    //~v66KI~
     pcfg=&Scfg;
     Spcfg=pcfg;                                                    //~v6bcI~
+  	if (Popt & UCEIO_CONVERTERCFG) //parm-cfg is created by getConverterCfg//~v6M5I~
+    	memcpy(pcfg,*Ppcfg,UCVEXTCFGSZ);                           //~v6M5R~
     *Ppcfg=pcfg;
   for (;;)//return at end of func                                  //~v66DI~
   {                                                                //~v66DI~
+    if (Popt & UCEIO_CONVERTERCFG) //parm-cfg is created by getConverterCfg//~v6M5I~
+    	;                                                          //~v6M5I~
+    else                                                           //~v6M5I~
 	if (rc=ucvext_getcfg(Popt,Pcfgfnm,pcfg),rc)
     {                                                              //~v660I~
 #ifdef UTF8EBCD                                                    //~v660I~
@@ -1444,6 +1476,8 @@ UTRACED("char cfg",pcfg,UCVEXTCFGSZ);
         {                                                          //~v66hI~
 			if (Sextflag & SEXTF_ICU)                              //~v66hI~
             {                                                      //~v66hI~
+		      if (!(Popt & UCEIO_CONVERTERCFG)) //parm-cfg is created by getConverterCfg//~v6M2I~
+              {                                                    //~v6M2I~
 				Sextflag&=~SEXTF_ICU;                              //~v66hI~
             	uerrmsg("Specified ICU mode on %s, but missing CHARSET parameter",0,//~v66hR~
 							Pcfgfnm);                              //~v66hI~
@@ -1452,6 +1486,7 @@ UTRACED("char cfg",pcfg,UCVEXTCFGSZ);
                 	swforcedefault=1;                              //~v6ffR~
                 	rc=4;                                          //~v6ffR~
               	}                                                  //~v6ffR~
+              }                                                    //~v6M2I~
             }                                                      //~v66hI~
 			if (pcfg->UCECflag & UCECF_USE_ICONV)                  //~v66hR~
             {                                                      //~v66hI~
@@ -1468,6 +1503,9 @@ UTRACED("char cfg",pcfg,UCVEXTCFGSZ);
         {
 //        	addr=(ULONG)pcfg->UCEChiconvdbcs;	//for linux; parm to ucvext_iconvgetconverter//~v5mTI~//~v6hhR~
         	addr=(ULPTR)pcfg->UCEChiconvdbcs;	//for linux; parm to ucvext_iconvgetconverter//~v6hhI~
+		  if (Popt & UCEIO_CONVERTERCFG) //mapinit parm:cfg is created by getConverterCfg//~v6M5I~
+			rc2=ucvext_icugetconverter(Popt|UCEIO_DBCSCV|UCEIO_CHKSTATEFULEBC,pdbcscharset,&addr);//~v6M5I~
+          else                                                     //~v6M5I~
 			rc2=ucvext_icugetconverter(Popt|UCEIO_DBCSCV,pdbcscharset,&addr);
             if (!rc2)
             {
@@ -1475,7 +1513,9 @@ UTRACED("char cfg",pcfg,UCVEXTCFGSZ);
 		    	pcfg->UCECflag|=UCECF_DBCSCV;
             }
             else
+            {                                                      //~v6M5I~
             	rc=4;
+            }                                                      //~v6M5I~
         }
     	if (!*psbcscharset)
         	strcpy(psbcscharset,pdbcscharset);
@@ -1861,6 +1901,58 @@ int ucvext_setupsubch(int Popt,PUCVEXTCFG Ppcfg)                   //~v66DI~
 }//ucvext_setupsubch                                               //~v66DI~
 #endif                                                             //~v66DI~
 //*************************************************************************//~v6g2I~
+int ucvext_loaddll_icudata(int Popt,char *Pdllname,char *Penvvar,ULPTR *Pphandle)//~v6M2R~
+{                                                                  //~v6M2I~
+//********************                                             //~v6M2I~
+	char *pc,*pc2;                                                 //~v6M2I~
+    int len,rc=0;                                                  //~v6M2R~
+    char fpath[_MAX_PATH]={0};                                     //~v6M2R~
+    int opt=0;                                                     //~v6M2I~
+//**********************************                               //~v6M2I~
+    pc=Penvvar;                                                    //~v6M2I~
+    for (;*pc;pc+=len+1)                                           //~v6M2I~
+    {                                                              //~v6M2I~
+    	pc2=strchr(pc,ENV_SEPC);                                   //~v6M2I~
+        if (pc2)                                                   //~v6M2I~
+        	len=PTRDIFF(pc2,pc);                                   //~v6M2I~
+        else                                                       //~v6M2I~
+        	len=(int)strlen(pc);                                   //~v6M2I~
+        if (!len)                                                  //~v6M2I~
+        {                                                          //~v6M2I~
+          if (pc2)	//continued seperator                          //~v6M2I~
+        	continue;                                              //~v6M2I~
+          else                                                     //~v6M2I~
+          	break;                                                 //~v6M2I~
+        }                                                          //~v6M2I~
+        if (pc2)                                                   //~v6M2I~
+			*pc2=0;                                                //~v6M2R~
+        if (*(pc+len-1)==DIR_SEPC)                                 //~v6M2I~
+	        sprintf(fpath,"%s%s",pc,Pdllname);                     //~v6M2I~
+        else                                                       //~v6M2I~
+	        sprintf(fpath,"%s%c%s",pc,DIR_SEPC,Pdllname);          //~v6M2R~
+        rc=(int)ufstat(fpath,0);                                   //~v6M2R~
+    	UTRACEP("%s:ufstat rc=%d,fpath=%s\n",UTT,rc,fpath);        //~v6M2I~
+        if (!rc)                                                   //~v6M2R~
+        	break;                                                 //~v6M2I~
+        if (pc2)                                                   //~v6M2I~
+			*pc2=ENV_SEPC;                                         //~v6M2I~
+    }                                                              //~v6M2I~
+    if (rc)                                                        //~v6M2R~
+    {                                                              //~v6M2I~
+  	    uerrmsg("ICU library %s not found on ICU_DATA path:%s",0,  //~v6M2I~
+    	            Pdllname,Penvvar);                             //~v6M2I~
+        rc=4;                                                      //~v6M2I~
+    }                                                              //~v6M2I~
+    else                                                           //~v6M2I~
+    {                                                              //~v6M2I~
+		if (Popt & UPGPAO_NOW)       //RTLD_NOW                    //~v6M2I~
+			opt|=UPLD_NOW;			//         //RTLD_NOW          //~v6M2I~
+        opt|=UPLD_DELEMSG|UPLD_SETICUDATAENV;         //ugeterrmsg to delete previous uerrmsg//~v6M2R~
+		rc=uproc_loaddllpath(opt,fpath,0,0,Pphandle);              //~v6M2R~
+    }                                                              //~v6M2I~
+    UTRACEP("%s:rc=%d,so=%s,paths=%s,fpath=%s\n",UTT,rc,Pdllname,Penvvar,fpath);//~v6M2R~
+    return rc;                                                     //~v6M2I~
+}//ucvext_loaddll_icudata                                          //~v6M2I~
 //*************************************************************************//~v6g2I~
 //int ucvext_loaddll(int Popt,char *Pdllname,char *Pdllfpath,ULONG *Pphandle)//~v6g2I~//~v6hhR~
 int ucvext_loaddll(int Popt,char *Pdllname,char *Pdllfpath,ULPTR *Pphandle)//~v6hhI~
@@ -1870,9 +1962,19 @@ int ucvext_loaddll(int Popt,char *Pdllname,char *Pdllfpath,ULPTR *Pphandle)//~v6
 //********************                                             //~v6g2I~
 	if (Popt & UPGPAO_NOW)       //RTLD_NOW                        //~v6g2I~
 		opt|=UPLD_NOW;			//         //RTLD_NOW              //~v6g2I~
-    rc=uproc_loaddll(opt,Pdllname,0,Pphandle);                     //~v6g2I~
+//  rc=uproc_loaddll(opt,Pdllname,0,Pphandle);                     //~v6g2I~//~v6M0R~
+//  rc=uproc_loaddllpath(opt,Sicudataparm,Pdllname,0,Pphandle);    //~v6M0R~//~v6M2R~
+    rc=uproc_loaddll(opt,Pdllname,0,Pphandle);                     //~v6M2I~
 //    if (rc)                                                      //~v6g2R~
 //        rc=uproc_loaddll(opt,Pdllfpath,0,Pphandle);              //~v6g2R~
+    if (rc)                                                        //~v6M2I~
+      if (Pdllfpath && *Pdllfpath)                                 //~v6M2I~
+        rc=uproc_loaddll(opt,Pdllfpath,0,Pphandle);                //~v6M2I~
+#ifdef W32                                                         //~v6M3I~
+    if (rc)                                                        //~v6M2R~
+      if (Sicudataparm && *Sicudataparm)                           //~v6M2I~
+        rc=ucvext_loaddll_icudata(Popt,Pdllname,Sicudataparm,Pphandle);//~v6M2R~
+#endif                                                             //~v6M3I~
     return rc;                                                     //~v6g2I~
 }//ucvext_loaddll                                                  //~v6g2I~
 //*************************************************************************
@@ -1898,7 +2000,8 @@ int ucvext_icuinit(int Popt,char *Pdllversion,char *Pprocversion,ULPTR *Papis)//
   	if (!IS_ICUMODE())                                             //~v5n1R~
   		return 0;                                                  //~v5n1R~
 #ifdef W32                                                         //~v5mTI~
-	sprintf(dllname,"%s%s",ICU_DLLNAME,Pdllversion);
+//  sprintf(dllname,"%s%s",ICU_DLLNAME,Pdllversion);               //~v6M2R~
+	sprintf(dllname,"%s%s.dll",ICU_DLLNAME,Pdllversion);           //~v6M2I~
 #else                                                              //~v5n2I~
 //  printf("dllversion=%s,apiversion=%s;",Pdllversion,Pprocversio  //~v6baR~
   if (Pdllversion && *Pdllversion)                                 //~v6baR~
@@ -2759,6 +2862,7 @@ int ucvext_icugetconverter(int Popt,char *Pcharset,ULPTR *Ppconverter)//~v6hhI~
   			&&  (ucvext_icugetconvertertype(Popt|UCEIO_OPENED,(ULPTR)pconverter,&type)!=UCEIRC_STATEFULEBC)//~v6hhI~
             )                                                      //~v5n2I~
             {
+			  if (!(Popt & UCEIO_CONVERTERCFG)) //mapinit parm:cfg is created by getConverterCfg//~v6M5I~
 	            uerrmsg("Warning:%s is not Stateful EBCDIC",
                 		"警告:%s は DBCS対応ではありません",
                     		Pcharset);
@@ -3585,3 +3689,82 @@ int ucvext_setdefaultlocale(int Popt,char *Pcharset)               //~v6f3I~
     return 0;                                                      //~v6f3I~
 }//ucvext_setdefaultlocale                                         //~v6f3I~
 #endif //WIN/LNX
+//************************************************************************//~v6M4I~
+//get icu version by uconv cmd                                     //~v6M4I~
+//rc:0:suffix specified on cfg parm                                //~v6M4I~
+//rc:1:suffix filled                                               //~v6M4I~
+//rc:4:err                                                         //~v6M4I~
+//************************************************************************//~v6M4I~
+int chkicuversion(char *Ppdllsuffix,size_t Pdllsuffixsz,char *Ppapisuffix,size_t Papisuffixsz)//~v6M4I~
+{                                                                  //~v6M4I~
+    int rc,stdoctr,stdectr,opt,len=0;                              //~v6M4R~
+    char **pstde,*pc,*pc2,**pstdo,*pcmd;                                    //~v558R~//~v6M4I~
+//********************************                                 //~v6M4I~
+    if (*Ppdllsuffix || *Ppapisuffix)                              //~v6M4I~
+    	return 0;                                                  //~v6M4I~
+    opt=UPROC_LANGC|UPROC_NOMSG;                                 //~v6M4I~//~v6M5R~
+    pcmd="uconv --version";                                        //~v6M4I~
+	rc=usystem_redirect(opt,pcmd,&pstdo,&pstde,&stdoctr,&stdectr); //~v6M4R~
+    UTRACEP("%s:usystem_redirect rc=%d,cmd=%s\n",UTT,rc,pcmd);     //~v6M4R~
+ for(;;)                                                           //~v6M4M~
+ {                                                                 //~v6M4M~
+    rc=4;                                                          //~v6M4M~
+    if (!pstdo)                                                    //~v6M4I~
+        break;                                                     //~v6M4R~
+    pc=*pstdo;                                                     //~v6M4I~
+    if (!pc)                                                       //~v6M4I~
+        break;                                                     //~v6M4R~
+    UTRACEP("%s:stdo=%s\n",UTT,pc);                                //~v6M4I~
+    pc=strstr(pc,"ICU");                                           //~v6M4I~
+    if (!pc)                                                       //~v6M4I~
+        break;                                                     //~v6M4R~
+    pc+=3;                                                         //~v6M4I~
+    pc+=strspn(pc," \t");                                          //~v6M4R~
+    pc2=strpbrk(pc," \t\n");                                       //~v6M4I~
+    if (!pc2)                                                      //~v6M4I~
+        len=(int)strlen(pc);                                       //~v6M4R~
+    else                                                           //~v6M4I~
+    	len=PTRDIFF(pc2,pc);                                       //~v6M4R~
+    if (len>=(int)Pdllsuffixsz)                                    //+v6M4R~
+        break;                                                     //~v6M4R~
+    UmemcpyZ(Ppdllsuffix,pc,(size_t)len);                          //~v6M4R~
+    pc2=strchr(Ppdllsuffix,'.');                                   //~v6M4R~
+    if (pc2)                                                       //~v6M4I~
+    {                                                              //~v6M4I~
+    	len=PTRDIFF(pc2,Ppdllsuffix);                              //~v6M4R~
+        *pc2=0; //Windows dose not slink to 59.1.dll from 59.dll   //~v6M4I~
+    }                                                              //~v6M4I~
+    if (len+1>=(int)Papisuffixsz)                                  //+v6M4R~
+        break;                                                     //~v6M4R~
+    rc=0;                                                          //~v6M4I~
+    break;                                                         //~v6M4I~
+  }                                                                //~v6M4I~
+    if (pstdo)                                                     //~v6M4I~
+	    ufree(pstdo);                                              //~v6M4R~
+    if (pstde)                                                     //~v6M4I~
+	    ufree(pstde);                                              //~v6M4R~
+    if (rc)                                                        //~v6M4I~
+        return 4;                                                  //~v6M4I~
+    *Ppapisuffix='_';                                              //~v6M4I~
+    UmemcpyZ(Ppapisuffix+1,Ppdllsuffix,(size_t)len);               //~v6M4R~
+    UTRACEP("%s:dllsuffix=%s,apisuffix=%s\n",UTT,Ppdllsuffix,Ppapisuffix);//~v6M4I~
+    return 1;                                                      //~v6M4I~//~v6M5R~
+}//chkicuversion                                                   //~v6M4I~
+//************************************************************************//~v6M5I~
+//createcfg by uconv version and convertername                     //~v6M5I~
+//rc=4:err                                                         //~v6M5I~
+//************************************************************************//~v6M5I~
+int ucvext_getConverterCfg(int Popt,PUCVEXTCFG Ppcfg)//~v6M5R~     //~v6M4R~
+{                                                                  //~v6M5I~
+    int rc;                                                        //~v6M5R~
+//********************************                                 //~v6M5I~
+    memset(Ppcfg,0,UCVEXTCFGSZ);                                   //~v6M5I~
+	rc=chkicuversion(Ppcfg->UCECdllsuffix,sizeof(Ppcfg->UCECdllsuffix),Ppcfg->UCECapisuffix,sizeof(Ppcfg->UCECapisuffix));//~v6M5R~
+    if (rc!=1)                                                     //~v6M5I~
+    	return 4;                                                  //~v6M5I~
+    Ppcfg->UCECflag2|=UCECF2_CFGBYUCONV|UCECF2_CFGOK;              //~v6M2I~
+    Ppcfg->UCECflag2|=UCECF2_CONVERTER_PARM;                       //~v6M5I~
+    Ppcfg->UCECflag|=UCECF_USE_CONVERTER|UCECF_USE_ICU;            //~v6M5I~
+	ucvext_setdefaultlocalcv(0,Ppcfg);                             //~v6M5I~
+    return 0;                                                      //~v6M5I~
+}//getConverterCfg                                                 //~v6M5I~

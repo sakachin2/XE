@@ -168,6 +168,8 @@ a:hover{font-weight:bold;}-->
         #                     ex)(Linux)   ICU_DATA=/system/usr/icu:/data/data/yourcnvs
         #                        (Windows) ICU_DATA=w:\icu\icu562\icu\bin;w:\icu\icu481\icu\bin
         #                    Put your cnv file into sub-folder yourcnvs/icudt__l  ; __ is version like as icudt44l.
+        #                    (Windows) search ICU library(dll) also in ICU_DATA folder and in ICU_DATA enviromnent variable.
+        #                    (Linux) set path to the .so to LD_LIBRARY_PATH.
         #                                                             
         #   DBCS_CHARSET   : Defines EBCDIC charset name to translate UCS&lt;--&gt;EBCDIC which supports DBCS.
         #                    You can get the list of charset by &quot;uconv -l&quot; (ICU), &quot;iconv -l&quot;(iconv).

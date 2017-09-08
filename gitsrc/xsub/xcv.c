@@ -1,8 +1,9 @@
-//*CID://+vaa2R~:                             update#=  767;       //+vaa2R~
+//*CID://+vag0R~:                             update#=  779;       //~vag0R~
 //***********************************************************
 //* xcv: convert (S)JIS <-->EUC,UCS2,UTF8,EBC                      //~va2oR~
 //***********************************************************
-//vaa2:160424 Lnx64 compiler warning(FDATE/FTIME)                  //+vaa2I~
+//vag0:170825 xcv v1.20:create ebc mapfile if dll version was gotten by "uconv --version"//~vag0I~
+//vaa2:160424 Lnx64 compiler warning(FDATE/FTIME)                  //~vaa2I~
 //vaa1:160418 Lnx64 compiler warning                               //~vaa1I~
 //va9w:160227 LNX compiler warning                                 //~va9wI~
 //va97:140908 xcv v1.19 /List option rejected if with /ICU         //~va97R~
@@ -70,7 +71,7 @@
 //*020406 xcv v111 support sjis->euc(rename xe2j to xcv)           //~v111I~
 //*020406 xe2j v110 v1.1 (BUG)hankaku katakana is not converted.   //~v111R~
 //***********************************************************      //~v1.1I~
-#define VER "V1.19"   //version                                    //~va97R~
+#define VER "V1.20"   //version                                    //~va97R~//~vag0R~
 //***********************************************************
 //***********************************************************
 
@@ -107,7 +108,7 @@
 #include <uerr.h>
 #include <ualloc.h>                                                //~v122I~
 #include <udbcschk.h>
-#include <ufile.h>                                                 //+vaa2I~
+#include <ufile.h>                                                 //~vaa2I~
 #include <ufile5.h>                                                //~v122I~
 #include <ufemsg.h>                                                //~v122I~
 #include <utrace.h>                                                //~v122I~
@@ -1021,10 +1022,21 @@ int mapinit(int Popt,char *Pmapfile,PUCVEXTCFG *Ppcfg)             //~va55I~
 //	ULONG pcfg;                                                    //~va55I~//~va66R~
 	ULPTR pcfg;                                                    //~va66I~
     int opt;                                                       //~va57R~
+	UCVEXTCFG  convertercfg;                                       //~vag0I~
 //*******************                                              //~va57I~
     opt=Popt;                                                      //~va57I~
     if (Smiscopt & MISC_ICU)                                       //~va57M~
 		opt|=UCEIO_USEICU;         //0x0001 //set use icu flag     //~va57M~
+    if (!*Pmapfile	//no /MF: parm                                 //~vag0R~
+    &&  Smiscopt & MISC_ICU                                        //~vag0I~
+	&&  !ucvext_getConverterCfg(0,&convertercfg))	//dll found by uconv//~vag0R~
+    {                                                              //~vag0I~
+    	opt|=UCEIO_CONVERTERCFG; //parm-cfg is created by getConverterCfg//~vag0I~
+        *Ppcfg=&convertercfg;    //ucvext_mapinit copy convertercfg then uodate it Scfg in ucvext//~vag0I~
+		if (ucvext_mapinit(opt,"",Ppcfg))                          //~vag0I~
+    		return 4;                                              //~vag0I~
+    }                                                              //~vag0I~
+    else                                                           //~vag0I~
 	if (ucvext_mapinit(opt,Pmapfile,Ppcfg))                       //~va55I~//~va57R~
     	return 4;                                                  //~va55I~
 //  pcfg=(ULONG)(*Ppcfg);                                          //~va55R~//~va66R~
@@ -1154,6 +1166,7 @@ void parmchk(int parmc,char *parmp[])
                 Sstderrfnm=cptr+1;                                 //~v131I~
                 break;                                             //~v131I~
             case '?':
+            case 'H':                                              //~vag0I~
                 help();
                 exit(0);
                 break;
@@ -2058,8 +2071,8 @@ HELPMSG                                                            //~v131I~
 "    %c2errf :標準エラー宛先ファイル。\n",                         //~v131R~
 			CMDFLAG_PREFIX);                                       //~v131I~
 HELPMSG                                                            //~v130R~
-"    %c[C]x2y:x2y is following.\n",                                //~v130R~
-"    %c[C]x2y:x2y は以下。\n",                                     //~v130R~
+"    %c[C]x2y:x2y is following. (Specify as first parameter.)\n",                                //~v130R~//~vag0R~
+"    %c[C]x2y:x2y は以下。(オプションパラメータとして最初に指定すること)\n",                                     //~v130R~//~vag0R~
 			CMDFLAG_PREFIX);                                       //~v111R~
 HELPMSG                                                            //~v121I~
 "            e2s/s2e: EUC<-->SJIS.\n",0);                          //~v121I~
@@ -2137,9 +2150,12 @@ HELPMSG                                                            //~v121M~
 //"            u2f,f2u: UCS2<-->UTF-8.\n",0);                        //~v121R~//~va57R~
 "            u2f,f2u: UCS<-->UTF-8.\n",0);                         //~va57I~
 HELPMSG                                                            //~va4pI~
-"    %c%s:cp :EBCDIC codepage for B2M/M2B. Alternative of %cMF:mapfile option.\n",//~va4pR~
-"    %c%s:cp :EBCDIC コードページ。 B2M/M2B用。%cMF:mapfile の代わり。\n",//~va4pI~
-			CMDFLAG_PREFIX,OPTCPEB,CMDFLAG_PREFIX);                //~va4pI~
+//"    %c%s:cp :EBCDIC codepage for B2M/M2B. Alternative of %cMF:mapfile option.\n",//~va4pR~//~vag0R~
+//"    %c%s:cp :EBCDIC コードページ。 B2M/M2B用。%cMF:mapfile の代わり。\n",//~va4pI~//~vag0R~
+//			CMDFLAG_PREFIX,OPTCPEB,CMDFLAG_PREFIX);                //~va4pI~//~vag0R~
+"    %c%s:cp :EBCDIC codepage for B2M/M2B.\n",                     //~vag0I~
+"    %c%s:cp :EBCDIC コードページ。 B2M/M2B用。\n",                //~vag0I~
+			CMDFLAG_PREFIX,OPTCPEB);                               //~vag0I~
 HELPMSG                                                            //~v128I~
 "    %cEnn   :conv err max msg output count. default=%d.\n",       //~v128R~
 "    %cEnn   :変換エラーMSG最大出力。省略値=%d。\n",               //~v128R~
@@ -2177,15 +2193,27 @@ HELPMSG                                                            //~va3yI~
 "                 \"N\" は m2b でのみ有効。\n");                   //~va3yR~
 #endif                                                             //~va3yI~
 HELPMSG                                                            //~va57M~
-"    %cICU     :for B2x/x2B(x:B/M/F), use ICU when %cmf: omitted.\n",//~va57R~
+"    %cICU     :for B2x/x2B(x:B/M/F), specify use ICU when %cMF: is omitted.\n",//~va57R~//+vag0R~
 "    %cICU     :B2x/x2B(x:B/M/F)のとき %cmf:の指定無しで ICU 使用の指定。\n",//~va57R~
 			CMDFLAG_PREFIX,                                        //~va57I~
 			CMDFLAG_PREFIX);                                       //~va57M~
-HELPMSG                                                            //~va63I~
-"              for M2M, use ICU.\n",                               //~va63R~
-"              M2M で ICU 使用の指定。\n",                         //~va63R~
-			CMDFLAG_PREFIX,                                        //~va63I~
-			CMDFLAG_PREFIX);                                       //~va63I~
+//HELPMSG                                                            //~va63I~//~vag0R~
+//"              for M2M, use ICU.\n",                               //~va63R~//~vag0R~
+//"              あるいは M2M で ICU 使用の指定。\n",                         //~va63R~//~vag0R~
+//            CMDFLAG_PREFIX,                                        //~va63I~//~vag0R~
+//            CMDFLAG_PREFIX);                                       //~va63I~//~vag0R~
+HELPMSG                                                            //~vag0I~
+"              If %cMF:mapfile option is not specified,\n",        //~vag0I~
+"              %cMF:mapfile を指定しない場合は\n",                 //~vag0I~
+			CMDFLAG_PREFIX);                                       //~vag0I~
+HELPMSG                                                            //~vag0I~
+#ifdef W32                                                         //~vag0I~
+"              set PATH to uconv.exe or ICU library(.dll)\n",      //~vag0I~
+"              uconv.exe, ICU library(.dll)にPATH を通すこと\n");  //~vag0I~
+#else                                                              //~vag0I~
+"              Set PATH to uconv and LD_LIBRARY_PATH to ICU library(.so)\n",//~vag0I~
+"              uconv に PATH, ICU library(.so) にLD_LIBRARY_PATH を通すこと\n");//~vag0I~
+#endif                                                             //~vag0I~
 //HELPMSG                                                          //~v122R~
 //"    %cMxy   :End-Of-Line-ID specification. x for input, y for output.\n",//~v122R~
 //"    %cMxy   :改行文字指定。x は 読みこみ用、y は書き込み用で以下を指定。\n",//~v122R~
@@ -2316,7 +2344,7 @@ HELPMSG                                                            //~va4qI~
 //"                 But, required to use ICU converter.\n",          //~va4qI~//~va57R~
 //"                 但し、ICUのコードページを使用する場合は必要。\n");//~va4qI~//~va57R~
 "                 But, To use ICU, specify in this file or use %cICU.\n",//~va57R~
-"                 但し、ICUの使用する場合は%cICUかこのファイル内で指定\n",//~va57R~
+"                 但し、ICUを使用する場合は%cICUかこのファイル内で指定\n",//~va57R~//~vag0R~
 			CMDFLAG_PREFIX);                                       //~va57I~
 #endif                                                             //~va3yI~
 HELPMSG                                                            //~v123I~

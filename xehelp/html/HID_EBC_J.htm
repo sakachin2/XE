@@ -169,6 +169,9 @@ a:hover{font-weight:bold;}-->
                               例)(Linux)   ICU_DATA=/system/usr/icu:/data/data/yourcnvs
                                  (Windows) ICU_DATA=w:\icu\icu562\icu\bin;w:\icu\icu481\icu\bin
                                  yourcnvsにはicudt__l(例えば icudt56l)サブフォルダーを作成しその中にcnvファイルを置いてください
+                            Windows版ではICUライブラリー(dll)が見つからない時 ICU_DATA に指定したフォルダーのなかも調べます
+                            なければ 環境変数 ICU_DATA もしらべます
+                            LinuxではsoはLD_LIBRARY_PATHに通してください
 
            DBCS_CHARSET   : UCS&lt;--&gt;EBCDIC 変換でDBCS をサポートする文字セットを指定する。
                             (文字セットのリストは &quot;uconv -l&quot; ないし &quot;iconv -l&quot; で得ることができます。)

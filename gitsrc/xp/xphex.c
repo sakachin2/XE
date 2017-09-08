@@ -1,8 +1,9 @@
-//CID://+v997R~:       update#=   112                              //~v993R~//~v996R~//+v997R~
+//CID://+v9e2R~:       update#=   113                              //+v9e2R~
 //***********************************************************
 //* XPRINT : file print utility                                    //~v801R~
 //***********************************************************
-//v997:160309 v9.32 (LNX)compiler warning                          //+v997I~
+//v9e2:170809 compiler warning                                     //+v9e2I~
+//v997:160309 v9.32 (LNX)compiler warning                          //~v997I~
 //v996:160309 v9.32 (BUG)utfdd2u buffsize parm is not ctr but size //~v996I~
 //v993:160308 v9.32 ucs4 support                                   //~v993I~
 //v97t:131113 (BUG)record mode vhex print EOLDELM('|')             //~v97tI~
@@ -209,8 +210,8 @@ static  ULONG Samestartrecoffs;         //Same line start addr value//~v96kR~
 			oldlen=wlen;
 			oldcharlen=charlen;
           	if (recordsz || vfmt) //recfm=R/V                      //~v96kR~
-//				Samestartrecoffs=reccolomn;                        //~v96kR~//+v997R~
-  				Samestartrecoffs=(ULONG)reccolomn;                 //+v997I~
+//				Samestartrecoffs=reccolomn;                        //~v96kR~//~v997R~
+  				Samestartrecoffs=(ULONG)reccolomn;                 //~v997I~
 			Samestart=offset;
 			sameno=1;			//line saved no
 			if (lastreadc==EOF)
@@ -232,7 +233,8 @@ static  ULONG Samestartrecoffs;         //Same line start addr value//~v96kR~
 //*   output:
 //*     print output
 //********************************************************************
-void puthexline(UCHAR* oldintc,UCHAR *oldchar,ULONG offset,int hexlen,int charlen)//v7.0r
+//void puthexline(UCHAR* oldintc,UCHAR *oldchar,ULONG offset,int hexlen,int charlen)//v7.0r//+v9e2R~
+void puthexline(UCHAR* Poldintc,UCHAR *oldchar,ULONG offset,int hexlen,int charlen)//v7.0r//+v9e2I~
 {
 //static  UCHAR trt[16]="0123456789ABCDEF";/*hex cnv tbl*/         //~v92bR~
 static  ULONG oldline;
@@ -312,7 +314,8 @@ static  ULONG oldline;
     if (vhexdump==2)    //record mode vhex dump                    //~v96kI~
 	{
 //*recordmode vhex                                                 //~v97tI~
-		pcintc=oldintc;	
+//  	pcintc=oldintc;	                                           //+v9e2R~
+    	pcintc=Poldintc;                                           //+v9e2I~
 		XPsetucsON_()	//parm to datapline:utf strlen             //~v928R~
 		datapxline(dumpline,wlen);//v7.12r
 		XPsetucsOFF_()	//parm to datapline:utf strlen             //~v928R~
@@ -349,7 +352,8 @@ static  ULONG oldline;
     if (vhexdump==3)                                               //~v96kI~
 	{                                                              //~v96eI~
 //*vmt vhex                                                        //~v97tI~
-		pcintc=oldintc;                                            //~v96eI~
+//  	pcintc=oldintc;                                            //~v96eI~//+v9e2R~
+    	pcintc=Poldintc;                                           //+v9e2I~
 		XPsetucsON_()	//parm to datapline:utf strlen             //~v96eI~
 		datapxline(dumpline,wlen);//v7.12r                         //~v96eI~
 		XPsetucsOFF_()	//parm to datapline:utf strlen             //~v96eI~
@@ -371,8 +375,8 @@ static  ULONG oldline;
       {                                                            //~v92uI~
 //      memmove(Solducs+Linecharpos,Solducs+LINENOSZ+1,(Solducscnt-LINENOSZ-1)*sizeof(USHORT));  //shift to char pos//~v928R~//~v950R~
 //      memmove(Solducs+Linecharpos,Solducs+LINENOSZ+1,(Solducscnt-LINENOSZ-1)*WUCSSZ);  //shift to char pos//~v950I~//~v993R~
-//      memmove(Solducs+Linecharpos,Solducs+LINENOSZ+1,(Solducscnt-LINENOSZ-1)*UWUCSSZ);  //shift to char pos//~v993I~//+v997R~
-        memmove(Solducs+Linecharpos,Solducs+LINENOSZ+1,(size_t)((Solducscnt-LINENOSZ-1)*UWUCSSZ));  //shift to char pos//+v997I~
+//      memmove(Solducs+Linecharpos,Solducs+LINENOSZ+1,(Solducscnt-LINENOSZ-1)*UWUCSSZ);  //shift to char pos//~v993I~//~v997R~
+        memmove(Solducs+Linecharpos,Solducs+LINENOSZ+1,(size_t)((Solducscnt-LINENOSZ-1)*UWUCSSZ));  //shift to char pos//~v997I~
         Solducscnt=Linecharpos+(Solducscnt-LINENOSZ-1);  //shift to char pos//~v928I~
       }                                                            //~v92uI~
 #endif                                                             //~v928I~
@@ -384,7 +388,8 @@ static  ULONG oldline;
 #ifdef UTF8SUPP                                                    //~v928I~
             {                                                      //~v928I~
               if (XPUTF8MODE())                                    //~v928I~
-                xphexresetboundary(oldintc,lowboundary);           //~v928R~
+//              xphexresetboundary(oldintc,lowboundary);           //~v928R~//+v9e2R~
+                xphexresetboundary(Poldintc,lowboundary);          //+v9e2I~
           	  else                                                 //~v928I~
 #endif                                                             //~v928I~
 				memset(dumpline+Linecharpos,' ',(UINT)lowboundary);
@@ -413,8 +418,10 @@ static  ULONG oldline;
         		}
 	        	else                             /*net area*/
     	    	{
-    	      		*pchexd++=*(trt+(oldintc[i]>>4));     /*first 4 bit*/
-          	  		*pchexd++=*(trt+(oldintc[i] & 0x0F));	/*last 4*/
+//  	      		*pchexd++=*(trt+(oldintc[i]>>4));     /*first 4 bit*///+v9e2R~
+    	      		*pchexd++=*(trt+(Poldintc[i]>>4));     /*first 4 bit*///+v9e2I~
+//        	  		*pchexd++=*(trt+(oldintc[i] & 0x0F));	/*last 4*///+v9e2R~
+          	  		*pchexd++=*(trt+(Poldintc[i] & 0x0F));	/*last 4*///+v9e2I~
 //  		  		if (i==8)                                      //~v781R~
     		  		if (i==7)                                      //~v781I~
     					*pchexd='-';	                           //~v781R~
@@ -439,8 +446,10 @@ static  ULONG oldline;
         		}
 	        	else                             /*net area*/
     	    	{
-    	      		*pchexd++=*(trt+(oldintc[i]>>4));     /*first 4 bit*/
-          	  		*pchexd++=*(trt+(oldintc[i] & 0x0F));	/*last 4*/
+//  	      		*pchexd++=*(trt+(oldintc[i]>>4));     /*first 4 bit*///+v9e2R~
+    	      		*pchexd++=*(trt+(Poldintc[i]>>4));     /*first 4 bit*///+v9e2I~
+//        	  		*pchexd++=*(trt+(oldintc[i] & 0x0F));	/*last 4*///+v9e2R~
+          	  		*pchexd++=*(trt+(Poldintc[i] & 0x0F));	/*last 4*///+v9e2I~
 	        	}
 			}                                  /*dumpwidth loop*/
         UTRACED("puthexline hhex",dumpline,wlen);                  //~v97pR~
@@ -512,8 +521,8 @@ void putsameline(ULONG offset,int sameno) //v7.0r
 //  					offset+sameno-1)+Linehexdpos;              //~v96kR~
     					"OFFS %6lX to %6lX is same as above\n",    //~v96kI~
     					offset,                                    //~v96kI~
-//  					offset+dumpwidth*(sameno-1)-1)+Linehexdpos;//~v96kR~//+v997R~
-    					offset+(ULONG)(dumpwidth*(sameno-1))-1)+Linehexdpos;//+v997I~
+//  					offset+dumpwidth*(sameno-1)-1)+Linehexdpos;//~v96kR~//~v997R~
+    					offset+(ULONG)(dumpwidth*(sameno-1))-1)+Linehexdpos;//~v997I~
 //  	pxline("\n",1);                                            //~v96kR~
 		datapxline(Sameline,wlen);//v7.12r
 //  	pxline("\n",1);                                            //~v96kR~
@@ -523,16 +532,16 @@ void putsameline(ULONG offset,int sameno) //v7.0r
 		if (sameno==2)
 			wlen=sprintf(Sameline+Linehexdpos,
 						"OFFS %06lX           is same as above\n",
-//  					offset+dumpwidth)                          //+v997R~
-    					offset+(ULONG)dumpwidth)                   //+v997I~
+//  					offset+dumpwidth)                          //~v997R~
+    					offset+(ULONG)dumpwidth)                   //~v997I~
 				+Linehexdpos;
 		else
 			wlen=sprintf(Sameline+Linehexdpos,
 						"OFFS %06lX to %06lX is same as above\n",
-//  					offset+dumpwidth,                          //+v997R~
-    					offset+(ULONG)dumpwidth,                   //+v997I~
-//  					offset+dumpwidth*sameno-1)                 //+v997R~
-    					offset+(ULONG)(dumpwidth*sameno)-1)        //+v997I~
+//  					offset+dumpwidth,                          //~v997R~
+    					offset+(ULONG)dumpwidth,                   //~v997I~
+//  					offset+dumpwidth*sameno-1)                 //~v997R~
+    					offset+(ULONG)(dumpwidth*sameno)-1)        //~v997I~
 				+Linehexdpos;
 		datapxline(Sameline,wlen);//v7.12r
 	}
@@ -701,7 +710,7 @@ void pxline_ucsebc(int Popt,UCHAR *Pbuff,WUCS *Pucs,int Plen,int Pbuffsz)//~v996
     WUCS *pucs;                                                    //~v955I~
 //****************                                                 //~v955I~
 	UTRACED("pxline_ucsebc buff",Pbuff,Plen);                      //~v96kR~
-	UTRACED("pxline_ucsebc ucs",Pucs,Plen*(int)sizeof(WUCS));           //~v96kI~//+v997R~
+	UTRACED("pxline_ucsebc ucs",Pucs,Plen*(int)sizeof(WUCS));           //~v96kI~//~v997R~
 	wlen=Plen;                                                     //~v955I~
   	swucsebc=(Gxputfstat & GXPUS_UCSLINE_EBC);	//save over printhdr//~v955M~
 	if (line==maxline)           //page overflow                   //~v955I~

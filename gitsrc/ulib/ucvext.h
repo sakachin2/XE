@@ -1,5 +1,6 @@
-//*CID://+v6E1R~:                             update#=  318;       //~v6E1R~
+//*CID://+v6M4R~:                             update#=  324;       //~v6M4R~
 //******************************************************           //~v5n3R~
+//v6M4:170825 try get icu version by uconv cmd if ICU_DLL_SUFFIX,ICU_API_SUFFIX both are not specified//~v6M4I~
 //v6E1:160718 (W32)WideCharToMultiByte dose not set err            //~v6E1I~
 //            cv F8F0->a0,F8F1->fd,F8F2->fe,F8F3->ff and it is reversible//~v6E1I~
 //            not by v6E0 but chk reversible by MB_ERR_INVALID_CHARS//~v6E1I~
@@ -124,6 +125,7 @@
 #define UCEIO_LOCALICU     0x010000 //local icu init               //~v6f3I~//~v6f4R~
 #define UCEIO_MBICU        0x020000 //m2m icu                      //~v6f4I~
 #define UCEIO_OPENICU      0x040000 //ICU specific function        //~v6feI~
+#define UCEIO_CONVERTERCFG 0x080000 //mapinit parm:cfg is created by getConverterCfg//~v6M4I~
                                                                    //~v5mVI~
 #define UCEIRC_SBCS         0
 #define UCEIRC_DBCS         1
@@ -182,6 +184,7 @@ typedef struct _UCVEXTCFG {
 #define  UCECF2_ICUDATA        0x00000002      //setenv was done for ICU_DATA//~v6boI~
 #define  UCECF2_ICUINITEND     0x00000004      //icuinitend        //~v6f3I~
 #define  UCECF2_CONVERTER_PARM 0x00000008      //for dup chk       //~v6x5R~
+#define  UCECF2_CFGBYUCONV     0x00000010      //unknow sbcs or dbcs//~v6M4I~
 					USHORT UCECsubchardbcs;
 					USHORT UCECsubcharsbcs;
 					USHORT UCECsubchardefaultucsdbcs;   //windows cp info//~v66CI~
@@ -433,6 +436,7 @@ int ucvext_icua2aterm(int Popt,ULPTR *Pconverters);                //~v6hhI~
 #ifdef W32                                                         //~v6BII~//~v6BHM~
 int uMultiByteToWideChar(int Popt,ULONG Pconverter,int Papiopt,char *Ppebc,int Pinplen,WUCS/*ucs2*/ *Ppucs,size_t Pbuffsz,int *Pplasterr);//~v6BHM~
 int uWideCharToMultiByte(int Popt,ULONG Pconverter,int Papiopt,WUCS/*int2*/*Ppucs,int Pucsctr,UCHAR *Ppmbs,size_t Pbuffsz,char *Pdefaultchars,int *Ppdefaultused,int *Pplasterr);//~v6BIR~//~v6BHR~
-//#define UWCTMBO_SETSUBCHRC      0x01  //reverse chk              //+v6E1R~
+//#define UWCTMBO_SETSUBCHRC      0x01  //reverse chk              //~v6E1R~
 #define UWCTMBO_REVERSECHK      0x02  //from reverse chk protect recursive//~v6E1I~
 #endif                                                             //~v6BII~//~v6BHM~
+int ucvext_getConverterCfg(int Popt,PUCVEXTCFG Ppcfg);             //~v6M4R~

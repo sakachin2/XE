@@ -1,6 +1,7 @@
-//*CID://+v6BkR~:                             update#=  322;       //+v6BkR~
+//*CID://+v6M5R~:                             update#=  323;       //+v6M5R~
 //******************************************************           //~v57GI~
-//v6Bk:160220 (LNX)compiler warning                                //+v6BkI~
+//v6M5:170825 for xcv,xprint;create EBC cfg by uconv output        //+v6M5I~
+//v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
 //v6Bj:160213 (W32:BUG)UCS4 was cut to UCS2                        //~v6BjI~
 //v6m3:130726 for xprint, support -ICU without CFG parm file       //~v6m3I~
 //v6m2:130725 (BUG)EBC2ASC_IBM(x20) and UCVEXTO_TOUTF8 conflict occured//~v6m2I~
@@ -72,6 +73,7 @@
     #define UCVEBCS_xcv           0x02 //on xcv    process         //~v6bhI~
     #define UCVEBCS_TOUTF8        0x04 //parm to ucvext_iconvucs2local1//~v6m2I~
     #define UCVEBCS_icutool       0x08 //tool to use ICU           //~v6m3I~
+    #define UCVEBCS_CONVERTERCFG  0x10 //create cfg by uconv --version//+v6M5I~
                                                                    //~v660I~
 //  EXT_EBC UCHAR Gucvebc_toupper[256];                            //~v660R~//~v69cR~
 //  #define EBC_toupper(ch) ((int)Gucvebc_toupper[(int)(ch)])      //~v660R~//~v69cR~

@@ -34,6 +34,9 @@ a:hover{font-weight:bold;}-->
       -CPEB option is used for <A href="HID00000277.htm">EDIt</A>/<A href="HID00000311.htm">SAVe</A>/<A href="HID00000268.htm">REPlace/CREate/APPend/CUT</A>/<A href="HID00000278.htm">END</A>/<A href="HID00000267.htm">COPy</A>/<A href="HID00000296.htm">MOVe</A>/<A href="HID00000267.htm">PASte</A> cmd.
        IE option may be required if invalid EBCDIC code is contained.
        Indicater on header line is &quot;=E&quot; , and &quot;=e&quot; when binary mode.
+       (The file containing unprintable char with some extent is opened as binary file,
+        and DBCS is not detected when binary mode. /Mt is option to force text mode.)
+       LineFeed is 0x15 if /Mp(0x0d0a) or /Mu(0x0a) is not specified.
          ex). &quot;e file1 cpeb&quot;
        When cfg file is not prepared or to use different codepage than defined on cfg file,
        use CPEB:codepage format.

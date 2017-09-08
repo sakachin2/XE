@@ -1,4 +1,21 @@
 *** update history ******************************************************************
+//*********  20170812 v129C updated   ****************
+//v9e7:170826 compiler warning
+//            xprint.c xpebc.c xppf.c
+//v9e6:170826 compiler warning samename parm and gbl
+//            xpmult.c xpesc.c xpwinp.c xphlp.c
+//v9e5:170826 get dll suffix by uconv --version
+//            xpebc.c xprint.c xpmult.c
+//v9e4:170812 print params on trailer
+//            xppf.c xprint.c
+//v9e3:170810 shorten trailer msg for small /c parm
+//            xppf.c
+//v9e2:170809 compiler warning(duplicate define in local variable)
+//            xphex.c xpebc.c
+//v9e1:170809 (BUG)TAB(0x09) was output when utf8 file. No actual damage because 0x09 was not printed.
+//            xppf.c
+//v9e0:170807 v9.38 tabchar support(tabon:c/x__/u__)
+//            xprint.c xp.h xphelp.c xppf.c/h xpebc.c
 //*********  20170218 v128H released  ****************
 //v9d0:170218 v9.37 from xe,xpr ** total page number is not valid
 //            xprint.c xp.h

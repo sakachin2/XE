@@ -1,4 +1,4 @@
-||*CID:||+v129R~:  2017/07/27              update#=  557;             ||+v129R~
+||*CID:||+v129R~:  2017/09/04              update#=  560;             ||+v129R~
 ######################################################################
 [English]    v1.29                                                    ||~v128R~||~v129R~
 
@@ -2432,42 +2432,85 @@ How to start.
         .(Bug)64Bit version crashes.                                  ||~v129R~
                                                                       ||~v129R~
 ######################################################################||~v129R~
-  .v129B<--129:(2017/07/27)                                           ||+v129R~
+  .v129B<--129 :(2017/07/27)                                          ||~v129R~
+  .v129C<--129B:(2017/09/04)                                          ||~v129I~
                                                                       ||~v129R~
      1.BUGs                                                           ||~v129R~
        -(Windows:64)"&"(spawn executable file) dir cmd crush.         ||~v129R~
        -(64Bit) =3.14 crush                                           ||~v129R~
-       -(Win64) Erroneous calculation when Datatype is X(Hex),O(octal).||+v129I~
-       -(Win64) DragDrop between split panels(file copy) crashes.     ||+v129I~
+       -(Win64) Erroneous calculation when Datatype is X(Hex),O(octal).||~v129I~
+       -(Win64) DragDrop between split panels(file copy) crashes.     ||~v129I~
                                                                       ||~v129R~
-     2.Additional function.                                           ||+v129I~
-                                                                      ||+v129I~
-       -Shortcut pathname                                             ||+v129I~
-        .SP { edit | refresh | add sp-name { file-spec | *\\ | ^*\\ } }||+v129I~
-            edit   : show edit panel of Shortcut pathname definition file(::xe.shortpath).||+v129I~
-                     Update is enabled when restart xe,               ||+v129I~
-                     or enabled if "refresh" after saved.             ||+v129I~
-                     Format of the line of definition file is "Shortcut-pathname fullpath-name".||+v129I~
-                     Put "#" at top of line to comment out.           ||+v129I~
-                     e.g.) srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+v129I~
-                           ecws  "c:\Program Files\Android\Android Studio\gradle"||+v129I~
-            refresh: reload  definition file of ::xe.shortpath.       ||+v129I~
-                     Use after "sp edit", modify then saved or directly updated ::xe.shortpath by||+v129I~
-                     another process.                                 ||+v129I~
-            add    : add a line to definition file by sp-name:Shortcut pathname and file-spec:shortcut target fullpath name.||+v129I~
-                     This definition is enabled instantly.            ||+v129I~
-                     Following specifications are effective at proper situation.||+v129I~
-                       *\ :the file currently opened on this panel.   ||+v129I~
-                       ^*\:the file currently opened on another split panel.||+v129I~
-                     e.g.) sp add srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+v129I~
-                           sp add ecws  "c:\Program Files\Android\Android Studio\gradle"||+v129I~
-        .To utilize Shortcut pathname, add prefix "sp:" to file-spec. ||+v129I~
-         (If xxx of sp:xxx is not defined, "sp:xxx" is used as is.)   ||+v129I~
-           e.g.) e sp:srctest1\Main.java                              ||+v129I~
-                 e sp:ecws                                            ||+v129I~
-                 e "sp:ecws\space embedded name"                      ||+v129I~
-                 xcopy sp:ecdir\x1 sp.ecdir\x2                        ||+v129I~
-                 cd sp:ecdir                                          ||+v129I~
-                                                                      ||+v129I~
+     2.Additional function.                                           ||~v129I~
+                                                                      ||~v129I~
+       -Shortcut pathname                                             ||~v129I~
+        .SP { edit | refresh | add sp-name { file-spec | *\\ | ^*\\ } }||~v129I~
+            edit   : show edit panel of Shortcut pathname definition file(::xe.shortpath).||~v129I~
+                     Update is enabled when restart xe,               ||~v129I~
+                     or enabled if "refresh" after saved.             ||~v129I~
+                     Format of the line of definition file is "Shortcut-pathname fullpath-name".||~v129I~
+                     Put "#" at top of line to comment out.           ||~v129I~
+                     e.g.) srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||~v129I~
+                           ecws  "c:\Program Files\Android\Android Studio\gradle"||~v129I~
+            refresh: reload  definition file of ::xe.shortpath.       ||~v129I~
+                     Use after "sp edit", modify then saved or directly updated ::xe.shortpath by||~v129I~
+                     another process.                                 ||~v129I~
+            add    : add a line to definition file by sp-name:Shortcut pathname and file-spec:shortcut target fullpath name.||~v129I~
+                     This definition is enabled instantly.            ||~v129I~
+                     Following specifications are effective at proper situation.||~v129I~
+                       *\ :the file currently opened on this panel.   ||~v129I~
+                       ^*\:the file currently opened on another split panel.||~v129I~
+                     e.g.) sp add srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||~v129I~
+                           sp add ecws  "c:\Program Files\Android\Android Studio\gradle"||~v129I~
+        .To utilize Shortcut pathname, add prefix "sp:" to file-spec. ||~v129I~
+         (If xxx of sp:xxx is not defined, "sp:xxx" is used as is.)   ||~v129I~
+           e.g.) e sp:srctest1\Main.java                              ||~v129I~
+                 e sp:ecws                                            ||~v129I~
+                 e "sp:ecws\space embedded name"                      ||~v129I~
+                 xcopy sp:ecdir\x1 sp.ecdir\x2                        ||~v129I~
+                 cd sp:ecdir                                          ||~v129I~
+     (129C)                                                           ||~v129I~
+       -Find cmd                                                      ||~v129I~
+          Search file attribute column on dir-list panel.             ||~v129I~
+          Parameter is case insensitive.                              ||~v129I~
+          Use "d" for directory, "L" for symbolic link.               ||~v129I~
+          Specify "d" and "L" alone each.                             ||~v129I~
+          For other attributes, on Windows, select the line having all attributes of parameter,||~v129I~
+          on Linux, select the line having string of attribute parameter.||~v129I~
+          Following attribute IDs are specific to Linux.              ||~v129I~
+            u:setuid, g:setgid, S:setuid+setgid, t:stickey            ||~v129I~
+            c:char device, b:block device, p:pipe, s:socket           ||~v129I~
+          e.g.) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr||~v129I~
+                (Linux)   f 775 attr ; f u attr                       ||~v129I~
+                                                                      ||~v129I~
      3.Miscellaneous.                                                 ||~v129R~
        -(Windows) add "msi" as executable binary extension            ||~v129R~
+     (129C)                                                           ||~v129I~
+       -(Windows)If LoadLibrary failed for EBCDIC library for ICU(libicuuc.dll),||~v129R~
+        search in the directory of ICU_DATA parameter of xeebc.map and also||~v129I~
+        ICU_DATA environment variable.                                ||~v129I~
+        (Linex)It is need to set LD_LIBRARY_PATH if the ICU so is not on default path like as /usr/lib etc.||~v129I~
+       -When ICU_DLL_SUFFIX and ICU_APP_SUFFIX  are missing,          ||~v129I~
+        set both bt ICU utility  uconv(.exe).                         ||~v129I~
+       -Reject /Mr(Recordmode) option for CPU8 file because string length of UTF8 code is indefinite.||~v129I~
+                                                                      ||~v129I~
+     4.Tool.                                                          ||~v129I~
+     (129C)                                                           ||~v129I~
+       -xprint v9.38                                                  ||~v129I~
+        ./Tabon: new parameter added                                  ||~v129I~
+           Specify alternative char for DBCS space, TAB(0x09) and its following space.||~v129I~
+           /Tabon:x:y:z ;Text mode alternative char for DBCS space,Tab(0x09),Tab-skip.||~v129I~
+                        ;For x,y,z each, specify Char itself, Unicode or Hex notation.||~v129I~
+                        ;e.g.) /Tabon:x2020:x18:x1a  /Tabon::u2191:u2192 /Tabon::u25cb||~v129I~
+                        ;      /Tabon:u2750                           ||~v129I~
+                        ;Default is /Tabon:u3000:x20:x20(UTF8/EBCDIC file)||~v129I~
+                        ;       and /Tabon:x8140:x20:x20(other file). ||~v129I~
+        .For EBCDIC file EBCDIC, if /BCfilename is missing to translate by ICU,||~v129I~
+         Search ICU shared library(DLL or so) on PATH or LD_LIBRARY_PATH.||~v129I~
+         If library found, supply ICU version using ICU utility uconv(.exe).||~v129I~
+           e.g.) xprint x1ebc22 -cpeb=cp930 -me -icu                  ||~v129I~
+       -xcv 1.20                                                      ||~v129I~
+        .When translating EBCDIC file by ICU, if /BCfilename parameter is missing,||~v129I~
+         Search ICU shared library(DLL or so) on PATH or LD_LIBRARY_PATH.||~v129I~
+         If library found, supply ICU version using ICU utility uconv(.exe).||~v129I~
+           e.g) xcv x1ebc22 x1ebc22m -b2m -cpeb=cp930 -icu            ||~v129I~

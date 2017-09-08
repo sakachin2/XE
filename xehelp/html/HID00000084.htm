@@ -24,7 +24,7 @@ a:hover{font-weight:bold;}-->
                      [-Llcmd] -m[n] [-nx] [.lab1 .lab2]
                      [-{PSP|PSF}[X|R|D]]
 
-            探索位置:[l-column | LM | RM [r-column] | eol | maxeol]
+            探索位置:[c1 | LM | RM [c2] | eol | maxeol | ATTR]
 
             FIN     :大文字/小文字 区別有
             IFI     :大文字/小文字 区別無(case Insensitive)
@@ -192,14 +192,25 @@ a:hover{font-weight:bold;}-->
             last    :ファイルの最後から探索,見つかった所にカーソルを移動
             .lab1/2 :行番号欄に設定したラベルを対で指定して探索行範囲を
                      限定する.行番号を使用しての範囲指定も可.
-            l-column:探索範囲の左端桁位置.
-            r-column:探索範囲の右端桁位置.
+            c1      :探索範囲の左端桁位置.
+            c2      :探索範囲の右端桁位置.
             LM      :探索範囲を左<a href="HID00000040.htm">マージン</a>に限定
             RM      :探索範囲を右マージンに限定
             eol     :行末のみ探す。
                      探索文字がスペースを含むときに使用する。
                      (&quot;a b&quot;\n はエラーとなる)
             maxeol  :最長行（複数行ありうる)の行末のみ探す。
+            ATTR    :ディレクトリーリストでファイルの属性値を探索する
+                     大文字小文字の区別はしません
+                     属性欄には表示されていないが ディレクトリーには &quot;d&quot;、シンボリックリンクには &quot;L&quot; を指定する
+                     また &quot;d&quot; と &quot;L&quot; はそれぞれ単独で指定してください
+                     それ以外の属性は Windowsでは 指定の一つ一つの属性すべてを含む行が一致行とし
+                     Linuxでは属性指定の文字列を含む行が一致行とする
+                     Linuxで特殊な属性欄の値は
+                        u:setuid, g:setgid, S:setuid+setgid, t:stickey
+                        c:char device, b:block device, p:pipe, s:socket
+                     例) (Windows) f SH attr ; f R attr &amp; 17-08 ; f D attr &amp; L attr
+                         (Linux) f 775 attr ; f u attr
             -a[-]   :探索文字列を含む行の後ｎ行を表示化/非表示化する。
                      &amp; 探索の時は 2 番目の文字列を含む行を基準とする。
                      &quot;-&quot;は前のｎ行を意味する, このとき -b を指定し

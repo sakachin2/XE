@@ -13,7 +13,8 @@ a:hover{font-weight:bold;}-->
 <BODY bgcolor="#FFFFE2">
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
 ######################################################################
-  .v129B<--129:(2017/07/30)
+  .v129B<--129 :(2017/07/30)
+  .v129C<--129B:(2017/09/04)
 
      1.BUGs
        -(Windows:64)"&"(spawn executable file) dir cmd crush.
@@ -49,10 +50,51 @@ a:hover{font-weight:bold;}-->
                  e "sp:ecws\space embedded name"
                  xcopy sp:ecdir\x1 sp.ecdir\x2
                  cd sp:ecdir
+     (129C)
+       -Find cmd
+          Search file attribute column on dir-list panel.
+          Parameter is case insensitive.
+          Use "d" for directory, "L" for symbolic link.
+          Specify "d" and "L" alone each.
+          For other attributes, on Windows, select the line having all attributes of parameter,
+          on Linux, select the line having string of attribute parameter.
+          Following attribute IDs are specific to Linux.
+            u:setuid, g:setgid, S:setuid+setgid, t:stickey
+            c:char device, b:block device, p:pipe, s:socket
+          e.g.) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr
+                (Linux)   f 775 attr ; f u attr
 
      3.Miscellaneous.
        -(Windows) add "msi" as executable binary extension
+     (129C)
+       -(Windows)If LoadLibrary failed for EBCDIC library for ICU(libicuuc.dll),
+        search in the directory of ICU_DATA parameter of xeebc.map and also
+        ICU_DATA environment variable.
+        (Linex)It is need to set LD_LIBRARY_PATH if the ICU so is not on default path like as /usr/lib etc.
+       -When ICU_DLL_SUFFIX and ICU_APP_SUFFIX  are missing,
+        set both bt ICU utility  uconv(.exe).
+       -Reject /Mr(Recordmode) option for CPU8 file because string length of UTF8 code is indefinite.
 
+     4.Tool.
+     (129C)
+       -xprint v9.38
+        ./Tabon: new parameter added
+           Specify alternative char for DBCS space, TAB(0x09) and its following space.
+           /Tabon:x:y:z ;Text mode alternative char for DBCS space,Tab(0x09),Tab-skip.
+                        ;For x,y,z each, specify Char itself, Unicode or Hex notation.
+                        ;e.g.) /Tabon:x2020:x18:x1a  /Tabon::u2191:u2192 /Tabon::u25cb
+                        ;      /Tabon:u2750
+                        ;Default is /Tabon:u3000:x20:x20(UTF8/EBCDIC file)
+                        ;       and /Tabon:x8140:x20:x20(other file).
+        .For EBCDIC file EBCDIC, if /BCfilename is missing to translate by ICU,
+         Search ICU shared library(DLL or so) on PATH or LD_LIBRARY_PATH.
+         If library found, supply ICU version using ICU utility uconv(.exe).
+           e.g.) xprint x1ebc22 -cpeb=cp930 -me -icu
+       -xcv 1.20
+        .When translating EBCDIC file by ICU, if /BCfilename parameter is missing,
+         Search ICU shared library(DLL or so) on PATH or LD_LIBRARY_PATH.
+         If library found, supply ICU version using ICU utility uconv(.exe).
+           e.g) xcv x1ebc22 x1ebc22m -b2m -cpeb=cp930 -icu
 
 </SPAN></PRE>
 </BODY>

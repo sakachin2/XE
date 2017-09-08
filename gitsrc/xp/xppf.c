@@ -1,8 +1,13 @@
-//*CID://+v9b0R~:                              update#=  543;      //~v9b0R~
+//*CID://+v9e7R~:                              update#=  604;      //+v9e7R~
 //***********************************************************      //~v907R~
 //* XPRINT : file print utility                                    //~v801R~
 //***********************************************************
-//v9b0:161220 v9.35 warning when NOTRACE                           //+v9b0I~
+//v9e7:170826 compiler warning                                     //+v9e7I~
+//v9e4:170812 print params on trailer                              //~v9e4I~
+//v9e3:170810 shorten trailer msg for small /c parm                //~v9e3I~
+//v9e1:170809 (BUG)TAB(0x09) was output when utf8 file. No actual damage because 0x09 was not printed.//~v9e1I~
+//v9e0:170807 v9.38 tabchar support(tabon:c/x__/u__)               //~v9e0I~
+//v9b0:161220 v9.35 warning when NOTRACE                           //~v9b0I~
 //v9a1:160418 v9.33 LNX64 Compiler warning                         //~v9a1I~
 //v998:160404 v9.32 W64 compiler warning                           //~v998I~
 //v997:160309 v9.32 (LNX)compiler warning                          //~v997I~
@@ -143,6 +148,7 @@
 #include <ucvebc4.h>                                               //~v953R~
 #include <utrace.h>                                                //~v941R~
 #include <utf22.h>                                                 //~v993I~
+#include <uedit.h>                                                 //~v9e0I~
                                                                 //~v743I~
 //*********************************************************************
 #include  "xp.h"                                                //~v74kI~
@@ -171,6 +177,13 @@
        int Gtrailersw=0;   //parm to putline2p                     //~v911I~
        int hdr0linesw=0;    	//requesting header0 put           //~v855R~
        UCHAR *Gebctrt;      //EBCDIC trt                           //~v891I~
+    int Gtabonutf8,Gtabonlocale,GtabonDBCSspace,GtabonTab,GtabonTabskip;//~v9e0R~
+#define TABON_DEFAULT_DBCSSPACE_UTF8   DBCSSPACE_UCS               //~v9e0R~
+#define DBCSSPACE_SJIS                 0x8140                      //~v9e0R~
+#define DBCSSPACE_EBC                  0x4040                      //~v9e0I~
+#define TABON_DEFAULT_DBCSSPACE_LOCALE DBCSSPACE_SJIS              //~v9e0I~
+#define TABON_DEFAULT_TAB              ' '                         //~v9e0I~
+#define TABON_DEFAULT_TABSKIP          ' '                         //~v9e0R~
 //*********************************************************************//~v850I~
 extern int Gcontpageno;                                            //~v910I~
 extern int recordsz;       	//input record length      	v6.7a      //~v831I~
@@ -231,6 +244,7 @@ extern int  totpage;         //v4.1a total page count              //~v831I~
 extern int pagerangectr;		//entry no of pagerange            //~v831I~
 extern int pagerange[];                                            //~v831I~
 extern long pageoutlen;          //output len      v5.8a           //~v831I~
+extern char *Gcmdlineparms;      //set at xprint.c                 //~v9e4I~
 //*********************************************************************//~v831I~
 static int lastpage;          //last pageno                    v4.4a//~v831I~
 static int printsw;           //at least 1 page printed sw v3.2add v3.7r//~v831I~
@@ -729,6 +743,9 @@ do {                                                               //~v801R~
     {                                                // v1.7add
       chartype=1;         //printable                   v1.7add
       readc=' ';          //padd with space             v1.7add
+	  if (UCBITCHK(swsw5,SW5TABONPRM))  //0x10	//tabon parameter specified//~v9e0I~
+      	readc=getTabonAltch(TAB,1);                                //~v9e0R~
+      ucs=readc;                                                   //~v9e1I~
       tabspace--;                                    // v1.7add
 	  dummybytesw=0;                                               //~v965I~
     }                                                // v1.7add
@@ -913,6 +930,21 @@ do {                                                               //~v801R~
 //              printf("ms=%04x,jis=%04x,readc=%02x,dbcssw=%02x\n",sjiskanji,jiskanji,readc,dbcssw);//~v78aR~
 //              }                                                  //~v78cR~
 //#endif                                                           //~v78cR~
+				if (UCBITCHK(swsw5,SW5TABONPRM))  //0x10	//tabon parameter specified//~v9e0I~
+                {                                                  //~v9e0I~
+                    if ((!swebcfile||(swebcfile && (swsw5 & SW5NOBYUCS))) //locale file or ebc by /TU(ebc by not ucs)//~v9e0R~
+                    && !XPUTF8MODE()                               //~v9e0I~
+					)                                              //~v9e0I~
+                    {                                              //~v9e0I~
+                        if ((readc<<8|dbcssw)==DBCSSPACE_SJIS)     //~v9e0R~
+                        {                                          //~v9e0R~
+                            int altch;                             //~v9e0R~
+                            altch=getTabonAltch(0,0);     //get dbcsspace altch//~v9e0R~
+                            readc=altch>>8;               //1st byte//~v9e0R~
+                            dbcssw=altch&255;             //2nd byte//~v9e0R~
+                        }                                          //~v9e0R~
+                    }                                              //~v9e0I~
+                }                                                  //~v9e0I~
               if (colomn==(maxcol-1)) //on the line boundary        //v1.8add
               {                       //set complete dbcs char      //v1.8add
                 dbcssw++;           //next time return char save //v2.7add
@@ -1088,7 +1120,10 @@ do {                                                               //~v801R~
 
       tabspace=((colomn-LINENOSZ-1)/tabskip+1)*tabskip+LINENOSZ-colomn;
                                   //v1.7add v2.1rep
+                                                                   //~v9e0I~
       c=' ';                                             //v1.7add
+	  if (UCBITCHK(swsw5,SW5TABONPRM))  //0x10	//tabon parameter specified//~v9e0I~
+      	c=(unsigned char)getTabonAltch(TAB,0);                     //~v9e0I~
      }                                                             //~v96DI~
     }                                                    //v1.7add
     }//!dumpmode                                                   //~v97vI~
@@ -1125,7 +1160,18 @@ do {                                                               //~v801R~
       	  if (((textmodevhexsw||vhexdump>1) && c==FORMFEED))       //~v96tI~
 		    Gbuffucs[Gcolumnucs++]='.';                            //~v92cI~
           else                                                     //~v92cI~
+          {                                                        //~v9e0I~
+           if (ucs==DBCSSPACE_UCS //   0x3000                      //~v9e0R~
+		   &&  UCBITCHK(swsw5,SW5TABONPRM)   //0x10	//tabon parameter specified//~v9e0R~
+           )                                                       //~v9e0I~
+           {                                                       //~v9e0I~
+            int altch;                                             //~v9e0M~
+            altch=getTabonAltch(0,0);     //get dbcsspace altch    //~v9e0I~
+		    Gbuffucs[Gcolumnucs++]=altch;                          //~v9e0I~
+           }                                                       //~v9e0I~
+           else                                                    //~v9e0I~
 		    Gbuffucs[Gcolumnucs++]=ucs;                            //~v928R~
+          }                                                        //~v9e0I~
         	if (dbcssw)                                            //~v928I~
 			    buff[++colomn]=c;                                  //~v928I~
         }                                                          //~v928I~
@@ -1844,7 +1890,8 @@ do {                                                               //~v801R~
   if (dumpmode==2)			//skim dump mode v7.12a	
 //    intwk=sprintf(trailer,"\n%s:%s:end of process at %02d/%02d/%02d %02d:%02d;//~v898R~
 //    intwk=sprintf(trailer,"\n%s:%s:(%c)end of process at %04d/%02d/%02d %02d:%02d;//~v955R~
-      intwk=sprintf(trailer,"\n%s:%s:(%c)Printed at %04d/%02d/%02d %02d:%02d;\
+//    intwk=sprintf(trailer,"\n%s:%s:(%c)Printed at %04d/%02d/%02d %02d:%02d;//~v9e0R~
+      intwk=sprintf(trailer,"\n%s:%s:(%c) %04d/%02d/%02d %02d:%02d;\
  mode=%s%s%s tab=%d.\n", //v4.6av6.5r v7.1rv7.12r                  //~v96jR~
 // mode=%s(%d)-%s,tab=%d.\n", //v4.6av6.5r v7.1rv7.12r             //~v96jR~
 	    pgmid,ver,OSTYPE,                                          //~v898R~
@@ -1858,8 +1905,10 @@ do {                                                               //~v801R~
   {                                                             //~v747I~
 //    intwk=sprintf(trailer,"\n%s:%s:end of process at %02d/%02d/%02d %02d:%02d;//~v898R~
 //    intwk=sprintf(trailer,"\n%s:%s:(%c)end of process at %04d/%02d/%02d %02d:%02d;//~v955R~
-      intwk=sprintf(trailer,"\n%s:%s:(%c) Printed at %04d/%02d/%02d %02d:%02d;\
- mode=%s,%s%s%s%s.\n", //modeparm-pc-edittabctr                     //~v96jR~//~v96xR~
+//    intwk=sprintf(trailer,"\n%s:%s:(%c) Printed at %04d/%02d/%02d %02d:%02d;//~v9e3R~
+      intwk=sprintf(trailer,"\n%s:%s:(%c) %04d/%02d/%02d %02d:%02d;\
+%s\n", //cmdline parms                                             //~v9e4R~
+//mode=%s,%s%s%s%s.\n", //modeparm-pc-edittabctr                     //~v96jR~//~v96xR~//~v9e4R~
 // mode=%s-%s%c,%s.\n", //v4.6av6.5r v7.1r                           //~v969M~//~v96jR~
 // mode=%s-%s%n,%s.\n", //v4.6av6.5r v7.1r                           //~v953I~//~v969R~
 	    pgmid,ver,OSTYPE,                                          //~v898R~
@@ -1867,11 +1916,12 @@ do {                                                               //~v801R~
     	plocaltime->tm_year+1900,plocaltime->tm_mon+1,plocaltime->tm_mday,//~v898I~
 		plocaltime->tm_hour,plocaltime->tm_min,
 //      pc,asciiid[asciimode],                                     //~v96jR~
-        modeparm,(*pc?" ":""),pc,(*edittabctr?" ":""),      //%s-%s//~v96jR~
+//      modeparm,(*pc?" ":""),pc,(*edittabctr?" ":""),      //%s-%s//~v96jR~//~v9e4R~
 //      &ii,	//to set \n for hex mode                        //~v747I~//~v969R~
 //      '\t',   //for tabctr pos                                   //~v969R~//~v96jR~
 //      tabskip);//v7.12a                                          //~v953R~
-        edittabctr);//v7.12a                                       //~v953I~
+//      edittabctr);//v7.12a                                       //~v953I~//~v9e4R~
+        Gcmdlineparms);                                            //~v9e4I~
 //        ii=(ULPTR)strchr(trailer,'\t')-(ULPTR)trailer;             //~v969I~//~v96jR~
 //        if (hexdump)                    //v7.12a                //~v747I~//~v96jR~
 //        {                                                       //~v761I~//~v96jR~
@@ -2992,3 +3042,168 @@ UCHAR keisenconv(UCHAR Pch)                                        //~v857I~
     }                                                              //~v857I~
     return ch;                                                     //~v857I~
 }//keisenconv                                                      //~v857I~
+//**********************************************************************//~v9e0I~
+//*DBCSspace,tab alt char parm                                     //~v9e0I~
+//**********************************************************************//~v9e0I~
+int getTabon(char *Pparm)                                          //~v9e0I~
+{                                                                  //~v9e0I~
+    char *pc,*pc2,*pc3;                                            //~v9e0R~
+    int parm[3]={0,0,0},parmctr=0,len,rc=4,swutf=0,swlocale=0,val; //~v9e0R~
+    char wkbin[8];                                                 //~v9e0I~
+//**************************                                       //~v9e0I~
+    for (pc=Pparm;*pc;)                                            //~v9e0I~
+    {                                                              //~v9e0I~
+//    printf("getTabon:ctr=%d,pc=%s\n",parmctr,pc);                //~v9e0R~
+        pc2=strchr(pc,':');                                        //~v9e0I~
+        if (!pc2)                                                  //~v9e0R~
+        {                                                          //~v9e0I~
+//        	len=strlen(pc);                                        //~v9e0I~//+v9e7R~
+          	len=(int)strlen(pc);                                   //+v9e7I~
+            pc3=pc+len;                                            //~v9e0I~
+        }                                                          //~v9e0I~
+        else                                                       //~v9e0I~
+        {                                                          //~v9e0I~
+        	len=PTRDIFF(pc2,pc);                                   //~v9e0I~
+            pc3=pc2+1;                                             //~v9e0I~
+        }                                                          //~v9e0I~
+        if (toupper(*pc)=='X'||toupper(*pc)=='U')                  //~v9e0R~
+        {                                                          //~v9e0I~
+	        if (len>5||len<=1)                                     //~v9e0R~
+    	    	break;                                             //~v9e0I~
+        	memset(wkbin,0,sizeof(wkbin));                         //~v9e0R~
+        	if (ugethex(pc+1,wkbin,len-1)<0)                       //~v9e0R~
+	        	break;                                             //~v9e0I~
+            if (wkbin[0])                                          //~v9e0R~
+	            val=wkbin[0]*256+wkbin[1];                         //~v9e0R~
+            else                                                   //~v9e0I~
+	            val=wkbin[0];                                      //~v9e0I~
+            if (val>0xff)                                          //~v9e0I~
+            {                                                      //+v9e7I~
+        		if (toupper(*pc)=='X')                             //~v9e0I~
+		            swlocale=1;                                    //~v9e0R~
+                else                                               //~v9e0I~
+		            swutf=1;                                       //~v9e0I~
+            }                                                      //+v9e7I~
+        }                                                          //~v9e0I~
+        else                                                       //~v9e0I~
+        {                                                          //~v9e0I~
+            if (len==0)                                            //~v9e0I~
+            	val=0;                                             //~v9e0I~
+            else                                                   //~v9e0I~
+            if (len==1)                                            //~v9e0I~
+            	val=*pc;                                           //~v9e0I~
+            else                                                   //~v9e0I~
+            if (len==2)                                            //~v9e0I~
+            	val=*pc*256+*(pc+1);                               //~v9e0I~
+        	else                                                   //~v9e0I~
+        		break;                                             //~v9e0I~
+            if (val>0xff)                                          //~v9e0I~
+	            swlocale=1;                                        //~v9e0R~
+        }                                                          //~v9e0I~
+	    if (swutf & swlocale)                                      //~v9e0R~
+    	{                                                          //~v9e0I~
+        	printf("Tabon parameter is mixed of Unicode and Locale code\n");//~v9e0R~
+        	break;                                                 //~v9e0I~
+    	}                                                          //~v9e0I~
+    	if (parmctr>=3)                                            //~v9e0M~
+        	break;                                                 //~v9e0M~
+        if (parmctr==0 && val<=0xff)                               //~v9e0I~
+        {                                                          //~v9e0I~
+        	printf("Tabon parameter:DBCS space is not DBCS code\n");//~v9e0I~
+        	break;                                                 //~v9e0I~
+        }                                                          //~v9e0I~
+        parm[parmctr++]=val;                                       //~v9e0I~
+        pc=pc3;                                                    //~v9e0R~
+    }                                                              //~v9e0I~
+    if (!*pc)                                                      //~v9e0R~
+    {                                                              //~v9e0I~
+    	Gtabonutf8=swutf;                                          //~v9e0I~
+    	Gtabonlocale=swlocale;                                     //~v9e0I~
+    	GtabonDBCSspace=parm[0];                                   //~v9e0I~
+    	GtabonTab=parm[1];                                         //~v9e0I~
+    	GtabonTabskip=parm[2];                                     //~v9e0I~
+		UCBITON(swsw5,SW5TABONPRM);  //0x10	//tabon parameter specified//~v9e0I~
+    	rc=0;                                                      //~v9e0I~
+    }                                                              //~v9e0I~
+//    printf("getTabon:ctr=%d,swutf8=%d,space=%x,tab=%x,tabskip=%x\n",parmctr,Gtabonutf8,GtabonDBCSspace,GtabonTab,GtabonTabskip);//~v9e0R~
+    return rc;                                                     //~v9e0I~
+}//getTabon                                                        //~v9e0I~
+//**********************************************************************//~v9e0I~
+//*chk utf8 mode and tabon                                         //~v9e0R~
+//**********************************************************************//~v9e0I~
+int chkTabon()                                                     //~v9e0I~
+{                                                                  //~v9e0I~
+	int swutf8file,swebcfile,ddlen;                                //~v9e0R~
+    UCHAR dddbcs[4]={0,0},dddata[4];                               //~v9e0R~
+//**************************                                       //~v9e0I~
+	swebcfile=UCBITCHK(swsw4,SW4EBCCFG);                           //~v9e0I~
+    if (swebcfile)                                                 //~v9e0I~
+    	if (swsw5 & SW5NOBYUCS) //ebc by /TU(ebc by not ucs)       //~v9e0I~
+        	swutf8file=0;                                          //~v9e0I~
+        else                                                       //~v9e0I~
+        	swutf8file=1;                                          //~v9e0I~
+    else                                                           //~v9e0I~
+	    swutf8file=XPUTF8MODE();                                   //~v9e0I~
+    if (( swutf8file &&   Gtabonlocale)                            //~v9e0R~
+    ||  (!swutf8file &&   Gtabonutf8)                              //~v9e0I~
+    )                                                              //~v9e0I~
+    {                                                              //~v9e0I~
+        printf("Tabon parameter type(unicode or not) and file type is inconsistent\n");//@@@@test//~v9e0R~
+        return 4;                                                  //~v9e0I~
+    }                                                              //~v9e0I~
+    if (!GtabonDBCSspace)                                          //~v9e0I~
+    {                                                              //~v9e0I~
+    	if (swutf8file)                                            //~v9e0R~
+        	GtabonDBCSspace=TABON_DEFAULT_DBCSSPACE_UTF8;          //~v9e0R~
+        else                                                       //~v9e0I~
+        	GtabonDBCSspace=TABON_DEFAULT_DBCSSPACE_LOCALE;        //~v9e0R~
+    }                                                              //~v9e0I~
+    else                                                           //~v9e0I~
+    {                                                              //~v9e0I~
+        if (swutf8file)                                            //~v9e0I~
+        {                                                          //~v9e0I~
+            utfcvu2dd1(0,(WUCS)GtabonDBCSspace,dddata,dddbcs,&ddlen);//~v9e0R~
+//          printf("dddata=%02x%02x,dddbcs=%02x%02x\n",*dddata,*(dddata+1),*dddbcs,*(dddbcs+1));//~v9e0R~
+            if (*dddbcs!=UDBCSCHK_DBCS1STUCS)                      //~v9e0I~
+            {                                                      //~v9e0I~
+        		printf("Tabon DBCS space param(u%02x%02x) is not colomn width=2\n",GtabonDBCSspace>>8,GtabonDBCSspace&255);//@@@@test//~v9e0R~
+        		return 4;                                          //~v9e0I~
+            }                                                      //~v9e0I~
+        }                                                          //~v9e0I~
+        else                                                       //~v9e0I~
+        {                                                          //~v9e0I~
+	        if (!(GtabonDBCSspace>>8))                             //~v9e0I~
+    	    {                                                      //~v9e0I~
+        		printf("Tabon DBCS space param(x%02x%02x) is colomn width=1\n",GtabonDBCSspace>>8,GtabonDBCSspace&255);//@@@@test//~v9e0R~
+        		return 4;                                          //~v9e0I~
+        	}                                                      //~v9e0I~
+        }                                                          //~v9e0I~
+    }                                                              //~v9e0I~
+    if (!GtabonTab)                                                //~v9e0I~
+        GtabonTab=TABON_DEFAULT_TAB;                               //~v9e0I~
+    if (!GtabonTabskip)                                            //~v9e0I~
+        GtabonTabskip=TABON_DEFAULT_TABSKIP;                       //~v9e0I~
+//  printf("chkTabon:swebcfile=%d,swutf8file=%d,swutf8=%d,space=%x,tab=%x,tabskip=%x\n",swebcfile,swutf8file,Gtabonutf8,GtabonDBCSspace,GtabonTab,GtabonTabskip);//@@@@test//~v9e0R~
+    return 0;                                                      //~v9e0I~
+}//chkTabon                                                        //~v9e0I~
+//**********************************************************************//~v9e0I~
+//*get altch for tab/dbcsspace                                     //~v9e0I~
+//**********************************************************************//~v9e0I~
+int getTabonAltch(int Ptype,int Ptype2)                            //~v9e0I~
+{                                                                  //~v9e0I~
+	int rc;                                                        //~v9e0I~
+//***************************                                      //~v9e0I~
+	if (Ptype==TAB)                                                //~v9e0I~
+    {                                                              //~v9e0I~
+    	if (Ptype2==0)	//TAB                                      //~v9e0I~
+        	rc=GtabonTab;                                          //~v9e0I~
+        else            //TABSkip                                  //~v9e0I~
+        	rc=GtabonTabskip;                                      //~v9e0I~
+    }                                                              //~v9e0I~
+    else                                                           //~v9e0I~
+    {                                                              //~v9e0I~
+    	rc=GtabonDBCSspace;                                        //~v9e0I~
+    }                                                              //~v9e0I~
+//  printf("parm=%x-%x,rc=%x\n",Ptype,Ptype2,rc);                  //~v9e0R~
+    return rc;                                                     //~v9e0I~
+}//getTabonAltch                                                   //~v9e0I~

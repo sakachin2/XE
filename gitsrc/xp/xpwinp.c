@@ -1,8 +1,9 @@
-//CID://+v994R~:        update#=   28                              //+v994R~
+//CID://+v9e6R~:        update#=   29                              //+v9e6R~
 //**********************************************************************
 //* xpwinp.c                                                       //~v928R~
 //**********************************************************************
-//v994:160308 v9.32 W32 compiler warning                           //+v994I~
+//v9e6:170826 compiler warning samename parm and gbl               //+v9e6I~
+//v994:160308 v9.32 W32 compiler warning                           //~v994I~
 //v990:140506 v9.30 (W32UNICODE) filename by UD fmt                //~v990I~
 //120629 v968 VC2010:LP64 support                                  //~v968I~
 //120616 v967 for VC6:/W4 warning except C4115,C4214,C4100,C4706,C4244,C4210,C4127,C4245//~v967I~
@@ -445,10 +446,10 @@ UTRACED("getprinter pdm",pdm,64);                                  //~v91fR~
 UTRACEP("ori=%d,form=%d\n",Pori,Ppapersz);                         //~v91fR~
 	if (pdm->dmOrientation!=Pori || pdm->dmPaperSize!=Ppapersz)    //~v91fI~
     {                                                              //~v91fI~
-//  	pdm->dmOrientation=Pori;                                   //~v91fR~//+v994R~
-    	pdm->dmOrientation=(short)Pori;                            //+v994I~
-//  	pdm->dmPaperSize=Ppapersz;                                 //~v91fR~//+v994R~
-    	pdm->dmPaperSize=(short)Ppapersz;                          //+v994I~
+//  	pdm->dmOrientation=Pori;                                   //~v91fR~//~v994R~
+    	pdm->dmOrientation=(short)Pori;                            //~v994I~
+//  	pdm->dmPaperSize=Ppapersz;                                 //~v91fR~//~v994R~
+    	pdm->dmPaperSize=(short)Ppapersz;                          //~v994I~
 UTRACED("setprinter",pdm,64);                                      //~v91fR~
 //UTRACED("setprinter ppi2",ppi2,256);                             //~v91fR~
     	rc=SetPrinter(hprinter,2,(LPBYTE)ppi2,0);//2:ifolevel,0:buff addr,0:buffsz//~v91fR~
@@ -561,10 +562,10 @@ int win_initdm(DEVMODE **Ppdm,char *Pdriver,char *Ptype,char *Pport)//~v916R~
 	    pdm->dmFields=0;                                           //~v91fI~
 	    pdm->dmFields|=DM_ORIENTATION;                             //~v91fI~
 	  	pdm->dmFields|=DM_PAPERSIZE;                               //~v91fI~
-//  	pdm->dmOrientation=ori;                                    //~v91fR~//+v994R~
-    	pdm->dmOrientation=(short)ori;                             //+v994I~
-//  	pdm->dmPaperSize=papersz;                                  //~v91fR~//+v994R~
-    	pdm->dmPaperSize=(short)papersz;                           //+v994I~
+//  	pdm->dmOrientation=ori;                                    //~v91fR~//~v994R~
+    	pdm->dmOrientation=(short)ori;                             //~v994I~
+//  	pdm->dmPaperSize=papersz;                                  //~v91fR~//~v994R~
+    	pdm->dmPaperSize=(short)papersz;                           //~v994I~
     	pdm=getsetdm(Ptype,pdm);	//set and get new dm           //~v91fR~
 //  	pdm=getsetdm(Ptype,0);	//get current dm                   //~v91fR~
     }                                                              //~v91fI~
@@ -581,7 +582,8 @@ int win_initdm(DEVMODE **Ppdm,char *Pdriver,char *Ptype,char *Pport)//~v916R~
 //**************************************************************************
 HDC win_createdc(char *Pdriver,char *Ptype,char *Pport)
 {
-    HDC  	hdc;
+//  HDC  	hdc;                                                   //+v9e6R~
+    HDC  	wkhdc;                                                 //+v9e6I~
     DEVMODE *pdevmode=0;                                           //~v91fR~
 //********************************
 	if (Gtraceopt)		//trace option by /Yt                      //~v889I~
@@ -596,13 +598,15 @@ HDC win_createdc(char *Pdriver,char *Ptype,char *Pport)
         	printf("Use /Nd to skip driver setting\n");            //~v916I~
     }                                                              //~v916I~
 //printf("pdevmode=%x\n",pdevmode);                                //~v916R~
-  	if (!(hdc=CreateDC(NULL,Ptype,NULL,pdevmode)))//driver name and output is for compatibilty of old win//~v916I~
+//	if (!(hdc=CreateDC(NULL,Ptype,NULL,pdevmode)))//driver name and output is for compatibilty of old win//~v916I~//+v9e6R~
+  	if (!(wkhdc=CreateDC(NULL,Ptype,NULL,pdevmode)))//driver name and output is for compatibilty of old win//+v9e6I~
 	{
 		printf("\nCreateDC(%s) failed,rc=%d\n",                    //~v844R~
 				Ptype,GetLastError());
 		exit(8);
     }
-	return hdc;
+//  return hdc;                                                    //+v9e6R~
+    return wkhdc;                                                  //+v9e6I~
 }//win_createdc
 //****************************************************************************//~v844I~
 //reset after startpage for win95                                  //~v844I~

@@ -14,6 +14,7 @@ echo libpath=%LIBPATH%
 echo lib=%LIB%
 
      nmake "utf8=yes" "ULIBHDIR=%ULIBHDIR%" "OBJULIB=%OBJULIB%" "trace=%TRACE%" "w98=vc10" "vc=17c" "x64=%X64%" "source=no" "debug=%DEBUG%" %* /f xp17c.mak   
-
+@if exist err0    type err0
+@if exist err     type err 
 endlocal
 

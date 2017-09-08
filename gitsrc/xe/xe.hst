@@ -1,3 +1,15 @@
+//*********  20170821 v129Cj/v129Ce/xej.txt updated   ****************
+//vbc4:170826 xemtrch:v1.5 for 64bit(return addr)
+//            xemtrchk
+//vbc3:170822 delete vbc2(it is enough by normal find;reject TS parameter)
+//            xefcmd22.c
+//vbc2:170821 add TS   option for find cmd on dirlist
+//            xefcmd22.c/h xefcmd25.c xefcmd26.c
+//vbc1:170820 add ATTR option for find cmd on dirlist
+//            xefcmd22.c/h xefcmd25.c xefcmd26.c
+//*********  20170814 v129Cj updated   ****************
+//vbc0:170814 reject FixedRecordLength mode for CPU8 file(because record Length!=Column width)
+//            wxecsub.c wxefile.cpp 
 //*********  20170321 v129Bj updated   ****************
 //vba7:170716 (Bug:Win64bit)upostmsg WPARAM/LPARAM is IntPtr(64bit!=ULONG)
 //            wxecsub.c wxefile.cpp 

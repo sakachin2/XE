@@ -1,9 +1,12 @@
-//*CID://+v6xiR~:                             update#=  387;       //+v6xiR~
+//*CID://+v6M3R~:                             update#=  417;       //+v6M3R~
 //************************************************************* //~5825I~
 //*uproc2.c                                                        //~v5euR~
 //* parse-redirect,rsh                                             //~v5euR~
 //*************************************************************    //~v022I~
-//v6xi:150115 conversion warning                                   //+v6xiI~
+//v6M3:170824 (Lnx) putenv to LD_LIRARY_PATH is not effective(loader chk it at pgm startup and ignore putenv after startup)//+v6M3I~
+//v6M2:170824 (Bug)v6M0 faile if path is multiple devided by ";"/":"//~v6M2I~
+//v6M0:170808 err "LoadLibrary failed for icuucxx"-=>loaddll using ICU_DATA param//~v6M0I~
+//v6xi:150115 conversion warning                                   //~v6xiI~
 //v6hh:120623 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  defines ULPTR(unsigned long long)//~v6hhI~
 //v6h6:120609 (WTL)avoid c4701 warning(used uninitialized variable)//~v6h6I~
 //v6g4:120512 ICU api suffix for 4.2 is also 4_2 like as 4.0(4_2)  //~v6g4I~
@@ -63,6 +66,7 @@
 #include <uftp.h>                                                  //~v5euI~
 #include <ufemsg.h>                                                //~v5euI~
 #include <utrace.h>                                                //~v5mPI~
+#include <udos2.h>                                                 //~v6M0I~
 //*********************************************                    //~v064R~
 //*********************************************                    //~v064R~
 //**************************************************************** //~v50HI~
@@ -204,11 +208,11 @@ int uproc_rsh(ULONG Popt,void *Pphost,char *Ppuser,char *Ppcmd,char *Ppfnmstdo,c
 	if (pfnmstde && !*pfnmstde)                                    //~v5euR~
     	pfnmstde=0;                                                //~v5euR~
     if (!pfnmstdo)                                                 //~v5euI~
-//		Popt &= ~UPROC_APPENDSO;	//append no meaning            //~v5euI~//+v6xiR~
-  		Popt = (ULONG)(Popt & (UINT)(~UPROC_APPENDSO));	//append no meaning//+v6xiI~
+//		Popt &= ~UPROC_APPENDSO;	//append no meaning            //~v5euI~//~v6xiR~
+  		Popt = (ULONG)(Popt & (UINT)(~UPROC_APPENDSO));	//append no meaning//~v6xiI~
     if (!pfnmstde)                                                 //~v5euI~
-//  	Popt &= ~UPROC_APPENDSE;	//append no meaning            //~v5euI~//+v6xiR~
-    	Popt = (ULONG)(Popt & (ULONG)(~UPROC_APPENDSE));	//append no meaning//+v6xiI~
+//  	Popt &= ~UPROC_APPENDSE;	//append no meaning            //~v5euI~//~v6xiR~
+    	Popt = (ULONG)(Popt & (ULONG)(~UPROC_APPENDSE));	//append no meaning//~v6xiI~
 //*edit cmd string                                                 //~v5euI~
     if (strlen(Ppcmd)>MAX_RSHCMDLEN)                               //~v5euI~
     {                                                              //~v5euI~
@@ -280,8 +284,8 @@ int uproc_rsh(ULONG Popt,void *Pphost,char *Ppuser,char *Ppcmd,char *Ppfnmstdo,c
 		sprintf(cmdstr,"rsh %s -n %s",phost,Ppcmd);                //~v5ewR~
 //printf("cmdstr=%s\n",cmdstr);                                    //~v5euR~
 //*issue cmd                                                       //~v5euI~
-//  sysopt=(Popt & ~(UPROC_CVS2E|UPROC_CVE2S));                    //~v5euI~//+v6xiR~
-    sysopt=(int)(Popt & (ULONG)(~(UPROC_CVS2E|UPROC_CVE2S)));      //+v6xiI~
+//  sysopt=(Popt & ~(UPROC_CVS2E|UPROC_CVE2S));                    //~v5euI~//~v6xiR~
+    sysopt=(int)(Popt & (ULONG)(~(UPROC_CVS2E|UPROC_CVE2S)));      //~v6xiI~
     cvopt2=sysopt|cvopt;                                           //~v5euI~
     sysopt|=UPROC_NOOKMSG|UPROC_KEEPTEMP|cvopt;                    //~v5euR~
     IFDEF_WINCON(sysopt|=UPROC_KEEPMODE);	//keep consolemode     //~v5maI~
@@ -295,11 +299,11 @@ int uproc_rsh(ULONG Popt,void *Pphost,char *Ppuser,char *Ppcmd,char *Ppfnmstdo,c
         if ((rc=uproc_redirectoutchk(sysopt,cmdstr,&pstdo,&pstde,Ppstdoctr,Ppstdectr,pfnmstdo,pfnmstde))>1)//~v5ewR~
 			return rc;		//rc=1:stderr exist                    //~v5ewI~
         if (Ppfnmstdo && *Ppfnmstdo)                               //~v5euR~
-//	        uproc_redirectrewrite(cvopt2 & ~UPROC_APPENDSE,pstdo,Ppfnmstdo);//~v5euR~//+v6xiR~
-  	        uproc_redirectrewrite((ULONG)(cvopt2 & ~UPROC_APPENDSE),pstdo,Ppfnmstdo);//+v6xiI~
+//	        uproc_redirectrewrite(cvopt2 & ~UPROC_APPENDSE,pstdo,Ppfnmstdo);//~v5euR~//~v6xiR~
+  	        uproc_redirectrewrite((ULONG)(cvopt2 & ~UPROC_APPENDSE),pstdo,Ppfnmstdo);//~v6xiI~
         if (Ppfnmstde && *Ppfnmstde)                               //~v5euR~
-//   	   	uproc_redirectrewrite(cvopt2 & ~UPROC_APPENDSO,pstde,Ppfnmstde);//~v5euR~//+v6xiR~
-     	   	uproc_redirectrewrite((ULONG)(cvopt2 & ~UPROC_APPENDSO),pstde,Ppfnmstde);//+v6xiI~
+//   	   	uproc_redirectrewrite(cvopt2 & ~UPROC_APPENDSO,pstde,Ppfnmstde);//~v5euR~//~v6xiR~
+     	   	uproc_redirectrewrite((ULONG)(cvopt2 & ~UPROC_APPENDSO),pstde,Ppfnmstde);//~v6xiI~
 //delete temp file                                                 //~v5euI~
 	    if (swtempso)	//                                         //~v5euR~
 #ifdef UNX                                                         //~v5euI~
@@ -480,24 +484,112 @@ int uprocredirectchk(int Pfileno)                                  //~v5kuI~
 }//uprocredirectchk                                                //~v5kuI~
 //#ifdef W32                                                       //~v5mPR~
 #ifdef WCSUPP                                                      //~v5mPI~
+//*********************************************************************//~v6M0I~
+//* accept path, dllname is optional                               //~v6M0I~
+//*********************************************************************//~v6M0I~
+int uproc_loaddllpath(int Popt,char *Ppath,char *Pdllname,char *Pversion,ULPTR *Pphandle)//~v6M0M~
+{                                                                  //~v6M0M~
+    int rc,opt,rc2=0;                                              //~v6M0R~
+    char dllname[_MAX_PATH*2],*pc;                                 //~v6M0M~
+//********************                                             //~v6M0M~
+	if (Pdllname)                                                  //~v6M0I~
+    {                                                              //~v6M0I~
+    	rc=uproc_loaddll(Popt,Pdllname,Pversion,Pphandle);         //~v6M0I~
+    	if (!rc)                                                   //~v6M0I~
+        	return 0;                                              //~v6M0I~
+		sprintf(dllname,"%s%c%s",Ppath,DIR_SEPC,Pdllname);         //~v6M0I~
+        rc2=rc;                                                    //~v6M0I~
+    }                                                              //~v6M0I~
+    else                                                           //~v6M0I~
+    	strcpy(dllname,Ppath);                                     //~v6M0I~
+    pc=strchr(dllname,'.');                                        //~v6M0I~
+#ifdef W32                                                         //~v6M0I~
+	if (Pversion)                                                  //~v6M0I~
+    {                                                              //~v6M0I~
+    	if (pc)                                                    //~v6M0I~
+        {                                                          //~v6M0I~
+			strcpy(pc+strlen(Pversion),pc);                        //~v6M0I~
+            memcpy(pc,Pversion,strlen(Pversion));                  //~v6M0I~
+        }                                                          //~v6M0I~
+        else                                                       //~v6M0I~
+        	strcat(dllname,Pversion);                              //~v6M0I~
+    }                                                              //~v6M0I~
+    if (!pc)                                                       //~v6M0I~
+        strcat(dllname,".dll");                                    //~v6M0M~
+#else                                                              //~v6M0M~
+    if (!pc)                                                       //~v6M0I~
+    {                                                              //~v6M0I~
+        strcat(dllname,".so");                                     //~v6M0M~
+		if (Pversion)                                              //~v6M0I~
+			sprintf(dllname+strlen(dllname),".%s",Pversion);       //~v6M0I~
+    }                                                              //~v6M0I~
+#endif                                                             //~v6M0M~
+	opt=Popt|UPLD_ALTPATH;//  0x04         //LoadLibraryEx with LOAD_WITH_ALTERED_SEARCH_PATH//~v6M0I~
+#ifdef LNX                                                         //~v6M0I~
+//    pc=strrchr(dllname,DIR_SEPC);                                  //~v6M0I~//+v6M3R~
+//    if (pc)                                                        //~v6M0I~//+v6M3R~
+//    {                                                              //~v6M0I~//+v6M3R~
+//        *pc=0;                                                     //~v6M0I~//+v6M3R~
+//        udos_setenv(UDSE_PREPEND,"LD_LIBRARY_PATH",dllname);       //~v6M0I~//+v6M3R~
+////      if (Popt & UPLD_SETICUDATAENV)                             //~v6M2R~//+v6M3R~
+////          udos_setenv(UDSE_PREPEND,"ICU_DATA",newenv);           //~v6M2R~//+v6M3R~
+////      strcpy(dllname,pc);                                        //~v6M0I~//~v6M2R~//+v6M3R~
+//        strcpy(dllname,pc+1);                                      //~v6M2I~//+v6M3R~
+//    }                                                              //~v6M0I~//+v6M3R~
+#endif                                                             //~v6M0I~
+    rc=uproc_loaddll(opt,dllname,0,Pphandle);                      //~v6M0R~
+    if (!rc) //success by path                                     //~v6M0I~
+//  	if (rc2)	//1st loaddll failed                           //~v6M0I~//~v6M2R~
+    	if (rc2	//1st loaddll failed                               //~v6M2I~
+        ||  (Popt & UPLD_DELEMSG))        //ugeterrmsg to delete previous uerrmsg//~v6M2I~
+        {                                                          //~v6M0I~
+        	uerrmsg(" retry by %s was scceeded",0,                 //~v6M0I~
+            		dllname);	//to stdout                        //~v6M0I~
+            ugeterrmsg();	//clear errmsg on hdr line of xe       //~v6M0I~
+        }                                                          //~v6M0I~
+    UTRACEP("%s:rc=%d,path=%s,dll=%s,version=%s,dllname=%s\n",UTT,rc,Ppath,Pdllname,Pversion,dllname);//~v6M0I~
+    return rc;                                                     //~v6M0M~
+}//uproc_loaddllpath                                               //~v6M0M~
 //*************************************************************************//~v5mPM~
 //*DLL load                                                        //~v5mPM~
+//*omit extension of dllname                                       //~v6M0I~
 //*************************************************************************//~v5mPM~
 //int uproc_loaddll(int Popt,char *Pdllname,char *Pversion,ULONG *Pphandle)//~v5mPM~//~v6hhR~
 int uproc_loaddll(int Popt,char *Pdllname,char *Pversion,ULPTR *Pphandle)//~v6hhI~
 {                                                                  //~v5mPM~
 #ifdef W32                                                         //~v5mPI~
 	HINSTANCE      hInstLib ;                                      //~v5mPM~
+    int   flag;                                                    //~v6M0I~
 #else                                                              //~v5mPI~
 	void *hInstLib;                                                //~v5mPI~
     int   mode;                                                    //~v5mPI~
 #endif                                                             //~v5mPI~
     int rc;                                                        //~v5mPM~
-    char dllname[256],*pdllname;                                   //~v5mPM~
+//  char dllname[256],*pdllname;                                   //~v5mPM~//~v6M0R~
+    char dllname[_MAX_PATH*2],*pdllname,*pc;                       //~v6M0R~
+#ifdef W32                                                         //~v6M0I~
+    int pos;                                                       //~v6M0I~
+#endif                                                             //~v6M0I~
 //********************                                             //~v5mPM~
 	if (Pversion)                                                  //~v5mPM~
     {                                                              //~v5mPM~
+    	pc=strchr(Pdllname,'.');                                   //~v6M0I~
+#ifdef W32                                                         //~v6M0I~
+      if (pc)              //insert version before extension       //~v6M0I~
+      {                                                            //~v6M0I~
+        pos=PTRDIFF(pc,Pdllname);                                  //~v6M0I~
+        strcpy(dllname,Pdllname);                                  //~v6M0I~
+		strcpy(dllname+pos,Pversion);                              //~v6M0I~
+        strcat(dllname,pc);                                        //~v6M0I~
+      }                                                            //~v6M0I~
+      else                                                         //~v6M0I~
 		sprintf(dllname,"%s%s",Pdllname,Pversion);                 //~v5mPR~
+#else                                                              //~v6M0I~
+      if (pc)              //insert version before extension       //~v6M0I~
+        sprintf(dllname,"%s.%s",Pdllname,Pversion);                //~v6M0I~
+      else                                                         //~v6M0I~
+        sprintf(dllname,"%s.so.%s",Pdllname,Pversion);             //~v6M0I~
+#endif                                                             //~v6M0I~
         pdllname=dllname;                                          //~v5mPM~
     }                                                              //~v5mPM~
     else                                                           //~v5mPM~
@@ -506,6 +598,12 @@ int uproc_loaddll(int Popt,char *Pdllname,char *Pversion,ULPTR *Pphandle)//~v6hh
 //#ifdef WXE                                                       //~v5mPR~
 //    hInstLib = AfxLoadLibrary(pdllname) ;                        //~v5mPR~
 //#else                                                            //~v5mPR~
+  if (Popt & UPLD_ALTPATH)         //LoadLibraryEx with LOAD_WITH_ALTERED_SEARCH_PATH//~v6M0I~
+  {                                                                //~v6M0I~
+    flag=LOAD_WITH_ALTERED_SEARCH_PATH;                //~7809I~   //~v6M0I~
+    hInstLib = LoadLibraryEx(pdllname,NULL,flag) ;                 //~v6M0I~
+  }                                                                //~v6M0I~
+  else                                                             //~v6M0I~
     hInstLib = LoadLibrary(pdllname) ;                             //~v5mPM~
 //#endif                                                           //~v5mPR~
 #else       //LNX                                                  //~v5mPI~
@@ -514,6 +612,7 @@ int uproc_loaddll(int Popt,char *Pdllname,char *Pversion,ULPTR *Pphandle)//~v6hh
   else                                                             //~v5mPI~
 	mode=RTLD_LAZY;                                                //~v5mPI~
     hInstLib=dlopen(pdllname,mode) ;                               //~v5mPI~
+    UTRACEP("%s:dlopen hInstLib=%p,mode=%x,dllname=%s\n",UTT,hInstLib,mode,pdllname);//~v6M2I~
 #endif                                                             //~v5mPI~
 //  *Pphandle=(ULONG)hInstLib;                                     //~v5mPM~//~v6hhR~
     *Pphandle=(ULPTR)hInstLib;                                     //~v6hhI~
@@ -537,6 +636,7 @@ int uproc_loaddll(int Popt,char *Pdllname,char *Pversion,ULPTR *Pphandle)//~v6hh
         	rc=ENOENT;                                             //~v6fhI~
 #endif                                                             //~v5mPI~
     }                                                              //~v5mPM~
+    UTRACEP("%s:Popt=%x,rc=%d,dll=%s,version=%s,dllname=%s\n",UTT,Popt,rc,Pdllname,Pversion,pdllname);//~v6M0R~
     return rc;                                                     //~v5mPM~
 }//uproc_loaddll                                                   //~v5mPM~
 //*************************************************************************//~v5mPM~

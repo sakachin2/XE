@@ -27,7 +27,7 @@ a:hover{font-weight:bold;}-->
 
                     ( &quot;\&quot; = 0x5c = backslash )
 
-            col-range:[left-column | LM | RM [right-column] | eol | maxeol]
+            col-range:[c1 | LM | RM [c2] | eol | maxeol]
 
             FIN     :Case sensitive search
             IFI     :Case Insensitive search
@@ -93,7 +93,7 @@ a:hover{font-weight:bold;}-->
             \esc    :Following 1 byte escape sequence and hex notation
                      is available.
                      \a (bell=0x07),<B> </B>(BS=0x08),\t (H-tab=0x09)<B>
-                   </B>\n (LF=0x0a),\v (V-tab=0x0b),</SPAN><SPAN STYLE="color:#000000;font-size:12pt;font-family:‚l‚r ƒSƒVƒbƒN"> (FF=0x0c)
+                   </B>\n (LF=0x0a),\v (V-tab=0x0b),</SPAN><SPAN STYLE="color:#000000;font-size:12pt;font-family:ï¿½lï¿½r ï¿½Sï¿½Vï¿½bï¿½N"> (FF=0x0c)
                      \r (CR=0x0d),\x(even number of hex notation)
                      ex of hex notation. \x8281 , \x09 , \x0c ,
                      \a or \x0d0a cannnot be found if it is treated as
@@ -203,12 +203,24 @@ a:hover{font-weight:bold;}-->
             .lab1/2 :Limit search line range using a pair of label
                      on lineno column. line number may be used so as to
                      limit line range with no label on lineno column.
-            l-column:left-most column of search range.
-            r-column:right-most column of search range.
+            c1      :left-most column of search range.
+            c2      :right-most column of search range.
             LM      :search Left <a href="HID00000238.htm">margin</a> only.
             RM      :search Reft margin only.
             eol     :search EndOfLine only.
                      ex) F &quot;a b&quot; eol (F &quot;a b&quot;\n is err)
+            maxeol  :search EndOfLine of lines with maximum length.
+            ATTR    :Search file attribute column on dir-list panel.
+                     Parameter is case insensitive.
+                     Use "d" for directory, "L" for symbolic link.
+                     Specify "d" and "L" alone each.
+                     For other attributes, on Windows, select the line having all attributes of parameter,
+                     on Linux, select the line having string of attribute parameter.
+                     Following attribute IDs are specific to Linux.
+                        u:setuid, g:setgid, S:setuid+setgid, t:stickey
+                        c:char device, b:block device, p:pipe, s:socket
+                     e.g.) (Windows) f SH attr ; f R attr &amp; 17-08 ; f D attr &amp; L attr
+                           (Linux) f 775 attr ; f u attr
             -a[-]n  :display/exclude n lines after the line of the word.
                      For &amp; search,base is the line containing the 2nd word.
                      &quot;-&quot; means &quot;before the line&quot; and -b option is also
