@@ -1,6 +1,6 @@
-||*CID:||+129BR~:  2017/06/24                update#=  798;           ||+129BR~
+||*CID:||+129CR~:  2017/09/07                update#=  800;           ||+129CR~
 ######################################################################
-[English]    v1.29B
+[English]    v1.29C                                                   ||+129CR~
 
 This editor is fit for programmers working on both main-frame and PC.
 Its operation is based on mainframe SPF editor,
