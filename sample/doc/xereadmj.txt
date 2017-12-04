@@ -1,6 +1,6 @@
-||*CID:||+v@@@R~:  2017/03/29                update#=  787;           ||~v@@@R~
+||*CID:||+v129R~:  2017/11/30                update#=  796;           ||~v129R~||~v129R~
 ######################################################################
-[Japanese]    v1.29  (Refer xereadme.txt for English)                 ||~127SR~||~v128R~||~v@@@R~
+[Japanese]    v1.29  (Refer xereadme.txt for English)                 ||~127SR~||~v128R~||~v129R~
 
 メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。||~v126R~
 ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。       ||~v126I~
@@ -67,9 +67,9 @@
         xereadme.txt 英語版 README                                    ||~124FR~
         xej.txt      日本語マニュアル                                 ||~124FR~
         xee.txt      英語マニュアル                                   ||~124FR~
- v1.29  xe.exe       実行ファイル(DOS版はv1.13)                       ||~127SR~||~v128R~||~v@@@R~
- v1.29  wxe.exe      Windows GUI 版。                                 ||~127SR~||~v128R~||~v@@@R~
- v1.29  gxe.exe      Linux X-Windows 版                               ||~127SR~||~v128R~||~v@@@R~
+ v1.29  xe.exe       実行ファイル(DOS版はv1.13)                       ||~127SR~||~v128R~||~v129R~
+ v1.29  wxe.exe      Windows GUI 版。                                 ||~127SR~||~v128R~||~v129R~
+ v1.29  gxe.exe      Linux X-Windows 版                               ||~127SR~||~v128R~||~v129R~
         xehelp\      Windows/Linux版ヘルプファイルDir。
                      ワークディレクトリーに置くか、xehelp環境変数
                      あるいは/hdコマンドラインパラメータで位置指定する。
@@ -96,7 +96,7 @@
         XE4S001Z.aws awsutil で作成した導入用LoadModule
         XE4S001Z.jcl XE4S001Z.awsからLoadModuleライブラリーに導入するJCL
 
- v9.38  xprint.exe   テキストファイルプリントユーティリティ           ||~128CR~||+v@@@R~
+ v9.38  xprint.exe   テキストファイルプリントユーティリティ           ||~128CR~||~v129R~
         xprint.sh    Linuxでxprintを使用するためのラッパーシェル
         gxp          Linux GTKPrint版 xprint                          ||~127DR~
         xpj.txt      xprint 日本語説明                                ||~124FR~
@@ -106,15 +106,15 @@
  v1.1   xads.exe     (Win版のみ)NTFSファイルシステムのADS(Alternative Data Stream)アクセス。||~v128R~
  v1.5   xbc.exe      簡易計算ツール。
  v1.1   xci.exe      C/C++/Javaテキストファイルのインデンテーション   ||~127CR~
- v1.20  xcv.exe      コード変換ツール。(SJIS,EUC,Unicode,UTF-8,EBCDIC,任意のコードページ)||~127QR~||+v@@@R~
+ v1.20  xcv.exe      コード変換ツール。(SJIS,EUC,Unicode,UTF-8,EBCDIC,任意のコードページ)||~127QR~||~v129R~
  v1.2   xcvsjisc.exe ソースファイル中のSJISコードを８進表記に変換する。||~124FR~
  v2.28  xdc.exe      ディレクトリー比較ツール                         ||~127SR~||~128ER~||~v128R~
  v2.1   xdd.exe      ディレクトリー削除ツール                         ||~127MR~||~v128R~
- v1.12  xdig.exe     ディレクトリーウォークツール                     ||~127AR~||~127QR~||~v@@@R~
+ v1.12  xdig.exe     ディレクトリーウォークツール                     ||~127AR~||~127QR~||~v129R~
                      ディレクトリー内の全サブディレクトリー/ファイルに指定の
                      コマンドを作用させるプログラム.
         xdig.txt     xdig 解説                                        ||~124FR~
- v1.11  xds.exe      ディレクトリーサイズ表示ツール                   ||~127AR~||~v@@@R~
+ v1.12  xds.exe      ディレクトリーサイズ表示ツール                   ||~127AR~||~v129R~
  v1.25  xfc.exe      ファイル比較ツール                               ||~127SR~||~v128R~
  v1.7   xff.exe      サイズ、タイムスタンプによるファイルサーチ       ||~7B08R~||~127ER~
  v1.19  xfg.exe      テキスト/バイナリ－(Recursive)ファイル文字列探索 ||~127AR~||~v128R~||~128ER~||~v128R~
@@ -2077,8 +2077,8 @@
    v128E <--v128D:                                        (2016/09/08)||~128EI~
    v128F <--v128E:                                        (2016/12/20)
    v128G <--v128F:                                        (2017/02/02)||~v128R~||~v128R~
-   v128H <--v128G:                                        (2017/02/12)||~v@@@I~
-   v128K <--v128H: =v129                                  (2017/03/29)||~v@@@R~
+   v128H <--v128G:                                        (2017/02/12)||~v129R~
+   v128K <--v128H: =v129                                  (2017/03/29)||~v129R~
                                                                       ||~v128I~
      1.BUGs                                                           ||~v128R~
        -(Win)コピーコマンド(XCopy, "c" ディレクトリーリスト行コマンド ||~v128R~
@@ -2153,15 +2153,15 @@
          .Copy & Paste による gxe からのファイルのコピーができない    ||~v128R~
          .マウス中ボタンの回転で画面がスクロールしない                ||~v128R~
        -(LNX)ファイルをDragしようとするをスクロールが発生することがある||~v128R~
-     (128H)                                                           ||~v@@@I~
-       -(64Bit) =0.1(ショートカットコマンド)画面の更新でエラーが出る  ||~v@@@I~
-       -(Linux) リモートのサンバサーバー上のファイル編集で権限エラーなどのエラーの時||~v@@@I~
-              　新規ファイルとして開く                                ||~v@@@I~
-       -(Linux) リモートのFTPサーバー上のファイル編集でシンボリックリンクを開くときエラーMSGがでる||~v@@@I~
-     (128K)                                                           ||~v@@@I~
-       -XBC コマンド                                                  ||~v@@@I~
-         .時間計算で大きな値の時クラッシュする                        ||~v@@@I~
-         .時間計算で HH>0x7fff の時桁落ちする                         ||~v@@@I~
+     (128H)                                                           ||~v129R~
+       -(64Bit) =0.1(ショートカットコマンド)画面の更新でエラーが出る  ||~v129R~
+       -(Linux) リモートのサンバサーバー上のファイル編集で権限エラーなどのエラーの時||~v129R~
+              　新規ファイルとして開く                                ||~v129R~
+       -(Linux) リモートのFTPサーバー上のファイル編集でシンボリックリンクを開くときエラーMSGがでる||~v129R~
+     (128K)                                                           ||~v129R~
+       -XBC コマンド                                                  ||~v129R~
+         .時間計算で大きな値の時クラッシュする                        ||~v129R~
+         .時間計算で HH>0x7fff の時桁落ちする                         ||~v129R~
                                                                       ||~v128I~||~128BR~
      2.機能追加                                                       ||~127AR~||~v128I~||~128BR~
        -Alt+n (nは1-9,h,v) キーでの文字入力機能でユニコード指定をサポート||~v128I~||~128BR~
@@ -2242,11 +2242,11 @@
                                                                       ||~v128R~
         ==>この対応によりini ファイルのサイズが変わるので一旦 ini ファイルを削除してください||~v128R~
            (ワークディレクトリーのファイル Win=::XE!SAVE!, Linux=::xe_save_)||~v128R~
-     (128K)                                                           ||~v@@@I~
-       -XBC コマンド で 最大１０演算を可能にする                      ||~v@@@I~
-        e.g. xbc 200/3.3*35.7 , xbc 1+2+3+4+5+6+7+8+9+10              ||~v@@@I~
-       -コマンド追加                                                  ||~v@@@I~
-        "LIG" を リガチャーモード(A+";"), "CMB" をコンバインモード(A+":")に||~v@@@I~
+     (128K)                                                           ||~v129R~
+       -XBC コマンド で 最大１０演算を可能にする                      ||~v129R~
+        e.g. xbc 200/3.3*35.7 , xbc 1+2+3+4+5+6+7+8+9+10              ||~v129R~
+       -コマンド追加                                                  ||~v129R~
+        "LIG" を リガチャーモード(A+";"), "CMB" をコンバインモード(A+":")に||~v129R~
                                                                       ||~v128I~||~128BR~
      3.その他                                                         ||~v128I~||~128BR~
        -EDIt/BROwse/SELect コマンド、ディレクトリーリストの Open 行コマンドの||~v128I~||~128BR~
@@ -2298,12 +2298,12 @@
          とするとよいようです                                         ||~v128R~
      (128G)                                                           ||~v128R~
        -(LNX)Gtk3で廃止されたAPIの対応                                ||~v128R~
-     (128H)                                                           ||~v@@@I~
-       -メモリアロケーションの効率化                                  ||~v@@@I~
-        メンバーあたり 約 Windows 9000->300 Byte, Linux 450->250 Byte ||~v@@@I~
-        ディレクトリーリストで大きな(メンバー数の多い)ディレクトリーを開ける||~v@@@I~
-     (128K)                                                           ||~v@@@I~
-       -XBC コマンドの時間計算で HH>24 の時日数も表示                 ||~v@@@I~
+     (128H)                                                           ||~v129R~
+       -メモリアロケーションの効率化                                  ||~v129R~
+        メンバーあたり 約 Windows 9000->300 Byte, Linux 450->250 Byte ||~v129R~
+        ディレクトリーリストで大きな(メンバー数の多い)ディレクトリーを開ける||~v129R~
+     (128K)                                                           ||~v129R~
+       -XBC コマンドの時間計算で HH>24 の時日数も表示                 ||~v129R~
                                                                       ||~v128I~||~128BR~
      4.ツール。                                                       ||~v128I~||~128BR~
        -xfg v1.18                                                     ||~v128I~||~128BR~||~v128R~
@@ -2322,89 +2322,114 @@
         ./r オプションで長すぎるパス名の削除を行う                    ||~v128R~
        -xprint v9.34                                                  ||~v128I~||~128ER~
         .(Win) UCS4(ユニコード>u-ffff)サポート                        ||~v128I~||~128BR~
-       -xdig v1.12                                                    ||~v@@@I~
-        .(Bug)64Bit でクラッシュ                                      ||~v@@@I~
-                                                                      ||~v@@@I~
-######################################################################||~v@@@I~
-  .v129B<--129 :(2017/07/27)                                          ||~v@@@R~
-  .v129C<--129B:(2017/09/04)                                          ||~v@@@I~
+       -xdig v1.12                                                    ||~v129R~
+        .(Bug)64Bit でクラッシュ                                      ||~v129R~
+                                                                      ||~v129R~
+######################################################################||~v129R~
+  .v129B<--129 :(2017/07/27)                                          ||~v129R~
+  .v129C<--129B:(2017/09/04)                                          ||~v129R~
+  .v129D<--129C:(2017/11/30)                                          ||~v129R~
                                                                       ||~128CI~
-     1.BUGs                                                           ||~v@@@I~
-       -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする||~v@@@I~
-       -(64Bit) =3.14 がクラッシュする                                ||~v@@@I~
-       -(Win64) データタイプ X(Hex),O(octal) の計算結果の誤り         ||~v@@@I~
-       -(Win64) 分割画面間のドラッグドロップ(ファイルのコピー)がクラッシュ||~v@@@I~
-                                                                      ||~v@@@I~
-     2.機能追加                                                       ||~v@@@I~
-                                                                      ||~v@@@I~
-       -長いパス名に短縮名を定義                                      ||~v@@@I~
-        .SP { edit | refresh | add sp-name { file-spec | *\\ | ^*\\ } }||~v@@@I~
-            edit   : 定義ファイル(::xe.shortpath) を編集表示          ||~v@@@I~
-                     修正して保存すれば、次回から有効になる           ||~v@@@I~
-                     あるいは保存後 "refresh" すれば有効になります    ||~v@@@I~
-                     定義ファイルの各行は"短縮名 フルパス名" の形式   ||~v@@@I~
-                     コメント行は先頭に "#"                           ||~v@@@I~
-                     例) srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||~v@@@I~
-                         ecws  "c:\Program Files\Android\Android Studio\gradle"||~v@@@I~
-            refresh: 定義ファイルを修正した場合に、その修正を反映させる||~v@@@I~
-                     "sp edit" 画面で修正、保存後 あるいは直接 ::xe.shortpath ファイルを||~v@@@I~
-                     他のプロセスで修正した後に使用する               ||~v@@@I~
-            add    : 定義ファイルに sp-name:短縮名, file-spec:ターゲットファイル名 の行を追加||~v@@@I~
-                     この定義はすぐ使用できる                         ||~v@@@I~
-                     *\ :現在開いているファイル/ディレクトリー,       ||~v@@@I~
-                     ^*\:分割画面の他方で現在開いているファイル/ディレクトリー||~v@@@I~
-                     も状況が適当ならば使用できる                     ||~v@@@I~
-                     例) sp add srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||~v@@@I~
-                         sp add ecws  "c:\Program Files\Android\Android Studio\gradle"||~v@@@I~
-        .短縮名は "sp:"プレフィックスで使用する                       ||~v@@@I~
-         (sp:xxx の xxx が未定義の場合はそのまま "sp:xxx" として使用される)||~v@@@I~
-           例) e sp:srctest1\Main.java                                ||~v@@@I~
-               e sp:ecws                                              ||~v@@@I~
-               e "sp:ecws\space embedded name"                        ||~v@@@I~
-               xcopy sp:ecdir\x1 sp.ecdir\x2                          ||~v@@@I~
-               cd sp:ecdir                                            ||~v@@@I~
-     (129C)                                                           ||~v@@@I~
-       -Find コマンド                                                 ||~v@@@I~
-          ディレクトリーリスト上で ATTR(属性)欄のみを探すオプションを追加||~v@@@I~
-          大文字小文字の区別はしません                                ||~v@@@I~
-          属性欄には表示されていないが ディレクトリーには "d"、シンボリックリンクには "L" を指定する||~v@@@I~
-          また "d" と "L" はそれぞれ単独で指定してください            ||~v@@@I~
-          それ以外の属性は Windowsでは 指定の一つ一つの属性すべてを含む行が一致行とし||~v@@@I~
-          Linuxでは属性指定の文字列を含む行が一致行とする             ||~v@@@I~
-          Linuxで特殊な属性欄の値は                                   ||~v@@@I~
-            u:setuid, g:setgid, S:setuid+setgid, t:stickey            ||~v@@@I~
-            c:char device, b:block device, p:pipe, s:socket           ||~v@@@I~
-        例) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr||~v@@@I~
-            (Linux)   f 775 attr ; f u attr                           ||~v@@@I~
-                                                                      ||~v@@@I~
-     3.その他                                                         ||~v@@@I~
-       -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加        ||~v@@@I~
-     (129C)                                                           ||~v@@@I~
-       -(Windows)ICU EBCDIC変換ライブラリー(libicuuc.dll)が見つからないとき||~v@@@R~
-        xeebc.mapに ICU_DATA の指定があればそのフォルダー内もチェックする||~v@@@I~
-        なければ 環境変数 ICU_DATA もチェックする                     ||~v@@@I~
-        (Linux)/usr/lib など以外にある場合は LD_LIBRARY_PATH 環境変数に ICU の so のパスをしてしてください||~v@@@I~
-       -xeebc.map に ICU_DLL_SUFFIX, ICU_APP_SUFFIX が ないとき       ||~v@@@I~
-        ICU の uconv(.exe) で ICU のバージョンが分かればそれを補う    ||~v@@@I~
-       -CPU8(UTF8)ファイルではレコード長は不定なので/Mr(レコードモード)オプションは受け付けない||~v@@@I~
-                                                                      ||~v@@@I~
-     4.ツール。                                                       ||~v@@@I~
-     (129C)                                                           ||~v@@@I~
-       -xprint v9.38                                                  ||~v@@@I~
-        ./Tabon: パラメータサポート追加                               ||~v@@@I~
-           DBCSスペース、TAB(0x09)とそれに続く桁空けに表示する代替文字を指定する||~v@@@I~
-           /Tabon:x:y:z ;テキストモードのときのDBCSスペース,タブ文字,タブスキップの||~v@@@I~
-                        ;代替印刷文字。x,y,zは 文字、ヘキサ文字またはユニコード。||~v@@@I~
-                        ;例) /Tabon:x2020:x18:x1a  /Tabon::u2191:u2192 /Tabon::u25cb||~v@@@I~
-                        ;    /Tabon:u2750                             ||~v@@@I~
-                        ;省略値は UTF8/EBCDICファイル /Tabon:u3000:x20:x20||~v@@@I~
-                        ;                        以外 /Tabon:x8140:x20:x20||~v@@@I~
-        .EBCDIC ファイルを ICU で変換して印刷するときで /BCfilename の指定がない場合||~v@@@I~
-         ICU の 共有ライブラリー(DLL または so)が PATH または LD_LIBRARY_PATH にあれば||~v@@@I~
-         探して ICU バージョンは uconv(.exe) を発行して それを補う    ||~v@@@I~
-           例) xprint x1ebc22 -cpeb=cp930 -me -icu                    ||~v@@@I~
-       -xcv 1.20                                                      ||~v@@@I~
-        .EBCDIC ファイルを ICU で変換するときで /BCfilename の指定がない場合||~v@@@I~
-         ICU の 共有ライブラリー(DLL または so)が PATH または LD_LIBRARY_PATH にあれば||~v@@@I~
-         探して ICU バージョンは uconv(.exe) を発行して それを補う    ||~v@@@I~
-           例) xcv x1ebc22 x1ebc22m -b2m -cpeb=cp930 -icu             ||~v@@@I~
+     1.BUGs                                                           ||~v129R~
+       -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする||~v129R~
+       -(64Bit) =3.14 がクラッシュする                                ||~v129R~
+       -(Win64) データタイプ X(Hex),O(octal) の計算結果の誤り         ||~v129R~
+       -(Win64) 分割画面間のドラッグドロップ(ファイルのコピー)がクラッシュ||~v129R~
+                                                                      ||~v129R~
+     (129D)                                                           ||~v129R~
+       -(Linux)GTK3環境の時セットアックダイアログでのメニューアクセラレーター(Ctrl+)オプションの||~v129R~
+        オン/オフが効かない                                           ||~v129R~
+       -(Wxe)ファイル-New(新規ファイル)でクラッシュ                   ||~v129R~
+                                                                      ||~v129R~
+     2.機能追加                                                       ||~v129R~
+                                                                      ||~v129R~
+       -長いパス名に短縮名を定義                                      ||~v129R~
+        .SP { edit | refresh | add sp-name { file-spec | *\\ | ^*\\ } }||~v129R~
+            edit   : 定義ファイル(::xe.shortpath) を編集表示          ||~v129R~
+                     修正して保存すれば、次回から有効になる           ||~v129R~
+                     あるいは保存後 "refresh" すれば有効になります    ||~v129R~
+                     定義ファイルの各行は"短縮名 フルパス名" の形式   ||~v129R~
+                     コメント行は先頭に "#"                           ||~v129R~
+                     例) srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||~v129R~
+                         ecws  "c:\Program Files\Android\Android Studio\gradle"||~v129R~
+            refresh: 定義ファイルを修正した場合に、その修正を反映させる||~v129R~
+                     "sp edit" 画面で修正、保存後 あるいは直接 ::xe.shortpath ファイルを||~v129R~
+                     他のプロセスで修正した後に使用する               ||~v129R~
+            add    : 定義ファイルに sp-name:短縮名, file-spec:ターゲットファイル名 の行を追加||~v129R~
+                     この定義はすぐ使用できる                         ||~v129R~
+                     *\ :現在開いているファイル/ディレクトリー,       ||~v129R~
+                     ^*\:分割画面の他方で現在開いているファイル/ディレクトリー||~v129R~
+                     も状況が適当ならば使用できる                     ||~v129R~
+                     例) sp add srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||~v129R~
+                         sp add ecws  "c:\Program Files\Android\Android Studio\gradle"||~v129R~
+        .短縮名は "sp:"プレフィックスで使用する                       ||~v129R~
+         (sp:xxx の xxx が未定義の場合はそのまま "sp:xxx" として使用される)||~v129R~
+           例) e sp:srctest1\Main.java                                ||~v129R~
+               e sp:ecws                                              ||~v129R~
+               e "sp:ecws\space embedded name"                        ||~v129R~
+               xcopy sp:ecdir\x1 sp.ecdir\x2                          ||~v129R~
+               cd sp:ecdir                                            ||~v129R~
+     (129C)                                                           ||~v129R~
+       -Find コマンド                                                 ||~v129R~
+          ディレクトリーリスト上で ATTR(属性)欄のみを探すオプションを追加||~v129R~
+          大文字小文字の区別はしません                                ||~v129R~
+          属性欄には表示されていないが ディレクトリーには "d"、シンボリックリンクには "L" を指定する||~v129R~
+          また "d" と "L" はそれぞれ単独で指定してください            ||~v129R~
+          それ以外の属性は Windowsでは 指定の一つ一つの属性すべてを含む行が一致行とし||~v129R~
+          Linuxでは属性指定の文字列を含む行が一致行とする             ||~v129R~
+          Linuxで特殊な属性欄の値は                                   ||~v129R~
+            u:setuid, g:setgid, S:setuid+setgid, t:stickey            ||~v129R~
+            c:char device, b:block device, p:pipe, s:socket           ||~v129R~
+        例) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr||~v129R~
+            (Linux)   f 775 attr ; f u attr                           ||~v129R~
+     (129D)                                                           ||~v129R~
+       -SelectAll                                                     ||~v129I~
+          .コマンド                                                   ||~v129I~
+             SEL [all] [col1 col2] [.label1 .label2]                  ||~v129I~
+               label1/2 で行範囲指定、col1/2 でカラム範囲指定         ||~v129I~
+               labelは1/2とも数字による行番号指定でもよい             ||~v129I~
+               col の指定があるとブロックモード、ないと領域モード     ||~v129I~
+               label/column の指定がないと全選択                      ||~v129I~
+               例）sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;         ||+v129I~
+          .Edit画面で 行選択し、Cut/Copy/Pasteにつなげていきます      ||~v129I~
+           領域モードではすぐPaste の対象にもなります                 ||~v129I~
+          .省略型:"S"は使用できません、                               ||~v129I~
+           ファイル表示/編集画面で"S" は "SAVe" になります            ||~v129I~
+        (Wxe,gxe)                                                     ||~v129I~
+          .Editサブメニュー、ポップアップメニューにも "SelectAll" メニュー項目追加||~v129I~
+          .ショートカットはCtrl+Aに設定 SaveAs(別名保存)はCtrl+Shift+Aに変更||~v129I~
+                                                                      ||~v129R~
+     3.その他                                                         ||~v129R~
+       -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加        ||~v129R~
+     (129C)                                                           ||~v129R~
+       -(Windows)ICU EBCDIC変換ライブラリー(libicuuc.dll)が見つからないとき||~v129R~
+        xeebc.mapに ICU_DATA の指定があればそのフォルダー内もチェックする||~v129R~
+        なければ 環境変数 ICU_DATA もチェックする                     ||~v129R~
+        (Linux)/usr/lib など以外にある場合は LD_LIBRARY_PATH 環境変数に ICU の so のパスをしてしてください||~v129R~
+       -xeebc.map に ICU_DLL_SUFFIX, ICU_APP_SUFFIX が ないとき       ||~v129R~
+        ICU の uconv(.exe) で ICU のバージョンが分かればそれを補う    ||~v129R~
+       -CPU8(UTF8)ファイルではレコード長は不定なので/Mr(レコードモード)オプションは受け付けない||~v129R~
+     (129D)                                                           ||~v129R~
+       -Fileサブメニューのメニュー項目も画面の状況によっては不活性化する||~v129R~
+        例えば、ディレクトリー画面での保存メニュー項目など            ||~v129R~
+                                                                      ||~v129R~
+     4.ツール。                                                       ||~v129R~
+     (129C)                                                           ||~v129R~
+       -xprint v9.38                                                  ||~v129R~
+        ./Tabon: パラメータサポート追加                               ||~v129R~
+           DBCSスペース、TAB(0x09)とそれに続く桁空けに表示する代替文字を指定する||~v129R~
+           /Tabon:x:y:z ;テキストモードのときのDBCSスペース,タブ文字,タブスキップの||~v129R~
+                        ;代替印刷文字。x,y,zは 文字、ヘキサ文字またはユニコード。||~v129R~
+                        ;例) /Tabon:x2020:x18:x1a  /Tabon::u2191:u2192 /Tabon::u25cb||~v129R~
+                        ;    /Tabon:u2750                             ||~v129R~
+                        ;省略値は UTF8/EBCDICファイル /Tabon:u3000:x20:x20||~v129R~
+                        ;                        以外 /Tabon:x8140:x20:x20||~v129R~
+        .EBCDIC ファイルを ICU で変換して印刷するときで /BCfilename の指定がない場合||~v129R~
+         ICU の 共有ライブラリー(DLL または so)が PATH または LD_LIBRARY_PATH にあれば||~v129R~
+         探して ICU バージョンは uconv(.exe) を発行して それを補う    ||~v129R~
+           例) xprint x1ebc22 -cpeb=cp930 -me -icu                    ||~v129R~
+       -xcv 1.20                                                      ||~v129R~
+        .EBCDIC ファイルを ICU で変換するときで /BCfilename の指定がない場合||~v129R~
+         ICU の 共有ライブラリー(DLL または so)が PATH または LD_LIBRARY_PATH にあれば||~v129R~
+         探して ICU バージョンは uconv(.exe) を発行して それを補う    ||~v129R~
+           例) xcv x1ebc22 x1ebc22m -b2m -cpeb=cp930 -icu             ||~v129R~

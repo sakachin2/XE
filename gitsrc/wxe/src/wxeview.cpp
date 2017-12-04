@@ -1,5 +1,6 @@
-//*CID://+vba3R~:                             update#=  234;       //+vba3R~
+//*CID://+vbd2R~:                             update#=  248;       //~vbd2R~
 //***************************************************************************//~v516I~
+//vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
 //vba3:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit)     //~vba3I~
 //vb3w:160621 w64 compiler warning                                 //~vb3wI~
 //vavC:140430 change Dialog to modeal                              //~vak7I~
@@ -455,6 +456,10 @@ void CWxeView::OnUpdateEditClear(CCmdUI* pCmdUI)                   //~2A06M~
 	pCmdUI->Enable(Mwxemain.cpupdatecut());                        //~2A06I~
 	                                                               //~2A06M~
 }                                                                  //~2A06M~
+void CWxeView::OnUpdateEditSelectAll(CCmdUI* pCmdUI)               //~vbd2R~
+{                                                                  //~vbd2I~
+	pCmdUI->Enable(Mwxemain.cpupdateselectall());                  //~vbd2I~
+}                                                                  //~vbd2I~
 
 void CWxeView::OnEditCut() 
 {
@@ -467,6 +472,11 @@ void CWxeView::OnEditClear()                                       //~2A06M~
 	Mwxemain.cpcopy(2);                                            //~2A06I~
     Invalidate(FALSE);                                             //~v66hI~
 }                                                                  //~2A06M~
+void CWxeView::OnEditSelectAll()                                   //~vbd2R~
+{                                                                  //~vbd2I~
+	Mwxemain.cpselectall();                                        //+vbd2R~
+    Invalidate(FALSE);                                             //~vbd2I~
+}                                                                  //~vbd2I~
 
 void CWxeView::OnLButtonDown(UINT nFlags, CPoint point) 
 {

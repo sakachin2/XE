@@ -1,8 +1,9 @@
-//*CID://+va33R~:                             update#=   23;       //~va33R~
+//*CID://+vbdgR~:                             update#=   25;       //~vbdgR~
 //*************************************************************
 //*xefile.c*
 //**load/save/edit/browse/end/cancel
 //*************************************************************    //~v102I~
+//vbdg:171123 by vbdf compiler warning:conversion                  //~vbdgI~
 //va34:070511 xft:indexlist invalid print seqence when dupfunc on the same plh//~va34I~
 //va33:070511 xft:ABEND by plh free(#define macro with no parm;#define func that is not used)//~va33I~
 //011018 v102 function to exclude function of DEBUG etc            //~v102I~
@@ -119,7 +120,8 @@ int filesrchfunc(PUFILEH Ppfh,int Popt)
     }                                                              //~0709I~
                                                                    //~0709I~
     UENQ(UQUE_END,&Gfilehq,Ppfh);
-    Ppfh->UFHfileno=UGETQCTR(&Gfilehq);	//fileseqno
+//  Ppfh->UFHfileno=UGETQCTR(&Gfilehq);	//fileseqno                //~vbdgR~
+    Ppfh->UFHfileno=(int)UGETQCTR(&Gfilehq);	//fileseqno        //~vbdgI~
 //*setup func def/call struct
 	if (Stestsw)
 		printf("fileproc : %s\n",Ppfh->UFHfilename);
@@ -354,7 +356,8 @@ int macrochk(PULINEH *Ppplh,UCHAR *Pdata,int *Ppnestcnt)           //~0704R~
 //search verb                                                      //~0704I~
     for (;plh;)                                                    //~0704I~
     {                                                              //~0704I~
-	    rlen=(int)(plh->ULHlen-((ULONG)pdata-(ULONG)plh->ULHdata));//~0704I~
+//      rlen=(int)(plh->ULHlen-((ULONG)pdata-(ULONG)plh->ULHdata));//~0704I~//~vbdgR~
+        rlen=(int)(plh->ULHlen-PTRDIFF(pdata,plh->ULHdata));       //+vbdgR~
         len=(int)umemspnc(pdata,SPACE,(UINT)rlen);                 //~0704R~
         if (len==rlen)                                             //~0704R~
         {                                                          //~0708I~
@@ -636,7 +639,7 @@ int getbyte(PULINEH *Ppplh,UCHAR **Ppdata,int Psrchchar,int Pifsw,UCHAR *Pfuncnm
         pc=plh->ULHdata;
 //#define stmt EOL chk
         if (Pifsw==2)		//to get byte in #define line
-        {                                                          //+va33I~
+        {                                                          //~va33I~
         	if (defmacrochk(&plh,&pc,0))	//end of stmt chk
             {
             	rc=8;			//end of #definestmt
@@ -647,7 +650,7 @@ int getbyte(PULINEH *Ppplh,UCHAR **Ppdata,int Psrchchar,int Pifsw,UCHAR *Pfuncnm
     	    	srchdefmacrouse(plh,pc,Pifsw);   //search defined macro usage//~0708R~
             	continue;	//chk 1st of byte in continued line of #define stmt
             }                                                      //~0705I~
-        }                                                          //+va33I~
+        }                                                          //~va33I~
 
         if (plh->ULHtype!=ULHTMACRO)
         {                                                          //~0708I~
@@ -1094,7 +1097,8 @@ PUFUNCDEF fdalloc(UCHAR *Pname,int Pnamelen)
 {
 	PUFUNCDEF pfd;
 //*********************
-	pfd=UALLOCC(1,(UINT)(UFUNCDEFSZ+Pnamelen));
+//  pfd=UALLOCC(1,(UINT)(UFUNCDEFSZ+Pnamelen));                    //~vbdgR~
+    pfd=UALLOCC(1,(UINT)((int)UFUNCDEFSZ+Pnamelen));               //~vbdgI~
     if (!pfd)
     	errmalloc("FuncDef Elem");
 	pfd->UFDfnl=(UCHAR)Pnamelen;
@@ -1179,7 +1183,8 @@ PUFUNCCALL fcalloc(UCHAR *Pname,int Pnamelen)
 {
 	PUFUNCCALL pfc;
 //*********************
-	pfc=UALLOCC(1,(UINT)(UFUNCCALLSZ+Pnamelen));
+//  pfc=UALLOCC(1,(UINT)(UFUNCCALLSZ+Pnamelen));                   //~vbdgR~
+    pfc=UALLOCC(1,(UINT)((int)UFUNCCALLSZ+Pnamelen));              //~vbdgI~
     if (!pfc)
     	errmalloc("FuncCall Elem");
 	pfc->UFCfnl=(UCHAR)Pnamelen;
@@ -1495,7 +1500,7 @@ int setchipar(void)
             {
             	callsw=0;                                          //~0722I~
                 if (!UCBITCHK(pfd->UFDflag,UFDF_DUPDEF2))	//not dup entry//~0722I~
-                {                                                  //+va33I~
+                {                                                  //~va33I~
                     if (!ii)        //1st level                    //~0722R~
                     {                                              //~0722R~
                         if (!UGETQCTR(&pfd->UFDqhp))               //~0722R~
@@ -1506,7 +1511,7 @@ int setchipar(void)
                         if (pfd->UFDlevel==ii)                     //~0722R~
                             callsw=1;                              //~0722I~
                     }                                              //~0722R~
-                }                                                  //+va33I~
+                }                                                  //~va33I~
                 if (callsw)                                        //~0722I~
                 {                                                  //~0722I~
                 	procsw+=setchiparsub(pfd,ii+1);      //child level=1//~0722I~

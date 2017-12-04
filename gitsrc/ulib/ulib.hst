@@ -1,4 +1,9 @@
 *** update history ******************************************************************
+//*********  20171130 v129Dj update     ****************
+//v6N1:171203 (Bug)chk by xuerpck
+//            ufemsg.c
+//v6N0:171114 (Win:Bug)ugetprocessuid have to chk handle=-1 to avoid read wait if xesyscmd was spawned
+//            uproc22.c
 //*********  20170812 v129Cj update     ****************
 //v6M5:170825 for xcv,xprint;create EBC cfg by uconv output
 //            ucvext.c/h ucvebc3.c ucvebc.h

@@ -1,9 +1,11 @@
-//*CID://+vba2R~:                             update#=  297;       //+vba2R~
+//*CID://+vbdsR~:                             update#=  301;       //+vbdsR~
 //*************************************************************
 //*xefunct.c                                                       //~v663R~
 //* func definition tbl                                         //~5216R~
 //************************************************************* //~v020I~
-//vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//+vba2I~
+//vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg//+vbdsI~
+//vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
+//vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I~
 //vb96:170305 regist cmd for A+";"=LIG, A+":"=CMB(that key combination is not effective on Axe usb kbd)//~vb96I~
 //vb53:160903 add A+PGDN/A+PGUP to end_of_file and top_of_file     //~vb53R~
 //vb51:160827 (Bug)funct description have not to be space embedding(ini file proc err)//~vb51I~
@@ -885,10 +887,13 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
 		{KEY_F3,0,0,0},NULL_NOFLAG},                               //~v55nR~
 	{"Save"         ,"保存"          ,                           //~4C18I~
         FUNCID_SAVE,                                            //~5204R~
-        FTFDUPACMD,0,          //flag(alias duplicated),char,      //~v09wR~
+//      FTFDUPACMD,0,          //flag(alias duplicated),char,      //~v09wR~//~vbd7R~
+//      FTFDUPACMD|FTFDUPACMDFUNC,0,          //flag(alias duplicated,handle dup by func),char,//~vbd7R~//+vbdsR~
+        FTFDUPACMD               ,0,          //flag(alias duplicated,handle dup by func),char,//+vbdsI~
 		{0	,func_save_file,0},                                    //~v75SR~
 		"SAV","S",                                                  //~4C18I~
-		{KEY_S_F3,0,0,0},NULL_NOFLAG},                             //~v55nR~
+//  	{KEY_S_F3,0,0,0},NULL_NOFLAG},                             //~v55nR~//+vbdsR~
+    	{KEY_S_F3,0,0,0},NULL_NOFLAG2(FTF2DUPACMDFUNC)},           //+vbdsI~
 	{"Cancel"       ,"破棄"          ,
         FUNCID_CANCEL,                                          //~5204R~
         FTFFREECW,0,          //flag,char,                         //~v13bR~
@@ -1036,11 +1041,15 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
         NULL_CMDONLY2(FTF2FIXEDVERB)},                             //~v75HI~
   	{"Select"       ,"選択"          ,                             //~v414R~
         FUNCID_SELECT,                                             //~v09wI~
-        FTFDUPACMD|FTFCMDONLY,0,          //flag(alias duplicated),char,//~v0isR~
-		{0               ,0               ,func_select},           //~v75SR~
+//      FTFDUPACMD|FTFCMDONLY,0,          //flag(alias duplicated),char,//~v0isR~//~vbd7R~
+//      FTFDUPACMD|FTFDUPACMDFUNC|FTFCMDONLY,0,          //flag(alias duplicated,handle dup acmd by a func),char,//~vbd7R~//+vbdsR~
+        FTFDUPACMD|               FTFCMDONLY,0,          //flag(alias duplicated,handle dup acmd by a func),char,//+vbdsI~
+//  	{0               ,0               ,func_select},           //~v75SR~//~vbd7R~
+    	{0               ,func_select     ,func_select},           //~vbd7I~
 //  	"SEL","S",NULL_CMDONLY},                                   //~v71PR~
     	"SEL","S",                                                 //~v71PI~
-        NULL_CMDONLY2(FTF2FIXEDVERB)},                             //~v71PI~
+//      NULL_CMDONLY2(FTF2FIXEDVERB)},                             //~v71PI~//+vbdsR~
+        NULL_CMDONLY2(FTF2FIXEDVERB|FTF2DUPACMDFUNC)},             //+vbdsI~
   	{"Select-Text"       ,"選択-テキスト"          ,               //~v50GI~
         FUNCID_SELECTTEXT,                                         //~v50GI~
         FTFCMDONLY,0,          //flag(alias duplicated),char,      //~v50GI~
@@ -1416,11 +1425,11 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
 		"","",                                                     //~v48fI~
   		{KEY_A_q  	,0,0,0},                                       //~v48fI~
 		{FTDMYF,0,0,0},NULL_LAST	},                             //~v76gR~
-	{"Short-Path"    ,"短縮パス名"    ,                            //+vba2I~
-        FUNCID_SHORTPATH,                                          //+vba2I~
-        FTFCMDONLY,0,          //flag,char,                        //+vba2I~
-		{func_shortpath,func_shortpath,func_shortpath},            //+vba2I~
-		"SP","",NULL_CMDONLY},                                     //+vba2I~
+	{"Short-Path"    ,"短縮パス名"    ,                            //~vba2I~
+        FUNCID_SHORTPATH,                                          //~vba2I~
+        FTFCMDONLY,0,          //flag,char,                        //~vba2I~
+		{func_shortpath,func_shortpath,func_shortpath},            //~vba2I~
+		"SP","",NULL_CMDONLY},                                     //~vba2I~
 #ifdef FTPSUPP                                                     //~v78ZI~
 	{"3270-Hotkey"    ,"3270ホットキー"    ,                       //~v78ZR~
         FUNCID_TSOHOTKEY,                                          //~v78ZI~

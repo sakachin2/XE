@@ -1,9 +1,10 @@
-//CID://+vafkR~:              update#=      11                     //+vafkR~
+//CID://+vbd7R~:              update#=     121                     //~vafkR~//+vbd7R~
 //***********************************************************
 //* xescr2.c
 //* confirm/splith/splitv/swap/nextpan/prevpan                  //~5105R~
 //***********************************************************
-//vafk:120624 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  use ULPTR(unsigned __int64/ULONG)//+vafkI~
+//vbd7:171119 "SEL all" support on file panel                      //+vbd7I~
+//vafk:120624 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  use ULPTR(unsigned __int64/ULONG)//~vafkI~
 //va1q:091107 compchkm                                             //~va1qI~
 //va1c:091030_merge GB18030 support                                //~va1cI~
 //v74x:070223*(BUG)generated tab expand required for "cv x2c"      //~v74xI~
@@ -333,8 +334,8 @@ int scrpansw(PUCLIENTWE Ppcw,int Pdest)                         //~5105I~
 		scrpopup(pcw,0);	//move to top,no return deq pcw ptr parm//~5228R~
     }                                                           //~5105I~
 	else			//prevpan                                   //~5105I~
-//  	scrpopup((PUCLIENTWE)(-1),0);	//rotational popup,no save ptr//~5228R~//+vafkR~
-    	scrpopup((PUCLIENTWE)(ULPTR)(-1),0);	//rotational popup,no save ptr//+vafkI~
+//  	scrpopup((PUCLIENTWE)(-1),0);	//rotational popup,no save ptr//~5228R~//~vafkR~
+    	scrpopup((PUCLIENTWE)(ULPTR)(-1),0);	//rotational popup,no save ptr//~vafkI~
 	return 0;                                                   //~5105I~
 }//func_nextpan                                                 //~5105I~
                                                                 //~5105I~
@@ -394,7 +395,7 @@ void scrcsrtyperestore(void)                                       //~v09lR~
 	return;                                                        //~v05kI~
 }//scrcsrtyperestore                                               //~v05kR~
 //#ifdef WXE                                                       //~v53mR~
-#if defined(WXE)||defined(LNX)                                     //~v53mI~
+//#if defined(WXE)||defined(LNX)                                     //~v53mI~//+vbd7R~
 ////****************************************************************//~v500R~
 //// csr restore                                                   //~v500R~
 ////****************************************************************//~v500R~
@@ -496,6 +497,7 @@ int scrcpgetpcw(int Prow,int Pcol,PUCLIENTWE *Pppcw)               //~v500I~
     *Pppcw=pcw;                                                    //~v500I~
     return psdpos;                                                 //~v500I~
 }//scrcpgetpcw                                                     //~v500I~
+#if defined(WXE)||defined(LNX)                                     //+vbd7I~
 ////****************************************************************//~v500R~
 //// get frame data                                                //~v500R~
 ////****************************************************************//~v500R~

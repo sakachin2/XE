@@ -1,7 +1,9 @@
-//*CID://+vb50R~:                             update#=  370;       //~vb50R~
+//*CID://+vbdsR~:                             update#=  374;       //+vbdsR~
 //*************************************************************
 //*xefunc.c
 //************************************************************* //~v020I~
+//vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg//+vbdsI~
+//vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //vb50:160827 accept S+A/C+extended key                            //~vb50I~
 //vb31:160418 (LNX64)Compiler warning                              //~vb31I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
@@ -433,10 +435,10 @@ int funcinit(char *Postype)                                        //~v705I~
 						rc+=funcduperr(key,sekftrt[scanc],pft,i,FTSHIFT);//~5216R~
 				else	//SHIFT key change key code             //~5216R~
 					if (!ekftrt[scanc])	//new key               //~5216R~
-                    {                                              //+vb50I~
+                    {                                              //~vb50I~
 						ekftrt[scanc]=pft;                      //~5216R~
-                        UTRACEP("%s:ekftrt:noFTSHIFT;scanc=%02x,pft=%s,shiftmodifier=%d,FTflag[]=%02x\n",UTT,scanc,pft->FTnamej,i,pft->FTkflag[i]);//+vb50I~
-                    }                                              //+vb50I~
+                        UTRACEP("%s:ekftrt:noFTSHIFT;scanc=%02x,pft=%s,shiftmodifier=%d,FTflag[]=%02x\n",UTT,scanc,pft->FTnamej,i,pft->FTkflag[i]);//~vb50I~
+                    }                                              //~vb50I~
 					else                                        //~5216R~
 						rc+=funcduperr(key,ekftrt[scanc],pft,i,0);//~5216R~
 			}//extended key
@@ -476,7 +478,15 @@ int funcinit(char *Postype)                                        //~v705I~
                 	if (pft->FTfunc[i] && pft2->FTfunc[i])         //~v09wI~
                     	break;                                     //~v09wI~
                 if (i<UCWMAXTYPE)                                  //~v09wI~
+                {                                                  //~vbd7I~
+//               if (UCBITCHK(pft->FTflag,FTFDUPACMDFUNC)          //~vbd7I~//+vbdsR~
+//               &&  UCBITCHK(pft2->FTflag,FTFDUPACMDFUNC))        //~vbd7I~//+vbdsR~
+                 if (UCBITCHK(pft->FTflag2,FTF2DUPACMDFUNC)        //+vbdsI~
+                 &&  UCBITCHK(pft2->FTflag2,FTF2DUPACMDFUNC))      //+vbdsI~
+                 	;                                              //~vbd7I~
+                 else                                              //~vbd7I~
 					cmdduperr(pft,pft2,1);                         //~v09wI~
+                }                                                  //~vbd7I~
               }                                                    //~v09wI~
             }                                                      //~v09wI~
 		}//all ft entry                                         //~5105I~
@@ -1511,6 +1521,7 @@ static UCHAR Sspecialeditcmd[]=PGMID;                              //~v55cR~
 			cmdlen=sizeof(pft->FTcmd)-1;                           //~v0iuR~
         memcpy(cmdverb,wkbuff,(UINT)cmdlen);                       //~v0iuI~
         *(cmdverb+cmdlen)=0;                                       //~v0iuI~
+        UstrncpyZ(Ppcw->UCWcmdverb,cmdverb,sizeof(Ppcw->UCWcmdverb));//~vbd7I~
 		for (pft=Sfunctbl;*pft->FTnamee;pft++)	//all ft entry  //~5505R~
 		{                                                       //~5505R~
 //  		if (pft->FTcmdlen                                      //~v0iuR~

@@ -23,9 +23,27 @@ a:hover{font-weight:bold;}-->
              DirListのメンバーが1つのときはファイル名を省略できます。
             -コマンド名は対象のファイルのタイプで使い分ける。EDIt参照。
              オプションも EDIt コマンド参照。
-</SPAN>            -&quot;-lineno&quot;
+            -&quot;-lineno&quot;
              ファイル名の代わりに &quot;S -5&quot; の様に行番号を指定できる.
              ファイル名も行番号も指定のない場合は最初のメンバーを開く
+    = 行選択
+
+         SELelect [all] [col1 col2] [.label1 .label2]
+         </SPAN></PRE>
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">            -label1/2 で行範囲指定、col1/2 でカラム範囲指定
+             labelは1/2とも数字による行番号指定でもよい
+             col の指定があるとブロックモード、ないと領域モード
+             label/column の指定がないと全選択
+               例）sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;
+            -Edit画面で 行選択し、Cut/Copy/Pasteにつなげていきます
+             領域モードではすぐPaste の対象にもなります
+            -省略型:&quot;S&quot;は使用できません、
+             ファイル表示/編集画面で&quot;S&quot; は &quot;SAVe&quot; になります
+
+
+</SPAN>
+
 </PRE>
 </BODY>
 </HTML>

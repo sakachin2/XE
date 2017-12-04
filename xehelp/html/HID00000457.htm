@@ -15,12 +15,17 @@ a:hover{font-weight:bold;}-->
 ######################################################################
   .v129B<--129 :(2017/07/27)
   .v129C<--129B:(2017/09/04)
+  .v129D&lt;--129C:(2017/11/30)
 
      1.BUGs
        -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする
        -(64Bit) =3.14 がクラッシュする
        -(Win64) データタイプ X(Hex),O(octal) の計算結果の誤り
        -(Win64) 分割画面間のドラッグドロップ(ファイルのコピー)がクラッシュ
+    (129D)
+       -(Linux)GTK3環境の時セットアックダイアログでのメニューアクセラレーター(Ctrl+)オプションの
+        オン/オフが効かない
+       -(Wxe)ファイル-New(新規ファイル)でクラッシュ
 
      2.機能追加
 
@@ -63,8 +68,25 @@ a:hover{font-weight:bold;}-->
             c:char device, b:block device, p:pipe, s:socket
         例) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr
             (Linux)   f 775 attr ; f u attr
+     (129D)
+       -SelectAll
+          .コマンド
+             SEL [all] [col1 col2] [.label1 .label2]
+               label1/2 で行範囲指定、col1/2 でカラム範囲指定
+               labelは1/2とも数字による行番号指定でもよい
+               col の指定があるとブロックモード、ないと領域モード
+               label/column の指定がないと全選択 
+               例）sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;
 
-     3.その他
+          .Edit画面で 行選択し、Cut/Copy/Pasteにつなげていきます
+             領域モードではすぐPaste の対象にもなります
+          .省略型:&quot;S&quot;は使用できません、
+            ファイル表示/編集画面で&quot;S&quot; は &quot;SAVe&quot; になります
+       (Wxe,gxe)
+          .Editサブメニュー、ポップアップメニューにも &quot;SelectAll&quot; メニュー項目追加
+          .ショートカットはCtrl+Aに設定 SaveAs(別名保存)はCtrl+Shift+Aに変更 
+
+    3.その他
        -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加
      (129C)
        -(Windows)ICU EBCDIC変換ライブラリー(libicuuc.dll)が見つからないとき
@@ -74,6 +96,9 @@ a:hover{font-weight:bold;}-->
        -xeebc.map に ICU_DLL_SUFFIX, ICU_APP_SUFFIX が ないとき
         ICU の uconv(.exe) で ICU のバージョンが分かればそれを補う
        -CPU8(UTF8)ファイルではレコード長は不定なので/Mr(レコードモード)オプションは受け付けない
+     (129D)
+       -Fileサブメニューのメニュー項目も画面の状況によっては不活性化する
+        例えば、ディレクトリー画面での保存メニュー項目など
      4.ツール。
      (129C)
        -xprint v9.38

@@ -1,7 +1,8 @@
-//*CID://+vba2R~:                              update#=  409;      //~vb8aR~//~vba2R~
+//*CID://+vbdaR~:                              update#=  411;      //~vbdaR~
 //*************************************************************
 //*XE.c*                                                           //~v641R~
 //*************************************************************
+//vbda:171121*(gxe)display GTK3/GTK2 on titlemsg/about dialog      //~vbdaI~
 //vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I~
 //vb8a:170218 use xe_wd when /W option is for root dir(d:\xe_wd if /wd:)//~vb8aI~
 //vb7p:170119 no longname errmsg at dlcmdterm                      //~vb7pI~
@@ -784,7 +785,7 @@ if (Preqtype==WXE_REQ_INIT)                                        //~v501I~
     scrinit(Sscrparm);                                             //~v47rI~
     paninit();                                                  //~v032I~
     kbdinit();
-    funcsp_init(0);                                                //+vba2R~
+    funcsp_init(0);                                                //~vba2R~
     dcmdinit(0);                                                   //~v781R~
 #ifdef UNX                                                         //~v19FI~
     dlcmdundelinit();   //undel top dirname edit by userid         //~v19FI~
@@ -2380,12 +2381,28 @@ int numchk(UCHAR *Pnumstring)                                   //~5114I~
 //**********************************************************************
 void titlemsg(void)
 {
+#ifdef XXE                                                         //~vbdaI~
+    char verdate[32];                                              //~vbdaI~
+#endif                                                             //~vbdaI~
+//*************************                                        //~vbdaI~
+#ifdef XXE                                                         //~vbdaI~
+  	#ifndef OPTGTK3                                                //~vbdaI~
+	    sprintf(verdate,"%s:GTK2",Gverdate);                       //+vbdaR~
+    #else                                                          //~vbdaI~
+	    sprintf(verdate,"%s:GTK3",Gverdate);                       //+vbdaR~
+    #endif                                                         //~vbdaI~
+#endif                                                             //~vbdaI~
 //  uerrmsg_init(Spgmver,stdout,0);//msg to stdout                 //~v21iR~
     uerrmsg_init(Spgmver,stdout,Suerrmsgopt);//msg to stdout       //~v21iI~
 //  uerrmsg("\n(%c) === Hybrid Editor (%s) ============ by MIZUMAKI-machi ===",//~v085R~//~v7a3R~//~va71R~
 //          "\n(%c) === Hybrid Editor (%s) ================== by 水巻マチ ==",//~v13mR~//~v7a3R~//~va71R~
+#ifdef XXE                                                         //~vbdaI~
+    uerrmsg("\n(%c%s) === Hybrid Editor (%s) ===== by MIZUMAKI-machi ===",//~vbdaI~
+            "\n(%c%s) === Hybrid Editor (%s) =========== by 水巻マチ ==",//~vbdaI~
+#else                                                              //~vbdaI~
     uerrmsg("\n(%c%s) === Hybrid Editor (%s) ========== by MIZUMAKI-machi ===",//~va71I~
             "\n(%c%s) === Hybrid Editor (%s) ================ by 水巻マチ ==",//~va71I~
+#endif                                                             //~vbdaI~
 //#ifdef DOS                                                       //~v19bR~
 //    #ifdef DPMI                 //DPMI version                   //~v19bR~
 //            'G',                                                 //~v19bR~
@@ -2412,7 +2429,11 @@ void titlemsg(void)
 #else                                                              //~va71I~
 			"",                                                    //~va71I~
 #endif                                                             //~va71I~
+#ifdef XXE                                                         //~vbdaI~
+            verdate);                                              //~vbdaI~
+#else                                                              //~vbdaI~
             Gverdate);                                          //~v031R~
+#endif                                                             //~vbdaI~
     return;
 }//titlemsg
 //**********************************************************************

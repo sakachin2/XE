@@ -1,5 +1,6 @@
-//*CID://+@@@@R~:                             update#=    3;       //~@@@@I~
-#pragma once                                                       //+@@@@I~
+//*CID://+vbd2R~:                             update#=    5;       //~vbd2R~
+//vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
+#pragma once                                                       //~@@@@I~
 //{{NO_DEPENDENCIES}}
 // Microsoft Developer Studio generated include file.
 // Used by wxe.rc
@@ -176,6 +177,7 @@
 #define ID_EDIT_PASTE2                  32794
 #define ID_FILE_EXPLORER                32795
 #define ID_FILE_OPENWITH                32796
+#define ID_EDIT_SELECTALL               32797                      //+vbd2I~
 #define ID_HELPXE                       32800
 #define ID_EDIT_PASTE_STD               32801
 #define ID_FILE_DNDCOPY                 32802

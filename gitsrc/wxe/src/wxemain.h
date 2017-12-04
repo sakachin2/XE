@@ -1,6 +1,8 @@
-//*CID://+vb4qR~:                             update#=  245;       //+vb4qR~
+//*CID://+vbdnR~:                             update#=  249;       //+vbdnR~
 //================================================================================//~v510I~
-//vb4q:160810 display ligature/combine mode on "TOP OF LINE"       //+vb4qI~
+//vbdn:171125 disable filemenu depending curent pcw type           //+vbdnI~
+//vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
+//vb4q:160810 display ligature/combine mode on "TOP OF LINE"       //~vb4qI~
 //vb4i:160805 vb4f for wxe(specify ligature on/off,combine on/of line by line)//~vb4iI~
 //vb3q:160617 (BUG)dbcsspace dispchar should be fix to ffff(apply assign by ini file to LC file only)//~vb3qI~
 //vavz:140428 (wxe)display ucs2 filename on page dialog            //~vavzI~
@@ -250,11 +252,13 @@ public :                                                           //~2816I~
 	int OnOk(void);                                                //~2817I~
 	int OnSize(UINT Ptype,int Px,int Py);                          //~2818I~
 	int cpcopy(int Pcutsw);                                        //~2A03R~
+	int cpselectall();                                             //~vbd2I~
 	int cppaste(int Pinssw);                                       //~2A03R~
 #define PASTE_TEXT_ONLY      0x100  //only effective when clipboard is not dropfile but text//~v689I~
 #define PASTE_INSMODE        0x001  //only effective when clipboard is not dropfile but text//~v689I~
 #define PASTE_PASTEV         0x002  //pastev                       //~v689I~
 	int  iniput(WXEINIDATA *pwxei);                                //~2A20R~
+	BOOL cpupdateselectall(void);                                  //~vbd2R~
 	BOOL cpupdatecopy();                                           //~2824R~
 	BOOL cpupdatecut();                                            //~2824R~
 	BOOL cpupdatepaste();                                          //~2824R~
@@ -388,7 +392,7 @@ private :                                                          //~2816I~
 	int  createfont();                                             //~2901R~
 	void scronok(int Pcpchngsw);                                   //~2929R~
 	int  xeinitcall();                                             //~2831R~
-	void optligatureinit(int Popt);                                //+vb4qI~
+	void optligatureinit(int Popt);                                //~vb4qI~
 	int  xeerrchk();                                               //~2901I~
 //  int  lineput(CDC *Ppmemdc,int Pprintsw,int Prow);              //~va3gR~
     int  lineput(int Popt,CDC *Ppdc,int Pprintsw,int Prow);        //~va3gI~
@@ -448,6 +452,7 @@ int  CWxemain::prttextoutwHeader(CDC *Pdc,int Pyy,char *Pdata,int Plen,int Ppos,
 	BOOL cppastedropchk(int Popt);                                 //~v686I~
 #define DNDDODRAG_COPY 0x01                                        //~v63iI~
 //    scrcombinechk(int Popt,int Pcol,int Plen,int *Ppstarterr,int *Ppendcombine);//not used//~@@@@R~
+	int updateFileMenu(int Popt);                                  //+vbdnI~
 //********************** private                                   //~2929R~
     CBitmap *Mpbgbitmap;                                           //~2908R~
 	WXEINTF Mwxeintf;                                              //~2831I~

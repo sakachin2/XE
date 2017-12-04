@@ -1,4 +1,4 @@
-CID:||+v129R~:  2017/09/04                 update#=  667;             ||+v129R~
+CID:||+v129R~:  2017/09/04                 update#=  672;             ||~v129R~
 ************************************************************************
 (Index)
     (0).Introduction.
@@ -896,9 +896,9 @@ CID:||+v129R~:  2017/09/04                 update#=  667;             ||+v129R~
       -CPEB option is used for EDIt/SAVe/REPlace/CREate/APPend/CUT/END/COPy/MOVe/PASte cmd.||~v125R~
        IE option may be required if invalid EBCDIC code is contained. ||~v125R~
        Indicater on header line is "=E" , and "=e" when binary mode.  ||~v125R~
-       (The file containing unprintable char with some extent is opened as binary file,||+v129R~
-       and DBCS is not detected when binary mode. /Mt is option to force text mode.)||+v129R~
-       LineFeed is 0x15 if /Mp(0x0d0a) or /Mu(0x0a) is not specified. ||+v129R~
+       (The file containing unprintable char with some extent is opened as binary file,||~v129R~
+       and DBCS is not detected when binary mode. /Mt is option to force text mode.)||~v129R~
+       LineFeed is 0x15 if /Mp(0x0d0a) or /Mu(0x0a) is not specified. ||~v129R~
          e.g. "e file1 cpeb"                                          ||~v125R~||~v128R~
        When cfg file is not prepared or to use different codepage than defined on cfg file,||~v125R~
        use CPEB:codepage format.                                      ||~v125R~
@@ -1269,8 +1269,8 @@ CID:||+v129R~:  2017/09/04                 update#=  667;             ||+v129R~
         #                     e.g.(Linux)   ICU_DATA /system/usr/icu:/data/data/yourcnvs||~126DI~||~v128R~||~v128R~||~v129R~
         #                         (Windows) ICU_DATA w:\icu\icu562\icu\bin;w:\icu\icu481\icu\bin||~v128R~||~v128R~||~v129R~
         #                    Put your cnv file into sub-folder yourcnvs/icudt__l  ; __ is version like as icudt44l.||~126DI~
-        #                    (Windows) search ICU library(dll) also in ICU_DATA folder and in ICU_DATA enviromnent variable.||+v129R~
-        #                    (Linux) set path to the .so to LD_LIBRARY_PATH.||+v129R~
+        #                    (Windows) search ICU library(dll) also in ICU_DATA folder and in ICU_DATA enviromnent variable.||~v129R~
+        #                    (Linux) set path to the .so to LD_LIBRARY_PATH.||~v129R~
         #                                                             ||~126DI~
         #   DBCS_CHARSET   : Defines EBCDIC charset name to translate UCS<-->EBCDIC which supports DBCS.||~v125R~
         #                    You can get the list of charset by "uconv -l" (ICU), "iconv -l"(iconv).||~v125R~
@@ -6138,6 +6138,7 @@ by screen expansion)
  |  Save file             | SAVe                                     |
  |  File select           | SELect, SB,SN,SC,SL,SCN,SI,SK,SKN,SJ,SH, |
  |                        |         ST                               |
+ |  Line select           | SEL                                      |||~v129R~
  |  File write from screen| CREate, REPlace, APPend                  |
  |  File copy into screen | COPy                                     |
  |  File copy to ::CB2    | CUT                                      |||~v124R~
@@ -6345,7 +6346,7 @@ by screen expansion)
         {CHAnge | CNX | IC | ICN} {(old-string) | * | \esc} {(new-string) | * | \esc | P'pics'}||~v124R~
                      [-g]                                             ||~v124R~
                      [all | next | + | prev | - | first | last]
-                     [-nx] [.lab1 .lab2] [c1 | LM | RM [c2]]          ||+v129R~
+                     [-nx] [.lab1 .lab2] [c1 | LM | RM [c2]]          ||~v129R~
                                                                       
                     ( "\" = 0x5c = backslash )                        
 
@@ -6405,8 +6406,8 @@ by screen expansion)
             .lab1/2 :Limit search line range using a pair of label
                      on lineno column. line number may be used so as to
                      limit line range with no label on lineno column.
-            c1      :left-most column of search range.                ||+v129R~
-            c2      :right-most column of search range.               ||+v129R~
+            c1      :left-most column of search range.                ||~v129R~
+            c2      :right-most column of search range.               ||~v129R~
             LM      :search Left margin only.
             RM      :search Reft margin only.
             -nx     :search on displayed lines only(same as CNX/ICN)  
@@ -7188,7 +7189,7 @@ by screen expansion)
                                                                       
                     ( "\" = 0x5c = backslash )                        
 
-            col-range:[c1 | LM | RM [c2] | eol | maxeol | ATTR]       ||+v129R~
+            col-range:[c1 | LM | RM [c2] | eol | maxeol | ATTR]       ||~v129R~
 
             FIN     :Case sensitive search
             IFI     :Case Insensitive search
@@ -7366,24 +7367,24 @@ by screen expansion)
             .lab1/2 :Limit search line range using a pair of label
                      on lineno column. line number may be used so as to
                      limit line range with no label on lineno column.
-            c1      :left-most column of search range.                ||+v129R~
-            c2      :right-most column of search range.               ||+v129R~
+            c1      :left-most column of search range.                ||~v129R~
+            c2      :right-most column of search range.               ||~v129R~
             LM      :search Left margin only.
             RM      :search Reft margin only.
             eol     :search EndOfLine only.
                      e.g. F "a b" eol (F "a b"\n is err)              ||~v128R~
-            maxeol  :search EndOfLine of lines with maximum length.   ||+v129R~
-            ATTR    :Search file attribute column on dir-list panel.  ||+v129R~
-                     Parameter is case insensitive.                   ||+v129R~
-                     Use "d" for directory, "L" for symbolic link.    ||+v129R~
-                     Specify "d" and "L" alone each.                  ||+v129R~
-                     For other attributes, on Windows, select the line having all attributes of parameter,||+v129R~
-                     on Linux, select the line having string of attribute parameter.||+v129R~
-                     Following attribute IDs are specific to Linux.   ||+v129R~
-                       u:setuid, g:setgid, S:setuid+setgid, t:stickey ||+v129R~
-                       c:char device, b:block device, p:pipe, s:socket||+v129R~
-                     e.g.) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr||+v129R~
-                           (Linux)   f 775 attr ; f u attr            ||+v129R~
+            maxeol  :search EndOfLine of lines with maximum length.   ||~v129R~
+            ATTR    :Search file attribute column on dir-list panel.  ||~v129R~
+                     Parameter is case insensitive.                   ||~v129R~
+                     Use "d" for directory, "L" for symbolic link.    ||~v129R~
+                     Specify "d" and "L" alone each.                  ||~v129R~
+                     For other attributes, on Windows, select the line having all attributes of parameter,||~v129R~
+                     on Linux, select the line having string of attribute parameter.||~v129R~
+                     Following attribute IDs are specific to Linux.   ||~v129R~
+                       u:setuid, g:setgid, S:setuid+setgid, t:stickey ||~v129R~
+                       c:char device, b:block device, p:pipe, s:socket||~v129R~
+                     e.g.) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr||~v129R~
+                           (Linux)   f 775 attr ; f u attr            ||~v129R~
             -a[-]n  :display/exclude n lines after the line of the word.
                      For & search,base is the line containing the 2nd word.
                      "-" means "before the line" and -b option is also
@@ -8355,6 +8356,20 @@ by screen expansion)
             -"-lineno"                                                ||~v128R~
              Lineno of dir-list as alternative of file-name.          ||~v128R~
              Selects 1st member if both file-name and lineno is missing.||~v128R~
+                                                                      ||~v129I~
+   = Line select                                                      ||~v129R~
+                                                                      ||~v129I~
+        SELect [all] [col1 col2] [.label1 .label2]                    ||+v129R~
+                                                                      ||~v129I~
+            -label1/2:line range  col1/2:column range                 ||~v129I~
+             numeric specification for both label 1 and 2 are accepted as lineno.||~v129I~
+             Block mode with col1/2, Range mode without col1/2.       ||~v129I~
+             "Selct All" without label/column.                        ||~v129I~
+               e.g.) sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;       ||~v129I~
+            -Select range to Cut/Copy/Paste on Edit panel.            ||~v129I~
+             Under range mode, selected range itself is target of Paste Range mode.||~v129I~
+            -Abridged format command "S" is not available             ||~v129I~
+             "S" means "SAVe" on Browse/Edit panel.                   ||~v129I~
 
 #ifdef WIN
 

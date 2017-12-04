@@ -15,12 +15,16 @@ a:hover{font-weight:bold;}-->
 ######################################################################
   .v129B<--129 :(2017/07/30)
   .v129C<--129B:(2017/09/04)
-
+  .v129D&lt;--129B:(2017/11/30)
+ 
      1.BUGs
        -(Windows:64)"&"(spawn executable file) dir cmd crush.
        -(64Bit) =3.14 crush
        -(Win64) Erroneous calculation when Datatype is X(Hex),O(octal).
        -(Win64) DragDrop between split panels(file copy) crashes.
+     (129D)
+       -(Linux)Under GTK3 environmentt, Accelerator option on Setup dialog was not work.
+       -(Wxe)Crash when File-&gt;New menuitem was selected.
 
      2.Additional function.
 
@@ -63,6 +67,22 @@ a:hover{font-weight:bold;}-->
             c:char device, b:block device, p:pipe, s:socket
           e.g.) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr
                 (Linux)   f 775 attr ; f u attr
+    (129D)
+      -SelectLine
+         .Command.
+            SEL [all] [col1 col2] [.label1 .label2]
+              label1/2:line range col1/2:column range
+              numeric specification for both label 1 and 2 are accepted as lineno.
+              Block mode with col1/2, Range mode without col1/2.
+              "Selct All" without label/column.
+              e.g.) sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;
+         .Select range to Cut/Copy/Paste on Edit panel.
+            Under range mode, selected range itself is target of Paste Range mode.
+         .Abridged format command "S" is not available
+          "S" means "SAVe" on Browse/Edit panel.
+       (Wxe,gxe)
+         ."SelectAll" menuitem was added to File submenu and popup menu on edit panel.
+         .Set shotcut key to Ctrl+A and cabnged to Ctrk+Shift+A for SaveAs.
 
      3.Miscellaneous.
        -(Windows) add "msi" as executable binary extension
@@ -74,6 +94,9 @@ a:hover{font-weight:bold;}-->
        -When ICU_DLL_SUFFIX and ICU_APP_SUFFIX  are missing,
         set both bt ICU utility  uconv(.exe).
        -Reject /Mr(Recordmode) option for CPU8 file because string length of UTF8 code is indefinite.
+     (129D)
+       -Disable also menuitem of File submenu depending panel type.
+        e.g. Save is disable for directory list panel.
 
      4.Tool.
      (129C)

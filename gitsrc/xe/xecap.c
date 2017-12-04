@@ -1,8 +1,13 @@
-//*CID://+vb84R~:                                   update#=  202; //~vb84R~
+//*CID://+vbdrR~:                                   update#=  279; //~vbdrR~
 //*************************************************************
 //*xecap.c                                                         //~v66jR~
 //* cut and paste
 //************************************************************* //~v069I~
+//vbdr:171130 support label and lineno range option to SEL command //~vbdrI~
+//vbd8:171120 (WXE)stdregion by PFK(F6) should disable PAste REP/INS//~vbd8I~
+//vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
+//vbd4:171118 (BUG) invalid csr pos msg when capsave data(A+F9) even after block closed//~vbd4I~
+//vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
 //vb84:170215 (BUG)line of status ULHFLINECMD on but not on UFHliencmd[], the line cmd input is ignored//~vb84I~
 //vb4f:160801 (W32)embet by NOTLC for copyword uerrmsg CB:xxx      //~vb4fI~
 //vb4a:160729 display C+W word copyed from utf8 on errmsg          //~vb4aI~
@@ -193,6 +198,7 @@
 #include <ukbd.h>                                               //~v06lI~
 #include <utrace.h>                                                //~v66hI~
 #include <ustring.h>                                               //~v77FI~
+#include <uparse.h>                                                //~vbdrI~
 #ifdef UTF8SUPPH                                                   //~va00I~
 	#include <utf.h>                                               //~va00I~
 #endif                                                             //~va00I~
@@ -213,6 +219,7 @@
 #include "xedir2.h"     //dirgetword                               //~v53cI~
 #include "xedir3.h"                                                //~vawcI~
 #include "xefcmd3.h"     //fcmdisrtline                            //~v53cI~
+#include "xefcmd4.h"     //fcmdgetlabparm                          //~vbdrI~
 #include "xefunc.h"
 #include "xefunc2.h"                                               //~v500I~
 #include "xechar.h"
@@ -286,6 +293,23 @@ int capsavedataword(PUCLIENTWE Ppcw,char *Pword,int Plen);         //~v53cI~
 #endif                                                             //~va20I~
 int captopanfld(PUCLIENTWE Ppcw,int Pinsopt);                      //~v76bI~
 int func_copywordcmd_dir(PUCLIENTWE Ppcw);                         //~vaunI~
+int capchkcsrpos(int Prow,int Pcol,PUCLIENTWE *Pppcw);             //~vbd7I~
+#ifdef WXEXXE                                                      //~vbd2I~//~vbd7R~
+	int capselectallfile(PUCLIENTWE Ppcw);                         //~vbd2I~
+//	int capsavepointselectall(PUCLIENTWE Ppcw,int Pendsw);         //~vbd2I~//~vbd7R~
+//  void capsortpointselectall(void);                              //~vbd2I~//~vbd7R~
+#endif                                                             //~vbd2I~
+//	int capsavepointselectall(PUCLIENTWE Ppcw,int Pendsw);         //~vbd7I~//~vbdrR~
+	int capsavepointselectall(PUCLIENTWE Ppcw,int Pendsw,PULINEH Pplh1,PULINEH Pplh2);//~vbdrI~
+    void capsortpointselectall(int PswBlockmode);                  //~vbd7R~
+//  int capselectallfilecmdstd(PUCLIENTWE Ppcw);                   //~vbd7I~//~vbdrR~
+int capselectallfilecmdstd(PUCLIENTWE Ppcw,PULINEH Pplh1,PULINEH Pplh2);//~vbdrI~
+//  int capselectallfilecmdblock(PUCLIENTWE Ppcw,int Pcol1,int Pcol2);//~vbd7I~//~vbdrR~
+int capselectallfilecmdblock(PUCLIENTWE Ppcw,int Pcol1,int Pcol2,PULINEH Pplh1,PULINEH Pplh2);//~vbdrI~
+//	int capselectallfilecmdblocksub(PUCLIENTWE Ppcw,int Pcol1,int Pcol2);//~vbd7I~//~vbdrR~
+int capselectallfilecmdblocksub(PUCLIENTWE Ppcw,int Pcol1,int Pcol2,PULINEH Pplh,PULINEH Pplh2);//~vbdrI~
+//int capsavepointselectallblock(PUCLIENTWE Ppcw,int Pendsw,int Pcol1,int Pcol2);//~vbd7I~//~vbdrR~
+int capsavepointselectallblock(PUCLIENTWE Ppcw,int Pendsw,int Pcol1,int Pcol2,PULINEH Pplh1,PULINEH Pplh2);//~vbdrI~
 //*******************************************************
 static char Sblockstat=0;	//block operation statistic            //~v54hR~
 //#define SBLOCKCLOSED            0x01    //start and block closed //~v66fR~
@@ -444,7 +468,7 @@ void caplinechk(PUCLIENTWE Ppcw,PULINEH Pplh)
 {
 //*******************
 	if (lineseqchk(Ssortplh1,Pplh)<=0                           //~5226R~
-	&&  lineseqchk(Pplh,Ssortplh2)<=0)	//between start and end //~5226R~
+    &&  lineseqchk(Pplh,Ssortplh2)<=0)	//between start and end //~5226R~
 	  if (!Sblockdraw)			//block closed,no csr moved        //~v08fR~
 		UCBITON(Pplh->ULHflag,ULHFBLOCK);                          //~v08fI~
       else                                                         //~v08fI~
@@ -577,9 +601,21 @@ int func_lmark_file(PUCLIENTWE Ppcw)                                  //~v06eR~
 	int rc;                                                           //~v06eI~
 //*******************                                                 //~v06eI~
 	UCBITON(Sblockstat2,SBLOCK2LINEMARK);	//parm to capsavepoint    //~v06eR~
+#ifdef WXEXXE                                                      //~vbd2I~
+  if (Gwxestat & GWXES_SELECTALL)		//flag for xecap,req callback//~vbd2I~
+  {                                                                //~vbd2I~
+	rc=capselectallfile(Ppcw);                                     //~vbd2I~
+	UCBITOFF(Sblockstat2,SBLOCK2LINEMARK);	//parm to capsavepoint //~vbd2I~
+  }                                                                //~vbd2I~
+  else                                                             //~vbd2I~
+  {                                                                //~vbd2I~
+#endif                                                             //~vbd2I~
     rc=func_block_file(Ppcw);                                         //~v06eR~
     if (rc)                                                           //~v06eI~
 		UCBITOFF(Sblockstat2,SBLOCK2LINEMARK);	//parm to capsavepoint//~v06eR~
+#ifdef WXEXXE                                                      //~vbd8I~
+  }                                                                //~vbd2I~
+#endif                                                             //~vbd2I~
     return rc;                                                        //~v06eI~
 }//func_lmark_file                                                    //~v06eR~
                                                                       //~v06eI~
@@ -595,7 +631,12 @@ int func_stdcpregion_file(PUCLIENTWE Ppcw)                         //~v66eI~
 	PUFILEH pfh;                                                   //~v66eI~
 //*******************                                              //~v66eI~
 	if (!CSRONFILELINE(Ppcw))				//out of screen        //~v66eI~
+    {                                                              //~vbd8I~
+	  if (UCBITCHK(Sblockstat2,SBLOCK2SAVEDATA) && UCBITCHK(Sblockstat,SBLOCKCLOSED))	//savedata req and block closed//~vbd4I~
+      	;                                                          //~vbd4I~
+      else                                                         //~vbd4I~
   		return errcsrpos();                                        //~v66eI~
+    }                                                              //~vbd8I~
 	pfc=Ppcw->UCWpfc;                                              //~v66eI~
 	pfh=pfc->UFCpfh;                                               //~v66eI~
 	if (pfh->UFHtype==UFHTCLIPBOARD)                               //~v66eI~
@@ -681,8 +722,13 @@ int func_block_file(PUCLIENTWE Ppcw)
 static int Skbdinpctr;                                             //~v155I~
 //*******************
 	if (!CSRONFILELINE(Ppcw))				//out of screen
+    {                                                              //~vbd8I~
 //		return capcsrposerr();                                     //~v0i8R~
+	  if (UCBITCHK(Sblockstat2,SBLOCK2SAVEDATA) && UCBITCHK(Sblockstat,SBLOCKCLOSED))	//savedata req and block closed//~vbd4I~
+      	;                                                          //~vbd4I~
+      else                                                         //~vbd4I~
   		return errcsrpos();                                        //~v0i8I~
+    }                                                              //~vbd8I~
 	pfc=Ppcw->UCWpfc;
 	pfh=pfc->UFCpfh;
 	if (pfh->UFHtype==UFHTCLIPBOARD)
@@ -714,7 +760,7 @@ static int Skbdinpctr;                                             //~v155I~
       else                                                         //~v0heI~
       {                                                            //~v155I~
 #ifdef WXEXXE                                                      //~v69ZM~
-    	wxemouse_capi(WXEM_SETRGN,0);     //enable copy menu       //~v69ZI~
+      	wxemouse_capi(WXEM_SETRGN,0);     //enable copy menu       //~v69ZI~
 #endif                                                             //~v69ZM~
       	Skbdinpctr=Gkbdinpctr;		//ctr when block closed        //~v155I~
 		uerrmsg("Block defined",                                //~5423R~
@@ -757,7 +803,119 @@ static int Skbdinpctr;                                             //~v155I~
 	}
 	return 0;
 }//func_block_file
-
+#ifdef WXEXXE                                                      //~vbd2I~
+//*******************************************************          //~vbd2I~
+//* WXE selectall                                                  //~vbd2I~
+//*******************************************************          //~vbd2I~
+int capselectallfile(PUCLIENTWE Ppcw)                              //~vbd2I~
+{                                                                  //~vbd2I~
+    PULINEH plh;                                                   //~vbd2R~
+	int rc;                                                        //~vbd2I~
+//*******************                                              //~vbd2I~
+//  if (!CSRONFILELINE(Ppcw))				//out of screen        //~vbd2R~
+//		return errcsrpos();                                        //~vbd2R~
+//  if (capsavepointselectall(Ppcw,0)) //startpoint                //~vbd2I~//+vbdrR~
+    if (capsavepointselectall(Ppcw,0,0,0)) //startpoint            //+vbdrI~
+		return 4;                                                  //~vbd2I~
+//  if (capsavepointselectall(Ppcw,1))                             //~vbd2R~//+vbdrR~
+    if (capsavepointselectall(Ppcw,1,0,0))                         //+vbdrI~
+		return 4;                                                  //~vbd2R~
+    for (plh=Gcapplh1;plh;plh=UGETQNEXT(plh))                      //~vbd2R~
+    {                                                              //~vbd2R~
+        if (plh->ULHtype==ULHTDATA)                                //~vbd2R~
+            UCBITON(plh->ULHflag,ULHFDRAW|ULHFBLOCK);              //~vbd2R~
+    }                                                              //~vbd2R~
+	UCBITON(Sblockstat,SBLOCKCLOSED);	//block closed             //~vbd2R~
+	UCBITOFF(Sblockstat,SBLOCKSAVED);	//block closed             //~vbd2R~
+	UCBITOFF(Sblockstat2,SBLOCK2LINEMARK);	//block closed         //~vbd2R~
+    rc=capchkcsrpos(Gcsrposy,Gcsrposx,0/*Pppcw*/);                 //~vbd2I~
+    if (rc==2)	//on cmdline                                       //~vbd2I~
+		func_nextline(Ppcw); //bypass capchkcsrpos <-- wxe_capprotchk to enable pasteV menuitem//~vbd2I~
+    wxemouse_capi(WXEM_SETRGN,0);     //set Mcpcopysw=2 then enable copy menu           //~vbd2R~//~vbd8R~
+  	uerrmsg("Selected all lines(Region Mode)",                                  //~vbd2R~//~vbd7R~
+  				"領域モード全選択完了");                                     //~vbd2I~//~vbd7R~
+	return 0;                                                      //~vbd2I~
+}//capselectallfile                                                //~vbd2I~
+#endif                                                             //~vbd2R~
+//*******************************************************          //~vbd7I~
+//* SEL all cmd for range type(A+F6)                               //~vbd7I~
+//*******************************************************          //~vbd7I~
+//int capselectallfilecmdstd(PUCLIENTWE Ppcw)                        //~vbd7I~//~vbdrR~
+int capselectallfilecmdstd(PUCLIENTWE Ppcw,PULINEH Pplh1,PULINEH Pplh2)//~vbdrI~
+{                                                                  //~vbd7I~
+	int rc;                                                        //~vbd7I~
+//*******************                                              //~vbd7I~
+	UTRACEP("%s\n",UTT);                                           //~vbd7R~
+//  if (capsavepointselectall(Ppcw,0)) //startpoint                //~vbd7I~//~vbdrR~
+    if (capsavepointselectall(Ppcw,0,Pplh1,Pplh2)) //startpoint    //~vbdrI~
+		return 4;                                                  //~vbd7I~
+//  if (capsavepointselectall(Ppcw,1))                             //~vbd7I~//~vbdrR~
+    if (capsavepointselectall(Ppcw,1,Pplh1,Pplh2))                 //~vbdrI~
+		return 4;                                                  //~vbd7I~
+	UCBITON(Sblockstat,SBLOCKCLOSED);	//block closed             //~vbd7I~
+	UCBITOFF(Sblockstat,SBLOCKSAVED);	//block closed             //~vbd7I~
+    rc=capchkcsrpos(Gcsrposy,Gcsrposx,0/*Pppcw*/);                 //~vbd7I~
+    if (rc==2)	//on cmdline                                       //~vbd7I~
+		func_nextline(Ppcw); //bypass capchkcsrpos <-- wxe_capprotchk to enable pasteV menuitem//~vbd7I~
+#ifdef WXEXXE                                                      //~vbd7I~
+    wxemouse_capi(WXEM_SETRGN2,0);     //enable copy menu           //~vbd7I~//~vbd8R~
+#endif                                                             //~vbd7I~
+  if (Pplh1)                                                       //~vbdrI~
+  {                                                                //~vbdrI~
+    if (*Pplh1->ULHlinecmd && *Pplh2->ULHlinecmd)                  //~vbdrI~
+  		uerrmsg("RegionMode:Selected by line label(%s<-->%s)",     //~vbdrR~
+  				"領域モード ラベル指定(%s<-->%s) 完了",            //~vbdrR~
+                Pplh1->ULHlinecmd,Pplh2->ULHlinecmd);              //~vbdrR~
+    else                                                           //~vbdrI~
+  		uerrmsg("RegionMode:Selected by lineno(%d<-->%d)",         //~vbdrR~
+  				"領域モード 行番号指定(%d<-->%d) 完了",            //~vbdrR~
+                Pplh1->ULHlinenor,Pplh2->ULHlinenor);              //~vbdrR~
+  }                                                                //~vbdrI~
+  else                                                             //~vbdrI~
+  	uerrmsg("RegionMode:Selected all lines",                       //~vbd7R~
+  				"領域モード全選択完了");                           //~vbd7R~
+	return 0;                                                      //~vbd7I~
+}//capselectallfilecmdstd                                          //~vbd7R~
+//*******************************************************          //~vbd7I~
+//* SEL all cmd with col range(block mode)                         //~vbd7I~
+//*******************************************************          //~vbd7I~
+//int capselectallfilecmdblocksub(PUCLIENTWE Ppcw,int Pcol1,int Pcol2)//~vbd7I~//~vbdrR~
+int capselectallfilecmdblocksub(PUCLIENTWE Ppcw,int Pcol1,int Pcol2,PULINEH Pplh1,PULINEH Pplh2)//~vbdrR~
+{                                                                  //~vbd7I~
+	int rc,col1,col2;                                              //~vbd7R~
+//*******************                                              //~vbd7I~
+	UTRACEP("%s\n",UTT);                                           //~vbd7R~
+    col1=Pcol1-1;                                                  //~vbd7I~
+    col2=Pcol2;                                                    //~vbd7R~
+//  if (capsavepointselectallblock(Ppcw,0,col1,col2)) //startpoint //~vbd7R~//~vbdrR~
+    if (capsavepointselectallblock(Ppcw,0,col1,col2,Pplh1,Pplh2)) //startpoint//~vbdrI~
+		return 4;                                                  //~vbd7I~
+//  if (capsavepointselectallblock(Ppcw,1,col1,col2))              //~vbd7R~//~vbdrR~
+    if (capsavepointselectallblock(Ppcw,1,col1,col2,Pplh1,Pplh2))  //~vbdrI~
+		return 4;                                                  //~vbd7I~
+	UCBITON(Sblockstat,SBLOCKCLOSED);	//block closed             //~vbd7I~
+	UCBITOFF(Sblockstat,SBLOCKSAVED);	//block closed             //~vbd7I~
+    rc=capchkcsrpos(Gcsrposy,Gcsrposx,0/*Pppcw*/);                 //~vbd7I~
+    if (rc==2)	//on cmdline                                       //~vbd7I~
+		func_nextline(Ppcw); //bypass capchkcsrpos <-- wxe_capprotchk to enable pasteV menuitem//~vbd7I~
+#ifdef WXEXXE                                                      //~vbd7I~
+    wxemouse_capi(WXEM_SETRGN,0);     //enable copy menu           //~vbd7I~//~vbd8R~
+#endif                                                             //~vbd7I~
+  if (Pplh1)                                                       //~vbdrI~
+    if (*Pplh1->ULHlinecmd && *Pplh2->ULHlinecmd)                  //~vbdrI~
+	  	uerrmsg("BlockMode:Selected by line label(%s<-->%s), Colomn %d-%d",//~vbdrR~
+  				"ブロックモード ラベル指定(%s<-->%s) 選択完了, カラム=%d-%d",//~vbdrI~
+                Pplh1->ULHlinecmd,Pplh2->ULHlinecmd,Pcol1,Pcol2);  //~vbdrI~
+    else                                                           //~vbdrI~
+	  	uerrmsg("BlockMode:Selected by lineno(%d<-->%d), Colomn %d-%d",//~vbdrI~
+  				"ブロックモード 行番号指定(%d<-->%d) 選択完了, カラム=%d-%d",//~vbdrI~
+                Pplh1->ULHlinenor,Pplh2->ULHlinenor,Pcol1,Pcol2);  //~vbdrI~
+  else                                                             //~vbdrI~
+  	uerrmsg("BlockMode:Selected all lines,Colomn %d-%d",           //~vbd7R~
+  				"ブロックモード全選択完了, カラム=%d-%d",          //~vbd7R~
+                Pcol1,Pcol2);                                      //~vbd7I~
+	return 0;                                                      //~vbd7I~
+}//capselectallfilecmdblocksub                                     //~vbd7R~
 //*******************************************************          //~v53cI~
 //!func_copyword                                                   //~v53cI~
 //* block mode start/stop                                          //~v53cI~
@@ -2198,11 +2356,11 @@ void capfcmdi(PUCLIENTWE Ppcw,PULINEH Pplh,int Pverbopt)        //~v06iR~
 //same as xechar                                                //~v06hI~
 	if (!UCBITCHK(Pplh->ULHflag,ULHFLINECMD))	//not yet lcmd input//~v06hR~
     {                                                           //~v06hI~
-		UCBITOFF(pfh->UFHflag2,UFHF2LCMDCOMP);//need command process//+vb84I~
+		UCBITOFF(pfh->UFHflag2,UFHF2LCMDCOMP);//need command process//~vb84I~
 		UCBITON(Pplh->ULHflag,ULHFLINECMD);//line cmd input     //~v06hR~
 		pfh->UFHcmdline[pfh->UFHcmdlinectr++]=Pplh;	//save cmd line//~v06iR~
 	    UTRACEP("@@@1 %s:add %c cmd,cmdlinectr=%d\n",UTT,*Pplh->ULHlinecmd,pfh->UFHcmdlinectr);//~vb25I~
-                                                                   //+vb84I~
+                                                                   //~vb84I~
 	}                                                           //~v06hI~
     UCBITON(Pplh->ULHflag3,ULHF3TEMPLCMD); //not saved at savependlcmd//~v06iR~
     memset(Pplh->ULHlinecmd,0,sizeof(Pplh->ULHlinecmd));        //~v06iR~
@@ -3243,7 +3401,106 @@ int capsavepoint(PUCLIENTWE Ppcw,int Pendsw)
     capsortpoint();                                             //~5226I~
 	return 0;
 }//capsavepoint
-
+//#ifdef WXEXXE                                                      //~vbd2I~//~vbd7R~
+//*******************************************************          //~vbd2I~
+//!capsavepointselectall                                           //~vbd2I~
+//* capsavepoint                                                   //~vbd2I~
+//* parm1:pcw                                                      //~vbd2I~
+//* parm2:0:start point, 1:end pint                                //~vbd2I~
+//* retrn:rc                                                       //~vbd2I~
+//*******************************************************          //~vbd2I~
+//int capsavepointselectall(PUCLIENTWE Ppcw,int Pendsw)              //~vbd2R~//~vbdrR~
+int capsavepointselectall(PUCLIENTWE Ppcw,int Pendsw,PULINEH Pplh1,PULINEH Pplh2)//~vbdrI~
+{                                                                  //~vbd2I~
+	PUFILEC pfc;                                                   //~vbd2I~
+	PULINEH plh;                                                   //~vbd2I~
+	PUFILEH pfh;                                                   //~vbd2I~
+//*******************                                              //~vbd2I~
+	pfc=Ppcw->UCWpfc;                                              //~vbd2I~
+	pfh=pfc->UFCpfh;                                               //~vbd2R~
+	if (UGETQCTR(&pfh->UFHlineque)==2)	//del old all              //~vbd2I~
+    	return 4;                                                  //~vbd2I~
+  if (Pplh1)	//label specified                                  //~vbdrI~
+  {                                                                //~vbdrI~
+    if (Pendsw)                                                    //~vbdrI~
+    {                                                              //~vbdrI~
+    	plh=UGETQNEXT(Pplh2);                                      //~vbdrR~
+        if (!plh)                                                  //~vbdrI~
+            plh=Pplh2;                                             //~vbdrI~
+    }                                                              //~vbdrI~
+    else                                                           //~vbdrI~
+		plh=Pplh1;                                                 //~vbdrR~
+  }                                                                //~vbdrI~
+  else                                                             //~vbdrI~
+  {                                                                //~vbdrI~
+    if (Pendsw)                                                    //~vbd2I~
+    	plh=UGETQEND(&pfh->UFHlineque);	//last line                //~vbd2R~
+    else                                                           //~vbd2I~
+		plh=UGETQNEXT(UGETQTOP(&pfh->UFHlineque));	//top line     //~vbd2I~
+  }                                                                //~vbdrI~
+	if (Pendsw)                                                    //~vbd2I~
+	{                                                              //~vbd2I~
+		Gcapplh2=plh;                                              //~vbd2I~
+		Scapposx2=-1;                                              //~vbd2R~
+	}//end point                                                   //~vbd2I~
+	else	//start point                                          //~vbd2I~
+	{                                                              //~vbd2I~
+		Gcappcw=Ppcw;                                              //~vbd2I~
+		Sblockstat=0;                                              //~vbd2I~
+		Gcapplh2=Gcapplh1=plh;                                     //~vbd2I~
+		Scapposx2=Scapposx1=-1;                                    //~vbd2R~
+	}                                                              //~vbd2I~
+    capsortpointselectall(0);                                       //~vbd2I~//~vbd7R~
+	return 0;                                                      //~vbd2I~
+}//capsavepointselectall                                           //~vbd2I~
+//#endif                                                             //~vbd2R~//~vbd7R~
+//*******************************************************          //~vbd7I~
+//!capsavepointselectallblock                                      //~vbd7I~
+//* capsavepoint                                                   //~vbd7I~
+//* parm1:pcw                                                      //~vbd7I~
+//* parm2:0:start point, 1:end pint                                //~vbd7I~
+//* retrn:rc                                                       //~vbd7I~
+//*******************************************************          //~vbd7I~
+//int capsavepointselectallblock(PUCLIENTWE Ppcw,int Pendsw,int Pcol1,int Pcol2)//~vbd7I~//~vbdrR~
+int capsavepointselectallblock(PUCLIENTWE Ppcw,int Pendsw,int Pcol1,int Pcol2,PULINEH Pplh1,PULINEH Pplh2)//~vbdrI~
+{                                                                  //~vbd7I~
+	PUFILEC pfc;                                                   //~vbd7I~
+	PULINEH plh;                                                   //~vbd7I~
+	PUFILEH pfh;                                                   //~vbd7I~
+//*******************                                              //~vbd7I~
+	pfc=Ppcw->UCWpfc;                                              //~vbd7I~
+	pfh=pfc->UFCpfh;                                               //~vbd7I~
+	if (UGETQCTR(&pfh->UFHlineque)==2)	//del old all              //~vbd7I~
+    	return 4;                                                  //~vbd7I~
+  if (Pplh1)                                                       //~vbdrI~
+  {                                                                //~vbdrI~
+    if (Pendsw)                                                    //~vbdrI~
+    	plh=Pplh2;                                                 //~vbdrI~
+    else                                                           //~vbdrI~
+		plh=Pplh1;                                                 //~vbdrR~
+  }                                                                //~vbdrI~
+  else                                                             //~vbdrI~
+  {                                                                //~vbdrI~
+    if (Pendsw)                                                    //~vbd7I~
+    	plh=UGETQEND(&pfh->UFHlineque);	//last line                //~vbd7I~
+    else                                                           //~vbd7I~
+		plh=UGETQNEXT(UGETQTOP(&pfh->UFHlineque));	//top line     //~vbd7I~
+  }                                                                //~vbdrI~
+	if (Pendsw)                                                    //~vbd7I~
+	{                                                              //~vbd7I~
+		Gcapplh2=plh;                                              //~vbd7I~
+		Scapposx2=Pcol2;                                           //~vbd7I~
+	}//end point                                                   //~vbd7I~
+	else	//start point                                          //~vbd7I~
+	{                                                              //~vbd7I~
+		Gcappcw=Ppcw;                                              //~vbd7I~
+		Sblockstat=0;                                              //~vbd7I~
+		Gcapplh2=Gcapplh1=plh;                                     //~vbd7I~
+		Scapposx2=Scapposx1=Pcol1;                                 //~vbd7I~
+	}                                                              //~vbd7I~
+    capsortpointselectall(1);   //blockmode                        //~vbd7I~
+	return 0;                                                      //~vbd7I~
+}//capsavepointselectallblock                                      //~vbd7I~
 //*******************************************************          //~v0eKI~
 //!capchkmergin                                                    //~v0eKI~
 //* chk cross mergin,oom for spf and oom protected mergined file   //~v0eKI~
@@ -3351,7 +3608,34 @@ void capsortpoint(void)                                         //~5226R~
 		Ssortposx2=0;                                           //~5226I~
 	return ;
 }//capsortpoint
-
+                                                                   //~vbd2I~
+//#ifdef WXEXXE                                                      //~vbd2I~//~vbd7R~
+//*******************************************************          //~vbd2I~
+//void capsortpointselectall(void)                                   //~vbd2I~//~vbd7R~
+void capsortpointselectall(int Pswblockmode)                       //~vbd7I~
+{                                                                  //~vbd2I~
+//*******************                                              //~vbd2I~
+	Ssortplh1=Gcapplh1;                                            //~vbd2I~
+	Ssortplh2=Gcapplh2;                                            //~vbd2I~
+	Ssortposx1=Scapposx1;                                          //~vbd2I~
+	Ssortposx2=Scapposx2;                                          //~vbd2I~
+  if (Pswblockmode)                                                //~vbd7I~
+  {                                                                //~vbd7I~
+	UCBITON(Sblockstat,SBLOCKMODE);                                //~vbd7I~
+	UCBITOFF(Sblockstat2,SBLOCK2STDREGION);	//Not Blockmode to enable paste to selected//~vbd7I~
+  }                                                                //~vbd7I~
+  else                                                             //~vbd7I~
+  {                                                                //~vbd7I~
+	UCBITOFF(Sblockstat,SBLOCKMODE);                               //~vbd2I~
+	UCBITON(Sblockstat2,SBLOCK2STDREGION);	//Not Blockmode to enable paste to selected//~vbd2M~
+  }                                                                //~vbd7I~
+	if (Ssortposx1<0)                                              //~vbd2I~
+		Ssortposx1=0;                                              //~vbd2I~
+	if (Ssortposx2<0)                                              //~vbd2I~
+		Ssortposx2=0;                                              //~vbd2I~
+	return ;                                                       //~vbd2I~
+}//capsortpointselectall                                           //~vbd2I~
+//#endif                                                             //~vbd2R~//~vbd7R~
 //*******************************************************       //~v06lI~
 //!capgetcsrplh
 //* capgetcsrplh                                                //~v06lI~
@@ -3577,7 +3861,7 @@ int capnoblockerr(void)                                            //~v0heI~
     return 4;                                                      //~v0heI~
 }//capnoblockerr                                                   //~v0heI~
 //#ifdef WXE                                                       //~v641R~
-#ifdef WXEXXE                                                      //~v641I~
+//#ifdef WXEXXE                                                      //~v641I~//~vbd7R~
 ////****************************************************************//~v502R~
 //// chk paste pos is on file area                                 //~v502R~
 ////pcol      :-1 :2nd line                                        //~v502R~
@@ -3712,6 +3996,7 @@ int capchkcsrpos(int Prow,int Pcol,PUCLIENTWE *Pppcw)              //~v502I~
 	    *Pppcw=pcw;                                                //~v502I~
     return rc;                                                     //~v502I~
 }//capchkcsrpos                                                    //~v502I~
+#ifdef WXEXXE                                                      //~vbd7I~
 //**************************************************************** //~v69ZI~
 // return status flag                                              //~v69ZI~
 //**************************************************************** //~v69ZI~
@@ -3783,3 +4068,103 @@ int func_copywordcmd_dir(PUCLIENTWE Ppcw)                          //~vaunI~
     UTRACEP("func_copywordcmd_dir cmdlen=%d,codetype=%d,word=%s\n",cmdlen,wordct,pword);                             //~vaunI~//~vauDR~
 	return 0;                                                      //~vaunI~
 }//func_copywordcmd_dir                                            //~vaunI~
+//*******************************************************          //~vbd7I~
+int capselectallfilecmdhelp(PUCLIENTWE Ppcw)                       //~vbd7R~
+{                                                                  //~vbd7I~
+//*********************************                                //~vbd7I~
+//  uerrmsg("Sel All [col1 col2]",0);                              //~vbd7I~//~vbdrR~
+    uerrmsg("Sel [All] [col1 col2] [.label1 .label2]",0);          //~vbdrI~
+    return 1;                                                      //~vbd7I~
+}//capselectallfilecmdhelp                                         //~vbd7I~
+//*******************************************************          //~vbd7I~
+//* selectall cmd                                                  //~vbd7I~
+//*******************************************************          //~vbd7I~
+//int capselectallfilecmdblock(PUCLIENTWE Ppcw,int Pcol1,int Pcol2)  //~vbd7I~//~vbdrR~
+int capselectallfilecmdblock(PUCLIENTWE Ppcw,int Pcol1,int Pcol2,PULINEH Pplh1,PULINEH Pplh2)//~vbdrI~
+{                                                                  //~vbd7I~
+    PULINEH plh;                                                   //~vbd7I~
+	int rc;                                                        //~vbd7I~
+//*******************                                              //~vbd7I~
+    capreset(1);	//keep calc pcw                                //~vbd7I~
+	if (Pcol1<0)                                                   //~vbd7I~
+//  	rc=capselectallfilecmdstd(Ppcw);                           //~vbd7R~//~vbdrR~
+    	rc=capselectallfilecmdstd(Ppcw,Pplh1,Pplh2);               //~vbdrI~
+    else                                                           //~vbd7I~
+//		rc=capselectallfilecmdblocksub(Ppcw,Pcol1,Pcol2);          //~vbd7R~//~vbdrR~
+  		rc=capselectallfilecmdblocksub(Ppcw,Pcol1,Pcol2,Pplh1,Pplh2);//~vbdrI~
+    rc=capchkcsrpos(Gcsrposy,Gcsrposx,0/*Pppcw*/);                 //~vbd7I~
+    if (rc==2)	//on cmdline                                       //~vbd7I~
+		func_nextline(Ppcw); //bypass capchkcsrpos <-- wxe_capprotchk to enable pasteV menuitem//~vbd7I~
+    if (!rc)                                                       //~vbd7I~
+    {                                                              //~vbd7I~
+        for (plh=Gcapplh1;plh;plh=UGETQNEXT(plh))                  //~vbd7I~
+        {                                                          //~vbd7I~
+            if (plh->ULHtype==ULHTDATA)                            //~vbd7I~
+                UCBITON(plh->ULHflag,ULHFDRAW|ULHFBLOCK);          //~vbd7I~
+        }                                                          //~vbd7I~
+    }                                                              //~vbd7I~
+	return rc;                                                     //~vbd7I~
+}//capselectallfilecmdblock                                        //~vbd7I~
+//*******************************************************          //~vbd7I~
+//SEL/S cmd on file panel                                          //~vbd7R~
+//*******************************************************          //~vbd7I~
+int capselectallfilecmd(PUCLIENTWE Ppcw,PUFILEH Ppfh)              //~vbd7I~
+{                                                                  //~vbd7I~
+	int rc=0;                                                      //~vbd7R~
+    int ii,opdno,col1=-1,col2=-1;                                  //~vbd7I~
+    UCHAR *pc;                                                     //~vbd7R~
+    int nonlabelopdno=0;                                           //~vbdrI~
+    PULINEH plh1=0,plh2=0;                                         //~vbdrI~
+    UPODELMTBL *podt;                                              //~v47iI~//~vbdrI~
+//*********************************                                //~vbd7I~
+    UTRACEP("%s",0,UTT);                                           //~vbd7I~
+    rc=fcmdgetlabparm(Ppcw,0,&plh1,&plh2,FCGLP_SPLITCHK|FCGLP_0IFNOLAB);	//label on split line is err//~vbdrR~
+    if (rc)                                                        //~vbdrI~
+    	return rc;                                                 //~vbdrI~
+	pc=Ppcw->UCWopdpot;                                            //~vbd7I~
+	opdno=Ppcw->UCWopdno;                                          //~vbd7I~
+    podt=Ppcw->UCWopddelmt;                                        //~v47iI~//~vbdrI~
+//  for (ii=0;ii<opdno;ii++,pc+=strlen(pc)+1)                      //~vbd7R~//~vbdrR~
+    for (ii=0;ii<opdno;ii++,pc+=strlen(pc)+1,podt++)               //~vbdrI~
+    {                                                              //~vbd7I~
+      	if ((*pc==ULCCMDLABEL && !podt->upoquate))  //start by . but not in quate//~vbdrI~
+    		continue;                                              //~vbdrI~
+//        switch (ii)                                                //~vbd7R~//~vbdrR~
+//        {                                                          //~vbd7I~//~vbdrR~
+//        case 0:                                                    //~vbd7I~//~vbdrR~
+//            if (stricmp(pc,"ALL"))                                 //~vbd7I~//~vbdrR~
+//                return capselectallfilecmdhelp(Ppcw);              //~vbd7R~//~vbdrR~
+//            break;                                                 //~vbd7I~//~vbdrR~
+//        case 1:                                                    //~vbd7I~//~vbdrR~
+//            col1=atoi(pc);                                         //~vbd7I~//~vbdrR~
+//            break;                                                 //~vbd7I~//~vbdrR~
+//        case 2:                                                    //~vbd7I~//~vbdrR~
+//            col2=atoi(pc);                                         //~vbd7I~//~vbdrR~
+//            break;                                                 //~vbd7I~//~vbdrR~
+//        default:                                                   //~vbd7I~//~vbdrR~
+//            return errtoomany();                                   //~vbd7R~//~vbdrR~
+//        }                                                          //~vbd7I~//~vbdrR~
+        if (!stricmp(pc,"ALL"))                                    //~vbdrI~
+        	continue;                                              //~vbdrI~
+        nonlabelopdno++;                                           //~vbdrI~
+        switch (nonlabelopdno)                                     //~vbdrI~
+        {                                                          //~vbdrI~
+        case 1:                                                    //~vbdrI~
+            col1=atoi(pc);                                         //~vbdrI~
+            break;                                                 //~vbdrI~
+        case 2:                                                    //~vbdrI~
+            col2=atoi(pc);                                         //~vbdrI~
+            break;                                                 //~vbdrI~
+        default:                                                   //~vbdrI~
+            return errtoomany();                                   //~vbdrI~
+        }                                                          //~vbdrI~
+    }                                                              //~vbd7I~
+    if (col1>=0)                                                   //~vbd7I~
+    {                                                              //~vbd7I~
+    	if (col2<=col1)                                            //~vbd7I~
+            return capselectallfilecmdhelp(Ppcw);                  //~vbd7R~
+    }                                                              //~vbd7I~
+//  rc=capselectallfilecmdblock(Ppcw,col1,col2);                   //~vbd7I~//~vbdrR~
+    rc=capselectallfilecmdblock(Ppcw,col1,col2,plh1,plh2);         //~vbdrI~
+	return rc;                                                     //~vbd7I~
+}//capselectallfilecmd                                             //~vbd7I~

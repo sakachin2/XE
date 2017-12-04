@@ -1,7 +1,8 @@
-//*CID://+vb4fR~: update#=  327;                                   //~vb4fR~
+//*CID://+vbdqR~: update#=  328;                                   //+vbdqR~
 //*************************************************************
 //*xepan.c *
 //************************************************************* //~5610I~
+//vbdq:171125 add "MRU" to 1/2 of top menu                         //+vbdqI~
 //vb4h:160804 fnm list reverse len is short because strlen stop by 00 of dbcs unicode//~vb4hI~
 //vb4f:160802 (ULIB:v6Ei)specify ligature on/off,combine on/of line by line(used for edit/filename  panel)//~vb4fI~
 //vb4c:160730 display altch for also cmdline                       //~vb4cI~
@@ -134,7 +135,7 @@
 	#include <utf.h>                                               //~va00I~//~va0xR~
 	#include <utf22.h>                                             //~va5jI~
 #endif                                                             //~va00I~
-#define UVIOMDEFONLY	//for uviom.h                              //+vb4fI~
+#define UVIOMDEFONLY	//for uviom.h                              //~vb4fI~
 #include <uviom.h>                                                 //~vb4fI~
                                                                 //~5318I~
 #include "xe.h"
@@ -193,8 +194,10 @@ static UCHAR Sm042[]="       0.1 (A) SC-CMD   - Assign cmd-string to Short-Cut k
 static UCHAR Sm043[]="       0.2 (B) FUNC-KEY - Change Key Assignment";//~v11jR~
 static UCHAR Sm044[]="       0.3 (C) KEY-FUNC - Browse Key List";  //~v11jR~
 //static UCHAR Sm045[]="       0.5  CMDVERB - Change command verb";//~v0iwR~
-static UCHAR Sm0_5[]="    1  BROWSE       - Display File";
-static UCHAR Sm0_6[]="    2  EDIT         - Edit/Create File";
+//static UCHAR Sm0_5[]="    1  BROWSE       - Display File(";      //+vbdqR~
+static UCHAR Sm0_5[]="    1  BROWSE       - Display File (MRU list)";//+vbdqI~
+//static UCHAR Sm0_6[]="    2  EDIT         - Edit/Create File";   //+vbdqR~
+static UCHAR Sm0_6[]="    2  EDIT         - Edit File    (MRU list)";//+vbdqI~
 static UCHAR Sm061[]="    3  UTILITY";                             //~v76gI~
 static UCHAR Sm062[]="       3.12(F) COMPARE  - File/Directory Compare";//~v76gR~
 static UCHAR Sm063[]="       3.14(G) SEARCH   - Grep Search";      //~v76gR~

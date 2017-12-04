@@ -1,8 +1,9 @@
-//*CID://+v6L5R~:                             update#=  417;       //~v6L5R~
+//*CID://+v6N0R~:                             update#=  420;       //~v6L5R~//~v6N0R~
 //************************************************************* //~5825I~
 //*uproc2.c                                                        //~v5euR~
 //* parse-redirect,rsh                                             //~v5euR~
 //*************************************************************    //~v022I~
+//v6N0:171114 (Bug)ugetprocessuid have to chk handle=-1 to avoid read wait if xesyscmd was spawned//~v6N0I~
 //v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~v6L5I~
 //v6xr:150118 (BUG of v6xm) 6xm is for W7 only;back to old logic when XP//~v6xrI~
 //v6xq:150116 add uapierr1nt                                       //~v6xqI~
@@ -323,7 +324,7 @@ int uevent(int Popt,int Peventcnt,ULPTR *Peventcb,int Ptimeout,int *Ppindex)//~v
         if (eventidx==WAIT_FAILED)                                 //~v5ivM~
         {                                                          //~v5ivI~
 //          sprintf(wk,"1st handle=0x%x",*Peventcb);               //~v5ivI~//~v6L5R~
-            sprintf(wk,"1st handle=0x%" FMT_PTR("x"),*Peventcb);   //+v6L5R~
+            sprintf(wk,"1st handle=0x%" FMT_PTR("x"),*Peventcb);   //~v6L5R~
         	return	uerrapi1("WaitMultipleObjects",wk,GetLastError());//~v5ivR~
         }                                                          //~v5ivI~
         if (eventidx==WAIT_TIMEOUT)                                //~v5ivM~
@@ -348,7 +349,7 @@ int uevent(int Popt,int Peventcnt,ULPTR *Peventcb,int Ptimeout,int *Ppindex)//~v
      	if (!SetEvent((HANDLE)(ULPTR)*Peventcb))                   //~v6hhI~
         {                                                          //~v5ivI~
 //          sprintf(wk,"handle=0x%x",*Peventcb);                   //~v5ivI~//~v6L5R~
-            sprintf(wk,"handle=0x%" FMT_PTR("x"),*Peventcb);       //+v6L5R~
+            sprintf(wk,"handle=0x%" FMT_PTR("x"),*Peventcb);       //~v6L5R~
         	return uerrapi1("SetEvent",wk,GetLastError());         //~v5ivR~
         }                                                          //~v5ivI~
         return 0;                                                  //~v5ivM~
@@ -359,7 +360,7 @@ int uevent(int Popt,int Peventcnt,ULPTR *Peventcb,int Ptimeout,int *Ppindex)//~v
      	if (!ResetEvent((HANDLE)(ULPTR)*Peventcb))                 //~v6hhI~
         {                                                          //~v5ivI~
 //          sprintf(wk,"handle=0x%x",*Peventcb);                   //~v5ivI~//~v6L5R~
-            sprintf(wk,"handle=0x%" FMT_PTR("x"),*Peventcb);       //+v6L5R~
+            sprintf(wk,"handle=0x%" FMT_PTR("x"),*Peventcb);       //~v6L5R~
         	return uerrapi1("ResetEvent",wk,GetLastError());       //~v5ivR~
         }                                                          //~v5ivI~
         return 0;                                                  //~v5ivI~
@@ -1003,12 +1004,14 @@ DWORD ugetprocessid(int Popt,ULPTR Pprocesshandle)                 //~v6xnR~
 	DWORD pid;                                                     //~v6xnI~
     char wk[32];                                                   //~v6xnI~
 //*********************                                            //~v6xnI~
+	if ((LONGHANDLE)Pprocesshandle==(LONGHANDLE)-1)                //+v6N0R~
+    	return (DWORD)-1;                                          //~v6N0I~
     pid=GetProcessId((HANDLE)Pprocesshandle);                      //~v6xnI~
     if ((int)pid<=0)                                               //~v6xnI~
         if (Popt & UGPIO_ERRMSG)                                   //~v6xnI~
         {                                                          //~v6xnI~
-//          sprintf(wk,"x%p",Pprocesshandle);                      //~v6xnI~//+v6L5R~
-            sprintf(wk,"x%" FMT_PTR("x"),Pprocesshandle);          //+v6L5I~
+//          sprintf(wk,"x%p",Pprocesshandle);                      //~v6xnI~//~v6L5R~
+            sprintf(wk,"x%" FMT_PTR("x"),Pprocesshandle);          //~v6L5I~
         	uerrapi1t(1/*err description by last err*/,"GetProcessId",wk,-1/*issue GetLastError()*/);//~v6xnR~
         }                                                          //~v6xnI~
     UTRACEP("ugetprocessid handle=%p,pid=%d=x%x,error=%d\n",Pprocesshandle,pid,pid,GetLastError());//~v6xnI~

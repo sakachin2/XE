@@ -1,6 +1,6 @@
-||*CID:||+129CR~:  2017/09/07                update#=  800;           ||+129CR~
+||*CID:||+129CR~:  2017/12/03                update#=  802;           ||+129CR~
 ######################################################################
-[English]    v1.29C                                                   ||+129CR~
+[English]    v1.29D                                                   ||+129CR~
 
 This editor is fit for programmers working on both main-frame and PC.
 Its operation is based on mainframe SPF editor,
@@ -181,3 +181,77 @@ How to execute.
                  e "sp:ecws\space embedded name"
                  xcopy sp:ecdir\x1 sp.ecdir\x2
                  cd sp:ecdir
+                                                                      ||~129CI~
+  .v129C<--129B:(2017/09/04)                                          ||~129CI~
+                                                                      ||~129CI~
+     1.BUGs                                                           ||~129CI~
+                                                                      ||~129CI~
+     2.Additional function.                                           ||~129CI~
+       -Find cmd                                                      ||~129CI~
+          Search file attribute column on dir-list panel.             ||~129CI~
+          Parameter is case insensitive.                              ||~129CI~
+          Use "d" for directory, "L" for symbolic link.               ||~129CI~
+          Specify "d" and "L" alone each.                             ||~129CI~
+          For other attributes, on Windows, select the line having all attributes of parameter,||~129CI~
+          on Linux, select the line having string of attribute parameter.||~129CI~
+          Following attribute IDs are specific to Linux.              ||~129CI~
+            u:setuid, g:setgid, S:setuid+setgid, t:stickey            ||~129CI~
+            c:char device, b:block device, p:pipe, s:socket           ||~129CI~
+          e.g.) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr||~129CI~
+                (Linux)   f 775 attr ; f u attr                       ||~129CI~
+                                                                      ||~129CI~
+     3.Miscellaneous.                                                 ||~129CI~
+       -(Windows)If LoadLibrary failed for EBCDIC library for ICU(libicuuc.dll),||~129CI~
+        search in the directory of ICU_DATA parameter of xeebc.map and also||~129CI~
+        ICU_DATA environment variable.                                ||~129CI~
+        (Linex)It is need to set LD_LIBRARY_PATH if the ICU so is not on default path like as /usr/lib etc.||~129CI~
+       -When ICU_DLL_SUFFIX and ICU_APP_SUFFIX  are missing,          ||~129CI~
+        set both bt ICU utility  uconv(.exe).                         ||~129CI~
+       -Reject /Mr(Recordmode) option for CPU8 file because string length of UTF8 code is indefinite.||~129CI~
+                                                                      ||~129CI~
+     4.Tool.                                                          ||~129CI~
+       -xprint v9.38                                                  ||~129CI~
+        ./Tabon: new parameter added                                  ||~129CI~
+           Specify alternative char for DBCS space, TAB(0x09) and its following space.||~129CI~
+           /Tabon:x:y:z ;Text mode alternative char for DBCS space,Tab(0x09),Tab-skip.||~129CI~
+                        ;For x,y,z each, specify Char itself, Unicode or Hex notation.||~129CI~
+                        ;e.g.) /Tabon:x2020:x18:x1a  /Tabon::u2191:u2192 /Tabon::u25cb||~129CI~
+                        ;      /Tabon:u2750                           ||~129CI~
+                        ;Default is /Tabon:u3000:x20:x20(UTF8/EBCDIC file)||~129CI~
+                        ;       and /Tabon:x8140:x20:x20(other file). ||~129CI~
+        .For EBCDIC file EBCDIC, if /BCfilename is missing to translate by ICU,||~129CI~
+         Search ICU shared library(DLL or so) on PATH or LD_LIBRARY_PATH.||~129CI~
+         If library found, supply ICU version using ICU utility uconv(.exe).||~129CI~
+           e.g.) xprint x1ebc22 -cpeb=cp930 -me -icu                  ||~129CI~
+       -xcv 1.20                                                      ||~129CI~
+        .When translating EBCDIC file by ICU, if /BCfilename parameter is missing,||~129CI~
+         Search ICU shared library(DLL or so) on PATH or LD_LIBRARY_PATH.||~129CI~
+         If library found, supply ICU version using ICU utility uconv(.exe).||~129CI~
+           e.g) xcv x1ebc22 x1ebc22m -b2m -cpeb=cp930 -icu            ||~129CI~
+                                                                      ||~129CI~
+  .v129D<--129C:(2017/12/03)                                          ||~129CI~
+                                                                      ||~129CI~
+     1.BUGs                                                           ||~129CI~
+       -(Linux)Under GTK3 environmentt, Accelerator option on Setup dialog was not work.||~129CI~
+       -(Wxe)Crash when File->New menuitem was selected.              ||~129CI~
+                                                                      ||~129CI~
+     2.Additional function.                                           ||~129CI~
+       -SelectAll                                                     ||~129CI~
+          .Command.                                                   ||~129CI~
+             SEL [all] [col1 col2] [.label1 .label2]                  ||~129CI~
+               label1/2:line range  col1/2:column range               ||~129CI~
+               numeric specification for both label 1 and 2 are accepted as lineno.||~129CI~
+               Block mode with col1/2, Range mode without col1/2.     ||~129CI~
+               "Selct All" without label/column.                      ||~129CI~
+               e.g.) sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;       ||~129CI~
+          .Select range to Cut/Copy/Paste on Edit panel.              ||~129CI~
+           Under range mode, selected range itself is target of Paste Range mode.||~129CI~
+          .Abridged format command "S" is not available               ||~129CI~
+           "S" means "SAVe" on Browse/Edit panel.                     ||~129CI~
+        (Wxe,gxe)                                                     ||~129CI~
+          ."SelectAll" menuitem was added to File submenu and popup menu on edit panel.||~129CI~
+          .Set shotcut key to Ctrl+A and cabnged to Ctrk+Shift+A for SaveAs.||~129CI~
+                                                                      ||~129CI~
+     3.Miscellaneous.                                                 ||~129CI~
+       -Disable also menuitem of File submenu depending panel type.   ||~129CI~
+        e.g. Save is disable for directory list panel.                ||~129CI~

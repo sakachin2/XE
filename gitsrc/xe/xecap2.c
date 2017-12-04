@@ -1,8 +1,9 @@
-//CID://+vaf9R~:          update#= 11                              //~vaf9R~
+//CID://+vbd6R~:          update#= 14                              //~vbd6R~
 //*************************************************************
 //*xecap.c
 //* cut and paste
 //************************************************************* //~v069I~
+//vbd6:171119 (BUG)errmsg "lastline split by margin limit" when paste to stdregion including EndOfLine//~vbd6I~
 //vaf9:120607 (WTL)Bug found by vs2010exp(used uninitialized variable),avoid warning C4701//~vaf9I~
 //vaf8:120607 (WTL)Bug found by vs2010exp(used uninitialized variable)//~vaf8I~
 //va7y:100823 EBC:handle support for cap                           //~va7yI~
@@ -303,6 +304,7 @@ int capclearregion(PUCLIENTWE Ppcw,PULINEH Pplh1,PULINEH Pplh2,int Ppos1,int Ppo
 int capstdpaste(PUCLIENTWE Ppcw,PULINEH Psortplh1,PULINEH Psortplh2,int Ppos1,int Ppos2,char Pstat1,char Pstat2)//~v66fI~
 {                                                                  //~v66fI~
 	PULINEH plhs1,plhs2,plht,plht1,plht2,plhs,endplh,plhlast,plhprev,plhcsr=0;//~v66fR~
+	PULINEH plht2next;                                             //~vbd6I~
 //	int rc=0,stepline,mode,csrpos,linemodesw,swdelregion,cpos;     //~v66fR~//~vaf9R~
   	int rc=0,stepline,mode,csrpos=0,linemodesw,swdelregion,cpos;   //~vaf9I~
     int isrteolsw=0;                                               //~v66nI~
@@ -456,7 +458,7 @@ int capstdpaste(PUCLIENTWE Ppcw,PULINEH Psortplh1,PULINEH Psortplh2,int Ppos1,in
 #endif                                                             //~va20I~
     	if (rc=charcap2(Ppcw,mode,plhs1->ULHdata,plhs1->ULHdbcs,plhs1->ULHlen,plht1,cpos),rc)//~v760R~
         {                                                          //~v760I~
-    		pfh=UGETPFH(plht1);                                    //+vaf9I~
+    		pfh=UGETPFH(plht1);                                    //~vaf9I~
         	if (rc>1)     //rc==1:over flow is tab and space only  //~v760I~
 	        	return charmaxovererr(pfh->UFHmergin);             //~v760R~
             ovfcutctr++;                                           //~v760I~
@@ -549,7 +551,12 @@ int capstdpaste(PUCLIENTWE Ppcw,PULINEH Psortplh1,PULINEH Psortplh2,int Ppos1,in
 	    if (!plhs2->ULHeolid)	//last has no eol                  //~v66fI~
         {                                                          //~v66fI~
 //			rc=charlcmdjoin(Ppcw,plhlast,UGETQNEXT(plhlast));      //~v74iR~
-    		rc=charlcmdjoin(CLJ_IGM,Ppcw,plhlast,UGETQNEXT(plhlast));//~v74iR~
+//  		rc=charlcmdjoin(CLJ_IGM,Ppcw,plhlast,UGETQNEXT(plhlast));//~v74iR~//~vbd6R~
+    		plht2next=UGETQNEXT(plhlast);                          //~vbd6I~
+          if (plht2next && plht2next->ULHtype==ULHTHDR && !UGETQNEXT(plht2next)) //end of line//+vbd6R~
+    		rc=0;                                                  //~vbd6R~
+          else                                                     //~vbd6I~
+    		rc=charlcmdjoin(CLJ_IGM,Ppcw,plhlast,plht2next);       //~vbd6I~
             if (!rc)                                               //~v66fI~
             	UCBITON(plhlast->ULHflag,ULHFCURCAP);	//recover paste reverse//~v66fI~
             else                                                   //~v673I~

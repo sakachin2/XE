@@ -1,8 +1,9 @@
-//*CID://+vb5bR~:                             update#=  324;       //~vb5bR~
+//*CID://+vbd7R~:                             update#=  327;       //~vbd7R~
 //*************************************************************
 //*xefcmd.c*
 //**file cmd Save/Replace/Create/Tab/Copy/Move/Locate/Append       //~v0iaR~
 //*************************************************************
+//vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //vb5b:160913 additional to vb54, DBCS space altch is changable by TAB cmd//~vb5bI~
 //vb58:160911 TAB dispchar default was backed to 21be & 21c0,so change example of help msg//~vb58I~
 //vb54:160903 TAB cmd new option to set altch; TAB {on|off} [altch1 [altch2]]//~vb54I~
@@ -251,6 +252,7 @@ int func_save_file(PUCLIENTWE Ppcw)
 //  int opdno;                                                     //~v47TR~
 	UCHAR  fpath[_MAX_PATH];                                       //~v576R~
     int saveopt;                                                   //~va6QI~
+    PFUNCTBL pfunct;                                               //~vbd7I~
 //*********************************
 	pfc=Ppcw->UCWpfc;
 	pfh=pfc->UFCpfh;                                            //~5128I~
@@ -273,6 +275,16 @@ int func_save_file(PUCLIENTWE Ppcw)
 //  	UPARSERC(filename,filename,&opdno,0,",");	//parse out string(accept cr/lf)//~v47TR~
 //      if (opdno>1)                                               //~v47TR~
 //      	return errtoomany();                                   //~v47TR~
+    	if (!stricmp(filename,"ALL"))    //ambiguous "SAV all" or "SEL all"//~vbd7I~
+        {                                                          //~vbd7I~
+            pfunct=(PFUNCTBL)Ppcw->UCWpfunct;                      //~vbd7I~
+            if (!stricmp(Ppcw->UCWcmdverb,pfunct->FTcmda))  //alias "S" is for SAVe and SELlect//~vbd7I~
+            {                                                      //~vbd7I~
+				uerrmsg("Specify explicitly not \"S\" but \"SAV\" or \"SEL\" for operand \"ALL\".",//+vbd7R~
+					"\"ALL\" ‚ÌŽž‚Í \"S\" ‚Å‚Í‚È‚­ \"SAV\" ‚© \"SEL\" ‚©–¾Ž¦Žw’è‚µ‚Ä‚­‚¾‚³‚¢");//+vbd7I~
+				return 4;                                          //~vbd7R~
+            }                                                      //~vbd7I~
+        }                                                          //~vbd7I~
     	if (strcmp(filename,"*"))                               //~5128R~
         {                                                          //~v08oI~
 //  		if (filesrchpfh(filename,fullpath,&pfhsrch)            //~v13dR~
@@ -941,7 +953,7 @@ int  fcmdgettabaltch(int Popt,PUCLIENTWE Ppcw,char *Popd)          //~vb54R~
         if (*(Popd+2)=='0')                                        //~vb5bI~
         {                                                          //~vb5bI~
 	    	Gopttabaltch[2]=0;                                     //~vb5bI~
-	    	Gunpdispchar[3]=Gunpdispchar3_after_inigetopt;         //+vb5bR~
+	    	Gunpdispchar[3]=Gunpdispchar3_after_inigetopt;         //~vb5bR~
             if (Gunpdispchar[3]==DEFAULT_ALTCH)                    //~vb5bI~
 				if (utfsetvisiblealtch(UTFGVACO_DBCSSPACE,UTF22_DBCSSPACEALT))//~vb5bR~
 		        	return 4;                                      //~vb5bI~

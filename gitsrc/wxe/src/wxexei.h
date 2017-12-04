@@ -1,7 +1,10 @@
-//*CID://+vb4iR~:                             update#=  378;       //+vb4iR~
+//*CID://+vbdnR~:                             update#=  391;       //~vbd8R~//~vbdnR~
 //*********************************************************************//~v440I~
 //* wxe interface definition                                       //~v440I~
 //*********************************************************************//~v440I~
+//vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
+//vbd8:171120 (WXE)stdregion by PFK(F6) should disable PAste REP/INS//~vbd8I~
+//vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
 //vb4i:160805 vb4f for wxe(specify ligature on/off,combine on/of line by line)//~vb4iI~
 //vb4g:160801 (WXE)dirlist ligature on always like as vb37         //~vb4gI~
 //vb3p:160616 (BUG)when utf8 ligature on,1st colomn green is ligatured to linono//~vb3pI~
@@ -108,6 +111,8 @@ extern  "C"                                                        //~v440I~
   #define GWXES_CPDATAEBC    0x0400 //mouse paste data is unicodetext//~va5yI~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50I~//~va5yI~
   #define GWXES_KBDEVENT     0x0800 //kbdevent                     //~va7DI~
+  #define GWXES_SELECTALL    0x1000 //parm to func_lmark_file      //~vbd2I~
+  #define GWXES_UPDATEMENU   0x2000 //update File menu enabl/disable//~vbdnI~
                                                                    //~va20I~
   EXTERN  void *Gpwxei;    //ptr t WXEINTF                         //~va20I~
   #define GPWXEI()   ((WXEINTF*)Gpwxei)                            //~va3gR~
@@ -240,6 +245,13 @@ int  wxe_prtgetfnm(char *Pfnm,void **Pppcw,void **Pppfh,int *Pplnotype,UWCH *Pfn
 	#define CHKST_END            2                                 //~v55tI~
 	#define CHKST_SAVE           3                                 //~v55tI~
 	#define CHKST_OPENWITH       4                                 //~v55uI~
+                                                                   //~vbdnI~
+	int wxe_chkEnableFileSubmenu(int Popt,int Pmenuid);            //~vbdnR~
+	#define CHKSTFO_MSG          0x01  //issue errmsg              //~vbdnI~
+	#define CHKSTF_SAVE          2                                 //~vbdnI~
+	#define CHKSTF_SAVEAS        3                                 //~vbdnI~
+	#define CHKSTF_PRINT         5  //skip over 1 seperator        //~vbdnR~
+                                                                   //~vbdnI~
 	int wxe_onfileopenwith(void);                                  //~v55uI~
 	int wxegetdbcsmode(void);                                      //~v55DI~
 	int wxe_atcmd(int Popt,int Pintvl,int Prepeat,char *Pcmd,void *Ppodelmt,int Pwordno);//~v55WR~
@@ -290,8 +302,11 @@ int wxe_dndcopyfile(int Popt,int Pseq,int Ptot,char *Psource,char *Ptarget);//~v
     #define WXEM_INIT      0x00        //init                      //~v69ZI~
     #define WXEM_RESET     0x01        //capreset                  //~v69ZI~
     #define WXEM_SETRGN    0x02        //region/box defined        //~v69ZI~
+    #define WXEM_SETRGN2   0x04        //set Mcpcopysw=2 for SEL ALL cmd//~vbd8R~
                                                                    //~v69ZI~
 	int  wxe_capchkxestat(void);                                   //~v69ZI~
+	int  wxe_capchkselectall(void);                                //~vbd2I~
+	int  wxe_capselectall(void);                                   //~vbd2I~
 	int  wxe_funccall(int Pfuncid,char *Pcmdparm);                 //~v71sM~
   	int wxe_helpcall(void);                                        //~v71AM~
 	int  wxe_getpcwsubtype(void *Ppcw);                            //~v76jR~
@@ -339,6 +354,7 @@ int wxe_dndcopyfile(int Popt,int Pseq,int Ptot,char *Psource,char *Ptarget);//~v
 	#define XXECCPI_VHEXCSRMASK   0xff00	//vhexcsr pos          //~va3tR~
 	#define XXECCPI_GETVHEXCSR(inf) (((inf) & XXECCPI_VHEXCSRMASK)>>XXECCPI_VHEXCSRSHIFT)//~va3tR~
 	int xxe_getlinenofldsz(int Popt,int Prow,int *Poutcols);       //~vb3pR~
+	int wxe_chkUpdateFileMenu(int Popt);                           //+vbdnR~
                                                                    //~va3DI~
 //*****************************************************************//~v440R~
 #ifdef __cplusplus                                                 //~v440I~

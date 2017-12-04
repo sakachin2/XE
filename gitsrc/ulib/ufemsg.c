@@ -1,7 +1,8 @@
-//*CID://+v6HjR~:                             update#=   79;       //+v6HjR~
+//*CID://+v6N1R~:                             update#=   80;       //+v6N1R~
 //*************************************************************
 //*ufemsg.c                                                        //~v036R~
 //*************************************************************//~4C18I~
+//v6N1:171203 (Bug)chk by xuerpck                                  //+v6N1I~
 //v6Hj:170119 bypass toolong errmsg at xe term                     //~v6HjI~
 //v6Hf:170117 (Win)change errmsg for longname(move filename at end)//~v6HfI~
 //v6H9:170109 (Win)del longname using \\?\ prefix(path max is 32767) and Unicode API because move to shortpath dir could not delete dir/file name longer >=260.//~v6H1I~
@@ -635,7 +636,8 @@ int ufileTooLongFullpathName2(int Prc,char *Ppath,char *Pfnm)      //~v6H1R~
     	return Prc;                                                //~v6HjI~
 	UstrncpyZ(fpath,Ppath,sizeof(fpath));                          //~v6H1I~
 	if (!Pfnm || !*Pfnm)                                           //~v6H1I~
-	    uerrmsg("too long file path name(Max:%d):%s - %s",         //~v6H1R~
+//      uerrmsg("too long file path name(Max:%d):%s - %s",         //~v6H1R~//+v6N1R~
+        uerrmsg("too long file path name(Max:%d):%s",              //+v6N1I~
     			"長過ぎるファイルパス名(Max:%d):%s",               //~v6H1R~
         		_MAX_PATH,fpath);                                  //~v6H1R~
     else                                                           //~v6H1I~

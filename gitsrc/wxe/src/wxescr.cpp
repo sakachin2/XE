@@ -1,5 +1,6 @@
-//CID://+vb4iR~:       update#=   119                              //~vb4iR~
+//CID://+vbdnR~:       update#=   121                              //~vbdnR~
 //******************************************************************************//~v003I~
+//vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
 //vb4i:160805 vb4f for wxe(specify ligature on/off,combine on/of line by line)//~vb4iI~
 //vb4g:160801 (WXE)dirlist ligature on always like as vb37         //~vb4gI~
 //vb3q:160617 (BUG)dbcsspace dispchar should be fix to ffff(apply assign by ini file to LC file only)//~vb3qI~
@@ -225,6 +226,7 @@ UTRACEP("CREATEFONT draw select obj font=%p\n",Mpfont);            //~va74I~
 //  Pdc->BitBlt(0,0,Mscrwidth,Mscrheight,Mpmemdc,0,0,SRCCOPY);     //~@@@@R~
     Pdc->BitBlt(0,0,Mscrwidth,Mscrheight,HDC(*Mpmemdc),0,0,SRCCOPY);//~@@@@R~
     scrruler(Pdc,Mwxeintf.WXEIcsrposy,Mwxeintf.WXEIcsrposx);//direct write not required erase old ruler//~v78BR~
+	updateFileMenu(0);                                             //+vbdnR~
 	return 0;                                                      //~v003M~
 }//draw                                                            //~v003M~
 //===============================================================================//~v003I~
@@ -751,8 +753,8 @@ UTRACEP("CREATEFONT strput syntax=%d font=%p\n",Pstyle,Mpfonts[Pstyle]);//~va74I
 //  csubtextoutw(0,Ppmemdc->m_hDC,xx,yy,pdata,pdbcs,Plen,cellw);   //~va20R~//~va30R~
     opt=CSTOWO_COMBINECHK;                                         //~va30I~
 //  	csubtextoutw(opt,Ppmemdc->m_hDC,xx,yy,pdata,pdbcs,Plen,cellw);//~vb4iR~
-//	csubtextoutw(opt,lineopt,Ppmemdc->m_hDC,xx,yy,pdata,pdbcs,Plen,cellw,fgcolor,bgcolor);//+vb4iR~
-  	csubtextoutw(opt,lineopt,Ppmemdc->m_hDC,xx,yy,pdata,pdbcs,Plen,cellw);//+vb4iI~
+//	csubtextoutw(opt,lineopt,Ppmemdc->m_hDC,xx,yy,pdata,pdbcs,Plen,cellw,fgcolor,bgcolor);//~vb4iR~
+  	csubtextoutw(opt,lineopt,Ppmemdc->m_hDC,xx,yy,pdata,pdbcs,Plen,cellw);//~vb4iI~
   }                                                                //~va20M~
   else                                                             //~va20M~
 #endif                                                             //~va20M~
@@ -1039,3 +1041,17 @@ int CWxemain::onfileopenwith(void)                                 //~v55uI~
 	    Mpview->Invalidate(FALSE);                                 //~v55uR~
     return rc;                                                     //~v55uI~
 }//onfileopenwith                                                  //~v55uI~
+//===============================================================================//~vbdnI~
+//open by application                                              //~vbdnI~
+//===============================================================================//~vbdnI~
+int CWxemain::updateFileMenu(int Popt)                             //~vbdnI~
+{                                                                  //~vbdnI~
+	int rc=0;                                                      //~vbdnI~
+//********************************                                 //~vbdnI~
+    if (wxe_chkUpdateFileMenu(Popt))                               //~vbdnI~
+    {                                                              //~vbdnI~
+		if (Mpmainframe)                                           //~vbdnI~
+			rc=((CMainFrame*)Mpmainframe)->updateFileMenu(Popt);   //~vbdnI~
+    }                                                              //~vbdnI~
+    return rc;                                                     //~vbdnI~
+}//updateFileMenu                                                  //~vbdnI~

@@ -1,8 +1,9 @@
-//*CID://+vb7oR~:                             update#=  424;       //+vb7oR~
+//*CID://+vbdnR~:                             update#=  431;       //~vbdnR~
 //***********************************************************
 //* xescr.c                                                     //~5513I~
 //***********************************************************   //~v016I~
-//vb7o:170119 (Bug)Errmsg top 2 byte corrupted when msg is over 2line(MAXCOL*2)//+vb7oI~
+//vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
+//vb7o:170119 (Bug)Errmsg top 2 byte corrupted when msg is over 2line(MAXCOL*2)//~vb7oI~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCWI~
 //vb4w:160814 (XXE bug)UNICOMB UNPR was ignore                     //~vb4wI~
 //vb4u:160812 lineopt should be cleared when back to menu from file panel//~vb4uI~
@@ -382,6 +383,9 @@ int scrsetinsrepdbcs(PUCLIENTWE Ppcw,PUSCRD Ppsd);                 //~v770I~
   	UINT xescrerrmsgbycell(int Popt,char *Perrmsg,char *Pcodetype,int Plen,int Prow,int Pcol);//~vb4fI~
 	int scrcell2tocell(char *Pdata,char *Pcell,int Poffs,int Plen);//~va00R~
 #endif                                                             //~va00I~
+#ifdef WXEXXE                                                      //~vbdnI~
+	int scrSetUpdateFileMenu(int Popt,PUCLIENTWE Ppcw);            //+vbdnR~
+#endif                                                             //~vbdnI~
 //****************************************************************
 // scrinit 
 //*screan header init
@@ -1084,8 +1088,8 @@ static int Serrwritesw=0;
 //    char drawvlinesw[MAXVLINE];                                  //~v0h9R~
 #ifdef UTF8SUPPH                                                   //~va1cR~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va3AI~//~va50R~
-//  char errmsgdbcst[MAXCOLUMN*2*MAX_MBCSLEN];//expand by dbcssplit space insertion//~va3AI~//~va50R~//+vb7oR~
-    char errmsgdbcst[MAXCOLUMN*2*MAX_MBCSLEN+2];//same as errmsglc //+vb7oI~
+//  char errmsgdbcst[MAXCOLUMN*2*MAX_MBCSLEN];//expand by dbcssplit space insertion//~va3AI~//~va50R~//~vb7oR~
+    char errmsgdbcst[MAXCOLUMN*2*MAX_MBCSLEN+2];//same as errmsglc //~vb7oI~
 #else                                                              //~va3AI~//~va50R~
     char errmsgdbcst[MAXCOLUMN+2*MAX_MBCSLENLC];//expand by dbcssplit space insertion//~va1cR~
 #endif //UTF8EBCD raw ebcdic file support                          //~va3AI~//~va50R~
@@ -1219,7 +1223,9 @@ static int S1stclear=1;                                            //~v45BR~
 	uvio_w95buffmode(buffuse);	//set/reset buffer mode            //~v089M~
 #endif                                                             //~v089I~
 //create line
-
+#ifdef WXEXXE                                                      //~vbdnR~
+	scrSetUpdateFileMenu(0,pcw1);                                  //+vbdnI~
+#endif                                                             //~vbdnI~
  	pc=Gattrtbl+COLOR_TITLE;
 	for (i=0,pcw=pcw1;i<2;i++,pcw=pcw2)
 	{
@@ -2793,3 +2799,12 @@ int scrsetinsrepdbcs(PUCLIENTWE Ppcw,PUSCRD Ppsd)                  //~v770I~
 #endif                                                             //~va1cR~
     return 0;                                                      //~v770I~
 }//scrsetinsrepdbcs                                                //~v770I~
+#ifdef WXEXXE                                                      //~vbdnI~
+//*********************************************************************//~vbdnI~
+int scrSetUpdateFileMenu(int Popt,PUCLIENTWE Ppcw)                 //+vbdnI~
+{                                                                  //~vbdnI~
+	if (UCBITCHK(Ppcw->UCWflag,UCWFDRAW))  //current client may cahnged(poped or newly registered//+vbdnI~
+    	Gwxestat|=GWXES_UPDATEMENU;                                //+vbdnM~
+    return 0;                                                      //+vbdnI~
+}//scrSetUpdateFileMenu                                            //+vbdnR~
+#endif                                                             //~vbdnI~

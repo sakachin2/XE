@@ -1,5 +1,6 @@
-//*CID://+vb07R~:                             update#=  104;       //~vb07R~
+//*CID://+vbd0R~:                             update#=  115;       //~vbd0R~
 //*************************************************************
+//vbd0:171114 (Wxe:BUG)print cmd hung(spawn xesyscmd send no response):utrace.out ACCESS DENIED//~vbd0I~
 //vb07:150314 add Ctrl+C handley to xesyscmd to break cmd wait     //~vb07I~
 //vafk:120624 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  use ULPTR(unsigned __int64/ULONG)//~vafkI~
 //vafc:120607 C4701 warning(used uninitialized variable) by VC6    //~vafcI~
@@ -66,11 +67,21 @@ int main(int parmc,char * parmp[])
 //  char buff[256];                                                //~v59LR~
     char buff[UPROC_MAX_CMDSVRBUF];                                //~v59LR~
     int fdr,fdw,len,opt;
+    char fnm[_MAX_PATH],*pwd;                                      //~vbd0R~
 //**********************
+	pwd=getenv("xe");                                              //~vbd0R~
+    if (!pwd)                                                      //~vbd0I~
+		pwd=getenv("TEMP");                                        //~vbd0R~
+    if (!pwd)                                                      //~vbd0I~
+		pwd=getenv("TMP");                                         //~vbd0R~
+    if (!pwd)                                                      //~vbd0I~
+    	pwd=".";                                                   //~vbd0I~
     Spid=_getpid();     //parm to callback func                    //~v56xM~
+    sprintf(fnm,"%s\\xesyscmd.trc",pwd);                           //+vbd0R~
+UTRACE_INIT(fnm,2);          //2:ignore openerr                    //~vbd0R~
     uerrmsg("%s:started pid=%d(x%08x)",0,                          //~v579R~
 				PGM,Spid,Spid);                                    //~v579R~
-UTRACE_INIT("xesyscmd.trc",1);                                     //~v70rR~
+//UTRACE_INIT("xesyscmd.trc",1);                                     //~v70rR~//~vbd0R~
 //UTRACEP("parmc=%d\n",parmc);                                     //~v56wR~
 
     if (parmc!=4)
@@ -341,9 +352,9 @@ BOOL WINAPI ctrlHandler(DWORD Peventid)                            //~vb07I~
 	UTRACEP("ctrlHandler swProcessing=%d,id=%d(%s)\n",Sprocessing,Peventid,peventid);//~vb07R~
 	uerrmsg("Detected Control Break eventid=%d(%s)\n",0,           //~vb07I~
 					Peventid,peventid);                            //~vb07I~
-    if (swcontinue)                                                //+vb07I~
-		uerrmsg("Process Continue\n",0);                           //+vb07I~
-    else                                                           //+vb07I~
-		uerrmsg("Process will exit\n",0);                          //+vb07I~
+    if (swcontinue)                                                //~vb07I~
+		uerrmsg("Process Continue\n",0);                           //~vb07I~
+    else                                                           //~vb07I~
+		uerrmsg("Process will exit\n",0);                          //~vb07I~
     return swcontinue;	//FALSE:finally ExitProcess()              //~vb07I~
 }//ctrlHandler                                                     //~vb07I~

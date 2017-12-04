@@ -1,7 +1,8 @@
-//CID://+vbCBR~:      update#=   24                                //~vbCBR~
+//CID://+vbd7R~:      update#=   26                                //~vbd7R~
 //****************************************************************
 //xescr.h                                                          //~va00R~
 //****************************************************************//~5611I~
+//vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
 //vb4f:160802 (ULIB:v6Ei)specify ligature on/off,combine on/of line by line(used for edit/filename  panel)//~vb4fI~
 //vb2Y:160405 by vb2U string remains on screen when split screen or exit xe if ligature mode ON//~vb2YI~
@@ -221,7 +222,7 @@ typedef struct _UCLIENTWE{
 #define UCWF3HEXKBDUCS4 0x20                    //3byte ucs        //~va3xR~
 #endif                                                             //~va3xI~
 #define UCWF3HEXKBDUCS2 0x40                   //2byte ucs         //~va3xI~
-#define UCWF3FINDCMD    0x80                   //apply find cmd of UCWfindcmd//+vbCBR~
+#define UCWF3FINDCMD    0x80                   //apply find cmd of UCWfindcmd//~vbCBR~
                         UCHAR   UCWflag2;       //for utf          //~v778I~
 #ifdef UTF8SUPPH                                                   //~va00I~
 #define UCWF2SETFLD     0x01                    //parm to setflddata//~va00R~
@@ -293,6 +294,7 @@ typedef struct _UCLIENTWE{
                         char   *UCWcmdLC;       //cmd by lc from cmd verb//~vavQI~
                         char   *UCWcmdCT;       //ct for cmdLC     //~vavQR~
                         void   *UCWfindcmd;     //PUSCMD:pcw specific find cmd//~vbCBR~
+                        char    UCWcmdverb[4];  //cmd verb to srch funct//+vbd7R~
                         } UCLIENTWE;
 typedef UCLIENTWE  *PUCLIENTWE;
 #define UCLIENTWESZ (sizeof(UCLIENTWE))

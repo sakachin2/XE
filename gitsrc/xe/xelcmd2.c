@@ -1,8 +1,10 @@
-//*CID://+vb88R~:                              update#=  166;      //~vb88R~
+//*CID://+vbd5R~:                              update#=  167;      //+vbd5R~
 //*************************************************************
 //*xelcmd2.c                                                    //~v04dR~
 //* each line cmd process
 //************************************************************* //~v019I~
+//vbd5:171118 (BUG)ULHFBLOCK was reset when selectall after undo because EndOfLine ULHlinenor was not recovered.//+vbd5I~
+//            ULHlinenor is checked at caplinechk->lineseqchk and ULHlinenor is value of set at cappaste(linumsuffix).//+vbd5I~
 //vb88:170216 stop lcmd "i" continue mode by cut&paste             //~vb88I~
 //vb86:170216 display cmdline ctr excluded(fcmd:x,xx; lcmd x)      //~vb86I~
 //vaz0:150105 BUG:offset value is long long for fseek error msg    //~vaz0I~
@@ -1839,7 +1841,11 @@ static int Spower[4]={1,10,100,1000};
             	prevexcludesw=0;                                   //~v0cvI~
 		}                                                       //~5104R~
 	else                                                        //~5104I~
+    {                                                              //+vbd5I~
+		if (undoprep(Ppcw,Pplhnext,UUHTXSUFFIX)==UALLOC_FAILED)	//save suffix for prep undo//+vbd5I~
+            return UALLOC_FAILED;                                  //+vbd5I~
 		Pplhnext->ULHlinenor=++lineno;	//last hdr line         //~5104I~
+    }                                                              //+vbd5I~
 	return 0;                                                   //~v04dR~
 }//lcmdrenumsuffix
 //****************************************************************
@@ -2078,7 +2084,7 @@ int lcmdexcludedmsg(int Popt,PUFILEH Ppfh)                         //~vb86R~
     {                                                              //~vb86I~
     	UTRACEP("%s:opt=%x,ctr=%d\n",UTT,Popt,ctr);                //~vb86I~
      	if (!(Popt & LCXMO_NOMSG))                                 //~vb86I~
-        {                                                          //+vb88I~
+        {                                                          //~vb88I~
             if (Popt & LCXMO_MSGCAT)                               //~vb86R~
                 uerrmsgcat(" ; Excluded lines contains %d line-cmds.",//~vb86R~
                         " ,非\x95\\示部に %d 行の行コマンドがあります",//~vb86R~//~vb88R~
@@ -2087,7 +2093,7 @@ int lcmdexcludedmsg(int Popt,PUFILEH Ppfh)                         //~vb86R~
                 uerrmsg("Excluded lines contains %d line-cmds.",   //~vb86R~
                         "非\x95\\示部に %d 行の行コマンドがあります",  //~vb86R~//~vb88R~
                         ctr);                                      //~vb86R~
-        }                                                          //+vb88I~
+        }                                                          //~vb88I~
     }                                                              //~vb86I~
     return ctr;                                                    //~vb86I~
 }//lcmdexcludedmsg                                                 //~vb86I~

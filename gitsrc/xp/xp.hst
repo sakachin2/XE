@@ -1,4 +1,7 @@
 *** update history ******************************************************************
+//*********  20171130 v129D updated   ****************
+//v9f0:171123 compiler warning at FC25(GCC6); self-comparison always evaluates to true [-Wtautological-compare]
+//            xpinp.c
 //*********  20170812 v129C updated   ****************
 //v9e7:170826 compiler warning
 //            xprint.c xpebc.c xppf.c

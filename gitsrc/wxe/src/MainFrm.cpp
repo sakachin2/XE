@@ -1,5 +1,9 @@
-//*CID://+vb4vR~:                             update#=  295;       //~vb4vR~
+//*CID://+vbdnR~:                             update#=  337;       //~vbdnR~
 //************************************************************************//~v51dI~
+//vbdo:171125 (wxe:BUG)crashh when File/New is canceled            //~vbdnI~//~vbdoR~
+//vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
+//vbd3:171117 (Wxe)MainMenu enable/disable also on Edit submenu    //~vbd3I~
+//vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
 //vb4v:160813 (WXE bug)ATl/WTL is missing OnPrecreateWindow        //~vb4vI~
 //vb3w:160621 w64 compiler warning                                 //~vb3wI~
 //vak7:130906 redirect memcpy to memmove when overlaped            //~vak7I~
@@ -42,7 +46,8 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 //#define APPENDPOS   9                                            //~v51wR~
-#define APPENDPOS   11                                             //~v51wI~
+#define APPENDPOS   11                //pos of Cut(Icon) on menubar//~v51wI~
+#define TOOLBARINDEX_SAVE 5                                        //~vbdnI~
 /////////////////////////////////////////////////////////////////////////////
 // CMainFrame
 
@@ -80,6 +85,7 @@ CMainFrame::CMainFrame()
     Museact=Mwxeinidata.WXEINIuseact;	//accelerator use          //~3103I~
     Musemk =Mwxeinidata.WXEINIusemk ;	//accelerator use          //~3105I~
     Mpact=0;        //accelerator table copy                       //~3104I~
+    Menableselectall=1;                                            //~vbd2R~
     Menablecut=1;     //initialy dispaly menu bitmap               //~v51dR~
     Menablecopy=1;                                                 //~v51dR~
     Menablepaste=1;                                                //~v51dR~
@@ -147,20 +153,20 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-BOOL CMainFrame::OnPreCreateWindowW(LPCREATESTRUCT lpcs)           //+vb4vR~
+BOOL CMainFrame::OnPreCreateWindowW(LPCREATESTRUCT lpcs)           //~vb4vR~
 {                                                                  //~vb4vI~
-	int X=0,Y=0,ww,hh;                                             //+vb4vR~
+	int X=0,Y=0,ww,hh;                                             //~vb4vR~
     UINT uflag;                                                    //~vb4vI~
 //*****************************                                    //~vb4vI~
 //  PreCreateWindow(*lpcs);	//@@@@test                             //~vb4vI~
 	uflag=SWP_NOMOVE/*ignore X,Y parm*/|SWP_SHOWWINDOW;            //~vb4vI~
-    ww=Mwxeinidata.WXEINIframewidth;	//restore size             //+vb4vR~
-	hh=Mwxeinidata.WXEINIframeheight;	//restore size             //+vb4vR~
-    if (hh && ww)                                                  //+vb4vI~
-    {                                                              //+vb4vI~
-//  	SetWindowPos(m_hWnd,HWND_TOP,X,Y,ww,hh,uflag);	//not ATL  //+vb4vI~
-    	SetWindowPos(HWND_TOP,X,Y,ww,hh,uflag);         //ATL      //+vb4vI~
-    }                                                              //+vb4vI~
+    ww=Mwxeinidata.WXEINIframewidth;	//restore size             //~vb4vR~
+	hh=Mwxeinidata.WXEINIframeheight;	//restore size             //~vb4vR~
+    if (hh && ww)                                                  //~vb4vI~
+    {                                                              //~vb4vI~
+//  	SetWindowPos(m_hWnd,HWND_TOP,X,Y,ww,hh,uflag);	//not ATL  //~vb4vI~
+    	SetWindowPos(HWND_TOP,X,Y,ww,hh,uflag);         //ATL      //~vb4vI~
+    }                                                              //~vb4vI~
     return 0;                                                      //~vb4vI~
 }                                                                  //~vb4vI~
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
@@ -337,8 +343,10 @@ int  CMainFrame::appendmenu(CMenu* Ppmenu)                         //~v51dI~
 int  CMainFrame::enablemainmenu(void)                              //~v51dI~
 {                                                                  //~v51dI~
     CMenu *pmenu;                                                  //~v51dI~
+    CMenu *psubmenu;                                               //~vbd3I~
     int enablecopy,enablepaste,enablecut,flag0,flag;               //~v51dR~
     int enablepastev;                                              //~v66hR~
+    int enableselectall;                                           //~vbd2R~
     int chngsw=0;                                                  //~v51dI~
 //***************************                                      //~v51dI~
 //  flag=MF_BYCOMMAND;                                             //~v51dR~
@@ -346,12 +354,21 @@ int  CMainFrame::enablemainmenu(void)                              //~v51dI~
 //  pmenu=GetMenu();                                               //~@@@@R~
 //  pmenu=this->GetMenu();                                         //~@@@@R~
     pmenu=GetMenuW();                                              //~@@@@M~
+    psubmenu=GetSubMenuW(pmenu,1);                                 //~vbd3R~
+    enableselectall =Mpxemain->cpupdateselectall();                //~vbd2R~
     enablecopy =Mpxemain->cpupdatecopy();                          //~v51dI~
     enablecut  =Mpxemain->cpupdatecut();                           //~v51dI~
     enablepaste=Mpxemain->cpupdatepaste();                         //~v51dI~
     enablepastev=Mpxemain->cpupdatepastestd();                     //~v66hI~
 UTRACEP("enable mainmenu copy=%d->%d,cut=%d->%d,paste=%d->%d,pasteV=%d->%d\n",//~v66ER~
   	Menablecopy,enablecopy,Menablecut,enablecut,Menablepaste,enablepaste,Menablepastev,enablepastev);//~v66ER~
+    if (enableselectall!=Menableselectall)                         //~vbd2R~
+    {                                                              //~vbd2R~
+    	chngsw=1;                                                  //~vbd2R~
+    	Menableselectall=enableselectall;                          //~vbd2R~
+        flag=flag0|(enableselectall ? MF_ENABLED : MF_GRAYED);     //~vbd2R~
+    	psubmenu->EnableMenuItem(0,flag);                  //~vbd2R~//~vbd3R~
+    }                                                              //~vbd2R~
     if (enablecopy!=Menablecopy)                                   //~v51dI~
     {                                                              //~v51dI~
     	chngsw=1;                                                  //~v66mR~
@@ -359,6 +376,7 @@ UTRACEP("enable mainmenu copy=%d->%d,cut=%d->%d,paste=%d->%d,pasteV=%d->%d\n",//
         flag=flag0|(enablecopy ? MF_ENABLED : MF_GRAYED);          //~v51dR~
 //  	pmenu->EnableMenuItem(ID_EDIT_COPY2,flag);                 //~v51dR~
     	pmenu->EnableMenuItem(APPENDPOS+1,flag);                   //~v51dI~
+    	psubmenu->EnableMenuItem(2,flag);                     //~vbd2R~//~vbd3R~
     }                                                              //~v51dI~
     if (enablecut !=Menablecut )                                   //~v51dI~
     {                                                              //~v51dI~
@@ -368,7 +386,9 @@ UTRACEP("enable mainmenu copy=%d->%d,cut=%d->%d,paste=%d->%d,pasteV=%d->%d\n",//
 //  	pmenu->EnableMenuItem(ID_EDIT_CUT2 ,flag);                 //~v51dR~
 //  	pmenu->EnableMenuItem(ID_EDIT_CLEAR,flag);                 //~v51dR~
     	pmenu->EnableMenuItem(APPENDPOS+0,flag);                   //~v51dI~
+    	psubmenu->EnableMenuItem(1,flag);   //Cut                  //~vbd2R~//~vbd3R~
     	pmenu->EnableMenuItem(APPENDPOS+2,flag);                   //~v51dI~
+    	psubmenu->EnableMenuItem(3,flag);   //Clear                  //~vbd2R~//~vbd3R~
     }                                                              //~v51dI~
     if (enablepastev!=Menablepastev)                               //~v66hI~
     {                                                              //~v66hI~
@@ -376,6 +396,7 @@ UTRACEP("enable mainmenu copy=%d->%d,cut=%d->%d,paste=%d->%d,pasteV=%d->%d\n",//
     	Menablepastev=enablepastev;                                //~v66hI~
         flag=flag0|(enablepastev ? MF_ENABLED : MF_GRAYED);        //~v66hI~
     	pmenu->EnableMenuItem(APPENDPOS+3,flag);                   //~v66hI~
+    	psubmenu->EnableMenuItem(4,flag);  //PasteV                   //~vbd2R~//~vbd3R~
     }                                                              //~v66hI~
     if (enablepaste!=Menablepaste)                                 //~v51dI~
     {                                                              //~v51dI~
@@ -386,7 +407,9 @@ UTRACEP("enable mainmenu copy=%d->%d,cut=%d->%d,paste=%d->%d,pasteV=%d->%d\n",//
 //  	pmenu->EnableMenuItem(ID_EDIT_PASTE_REP,flag);             //~v51dR~
 //  	pmenu->EnableMenuItem(APPENDPOS+3,flag);                   //~v66hR~
     	pmenu->EnableMenuItem(APPENDPOS+4,flag);                   //~v51dI~
+    	psubmenu->EnableMenuItem(5,flag);   //Paste(Ins)                  //~vbd2R~//~vbd3R~
     	pmenu->EnableMenuItem(APPENDPOS+5,flag);                   //~v66hI~
+    	psubmenu->EnableMenuItem(6,flag);   //Paste(Rep)                  //~vbd2R~//~vbd3R~
     }                                                              //~v51dI~
     if (chngsw)                                                    //~v66mR~
 //  	Invalidate(FALSE);                                         //~v51dR~
@@ -529,6 +552,66 @@ int  CMainFrame::updatemainmenu(int Pusemk)                        //~3105R~
   	    	SetMenu(HMENU(pmenu));                                 //~@@@@I~
     return updatesw;                                               //~3104R~
 }//updatemainmenu                                                  //~3104I~
+//***********************************************                  //~vbdnI~
+int  CMainFrame::updateFileMenu(int Popt)                          //~vbdnR~
+{                                                                  //~vbdnI~
+	CMenu *pmenu,*psubmenu;                                        //~vbdnI~
+    int rc;                                                        //~vbdnR~
+//********************************                                 //~vbdnI~
+	pmenu=GetMenuW();                                              //~vbdnR~
+	psubmenu=GetSubMenuW(pmenu,0);                                 //~vbdnI~
+	rc=updatemainmenuFile(psubmenu);                               //~vbdnR~
+//*toolbar save icon                                               //~vbdnI~
+	rc+=updateMenuIcon(0,CHKSTF_SAVE,TOOLBARINDEX_SAVE);           //~vbdnI~
+    return  rc;                                                    //~vbdnI~
+}//updateFileManu                                                  //~vbdnI~
+//***********************************************                  //~vbdnI~
+int  CMainFrame::updateMenuIcon(int Popt,int Pchkidx,int Piconidx) //~vbdnI~
+{                                                                  //~vbdnI~
+	CMenu *pmenu;                                                  //~vbdnI~
+    int rc=0;                                                      //~vbdnR~
+	UINT enable,stat;                                              //~vbdnI~
+//********************************                                 //~vbdnI~
+	pmenu=GetMenuW();                                              //~vbdnI~
+    enable=wxe_chkEnableFileSubmenu(0,Pchkidx)?MF_ENABLED:MF_GRAYED; //wxexei3//~vbdnI~
+    stat=pmenu->GetMenuState(Piconidx,MF_BYPOSITION) & (MF_ENABLED|MF_GRAYED); //wxexei3//~vbdnI~
+    UTRACEP("%s:iconidx=%d,menuid=%d,chkenable=%d,itemstatus=%x\n",UTT,Piconidx,pmenu->GetMenuItemID(Piconidx),enable,stat);//~vbdnI~
+    if (stat!=enable)                                              //~vbdnI~
+    {                                                              //~vbdnI~
+		pmenu->EnableMenuItem(Piconidx,MF_BYPOSITION|enable);      //~vbdnI~
+	    UTRACEP("%s:iconidx=%d,enable=%x\n",UTT,Piconidx,enable);  //~vbdnI~
+    	DrawMenuBar();                                             //~vbdnI~
+        rc=1;                                                      //~vbdnR~
+    }                                                              //~vbdnI~
+    return  rc;                                                    //~vbdnI~
+}//updateMenuIcon                                                  //~vbdnI~
+//***********************************************                  //~vbdnI~
+//*update mein manue text                                          //~vbdnI~
+//*return:1:updated                                                //~vbdnI~
+//***********************************************                  //~vbdnI~
+int  CMainFrame::updatemainmenuFile(CMenu *Pmenu)                  //~vbdnI~
+{                                                                  //~vbdnI~
+	int ii,updatectr=0,itemctr;                                    //~vbdnR~
+	UINT enable;                                                   //~vbdnR~
+    UINT stat;                                                     //~vbdnI~
+    CMenu *submenu;                                                //~vbdnR~
+//***************************                                      //~vbdnI~
+//  submenu=GetSubMenuW(Pmenu,0);                                  //~vbdnR~
+    submenu=Pmenu;                                                 //~vbdnR~
+    itemctr=submenu->GetMenuItemCount();                           //~vbdnR~
+    for (ii=0;ii<itemctr;ii++)                                     //~vbdnI~
+    {                                                              //~vbdnI~
+        stat=submenu->GetMenuState(ii,MF_BYPOSITION) & (MF_ENABLED|MF_GRAYED);//~vbdnR~
+        enable=wxe_chkEnableFileSubmenu(0,ii)?MF_ENABLED:MF_GRAYED; //wxexei3//~vbdnR~
+        UTRACEP("%s:ii=%d,id=%d,chkenable=%d,itemstatus=%x\n",UTT,ii,Pmenu->GetMenuItemID(ii),enable,stat);//~vbdnR~
+        if (stat!=enable)                                          //~vbdnR~
+        {                                                          //~vbdnI~
+		    submenu->EnableMenuItem(ii,MF_BYPOSITION|enable);      //~vbdnR~
+            updatectr++;                                           //~vbdnI~
+        }                                                          //~vbdnI~
+    }//all sub menu                                                //~vbdnI~
+    return updatectr;                                              //~vbdnR~
+}//updatemainmenuFile                                              //+vbdnR~
 //***********************************************                  //~3104I~
 //*ret 0:no update required                                        //~3104I~
 //***********************************************                  //~3104I~
@@ -569,6 +652,16 @@ void CMainFrame::OnInitMenu(CMenu* pMenu)
 //************                                                     //~v51dI~
 //    CFrameWnd::OnInitMenu(pMenu);                                //~@@@@R~
 }
+//********************************************************************//~vbdnI~
+//*Pindex:Menubar position,PswSysMenu:True if Control Menu(Move,Minimize etc)//~vbdnI~
+//********************************************************************//~vbdnI~
+void CMainFrame::OnInitMenuPopup(CMenu* pMenu,UINT Pindex,BOOL PswSysMenu)//~vbdnI~
+{                                                                  //~vbdnI~
+////************                                                   //~vbdnR~
+//    UTRACEP("%s:index=%d,swContextmenu=%d\n",UTT,Pindex,PswSysMenu);//~vbdnR~
+//    if (!PswSysMenu && Pindex==0)   //Menubar-File               //~vbdnR~
+//        updatemainmenuFile(pMenu);                               //~vbdnR~
+}                                                                  //~vbdnI~
 
 LRESULT CMainFrame::DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
 {
@@ -603,6 +696,14 @@ CMenu *CMainFrame::GetMenuW()                                      //~@@@@R~
 //  hmenu=m_CmdBar.GetMenu();                                //~v782I~//~@@@@R~
 	return new CMenu(hmenu);                                       //~@@@@I~
 }                                                                  //~@@@@I~
+//**********************************                               //~vbd3I~
+CMenu *CMainFrame::GetSubMenuW(CMenu *Pmenu,int Ppos)              //~vbd3R~
+{                                                                  //~vbd3I~
+	HMENU hmenu;                                                   //~vbd3I~
+//******************                                               //~vbd3I~
+    hmenu=Pmenu->GetSubMenu(Ppos);                                 //~vbd3R~
+	return new CMenu(hmenu);                                       //~vbd3I~
+}                                                                  //~vbd3I~
 //************************************************************     //~@@@@I~
 //*file dialog                                                     //~@@@@I~
 //************************************************************     //~@@@@I~
@@ -611,8 +712,10 @@ LRESULT CMainFrame::OnFileNew(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl
     char fnm[_MAX_PATH];                                           //~@@@@I~
     int rc;                                                        //~@@@@I~
 //*********************************                                //~@@@@I~
+    *fnm=0;                                                        //~vbdoR~
 	rc=fileselectiondlg(1/*new*/,fnm);                             //~@@@@I~
 //  m_view.GetDocument()->OnNewDocument();                         //~@@@@R~
+  if (rc<4)                                                        //~vbdoR~
     m_view.GetDocument()->OnNewDocument(fnm);                      //~@@@@I~
     return 0;                                                      //~@@@@I~
 }                                                                  //~@@@@I~
@@ -622,6 +725,7 @@ void CMainFrame::OnFileOpen(UINT unotifyCode,int nID,HWND wndCtl)  //~@@@@I~
     char fnm[_MAX_PATH];                                           //~@@@@I~
     int rc;                                                        //~@@@@I~
 //*********************************                                //~@@@@I~
+    *fnm=0;                                                        //~vbdoR~
 	rc=fileselectiondlg(2/*Open*/,fnm);                            //~@@@@R~
     if (rc<4)                                                      //~@@@@R~
 	    m_view.GetDocument()->OnOpenDocument(rc==1,fnm);           //~@@@@R~
@@ -629,6 +733,8 @@ void CMainFrame::OnFileOpen(UINT unotifyCode,int nID,HWND wndCtl)  //~@@@@I~
 //************************************************************     //~@@@@I~
 void CMainFrame::OnFileSave(UINT unotifyCode,int nID,HWND wndCtl)  //~@@@@I~
 {                                                                  //~@@@@I~
+//  if (!wxe_chkEnableFileSubmenu(CHKSTFO_MSG,CHKSTF_SAVE)) //WM_INITMENUPOPUP is issued also by Ctrl+x//~vbdnR~
+//        return;                                                  //~vbdnR~
     m_view.GetDocument()->OnSaveDocument(NULL);                    //~@@@@R~
 }                                                                  //~@@@@I~
 //************************************************************     //~@@@@I~
@@ -637,11 +743,22 @@ void CMainFrame::OnFileSaveAs(UINT unotifyCode,int nID,HWND wndCtl)//~@@@@I~
     char fnm[_MAX_PATH];                                           //~@@@@I~
     int rc;                                                        //~@@@@I~
 //*********************************                                //~@@@@I~
+//  if (!wxe_chkEnableFileSubmenu(CHKSTFO_MSG,CHKSTF_SAVEAS)) //WM_INITMENUPOPUP is issued also by Ctrl+x//~vbdnR~
+//  	return;                                                    //~vbdnR~
 	*fnm=0;                                                        //~@@@@I~
 	rc=fileselectiondlg(3/*SaveAs*/,fnm);                          //~@@@@R~
     if (!rc)                                                       //~@@@@I~
 	    m_view.GetDocument()->OnSaveDocument(fnm);                 //~@@@@I~
 }                                                                  //~@@@@I~
+//************************************************************     //~vbdnI~
+//*OnFilePrint                                                     //~vbdnI~
+//************************************************************     //~vbdnI~
+void CMainFrame::OnFilePrint(UINT unotifyCode,int nID,HWND wndCtl) //~vbdnI~
+{                                                                  //~vbdnI~
+//  if (!wxe_chkEnableFileSubmenu(CHKSTFO_MSG,CHKSTF_PRINT)) //WM_INITMENUPOPUP is issued also by Ctrl+x//~vbdnR~
+//      return;                                                    //~vbdnR~
+    m_view.OnFilePrint();  //through wxeview, goto wxeprt          //~vbdnI~
+}                                                                  //~vbdnI~
 //************************************************************     //~@@@@I~
 //*open file dialog as Modal                                       //~@@@@I~
 //*rc:0:ok,1:ok with ReadOnly open,4:cancel                        //~@@@@I~

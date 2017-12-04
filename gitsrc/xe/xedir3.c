@@ -1,8 +1,9 @@
-//*CID://+vb60R~:                             update#=  267;       //~vb60R~
+//*CID://+vbd7R~:                             update#=  269;       //~vbd7R~
 //*************************************************************
 //*xedir.c*
 //* execute key,dlcmd cut and paste,pathup,pathdown,linetop,lineend//~v55NR~
 //*************************************************************
+//vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //vb60:161127 select 1st entry when no filename operand (S [-n] n:line number)//~vb60I~
 //vb35:160529 (BUG)locate cmd on dirlist fail when path is wildcard on root dir//~vb35I~
 //vb31:160418 (LNX64)Compiler warning                              //~vb31I~
@@ -152,6 +153,7 @@
 #include "xetso.h"                                                 //~v717I~
 #include "xechar12.h"                                              //~va0WI~
 #include "xeutf.h"                                                 //~vawcI~
+#include "xecap.h"                                                 //+vbd7I~
 //*******************************************************
 #define SELECT_MODE(browsefuncid,editfuncid) (((browsefuncid)<<8)|(editfuncid & 255))//~v61mI~
 #define SAVEDATAPOS 2                                              //~v07eM~
@@ -899,6 +901,8 @@ int func_select(PUCLIENTWE Ppcw)                                   //~v09wI~
 //****************************                                     //~v09wI~
   	pfc=Ppcw->UCWpfc;                                              //~v611I~
     pfh=pfc->UFCpfh;                                               //~v611I~
+    if (Ppcw->UCWtype==UCWTFILE)                                   //+vbd7R~
+    	return capselectallfilecmd(Ppcw,pfh);                      //+vbd7R~
     if (!(opdfname=Ppcw->UCWparm))//pparseout 1st parm             //~v09wR~
     {                                                              //~v611I~
 		plh=UGETQEND(&pfh->UFHlineque);	//last                     //~v611I~
@@ -1663,7 +1667,7 @@ PUDIRLH getdefaultentry(PUFILEH Ppfh)                              //~vb60I~
 //**********************************************************       //~vb60I~
 int getlinenumbername(PUFILEH Ppfh,char *Popd,char *Pmembername)	//~vb60I~
 {                                                                  //~vb60I~
-	int len,lineno,ii,rc=0,swfound=0;                              //+vb60R~
+	int len,lineno,ii,rc=0,swfound=0;                              //~vb60R~
 	PULINEH plh;                                                   //~vb60I~
     PUDIRLH pdh;                                                   //~vb60I~
 //*********************************                                //~vb60I~
@@ -1679,7 +1683,7 @@ int getlinenumbername(PUFILEH Ppfh,char *Popd,char *Pmembername)	//~vb60I~
     {                                                              //~vb60I~
     	if (ii==lineno)                                            //~vb60I~
         {                                                          //~vb60I~
-        	swfound=1;                                             //+vb60I~
+        	swfound=1;                                             //~vb60I~
 			if (plh->ULHtype!=ULHTDATA)                            //~vb60I~
         	{                                                      //~vb60I~
     			uerrmsg("LineNumber:%d is not a member entry",     //~vb60I~
@@ -1702,7 +1706,7 @@ int getlinenumbername(PUFILEH Ppfh,char *Popd,char *Pmembername)	//~vb60I~
             break;                                                 //~vb60I~
         }                                                          //~vb60I~
     }                                                              //~vb60I~
-    if (!swfound)                                                  //+vb60R~
+    if (!swfound)                                                  //~vb60R~
     {                                                              //~vb60I~
         uerrmsg("LineNumber:%d is out of range",                   //~vb60I~
                 "çsî‘çÜ:%d ÇÕîÕàÕäOÇ≈Ç∑",                          //~vb60R~

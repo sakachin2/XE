@@ -1,8 +1,9 @@
-//CID://+va7PR~:     update#=      11                              //~va00R~//+va7PR~
+//CID://+vbd7R~:     update#=     121                              //+vbd7R~
 //*******************************************************       //~v06lI~
-//va7P:100906 (BUG)"invalid codepage" msg at cap copy; cb_stat contains codepage which is not valid now//+va7PI~
-//            because cfg CONVERTER was changed between ICU and others.//+va7PI~
-//            ignore it when save case(capsavedata,capsavedataword) because prev line is cleared imediately.//+va7PI~
+//vbd7:171119 "SEL all" support on file panel                      //+vbd7I~
+//va7P:100906 (BUG)"invalid codepage" msg at cap copy; cb_stat contains codepage which is not valid now//~va7PI~
+//            because cfg CONVERTER was changed between ICU and others.//~va7PI~
+//            ignore it when save case(capsavedata,capsavedataword) because prev line is cleared imediately.//~va7PI~
 //va00:090510 merge utf8 version(enclosed by UTF8SUPPH)            //~va00I~
 //          wxe/xxe clipboard data conversion                      //~va00I~
 //v77E:080203 FW(C+"["/"]")/IW(A+"["|"]") cmd support              //~v77EI~
@@ -70,7 +71,7 @@ void capgetxestat(char *Ppstat1,char *Ppstat2);                    //~v69ZR~
 //*******************************************************          //~v77EI~
 int capgetmouseword(int Popt,PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Pppos,int *Pplen);//~v77EM~
 //*******************************************************          //~v66fI~
-//PUFILEH capgetpfh(PUCLIENTWE Ppcw);                                //~v66fI~//+va7PR~
+//PUFILEH capgetpfh(PUCLIENTWE Ppcw);                                //~v66fI~//~va7PR~
 //*******************************************************          //~v66fI~
 PUFILEH capgetdata(PUCLIENTWE Ppcw,PULINEH *Ppplh1,PULINEH *Ppplh2);//~v66fI~
 //*******************************************************          //~v66fI~
@@ -83,3 +84,4 @@ int xecapcvcb(int Popt,char *Pdata,int Pdatalen,char *Poutdata,int *Ppoutlen);//
 #define CCVCBO_F2L       0x01	//clipboard to locale code         //~va00I~
 #define CCVCBO_L2F       0x02	//clipboard to locale code         //~va00I~
 #endif                                                             //~va00I~
+int capselectallfilecmd(PUCLIENTWE Ppcw,PUFILEH Ppfh);             //+vbd7I~

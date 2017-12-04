@@ -1,5 +1,6 @@
-//*CID://+@@@@R~:                             update#=   82;       //~@@@@R~
+//*CID://+vbd2R~:                             update#=   87;       //~vbd2R~
 //***************************************************************************//~v51VI~
+//vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
 //v77w:080117 visual studio 2005 compiler warning(LRESULT:BOOL)    //~v77wI~
 //v69g:060521 (WXE)tilt wheel mouse generate WM_VSCROLL/WM_HSCROLL by mycrosoft spec//~v69gI~
 //            if scroll bar exist.(both vertical and horizontal is requred to genarate both)//~v69gI~
@@ -77,6 +78,7 @@ BEGIN_MESSAGE_MAP(CWxeView, CView)                                 //~@@@@I~
 //  ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE_REP, OnUpdateEditPasteRep)  //~@@@@R~
 //  ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE_STD, OnUpdateEditPasteStd)  //~@@@@R~
 	ON_COMMAND(ID_EDIT_CLEAR, OnEditClearW)                        //~@@@@R~
+	ON_COMMAND(ID_EDIT_SELECTALL, OnEditSelectAllW)                //~vbd2R~
 //  ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, OnUpdateEditClear)         //~@@@@R~
 //    ON_WM_MOUSEWHEEL()                                           //~@@@@I~
 	MSG_WM_MOUSEWHEEL(OnMouseWheel)                                //~@@@@R~
@@ -243,6 +245,13 @@ public:                                                            //~@@@@I~
 				OnUpdateEditClear(new CCmdUI(Mpmainframewnd,nID)); //~@@@@R~
 			}                                                      //~@@@@I~
   	afx_msg void OnUpdateEditClear(CCmdUI* pCmdUI);                //~@@@@R~
+    afx_msg void OnEditSelectAll();                                //+vbd2R~
+  	afx_msg void OnUpdateEditSelectAll(CCmdUI* pCmdUI);            //+vbd2R~
+            void OnEditSelectAllW(UINT unotifyCode,int nID,HWND wndCtl)//~vbd2M~
+			{                                                      //~vbd2M~
+				OnEditSelectAll();                                 //+vbd2R~
+				OnUpdateEditSelectAll(new CCmdUI(Mpmainframewnd,nID));//+vbd2R~
+			}                                                      //~vbd2M~
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 	afx_msg void OnDropFiles(HDROP hDropInfo);
             void OnFilePrint()  //from MainFrame                   //~@@@@I~
@@ -253,7 +262,7 @@ public:                                                            //~@@@@I~
             void OnFileScrprtW(UINT unotifyCode,int nID,HWND wndCtl)//~@@@@R~
 			{	OnFileScrprt();	}                                  //~@@@@I~
     afx_msg void OnPageSetup();                                    //~@@@@R~
-            void OnFileSave(UINT unotifyCode,int nID,HWND wndCtl); //+@@@@R~
+            void OnFileSave(UINT unotifyCode,int nID,HWND wndCtl); //~@@@@R~
     afx_msg void OnEditEnd();                                      //~@@@@R~
             void OnEditEndW(UINT unotifyCode,int nID,HWND wndCtl)  //~@@@@R~
 			{	OnEditEnd();	}                                  //~@@@@I~

@@ -1,9 +1,10 @@
-//*CID://+vb2WR~:                               update#=  565;     //+vb2WR~
+//*CID://+vbdnR~:                               update#=  576;     //~vbdnR~
 //*********************************************************************//~v55cI~
 //* wxe interface definition-3                                     //~v55cI~
 //* rctl; menu enability;openwith;at cmd                           //~v55WR~
 //*********************************************************************//~v55cI~
-//vb2W:160404 W32 64 compiler warning                              //+vb2WI~
+//vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
+//vb2W:160404 W32 64 compiler warning                              //~vb2WI~
 //vafk:120624 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  use ULPTR(unsigned __int64/ULONG)//~vafkI~
 //vafh:120616 for VC10:/W4 warning except C4115,C4214,C4100,C4706,C4244,C4210,C4127,C4245//~vafhI~
 //v76j:070626 (WXEXXE)dnd by paste to utility panel                //~v76jI~
@@ -270,6 +271,49 @@ int wxe_chkendenable(int Pmenuid)                                  //~v55uR~
     }                                                              //~v55tI~
 //  return 0;                                                      //~v55tI~//~vafhR~
 }//wxe_chkendenable                                                //~v55tI~
+//*************************************************************    //~vbdnI~
+int wxe_errmenuitemDisabled(int Pid)                               //~vbdnI~
+{                                                                  //~vbdnI~
+    uerrmsg("MenuItem is disabled on this panel",                  //~vbdnI~
+			"この画面でこのメニュー項目は使用できません");         //~vbdnI~
+    scrdisp();                                                     //+vbdnI~
+    return 4;                                                      //~vbdnI~
+}//wxe_errMenuitemDisabled()                                       //~vbdnI~
+//*************************************************************    //~vbdnI~
+//*chk File submenu enablity                                       //~vbdnI~
+//*************************************************************    //~vbdnI~
+int wxe_chkEnableFileSubmenu(int Popt,int Pmenuid)                 //~vbdnR~
+{                                                                  //~vbdnI~
+    PUCLIENTWE pcw;                                                //~vbdnI~
+    PUFILEC    pfc;                                                //~vbdnI~
+    BOOL rc=1;                                                     //~vbdnI~
+//***********************                                          //~vbdnI~
+    pcw=scrgetcw(0); 	//get active                               //~vbdnI~
+    switch(Pmenuid)                                                //~vbdnI~
+    {                                                              //~vbdnI~
+    case CHKSTF_SAVE:                                              //~vbdnR~
+    case CHKSTF_SAVEAS:                                            //~vbdnR~
+    	if (pcw->UCWtype!=UCWTFILE)                                //~vbdnI~
+        	rc=0;                                                  //~vbdnI~
+        else                                                       //~vbdnI~
+        {                                                          //~vbdnI~
+    		pfc=pcw->UCWpfc;                                       //~vbdnI~
+			if (UCBITCHK(pfc->UFCflag,UFCFBROWSE))                 //~vbdnI~
+        		rc=0;                                              //~vbdnI~
+        }                                                          //~vbdnI~
+	    break;                                                     //~vbdnI~
+    case CHKSTF_PRINT:                                             //~vbdnR~
+    	if (pcw->UCWtype!=UCWTFILE)                                //~vbdnI~
+        	rc=0;                                                  //~vbdnI~
+	    break;                                                     //~vbdnI~
+    }                                                              //~vbdnI~
+    if (!rc)	//disabled                                         //~vbdnI~
+    {                                                              //~vbdnI~
+    	if (Popt & CHKSTFO_MSG)	//issue disabled msg               //~vbdnI~
+			wxe_errmenuitemDisabled(Pmenuid);                      //~vbdnI~
+    }                                                              //~vbdnI~
+  	return rc;                                                     //~vbdnI~
+}//wxe_chkEnableFileSubmenu                                        //~vbdnI~
 //*************************************************************    //~v55uI~
 //*chk menu item enablity                                          //~v55uI~
 //*************************************************************    //~v55uI~
@@ -488,13 +532,13 @@ int wxe_atcmdisrtalias(char *Pcmd,void *Ppodelmt,int Pwordno)      //~v67CI~
 	    	len=strlen(pc);                                        //~v67CI~
     }                                                              //~v67CI~
 //  len1=(ULONG)cur-(ULONG)top;	//with last null	               //~v67CI~//~vafkR~
-//  len1=(ULPTR)cur-(ULPTR)top;	//with last null                   //~vafkI~//+vb2WR~
-    len1=(int)((ULPTR)cur-(ULPTR)top);	//with last null           //+vb2WI~
+//  len1=(ULPTR)cur-(ULPTR)top;	//with last null                   //~vafkI~//~vb2WR~
+    len1=(int)((ULPTR)cur-(ULPTR)top);	//with last null           //~vb2WI~
     len2=strlen(Pcmd)+1;                                           //~v67CI~
 	next0=cur+strlen(cur)+1;                                       //~v67CR~
 //  len3=(ULONG)pc-(ULONG)next0;                                   //~v67CI~//~vafkR~
-//  len3=(ULPTR)pc-(ULPTR)next0;                                   //~vafkI~//+vb2WR~
-    len3=(int)((ULPTR)pc-(ULPTR)next0);                            //+vb2WI~
+//  len3=(ULPTR)pc-(ULPTR)next0;                                   //~vafkI~//~vb2WR~
+    len3=(int)((ULPTR)pc-(ULPTR)next0);                            //~vb2WI~
     cmdlen=len1+len2+len3+1;	//with last end of multicmd id     //~v67CR~
     cmdstr=umalloc(cmdlen);   //strz+end of multicmd               //~v67CI~
     UALLOCCHK(cmdstr,UALLOC_FAILED);                               //~v67CI~
@@ -1076,3 +1120,15 @@ static int Scopycnt=0;                                             //~v685I~
     scrdisp();                                                     //~v685R~
     return rc;		//copy file                                    //~v685R~
 }//wxe_dndcopyfile                                                 //~v685I~
+//*****************************************************************//~vbdnI~
+//*from scrUpdateFileMenu                                          //~vbdnI~
+//*****************************************************************//~vbdnI~
+int wxe_chkUpdateFileMenu(int Popt)                                //~vbdnR~
+{                                                                  //~vbdnI~
+	int rc;                                                        //~vbdnI~
+//*******************                                              //~vbdnI~
+	rc=(Gwxestat & GWXES_UPDATEMENU)?1:0;                          //~vbdnR~
+	UTRACEP("%s:rc=%d\n",UTT,rc);                                  //~vbdnI~
+	Gwxestat &= ~GWXES_UPDATEMENU;                                 //~vbdnR~
+    return rc;                                                     //~vbdnI~
+}//wxe_cckUpdateFileMenu                                           //~vbdnR~

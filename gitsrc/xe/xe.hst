@@ -1,3 +1,64 @@
+//*********  20171130 v129Dj/v129De         updated   ****************
+//vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg
+//            xefunc.c/h xefunct.c
+//vbdr:171130 support label and lineno range option to SEL command
+//            xecap.c
+//vbdq:171125 add "MRU" to 1/2 of top menu
+//            xepan.c
+//vbdp:171125 (wxe)del MRU menu, it is supported by =1/=2
+//            wxe.rc
+//vbdo:171125 (wxe:BUG)crash when File/New is canceled
+//            MainFrm.cpp
+//vbdn:171125 disable filemenu depending curent pcw type
+//            xescr.c wxexei.h wxescr.cpp wxexei3.c MainFrm.cpp/h wxemain.h
+//                    xxexei.h xxescr.c   xxexei3.c gxemfrm.c/h   wxemain.h gxeview.c
+//vbdm:171125 (gxe)append "NewFile" for menu:File/New when directory is selected
+//            xxefile.c interface.c
+//vbdk:171125 GTK2 GtkFileSelection was deprecated,GtkFileChooser is available from v2.4
+//            interface.c/h xxefile.c
+//vbdj:171125 (GTK2) menu label Ctrl+x dose not change by SetupDialog:Accel On/Off
+//            gxemfrm.c interface.c/h
+//vbdi:171125 (gxe) set accelerator(A+F,N it is not shortcut:Ctrl+N)
+//            interface.c
+//vbdh:171123 (GTK3.10 BUG) gtk_widget_add_accelerator() dose not allow runtime change of accelerator
+//            use not gtk_menu_item_set_accel_path() but gtk_widget_set_accel_path() to set accel path withgtk_accel_map_add_entry()
+//            interface.c gxemfrm.c gxe.h
+//vbdg:171123 by vbdf compiler warning:conversion
+//            xft.c xftsub.c xftsub2.c
+//vbdf:171123 On FC25(GTK3); warning misleading-indentation at GCC6 when -Wall, -Wno-misleading-indentation
+//            ulib/xe/xp Makefile xsub/Makefile.tl/makefil.xft
+//vbde:171122 On FC25(GTK3); gxehome automake;msg "subdir-objects" is disabled 
+//            It is warning but when set AM_INIT_AUTOMAKE([subdir-objects]) gxe-xxx.po not found-->back to old 
+//            gxehome/configure.ac
+//vbdc:171122 (gxe:BUG)Mainmenu nemonic have to set menubar item
+//            interface.c
+//vbdb:171121*(gxe)try setup/preview menu as menuitem to open dialog by one touch-->Not worked
+//            interface.c
+//vbda:171121*(gxe)display GTK3/GTK2 on titlemsg/about dialog
+//            xe.c gxedlg.c
+//vbd9:171121*(BUG)Title msg:version 1.28-->1.29
+//            xegbl.h rh9j/configure.ac
+//vbd8:171120 (WXE)stdregion by PFK(F6) should disable Paste REP/INS
+//            xecap.c wxexei.h xxexei.h wxemouse.cpp xxemouse.c
+//vbd7:171119 "SEL all" support on file panel
+//            xefunct.c/h xedir3.c xecap.c/h xefunc.c xescr2.c/h xefcmd.c xescr.h xefunc.c
+//vbd6:171119*(BUG)errmsg "lastline split by margin limit" when paste to stdregion including EndOfLine
+//            xecap2.c
+//vbd5:171118*(BUG)ULHFBLOCK was reset when selectall after undo because EndOfLine ULHlinenor was not recovered.
+//            ULHlinenor is checked at caplinechk->lineseqchk and ULHlinenor is value of set at cappaste(linumsuffix).
+//            xelcmd2.c
+//vbd4:171118*(BUG) invalid csr pos msg when capsave data(A+F9) even after block closed
+//            xecap.c
+//vbd3:171117 (Wxe)MainMenu enable/disable also on Edit submenu
+//            MainFrm.cpp/h gxemfrm.c
+//vbd2:171114 (Wxe)Add SelectAll menuitem (changed shortcut of Openwith A->W, SaveAs ->Control+Shift+A)
+//            wxe.rc*resourceMFC.h MainFrm.h MainFrm.c wxeView.h/cpp wxemouse.cpp wxemain.h
+//           *wxexei.h*wxexei2.c xecap.c 
+//            xxexei.h gxemfrm.c/h xxeres.h xxemouse.c xxexei2.c xxemain.h interface.c/h callbacks.c/h gxeview.h
+//vbd1:171114*(Wxe:BUG)Help About:version 1.28-->1.29
+//            wxe.rc xxedef.h
+//vbd0:171114*(Wxe:BUG)print cmd hung(spawn xesyscmd send no response):utrace.out ACCESS DENIED(rel version xesyscmd.exe is OK)
+//            xesyscmd.c
 //*********  20170821 v129Cj/v129Ce/xej.txt updated   ****************
 //vbc4:170826 xemtrch:v1.5 for 64bit(return addr)
 //            xemtrchk

@@ -1,5 +1,8 @@
-//*CID://+vb4vR~:                                   update#=   96; //~vb4vR~
+//*CID://+vbdnR~:                                   update#=  109; //~vbdnR~
 //*****************************************************************************//~vb20I~
+//vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
+//vbd3:171117 (Wxe)MainMenu enable/disable also on Edit submenu    //~vbd3I~
+//vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
 //vb4v:160813 (WXE bug)ATl/WTL is missing OnPrecreateWindow        //~vb4vI~
 //vb20:160108 (Wxe:BUG)setup/preview dialog change waas not written to wxeini(put init even when cancel exit)//~vb20I~
 //*****************************************************************************//~vb20I~
@@ -89,6 +92,7 @@ public:
 		MSG_WM_CLOSE(OnClose)                                      //~@@@@I~
 //      ON_WM_INITMENU()                                           //~@@@@I~
 		MSG_WM_INITMENU(OnInitMenuW)                               //~@@@@R~
+		MSG_WM_INITMENUPOPUP(OnInitMenuPopupW)                     //~vbdnI~
         ON_COMMAND(ID_HELPXE,OnHelpW)                              //~@@@@I~
 //  	CHAIN_MSG_MAP(CRibbonFrameWindowImpl<CMainFrame>)          //~@@@@R~
 //  	CHAIN_MSG_MAP(CUpdateUI<CMainFrame>)                       //~@@@@R~
@@ -102,6 +106,8 @@ public:
         ON_COMMAND(ID_EDIT_PASTE_REP, OnEditPasteRep)              //~@@@@I~
         ON_COMMAND(ID_EDIT_END, OnEditEnd)		//from toolbar     //~@@@@R~
         ON_COMMAND(ID_EDIT_CANCEL, OnEditCancel)                   //~@@@@R~
+        ON_COMMAND(ID_EDIT_SELECTALL, OnEditSelectAll)             //~vbd2I~
+                                                                   //~vbd2I~
                                                                    //~@@@@I~
         ON_COMMAND(ID_FILE_PRINT, OnFilePrint)                     //~@@@@I~
         ON_COMMAND(ID_FILE_SCRPRT, OnFileScrprt)                   //~@@@@I~
@@ -163,7 +169,7 @@ public:
 
 //  	ShowRibbonUI(bRibbonUI);                                   //~@@@@R~
 //  	UISetCheck(ID_VIEW_RIBBON, bRibbonUI);                     //~@@@@R~
-    	OnPreCreateWindowW(lpCreateStruct);                        //+vb4vI~
+    	OnPreCreateWindowW(lpCreateStruct);                        //~vb4vI~
 		OnCreate(lpCreateStruct);	//MainFrm.cpp                   //~@@@@I~
 
 		return 0;
@@ -238,6 +244,8 @@ public:                                                            //~@@@@I~
     int       Musemk ;                                             //~@@@@I~
 	WXEINIDATA Mwxeinidata;                                        //~@@@@I~
 	int  CMainFrame::updatemenu(int Pfloatsw,CMenu *Ppmenu);       //~@@@@I~
+	int  CMainFrame::updateFileMenu(int Popt);                     //~vbdnI~
+	int  CMainFrame::updateMenuIcon(int Popt,int Pchkidx,int Piconidx);//+vbdnI~
 public:                                                            //~@@@@I~
                                                                    //~@@@@I~
 	//{{AFX_VIRTUAL(CMainFrame)                                    //~@@@@I~
@@ -256,6 +264,7 @@ private:                                                           //~@@@@I~
 	int       updatemenutext(char *Ptext,ACCEL *Ppact);            //~@@@@I~
 	int       updatemainmenu(CMenu *Ppmenu);                       //~@@@@I~
 	int  	  updatemainmenutext(int Pmenupos,char *Ptext,int Pusesw);//~@@@@I~
+	int       updatemainmenuFile(CMenu *Pmenu);                    //~vbdnI~
 //  int       Monsizetype;                                         //~@@@@I~
 public:                                                            //~@@@@I~
 	virtual ~CMainFrame();                                         //~@@@@I~
@@ -282,6 +291,11 @@ protected:                                                         //~@@@@I~
 			{                                                      //~@@@@I~
 				OnInitMenu(new CMenu(pMenu));                      //~@@@@I~
 			}                                                      //~@@@@I~
+	afx_msg void OnInitMenuPopup(CMenu* pMenu,UINT Pindex,BOOL PswSysmenu);//~vbdnI~
+            void OnInitMenuPopupW(HMENU pMenu,UINT Pindex,BOOL PswSysMenu)//~vbdnI~
+			{                                                      //~vbdnI~
+				OnInitMenuPopup(new CMenu(pMenu),Pindex,PswSysMenu);//~vbdnI~
+			}                                                      //~vbdnI~
 	afx_msg void OnHelp();                                         //~@@@@I~
             void OnHelpW(UINT unotifyCode,int nID,HWND wndCtl)     //~@@@@I~
 			{	OnHelp();	}                                      //~@@@@I~
@@ -290,6 +304,7 @@ protected:                                                         //~@@@@I~
 private:                                                           //~@@@@I~
 	int Menablecopy,Menablecut,Menablepaste;                       //~@@@@I~
 	int Menablepastev;                                             //~@@@@I~
+	int Menableselectall;                                          //~vbd2I~
 public:                                                            //~vb20I~
 	int Mswappexit;                                                //~@@@@I~
 private:                                                           //~vb20I~
@@ -298,6 +313,8 @@ private:                                                           //~vb20I~
 	CBitmap Mbmpastev;                                             //~@@@@I~
 	int  appendmenu(CMenu* Ppmenu);                                //~@@@@I~
 	CMenu *GetMenuW();                                             //~@@@@I~
+	CMenu *GetSubMenuW();                                          //~vbd3R~
+	CMenu *GetSubMenuW(CMenu *Pmenu,int Ppos);                     //~vbd3I~
 ///////////////////////////////////////////////////////////////////////////////~@@@@I~
     void OnEditCut(UINT unotifyCode,int nID,HWND wndCtl)           //~@@@@I~
 	{                                                              //~@@@@I~
@@ -311,6 +328,10 @@ private:                                                           //~vb20I~
 	{                                                              //~@@@@I~
 		m_view.OnEditClear();                                      //~@@@@I~
 	}                                                              //~@@@@I~
+    void OnEditSelectAll(UINT unotifyCode,int nID,HWND wndCtl)     //~vbd2I~
+	{                                                              //~vbd2I~
+		m_view.OnEditSelectAll();                                  //~vbd2I~
+	}                                                              //~vbd2I~
     void OnEditPasteStd(UINT unotifyCode,int nID,HWND wndCtl)      //~@@@@I~
 	{                                                              //~@@@@I~
 		m_view.OnEditPasteStd();                                   //~@@@@I~
@@ -332,10 +353,11 @@ private:                                                           //~vb20I~
 		m_view.OnEditCancel();                                     //~@@@@I~
 	}                                                              //~@@@@I~
                                                                    //~@@@@I~
-    void OnFilePrint(UINT unotifyCode,int nID,HWND wndCtl)         //~@@@@R~
-	{                                                              //~@@@@I~
-		m_view.OnFilePrint();  //through wxeview, goto wxeprt      //~@@@@R~
-	}                                                              //~@@@@I~
+//    void OnFilePrint(UINT unotifyCode,int nID,HWND wndCtl)         //~@@@@R~//~vbdnR~
+//    {                                                              //~@@@@I~//~vbdnR~
+//        m_view.OnFilePrint();  //through wxeview, goto wxeprt      //~@@@@R~//~vbdnR~
+//    }                                                              //~@@@@I~//~vbdnR~
+    void OnFilePrint(UINT unotifyCode,int nID,HWND wndCtl);        //~vbdnI~
 	void BeginPrintJob(HDC hDC)                                    //~@@@@I~
 	{                                                              //~@@@@I~
 		m_view.OnBeginPrinting(new CDC(hDC),this/*CPrintJobInfo*/);//~@@@@R~

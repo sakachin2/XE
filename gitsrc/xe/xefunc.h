@@ -1,8 +1,10 @@
-//*CID://+vba2R~:                             update#=  146;       //+vba2R~
+//*CID://+vbdsR~:                             update#=  148;       //+vbdsR~
 //*********************************************************************
 //* xefunc.h
 //*********************************************************************
-//vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//+vba2I~
+//vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg//+vbdsI~
+//vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
+//vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I~
 //vb55:160904 old func-key def on ::xe.in reset new added default key of xefunct//~vb55I~
 //vb50:160827 accept S+A/C+extended key                            //~vb50I~
 //vbCC:160825 (Bug)F5 with operand is missing chk INX cmd verb     //~vbCCI~
@@ -224,7 +226,7 @@ typedef int (FTFUNC)(FUNCPARMS);
 #define FUNCID_DISPLAYPS   132                                     //~vbCBI~
 #define FUNCID_REVRFINDPSP 133                                     //~vb50R~
 #define FUNCID_REVRFINDPSF 134                                     //~vb50R~
-#define FUNCID_SHORTPATH   135                                     //+vba2I~
+#define FUNCID_SHORTPATH   135                                     //~vba2I~
 #define FUNCID_DOS         140                                  //~5521R~
 #define FUNCID_CSRSTEP     141                                  //~5521R~
 #define FUNCID_CID         142                                  //~5521R~
@@ -637,7 +639,7 @@ typedef int (FTFUNC)(FUNCPARMS);
 	FTFUNC func_revfindPSP;                                        //~vb50R~
 	FTFUNC func_revfindPSF;                                        //~vb50R~
 	FTFUNC func_displayPS;                                         //~vbCBI~
-	FTFUNC func_shortpath;                                         //+vba2I~
+	FTFUNC func_shortpath;                                         //~vba2I~
                                                                 //~5224I~
 //************************************                          //~5224M~
 //*function key asignment table                                 //~5224M~
@@ -663,6 +665,7 @@ typedef struct _FUNCTBL                                         //~5224M~
 #define FTFUPINI	   	0x08		//updated by ini process    //~5429I~
 #define FTFCSRKEY      	0x10		//csr move key(short path required)//~5504I~
 #define FTFDUPACMD     	0x20		//alias cmd duplicated         //~v09wI~
+//#define FTFDUPACMDFUNC  0x40        //alias cmd duplicated allows and process both by a func//~vbd7I~//+vbdsR~
                                                                    //~v705I~
 #define FTFLINECHSET   	0x20		//string input setupped for GRAPHIC func only//~v705I~
                                                                    //~v705I~
@@ -691,6 +694,7 @@ typedef struct _FUNCTBL                                         //~5224M~
 #define FTF2FIND_PSSUPP  0x04		//PSx cmd support              //~vbCBR~
 #define FTF2FINDCMD      0x08		//find cmd                     //~vbCCI~
 #define FTF2CHANGECMD    0x10		//change cmd                   //~vbCCI~
+#define FTF2DUPACMDFUNC  0x20       //alias cmd duplicated allows and process both by a func//+vbdsI~
 		UCHAR  FTrsv  [3];			//command word                 //~v71PI~
 } FUNCTBL,*PFUNCTBL;                                               //~v0ioR~
 typedef struct _FUNCTBLC {                                         //~v0ihI~

@@ -1,4 +1,7 @@
-//*CID://+@@@@R~:                             update#=   10;       //~@@@@I~
+//*CID://+vbdpR~:                             update#=   16;       //+vbdpR~
+//vbdp:171125 (wxe)del MRU menu, it is supported by =1/=2          //+vbdpI~
+//vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
+//vbd1:171114 (Wxe:BUG)version 1.28-->1.29                         //~vbd0I~//~vbd2R~
 //Microsoft Developer Studio generated resource script.
 //
 #include "resource.h"
@@ -125,11 +128,13 @@ BEGIN
         MENUITEM "Paste(&V)",                   ID_EDIT_PASTE_STD
         MENUITEM "PasteIns(&I)",                ID_EDIT_PASTE
         MENUITEM "PasteRep(&R)",                ID_EDIT_PASTE_REP
+        MENUITEM "SelectAll(&A)",               ID_EDIT_SELECTALL  //~vbd2M~
         MENUITEM SEPARATOR
         MENUITEM "Save(&S)",                    ID_FILE_SAVE
         MENUITEM "End(&E)",                     ID_EDIT_END
         MENUITEM "Discard(&D)",                 ID_EDIT_CANCEL
-        MENUITEM "OpenWithA(&A)",               ID_FILE_OPENWITH
+//      MENUITEM "OpenWithA(&A)",               ID_FILE_OPENWITH   //~vbd2R~
+        MENUITEM "OpenWithA(&W)",               ID_FILE_OPENWITH   //~vbd2I~
     END
 END
 
@@ -145,7 +150,7 @@ CAPTION "wxe version"
 FONT 10, "Microsoft Sans Serif"
 BEGIN
     ICON            IDI_MAINFRAME,IDC_STATIC,11,17,20,20
-    LTEXT           "wxe Version 1.28",IDC_STATIC,40,10,119,8,SS_NOPREFIX//+@@@@R~
+    LTEXT           "wxe Version 1.29",IDC_STATIC,40,10,119,8,SS_NOPREFIX//~@@@@R~//~vbd1R~
     LTEXT           "Copyright (C) 2005",IDC_STATIC,40,25,119,8
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
 END
@@ -444,9 +449,11 @@ END
 // Accelerator
 //
 
+//  "A",            ID_FILE_SAVE_AS,        VIRTKEY, CONTROL       //~vbd2I~
 IDR_MAINFRAME_DYN ACCELERATORS PRELOAD MOVEABLE PURE 
 BEGIN
-    "A",            ID_FILE_SAVE_AS,        VIRTKEY, CONTROL
+    "A",            ID_FILE_SAVE_AS,        VIRTKEY, CONTROL, SHIFT//~vbd2I~
+    "A",            ID_EDIT_SELECTALL,      VIRTKEY, CONTROL       //~vbd2I~
     "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
     "E",            ID_FILE_EXPLORER,       VIRTKEY, CONTROL
     "H",            ID_FILE_SCRPRT,         VIRTKEY, CONTROL
@@ -639,6 +646,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 // Menu
 //
+//      MENUITEM "Save as(&A)...",              ID_FILE_SAVE_AS    //~vbd2I~
 
 IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
 BEGIN
@@ -647,7 +655,7 @@ BEGIN
         MENUITEM "NewFile(&N)",                 ID_FILE_NEW
         MENUITEM "Open(&O)",                    ID_FILE_OPEN
         MENUITEM "Save(&S)",                    ID_FILE_SAVE
-        MENUITEM "Save as(&A)...",              ID_FILE_SAVE_AS
+        MENUITEM "Save as(&A)+Shift",           ID_FILE_SAVE_AS    //~vbd2R~
         MENUITEM SEPARATOR
         MENUITEM "Print(&P)",                   ID_FILE_PRINT
         MENUITEM "PrtScr(&H)",                  ID_FILE_SCRPRT
@@ -655,8 +663,8 @@ BEGIN
         MENUITEM "Explorer(&E)",                ID_FILE_EXPLORER
         MENUITEM "MS-DOS(&M)",                  ID_FILE_DOS
         MENUITEM "Exit(&X)",                    ID_APP_EXIT
-        MENUITEM SEPARATOR
-        MENUITEM "Recently Used",               ID_FILE_MRU_FILE1, GRAYED
+//      MENUITEM SEPARATOR                                         //+vbdpR~
+//      MENUITEM "Recently Used",               ID_FILE_MRU_FILE1, GRAYED//+vbdpR~
     END
     POPUP "Edit"
     BEGIN
@@ -666,6 +674,7 @@ BEGIN
         MENUITEM "Paste(&V)",                   ID_EDIT_PASTE_STD
         MENUITEM "PasteIns(&I)",                ID_EDIT_PASTE
         MENUITEM "PasteRep(&R)",                ID_EDIT_PASTE_REP
+        MENUITEM "SelectAll(&A)",               ID_EDIT_SELECTALL  //~vbd2M~
     END
     MENUITEM "Setup",                       IDC_FONT
     MENUITEM "Preview",                     ID_PAGE_SETUP

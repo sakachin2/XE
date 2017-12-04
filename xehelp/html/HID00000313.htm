@@ -26,7 +26,26 @@ a:hover{font-weight:bold;}-->
              See EDIt command for also operands.
             -&quot;-lineno&quot;
              Lineno of dir-list as alternative of file-name.
-             Selects 1st member if both file-name and lineno is missing.
+             Selects 1st member if both file-name and lineno is missing.</SPAN></PRE>
+<PRE>
+&nbsp;</PRE>
+<PRE>
+     <SPAN STYLE="color:#000000;font-size:12pt;">= Line select
+
+        SELect [all] [col1 col2] [.label1 .label2]
+
+            -label1/2:line range col1/2:column range
+             numeric specification for both label 1 and 2 are accepted as lineno.
+             Block mode with col1/2, Range mode without col1/2.
+             "Selct All" without label/column.
+               e.g.) sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;
+            -Select range to Cut/Copy/Paste on Edit panel.
+             Under range mode, selected range itself is target of Paste Range mode.
+            -Abridged format command "S" is not available
+             "S" means "SAVe" on Browse/Edit panel.
+
+
+
 </SPAN></PRE>
 </BODY>
 </HTML>

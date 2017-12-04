@@ -1,8 +1,9 @@
-//*CID://+vb00R~:                             update#=   39;       //+vb00R~
+//*CID://+vbd9R~:                             update#=   40;       //+vbd9R~
 //*********************************************************************
 //* xegbl.h
 //*********************************************************************
-//vb00:150309 v1.28 xegbl.h                                        //+vb00I~
+//vbd9:171121*(BUG)Title msg:version 1.28-->1.29                   //+vbd9I~
+//vb00:150309 v1.28 xegbl.h                                        //~vb00I~
 //vaiD:130703 xe version  1.27                                     //~vaiDI~
 //va8x:110520 version:v1.26                                        //~va8xI~
 //va00:090510 merge utf8 version(enclosed by UTF8SUPPH)            //~va00I~
@@ -40,7 +41,8 @@
 //v051:951014:print dlcmd                                       //~v051I~
 //*v031:950712:new
 //*********************************************************************
-#define VER   "v1.28"                                              //~v76gR~//~vaiDR~//+vb00R~
+//#define VER   "v1.28"                                              //~v76gR~//~vaiDR~//~vb00R~//+vbd9R~
+#define VER   "v1.29"                                              //+vbd9I~
                                                                    //~v440I~
 #define BINFILE_LINEWIDTH  72//default width for bin file          //~v176I~
 #define BINFILE_HEXLINEWIDTH  20//default width for bin file hex display//~v440R~

@@ -1,4 +1,4 @@
-||*CID:||+v129R~:  2017/09/04              update#=  560;             ||+v129R~
+||*CID:||+v129R~:  2017/11/30              update#=  567;             ||~v129R~||~v129R~
 ######################################################################
 [English]    v1.29                                                    ||~v128R~||~v129R~
 
@@ -100,7 +100,7 @@
         XE4S001Z.aws AWS file created from LoadModule by awsutil.
         XE4S001Z.jcl submit jcl to install LoadModule XE4S001Z from .aws file.
 
- v9.34  xprint.exe   text file print program                          ||~128CR~
+ v9.38  xprint.exe   text file print program                          ||~128CR~||~v129R~
         xprint.sh    wrapper shell to use xprint on Linux.            ||~7A25R~
         gxp          (Linux)xprint using GTKPrint                   ||~7A25I~||~127DR~
         xpj.txt      xprint Japanese document file                    ||~124FR~
@@ -110,7 +110,7 @@
  v1.1   xads.exe     For Windows Only,Access to NTFS ADS(Alternative Data Stream).||~v128R~
  v1.5   xbc.exe      Basic calculator.
  v1.1   xci.exe      C/C++/Java text file indentation                 ||~126JR~||~127CR~
- v1.19  xcv.exe      Code conversion.                                 ||+124FR~,||~124QR~||~125FR~||~125GR~||~127QR~
+ v1.20  xcv.exe      Code conversion.                                 ||+124FR~,||~124QR~||~125FR~||~125GR~||~127QR~||~v129R~
                      EUC,SJIS(Japanese:Shift JIS),Unicode,UTF-8,EBCDIC,Any-Codepage.||~124QR~
  v1.2   xcvsjisc.exe Convert SJIS in xe's source file to Octal-notation.||~124FR~
  v2.28  xdc.exe      directory compare tool                           ||~127SR~||~v128R~
@@ -118,7 +118,7 @@
  v1.12  xdig.exe     directory walk utility                           ||~124FR~||~127AR~||~127QR~||~v129R~
                      tool apply command to all sub-directory/files.
         xdig.txt     doc for xdig                                     ||~124FR~
- v1.11  xds.exe      Directory size display tool                      ||~124RR~||~126BR~||~127AR~||~v129R~
+ v1.12  xds.exe      Directory size display tool                      ||~124RR~||~126BR~||~127AR~||~v129R~||~v129R~
  v1.25  xfc.exe      File compare tool                                ||~127SR~||~v128R~
  v1.7   xff.exe      file search by size/timestamp/name.               ||~7B08R~||~127ER~
  v1.19  xfg.exe      Binary file string search & Recursive grep.      ||~127AR~||~128FR~||~v128R~
@@ -2434,12 +2434,16 @@ How to start.
 ######################################################################||~v129R~
   .v129B<--129 :(2017/07/27)                                          ||~v129R~
   .v129C<--129B:(2017/09/04)                                          ||~v129I~
+  .v129D<--129B:(2017/11/30)                                          ||~v129R~
                                                                       ||~v129R~
      1.BUGs                                                           ||~v129R~
        -(Windows:64)"&"(spawn executable file) dir cmd crush.         ||~v129R~
        -(64Bit) =3.14 crush                                           ||~v129R~
        -(Win64) Erroneous calculation when Datatype is X(Hex),O(octal).||~v129I~
        -(Win64) DragDrop between split panels(file copy) crashes.     ||~v129I~
+     (129D)                                                           ||~v129R~
+       -(Linux)Under GTK3 environmentt, Accelerator option on Setup dialog was not work.||~v129R~
+       -(Wxe)Crash when File->New menuitem was selected.              ||~v129R~
                                                                       ||~v129R~
      2.Additional function.                                           ||~v129I~
                                                                       ||~v129I~
@@ -2482,6 +2486,22 @@ How to start.
             c:char device, b:block device, p:pipe, s:socket           ||~v129I~
           e.g.) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr||~v129I~
                 (Linux)   f 775 attr ; f u attr                       ||~v129I~
+     (129D)                                                           ||~v129R~
+       -SelectAll
+          .Command.                                                   ||~v129I~
+             SEL [all] [col1 col2] [.label1 .label2]                  ||~v129I~
+               label1/2:line range  col1/2:column range               ||~v129I~
+               numeric specification for both label 1 and 2 are accepted as lineno.||~v129I~
+               Block mode with col1/2, Range mode without col1/2.     ||~v129I~
+               "Selct All" without label/column.                      ||~v129I~
+               e.g.) sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;       ||+v129I~
+          .Select range to Cut/Copy/Paste on Edit panel.              ||~v129I~
+           Under range mode, selected range itself is target of Paste Range mode.||~v129I~
+          .Abridged format command "S" is not available               ||~v129I~
+           "S" means "SAVe" on Browse/Edit panel.                     ||~v129I~
+        (Wxe,gxe)                                                     ||~v129I~
+          ."SelectAll" menuitem was added to File submenu and popup menu on edit panel.
+          .Set shotcut key to Ctrl+A and cabnged to Ctrk+Shift+A for SaveAs.
                                                                       ||~v129I~
      3.Miscellaneous.                                                 ||~v129R~
        -(Windows) add "msi" as executable binary extension            ||~v129R~
@@ -2493,6 +2513,9 @@ How to start.
        -When ICU_DLL_SUFFIX and ICU_APP_SUFFIX  are missing,          ||~v129I~
         set both bt ICU utility  uconv(.exe).                         ||~v129I~
        -Reject /Mr(Recordmode) option for CPU8 file because string length of UTF8 code is indefinite.||~v129I~
+     (129D)                                                           ||~v129R~
+       -Disable also menuitem of File submenu depending panel type.   ||~v129R~
+        e.g. Save is disable for directory list panel.                ||~v129R~
                                                                       ||~v129I~
      4.Tool.                                                          ||~v129I~
      (129C)                                                           ||~v129I~

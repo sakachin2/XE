@@ -1,6 +1,6 @@
-||*CID:||+129CR~:  2017/09/07                update#=  799;           ||~129CR~
+||*CID:||+129DR~:  2017/12/03                update#=  800;           ||+129DR~
 ######################################################################
-[Japanese]    v1.29C                                                  ||+129CR~
+[Japanese]    v1.29D                                                  ||~129CR~||+129DR~
 
 メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。
 ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。
@@ -181,3 +181,77 @@ Linux版はGUI版:gxe とTerminalEmulator版:xe があります。
                e "sp:ecws\space embedded name"
                xcopy sp:ecdir\x1 sp.ecdir\x2
                cd sp:ecdir
+                                                                      ||+129DI~
+  .v129C<--129B:(2017/09/04)                                          ||+129DI~
+                                                                      ||+129DI~
+     1.BUGs                                                           ||+129DI~
+                                                                      ||+129DI~
+     2.機能追加                                                       ||+129DI~
+       -Find コマンド                                                 ||+129DI~
+          ディレクトリーリスト上で ATTR(属性)欄のみを探すオプションを追加||+129DI~
+          大文字小文字の区別はしません                                ||+129DI~
+          属性欄には表示されていないが ディレクトリーには "d"、シンボリックリンクには "L" を指定する||+129DI~
+          また "d" と "L" はそれぞれ単独で指定してください            ||+129DI~
+          それ以外の属性は Windowsでは 指定の一つ一つの属性すべてを含む行が一致行とし||+129DI~
+          Linuxでは属性指定の文字列を含む行が一致行とする             ||+129DI~
+          Linuxで特殊な属性欄の値は                                   ||+129DI~
+            u:setuid, g:setgid, S:setuid+setgid, t:stickey            ||+129DI~
+            c:char device, b:block device, p:pipe, s:socket           ||+129DI~
+        例) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr||+129DI~
+            (Linux)   f 775 attr ; f u attr                           ||+129DI~
+                                                                      ||+129DI~
+     3.その他                                                         ||+129DI~
+       -(Windows)ICU EBCDIC変換ライブラリーlibicuuc.dllが見つからないとき||+129DI~
+        xeebc.mapに ICU_DATA の指定があればそのフォルダー内もチェックする||+129DI~
+        なければ 環境変数 ICU_DATA もチェックする                     ||+129DI~
+        (Linux)/usr/lib など以外にある場合は LD_LIBRARY_PATH 環境変数に ICU の so のパスをしてしてください||+129DI~
+       -xeebc.map に ICU_DLL_SUFFIX, ICU_APP_SUFFIX が ないとき       ||+129DI~
+        ICU の uconv(.exe) で ICU のバージョンが分かればそれを補う    ||+129DI~
+       -CPU8(UTF8)ファイルではレコード長は不定なので/Mr(レコードモード)オプションは受け付けない||+129DI~
+                                                                      ||+129DI~
+     4.ツール。                                                       ||+129DI~
+       -xprint v9.38                                                  ||+129DI~
+        ./Tabon: パラメータサポート追加                               ||+129DI~
+           DBCSスペース、TAB(0x09)とそれに続く桁空けに表示する代替文字を指定する||+129DI~
+           /Tabon:x:y:z ;テキストモードのときのDBCSスペース,タブ文字,タブスキップの||+129DI~
+                        ;代替印刷文字。x,y,zは 文字、ヘキサ文字またはユニコード。||+129DI~
+                        ;例) /Tabon:x2020:x18:x1a  /Tabon::u2191:u2192 /Tabon::u25cb||+129DI~
+                        ;    /Tabon:u2750                             ||+129DI~
+                        ;省略値は UTF8/EBCDICファイル /Tabon:u3000:x20:x20||+129DI~
+                        ;                        以外 /Tabon:x8140:x20:x20||+129DI~
+        .EBCDIC ファイルを ICU で変換して印刷するときで /BCfilename の指定がない場合||+129DI~
+         ICU の 共有ライブラリー(DLL または so)が PATH または LD_LIBRARY_PATH にあれば||+129DI~
+         探して ICU バージョンは uconv(.exe) を発行して それを補う    ||+129DI~
+           例) xprint x1ebc22 -cpeb=cp930 -me -icu                    ||+129DI~
+       -xcv 1.20                                                      ||+129DI~
+        .EBCDIC ファイルを ICU で変換するときで /BCfilename の指定がない場合||+129DI~
+         ICU の 共有ライブラリー(DLL または so)が PATH または LD_LIBRARY_PATH にあれば||+129DI~
+         探して ICU バージョンは uconv(.exe) を発行して それを補う    ||+129DI~
+           例) xcv x1ebc22 x1ebc22m -b2m -cpeb=cp930 -icu             ||+129DI~
+                                                                      ||+129DI~
+  .v129D<--129C:(2017/12/03)                                          ||+129DI~
+                                                                      ||+129DI~
+     1.BUGs                                                           ||+129DI~
+       -(Linux)GTK3環境の時セットアックダイアログでのメニューアクセラレーター(Ctrl+)オプションの||+129DI~
+        オン/オフが効かない                                           ||+129DI~
+       -(Wxe)ファイル-New(新規ファイル)でクラッシュ                   ||+129DI~
+                                                                      ||+129DI~
+     2.機能追加                                                       ||+129DI~
+       -SelectAll                                                     ||+129DI~
+          .コマンド                                                   ||+129DI~
+             SEL [all] [col1 col2] [.label1 .label2]                  ||+129DI~
+               label1/2 で行範囲指定、col1/2 でカラム範囲指定         ||+129DI~
+               labelは1/2とも数字による行番号指定でもよい             ||+129DI~
+               col の指定があるとブロックモード、ないと領域モード     ||+129DI~
+               label/column の指定がないと全選択                      ||+129DI~
+               例）sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;         ||+129DI~
+          .Edit画面で 行選択し、Cut/Copy/Pasteにつなげていきます      ||+129DI~
+           領域モードではすぐPaste の対象にもなります                 ||+129DI~
+        (Wxe,gxe)                                                     ||+129DI~
+          .Editサブメニュー、ポップアップメニューにも "SelectAll" メニュー項目追加||+129DI~
+          .ショートカットはCtrl+Aに設定 SaveAs(別名保存)はCtrl+Shift+Aに変更||+129DI~
+                                                                      ||+129DI~
+     3.その他                                                         ||+129DI~
+       -Fileサブメニューのメニュー項目も画面の状況によっては不活性化する||+129DI~
+        例えば、ディレクトリー画面での保存メニュー項目など            ||+129DI~
+                                                                      ||+129DI~

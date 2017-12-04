@@ -1,8 +1,9 @@
-//CID://+va34R~:                                                   //~va34R~
+//CID://+vbdgR~:        update#=    2                              //~vbdgR~
 //*************************************************************
 //*xefile.c*
 //**load/save/edit/browse/end/cancel
 //*************************************************************
+//vbdg:171123 by vbdf compiler warning:conversion                  //~vbdgI~
 //va34:070511 xft:indexlist invalid print seqence when dupfunc on the same plh//~va34R~
 //*************************************************************    //~7511I~
 #define TEST
@@ -88,7 +89,8 @@ int listfunc(int Popt,UCHAR *Pfuncnm)
 	PUFUNCDEF  pfd;
     int pfdno;                                                     //~0708R~
 //*********************
-    Sfilectr=UGETQCTR(&Gfilehq);                                   //~0722I~
+//  Sfilectr=UGETQCTR(&Gfilehq);                                   //~0722I~//~vbdgR~
+    Sfilectr=(int)UGETQCTR(&Gfilehq);                              //~vbdgI~
 	Soption=Popt;
 	Stestsw=Popt&OPT_TEST;
 	listfilename();		//filename list
@@ -118,7 +120,8 @@ int listfunc(int Popt,UCHAR *Pfuncnm)
             Slistfdsw=0;     //chk printed
 //print function macro at first                                    //~0702I~
 			Sinmacprint=1;		//printing all macro at first      //~0722I~
-            pfdno=UGETQCTR(&pfh->UFHfuncque);                      //~0708I~
+//          pfdno=UGETQCTR(&pfh->UFHfuncque);                      //~0708I~//~vbdgR~
+            pfdno=(int)UGETQCTR(&pfh->UFHfuncque);                 //~vbdgI~
 			if (Soption & OPT_PMACRO)                              //~0708I~
                 for (pfd=UGETQTOP(&pfh->UFHfuncque);pfd;pfd=UGETQNEXT(pfd))//~0708R~
                     if (UCBITCHK(pfd->UFDflag,UFDF_DEFINEMAC))        //macro//~0708R~
@@ -133,12 +136,12 @@ int listfunc(int Popt,UCHAR *Pfuncnm)
                 if (!pfd->UFDlevel)         //level 0 func
                     listfuncsub(pfd,0);                            //~0722R~
             if (!Slistfdsw)      //chk printed
-            {                                                      //+va34I~
+            {                                                      //~va34I~
                 if (pfdno)                                         //~0708R~
             		printf("--- All function already printed with call statement ---\n");//~0708R~
                 else                                               //~0708I~
             		printf("--- No function defined ---\n");       //~0708I~
-            }                                                      //+va34I~
+            }                                                      //~va34I~
         }
 		if (Soption & (OPT_INDEX1|OPT_INDEX2))                     //~0715R~
         	listindex();                                           //~0709I~
@@ -193,7 +196,7 @@ int listindex(void)                                                //~0709I~
      	pfd=*ppfd;                                                 //~0709I~
         if (Soption & OPT_INDEX2	//all print	                   //~0720R~
         ||  pfd->UFDindex)                                         //~0715I~
-        {                                                          //+va34I~
+        {                                                          //~va34I~
 			if (UCBITCHK(pfd->UFDflag,UFDF_DUPDEF2))               //~0720I~
 #ifdef AAA                                                         //~va34I~
                 printf("      \"%-32s--- %5d    --- (  \")\n",     //~0722R~
@@ -209,7 +212,7 @@ int listindex(void)                                                //~0709I~
                 else                                               //~0720R~
                     printf("     *%-32.*s ---     -    --- (%3d)\n",//~0722R~
                             pfd->UFDfnl,pfd->UFDfnm,pfd->UFDlevel);//~0720R~
-        }                                                          //+va34I~
+        }                                                          //~va34I~
     }                                                              //~0709I~
     return 0;                                                      //~0709I~
 }//listindex                                                       //~0709I~
@@ -228,7 +231,8 @@ static int Ssortedsw=0;                                            //~5322R~
     Ssortedsw=1;                                                   //~0720I~
 //count func number                                                //~0709M~
     for (pfh=UGETQTOP(&Gfilehq),fdcnt=0;pfh;pfh=UGETQNEXT(pfh))    //~0709M~
-        fdcnt+=UGETQCTR(&pfh->UFHfuncque);                         //~0709M~
+//      fdcnt+=UGETQCTR(&pfh->UFHfuncque);                         //~0709M~//~vbdgR~
+        fdcnt+=(int)UGETQCTR(&pfh->UFHfuncque);                    //~vbdgI~
 //sort func def list                                               //~0709M~
 	Ssortppfdcnt=fdcnt;                                            //~0709I~
 	Ssortppfd=UALLOCM((UINT)(fdcnt<<2));	//pfd ptr list for sort//~0709I~
@@ -447,9 +451,11 @@ int listfc(int Plevel,PUFUNCCALL Ppfc,PUFUNCDEF Ppfdc)             //~0722R~
                 pos=listprefix(Plevel,PREFIX_CALL,expandsw,plh);
                 top=Ppfc->UFCtop;
                 if (plh==Ppfc->UFCplhe)	//single line
-                	len=Ppfc->UFCend-top;
+//              	len=Ppfc->UFCend-top;                          //+vbdgR~
+                	len=PTRDIFF(Ppfc->UFCend,top);                 //+vbdgI~
                 else
-                	len=(int)(plh->ULHlen-((ULONG)top-(ULONG)plh->ULHdata));
+//              	len=(int)(plh->ULHlen-((ULONG)top-(ULONG)plh->ULHdata));//~vbdgR~
+                	len=(int)(plh->ULHlen-PTRDIFF(top,plh->ULHdata));//+vbdgR~
                 listlinedata(top,len,0,plh);
                 pos+=Ppfc->UFCfnl+1;
             }
@@ -741,14 +747,14 @@ int listindexcp(void)                                              //~0715I~
             externsw=' ';                                          //~0720I~
         if (Soption & OPT_INDEX2	//all function                 //~0715I~
         ||  pfd->UFDindexcp)          //expanded                   //~0715R~
-        {                                                          //+va34I~
+        {                                                          //~va34I~
         	if (pfd->UFDindexcp)          //expanded               //~0715R~
         		printf("     %c%-32.*s --- %5d\n",                 //~0722R~
 						externsw,pfd->UFDfnl,pfd->UFDfnm,pfd->UFDindexcp);//~0720R~
             else                                                   //~0715I~
 		        printf("     %c%-32.*s ---     -\n",               //~0722R~
 						externsw,pfd->UFDfnl,pfd->UFDfnm);         //~0720R~
-        }                                                          //+va34I~
+        }                                                          //~va34I~
     }                                                              //~0715I~
     return 0;                                                      //~0715I~
 }//listindex                                                       //~0715I~
@@ -830,14 +836,16 @@ int listchiparsubtree(PUFUNCDEF Ppfd,PUFUNCCALL Ppfc,int Plevel,PULINEH Pplh,int
         {
 //printf("plh=%08x,plhs=%08x,plhe=%08x\n",plh,Ppfc->UFCplhs,Ppfc->UFCplhe);
             if (plh->ULHtype!=ULHTMACRO)
-            {                                                      //+va34I~
+            {                                                      //~va34I~
                 if (plh==Ppfc->UFCplhs)
                 {
                     top=Ppfc->UFCtop;
                     if (plh==Ppfc->UFCplhe) //single line
-                        len=Ppfc->UFCend-top;
+//                      len=Ppfc->UFCend-top;                      //~vbdgR~
+                        len=PTRDIFF(Ppfc->UFCend,top);             //~vbdgI~
                     else
-                        len=(int)(plh->ULHlen-((ULONG)top-(ULONG)plh->ULHdata));
+//                      len=(int)(plh->ULHlen-((ULONG)top-(ULONG)plh->ULHdata));//~vbdgR~
+                        len=(int)(plh->ULHlen-PTRDIFF(top,plh->ULHdata));//+vbdgR~
                     printf(" : %.*s",len,top);
                     pos+=3+Ppfc->UFCfnl;                           //~0722R~
                 }
@@ -849,7 +857,7 @@ int listchiparsubtree(PUFUNCDEF Ppfd,PUFUNCCALL Ppfc,int Plevel,PULINEH Pplh,int
                         len=plh->ULHlen;
                     listlinecp(plh,pos,len);                       //~0722R~
                 }
-            }                                                      //+va34I~
+            }                                                      //~va34I~
             if (plh==Ppfc->UFCplhe)
                 break;
         }
@@ -876,7 +884,8 @@ int listchiparsubtree(PUFUNCDEF Ppfd,PUFUNCCALL Ppfc,int Plevel,PULINEH Pplh,int
     		printf("                                       <<<<<<<<<< C-P Func No. %5d <<<<<<<<<<\n",Sfuncindexcp);//~0722R~
         }                                                          //~0722I~
                                                                    //~0709I~
-    fccnt=UGETQCTR(&Ppfd->UFDqhp);
+//  fccnt=UGETQCTR(&Ppfd->UFDqhp);                                 //~vbdgR~
+    fccnt=(int)UGETQCTR(&Ppfd->UFDqhp);                            //~vbdgI~
     if (!fccnt)
     	return 0;
 	if (!expandsw)                                                 //~0715R~

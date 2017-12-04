@@ -1,6 +1,8 @@
-//*CID://+vba3R~:                             update#=  438;       //+vba3R~
+//*CID://+vbd8R~:                             update#=  453;       //+vbd8R~
 //******************************************************************************//~v003I~
-//vba3:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//+vba3I~
+//vbd8:171120 (WXE)stdregion by PFK(F6) should disable Paste REP/INS//+vbd8I~
+//vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
+//vba3:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~vba3I~
 //vb3w:160621 w64 compiler warning                                 //~vb3wI~
 //vb2N:160319 (Wxe)clipboard data may be translated CF_TEXT and CF_UNICODETEXT(copyed by CFTEXT is gotten as CF_UNICODETEXT)//~vb2NI~
 //            It dose not consider locale data by -Ccodepage parameter//~vb2NI~
@@ -342,6 +344,9 @@ UTRACEP("@@@@rbdown\n");                                             //~v76jI~//
 	    menuid=submenu->GetMenuItemID(ii);                         //~v003M~
         switch(menuid)                                             //~v003M~
         {                                                          //~v003M~
+        case ID_EDIT_SELECTALL:                                    //~vbd2I~
+        	enable=cpupdateselectall();                            //~vbd2I~
+        	break;                                                 //~vbd2I~
         case ID_EDIT_CUT:                                          //~v003M~
         case ID_EDIT_CLEAR:                                        //~2A06I~
         	enable=cpupdatecut();                                  //~v003M~
@@ -578,13 +583,13 @@ int  CWxemain::cpcopypan(char *Pcbdata,int Prow1,int Pcol1,int Prow2,int Pcol2)/
       }                                                            //~va20R~
     }                                                              //~2A05I~
 #ifdef UTF8UCS2                                                    //~va20R~
-//  totlen=(ULONG)pc-(ULONG)Pcbdata;                               //~va20R~//+vba3R~
-    totlen=PTRDIFF(pc,Pcbdata);                                    //+vba3I~
+//  totlen=(ULONG)pc-(ULONG)Pcbdata;                               //~va20R~//~vba3R~
+    totlen=PTRDIFF(pc,Pcbdata);                                    //~vba3I~
   if (swucs||swutf8data)                                           //~va20R~
   {                                                                //~va20R~
 	if (!swgetlen)                                                 //~va20R~
-//		*((WUCS*)(ULONG)pc-2)=0;                                   //~va20R~//+vba3R~
-  		*((WUCS*)(ULPTR)pc-2)=0;                                   //+vba3I~
+//		*((WUCS*)(ULONG)pc-2)=0;                                   //~va20R~//~vba3R~
+  		*((WUCS*)(ULPTR)pc-2)=0;                                   //~vba3I~
 UTRACEP("cpcopypan totlen=%d\n",totlen);                           //~va20R~
 UTRACEDIFNZ("cpcopypan out\n",Pcbdata,totlen);                     //~va20R~
 	if (swucs)                                                     //~va20R~
@@ -1284,6 +1289,12 @@ static CWxemain *Spmain;                                           //~v69ZR~
         ((CMainFrame*)(Spmain->Mpmainframe))->enablemainmenu(); //re-evaluate menu enable/disable//~v69ZR~
         return;                                                    //~v69ZI~
     }                                                              //~v69ZI~
+	if (Popt==WXEM_SETRGN2)                                        //+vbd8R~
+    {                                                              //+vbd8R~
+        Spmain->Mcpcopysw=2;                                       //+vbd8R~
+        ((CMainFrame*)(Spmain->Mpmainframe))->enablemainmenu(); //re-evaluate menu enable/disable//+vbd8R~
+        return;                                                    //+vbd8R~
+    }                                                              //+vbd8R~
     return;                                                        //~v69ZI~
 }//wxemouse_capreset                                               //~v69ZI~
 //===============================================================================//~va7DI~//~va7CI~
@@ -1304,3 +1315,28 @@ int CWxemain::mouse_csrmovedbykbd(int Popt)                                   //
     ((CMainFrame*)Mpmainframe)->enablemainmenu();	//main menu enable/disable//~va7CM~
     return 0;                                                      //~va7DI~//~va7CI~
 }//mouse_csrmovedbykbd                                             //~va7CI~
+//===============================================================================//~vbd2I~
+//cut & paste:selectall                                            //~vbd2I~
+//===============================================================================//~vbd2I~
+int  CWxemain::cpselectall()                                       //~vbd2I~
+{                                                                  //~vbd2I~
+//************************************                             //~vbd2I~
+	wxe_capreset();                                                //~vbd2I~
+    Mcpcopypansw=0;		//file panel                               //~vbd2I~
+    wxe_capselectall();                                            //~vbd2I~
+	Mcpcopysw=2;	//moved width lbutton down                     //~vbd2I~
+    ((CMainFrame*)Mpmainframe)->enablemainmenu();	//main menu enable/disable//~vbd2I~
+    Mpview->Invalidate(FALSE);                                     //~vbd2I~
+    return 0;                                                      //~vbd2R~
+}//cpselectall                                                     //~vbd2I~
+//===============================================================================//~vbd2M~
+//menu disable/enable for SelectAll                                //~vbd2R~
+//===============================================================================//~vbd2M~
+BOOL CWxemain::cpupdateselectall(void)                             //~vbd2M~
+{                                                                  //~vbd2M~
+	int rc;                                                        //~vbd2I~
+//****************************                                     //~vbd2M~
+UTRACEP("%s:updatepastestd Mcpcopysw=%d\n",UTT,Mcpcopysw);         //~vbd2M~
+    rc=wxe_capchkselectall();                                      //~vbd2R~
+    return rc!=0;                                                  //~vbd2R~
+}//cpupdateselectall                                               //~vbd2M~

@@ -1,7 +1,8 @@
-//*CID://+vb2WR~:                              update#=  769;      //~vb2WR~
+//*CID://+vbd2R~:                              update#=  777;      //~vbd2R~
 //*********************************************************************//~v440I~
 //* wxe interface definition;CAP,PRT                               //~3102R~
 //*********************************************************************//~v440I~
+//vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
 //vb2W:160404 W32 64 compiler warning                              //~vb2WI~
 //vb2H:160307 (W32)UWCHART cut ucs4                                //~vb2HI~
 //vb2B:160221 (Win)UCS4 support                                    //~vb2BI~
@@ -308,6 +309,21 @@ int  wxe_capblock(int Pstaend,int Prow,int Pcol,int *Ppancopysw)   //~2A05R~
     rc=wxe_funccall(funcid,"");                                    //~v66hI~
 	return rc;                                                     //~2A05I~
 }//wxe_capblock                                                    //~2A03I~
+//*************************************************************    //~vbd2I~
+//*cap selectall                                                   //~vbd2I~
+//*ret 4:cursor pos err                                            //~vbd2I~
+//*************************************************************    //~vbd2I~
+int  wxe_capselectall(void)                                        //~vbd2I~
+{                                                                  //~vbd2I~
+	int rc=0;                                                      //~vbd2I~
+    int funcid;                                                    //~vbd2I~
+//************************                                         //~vbd2I~
+    funcid=FUNCID_LINEMARK;                                        //~vbd2I~
+  	Gwxestat|=GWXES_SELECTALL; //    0x1000 //parm to func_lmark_file//~vbd2I~
+    rc=wxe_funccall(funcid,"");    //xecap:func_lmark_file         //~vbd2I~
+  	Gwxestat&=~GWXES_SELECTALL; //    0x1000 //parm to func_lmark_file//~vbd2I~
+	return rc;                                                     //~vbd2I~
+}//wxe_capselectall                                                //~vbd2I~
 //*************************************************************    //~2A03I~
 //*cap copy from plh                                               //~2A03I~
 //p1:cutsw 0:copy,1;cut,2:clear                                    //~2A06I~
@@ -1179,8 +1195,8 @@ int  wxe_capchkprot(int Popt,int Prow,int Pcol)                    //~v76jI~
 UTRACEP("wxe_capchkprot pos rc=%d\n",rc);                          //~v76jI~
     	if (rc)	//not file text area	                           //~v76jI~
         	return 1;	//std paste not avail                      //~v76jR~
-	    capgetxestat(0,&stat2);                                    //~v76jR~
-UTRACEP("wxe_capchkprot stat =%x\n",stat2);                        //~v76jI~
+        capgetxestat(0,&stat2);                                    //~v76jR~
+UTRACEP("wxe_capchkprot stat =%x\n",stat2);                        //~vbd2I~
         if (stat2 & SBLOCK2STDREGION)                              //~v76jI~
         	return 0;      //rgn mode,std paste available          //~v76jR~
         return 1;                                                  //~v76jR~
@@ -1226,6 +1242,28 @@ int  wxe_capchkxestat(void)                                        //~v69ZR~
         return 1;                                                  //~v69ZR~
     return 0;                                                      //~v69ZR~
 }//wxe_capchkxestat                                                //~v69ZR~
+//*************************************************************    //~vbd2I~
+//*chk selectall menu enable                                       //~vbd2I~
+//*ret :1:enable                                                   //~vbd2I~
+//*************************************************************    //~vbd2I~
+int  wxe_capchkselectall(void)                                     //~vbd2I~
+{                                                                  //~vbd2I~
+    PUCLIENTWE pcw;                                                //~vbd2I~
+    int rc=1;                                                      //~vbd2I~
+	PUFILEC pfc;                                                   //~vbd2I~
+	PUFILEH pfh;                                                   //~vbd2I~
+//***********************                                          //~vbd2I~
+    rc=(wxe_getpcw(&pcw)==PRTTYPE_FILE);                           //~vbd2R~
+UTRACEP("%s:rc=%d\n",UTT,rc);                                      //~vbd2R~
+	if (rc)	//file                                                 //~vbd2I~
+    {                                                              //~vbd2I~
+		pfc=pcw->UCWpfc;                                           //~vbd2R~
+		pfh=pfc->UFCpfh;                                           //~vbd2I~
+		if (pfh->UFHtype==UFHTCLIPBOARD)                           //~vbd2I~
+    		rc=0;	//disable                                      //~vbd2I~
+    }                                                              //~vbd2I~
+    return rc;                                                     //~vbd2I~
+}//wxe_capchkselectall                                             //+vbd2R~
 //*************************************************************    //~2A05I~
 //*copy dbcs data                                                  //~2A05I~
 //*ret :0                                                          //~2A05I~
@@ -1382,7 +1420,7 @@ int  wxe_capu2b(int Popt,UCHAR *Pebcdata,int Plen,int *Ppreadlen,int *Ppoutlen,i
     else                                                           //~va5yI~
 //  	readlen=(ULONG)pc-(ULONG)Pebcdata;                         //~va5yR~//~vafkR~
 //  	readlen=(ULPTR)pc-(ULPTR)Pebcdata;                         //~vafkI~//~vb2WR~
-    	readlen=(int)((ULPTR)pc-(ULPTR)Pebcdata);                  //+vb2WR~
+    	readlen=(int)((ULPTR)pc-(ULPTR)Pebcdata);                  //~vb2WR~
     outlen=readlen;                                                //~va5yI~
     if (readlen>=2                                                 //~va5yR~
     &&  *(pc-2)=='\r' && *(pc-1)=='\n'                             //~va5yR~

@@ -1,8 +1,9 @@
-//CID://+va15R~:                                                   //~va15R~
+//CID://+vbdgR~:        update#=     1                             //~va15R~//+vbdgR~
 //*************************************************************
 //*xft.c                                                           //~v101R~
 //* func call tree list                                            //~v101R~
 //*************************************************************
+//vbdg:171123 by vbdf compiler warning:conversion                  //+vbdgI~
 //*va15:031103 xft:v1.1:ftp support(4 byte udirlist attr for ! UNX)//~va15I~
 //011019 v103 by xuerpck tool(uerrmsg parm chk)                    //~v103I~
 //011018 v102 function to exclude function of DEBUG etc            //~v102R~
@@ -449,13 +450,13 @@ int fileload(UCHAR *Pfname,PUFILEH *Pppfh)
 	ULINEH 	*plh;
 	FILEFINDBUF3 fstat3;     				//output from DosFindxxxx
 	FILE *hfile;
-    UCHAR fpath[_MAX_PATH];                                        //+va15R~
+    UCHAR fpath[_MAX_PATH];                                        //~va15R~
 //****************************
 	*Pppfh=pfh=UALLOCC(1,UFILEHSZ);
     if (!pfh)
     	errmalloc("FileHdr");
 	memcpy(pfh->UFHcbid,UFHCBID,4);		//acronym
-    rc=filefindopen(Pfname,fpath,&fstat3,&hfile);                  //+va15R~
+    rc=filefindopen(Pfname,fpath,&fstat3,&hfile);                  //~va15R~
 	switch(rc)
 	{
 	case 0:
@@ -467,7 +468,7 @@ int fileload(UCHAR *Pfname,PUFILEH *Pppfh)
 		ufree(pfh);
 		return rc;
 	}
-    ufilesetfhfilename(pfh,fpath);                                 //+va15R~
+    ufilesetfhfilename(pfh,fpath);                                 //~va15R~
 //file attr
 	pfh->UFHsize	=fstat3.cbFile;			//file size
 	pfh->UFHfiledate=fstat3.fdateLastWrite;//file date
@@ -618,7 +619,8 @@ PULINEH filealloclh(UCHAR Ptype,int Pdatalen)
 {
 	PULINEH plh;
 //***************	
-	plh=UALLOCC(1,(UINT)(ULINEHSZ+Pdatalen+1+Pdatalen));	//padd last null
+//  plh=UALLOCC(1,(UINT)(ULINEHSZ+Pdatalen+1+Pdatalen));	//padd last null//+vbdgR~
+    plh=UALLOCC(1,(UINT)((int)ULINEHSZ+Pdatalen+1+Pdatalen));	//padd last null//+vbdgI~
     if (!plh)
     	errmalloc("LineData buffer");
 	memcpy(plh->ULHcbid,ULHCBID,4);
