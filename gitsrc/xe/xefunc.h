@@ -1,8 +1,9 @@
-//*CID://+vbdsR~:                             update#=  148;       //+vbdsR~
+//*CID://+vbe0R~:                             update#=  150;       //~vbe0R~
 //*********************************************************************
 //* xefunc.h
 //*********************************************************************
-//vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg//+vbdsI~
+//vbe0:171231 add function to search xml tag pair by A+/           //~vbe0I~
+//vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg//~vbdsI~
 //vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I~
 //vb55:160904 old func-key def on ::xe.in reset new added default key of xefunct//~vb55I~
@@ -201,6 +202,7 @@ typedef int (FTFUNC)(FUNCPARMS);
 #define FUNCID_DLCMDPASTE   93  //dlcmd paste from save            //~v07eR~
 #define FUNCID_EBC          94  //EBC cmd                          //~va7KI~
 #define FUNCID_NODE         95  //NODE cmd                         //~vac0I~
+#define FUNCID_XMLSRCH      96  //xml pair search                  //~vbe0I~
 #define FUNCID_EDIT        100                                  //~5521R~
 #define FUNCID_BROWSE      111                                     //~v07bR~
 #define FUNCID_PREVCMD     112                                     //~v07bR~
@@ -572,6 +574,7 @@ typedef int (FTFUNC)(FUNCPARMS);
 //    FTFUNC func_tcnx;                                            //~v17fR~
 	FTFUNC func_ppsrch;                                            //~v42hR~
 	FTFUNC func_ppsrchnx;                                          //~v42wI~
+	FTFUNC func_xmlsrch;                                           //+vbe0I~
 	FTFUNC func_browsehex_file;                                    //~v440R~
 	FTFUNC func_edithex_file;                                      //~v440R~
 	FTFUNC func_selecthex_file;                                    //~v440R~
@@ -665,7 +668,7 @@ typedef struct _FUNCTBL                                         //~5224M~
 #define FTFUPINI	   	0x08		//updated by ini process    //~5429I~
 #define FTFCSRKEY      	0x10		//csr move key(short path required)//~5504I~
 #define FTFDUPACMD     	0x20		//alias cmd duplicated         //~v09wI~
-//#define FTFDUPACMDFUNC  0x40        //alias cmd duplicated allows and process both by a func//~vbd7I~//+vbdsR~
+//#define FTFDUPACMDFUNC  0x40        //alias cmd duplicated allows and process both by a func//~vbd7I~//~vbdsR~
                                                                    //~v705I~
 #define FTFLINECHSET   	0x20		//string input setupped for GRAPHIC func only//~v705I~
                                                                    //~v705I~
@@ -694,7 +697,7 @@ typedef struct _FUNCTBL                                         //~5224M~
 #define FTF2FIND_PSSUPP  0x04		//PSx cmd support              //~vbCBR~
 #define FTF2FINDCMD      0x08		//find cmd                     //~vbCCI~
 #define FTF2CHANGECMD    0x10		//change cmd                   //~vbCCI~
-#define FTF2DUPACMDFUNC  0x20       //alias cmd duplicated allows and process both by a func//+vbdsI~
+#define FTF2DUPACMDFUNC  0x20       //alias cmd duplicated allows and process both by a func//~vbdsI~
 		UCHAR  FTrsv  [3];			//command word                 //~v71PI~
 } FUNCTBL,*PFUNCTBL;                                               //~v0ioR~
 typedef struct _FUNCTBLC {                                         //~v0ihI~

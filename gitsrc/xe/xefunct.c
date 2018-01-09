@@ -1,9 +1,10 @@
-//*CID://+vbdsR~:                             update#=  301;       //+vbdsR~
+//*CID://+vbe0R~:                             update#=  302;       //~vbdsR~//+vbe0R~
 //*************************************************************
 //*xefunct.c                                                       //~v663R~
 //* func definition tbl                                         //~5216R~
 //************************************************************* //~v020I~
-//vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg//+vbdsI~
+//vbe0:171231 add function to search xml tag pair by A+/           //+vbe0I~
+//vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg//~vbdsI~
 //vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I~
 //vb96:170305 regist cmd for A+";"=LIG, A+":"=CMB(that key combination is not effective on Axe usb kbd)//~vb96I~
@@ -407,6 +408,13 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
 		"","",                                                     //~v42wI~
 		{KEY_A_COMMA,0,0,0},                                       //~v42wI~
 		NULL_NOFLAG},                                              //~v55nR~
+	{"XML-Tag"         ,"XMLタグ探索"          ,                   //+vbe0I~
+        FUNCID_XMLSRCH,                                            //+vbe0I~
+        0,0,          //flag,char,                                 //+vbe0I~
+		{0               ,func_xmlsrch       ,0},                  //+vbe0I~
+		"","",                                                     //+vbe0I~
+		{KEY_A_SLASH,0,0,0},                                       //+vbe0I~
+		NULL_NOFLAG},                                              //+vbe0I~
 //  {"Scroll-Up-Line"  ,"1行上表示" ,                              //~v095R~
     {"Scroll-Up-Line"  ,"1行上\x95\\示" ,                          //~v095I~
         FUNCID_LINEUP,                                          //~5204R~
@@ -888,12 +896,12 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
 	{"Save"         ,"保存"          ,                           //~4C18I~
         FUNCID_SAVE,                                            //~5204R~
 //      FTFDUPACMD,0,          //flag(alias duplicated),char,      //~v09wR~//~vbd7R~
-//      FTFDUPACMD|FTFDUPACMDFUNC,0,          //flag(alias duplicated,handle dup by func),char,//~vbd7R~//+vbdsR~
-        FTFDUPACMD               ,0,          //flag(alias duplicated,handle dup by func),char,//+vbdsI~
+//      FTFDUPACMD|FTFDUPACMDFUNC,0,          //flag(alias duplicated,handle dup by func),char,//~vbd7R~//~vbdsR~
+        FTFDUPACMD               ,0,          //flag(alias duplicated,handle dup by func),char,//~vbdsI~
 		{0	,func_save_file,0},                                    //~v75SR~
 		"SAV","S",                                                  //~4C18I~
-//  	{KEY_S_F3,0,0,0},NULL_NOFLAG},                             //~v55nR~//+vbdsR~
-    	{KEY_S_F3,0,0,0},NULL_NOFLAG2(FTF2DUPACMDFUNC)},           //+vbdsI~
+//  	{KEY_S_F3,0,0,0},NULL_NOFLAG},                             //~v55nR~//~vbdsR~
+    	{KEY_S_F3,0,0,0},NULL_NOFLAG2(FTF2DUPACMDFUNC)},           //~vbdsI~
 	{"Cancel"       ,"破棄"          ,
         FUNCID_CANCEL,                                          //~5204R~
         FTFFREECW,0,          //flag,char,                         //~v13bR~
@@ -1042,14 +1050,14 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
   	{"Select"       ,"選択"          ,                             //~v414R~
         FUNCID_SELECT,                                             //~v09wI~
 //      FTFDUPACMD|FTFCMDONLY,0,          //flag(alias duplicated),char,//~v0isR~//~vbd7R~
-//      FTFDUPACMD|FTFDUPACMDFUNC|FTFCMDONLY,0,          //flag(alias duplicated,handle dup acmd by a func),char,//~vbd7R~//+vbdsR~
-        FTFDUPACMD|               FTFCMDONLY,0,          //flag(alias duplicated,handle dup acmd by a func),char,//+vbdsI~
+//      FTFDUPACMD|FTFDUPACMDFUNC|FTFCMDONLY,0,          //flag(alias duplicated,handle dup acmd by a func),char,//~vbd7R~//~vbdsR~
+        FTFDUPACMD|               FTFCMDONLY,0,          //flag(alias duplicated,handle dup acmd by a func),char,//~vbdsI~
 //  	{0               ,0               ,func_select},           //~v75SR~//~vbd7R~
     	{0               ,func_select     ,func_select},           //~vbd7I~
 //  	"SEL","S",NULL_CMDONLY},                                   //~v71PR~
     	"SEL","S",                                                 //~v71PI~
-//      NULL_CMDONLY2(FTF2FIXEDVERB)},                             //~v71PI~//+vbdsR~
-        NULL_CMDONLY2(FTF2FIXEDVERB|FTF2DUPACMDFUNC)},             //+vbdsI~
+//      NULL_CMDONLY2(FTF2FIXEDVERB)},                             //~v71PI~//~vbdsR~
+        NULL_CMDONLY2(FTF2FIXEDVERB|FTF2DUPACMDFUNC)},             //~vbdsI~
   	{"Select-Text"       ,"選択-テキスト"          ,               //~v50GI~
         FUNCID_SELECTTEXT,                                         //~v50GI~
         FTFCMDONLY,0,          //flag(alias duplicated),char,      //~v50GI~

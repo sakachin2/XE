@@ -1,8 +1,9 @@
-//*CID://+vba2R~:                             update#=  519;       //~vb50R~//~vba2R~
+//*CID://+vbe0R~:                             update#=  520;       //+vbe0R~
 //*************************************************************
 //*xekbchk.c                                                       //~0924R~//~van6R~
 //*	kbd scan/char chk                                              //~van6R~
 //*************************************************************
+//vbe0:171231 add function to search xml tag pair by A+/           //+vbe0I~
 //vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I~
 //vb50:160827 accept S+A/C+extended key                            //~vb50I~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
@@ -1893,5 +1894,6 @@ int func_findPSF(PUCLIENTWE Ppcw){return 0;}                       //~vbCBR~
 int func_displayPS(PUCLIENTWE Ppcw){return 0;}                     //~vbCBI~
 int func_revfindPSP(PUCLIENTWE Ppcw){return 0;}                    //~vb50I~
 int func_revfindPSF(PUCLIENTWE Ppcw){return 0;}                    //~vb50I~
+int func_xmlsrch(PUCLIENTWE Ppcw){return 0;}                       //+vbe0I~
 char *funcsp_search(int Popt,char *Ppname){return 0;}              //~vba2I~
 #endif//UTF8SUPPH                                                  //~va50I~

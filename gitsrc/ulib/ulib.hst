@@ -1,3 +1,5 @@
+//v6P0:171223 (Bug:WinConsole)errmsg corrupted when ddfmt contains <0x20
+//            uviom.c
 *** update history ******************************************************************
 //*********  20171130 v129Dj update     ****************
 //v6N1:171203 (Bug)chk by xuerpck

@@ -1,3 +1,5 @@
+//vbe0:171231 add function to search xml tag pair by A+/
+//            xefcmd24.c xefunc.h xefunct.c xekbchk.c
 //*********  20171130 v129Dj/v129De         updated   ****************
 //vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg
 //            xefunc.c/h xefunct.c

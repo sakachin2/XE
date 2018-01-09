@@ -12,15 +12,23 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-<SPAN STYLE="color:#000000;font-size:12pt;">    ..Parenthesis, #if, &quot;/*&quot; comment pair search
+<SPAN STYLE="color:#000000;font-size:12pt;">    .Parenthesis, #if, "/*" comment and XML tag pair search
+
       C has 3 parenthesis notation (,[ and {.
       It is hard to search pair in deep nest.
-      &quot;Alt+.&quot; support it,&quot;Alt+,&quot; search except excluded line.
+      Alt+"." support it,Alt+"," search except excluded line.
       To ignore comment line,exclude those lines and use &quot;Alt+,&quot;.
       This function support other pairing of &lt;,&gt; and /*,*/.
       The corresponding of same nest level of #if/#ifdef/#ifndef/#else
       /#endif/#elif is also searched.
       Move cursor on the parenthesis,# etc.,then hit key.
+
+      XML tag pair search
+        .Default shortcut key is Alt+"/"
+        .Use shortcut key on "&lt;" or "&gt;"
+        .Comment portion(from "&lt;!--" to "--&gt;") is ignored
+         and recognize nested tag.
+         It is convenient to correct html automation tool generated.
 </SPAN></PRE>
 </BODY>
 </HTML>

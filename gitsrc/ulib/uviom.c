@@ -1,5 +1,6 @@
-//*CID://+v6L4R~:                             update#= 2015;       //~v6L4R~
+//*CID://+v6P0R~:                             update#= 2022;       //~v6P0R~
 //*************************************************************
+//v6P0:171223 (Bug:WinConsole)errmsg corrupted when ddfmt contains <0x20//~v6P0I~
 //v6L4:170711 dbcs errmsg corrupted,try outputcharcterw for outputw//~v6L4I~
 //v6K7:170327 (LNX)compiler warning;wcwidth not defined            //~v6K7I~
 //            wchar.h is included from stdio.h and features.h #undef __USE_XOPEN//~v6K7I~
@@ -1786,14 +1787,18 @@ int uviowrtcellW1(int Popt,PCHAR_INFO Ppchi,int Plen,UCHAR *Ppdbcs,COORD Psrcbox
     {                                                              //~v5n8I~
     	ch=pchi->Char.AsciiChar;                                   //~v5n8R~
         if (ch==0x1b)                                              //~v5n8I~
+          if (!m2uopt)	//of locale string                         //+v6P0R~
+          {                                                        //~v6P0I~
 //      	escsw=1;                                               //~v5n8I~//~v65iR~
         	escsw|=1;                                              //~v65iR~
+          }                                                        //~v6P0I~
 #ifdef UTF8UCS2                                                    //~v640I~
         if (!ch)                                                   //~v640I~
         	if (!*pdbcs)	//sbcs                                 //~v640I~
                 ch=' ';                                            //~v640I~
 #endif                                                             //~v640I~
-		if (ch<0x20)                                               //~v65iM~
+//  	if (ch<0x20)                                               //~v65iM~//~v6P0R~
+    	if (ch<0x20 && !m2uopt)	//of locale string                 //+v6P0R~
         	escsw|=2;                                              //~v65iM~
         else                                                       //~v65iI~
         if (ch>=0x80)                                   //~v62mI~  //~v62BR~
@@ -1806,7 +1811,8 @@ int uviowrtcellW1(int Popt,PCHAR_INFO Ppchi,int Plen,UCHAR *Ppdbcs,COORD Psrcbox
                 }                                                  //~v62BI~
     	*pdata++=ch;                                               //~v5n8I~
 #ifndef JJJ                                                        //~v6EaR~
-	  if (ch<0x20 && noligid)                                      //~v6EaR~
+//    if (ch<0x20 && noligid)                                      //~v6EaR~//~v6P0R~
+      if (ch<0x20 && noligid && !m2uopt)	//of locale string     //+v6P0R~
     	*pattr++=(pchi->Attributes & 0xf0)|ATTR_CTLCHAR_FG;        //~v6EaR~
       else                                                         //~v6EaR~
 #endif                                                             //~v6EaR~
@@ -5146,7 +5152,7 @@ int uviowrtcellW1_Errmsg(int Popt,PWUCS Ppucs,int Pucsctr,char *Ppdbcs,USHORT *P
     USHORT *pattr,attr;                                            //~v6L4R~
     COORD tgtpos;                                                  //~v6L4I~
 //*******************************                                  //~v6L4I~
-	UTRACEP("%s:ucsctr=%d,len=%d\n",UTT,Pucsctr,Plen);             //+v6L4R~
+	UTRACEP("%s:ucsctr=%d,len=%d\n",UTT,Pucsctr,Plen);             //~v6L4R~
 	pattr=Ppattr;                                                  //~v6L4I~
 	attr=*pattr++;                                                 //~v6L4I~
 	for (ii=1;ii<Plen;ii++)                                        //~v6L4I~
@@ -5157,7 +5163,7 @@ int uviowrtcellW1_Errmsg(int Popt,PWUCS Ppucs,int Pucsctr,char *Ppdbcs,USHORT *P
     tgtpos.X=Pptgtrect->Left;                                      //~v6L4I~
     tgtpos.Y=Pptgtrect->Top;                                       //~v6L4I~
     uviom_clearlineW(UVIOMCLO_ATTRFILL,0/*data*/,&attr,Plen,tgtpos);//~v6L4I~
-	return uvioWriteConsoleOutputCharacterW(Shconout,Ppucs,Pucsctr,tgtpos,&wrtlen)==0;//+v6L4R~
+	return uvioWriteConsoleOutputCharacterW(Shconout,Ppucs,Pucsctr,tgtpos,&wrtlen)==0;//~v6L4R~
 }//uviowrtcellW1_Errmsg                                            //~v6L4I~
 //*******************************************************          //~v6E8I~
 //*draw line by one OutputCharacterW if attr indicate printable,else Ligature//~v6E8I~

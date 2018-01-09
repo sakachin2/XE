@@ -1,9 +1,10 @@
-//*CID://+vb86R~:                             update#=  408;       //+vb86R~
+//*CID://+vbe0R~:                             update#=  507;       //+vbe0R~
 //*************************************************************
 //*xefcmd24.c                                                      //~v42hR~
 //*  same,xx,ppsrch                                                //~v42hR~
 //****************************************************************
-//vb86:170216 display cmdline ctr excluded(fcmd:x,xx; lcmd x)      //+vb86I~
+//vbe0:171231 add function to search xml tag pair                  //~vbe0I~
+//vb86:170216 display cmdline ctr excluded(fcmd:x,xx; lcmd x)      //~vb86I~
 //vb2E:160229 LNX64 compiler warning                               //~vb2EI~
 //vb2D:160221 LNX compiler warning                                 //~vb2DI~
 //vb2C:160221 W32 compiler warning                                 //~vb2CI~
@@ -107,6 +108,29 @@
 #endif                                                             //~va20I~
 #include "xeebc.h"                                                 //~va50I~
 //*******************************************************
+#define MAX_ELEMENT_NAME 128                                       //~vbe0M~
+#define XML_VALID_CHAR       "-_."                                 //~vbe0M~
+                                                                   //~vbe0I~
+#define XML_TAG1             '<'     //<element>...                //~vbe0I~
+#define XML_TAG2             '>'     //                            //~vbe0I~
+#define XML_TAGT             '/'     //<elemennt ... />, </element>//~vbe0R~
+#define XML_CMT1             '!'     //<elemennt ... />, </element>//~vbe0I~
+#define XML_CMT2             '-'     //<elemennt ... />, </element>//~vbe0I~
+#define XML_OTH1             '?'     //                            //~vbe0I~
+#define XML_DELM_NAME      "> \t"                                  //~vbe0R~
+                                                                   //~vbe0I~
+#define XMLT_START           1       //<xxx>                       //~vbe0I~
+#define XMLT_STARTATTR       2       //<xxx ... />                 //~vbe0I~
+#define XMLT_STARTCMT        3       //<!--                        //~vbe0I~
+#define XMLT_STARTOTHER      4       //<! but not <--, <?          //~vbe0I~
+#define XMLT_END             5       //</xxx>                      //~vbe0I~
+#define XMLT_CLOSEATTR       6       //"/>" ,csr is on ">"         //~vbe0R~
+#define XMLT_ENDCMT          7       // -->                        //~vbe0I~
+#define XMLT_CLOSEOTHER      8       //">" but not "/>"            //~vbe0I~
+#define XMLT_CLOSEATTR2      9       //"/>" ,csr is on "/"         //~vbe0I~
+#define XMLT_ENDCMT2        10       //"-->" ,csr is on 1st "-"    //~vbe0I~
+#define XMLT_ENDCMT3        11       //"-->" ,csr is on 2nd "-"    //~vbe0I~
+                                                                   //~vbe0I~
 #define MACTR          6                                           //~v45tI~
 #define MAC_IF         0                                           //~v45tI~
 #define MAC_IFDEF      1                                           //~v45tI~
@@ -567,7 +591,7 @@ int func_xx_file(PUCLIENTWE Ppcw)                                  //~v40LI~
     UPCTRREQ(pfh);                                                 //~v40LI~
     uerrmsg("X=%ld,NX=%ld",0,                                      //~v40LI~
         		xctr,nxctr);                                       //~v40LI~
-    lcmdexcludedmsg(LCXMO_MSGCAT,pfh);                             //+vb86I~
+    lcmdexcludedmsg(LCXMO_MSGCAT,pfh);                             //~vb86I~
 	return 0;                                                      //~v40LI~
 }//func_xx_file                                                    //~v40LI~
 //**************************************************************** //~v42wI~
@@ -2311,3 +2335,767 @@ int ppsrchword(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Pswcase,int Pdes
     Ssrchwordplh=plh;                                              //~v77EI~
     return 0;                                                      //~v77ER~
 }//ppsrchword                                                      //~v77ER~
+//*************************************************************************//~vbe0I~
+int isValidElementName(int Popt,int Pch,int Pdbcsid,int Ppos)      //~vbe0R~
+{                                                                  //~vbe0I~
+	if (Pdbcsid)                                                   //~vbe0I~
+    	return 1;                                                  //~vbe0R~
+	if (!Ppos)                                                     //~vbe0I~
+    	if (Pch>='0' && Pch<='9')                                  //~vbe0I~
+        	return 0;	//err                                      //~vbe0I~
+    if (strchr(XML_VALID_CHAR,Pch))                                //~vbe0R~
+    	return 1;                                                  //~vbe0I~
+    if (ispunct(Pch)) //                                           //~vbe0I~
+    	return 0;                                                  //~vbe0I~
+    return 1;                                                      //~vbe0I~
+}//isValidElementName                                              //~vbe0R~
+//*************************************************************************//~vbe0I~
+//*Poffs:pos of cursor                                             //~vbe0I~
+//*return XMLT_xx,0 if err                                         //~vbe0I~
+//*************************************************************************//~vbe0I~
+int getxmltype(int Popt,char *Pdata,char *Pdbcs,int Plen,int Poffs,char *Pname,char *Pnamedbcs,//~vbe0R~
+					int Pbuffsz,int *Ppposnext,int *Ppnamelen)     //~vbe0I~
+{                                                                  //~vbe0I~
+	int type=0,ch,ctr=0,namepos=0,namelen=0,posnext;               //~vbe0R~
+    char *pc,*pc0,*pce,*pcd;                                       //~vbe0I~
+//******************************************                       //~vbe0I~
+	if (Poffs>=Plen || Poffs<0)                                    //~vbe0I~
+    	return 0;                                                  //~vbe0I~
+	pc0=Pdata+Poffs;                                               //~vbe0I~
+	pce=Pdata+Plen;                                                //~vbe0I~
+    pcd=Pdbcs+Poffs;                                               //~vbe0I~
+    pc=pc0;                                                        //~vbe0I~
+    if (*pcd)       //dbcs                                         //~vbe0I~
+    	return 0;                                                  //~vbe0I~
+	ch=*pc0;                                                       //~vbe0I~
+    switch(ch)                                                     //~vbe0I~
+    {                                                              //~vbe0I~
+    case XML_TAG1:  //"<"                                          //~vbe0I~
+    	pc++;                                                      //~vbe0I~
+        pcd++;                                                     //~vbe0I~
+        if (pc>=pce)                                               //~vbe0I~
+        	return 0;                                              //~vbe0I~
+        ch=*pc;                                                    //~vbe0I~
+        if (!*pcd)                                                 //~vbe0I~
+        {                                                          //~vbe0I~
+        	switch(ch)                                             //~vbe0I~
+            {                                                      //~vbe0I~
+            case XML_TAGT:      // "</"                            //~vbe0I~
+            	type=XMLT_END;                                     //~vbe0I~
+                pc++;                                              //~vbe0I~
+                pcd++;                                             //~vbe0I~
+                break;                                             //~vbe0I~
+	        case XML_CMT1:       // "<!"                           //~vbe0I~
+            	if (pc+1<pce                                       //~vbe0I~
+            	&&  *(pc+1)==XML_CMT2 && !*(pcd+1) //<!-           //~vbe0I~
+                )                                                  //~vbe0I~
+                {                                                  //~vbe0I~
+            		if (pc+2<pce                                   //~vbe0I~
+	            	&&  *(pc+2)==XML_CMT2 && !*(pcd+2)  //<!--     //~vbe0I~
+    	            )                                              //~vbe0I~
+                    {                                              //~vbe0I~
+	            		type=XMLT_STARTCMT;                        //~vbe0I~
+                   		pc+=2;                                     //~vbe0I~
+                    	pcd+=2;                                    //~vbe0I~
+                    	break;                                     //~vbe0I~
+                    }                                              //~vbe0I~
+		        	return 0;                                      //~vbe0I~
+				}                                                  //~vbe0I~
+                else                                               //~vbe0I~
+                {                                                  //~vbe0I~
+                	if (!isValidElementName(0,*(pc+1),*(pcd+1),0)) //~vbe0R~
+                    	return 0;                                  //~vbe0I~
+                }                                                  //~vbe0I~
+	            type=XMLT_STARTOTHER;                              //~vbe0I~
+                break;                                             //~vbe0I~
+	        case XML_OTH1:       // "<?"                           //~vbe0I~
+            	type=XMLT_STARTOTHER;                              //~vbe0I~
+                break;                                             //~vbe0I~
+            default:                                               //~vbe0I~
+                if (ch>='0' && ch<='9')                            //~vbe0I~
+                	return 0;                                      //~vbe0I~
+            	type=XMLT_START;                                   //~vbe0I~
+            }                                                      //~vbe0I~
+        }                                                          //~vbe0I~
+        else                                                       //~vbe0I~
+            type=XMLT_START;                                       //~vbe0I~
+        switch(type)                                               //~vbe0I~
+        {                                                          //~vbe0I~
+        case XMLT_STARTCMT:                                        //~vbe0I~
+        case XMLT_STARTOTHER:                                      //~vbe0I~
+        	break;                                                 //~vbe0I~
+        default:    //START(<xxx) or END(</)                       //~vbe0I~
+            namepos=PTRDIFF(pc,Pdata);                             //~vbe0I~
+            for (ctr=0;pc<pce;pc++)                                //~vbe0I~
+            {                                                      //~vbe0I~
+                ch=*pc;                                            //~vbe0I~
+                pcd=Pdbcs+PTRDIFF(pc,Pdata);                       //~vbe0I~
+                if (ch==XML_TAG2 && !*pcd)    //">"                //~vbe0I~
+                    break;                                         //~vbe0I~
+                if (ch==' ' || ch=='\t')    //"<xxx ...>"          //~vbe0I~
+                {                                                  //~vbe0I~
+                	if (type==XMLT_END)                            //~vbe0I~
+                    	return 0;                                  //~vbe0I~
+                    type=XMLT_STARTATTR;                           //~vbe0I~
+                    break;                                         //~vbe0I~
+                }                                                  //~vbe0I~
+                if (!isValidElementName(0,ch,*pcd,ctr))            //~vbe0I~
+                    return 0;                                      //~vbe0I~
+                ctr++;                                             //~vbe0I~
+        	}                                                      //~vbe0I~
+            namelen=ctr;                                           //~vbe0I~
+        }                                                          //~vbe0I~
+    	posnext=PTRDIFF(pc,Pdata)+1;                               //~vbe0I~
+        break;                                                     //~vbe0I~
+    case XML_TAG2:  //">"                                          //~vbe0I~
+    	type=XMLT_CLOSEOTHER;                                      //~vbe0I~
+    	if (pc>Pdata)                                              //~vbe0I~
+        {                                                          //~vbe0I~
+    		pc--;                                                  //~vbe0I~
+        	pcd--;                                                 //~vbe0I~
+        	ch=*pc;                                                //~vbe0I~
+            if (!*pcd)                                             //~vbe0I~
+            {                                                      //~vbe0I~
+                switch(ch)                                         //~vbe0I~
+                {                                                  //~vbe0I~
+                case XML_TAGT:   //     "/>"                       //~vbe0I~
+                	type=XMLT_CLOSEATTR;                           //~vbe0I~
+                    break;                                         //~vbe0I~
+                case XML_CMT2:   //     "->"                       //~vbe0I~
+                	if (pc>Pdata)                                  //~vbe0I~
+                    {                                              //~vbe0I~
+                    	pc--;                                      //~vbe0I~
+                        pcd--;                                     //~vbe0I~
+                        if (*pc==XML_CMT2 && !*pcd)                //~vbe0I~
+                        {                                          //~vbe0I~
+                        	type=XMLT_ENDCMT;                      //~vbe0I~
+                            break;                                 //~vbe0I~
+                        }                                          //~vbe0I~
+                    }                                              //~vbe0I~
+                    return 0;                                      //~vbe0R~
+                }                                                  //~vbe0I~
+            }                                                      //~vbe0I~
+        }                                                          //~vbe0I~
+    	posnext=PTRDIFF(pc,Pdata);                                 //~vbe0I~
+        break;                                                     //~vbe0I~
+    case XML_TAGT:  //"/"                                          //~vbe0I~
+    	if (pc+1<pce)                                              //~vbe0I~
+        {                                                          //~vbe0I~
+            if (*(pc+1)==XML_TAG2 && !*(pcd+1)) // "/>"            //~vbe0R~
+            {                                                      //~vbe0I~
+            	type=XMLT_CLOSEATTR2;                              //~vbe0R~
+		    	posnext=PTRDIFF(pc,Pdata);                         //~vbe0I~
+                break;                                             //~vbe0I~
+            }                                                      //~vbe0I~
+        }                                                          //~vbe0I~
+        return 0;                                                  //~vbe0I~
+    case XML_CMT2:  //"-"       allow cursor on "-->" to easy back to "<!--"//~vbe0I~
+    	if (pc+2<pce)                                              //~vbe0I~
+        {                                                          //~vbe0I~
+            if (*(pc+1)==XML_CMT2 && !*(pcd+1)                     //~vbe0I~
+            &&  *(pc+2)==XML_TAG2 && !*(pcd+2)                     //~vbe0I~
+            )                                                      //~vbe0I~
+            {                                                      //~vbe0I~
+            	type=XMLT_ENDCMT2;                                 //~vbe0I~
+		    	posnext=PTRDIFF(pc,Pdata);                         //~vbe0I~
+                break;                                             //~vbe0I~
+            }                                                      //~vbe0I~
+        }                                                          //~vbe0I~
+    	if (pc+1<pce && pc>Pdata)                                  //~vbe0I~
+        {                                                          //~vbe0I~
+            if (*(pc-1)==XML_CMT2 && !*(pcd+1)   //"-"             //~vbe0I~
+            &&  *(pc+1)==XML_TAG2 && !*(pcd+1)   //">"             //~vbe0I~
+            )                                                      //~vbe0I~
+            {                                                      //~vbe0I~
+            	type=XMLT_ENDCMT3;                                 //~vbe0I~
+		    	posnext=PTRDIFF(pc,Pdata)-1;                       //~vbe0I~
+                break;                                             //~vbe0I~
+            }                                                      //~vbe0I~
+        }                                                          //~vbe0I~
+        return 0;                                                  //~vbe0I~
+    default:                                                       //~vbe0I~
+    	return 0;                                                  //~vbe0I~
+    }                                                              //~vbe0I~
+    if (namepos)                                                   //~vbe0I~
+    {                                                              //~vbe0I~
+    	if (namelen>=Pbuffsz)                                      //~vbe0I~
+        	namelen=Pbuffsz-1;                                     //~vbe0I~
+        UmemcpyZ(Pname,Pdata+namepos,(size_t)namelen);             //~vbe0R~
+        UmemcpyZ(Pnamedbcs,Pdbcs+namepos,(size_t)namelen);         //~vbe0R~
+    }                                                              //~vbe0I~
+    *Ppposnext=posnext;                                            //~vbe0I~
+    *Ppnamelen=namelen;                                            //~vbe0I~
+    return type;                                                   //~vbe0I~
+}//getxmltype                                                      //~vbe0I~
+//*************************************************************************//~vbe0I~
+int xml_gettypename(int Popt,char *Pdata,char *Pdbcs,int Plen,int Poffs,//~vbe0I~
+		char *Pname,char *Pnamedbcs,int Pbuffsz,int *Ppposnext,int *Ppnamelen,int *Ppdest,//~vbe0R~
+        int *Ppsrcpos,int *Ppsrclen,char *Psrchword)               //~vbe0I~
+{                                                                  //~vbe0I~
+	int type,namelen=0,nextpos,dest=0,srcpos=0,srclen=0;           //~vbe0I~
+//******************************************                       //~vbe0I~
+    type=getxmltype(Popt,Pdata,Pdbcs,Plen,Poffs,Pname,Pnamedbcs,Pbuffsz,&nextpos,&namelen);   //word following//~vbe0R~
+    *Psrchword=0;                                                  //~vbe0I~
+    switch (type)                                                  //~vbe0I~
+    {                                                              //~vbe0I~
+	case XMLT_START:      //1:<xxx> ,srch  </xxx> forward          //~vbe0I~
+    	srcpos=Poffs;                                              //~vbe0I~
+    	srclen=namelen+2;                                          //~vbe0I~
+        sprintf(Psrchword,"</%s>",Pname);                          //~vbe0I~
+        dest=1;                                                    //~vbe0I~
+        break;                                                     //~vbe0I~
+	case XMLT_STARTATTR:  //2:<xxx ...> , srch </xxx> or </> forward//~vbe0I~
+    	srcpos=Poffs;                                              //~vbe0I~
+    	srclen=namelen+1;                                          //~vbe0I~
+        sprintf(Psrchword,"</%s>",Pname);  //for errmsg            //~vbe0R~
+        dest=1;                                                    //~vbe0I~
+        break;                                                     //~vbe0I~
+	case XMLT_STARTCMT:   //3:"<!--"   , srch "-->" forward        //~vbe0I~
+    	srcpos=Poffs;                                              //~vbe0I~
+    	srclen=4;                                                  //~vbe0I~
+        strcpy(Psrchword,"-->");                                   //~vbe0I~
+        dest=1;                                                    //~vbe0I~
+        break;                                                     //~vbe0I~
+	case XMLT_STARTOTHER:  //4:     //<! but not <--, <? ,srch ">" forward//~vbe0R~
+    	srcpos=Poffs;                                              //~vbe0I~
+    	srclen=2;                                                  //~vbe0I~
+        strcpy(Psrchword,">");                                     //~vbe0I~
+        dest=1;                                                    //~vbe0I~
+        break;                                                     //~vbe0I~
+	case XMLT_END:        //5:</xxx> , srch <xxx> or <xxx ... backword//~vbe0R~
+    	srcpos=Poffs;                                              //~vbe0I~
+    	srclen=namelen+3;                                          //~vbe0I~
+        sprintf(Psrchword,"<%s",Pname); //for errmsg,srch is done by name//~vbe0R~
+        dest=-1;                                                   //~vbe0I~
+        nextpos=srcpos;                                            //~vbe0I~
+        break;                                                     //~vbe0I~
+	case XMLT_CLOSEATTR:  //6:"/>"  csr on  ">" , srch "<" backward//~vbe0R~
+	    srcpos=Poffs-1;                                            //~vbe0I~
+    	srclen=2;                                                  //~vbe0I~
+        strcpy(Psrchword,"<");                                     //~vbe0I~
+        dest=-1;                                                   //~vbe0I~
+        nextpos=srcpos;                                            //~vbe0I~
+        break;                                                     //~vbe0I~
+	case XMLT_CLOSEATTR2: //9:"/>"  csr on "/"  , srch "<" backward//~vbe0I~
+	    srcpos=Poffs;                                              //~vbe0I~
+    	srclen=2;                                                  //~vbe0I~
+        strcpy(Psrchword,"<");                                     //~vbe0I~
+        dest=-1;                                                   //~vbe0I~
+        nextpos=srcpos;                                            //~vbe0I~
+        type=XMLT_CLOSEATTR;                                       //~vbe0I~
+        break;                                                     //~vbe0I~
+	case XMLT_ENDCMT:     //7:"-->"   , srch "<!--" backward       //~vbe0R~
+	    srcpos=Poffs-2;                                            //~vbe0I~
+    	srclen=3;                                                  //~vbe0I~
+        strcpy(Psrchword,"<!--");                                  //~vbe0I~
+        dest=-1;                                                   //~vbe0I~
+        nextpos=srcpos;                                            //~vbe0I~
+        break;                                                     //~vbe0I~
+	case XMLT_ENDCMT2:     //10:"-->"  csr on 1st "-" , srch "<!--" backward//~vbe0I~
+	    srcpos=Poffs;                                              //~vbe0I~
+    	srclen=3;                                                  //~vbe0I~
+        strcpy(Psrchword,"<!--");                                  //~vbe0I~
+        dest=-1;                                                   //~vbe0I~
+        nextpos=srcpos;                                            //~vbe0I~
+        type=XMLT_ENDCMT;                                          //~vbe0I~
+        break;                                                     //~vbe0I~
+	case XMLT_ENDCMT3:     //10:"-->"  csr on 2nd "-" , srch "<!--" backward//~vbe0R~
+	    srcpos=Poffs-1;                                            //~vbe0I~
+    	srclen=3;                                                  //~vbe0I~
+        strcpy(Psrchword,"<!--");                                  //~vbe0I~
+        dest=-1;                                                   //~vbe0I~
+        nextpos=srcpos;                                            //~vbe0I~
+        type=XMLT_ENDCMT;                                          //~vbe0I~
+        break;                                                     //~vbe0I~
+	case XMLT_CLOSEOTHER:  //8:       //">" but not "/>",srch "<" backward//~vbe0R~
+	    srcpos=Poffs;                                              //~vbe0I~
+    	srclen=1;                                                  //~vbe0I~
+        strcpy(Psrchword,"<");                                     //~vbe0I~
+        dest=-1;                                                   //~vbe0I~
+        nextpos=srcpos;                                            //~vbe0I~
+        break;                                                     //~vbe0I~
+    }                                                              //~vbe0I~
+    *Ppdest=dest;                                                  //~vbe0I~
+    *Ppposnext=nextpos;                                            //~vbe0I~
+    *Ppnamelen=namelen;                                            //~vbe0I~
+    *Ppsrcpos=srcpos;                                              //~vbe0I~
+    *Ppsrclen=srclen;                                              //~vbe0I~
+    return type;                                                   //~vbe0I~
+}//xml_gettypename                                                 //~vbe0I~
+//**************************************************************** //~vbe0M~
+// xmlsrchword                                                     //~vbe0R~
+// xml keyword search                                              //~vbe0I~
+//**************************************************************** //~vbe0M~
+int xmlsrchwordsub(int Popt,PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Pdest,//~vbe0R~
+		char *Psrch,char *Psrchdbcs,int Psrchlen)                  //~vbe0R~
+{                                                                  //~vbe0M~
+	int offs,rc,len;                                               //~vbe0R~
+    char *pc,*pc2;                                                 //~vbe0R~
+    PULINEH plh,plh0;                                              //~vbe0I~
+	int swutf8file;                                                //~vbe0I~
+//**************************************                           //~vbe0I~
+	plh=plh0=*Ppplh;                                               //~vbe0I~
+	swutf8file=PLHUTF8MODE(plh);                                   //~vbe0I~
+    offs=*Ppoffset;                                                //~vbe0I~
+	if (Pdest<0)                                                   //~vbe0I~
+	{                                                              //~vbe0I~
+        for (;plh;plh=UGETQPREV(plh))                              //~vbe0I~
+        {                                                          //~vbe0I~
+            if (plh->ULHtype!=ULHTDATA)                            //~vbe0I~
+                continue;                                          //~vbe0I~
+	    	if (!plh->ULHdbcs)                                     //~vbe0I~
+            {                                                      //~vbe0I~
+            	rc=filechktabdbcs(plh); //expand tab               //~vbe0I~
+            	if (rc==UALLOC_FAILED)                             //~vbe0I~
+                	return UALLOC_FAILED;                          //~vbe0I~
+            }                                                      //~vbe0I~
+            pc=plh->ULHdata;                                       //~vbe0I~
+            if (plh==plh0)                                         //~vbe0I~
+                len=offs;                                          //~vbe0I~
+            else                                                   //~vbe0I~
+                len=plh->ULHlen;                                   //~vbe0I~
+            pc2=UTF_umemrmem(swutf8file,pc,plh->ULHdbcs,Psrch,Psrchdbcs,len,Psrchlen);//~vbe0R~
+            if (pc2)                                               //~vbe0R~
+            {                                                      //~vbe0I~
+                offs=PTRDIFF(pc2,pc);                              //~vbe0R~
+                break;                                             //~vbe0R~
+            }                                                      //~vbe0I~
+        }//all plh                                                 //~vbe0I~
+	}//prev                                                        //~vbe0I~
+	else			//forward                                      //~vbe0I~
+	{				//next                                         //~vbe0I~
+        for (;plh;plh=UGETQNEXT(plh),offs=0)                       //~vbe0I~
+        {                                                          //~vbe0I~
+            if (plh->ULHtype!=ULHTDATA)                            //~vbe0I~
+                continue;                                          //~vbe0I~
+	    	if (!plh->ULHdbcs)                                     //~vbe0I~
+            {                                                      //~vbe0I~
+            	rc=filechktabdbcs(plh); //expand tab               //~vbe0I~
+            	if (rc==UALLOC_FAILED)                             //~vbe0I~
+                	return UALLOC_FAILED;                          //~vbe0I~
+            }                                                      //~vbe0I~
+            pc=plh->ULHdata+offs;                                  //~vbe0R~
+            len=plh->ULHlen-offs;                                  //~vbe0R~
+          	if (len>0)  //for safety                               //~vbe0R~
+            {                                                      //~vbe0R~
+	            pc2=UTF_umemmem(swutf8file,pc,plh->ULHdbcs+offs,Psrch,Psrchdbcs,len,Psrchlen);//~vbe0R~
+                if (pc2)                                           //~vbe0R~
+                {                                                  //~vbe0I~
+        	    	offs+=PTRDIFF(pc2,pc);                         //~vbe0R~
+                	break;                                         //~vbe0I~
+                }                                                  //~vbe0I~
+            }                                                      //~vbe0I~
+        }//all plh                                                 //~vbe0I~
+    }//prev/next                                                   //~vbe0I~
+    if (!plh)                                                      //~vbe0I~
+    	return 4;                                                  //~vbe0I~
+    *Ppplh=plh;                                                    //~vbe0I~
+    *Ppoffset=offs;                                                //~vbe0I~
+    return 0;                                                      //~vbe0I~
+}//xmlsrchwordsub                                                  //~vbe0R~
+//**************************************************************** //~vbe0I~
+//*rc 0:not in comment,1:incomment                                 //~vbe0I~
+//*set startPLH if dest =-1,else endPLH                            //~vbe0I~
+//*output is optional                                              //~vbe0I~
+//**************************************************************** //~vbe0I~
+int xmlchkcomment(int Popt,PUCLIENTWE Ppcw,PULINEH Pplh,int Poffs,int Pdest,PULINEH *Ppplh,int *Ppoffs)//~vbe0I~
+{                                                                  //~vbe0I~
+	int offs1,offs2,rc;                                            //~vbe0R~
+    PULINEH plh1,plh2;                                             //~vbe0R~
+//**************************************                           //~vbe0I~
+    plh1=Pplh;                                                     //~vbe0I~
+    offs1=Poffs;                                                   //~vbe0I~
+    rc=xmlsrchwordsub(Popt,Ppcw,&plh1,&offs1,-1,"<!--",0/*dbcs*/,4);//~vbe0R~
+    if (rc)                                                        //~vbe0I~
+    	return 0;                                                  //~vbe0I~
+    plh2=plh1;                                                     //~vbe0R~
+    offs2=offs1+4;                                                 //~vbe0R~
+    rc=xmlsrchwordsub(Popt,Ppcw,&plh2,&offs2,1,"-->",0/*dbcs*/,3); //~vbe0R~
+    if (rc)                                                        //~vbe0I~
+    	return 0;	//no cmt terminator,in comment                 //~vbe0R~
+    if (plh2->ULHlinenor<Pplh->ULHlinenor)   //cmd end after current plh//~vbe0I~
+    	return 0;                                                  //~vbe0I~
+    if (plh2->ULHlinenor==Pplh->ULHlinenor && plh2->ULHsuffix<Pplh->ULHsuffix)//~vbe0I~
+    	return 0;                                                  //~vbe0I~
+    if (plh2->ULHlinenor==Pplh->ULHlinenor && plh2->ULHsuffix==Pplh->ULHsuffix && offs2<Poffs)//~vbe0R~
+    	return 0;                                                  //~vbe0I~
+    if (Pdest<0)                                                   //~vbe0R~
+    {                                                              //~vbe0R~
+	    if (Ppplh)                                                 //~vbe0I~
+            *Ppplh=plh1;                                           //~vbe0R~
+	    if (Ppoffs)                                                //~vbe0I~
+            *Ppoffs=offs1;                                         //~vbe0R~
+    }                                                              //~vbe0R~
+    else                                                           //~vbe0R~
+    {                                                              //~vbe0R~
+	    if (Ppplh)                                                 //~vbe0I~
+            *Ppplh=plh2;                                           //~vbe0R~
+	    if (Ppoffs)                                                //~vbe0I~
+            *Ppoffs=offs2+3;                                       //~vbe0R~
+    }                                                              //~vbe0R~
+    return 1;                                                      //~vbe0I~
+}//xmlchkcomment                                                   //~vbe0I~
+//**************************************************************** //~vbe0I~
+// xmlsrchtagnest                                                  //~vbe0R~
+//    case XMLT_STARTOTHER:  //4:     <! but not <!--, <? ,srch ">" forward//~vbe0I~
+//    case XMLT_CLOSEATTR:   //6:     "/>"   , srch "<" backword   //~vbe0I~
+//    case XMLT_CLOSEOTHER:  //8:     ">" but not   "/>",srch "<" back srch//~vbe0I~
+//rc:0 found,3:in comment,4:notfound                               //~vbe0I~
+//**************************************************************** //~vbe0I~
+int xmlsrchtagnest(int Popt,PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Pdest,//~vbe0I~
+		int Ptype,int *Ppfoundlen)                                 //~vbe0I~
+{                                                                  //~vbe0I~
+    int offs,offs2,offs3,rc,foundlen=0;                            //~vbe0R~
+    PULINEH plh,plh2,plh3;                                         //~vbe0I~
+//**************************************                           //~vbe0I~
+	plh=*Ppplh;                                                    //~vbe0I~
+	offs=*Ppoffset;                                                //~vbe0I~
+	plh=*Ppplh;                                                    //~vbe0I~
+	if (Pdest<0)        //  "/>" ,back srch "<" , ">" ,back srch "<"//~vbe0I~
+	{                                                              //~vbe0I~
+        for (;plh;)                                                //~vbe0I~
+        {                                                          //~vbe0I~
+            plh2=plh;                                              //~vbe0I~
+            offs2=offs;                                            //~vbe0I~
+            rc=xmlsrchwordsub(Popt,Ppcw,&plh2,&offs2,Pdest,"<",0/*dbcs*/,1);//~vbe0R~
+            if (rc)                                                //~vbe0I~
+                return 4;                                          //~vbe0I~
+	    	rc=xmlchkcomment(Popt,Ppcw,plh2,offs2,Pdest,&plh3,&offs3);//~vbe0I~
+            if (rc)                                                //~vbe0I~
+            {                                                      //~vbe0I~
+            	plh=plh3;                                          //~vbe0I~
+                offs=offs3;                                        //~vbe0I~
+                continue;                                          //~vbe0I~
+            }                                                      //~vbe0I~
+            plh=plh2;                                              //~vbe0I~
+            offs=offs2;                                            //~vbe0I~
+            foundlen=1;                                            //~vbe0I~
+            break;                                                 //~vbe0I~
+        }//nest loop                                               //~vbe0I~
+	}//prev                                                        //~vbe0I~
+	else			// <!xx, <? forward srch ">"                   //~vbe0I~
+	{                                                              //~vbe0I~
+        for (;plh;)                                                //~vbe0I~
+        {                                                          //~vbe0I~
+            plh2=plh;                                              //~vbe0I~
+            offs2=offs;                                            //~vbe0I~
+            rc=xmlsrchwordsub(Popt,Ppcw,&plh2,&offs2,Pdest,">",0/*dbcs*/,1);//~vbe0R~
+            if (rc)                                                //~vbe0I~
+                return 4;                                          //~vbe0I~
+            rc=xmlchkcomment(Popt,Ppcw,plh2,offs2,Pdest,&plh3,&offs3);//~vbe0I~
+            if (rc)                                                //~vbe0I~
+            {                                                      //~vbe0I~
+                plh=plh3;                                          //~vbe0I~
+                offs=offs3;                                        //~vbe0I~
+                continue;                                          //~vbe0I~
+            }                                                      //~vbe0I~
+            plh=plh2;                                              //~vbe0I~
+            offs=offs2;                                            //~vbe0I~
+            foundlen=1;                                            //~vbe0I~
+            break;                                                 //~vbe0I~
+        }//nest loop                                               //~vbe0I~
+    }//prev/next                                                   //~vbe0I~
+    if (!plh)                                                      //~vbe0I~
+    	return 4;                                                  //~vbe0I~
+    *Ppplh=plh;                                                    //~vbe0I~
+    *Ppoffset=offs;                                                //~vbe0I~
+    *Ppfoundlen=foundlen;                                          //~vbe0I~
+    return 0;                                                      //~vbe0I~
+}//xmlsrchtagnest                                                  //~vbe0R~
+//**************************************************************** //~vbe0M~
+//rc:1 partial name,0 enclosed by punctuation                      //~vbe0M~
+//**************************************************************** //~vbe0M~
+int xmlchkpartialname(int Popt,PULINEH Pplh,int Poffs,int Pnamelen)//~vbe0I~
+{                                                                  //~vbe0M~
+	char *pc,*pcd;                                                 //~vbe0M~
+    int len,offs;                                                  //~vbe0R~
+//***********************                                          //~vbe0M~
+    pc=Pplh->ULHdata;                                              //~vbe0M~
+    pcd=Pplh->ULHdbcs;                                             //~vbe0M~
+    len=Pplh->ULHlen;                                              //~vbe0M~
+    offs=Poffs+Pnamelen;                                           //~vbe0I~
+    if (offs>0 && offs<len)                                        //~vbe0I~
+    {                                                              //~vbe0M~
+        if (*(pcd+offs)                                            //~vbe0M~
+		||  !strchr(XML_DELM_NAME,*(pc+offs))  //     "> \t"       //~vbe0I~
+        )                                                          //~vbe0M~
+        	return 1; //partial                                    //~vbe0M~
+    }                                                              //~vbe0M~
+    return 0;                                                      //~vbe0M~
+}//xmlchkpartialname                                               //~vbe0M~
+//**************************************************************** //~vbe0I~
+// xmlsrchwordnest                                                 //~vbe0I~
+//    case XMLT_START:      //1:<xxx> ,srch  </xxx> forward        //~vbe0I~
+//    case XMLT_STARTATTR:  //2:<xxx ...> , srch </xxx>            //~vbe0I~
+//    case XMLT_END:        //5:</xxx> , srch <xxx> backword       //~vbe0I~
+//rc:0 found,3:in comment,4:notfound                               //~vbe0I~
+//**************************************************************** //~vbe0I~
+int xmlsrchwordnest(int Popt,PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Pdest,//~vbe0I~
+		int Ptype,char *Pname,char *Pnamedbcs,int Pnamelen,char *Psrch,int Psrchlen,int *Ppfoundlen)//~vbe0R~
+{                                                                  //~vbe0I~
+    int offs,offs2,offs3,rc,foundlen=0,nestctr;                    //~vbe0R~
+    PULINEH plh,plh2,plh3;                                         //~vbe0R~
+//**************************************                           //~vbe0I~
+	plh=*Ppplh;                                                    //~vbe0R~
+	offs=*Ppoffset;                                                //~vbe0R~
+	plh=*Ppplh;                                                    //~vbe0I~
+	if (Pdest<0)        // </xxx>  :XMLT_END                       //~vbe0R~
+	{                                                              //~vbe0I~
+        nestctr=1;                                                 //~vbe0R~
+        for (;plh;)                                                //~vbe0I~
+        {                                                          //~vbe0I~
+            plh2=plh;                                              //~vbe0I~
+            offs2=offs;                                            //~vbe0I~
+            rc=xmlsrchwordsub(Popt,Ppcw,&plh2,&offs2,Pdest,Pname,Pnamedbcs,Pnamelen);//~vbe0R~
+            if (rc)                                                //~vbe0I~
+                return 4;                                          //~vbe0I~
+            if (xmlchkpartialname(Popt,plh2,offs2,Pnamelen))       //~vbe0I~
+            {                                                      //~vbe0I~
+                plh=plh2;                                          //~vbe0I~
+                offs=offs2;                                        //~vbe0I~
+                continue;                                          //~vbe0I~
+            }                                                      //~vbe0I~
+	    	rc=xmlchkcomment(Popt,Ppcw,plh2,offs2,Pdest,&plh3,&offs3);//~vbe0R~
+            if (rc)                                                //~vbe0I~
+            {                                                      //~vbe0I~
+            	plh=plh3;                                          //~vbe0I~
+                offs=offs3;                                        //~vbe0I~
+                continue;                                          //~vbe0I~
+            }                                                      //~vbe0I~
+            if (offs2>0 && *(plh2->ULHdata+offs2-1)==XML_TAGT && !*(plh2->ULHdbcs+offs2-1)//~vbe0I~
+            &&  offs2>1 && *(plh2->ULHdata+offs2-2)==XML_TAG1 && !*(plh2->ULHdbcs+offs2-2)// "</"//~vbe0R~
+            )         //</xxx                                      //~vbe0I~
+            {                                                      //~vbe0I~
+                nestctr++;                                         //~vbe0R~
+                plh=plh2;                                          //~vbe0R~
+                offs=offs2-2;                                      //~vbe0R~
+                continue;                                          //~vbe0I~
+            }                                                      //~vbe0I~
+            if (offs2>0 && *(plh2->ULHdata+offs2-1)==XML_TAG1 && !*(plh2->ULHdbcs+offs2-1)) // <xxx//~vbe0I~
+            {                                                      //~vbe0I~
+                nestctr--;                                         //~vbe0I~
+                if (!nestctr)                                      //~vbe0I~
+                {                                                  //~vbe0I~
+                	plh=plh2;                                      //~vbe0R~
+                	offs=offs2-1;                                  //~vbe0R~
+                    foundlen=Pnamelen+1;                           //~vbe0I~
+                    if ((offs+foundlen)<plh->ULHlen && *(plh->ULHdata+offs+foundlen)==XML_TAG2//~vbe0I~
+                    &&  !*(plh->ULHdbcs+offs+foundlen))            //~vbe0I~
+                    	foundlen++;                                //~vbe0I~
+                    break;                                         //~vbe0I~
+                }                                                  //~vbe0I~
+            }                                                      //~vbe0I~
+            plh=plh2;                                              //~vbe0I~
+            offs=offs2;                                            //~vbe0R~
+        }//nest loop                                               //~vbe0I~
+	}//prev                                                        //~vbe0I~
+	else			//<xxx>:XMLT_START, <xxx ...>:XMT_STARTATTR    //~vbe0R~
+	{			                                                   //~vbe0I~
+    	for (;;)                                                   //~vbe0I~
+        {                                                          //~vbe0I~
+            if (Ptype==XMLT_STARTATTR) //at first srch ">"//2:<xxx ...> , srch </xxx>//~vbe0I~
+            {                                                      //~vbe0I~
+                rc=xmlsrchwordsub(Popt,Ppcw,&plh,&offs,Pdest,">",0/*dbcs*/,1);//~vbe0R~
+                if (rc)                                            //~vbe0I~
+                    return 4;                                      //~vbe0R~
+                if (offs>0 && *(plh->ULHdata+offs-1)==XML_TAGT && !*(plh->ULHdbcs+offs-1)) // "/>"//~vbe0I~
+                {                                                  //~vbe0I~
+                	foundlen=2;                                    //~vbe0I~
+                    offs--;                                        //~vbe0I~
+                    break;                                         //~vbe0I~
+                }                                                  //~vbe0I~
+                offs++;                                            //~vbe0I~
+            }                                                      //~vbe0I~
+            nestctr=1;                                             //~vbe0I~
+            for (;plh;)                                            //~vbe0I~
+            {                                                      //~vbe0I~
+                plh2=plh;                                          //~vbe0I~
+                offs2=offs;                                        //~vbe0I~
+                rc=xmlsrchwordsub(Popt,Ppcw,&plh2,&offs2,Pdest,Pname,Pnamedbcs,Pnamelen);//~vbe0R~
+                if (rc)                                            //~vbe0I~
+                    return 4;                                      //~vbe0I~
+                if (xmlchkpartialname(Popt,plh2,offs2,Pnamelen))   //~vbe0I~
+                {                                                  //~vbe0I~
+                	plh=plh2;                                      //~vbe0I~
+                    offs=offs2+Pnamelen;                           //~vbe0I~
+                	continue;                                      //~vbe0I~
+                }                                                  //~vbe0I~
+                rc=xmlchkcomment(Popt,Ppcw,plh2,offs2,Pdest,&plh3,&offs3);//~vbe0I~
+                if (rc)                                            //~vbe0I~
+                {                                                  //~vbe0I~
+                    plh=plh3;                                      //~vbe0I~
+                    offs=offs3+Pnamelen;                           //~vbe0I~
+                    continue;                                      //~vbe0I~
+                }                                                  //~vbe0I~
+                if (offs2>0 && *(plh2->ULHdata+offs2-1)==XML_TAGT && !*(plh2->ULHdbcs+offs2-1)//~vbe0I~
+                &&  offs2>1 && *(plh2->ULHdata+offs2-2)==XML_TAG1 && !*(plh2->ULHdbcs+offs2-2)//~vbe0I~
+                )         //</xxx                                  //~vbe0I~
+                {                                                  //~vbe0I~
+                	nestctr--;                                     //~vbe0I~
+                    if  (!nestctr)                                 //~vbe0I~
+                    {                                              //~vbe0I~
+                		plh=plh2;	                               //~vbe0I~
+                		offs=offs2-2;                              //~vbe0R~
+                    	foundlen=Pnamelen+3;                       //~vbe0I~
+                    	break;                                     //~vbe0I~
+                    }                                              //~vbe0I~
+                }                                                  //~vbe0I~
+                else                                               //~vbe0I~
+                if (offs2>0 && *(plh2->ULHdata+offs2-1)==XML_TAG1 && !*(plh2->ULHdbcs+offs2-1)) // <xxx//~vbe0I~
+                    nestctr++;                                     //~vbe0I~
+                plh=plh2;                                          //~vbe0I~
+                offs=offs2+Pnamelen;                               //~vbe0R~
+            }//nest loop                                           //~vbe0I~
+            break;                                                 //~vbe0I~
+        }//break loop                                              //~vbe0I~
+    }//prev/next                                                   //~vbe0I~
+    if (!plh)                                                      //~vbe0I~
+    	return 4;                                                  //~vbe0I~
+    *Ppplh=plh;                                                    //~vbe0I~
+    *Ppoffset=offs;                                                //~vbe0R~
+    *Ppfoundlen=foundlen;                                          //~vbe0I~
+    return 0;                                                      //~vbe0R~
+}//xmlsrchwordnest                                                 //~vbe0R~
+//**************************************************************** //~vbe0I~
+// xmlsrchword                                                     //~vbe0I~
+//**************************************************************** //~vbe0I~
+int xmlsrchword(int Popt,PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Pdest,//~vbe0I~
+		int Ptype,char *Pname,char *Pnamedbcs,int Pnamedlen,char *Psrch,int Psrchlen,int *Ppfoundlen)//~vbe0R~
+{                                                                  //~vbe0I~
+    int offs,foundlen,rc=0;                                        //~vbe0R~
+    PULINEH plh;                                                   //~vbe0I~
+//**************************************                           //~vbe0I~
+	plh=*Ppplh;                                                    //~vbe0I~
+	offs=*Ppoffset;                                                //~vbe0I~
+	switch(Ptype)                                                  //~vbe0I~
+    {                                                              //~vbe0I~
+	case XMLT_STARTOTHER:  //4:     <! but not <!--, <? ,srch ">" forward//~vbe0R~
+	case XMLT_CLOSEATTR:   //6:     "/>"   , srch "<" backword     //~vbe0R~
+	case XMLT_CLOSEOTHER:  //8:     ">" but not "/>",srch "<"      //~vbe0R~
+		rc=xmlsrchtagnest(Popt,Ppcw,&plh,&offs,Pdest,Ptype,&foundlen);//~vbe0R~
+        break;                                                     //~vbe0I~
+	case XMLT_STARTCMT:   //3:"<!--"   , srch "-->" forward        //~vbe0I~
+	case XMLT_ENDCMT:     //7:"-->"   , srch "<!--" backword       //~vbe0I~
+		rc=xmlsrchwordsub(Popt,Ppcw,&plh,&offs,Pdest,Psrch,0/*dbcs*/,Psrchlen);//~vbe0R~
+        foundlen=Psrchlen;                                         //~vbe0I~
+        break;                                                     //~vbe0I~
+    default:                                                       //~vbe0I~
+//    case XMLT_START:      //1:<xxx> ,srch  </xxx> forward        //~vbe0I~
+//    case XMLT_STARTATTR:  //2:<xxx ...> , srch </xxx>            //~vbe0I~
+//    case XMLT_END:        //5:</xxx> , srch <xxx> backword       //~vbe0I~
+		rc=xmlsrchwordnest(Popt,Ppcw,&plh,&offs,Pdest,Ptype,Pname,Pnamedbcs,Pnamedlen,Psrch,Psrchlen,&foundlen);//~vbe0R~
+    }                                                              //~vbe0I~
+    if (rc)                                                        //~vbe0R~
+    	return 4;                                                  //~vbe0I~
+    *Ppplh=plh;                                                    //~vbe0I~
+    *Ppoffset=offs;                                                //~vbe0I~
+    *Ppfoundlen=foundlen;                                          //~vbe0I~
+    return 0;                                                      //~vbe0I~
+}//xmlsrchword                                                     //~vbe0I~
+//*************************************************************************//~vbe0M~
+//*                                                                //~vbe0M~
+//*************************************************************************//~vbe0M~
+int xmlsrchsub(int Popt,PUCLIENTWE Ppcw,PULINEH Pplh,int Poffs,int Pdest,//~vbe0R~
+		int Ptype,char *Pname,char *Pnamedbcs,int Pnamelen,int Ppossrc,int Plensrc,char *Psrchword)//~vbe0R~
+{                                                                  //~vbe0M~
+	int offset,rc,width,srchlen,scrollsz,wordlen;                  //~vbe0R~
+    int locatesw;                                                  //~vbe0R~
+    PULINEH plh;                                                   //~vbe0M~
+    PUFILEH pfh;                                                   //~vbe0M~
+    PUFILEC pfc;                                                   //~vbe0M~
+//**************************************                           //~vbe0M~
+	pfc=Ppcw->UCWpfc;                                              //~vbe0M~
+	pfh=pfc->UFCpfh;                                               //~vbe0M~
+	plh=Pplh;                                                      //~vbe0M~
+	offset=Poffs;                                                  //~vbe0R~
+    srchlen=(int)strlen(Psrchword);                                //~vbe0I~
+	rc=xmlsrchword(Popt,Ppcw,&plh,&offset,Pdest,Ptype,Pname,Pnamedbcs,Pnamelen,Psrchword,srchlen,&wordlen);//~vbe0R~
+    if (rc)                                                        //~vbe0M~
+    {                                                              //~vbe0M~
+    	uerrmsg("No corresponding for %s found",                   //~vbe0M~
+				"%s が見つかりません",                             //~vbe0M~
+                Psrchword);                                        //~vbe0R~
+        return 4;                                                  //~vbe0M~
+    }                                                              //~vbe0M~
+	if (UCBITCHK(plh->ULHflag2,ULHF2EXCLUDED))                     //~vbe0M~
+    {                                                              //~vbe0M~
+        UPCTRREQ(pfh);                                             //~vbe0M~
+		if (lcmdincm(Ppcw,plh)==UALLOC_FAILED)	//display excluded line//~vbe0M~
+        	return UALLOC_FAILED;                                  //~vbe0M~
+    	UPCTRREQ(pfh);                                             //~vbe0M~
+	}                                                              //~vbe0M~
+//*move page to the line if not on current page                    //~vbe0M~
+	fcmdscrollpagemid(Ppcw,plh);                                   //~vbe0M~
+	width=Ppcw->UCWwidth-Ppcw->UCWlinenosz;                        //~vbe0M~
+	if (offset<pfc->UFCleft                                        //~vbe0M~
+	|| 	offset>=pfc->UFCleft+width)                                //~vbe0M~
+    {                                                              //~vbe0M~
+    	 scrollsz=filehalfhscrollsz(Ppcw);//half scroll size       //~vbe0M~
+         pfc->UFCleft=max(0,(offset/scrollsz)*scrollsz-scrollsz);  //~vbe0M~
+         UCBITON(Ppcw->UCWflag,UCWFDRAW);                          //~vbe0M~
+    }                                                              //~vbe0M~
+	filesetcsr(Ppcw,plh,1,offset-pfc->UFCleft);//csr set           //~vbe0M~
+    locatesw=1;                                                    //~vbe0I~
+    locatesw|=FCMDSFHOPT_NOMULTIREV;        //reset multiple reverse//~vbe0M~
+    fcmdsetfindhighlight(pfh,Pplh,locatesw,0, 	//1:locate,0:no linesrch//~vbe0M~
+			Ppossrc,Plensrc,0);			//no span ;first char      //~vbe0I~
+    fcmdsetfindhighlight(pfh,plh,FCMDSFHOPT_NOMULTIREV,0, 	//0:no locate,0:no linesrch//~vbe0M~
+    		offset,wordlen,0);			//no span                  //~vbe0I~
+	return 0;                                                      //~vbe0M~
+}//xmlsrchsub                                                      //~vbe0R~
+//**************************************************************** //~vbe0I~
+// xml tag search                                                  //~vbe0I~
+//*rc   :                                                          //~vbe0I~
+//**************************************************************** //~vbe0I~
+int func_xmlsrch(PUCLIENTWE Ppcw)                                  //~vbe0I~
+{                                                                  //~vbe0I~
+    PUFILEH pfh;                                                   //~vbe0I~
+    PULINEH plh;                                                   //~vbe0I~
+    PUFILEC pfc;                                                   //~vbe0I~
+	PUSCRD psd;                                                    //~vbe0I~
+	int offset;                                                    //~vbe0I~
+    int lrecl;                                                     //~vbe0R~
+    int rc,namelen,type,dest,srcpos,srclen,posnext;                //~vbe0R~
+	UCHAR *pdata;                                                  //~vbe0I~
+	UCHAR *pdbcs;                                                  //~vbe0I~
+    char name[MAX_ELEMENT_NAME];                                   //~vbe0I~
+    char namedbcs[MAX_ELEMENT_NAME];                               //~vbe0I~
+    char srchword[MAX_ELEMENT_NAME+8];                             //~vbe0I~
+//*********************************                                //~vbe0I~
+	pfc=Ppcw->UCWpfc;                                              //~vbe0I~
+	pfh=pfc->UFCpfh;                                               //~vbe0I~
+    if (PFH_ISEBC(pfh))                                            //~vbe0I~
+    {                                                              //~vbe0I~
+    	uerrmsg("Ebcdic file is not supported",0);                 //~vbe0R~
+        return 4;                                                  //~vbe0I~
+    }                                                              //~vbe0I~
+	if (UCBITCHK(pfh->UFHflag4,UFHF4BIN))                          //~vbe0I~
+    {                                                              //~vbe0I~
+    	uerrmsg("XML tag search is not supported for binary file", //~vbe0R~
+        		"バイナリーファイルはXMLタグ探索できません。");    //~vbe0R~
+        return 4;                                                  //~vbe0I~
+    }                                                              //~vbe0I~
+	if (!CSRONFILEDATA(Ppcw))	//chk csr on file line             //~vbe0R~
+   		return errcsrpos();				//not on file client area  //~vbe0I~
+	psd=Ppcw->UCWpsd+Ppcw->UCWrcsry;                               //~vbe0I~
+    offset=pfc->UFCleft+Ppcw->UCWrcsrx-Ppcw->UCWlinenosz;          //~vbe0I~
+	plh=psd->USDbuffc;                                             //~vbe0I~
+    pdata=plh->ULHdata;                                            //~vbe0I~
+    pdbcs=plh->ULHdbcs;                                            //~vbe0I~
+    lrecl=plh->ULHlen;                                             //~vbe0I~
+    if (offset>=lrecl)                                             //~vbe0I~
+    	return errcsrpos();			//no filedata                  //~vbe0I~
+    if (plh->ULHtype!=ULHTDATA)                                    //~vbe0I~
+        return errcsrpos();                                        //~vbe0I~
+	type=xml_gettypename(0,pdata,pdbcs,lrecl,offset,name,namedbcs,(int)sizeof(name),&posnext,&namelen,&dest,//~vbe0R~
+					&srcpos,&srclen,srchword);                     //~vbe0R~
+    if (type<=0)                                                   //~vbe0R~
+    {                                                              //~vbe0I~
+    	uerrmsg("Invalid cursor position for XML pair tag search", //~vbe0R~
+        		"カー\x83\\ル位置の文字は XML タグ探索対象外です");//~vbe0I~
+        return 4;                                                  //~vbe0I~
+    }                                                              //~vbe0I~
+	if (rc=xmlsrchsub(0,Ppcw,plh,posnext,dest,type,name,namedbcs,namelen,srcpos,srclen,srchword),rc)//~vbe0R~
+		return rc;                                                 //~vbe0I~
+	return 0;                                                      //~vbe0I~
+}//func_ppsrch                                                     //~vbe0I~

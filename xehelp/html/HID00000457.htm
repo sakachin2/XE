@@ -16,6 +16,7 @@ a:hover{font-weight:bold;}-->
   .v129B<--129 :(2017/07/27)
   .v129C<--129B:(2017/09/04)
   .v129D&lt;--129C:(2017/11/30)
+  .v129E&lt;--129D:(2018/01/08)
 
      1.BUGs
        -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする
@@ -85,6 +86,12 @@ a:hover{font-weight:bold;}-->
        (Wxe,gxe)
           .Editサブメニュー、ポップアップメニューにも &quot;SelectAll&quot; メニュー項目追加
           .ショートカットはCtrl+Aに設定 SaveAs(別名保存)はCtrl+Shift+Aに変更 
+     (129E)
+       -XMLタグ ペア探索
+          .デフォルトで Alt+&quot;/&quot; を割り当て
+          .カーソルを &quot;&lt;&quot; または &quot;&gt;&quot; の位置において &quot;Alt+/&quot; を使用
+          .コメント内(&quot;&lt;!--&quot; から &quot;--&gt;&quot;)は無視、ネストも処理、
+　　　　　 html 自動生成ツールの不具合を修正するのに便利です
 
     3.その他
        -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加
