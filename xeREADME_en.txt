@@ -1,6 +1,6 @@
-||*CID:||+129CR~:  2017/12/03                update#=  802;           ||+129CR~
+||*CID:||+129ER~:  2018/01/09                update#=  803;           ||~129CR~||+129ER~
 ######################################################################
-[English]    v1.29D                                                   ||+129CR~
+[English]    v1.29E                                                   ||~129CR~||+129ER~
 
 This editor is fit for programmers working on both main-frame and PC.
 Its operation is based on mainframe SPF editor,
@@ -255,3 +255,18 @@ How to execute.
      3.Miscellaneous.                                                 ||~129CI~
        -Disable also menuitem of File submenu depending panel type.   ||~129CI~
         e.g. Save is disable for directory list panel.                ||~129CI~
+                                                                      ||+129EI~
+  .v129E<--129D:(2018/01/02)                                          ||+129EI~
+                                                                      ||+129EI~
+     1.BUGs                                                           ||+129EI~
+                                                                      ||+129EI~
+     2.Additional function.                                           ||+129EI~
+                                                                      ||+129EI~
+       -XML tag pairing search                                        ||+129EI~
+          .Default shortcut key is Alt+"/"                            ||+129EI~
+          .Use shortcut key on "<" or ">"                             ||+129EI~
+          .Comment portion(from "<!--" to  "-->") is ignored          ||+129EI~
+           and recognize nested tag.                                  ||+129EI~
+           It is convenient to correct html automation tool generated.||+129EI~
+                                                                      ||+129EI~
+     3.Miscellaneous.                                                 ||+129EI~
