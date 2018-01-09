@@ -1,3 +1,6 @@
+//*********  20180109 v129E released    ****************
+//v6Q0:180109 Api to get Windows version was changed
+//            udos.c/h
 //v6P0:171223 (Bug:WinConsole)errmsg corrupted when ddfmt contains <0x20
 //            uviom.c
 *** update history ******************************************************************

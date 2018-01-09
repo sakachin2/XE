@@ -15,8 +15,8 @@ a:hover{font-weight:bold;}-->
 ######################################################################
   .v129B<--129 :(2017/07/30)
   .v129C<--129B:(2017/09/04)
-  .v129D&lt;--129B:(2017/11/30)
- <SPAN STYLE="color:#000000;font-size:12pt;"> .v129E&lt;--129D:(2018/01/08)</SPAN>
+  .v129D&lt;--129C:(2017/11/30)
+ <SPAN STYLE="color:#000000;font-size:12pt;"> .v129E&lt;--129D:(2018/01/09)</SPAN>
      1.BUGs
        -(Windows:64)"&"(spawn executable file) dir cmd crush.
        -(64Bit) =3.14 crush
@@ -25,6 +25,8 @@ a:hover{font-weight:bold;}-->
      (129D)
        -(Linux)Under GTK3 environmentt, Accelerator option on Setup dialog was not work.
        -(Wxe)Crash when File-&gt;New menuitem was selected.
+     (129E)
+       -(Windows Console version) Japanese Error msg on header line may be corrupted.
 
      2.Additional function.
 
@@ -97,6 +99,10 @@ a:hover{font-weight:bold;}-->
      (129D)
        -Disable also menuitem of File submenu depending panel type.
         e.g. Save is disable for directory list panel.
+     (129E)
+       -(Windows Console version) When ligature:on on windows10,
+        UTF8 file lines of Japanese Kanji shrinks to unreadable.
+        So, reject Ligature:On for from Windows7.
 
      4.Tool.
      (129C)

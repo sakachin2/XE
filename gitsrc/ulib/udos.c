@@ -1,8 +1,9 @@
-//CID://+v188R~:                                                   //+v188R~
+//CID://+v6Q0R~:                                                   //~v188R~//~v6Q0R~
 //*************************************************************
 //*udos.c
 //*************************************************************
-//v188:980727 Windows98,iswin98 for kbdw                           //+v188R~
+//v6Q0:180109 Api to get Windows version was changed               //~v6Q0I~
+//v188:980727 Windows98,iswin98 for kbdw                           //~v188R~
 //v162:980202 iswin,iswinnt,isos2 for other version                //~v162I~
 //v159:980131 udosisos2   for DOS(chk env string "\MDOS\" in comspec)//~v159I~
 //v158:980131 udosiswinnt for DOS(chk env OS=Windows_NT)           //~v158I~
@@ -129,6 +130,24 @@ int udos_version(int *Ppmaj,int *Ppmin,void *Ppinfo)
     #endif
 #endif                                                             //~v039I~
 }//udos_version
+#ifdef W32                                                         //~v6Q0I~
+//*******************************************************          //~v6Q0I~
+//*when manifest specified                                         //+v6Q0I~
+// *win8:6.2, win8.1:6.3 win10:10                                  //+v6Q0I~
+//*else returns win8 for win10                                     //+v6Q0I~
+//*******************************************************          //+v6Q0I~
+int udos_getWindowsVersion(int Popt,int *Ppmaj,int *Ppmin,int *Ppbuildno)//~v6Q0I~
+{                                                                  //~v6Q0I~
+	OSVERSIONINFOEX inf={0};                                       //~v6Q0R~
+//**************************************                           //~v6Q0I~
+	inf.dwOSVersionInfoSize=sizeof(inf);                           //~v6Q0R~
+    GetVersionEx((OSVERSIONINFO*)&inf);                            //~v6Q0I~
+    *Ppmaj=(int)(inf.dwMajorVersion);                              //~v6Q0R~
+    *Ppmin=(int)(inf.dwMinorVersion);                              //~v6Q0R~
+	*Ppbuildno=(int)(inf.dwBuildNumber);                           //~v6Q0R~
+    return 0;                                                      //~v6Q0I~
+}//udos_getWindowsVersion                                          //~v6Q0I~
+#endif                                                             //~v6Q0I~
                                                                    //~v052I~
 #ifdef DOS                                                         //~v052I~
 //*******************************************************          //~v075I~
@@ -411,28 +430,28 @@ int udosiswin(void)                                                //~v162I~
 #endif                                                             //~v162I~
 }//udosiswin                                                       //~v162I~
                                                                    //~v162I~
-#ifdef W32                                                         //+v188R~
-//*******************************************************          //+v188R~
-//*udosiswin                                                       //+v188R~
-//*return true if os is win(include winnt)                         //+v188R~
-//*parm :none                                                      //+v188R~
-//*return: 1:win 0:not windows                                     //+v188R~
-//*******************************************************          //+v188R~
-int udosiswin98(void)                                              //+v188R~
-{                                                                  //+v188R~
-static char S98sw[2];                                              //+v188R~
-	int maj,min,rev;                                               //+v188R~
-//********                                                         //+v188R~
-	if (!S98sw[0])                                                 //+v188R~
-    {                                                              //+v188R~
-    	S98sw[0]=1;                                                //+v188R~
-		udos_version(&maj,&min,&rev);                              //+v188R~
-		S98sw[1]=(char)((maj==4 && min>=10) && !udosiswinnt());    //+v188R~
-	}                                                              //+v188R~
-    return (int)S98sw[1];                                          //+v188R~
-}//udosiswin98                                                     //+v188R~
-#endif                                                             //+v188R~
-                                                                   //+v188R~
+#ifdef W32                                                         //~v188R~
+//*******************************************************          //~v188R~
+//*udosiswin                                                       //~v188R~
+//*return true if os is win(include winnt)                         //~v188R~
+//*parm :none                                                      //~v188R~
+//*return: 1:win 0:not windows                                     //~v188R~
+//*******************************************************          //~v188R~
+int udosiswin98(void)                                              //~v188R~
+{                                                                  //~v188R~
+static char S98sw[2];                                              //~v188R~
+	int maj,min,rev;                                               //~v188R~
+//********                                                         //~v188R~
+	if (!S98sw[0])                                                 //~v188R~
+    {                                                              //~v188R~
+    	S98sw[0]=1;                                                //~v188R~
+		udos_version(&maj,&min,&rev);                              //~v188R~
+		S98sw[1]=(char)((maj==4 && min>=10) && !udosiswinnt());    //~v188R~
+	}                                                              //~v188R~
+    return (int)S98sw[1];                                          //~v188R~
+}//udosiswin98                                                     //~v188R~
+#endif                                                             //~v188R~
+                                                                   //~v188R~
 //#ifdef W32                                                       //~v158R~
 //*******************************************************          //~v136I~
 //*udosiswinnt                                                     //~v136I~

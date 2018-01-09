@@ -16,7 +16,7 @@ a:hover{font-weight:bold;}-->
   .v129B<--129 :(2017/07/27)
   .v129C<--129B:(2017/09/04)
   .v129D&lt;--129C:(2017/11/30)
-  .v129E&lt;--129D:(2018/01/08)
+  .v129E&lt;--129D:(2018/01/09)
 
      1.BUGs
        -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする
@@ -27,6 +27,8 @@ a:hover{font-weight:bold;}-->
        -(Linux)GTK3環境の時セットアックダイアログでのメニューアクセラレーター(Ctrl+)オプションの
         オン/オフが効かない
        -(Wxe)ファイル-New(新規ファイル)でクラッシュ
+    (129E)
+       -(Windows Console version) Japanese Error msg on header line may be corrupted.
 
      2.機能追加
 
@@ -106,6 +108,11 @@ a:hover{font-weight:bold;}-->
      (129D)
        -Fileサブメニューのメニュー項目も画面の状況によっては不活性化する
         例えば、ディレクトリー画面での保存メニュー項目など
+     (129E)
+       -(Windows Console version) When ligature:on on windows10,
+        UTF8 file lines of Japanese Kanji shrinks to unreadable.
+        So, reject Ligature:On for from Windows7.</SPAN></PRE>
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
      4.ツール。
      (129C)
        -xprint v9.38

@@ -1,6 +1,6 @@
-||*CID:||+129ER~:  2018/01/09                update#=  803;           ||~129CR~||+129ER~
+||*CID:||+129ER~:  2018/01/09                update#=  804;           ||~129CR~||~129ER~
 ######################################################################
-[English]    v1.29E                                                   ||~129CR~||+129ER~
+[English]    v1.29E                                                   ||~129CR~||~129ER~
 
 This editor is fit for programmers working on both main-frame and PC.
 Its operation is based on mainframe SPF editor,
@@ -255,18 +255,24 @@ How to execute.
      3.Miscellaneous.                                                 ||~129CI~
        -Disable also menuitem of File submenu depending panel type.   ||~129CI~
         e.g. Save is disable for directory list panel.                ||~129CI~
+                                                                      ||~129EI~
+  .v129E<--129D:(2018/01/09)                                          ||+129ER~
+                                                                      ||~129EI~
+     1.BUGs                                                           ||~129EI~
                                                                       ||+129EI~
-  .v129E<--129D:(2018/01/02)                                          ||+129EI~
+       -(Windows Console version) Japanese Error msg on header line may be corrupted.||+129EI~
+                                                                      ||~129EI~
+     2.Additional function.                                           ||~129EI~
+                                                                      ||~129EI~
+       -XML tag pairing search                                        ||~129EI~
+          .Default shortcut key is Alt+"/"                            ||~129EI~
+          .Use shortcut key on "<" or ">"                             ||~129EI~
+          .Comment portion(from "<!--" to  "-->") is ignored          ||~129EI~
+           and recognize nested tag.                                  ||~129EI~
+           It is convenient to correct html automation tool generated.||~129EI~
+                                                                      ||~129EI~
+     3.Miscellaneous.                                                 ||~129EI~
                                                                       ||+129EI~
-     1.BUGs                                                           ||+129EI~
-                                                                      ||+129EI~
-     2.Additional function.                                           ||+129EI~
-                                                                      ||+129EI~
-       -XML tag pairing search                                        ||+129EI~
-          .Default shortcut key is Alt+"/"                            ||+129EI~
-          .Use shortcut key on "<" or ">"                             ||+129EI~
-          .Comment portion(from "<!--" to  "-->") is ignored          ||+129EI~
-           and recognize nested tag.                                  ||+129EI~
-           It is convenient to correct html automation tool generated.||+129EI~
-                                                                      ||+129EI~
-     3.Miscellaneous.                                                 ||+129EI~
+       -(Windows Console version) When ligature:on on windows10,      ||+129EI~
+        UTF8 file lines of Japanese Kanji shrinks to unreadable.      ||+129EI~
+        So, reject Ligature:On for from Windows7.                     ||+129EI~

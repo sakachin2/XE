@@ -1,7 +1,8 @@
-//*CID://+vb5bR~:                             update#=  133;       //~vb5bR~
+//*CID://+vbf0R~:                             update#=  137;       //~vbf0R~
 //*********************************************************************
 //* common routine hdr                                             //~v07uR~
 //*********************************************************************
+//vbf0:180109 WriteConsoleOutputW(used for cpu8 ligaturemode) shrinks line on Windows10(OK on XP),prohibit ligature on for Windows10//~vbf0I~
 //vb5b:160913 additional to vb54, DBCS space altch is changable by TAB cmd//~vb5bI~
 //vb54:160903 TAB cmd new option to set altch; TAB {on|off} [altch1 [altch2]]//~vb54I~
 //vb2V:160404 (Bug of vb2M) trace filename was changed by vb2M     //~vb2VI~
@@ -433,7 +434,7 @@ EXT UCHAR *Gfilebuff2;      //buff for record manipuration      //~5102I~
 EXT int  Gfiletabskip INIT(TABSKIPCOUNT);       //tab step count//~5430R~
 EXT char Gfiletabdisp1;         //for tab char display(itself)  //~5102R~
 EXT char Gfiletabdisp2;         //for tab char display(skipped byte)//~5102R~
-EXT char Gunpdispchar3_after_inigetopt;//to resore "tab on 000"    //+vb5bI~
+EXT char Gunpdispchar3_after_inigetopt;//to resore "tab on 000"    //~vb5bI~
 
 #define  KBDSPEED           30  //char/sec                      //~v01aI~
 #define  KBDDELAY          250  //milisec                       //~v01aI~
@@ -574,6 +575,12 @@ EXT USHORT Gfhwidthtxt;     //text mode display width for browse   //~v10ER~
 EXT USHORT Gfhwidthtxtedit; //text mode display width for edit     //~v10EI~
                                                                    //~v19iI~
 EXT int Gkbdopt;                                                   //~v19iI~
+#ifdef W32                                                         //~vbf0R~
+EXT int GWinMajVersion;                                            //+vbf0R~
+EXT int GWinMinVersion;                                            //+vbf0R~
+EXT int GWinInfoVersion;                                           //~vbf0R~
+#define MAJ_WINDOWS10  10                                          //~vbf0I~
+#endif                                                             //~vbf0R~
 //**************************                                       //~v500I~
 //#ifdef WXE                                                       //~v641R~
 #ifdef WXEXXE                                                      //~v641I~

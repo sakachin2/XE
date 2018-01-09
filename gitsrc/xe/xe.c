@@ -1,7 +1,8 @@
-//*CID://+vbdaR~:                              update#=  411;      //~vbdaR~
+//*CID://+vbf0R~:                              update#=  416;      //~vbf0R~
 //*************************************************************
 //*XE.c*                                                           //~v641R~
 //*************************************************************
+//vbf0:180109 WriteConsoleOutputW(used for cpu8 ligaturemode) shrinks line on Windows10(OK on XP),prohibit ligature on for Windows10//~vbf0I~
 //vbda:171121*(gxe)display GTK3/GTK2 on titlemsg/about dialog      //~vbdaI~
 //vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I~
 //vb8a:170218 use xe_wd when /W option is for root dir(d:\xe_wd if /wd:)//~vb8aI~
@@ -265,6 +266,7 @@
 #ifdef UNX                                                         //~v79zI~
 	#include <uunxsub.h>	//ugetugid                             //~v79zI~
 #endif                                                             //~v79zI~
+	#include <udos.h>	//ugetugid                                 //~vbf0I~
                                                                    //~v19SI~
 #include "xe.h"
 #include "xegbl.h"                                              //~5712I~
@@ -485,6 +487,9 @@ if (Preqtype==WXE_REQ_PREINIT)                                     //~v53oI~
 #ifndef ARM                                                        //~vai2I~
     utrace_init(0/*tracefilename*/,0/*notrace*/);                  //~vafrI~
 #endif                                                             //~vai2I~
+#ifdef W32                                                         //~vbf0I~
+    udos_getWindowsVersion(0,&GWinMajVersion,&GWinMinVersion,&GWinInfoVersion);//~vbf0R~
+#endif                                                             //~vbf0I~
 #ifdef WCSUPP                                                      //~v7acI~
     udbcschk_wcinit(Swcinitopt|UDCWCIO_BEFOREINIT,0); //force english until next wcinit call//~v7acI~
 #endif //WCSUPP                                                    //~v7acI~
@@ -2387,9 +2392,9 @@ void titlemsg(void)
 //*************************                                        //~vbdaI~
 #ifdef XXE                                                         //~vbdaI~
   	#ifndef OPTGTK3                                                //~vbdaI~
-	    sprintf(verdate,"%s:GTK2",Gverdate);                       //+vbdaR~
+	    sprintf(verdate,"%s:GTK2",Gverdate);                       //~vbdaR~
     #else                                                          //~vbdaI~
-	    sprintf(verdate,"%s:GTK3",Gverdate);                       //+vbdaR~
+	    sprintf(verdate,"%s:GTK3",Gverdate);                       //~vbdaR~
     #endif                                                         //~vbdaI~
 #endif                                                             //~vbdaI~
 //  uerrmsg_init(Spgmver,stdout,0);//msg to stdout                 //~v21iR~

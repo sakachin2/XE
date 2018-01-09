@@ -1,8 +1,9 @@
-//*CID://+vbCDR~:                             update#=  431;       //~vbCDR~
+//*CID://+vbf0R~:                             update#=  437;       //~vbf0R~
 //*************************************************************
 //*xeopt2.c                                                        //~7B24R~
 //* Mode                                                           //~v90wR~
 //*************************************************************
+//vbf0:180109 WriteConsoleOutputW(used for cpu8 ligaturemode) shrinks line on Windows10(OK on XP),prohibit ligature on for Windows10//~vbf0I~
 //vbCD:160825 for also locale file display ligature mode like as vb4q//~vb4qI~
 //vb4q:160810 display ligature/combine mode on "TOP OF LINE"       //~vb4qI~
 //vb4p:160809 accept U-xx for UNICOMB UNPR                         //~vb4pI~
@@ -106,6 +107,7 @@
 #include <ucvebc.h>                                                //~va79R~
 #include <ucvebc4.h>                                               //~va79I~
 #include <utrace.h>                                                //~vb4jI~
+#include <udos.h>                                                  //~vbf0I~
 
 #include "xe.h"
 #include "xescr.h"                                                 //~v90wM~
@@ -175,8 +177,17 @@ void xeopt2init(void)                                              //~v91sI~
     	Gulibutfmode|=GULIBUTFCOMBINE;                             //~va30R~
 //#if defined(W32) && !defined(WXE)	//winconsole version           //~va3jR~
     if (Goptopt3 &  GOPT3_LIGATURE)                                //~va3hI~
+    {                                                              //~vbf0I~
+#if defined(W32) && !defined(WXE)                                  //+vbf0I~
+	  if (OS_WINDOWS7(GWinMajVersion,GWinMinVersion))  //>=Widows7 //~vbf0R~
+      	;                                                          //~vbf0I~
+      else                                                         //~vbf0I~
+#endif                                                             //~vbf0I~
+      {                                                            //~vbf0I~
 //		uviom_setopt2(UVIOMO2_LIGATURE,0/*displaychar*/);	//notify ligature//~va3jR~
         UTF_SET_LIGATUREMODE();                                    //~va3jI~
+      }                                                            //~vbf0I~
+    }                                                              //~vbf0I~
     if (Goptopt3 &  GOPT3_COMBINENP)                               //~vb4jI~
     	Gulibutfmode|=GULIBUTFCOMBINE_NP;                          //~vb4jR~
 #if defined(LNX) && !defined(XXE)                                  //~va3sI~
@@ -613,6 +624,13 @@ int func_optligature(PUCLIENTWE Ppcw)                              //~va3dI~
 //  if (uviom_setopt2(UVIOMO2_LIGATURE,0/*displaychar*/))          //~va3jR~
     if (!UTF_LIGATUREMODE())                                       //~va3jI~
     {                                                              //~va3hI~
+#if defined(W32) && !defined(WXE)                                  //~vbf0R~
+	    if (OS_WINDOWS7(GWinMajVersion,GWinMinVersion))  //>=Widows7//~vbf0I~
+        {                                                          //~vbf0I~
+			uerrmsg("Ligature mode is not supported for Console Version from Windows7.",0);//~vbf0R~
+    		return 4;                                              //~vbf0I~
+        }                                                          //~vbf0I~
+#endif                                                             //~vbf0I~
 //      Gutfmode2|=GUM2_CONSLIGATURE;                              //~va3jR~
         UTF_SET_LIGATUREMODE();                                    //~va3jI~
     	Goptopt3 |= GOPT3_LIGATURE;                                //~va3hI~
@@ -1768,8 +1786,8 @@ int opt2sethdrligcomb(int Popt,PUFILEH Ppfh)                       //~vb4qR~
     char *pc;                                                      //~vb4qR~
     char optligcomb[256];                                          //~vb4qR~
 //*********************************                                //~vb4qR~
-    if (Ppfh->UFHtype==UFHTKFI)                                    //+vbCDI~
-        return 0;                                                  //+vbCDI~
+    if (Ppfh->UFHtype==UFHTKFI)                                    //~vbCDI~
+        return 0;                                                  //~vbCDI~
 	optcombinehelpsub(Popt,&pmodecombine,&pmodeligature,altch);    //~vb4qR~
     cvlen=(int)strlen(altch);                                      //~vb4qR~
     memset(altch+cvlen,'*',sizeof(altch)-(size_t)cvlen);           //~vb4qR~

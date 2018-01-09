@@ -1,3 +1,6 @@
+//*********  20180109 v129E released *********************************
+//vbf0:180109 WriteConsoleOutputW(used for cpu8 ligaturemode) shrinks line on Windows10(OK on XP),prohibit ligature on for Windows7
+//            xe.c/h xeopt2.c
 //vbe0:171231 add function to search xml tag pair by A+/
 //            xefcmd24.c xefunc.h xefunct.c xekbchk.c
 //*********  20171130 v129Dj/v129De         updated   ****************

@@ -1,7 +1,8 @@
-//CID://+v327R~:   update#=  1                                     //+v327R~
+//CID://+v6Q0R~:   update#=  3                                     //~v327R~//~v6Q0R~
 //******************************************************           //~6A26I~
 //*udos.h                                                          //~6A26I~
 //******************************************************           //~6A26I~
+//v6Q0:180109 Api to get Windows version was changed               //~v6Q0I~
 //v327 000820:LINUX support                                        //~v327I~
 //v188:980727 Windows98,iswin98 for kbdw                           //~v188R~
 //v162:980202 iswin,iswinnt,isos2 for other version                //~v162I~
@@ -61,6 +62,9 @@ int udosiswin(void);                                               //~v162I~
 #ifdef W32                                                         //~v188R~
 //*******************************************************          //~v188R~
 int udosiswin98(void);                                             //~v188R~
+int udos_getWindowsVersion(int Popt,int *Ppmaj,int *Ppmin,int *Ppbuildno);//~v6Q0I~
+#define OS_WINDOWS8(maj,min) ((maj)>6 || ((maj)==6 && (min)>=2))   //+v6Q0I~
+#define OS_WINDOWS7(maj,min) ((maj)>6 || ((maj)==6 && (min)>=1))   //+v6Q0I~
 #endif                                                             //~v188R~
 //*******************************************************          //~v136I~
 int udosiswinnt(void);                                             //~v136I~
