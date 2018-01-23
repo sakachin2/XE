@@ -1,5 +1,5 @@
 # XE
-SPF line Editor xe           2018/01/09 V129E
+SPF line Editor xe           2018/01/23 V129F
     This editor is fit for programmers working on both main-frame and PC.
     Its operation is based on mainframe SPF editor,
     and like as other editor on PC, convenient short-cut key operation is hybrid.
@@ -12,7 +12,7 @@ SPF line Editor xe           2018/01/09 V129E
         .Supports Remote file access using ftp,samba,rsh,ssh,fuse.
         .Optionally update-tag:CID(ChangeID) is automatically appended to updated lines.
 *********************************************************************************************
-(Japanese)                   2018/01/09 V129E
+(Japanese)                   2018/01/23 V129F
     メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。
     ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。
 

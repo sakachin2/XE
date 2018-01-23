@@ -1,4 +1,4 @@
-CID:||+v129R~:  2017/09/04                 update#=  672;             ||~v129R~
+CID:||+v@@@R~:  2018/01/09                 update#=  674;             ||+v@@@R~
 ************************************************************************
 (Index)
     (0).Introduction.
@@ -46,7 +46,7 @@ CID:||+v129R~:  2017/09/04                 update#=  672;             ||~v129R~
             .Periodically check of other apllication in progress.     ||~v124R~
             .User command                                             ||~127ER~
             .Hex-calc/Time-calc/Timestamp-conv/Decimal-fraction-calc.
-            .Parenthesis, #if, "/*" comment pair search               ||~v124R~
+            .Parenthesis, #if, "/*" comment and XML tag pair search               ||~v124R~||~v@@@R~
             .Cut & Paste
             .Drag & Drop
             .Basic Table Calculation.
@@ -4362,15 +4362,22 @@ sample)
       Timestamp(elappsed seconds from 1970) is converted to date and time.
       Mainframe 8 byte TOD is also converted.
 
-   .Parenthesis, #if, "/*" comment pair search                        ||~v124R~
+   .Parenthesis, #if, "/*" comment and XML tag pair search            ||~v@@@I~
       C has 3 parenthesis notation (,[ and {.
       It is hard to search pair in deep nest.
-      "Alt+." support it,"Alt+," search except excluded line.
+      Alt+"." support it,Alt+"," search except excluded line.         ||~v@@@R~
       To ignore comment line,exclude those lines and use "Alt+,".
       This function support other pairing of <,> and /*,*/.
       The corresponding of same nest level of #if/#ifdef/#ifndef/#else
       /#endif/#elif is also searched.
       Move cursor on the parenthesis,# etc.,then hit key.             ||~v124R~
+                                                                      ||~v@@@I~
+      XML tag pair search                                             ||~v@@@I~
+          .Default shortcut key is Alt+"/"                            ||~v@@@I~
+          .Use shortcut key on "<" or ">"                             ||~v@@@I~
+          .Comment portion(from "<!--" to  "-->") is ignored          ||~v@@@I~
+           and recognize nested tag.                                  ||~v@@@I~
+           It is convenient to correct html automation tool generated.||~v@@@I~
 
    .Cut and Paste.
         -See xewxee.txt for mouse operation.                          ||~v124R~
@@ -5129,6 +5136,7 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
  |z      |              |              |3270 Hotkey   |              |||~v124R~
  |.      |              |              |Pair search   |              |
  |,      |              |              |Pair search-NX|              |
+ |/      |              |              |XML pair srch |              |||~v@@@I~
  |[      |              |              |FwdSrch-NoCase|FwdSrch-Case  |||~v124R~
  |]      |              |              |BwdSrch-NoCase|BwdSrch-Case  |||~v124R~
  |:      |              |              |Combining Char|              |||~v125R~
@@ -7646,6 +7654,7 @@ by screen expansion)
             - same as A+";" key                                       ||~v129R~
             - toggle Ligature mode.                                   ||~v129R~
               Console version accept Ligature ON only for CPU8(UTF8 file).||~v129R~
+              Console version dose not accept from Windows7.          ||+v@@@I~
                                                                       ||~v129R~
    = Locate to the line.
 
@@ -8102,6 +8111,7 @@ by screen expansion)
                Alt+";" is temporary for GUI version and checkbox status is saved.||~v125R~
                For Console version, A+";" status is saved to ini file.||~v125R~
                Command format: (reposrts current status if operand missong)||~v125R~
+               From windows7, this is not supported for Consiole version.||+v@@@I~
                                                                       ||~v125R~
               -When Ligature is ON, character spacing depends to background(Windows,GTK,pango,ncurses).||~v125R~
                If On,keep monospacing.                                ||~v125R~
@@ -8359,7 +8369,7 @@ by screen expansion)
                                                                       ||~v129I~
    = Line select                                                      ||~v129R~
                                                                       ||~v129I~
-        SELect [all] [col1 col2] [.label1 .label2]                    ||+v129R~
+        SELect [all] [col1 col2] [.label1 .label2]                    ||~v129R~
                                                                       ||~v129I~
             -label1/2:line range  col1/2:column range                 ||~v129I~
              numeric specification for both label 1 and 2 are accepted as lineno.||~v129I~

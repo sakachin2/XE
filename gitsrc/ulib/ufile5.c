@@ -1,8 +1,10 @@
-//*CID://+v6J7R~:                             update#=  244;       //~v6J7R~
+//*CID://+v6R1R~:                             update#=  250;       //~v6R1R~
 //*************************************************************
 //*ufile5.c                                                        //~v205R~
 //*  ufgets,ufgetsinit udoseditname ufileeditname                  //~v340R~
 //*************************************************************
+//v6R1:180123 set Buffsz=recordsize if recordmode for performance  //~v6R1I~
+//v6R0:180123 (BUG)Sbinsw=2(optionally bin mode by 1st 4096 byte) should be cleared;read until eof and crash if oveflow Gfilebuff(32760*4)//~v6R0I~
 //v6J7:170217 add filetouch for dummy record write for ::xehosts etc if not found//~v6J7I~
 //v6H1:161231 filename >_MAX_PATH occurse when moved directory on xe(native cmd issue error fo5r xcopy /move)//~v6H1I~
 //            and it cause fpath area overflow then 0c4            //~v6H1I~
@@ -128,6 +130,7 @@
 //**********************************************************************
 #define IOBSZ           4096
 #define IOBSZV          65536 //max for recfm=V                    //~v6m0R~
+#define IOBSZRMAX       32768 //max recordmode                     //~v6R1I~
 #define LFID            0x0a
 #define CRID            0x0d
 #define EOFID           0x1a
@@ -241,7 +244,12 @@ int ufgetsinit(int Pmode,unsigned int Pbuffsz,int Pbinrate,int Poptbinwidth)//~v
 	  if (Smode & UFGETS_RV)          //recfm=V                    //~v6m0I~
         Pbuffsz=(IOBSZV+4);           //65536+4                    //~v6m0R~
       else                                                         //~v6m0I~
+      {                                                            //~v6R1I~
+        if ((Smode & UFGETS_RECORD) && Poptbinwidth>IOBSZ && Poptbinwidth<IOBSZRMAX)//~v6R1I~
+        Pbuffsz=(UINT)Poptbinwidth;                                //+v6R1R~
+        else                                                       //~v6R1I~
         Pbuffsz=IOBSZ;
+      }                                                            //~v6R1I~
     }                                                              //~v6m0I~
     if (Pbuffsz!=Siobsz)                                           //~v090R~
     {                                                              //~v090I~
@@ -339,6 +347,7 @@ static int Ssubrc=0;                                               //~v56yR~
     char *buffpos;
     int  rc,eolid;                                                 //~v090R~
     UINT buffreslen,copylen;
+    int sw1st=1;                                                   //~v6R0R~
 //*******************
 	if (Smode & UFGETS_RV)          //recfm=V                      //~v6m0I~
     	return ufgetsV(Pbuff,Pbuffsz,Pfh,Preadlen,Peolid);	       //~v6m0I~
@@ -360,8 +369,13 @@ static int Ssubrc=0;                                               //~v56yR~
                 if (rc==UFGETS_EOF)
                         Seofsw=1;
                 if (Sbinsw==2)  //binary of optbin case;RCBIN      //~v237I~
+                {                                                  //~v6R0I~
                     if (Soptbinwidth)   //opt bin width specified  //~v237I~
+                    {                                              //~v6R0I~
+                      if (sw1st)                                   //~v6R0I~
                         buffreslen=Pbuffsz=(UINT)Soptbinwidth;  //shorted read size//~v237R~
+                    }                                              //~v6R0I~
+                }                                                  //~v6R0I~
             }
         }
         copylen=min(Sreadreslen,buffreslen);
@@ -377,6 +391,7 @@ static int Ssubrc=0;                                               //~v56yR~
         }
         if (!rc || rc==UFGETS_EOF)                      //a line moved
                 break;
+        sw1st=0;                                                   //~v6R0R~
     }
     *Preadlen=Pbuffsz-buffreslen;
         eolid=Seolid;                                                  //~v090R~
@@ -2587,5 +2602,5 @@ int filetouch(int Popt,char *Pfnm,char *Precord)                   //~v6J7I~
 		fclose(fh);                                                //~v6J7I~
     	rc=0;                                                      //~v6J7I~
     }                                                              //~v6J7I~
-    return rc;                                                     //+v6J7I~
+    return rc;                                                     //~v6J7I~
 }//filetouch                                                       //~v6J7I~

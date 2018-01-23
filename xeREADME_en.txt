@@ -1,6 +1,6 @@
-||*CID:||+129ER~:  2018/01/09                update#=  804;           ||~129CR~||~129ER~
+||*CID:||+129FR~:  2018/01/23                update#=  806;           ||~129FR~
 ######################################################################
-[English]    v1.29E                                                   ||~129CR~||~129ER~
+[English]    v1.29F                                                   ||~129FR~
 
 This editor is fit for programmers working on both main-frame and PC.
 Its operation is based on mainframe SPF editor,
@@ -256,11 +256,11 @@ How to execute.
        -Disable also menuitem of File submenu depending panel type.   ||~129CI~
         e.g. Save is disable for directory list panel.                ||~129CI~
                                                                       ||~129EI~
-  .v129E<--129D:(2018/01/09)                                          ||+129ER~
+  .v129E<--129D:(2018/01/09)                                          ||~129ER~
                                                                       ||~129EI~
      1.BUGs                                                           ||~129EI~
-                                                                      ||+129EI~
-       -(Windows Console version) Japanese Error msg on header line may be corrupted.||+129EI~
+                                                                      ||~129EI~
+       -(Windows Console version) Japanese Error msg on header line may be corrupted.||~129EI~
                                                                       ||~129EI~
      2.Additional function.                                           ||~129EI~
                                                                       ||~129EI~
@@ -272,7 +272,19 @@ How to execute.
            It is convenient to correct html automation tool generated.||~129EI~
                                                                       ||~129EI~
      3.Miscellaneous.                                                 ||~129EI~
-                                                                      ||+129EI~
-       -(Windows Console version) When ligature:on on windows10,      ||+129EI~
-        UTF8 file lines of Japanese Kanji shrinks to unreadable.      ||+129EI~
-        So, reject Ligature:On for from Windows7.                     ||+129EI~
+                                                                      ||~129EI~
+       -(Windows Console version) When ligature:on on windows10,      ||~129EI~
+        UTF8 file lines of Japanese Kanji shrinks to unreadable.      ||~129EI~
+        So, reject Ligature:On for from Windows7.                     ||~129EI~
+                                                                      ||~129FI~
+  .v129F<--129E:(2018/01/23)                                          ||~129FI~
+                                                                      ||~129FI~
+     1.BUGs                                                           ||~129FI~
+                                                                      ||~129FI~
+       -Edit/Browse Command                                           ||~129FI~
+        .Shows only last record when record mode with RecordSize>4096 ||~129FI~
+         and 1st record contains ControlChar(<0x20).                  ||~129FI~
+         Or crashes if FileSize>128K                                  ||~129FI~
+        .CPLC option registered on profile record was ignored when record mode.||~129FI~
+         ("CPLC" option was required each time)                       ||~129FI~
+                                                                      ||~129FI~

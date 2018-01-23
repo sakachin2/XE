@@ -1,9 +1,10 @@
-//*CID://+vbc0R~:                             update#=  698;       //+vbc0R~
+//*CID://+vbg0R~:                             update#=  699;       //+vbg0R~
 //*************************************************************    //~v08qI~
 //*xefile5.c*                                                      //~v08qI~
 //* miscellenious function                                         //~v08qI~
 //*************************************************************    //~v08qI~
-//vbc0:170814 reject FixedRecordLength mode for CPU8 file(because record Length!=Column width)//+vbc0I~
+//vbg0:180123 (BUG)errmsg "conflict recordmode and CPU8" evenif profile record has cplc option,rejected at optopn prechk//+vbg0I~
+//vbc0:170814 reject FixedRecordLength mode for CPU8 file(because record Length!=Column width)//~vbc0I~
 //vb60:161127 select 1st entry when no filename operand (S [-n] n:line number)//~vb60I~
 //vb2E:160229 LNX64 compiler warning                               //~vb2EI~
 //vb2j:160129 (LNX)use FN{LC|U8} option translate input filename u8<-->lc regardless A+u kbd mode//~vb2jI~
@@ -2648,15 +2649,18 @@ int fileoptionchk(PUCLIENTWE Ppcw,PUFILEH Ppfh,UCHAR Popt,int Pbinsw)//~v75HI~
         UCBITOFF(Ppfh->UFHflag5,UFHF5DROPTAB);   //tab clear at save//~va5YI~
     }                                                              //~va50R~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50R~
-    if (UCBITCHK(Ppfh->UFHflag8,UFHF8UTF8))                        //+vbc0I~
-    {                                                              //+vbc0I~
-    	if (UCBITCHK(Ppfh->UFHflag10,UFHF10RECORD))	//record mode read//+vbc0I~
-        {                                                          //+vbc0I~
-            uerrmsg("Record mode and CPU8 mode is inconsistent",   //+vbc0I~
-                    "レコードモードは CPU8 モードでは使えません"); //+vbc0I~
-            return 4;                                              //+vbc0I~
-        }                                                          //+vbc0I~
-    }                                                              //+vbc0I~
+  if (!Sswprechk)		//not prechk(after profile chk)            //+vbg0I~
+  {                                                                //+vbg0I~
+    if (UCBITCHK(Ppfh->UFHflag8,UFHF8UTF8))                        //~vbc0I~
+    {                                                              //~vbc0I~
+    	if (UCBITCHK(Ppfh->UFHflag10,UFHF10RECORD))	//record mode read//~vbc0I~
+        {                                                          //~vbc0I~
+            uerrmsg("Record mode and CPU8 mode is inconsistent",   //~vbc0I~
+                    "レコードモードは CPU8 モードでは使えません"); //~vbc0I~
+            return 4;                                              //~vbc0I~
+        }                                                          //~vbc0I~
+    }                                                              //~vbc0I~
+  }                                                                //+vbg0I~
 	if (UCBITCHK(Ppfh->UFHflag7,UFHF7FIXLRECL))                    //~v71VI~
 #ifdef UTF8EBCD   //raw ebcdic file support                        //~va5YI~
       if (!UCBITCHK(Ppfh->UFHflag10,UFHF10EBC))//not EBC file      //~va5YI~

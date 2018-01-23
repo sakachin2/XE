@@ -1,3 +1,8 @@
+//*********  20180123 v129F released    ****************
+//v6R1:180123 set Buffsz=recordsize if recordmode for performance
+//            ufile5.c
+//v6R0:180123 (BUG)Sbinsw=2(optionally bin mode by 1st 4096 byte) should be cleared;read until eof and crash if oveflow Gfilebuff(32760*4) 
+//            ufile5.c
 //*********  20180109 v129E released    ****************
 //v6Q0:180109 Api to get Windows version was changed
 //            udos.c/h

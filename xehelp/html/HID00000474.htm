@@ -17,7 +17,9 @@ a:hover{font-weight:bold;}-->
   .v129C<--129B:(2017/09/04)
   .v129D&lt;--129C:(2017/11/30)
  <SPAN STYLE="color:#000000;font-size:12pt;"> .v129E&lt;--129D:(2018/01/09)</SPAN>
-     1.BUGs
+  .v129F&lt;--129E:(2018/01/23)</SPAN></PRE>
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;">
+    1.BUGs
        -(Windows:64)"&"(spawn executable file) dir cmd crush.
        -(64Bit) =3.14 crush
        -(Win64) Erroneous calculation when Datatype is X(Hex),O(octal).
@@ -27,6 +29,13 @@ a:hover{font-weight:bold;}-->
        -(Wxe)Crash when File-&gt;New menuitem was selected.
      (129E)
        -(Windows Console version) Japanese Error msg on header line may be corrupted.
+     (129F)
+       -Edit/Browse Command
+        .Shows only last record when record mode with RecordSize&gt;4096
+         and 1st record contains ControlChar(&lt;0x20).
+         Or crashes if FileSize&gt;128K
+        .CPLC option registered on profile record was ignored when record mode.
+         ("CPLC" option was required each time)
 
      2.Additional function.
 

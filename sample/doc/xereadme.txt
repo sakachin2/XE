@@ -1,4 +1,4 @@
-||*CID:||+v129R~:  2017/11/30              update#=  567;             ||~v129R~||~v129R~
+||*CID:||+v129R~:  2018/01/23              update#=  573;             ||~v129R~||~v129R~
 ######################################################################
 [English]    v1.29                                                    ||~v128R~||~v129R~
 
@@ -2434,7 +2434,9 @@ How to start.
 ######################################################################||~v129R~
   .v129B<--129 :(2017/07/27)                                          ||~v129R~
   .v129C<--129B:(2017/09/04)                                          ||~v129I~
-  .v129D<--129B:(2017/11/30)                                          ||~v129R~
+  .v129D<--129C:(2017/11/30)                                          ||~v129R~
+  .v129E<--129D:(2018/01/09)                                          ||~v129R~
+  .v129F<--129E:(2018/01/23)                                          ||~v129R~
                                                                       ||~v129R~
      1.BUGs                                                           ||~v129R~
        -(Windows:64)"&"(spawn executable file) dir cmd crush.         ||~v129R~
@@ -2444,6 +2446,16 @@ How to start.
      (129D)                                                           ||~v129R~
        -(Linux)Under GTK3 environmentt, Accelerator option on Setup dialog was not work.||~v129R~
        -(Wxe)Crash when File->New menuitem was selected.              ||~v129R~
+     (129E)                                                           ||~v129I~
+       -(Windows Console version) Japanese Error msg on header line may be corrupted.||~v129I~
+     (129F)                                                           ||+v129I~
+       -Edit/Browse Command                                           ||+v129I~
+        .Shows only last record when record mode with RecordSize>4096 ||+v129I~
+         and 1st record contains ControlChar(<0x20).                  ||+v129I~
+         Or crashes if FileSize>128K                                  ||+v129I~
+        .CPLC option registered on profile record was ignored when record mode.||+v129I~
+         ("CPLC" option was required each time)                       ||+v129I~
+                                                                      ||~v129I~
                                                                       ||~v129R~
      2.Additional function.                                           ||~v129I~
                                                                       ||~v129I~
@@ -2494,7 +2506,7 @@ How to start.
                numeric specification for both label 1 and 2 are accepted as lineno.||~v129I~
                Block mode with col1/2, Range mode without col1/2.     ||~v129I~
                "Selct All" without label/column.                      ||~v129I~
-               e.g.) sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;       ||+v129I~
+               e.g.) sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;       ||~v129I~
           .Select range to Cut/Copy/Paste on Edit panel.              ||~v129I~
            Under range mode, selected range itself is target of Paste Range mode.||~v129I~
           .Abridged format command "S" is not available               ||~v129I~
@@ -2502,6 +2514,14 @@ How to start.
         (Wxe,gxe)                                                     ||~v129I~
           ."SelectAll" menuitem was added to File submenu and popup menu on edit panel.
           .Set shotcut key to Ctrl+A and cabnged to Ctrk+Shift+A for SaveAs.
+                                                                      ||~v129I~
+     (129E)                                                           ||~v129I~
+       -XML tag pairing search                                        ||~v129I~
+          .Default shortcut key is Alt+"/"                            ||~v129I~
+          .Use shortcut key on "<" or ">"                             ||~v129I~
+          .Comment portion(from "<!--" to  "-->") is ignored          ||~v129I~
+           and recognize nested tag.                                  ||~v129I~
+           It is convenient to correct html automation tool generated.||~v129I~
                                                                       ||~v129I~
      3.Miscellaneous.                                                 ||~v129R~
        -(Windows) add "msi" as executable binary extension            ||~v129R~
@@ -2516,6 +2536,11 @@ How to start.
      (129D)                                                           ||~v129R~
        -Disable also menuitem of File submenu depending panel type.   ||~v129R~
         e.g. Save is disable for directory list panel.                ||~v129R~
+                                                                      ||~v129I~
+     (129E)                                                           ||~v129I~
+       -(Windows Console version) When ligature:on on windows10,      ||~v129I~
+        UTF8 file lines of Japanese Kanji shrinks to unreadable.      ||~v129I~
+        So, reject Ligature:On for from Windows7.                     ||~v129I~
                                                                       ||~v129I~
      4.Tool.                                                          ||~v129I~
      (129C)                                                           ||~v129I~

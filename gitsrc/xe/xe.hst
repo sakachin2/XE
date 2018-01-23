@@ -1,3 +1,6 @@
+//*********  20180123 v129F released *********************************
+//vbg0:180123 (BUG)errmsg "conflict recordmode and CPU8" evenif profile record has cplc option,rejected at optopn prechk
+//            xefile5.c
 //*********  20180109 v129E released *********************************
 //vbf0:180109 WriteConsoleOutputW(used for cpu8 ligaturemode) shrinks line on Windows10(OK on XP),prohibit ligature on for Windows7
 //            xe.c/h xeopt2.c
