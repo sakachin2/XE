@@ -1,3 +1,8 @@
+//*********  20180130 v129G released    ****************
+//v6S1:180129 (Ubuntu 17.10:gcc7.2)Lnx warning iswprint is not defined(wctype.h required)
+//            utf3.c ucvext.c
+//v6S0:180129 alternative of deprecated gnome_vfs_mime_get_default_action_type is gnome_vfs_mime_application_launch
+//            uproc3.c
 //*********  20180123 v129F released    ****************
 //v6R1:180123 set Buffsz=recordsize if recordmode for performance
 //            ufile5.c

@@ -1,9 +1,10 @@
-//*CID://+vb72R~:                             update#=  767;       //+vb72R~
+//*CID://+vbh1R~:                             update#=  769;       //~vbh1R~
 //*************************************************************    //~v72BI~
 //*xetso2.c                                                        //~v72BI~
 //**interface to xe3270                                            //~v72BI~
 //*************************************************************    //~v72BI~
-//vb72:161212 (Win10) missing error.h , use winerror.h             //+vb72I~
+//vbh1:180129 (Ubuntu 17.10:gcc7.2) compiler warning,sprintf may overflow//~vbh1I~
+//vb72:161212 (Win10) missing error.h , use winerror.h             //~vb72I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vb2F:160229 W32 64 compiler warning                              //~vb2FI~
 //vaz8:150109 C4244 except ULPTR and ULONG                         //~vaz8I~
@@ -52,11 +53,11 @@
 #include <string.h>                                                //~v72BI~
 #ifdef W32                                                         //~v72BI~
 #include <io.h>                                                    //~v72BI~
-  #ifdef WIN10                                                     //+vb72I~
-	#include <winerror.h>                                          //+vb72I~
-  #else                                                            //+vb72I~
+  #ifdef WIN10                                                     //~vb72I~
+	#include <winerror.h>                                          //~vb72I~
+  #else                                                            //~vb72I~
 #include <error.h>                                                 //~v72BI~
-  #endif                                                           //+vb72I~
+  #endif                                                           //~vb72I~
 #include <errno.h>                                                 //~v72BI~
 #endif                                                             //~v72BI~
 #ifdef ARM                                                         //~va90I~
@@ -223,7 +224,8 @@ int xetsotsocmdlogon(int Popt,PUCLIENTWE Ppcw,PUFTPHOST Ppuftph)   //~v72BR~
     PUFTPHOST puftpho;                                             //~v72BI~
     PUFILEC  pfc;                                                  //~v72BI~
     PUFILEH  pfh;                                                  //~v72BI~
-    char logtext[256];                                             //~v72BI~
+//  char logtext[256];                                             //~v72BI~//+vbh1R~
+    char logtext[4096];                                            //~vbh1I~
     int rc;                                                        //~v8@hI~
 //*********************************                                //~v72BI~
 	pfc=Ppcw->UCWpfc;                                              //~v72BI~

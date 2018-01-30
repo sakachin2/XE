@@ -1,3 +1,6 @@
+//*********  20180130 v129G released  ****************
+//vah0:180129 (Ubuntu 17.10:gcc7.2)Lnx warning sprintf overflow
+//            xdc.c
 *** update history ******************************************************************
 //*********  20170826 v129Cj updated   ****************
 //vag0:170825 xcv v1.20:create ebc mapfile if dll version was gotten by "uconv --version"

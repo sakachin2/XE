@@ -1,8 +1,9 @@
-//CID://+v9c0R~:        update#=   1045                            //+v9c0R~
+//CID://+v9g0R~:        update#=   1046                            //+v9g0R~
 //**********************************************************************
 //* xplnxp.c                                                       //~v980R~
 //**********************************************************************
-//v9c0:170128 v9.36 Gtk3 deprecated                                //+v9c0I~
+//v9g0:180129 (Ubuntu 17.10:gcc7.2)Lnx warning not reachable       //+v9g0I~
+//v9c0:170128 v9.36 Gtk3 deprecated                                //~v9c0I~
 //v9b0:161220 v9.35 warning when NOTRACE or GTK3                   //~v9b0I~
 //v9a2:160623 v9.33 issue msg "-qfile is not supported by gxp"     //~v9a2I~
 //v9a1:160418 v9.33 LNX64 Compiler warning                         //~v9a1I~
@@ -3415,11 +3416,11 @@ GtkWidget *lnx_createfw(void)                                      //~v944R~
 //button_ok = gtk_button_new_from_stock ("gtk-ok");                //~v970R~
 //gtk_widget_show (button_ok);                                     //~v970R~
 //gtk_box_pack_start (GTK_BOX (hbox),button_ok,FALSE, FALSE, 0);   //~v970R~
-#if GTK_CHECK_VERSION(3,10,0)                                      //+v9c0R~
-  button_can = gtk_button_new_with_label("Cancel");                //+v9c0R~
-#else                                                              //+v9c0R~
+#if GTK_CHECK_VERSION(3,10,0)                                      //~v9c0R~
+  button_can = gtk_button_new_with_label("Cancel");                //~v9c0R~
+#else                                                              //~v9c0R~
   button_can = gtk_button_new_from_stock ("gtk-cancel");           //~v944I~
-#endif                                                             //+v9c0R~
+#endif                                                             //~v9c0R~
   Sbutton_can=button_can;                                          //~v97mI~
   gtk_widget_show (button_can);                                    //~v944I~
   gtk_box_pack_start (GTK_BOX (hbox),button_can,FALSE, FALSE, 0);  //~v944I~
@@ -3643,7 +3644,7 @@ void done_print_init (GtkPrintOperation *operation,                //~v981I~
   	UTRACEP("done_print_init,result=%d\n",result);                 //~v988R~
 }                                                                  //~v981I~
 #ifndef WWW                                                        //~v984R~
-#ifdef VVV                                                         //+v9c0I~
+#ifdef VVV                                                         //~v9c0I~
 //***************************************************************************//~v981I~
 gboolean onpreview(GtkPrintOperation *operation,                   //~v981I~
 	   GtkPrintOperationPreview  *preview,                         //~v981I~
@@ -3653,34 +3654,34 @@ gboolean onpreview(GtkPrintOperation *operation,                   //~v981I~
 {                                                                  //~v981I~
     cairo_t *cr;                                                   //~v984R~
     GdkWindow *gdkw;                                               //~v984R~
-#if GTK_CHECK_VERSION(3,22,0)                                      //+v9c0I~
-    GdkDrawingContext *gdkdc;                                      //+v9c0I~
-    cairo_region_t *preg;                                          //+v9c0I~
-    cairo_rectangle_int_t *prect;                                  //+v9c0I~
-#endif                                                             //+v9c0I~
+#if GTK_CHECK_VERSION(3,22,0)                                      //~v9c0I~
+    GdkDrawingContext *gdkdc;                                      //~v9c0I~
+    cairo_region_t *preg;                                          //~v9c0I~
+    cairo_rectangle_int_t *prect;                                  //~v9c0I~
+#endif                                                             //~v9c0I~
 //*******************                                              //~v981I~
   	printf("onpreview preview_context=%p,cairo_t*=%p\n",context,gtk_print_context_get_cairo_context(context));//~v981R~
     gdkw=gtk_widget_get_window(GTK_WIDGET(parent));                //~v984R~
-#if GTK_CHECK_VERSION(3,22,0)                                      //+v9c0I~
-	rect.x=0; rect.y=0; rect.width=0; rect.height=0;               //+v9c0I~
-	preg=cairo_region_create_rectangle(&rect);                     //+v9c0I~
-	gdkdc=gdk_window_begin_draw_frame(gdkw,preg);                  //+v9c0I~
-	cr=gdk_drawing_context_get_cairo_context(gdkdc);               //+v9c0I~
-#else                                                              //+v9c0I~
+#if GTK_CHECK_VERSION(3,22,0)                                      //~v9c0I~
+	rect.x=0; rect.y=0; rect.width=0; rect.height=0;               //~v9c0I~
+	preg=cairo_region_create_rectangle(&rect);                     //~v9c0I~
+	gdkdc=gdk_window_begin_draw_frame(gdkw,preg);                  //~v9c0I~
+	cr=gdk_drawing_context_get_cairo_context(gdkdc);               //~v9c0I~
+#else                                                              //~v9c0I~
     cr=gdk_cairo_create(gdkw);                                     //~v984R~
-#endif                                                             //+v9c0I~
+#endif                                                             //~v9c0I~
     gtk_print_context_set_cairo_context(context,cr,600.0,600.0);   //~v984R~
     gtk_print_operation_preview_end_preview(preview);              //~v984R~
     printf("onpreview return cr=%p,cairo_t*=%p\n",cr,gtk_print_context_get_cairo_context(context));//~v984R~
-#if GTK_CHECK_VERSION(3,22,0)                                      //+v9c0I~
-	cairo_region_destroy(preg);                                    //+v9c0I~
-#endif                                                             //+v9c0I~
+#if GTK_CHECK_VERSION(3,22,0)                                      //~v9c0I~
+	cairo_region_destroy(preg);                                    //~v9c0I~
+#endif                                                             //~v9c0I~
     return TRUE;                                                   //~v984R~
 //    gtk_print_operation_preview_end_preview(preview);            //~v984R~
 //    return FALSE;                                                //~v984R~
 }                                                                  //~v981I~
-#endif  //VVV                                                      //+v9c0I~
-#endif  //WWW                                                      //+v9c0R~
+#endif  //VVV                                                      //~v9c0I~
+#endif  //WWW                                                      //~v9c0R~
 //***************************************************************************//~v970I~
 GtkPrintSettings *lnx_settings(GtkPrintOperation *Pppo)            //~v970R~
 {                                                                  //~v970I~
@@ -5526,9 +5527,9 @@ getshiftparm(char *Pparm)                                          //~v977M~
         case 'O':      //shift origin                              //~v98aI~
 			sworigin=1;                                            //~v98aI~
 #else                                                              //~v98hR~
-			swmargin=0;                                            //~v98hI~
+//			swmargin=0;                                            //~v98hI~//+v9g0R~
 #endif                                                             //~v98hI~
-            break;                                                 //~v98aI~
+//          break;                                                 //~v98aI~//+v9g0R~
 #ifndef MMM                                                        //~v98hI~
         case 'M':      //shift origin                              //~v98hI~
 			swmargin=1;                                            //~v98hI~

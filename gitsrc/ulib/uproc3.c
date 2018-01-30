@@ -1,4 +1,4 @@
-//*CID://+v6G2R~:                              update#=  434;      //~v6G2R~
+//*CID://+v6G2R~:                              update#=  453;      //~v6G2R~
 //************************************************************* //~5825I~
 //*uproc3.c                                                        //~v5kkR~
 //* ushellexec,uprocconnect                                        //~v5jaR~
@@ -66,6 +66,8 @@
 //	#include <libgnomevfs/gnome-vfs-mime-info.h>                   //~v5g9I~
 	#include <libgnomevfs/gnome-vfs-mime-handlers.h>               //~v5g9I~
 	#include <libgnomevfs/gnome-vfs-mime.h>                        //~v5g9I~
+	#include <libgnomevfs/gnome-vfs-file-info.h>                   //~v6G2R~
+	#include <libgnomevfs/gnome-vfs-ops.h>                         //~v6G2I~
    #endif //ARM                                                    //~v6a0I~
   #endif                                                           //~v59jI~
 	#include <sys/stat.h>                                          //~v327I~
@@ -237,15 +239,18 @@ int ushellexecsub(char *Pfpath,char *Pcmd,int Ptermuse);           //~v5g9I~
 int ushellexec(int Popt,char *Pfnm)                                //~v5g9I~
 {                                                                  //~v5g9M~
 int ushellexecsub(char *Pfpath,char *Pcmd,int Ptermuse);           //~v5g9I~
-#ifdef AAA                                                         //+v6G2I~
+#ifdef AAA                                                         //~v6G2I~
     GnomeVFSMimeActionType actiontype;                             //~v5g9M~
-#endif                                                             //+v6G2I~
+#endif                                                             //~v6G2I~
     GnomeVFSMimeApplication *papp;                                 //~v5g9M~
 	char *pmimetype,*puri,*pparmname,*pdircmd=0,*pcmd,*pname;      //~v5gbR~
     char fpath[_MAX_PATH];                                         //~v5g9M~
     int rc=0,termsw,simid,termid,actiontypeerr=0,reqterm;          //~v5gbR~
 #define MIME_DIR  "x-directory/"                                   //~v5gbI~
 #define MIME_DIR_CMD  "nautilus"                                   //~v5gbI~
+    GnomeVFSFileInfo finf;                                         //~v6G2I~
+    GnomeVFSFileInfoOptions optfi;                                 //~v6G2I~
+	char *pmimetypeslow;                                           //~v6G2I~
 //*********************                                            //~v5g9M~
 	termid=ukbdl_gettermid();                                      //~v5g9R~
     if ((termid & TERM_IDMASK)==TERM_TTYLCONS)                     //~v5g9R~
@@ -284,6 +289,17 @@ int ushellexecsub(char *Pfpath,char *Pcmd,int Ptermuse);           //~v5g9I~
     	return -1;		//no mime type defined                     //~v5g9M~
     }                                                              //~v5g9I~
     papp=gnome_vfs_mime_get_default_application(pmimetype);        //~v5jnI~
+    UTRACEP("%s,getdefault app mimetype=%s,papp=%p\n",UTT,pmimetype,papp);//+v6G2R~
+    if (!papp)                                                     //~v6G2I~
+    {                                                              //~v6G2I~
+        optfi=GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE|GNOME_VFS_FILE_INFO_GET_MIME_TYPE;//~v6G2I~
+        gnome_vfs_get_file_info(puri,&finf,optfi);                 //~v6G2I~
+        pmimetypeslow=finf.mime_type;                              //~v6G2R~
+	    papp=gnome_vfs_mime_get_default_application(pmimetypeslow);//~v6G2I~
+        UTRACEP("%s,fileinfo slow mimetype=%s,papp=%p\n",UTT,pmimetypeslow,papp);//~v6G2I~
+        if (papp)                                                  //~v6G2I~
+        	pmimetype=pmimetypeslow;                               //~v6G2R~
+    }                                                              //~v6G2I~
   if (!papp)	//no application defined                           //~v5jnI~
   {                                                                //~v5jnI~
 #ifdef AAA                                                         //~v6G2I~

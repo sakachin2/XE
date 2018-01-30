@@ -1,182 +1,182 @@
-||*CID:||+129FR~:  2018/01/23                update#=  804;           ||+129FR~
+||*CID:||+129GR~:  2018/01/30                update#=  806;           ||~129FR~||~129GR~
 ######################################################################
-[Japanese]    v1.29F                                                  ||+129FR~
+[Japanese]    v1.29G                                                  ||~129FR~||~129GR~
 
-���C���t���[��(SPF�t�@�C���̕ҏW�ɂ��֗�) �� PC �� �����d�����Ă���l�Ɏg���Ղ��G�f�B�^�[�B
-�z�X�g��SPF���x�[�X��PC��EDITOR�֗̕��ȃL�[������n�C�u���b�h�B
+メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。||+129GR~
+ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。||+129GR~
 
-    .Windows�ŁALinux�ł���
-    .���s�R�[�h�Ȃ��̌Œ蒷���R�[�h/�ϒ��t�@�C���T�|�[�g�B
-    .UTF8�t�@�C���AEBCDIC(ICU�̓������K�v)�t�@�C���ҏW�B
-    .�o�C�i���[�G�f�B�^�[(�c2�iHEX����HEX�\���j
-    .�t�@�C���[(�t�H���_�[�\���A�폜�A�����A���ʁA���s...)
-    .�����[�g�A�N�Z�X�B
+    .Windows版、Linux版あり                                      ||+129GR~
+    .改行コードなしの固定長レコード/可変長ファイルサポート。||+129GR~
+    .UTF8ファイル、EBCDIC(ICUの導入が必要)ファイル編集。||+129GR~
+    .バイナリーエディター(縦2段HEXか横HEX表示）      ||+129GR~
+    .ファイラー(フォルダー表示、削除、改名、複写、実行...)||+129GR~
+    .リモートアクセス。                                      ||+129GR~
        ftp,samba,rsh,ssh,fuse
-    .�I�v�V�����ŕύX�s�ɏC���^�O�������t�^�B
+    .オプションで変更行に修正タグを自動付与。     ||+129GR~
 
-  ���C�Z���X:GNU GPL �ɏ]���B
+  ライセンス:GNU GPL に従う。                                ||+129GR~
 
-                                   By �����}�` (sakachin2@yahoo.co.jp)
+                                   By 水巻マチ (sakachin2@yahoo.co.jp)||+129GR~
 
                                    http://hp.vector.co.jp/authors/VA010562
                                    http://www.geocities.jp/sakachin2/index.htm
                                    GitHub: sakachin2/XE
 
-WIN�ł�GUI�ł�WIN32�R���\�[���A�v���P�[�V�����ł�����܂��B
-   Console��:xe.exe �̓R�}���h�v�����v�g�œ����}�E�X�̓T�|�[�g���Ă��܂���B
-   GUI��:wxe.exe ��WTL/ATL��(MFC�s�g�p)��vs2010Express�ŃR���p�C���������̂ł�
-   w64binGit.zip����
-Linux�ł�GUI��:gxe ��TerminalEmulator��:xe ������܂��B
-   gxe-x.xx.tar.gz �� �𓀂� ./configure && make �ŃC���X�g�[��
-�ȉ��̃R���\�[���Ńc�[�����܂܂�Ă��܂�
-   xads         (Win�ł̂�)NTFS�t�@�C���V�X�e����ADS(Alternative Data Stream)�A�N�Z�X�B
-   xbc          �ȈՌv�Z�c�[���B
-   xci          C/C++/Java�e�L�X�g�t�@�C���̃C���f���e�[�V����
-   xcv          �R�[�h�ϊ��c�[���B(SJIS,EUC,Unicode,UTF-8,EBCDIC,�C�ӂ̃R�[�h�y�[�W)
-   xcvsjisc     �\�[�X�t�@�C������SJIS�R�[�h���W�i�\�L�ɕϊ�����B
-   xdc          �f�B���N�g���[��r�c�[��
-   xdd          �f�B���N�g���[�폜�c�[��
-   xdig         �f�B���N�g���[�E�H�[�N�c�[��
-                �f�B���N�g���[���̑S�T�u�f�B���N�g���[/�t�@�C���Ɏw���
-                �R�}���h����p������v���O����.
-   xds          �f�B���N�g���[�T�C�Y�\���c�[��
-   xfc          �t�@�C����r�c�[��
-   xff          �T�C�Y�A�^�C���X�^���v�ɂ��t�@�C���T�[�`
-   xfg          �e�L�X�g/�o�C�i���|(Recursive)�t�@�C��������T��
-   xfmt         �t�@�C���t�B�[���h�t�H�[�}�b�^�[
-   xfs          �t�@�C���̕���/����.�傫�ȃt�@�C���̃f�B�X�P�b�g�ւ�
-                �o�b�N�A�b�v/���X�g�A�[�Ɏg���܂�
-   xkp          (WIN)�v���Z�XID�̕\���ƃv���Z�X��kill
-   xlow         �啶���t�@�C�������������ɉ����B
-   xmj          2 �t�@�C���}�b�`���O�B
-   xpe          errno(libc�̃G���[�ԍ�)�̐�����\������B
-   xts          �t�@�C���̃^�C���X�^���v�̕\��/�ύX
-   xver         OS�o�[�W��������ERRORLEVEL��ݒ�
+WIN版はGUI版とWIN32コンソールアプリケーション版があります。||+129GR~
+   Console版:xe.exe はコマンドプロンプトで動きマウスはサポートしていません。||+129GR~
+   GUI版:wxe.exe はWTL/ATL版(MFC不使用)でvs2010Expressでコンパイルしたものです||+129GR~
+   w64binGit.zipを解凍                                             ||+129GR~
+Linux版はGUI版:gxe とTerminalEmulator版:xe があります。    ||+129GR~
+   gxe-x.xx.tar.gz を 解凍し ./configure && make でインストール||+129GR~
+以下のコンソール版ツールも含まれています          ||+129GR~
+   xads         (Win版のみ)NTFSファイルシステムのADS(Alternative Data Stream)アクセス。||+129GR~
+   xbc          簡易計算ツール。                              ||+129GR~
+   xci          C/C++/Javaテキストファイルのインデンテーション||+129GR~
+   xcv          コード変換ツール。(SJIS,EUC,Unicode,UTF-8,EBCDIC,任意のコードページ)||+129GR~
+   xcvsjisc     ソースファイル中のSJISコードを８進表記に変換する。||+129GR~
+   xdc          ディレクトリー比較ツール                  ||+129GR~
+   xdd          ディレクトリー削除ツール                  ||+129GR~
+   xdig         ディレクトリーウォークツール            ||+129GR~
+                ディレクトリー内の全サブディレクトリー/ファイルに指定の||+129GR~
+                コマンドを作用させるプログラム.        ||+129GR~
+   xds          ディレクトリーサイズ表示ツール         ||+129GR~
+   xfc          ファイル比較ツール                           ||+129GR~
+   xff          サイズ、タイムスタンプによるファイルサーチ||+129GR~
+   xfg          テキスト/バイナリ−(Recursive)ファイル文字列探索||+129GR~
+   xfmt         ファイルフィールドフォーマッター      ||+129GR~
+   xfs          ファイルの分割/統合.大きなファイルのディスケットへの||+129GR~
+                バックアップ/リストアーに使えます     ||+129GR~
+   xkp          (WIN)プロセスIDの表示とプロセスのkill    ||+129GR~
+   xlow         大文字ファイル名を小文字に改名。      ||+129GR~
+   xmj          2 ファイルマッチング。                      ||+129GR~
+   xpe          errno(libcのエラー番号)の説明を表示する。||+129GR~
+   xts          ファイルのタイムスタンプの表示/変更  ||+129GR~
+   xver         OSバージョンからERRORLEVELを設定            ||+129GR~
 
-   xprint       �e�L�X�g�t�@�C���v�����g���[�e�B���e�B
-   gxp          Linux GTKPrint�� xprint
+   xprint       テキストファイルプリントユーティリティ||+129GR~
+   gxp          Linux GTKPrint版 xprint                              ||+129GR~
 
 
-���̑��̃t�H���_�[�̓��e
+その他のフォルダーの内容                                  ||+129GR~
   xehelp:
-    Browser�p�w���v�t�@�C��
-    ���[�N�f�B���N�g���[�ɒu�����Axehelp���ϐ�
-    ���邢��/hd�R�}���h���C���p�����[�^�ňʒu�w�肷��B
-    Linux�łł̂���ȊO�̒u���ꏊ��xelnxj.txt���Q�Ƃ��Ă�������
+    Browser用ヘルプファイル                                   ||+129GR~
+    ワークディレクトリーに置くか、xehelp環境変数   ||+129GR~
+    あるいは/hdコマンドラインパラメータで位置指定する。||+129GR~
+    Linux版でのこれ以外の置き場所はxelnxj.txtを参照してください||+129GR~
   sample\doc:
-    �e�L�X�g�t�@�C���`���̃}�j���A��
+    テキストファイル形式のマニュアル                  ||+129GR~
       xej.txt/xee.txt
       xereadmj.txt/xereadme.txt
-      xelnxj.txt/xelnxe.txt(Linux�ŗp)
-      xewxej.txt/xewxee.txt(GUI��:wxe/gxe�p)
+      xelnxj.txt/xelnxe.txt(Linux版用)                              ||+129GR~
+      xewxej.txt/xewxee.txt(GUI版:wxe/gxe用)                        ||+129GR~
   sample\data:
-      xehosts      �����[�g�t�@�C���A�N�Z�X�p�T���v���z�X�c�t�@�C���B
-      xesynw.cfg   (Win)�V���^�b�N�X�n�C���C�g�p�ݒ�t�@�C���B
-      xeebc.map    EBCDIC �ϊ��p�ݒ�t�@�C��
+      xehosts      リモートファイルアクセス用サンプルホスツファイル。||+129GR~
+      xesynw.cfg   (Win)シンタックスハイライト用設定ファイル。||+129GR~
+      xeebc.map    EBCDIC 変換用設定ファイル                 ||+129GR~
 
-  sample\staff:�O���c�[����p�ӂł��Ȃ��ꍇ�͈ȉ��̂��̂����g����������
+  sample\staff:外部ツールを用意できない場合は以下のものをお使いください||+129GR~
 
-      grep.exe     �R�}���h�s�� GREp �R�}���h�A=3.14 ��ʂŎg�p���܂�
+      grep.exe     コマンド行の GREp コマンド、=3.14 画面で使用します||+129GR~
 
-      �V���^�b�N�X�n�C���C�g�Ŏg�p���܂��A���̂ǂ��炩��I��� xesynw.cfg �Ŏw�肵�܂�
-        �g������ xej.txt �� xesynw.cfg �����Ă�������
+      シンタックスハイライトで使用します、次のどちらかを選んで xesynw.cfg で指定します||+129GR~
+        使い方は xej.txt や xesynw.cfg を見てください     ||+129GR~
         gnu-source-highlight.zip
-                     (Win)GNU source-highlight v2.9 �� MinGW��ŃR���p�C�����܂����B
+                     (Win)GNU source-highlight v2.9 を MinGW上でコンパイルしました。||+129GR~
         WinHighlight31.copies2.zip
                      andre simon's highlight v3.1
-                     exe �� dll �̃t�H���_�[�𗣂��Ȃ��ł�������
+                     exe と dll のフォルダーを離さないでください||+129GR~
       putty063.zip
-                     �����[�g�A�N�Z�X�� putty ���g�p����ꍇ�ɕK�v�ł�
+                     リモートアクセスに putty を使用する場合に必要です||+129GR~
 
 
-�N�����@
+起動方法                                                          ||+129GR~
 
-  (Windows��)
+  (Windows版)                                                        ||+129GR~
 
-  �D���[�N�t�H���_�[���쐬����A�ȗ��l��c:\xe_wd���� c:\�͕ی삳��Ă���\��������̂Ŕ����Ă�������
-    �Ⴆ��  "mkdir d:\xe_wd"
-  �D���[�N�t�H���_�[�� zip�t�@�C����u��,�����ŉ𓀂���
-      �K�v�ɉ����� sample\data �t�H���_�[����xehosts �Ȃǂ̐ݒ�p�t�@�C�������[�N�t�H���_�[�ɃR�s�[���C�����Ă�������
-      �����̋@�\���g�p���Ȃ��ꍇ�� �R�����g�s("#") 1�s�̃t�@�C���ɂ��Ă�������
-  . ���s�\�t�@�C���� PATH ��ʂ�.
-      Windows10�̏ꍇ�A�R���g���[���p�l��-->�V�X�e���ƃZ�L�����e�B-->�V�X�e��-->�V�X�e���̏ڍאݒ�-->���ϐ�:PATH
-  . ���|�N�f�B���N�g���[�������ϐ�:xe �ɃZ�b�g����
-      ���邢�� �C�ӂɍ쐬���� xe �N���p�R�}���h�t�@�C�����쐬����
-      �Ⴆ�� xe.bat
+  ．ワークフォルダーを作成する、省略値はc:\xe_wdだが c:\は保護されている可能性があるので避けてください||+129GR~
+    例えば  "mkdir d:\xe_wd"                                       ||+129GR~
+  ．ワークフォルダーに zipファイルを置き,そこで解凍する||+129GR~
+      必要に応じて sample\data フォルダーからxehosts などの設定用ファイルをワークフォルダーにコピーし修正してください||+129GR~
+      それらの機能を使用しない場合は コメント行("#") 1行のファイルにしてください||+129GR~
+  . 実行可能ファイルに PATH を通す.                       ||+129GR~
+      Windows10の場合、コントロールパネル-->システムとセキュリティ-->システム-->システムの詳細設定-->環境変数:PATH||+129GR~
+  . ワ−クディレクトリー名を環境変数:xe にセットする||+129GR~
+      あるいは 任意に作成した xe 起動用コマンドファイルを作成する||+129GR~
+      例えば xe.bat                                                ||+129GR~
                set xe=d:\xe010
                xe.exe
-            �����
+            あるは                                                 ||+129GR~
                xe.exe /wd:\xe010
-  �Dxe [�t�@�C����] �ŋN������
-      �R�}���h���C�� �p�����[�^��  xe /? �ŕ\������܂�
-  . wxe �������ł�
+  ．xe [ファイル名] で起動する                             ||+129GR~
+      コマンドライン パラメータは  xe /? で表示されます||+129GR~
+  . wxe も同じです                                               ||+129GR~
 
-  (Linux��)
-  .�^�[�~�i���G�~�����[�^�[���J���A�K���ȏꏊ�ŉ𓀂�configure/make/install
+  (Linux版)                                                          ||+129GR~
+  .ターミナルエミュレーターを開き、適当な場所で解凍しconfigure/make/install||+129GR~
       tar -zxvf gxe-1.xx.tar.gz
       cd
       ./configure
       make
-      sudo make install   -->/usr/local/bin�ɃC���X�g�[��
-    ��肪����������sample�t�H���_�[�� READMEj.txt ���Q�Ƃ��Ă�������
-    �K�v�Ȃ�/usr/local/bin�ɃC���X�g�[������Ȃ��R�}���h���C���c�[����
-    src/xsub �t�H���_�[����蓮�ŃR�s�[���Ă�������
-  .���[�N�t�H���_�[�� home �ɍ쐬
-      mkdir ~/xe_wdnnnnn     nnnnn �� ���[�U�[ID�ԍ�
-    �K�v�ɉ����� sample �t�H���_�[����xehosts �Ȃǂ̐ݒ�p�t�@�C�������[�N�t�H���_�[�ɃR�s�[���C�����Ă�������
-    �����̋@�\���g�p���Ȃ��ꍇ�� �R�����g�s("#") 1�s�̃t�@�C���ɂ��Ă�������
-  �Dxe [�t�@�C����] �ŋN������
-      �R�}���h���C�� �p�����[�^��  xe -? �ŕ\������܂�
-      F1�AF10 �� �C���L�[(Shift/Alt/Ctrl)�Ƃ̑g�ݍ��킹�̓^�[�~�i���G�~�����[�^�[��
-      �V���[�g�J�b�g�L�[�ɐݒ肳��Ă���ꍇ������܂�
-      xe �� F1�AF10 �Ȃǂ��g�p����ꍇ�^�[�~�i���G�~�����[�^�̐ݒ�ŃV���[�g�J�b�g�𖳌��ɂ���K�v������܂�
-  . gxe �̓^�[�~�i���G�~�����[�^�̃V���[�g�J�b�g�L�[�̉e���͂���܂���
+      sudo make install   -->/usr/local/binにインストール      ||+129GR~
+    問題が発生したらsampleフォルダーの READMEj.txt を参照してください||+129GR~
+    必要なら/usr/local/binにインストールされないコマンドラインツールは||+129GR~
+    src/xsub フォルダーから手動でコピーしてください||+129GR~
+  .ワークフォルダーを home に作成                         ||+129GR~
+      mkdir ~/xe_wdnnnnn     nnnnn は ユーザーID番号           ||+129GR~
+    必要に応じて sample フォルダーからxehosts などの設定用ファイルをワークフォルダーにコピーし修正してください||+129GR~
+    それらの機能を使用しない場合は コメント行("#") 1行のファイルにしてください||+129GR~
+  ．xe [ファイル名] で起動する                             ||+129GR~
+      コマンドライン パラメータは  xe -? で表示されます||+129GR~
+      F1、F10 や 修飾キー(Shift/Alt/Ctrl)との組み合わせはターミナルエミュレーターで||+129GR~
+      ショートカットキーに設定されている場合があります||+129GR~
+      xe で F1、F10 などを使用する場合ターミナルエミュレータの設定でショートカットを無効にする必要があります||+129GR~
+  . gxe はターミナルエミュレータのショートカットキーの影響はありません||+129GR~
 
 ######################################################################
-�C������.
+修正履歴.                                                         ||+129GR~
   .v010 (95/06/04)
-        ����                                                          
+        初版                                                        ||+129GR~
 ######################################################################
   .v129A<--129:(2017/06/24)
 
      1.BUGs
-       -(Windows:64)"&"(�o�C�i���[�t�@�C���񓯊����s) �f�B���N�g���[���X�g�R�}���h���N���b�V������
-       -(64Bit) =3.14 ���N���b�V������
+       -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする||+129GR~
+       -(64Bit) =3.14 がクラッシュする                        ||+129GR~
 
-     3.���̑�
-       -(Windows)�g���q:"msi" �����s�\�t�@�C���̊g���q�ɒǉ�
+     3.その他                                                      ||+129GR~
+       -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加||+129GR~
 
   .v129B<--129A:(2017/07/10)
 
      1.BUGs
 
-       -(Win64) �f�[�^�^�C�v X(Hex),O(octal) �̌v�Z���ʂ̌��
-       -(Win64) ������ʊԂ̃h���b�O�h���b�v(�t�@�C���̃R�s�[)���N���b�V��
+       -(Win64) データタイプ X(Hex),O(octal) の計算結果の誤り||+129GR~
+       -(Win64) 分割画面間のドラッグドロップ(ファイルのコピー)がクラッシュ||+129GR~
 
-     2.�@�\�ǉ�
+     2.機能追加                                                   ||+129GR~
 
-       -�����p�X���ɒZ�k�����`
+       -長いパス名に短縮名を定義                          ||+129GR~
         .SP { edit | refresh | add sp-name { file-spec | *\\ | ^*\\ } }
-            edit   : ��`�t�@�C��(::xe.shortpath) ��ҏW�\��
-                     �C�����ĕۑ�����΁A���񂩂�L���ɂȂ�
-                     ���邢�͕ۑ��� "refresh" ����ΗL���ɂȂ�܂�
-                     ��`�t�@�C���̊e�s��"�Z�k�� �t���p�X��" �̌`��
-                     �R�����g�s�͐擪�� "#"
-                     ��) srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test
+            edit   : 定義ファイル(::xe.shortpath) を編集表示||+129GR~
+                     修正して保存すれば、次回から有効になる||+129GR~
+                     あるいは保存後 "refresh" すれば有効になります||+129GR~
+                     定義ファイルの各行は"短縮名 フルパス名" の形式||+129GR~
+                     コメント行は先頭に "#"                  ||+129GR~
+                     例) srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+129GR~
                          ecws  "c:\Program Files\Android\Android Studio\gradle"
-            refresh: ��`�t�@�C�����C�������ꍇ�ɁA���̏C���𔽉f������
-                     "sp edit" ��ʂŏC���A�ۑ��� ���邢�͒��� ::xe.shortpath �t�@�C����
-                     ���̃v���Z�X�ŏC��������Ɏg�p����
-            add    : ��`�t�@�C���� sp-name:�Z�k��, file-spec:�^�[�Q�b�g�t�@�C���� �̍s��ǉ�
-                     ���̒�`�͂����g�p�ł���
-                     *\ :���݊J���Ă���t�@�C��/�f�B���N�g���[,
-                     ^*\:������ʂ̑����Ō��݊J���Ă���t�@�C��/�f�B���N�g���[
-                     ���󋵂��K���Ȃ�Ύg�p�ł���
-                     ��) sp add srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test
+            refresh: 定義ファイルを修正した場合に、その修正を反映させる||+129GR~
+                     "sp edit" 画面で修正、保存後 あるいは直接 ::xe.shortpath ファイルを||+129GR~
+                     他のプロセスで修正した後に使用する||+129GR~
+            add    : 定義ファイルに sp-name:短縮名, file-spec:ターゲットファイル名 の行を追加||+129GR~
+                     この定義はすぐ使用できる             ||+129GR~
+                     *\ :現在開いているファイル/ディレクトリー,||+129GR~
+                     ^*\:分割画面の他方で現在開いているファイル/ディレクトリー||+129GR~
+                     も状況が適当ならば使用できる       ||+129GR~
+                     例) sp add srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test||+129GR~
                          sp add ecws  "c:\Program Files\Android\Android Studio\gradle"
-        .�Z�k���� "sp:"�v���t�B�b�N�X�Ŏg�p����
-         (sp:xxx �� xxx ������`�̏ꍇ�͂��̂܂� "sp:xxx" �Ƃ��Ďg�p�����)
-           ��) e sp:srctest1\Main.java
+        .短縮名は "sp:"プレフィックスで使用する       ||+129GR~
+         (sp:xxx の xxx が未定義の場合はそのまま "sp:xxx" として使用される)||+129GR~
+           例) e sp:srctest1\Main.java                               ||+129GR~
                e sp:ecws
                e "sp:ecws\space embedded name"
                xcopy sp:ecdir\x1 sp.ecdir\x2
@@ -186,99 +186,113 @@ Linux�ł�GUI��:gxe ��TerminalEmulator��:xe ������܂��B
                                                                       ||~129DI~
      1.BUGs                                                           ||~129DI~
                                                                       ||~129DI~
-     2.�@�\�ǉ�                                                       ||~129DI~
-       -Find �R�}���h                                                 ||~129DI~
-          �f�B���N�g���[���X�g��� ATTR(����)���݂̂�T���I�v�V������ǉ�||~129DI~
-          �啶���������̋�ʂ͂��܂���                                ||~129DI~
-          �������ɂ͕\������Ă��Ȃ��� �f�B���N�g���[�ɂ� "d"�A�V���{���b�N�����N�ɂ� "L" ���w�肷��||~129DI~
-          �܂� "d" �� "L" �͂��ꂼ��P�ƂŎw�肵�Ă�������            ||~129DI~
-          ����ȊO�̑����� Windows�ł� �w��̈��̑������ׂĂ��܂ލs����v�s�Ƃ�||~129DI~
-          Linux�ł͑����w��̕�������܂ލs����v�s�Ƃ���             ||~129DI~
-          Linux�œ���ȑ������̒l��                                   ||~129DI~
+     2.機能追加                                                       ||~129DI~||+129GR~
+       -Find コマンド                                                 ||~129DI~||+129GR~
+          ディレクトリーリスト上で ATTR(属性)欄のみを探すオプションを追加||~129DI~||+129GR~
+          大文字小文字の区別はしません                                ||~129DI~||+129GR~
+          属性欄には表示されていないが ディレクトリーには "d"、シンボリックリンクには "L" を指定する||~129DI~||+129GR~
+          また "d" と "L" はそれぞれ単独で指定してください            ||~129DI~||+129GR~
+          それ以外の属性は Windowsでは 指定の一つ一つの属性すべてを含む行が一致行とし||~129DI~||+129GR~
+          Linuxでは属性指定の文字列を含む行が一致行とする             ||~129DI~||+129GR~
+          Linuxで特殊な属性欄の値は                                   ||~129DI~||+129GR~
             u:setuid, g:setgid, S:setuid+setgid, t:stickey            ||~129DI~
             c:char device, b:block device, p:pipe, s:socket           ||~129DI~
-        ��) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr||~129DI~
+        例) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr||~129DI~||+129GR~
             (Linux)   f 775 attr ; f u attr                           ||~129DI~
                                                                       ||~129DI~
-     3.���̑�                                                         ||~129DI~
-       -(Windows)ICU EBCDIC�ϊ����C�u�����[libicuuc.dll��������Ȃ��Ƃ�||~129DI~
-        xeebc.map�� ICU_DATA �̎w�肪����΂��̃t�H���_�[�����`�F�b�N����||~129DI~
-        �Ȃ���� ���ϐ� ICU_DATA ���`�F�b�N����                     ||~129DI~
-        (Linux)/usr/lib �ȂǈȊO�ɂ���ꍇ�� LD_LIBRARY_PATH ���ϐ��� ICU �� so �̃p�X�����Ă��Ă�������||~129DI~
-       -xeebc.map �� ICU_DLL_SUFFIX, ICU_APP_SUFFIX �� �Ȃ��Ƃ�       ||~129DI~
-        ICU �� uconv(.exe) �� ICU �̃o�[�W������������΂����₤    ||~129DI~
-       -CPU8(UTF8)�t�@�C���ł̓��R�[�h���͕s��Ȃ̂�/Mr(���R�[�h���[�h)�I�v�V�����͎󂯕t���Ȃ�||~129DI~
+     3.その他                                                         ||~129DI~||+129GR~
+       -(Windows)ICU EBCDIC変換ライブラリーlibicuuc.dllが見つからないとき||~129DI~||+129GR~
+        xeebc.mapに ICU_DATA の指定があればそのフォルダー内もチェックする||~129DI~||+129GR~
+        なければ 環境変数 ICU_DATA もチェックする                     ||~129DI~||+129GR~
+        (Linux)/usr/lib など以外にある場合は LD_LIBRARY_PATH 環境変数に ICU の so のパスをしてしてください||~129DI~||+129GR~
+       -xeebc.map に ICU_DLL_SUFFIX, ICU_APP_SUFFIX が ないとき       ||~129DI~||+129GR~
+        ICU の uconv(.exe) で ICU のバージョンが分かればそれを補う    ||~129DI~||+129GR~
+       -CPU8(UTF8)ファイルではレコード長は不定なので/Mr(レコードモード)オプションは受け付けない||~129DI~||+129GR~
                                                                       ||~129DI~
-     4.�c�[���B                                                       ||~129DI~
+     4.ツール。                                                       ||~129DI~||+129GR~
        -xprint v9.38                                                  ||~129DI~
-        ./Tabon: �p�����[�^�T�|�[�g�ǉ�                               ||~129DI~
-           DBCS�X�y�[�X�ATAB(0x09)�Ƃ���ɑ������󂯂ɕ\�������֕������w�肷��||~129DI~
-           /Tabon:x:y:z ;�e�L�X�g���[�h�̂Ƃ���DBCS�X�y�[�X,�^�u����,�^�u�X�L�b�v��||~129DI~
-                        ;��ֈ�������Bx,y,z�� �����A�w�L�T�����܂��̓��j�R�[�h�B||~129DI~
-                        ;��) /Tabon:x2020:x18:x1a  /Tabon::u2191:u2192 /Tabon::u25cb||~129DI~
+        ./Tabon: パラメータサポート追加                               ||~129DI~||+129GR~
+           DBCSスペース、TAB(0x09)とそれに続く桁空けに表示する代替文字を指定する||~129DI~||+129GR~
+           /Tabon:x:y:z ;テキストモードのときのDBCSスペース,タブ文字,タブスキップの||~129DI~||+129GR~
+                        ;代替印刷文字。x,y,zは 文字、ヘキサ文字またはユニコード。||~129DI~||+129GR~
+                        ;例) /Tabon:x2020:x18:x1a  /Tabon::u2191:u2192 /Tabon::u25cb||~129DI~||+129GR~
                         ;    /Tabon:u2750                             ||~129DI~
-                        ;�ȗ��l�� UTF8/EBCDIC�t�@�C�� /Tabon:u3000:x20:x20||~129DI~
-                        ;                        �ȊO /Tabon:x8140:x20:x20||~129DI~
-        .EBCDIC �t�@�C���� ICU �ŕϊ����Ĉ������Ƃ��� /BCfilename �̎w�肪�Ȃ��ꍇ||~129DI~
-         ICU �� ���L���C�u�����[(DLL �܂��� so)�� PATH �܂��� LD_LIBRARY_PATH �ɂ����||~129DI~
-         �T���� ICU �o�[�W������ uconv(.exe) �𔭍s���� �����₤    ||~129DI~
-           ��) xprint x1ebc22 -cpeb=cp930 -me -icu                    ||~129DI~
+                        ;省略値は UTF8/EBCDICファイル /Tabon:u3000:x20:x20||~129DI~||+129GR~
+                        ;                        以外 /Tabon:x8140:x20:x20||~129DI~||+129GR~
+        .EBCDIC ファイルを ICU で変換して印刷するときで /BCfilename の指定がない場合||~129DI~||+129GR~
+         ICU の 共有ライブラリー(DLL または so)が PATH または LD_LIBRARY_PATH にあれば||~129DI~||+129GR~
+         探して ICU バージョンは uconv(.exe) を発行して それを補う    ||~129DI~||+129GR~
+           例) xprint x1ebc22 -cpeb=cp930 -me -icu                    ||~129DI~||+129GR~
        -xcv 1.20                                                      ||~129DI~
-        .EBCDIC �t�@�C���� ICU �ŕϊ�����Ƃ��� /BCfilename �̎w�肪�Ȃ��ꍇ||~129DI~
-         ICU �� ���L���C�u�����[(DLL �܂��� so)�� PATH �܂��� LD_LIBRARY_PATH �ɂ����||~129DI~
-         �T���� ICU �o�[�W������ uconv(.exe) �𔭍s���� �����₤    ||~129DI~
-           ��) xcv x1ebc22 x1ebc22m -b2m -cpeb=cp930 -icu             ||~129DI~
+        .EBCDIC ファイルを ICU で変換するときで /BCfilename の指定がない場合||~129DI~||+129GR~
+         ICU の 共有ライブラリー(DLL または so)が PATH または LD_LIBRARY_PATH にあれば||~129DI~||+129GR~
+         探して ICU バージョンは uconv(.exe) を発行して それを補う    ||~129DI~||+129GR~
+           例) xcv x1ebc22 x1ebc22m -b2m -cpeb=cp930 -icu             ||~129DI~||+129GR~
                                                                       ||~129DI~
   .v129D<--129C:(2017/12/03)                                          ||~129DI~
                                                                       ||~129DI~
      1.BUGs                                                           ||~129DI~
-       -(Linux)GTK3���̎��Z�b�g�A�b�N�_�C�A���O�ł̃��j���[�A�N�Z�����[�^�[(Ctrl+)�I�v�V������||~129DI~
-        �I��/�I�t�������Ȃ�                                           ||~129DI~
-       -(Wxe)�t�@�C��-New(�V�K�t�@�C��)�ŃN���b�V��                   ||~129DI~
+       -(Linux)GTK3環境の時セットアックダイアログでのメニューアクセラレーター(Ctrl+)オプションの||~129DI~||+129GR~
+        オン/オフが効かない                                           ||~129DI~||+129GR~
+       -(Wxe)ファイル-New(新規ファイル)でクラッシュ                   ||~129DI~||+129GR~
                                                                       ||~129DI~
-     2.�@�\�ǉ�                                                       ||~129DI~
+     2.機能追加                                                       ||~129DI~||+129GR~
        -SelectAll                                                     ||~129DI~
-          .�R�}���h                                                   ||~129DI~
+          .コマンド                                                   ||~129DI~||+129GR~
              SEL [all] [col1 col2] [.label1 .label2]                  ||~129DI~
-               label1/2 �ōs�͈͎w��Acol1/2 �ŃJ�����͈͎w��         ||~129DI~
-               label��1/2�Ƃ������ɂ��s�ԍ��w��ł��悢             ||~129DI~
-               col �̎w�肪����ƃu���b�N���[�h�A�Ȃ��Ɨ̈惂�[�h     ||~129DI~
-               label/column �̎w�肪�Ȃ��ƑS�I��                      ||~129DI~
-               ��jsel; sel .a .b; sel 1 20; sel 10 20 .1 .4;         ||~129DI~
-          .Edit��ʂ� �s�I�����ACut/Copy/Paste�ɂȂ��Ă����܂�      ||~129DI~
-           �̈惂�[�h�ł͂���Paste �̑Ώۂɂ��Ȃ�܂�                 ||~129DI~
+               label1/2 で行範囲指定、col1/2 でカラム範囲指定         ||~129DI~||+129GR~
+               labelは1/2とも数字による行番号指定でもよい             ||~129DI~||+129GR~
+               col の指定があるとブロックモード、ないと領域モード     ||~129DI~||+129GR~
+               label/column の指定がないと全選択                      ||~129DI~||+129GR~
+               例）sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;         ||~129DI~||+129GR~
+          .Edit画面で 行選択し、Cut/Copy/Pasteにつなげていきます      ||~129DI~||+129GR~
+           領域モードではすぐPaste の対象にもなります                 ||~129DI~||+129GR~
         (Wxe,gxe)                                                     ||~129DI~
-          .Edit�T�u���j���[�A�|�b�v�A�b�v���j���[�ɂ� "SelectAll" ���j���[���ڒǉ�||~129DI~
-          .�V���[�g�J�b�g��Ctrl+A�ɐݒ� SaveAs(�ʖ��ۑ�)��Ctrl+Shift+A�ɕύX||~129DI~
+          .Editサブメニュー、ポップアップメニューにも "SelectAll" メニュー項目追加||~129DI~||+129GR~
+          .ショートカットはCtrl+Aに設定 SaveAs(別名保存)はCtrl+Shift+Aに変更||~129DI~||+129GR~
                                                                       ||~129DI~
-     3.���̑�                                                         ||~129DI~
-       -File�T�u���j���[�̃��j���[���ڂ���ʂ̏󋵂ɂ���Ă͕s����������||~129DI~
-        �Ⴆ�΁A�f�B���N�g���[��ʂł̕ۑ����j���[���ڂȂ�            ||~129DI~
+     3.その他                                                         ||~129DI~||+129GR~
+       -Fileサブメニューのメニュー項目も画面の状況によっては不活性化する||~129DI~||+129GR~
+        例えば、ディレクトリー画面での保存メニュー項目など            ||~129DI~||+129GR~
                                                                       ||~129DI~
   .v129E<--129D:(2018/01/09)                                          ||~129DI~||~129ER~
                                                                       ||~129DI~
      1.BUGs                                                           ||~129DI~
                                                                       ||~129EI~
-       -Window �R���\�[���ŁF�w�b�_�[�s�̃G���[���b�Z�[�W�������������邱�Ƃ�����||~129EI~
+       -Window コンソール版：ヘッダー行のエラーメッセージが文字化けすることがある||~129EI~||+129GR~
                                                                       ||~129DI~
-     2.�@�\�ǉ�                                                       ||~129DI~
-       -XML�^�O �y�A�T��                                              ||~129DI~
-          .�f�t�H���g�� Alt+"/" �����蓖��                            ||~129DI~
-          .�J�[�\���� "<" �܂��� ">" �̈ʒu�ɂ����� "Alt+/" ���g�p    ||~129DI~
-          .�R�����g�Ȃ�("<!--" ���� "-->")�͖����A�l�X�g�������A      ||~129DI~
-           html ���������c�[���̕s����C������̂ɕ֗��ł�          ||~129DI~
+     2.機能追加                                                       ||~129DI~||+129GR~
+       -XMLタグ ペア探索                                              ||~129DI~||+129GR~
+          .デフォルトで Alt+"/" を割り当て                            ||~129DI~||+129GR~
+          .カーソルを "<" または ">" の位置において "Alt+/" を使用    ||~129DI~||+129GR~
+          .コメントない("<!--" から "-->")は無視、ネストも処理、      ||~129DI~||+129GR~
+           html 自動生成ツールの不具合を修正するのに便利です          ||~129DI~||+129GR~
                                                                       ||~129DI~
-     3.���̑�                                                         ||~129DI~
+     3.その他                                                         ||~129DI~||+129GR~
                                                                       ||~129DI~
-       -Window �R���\�[���ŁFWindows10�ł̓��K�`���[:ON�ɂ���� UTF8 �t�@�C����||~129EI~
-        DBCS �\���������ꂷ��̂� Windos7�ȍ~ �R���\�[���łł̓��K�`���[:ON���󂯕t���Ȃ�||~129EI~
-                                                                      ||+129FI~
-  .v129F<--129E:(2018/01/23)                                          ||+129FI~
-                                                                      ||+129FI~
-     1.BUGs                                                           ||+129FI~
-                                                                      ||+129FI~
-       -Edit/Browse �R�}���h                                          ||+129FI~
-        .���R�[�h���[�h�Ń��R�[�h�T�C�Y>4096���ŏ��̃��R�[�h�ɐ��䕶��(<0x20)�������||+129FI~
-         �Ō�̃��R�[�h�݂̂��\�������B�܂��t�@�C���T�C�Y��128K�����ƃN���b�V������||+129FI~
-        .���R�[�h���[�h�̎��v���t�@�C���ɋL�^������CPLC�����������i����CPLC�̎w�肪�K�v�ɂȂ�)||+129FI~
-                                                                      ||+129FI~
+       -Window コンソール版：Windows10ではリガチャー:ONにすると UTF8 ファイルの||~129EI~||+129GR~
+        DBCS 表示が桁ずれするので Windos7以降 コンソール版ではリガチャー:ONを受け付けない||~129EI~||+129GR~
+                                                                      ||~129FI~
+  .v129F<--129E:(2018/01/23)                                          ||~129FI~
+                                                                      ||~129FI~
+     1.BUGs                                                           ||~129FI~
+                                                                      ||~129FI~
+       -Edit/Browse コマンド                                          ||~129FI~||+129GR~
+        .レコードモードでレコードサイズ>4096かつ最初のレコードに制御文字(<0x20)があると||~129FI~||+129GR~
+         最後のレコードのみが表示される。またファイルサイズが128K超だとクラッシュする||~129FI~||+129GR~
+        .レコードモードの時プロファイルに記録したのCPLCが無視される（毎回CPLCの指定が必要になる)||~129FI~||+129GR~
+                                                                      ||~129FI~
+  .v129G<--129F:(2018/01/30)                                          ||~129GI~
+                                                                      ||~129GI~
+     1.BUGs                                                           ||~129GI~
+                                                                      ||~129GI~
+       -(Linux)Ubuntu17.10 で ディレクトリーリスト行コマンド:"!"(拡張子対応アプリの起動)が||+129GR~
+        "MIME タイプアプリ未定義"で失敗する             ||+129GR~
+       -(Wxe/gxe)マウス でのカット＆ペーストでごみが入ることがある||+129GR~
+                                                                      ||~129GI~
+     2.機能追加                                                   ||+129GR~
+                                                                      ||~129GI~
+     3.その他                                                      ||+129GR~
+                                                                      ||~129GI~
+       -(Linux)Hercules emulater:S390x インストール作業で configure.ac を改善||+129GR~
+               また 経験をトラブルシューティング(READMEj.txt)に反映||+129GR~

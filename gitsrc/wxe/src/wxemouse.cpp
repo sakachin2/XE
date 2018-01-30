@@ -1,6 +1,7 @@
-//*CID://+vbd8R~:                             update#=  453;       //+vbd8R~
+//*CID://+vbh2R~:                             update#=  457;       //~vbh2R~
 //******************************************************************************//~v003I~
-//vbd8:171120 (WXE)stdregion by PFK(F6) should disable Paste REP/INS//+vbd8I~
+//vbh2:180129 wxe copypasete  clipboad len=ulhlen but copy data width CID dropped,trashdata cap data len drop CID;so dreg data is copyed at paste//~vbh2I~
+//vbd8:171120 (WXE)stdregion by PFK(F6) should disable Paste REP/INS//~vbd8I~
 //vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
 //vba3:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~vba3I~
 //vb3w:160621 w64 compiler warning                                 //~vb3wI~
@@ -484,7 +485,8 @@ int  CWxemain::cpcopy(int Pcutsw)                                  //~v003R~
     else                                                           //~v003I~
 	{                                                              //~v003I~
 		pcg=(char *)GlobalLock(hGlobal);                           //~v003I~
-        *(pcg+totlen)=0;                                           //~v66zI~
+//      *(pcg+totlen)=0;                                           //~v66zI~//~vbh2R~
+        memset(pcg,0,size_t(totlen+1));                            //~vbh2R~
 		if (Mcpcopypansw)	//copy from panel data                 //~2A05I~
         {                                                          //~va20R~
 #ifdef UTF8UCS2                                                    //~va20R~
@@ -1289,12 +1291,12 @@ static CWxemain *Spmain;                                           //~v69ZR~
         ((CMainFrame*)(Spmain->Mpmainframe))->enablemainmenu(); //re-evaluate menu enable/disable//~v69ZR~
         return;                                                    //~v69ZI~
     }                                                              //~v69ZI~
-	if (Popt==WXEM_SETRGN2)                                        //+vbd8R~
-    {                                                              //+vbd8R~
-        Spmain->Mcpcopysw=2;                                       //+vbd8R~
-        ((CMainFrame*)(Spmain->Mpmainframe))->enablemainmenu(); //re-evaluate menu enable/disable//+vbd8R~
-        return;                                                    //+vbd8R~
-    }                                                              //+vbd8R~
+	if (Popt==WXEM_SETRGN2)                                        //~vbd8R~
+    {                                                              //~vbd8R~
+        Spmain->Mcpcopysw=2;                                       //~vbd8R~
+        ((CMainFrame*)(Spmain->Mpmainframe))->enablemainmenu(); //re-evaluate menu enable/disable//~vbd8R~
+        return;                                                    //~vbd8R~
+    }                                                              //~vbd8R~
     return;                                                        //~v69ZI~
 }//wxemouse_capreset                                               //~v69ZI~
 //===============================================================================//~va7DI~//~va7CI~

@@ -17,7 +17,9 @@ a:hover{font-weight:bold;}-->
   .v129C<--129B:(2017/09/04)
   .v129D&lt;--129C:(2017/11/30)
  <SPAN STYLE="color:#000000;font-size:12pt;"> .v129E&lt;--129D:(2018/01/09)</SPAN>
-  .v129F&lt;--129E:(2018/01/23)</SPAN></PRE>
+  .v129F&lt;--129E:(2018/01/23) 
+  .v129G&lt;--129F:(2018/01/30)
+  </SPAN></PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
     1.BUGs
        -(Windows:64)"&"(spawn executable file) dir cmd crush.
@@ -36,6 +38,10 @@ a:hover{font-weight:bold;}-->
          Or crashes if FileSize&gt;128K
         .CPLC option registered on profile record was ignored when record mode.
          ("CPLC" option was required each time)
+     (129G)
+       -(Linux) On Ubuntu17.10, DirList line command:"!"(start application corresoponding to the file extension)
+        failes by "No application defined to the MIME type".
+       -(Wxe/gxe) Cut&amp;Paste by mouse may paste trash data with length of CID of source line.
 
      2.Additional function.
 
@@ -112,6 +118,9 @@ a:hover{font-weight:bold;}-->
        -(Windows Console version) When ligature:on on windows10,
         UTF8 file lines of Japanese Kanji shrinks to unreadable.
         So, reject Ligature:On for from Windows7.
+     (129G)
+       -(Linux)Adjusted configure.ac through installation to S390x on Hercules emulater.
+        And updated TroubleShooting notes(READMEe.txt).
 
      4.Tool.
      (129C)

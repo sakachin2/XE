@@ -1,3 +1,10 @@
+//*********  20180130 v129G released *********************************
+//vbh2:180129 wxe/gxe copypasete  clipboad len=ulhlen but copy data width CID dropped,trashdata cap data len drop CID;so dreg data is copyed at paste
+//            wxemouse.cpp xxemouse.c
+//vbh1:180129 (Ubuntu 17.10:gcc7.2) compiler warning,sprintf may overflow
+//            xetso2.c
+//vbh0:180123 (Linux Bug)configure dis not chk ncursesw/ncurses.h
+//            configure.ac
 //*********  20180123 v129F released *********************************
 //vbg0:180123 (BUG)errmsg "conflict recordmode and CPU8" evenif profile record has cplc option,rejected at optopn prechk
 //            xefile5.c

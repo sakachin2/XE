@@ -1,8 +1,9 @@
-//*CID://+v6C3R~:                             update#=  500;       //~v6C3R~
+//*CID://+v6S1R~:                             update#=  502;       //~v6S1R~
 //*********************************************************************//~7712I~
 //utf3.c                                                           //~7817R~
 //* utf8 data manipulation:os library                              //~7712R~
 //*********************************************************************//~7712I~
+//v6S1:180129 (Ubuntu 17.10:gcc7.2)Lnx warning iswprint is not defined(wctype.h required)//~v6S1I~
 //v6C3:160331 (BUG) missing to free modify map work tbl            //~v6C3I~
 //v6BC:160306 W32:iswprint support BMP(ucs2) only                  //~v6BCI~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
@@ -63,9 +64,9 @@
 //	    #include <glib/gmem.h>                                     //~7712I~//~v6fsR~
 //	    #include <glib/gconvert.h>                                 //~7712I~//~v6fsR~
 		#include <glib.h>                                          //~v6fsI~
-        #ifdef MGW32                                               //~v5ncI~
+//      #ifdef MGW32                                               //~v5ncI~//+v6S1R~
             #include <wctype.h>                                    //~v5ncI~
-        #endif                                                     //~v5ncI~
+//      #endif                                                     //~v5ncI~//+v6S1R~
       #endif	//ARM                                              //~v6a0I~
     #endif                                                         //~7712I~
 #else       //!!!!!!!!!!!!!!!!!!                                   //~7712I~
@@ -272,7 +273,7 @@ int utfwcwidth(int Popt,ULONG Pucs,int *Ppflag)                    //~v62UR~
 #ifdef TEST                                                        //~v6C3I~
 if (Pucs==0x23ce)              //@@@@test                        //~v6BCR~//~v6C3R~
       UTRACEP("ucs=%04x\n",Pucs);                                  //~v6BCR~//~v6C3R~
-#endif                                                             //+v6C3R~
+#endif                                                             //~v6C3R~
 #ifdef UTF8UCS416                                                  //~v6uBI~
   if (Pucs>=UCS2DDMAP_ENTNO)	//no sbcs id tbl                   //~v65cR~
   {                                                                //~v65cI~

@@ -1,8 +1,9 @@
-//*CID://+vad1R~:                             update#=  658;       //+vad1R~
+//*CID://+vah0R~:                             update#=  659;       //+vah0R~
 //***********************************************************
 //* XDComp : directory status compare                              //~v1.aR~
 //***********************************************************
-//vad1:170103 xdc v2.28 correct err msg                            //+vad1I~
+//vah0:180129 (Ubuntu 17.10:gcc7.2)Lnx warning sprintf overflow    //+vah0I~
+//vad1:170103 xdc v2.28 correct err msg                            //~vad1I~
 //vaa2:160424 Lnx64 compiler warning(FDATE/FTIME)                  //~vaa2I~
 //vaa1:160418 Lnx64 compiler warning                               //~vaa1I~
 //vaa0:160417 Lnx compiler warning                                 //~vaa0I~
@@ -142,7 +143,7 @@
 //*             -dir2 only subdir display
 //***********************************************************
 
-#define VER "V2.28"   //version                                    //+vad1R~
+#define VER "V2.28"   //version                                    //~vad1R~
 //#ifdef UNX                                                         //~v2.3I~//~va9eR~
 	#define PGM "xdc"                                              //~v2.3I~
 //#else                                                              //~v2.3I~//~va9eR~
@@ -3141,7 +3142,8 @@ int filecompbyxfc(FNTBL *Pfnt1,FNTBL *Pfnt2)                       //~va4uI~
     int rc=0,len,redirectsw;                                       //~va4uR~
 	char fpath1[_MAX_PATH],fpath2[_MAX_PATH];                      //~va4uI~
 	char cmd[_MAX_PATH*4],*cmdstr;                                 //~va4uR~
-	char redirect[_MAX_PATH];                                      //~va4uI~
+//  char redirect[_MAX_PATH];                                      //~va4uI~//+vah0R~
+    char redirect[_MAX_PATH*2];                                    //+vah0I~
 	char suffix[12],*pc,*pc2;                                      //~va4uI~
 #ifdef W32UNICODE                                                  //~va91I~
 	char cmdstrx[_MAX_PATH*4];                                     //~va91I~
@@ -3788,9 +3790,9 @@ for (parmno=1;parmno<parmc;parmno++)
 				fileeditname_copypath_err(0,Dir1,Dir2);            //~va9eI~
             ufilenotfound(Dir2,4);                                 //~v23fI~
         }                                                          //~va9eI~
-//  	printf("%s:%s:Both is not dir,%ci flag is required for intermediate file use\n",//+vad1R~
-   		uerrmsg("%s:%s:Not both are directory,%ci flag is required for intermediate file use.",//+vad1I~
-   		        "%s:%s:両方ともがディレクトリーではない、中間ファイルを使用するときは %ci オプションを指定してください",//+vad1I~
+//  	printf("%s:%s:Both is not dir,%ci flag is required for intermediate file use\n",//~vad1R~
+   		uerrmsg("%s:%s:Not both are directory,%ci flag is required for intermediate file use.",//~vad1I~
+   		        "%s:%s:両方ともがディレクトリーではない、中間ファイルを使用するときは %ci オプションを指定してください",//~vad1I~
 					Spgm,Sver,CMDFLAG_PREFIX);                     //~v234I~
 		exit(4);                                                   //~v234I~
 	}                                                              //~v234I~

@@ -1,5 +1,6 @@
-//*CID://+v6M4R~:                                   update#=  999; //~v6M4R~
+//*CID://+v6S1R~:                                   update#= 1000; //~v6M4R~//+v6S1R~
 //***********************************************************************
+//v6S1:180129 (Ubuntu 17.10:gcc7.2)Lnx warning iswprint is not defined(wctype.h required)//+v6S1I~
 //v6M5:170825 for xcv,xprint;create EBC cfg by uconv output        //~v6M5I~
 //v6M4:170825 try get icu version by uconv cmd if ICU_DLL_SUFFIX,ICU_API_SUFFIX both are not specified//~v6M4I~
 //v6M3:170824 (Lnx) putenv to LD_LIRARY_PATH is not effective(loader chk it at pgm startup and ignore putenv after startup)//~v6M3I~
@@ -2249,7 +2250,8 @@ int ucvext_icuenumcvname(int Popt,char *Pdllversion,char* Pprocversion)
 char *ucvext_icuuerrname(UErrorCode Puerr)
 {
 	char *perrmsg;
-static char Serrnum[8];
+//static char Serrnum[8];                                          //+v6S1R~
+static char Serrnum[16];                                           //+v6S1I~
 //***********************
 	if (Spfuncuerrname)
     	perrmsg=(*Spfuncuerrname)(Puerr);
@@ -3725,7 +3727,7 @@ int chkicuversion(char *Ppdllsuffix,size_t Pdllsuffixsz,char *Ppapisuffix,size_t
         len=(int)strlen(pc);                                       //~v6M4R~
     else                                                           //~v6M4I~
     	len=PTRDIFF(pc2,pc);                                       //~v6M4R~
-    if (len>=(int)Pdllsuffixsz)                                    //+v6M4R~
+    if (len>=(int)Pdllsuffixsz)                                    //~v6M4R~
         break;                                                     //~v6M4R~
     UmemcpyZ(Ppdllsuffix,pc,(size_t)len);                          //~v6M4R~
     pc2=strchr(Ppdllsuffix,'.');                                   //~v6M4R~
@@ -3734,7 +3736,7 @@ int chkicuversion(char *Ppdllsuffix,size_t Pdllsuffixsz,char *Ppapisuffix,size_t
     	len=PTRDIFF(pc2,Ppdllsuffix);                              //~v6M4R~
         *pc2=0; //Windows dose not slink to 59.1.dll from 59.dll   //~v6M4I~
     }                                                              //~v6M4I~
-    if (len+1>=(int)Papisuffixsz)                                  //+v6M4R~
+    if (len+1>=(int)Papisuffixsz)                                  //~v6M4R~
         break;                                                     //~v6M4R~
     rc=0;                                                          //~v6M4I~
     break;                                                         //~v6M4I~

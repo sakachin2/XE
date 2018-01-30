@@ -1,4 +1,4 @@
-||*CID:||+v129R~:  2018/01/23              update#=  573;             ||~v129R~||~v129R~
+||*CID:||+v129R~:  2018/01/39              update#=  574;             ||+v129R~
 ######################################################################
 [English]    v1.29                                                    ||~v128R~||~v129R~
 
@@ -2437,6 +2437,7 @@ How to start.
   .v129D<--129C:(2017/11/30)                                          ||~v129R~
   .v129E<--129D:(2018/01/09)                                          ||~v129R~
   .v129F<--129E:(2018/01/23)                                          ||~v129R~
+  .v129G<--129F:(2018/01/30)                                          ||+v129I~
                                                                       ||~v129R~
      1.BUGs                                                           ||~v129R~
        -(Windows:64)"&"(spawn executable file) dir cmd crush.         ||~v129R~
@@ -2448,13 +2449,17 @@ How to start.
        -(Wxe)Crash when File->New menuitem was selected.              ||~v129R~
      (129E)                                                           ||~v129I~
        -(Windows Console version) Japanese Error msg on header line may be corrupted.||~v129I~
-     (129F)                                                           ||+v129I~
-       -Edit/Browse Command                                           ||+v129I~
-        .Shows only last record when record mode with RecordSize>4096 ||+v129I~
-         and 1st record contains ControlChar(<0x20).                  ||+v129I~
-         Or crashes if FileSize>128K                                  ||+v129I~
-        .CPLC option registered on profile record was ignored when record mode.||+v129I~
-         ("CPLC" option was required each time)                       ||+v129I~
+     (129F)                                                           ||~v129I~
+       -Edit/Browse Command                                           ||~v129I~
+        .Shows only last record when record mode with RecordSize>4096 ||~v129I~
+         and 1st record contains ControlChar(<0x20).                  ||~v129I~
+         Or crashes if FileSize>128K                                  ||~v129I~
+        .CPLC option registered on profile record was ignored when record mode.||~v129I~
+         ("CPLC" option was required each time)                       ||~v129I~
+     (129G)                                                           ||+v129I~
+       -(Linux) On Ubuntu17.10, DirList line command:"!"(start application corresoponding to the file extension)||+v129I~
+        failes by "No application defined to the MIME type".          ||+v129I~
+       -(Wxe/gxe) Cut&Paste by mouse may paste trash data with length of CID of source line.||+v129I~
                                                                       ||~v129I~
                                                                       ||~v129R~
      2.Additional function.                                           ||~v129I~
@@ -2536,11 +2541,13 @@ How to start.
      (129D)                                                           ||~v129R~
        -Disable also menuitem of File submenu depending panel type.   ||~v129R~
         e.g. Save is disable for directory list panel.                ||~v129R~
-                                                                      ||~v129I~
      (129E)                                                           ||~v129I~
        -(Windows Console version) When ligature:on on windows10,      ||~v129I~
         UTF8 file lines of Japanese Kanji shrinks to unreadable.      ||~v129I~
         So, reject Ligature:On for from Windows7.                     ||~v129I~
+     (129G)                                                           ||+v129I~
+       -(Linux)Adjusted configure.ac through installation to S390x on Hercules emulater.||+v129I~
+               And updated TroubleShooting notes(READMEe.txt).        ||+v129I~
                                                                       ||~v129I~
      4.Tool.                                                          ||~v129I~
      (129C)                                                           ||~v129I~

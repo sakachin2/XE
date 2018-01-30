@@ -1,0 +1,435 @@
+V129G 2018/01/30 
+(A)Automake パッケージ 導入手順。
+
+    ディストリビューションによっては導入先フォルダーを変更する必要があるかもしれません。
+    ./configure を実行する前にconfigureを修正してください。
+        html ヘルプは  "packagehelpdir",                現在値は /usr/local/share/gnome/help/gxe
+        icon は        "packagepixmapsdir",             現在値は /usr/local/share/pixmaps/gxe
+        bins は        ./configure --bindir=PATHで指定。現在値は /usr/local/bin
+
+    (1)tar -zxvf gxe-v.rr.tar.gz    (v.rr : version)
+    (2)cd gxe-v.rr
+    (3)./configure
+    (4)make
+    (5)make install (rootで実行、ubuntuでは "sudo make install")
+
+       名前の競合を避けるため次のbinだけが導入されます。これ以外のツールは自分でコピーしてください。
+         gxe, xe, xprint, gxp, xfc, xdc
+    (6)gnome-terminal ないし konsole を開いて gxe ないし xe と入力する。
+       ヘルプhtmlは立ち上げ後 第2行に "help" ないし "?" を入力するとブラウザーから観ることが出来ます。
+    (7)ssh
+       リモートでxe起動する場合、ssh(d)の設定をチェック。
+           local :/etc/ssh/ssh_config
+                      set "SendEnv LANG LC_*"
+           remote:/etc/ssh/sshd_config
+                      set "AcceptEnv LANG LC_*"
+                      set "X11Forwarding yes"
+                      xhost +local:username    local=local ip addr, username=your user id
+                  xauth は導入済みか ?
+
+       リモートでgxe起動する場合 -X オプションを指定する。
+           ssh -X uid@remotehost
+
+(B)トラブルシューティング
+    次のデストリビューションでテストしました。
+        RH9, FC5, Kubuntu6, Ubuntu7, openSUSE10, Vine4, TurbolinuxFUJItrial
+        Debian4.0r2(2008/01/25)
+        ubuntu8, FC12
+
+  (B1) ./configure エラー
+
+    (1) no acceptable C compiler found in $PATH
+        ===> install gcc
+             on debian8.10: apt-get install build-essential
+    (2) crt1.o no such file   (Debian 4.0)
+        (development パッケージのサフィックスはデストリビューションごとに異なります)
+        ===> install libglib2.0-dev
+        ===> install libc6-dev (ubuntu8)
+    (3) "term.h" not found
+        ===> install ncurses-develop. 
+        ncursesw/ncurses.h not found.
+        ===> install ncursesw-develop. 
+             (debian8.10)
+                 apt-get install libncurses5-dev
+                 apt-get install libncursesw5-dev
+    (4) cups/cups.h not found.
+        ===> apt-get install libncursesw5-dev
+        ===> install cups-devel
+        ===> install libgnomecups1.0.dev (ubuntu8)
+        ===> install libcupsys2-dev      (ubuntu9)
+    (5) No package libgnomeui-2.0 found
+        No package gnome-vfs-module-2.0 found
+        No package libgnomeprint-2.2 found
+        ===> install libgnomeui-devel
+             install libgnomeprint-devel
+        ===> install libgnomeui-dev
+             install libgnomeprint2.2-dev  (ubuntu8)
+    (6) pkg-config was not found
+        ===> install pkg-config
+    (7) CHK_INSTALL_GTK3...no and  CHK_INSTALL_GTK2..no
+        ==>apt-file --package-only search gtk+-2.0
+           apt-file --package-only search gtk+-3.0
+           apt-get install libgtk2.0-dev
+             or 
+           apt-get install libgtk-3-dev
+    (8) CHK_EXIST_GTK3_LIBGNOME2... no
+        ===> install libgnome2-dev
+    (9) can not find -lncursesw
+        ===> apt-get install libncursesw5-dev
+
+  (B2) makeのエラー。
+
+    (1) "term.h" not found
+        ===> install ncurses-develop. 
+    (2) Cannot find the librarly libssl (On TurbolinuxFUJI trial version)
+        ===> install openssp
+    (3) Cannot find the librarly libpopt.la
+        ===> install popt from ftp site
+    (4) X error'BadDevice invalid or uninitialized device 168  (Ubuntu-7)
+        :        major 145 .. minor 3 resource 0x00
+        Failed to open Device
+        ===> /etc/X11/xorg.conf was changed.
+
+        Following lines are comment out
+
+        ##Section "InputDevice"
+        ##  Driver        "wacom"
+        ##  Identifier    "stylus"
+        ##  Option        "Device"        "/dev/wacom"          # Change to
+        ##                                                      # /dev/input/event
+        ##                                                      # for USB
+        ##  Option        "Type"          "stylus"
+        ##  Option        "ForceDevice"   "ISDV4"               # Tablet PC ONLY
+        ##EndSection
+
+        ##Section "InputDevice"
+        ##  Driver        "wacom"
+        ##  Identifier    "eraser"
+        ##  Option        "Device"        "/dev/wacom"          # Change to
+        ##                                                      # /dev/input/event
+        ##                                                      # for USB
+        ##  Option        "Type"          "eraser"
+        ##  Option        "ForceDevice"   "ISDV4"               # Tablet PC ONLY
+        ##EndSection
+
+        ##Section "InputDevice"
+        ##  Driver        "wacom"
+        ##  Identifier    "cursor"
+        ##  Option        "Device"        "/dev/wacom"          # Change to
+        ##                                                      # /dev/input/event
+        ##                                                      # for USB
+        ##  Option        "Type"          "cursor"
+        ##  Option        "ForceDevice"   "ISDV4"               # Tablet PC ONLY
+        ##EndSection
+
+                And in Section "ServerLayout"
+
+        ##    InputDevice     "stylus" "SendCoreEvents"
+        ##    InputDevice     "cursor" "SendCoreEvents"
+        ##    InputDevice     "eraser" "SendCoreEvents"
+
+    (5) /bin/sh' /usr/bin/esd: not found (Ubuntu-7)
+        ===> install esound
+
+  (B3) execution
+
+    (1)  WARNING **:Could'nt find pixmap file gxe/wxe.png
+        ===> "make install" を root で実行. (A)の導入先フォルダーをチェック。
+
+    (2) WARNING **: IPP request failed with status 1030
+        ===> CUPS プリンターをセットアップする。プリンターがつながってない場合でも何か設定する。
+
+    (3) WARNING **: IPP request failed with status 1280
+        ===> CUPS サービスデーモンを開始.
+
+    (4) ??? xe:serach for gnome-terminal by "which" cmd failed ???
+        ===> "xe: use konsole for shell terminal" が続いていれば問題ない。
+             そうでなければ gnome-terminal か konsole を導入する。
+
+    (5) Gdk-WARNING **: gdk_property_get(): length value has wrapped in calculation (did you pass G_MAXLONG)
+        ===> 無視.
+             (imlib call gdk_property_get with length=MAX_INT,callee issue warning length+3>G_MAXLONG,then use G_MAXLONG as length.)
+
+    (6) WARNING **: failed request with status 200
+        ===> 無視.
+             理由は分からないが無害のようだ。
+
+    (7) GnomePrintCupsPlugin-WARNING **: failed iconv dose not support ppd character encoding: ISOLatin1, trying CSISOLatin1
+        ===> 無視.
+             理由は分からないが無害のようだ。
+
+    (8) WARNING ***: Owner of /tmp/xx-username is not the current user
+                     Failed to initialize Panel Agent!
+        ===> UserID 番号 を変更した。 表示されたフォルダーを削除。
+             旧 UserIDの /tmp/scim-panel-socket-username... も削除。
+
+    (9) GnomePrint-CRITICAL ... assertion face != NULL failed
+        ===> 印刷フォント名にフェイス名(Regular,Bold,Italic など) がかけている。
+             xeは最初画面フォント名から印刷フォント名を設定するがxeはこのケースの時Regularを補完するので
+             以降は出ないはず。
+
+    (10) xe help command 失敗
+         (MIME タイプ text/htmlに省略時アクション(ブラウザーの起動)が定義されていない。
+          Gnome デスクトップの場合それは /usr/share/mime-info/gnome-vfs-keys にある)
+        ===> install desktop-file-utils
+             /usr/share/applications/defaults.list-->/etc/gnome/defaults.list is installed.
+
+    (11) Gtk WARNING : Cannot open display   (Debian 4.0 when started from console)
+        confirm  xauth("apt-get install xauth" on Debian9.3) is installed
+        (check also environment variable DISPLAY= on remote)
+        chk ssh option "ssh -X"
+        X11Forwarding=yes on ssh.config(local)/sshd.config(remote)
+
+    (12) Gtk WARNING : Locale not supported by C library at debian/390
+        ===>"setlocale" が失敗する場合 locale を追加する。
+                 "locale -a" で使用可能なlocale をチェック、リストになければ
+                 "dpkg-reconfigure locales"
+
+    (13)文字化け(debian/390)
+        ===>unifont を導入
+                "aptitude install unifont"
+
+    (14)Gconf err, scim failed to load frontend module
+        ===>rootユーザーで gxe を起動している。そして /root/gconf(d) がない。
+            "su" ではなく "su -"  でrootになる。sudo なら "sudo -i"
+
+    (15)"(スーパーユーザで)" がタイトルに出る。
+        s390xに "ssh -X" して X-applを起動した時。
+        ===>無視。権限はrootになっていない。
+            metacity というパッケージが出しているらしいが、X-サーバー(local側のdaemon）が
+            root だからではないかと思う。
+
+    (16)ssh の X-APPL で文字化け。(s390x)
+        sshのロケールは /etc/ssh/ssh(d).conf の AcceptEnv/SendEnvで local のロケールを 
+        継続することが出来、ssh上は日本語表示されるが、
+        Xappl用には導入が必要らしい
+        ===> yum install "@Japanese Support" あるいは yum groupinstall "Japanese Support"
+
+    (17)"Gtk WARNING ** cannnot open display"
+        ==> "export DISPLAY=localhost:10.0"   (10 may be 11, 12..., リモートのsshd_config:X11DisplayOffset(省略値:10)を確認)
+        "su" するとでる。通常は DISPLAY は ssh が自動で割り当てる。
+        通常DISPLAYはsshが制御するので必要ないはずだが
+        リモートにxauth は導入済みか?
+
+(C) FC11.s390x アップグレードトラブルシューティング
+
+ !!! (E)-FC14 の方が新しいのでそちらを見て下さい !!!
+
+    FC11導入済みのDASDイメージ(http://secondary.fedoraproject.org/pub/alt/spins/S390/)
+    を使用し必要なパッケージを導入する。
+            参照url       http://katzkichi-katzkichi.blogspot.com/2010/01/linux.html   (日本語ページ)
+            pkg-download  //s390.koji.fedoraproject.org/koji
+
+    (1) yum -y install libgnomeprint22-devel.s390x ("yum upgrade" のプレテスト)
+          --> UnicodeDecodeError: 'ascii' codec can't decode byte 0xe5 in position 154: ordinal not in range(128)
+              ==> 新規ファイル作成
+                      /usr/lib/python2.6/site-packages/sitecustomize.py
+                         import sys
+                         sys.setdefaultencoding("utf-8")
+          (yum install)
+          --> Destination Host Prohibit
+              ==> firewall 解除
+                      "iptables -F"
+          (yum install)
+          --> ERROR with rpm_check_debug vs depsolve
+              //..koji..から xz 4.999.8-0.7.beta と rpm 4.7.1-2 を探しdebuginfo以外は同じページのたのrpmもダウンロードし
+              導入する。(scp で FC11にUpして,sshで入りrpmする)
+                scp fnm root@192.168.200.3:/root
+                xz-libs:  rpm  -ivh   rpm*.rpm
+                rpm    :  rpm  -Uvh   xz*.rpm
+    (2) yum upgrade
+          --->
+             createrepo-0.9.8-2.fc12.noarch from fedora has depsolving problems
+               --> Missing Dependency: python-deltarpm is needed by package createrepo-0.9.8-2.fc12.noarch (fedora)
+             system-config-network-tui-1.5.99-1.fc12.noarch from fedora has depsolving problems
+               --> Missing Dependency: python-iwlib is needed by package system-config-network-tui-1.5.99-1.fc12.noarch (fedora)
+             Error: Missing Dependency: python-iwlib is needed by package system-config-network-tui-1.5.99-1.fc12.noarch (fedora)
+             Error: Missing Dependency: python-deltarpm is needed by package createrepo-0.9.8-2.fc12.noarch (fedora)
+              You could try using --skip-broken to work around the problem
+              You could try running: package-cleanup --problems
+                                     package-cleanup --dupes
+                                     rpm -Va --nofiles --nodigest
+
+        ===>yum install deltarpm
+        ===>iwlib 導入。 //..koji.. から rpm install
+        ---> libiw, wireless-tools required.
+        ===>yum install wiress-tools
+        (yum upgradeは数時間かかった(core4))
+
+    (3) リスタート
+
+        Hercules コンソールでの kernel 選択 で new(FC12) を選択
+        --->"No root device" でboot出来ず。===>give-up
+        old(FC11)を選択
+        --->CTC エラー
+        ===>/etc/rc.sysinit に 3行(@@@の行)追加 (upgrade前にはあったがupgradeで失われた) 
+                # /bin/bash
+                #
+                # /etc/rc.d/rc.sysinit - run once at boot time
+                #
+                # Taken in part from Miquel van Smoorenburg's bcheckrc.
+                #
+
+                HOSTNAME=`/bin/hostname`
+
+                set -m
+
+                if   -f /etc/sysconfig/network !; then
+                    . /etc/sysconfig/network
+                fi
+                if   -z "$HOSTNAME" -o "$HOSTNAME" = "(none)" !; then
+                    HOSTNAME=localhost
+                fi
+
+            @@@ modprobe ctcm
+            @@@ echo "0.0.0600,0.0.0601" > /sys/bus/ccwgroup/drivers/ctcm/group
+            @@@ echo 1 > /sys/bus/ccwgroup/drivers/ctcm/0.0.0600/online
+        (restart)
+        --->"udevd error geting buffer for inotify"
+        ===>yum -Uvh *udev*145-14* (release-7から更新)
+        --->Completed!   
+
+(D) sshfs の導入
+
+   .sshfs をパッケージマネージャを使って導入する。
+   .fusermountに実行権限があるか確認する、なければ chmod +x /usr/bin/fusermount. 
+   .マウントポイントを 777 で 作る  (mkdir /mountpoint; chmod 777 /mountpoint)
+   .使用するユーザーＩＤを グループ fuse のメンバーにする。reboot が必要.
+   ./dev/fuseのオーナーグループがfuseになっているか確認、そうでなければ chgrp fuse /dev/fuse。 
+
+   使用法:
+     sshfs [-o uid=nnn] [-o gid=nnn] user@remotehost:/remotedir /mountpoint
+   
+     Windows版のDokan sshfs は GUIでドライブＩＤを割り当てるようになっているので。
+     "e N:\"のようにアクセスする。
+
+(E) インストールログ：fc14.s390x           2011/11/10
+   00). (Linux)
+        -IPLイメージは "fedora-14-s390x-20100925"
+         (fedora-14-s390x.img はサイズが小さくすぐDiskFullになる) 
+        -Herclese は "hercules-3.07-1.i686.rpm"
+        -"hercles.cnf" の修正
+          0120 3390 image-file-name
+          (000C 3505 files(generic.prm,kernel..) は IPL 120 では使用しない)
+        -hosts登録("/etc/hosts")
+           192.168.200.3 s390x
+        	
+   01). (s390x)
+        #adduser useruser
+        #asswd  useruser
+   02). (s390x)
+        -DNS サーバー修正("/etc/resolv.conf")
+          search example.com
+          nameserver xxx.xxx.xxx.xxx 
+          nameserver yyy.yyy.yyy.yyy    <--if secondary exists
+            (/etc/resolv.conf は IPL で元に戻る
+             固定する場合 /etc/sysconfig/network-scripts/ifcfg-ctc0 を修正
+               DNS1=xxx.xxx.xxx.xxx
+               DNS2=yyy.yyy.yyy.yyy
+            )
+        -sshのXサーバー設定("/etc/ssh/sshd_config")
+          X11Forwarding yes
+   03). (s390x)
+        -yum リポジトリー修正(http://fedoraproject.org/wiki/Architectures/s390xの記述に従う)
+          [fedora]
+          name=Fedora $releasever - $basearch
+          baseurl=http://s390.koji.fedoraproject.org/mash/rawhide/s390x/os/
+          enabled=1
+          gpgcheck=0
+   ==> yum 失敗,ping が "host prohibit"
+   04). (Linux)
+        -iptableの REJECT 指定を除く
+          #iptables -S         ->エントリー番号の確認
+          #iptables -D INPUT n1  (n1 は INPUT チェインのエントリー番号(1から始まる))
+          #iptables -D FORWARD n2  (n2 は FORWARDチェインのエントリー番号)
+          #iptables -S         ->削除の確認
+   05). (Linux)
+        -gxe-vvv-tar.gz を s390 に送る
+		  scp $SRCPATH/gxe-vvv.tar.gz useruser@s390x:gxe-vvv.tar.gz
+   06). (s390x)
+        -tgzを展開しconfigure
+          $tar -zxvf gxe-vvv.tar.gz        （/home/useruserで と仮定）
+          $cd  gxe-vvv
+          $./configure
+   ==> no acceptable C compiler
+        -C の導入
+          #yum install gcc.s390x
+   ==> term.h not found
+        -ncursesの導入
+          #yum install ncurses-devel.s390x
+   ==> yum WARNING: refresh-packagekit" inport failed
+          #yum install PackageKit-yum-plugin.s390x
+   ==> cups/cups.h not found
+        -cupsの導入
+          #yum install cups-devel.s390x
+   ==> no package libgnomeui,gnome-vfs-module,libgnomeprint,libgnomeprintui
+        -それぞれlibを導入
+          #yum install libgnomeui-devel.s390x
+          #yum install libgnomeprintui22-devel.s390x
+          (処理が遅く yum がハングしたら, #yum-complete-transaction)
+   06). (s390x)
+        -make
+   ==> unknown type name ppd_file_t
+        -cups/cups.h が ppd.hを #include してない（Bugか)
+        -gxe's xxecsub2 ：明示的に ppd.h を#include する
+   ==> ld fails dlsym@@GLIBC_2.2...
+        -ld の使用が fc13 から変更になった
+         2.so of "o.o"-->"1.so"-->"2.so" のケースで "2.so" を明示的にlinkしなければならない
+        -gxeの Makefile 修正 (-ldl, -lX11)
+   ==> WARNING:unused but set
+        -gcc4.6 からのオプション(-Wunused-but-set-variable:省略値)
+        -configure.in修正済(gcc のバージョン>=4.6のとき-Wno-unused-but-set を指定
+         必要なら "./configure --enable-unused-but-set=yes" でconfigure してください
+   07). (Linux)
+        -gxeのテスト
+   ==> cannot open display:
+        #yum install xorg-x11-xauth.s390x
+        (linuxでのxhostコマンド s390x での DISPLAY=設定は ssh の場合不要)
+   ==> 日本語が表示されない
+        #yum groupinstall "Japanese Support"
+   ==> GConf WARNING client failed to connect to the D-BUS deaemon
+        #yum install dbus-x11.s390x
+   ==> failed to load module pk-gtk-module
+        #yum install PackageKit-gtk-module.s390x
+   ==> xe: search for gnome-terminal failed
+        #yum install gnome-terminal.s390x
+   ==> IPP request failed with status 1280
+        -libgnomeprint の CUPSポーリングが利用可能なプリンターなしで失敗
+        -これは無視する
+   ==> ポップアップダイアログ:An error occurred while loading or saving configuration information.
+        -ルートユーザーのときに出る、"su" 出はなく "su -"を使う
+   ==> GnomeUI-Warning:While connecting to session manager:None of authentication protocols specified are supported.
+        -ルートユーザーのときに出る、"su" 出はなく "su -"を使う
+   ==> Gtk-Message: Failed to load module "gnomebreakpad"
+        -yum install bug-buddy (/usr/lib64/gtk-2.0/libgnomebreakpad)
+        もし bug-buddy がなければ無視。(バグレポート用)
+
+(F) Ubunto11.10_x64 インストールテスト      2011/11/21
+   make
+   ==> undefined symbol gnome_vfs_mime_get_default...
+        libgnomevfs2-extra をインストール
+   ==> dlopen@@GLIBC_2.1 undefined 
+        もし発生したら MAkefile の LDFLAG を調整してください("-ldl" など)
+   gxe 実行
+   ==> Gtk-WARNING: Funable to locate theme engine in gtk-modules "pixbuf"
+        "aptitude install gtk-engine-pixbuf"
+
+(G) OpenSuse12.1_x64 インストールテスト 2011/11/22
+	cups-devel, libgnomeui-devel, libgnomeprintui-devel を導入
+    (DVD から os を導入後 リポジトリーを更新:"download.opensuse.org/distribution/12.1/repo/oss/suse")
+
+(H) Deb Debian jessie 3.10 xfce インストールテスト 2014/02/14
+    xfce4-terminal
+    	ショートカットキー変更 F1=ヘルプ, F11=全画面, F10=メニュー
+        	xfce4-appearance-settingsを実行、 設定, "メニューのショートカットキーを変更可能にする" をチェック
+        	xfce4-appearance-settingsを実行、 設定, "メニューのショートカットキーを変更可能にする" をチェック
+        	xfce4-terminal のメニューで
+            	ヘルプ-->目次("F1" が表示されている)メニュー項目の上で"Del"キーを押す
+            	表示-->全画面表示("F11"が表示されている)メニュー項目上で"Del"を押す
+                (この操作で ~/.config/xfce4/terminal/accels.scm が作成sれる)
+                編集-->設定(E)-->上級者(V), "メニューショートカットキーを無効にする"をオンにする
+	WARNING **: Couldn't register with accessibility bus: Did not receive a reply. Possible causes include: the remote application did not send a reply, the message bus security policy blocked the reply, the reply timeout expired, or the network connection was broken.
+            -->どこかで export NO_AT_BRIDGE=1 で環境変数を設定する
+
+    Gtk-WARNING **: Calling IsInhibited failed: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.gnome.SessionManager was not provided by any .service files
+            -->無害なので無視する
