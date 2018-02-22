@@ -1,11 +1,13 @@
-//*CID://+v6K7R~:                             update#=  278;       //+v6K7R~
+//*CID://+v6T7R~:                             update#=  285;       //~v6T7R~
 //*********************************************************************//~7712I~
 //utf2.c                                                           //~7716R~
 //* utf8 data manipulation:process using chof                      //~7712I~
 //*********************************************************************//~7712I~
-//v6K7:170327 (LNX)compiler warning;wcwidth not defined            //+v6K7I~
-//            wchar.h is included from stdio.h and features.h #undef __USE_XOPEN//+v6K7I~
-//            so #define _XOPEN_SOURCE before srdio.h              //+v6K7I~
+//v6T7:180220 stack errmsg to errmsg.<pid> and issue notification at initcomp//~v6T7I~
+//v6T5:180217 WCons:Cmdline,WriteConsoleOutputW/WriteConsoleOutputCharacterW shrink colomn. Use WriteConsoleOutputChar if avail(when successful cv to locale,also for altch)//~v6T5R~
+//v6K7:170327 (LNX)compiler warning;wcwidth not defined            //~v6K7I~
+//            wchar.h is included from stdio.h and features.h #undef __USE_XOPEN//~v6K7I~
+//            so #define _XOPEN_SOURCE before srdio.h              //~v6K7I~
 //v6K0:170224 (BUG)compile err at arm                              //~v6K0I~
 //v6Fc:160904 in addition to v6F3,also DBCS space altch is changable//~v6FcI~
 //v6F4:160905 write default tab altch to ini file                  //~v6F4I~
@@ -93,9 +95,9 @@
 		#include <windows.h>	         //v1.3 add                //~v022M~//~v640I~
     #endif                                                         //~v640I~
 #endif                                                             //~v640I~
-#ifdef LNX                                                         //+v6K7R~
- 	#define _XOPEN_SOURCE       //set before first include wchar.h //+v6K7R~
-#endif                                                             //+v6K7R~
+#ifdef LNX                                                         //~v6K7R~
+ 	#define _XOPEN_SOURCE       //set before first include wchar.h //~v6K7R~
+#endif                                                             //~v6K7R~
 #include <stdio.h>                                                 //~7712I~
 #include <stdlib.h>                                                //~7712I~
 #include <ctype.h>                                                 //~7712I~
@@ -103,7 +105,7 @@
 #include <errno.h>                                                 //~7712I~
 #ifdef LNX                                                         //~7712I~
 	#include <iconv.h>                                             //~v61bI~
-// 	#define __USE_XOPEN         //for wcwidth                      //~v640I~//+v6K7R~
+// 	#define __USE_XOPEN         //for wcwidth                      //~v640I~//~v6K7R~
     #include <wchar.h>                                             //~7712I~
 //  #include <langinfo.h>                                          //~v6a0R~
 #endif                                                             //~7712I~
@@ -185,7 +187,7 @@ static char *Ssbcstbfnm;                                           //~v6c7I~
 //static int Slastsbcsidw0;                                        //~v67ZR~
 int utfucsloadmap(int Popt,PSAVESBCSTB Ppsbcstbhdr);               //~v6c7I~
 int utfucssavemap(int Popt,PSAVESBCSTB Ppsbcstbhdr);               //~v6c7I~
-ULONG utf22_setunpucsvio(int Popt,ULONG Pucs,int Pdbcsid,int *Prc);//~v6DbR~
+//ULONG utf22_setunpucsvio(int Popt,ULONG Pucs,int Pdbcsid,int *Prc);//~v6DbR~//~v6T5R~
 #define  UT22SUUVO_OVF            0x01    //dbcsid:OVF             //~v6DbR~
 int utf22_setdbcsspacealt(int Popt,UWUCS Pucs,char *Ppdbcs,int Preslen,int *Ppaltch);//~v6DdR~
 //**************************************************               //~7801M~
@@ -674,6 +676,7 @@ int utfucsmapinit(int Popt)                                        //~v640I~
     	if (ovfctr)                                                //~v67ZI~
 //        	uerrmsg("%s. u-%06x-->u-%06x(x%04x of x%04x ucs).",0,  //~v67ZR~//~v697R~
 //        	uerrmsg("%s. u-%06x-->u-%06x(x%04x of x%04x SBCS).",0, //~v697R~//~v6BYR~
+#ifdef AAA                                                         //~v6T7I~
           	uerrmsg("%s. u-%06x-->u-%06x(0x%04x SBCSs of total 0x%04x).",0,//~v6BYI~
                     OVFMSG,                                        //~v67ZI~
           			ovfucs,ovfucslast,ovfctr,sbcsctr);             //~v67ZR~
@@ -684,6 +687,19 @@ int utfucsmapinit(int Popt)                                        //~v640I~
     	if (loaded)                                                //~v6c7I~
 	      	uerrmsgcat(";try to clear ::%s.xxx",0,                 //~v6c7R~
             			SBCSTBFNM);                                //~v6c7I~
+#else                                                              //~v6T7I~
+          	printf("%s",uerrsprintf("%s. u-%06x-->u-%06x(0x%04x SBCSs of total 0x%04x).",0,//~v6T7R~
+                    OVFMSG,                                        //~v6T7I~
+          			ovfucs,ovfucslast,ovfctr,sbcsctr));            //~v6T7I~
+    	if (ovfctrw0)                                              //~v6T7I~
+	      	printf("%s",uerrsprintf(";%s. u-%06x-->u-%06x(x%04x ucs) for width=0.",0,//~v6T7I~
+                    OVFMSG,                                        //~v6T7I~
+          			ovfucsw0,ovfucsw0last,ovfctrw0));              //~v6T7I~
+    	if (loaded)                                                //~v6T7I~
+	      	printf("%s",uerrsprintf(";try to clear ::%s.xxx",0,    //~v6T7I~
+            			SBCSTBFNM));                               //~v6T7I~
+          	printf("\n");                                          //+v6T7I~
+#endif                                                             //~v6T7I~
 	Gulibutfmode|=GULIBUTFSBCSIDOVF; //mapinit SBCSid overflow     //~v67ZI~
     }                                                              //~v67ZI~
     UTRACEP("sbcscount=%d,sbcsctr=%06x,sbcsw0ctr=%06x\n",seqno,sbcsctr,sbcsw0ctr);//~v67ZR~//~v69bR~//~v6DhR~

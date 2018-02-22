@@ -1,8 +1,9 @@
-//*CID://+v6J1R~:                             update#=265;         //+v6J1R~
+//*CID://+v6T4R~:                             update#=266;         //+v6T4R~
 //******************************************************
 //*ufilew.h
 //******************************************************
-//v6J1:170206 errmsg loop when UD fmt err(uerrmsg->ufprintf->ufilecvUD2Wnopath->uerrmsg);occued when !UD_MODE()//+v6J1I~
+//v6T4:180217 f2l option to set dbcs "?" for f2l err               //+v6T4I~
+//v6J1:170206 errmsg loop when UD fmt err(uerrmsg->ufprintf->ufilecvUD2Wnopath->uerrmsg);occued when !UD_MODE()//~v6J1I~
 //v6Hn:170120 (Win)when not too long but little bit short path fails when rsv name//~v6HnI~
 //v6Hg:170117 (Win)CreateDirectory maxpath is 248                  //~v6HgI~
 //v6Hc:170114 (Win)_MAX_PATH is wchar ctr,for dbcs size is doubled.(dir=240,file=255)//~v6H9I~
@@ -82,8 +83,9 @@ int upathlenWW(int Popt,UWCH *Pfilename);                          //~v6uaI~
 #define UFCVO_ALLOWCP2UERR 0x4000       //ignore MultibyteToWideChar err//~v6unI~
 #define UFCVO_ENCUTF8WC    0x8000       //enclose all utf8(not f2l err only)//~v6unI~
 #define UFCVO_DIRPATH    0x010000       //path is dir path(max:248)//~v6HgI~
-#define UFCVO_RSVNAME    0x020000       //set longname prefixÅ@for rsvname//~v6HnI~
-#define UFCVO_NOMSG      0x040000       //No fmterr msg            //+v6J1I~
+#define UFCVO_RSVNAME    0x020000       //set longname prefix for rsvname//~v6HnI~//+v6T4R~
+#define UFCVO_NOMSG      0x040000       //No fmterr msg            //~v6J1I~
+#define UFCVO_ERRREPDBCS 0x080000       //set dbcs "?" for f2l err //+v6T4I~
 //************************************************************     //~v6uaI~
 int ufilecvcp2ucsW(int Popt,char *Plc,int Plclen,UWCH *Puwch,int Pbuffsz,int *Ppucsctr);
 //******************************************************

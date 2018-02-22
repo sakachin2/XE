@@ -1,8 +1,9 @@
-//*CID://+v6J1R~:                              update#=  287       //~v6J1R~
+//*CID://+v6T7R~:                              update#=  296       //~v6T7R~
 //*************************************************************
 //*uerrexit/uerrmsg/uerrexit_init/uerrmsg_init/ugeterrmsg**
 //*uerrapi1,uerrapi1x,uerrapi0,uerrapi0x                           //~v040R~
 //*************************************************************
+//v6T7:180220 stack errmsg to errmsg.<pid> and issue notification at initcomp//~v6T7I~
 //v6J1:170206 errmsg loop when UD fmt err(uerrmsg->ufprintf->ufilecvUD2Wnopath->uerrmsg);occued when !UD_MODE()//~v6J1I~
 //v6G3:161212 (Win10) missing error.h , use winerror.h             //~v6G3I~
 //v6F5:160905 (LNXBUG)write default tab altch to ini file          //~v6F5I~
@@ -217,6 +218,7 @@
 #include <ucvext.h>                                                //~v5n8I~
 #include <ucvebc.h>                                                //~v6m2I~
 #include <ufile.h>                                                 //~vaucI~
+#include <ufile2.h>                                                //~v6T7I~
 #include <ufilew.h>                                                //~vaucI~
 //*******************************************************
 #define MAXPARM   10
@@ -227,6 +229,7 @@
 #ifdef W32UNICODE                                                  //~vaucI~
 	#define MAX_PRINTFW_MSGSZ  4096                                //~vaucI~
 #endif                                                             //~vaucI~
+#define ERRFNM_STACK  "xeerrmsg"                                   //~v6T7R~
 //*******************************************************
 //*errmsg and exit
 //*******************************************************
@@ -266,10 +269,13 @@ static UEXITFUNC *Sexitfunc;
 static UPOPUPMSG *Supopupmsg;	//upopupmsg func addr           //~5902R~
 static void *Sexitparm;
 static UCHAR Sexitmapfile[_MAX_PATH];                              //~v101R~
+static FILE *Sfhstack;                                             //~v6T7I~
+static char *Sworkdir;                                             //~v6T7I~
 //****************************
 static unsigned char Sattr2='\x17';	//default:white char on blue back ground
 //******************************************************
 //char *uerrmsgedit(char *Ptitle,char *Pemsg ,char *Pjmsg,unsigned long *Pparg);//~v570R~
+void uerrmsg_initstack(char *Pmsg);                                //~v6T7R~
 //*******************************************************
 //*dummy for LIB(same name as file)						*
 //*******************************************************
@@ -721,6 +727,8 @@ char *uerrmsg(char *Pemsg ,char *Pjmsg,... )
 #endif                                                             //~v570I~
         }                                                          //~v570I~
   }	                                                               //~v062I~
+    if (Guerropt2 & GBL_UERR2_INIT_INPROG) //xe init in progress   //+v6T7M~
+		uerrmsg_initstack(pmsg);                                   //+v6T7I~
 	return pmsg;
 }//uerrmsg                                                         //~v060R~
 
@@ -763,6 +771,8 @@ char *uerrmsg2(char *Pemsg ,char *Pjmsg,... )                      //~v182I~
 #endif                                                             //~v570I~
         }//Shandle2                                                //~v5nnI~
   }                                                                //~v182I~
+    if (Guerropt2 & GBL_UERR2_INIT_INPROG) //xe init in progress   //+v6T7I~
+		uerrmsg_initstack(pmsg);                                   //+v6T7I~
 	return pmsg;                                                   //~v182I~
 }//uerrmsg2                                                        //~v182I~
                                                                    //~v182I~
@@ -1926,11 +1936,11 @@ int ufprintfW(FILE *Pfh,char *Ppattern,char *Pmsg)                 //~vaucI~
 	opt=UFCVO_NOMSG;                                               //~v6J1I~
   rc2=                                                             //~v6J1I~
     ufilecvUD2WCnopath(opt,Ppattern,wkpatW,sizeof(wkpatW),NULL/*ucsctr*/);//~v6J1I~
-    if (rc2)                                                       //+v6J1R~
+    if (rc2)                                                       //~v6J1R~
     	return fprintf(Pfh,Ppattern,Pmsg);                         //~v6J1I~
   rc2=                                                             //~v6J1I~
     ufilecvUD2WCnopath(opt,Pmsg,wkmsgW,sizeof(wkmsgW),NULL/*ucsctr*/);//~v6J1I~
-    if (rc2)                                                       //+v6J1R~
+    if (rc2)                                                       //~v6J1R~
     	return fprintf(Pfh,Ppattern,Pmsg);                         //~v6J1I~
 	ucsctr=fwprintf(Pfh,wkpatW,wkmsgW);                            //~vaucR~
     return ucsctr;                                                 //~vaucI~
@@ -1957,10 +1967,60 @@ size_t ufwriteWCONS(char *Pmsg,size_t Punit,size_t Pcount,FILE *Pfh)//~vaucI~
 	opt=UFCVO_NOMSG;                                               //~v6J1I~
   rc2=                                                             //~v6J1R~
     ufilecvUD2WCnopath(opt,Pmsg,wkmsgW,sizeof(wkmsgW),NULL/*ucsctr*/);//~v6J1I~
-  if (!rc2)                                                        //+v6J1R~
+  if (!rc2)                                                        //~v6J1R~
 	fwprintf(Pfh,L"%s",wkmsgW);                                    //~vaucI~
   else                                                             //~v6J1I~
 	fprintf(Pfh,"%s",Pmsg);                                        //~v6J1I~
     return Pcount;                                                 //~vaucI~
 }//ufwriteWCONS                                                    //~vaucI~
 #endif	//W32UNICODE                                               //~vaucI~
+//**************************************************************** //~v6T7I~
+void uerrmsg_initstart(char *Pworkdir)                             //~v6T7I~
+{                                                                  //~v6T7I~
+#ifndef ARM                                                         //~vb26I~//~v6T7I~
+	ULONG pid;                                                     //~v6T7I~
+    char fpath[_MAX_PATH];                                         //~v6T7I~
+//******************                                               //~v6T7I~
+    Sworkdir=Pworkdir;                                             //~v6T7I~
+    Guerropt2|=GBL_UERR2_INIT_INPROG; //xe init in progress        //~v6T7I~
+    pid=ugetpid();                                                 //~vb26I~//~v6T7I~
+    sprintf(fpath,"%s%s.%ld",Pworkdir,ERRFNM_STACK,pid);           //~v6T7I~
+    Sfhstack=fopen(fpath,"w");                                     //~v6T7I~
+#endif                                                             //~v6T7I~
+}                                                                  //~v6T7I~
+//**************************************************************** //~v6T7I~
+void uerrmsg_initstack(char *Pmsg)                                 //~v6T7R~
+{                                                                  //~v6T7I~
+#ifndef ARM                                                        //~v6T7I~
+//******************                                               //~v6T7I~
+	if (Sfhstack)                                                  //~v6T7I~
+    {                                                              //~v6T7I~
+	    Guerropt2|=GBL_UERR2_INIT_MSGSTACK;                        //~v6T7I~
+    	fprintf(Sfhstack,"%s\n",Pmsg);                             //~v6T7I~
+    }                                                              //~v6T7I~
+#endif                                                             //~v6T7I~
+}                                                                  //~v6T7I~
+//**************************************************************** //~v6T7I~
+void uerrmsg_initcomp()                                            //~v6T7I~
+{                                                                  //~v6T7I~
+#ifndef ARM                                                        //~v6T7I~
+	ULONG pid;                                                     //~v6T7I~
+    char fpath[_MAX_PATH];                                         //~v6T7I~
+//******************                                               //~v6T7I~
+    Guerropt2&=(UINT)(~GBL_UERR2_INIT_INPROG); //xe init in progress//~v6T7M~
+    fclose(Sfhstack);                                              //~v6T7R~
+    ugeterrmsg();	//clear errmsg                                 //~v6T7I~
+    pid=ugetpid();                                                 //~v6T7I~
+    if (Guerropt2 & GBL_UERR2_INIT_MSGSTACK)                       //~v6T7R~
+    {                                                              //~v6T7I~
+    	uerrmsg("At initialization, some error message was written to %s.%ld.",//~v6T7I~
+        		"初期処理中にエラーを検知しました、%s.%ld をチェックしてください",//~v6T7I~
+                	"::" ERRFNM_STACK,pid);                        //~v6T7R~
+    }                                                              //~v6T7I~
+    else                                                           //~v6T7I~
+    {                                                              //~v6T7I~
+	    sprintf(fpath,"%s%s.%ld",Sworkdir,ERRFNM_STACK,pid);       //~v6T7R~
+    	uremove(fpath);                                            //~v6T7R~
+    }                                                              //~v6T7I~
+#endif                                                             //~v6T7I~
+}                                                                  //~v6T7I~

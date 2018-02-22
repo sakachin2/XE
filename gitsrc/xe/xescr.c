@@ -1,7 +1,8 @@
-//*CID://+vbdnR~:                             update#=  431;       //~vbdnR~
+//*CID://+vbi3R~:                             update#=  437;       //~vbi3R~
 //***********************************************************
 //* xescr.c                                                     //~5513I~
 //***********************************************************   //~v016I~
+//vbi3:180211 supprt command history list                          //~vbi3I~
 //vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
 //vb7o:170119 (Bug)Errmsg top 2 byte corrupted when msg is over 2line(MAXCOL*2)//~vb7oI~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCWI~
@@ -384,7 +385,7 @@ int scrsetinsrepdbcs(PUCLIENTWE Ppcw,PUSCRD Ppsd);                 //~v770I~
 	int scrcell2tocell(char *Pdata,char *Pcell,int Poffs,int Plen);//~va00R~
 #endif                                                             //~va00I~
 #ifdef WXEXXE                                                      //~vbdnI~
-	int scrSetUpdateFileMenu(int Popt,PUCLIENTWE Ppcw);            //+vbdnR~
+	int scrSetUpdateFileMenu(int Popt,PUCLIENTWE Ppcw);            //~vbdnR~
 #endif                                                             //~vbdnI~
 //****************************************************************
 // scrinit 
@@ -1224,7 +1225,7 @@ static int S1stclear=1;                                            //~v45BR~
 #endif                                                             //~v089I~
 //create line
 #ifdef WXEXXE                                                      //~vbdnR~
-	scrSetUpdateFileMenu(0,pcw1);                                  //+vbdnI~
+	scrSetUpdateFileMenu(0,pcw1);                                  //~vbdnI~
 #endif                                                             //~vbdnI~
  	pc=Gattrtbl+COLOR_TITLE;
 	for (i=0,pcw=pcw1;i<2;i++,pcw=pcw2)
@@ -2461,11 +2462,11 @@ static 	FTFUNC *Sfuncwakeup[UCWMAXTYPE]                            //~v08bM~
 	}
 	return pcw;
 }//scrpopup
-
 //****************************************************************
 // scrgetcw
 //*get current client work element and set set relative csr pos
 //*parm   :client id -- 0:current active client, -1:another client
+//*       :3 split1 under top,4:spli2 under top                    //~vbi3I~
 //*retuen :client work element
 //****************************************************************
 PUCLIENTWE scrgetcw(int Pclientid)
@@ -2640,6 +2641,30 @@ PUCLIENTWE scrsrchcw(int Psplitid,int Ppanid)                   //~5224I~
 	}                                                           //~5224I~
 	return 0;                                                   //~5224I~
 }//scrsrchcw                                                    //~5224I~
+//**************************************************               //~vbi3I~
+//*search cmd history list pcw                                     //~vbi3I~
+//**************************************************               //~vbi3I~
+PUCLIENTWE scrsrchcwchl(int Popt,int Psplitid)                     //~vbi3I~
+{                                                                  //~vbi3I~
+	PUCLIENTWE pcw;                                                //~vbi3I~
+    PUFILEH pfh;                                                   //~vbi3I~
+    PUFILEC pfc;                                                   //~vbi3I~
+//************************************                             //~vbi3I~
+	for (pcw=UGETQTOP(&Sclientwq[Psplitid]);pcw;pcw=UGETQNEXT(pcw))//~vbi3I~
+	{                                                              //~vbi3I~
+        pfc=pcw->UCWpfc;                                           //~vbi3I~
+        if (pfc)                                                   //~vbi3I~
+        {                                                          //~vbi3I~
+        	pfh=pfc->UFCpfh;                                       //~vbi3I~
+            if (pfh)                                               //~vbi3I~
+            {                                                      //~vbi3I~
+				if (pfh->UFHtype==UFHTCMDHIST)                     //~vbi3I~
+					return pcw;                                    //~vbi3I~
+            }                                                      //~vbi3I~
+        }                                                          //~vbi3I~
+	}                                                              //~vbi3I~
+	return 0;                                                      //~vbi3I~
+}//scrsrchcwchl                                                    //~vbi3I~
 //#ifdef WXE                                                       //~v64aR~
 #ifdef WXEXXE                                                      //~v64aR~
 //**************************************************               //~v500I~
@@ -2801,10 +2826,10 @@ int scrsetinsrepdbcs(PUCLIENTWE Ppcw,PUSCRD Ppsd)                  //~v770I~
 }//scrsetinsrepdbcs                                                //~v770I~
 #ifdef WXEXXE                                                      //~vbdnI~
 //*********************************************************************//~vbdnI~
-int scrSetUpdateFileMenu(int Popt,PUCLIENTWE Ppcw)                 //+vbdnI~
+int scrSetUpdateFileMenu(int Popt,PUCLIENTWE Ppcw)                 //~vbdnI~
 {                                                                  //~vbdnI~
-	if (UCBITCHK(Ppcw->UCWflag,UCWFDRAW))  //current client may cahnged(poped or newly registered//+vbdnI~
-    	Gwxestat|=GWXES_UPDATEMENU;                                //+vbdnM~
-    return 0;                                                      //+vbdnI~
-}//scrSetUpdateFileMenu                                            //+vbdnR~
+	if (UCBITCHK(Ppcw->UCWflag,UCWFDRAW))  //current client may cahnged(poped or newly registered//~vbdnI~
+    	Gwxestat|=GWXES_UPDATEMENU;                                //~vbdnM~
+    return 0;                                                      //~vbdnI~
+}//scrSetUpdateFileMenu                                            //~vbdnR~
 #endif                                                             //~vbdnI~

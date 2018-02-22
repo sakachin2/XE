@@ -1,8 +1,9 @@
-//*CID://+v6FcR~: update#=  331;                                   //+v6FcR~
+//*CID://+v6T5R~: update#=  333;                                   //~v6T5R~
 //******************************************************           //~v600I~
 //*utf22.h                                                         //~v640R~
 //******************************************************           //~v600I~
-//v6Fc:160904 in addition to v6F3,also DBCS space altch is changable//+v6FcI~
+//v6T5:180217 WCons:Cmdline,WriteConsoleOutputW/WriteConsoleOutputCharacterW shrink colomn. Use WriteConsoleOutputChar if avail(when successful cv to locale,also for altch)//+v6T5R~
+//v6Fc:160904 in addition to v6F3,also DBCS space altch is changable//~v6FcI~
 //v6F7:160905 (W64) TAB disp char on W64                           //~v6F7I~
 //                  TT font:tab skip colomn err,errmsg OK          //~v6F7I~
 //                  Laster font tab skip colomn OK,errmsg shorten  //~v6F7I~
@@ -58,7 +59,7 @@
 //  #define UTF22_TABALT2       0x25b9      //TAB padding display char//~v6F7R~
     #define UTF22_TABALT1       0x21be      //TAB(0x09) display char//~v6F7I~
     #define UTF22_TABALT2       0x21c0      //TAB padding display char//~v6F7I~
-    #define UTF22_DBCSSPACEALT  0x2591      //default dbcs space altch//+v6FcI~
+    #define UTF22_DBCSSPACEALT  0x2591      //default dbcs space altch//~v6FcI~
 //*********************************************************************//~v640M~
     #define UTF_UNPDBCS      0x25a1 //square grid                  //~v6DcI~
 	#define UTF_ISTABDBCS(dbcsid) \
@@ -578,3 +579,5 @@ int utfucs42utf16(int Popt,UWUCS *Pucs4,int Pucs4ctr,WUCS *Pucs2,int Pbuffsz,int
 //*******************************************************************//~v6BPI~
 int utf162ucs4(int Popt,WUCS *Ppdata,int Pctr,UWUCS *Poutucs4,int Poutbuffsz,int *Ppchkctr,int *Ppoutctr);//~v6BPR~
 #define U162U4O_UCS1      0x01 //return by 1 ucs4                  //~v6BPI~
+//*******************************************************************//~v6T5I~
+ULONG utf22_setunpucsvio(int Popt,ULONG Pucs,int Pdbcsid,int *Prc);//~v6T5I~

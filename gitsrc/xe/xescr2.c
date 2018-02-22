@@ -1,9 +1,10 @@
-//CID://+vbd7R~:              update#=     121                     //~vafkR~//+vbd7R~
+//CID://+vbi3R~:              update#=   12221                     //~vbi3R~
 //***********************************************************
 //* xescr2.c
 //* confirm/splith/splitv/swap/nextpan/prevpan                  //~5105R~
 //***********************************************************
-//vbd7:171119 "SEL all" support on file panel                      //+vbd7I~
+//vbi3:180211 supprt command history list                          //~vbi3I~
+//vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //vafk:120624 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  use ULPTR(unsigned __int64/ULONG)//~vafkI~
 //va1q:091107 compchkm                                             //~va1qI~
 //va1c:091030_merge GB18030 support                                //~va1cI~
@@ -292,6 +293,23 @@ int func_swap(PUCLIENTWE Ppcw)
 	return 0;                                                   //~4C24R~
 }//func_swap
 
+//**************************************************************** //~vbi3I~
+// funcswap2                                                       //~vbi3I~
+//*swap screen(not swap screen size)                               //~vbi3I~
+//**************************************************************** //~vbi3I~
+int funcswap2(int Popt,PUCLIENTWE Ppcw)                            //~vbi3I~
+{                                                                  //~vbi3I~
+	PUCLIENTWE pcw1,pcw2;                                          //~vbi3I~
+//***************                                                  //~vbi3I~
+	Gscrcurclient=!Gscrcurclient;	//lower is active              //~vbi3I~
+	pcw1=scrgetcw(1);                                              //~vbi3I~
+	pcw2=scrgetcw(2);                                              //~vbi3I~
+	csrhomepos(0);	//home pos of cur client                       //~vbi3I~
+	UCBITON(pcw1->UCWflag,UCWFDRAW);                               //~vbi3I~
+	UCBITON(pcw2->UCWflag,UCWFDRAW);                               //~vbi3I~
+	return 0;                                                      //~vbi3I~
+}//funcswap2                                                       //~vbi3I~
+                                                                   //~vbi3I~
 //****************************************************************//~5105I~
 // func_nextpan                                                 //~5105I~
 //*push current,pop bottom panel                                //~5105I~
@@ -395,7 +413,7 @@ void scrcsrtyperestore(void)                                       //~v09lR~
 	return;                                                        //~v05kI~
 }//scrcsrtyperestore                                               //~v05kR~
 //#ifdef WXE                                                       //~v53mR~
-//#if defined(WXE)||defined(LNX)                                     //~v53mI~//+vbd7R~
+//#if defined(WXE)||defined(LNX)                                     //~v53mI~//~vbd7R~
 ////****************************************************************//~v500R~
 //// csr restore                                                   //~v500R~
 ////****************************************************************//~v500R~
@@ -497,7 +515,7 @@ int scrcpgetpcw(int Prow,int Pcol,PUCLIENTWE *Pppcw)               //~v500I~
     *Pppcw=pcw;                                                    //~v500I~
     return psdpos;                                                 //~v500I~
 }//scrcpgetpcw                                                     //~v500I~
-#if defined(WXE)||defined(LNX)                                     //+vbd7I~
+#if defined(WXE)||defined(LNX)                                     //~vbd7I~
 ////****************************************************************//~v500R~
 //// get frame data                                                //~v500R~
 ////****************************************************************//~v500R~

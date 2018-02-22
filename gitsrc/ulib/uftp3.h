@@ -1,8 +1,9 @@
-//*CID://+v6J4R~:                             update#=  417;       //+v6J4R~
+//*CID://+v6T0R~:                             update#=  418;       //+v6T0R~
 //******************************************************           //~v61pI~
 //*uftp3.h                                                         //~v61pI~
 //******************************************************           //~v61pI~
-//v6J4:170207 (Bug:Lnx)smb err was not checked, edit cmd opens file as new file//+v6J4I~
+//v6T0:180129 xehosts;Port option support                          //+v6T0I~
+//v6J4:170207 (Bug:Lnx)smb err was not checked, edit cmd opens file as new file//~v6J4I~
 //v6da:120217 (Axe)smb support                                     //~v6daI~
 //v6d7:120209 (SMB)adjust for target:Windows                       //~v6d7I~
 //v6d1:120131 (SMB)share option for SAMBA node(win64  192.168.2.19 usrskt pswd  share=p)//~v6d1I~
@@ -15,6 +16,8 @@
 #define FTP_HDR_SSH          "#@SSH="      //set default ssh=ALL   //~v61pR~
 #define FTP_OPT_SSH          "SSH="        //each destination      //~v61pI~
 #define FTP_OPT_SMB          "SHARE="      //each destination      //~v6d1I~
+#define FTP_OPT_PORTL        "p="          //port  lower case option parm//+v6T0I~
+#define FTP_OPT_PORTU        "P="          //port  upper case option parm//+v6T0I~
 #define FTP_VALUE_ALL        "ALL"         //set default           //~v61pI~
 #define FTP_PSFTP_PWPARM     "-pw"                                 //~v61pI~
 #define FTP_VALUE_PSFTP      "psftp"                               //~v61pR~
@@ -63,7 +66,7 @@
 #define SMB_STAT_NOT_FOUND2   "_NO_SUCH_"         //NT_STATUS_NO_SUCH_FILE//~v6d1I~
 #define SMB_STAT_PATH_ERR     "_PATH_NOT_FOUND "  //NT_STATUS      //~v6d1I~
 #define SMB_STAT_NO_UNIX_EXT  "UNIX CIFS"  //Server dose'nt support UNIX CIFS call//~v6d1I~
-#define SMB_STAT_ACCESS_DENIED "_ACCESS_DENIED "                   //+v6J4I~
+#define SMB_STAT_ACCESS_DENIED "_ACCESS_DENIED "                   //~v6J4I~
                                                                    //~v6d1I~
 #define SMB_CMD_VOLUME         "volume"                            //~v6d1R~
 #define SMB_RESP_VOLUME        "Volume:"                           //~v6d1I~

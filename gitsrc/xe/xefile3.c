@@ -1,10 +1,11 @@
-//*CID://+vazpR~:                             update#=  145;       //~vazpR~
+//*CID://+vbi3R~:                             update#=  151;       //~vbi3R~
 //*************************************************************
 //*xefile3.c*
 //* execute key                                                 //~4C23R~
 //* pgup/pgdn/pgleft/pgright/linetop/lineend/scroll 1line up/down//~5111R~
 //* filetop/fileend                                             //~4C23I~
 //*************************************************************
+//vbi3:180211 supprt command history list                          //~vbi3I~
 //vazp:150113 (BUG)scroll-right MAX crash when maxline<scrwidth    //~vazpI~
 //vaf9:120607 (WTL)Bug found by vs2010exp(used uninitialized variable),avoid warning C4701//~vaf9I~
 //va50:100324 Raw EBCDIC file support for NFS mount                //~va50I~
@@ -112,7 +113,7 @@
 #include <utf22.h>                                                 //~va20I~
 #endif                                                             //~va20I~
 #include <ucvebc.h>                                                //~va50I~
-#include <utrace.h>                                                //+vazpI~
+#include <utrace.h>                                                //~vazpI~
                                                                 //~4C19I~
 #include "xe.h"
 #include "xescr.h"
@@ -1328,6 +1329,18 @@ int filecharcsr(PUCLIENTWE Ppcw)                                //~5423R~
     PUFILEH pfh;                                                   //~v0d7I~
 //****************************                                  //~5423M~
 //  if (UCBITCHK(Gscrstatus,GSCRSCSRDOWN))                         //~va3RR~
+	if (Gotherstatus & GOTHERS_CHLPOPUP)//CommandHistoryList popup at return from funccall,UCWreason is not avail becaquse Ppcw may be freeed//+vbi3R~
+    {                                                              //~vbi3I~
+    	return 0;	//pcw will be freed                            //~vbi3I~
+    }                                                              //~vbi3I~
+	if (Ppcw->UCWreason==UCWREASON_CHLSPLIT)	//free current command history list pfh+pcw at return to funccall//~vbi3I~
+    {                                                              //~vbi3I~
+    	return 0;	//no csr move                                  //~vbi3I~
+    }                                                              //~vbi3I~
+	if (Ppcw->UCWreason==UCWREASON_CHLNOSPLIT)	//free current command history list pfh+pcw at return to funccall//~vbi3I~
+    {                                                              //~vbi3I~
+    	return 0;	//no csr move                                  //~vbi3I~
+    }                                                              //~vbi3I~
     if (Goptopt3 & GOPT3_VHEXCSRZIGZAG)                            //~va3TI~
     {                                                              //~va3TI~
       	if (Ppcw->UCWreason==UCWREASON_VHEX1STEP)                  //~va3TI~

@@ -1,12 +1,13 @@
-//*CID://+v6K8R~:                             update#=  608;       //+v6K8R~
+//*CID://+v6T4R~:                             update#=  609;       //+v6T4R~
 //*********************************************************************//~v600I~
 //* utf8 data manipulation                                         //~v600I~
 //*********************************************************************//~v600I~
-//v6K8:170331 (LNX)ubuntu lts uerrexit at udbcschk_wclocalereset after udbcschk_chklocale//+v6K8I~
-//            because iconv_open failed for "eucjp", iconv --list show "EUCJP".//+v6K8I~
-//            cause is libiconv114 was installed to /usr/local for Axe//+v6K8I~
-//            uninstall it by /home3/androidndk/Project/Aiconv114  //+v6K8I~
-//            and for safety iso88591 to ISO8859-1                 //+v6K8I~
+//v6T4:180217 f2l option to set dbcs "?" for f2l err               //+v6T4I~
+//v6K8:170331 (LNX)ubuntu lts uerrexit at udbcschk_wclocalereset after udbcschk_chklocale//~v6K8I~
+//            because iconv_open failed for "eucjp", iconv --list show "EUCJP".//~v6K8I~
+//            cause is libiconv114 was installed to /usr/local for Axe//~v6K8I~
+//            uninstall it by /home3/androidndk/Project/Aiconv114  //~v6K8I~
+//            and for safety iso88591 to ISO8859-1                 //~v6K8I~
 //v6Ek:160806 (W32)for xe:b4j(OPT UNICOMP UNPR was effective only for file contents(chk at tabdisplay))//~v6EkI~
 //v6Bj:160213 (W32:BUG)UCS4 was cut to UCS2                        //~v6BjI~
 //v6B9:160121 (LNX)new ufullpathCP function to chk optionally filesystem iocharset  convert to utf8 from locale code//~v6B9I~
@@ -681,6 +682,7 @@ int utftbterm(void);                                               //~v600I~
 #define UTFCVO_OUTWIDTH    0x020000          //f2dd;return chklen if outarea overflow//~v6btI~
 #define UTFCVO_BUFFSZPARM  0x040000          //outlen parm contains outbuff size to protect buff overflow//~v6hGI~
 #define UTFCVO_CHKLCWIDTH  0x080000          //chk ddwidth and lcwidth,if err rep by errch//~v6t1I~
+#define UTFCVO_ERRREPDBCS  0x100000          //set dbcs subchar for f2l err//+v6T4I~
 //#ifdef W32                                                         //~v6ueI~//~v6uBR~
 //#define UTFCVO_UCS4W       0x100000          //parm type is WUCS but data is ULONG//~v6ueI~//~v6uBR~
 //#endif                                                             //~v6ueI~//~v6uBR~
@@ -856,8 +858,8 @@ int utfcvf2lany1mb(int Popt,char *Pout,int Poutbufflen,char *Pinp,int Pinplen,//
 #ifdef ARM                                                         //~v6a0I~
 	#define ISO88591       "ISO8859-1"                             //~v6a0I~
 #else                                                              //~v6a0I~
-//#define ISO88591       "iso88591"                                  //~v62WM~//+v6K8R~
-	#define ISO88591       "ISO8859-1"                             //+v6K8I~
+//#define ISO88591       "iso88591"                                  //~v62WM~//~v6K8R~
+	#define ISO88591       "ISO8859-1"                             //~v6K8I~
 #endif                                                             //~v6a0I~
   #ifdef UTF8UCS2                                                  //~v640I~
 	int utfcvf2dd(int Popt,UCHAR *Ppdata,int Plen,UCHAR *Ppoutdata,UCHAR *Ppoutdbcs,int Poutbuffsz,int *Ppoutlen);//~v640R~

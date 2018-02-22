@@ -1,8 +1,9 @@
-//*CID://+vb7eR~:                             update#=  390;       //~vb7eR~
+//*CID://+vbi3R~:                             update#=  427;       //~vbi3R~
 //*************************************************************
 //*xefile14.c*                                                     //~v54dR~
 //* fileload ,filefindopen/filegetline                             //~v54dR~
 //*************************************************************
+//vbi3:180211 supprt command history list                          //~vbi3I~
 //vb7e:170108 FTP crash by longname                                //~vb7eI~
 //vb2e:160122 (LNX)convert filename according IOCHARSET mount option//~vb2eI~
 //vazt:150114 (BUG)"UCHAR UFHpathlen" is invalid when _MAX_PATH>256//~vaztI~
@@ -268,6 +269,7 @@
 #include <ufemsg.h>  //ufgetpos                                    //~v09aI~
 #include <uparse.h>                                                //~v0b2R~
 #include <uedit.h>                                                 //~v0clI~
+#include <uedit2.h>                                                //~vbi3I~
 #include <ustring.h>                                               //~v53UI~
 #ifdef FTPSUPP                                                     //~v540I~
 	#include <uftp.h>                                              //~v540R~
@@ -293,6 +295,7 @@
 #include "xefile12.h"                                              //~v0baR~
 #include "xefile13.h"                                              //~v0d5I~
 #include "xefunc.h"                                             //~5118I~
+#include "xefunc2.h"                                               //~vbi3I~
 #include "xeundo.h"
 #include "xepan.h"                                              //~5318I~
 #include "xefsub.h"                                             //~5318I~
@@ -322,6 +325,9 @@
 #include "xeutf.h"                                                 //~va1EI~
 #endif                                                             //~v914I~//~va00I~
 #include "xeebc.h"                                                 //~va51I~
+#ifdef W32UNICODE                                                  //~vbi3I~
+	#include "xefsubw.h"                                           //~vbi3I~
+#endif                                                             //~vbi3I~
 //*******************************************************
 //#define MAXLINEDATA2 (MAXLINEDATA-99)	//split line cut size      //~v0e2R~
 #define MAXLINEDATA2 MAXLINEDATA	//same as max                  //~v0e2I~
@@ -1713,7 +1719,7 @@ int filefindopen(UCHAR *Ppfile,FILEFINDBUF3 *Ppfstat3,int Popt, //~v020R~
       }                                                            //~v576I~
         if (!newsw)                                                //~v542I~
         {                                                          //~v8@sI~
-            binsw|=XEFTPO_2TEMPF;             //get to local temp file directory//+vb7eI~
+            binsw|=XEFTPO_2TEMPF;             //get to local temp file directory//~vb7eI~
             xetsosetftpparm(XETSOFTPO_DBCSCONV|XETSOFTPO_FFB3,puftph,&tsop,Ppfstat3); //set tso parm to puftph//~v8@sR~
 //  		if (xeftpget(puftph,Ppfile))                           //~v576R~
 //  		if (xeftpget(puftph,Ppfile,ftpwdfile))                 //~v70zR~
@@ -2177,3 +2183,141 @@ int chklargefile(PUFILEH Ppfh)                                     //~vazdR~
 	UTRACEP("chklargefile rc=%d,filesz=%s,limit=0x%s\n",rc,ufileeditsz(0,opensz,0),ueditFILESZ(0/*opt*/,0/*outbuff*/,0/*buffsz*/,"%$x",Glargefilesz));//~vazdR~
     return rc;                                                     //~vazdR~
 }//chklargefile                                                    //~vazdR~
+//**************************************************************** //~vbi3I~
+//*allocate plh by cpu8                                            //~vbi3I~
+//**************************************************************** //~vbi3I~
+PUSCMD filegetcmdstack(int Popt,PUFILEH Ppfh,int Pline,PULINEH *Ppplh,PUSCMD Ppsc)//~vbi3R~
+{                                                                  //~vbi3I~
+	PUSCMD psc;			//stack cmd                                //~vbi3I~
+	PULINEH plh;                                                   //~vbi3I~
+    int opt;                                                       //~vbi3R~
+    int fmt,len,lenu8;                                             //~vbi3I~
+#ifdef W32UNICODE                                                  //~vbi3I~
+    char wkstripu8[_MAX_PATHU8];                                   //~vbi3I~
+#endif                                                             //~vbi3I~
+	char *pc;                                                      //~vbi3R~
+	UCHAR *pu8;                                                    //~vbi3I~
+    int swcmdu8=0;                                                 //~vbi3R~
+//****************************                                     //~vbi3I~
+    if(psc=funcgetcmdstack(Popt,Ppsc,&pc,&len,&fmt),!psc)          //~vbi3R~
+    	return 0;                                                  //~vbi3I~
+#ifdef W32UNICODE                                                  //~vbi3I~
+    if (fmt==2)   //ud fmt                                         //~vbi3I~
+    {                                                              //~vbi3I~
+		fsubw_stripUDCT(0,pc,len,wkstripu8,sizeof(wkstripu8),NULL/*wkfpathct2*/,0/*sizeof(wkfpathct2)*/,&lenu8);//~vbi3I~
+        pc=wkstripu8;                                              //~vbi3I~
+		len=lenu8;                                                 //~vbi3I~
+        swcmdu8=1;                                                 //~vbi3I~
+    }                                                              //~vbi3I~
+    else                                                           //~vbi3I~
+#endif                                                             //~vbi3I~
+	if (fmt==1)	//lc only                                          //~vbi3I~
+	{                                                              //~vbi3I~
+        opt=XEUTFCVO_ERRREPQM|XEUTFCVO_CPU8;                       //~vbi3R~
+    	xeutf_cvdata(opt,pc,len,&pu8,&lenu8);                      //~vbi3R~
+        pc=(char*)pu8;                                             //~vbi3R~
+		len=lenu8;                                                 //~vbi3R~
+    }                                                              //~vbi3I~
+    else //fmt==0:  lc and u8,returned u8                          //~vbi3I~
+    {                                                              //~vbi3I~
+		swcmdu8=1;                                                 //~vbi3I~
+    }                                                              //~vbi3I~
+	plh=filealloclh(ULHTDATA,len);                                 //~vbi3R~
+    if (!plh)                                                      //~vbi3I~
+    {                                                              //~vbi3I~
+		filelinemallocerr(Pline);                                  //~vbi3I~
+    	return 0;                                                  //~vbi3R~
+    }                                                              //~vbi3I~
+	plh->ULHlinenor=Pline;                                         //~vbi3I~
+	plh->ULHuscentryno=psc->USCentryno;	//searchkey at s/x cmd     //~vbi3I~
+	memcpy(plh->ULHdata,pc,(UINT)len);                             //~vbi3R~
+	UCBITON(plh->ULHflag4,ULHF4NOEOL);                             //~vbi3I~
+    if (swcmdu8)                                                   //~vbi3R~
+		UCBITON(plh->ULHflag6,ULHF6CHLCPU8CMD);                    //~vbi3R~
+	*Ppplh=plh;                                                    //~vbi3I~
+    return psc;                                                    //~vbi3I~
+}                                                                  //~vbi3I~
+//**************************************************************** //~vbi3I~
+// fileloadchl                                                     //~vbi3I~
+//*rc   :0-ok 4:file load err or UALLOC_FAILED                     //~vbi3I~
+//**************************************************************** //~vbi3I~
+int fileloadchl(int Popt,PUCLIENTWE Ppcw,char *Ppfile,char *Pfullpath,PUFILEH *Pppfh)//~vbi3I~
+{                                                                  //~vbi3I~
+#define CHL_HDR	    "********** Top of Cmd History "               //~vbi3R~
+#define CHL_TRAILER "********** End of Cmd History "               //~vbi3R~
+#define CHL_LINENO "*******|"                                      //~vbi3R~
+#define CHL_CMDPREFIX " cmdKey:"                                   //+vbi3I~
+	int 	lineno;                                                //~vbi3R~
+	PUFILEH pfh;                                                   //~vbi3I~
+	ULINEH 	*plh;                                                  //~vbi3I~
+	PULINEH *pplh,plhprev;                                         //~vbi3R~
+	PUSCMD psc;			//stack cmd                                //~vbi3I~
+	UCHAR 	*pc,*pc2;                                              //+vbi3R~
+    int lnosuffix;                                                 //~vbi3I~
+    int binopt=UFCFBROWSE;                                         //~vbi3I~
+    int rc2;                                                       //~vbi3I~
+//****************************                                     //~vbi3I~
+    *Pppfh=pfh=UALLOCC(1,UFILEHSZ);                                //~vbi3R~
+    UALLOCCHK(pfh,UALLOC_FAILED);                                  //~vbi3R~
+    memcpy(pfh->UFHcbid,UFHCBID,4);     //acronym                  //~vbi3R~
+    pfh->UFHopenctr=1;      //open ctr                             //~vbi3R~
+    UCBITON(pfh->UFHflag,UFHFUPCTRREQ|UFHFUNDOCTRREQ);//next time updatectr up//~vbi3R~
+    rc2=ufilesetfhfilename(pfh,Pfullpath);                         //~vbi3R~
+    if (rc2)                                                       //~vbi3R~
+        return 4;                                                  //~vbi3R~
+    pfh->UFHopenctr=1;                                             //~vbi3R~
+    UCBITON(pfh->UFHflag,UFHFWORKDIRFILE);//work dir file          //~vbi3R~
+    pfh->UFHtype=UFHTCMDHIST;                                      //~vbi3R~
+    strncpy(pfh->UFHalias,Ppfile,sizeof(pfh->UFHalias)-1);         //~vbi3R~
+    pfh->UFHpathlen=getpathlen(pfh->UFHfilename,    //get path len //~vbi3R~
+                                &pfh->UFHlevel,     //dir level    //~vbi3R~
+                                0);//dir sw                        //~vbi3R~
+    pfh->UFHmergin=MAXLINEDATA;                                    //~vbi3R~
+    ueditNowFileTime(0,&pfh->UFHfiledate,&pfh->UFHfiletime);       //~vbi3I~
+    if (Popt & CHLO_UTF8)                                          //~vbi3I~
+    {                                                              //~vbi3I~
+        UCBITON(pfh->UFHflag8,UFHF8UTF8);                          //~vbi3I~
+        UCBITON(pfh->UFHflag10,UFHF10UTF8IE);                      //~vbi3I~
+    }                                                              //~vbi3I~
+    else                                                           //~vbi3I~
+    {                                                              //~vbi3I~
+        UCBITOFF(pfh->UFHflag8,UFHF8UTF8);                         //~vbi3I~
+        UCBITOFF(pfh->UFHflag10,UFHF10UTF8IE);                     //~vbi3I~
+    }                                                              //~vbi3I~
+//top line                                                         //~vbi3I~
+	lineno=0;                                                      //~vbi3I~
+	lnosuffix=0;		//for split line                           //~vbi3I~
+    plh=filealloclh(ULHTHDR,MAXCOLUMN);                            //~vbi3R~
+    UALLOCCHK(plh,fileplhfail(pfh));//return when storage shortage //~vbi3R~
+    pc=plh->ULHdata;                                               //~vbi3R~
+    memset(pc,'*',MAXCOLUMN);       //clear by '*'                 //~vbi3R~
+    memcpy(pc,CHL_HDR,sizeof(CHL_HDR)-1);   //except last null     //~vbi3R~
+    pc2=CHL_CMDPREFIX CHL_CMDLIST " ";                             //+vbi3I~
+    memcpy(pc+CHL_CMDLIST_POS,pc2,strlen(pc2));                    //+vbi3I~
+    memcpy(plh->ULHlineno,CHL_LINENO,ULHLINENOSZ);                 //~vbi3R~
+    UENQ(UQUE_END,&pfh->UFHlineque,plh);                           //~vbi3R~
+//enq file data                                                    //~vbi3I~
+    psc=0;                                                         //~vbi3R~
+	for (plhprev=plh;;plhprev=plh)	//until eof/err                //~vbi3R~
+	{                                                              //~vbi3I~
+		++lineno;                                                  //~vbi3I~
+        pplh=&plh;                                                 //~vbi3I~
+    	if(psc=filegetcmdstack(Popt,pfh,lineno,pplh,psc),!psc)     //~vbi3R~
+			break;                                                 //~vbi3I~
+        UTRACEP("%s:ENQ plh=%p\n",UTT,plh);                        //~vbi3I~
+		plh->ULHsuffix=lnosuffix;	//split suffix                 //~vbi3I~
+		UENQENT(UQUE_AFT,plhprev,plh);                     //~5819I~//~vbi3I~
+	}//until eof                                                   //~vbi3I~
+//end of line                                                      //~vbi3I~
+    plh=filealloclh(ULHTHDR,MAXCOLUMN);                            //~vbi3R~
+    UALLOCCHK(plh,fileplhfail(pfh));//return when storage shortage //~vbi3R~
+    plh->ULHlinenor=lineno;                                        //~vbi3R~
+    pc=plh->ULHdata;                                               //~vbi3R~
+    memset(pc,'*',MAXCOLUMN);       //clear by '*'                 //~vbi3R~
+    memcpy(pc,CHL_TRAILER,sizeof(CHL_TRAILER)-1);   //except last null//~vbi3R~
+    memcpy(plh->ULHlineno,CHL_LINENO,ULHLINENOSZ);                 //~vbi3R~
+    UENQ(UQUE_END,&pfh->UFHlineque,plh);                           //~vbi3R~
+    filechkutf8encoding(0,Ppcw,binopt,pfh);	//chk each line utf8 code(IE mode)//~vbi3I~
+    filesetlocaleid(pfh);    //set locale id on hdr line           //~vbi3I~
+	return 0;                                                      //~vbi3I~
+}//fileloadch                                                      //~vbi3I~

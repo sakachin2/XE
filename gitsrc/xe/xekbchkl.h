@@ -1,9 +1,10 @@
-//*CID://+vba2R~:                             update#=   77;       //+vba2R~
+//*CID://+vbi3R~:                             update#=   78;       //+vbi3R~
 //*********************************************************************//~v51CI~
 //* xekbchkl.h                                                     //~v51CR~
 //* dummy func for xekbchk LKED under UNX only                     //~v51CR~
 //*********************************************************************//~v51CI~
-//vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//+vba2I~
+//vbi3:180211 supprt command history list                          //+vbi3I~
+//vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I~
 //vac0:120131 (SMB)node cmd to set volatile password to UFTPHOST   //~vac0I~
 //va7K:100904 add SETCP option to cv cmd B2B(change UFHhandle) and SETCP option to EBC cmd.//~va7KI~
 //va3d:100206 (LNX)toggle ligature temprary by A+";", change combine key A+"/"-->C+":"//~va3dI~
@@ -280,10 +281,11 @@
 #endif                                                             //~va30I~
 	FTFUNC(func_ebc);                                              //~va7KI~
 	FTFUNC(func_node);                                             //~vac0I~
+	FTFUNC(func_cmdhistu8);                                        //+vbi3I~
 //*****************************************                        //~v51CI~
 void funcfreecmdstack(void){return;}                               //~v51CI~
 int panfunc000optchk(PUCLIENTWE Ppcw,UCHAR *Pcmd,int *Prc){return 0;}//~v51CI~
 int mousel_btnproc(KBDKEYINFO *Ppkeyinfo){return 0;}               //~v53mI~
 int mousel_funcsrch(PUCLIENTWE Ppcw,UCHAR *Pxy,FUNCTBL **Pppft,FTFUNC **Ppfunc)//~v53mI~
 {return 0;}                                                        //~v53mI~
-int func_shortpath(PUCLIENTWE Ppcw){return 0;}                     //+vba2I~
+int func_shortpath(PUCLIENTWE Ppcw){return 0;}                     //~vba2I~

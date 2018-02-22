@@ -1,6 +1,6 @@
-||*CID:||+129GR~:  2018/01/30                update#=  807;           ||+129GR~
+||*CID:||+129HR~:  2018/02/22                update#=  808;           ||+129HR~
 ######################################################################
-[English]    v1.29G                                                   ||~129FR~||+129GR~
+[English]    v1.29H                                                   ||+129HR~
 
 This editor is fit for programmers working on both main-frame and PC.
 Its operation is based on mainframe SPF editor,
@@ -287,18 +287,44 @@ How to execute.
          Or crashes if FileSize>128K                                  ||~129FI~
         .CPLC option registered on profile record was ignored when record mode.||~129FI~
          ("CPLC" option was required each time)                       ||~129FI~
-  .v129G<--129F:(2018/01/30)                                          ||+129GI~
-                                                                      ||+129GI~
-     1.BUGs                                                           ||+129GI~
-                                                                      ||+129GI~
-       -(Linux) On Ubuntu17.10, DirList line command:"!"(start application corresoponding to the file extension)||+129GI~
-        failes by "No application defined to the MIME type".          ||+129GI~
-       -(Wxe/gxe) Cut&Paste by mouse may paste trash data with length of CID of source line.||+129GI~
-                                                                      ||+129GI~
-     2.Additional function.                                           ||+129GI~
-                                                                      ||+129GI~
-     3.Miscellaneous.                                                 ||+129GI~
-                                                                      ||+129GI~
-       -(Linux)Adjusted configure.ac through installation to S390x on Hercules emulater.||+129GI~
-               And updated TroubleShooting notes(READMEe.txt).        ||+129GI~
+                                                                      ||+129HI~
+  .v129G<--129F:(2018/01/30)                                          ||~129GI~
+                                                                      ||~129GI~
+     1.BUGs                                                           ||~129GI~
+                                                                      ||~129GI~
+       -(Linux) On Ubuntu17.10, DirList line command:"!"(start application corresoponding to the file extension)||~129GI~
+        failes by "No application defined to the MIME type".          ||~129GI~
+       -(Wxe/gxe) Cut&Paste by mouse may paste trash data with length of CID of source line.||~129GI~
+                                                                      ||~129GI~
+     2.Additional function.                                           ||~129GI~
+                                                                      ||~129GI~
+     3.Miscellaneous.                                                 ||~129GI~
+                                                                      ||~129GI~
+       -(Linux)Adjusted configure.ac through installation to S390x on Hercules emulater.||~129GI~
+               And updated TroubleShooting notes(READMEe.txt).        ||~129GI~
                                                                       ||~129FI~
+  .v129H<--129G:(2018/02/22)                                          ||+129HI~
+                                                                      ||+129HI~
+     1.BUGs                                                           ||+129HI~
+       -(gxe:GTK3)printer selection on PrintDialog is applied incorrectly.||+129HI~
+       -(gxe:GTK3)screen size at termination is not recovered correctly and enlarged.||+129HI~
+                                                                      ||+129HI~
+     2.Additional function.                                           ||+129HI~
+       -P=nn(PortNo) option in xehots                                 ||+129HI~
+        .specific to the psftp destination other than default SSH portNo(22).||+129HI~
+       -Command History List.                                         ||+129HI~
+        .Shift+Ctrl+F12 shows CommandHistoryList, use "x" key to execute cmd on the line.||+129HI~
+        .Available commands are                                       ||+129HI~
+          s : set to the command input line after closed the command history panel.||+129HI~
+          S : set to the command input line of the command history panel.||+129HI~
+          t : set on the other panel if screen is split.              ||+129HI~
+              same as "S" if not split                                ||+129HI~
+          x : executhe the command after closed the command history panel.||+129HI~
+          X : execute on the command history panel.                   ||+129HI~
+          y : execute on the other panel if screen is split.          ||+129HI~
+              same as "X" if not split.                               ||+129HI~
+        .Max 40 entry is saved at xe terminate.                       ||+129HI~
+                                                                      ||+129HI~
+     3.Miscellaneous.                                                 ||+129HI~
+       -Function:"R-Retrieve-OfTheScr"(Retrieve command of Next of the panel)||+129HI~
+        had not function key assigned, assign Shift+Alt+F12.          ||+129HI~

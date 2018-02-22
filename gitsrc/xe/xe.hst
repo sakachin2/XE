@@ -1,3 +1,30 @@
+//*********  20180222 v129H update *********************************
+//vbi9:180221 (GTK3:bug)window size recovery err
+//            xxedef.h xe.c xxecsub.c/h gxemfrm.c
+//vbi8:180221 (GTK3:bug) selected printer is not recovered(index differ by 1 by "Default" entry)
+//            gxepage.c
+//vbi7:180221 (gxe)cupsGetDest is time consuming,change to cupsServer() for cups active chk;see vat0(enumprinter hung if cups not running)
+//            xxecsub2.c/h 
+//vbi6:180220 stack all errmsg before init end to errmsg.<pid>
+//            xe.c
+//vbi6:180219 R-Retrieve-OfTheScr was not assigned key, use S+A+F12
+//            xefunct.c
+//vbi5:180219 correct word of functbl, Regin-->Region,accept both for ini read
+//            xefunct.c
+//vbi4:180217 set dbcs '?' when f2l err of dbcs(if sbcs '?' err at funcsetlongcmdfromstack xeutf_setbyu8lc->xeutfcvf2dd)
+//            sbcs '?' is set at read ini.
+//            xefsubw.c xeutf.c
+//vbi3:180211 supprt command history list
+//            maxstack=40
+//            xefunct.c xefunc.c/h xefile.c/h xefile14.c/h xefunc2.c/h xepan22.c xeini3.c
+//            xefile23.c xechar.c xescr.c/h xefile3.c xescr2.c/h
+//            xekbchkl.h xeopt2.c xe.h
+//vbi2:180211 (BUG) revRfind with Alt(PSF)/Ctl(PSP) was mixed(But now no effect because no caller)
+//            xefcmd2.c
+//vbi1:180210 it is used on ini file,abondon vbi0
+//            xefunct.c
+//vbi0:180210 correct word of functbl, Regin-->Region
+//            xefunct.c
 //*********  20180130 v129G released *********************************
 //vbh2:180129 wxe/gxe copypasete  clipboad len=ulhlen but copy data width CID dropped,trashdata cap data len drop CID;so dreg data is copyed at paste
 //            wxemouse.cpp xxemouse.c

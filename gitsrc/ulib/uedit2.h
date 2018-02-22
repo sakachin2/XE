@@ -1,4 +1,4 @@
-//CID://+v6D2R~:         update#=     4;                           //~v6D2R~
+//CID://+v6D2R~:         update#=     5;                           //~v6D2R~
 //*******************************************************          //~v163I~
 //*uedit2.h                                                        //~v5i5R~
 //*******************************************************          //~v163I~
@@ -101,9 +101,11 @@ int ueditsetftime(int Phh,int Pmm,int Pss,void /*FTIME*/ *Ppftime);//~v5czI~
 int uxdumpstr(int Popt,char *Pinp,int Plen,char *Pout,int Pbuffsz,int *Ppoutlen);//~v6BfI~
 #define UXDSO_LOWER       0x01      //lower char('a' for 10)       //~v6BfI~
 #define UXDSO_OUTSTRZ     0x02      //add null at last             //~v6BfI~
-#ifdef MAKE_FTIME   //ufile.h is included                          //+v6D2I~
+#ifdef MAKE_FTIME   //ufile.h is included                          //~v6D2I~
 //*******************************************************          //~v6D2I~
 int ueditsetfdateUSHORT(int Popt,int Pyy,int Pmm,int Pdd,FDATE *Ppfdate);//~v6D2R~
 //*******************************************************          //~v6D2I~
 int ueditsetftimeUSHORT(int Popt,int Phh,int Pmm,int Pss,FTIME *Ppftime);//~v6D2R~
-#endif                                                             //+v6D2I~
+//*******************************************************          //~v6T2I~//+v6D2M~
+int ueditNowFileTime(int Popt,FDATE *Ppfdate,FTIME *Ppftime);      //~v6T2I~//+v6D2M~
+#endif                                                             //~v6D2I~

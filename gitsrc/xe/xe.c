@@ -1,7 +1,9 @@
-//*CID://+vbf0R~:                              update#=  416;      //~vbf0R~
+//*CID://+vbi9R~:                              update#=  418;      //~vbi6R~//+vbi9R~
 //*************************************************************
 //*XE.c*                                                           //~v641R~
 //*************************************************************
+//vbi9:180221 (GTK3:bug)window size recovery err                   //+vbi9I~
+//vbi6:180220 stack all errmsg before init end to errmsg.<pid>     //~vbi6I~
 //vbf0:180109 WriteConsoleOutputW(used for cpu8 ligaturemode) shrinks line on Windows10(OK on XP),prohibit ligature on for Windows10//~vbf0I~
 //vbda:171121*(gxe)display GTK3/GTK2 on titlemsg/about dialog      //~vbdaI~
 //vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I~
@@ -496,6 +498,7 @@ if (Preqtype==WXE_REQ_PREINIT)                                     //~v53oI~
     uerrmsg_init("",stdout,UERR_FORCE_ENGLISH);//english until wcinit msg to stdout//~v79zI~
     parmproc00(parmc,parmp); //get locale,trace option parm        //~v79zI~
     xegetworkdir(); //setup workdir                                //~v79zI~
+    uerrmsg_initstart(Gworkdir);                                   //~vbi6I~
 #ifndef NOTRACE                                                    //~va3UI~
 #ifndef ARM                                                        //~vai2I~
     xetraceinit();  //trace init                                   //~v79zI~
@@ -807,7 +810,7 @@ if (Preqtype==WXE_REQ_INIT)                                        //~v501I~
     ualloc_init(UALLOC_ERRRETURN,0);    //req return when alloc err//~v04dI~
     ubell_init((Gopt4 & GOPT4NOBEEP)==0);   //beep if nobeep is off//~v13mI~
     ubell_init2(&Gkbdinpctr);           //for dup chk              //~v141I~
-                                                                   //~v500I~
+    uerrmsg_initcomp();	//issue                                    //~vbi6I~
 //#ifdef WXE                                                       //~v641R~
 #ifdef WXEXXE                                                      //~v641I~
 }//WXE_REQ_INIT                                                    //~v500I~
@@ -990,8 +993,9 @@ if (Preqtype==WXE_REQ_TERM)                                        //~v500I~
     uharderr(-1);   //reset hard err                               //~v099I~
 #else                                                              //~v099I~
 #endif                                                             //~v099I~
-                                                                   //~v500I~
+#ifndef XXE                                                                   //~v500I~//+vbi9R~
     utrace_term(0);  //close utrace file and stop utrace                                                //~v500I~//~vb26M~
+#endif                                                             //+vbi9I~
 //#ifdef WXE                                                       //~v641R~
 #ifdef WXEXXE                                                      //~v641I~
 }//WXE_REQ_TERM                                                    //~v500I~

@@ -1,8 +1,9 @@
-//CID://+vbd7R~:    updateno=      1                               //+vbd7R~
+//CID://+vbi3R~:    updateno=      1                               //+vbi3R~
 //****************************************************************
 //xescr2.h
 //****************************************************************
-//vbd7:171119 "SEL all" support on file panel                      //+vbd7I~
+//vbi3:180211 supprt command history list                          //+vbi3I~
+//vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //v53m:030928 (LNX)mouse support                                   //~v53mI~
 //v500:020929 (WXE)scr cut/paste                                   //~v500I~
 //v09l:970518:csr wait mark in dlcmd or cmd processing             //~v09lI~
@@ -33,8 +34,9 @@ void scrcsrtyperestore(void);                                      //~v09lR~
 //**************************************************************** //~v500I~
 int scrsetcsrpos(int Prow,int Pcol);                               //~v500R~
 //**************************************************************** //~v500I~
-//int scrcpgetpcw(int Prow,int Pcol,PUCLIENTWE *Pppcw);              //~v500M~//+vbd7R~
+//int scrcpgetpcw(int Prow,int Pcol,PUCLIENTWE *Pppcw);              //~v500M~//~vbd7R~
                                                                    //~v500I~
 #endif                                                             //~v500I~
-int scrcpgetpcw(int Prow,int Pcol,PUCLIENTWE *Pppcw);              //+vbd7I~
-                                                                   //~v500I~
+int scrcpgetpcw(int Prow,int Pcol,PUCLIENTWE *Pppcw);              //~vbd7I~
+//**************************************************************** //+vbi3I~
+int funcswap2(int Popt,PUCLIENTWE Ppcw);                           //+vbi3R~

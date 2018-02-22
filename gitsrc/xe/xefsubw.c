@@ -1,8 +1,9 @@
-//*CID://+vb4bR~:                             update#=248;         //+vb4bR~
+//*CID://+vbi4R~:                             update#=255;         //~vbi4R~
 //*************************************************************
 //* xefsubw.c                                                      //~vav0R~
 //*************************************************************
-//vb4b:160729 (BUG) err msg "Invalid FileNAme Format" when saved cmd stack contains UD format char(0x01 etc)//+vb4bI~
+//vbi4:180217 set dbcs '?' when f2l err of dbcs(if sbcs '?' err at funcsetlongcmdfromstack xeutf_setbyu8lc->xeutfcvf2dd)//~vbi4I~
+//vb4b:160729 (BUG) err msg "Invalid FileNAme Format" when saved cmd stack contains UD format char(0x01 etc)//~vb4bI~
 //vaww:140611 (W32UNICODE:BUG)retrive of 2 opd cmd,2nd displayed as dbcs//~vawvI~
 //vawv:140610 (W32UNICODE)for ftp,enclose utf8 membname on UDHname //~vaw1I~
 //vaw1:140523 (Win:UNICODE)dbcsid:overflow for ucs4 on Windows     //~vaw1I~
@@ -384,7 +385,7 @@ int fsubw_U8CT2UD(int Popt,char *Pu8,char *Pct,int Plen,char *Poutbuff,int Pbuff
 #else   //AAA                                                      //~vawvI~//~vawwR~
 //**************************************************************** //~vawvI~//~vawwR~
 //enclose u8 string to UD string using ct                          //~vawvI~//~vawwR~
-//from funccmdstack_utf8                                           //~vawvI~//~vawwR~
+//from funccmdstack_utf8 only                                      //~vawvI~//~vawwR~//+vbi4R~
 //rc:0/4:buffovf                                                   //~vawvI~//~vawwR~
 //**************************************************************** //~vawvI~//~vawwR~
 int fsubw_U8CT2UD(int Popt,char *Pu8,char *Pct,int Plen,int Pctlen,char *Poutbuff,int Pbuffsz,int *Ppoutlen)//~vawvI~//~vawwR~
@@ -404,6 +405,7 @@ int fsubw_U8CT2UD(int Popt,char *Pu8,char *Pct,int Plen,int Pctlen,char *Poutbuf
     else                                                           //~vawwI~
     {                                                              //~vawwI~
     	opt=UFCVO_ENCUTF8WC;       //not enclose f2l err only          //~vawvI~//~vawwR~
+    	opt|=UFCVO_ERRREPDBCS;     //set dbcs subchar for f2l err  //+vbi4I~
     	rc=ufilecvU8CT2UD(opt,Pu8,Pct,Pctlen,Poutbuff,Pbuffsz,&outlen);//~vawvI~//~vawwR~
     	if (rc>=4)                                                    //~vawvI~//~vawwR~
         	UmemcpyZ(Poutbuff,Pu8,min(Pbuffsz,inplen));                   //~vawvI~//~vawwR~
@@ -507,19 +509,33 @@ int fsubw_stripUDCT(int Popt,char *Pud,int Plen,char *Pu8,int Pbuffsz,char *Pout
 int fsubw_UD2LC(int Popt,char *Pud,int Plen,char *Plc,int Pbuffsz,int *Ppoutlen)//~vavkI~
 {                                                                  //~vavkI~
 	int outlen,rc2;                                                //~vavkR~
-    int opt=0;                                                     //+vb4bI~
+    int opt=0;                                                     //~vb4bI~
+    int buffsz,ddlen;                                              //~vbi4I~
+    char *pdata,*pdbcs,*pct;                                       //~vbi4R~
 //********************                                             //~vavkI~
     UTRACED("inp ud",Pud,Plen);                                    //~vavkI~
 	if (!(memchr(Pud,UD_NOTLC, Plen)))                             //~vavkI~
     {                                                              //~vavkI~
     	return 0;                                                  //~vavkI~
     }                                                              //~vavkI~
-//  rc2=ufilecvUD2LC(0,Pud,Plen,Plc,Pbuffsz,&outlen);              //~vavkR~//+vb4bR~
-	if (Popt & FSWUD2LCO_NOMSG)   //    0x01                       //+vb4bI~
-    	opt|=UFCUD2LCO_NOMSG;	//  0x01                           //+vb4bI~
-    rc2=ufilecvUD2LC(opt,Pud,Plen,Plc,Pbuffsz,&outlen);            //+vb4bI~
+#ifdef AAA                                                         //~vbi4I~
+//  rc2=ufilecvUD2LC(0,Pud,Plen,Plc,Pbuffsz,&outlen);              //~vavkR~//~vb4bR~
+	if (Popt & FSWUD2LCO_NOMSG)   //    0x01                       //~vb4bI~
+    	opt|=UFCUD2LCO_NOMSG;	//  0x01                           //~vb4bI~
+    rc2=ufilecvUD2LC(opt,Pud,Plen,Plc,Pbuffsz,&outlen);            //~vb4bI~
     if (rc2>=UDRC_ERR)                                             //~vavkR~
     	return 0;                                                  //~vavkI~
+#else                                                              //~vbi4I~
+    buffsz=Plen;                                                   //~vbi4R~
+    pdata=xeutf_buffget(XEUTF_BUFF3,buffsz*3);                     //~vbi4I~
+    UALLOCCHK(pdata,UALLOC_FAILED);                                //~vbi4R~
+    pdbcs=pdata+buffsz;                                            //~vbi4I~
+    pct=pdbcs+buffsz;                                              //~vbi4I~
+    rc2=fsubw_UD2DD(opt,Pud,Plen,pdata,pdbcs,Pbuffsz,&ddlen);      //~vbi4R~
+    if (rc2)                                                       //~vbi4I~
+    	return 0;                                                  //~vbi4I~
+	xeutfcvdd2lc(opt,pdata,ddlen,pdbcs,Plc,pct,Pbuffsz,&outlen);   //~vbi4R~
+#endif                                                             //~vbi4I~
     if (Ppoutlen)                                                  //~vavkI~
 	    *Ppoutlen=outlen;                                          //~vavkR~
     UTRACED("out lc",Plc,outlen);                                  //~vavkR~
@@ -527,7 +543,6 @@ int fsubw_UD2LC(int Popt,char *Pud,int Plen,char *Plc,int Pbuffsz,int *Ppoutlen)
 }//fsubw_UD2LC                                                     //~vavkR~
 //**************************************************************** //~vavQR~
 //get lc to Gcmdbufflc from UD,from funcrcmdstack                  //~vavFI~
-//rc:1 input is ud string,strp and cv2lc                           //~vavFI~
 //**************************************************************** //~vavFI~
 int fsubw_UD2DD(int Popt,char *Pud,int Plen,char *Pdddata,char *Pdddbcs,int Pbuffsz,int *Ppoutlen)//~vavFI~
 {                                                                  //~vavFI~

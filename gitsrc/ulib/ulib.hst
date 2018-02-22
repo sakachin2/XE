@@ -1,3 +1,20 @@
+//*********  20180219 v129H update      ****************
+//v6T7:180220 stack errmsg to errmsg.<pid> and issue notification at initcomp
+//            uerr.c/h uproc2.c utf22.c
+//v6T6:180219 icu loaderr clear errmsg from ini file,stdout from loaderr
+//            uproc2.c
+//v6T5:180217 WCons:Cmdline,WriteConsoleOutputW/WriteConsoleOutputCharacterW shrink colomn. Use WriteConsoleOutputChar if avail(when successful cv to locale,also for altch)  
+//            uviom.c utf22.c/h
+//v6T4:180217 f2l option to set dbcs "?" for f2l err
+//            ufilew.c/h utf.h utf2.c
+//v6T3:180217 exception info is 16byte for 64bit
+//            uehmsg.c
+//v6T2:180211 add ueditNowFileTime (current time -->FTIME/FDATE)
+//            uedit2.c/h
+//v6T1:180210 add ueditKMG(edit Kiro,mega,Giga value)
+//            uedit.c/h
+//v6T0:180209 xehosts;Port option support (P=)
+//            utf3.c/h uftp.c/h
 //*********  20180130 v129G released    ****************
 //v6S1:180129 (Ubuntu 17.10:gcc7.2)Lnx warning iswprint is not defined(wctype.h required)
 //            utf3.c ucvext.c

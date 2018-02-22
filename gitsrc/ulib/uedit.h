@@ -1,7 +1,8 @@
-//CID://+v6L5R~:        update#=11                                 //~v6L5R~
+//CID://+v6T1R~:        update#=14                                 //+v6T1R~
 //*******************************************************
 //*uedit.h                                                         //~v57WR~
 //*******************************************************
+//v6T1:180210 add ueditKMG(edit Kiro,mega,Giga value)              //~v6T1I~
 //v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~v6L5I~
 //v6xk:150115 (BUG:W32)spwanxx deplicated,use _spawnxx(return intptr_t, Linux returns int pid)//~v6xkI~
 //v6x3:150106 add editFILESZ                                       //~v6x3I~
@@ -112,3 +113,5 @@ char *ueditFILESZ(int Popt,char *Pout,int Pbuffsz,char *Pfmt,FILESZT Psz);//~v6x
 #define UEFS_KMGT        0x01 //unit by decimal KB,MB,GB if avail  //~v6x3R~
 //*******************************************************          //~v6xkI~
 char *ueditLONGHANDLE(int Popt,char *Pout,int Pbuffsz,char *Pfmt,LONGHANDLE Phandle);//~v6xkI~
+//*******************************************************          //~v6T1I~
+char *ueditKMG(int Popt,size_t Psz);                               //~v6T1I~

@@ -1,3 +1,8 @@
+//*********  20170826 v129H updated   ****************
+//vai1:180208 allow K/M postfix for /Wsize parm
+//            xdc.c
+//vai0:180208 (Bug) crash when /Wsize parm is too short<1026) (crash before sizechk)
+//            xdc.c
 //*********  20180130 v129G released  ****************
 //vah0:180129 (Ubuntu 17.10:gcc7.2)Lnx warning sprintf overflow
 //            xdc.c

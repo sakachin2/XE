@@ -143,6 +143,7 @@ a:hover{font-weight:bold;}-->
                           ICMD=passive toggles passive and active mode.
         SSH={Y|N}        :use PSFTP as FTP client(Y) or not(N)
         SHARE=shraename  :shared resource name. specify when the remote is Samba server or Windows.
+        P=prtNo          :specify port number other than SSH default(22) if needed.
 
 sample)
 
@@ -186,6 +187,7 @@ sample)
     # w64   SmbSvr      user1    &quot;&quot;      SHARE=d
     # w7p   192.168.2.12 w7user pswd     share=p
     # gcty  ftp.geocities.jp ybbusr pswd SSH=N
+    # centos7r localhost root pswd SSH=Y P=2222
     ###################################################################
 
     (Note) Because using ftp to access remote,proper environment setup is required.

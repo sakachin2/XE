@@ -1,8 +1,9 @@
-//*CID://+v6J4R~:                             update#= 1002;       //~v6J4R~
+//*CID://+v6T0R~:                             update#= 1003;       //+v6T0R~
 //*************************************************************
 //*uftp3.c                                                         //~v61pR~
 //* psftp support                                                  //~v61pR~
 //*************************************************************
+//v6T0:180129 xehosts;Port option support                          //+v6T0I~
 //v6J4:170207 (Bug:Lnx)smb err was not checked, edit cmd opens file as new file//~v6J4I~
 //v6J0:170205 malloc udirlist filename to  allow more large number of fine in the dir//~v6J0I~
 //v6H7:170108 FTP crush by long name                               //~v6H3I~
@@ -180,6 +181,15 @@ static int Ssw1st=1;                                               //~v61pI~
 //        bora="binary";                                           //~v61pR~
 //    else                                                         //~v61pR~
 //        bora="ascii";                                            //~v61pR~
+  if (Ppuftph->UFTPHport)                                          //+v6T0I~
+    sprintf(Psubcmdhdr,                                            //+v6T0I~
+    		"open %s %d\n"                    \
+	    	"%s\n"        /*binary|ascii*;@@@ required for 530 diff LNX and AIX*///+v6T0I~
+    		"pwd\n", 	//last of  hdr cmd                         //+v6T0I~
+			Ppuftph->UFTPHipad,                                    //+v6T0I~
+			Ppuftph->UFTPHport,                                    //+v6T0I~
+			Ppuftph->UFTPHicmd);                                   //+v6T0I~
+  else                                                             //+v6T0I~
     sprintf(Psubcmdhdr,                                            //~v61pI~
     		"open %s\n"                    \
 	    	"%s\n"        /*binary|ascii*;@@@ required for 530 diff LNX and AIX*///~v61pI~
@@ -1577,8 +1587,8 @@ unsigned int uftp3smb_lsoutchk(int Popt,PUFTPHOST Ppuftph,char *Pfname,char **Ps
         {                                                          //~v6d1I~
             UTRACED("old Ppudl",Ppudl,UDIRLISTSZ);                 //~v6J4I~
             UTRACEP("%s:Old otherflag=%x,name=%p=%s,short=%s,pslink=%p=%s\n",UTT,Ppudl->otherflag,Ppudl->name,Ppudl->name,Ppudl->nameShortbuff,Ppudl->pslink,Ppudl->pslink);//~v6J4I~
-//        	memcpy(Ppudl,&udl,sizeof(udl));                        //~v6d1R~//+v6J4R~
-			UDIRLIST_COPY(Ppudl,&udl);		//this is work to work //+v6J4I~
+//        	memcpy(Ppudl,&udl,sizeof(udl));                        //~v6d1R~//~v6J4R~
+			UDIRLIST_COPY(Ppudl,&udl);		//this is work to work //~v6J4I~
             UTRACEP("%s:New otherflag=%x,name=%p=%s,short=%s,pslink=%p=%s\n",UTT,Ppudl->otherflag,Ppudl->name,Ppudl->name,Ppudl->nameShortbuff,Ppudl->pslink,Ppudl->pslink);//~v6J4R~
             UTRACED("new Ppudl",Ppudl,UDIRLISTSZ);                 //~v6J4I~
         	rc=0;                                                  //~v6d1I~

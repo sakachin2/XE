@@ -7,7 +7,11 @@
 <TITLE>Update in this version</TITLE>
 <STYLE TYPE="text/css">
 <!--
-a:hover{font-weight:bold;}-->
+a:hover{font-weight:bold;}
+.auto-style1 {
+	font-size: 12pt;
+}
+-->
 </STYLE>
 </HEAD>
 <BODY bgcolor="#FFFFE2">
@@ -19,7 +23,8 @@ a:hover{font-weight:bold;}-->
  <SPAN STYLE="color:#000000;font-size:12pt;"> .v129E&lt;--129D:(2018/01/09)</SPAN>
   .v129F&lt;--129E:(2018/01/23) 
   .v129G&lt;--129F:(2018/01/30)
-  </SPAN></PRE>
+  .v129H&lt;--129G:(2018/02/22)
+</SPAN></PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
     1.BUGs
        -(Windows:64)"&"(spawn executable file) dir cmd crush.
@@ -42,7 +47,11 @@ a:hover{font-weight:bold;}-->
        -(Linux) On Ubuntu17.10, DirList line command:"!"(start application corresoponding to the file extension)
         failes by "No application defined to the MIME type".
        -(Wxe/gxe) Cut&amp;Paste by mouse may paste trash data with length of CID of source line.
-
+<SPAN STYLE="color:#000000;font-size:12pt;">     (129G)
+       </SPAN></SPAN><font size="3"> -(gxe:GTK3)printer selection on PrintDialog is applied incorrectly.</font>
+<font size="3">        -(gxe:GTK3)screen size at termination is not recovered correctly and enlarged.</font>
+</PRE>
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;">
      2.Additional function.
 
        -Shortcut pathname
@@ -99,7 +108,31 @@ a:hover{font-weight:bold;}-->
           "S" means "SAVe" on Browse/Edit panel.
        (Wxe,gxe)
          ."SelectAll" menuitem was added to File submenu and popup menu on edit panel.
-         .Set shotcut key to Ctrl+A and cabnged to Ctrk+Shift+A for SaveAs.
+         .Set shotcut key to Ctrl+A and cabnged to Ctrk+Shift+A for SaveAs.</SPAN></PRE>
+<PRE><font size="3">    (</font><SPAN STYLE="color:#000000;font-size:12pt;">129E)
+      -XML tag pairing search
+       .Default shortcut key is Alt+"/"
+       .Use shortcut key on "&lt;" or "&gt;"
+       .Comment portion(from "&lt;!--" to "--&gt;") is ignored
+        and recognize nested tag.
+        It is convenient to correct html automation tool generated.
+
+    (129H)
+      -P=nn(PortNo) option in xehots
+       .specific to the psftp destination other than default SSH portNo(22).
+      -Command History List.
+       .Shift+Ctrl+F12 shows CommandHistoryList, use "x" key to execute cmd on the line.
+       .Available commands are
+         s : set to the command input line after closed the command history panel.
+         S : set to the command input line of the command history panel.
+         t : set on the other panel if screen is split.
+             same as "S" if not split
+         x : executhe the command after closed the command history panel.
+         X : execute on the command history panel.
+         y : execute on the other panel if screen is split.
+             same as "X" if not split.
+       .Max 40 entry is saved at xe terminate.
+
 
      3.Miscellaneous.
        -(Windows) add "msi" as executable binary extension
@@ -121,6 +154,9 @@ a:hover{font-weight:bold;}-->
      (129G)
        -(Linux)Adjusted configure.ac through installation to S390x on Hercules emulater.
         And updated TroubleShooting notes(READMEe.txt).
+     (129H)
+       -Function:"R-Retrieve-OfTheScr"(Retrieve command of Next of the split panel)
+        had not function key assigned, assign Shift+Alt+F12.
 
      4.Tool.
      (129C)

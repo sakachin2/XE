@@ -1,8 +1,9 @@
-//*CID://+v6L3R~:                             update#=  827;       //~v6J0R~//~v6L3R~
+//*CID://+v6T0R~:                             update#=  831;       //~v6T0R~
 //*************************************************************
 //*ufile1f.c
 //* get remote file/dir info by ftp
 //*************************************************************
+//v6T0:180129 xehosts;Port option support                          //~v6T0I~
 //v6L3:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~v6L3I~
 //v6J0:170205 malloc udirlist filename to  allow more large number of fine in the dir//~v6J0I~
 //v6Di:160625 for compiler warning,-Wformat-security(not literal printf format)//~v6DiI~
@@ -156,6 +157,7 @@ int uftgetstringopd(int Popt,char *Pparmid,char *Pbuff,char *Pin,char *Pout,int 
 					UCHAR **Ppargc,int Pmaxii,int *Ppii);          //~v5ktR~
 int uftplshome(PUFTPHOST Ppuftph,int Popt,char *Pfpnm,PUDIRLIST Ppudl);//~v61cR~
 int uftpmodtimeerr(PUFTPHOST Ppuftph);                             //~v61dI~
+int uftpgetportno(char *Ppc,char *Pval,int *Ppport);               //~v6T0I~
 //*******************************************************
 //*set ffb3 from stdo
 //*******************************************************
@@ -1550,7 +1552,7 @@ int uftpgethostsdata(int Popt,char *Pdata,int Plen,PUFTPHOST Ppufh)//~v6qeI~
         if (!stricmp(pnode,FTP_SHORTPATH_ID))   //        "SP"     //~v6L3I~
         {                                                          //~v6L3I~
             uerrmsg("hostid(%s) is reserved for Short-Pathname prefix, this entry was ignored.",//~v6L3I~
-					"ホスト名(%s) は \"短縮パス名\"プレフィックスに\x97\\約されています、このエントリーは無視されました",//+v6L3R~
+					"ホスト名(%s) は \"短縮パス名\"プレフィックスに\x97\\約されています、このエントリーは無視されました",//~v6L3R~
                     pnode);                                        //~v6L3I~
             break;                                                 //~v6L3I~
         }                                                          //~v6L3I~
@@ -1789,6 +1791,21 @@ int uftpgethostsdata(int Popt,char *Pdata,int Plen,PUFTPHOST Ppufh)//~v6qeI~
 			if (!memicmp(pcwd,FTP_OPT_SMB,sizeof(FTP_OPT_SMB)-1))  //~v6d1I~
         		uftp3setsmb(0,Ppufh,pcwd+sizeof(FTP_OPT_SMB)-1,&pcwd);//~v6d1I~
             else                                                   //~v6d1I~
+			if (!memcmp(pcwd,FTP_OPT_PORTU,sizeof(FTP_OPT_PORTU)-1))//~v6T0I~
+            {                                                      //~v6T0I~
+				if (uftpgetportno(pcwd,pcwd+sizeof(FTP_OPT_PORTU)-1,&Ppufh->UFTPHport))//~v6T0I~
+                	break;                                         //~v6T0I~
+			    Ppufh->UFTPHflag|=UFTPHFPORTUPP;                   //~v6T0I~
+            }                                                      //~v6T0I~
+            else                                                   //~v6T0I~
+			if (!memcmp(pcwd,FTP_OPT_PORTL,sizeof(FTP_OPT_PORTL)-1))//~v6T0I~
+            {                                                      //~v6T0I~
+				if (uftpgetportno(pcwd,pcwd+sizeof(FTP_OPT_PORTL)-1,&Ppufh->UFTPHport))//~v6T0I~
+                	break;                                         //~v6T0I~
+		        if (Ppufh->UFTPHflag & UFTPHFPSFTP)                //~v6T0I~
+				    Ppufh->UFTPHflag|=UFTPHFPORTUPP;               //~v6T0I~
+            }                                                      //~v6T0I~
+            else                                                   //~v6T0I~
             {                                                      //~v6d1I~
                 uerrmsg("not supported parm(%s)",0,                //~v5adI~
                         pcwd);                                     //~v5adI~
@@ -1824,6 +1841,7 @@ int uftpgethostsdata(int Popt,char *Pdata,int Plen,PUFTPHOST Ppufh)//~v6qeI~
         	rc=4;                                                  //~v5mBI~
         }                                                          //~v5mBI~
     }                                                              //~v5mBI~
+    UTRACEP("%s:portno=%d\n",UTT,Ppufh->UFTPHport);                //+v6T0R~
     ufree(pbuff);
     if (pargc0)                                                    //~v5a7I~
 	    ufree(pargc0);                                             //~v5a7I~
@@ -1935,6 +1953,22 @@ int uftpipachk(char *Pipa,ULONG *Ppxipa)
     *Ppxipa=xipa;
     return 0;
 }//uftpipachk
+//**********************************************************************//~v6T0I~
+int uftpgetportno(char *Ppc,char *Pval,int *Ppport)                //~v6T0I~
+{                                                                  //~v6T0I~
+    int len,numlen;                                                //~v6T0R~
+//***************************                                      //~v6T0I~
+    len=(int)strlen(Pval);                                         //~v6T0I~
+	numlen=unumlen(Pval,0,len);                                    //~v6T0I~
+    if (len!=numlen)                                               //~v6T0I~
+    {                                                              //~v6T0I~
+        uerrmsg("Port Number option err(%s)",0,                    //~v6T0I~
+        		Ppc);                                              //~v6T0I~
+    	return 4;                                                  //~v6T0I~
+    }                                                              //~v6T0I~
+    *Ppport=atoi(Pval);                                            //~v6T0I~
+    return 0;                                                      //~v6T0I~
+}//uftpgetportno                                                   //~v6T0I~
 //**********************************************************************//~v59dM~
 //* chk fullpath name is remote file specification                 //~v59dM~
 //* "xx:filname" fmt                                               //~v59dM~

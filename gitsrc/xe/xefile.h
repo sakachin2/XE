@@ -1,8 +1,9 @@
-//CID://+vb7kR~:                                      Update#=  319//~vb7kR~
+//CID://+vbi3R~:                                      Update#=  330//~vbi3R~
 //****************************************************************
 //xefile.h                                                         //~v10LR~
 //****************************************************************
-//vb88:170216 stop lcmd "i" continue mode by cut&paste             //+vb7kI~
+//vbi3:180211 supprt command history list                          //~vbi3I~
+//vb88:170216 stop lcmd "i" continue mode by cut&paste             //~vb7kI~
 //vb7k:170115 dir list;gree attr overflow to "=Rep" when dirname is too long//~vb7kI~
 //vb2n:160201 (W32)use FN{LC|U8} option translate input filename u8<-->lc regardless A+u kbd mode(like as (LNX)b2j)//~vb2nI~
 //vb2h:160129 display filename encoding type on hdr/trailer linet at ufcleft//~vb2hI~
@@ -363,6 +364,7 @@ typedef struct _ULINEH {
 #define ULHF6WXPWKVHEX         0x02     //wxp **/*** cmd work file vhex line//~va87I~
 #define ULHF6EBCDBCSCONCAT1    0x04     //split/tflow join dropped intermediate si//~va8wI~
 #define ULHF6EBCDBCSCONCAT2    0x08     //split/tflow join dropped intermediate so//~va8wI~
+#define ULHF6CHLCPU8CMD        0x10     //CmdHistoryList:utf8 cmd string//+vbi3I~
                         UCHAR  ULHrsv[1];                          //~va87I~
                         UCHAR  ULHsynflag;     //see xesyn.h for EQU definition//~v780I~
                         int    ULHsynlineno;   //line seqno written to source-highlignt//~v786R~
@@ -373,6 +375,7 @@ typedef struct _ULINEH {
                         UCHAR  ULHmflinetype;                      //~vaj0I~
                         UCHAR  ULHrev[2];                          //~vaj0I~
 #endif                                                             //~va20I~
+                        int    ULHuscentryno;//CmdHistoryList search key of USCMD entry//~vbi3R~
                         } ULINEH;
 typedef ULINEH *PULINEH;
 #define ULINEHSZ (sizeof(ULINEH))
@@ -436,6 +439,7 @@ typedef struct _UFILEH {                        //file hdr
 #ifdef WXEXXE                                                      //~v632I~
   	#define UFHTWXPWK   'P'     //wxp work                         //~v54yR~
 #endif                                                             //~v54yI~
+#define UFHTCMDHIST     'M'     //command history                  //~vbi3I~
                         UCHAR   UFHcidtype;     //cid type      //~5308R~
 #define UFHCIDTYPEC     1       //for c,cpp,h,hpp etc           //~5310R~
 #define UFHCIDTYPEASM   2       //for asm                       //~5310R~
@@ -659,7 +663,7 @@ typedef struct _UFILEH {                        //file hdr
 #define UFHF14FN_ENCODED_UTF8 0x04	    //filename(not path) encoding is aftually utf8//~vb2hR~
                         UCHAR   UFHrsv14[3];                       //~vb2eI~
                         PULINEH UFHplhlcmdi;       //plh isrted by lcmd i//~v78SR~
-                        int     UFHplhlcmdi_upundoctr; //if changed set UFHplhlcmdi=0//+vb7kI~
+                        int     UFHplhlcmdi_upundoctr; //if changed set UFHplhlcmdi=0//~vb7kI~
 //*syntax highlight                                                //~v780I~
                         ULONG   UFHsynflag;     //syntaxHL ctl //see xesyn.h for flag EQU define//~v780I~
 #define MAX_SYNTYPE     7                                          //~v780I~
@@ -759,6 +763,8 @@ typedef struct _UFILEC {                        //file cwe
 //#define MAXCOLSTYPNM    7                                        //~v78rR~
                         UCHAR     UFCcolstype[MAXCOLSTYPNM+1];//for COL cmd,cols type//~v447R~
                         char     *UFCdeepestpath; //for path up/down ctl//~v558I~
+                        int       UFCcsrline;    //current file csr line//~vbi3R~
+                        int       UFCcsrlineold; //current file csr line//~vbi3I~
                         } UFILEC;
 typedef UFILEC *PUFILEC;
 #define UFILECSZ (sizeof(UFILEC))

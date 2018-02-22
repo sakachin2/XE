@@ -1,8 +1,9 @@
-//*CID://+vb97R~:                            update#=  431;        //+vb97R~
+//*CID://+vbi3R~:                            update#=  484;        //~vbi3R~
 //*************************************************************
 //*xechar.c                                                     //~v04dR~
 //*************************************************************
-//vb97:170311 Trap lcmd ineffective bug(Windows dump is taken by ueh,so change uerrmsg to uerrexit)//+vb97I~
+//vbi3:180211 supprt command history list                          //~vbi3I~
+//vb97:170311 Trap lcmd ineffective bug(Windows dump is taken by ueh,so change uerrmsg to uerrexit)//~vb97I~
 //vb81:170206 trap for edit panel lcmd input ignored case if !NOTRACE//~vb81I~
 //vb2D:160221 LNX compiler warning                                 //~vb2DI~
 //vaze:150112 expand MAXLINEDATA 9999 to 32760                     //~vazeI~
@@ -242,6 +243,7 @@
 #include "xecsr.h"
 #include "xefile.h"
 #include "xefile12.h"                                              //~v0dhI~
+#include "xefile14.h"                                              //~vbi3I~
 #include "xefile22.h"                                              //~v441I~
 #include "xefile3.h"                                              //~v441I~//~v73gI
 #include "xefile4.h"                                               //~v0bpR~
@@ -254,6 +256,7 @@
 #include "xelcmd2.h"                                            //~5105I~
 #include "xeundo.h"
 #include "xefunc.h"
+#include "xefunc2.h"                                               //~vbi3I~
 #include "xepan.h"                                              //~5318I~
 #include "xepan2.h"                                             //~5701I~
 #ifdef UTF8SUPPH                                                   //~va00I
@@ -284,6 +287,7 @@ int charcaps(PUCLIENTWE Ppcw,PUFILEH Ppfh);                        //~v72MI~
 //int charjoinchk(PUCLIENTWE Ppcw,PULINEH Pplh1,PULINEH Pplh2,int Pcol,int Popt);//~v42gR~//~v74iR
 //#define INMARGINJOIN  0x1000                                       //~v42gI~//~v74iR
 int charjoinsetdbcstbl(int Popt,PULINEH Pplh,int *Pppos,int *Pplenc);//~v77gI
+int charfldeditchl(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh);         //~vbi3R~
 //**************************************************
 //* menu field char input **************************
 //**************************************************
@@ -587,13 +591,23 @@ static UCHAR Sdummydbcs[ULHLINENOSZ];
     int swcapcmd=0;                                                //~v8@MI
 //****************************
     Ppcw->UCWreason=0;	//for filecharcsr and filecharhexinput     //~v442I~//~v73nR
+    pfc=Ppcw->UCWpfc;                                              //~vbi3M~
+    if (pfc)                                                       //~vbi3M~
+    {                                                              //~vbi3M~
+    	pfh=pfc->UFCpfh;                                           //~vbi3M~
+    	if (pfh && pfh->UFHtype==UFHTCMDHIST)                      //~vbi3M~
+    	{                                                          //~vbi3M~
+    		if (rc=charfldeditchl(0,Ppcw,pfh),rc>=0)               //~vbi3R~
+        		return rc;                                         //~vbi3M~
+    	}                                                          //~vbi3M~
+    }                                                              //~vbi3M~
  	psd=Ppcw->UCWpsd+Ppcw->UCWrcsry;
 	if ((pfli=fldprotchk(Ppcw,FPC_NODBCSCHK,&pfld))<0)          //~v020R~
 		return 4;
 
 //  ppc=Ppcw->UCWppc;                                           //~v03dR~
-	pfc=Ppcw->UCWpfc;
-	pfh=pfc->UFCpfh;                                            //~v03uI~
+//  pfc=Ppcw->UCWpfc;                                              //~v03uR~//~vbi3R~
+    pfh=pfc->UFCpfh;                                            //~v03uI~
 //    if (UCBITCHK(pfh->UFHflag8,UFHF8CAPSON))                     //~v72mR~
 //        if (Ppcw->UCWkeytype==UCWKTSBCS)                         //~v72mR~
 //        {                                                        //~v72mR~
@@ -659,7 +673,6 @@ static UCHAR Sdummydbcs[ULHLINENOSZ];
 						MAXCMDLINE);
 				return 4;
 			}
-
 		rc=charfldedit(Popt,						//mode rep/del
 				   plh->ULHlinecmd,					//buffer
 				   Sdummydbcs,         				//dbcs id tbl
@@ -687,8 +700,8 @@ static UCHAR Sdummydbcs[ULHLINENOSZ];
         	int idx;                                               //~vb81I~
 			idx=dlcsrchplh(0,pfh,plh);                             //~vb81I~
 			if (idx<0)	//old but not registered on UFHcmdline     //~vb81R~
-//          	uerrmsg("%s:internal error UFHcmdlinectr=%d,idx=%d,plh=%p,lineno=%d\n",0,//~vb81R~//+vb97R~
-            	uerrexit("%s:internal error UFHcmdlinectr=%d,idx=%d,plh=%p,lineno=%d\n",0,//+vb97I~
+//          	uerrmsg("%s:internal error UFHcmdlinectr=%d,idx=%d,plh=%p,lineno=%d\n",0,//~vb81R~//~vb97R~
+            	uerrexit("%s:internal error UFHcmdlinectr=%d,idx=%d,plh=%p,lineno=%d\n",0,//~vb97I~
 					UTT,pfh->UFHcmdlinectr,idx,plh,plh->ULHlinenor);//~vb81I~
                 		                                           //~vb81I~
         }                                                          //~vb81I~
@@ -2576,4 +2589,137 @@ int charmerginerr(int Pmaxlen)                                     //~v0avI~
     		Pmaxlen);                                              //~v0avI~
 	return 4;                                                      //~v0avI~
 }//charmerginerr                                                   //~v0avI~
-                                                                   //~v0avI~
+//******************************************************************************//~vbi3I~
+int helpchlcmd()                                                   //~vbi3I~
+{                                                                  //~vbi3I~
+    uerrmsg("Available cmd on CmdHistoryList is %s",                                  //~v0avI~//~v760I//~vbi3I~
+    		"コマンドヒストリーリストでは行コマンド  %s が使用できます",//~vbi3I~
+            CHL_CMDLIST);                                          //~vbi3I~
+	return 4;                                                      //~vbi3I~
+}//helpchlcmd()                                                    //~vbi3I~
+//*******************************************************          //~vbi3I~
+//!chargetlinedata                                                 //~vbi3I~
+//*******************************************************          //~vbi3I~
+int charsetchlcmd(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh,PULINEH Pplh,PUCLIENTWE Ppcwtgt)//~vbi3I~
+{                                                                  //~vbi3I~
+    char *pdata;   //word get area                                 //~vbi3I~
+    int datalen;                                                   //~vbi3R~
+    int swutf8file,u8len,opt,lclen,rc2;                            //~vbi3R~
+//*******************                                              //~vbi3I~
+    pdata=Pplh->ULHdata;                                           //~vbi3I~
+    datalen=Pplh->ULHlen;                                          //~vbi3I~
+    UTRACED("wordpos=%s",pdata,datalen);                           //~vbi3I~
+    swutf8file=PLHUTF8MODE(Pplh);                                  //~vbi3I~
+    if (swutf8file)                                                //~vbi3I~
+    {                                                              //~vbi3I~
+        opt=0;                                                     //~vbi3I~
+    	if ((rc2=xeutfcvdd2fl(opt,Ppcw,pdata,Pplh->ULHdbcs,datalen,//~vbi3I~
+				Gcmdbuffu8,sizeof(Gcmdbuffu8),&u8len,              //~vbi3I~
+    			Gcmdbufflc,Gcmdbuffdbcs,Gcmdbuffct,sizeof(Gcmdbufflc),&lclen))>=4)//~vbi3I~
+            return 4;                                              //~vbi3I~
+        Gcmdbufflclen=lclen;                                       //~vbi3I~
+        datalen=u8len;                                             //~vbi3I~
+        pdata=Gcmdbuffu8;                                          //~vbi3I~
+    }                                                              //~vbi3I~
+	opt=0;                                                         //~vbi3I~
+	setflddatadbcscmd_byutf8(opt,Ppcwtgt,0/*pod*/,pdata,Gcmdbuffdbcs,datalen);//~vbi3I~
+	csrhomepos(Ppcwtgt->UCWsplitid);                               //~vbi3I~
+    UTRACEP("func_copywordcmd\n");                                 //~vbi3I~
+	return 0;                                                      //~vbi3I~
+}//charsetchlcmd                                                   //~vbi3I~
+//**************************************************************************//~vbi3I~
+//*accept cmd history list cmd  s/S/x/X                            //~vbi3I~
+//**************************************************************************//~vbi3I~
+int charfldeditchl(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh)          //~vbi3R~
+{                                                                  //~vbi3I~
+	int cmd,rc;                                                    //~vbi3R~
+    int swexec=0,swpopup=0,swsplit=0;                              //~vbi3I~
+    PUCLIENTWE pcwtgt,pcw2;                                        //~vbi3R~
+    PUSCRD psd;                                                    //~vbi3I~
+    PULINEH plh;                                                   //~vbi3R~
+    PUSCMD psc;                                                    //~vbi3I~
+//********************************                                 //~vbi3I~
+    if (!CSRONFILELINE(Ppcw))                                      //~vbi3R~
+        return -1;                                                 //~vbi3I~
+    if (Ppcw->UCWrcsrx<Ppcw->UCWlinenosz-1)  //allow on sparator col("|")//~vbi3R~
+        return -1;   //continue process normal lineno fld input    //~vbi3R~
+    if (Ppcw->UCWkeytype!=UCWKTSBCS)                               //~vbi3I~
+        return -1;   //allow limited cmd                           //~vbi3I~
+ 	psd=Ppcw->UCWpsd+Ppcw->UCWrcsry;                               //~vbi3M~
+	plh=psd->USDbuffc;                                             //~vbi3M~
+    psc=funcsrchpsc(FSPO_ERRMSG,plh->ULHuscentryno);               //~vbi3R~
+    if (!psc)                                                      //~vbi3M~
+    	return 4;                                                  //~vbi3M~
+    cmd=(int)Ppcw->UCWkeydata[0];                                  //~vbi3R~
+    pcwtgt=Ppcw;                                                   //~vbi3I~
+//s:set,x:execute,t:set split,y:execute split                      //~vbi3R~
+//uppercase for myself:no popup                                    //~vbi3I~
+    switch (cmd)                                                   //~vbi3I~
+    {                                                              //~vbi3I~
+    case 'x':                                                      //~vbi3I~
+    	swexec=1;                                                  //~vbi3I~
+    	swpopup=1;                                                 //~vbi3I~
+    	break;                                                     //~vbi3I~
+    case 'X':                                                      //~vbi3I~
+    	swexec=1;                                                  //~vbi3I~
+    	break;                                                     //~vbi3I~
+    case 'y':                                                      //~vbi3I~
+    case 'Y':                                                      //~vbi3I~
+    	swexec=1;                                                  //~vbi3I~
+    	swsplit=1;                                                 //~vbi3I~
+    	break;                                                     //~vbi3I~
+    case 's':                                                      //~vbi3I~
+    	swpopup=1;                                                 //~vbi3I~
+    	break;                                                     //~vbi3I~
+    case 'S':                                                      //~vbi3I~
+    	break;                                                     //~vbi3I~
+    case 't':                                                      //~vbi3I~
+    case 'T':                                                      //~vbi3I~
+    	swsplit=1;                                                 //~vbi3I~
+    	break;                                                     //~vbi3I~
+    default:                                                       //~vbi3I~
+    	helpchlcmd();                                              //~vbi3I~
+    	return 4;                                                  //~vbi3I~
+    }                                                              //~vbi3I~
+    if (swsplit)	//effect on other of split                     //~vbi3R~
+    {                                                              //~vbi3I~
+		pcw2=scrgetcw(-1);	//another split                        //~vbi3R~
+        if (pcw2)                                                  //~vbi3I~
+        	pcwtgt=pcw2;                                           //~vbi3I~
+        else                                                       //~vbi3I~
+            swsplit=0;                                             //~vbi3R~
+    }                                                              //~vbi3I~
+    if (!swsplit)	//effect on myselfother of split               //~vbi3I~
+    {                                                              //~vbi3I~
+    	if (swpopup)                                               //~vbi3I~
+        {                                                          //~vbi3I~
+			pcw2=UGETQNEXT(&Ppcw->UCWqelem);                       //~vbi3R~
+        	if (pcw2)	//exist                                    //~vbi3R~
+	        	pcwtgt=pcw2;                                       //~vbi3R~
+            else                                                   //~vbi3I~
+            	swpopup=0;                                         //~vbi3I~
+        }                                                          //~vbi3I~
+    }                                                              //~vbi3I~
+    if (swsplit)                                                   //~vbi3I~
+    {                                                              //~vbi3I~
+        funcswap2(0,Ppcw); //swap without size change              //~vbi3I~
+    }                                                              //~vbi3I~
+    rc=0;                                                          //~vbi3I~
+    if (swexec)                                                    //~vbi3R~
+		rc=funccmdrepeatpsc(0,pcwtgt,psc);                         //~vbi3R~
+    else                                                           //~vbi3I~
+		rc=funcretrievepsc(0,pcwtgt,psc,plh);                      //~vbi3R~
+    if (!rc)                                                       //~vbi3R~
+    {                                                              //~vbi3I~
+    	if (swpopup)                                               //~vbi3R~
+			Gotherstatus|=GOTHERS_CHLPOPUP;//CommandHistoryList popup at return from funccall,UCWreason is not avail becaquse Ppcw may be freeed//+vbi3R~
+    	if (swsplit)                                               //~vbi3I~
+			Ppcw->UCWreason=UCWREASON_CHLSPLIT;                    //~vbi3I~
+        else                                                       //~vbi3I~
+        {                                                          //~vbi3I~
+            csrloctogbl(Ppcw);                                     //~vbi3R~
+    		Ppcw->UCWreason=UCWREASON_CHLNOSPLIT;  //call filecharcsr not to csrright at func_char//~vbi3R~
+        }                                                          //~vbi3I~
+    }                                                              //~vbi3I~
+    return rc;                                                     //~vbi3R~
+}//charfldeditchl                                                  //~vbi3I~

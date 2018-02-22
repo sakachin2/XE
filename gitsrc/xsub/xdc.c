@@ -1,8 +1,10 @@
-//*CID://+vah0R~:                             update#=  659;       //+vah0R~
+//*CID://+vai1R~:                             update#=  679;       //~vai1R~
 //***********************************************************
 //* XDComp : directory status compare                              //~v1.aR~
 //***********************************************************
-//vah0:180129 (Ubuntu 17.10:gcc7.2)Lnx warning sprintf overflow    //+vah0I~
+//vai1:180208 allow K/M postfix for /Wsize parm                    //~vai1I~
+//vai0:180208 (Bug) crash when /Wsize parm is too short<1026) (crash before sizechk)//~vai0I~
+//vah0:180129 (Ubuntu 17.10:gcc7.2)Lnx warning sprintf overflow    //~vah0I~
 //vad1:170103 xdc v2.28 correct err msg                            //~vad1I~
 //vaa2:160424 Lnx64 compiler warning(FDATE/FTIME)                  //~vaa2I~
 //vaa1:160418 Lnx64 compiler warning                               //~vaa1I~
@@ -215,7 +217,8 @@
  #ifdef UNX                                                        //~v255I~
 	#define TBLSZ   (sizeof(FNTBL)*10000)                          //~v255I~
  #else                                                             //~v255I~
-	#define TBLSZ   1024000                                        //~v1.7R~
+//  #define TBLSZ   1024000                                        //~v1.7R~//~vai1R~
+    #define TBLSZ   1024*1024                                      //~vai1I~
  #endif                                                            //~v255I~
 #endif                                                             //~v1.7R~
 #define MAXPATH _MAX_PATH                                          //~v1.7R~
@@ -1517,7 +1520,8 @@ void stackfile(int Pdirid,char *Pdir,char *Pmask,FNTBL *Pfnt,int *Pentno,int *Pe
 			if (*Pentno==(maxent-1))                               //~v1.8R~
 		  	{
         		printf("%s:%s:Dir %s has too many files(Max is %d),\n\
-expand work area by /W(current is %d)\n",Spgm,Sver,path,maxent,tblsz);//~v1.9R~
+expand work area by /W(current is %s)\n",Spgm,Sver,path,maxent,ueditKMG(0,(size_t)tblsz));//~vai1R~
+//expand work area by /W(current is %d)\n",Spgm,Sver,path,maxent,tblsz);//~v1.9R~//~vai1M~
         		exit (4);
 			}
 			fnt=Pfnt+*Pentno;
@@ -3142,8 +3146,8 @@ int filecompbyxfc(FNTBL *Pfnt1,FNTBL *Pfnt2)                       //~va4uI~
     int rc=0,len,redirectsw;                                       //~va4uR~
 	char fpath1[_MAX_PATH],fpath2[_MAX_PATH];                      //~va4uI~
 	char cmd[_MAX_PATH*4],*cmdstr;                                 //~va4uR~
-//  char redirect[_MAX_PATH];                                      //~va4uI~//+vah0R~
-    char redirect[_MAX_PATH*2];                                    //+vah0I~
+//  char redirect[_MAX_PATH];                                      //~va4uI~//~vah0R~
+    char redirect[_MAX_PATH*2];                                    //~vah0I~
 	char suffix[12],*pc,*pc2;                                      //~va4uI~
 #ifdef W32UNICODE                                                  //~va91I~
 	char cmdstrx[_MAX_PATH*4];                                     //~va91I~
@@ -3457,6 +3461,26 @@ for (parmno=1;parmno<parmc;parmno++)
       break;                                
     case 'W':           //work area size                           //~v1.8I~
       tblsz=atoi(cptr+1);                                          //~v1.8I~
+      {                                                            //~vai1I~
+            int wpsz;                                              //~vai1I~
+            wpsz=unumlen(cptr+1,0,(int)strlen(cptr+1));            //~vai1I~
+            if (toupper(*(cptr+1+wpsz))=='K')                      //~vai1R~
+            	tblsz*=1024;                                       //~vai1I~
+            else                                                   //~vai1R~
+            if (toupper(*(cptr+1+wpsz))=='M')                      //~vai1R~
+            	tblsz*=1024*1024;                                  //~vai1I~
+            else                                                   //~vai1I~
+			{                                                      //~vai1I~
+                printf("%s:%s:invalid option value(%s)\n",Spgm,Sver,parmp[parmno]);//~vai1I~
+        		exit(4);                                           //~vai1I~
+      		}                                                      //~vai1I~
+      }                                                            //~vai1I~
+      if (tblsz<TBLSZ)                                             //~vai0I~
+      {                                                            //~vai0I~
+//          printf("%s:%s:Too small(<%d) value(%s)\n",Spgm,Sver,TBLSZ,parmp[parmno]);//~vai0I~//~vai1R~
+            printf("%s:%s:Too small(<%s) value(%s)\n",Spgm,Sver,ueditKMG(0,(size_t)TBLSZ),parmp[parmno]);//~vai1R~
+        	exit(4);                                               //~vai0I~
+      }                                                            //~vai0I~
       break;                                                       //~v1.8I~
     case 'X':           //work area size                           //~va9gI~
       stackMask(&Sqhxmask,cptr+1);                                 //~va9gI~
@@ -4365,10 +4389,13 @@ HELPMSG                                                            //~v1.xI~
 "                x=n:dir1/2 is not intermediate file(default)\n",  //~v1.xR~
 "                x=n:dir1/2 は中間ワークファイルではない(省略値)\n");//~v1.xI~
 HELPMSG                                                            //~v1.xI~
-"         %cWsz  :work buff area size(default sz is %d)\n",        //~v2.3R~
-"         %cWsz  :ワークバッファサイズ(省略値は %d)\n",            //~v2.3R~
+//"         %cWsz  :work buff area size(default sz is %d)\n",        //~v2.3R~//~vai1R~
+//"         %cWsz  :ワークバッファサイズ(省略値は %d)\n",            //~v2.3R~//~vai1R~
+"         %cWsz[K|M]:work buff area size(default sz is %s)\n",     //~vai1R~
+"         %cWsz[K|M]:ワークバッファサイズ(省略値は %s)\n",         //~vai1R~
 					CMDFLAG_PREFIX,                                //~v2.3I~
-						tblsz);                                    //~v1.xI~
+//  					tblsz);                                    //~v1.xI~//~vai1R~
+    					ueditKMG(0,(size_t)tblsz));                //+vai1R~
 HELPMSG                                                            //~v231I~
 "         %cYx,%cNx:toggle type switch; x is as following.\n",     //~v231I~
 "         %cYx,%cNx:オン/オフ タイプのフラグ; x はつぎのフラグを指定\n",//~v231I~

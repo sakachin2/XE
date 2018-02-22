@@ -1,8 +1,9 @@
-//CID://+v6F1R~:     update#=     43                               //~v6F1R~
+//CID://+v6T3R~:     update#=     48                               //~v6T3R~
 // *******************************************************************
 // * uehmsg.c
-// * ‹@”\ŠT—v   : exception handler set/unset,exception handler itself
+// * exception handler set/unset,exception handler itself          //~v6T3R~
 // *******************************************************************
+//v6T3:180217 exception info is 16byte for 64bit                   //~v6T3I~
 //v6F1:160831 W64 try Exception msg                                //~v6F1I~
 //v6hh:120623 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  defines ULPTR(unsigned long long)//~v6hhI~
 //v288:991023 (BUG)map not found msg override previous uerrexit msg//~v288I~
@@ -335,9 +336,17 @@ static UCHAR constnae[MAX_FUNCNAME]="Function name N/A";           //~v6F1I~
   static UCHAR msgprotcodedump3e[]
          =" Not Avail%n";
   static UCHAR msgprotparm1[]
+#ifdef ULIB64X                                                     //+i called//~v6T3R~
+         ="P%1d=%p(%s) %n";  //with description                    //+v6T3M~
+#else                                                              //+v6T3M~
          ="P%1d=%08X(%s) %n";  //with description               //~5105R~
+#endif                                                             //~v6T3R~
   static UCHAR msgprotparm2[]
+#ifdef ULIB64X                                                     //~v6T3R~
+         ="P%1d=%p %n";      //without description                 //+v6T3I~
+#else                                                              //+v6T3M~
          ="P%1d=%08X %n";      //without description            //~5105R~
+#endif                                                             //~v6T3R~
   static UCHAR msgprotintreg[]
          ="EAX=%08X EBX=%08X ECX=%08X EDX=%08X ESI=%08X EDI=%08X\n%n";//~5105R~
   static UCHAR msgprotsegreg[]
@@ -1125,7 +1134,7 @@ int uehstacktracemsg(int Popt,void *Pexceptionaddr,char *Pmsgout)  //~v6F1R~
         	break;                                                 //~v6F1I~
         UTRACEP("%s:SymFromAddress rc=%d,addr=%p,lasterr=%d\n",UTT,rc2,stack[ii],GetLastError());//~v6F1I~
         UTRACED("link addr symbol",symbol,(int)sizeof(IMAGEHLP_SYMBOL64)+SYM_MAX_NAMELEN);//~v6F1R~
-        len=sprintf(pc,"%2d: at %p called %p:%s\n",ii,stack[ii+1],(void*)symbol->Address,symbol->Name);//+v6F1R~
+        len=sprintf(pc,"%2d: at %p called %p:%s\n",ii,stack[ii+1],(void*)symbol->Address,symbol->Name);//~v6F1R~
         pc+=len;                                                   //~v6F1I~
         msglen+=len;                                               //~v6F1I~
     }                                                              //~v6F1I~

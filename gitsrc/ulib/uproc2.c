@@ -1,9 +1,11 @@
-//*CID://+v6M3R~:                             update#=  417;       //+v6M3R~
+//*CID://+v6T7R~:                             update#=  422;       //+v6T7R~
 //************************************************************* //~5825I~
 //*uproc2.c                                                        //~v5euR~
 //* parse-redirect,rsh                                             //~v5euR~
 //*************************************************************    //~v022I~
-//v6M3:170824 (Lnx) putenv to LD_LIRARY_PATH is not effective(loader chk it at pgm startup and ignore putenv after startup)//+v6M3I~
+//v6T7:180220 stack errmsg to errmsg.<pid> and issue notification at initcomp//+v6T7I~
+//v6T6:180219 icu loaderr clear errmsg from ini file,stdout from loaderr//~v6T6I~
+//v6M3:170824 (Lnx) putenv to LD_LIRARY_PATH is not effective(loader chk it at pgm startup and ignore putenv after startup)//~v6M3I~
 //v6M2:170824 (Bug)v6M0 faile if path is multiple devided by ";"/":"//~v6M2I~
 //v6M0:170808 err "LoadLibrary failed for icuucxx"-=>loaddll using ICU_DATA param//~v6M0I~
 //v6xi:150115 conversion warning                                   //~v6xiI~
@@ -526,16 +528,16 @@ int uproc_loaddllpath(int Popt,char *Ppath,char *Pdllname,char *Pversion,ULPTR *
 #endif                                                             //~v6M0M~
 	opt=Popt|UPLD_ALTPATH;//  0x04         //LoadLibraryEx with LOAD_WITH_ALTERED_SEARCH_PATH//~v6M0I~
 #ifdef LNX                                                         //~v6M0I~
-//    pc=strrchr(dllname,DIR_SEPC);                                  //~v6M0I~//+v6M3R~
-//    if (pc)                                                        //~v6M0I~//+v6M3R~
-//    {                                                              //~v6M0I~//+v6M3R~
-//        *pc=0;                                                     //~v6M0I~//+v6M3R~
-//        udos_setenv(UDSE_PREPEND,"LD_LIBRARY_PATH",dllname);       //~v6M0I~//+v6M3R~
-////      if (Popt & UPLD_SETICUDATAENV)                             //~v6M2R~//+v6M3R~
-////          udos_setenv(UDSE_PREPEND,"ICU_DATA",newenv);           //~v6M2R~//+v6M3R~
-////      strcpy(dllname,pc);                                        //~v6M0I~//~v6M2R~//+v6M3R~
-//        strcpy(dllname,pc+1);                                      //~v6M2I~//+v6M3R~
-//    }                                                              //~v6M0I~//+v6M3R~
+//    pc=strrchr(dllname,DIR_SEPC);                                  //~v6M0I~//~v6M3R~
+//    if (pc)                                                        //~v6M0I~//~v6M3R~
+//    {                                                              //~v6M0I~//~v6M3R~
+//        *pc=0;                                                     //~v6M0I~//~v6M3R~
+//        udos_setenv(UDSE_PREPEND,"LD_LIBRARY_PATH",dllname);       //~v6M0I~//~v6M3R~
+////      if (Popt & UPLD_SETICUDATAENV)                             //~v6M2R~//~v6M3R~
+////          udos_setenv(UDSE_PREPEND,"ICU_DATA",newenv);           //~v6M2R~//~v6M3R~
+////      strcpy(dllname,pc);                                        //~v6M0I~//~v6M2R~//~v6M3R~
+//        strcpy(dllname,pc+1);                                      //~v6M2I~//~v6M3R~
+//    }                                                              //~v6M0I~//~v6M3R~
 #endif                                                             //~v6M0I~
     rc=uproc_loaddll(opt,dllname,0,Pphandle);                      //~v6M0R~
     if (!rc) //success by path                                     //~v6M0I~
@@ -543,9 +545,11 @@ int uproc_loaddllpath(int Popt,char *Ppath,char *Pdllname,char *Pversion,ULPTR *
     	if (rc2	//1st loaddll failed                               //~v6M2I~
         ||  (Popt & UPLD_DELEMSG))        //ugeterrmsg to delete previous uerrmsg//~v6M2I~
         {                                                          //~v6M0I~
-        	uerrmsg(" retry by %s was scceeded",0,                 //~v6M0I~
+//      	uerrmsg(" retry by %s was scceeded",0,                 //~v6M0I~//~v6T6R~
+//      	uerrmsgcat(" retry by %s was scceeded",0,              //~v6T6I~//+v6T7R~
+        	uerrmsg(" retry by %s was scceeded",0,   //written to error.pid//+v6T7I~
             		dllname);	//to stdout                        //~v6M0I~
-            ugeterrmsg();	//clear errmsg on hdr line of xe       //~v6M0I~
+//          ugeterrmsg();	//clear errmsg on hdr line of xe       //~v6M0I~//~v6T6R~
         }                                                          //~v6M0I~
     UTRACEP("%s:rc=%d,path=%s,dll=%s,version=%s,dllname=%s\n",UTT,rc,Ppath,Pdllname,Pversion,dllname);//~v6M0I~
     return rc;                                                     //~v6M0M~
@@ -622,7 +626,9 @@ int uproc_loaddll(int Popt,char *Pdllname,char *Pversion,ULPTR *Pphandle)//~v6hh
     {                                                              //~v5mPM~
 #ifdef W32                                                         //~v5mPI~
     	rc=GetLastError();                                         //~v5mPM~
-    	uerrmsg("LoadLibrary failed for %s,lasterr=%d",0,          //~v5mPM~
+//  	uerrmsg("LoadLibrary failed for %s,lasterr=%d",0,          //~v5mPM~//~v6T6R~
+//  	uerrmsgcat("LoadLibrary(%s) failed,lasterr=%d, adjust ::xeebc.map if not use ICU.",0,//~v6T6R~//+v6T7R~
+    	uerrmsg("LoadLibrary(%s) failed,lasterr=%d, adjust ::xeebc.map if not use ICU.",0,//+v6T7I~
         		pdllname,rc);                                      //~v5mPM~
 #else       //LNX                                                  //~v5mPI~
 		rc=errno;                                                  //~v5mPI~
@@ -630,7 +636,9 @@ int uproc_loaddll(int Popt,char *Pdllname,char *Pversion,ULPTR *Pphandle)//~v6hh
 //                pdllname,rc,dlerror());                            //~v5mPI~//~v6fiR~
 //        uerrmsg("LoadLibrary(dlopen) failed for %s by errno=%d",0,//~v6fiR~
 //                pdllname,rc);                                    //~v6fiR~
-        uerrmsg("LoadLibrary(dlopen) failed for %s(check LD_LIBRARY_PATH). ",0,//~v6fiR~
+//      uerrmsg("LoadLibrary(dlopen) failed for %s(check LD_LIBRARY_PATH). ",0,//~v6fiR~//~v6T6R~
+//      uerrmsgcat("dlopen(%s) failed(chk LD_LIBRARY_PATH), or adjust xeebc.map if no use ICU.",0,//~v6T6R~//+v6T7R~
+        uerrmsg("dlopen(%s) failed(chk LD_LIBRARY_PATH), or adjust xeebc.map if no use ICU.",0,//+v6T7I~
                 pdllname);                                         //~v6fiI~
         if (!rc)                                                   //~v6fhI~
         	rc=ENOENT;                                             //~v6fhI~

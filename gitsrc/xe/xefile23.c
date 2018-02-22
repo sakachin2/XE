@@ -1,9 +1,10 @@
-//*CID://+vb5jR~:                             update#=  651;       //+vb5jR~
+//*CID://+vbi3R~:                             update#=  665;       //~vbi3R~
 //*************************************************************
 //*xefile23.c  *                                                   //~v69DR~
 //* draw(func_draw_file/setlineattr)                               //~v69DI~
 //*************************************************************
-//vb5j:160919 (W32) when Lig:On and Comb:SPLIT,altch should be green//+vb5jI~
+//vbi3:180211 supprt command history list                          //~vbi3R~
+//vb5j:160919 (W32) when Lig:On and Comb:SPLIT,altch should be green//~vb5jI~
 //vb5a:160913 (W32)locale file ligature support                    //~vb5aI~
 //vb59:160913 vhex line shift to left when focus lost              //~vb59I~
 //vb4A:160815 if UNICOMB UNPR mode and LIGATURE ON, write altch just after base char using GetTextExtentPoint32W//~vb4AI~
@@ -327,6 +328,7 @@
 #define NOTUPDATEDID  '|'    //update file/line id              //~5107I~
 #define UPDATEID      '*'    //update file/line id              //~5107I~
 #define SPLITTOPID    '-'    //post of split line id               //~v0agR~
+#define U8CMDID       'u'    //on lineno fld splitter              //~vbi3I~
 #define SPLITID       '.'    //post of split line id             //~v0eQR~
 #define SPLITTOPUPDID '+'    //post of split line id               //~v0agI~
 #define SPLITUPDATEID ':'    //post of split update line id      //~v0eQR~
@@ -383,7 +385,8 @@ static UCHAR Shexcsrattr;                                          //~v457I~
 //void vsplitshift(PUCLIENTWE Ppcw);                               //~v69DR~
 //int tabdisplay(UCHAR *Pdata,UCHAR *Pdbcs,int Plen);              //~v0avR~
 void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
-					int Pcellsw);                                  //~v09RR~
+//  				int Pcellsw);                                  //~v09RR~//~vbi3R~
+    				int Pcellsw,int Pline);                        //~vbi3R~
 #ifdef W32                                                         //~va3mI~
 int setattraroundvhexdataline(int Popt,UCHAR *Pdbcs,USHORT *Pattr,int Ppos1,int Ppos2,int Pwidth,int Pcolor);//~va3mI~
 #else                                                              //~va3mI~
@@ -476,6 +479,7 @@ int func_draw_file(PUCLIENTWE Ppcw)
 	int recordmodesw;                                              //~va50I~
     int swligaturemode=0,swutf8orligaturemode=0;                   //~vafcR~
     int swlongrecord;                                              //~vaznI~
+    int oldcsrline;                                                //~vbi3R~
 //****************************
 //  fulldrawsw=UCBITCHK(Ppcw->UCWflag,UCWFDRAW);                   //~v0k0R~
     linenosz=Ppcw->UCWlinenosz;                                 //~v069I~
@@ -757,6 +761,12 @@ int func_draw_file(PUCLIENTWE Ppcw)
     newposx=Ppcw->UCWrcsrx-linenosz;               //cols          //~v44kI~
     newposy=Ppcw->UCWrcsry-FILEHDRLINENO-colslinesw;   //csr line  //~v44kI~
     csrline=newposy;		//csr line offset                      //~v60vI~
+    oldcsrline=pfc->UFCcsrline;                                    //~vbi3R~
+    if (csrline==oldcsrline)                                       //~vbi3I~
+    	pfc->UFCcsrlineold=0;                                      //~vbi3I~
+    else                                                           //~vbi3I~
+    	pfc->UFCcsrlineold=oldcsrline;                             //~vbi3R~
+    pfc->UFCcsrline=csrline;                                       //~vbi3I~
     csrcols=newposx;		//csr column                           //~va3jI~
 //case for csr line excluded                                       //~v507I~
 	plhcsr=pfc->UFCcsrplh;	//csr set requested                    //~v507I~
@@ -1095,6 +1105,24 @@ UTRACEP("previousline drawsw=%d\n",vhexdrawsw);                    //~va6xI~
 //		vhexdrawsw,vhexdrawsw3,vhexdrawsw2,plh->ULHvhexcsrlinetype);//~va20I~//~vafcR~
         }                                                          //~va20I~
 #endif  //UTF8UCS2                                                 //~va20I~
+        if (pfh->UFHtype==UFHTCMDHIST)                             //~vbi3R~
+        {                                                          //~vbi3R~
+        	if (line==csrline)                                     //~vbi3R~
+            {                                                      //~vbi3R~
+        		if (csrline!=oldcsrline)	//line changed         //~vbi3R~
+                {	                                               //~vbi3R~
+					UCBITON(plh->ULHflag,ULHFDRAW);                //~vbi3R~
+                }                                                  //~vbi3R~
+            }                                                      //~vbi3R~
+            else                                                   //~vbi3R~
+        	if (line==oldcsrline)   	//old csr line             //~vbi3R~
+            {                                                      //~vbi3R~
+        		if (line!=csrline)	//line changed                 //~vbi3R~
+                {                                                  //~vbi3R~
+					UCBITON(plh->ULHflag,ULHFDRAW);                //~vbi3R~
+                }                                                  //~vbi3R~
+            }                                                      //~vbi3R~
+        }                                                          //~vbi3R~
 //UTRACEP("HHEX drawsw=%d\n",UCBITCHK(plh->ULHflag,ULHFDRAW));     //~v79eR~
 //  	if (!UCBITCHK(Ppcw->UCWflag,UCWFDRAW)	//screen full display//~v08dR~
 		if (!fulldrawsw                                            //~v08dI~
@@ -1229,6 +1257,8 @@ UTRACEP("filedraw row=%d,col=%d,csrcol=%d,line=%d,plhlineno=%d,drawflag=%x\n",Pp
             }                                                      //~va7jI~
           	if (vhexpsdid)//vhex display hex line sw               //~v60vI~
 				memset(pc,' ',(UINT)(linenosz-1));                 //~v60vI~
+	        if (UCBITCHK(plh->ULHflag6,ULHF6CHLCPU8CMD))           //+vbi3R~
+     	       *(pc+linenosz-1)=U8CMDID;                           //~vbi3I~
 			pc+=linenosz;                                       //~v069R~
 			pcd+=linenosz;                                      //~v069R~
         }                                                       //~v069I~
@@ -1427,8 +1457,10 @@ UTRACEP("filedraw row=%d,col=%d,csrcol=%d,line=%d,plhlineno=%d,drawflag=%x\n",Pp
 #endif                                                             //~v780I~
 UTRACEP("SETLINEATTR lineno=%d,drawsw=%d\n",plh->ULHlinenor,UCBITCHK(plh->ULHflag,ULHFDRAW));//~va3jR~
 		setlineattr(Ppcw,plh,psd,                                  //~v09RR~
-					celldrawsw);                                   //~v09RI~
+//  				celldrawsw);                                   //~v09RI~//~vbi3R~
+    				celldrawsw,line);                              //~vbi3R~
 	}//while ULINEH exist
+    pfc->UFCcsrline=csrline;                                       //~vbi3R~
 //after bottom of data
 //  if (UCBITCHK(Ppcw->UCWflag,UCWFDRAW))                          //~v08dR~
 //  if (fulldrawsw)                                                //~v0hfR~
@@ -1803,7 +1835,8 @@ int filesetvhexcsrattr(int Popt,int Prevcolor,int Pdefcolor,int *Ppvhexattr,int 
 //*rc   :none
 //****************************************************************
 void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
-					int Pcellsw)                                   //~v09RI~
+//  				int Pcellsw)                                   //~v09RI~//~vbi3R~
+    				int Pcellsw,int Pline)                         //~vbi3R~
 {
 	PUFILEC pfc;
 	PUFILEH pfh;                                                //~v05vI~
@@ -2000,6 +2033,14 @@ void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
       	if (vhexpsdid && linenosz>1)                               //~vb59I~
     		*(paw-2)=attr&0xf0;   //fg=0; set diffrent attr with next colomn to protect next column shift//~vb59I~
 #endif                                                             //~vb59I~
+        if (pfh->UFHtype==UFHTCMDHIST)                             //~vbi3R~
+        {                                                          //~vbi3R~
+        	if (Pline==pfc->UFCcsrlineold)                         //~vbi3R~
+	    		*(paw-1)=Scolor_lineno;	//normal lineno            //~vbi3R~
+        	else                                                   //~vbi3R~
+        	if (Pline==pfc->UFCcsrline)                            //~vbi3R~
+	    		*(paw-1)=Scolor_lineno_r;	//reverse              //~vbi3R~
+        }                                                          //~vbi3R~
     }   //linenosz not 0                                           //~v08eI~
 //*data part                                                       //~v08eI~
 	width=Ppsd->USDlen-linenosz;                                   //~v08eM~
@@ -2204,8 +2245,8 @@ void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
 		                *paw=ATTR_COMBINENP_FG;                    //~vb4yR~
                     }                                              //~vb4yR~
                     else                                           //~vb4yR~
-//  				if (!UTF_COMBINEMODE() && !OPT_ISLIGATUREON()) //+vb5jR~
-    				if (!UTF_COMBINEMODE())                        //+vb5jI~
+//  				if (!UTF_COMBINEMODE() && !OPT_ISLIGATUREON()) //~vb5jR~
+    				if (!UTF_COMBINEMODE())                        //~vb5jI~
 						*paw=tabattr;   		//draw by lineno color//~vb4yR~
                   }                                                //~vb4AI~
                 }                                                  //~vb4yR~
@@ -2239,6 +2280,14 @@ void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
 		*(pcc-1)=Scolor_lineno_r;	//latest update             //~5430R~
   	else                                                        //~5127R~
 		*(pcc-1)=Scolor_lineno;	//normal color                  //~5430R~
+    if (pfh->UFHtype==UFHTCMDHIST)                                 //~vbi3R~
+    {                                                              //~vbi3R~
+        if (Pline==pfc->UFCcsrlineold)                             //~vbi3R~
+            *(pcc-1)=Scolor_lineno; //normal lineno                //~vbi3R~
+        else                                                       //~vbi3R~
+        if (Pline==pfc->UFCcsrline)                                //~vbi3R~
+            *(pcc-1)=Scolor_lineno_r;   //reverse                  //~vbi3R~
+    }                                                              //~vbi3R~
     }   //linenosz not 0                                              //~v069I~
 //*data part
   if (!Pcellsw)                                                    //~v09RI~

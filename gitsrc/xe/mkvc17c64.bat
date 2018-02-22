@@ -13,7 +13,8 @@ echo lib=%LIB%
 @rem echo trace=%TRACE%
 @rem echo debug=%DEBUG%
 
-echo     nmake "ULIBHDIR=%ULIBHDIR%" "OBJULIB=%OBJULIB%" "OBJXE=%OBJXE%" "trace=%TRACE%" "w98=vc10" "vc=17c" "x64=yes" "source=no" "debug=%DEBUG%" %* /f xe17c.mak   
+@rem echo  PATH=%PATH%
+@echo     nmake "ULIBHDIR=%ULIBHDIR%" "OBJULIB=%OBJULIB%" "OBJXE=%OBJXE%" "trace=%TRACE%" "w98=vc10" "vc=17c" "x64=yes" "source=no" "debug=%DEBUG%" %* /f xe17c.mak   
      nmake "ULIBHDIR=%ULIBHDIR%" "OBJULIB=%OBJULIB%" "OBJXE=%OBJXE%" "trace=%TRACE%" "w98=vc10" "vc=17c" "x64=yes" "source=no" "debug=%DEBUG%" %* /f xe17c.mak   
 
 endlocal

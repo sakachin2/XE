@@ -148,6 +148,7 @@ a:hover{font-weight:bold;}-->
                           ICMD=passive toggles passive and active mode.
         SSH={Y|N}        :FTPクライアントにPSFTP を使用する(Y) か 否か(N)
         SHARE=shraename  :共有資源名。リモートがSambaサーバーまたはWindowsの時指定
+        P=prtNo          :psftp で SSH ポートを省略値(22)以外を使用する場合指定
 
 例）
 
@@ -191,6 +192,7 @@ a:hover{font-weight:bold;}-->
     # w64   SmbSvr      user1    &quot;&quot;      SHARE=d
     # w7p   192.168.2.12 w7user pswd     share=p
     # gcty  ftp.geocities.jp ybbusr pswd SSH=N
+    # centos7r localhost root pswd SSH=Y P=2222
     ###################################################################
 
     (注)ftpを利用するので接続するための適切な環境設定が必要です。

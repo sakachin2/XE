@@ -1,8 +1,9 @@
-//*CID://+vb86R~:                             update#=  514;       //~vb86R~
+//*CID://+vbi3R~:                             update#=  545;       //~vbi3R~
 //************************************************************* //~5428I~
 //* xefunc2.c
 //*        func_char,quit,term,exit,reset,retrieve,help,key,exe    //~v55nR~
 //*************************************************************
+//vbi3:180211 supprt command history list                          //~vbi3I~
 //vb86:170216 display cmdline ctr excluded(fcmd:x,xx; lcmd x)      //~vb86I~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
 //vb2E:160229 LNX64 compiler warning                               //~vb2EI~
@@ -202,6 +203,7 @@
 #include "xefunc2.h"                                            //~5114I~
 #include "xefunct.h"                                               //~v705I~
 #include "xefile.h"                                             //~5318R~
+#include "xefile14.h"                                              //~vbi3I~
 #include "xefile3.h"                                            //~5423R~
 #include "xedir.h"                                                 //~v137I~
 #include "xecap.h"                                              //~5318I~
@@ -266,6 +268,7 @@ static int    Sretreivescrsw=0;                                    //~v670I~
 static int    Sretreivecmdtype=0;                                  //~v670I~
                                                                 //~v020I~
 static int    Sstackctsw=0;                                        //~va1rI~
+static int    Suscentryno=0;                                       //~vbi3I~
 //**************************************************               //~v0hmI~
 int funcretrieve(PUCLIENTWE Ppcw,int Pdest);                    //~v04hR~
 int  funcinhibitkey2(int Pchar);                                   //~v218R~
@@ -943,6 +946,9 @@ UTRACEP("funct2getinputgc rc=%d,type=%d,data=%x%x\n",rc,Ppcw->UCWkeytype,*Ppcw->
 #endif                                                             //~va3xI~
     if (rc)                                                        //~v778R~
 		return rc;
+    if (Ppcw->UCWreason==UCWREASON_CHLNOSPLIT)                     //~vbi3I~
+		rc=filecharcsr(Ppcw);                                      //~vbi3I~
+    else                                                           //~vbi3I~
 	if (Ppcw->UCWtype==UCWTFILE                                 //~5423R~
     &&	CSRONFILEDATA(Ppcw))	//file edit scr                 //~5225I~
 		rc=filecharcsr(Ppcw);	//cursor move using UCWkeytype(datalen)//~5423R~
@@ -1308,7 +1314,7 @@ int func_reset2(PUCLIENTWE Ppcw,int Popt)                          //~v69WI~
     {                                                              //~vb86I~
       if (ctrold || ctrnew)                                        //~vb86I~
     	uerrmsg("%d ( %d/%d in excluded part) lines cmd reset.",   //~vb86R~
-                "%d (内 非\x95\\示: %d/%d ) 行コマンドをリセット", //+vb86I~
+                "%d (内 非\x95\\示: %d/%d ) 行コマンドをリセット", //~vb86I~
                 resetlcmdno,ctrold-ctrnew,ctrold);                 //~vb86I~
       else                                                         //~vb86I~
     	uerrmsg("%d line cmd reset.",                               //~v0hmI~//~vb86R~
@@ -2368,6 +2374,23 @@ int funcretrieve(PUCLIENTWE Ppcw,int Pdest)                     //~v04hR~
   	UCBITOFF(Ppcw->UCWflag,UCWFCMDERR);//clear cmd err          //~5114I~
 	return rc;                                                  //~v04hR~
 }//funcretrieve                                                 //~5114I~
+//**************************************************************** //~vbi3I~
+int funcretrievepsc(int Popt,PUCLIENTWE Ppcw,PUSCMD Ppsc,void *Pplh)//+vbi3R~
+{                                                                  //~vbi3I~
+    int datalen,pos;                                               //~vbi3R~
+//**************************************************               //~vbi3I~
+	if (Ppcw->UCWmaxline<=CMDLINENO)                               //~vbi3I~
+		return 4;                                                  //~vbi3I~
+    if ((pos=((UFLDE*)getuflde(Ppcw,CMDLINENO,0))->UFLstart)>=Ppcw->UCWwidth)//~vbi3R~
+		return 4;	//no display width                             //~vbi3I~
+    scrclearmsg(Ppcw);                                             //~vbi3I~
+	funcsetlongcmdfromstack(Ppcw,0,Ppsc,&datalen);	//no execute,le by strlen//~vbi3I~
+    Ppcw->UCWrcsry=CMDLINENO;                                      //~vbi3I~
+    Ppcw->UCWrcsrx=pos;                                            //~vbi3R~
+	UCBITON((Ppcw->UCWpsd+CMDLINENO)->USDflag2,USDF2DRAW);         //~vbi3I~
+  	UCBITOFF(Ppcw->UCWflag,UCWFCMDERR);//clear cmd err             //~vbi3I~
+	return 0;                                                      //~vbi3I~
+}//funcretrievepsc                                                 //~vbi3I~
 //****************************************************************************//~vbCBI~
 int funcrestorePSC(PUCLIENTWE Ppcw,PUSCMD Ppsc)                    //~vbCBR~
 {                                                                  //~vbCBI~
@@ -2419,6 +2442,22 @@ int func_cmdrepeat(PUCLIENTWE Ppcw)                                //~v47kI~
   	UCBITOFF(Ppcw->UCWflag,UCWFCMDERR);//clear cmd err             //~v47kI~
 	return rc;                                                     //~v47kI~
 }//func_cmdrepeat                                                   //~v47kI~//~va1rR~
+//**************************************************               //~vbi3I~
+//*func_cmdrepeat                                                  //~vbi3I~
+//*repaet previous command                                         //~vbi3I~
+//*parm1:pcw                                                       //~vbi3I~
+//*ret  :none                                                      //~vbi3I~
+//**************************************************               //~vbi3I~
+int funccmdrepeatpsc(int Popt,PUCLIENTWE Ppcw,PUSCMD Ppsc)         //~vbi3I~
+{                                                                  //~vbi3I~
+    int rc;                                                        //~vbi3I~
+//**************************************************               //~vbi3I~
+    scrclearmsg(Ppcw);                                             //~vbi3I~
+    rc=funcsetlongcmdfromstack(Ppcw,FSLCO_EXECUTE,Ppsc,0/*out len*/);  //execute execute,no output cmd len//~vbi3I~
+	UCBITON((Ppcw->UCWpsd+CMDLINENO)->USDflag2,USDF2DRAW);         //~vbi3I~
+  	UCBITOFF(Ppcw->UCWflag,UCWFCMDERR);//clear cmd err             //~vbi3I~
+	return rc;                                                     //~vbi3I~
+}//funccmdrepeatpsc                                                //~vbi3I~
                                                                    //~v47kI~
 #ifdef UTF8SUPPH                                                   //~va1rI~
 //**************************************************               //~va1rI~
@@ -2525,6 +2564,7 @@ PUSCMD funccmdstack(UCHAR *Pcmd,int Pcmdlen,int Pseqno)            //~vbCBI~
 	        	memcpy(psc->USCcmd+Pcmdlen+1,Gcmdbufflc,(UINT)(lenlc+1));//~va1rR~
       		}                                                      //~va1rI~
 #endif                                                             //~va1rR~
+	        psc->USCentryno=++Suscentryno;	//search key           //~vbi3I~
         }                                                       //~v04dI~
 	}//not found                                                //~5114I~
     if (psc)                                                    //~v04dI~
@@ -2581,6 +2621,7 @@ void funcrcmdstackmergeutf8(void)                                  //~va1rR~
         memcpy(pscnew->USCcmd+lenu8+1,plc,(UINT)(lenlc+1));        //~va1rI~
         pscnew->USCcmdlen=lenu8;                                   //~va1rI~
         pscnew->USCcmdlenlc=lenlc;                                 //~va1rR~
+        pscnew->USCentryno=++Suscentryno;	//search key           //~vbi3I~
 		UENQENT(UQUE_AFT,pscnext,pscnew);	//enq after to be deleted//~va1rI~
 		UDEQ(UQUE_ENT,&Gcmdstack,psc);	//deq to re-enq            //~va1rI~
         ufree(psc);                                                //~va1rI~
@@ -3236,3 +3277,72 @@ int func_redo_file(FUNCPARMS)                                      //~vag2I~
 #endif                                                             //~vag2I~
 }                                                                  //~vag2I~
 //int func_hex_file(FUNCPARMS){DUMMYPROC}                          //~v60vR~
+//**************************************************               //~vbi3I~
+//*get entry for cmd history list                                  //~vbi3I~
+//*Ppfmt:0;u8,1:lc,2:Windows-ud,3:lc by request                    //~vbi3R~
+//**************************************************               //~vbi3I~
+PUSCMD funcgetcmdstack(int Popt,PUSCMD Ppsc,char **Ppcmdstr,int *Pplen,int *Ppfmt)//~vbi3R~
+{                                                                  //~vbi3I~
+static PUSCMD Sprevpsc;			//previously treturned             //~vbi3I~
+	PUSCMD psc;			//stack cmd                                //~vbi3I~
+    char *pu8,*plc;                                                //~vbi3R~
+    int lenu8,lenlc;                                               //~vbi3I~
+//**************************************************               //~vbi3I~
+	*Ppfmt=0;                                                      //~vbi3R~
+    psc=UGETQTOP(&Gcmdstack);                                      //~vbi3R~
+	if (Ppsc && Ppsc==Sprevpsc)                                    //~vbi3R~
+    	psc=UGETQNEXT(Ppsc);                                       //~vbi3I~
+    if (!psc)                                                      //~vbi3I~
+        return 0;                                                  //~vbi3I~
+	Sprevpsc=psc;                                                  //~vbi3I~
+	lenlc=psc->USCcmdlenlc;                                        //~vbi3R~
+	lenu8=psc->USCcmdlen;                                          //~vbi3R~
+    pu8=psc->USCcmd;                                               //~vbi3R~
+    if (!lenlc)                                                    //~vbi3I~
+    {                                                              //~vbi3I~
+    	*Ppcmdstr=pu8;                                             //~vbi3I~
+        *Pplen=lenu8;                                              //~vbi3I~
+		*Ppfmt=1;                                                  //~vbi3R~
+    }                                                              //~vbi3I~
+    else                                                           //~vbi3I~
+    {                                                              //~vbi3I~
+    	if (Popt & CHLO_UTF8) //get utf8                           //~vbi3R~
+        {                                                          //~vbi3I~
+#ifdef W32UNICODE                                                  //~vbi3I~
+			if (memchr(pu8,UD_NOTLC,lenu8))                        //~vbi3R~
+				*Ppfmt=2;                                          //~vbi3R~
+#endif                                                             //~vbi3M~
+	    	*Ppcmdstr=pu8;                                         //~vbi3I~
+    	    *Pplen=lenu8;                                          //~vbi3M~
+		}                                                          //~vbi3I~
+        else                                                       //~vbi3I~
+        {                                                          //~vbi3I~
+			plc=pu8+lenu8+1;                                       //~vbi3I~
+	    	*Ppcmdstr=plc;                                         //~vbi3I~
+    	    *Pplen=lenlc;                                          //~vbi3I~
+			*Ppfmt=3;                                              //~vbi3I~
+        }                                                          //~vbi3I~
+    }                                                              //~vbi3I~
+	return psc;                                                    //~vbi3R~
+}//funcgetcmdstack                                                 //~vbi3I~
+//**************************************************               //~vbi3I~
+//*search psc for cmd history list                                 //~vbi3I~
+//**************************************************               //~vbi3I~
+PUSCMD funcsrchpsc(int Popt,int Pentryno)                          //~vbi3R~
+{                                                                  //~vbi3I~
+	PUSCMD psc;			//stack cmd                                //~vbi3I~
+//**************************************************               //~vbi3I~
+	for (psc=UGETQTOP(&Gcmdstack);psc;psc=UGETQNEXT(psc))//chk same string//~vbi3I~
+    {                                                              //~vbi3I~
+    	if (Pentryno==psc->USCentryno)                             //~vbi3R~
+        	break;                                                 //~vbi3I~
+    }                                                              //~vbi3I~
+    if (!psc)                                                      //~vbi3I~
+    {                                                              //~vbi3I~
+        if (Popt & FSPO_ERRMSG)                                    //~vbi3I~
+            uerrmsg("Command stack entry#=%d not found(max save count=%d and latest entry#=%d).",//~vbi3I~
+            	"エントリー# %d のコマンドがありません(最大保存数は %d で 直近は %d)",//~vbi3I~
+                	Pentryno,Gcmdmaxstack,Suscentryno);            //~vbi3I~
+    }                                                              //~vbi3I~
+	return psc;                                                    //~vbi3I~
+}//funcsrchpsc                                                     //~vbi3I~

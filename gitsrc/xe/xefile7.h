@@ -1,4 +1,4 @@
-//**Fixed-CID://+vb50R~:*      update#=7                           //~vb50R~
+//**Fixed-CID://+vb50R~:*      update#=9                           //+vb50R~
 //**************************************************************** //~v0fqI~
 //xefile7.h                                                        //~v0fqI~
 //**************************************************************** //~v0fqI~
@@ -15,11 +15,11 @@
 //v0ic:980607 label support for DROP cmd                           //~v0icI~
 //v0hq:980316 add DROP cmd(del all line XON/XOFF)                  //~v0fqI~
 //**************************************************************** //~v0fqI~
-#ifndef KKK                                                        //+vb50I~
-	#define FKF_PROTLEN1   8     //prot area len for cmd key file  //+vb50I~
-#else                                                              //+vb50I~
+#ifndef KKK                                                        //~vb50I~
+	#define FKF_PROTLEN1   8     //prot area len for cmd key file  //~vb50I~
+#else                                                              //~vb50I~
 #define FKF_PROTLEN1   6     //prot area len for cmd key file      //~v0imR~
-#endif                                                             //+vb50I~
+#endif                                                             //~vb50I~
 #define FKF_LRECL1     (FKF_PROTLEN1+FKF_MAXCMDLEN)    //cmd key list//~v0ioI~
 #define FKF_MAXCMDLEN  MAXCOLUMN   //max cmd len                   //~v0ioM~
 #ifndef KKK                                                        //~vb50I~

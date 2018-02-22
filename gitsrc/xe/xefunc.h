@@ -1,7 +1,8 @@
-//*CID://+vbe0R~:                             update#=  150;       //~vbe0R~
+//*CID://+vbi3R~:                             update#=  152;       //~vbe0R~//~vbi3R~
 //*********************************************************************
 //* xefunc.h
 //*********************************************************************
+//vbi3:180211 supprt command history list                          //~vbi3I~
 //vbe0:171231 add function to search xml tag pair by A+/           //~vbe0I~
 //vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg//~vbdsI~
 //vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
@@ -203,6 +204,8 @@ typedef int (FTFUNC)(FUNCPARMS);
 #define FUNCID_EBC          94  //EBC cmd                          //~va7KI~
 #define FUNCID_NODE         95  //NODE cmd                         //~vac0I~
 #define FUNCID_XMLSRCH      96  //xml pair search                  //~vbe0I~
+#define FUNCID_CMDHISTLC    97  //CHL(Shift+Ctrl+F12)              //~vbi3I~
+#define FUNCID_CMDHISTU8    98  //CHL(Shift+Alt +F12)              //~vbi3I~
 #define FUNCID_EDIT        100                                  //~5521R~
 #define FUNCID_BROWSE      111                                     //~v07bR~
 #define FUNCID_PREVCMD     112                                     //~v07bR~
@@ -574,7 +577,7 @@ typedef int (FTFUNC)(FUNCPARMS);
 //    FTFUNC func_tcnx;                                            //~v17fR~
 	FTFUNC func_ppsrch;                                            //~v42hR~
 	FTFUNC func_ppsrchnx;                                          //~v42wI~
-	FTFUNC func_xmlsrch;                                           //+vbe0I~
+	FTFUNC func_xmlsrch;                                           //~vbe0I~
 	FTFUNC func_browsehex_file;                                    //~v440R~
 	FTFUNC func_edithex_file;                                      //~v440R~
 	FTFUNC func_selecthex_file;                                    //~v440R~
@@ -643,6 +646,8 @@ typedef int (FTFUNC)(FUNCPARMS);
 	FTFUNC func_revfindPSF;                                        //~vb50R~
 	FTFUNC func_displayPS;                                         //~vbCBI~
 	FTFUNC func_shortpath;                                         //~vba2I~
+	FTFUNC func_cmdhistlc;                                         //+vbi3I~
+	FTFUNC func_cmdhistu8;                                         //+vbi3I~
                                                                 //~5224I~
 //************************************                          //~5224M~
 //*function key asignment table                                 //~5224M~

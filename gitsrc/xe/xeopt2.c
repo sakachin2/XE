@@ -1,8 +1,9 @@
-//*CID://+vbf0R~:                             update#=  437;       //~vbf0R~
+//*CID://+vbi3R~:                             update#=  438;       //+vbi3R~
 //*************************************************************
 //*xeopt2.c                                                        //~7B24R~
 //* Mode                                                           //~v90wR~
 //*************************************************************
+//vbi3:180211 supprt command history list                          //+vbi3I~
 //vbf0:180109 WriteConsoleOutputW(used for cpu8 ligaturemode) shrinks line on Windows10(OK on XP),prohibit ligature on for Windows10//~vbf0I~
 //vbCD:160825 for also locale file display ligature mode like as vb4q//~vb4qI~
 //vb4q:160810 display ligature/combine mode on "TOP OF LINE"       //~vb4qI~
@@ -178,7 +179,7 @@ void xeopt2init(void)                                              //~v91sI~
 //#if defined(W32) && !defined(WXE)	//winconsole version           //~va3jR~
     if (Goptopt3 &  GOPT3_LIGATURE)                                //~va3hI~
     {                                                              //~vbf0I~
-#if defined(W32) && !defined(WXE)                                  //+vbf0I~
+#if defined(W32) && !defined(WXE)                                  //~vbf0I~
 	  if (OS_WINDOWS7(GWinMajVersion,GWinMinVersion))  //>=Widows7 //~vbf0R~
       	;                                                          //~vbf0I~
       else                                                         //~vbf0I~
@@ -1296,6 +1297,8 @@ void filesetlocaleid(PUFILEH Ppfh)                                 //~v915M~
 //    if (cvlen)                                                     //~va79I~//~va7LR~
 //        memcpy(pc+CVNAMEPOS,cvname,(UINT)cvlen);                   //~va79I~//~va7LR~
     UCBITON(plh->ULHflag,ULHFDRAW); //redraw                       //~v915I~
+  if (Ppfh->UFHtype!=UFHTCMDHIST)                                  //+vbi3I~
+  {                                                                //+vbi3I~
  	if (PFH_ISEBC(Ppfh))                                           //~va7LI~
 		opt2setebccvname(0,Ppfh);                                  //~va7LI~
     else                                                           //~vb4qR~
@@ -1303,6 +1306,7 @@ void filesetlocaleid(PUFILEH Ppfh)                                 //~v915M~
 		opt2sethdrligcomb(0,Ppfh);                                 //~vb4qR~
     else                                                           //~vbCDR~
 		opt2sethdrligcomb(O2SHLCO_LIGATUREONLY,Ppfh);              //~vbCDR~
+  }                                                                //+vbi3I~
     return;                                                        //~v915I~
 }//filesetlocaleid                                                 //~v915M~
 //*******************************************************          //~va7KI~

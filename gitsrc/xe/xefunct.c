@@ -1,9 +1,14 @@
-//*CID://+vbe0R~:                             update#=  302;       //~vbdsR~//+vbe0R~
+//*CID://+vbi6R~:                             update#=  316;       //~vbi6R~
 //*************************************************************
 //*xefunct.c                                                       //~v663R~
 //* func definition tbl                                         //~5216R~
 //************************************************************* //~v020I~
-//vbe0:171231 add function to search xml tag pair by A+/           //+vbe0I~
+//vbi6:180219 R-Retrieve-OfTheScr was not assigned key, use S+A+F12//~vbi6I~
+//vbi5:180219 correct word of functbl, Regin-->Region,accept both for ini read//~vbi5I~
+//vbi3:180211 supprt command history list                          //~vbi3I~
+//vbi1:180210 it is used on ini file,abondon vbi0                  //~vbi1I~
+//vbi0:180210 correct word of functbl, Regin-->Region              //~vbi0I~
+//vbe0:171231 add function to search xml tag pair by A+/           //~vbe0I~
 //vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg//~vbdsI~
 //vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I~
@@ -260,6 +265,8 @@
 #define NULL_CMDONLY2(flag) NULL_FTKEY,NULL_FTKFLAG,    (flag),{0} //~v76iI~
 #define NULL_NOFLAG                    NULL_FTKFLAG,NULL_LAST      //~v55nI~
 #define NULL_NOFLAG2(flag)            NULL_FTKFLAG,     (flag),{0} //FTkflag[],FTflag2,FTrsv[3]//~vbCBI~
+#define CAPRGN_OLD "Regin-Start/End"                               //~vbi5I~
+#define CAPRGN_NEW "Region-Start/End"                              //~vbi5I~
 //*********************************************************        //~v679I~
 	FTFUNC func_nosupport;                                         //~v679I~
 //*********************************************************
@@ -408,13 +415,13 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
 		"","",                                                     //~v42wI~
 		{KEY_A_COMMA,0,0,0},                                       //~v42wI~
 		NULL_NOFLAG},                                              //~v55nR~
-	{"XML-Tag"         ,"XMLタグ探索"          ,                   //+vbe0I~
-        FUNCID_XMLSRCH,                                            //+vbe0I~
-        0,0,          //flag,char,                                 //+vbe0I~
-		{0               ,func_xmlsrch       ,0},                  //+vbe0I~
-		"","",                                                     //+vbe0I~
-		{KEY_A_SLASH,0,0,0},                                       //+vbe0I~
-		NULL_NOFLAG},                                              //+vbe0I~
+	{"XML-Tag"         ,"XMLタグ探索"          ,                   //~vbe0I~
+        FUNCID_XMLSRCH,                                            //~vbe0I~
+        0,0,          //flag,char,                                 //~vbe0I~
+		{0               ,func_xmlsrch       ,0},                  //~vbe0I~
+		"","",                                                     //~vbe0I~
+		{KEY_A_SLASH,0,0,0},                                       //~vbe0I~
+		NULL_NOFLAG},                                              //~vbe0I~
 //  {"Scroll-Up-Line"  ,"1行上表示" ,                              //~v095R~
     {"Scroll-Up-Line"  ,"1行上\x95\\示" ,                          //~v095I~
         FUNCID_LINEUP,                                          //~5204R~
@@ -592,7 +599,10 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
 //  	0	,func_blockins_file,0,  //differ by function id     //~v06lR~
 //  	"","",                                                  //~v06lR~
 //  	KEY_A_a},                                               //~v06lR~
-	{"Regin-Start/End","領域始点/終点",                            //~v66eR~
+//  {"Regin-Start/End","領域始点/終点",                            //~v66eR~//~vbi0R~
+//  {"Region-Start/End","領域始点/終点",                           //~vbi0I~//~vbi1R~
+//  {"Regin-Start/End","領域始点/終点",                            //~vbi1I~//~vbi5R~
+    {CAPRGN_NEW,"領域始点/終点",                                   //~vbi5I~
         FUNCID_STDCPREGION,                                        //~v66eI~
         0,0,          //flag,char,                                 //~v66eI~
 		{0	,func_stdcpregion_file,0},                             //~v75SR~
@@ -1413,12 +1423,22 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
 		{func_retrieveprevscr,func_retrieveprevscr,func_retrieveprevscr},//~v75SR~
 		"","",                                                     //~v670I~
 		{KEY_A_F12,0,0,0},NULL_NOFLAG},                            //~v670I~
-	{"R-Retrieve-OfTheScr"     ,"前コマンド-画面毎"    ,           //~v670I~
+//  {"R-Retrieve-OfTheScr"     ,"前コマンド-画面毎"    ,           //~v670I~//~vbi6R~
+    {"R-Retrieve-OfTheScr"     ,"次コマンド-画面毎"    ,           //~vbi6I~
         FUNCID_NEXTCMDSCR,                                         //~v670I~
         0,0,          //flag,char,                                 //~v670I~
 		{func_retrievenextscr,func_retrievenextscr,func_retrievenextscr},//~v75SR~
 		"","",                                                     //~v670I~
-		{0        ,0,0,0},NULL_NOFLAG},                            //~v670I~
+//  	{0        ,0,0,0},NULL_NOFLAG},                            //~v670I~//~vbi6R~
+    	{KEY_A_F12,0,0,0},                                         //~vbi6I~
+    	/*FTkflag*/{FTSHIFT,0,0,0},/*FTflag2*/0,{0}},              //~vbi6I~
+	{"CmdHistoryList"        ,"コマンド履歴"    ,                  //~vbi3R~//+vbi6R~
+        FUNCID_CMDHISTU8,                                          //~vbi3R~
+        0,0,          //flag,char,                                 //~vbi3I~
+		{func_cmdhistu8,func_cmdhistu8,func_cmdhistu8},            //~vbi3R~
+		"CHL","",                                                  //~vbi3R~//~vbi6R~
+		{KEY_C_F12,0,0,0},                                         //~vbi3I~
+    	/*FTkflag*/{FTSHIFT,0,0,0},/*FTflag2*/0,{0}},              //~vbi3I~
 	{"Short-Cut-Input"    ,"短縮キー入力"    ,                     //~v48fI~
         FUNCID_SHORTCUT,                                           //~v48fI~
         0,0,          //flag,char,                                 //~v48fI~
@@ -2266,6 +2286,8 @@ FUNCTBL *functblsrchbyname(UCHAR *Pfuncname)                    //~5429I~
 {                                                               //~5429I~
 	FUNCTBL *pft;                                               //~5429I~
 //************************************                          //~5429I~
+    if (!strcmp(Pfuncname,CAPRGN_OLD))                             //~vbi5I~
+    	Pfuncname=CAPRGN_NEW;                                      //~vbi5I~
 	for (pft=Sfunctbl;*(pft->FTnamee);pft++)	//all ft entry  //~5429I~
 	{                                                           //~5429I~
       if (pft->FTfuncid>FUNCID_GRAPHCHAR                           //~v71QR~

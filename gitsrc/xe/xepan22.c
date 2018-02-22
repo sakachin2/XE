@@ -1,8 +1,9 @@
-//*CID://+vb4gR~:                             update#=  619;       //~vb4gR~
+//*CID://+vbi3R~:                             update#=  621;       //~vbi3R~
 //*************************************************************
 //*xepan2.c
 //*   filename list process
 //*************************************************************
+//vbi3:180211 supprt command history list                          //~vbi3I~
 //vb4g:160804 like vb3d,set hdr attr not to the char but to pathname to draw at uviom by Ligature same as dir member//~vb4gR~
 //vb4f:160802 (ULIB:v6Ei)specify ligature on/off,combine on/of line by line(used for edit/filename  panel)//~vb4fI~
 //vb31:160418 (LNX64)Compiler warning                              //~vb31I~
@@ -114,7 +115,7 @@
 #endif                                                             //~va0tI~
 #include <ufilew.h>                                                //~vavpI~
 #include <utf22.h>                                                 //~vavxI~
-#define UVIOMDEFONLY	//for uviom.h                              //+vb4gI~
+#define UVIOMDEFONLY	//for uviom.h                              //~vb4gI~
 #include <uviom.h>                                                 //~vb4fI~
 
 #include "xe.h"
@@ -1206,6 +1207,7 @@ void pan300stack(PUCLIENTWE Ppcw,PUFILEH Ppfh,PUCLIENTWE Pcmdpcw)  //~v61cR~
     case UFHTSTDOUT   :          //first opened as cmd stdout
     case UFHTTEMPWK   :          //TEMP work for partial edit etc
     case UFHTTEMPWK2  :          //TEMP work for filenamelist find support//~v76mI~
+    case UFHTCMDHIST  :          //TEMP work for filenamelist find support//~vbi3I~
         return;
     }
     if (UCBITCHK(Ppfh->UFHflag13,UFHF13CB2))                       //~vaj0I~
@@ -1852,12 +1854,14 @@ int pan300rstack(FILE *Pfh)
             return 8;
 		cmdlen=(int)wkint;
     	pc=UALLOCM((UINT)(cmdlen));
+        UTRACEP("%s:cmdlen=%d\n",UTT,cmdlen);                      //+vbi3I~
 	    UALLOCCHK(pc,UALLOC_FAILED);
 	  	if (!fread(pc,(UINT)cmdlen,1,Pfh))
         {
             ufree(pc);
             return 8;
         }
+        UTRACED("rstack",pc,cmdlen);                               //+vbi3I~
 #ifdef UTF8SUPPH                                                   //~va1yI~
 	  if (!pan300chklcentry(0,pc,cmdlen))	//lc entry, updated previous//~va1yI~
 #endif                                                             //~va1yI~

@@ -1,9 +1,10 @@
-//*CID://+vb50R~:                             update#=  684;       //+vb50R~
+//*CID://+vbi2R~:                             update#=  685;       //+vbi2R~
 //*************************************************************
 //*xefcmd2.c                                                       //~v53FR~
 //*  find/change/exclude                                           //~v11kR~
 //****************************************************************////~v438R~
-//vb50:160827 accept S+A/C+extended key                            //+vb50I~
+//vbi2:180211 (BUG) revRfind with Alt(PSF)/Ctl(PSP) was mixed(But now no effect because no caller)//+vbi2I~
+//vb50:160827 accept S+A/C+extended key                            //~vb50I~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
 //vb31:160418 (LNX64)Compiler warning                              //~vb31I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
@@ -633,10 +634,13 @@ int func_rfind_file(PUCLIENTWE Ppcw)
 //****************************************************************
 int func_revrfind_file(PUCLIENTWE Ppcw)
 {
+//*By funct panfnlfind(PAN func) is not called                     //+vbi2I~
     if (Ppcw->UCWkeyshift & KBDSTF_CONTROL)                        //~vbCBR~
-		return func_findPSF(Ppcw);                                 //~vbCBI~
+//  	return func_findPSF(Ppcw);                                 //~vbCBI~//+vbi2R~
+		return func_findPSP(Ppcw);                                 //+vbi2I~
     if (Ppcw->UCWkeyshift & KBDSTF_ALT)                            //~vbCBR~
-		return func_findPSP(Ppcw);                                 //~vbCBI~
+//  	return func_findPSP(Ppcw);                                 //~vbCBI~//+vbi2R~
+    	return func_findPSF(Ppcw);                                 //+vbi2I~
 	return fcmdrfind(Ppcw,1,CMDFIND);	//reverse direction     //~5302R~
 }//func_revrfind_file                                           //~5106R~
                                                                 //~5106I~
@@ -750,8 +754,8 @@ int func_findPSF(PUCLIENTWE Ppcw)                                  //~vbCBI~
 {                                                                  //~vbCBI~
     int dest=0;                                                    //~vbCBR~
 //*************                                                    //~vbCBI~
-//  if (Ppcw->UCWkeyshift & (KBDSTF_RIGHTSHIFT|KBDSTF_LEFTSHIFT))  //+vb50R~
-//      dest=1;                                                    //+vb50R~
+//  if (Ppcw->UCWkeyshift & (KBDSTF_RIGHTSHIFT|KBDSTF_LEFTSHIFT))  //~vb50R~
+//      dest=1;                                                    //~vb50R~
     UTRACEP("%s:dest=%d\n",UTT,dest);                              //~vbCBR~
     return fcmdsrchPSF(0,Ppcw,dest,CMDFIND);                       //~vbCBR~
 }//func_findPSF                                                    //~vbCBR~
@@ -762,29 +766,29 @@ int func_findPSP(PUCLIENTWE Ppcw)                                  //~vbCBI~
 {                                                                  //~vbCBI~
     int dest=0;                                                    //~vbCBR~
 //*************                                                    //~vbCBI~
-//  if (Ppcw->UCWkeyshift & (KBDSTF_RIGHTSHIFT|KBDSTF_LEFTSHIFT))  //+vb50R~
-//      dest=1;                                                    //+vb50R~
+//  if (Ppcw->UCWkeyshift & (KBDSTF_RIGHTSHIFT|KBDSTF_LEFTSHIFT))  //~vb50R~
+//      dest=1;                                                    //~vb50R~
     UTRACEP("%s:dest=%d\n",UTT,dest);                              //~vbCBR~
     return fcmdsrchPSP(0,Ppcw,dest,CMDFIND);                       //~vbCBR~
 }//func_findPSP                                                    //~vbCBR~
-//**************************************************************** //+vb50I~
-//* find on this split screen                                      //+vb50I~
-//**************************************************************** //+vb50I~
-int func_revfindPSP(PUCLIENTWE Ppcw)                               //+vb50I~
-{                                                                  //+vb50I~
-    int dest=1;                                                    //+vb50I~
-//*************                                                    //+vb50I~
-    return fcmdsrchPSP(0,Ppcw,dest,CMDFIND);                       //+vb50I~
-}//func_revfindPSP                                                 //+vb50I~
-//**************************************************************** //+vb50I~
-//* find on this split screen                                      //+vb50I~
-//**************************************************************** //+vb50I~
-int func_revfindPSF(PUCLIENTWE Ppcw)                               //+vb50I~
-{                                                                  //+vb50I~
-    int dest=1;                                                    //+vb50I~
-//*************                                                    //+vb50I~
-    return fcmdsrchPSF(0,Ppcw,dest,CMDFIND);                       //+vb50I~
-}//func_revfindPSF                                                 //+vb50I~
+//**************************************************************** //~vb50I~
+//* find on this split screen                                      //~vb50I~
+//**************************************************************** //~vb50I~
+int func_revfindPSP(PUCLIENTWE Ppcw)                               //~vb50I~
+{                                                                  //~vb50I~
+    int dest=1;                                                    //~vb50I~
+//*************                                                    //~vb50I~
+    return fcmdsrchPSP(0,Ppcw,dest,CMDFIND);                       //~vb50I~
+}//func_revfindPSP                                                 //~vb50I~
+//**************************************************************** //~vb50I~
+//* find on this split screen                                      //~vb50I~
+//**************************************************************** //~vb50I~
+int func_revfindPSF(PUCLIENTWE Ppcw)                               //~vb50I~
+{                                                                  //~vb50I~
+    int dest=1;                                                    //~vb50I~
+//*************                                                    //~vb50I~
+    return fcmdsrchPSF(0,Ppcw,dest,CMDFIND);                       //~vb50I~
+}//func_revfindPSF                                                 //~vb50I~
 //**************************************************************** //~vbCBI~
 //* find on this split screen                                      //~vbCBI~
 //**************************************************************** //~vbCBI~

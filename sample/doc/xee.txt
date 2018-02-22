@@ -1,4 +1,4 @@
-CID:||+v@@@R~:  2018/01/09                 update#=  674;             ||+v@@@R~
+CID:||+v@@@R~:  2018/02/19                 update#=  680;             ||~v129R~||~v@@@R~
 ************************************************************************
 (Index)
     (0).Introduction.
@@ -9,6 +9,7 @@ CID:||+v@@@R~:  2018/01/09                 update#=  674;             ||+v@@@R~
             .Mouse operation.
             .Scroll function.
             .Use Right Ctrl key as Enter(execute) key.
+            .Command History.                                         ||~v@@@I~
             .Tab setting.
             .Line Drawling/Special glyph input
             .Control Character Input                                  ||~v124R~
@@ -46,7 +47,7 @@ CID:||+v@@@R~:  2018/01/09                 update#=  674;             ||+v@@@R~
             .Periodically check of other apllication in progress.     ||~v124R~
             .User command                                             ||~127ER~
             .Hex-calc/Time-calc/Timestamp-conv/Decimal-fraction-calc.
-            .Parenthesis, #if, "/*" comment and XML tag pair search               ||~v124R~||~v@@@R~
+            .Parenthesis, #if, "/*" comment and XML tag pair search               ||~v124R~||~v129R~
             .Cut & Paste
             .Drag & Drop
             .Basic Table Calculation.
@@ -453,6 +454,25 @@ CID:||+v@@@R~:  2018/01/09                 update#=  674;             ||+v@@@R~
       To reset temporarily R-Ctl_NewLine option of ini file,specify /Nrr||~v124R~||~v125R~
       cmd line option.                                                ||~v124R~
                                                                       ||~v124R~
+   .Command History                                                   ||~v@@@I~
+                                                                      ||~v@@@I~
+      -Command History is kept and saved only latest 40 entry at xe termination.||~v@@@I~
+      -Use following FunctionKey to retrive the command from history. ||~v@@@I~
+       F12    :when repeated, retrives commands backward from latest. ||~v@@@I~
+               New command input reset position to the latest.        ||~v@@@I~
+       S+F12  :retrives forward to latest.                            ||~v@@@I~
+       C+F12  :re-executes the lastest command.                       ||~v@@@I~
+       A+F12  :retrieves backward selecting only for the panel.       ||~v@@@R~
+       S+A+F12:retrieves forward selecting only for the panel.        ||~v@@@R~
+       S+C+F12:shows command history list panel. use following keys.  ||~v@@@I~
+               s : set to the command input line after closed the command history panel.||~v@@@I~
+               S : set to the command input line of the command history panel.||~v@@@I~
+               t : set on the other panel if screen is split.         ||~v@@@I~
+                   same as "S" if not split                           ||~v@@@I~
+               x : executhe the command after closed the command history panel.||~v@@@I~
+               X : execute on the command history panel.              ||~v@@@I~
+               y : execute on the other panel if screen is split.     ||~v@@@I~
+                   same as "X" if not split.                          ||~v@@@I~
 
 #ifdef LNX                                                            ||~v124R~
                                                                       ||~v124R~
@@ -4362,22 +4382,22 @@ sample)
       Timestamp(elappsed seconds from 1970) is converted to date and time.
       Mainframe 8 byte TOD is also converted.
 
-   .Parenthesis, #if, "/*" comment and XML tag pair search            ||~v@@@I~
+   .Parenthesis, #if, "/*" comment and XML tag pair search            ||~v129R~
       C has 3 parenthesis notation (,[ and {.
       It is hard to search pair in deep nest.
-      Alt+"." support it,Alt+"," search except excluded line.         ||~v@@@R~
+      Alt+"." support it,Alt+"," search except excluded line.         ||~v129R~
       To ignore comment line,exclude those lines and use "Alt+,".
       This function support other pairing of <,> and /*,*/.
       The corresponding of same nest level of #if/#ifdef/#ifndef/#else
       /#endif/#elif is also searched.
       Move cursor on the parenthesis,# etc.,then hit key.             ||~v124R~
-                                                                      ||~v@@@I~
-      XML tag pair search                                             ||~v@@@I~
-          .Default shortcut key is Alt+"/"                            ||~v@@@I~
-          .Use shortcut key on "<" or ">"                             ||~v@@@I~
-          .Comment portion(from "<!--" to  "-->") is ignored          ||~v@@@I~
-           and recognize nested tag.                                  ||~v@@@I~
-           It is convenient to correct html automation tool generated.||~v@@@I~
+                                                                      ||~v129R~
+      XML tag pair search                                             ||~v129R~
+          .Default shortcut key is Alt+"/"                            ||~v129R~
+          .Use shortcut key on "<" or ">"                             ||~v129R~
+          .Comment portion(from "<!--" to  "-->") is ignored          ||~v129R~
+           and recognize nested tag.                                  ||~v129R~
+           It is convenient to correct html automation tool generated.||~v129R~
 
    .Cut and Paste.
         -See xewxee.txt for mouse operation.                          ||~v124R~
@@ -5067,6 +5087,7 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
 ************************************************************************
 
 [Table 1-R] Function-Key default assignment/by key sequence
+    You can see this on xe by "=C" command.                           ||~v@@@I~
  +-------+--------------+--------------+--------------+--------------+
  |  Key  |     Base     |    Shift     |     Alt      |    Ctrl      |
  +-------+--------------+--------------+--------------+--------------+
@@ -5094,6 +5115,7 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
  |F3     |End           |Save          |              |              |
  |F4     |Return        |Quit          |              |              |
  |F5     |Re-Find (*5)  |Re-Find(rev)  |              |              |
+ |                          (Shift+)-->|FindPSF-rev   |FindPSP-rev   |||~v@@@I~
  |F6     |Re-Change     |Re-Chng(rev)  |RgnStart/End  | (*3)         |
  |       |Size option   |              |              | (*3)         |
  |F7     |Page Up       |Prev Panel    |BlockStart/End|SameAsLeft    |
@@ -5103,7 +5125,8 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
  |       |Linecmd Cut   |FileDescript'n|              |              | (*3)
  |F11    |Scroll Right  |Column gauge  |              |Hex input mode| (*3)
  |       |Linecmd Paste |LongFileName  |              |              | (*3)
- |F12    |Retrieve      |Retrieve(rev) |Retrieve(Scr) |Repeat cmd    |||~v124R~
+ |F12    |Retrieve      |Retrieve(rev) |RetrieveScr   |Repeat cmd    |||~v124R~||~v@@@R~
+ |                          (Shift+)-->|RetrieveScrRev|CmdHistoryList|||~v@@@I~
  |       |              |              |              |              |
  |a      |              |              |Input Shortcut|              |||~v124R~
  |b      |              |              |BLK Start/End |              |
@@ -5136,7 +5159,7 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
  |z      |              |              |3270 Hotkey   |              |||~v124R~
  |.      |              |              |Pair search   |              |
  |,      |              |              |Pair search-NX|              |
- |/      |              |              |XML pair srch |              |||~v@@@I~
+ |/      |              |              |XML pair srch |              |||~v129R~
  |[      |              |              |FwdSrch-NoCase|FwdSrch-Case  |||~v124R~
  |]      |              |              |BwdSrch-NoCase|BwdSrch-Case  |||~v124R~
  |:      |              |              |Combining Char|              |||~v125R~
@@ -5193,6 +5216,7 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
 (*6)These keys are used to send filename from dir-list panel to utility panel.
                                                                       
 [Table 1] Function-Key default assignment                                  
+    You can see this on xe by "=B" command.                           ||~v@@@I~
  +-----------------+--------+---------------------------------------+
  |Function         |Command |Key assign(*:Fixed,you cannot change)  |
  +-----------------+--------+---------------------------------------+
@@ -5293,6 +5317,10 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
  |do.(Caseinsense) |IX      |                       #4              |
  |Re-Find          |        |F5                     #4              |
  |Re-Find(reverse) |        |Shift+F5               #4  #5          |
+ |Find SplitScr    |        |Ctrl+F5                                | ||~v@@@I~
+ |Find SplitScr-rev|        |Shift+Ctrl+F5                          | ||~v@@@I~
+ |Find OnTheScr    |        |Alt+F5                                 | ||~v@@@I~
+ |Find OnTheScr-rev|        |Shift+Alt+F5                           | ||~v@@@I~
  |WordFindFwdCase  |FWF     |Ctl+] , Alt+Shift+]                    | ||~v124R~
  |WordFindBwdCase  |FWB     |Ctl+[ , Alt+Shift+[                    | ||~v124R~
  |WordFindFwdNoCase|IWF     |Alt+[                                  | ||~v124R~
@@ -5304,6 +5332,8 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
  |Retrieve(reverse)|        |Shift+F12              #6              |
  |Repeat-cmd       |        |Ctl+F12                                |
  |RetrieveOfTheScr |        |Alt+F12                                |
+ |RetrOfTheScrRev  |        |Shift+Alt+F12                          | ||~v@@@I~
+ |CmdHistoryList   |CHL     |Shift+Ctrl+F12                         | ||+v@@@R~
  |Exchange-exclude |FLI (XX)|                                       | ||~v124R~
  |Line-no display  |NUM     |                                       |
  |CapsLock         |CAP     |                                       |
@@ -7654,7 +7684,7 @@ by screen expansion)
             - same as A+";" key                                       ||~v129R~
             - toggle Ligature mode.                                   ||~v129R~
               Console version accept Ligature ON only for CPU8(UTF8 file).||~v129R~
-              Console version dose not accept from Windows7.          ||+v@@@I~
+              Console version dose not accept from Windows7.          ||~v129R~
                                                                       ||~v129R~
    = Locate to the line.
 
@@ -8111,7 +8141,7 @@ by screen expansion)
                Alt+";" is temporary for GUI version and checkbox status is saved.||~v125R~
                For Console version, A+";" status is saved to ini file.||~v125R~
                Command format: (reposrts current status if operand missong)||~v125R~
-               From windows7, this is not supported for Consiole version.||+v@@@I~
+               From windows7, this is not supported for Consiole version.||~v129R~
                                                                       ||~v125R~
               -When Ligature is ON, character spacing depends to background(Windows,GTK,pango,ncurses).||~v125R~
                If On,keep monospacing.                                ||~v125R~

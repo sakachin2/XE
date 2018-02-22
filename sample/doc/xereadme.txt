@@ -1,4 +1,4 @@
-||*CID:||+v129R~:  2018/01/39              update#=  574;             ||+v129R~
+||*CID:||+v129R~:  2018/02/22              update#=  578;             ||+v129R~
 ######################################################################
 [English]    v1.29                                                    ||~v128R~||~v129R~
 
@@ -2437,7 +2437,8 @@ How to start.
   .v129D<--129C:(2017/11/30)                                          ||~v129R~
   .v129E<--129D:(2018/01/09)                                          ||~v129R~
   .v129F<--129E:(2018/01/23)                                          ||~v129R~
-  .v129G<--129F:(2018/01/30)                                          ||+v129I~
+  .v129G<--129F:(2018/01/30)                                          ||~v129I~
+  .v129H<--129G:(2018/02/22)                                          ||+v129R~
                                                                       ||~v129R~
      1.BUGs                                                           ||~v129R~
        -(Windows:64)"&"(spawn executable file) dir cmd crush.         ||~v129R~
@@ -2456,11 +2457,13 @@ How to start.
          Or crashes if FileSize>128K                                  ||~v129I~
         .CPLC option registered on profile record was ignored when record mode.||~v129I~
          ("CPLC" option was required each time)                       ||~v129I~
-     (129G)                                                           ||+v129I~
-       -(Linux) On Ubuntu17.10, DirList line command:"!"(start application corresoponding to the file extension)||+v129I~
-        failes by "No application defined to the MIME type".          ||+v129I~
-       -(Wxe/gxe) Cut&Paste by mouse may paste trash data with length of CID of source line.||+v129I~
-                                                                      ||~v129I~
+     (129G)                                                           ||~v129I~
+       -(Linux) On Ubuntu17.10, DirList line command:"!"(start application corresoponding to the file extension)||~v129I~
+        failes by "No application defined to the MIME type".          ||~v129I~
+       -(Wxe/gxe) Cut&Paste by mouse may paste trash data with length of CID of source line.||~v129I~
+     (129H)                                                           ||+v129I~
+       -(gxe:GTK3)printer selection on PrintDialog is applied incorrectly.||+v129I~
+       -(gxe:GTK3)screen size at termination is not recovered correctly and enlarged.||+v129I~
                                                                       ||~v129R~
      2.Additional function.                                           ||~v129I~
                                                                       ||~v129I~
@@ -2528,6 +2531,22 @@ How to start.
            and recognize nested tag.                                  ||~v129I~
            It is convenient to correct html automation tool generated.||~v129I~
                                                                       ||~v129I~
+     (129H)                                                           ||~v129I~
+       -P=nn(PortNo) option in xehots                                 ||~v129I~
+        .specific to the psftp destination other than default SSH portNo(22).||~v129I~
+       -Command History List.                                         ||~v129I~
+        .Shift+Ctrl+F12 shows CommandHistoryList, use "x" key to execute cmd on the line.||~v129I~
+        .Available commands are                                       ||~v129I~
+          s : set to the command input line after closed the command history panel.||~v129I~
+          S : set to the command input line of the command history panel.||~v129I~
+          t : set on the other panel if screen is split.              ||~v129I~
+              same as "S" if not split                                ||~v129I~
+          x : executhe the command after closed the command history panel.||~v129I~
+          X : execute on the command history panel.                   ||~v129I~
+          y : execute on the other panel if screen is split.          ||~v129I~
+              same as "X" if not split.                               ||~v129I~
+        .Max 40 entry is saved at xe terminate.                       ||~v129I~
+                                                                      ||~v129I~
      3.Miscellaneous.                                                 ||~v129R~
        -(Windows) add "msi" as executable binary extension            ||~v129R~
      (129C)                                                           ||~v129I~
@@ -2545,9 +2564,12 @@ How to start.
        -(Windows Console version) When ligature:on on windows10,      ||~v129I~
         UTF8 file lines of Japanese Kanji shrinks to unreadable.      ||~v129I~
         So, reject Ligature:On for from Windows7.                     ||~v129I~
-     (129G)                                                           ||+v129I~
-       -(Linux)Adjusted configure.ac through installation to S390x on Hercules emulater.||+v129I~
-               And updated TroubleShooting notes(READMEe.txt).        ||+v129I~
+     (129G)                                                           ||~v129I~
+       -(Linux)Adjusted configure.ac through installation to S390x on Hercules emulater.||~v129I~
+               And updated TroubleShooting notes(READMEe.txt).        ||~v129I~
+     (129H)                                                           ||~v129I~
+       -Function:"R-Retrieve-OfTheScr"(Retrieve command of Next of the panel)||~v129I~
+        had not function key assigned, assign Shift+Alt+F12.          ||~v129I~
                                                                       ||~v129I~
      4.Tool.                                                          ||~v129I~
      (129C)                                                           ||~v129I~

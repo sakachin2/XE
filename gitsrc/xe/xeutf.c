@@ -1,8 +1,9 @@
-//*CID://+vb7dR~:                            update#= 1517;        //+vb7dR~
+//*CID://+vbi4R~:                            update#= 1521;        //~vb7dR~//~vbi4R~
 //*************************************************************    //~v904I~
 //* xeutf.c                                                        //~v904I~
 //*************************************************************    //~v904I~
-//vb7d:170108 (BUG)malloc size is too large;linux crush by _MAX_PATH=4096//+vb7dI~
+//vbi4:180217 set dbcs '?' when f2l err of dbcs(if sbcs '?' err at funcsetlongcmdfromstack xeutf_setbyu8lc->xeutfcvf2dd)//~vbi4I~
+//vb7d:170108 (BUG)malloc size is too large;linux crush by _MAX_PATH=4096//~vb7dI~
 //vb4c:160730 display altch for also cmdline/errmsg                //~vb2HI~
 //vb2H:160307 (W32)UWCHART cut ucs4                                //~vb2HI~
 //vb2E:160229 LNX64 compiler warning                               //~vb2EI~
@@ -228,6 +229,7 @@ int xeutfcvf2lDDW(int Popt,char *Pdata,int Pdatalen,char *Poutbuff,int Poutbuffs
 int xeutfcvf2lDDWct(int Popt,char *Pdata,int Pdatalen,char *Poutbuff,int Poutbuffsz,int *Ppoutlen,char *Poutct);//~vavsI~
 #endif                                                             //~vavsI~
 int xeutf_seterrmsgctopd2(int Popt,char *Ppu8,int Plenu8,char *Pdddata,char *Pdddbcs,char *Ppct,int Pbuffsz,int *Pplenlc);//~vawrI~
+int xeutf_dbcssubcharcmp(int Popt,char *Plc,int Plen);             //~vbi4I~
 //*******************************************************          //~va10I~
                                                                    //~va10I~
 #ifdef UTF8SUPPH                                                   //~va00R~
@@ -1209,8 +1211,8 @@ UTRACED("getmixedword input",Pdata,Pdatalen);                      //~va10I~
     ddbuffsz=wkbuffsz*2;   //ddfmt char sz                         //~vauaR~
     if (Pdddata)                                                   //~vauaM~
     	wkallocsz+=ddbuffsz*6;		//dddata,dddbcs,ddct *ddfmtsz*for selected u8/lc//~vauaI~
-//  pwklc=xeutf_buffget(XEUTF_BUFFMIXWORD,wkbuffsz*wkallocsz);     //~vauaI~//+vb7dR~
-    pwklc=xeutf_buffget(XEUTF_BUFFMIXWORD,wkallocsz);              //+vb7dI~
+//  pwklc=xeutf_buffget(XEUTF_BUFFMIXWORD,wkbuffsz*wkallocsz);     //~vauaI~//~vb7dR~
+    pwklc=xeutf_buffget(XEUTF_BUFFMIXWORD,wkallocsz);              //~vb7dI~
 	UALLOCCHK(pwklc,UALLOC_FAILED);                                //~va10I~
 //  pwkct=pwklc+wkbuffsz;                                          //~va1cR~
     pwkct=pwklc+wkbuffsz*UTF8_F2LMAXRATE;                          //~va1cR~
@@ -3685,6 +3687,18 @@ int xeutf_setctbyu8lc(int Popt,char *Ppu8,int Plenu8,char *Pplc,int Plenlc,char 
 	        memset(pct,XEUTFCT_UTF8,(UINT)chklenlc);               //~vau7I~
             continue;                                              //~vau7I~
         }                                                          //~vau7I~
+        if (!xeutf_dbcssubcharcmp(0,plc,reslenlc))                 //~vbi4R~
+        {                                                          //~vbi4I~
+    		opt=UTFCVO_ERRRET;  //doubled "?" for err dbcs         //+vbi4I~
+	    	rc2=utfcvf2l(opt,wklc,pu8,chklenu8,0/*chklen*/,&chklenlc,0/*Ppcharwidth*/);//+vbi4I~
+			if (rc2==UTFCVRC_ERRSTOP)                              //+vbi4I~
+            {                                                      //~vbi4I~
+	            swrepchkokdd=1;                                    //~vbi4I~
+	        	chklenlc=2;                                        //~vbi4I~
+		        memset(pct,XEUTFCT_UTF8,(UINT)chklenlc);           //~vbi4I~
+	            continue;                                          //~vbi4I~
+            }                                                      //~vbi4I~
+        }                                                          //~vbi4I~
 #endif                                                             //~vau7I~
 //  	if (utfcvf2l(0,wklc,pu8,chklenu8,0/*chklen*/,&chklenlc,0/*Ppcharwidth*/))//~va5rR~
 //      	break;                                                 //~va5rR~
@@ -4695,3 +4709,24 @@ int xeutf_seterrmsgctopd2(int Popt,char *Ppu8,int Plenu8,char *Pdddata,char *Pdd
     UTRACEP("%s:xeutf_seterrmsgct rc=1\n",UTT);                    //~vawrI~
     return 1;                                                      //~vawrI~
 }//xeutf_seterrmsgctopd2                                           //~vawrI~
+//**************************************************************** //~v6ufI~//~vbi4I~
+//*chk dbcs errrep and 2 sbcs err,under the condition 2 string is unmatch//~v6ufI~//~vbi4I~
+//*ret 1:unmatch,0:match                                           //~v6ufI~//~vbi4I~
+//**************************************************************** //~v6ufI~//~vbi4I~
+int xeutf_dbcssubcharcmp(int Popt,char *Plc,int Plen)//~v6ufI~     //~vbi4I~
+{                                                                  //~v6ufI~//~vbi4I~
+static char Sdbcssubchar[2];                                       //~vbi4R~
+    int rc=1;                                                      //~v6ufI~//~vbi4I~
+//*************                                                    //~v6ufI~//~vbi4I~
+	if (!Sdbcssubchar[0])                                          //~vbi4I~
+		if (!utf_setsubchar_dbcs(0,Sdbcssubchar))//no dbcs subchar      //~v6ufI~//~vbi4I~
+    		return 1;                                                  //~v6ufI~//~vbi4I~
+	if (Plen>=2)                                                   //~v6ufR~//~vbi4I~
+    {                                                              //~v6ufI~//~vbi4I~
+		if (Plc[0]==Sdbcssubchar[0]                               //~v6ufI~//~vbi4I~
+		&&  Plc[1]==Sdbcssubchar[1]                               //~v6ufR~//~vbi4I~
+        )                                                          //~v6ufI~//~vbi4I~
+            rc=0;   //match                                        //~v6ufI~//~vbi4I~
+    }                                                              //~v6ufI~//~vbi4I~
+    return rc;                                                     //~v6ufI~//~vbi4I~
+}//utf_subcharcmp                                                  //~v6ufI~//~vbi4I~

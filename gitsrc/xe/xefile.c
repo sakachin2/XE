@@ -1,8 +1,9 @@
-//*CID://+vb5bR~:                             update#=  323;       //~vb5bR~
+//*CID://+vbi3R~:                             update#=  356;       //~vbi3R~
 //*************************************************************
 //*xefile.c*                                                       //~v06zR~
 //**load/save/edit/browse/end/cancel                            //~v020R~
 //*************************************************************
+//vbi3:180211 supprt command history list                          //~vbi3I~
 //vb5b:160913 additional to vb54, DBCS space altch is changable by TAB cmd//~vb5bI~
 //vb54:160903 TAB cmd new option to set altch; TAB {on|off} [altch1 [altch2]]//~vb4BI~
 //vb4B:160819 (BUG) missing clear Gsubgblopt:XESUB_GBLOPT_WILDPATH flag before return//~vb4BI~
@@ -346,7 +347,7 @@ static int Sfebfiopt=0;  	//internal edit/brwse call option      //~v76mI~
 //****************************************************************
 void fileinit(void)
 {
-	Gunpdispchar3_after_inigetopt=Gunpdispchar[3];  //to restore by tab on 000//+vb5bI~
+	Gunpdispchar3_after_inigetopt=Gunpdispchar[3];  //to restore by tab on 000//~vb5bI~
 //  if (UCBITCHK(Gscrstatus,GSCRSDBCS))	//dbcs                     //~v79zR~
     if (XE_ISDBCSJ())	//Japanese(SJIS,EUC,UTF8J)                 //~v79zR~
 	{
@@ -1612,6 +1613,7 @@ int func_end_file(PUCLIENTWE Ppcw)                              //~v020M~
 	rc=0;                                                       //~v020M~
 	pfc=Ppcw->UCWpfc;                                           //~v020M~
 	pfh=pfc->UFCpfh;                                            //~v020M~
+    UTRACEP("%s:pfhname=%s\n",UTT,pfh->UFHfilename);               //~vbi3R~
 	if (!UCBITCHK(pfc->UFCflag,UFCFBROWSE))	//not browse mode   //~v020M~
     {                                                           //~v020M~
 		if (rc=filesave(Ppcw,1,pfh,0,0,0),rc)//end cmd,plh1=plh2=0,save to same file//~v445R~
@@ -1809,7 +1811,10 @@ void filefreeplh(PULINEH Pplh,int Popt)
 	}
     UFREECLEARIFNZ(Pplh->ULHci);                                   //~v780R~
 	if (Popt)
+    {                                                              //~vbi3I~
+    	UTRACEP("%s:FREEplh=%p\n",UTT,Pplh);                       //~vbi3R~
 		ufree(Pplh);
+    }                                                              //~vbi3I~
 }//filefreeplh
 
 //*******************************************************       //~5223I~
@@ -1909,3 +1914,58 @@ int fileerrmixmode(char *Pfnm)                                     //~v440R~
     		"%s は別のテキスト/バイナりー/Hex モードでオープン中",Pfnm);//~v440R~
     return 4;                                                      //~v440I~
 }//fileerrmixmode                                                  //~v440R~
+//**************************************************************** //~vbi3I~
+// filebrowsefilechl                                               //~vbi3I~
+//*cmd history list                                                //~vbi3I~
+//*parm1:file name                                                 //~vbi3I~
+//*rc   :0-ok 4:file load err                                      //~vbi3I~
+//**************************************************************** //~vbi3I~
+int filebrowsechl(int Popt,PUCLIENTWE Ppcw)                        //~vbi3R~
+{                                                                  //~vbi3I~
+	int rc;                                                        //~vbi3I~
+	UFILEH *pfh;                                                   //+vbi3R~
+    PUCLIENTWE pcw,pcwold=0;                                       //~vbi3R~
+	UCHAR  fpath[_MAX_PATH];                                       //~vbi3I~
+	UCHAR  *pfname=CHL_FNM;                                        //~vbi3R~
+    int optchl;                                                    //~vbi3I~
+    int splitid;                                                   //~vbi3I~
+//*********************************                                //~vbi3I~
+	splitid=Ppcw->UCWsplitid;                                      //~vbi3I~
+    if (splitid)                                                   //~vbi3I~
+        pfname=CHL_FNM "2";                                        //~vbi3R~
+    else                                                           //~vbi3I~
+        pfname=CHL_FNM "1";                                        //~vbi3R~
+    filefullpath(fpath,pfname,sizeof(fpath));                      //~vbi3R~
+	pcwold=scrsrchcwchl(0,splitid);                                //~vbi3R~
+    optchl=Popt;                                                   //~vbi3I~
+    rc=fileloadchl(optchl,Ppcw,pfname,fpath,&pfh);                 //~vbi3R~
+	if (rc)                                                        //~vbi3I~
+		return 4;                                                  //~vbi3I~
+    pcw=fileregist(Ppcw,PANFBROWSE,pfh,0/*editsw*/);               //~vbi3R~
+    if (!pcw)       //storage shortage                             //~vbi3R~
+    {                                                              //~vbi3R~
+    	fileclosefree2(pfh);    //close and free pfh               //~vbi3R~
+        return UALLOC_FAILED;                                      //~vbi3R~
+    }                                                              //~vbi3M~
+	pcw->UCWlinenosz=1;   //splitter only                          //~vbi3R~
+    if (pcwold)                                                    //~vbi3I~
+    {                                                              //~vbi3I~
+    	scrpopup(pcwold,0);	//move to top to free top              //~vbi3I~
+        func_cancel_file(pcwold);                                  //~vbi3I~
+    }                                                              //~vbi3I~
+	return 0;                                                      //~vbi3I~
+}//func_browse_file                                                //~vbi3I~
+//**************************************************************** //~vbi3M~
+//* cmdhistory CPLC                                                //~vbi3M~
+//**************************************************************** //~vbi3M~
+int func_cmdhistlc(PUCLIENTWE Ppcw)                                //~vbi3M~
+{                                                                  //~vbi3M~
+	return filebrowsechl(0,Ppcw);                                  //~vbi3M~
+}//func_cmdhistlc                                                  //~vbi3M~
+//**************************************************************** //~vbi3M~
+//* cmdhistory CPU8                                                //~vbi3M~
+//**************************************************************** //~vbi3M~
+int func_cmdhistu8(PUCLIENTWE Ppcw)                                //~vbi3M~
+{                                                                  //~vbi3M~
+	return filebrowsechl(CHLO_UTF8,Ppcw);                          //~vbi3M~
+}//func_cmdhistu8                                                  //~vbi3M~

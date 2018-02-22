@@ -1,8 +1,9 @@
-//*CID://+vaj0R~:                             update#=   66;       //+vaj0R~
+//*CID://+vbi3R~:                             update#=   78;       //~vbi3R~
 //**************************************************************** //~v54dI~
 //xefile14.h                                                       //~v54dI~
 //**************************************************************** //~v54dI~
-//vaj0:130710 localfile:recfm=V support (E /mV F{MFH|RDW|FD|HD|F|H})//+vaj0I~
+//vbi3:180211 supprt command history list                          //~vbj3I~
+//vaj0:130710 localfile:recfm=V support (E /mV F{MFH|RDW|FD|HD|F|H})//~vaj0I~
 //va6k:000622 COPY cmd considers priofile RECORD mode              //~va6kI~
 //va1e:091101_(UTF8) retry by lc for f2l err at load if no CPU8 option specified//~va1eI~
 //va00:090510 merge utf8 version(enclosed by UTF8SUPPH)            //~va00I~
@@ -52,5 +53,12 @@ int fileload(PUCLIENTWE Ppcw,UCHAR *Ppfile,UCHAR *Pfullpath,UCHAR Ppopt,PUFILEH 
 
 //**************************************************************** //~v542I~
 void filesetfstat(PUFILEH Ppfh,FILEFINDBUF3 *Ppfstat3);            //~v542I~
-//**************************************************************** //+vaj0I~
-int setufgetsoptVparm2(int Pvfmt);                                 //+vaj0I~
+//**************************************************************** //~vaj0I~
+int setufgetsoptVparm2(int Pvfmt);                                 //~vaj0I~
+//**************************************************************** //~vbj3I~
+int fileloadchl(int Popt,PUCLIENTWE Ppcw,char *Ppfile,char *Pfullpath,PUFILEH *Pppfh);//~vbi3R~
+#define CHLO_UTF8    0x01                                          //~vbi3I~
+#define CHLO_NEW     0x02                                          //~vbi3I~
+#define CHL_FNM      "::chl"                     //fnm for option key//~vbi3I~
+#define CHL_CMDLIST "s/S/t/x/X/y"                                  //+vbi3R~
+#define CHL_CMDLIST_POS   40     //lig/comb option is not set for chl//~vbi3R~

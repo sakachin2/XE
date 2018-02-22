@@ -24,6 +24,7 @@ a:hover{font-weight:bold;}
   .v129E&lt;--129D:(2018/01/09)
   .v129F&lt;--129E:(2018/01/23)
   .v129G&lt;--129F:(2018/01/30)
+  .v129H&lt;--129G:(2018/02/22)
 
      1.BUGs
        -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする
@@ -44,7 +45,10 @@ a:hover{font-weight:bold;}
     (129G)
        -(Linux)Ubuntu17.10 で ディレクトリーリスト行コマンド:&quot;!&quot;(拡張子対応アプリの起動)が
         &quot;MIME タイプアプリ未定義&quot;で失敗する
-       -(Wxe/gxe)マウス でのカット＆ペーストでごみが入ることがある
+       -(Wxe/gxe)マウス でのカット＆ペーストでごみが入ることがある</SPAN></PRE>
+<PRE><span class="auto-style1">    (129H)</span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> </SPAN>  </SPAN></PRE>
+<PRE><span class="auto-style1">     </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">  -(gxe:GTK3)Previewダイアログでプリンター選択が1つ分だけずれる
+       -(gxe:GTK3)終了時画面サイズ正しく保存されずに再スタートで大きくなる
 
      2.機能追加
 
@@ -110,6 +114,21 @@ a:hover{font-weight:bold;}
           .カーソルを &quot;&lt;&quot; または &quot;&gt;&quot; の位置において &quot;Alt+/&quot; を使用
           .コメント内(&quot;&lt;!--&quot; から &quot;--&gt;&quot;)は無視、ネストも処理、
 　　　　　 html 自動生成ツールの不具合を修正するのに便利です
+     (129H)
+       -xehosts で P=nn(ポートNoオプション)サポート
+          .psftp で 宛先ごとにデフォルト SSH ポート(22)以外を指定したいとき使用する
+       -コマンド履歴リストサポート
+          .Shift+Ctrl+F12 でコマンド履歴を表示,任意の行上で &quot;x&quot; で実行
+          .この画面のライン上で使用できるコマンドキーは
+            s : 履歴画面は終了してそのあとの画面のコマンド入力行にセット
+            S : 履歴画面は終了せず履歴画面のコマンド入力行にセット
+            t : 画面分割の他方の画面のコマンド入力行にセット
+                分割していないときは &quot;S&quot; と同じ
+            x : 履歴画面は終了してそのあとの画面上でコマンドを実行
+            X : 履歴画面は終了せず履歴画面上でコマンドを実行
+            y : 画面分割の他方の画面でコマンドを実行
+                分割していないときは &quot;X&quot; と同じ
+          .xe終了時に保存されるエントリー数は最大40
 
     3.その他
        -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加
@@ -130,7 +149,10 @@ a:hover{font-weight:bold;}
         So, reject Ligature:On for from Windows7. </SPAN></PRE>
 <PRE><span class="auto-style1">     </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">(129G)
        -(Linux)Hercules emulater:S390x インストール作業で configure.ac を改善
-        また 経験をトラブルシューティング(READMEj.txt)に反映
+        また 経験をトラブルシューティング(READMEj.txt)に反映</SPAN></PRE>
+<PRE><span class="auto-style1">    </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> (129H)
+       -機能:&quot;次コマンド-画面毎&quot;に機能キーが未割当だった、Shift+Alt+F12 を割り当てる
+
 </SPAN></PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
      4.ツール。

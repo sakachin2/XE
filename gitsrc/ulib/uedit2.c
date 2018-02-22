@@ -1,9 +1,10 @@
-//CID://+v6D2R~:                             update#=  106;        //~v6D2R~
+//CID://+v6T2R~:                             update#=  111;        //~v6D2R~//~v6T2R~
 //*************************************************************
 //*uedit2.c
 //*  uasciidump,ueditfattr,uxdumpline,ugetdtparm(date/time parm)   //~v5czR~
 //*  uxdumpstr                                                     //~v6BfI~
 //*************************************************************
+//v6T2:180211 add ueditNowFileTime (current time -->FTIME/FDATE)   //~v6T2I~
 //v6D2:160423 LNX compiler warning for bitmask assignment(FDATE,FTIE)//~v6D2I~
 //v6BM:160313 (W32) compiler warning                               //~v6BMI~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
@@ -1002,20 +1003,20 @@ int ueditgetftnum(char *Pdata,int *Ppi1,int *Ppi2,int *Ppi3)       //~v5czI~
 //**********************************************************************//~v6D2I~
 int ueditsetfdateUSHORT(int Popt,int Pyy,int Pmm,int Pdd,FDATE *Ppfdate)//~v6D2R~
 {                                                                  //~v6D2I~
-#ifdef AIX                                                         //+v6D2I~
-    int    *pfdt;                                                  //+v6D2I~
-#else                                                              //+v6D2I~
+#ifdef AIX                                                         //~v6D2I~
+    int    *pfdt;                                                  //~v6D2I~
+#else                                                              //~v6D2I~
     USHORT *pfdt;                                                  //~v6D2R~
-#endif                                                             //+v6D2I~
+#endif                                                             //~v6D2I~
     int rc=0;                                                      //~v6D2I~
 //**************                                                   //~v6D2I~
-#ifdef AIX                                                         //+v6D2I~
-    pfdt=(int*)(ULPTR)Ppfdate;                                     //+v6D2I~
-    *pfdt=(int)MAKE_FDATE(Pyy,Pmm,Pdd);                            //+v6D2I~
-#else                                                              //+v6D2I~
-    pfdt=(USHORT*)(ULPTR)Ppfdate;                                  //+v6D2R~
+#ifdef AIX                                                         //~v6D2I~
+    pfdt=(int*)(ULPTR)Ppfdate;                                     //~v6D2I~
+    *pfdt=(int)MAKE_FDATE(Pyy,Pmm,Pdd);                            //~v6D2I~
+#else                                                              //~v6D2I~
+    pfdt=(USHORT*)(ULPTR)Ppfdate;                                  //~v6D2R~
     *pfdt=MAKE_FDATE(Pyy,Pmm,Pdd);                                 //~v6D2R~
-#endif                                                             //+v6D2I~
+#endif                                                             //~v6D2I~
     return rc;                                                     //~v6D2I~
 }//ueditsetfdateUSHORT                                             //~v6D2R~
 //**********************************************************************//~v5czI~
@@ -1064,20 +1065,20 @@ int ueditsetfdate(int Pyy,int Pmm,int Pdd,void /*FDATE*/ *Ppfdate) //~v5czR~
 //**********************************************************************//~v6D2I~
 int ueditsetftimeUSHORT(int Popt,int Phh,int Pmm,int Pss,FTIME *Ppftime)//~v6D2R~
 {                                                                  //~v6D2I~
-#ifdef AIX                                                         //+v6D2I~
-    int    *pftm;                                                  //+v6D2I~
-#else                                                              //+v6D2I~
+#ifdef AIX                                                         //~v6D2I~
+    int    *pftm;                                                  //~v6D2I~
+#else                                                              //~v6D2I~
     USHORT *pftm;                                                  //~v6D2I~
-#endif                                                             //+v6D2I~
+#endif                                                             //~v6D2I~
     int rc=0;                                                      //~v6D2I~
 //**************                                                   //~v6D2I~
-#ifdef AIX                                                         //+v6D2I~
-    pftm=(int*)(ULPTR)Ppftime;                                     //+v6D2I~
-    *pftm=(int)MAKE_FTIME(Phh,Pmm,Pss);                            //+v6D2I~
-#else                                                              //+v6D2I~
-    pftm=(USHORT*)(ULPTR)Ppftime;                                  //+v6D2R~
+#ifdef AIX                                                         //~v6D2I~
+    pftm=(int*)(ULPTR)Ppftime;                                     //~v6D2I~
+    *pftm=(int)MAKE_FTIME(Phh,Pmm,Pss);                            //~v6D2I~
+#else                                                              //~v6D2I~
+    pftm=(USHORT*)(ULPTR)Ppftime;                                  //~v6D2R~
     *pftm=MAKE_FTIME(Phh,Pmm,Pss);                                 //~v6D2I~
-#endif                                                             //+v6D2I~
+#endif                                                             //~v6D2I~
     return rc;                                                     //~v6D2I~
 }//ueditsetftimeUSHORT                                             //~v6D2I~
 //**********************************************************************//~v5czI~
@@ -1150,3 +1151,29 @@ int uxdumpstr(int Popt,char *Pinp,int Plen,char *Pout,int Pbuffsz,int *Ppoutlen)
     	*pco=0;                                                    //~v6BfR~
     return rc;                                                     //~v6BfI~
 }//ueditsetftime                                                   //~v6BfI~
+//**********************************************************************//~v6T2I~
+//* current tie to FDATE/FTIME                                     //~v6T2I~
+//**********************************************************************//~v6T2I~
+int ueditNowFileTime(int Popt,FDATE *Ppfdate,FTIME *Ppftime)       //~v6T2I~
+{                                                                  //~v6T2I~
+    ULONG uldttm[2];                                               //~v6T2I~
+    UINT dt,tm;                                                    //~v6T2I~
+    int yy,yy2,mm,dd,hh,mn,ss;                                     //~v6T2R~
+//**************                                                   //~v6T2I~
+    utimeedit((UCHAR*)(ULPTR)UET_ILONG,uldttm); //each int byte YYyymmdd+hhmmssth//~v6T2I~
+    dt=(UINT)uldttm[0];                                            //~v6T2I~
+    yy=(int)((dt>>24)*100+((dt>>16)& 255));                        //+v6T2R~
+    mm=(yy>>8)&255;                                                //~v6T2I~
+    dd=yy&255;                                                     //~v6T2I~
+  	if (yy>1980)                                                   //~v6T2I~
+    	yy2=yy-1980;                                               //~v6T2I~
+  	else                                                           //~v6T2I~
+    	yy2=0;                                                     //~v6T2I~
+    ueditsetfdateUSHORT(0,yy2,mm,dd,Ppfdate);                      //~v6T2R~
+    tm=(UINT)uldttm[1];                                            //~v6T2I~
+    hh=(int)(tm>>24);                                              //+v6T2R~
+    mn=(tm>>16)&255;                                               //~v6T2I~
+    ss=(tm>>8)&255;                                                //~v6T2I~
+    ueditsetftimeUSHORT(0,hh,mn,ss,Ppftime);                       //~v6T2R~
+    return 0;                                                      //~v6T2I~
+}//ueditsetftime                                                   //~v6T2I~

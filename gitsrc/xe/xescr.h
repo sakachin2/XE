@@ -1,7 +1,8 @@
-//CID://+vbd7R~:      update#=   26                                //~vbd7R~
+//CID://+vbi3R~:      update#=   33                                //~vbi3R~
 //****************************************************************
 //xescr.h                                                          //~va00R~
 //****************************************************************//~5611I~
+//vbi3:180211 supprt command history list                          //~vbi3I~
 //vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
 //vb4f:160802 (ULIB:v6Ei)specify ligature on/off,combine on/of line by line(used for edit/filename  panel)//~vb4fI~
@@ -267,6 +268,8 @@ typedef struct _UCLIENTWE{
 #define UCWREASON_VHEX2STEP    0x85 //rep/ins on vhex lower line   //~va7MI~
 //#define UCWREASON_CSRBYKEYTYPE 0x84	//step by keytype              //~v777I~//~va7MR~
 #define UCWREASON_CSRBYKEYTYPE 0x86	//step by keytype              //~va7MI~
+#define UCWREASON_CHLSPLIT     0x88	//cmd history list char cmd,set other split//~vbi3I~
+#define UCWREASON_CHLNOSPLIT   0x89	//cmd history list char cmd,set my split//~vbi3I~
                         int     UCWwidth;       //client screen width
                         int     UCWheight;      //client screen hight
                         int     UCWmaxline;     //min(height,defined on ppc)//~v11NR~
@@ -294,7 +297,7 @@ typedef struct _UCLIENTWE{
                         char   *UCWcmdLC;       //cmd by lc from cmd verb//~vavQI~
                         char   *UCWcmdCT;       //ct for cmdLC     //~vavQR~
                         void   *UCWfindcmd;     //PUSCMD:pcw specific find cmd//~vbCBR~
-                        char    UCWcmdverb[4];  //cmd verb to srch funct//+vbd7R~
+                        char    UCWcmdverb[4];  //cmd verb to srch funct//~vbd7R~
                         } UCLIENTWE;
 typedef UCLIENTWE  *PUCLIENTWE;
 #define UCLIENTWESZ (sizeof(UCLIENTWE))
@@ -359,3 +362,5 @@ int scronsize(int Prow,int Pcol,int Pcpchngsw);                    //~v500R~
 	int scracssetup(int Popt);                                     //~v69FR~
 	int scrsetunxflag(int Popt);                                   //~v79TI~
 #endif                                                             //~v69FI~
+//**************************************************************** //~vbd7I~
+PUCLIENTWE scrsrchcwchl(int Popt,int Psplitid);                    //~vbd7I~

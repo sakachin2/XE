@@ -1,5 +1,6 @@
-//*CID://+v6P0R~:                             update#= 2022;       //~v6P0R~
+//*CID://+v6T5R~:                             update#= 2058;       //~v6T5R~
 //*************************************************************
+//v6T5:180217 WCons:Cmdline,WriteConsoleOutputW/WriteConsoleOutputCharacterW shrink colomn. Use WriteConsoleOutputChar if avail(when successful cv to locale,also for altch)//+v6T5R~
 //v6P0:171223 (Bug:WinConsole)errmsg corrupted when ddfmt contains <0x20//~v6P0I~
 //v6L4:170711 dbcs errmsg corrupted,try outputcharcterw for outputw//~v6L4I~
 //v6K7:170327 (LNX)compiler warning;wcwidth not defined            //~v6K7I~
@@ -318,6 +319,9 @@ int uviowrtcellW1_cpu8file_Ligature(int Popt,WUCS *Ppucs,int Pucsctr,UCHAR *Ppda
 #define DBCSJ_BA_STANDALONE  0x309b                                //~v6G1I~
 #define DBCSJ_PA_COMBINE     0x309a                                //~v6G1I~
 #define DBCSJ_PA_STANDALONE  0x309c                                //~v6G1I~
+#if defined(W32) && !defined(WXE)                                  //~v6T5I~
+int uviowritelocale_ifavail(int Popt,WUCS *Ppucs,int Pucsctr,char *Ppdbcs,USHORT *Ppattr,int Plen,SMALL_RECT *Pptgtrect);//~v6T5I~
+#endif                                                             //~v6T5I~
 //*********************************************************************//~v5n8I~
 //* get scr info                                                   //~v5n8I~
 //*   get dbcstbl addr from xe                                     //~v5n8I~
@@ -825,6 +829,21 @@ int uvioWriteConsoleOutputCharacterW1withAttrN(int Popt,HANDLE Phandle,WUCS *Ppu
     	*Ppwritelen=0;                                             //~v6C8I~
     return rc;                                                     //~v6C8I~
 }//uvioWriteConsoleOutputCharacterW1withAttrN                      //~v6C8I~
+//*****************************************************************//~v6T5I~
+//*write by OutputCharW+OutputAttr                                 //~v6T5I~
+//*****************************************************************//~v6T5I~
+int uvioWriteConsoleOutputCharacterWwithAttr(int Popt,WUCS *Ppucs,int Pucsctr,COORD Ptgtpos,int *Ppwritelen,USHORT *Pattr,int Pattrlen)//~v6T5I~
+{                                                                  //~v6T5I~
+    int rc;                                                        //~v6T5I~
+//********************                                             //~v6T5I~
+    UTRACEP("%s:Popt=%x,attrlen=%d,ucsctr=%d,tgtpos=%d,ucs=%04x-%04x\n",UTT,Popt,Pattrlen,Pucsctr,Ptgtpos.X,*Ppucs);//~v6T5I~
+    UTRACED("Ppucs",Ppucs,Pucsctr*(int)sizeof(WUCS));              //~v6T5I~
+    UTRACED("Pattr",Pattr,Pattrlen*(int)sizeof(USHORT));           //~v6T5I~
+    rc=uvioWriteConsoleOutputCharacterW(Shconout,Ppucs,Pucsctr,Ptgtpos,Ppwritelen); //len written//~v6T5I~
+    rc+=WriteConsoleOutputAttribute(Shconout,Pattr,Pattrlen,Ptgtpos,Ppwritelen)==0;			//writelen//~v6T5R~
+    UTRACEP("%s:DBCS OutputCharcterW rc=%d\n",UTT,rc);             //~v6T5I~
+    return rc;                                                     //~v6T5I~
+}//uvioWriteConsoleOutputCharacterWwithAttr                        //~v6T5I~
 //*****************************************************************//~v6F7R~
 //*write 1 ucs using cell                                          //~v6F7R~
 //*rc:TRUE/FALSE                                                   //~v6F7R~
@@ -843,6 +862,7 @@ int uvioWriteConsoleOutputCharacterW1withAttr1(int Popt,HANDLE Phandle,WUCS *Ppu
   if (swdbcs||swascii)                                             //~v6FaR~
   {                                                                //~v6FaI~
     rc=uvioWriteConsoleOutputCharacterW(Shconout,Ppucs,Pucsctr,Ptgtpos,Ppwritelen); //len written//~v6FaI~
+    rc+=WriteConsoleOutputAttribute(Shconout,Pattr,Pchwidth,Ptgtpos,Ppwritelen)==0;			//writelen//~v6T5I~
     UTRACEP("%s:DBCS OutputCharcterW rc=%d\n",UTT,rc);             //~v6FaI~
   }                                                                //~v6FaI~
   else                                                             //~v6FaI~
@@ -1787,7 +1807,7 @@ int uviowrtcellW1(int Popt,PCHAR_INFO Ppchi,int Plen,UCHAR *Ppdbcs,COORD Psrcbox
     {                                                              //~v5n8I~
     	ch=pchi->Char.AsciiChar;                                   //~v5n8R~
         if (ch==0x1b)                                              //~v5n8I~
-          if (!m2uopt)	//of locale string                         //+v6P0R~
+          if (!m2uopt)	//of locale string                         //~v6P0R~
           {                                                        //~v6P0I~
 //      	escsw=1;                                               //~v5n8I~//~v65iR~
         	escsw|=1;                                              //~v65iR~
@@ -1798,7 +1818,7 @@ int uviowrtcellW1(int Popt,PCHAR_INFO Ppchi,int Plen,UCHAR *Ppdbcs,COORD Psrcbox
                 ch=' ';                                            //~v640I~
 #endif                                                             //~v640I~
 //  	if (ch<0x20)                                               //~v65iM~//~v6P0R~
-    	if (ch<0x20 && !m2uopt)	//of locale string                 //+v6P0R~
+    	if (ch<0x20 && !m2uopt)	//of locale string                 //~v6P0R~
         	escsw|=2;                                              //~v65iM~
         else                                                       //~v65iI~
         if (ch>=0x80)                                   //~v62mI~  //~v62BR~
@@ -1812,7 +1832,7 @@ int uviowrtcellW1(int Popt,PCHAR_INFO Ppchi,int Plen,UCHAR *Ppdbcs,COORD Psrcbox
     	*pdata++=ch;                                               //~v5n8I~
 #ifndef JJJ                                                        //~v6EaR~
 //    if (ch<0x20 && noligid)                                      //~v6EaR~//~v6P0R~
-      if (ch<0x20 && noligid && !m2uopt)	//of locale string     //+v6P0R~
+      if (ch<0x20 && noligid && !m2uopt)	//of locale string     //~v6P0R~
     	*pattr++=(pchi->Attributes & 0xf0)|ATTR_CTLCHAR_FG;        //~v6EaR~
       else                                                         //~v6EaR~
 #endif                                                             //~v6EaR~
@@ -5030,6 +5050,8 @@ int uviowrtcellW1_NonLigatureLineCmd(int Popt,WUCS *Ppucs,int Pucsctr,char *Ppdb
 	UTRACED("ucs",Ppucs,ctr2szW(Pucsctr));                         //~v6E8I~
 	UTRACED("dbcs",Ppdbcs,Plen);                                   //~v6E8I~
 	UTRACED("attr",Ppattr,Plen*2);                                 //~v6E8I~
+    if (uviowritelocale_ifavail(Popt,Ppucs,Pucsctr,Ppdbcs,Ppattr,Plen,Pptgtrect))//~v6T5I~
+    	return 0;                                                  //~v6T5I~
     tgtrect=*Pptgtrect;                                            //~v6E8I~
     tgtpos.X=0;                                                    //~v6E8I~
     tgtpos.Y=Pptgtrect->Top;                                       //~v6E8I~
@@ -5664,8 +5686,8 @@ int uviowrtcellW1_localefile(int Popt,WUCS *Ppucs,int Pucsctr,UCHAR *Ppdata,UCHA
     UTRACEP("%s:ucsctr=%d,len=%d,tgtpos=(%d,%d),dbcsspacealt=%x\n",UTT,Pucsctr,Plen,Ptgtpos.X,Ptgtpos.Y,Sdbcsspacealt);//~v6G0R~
     UTRACED("ucs",Ppucs,Pucsctr*(int)sizeof(WUCS));                //~v6G0I~
     UTRACED("attr",Ppattr,Plen*(int)sizeof(USHORT));               //~v6G0I~
-    UTRACED("daat",Ppdata,Plen);                                   //~v6G0I~
-    UTRACED("dbcs",Ppdbcs,Plen);                                   //~v6G0I~
+    UTRACED("data",Ppdata,Plen);     //lcdata                      //~v6G0I~//~v6T5R~
+    UTRACED("dbcs",Ppdbcs,Plen);     //lcdbcs                      //~v6G0I~//~v6T5R~
     uviom_clearlineW(UVIOMCLO_ATTRSTR,0/*data*/,Ppattr,Plen,Ptgtpos);//~v6G0R~
 //  rc=uvioWriteConsoleOutputCharacterW(Shconout,Ppucs,Pucsctr,Ptgtpos,&wrtlen);//~v6G0R~
     for (ii=0,len=0,pdatao=0,pdata=Ppdata,pdbcs=Ppdbcs,tgtpos=Ptgtpos,pucs=Ppucs;ii<Pucsctr;ii++,pdata++,pdbcs++,pucs++)//~v6G0R~
@@ -5766,6 +5788,225 @@ int uviowrtcellW1_localefile(int Popt,WUCS *Ppucs,int Pucsctr,UCHAR *Ppdata,UCHA
 			rc+=uvioWriteConsoleOutputCharacterW(Shconout,pucso,ucsctr,tgtpos,&wrtlen);//~v6G0R~
     return rc;                                                     //~v6G0I~
 }//uviowrtcellW1_localefile                                        //~v6G0I~
+//*********************************************************************************//~v6T5I~
+//*chk unprintable ucs was replaced by altch at uvio_mdd2u->utfdd2u//~v6T5I~
+//*return 1 replaced by sbcs altch                                 //~v6T5I~
+//*********************************************************************************//~v6T5I~
+int uviochk_nprepsbcs(int Popt,WUCS Pucs,int Pdbcsid)              //~v6T5I~
+{                                                                  //~v6T5I~
+	int rc;                                                        //~v6T5I~
+//***********************                                          //~v6T5I~
+    if (!UDBCSCHK_ISUCSNP(Pdbcsid))                                //~v6T5R~
+    	return 0;                                                  //~v6T5I~
+	rc=(Pucs==(WUCS)utf22_setunpucsvio(0,0/*one nof np ucs*/,Pdbcsid,0/*Pprc*/));//~v6T5R~
+    UTRACEP("%s:rc=%d,Pucs=%x,dbcsid=%x\n",UTT,rc,Pucs,Pdbcsid);   //~v6T5I~
+    return rc;                                                     //~v6T5I~
+}//uviochk_nprepsbcs                                               //~v6T5R~
+#ifdef AAA                                                         //~v6T5I~
+//*********************************************************************************//~v6T5I~
+//use WriteConsoleOutputChar                                       //~v6T5I~
+//return 1:done                                                    //~v6T5I~
+//*********************************************************************************//~v6T5I~
+int uviowritelocale_ifavail(int Popt,WUCS *Ppucs,int Pucsctr,char *Ppdbcs,USHORT *Ppattr,int Plen,SMALL_RECT *Pptgtrect)//~v6T5I~
+{                                                                  //~v6T5I~
+#define NPID 0x01                                                  //~v6T5R~
+	UCHAR *pco,*pcdo,*pdddbcs,*pcoe,*pcoo,*pcdoo;                  //~v6T5R~
+	UCHAR wklcdata[UVIOM_MAXCOL+4];                                //~v6T5R~
+	UCHAR wklcdbcs[UVIOM_MAXCOL+4];                                //~v6T5R~
+    int opt1,opt2,ii,chkctr,rc,mblen,dbcsid,ucsctr,len,writelen;   //~v6T5R~
+    UWUCS ucs4;                                                    //~v6T5I~
+    COORD tgtpos;                                                  //~v6T5I~
+    WUCS *pucs,*pucso;                                             //~v6T5R~
+    USHORT *pattr,*pattro;                                         //~v6T5I~
+    SMALL_RECT targetrect;                                         //~v6T5I~
+    int swnpucs=0;                                                 //~v6T5I~
+//***************************************************              //~v6T5I~
+    UTRACEP("%s:ucsctr=%d,len=%d,tgtpos=(%d,%d)\n",UTT,Pucsctr,Plen,Pptgtrect->Left,Pptgtrect->Top);//~v6T5R~
+    opt1=U162U4O_UCS1; //return by 1 ucs4                          //~v6T5I~
+#ifdef AAA                                                         //~v6T5I~
+    opt2=UTFCVO_ERRRET;  //return if err                           //~v6T5I~
+#else                                                              //~v6T5I~
+    opt2=UTFCVO_ERRREP;  //rep and get mblen                       //~v6T5I~
+#endif                                                             //~v6T5I~
+    tgtpos.Y=Pptgtrect->Top;                                       //~v6T5I~
+    tgtpos.X=Pptgtrect->Left;                                      //~v6T5M~
+    for (ii=0,pucs=Ppucs,pdddbcs=Ppdbcs,pco=wklcdata,pcdo=wklcdbcs,pcoe=pco+UVIOM_MAXCOL;//~v6T5R~
+					ii<Pucsctr;                                    //~v6T5I~
+					ii+=chkctr,pucs+=chkctr)                       //~v6T5I~
+    {                                                              //~v6T5I~
+    	if (pco>=pcoe)                                             //~v6T5I~
+        	return 0;                                              //~v6T5I~
+    	dbcsid=*pdddbcs;                                           //~v6T5I~
+    	if (dbcsid)                                                //~v6T5R~
+        {                                                          //~v6T5I~
+        	rc=utf162ucs4(opt1,pucs,Pucsctr-ii,&ucs4,(int)sizeof(ucs4),&chkctr,0/*Ppoutctr*/);//~v6T5R~
+	    	if (rc)	//cv err                                       //~v6T5I~
+            {                                                      //~v6T5I~
+    			UTRACEP("%s:return rc=0 utf162ucs4 rc=%d\n",UTT,rc);//~v6T5I~
+    			return 0;                                          //~v6T5I~
+            }                                                      //~v6T5I~
+			if (uviochk_nprepsbcs(0,(WUCS)ucs4,dbcsid)) //uvio_udd2u() may replaced unprintable//~v6T5M~
+            {                                                      //~v6T5M~
+            	                                                   //~v6T5I~
+				swnpucs=1;                                         //~v6T5R~
+    	        pdddbcs++;                                         //~v6T5M~
+                *pco++='?';  //temporally                          //~v6T5R~
+                *pcdo++=NPID; //0x01                               //~v6T5R~
+                continue;                                          //~v6T5I~
+            }                                                      //~v6T5M~
+			rc=utfcvu2lany1mb(opt2,ucs4,pco,&mblen);               //~v6T5R~
+#ifdef AAA                                                         //~v6T5I~
+	    	if (rc)	//cv err                                       //~v6T5R~
+    			return 0;	                                       //~v6T5R~
+#else                                                              //~v6T5I~
+	    	if (rc)	//cv err                                       //~v6T5I~
+            {                                                      //~v6T5I~
+    			UTRACEP("%s:utfcvu2lany1mb rc=%d0 dbcsid=%x\n",UTT,dbcsid);//~v6T5R~
+				swnpucs=2;                                         //~v6T5I~
+                mblen=(UDBCSCHK_ISUCSSBCS(dbcsid)?1:2);            //~v6T5R~
+    	        pdddbcs+=mblen;                                    //~v6T5I~
+                memset(pco,'?',mblen);                             //~v6T5I~
+                pco+=mblen;                                        //~v6T5I~
+                memset(pcdo,NPID,mblen);                           //~v6T5I~
+                pcdo+=mblen;                                       //~v6T5I~
+                continue;                                          //~v6T5I~
+            }                                                      //~v6T5I~
+#endif                                                             //~v6T5I~
+	        pco+=mblen;                                            //~v6T5I~
+			if (UDBCSCHK_DBCS1STUCS2(dbcsid))                      //~v6T5I~
+            {                                                      //~v6T5I~
+            	*pcdo++=UDBCSCHK_DBCS1ST; //     '1'     //on dbcs tbl//~v6T5R~
+            	*pcdo++=UDBCSCHK_DBCS2ND; //     '2'     //on dbcs tbl//~v6T5I~
+    	        pdddbcs+=2;                                        //~v6T5I~
+            }                                                      //~v6T5I~
+            else                                                   //~v6T5I~
+			if (UDBCSCHK_ISUCSSBCS(dbcsid))                        //~v6T5M~
+            {                                                      //~v6T5M~
+            	*pcdo++=0;                                         //~v6T5M~
+    	        pdddbcs++;                                         //~v6T5M~
+            }                                                      //~v6T5M~
+            else	//overflow etc                                 //~v6T5M~
+            {                                                      //~v6T5I~
+    			UTRACEP("%s:return rc=0 dbcsid=%x\n",UTT,dbcsid);  //~v6T5I~
+    			return 0;                                          //~v6T5I~
+            }                                                      //~v6T5I~
+        }                                                          //~v6T5I~
+        else                                                       //~v6T5I~
+        {                                                          //~v6T5I~
+            chkctr=1;                                              //~v6T5I~
+        	*pco++=(UCHAR)*pucs;                                   //~v6T5R~
+            *pcdo++=0;                                             //~v6T5R~
+            pdddbcs++;                                             //~v6T5I~
+        }                                                          //~v6T5I~
+    }//for                                                         //~v6T5R~
+	if (!swnpucs)	//no unprintable found                         //~v6T5R~
+    {                                                              //~v6T5I~
+    	tgtpos.X=Pptgtrect->Left;                                  //~v6T5R~
+		uviowrtcellW1_localefile(0,Ppucs,Pucsctr,wklcdata,wklcdbcs,Ppattr,Plen,tgtpos);//~v6T5R~
+        return 1;                                                  //~v6T5I~
+    }                                                              //~v6T5I~
+//*by outputchar for printable ,outputcharw for unprintable        //~v6T5I~
+    targetrect=*Pptgtrect;                                         //~v6T5R~
+    for (ii=0,pucs=Ppucs,pdddbcs=Ppdbcs,pattr=Ppattr,pco=wklcdata,pcdo=wklcdbcs,pcoe=pco+UVIOM_MAXCOL,//~v6T5I~
+						ucsctr=0,pucso=pucs,pcoo=pco,pcdoo=pcdo,pattro=pattr;//~v6T5I~
+				ii<Pucsctr;                                        //~v6T5I~
+				ii+=chkctr,pucs+=chkctr,ucsctr+=chkctr)            //~v6T5I~
+    {                                                              //~v6T5I~
+    	if (pco>=pcoe)                                             //~v6T5I~
+        	return 0;                                              //~v6T5I~
+    	dbcsid=*pdddbcs;                                           //~v6T5I~
+    	if (dbcsid)                                                //~v6T5I~
+        {                                                          //~v6T5I~
+        	utf162ucs4(opt1,pucs,Pucsctr-ii,&ucs4,(int)sizeof(ucs4),&chkctr,0/*Ppoutctr*/);//~v6T5I~
+			if (uviochk_nprepsbcs(0,(WUCS)ucs4,dbcsid)) //uvio_udd2u() may replaced unprintable//~v6T5I~
+            {                                                      //~v6T5I~
+            	if (ucsctr)                                        //~v6T5I~
+                {                                                  //~v6T5I~
+					len=PTRDIFF(pco,pcoo);                         //~v6T5R~
+					uviowrtcellW1_localefile(0,pucso,ucsctr,pcoo,pcdoo,pattro,len,tgtpos);//~v6T5I~
+                    tgtpos.X=tgtpos.X+(SHORT)len;                  //~v6T5R~
+                }                                                  //~v6T5I~
+				targetrect.Left=tgtpos.X;                          //~v6T5R~
+				targetrect.Right=tgtpos.X;                         //~v6T5R~
+				uvioWriteConsoleOutputCharacterWwithAttr(0,pucs,chkctr,tgtpos,&writelen,pattr,1);//~v6T5R~
+				tgtpos.X++;                                        //~v6T5I~
+                pcoo=++pco,pcdoo=++pcdo,pattro=++pattr;            //~v6T5I~
+    	        pdddbcs++;                                         //~v6T5I~
+                ucsctr=-chkctr; //set to 0 at next loop            //~v6T5R~
+                pucso=pucs+chkctr;                                 //~v6T5I~
+                continue;                                          //~v6T5I~
+            }                                                      //~v6T5I~
+			rc=utfcvu2lany1mb(opt2,ucs4,pco,&mblen);               //~v6T5R~
+#ifdef AAA                                                         //~v6T5I~
+#else                                                              //~v6T5I~
+	    	if (rc)	//cv err                                       //~v6T5I~
+            {                                                      //~v6T5I~
+            	if (ucsctr)                                        //~v6T5I~
+                {                                                  //~v6T5I~
+					len=PTRDIFF(pco,pcoo);                         //~v6T5I~
+					uviowrtcellW1_localefile(0,pucso,ucsctr,pcoo,pcdoo,pattro,len,tgtpos);//~v6T5I~
+                    tgtpos.X=tgtpos.X+(SHORT)len;                  //~v6T5I~
+                }                                                  //~v6T5I~
+				targetrect.Left=tgtpos.X;                          //~v6T5I~
+				targetrect.Right=tgtpos.X;                         //~v6T5I~
+                mblen=(UDBCSCHK_ISUCSSBCS(dbcsid)?1:2);            //~v6T5R~
+				uvioWriteConsoleOutputCharacterWwithAttr(0,pucs,chkctr,tgtpos,&writelen,pattr,mblen/*attrlen*/);//~v6T5R~
+				tgtpos.X=(SHORT)(tgtpos.X+mblen);                  //~v6T5R~
+                pcoo=pco+mblen,pcdoo=pcdo+mblen,pattro=pattr+mblen*(int)sizeof(USHORT);//~v6T5I~
+    	        pdddbcs+=mblen;                                    //~v6T5I~
+                ucsctr=-chkctr; //set to 0 at next loop            //~v6T5I~
+                pucso=pucs+chkctr;                                 //~v6T5I~
+                continue;                                          //~v6T5I~
+            }                                                      //~v6T5I~
+#endif                                                             //~v6T5I~
+	        pco+=mblen;                                            //~v6T5I~
+			if (UDBCSCHK_DBCS1STUCS2(dbcsid))                      //~v6T5I~
+            {                                                      //~v6T5I~
+            	pcdo+=2;                                           //~v6T5I~
+    	        pdddbcs+=2;                                        //~v6T5I~
+                pattr+=2;                                          //~v6T5I~
+            }                                                      //~v6T5I~
+            else                                                   //~v6T5I~
+            {                                                      //~v6T5I~
+            	pcdo++;                                            //~v6T5I~
+    	        pdddbcs++;                                         //~v6T5I~
+                pattr++;                                           //~v6T5I~
+            }                                                      //~v6T5I~
+        }                                                          //~v6T5I~
+        else                                                       //~v6T5I~
+        {                                                          //~v6T5I~
+            chkctr=1;                                              //~v6T5I~
+        	pco++;                                                 //~v6T5I~
+            pcdo++;                                                //~v6T5I~
+            pdddbcs++;                                             //~v6T5I~
+            pattr++;                                               //~v6T5I~
+        }                                                          //~v6T5I~
+    }                                                              //~v6T5I~
+    if (ucsctr)                                                    //~v6T5I~
+    {                                                              //~v6T5I~
+		len=PTRDIFF(pco,pcoo);                                     //~v6T5I~
+        uviowrtcellW1_localefile(0,pucso,ucsctr,pcoo,pcdoo,pattro,len,tgtpos);//~v6T5I~
+    }                                                              //~v6T5I~
+    UTRACEP("%s:return rc=1\n",UTT);                               //~v6T5I~
+	return 1;                                                      //~v6T5I~
+}//uviowritelocale_ifavail                                         //~v6T5I~
+#else                                                              //~v6T5I~
+//*********************************************************************************//~v6T5I~
+//use WriteConsoleOutputChar,Now write at once is OK because Windows10?//~v6T5I~
+//return 1:done                                                    //~v6T5I~
+//*********************************************************************************//~v6T5I~
+int uviowritelocale_ifavail(int Popt,WUCS *Ppucs,int Pucsctr,char *Ppdbcs,USHORT *Ppattr,int Plen,SMALL_RECT *Pptgtrect)//~v6T5I~
+{                                                                  //~v6T5I~
+    COORD tgtpos;                                                  //~v6T5I~
+    int writelen;                                                  //~v6T5I~
+//***************************************************              //~v6T5I~
+    UTRACEP("%s-2:ucsctr=%d,len=%d,tgtpos=(%d,%d)\n",UTT,Pucsctr,Plen,Pptgtrect->Left,Pptgtrect->Top);//~v6T5I~
+    tgtpos.Y=Pptgtrect->Top;                                       //~v6T5I~
+    tgtpos.X=Pptgtrect->Left;                                      //~v6T5I~
+	uvioWriteConsoleOutputCharacterWwithAttr(0,Ppucs,Pucsctr,tgtpos,&writelen,Ppattr,Plen);//~v6T5I~
+	return 1;                                                      //~v6T5I~
+}//uviowritelocale_ifavail                                         //~v6T5I~
+#endif                                                             //~v6T5I~
 //*********************************************************************************//~v6G0I~
 //*combine and no combine *********************************************************//~v6G0I~
 //*********************************************************************************//~v6G0I~

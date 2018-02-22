@@ -1,8 +1,9 @@
-//*CID://+vbdsR~:                             update#=  374;       //+vbdsR~
+//*CID://+vbi3R~:                             update#=  380;       //~vbi3R~
 //*************************************************************
 //*xefunc.c
 //************************************************************* //~v020I~
-//vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg//+vbdsI~
+//vbi3:180211 supprt command history list                          //~vbi3I~
+//vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg//~vbdsI~
 //vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //vb50:160827 accept S+A/C+extended key                            //~vb50I~
 //vb31:160418 (LNX64)Compiler warning                              //~vb31I~
@@ -479,10 +480,10 @@ int funcinit(char *Postype)                                        //~v705I~
                     	break;                                     //~v09wI~
                 if (i<UCWMAXTYPE)                                  //~v09wI~
                 {                                                  //~vbd7I~
-//               if (UCBITCHK(pft->FTflag,FTFDUPACMDFUNC)          //~vbd7I~//+vbdsR~
-//               &&  UCBITCHK(pft2->FTflag,FTFDUPACMDFUNC))        //~vbd7I~//+vbdsR~
-                 if (UCBITCHK(pft->FTflag2,FTF2DUPACMDFUNC)        //+vbdsI~
-                 &&  UCBITCHK(pft2->FTflag2,FTF2DUPACMDFUNC))      //+vbdsI~
+//               if (UCBITCHK(pft->FTflag,FTFDUPACMDFUNC)          //~vbd7I~//~vbdsR~
+//               &&  UCBITCHK(pft2->FTflag,FTFDUPACMDFUNC))        //~vbd7I~//~vbdsR~
+                 if (UCBITCHK(pft->FTflag2,FTF2DUPACMDFUNC)        //~vbdsI~
+                 &&  UCBITCHK(pft2->FTflag2,FTF2DUPACMDFUNC))      //~vbdsI~
                  	;                                              //~vbd7I~
                  else                                              //~vbd7I~
 					cmdduperr(pft,pft2,1);                         //~v09wI~
@@ -1122,8 +1123,16 @@ static int Sccfuncmsgctr=0;                                        //~v75zI~
 //UTRACEP("continue\n");                                           //~v562R~
     }                                                              //~v560I~
 #endif                                                             //~v560I~
+                                                                   //~vbi3I~
 	if (pfunc)
+    {                                                              //~vbi3I~
 		rc=pfunc(Ppcw);
+		if (Gotherstatus & GOTHERS_CHLPOPUP)//CommandHistoryList request popup at return//~vbi3R~
+        {                                                          //~vbi3I~
+			Gotherstatus&=(UINT)(~GOTHERS_CHLPOPUP);//CommandHistoryList request popup at return//~vbi3R~
+    		func_end_file(Ppcw);	//do not access Ppcw it is freeed//~vbi3I~
+        }                                                          //~vbi3I~
+    }                                                              //~vbi3I~
 	else
     {                                                           //~5521I~
 //      if (pft)	//defined,pannel unmatch                    //~5521I~//~va3ZR~

@@ -1,10 +1,11 @@
-//*CID://+v6BxR~:                             update#=   80;       //~v6BxR~
+//*CID://+v6T1R~:                             update#=   82;       //~v6T1R~
 //*************************************************************
 //*uedit.c                                                         //~v022R~
 //*  unumedit,utimeedit,uitoa10,ucmdparmedit,uwordrep              //~v066R~
 //*  ugethex,ux2l,ux2s,ugetnumrange,ugetxnumrange,unumlen,uatoin   //~v244R~
 //*  ugetnumrange2 ugetnumrange3                                   //~v5fxR~
 //*************************************************************
+//v6T1:180210 add ueditKMG(edit Kiro,mega,Giga value)              //~v6T1I~
 //v6Bx:160212 (LNX)compiler warning at suse64                      //~v6BxI~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
 //v6xk:150115 (BUG:W32)spwanxx deplicated,use _spawnxx(return intptr_t, Linux returns int pid)//~v6xkI~
@@ -259,7 +260,7 @@ static UCHAR Swk[32];
     th=tb.millitm/10;                                              //~v321R~
     milisec=tb.millitm;                                            //~v59kR~
 //  swcase=(ULONG)Ppatern;                                         //~v321I~//~v6BxR~
-    swcase=(UINT)(ULPTR)Ppatern;                                   //+v6BxR~
+    swcase=(UINT)(ULPTR)Ppatern;                                   //~v6BxR~
 #else                                                              //~v321R~
 #ifdef DOS
     _dos_getdate(&date);
@@ -1707,3 +1708,41 @@ static char Swk[64];                                               //~v6xkI~
     	UmemcpyZ(pout,psrc,(size_t)outlen);                        //~v6BkI~
     return pout;                                                   //~v6xkI~
 }//ueditLONGHANDLE                                                 //~v6xkI~
+//******************************************************************//~v6T1I~
+//*edit memorisize by K/M/G                                        //~v6T1I~
+//******************************************************************//~v6T1I~
+char *ueditKMG(int Popt,size_t Psz)                                //~v6T1I~
+{                                                                  //~v6T1I~
+static char Swk[16];                                               //~v6T1I~
+	size_t szK,szM,szG,res;                                        //~v6T1I~
+//************************                                         //~v6T1I~
+	res=Psz%1024;                                                  //~v6T1I~
+    if (res)                                                       //~v6T1I~
+    {                                                              //~v6T1I~
+    	sprintf(Swk,"%ld",(long)Psz);                              //+v6T1R~
+    }                                                              //~v6T1I~
+    else                                                           //~v6T1I~
+    {                                                              //~v6T1I~
+		szK=Psz/1024;                                              //~v6T1I~
+        res=szK%1024;                                              //~v6T1I~
+        if (res)                                                   //~v6T1I~
+        {                                                          //~v6T1I~
+	    	sprintf(Swk,"%ldK",(long)szK);                         //+v6T1R~
+        }                                                          //~v6T1I~
+        else                                                       //~v6T1I~
+        {                                                          //~v6T1I~
+			szM=szK/1024;                                          //~v6T1I~
+	        res=szM%1024;                                          //~v6T1I~
+            if (res)                                               //~v6T1I~
+            {                                                      //~v6T1I~
+		    	sprintf(Swk,"%ldM",(long)szM);                     //+v6T1R~
+            }                                                      //~v6T1I~
+            else                                                   //~v6T1I~
+            {                                                      //~v6T1I~
+				szG=szM/1024;                                      //~v6T1I~
+		    	sprintf(Swk,"%ldG",(long)szG);                     //+v6T1R~
+            }                                                      //~v6T1I~
+        }                                                          //~v6T1I~
+    }                                                              //~v6T1I~
+	return Swk;                                                    //~v6T1I~
+}//ueditKMG                                                        //~v6T1I~

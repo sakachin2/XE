@@ -1,8 +1,9 @@
-//*CID://+v6H8R~:                             update#=   54;       //+v6H8R~
+//*CID://+v6T7R~:                             update#=   57;       //~v6H8R~//~v6T7R~
 //******************************************************
 //*uerr.h
 //******************************************************
-//v6H8:170109 (BUG)FTP del dir fail(remains subdir)                //+v6H8I~
+//v6T7:180220 stack errmsg to errmsg.<pid> and issue notification at initcomp//~v6T7I~
+//v6H8:170109 (BUG)FTP del dir fail(remains subdir)                //~v6H8I~
 //v6xq:150116 add uapierr1nt                                       //~v6xqI~
 //v6v0:140623 (LNX:BUG)uerrmsg for xsub,utf8 fnm was cv to utf8 twice//~vav0I~
 //vauc:140420 (Win)unicode support by UD fmt string                //~vaucI~
@@ -42,8 +43,8 @@
 //******************************************************           //~v022I~
 #define UERRMSG_MAXPARM   10                                       //~v6hhI~
 //#define MAX_UERRMSGLL  4096                                      //~v6hMR~
-//efine MAX_UERRMSGLL  (4096+_MAX_PATH+_MAX_PATH)                  //~v6hMR~//+v6H8R~
-#define MAX_UERRMSGLL  (4096*3)      //4096+FTP_MAXPATH*2          //+v6H8I~
+//efine MAX_UERRMSGLL  (4096+_MAX_PATH+_MAX_PATH)                  //~v6hMR~//~v6H8R~
+#define MAX_UERRMSGLL  (4096*3)      //4096+FTP_MAXPATH*2          //~v6H8I~
                                                                    //~v5j3I~
 #define GBL_UERR_BG			0x01		//*back ground exec        //~v060R~
 #define GBL_UERR_DBCSSET  	0x02		//*determined              //~v060I~
@@ -62,6 +63,8 @@
 //#define GBL_UERR2_CONSWRITE 0x10        //use console write for UD fmt//~vaucR~
 #define GBL_UERR2_UTF8STDO  0x10        //for xsub(not xe),printf to stdout of LNX UTF8 env//~vav0I~
 #define GBL_UERR2_S2UJMSG   0x20        //SJIS Pjmsg was translated to UTF8//~vav0I~
+#define GBL_UERR2_INIT_INPROG           0x0040        //from xe uerrmsg_initstart()//~v6T7R~
+#define GBL_UERR2_INIT_MSGSTACK         0x0080        //uerrmsg called before init comp//~v6T7I~
 //#endif                                                           //~v5n8R~
 #ifdef GBL_UERR                                                    //~v060I~
     unsigned char Guerropt;                                        //~v060I~
@@ -181,6 +184,8 @@ int ufprintfW(FILE *Pfh,char *Ppattern,char *Pmsg);                //~vaucI~
 size_t ufwriteWCONS(char *Pmsg,size_t Punit,size_t Pcount,FILE *Pfh);//~vaucI~
 //**************************************************************** //~vaucI~
 #endif                                                             //~vaucI~
+void uerrmsg_initstart(char *Pworkdir);                            //+v6T7I~
+void uerrmsg_initcomp();                                           //+v6T7I~
 #ifdef __cplusplus                                                 //~v5c2I~
 	}                                                              //~v5c2I~
 #endif                                                             //~v5c2I~

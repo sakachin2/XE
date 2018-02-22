@@ -1,4 +1,4 @@
-//*CID://+vb82R~:                             update#=  169;       //~vb82R~
+//*CID://+vb82R~:                             update#=  184;       //+vb82R~
 //*************************************************************    //~v0hqI~
 //*xefile7.c                                                       //~v0hqI~
 //**drop,tab clear,func key file edit                              //~v0ifR~
@@ -696,7 +696,7 @@ int filefksave(PUFILEH Ppfh)                                       //~v0ihI~
     if (!(entno=pfkctt->FKCTTentno))                               //~v0ihI~
     	return 0;                                                  //~v0ihI~
 //  plhtbl=UALLOCC((UINT)(entno<<2),1);                            //~v0ihR~//~vb82R~
-    plhtbl=UALLOCC((size_t)entno*PTRSZ,1);                         //+vb82R~
+    plhtbl=UALLOCC((size_t)entno*PTRSZ,1);                         //~vb82R~
     UALLOCCHK(plhtbl,UALLOC_FAILED);                               //~v0ihI~
 	plh=UGETQTOP(&Ppfh->UFHlineque);                               //~v0ihR~
     protlen=Ppfh->UFHprotlen;                                      //~v0imR~

@@ -1,7 +1,8 @@
-//*CID://+vb5gR~:                            update#=  121;        //+vb5gR~
+//*CID://+vbi3R~:                            update#=  123;        //~vbi3R~
 //*************************************************************
 //* xeini3.c
 //*************************************************************
+//vbi3:180211 supprt command history list                          //~vbi3I~
 //vb5g:160918 (LNX-CONS:BUG)inigetopt cleared NP char              //~vb5gI~
 //vb5f:160918 (XXE:BUG)inigetopt cleared combine altch initialized by xeopt.h//~vb5fI~
 //vb5b:160913 additional to vb54, DBCS space altch is changable by TAB cmd//~vb5bI~
@@ -130,7 +131,7 @@
 #ifdef LNX                                                         //~vafsI~
 	#define INI_MAX_PATH  _MAX_PATH_FOR_INIFILE     //to keep xe_SAVE_ file size//~vafsI~
 #else                                                              //~vafsI~
-    #define INI_MAX_PATH  _MAX_PATH                                //+vb5gR~
+    #define INI_MAX_PATH  _MAX_PATH                                //~vb5gR~
 #endif                                                             //~vafsI~
 //*******************************************************
 typedef struct _UINISAVE {              //option save
@@ -464,6 +465,16 @@ void inisavelastfile(PUFILEC Ppfc)                                 //~v11zR~
     PUFILEH pfh;                                                   //~v11zI~
 //*********************************                                //~v11zI~
     pfh=Ppfc->UFCpfh;                                              //~v11zI~
+    switch(pfh->UFHtype)                                           //+vbi3R~
+    {                                                              //~vbi3I~
+    case UFHTCLIPBOARD:          //clipboard file in work dir      //~vbi3I~
+    case UFHTKFI      :          //key func ini file in work dir   //~vbi3I~
+    case UFHTSTDOUT   :          //first opened as cmd stdout      //~vbi3I~
+    case UFHTTEMPWK   :          //TEMP work for partial edit etc  //~vbi3I~
+    case UFHTTEMPWK2  :          //TEMP work for filenamelist find support//~vbi3I~
+    case UFHTCMDHIST  :          //TEMP work for filenamelist find support//~vbi3I~
+        return;                                                    //~vbi3I~
+    }                                                              //~vbi3I~
     if (UCBITCHK(Ppfc->UFCflag,UFCFBROWSE)) //not browse mode      //~v11zR~
         Slastfmode='B';                                            //~v11zI~
     else                                                           //~v11zI~

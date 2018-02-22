@@ -1,5 +1,6 @@
-//*CID://+vbCBR~:                             update#=   35;       //~vbCBR~
+//*CID://+vbi3R~:                             update#=   47;       //~vbi3R~
 //**************************************************************** //~8627I~
+//vbi3:180211 supprt command history list                          //~vbi3I~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
 //vb2D:160221 LNX compiler warning                                 //~vb2DI~
 //va1r:091108_(UTF8)cmd string get/set by all of lc, u8 and ct to avoid miss interpretation//~va1rI~
@@ -25,6 +26,7 @@ typedef struct _USCMD {						//stack cmd         //~5114I~
 						UQUEE   USCqelem;   //fifo q            //~5114I~
                         int     USCcmdlenlc;//if not 0 cmd by locale code is save after USCcmd//~va1rR~
                         int     USCseqno;   //pcw instance no      //~v670I~
+                        int     USCentryno; //malloc seqno(key of search for cmd history list)//~vbi3I~
                         int     USCcmdlen;  //cmd string len    //~5114R~
 						UCHAR   USCcmd[1];	//cmd string        //~5114I~
 					  	} USCMD;                                //~5114I~
@@ -34,8 +36,8 @@ typedef USCMD  *PUSCMD;                                         //~5114I~
                                                                 //~5114I~
 //**************************************************            //~5114I~
 //void funccmdstack(UCHAR *Pcmd,int Pcmdlen);                      //~v670R~
-//void funccmdstack(UCHAR *Pcmd,int Pcmdlen,int Pseqno);           //+vbCBR~
-PUSCMD funccmdstack(UCHAR *Pcmd,int Pcmdlen,int Pseqno);           //+vbCBI~
+//void funccmdstack(UCHAR *Pcmd,int Pcmdlen,int Pseqno);           //~vbCBR~
+PUSCMD funccmdstack(UCHAR *Pcmd,int Pcmdlen,int Pseqno);           //~vbCBI~
 //**************************************************               //~va1rI~
 #ifdef UTF8SUPPH                                                   //~va1rI~
 void funccmdstack_utf8(int Popt,UCHAR *Pcmd,int Pcmdlen,int Pseqno);//~va1rR~
@@ -91,3 +93,11 @@ int funcparseredirect(int Popt,PUCLIENTWE Ppcw,char *Pcmdstr,char *Ppot,char *Pp
 int  funcerrexecmdinprog(void);                                    //~v77LI~
 //**************************************************               //~vbCBI~
 int funcrestorePSC(PUCLIENTWE Ppcw,PUSCMD Ppsc);                   //~vbCBR~
+//**************************************************               //~vbi3I~
+PUSCMD funcgetcmdstack(int Popt,PUSCMD Ppsc,char **Ppcmdstr,int *Pplen,int *Ppfmt);//~vbi3R~
+//**************************************************               //~vbi3I~
+PUSCMD funcsrchpsc(int Popt,int Pentryno);                         //~vbi3R~
+#define FSPO_ERRMSG 0x01                                           //~vbi3I~
+//**************************************************               //~vbi3I~
+int funcretrievepsc(int Popt,PUCLIENTWE Ppcw,PUSCMD Ppsc,void* /*PULINEH*/ Pplh);//+vbi3R~
+int funccmdrepeatpsc(int Popt,PUCLIENTWE Ppcw,PUSCMD Ppsc);        //~vbi3R~
