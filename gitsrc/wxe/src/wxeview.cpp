@@ -1,5 +1,6 @@
-//*CID://+vbd2R~:                             update#=  248;       //~vbd2R~
+//*CID://+vbj2R~:                             update#=  250;       //~vbj2R~
 //***************************************************************************//~v516I~
+//vbj2:180424 popup menu on cmd history list                       //~vbj2I~
 //vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
 //vba3:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit)     //~vba3I~
 //vb3w:160621 w64 compiler warning                                 //~vb3wI~
@@ -474,7 +475,7 @@ void CWxeView::OnEditClear()                                       //~2A06M~
 }                                                                  //~2A06M~
 void CWxeView::OnEditSelectAll()                                   //~vbd2R~
 {                                                                  //~vbd2I~
-	Mwxemain.cpselectall();                                        //+vbd2R~
+	Mwxemain.cpselectall();                                        //~vbd2R~
     Invalidate(FALSE);                                             //~vbd2I~
 }                                                                  //~vbd2I~
 
@@ -648,3 +649,27 @@ void CWxeView::OnFileSave(UINT unotifyCode,int nID,HWND wndCtl)    //~@@@@R~
 {                                                                  //~@@@@I~
     Mpmainframewnd->OnFileSave(unotifyCode,nID,wndCtl);            //~@@@@I~
 }                                                                  //~@@@@I~
+void CWxeView::OnFileCHLSetClosed()                                //~vbj2I~
+{                                                                  //~vbj2I~
+    Mwxemain.onfileCHL('s');                                       //+vbj2R~
+}                                                                  //~vbj2I~
+void CWxeView::OnFileCHLSetCurrent()                               //~vbj2I~
+{                                                                  //~vbj2I~
+    Mwxemain.onfileCHL('S');                                       //+vbj2R~
+}                                                                  //~vbj2I~
+void CWxeView::OnFileCHLSetSplit()                                 //~vbj2I~
+{                                                                  //~vbj2I~
+    Mwxemain.onfileCHL('t');                                       //+vbj2R~
+}                                                                  //~vbj2I~
+void CWxeView::OnFileCHLExeClosed()                                //~vbj2I~
+{                                                                  //~vbj2I~
+    Mwxemain.onfileCHL('x');                                       //+vbj2R~
+}                                                                  //~vbj2I~
+void CWxeView::OnFileCHLExeCurrent()                               //~vbj2I~
+{                                                                  //~vbj2I~
+    Mwxemain.onfileCHL('X');                                       //+vbj2R~
+}                                                                  //~vbj2I~
+void CWxeView::OnFileCHLExeSplit()                                 //~vbj2I~
+{                                                                  //~vbj2I~
+    Mwxemain.onfileCHL('y');                                       //+vbj2R~
+}                                                                  //~vbj2I~

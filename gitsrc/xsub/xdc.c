@@ -1,7 +1,8 @@
-//*CID://+vai1R~:                             update#=  679;       //~vai1R~
+//*CID://+vaj1R~:                             update#=  681;       //~vaj1R~
 //***********************************************************
 //* XDComp : directory status compare                              //~v1.aR~
 //***********************************************************
+//vaj1:180305 xdc-2.29: /CPU8 option:output triler by utf8 to show on xe result of "=" cmd with cpu8 option//~vaj1I~
 //vai1:180208 allow K/M postfix for /Wsize parm                    //~vai1I~
 //vai0:180208 (Bug) crash when /Wsize parm is too short<1026) (crash before sizechk)//~vai0I~
 //vah0:180129 (Ubuntu 17.10:gcc7.2)Lnx warning sprintf overflow    //~vah0I~
@@ -145,7 +146,7 @@
 //*             -dir2 only subdir display
 //***********************************************************
 
-#define VER "V2.28"   //version                                    //~vad1R~
+#define VER "V2.29"   //version                                    //~vad1R~//+vaj1R~
 //#ifdef UNX                                                         //~v2.3I~//~va9eR~
 	#define PGM "xdc"                                              //~v2.3I~
 //#else                                                              //~v2.3I~//~va9eR~
@@ -3346,6 +3347,17 @@ for (parmno=1;parmno<parmc;parmno++)
       	Slfnsw=0;                                                  //~v1.mI~
 #endif                                                             //~va3wI~
       	break;                                                     //~v1.mI~
+    case 'C':           //alias                                    //~vaj1I~
+        if (!stricmp(cptr,"CPU8"))                                 //~vaj1I~
+        {                                                          //~vaj1I~
+#ifdef W32                                                         //~vaj1I~
+    		uerrsetopt2(GBL_UERR2_OUTUTF8,0);                      //~vaj1I~
+#endif     //Linux ignore,xe may specify                           //~vaj1I~
+            break;                                                 //~vaj1I~
+        }                                                          //~vaj1I~
+	    printf("%s:%s:%s is invalid\n",Spgm,Sver,cptr);            //~vaj1I~
+		exit(4);                                                   //~vaj1I~
+      	break;                                                     //~vaj1I~
     case 'F':           //file bincomp                             //~va1BI~
     	UTRACEP("F parm %s\n",cptr);                               //~va4uI~
       switch(toupper(*(cptr+1)))                                   //~va43I~
@@ -4233,6 +4245,12 @@ HELPMSG                                                            //~v1.xI~
 "         %cA    :use alias for long file name(WIN/GCC version only)\n",//~v2.3R~
 "         %cA    :長いファイル名を別名で比較(WIN/GCCバージョンのみ有効)\n",//~v2.3R~
 					CMDFLAG_PREFIX);                               //~v2.3I~
+#ifdef W32                                                         //~vaj1I~
+HELPMSG                                                            //~vaj1I~
+"         %cCPU8 :(Win)for XE, msg by UTF8 code.\n",               //~vaj1I~
+"         %cCPU8 :(Win)XE 用、メッセージをUTF8 コードで出力\n",    //~vaj1I~
+					CMDFLAG_PREFIX);                               //~vaj1I~
+#endif                                                             //~vaj1I~
 HELPMSG                                                            //~va1BI~
 "         %cF    :compare file contents if size is same\n",        //~va1BI~
 "         %cF    :サイズが等しいときファイル内容比較も実施\n",     //~va1BI~
@@ -4395,7 +4413,7 @@ HELPMSG                                                            //~v1.xI~
 "         %cWsz[K|M]:ワークバッファサイズ(省略値は %s)\n",         //~vai1R~
 					CMDFLAG_PREFIX,                                //~v2.3I~
 //  					tblsz);                                    //~v1.xI~//~vai1R~
-    					ueditKMG(0,(size_t)tblsz));                //+vai1R~
+    					ueditKMG(0,(size_t)tblsz));                //~vai1R~
 HELPMSG                                                            //~v231I~
 "         %cYx,%cNx:toggle type switch; x is as following.\n",     //~v231I~
 "         %cYx,%cNx:オン/オフ タイプのフラグ; x はつぎのフラグを指定\n",//~v231I~

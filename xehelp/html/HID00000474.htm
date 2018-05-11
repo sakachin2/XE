@@ -8,9 +8,6 @@
 <STYLE TYPE="text/css">
 <!--
 a:hover{font-weight:bold;}
-.auto-style1 {
-	font-size: 12pt;
-}
 -->
 </STYLE>
 </HEAD>
@@ -24,6 +21,7 @@ a:hover{font-weight:bold;}
   .v129F&lt;--129E:(2018/01/23) 
   .v129G&lt;--129F:(2018/01/30)
   .v129H&lt;--129G:(2018/02/22)
+  .v129J&lt;--129H:(2018/05/10)
 </SPAN></PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
     1.BUGs
@@ -127,11 +125,17 @@ a:hover{font-weight:bold;}
          S : set to the command input line of the command history panel.
          t : set on the other panel if screen is split.
              same as "S" if not split
-         x : executhe the command after closed the command history panel.
+         x : execute the command after closed the command history panel.
          X : execute on the command history panel.
          y : execute on the other panel if screen is split.
              same as "X" if not split.
        .Max 40 entry is saved at xe terminate.
+    (129J)
+      -CommandHistoryList.
+       Mouse operation support.
+         .R-button popups context menu.
+         .Double click works as "x" cmd(execute the command after closed the command history panel).
+         .Click on the selected line works as "s" cmd(set to the command input line after closed the command history panel).
 
 
      3.Miscellaneous.
@@ -157,6 +161,8 @@ a:hover{font-weight:bold;}
      (129H)
        -Function:"R-Retrieve-OfTheScr"(Retrieve command of Next of the split panel)
         had not function key assigned, assign Shift+Alt+F12.
+     (129J)
+       -Add "CPU8" option to dirlist cmd "="(compare file/directory).
 
      4.Tool.
      (129C)
@@ -178,6 +184,9 @@ a:hover{font-weight:bold;}
          Search ICU shared library(DLL or so) on PATH or LD_LIBRARY_PATH.
          If library found, supply ICU version using ICU utility uconv(.exe).
            e.g) xcv x1ebc22 x1ebc22m -b2m -cpeb=cp930 -icu
+     (129J)
+       -xdc v2.29,xfc v1.27
+        Add "CPU8" option.
 
 </SPAN></PRE>
 </BODY>

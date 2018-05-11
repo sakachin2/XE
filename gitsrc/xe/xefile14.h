@@ -1,4 +1,4 @@
-//*CID://+vbi3R~:                             update#=   78;       //~vbi3R~
+//*CID://+vbi3R~:                             update#=   79;       //~vbi3R~
 //**************************************************************** //~v54dI~
 //xefile14.h                                                       //~v54dI~
 //**************************************************************** //~v54dI~
@@ -60,5 +60,9 @@ int fileloadchl(int Popt,PUCLIENTWE Ppcw,char *Ppfile,char *Pfullpath,PUFILEH *P
 #define CHLO_UTF8    0x01                                          //~vbi3I~
 #define CHLO_NEW     0x02                                          //~vbi3I~
 #define CHL_FNM      "::chl"                     //fnm for option key//~vbi3I~
-#define CHL_CMDLIST "s/S/t/x/X/y"                                  //+vbi3R~
+#ifdef WXEXXE                                                      //+vbi3I~
+#define CHL_CMDLIST "s(2Cl)/S/t/x(DbCl)/X/y"                       //+vbi3I~
+#else                                                              //+vbi3I~
+#define CHL_CMDLIST "s/S/t/x/X/y"                                  //~vbi3R~
+#endif                                                             //+vbi3I~
 #define CHL_CMDLIST_POS   40     //lig/comb option is not set for chl//~vbi3R~

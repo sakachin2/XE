@@ -1,7 +1,8 @@
-//*CID://+vb4tR~:                               update#=  525;     //~vb4tR~
+//*CID://+vbj2R~:                               update#=  538;     //~vbj2R~
 //*********************************************************************//~v440I~
 //* wxe interface definition                                       //~v440I~
 //*********************************************************************//~v440I~
+//vbj2:180424 popup menu on cmd history list                       //~vbj2I~
 //vb4t:160812 consider errmsg 2nd line for combine                 //~vb4tI~
 //vb4q:160810 display ligature/combine mode on "TOP OF LINE"       //~vb4qI~
 //vb4i:160805 vb4f for wxe(specify ligature on/off,combine on/of line by line)//~vb4iI~
@@ -1955,7 +1956,7 @@ int wxe_getlineopt(int Popt,int Prow,int Pcol)                     //~vb4iR~
 //        else                                                     //~vb4tR~
 //            lineopt&=~UVIOO_ERRMSGMASK;                          //~vb4tR~
 //    }                                                            //~vb4tR~
-    UTRACEP("%s:Prow=%d,Pcol=%d,rc:lineopt=%04x,vsplit2nd=%04x\n",UTT,Prow,Pcol,lineopt,vsplit2nd);//+vb4tR~
+    UTRACEP("%s:Prow=%d,Pcol=%d,rc:lineopt=%04x,vsplit2nd=%04x\n",UTT,Prow,Pcol,lineopt,vsplit2nd);//~vb4tR~
     return lineopt;                                                //~vb4iI~
 }//wxe_getlineopt                                                  //~vb4iI~
 //*************************************************************    //~vb4qI~
@@ -1969,3 +1970,53 @@ int wxe_resethdrligature(int Popt,int Pligature)                   //~vb4qR~
     scrdisp();          //update screen                            //~vb4qI~
     return 0;                                                      //~vb4qI~
 }//wxe_resethdrligature                                            //~vb4qI~
+//*************************************************************    //~vbj2I~
+//*chk current is cmdHistoryListPanel                              //~vbj2I~
+//*rc:1:Yes                                                        //~vbj2I~
+//*************************************************************    //~vbj2I~
+void *wxe_isCHLLine(int Popt)                                      //~vbj2R~
+{                                                                  //~vbj2I~
+	PUCLIENTWE pcw;                                                //~vbj2I~
+    PUFILEC    pfc;                                                //~vbj2I~
+    PUFILEH    pfh;                                                //~vbj2I~
+    PULINEH    plh;                                                //~vbj2I~
+    PUSCRD psd;                                                    //~vbj2I~
+    int row;                                                       //~vbj2I~
+//***********************                                          //~vbj2I~
+	pcw=scrgetcw(0);	//active client                            //~vbj2I~
+    if (pcw->UCWtype!=UCWTFILE)                                    //~vbj2I~
+    	return 0;                                                  //~vbj2R~
+	pfc=pcw->UCWpfc;                                               //~vbj2I~
+	pfh=pfc->UFCpfh;                                               //~vbj2I~
+    if (pfh->UFHtype!=UFHTCMDHIST)                                 //~vbj2I~
+    	return 0;                                                  //~vbj2R~
+    if (!CSRONFILELINE(pcw))                                       //~vbj2I~
+    	return 0;                                                  //~vbj2I~
+    row=pcw->UCWrcsry;                                             //~vbj2R~
+    psd=pcw->UCWpsd;                                               //~vbj2I~
+    psd+=row;                                                      //~vbj2I~
+    plh=psd->USDbuffc;                                             //~vbj2I~
+    if (!plh)                                                      //~vbj2I~
+    	return 0;                                                  //~vbj2I~
+    if (plh->ULHtype==ULHTHDR)                                     //~vbj2I~
+    	return 0;                                                  //~vbj2I~
+    UTRACEP("%s:row=%d,plhline=%d,pcw=%p\n",UTT,row,plh->ULHlinenor,pcw);//~vbj2R~
+    return pcw;                                                    //~vbj2R~
+}//wxe_isCHLLine                                                   //~vbj2R~
+//*************************************************************    //~vbj2I~
+//*chk current is cmdHistoryListPanel                              //~vbj2I~
+//*rc:1:Yes                                                        //~vbj2I~
+//*************************************************************    //~vbj2I~
+int  wxe_CHLcmd(int Popt,int Pcmd)                                 //~vbj2R~
+{                                                                  //~vbj2I~
+	PUCLIENTWE pcw;                                                //~vbj2I~
+    int rc;                                                        //~vbj2I~
+    int stat=0;                                                    //~vbj2I~
+//***********************                                          //~vbj2I~
+	pcw=wxe_isCHLLine(0);                                          //~vbj2R~
+	if (!pcw)                                                      //~vbj2R~
+    	return -1;                                                 //~vbj2R~
+    stat|=WXEKBDMSG_ONCHAR;                                        //~vbj2I~
+	rc=wxe_kbdmsg(stat,(UINT)Pcmd,1/*Prepctr*/,0/*flag*/);         //~vbj2R~
+    return rc;                                                     //~vbj2I~
+}//wxe_CHLcmd                                                      //+vbj2R~

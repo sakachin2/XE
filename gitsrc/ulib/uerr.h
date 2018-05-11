@@ -1,7 +1,8 @@
-//*CID://+v6T7R~:                             update#=   57;       //~v6H8R~//~v6T7R~
+//*CID://+v6U0R~:                             update#=   58;       //+v6U0R~
 //******************************************************
 //*uerr.h
 //******************************************************
+//v6U0:180305 debug assertion failed Expression:_format_char != '\0' at errmsgedit sprintf; count argment count//+v6U0I~
 //v6T7:180220 stack errmsg to errmsg.<pid> and issue notification at initcomp//~v6T7I~
 //v6H8:170109 (BUG)FTP del dir fail(remains subdir)                //~v6H8I~
 //v6xq:150116 add uapierr1nt                                       //~v6xqI~
@@ -65,6 +66,9 @@
 #define GBL_UERR2_S2UJMSG   0x20        //SJIS Pjmsg was translated to UTF8//~vav0I~
 #define GBL_UERR2_INIT_INPROG           0x0040        //from xe uerrmsg_initstart()//~v6T7R~
 #define GBL_UERR2_INIT_MSGSTACK         0x0080        //uerrmsg called before init comp//~v6T7I~
+#ifdef W32                                                         //+v6U0I~
+#define GBL_UERR2_OUTUTF8               0x0100        //uerrmsg by utf8 encoding//+v6U0I~
+#endif                                                             //+v6U0I~
 //#endif                                                           //~v5n8R~
 #ifdef GBL_UERR                                                    //~v060I~
     unsigned char Guerropt;                                        //~v060I~
@@ -184,8 +188,8 @@ int ufprintfW(FILE *Pfh,char *Ppattern,char *Pmsg);                //~vaucI~
 size_t ufwriteWCONS(char *Pmsg,size_t Punit,size_t Pcount,FILE *Pfh);//~vaucI~
 //**************************************************************** //~vaucI~
 #endif                                                             //~vaucI~
-void uerrmsg_initstart(char *Pworkdir);                            //+v6T7I~
-void uerrmsg_initcomp();                                           //+v6T7I~
+void uerrmsg_initstart(char *Pworkdir);                            //~v6T7I~
+void uerrmsg_initcomp();                                           //~v6T7I~
 #ifdef __cplusplus                                                 //~v5c2I~
 	}                                                              //~v5c2I~
 #endif                                                             //~v5c2I~

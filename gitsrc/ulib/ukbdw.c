@@ -1,8 +1,9 @@
-//CID://+v6L5R~:             update#=  156                         //~v6EzR~//+v6L5R~
+//CID://+v6U1R~:             update#=  164                         //~v6U1R~
 //*************************************************************
 //*ukbdpeek/ukbdcharin/ukbdsetrate/ukbdsetstate                 //~5104R~
 //*************************************************************
-//v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//+v6L5I~
+//v6U1:180317 ReadConsoleInputW loop by continued eventrecord eventType=x10(FOCUS_EVENT),try flush//~v6U1I~
+//v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~v6L5I~
 //v6Ez:160826 S+C+F5 shows S+F5, it will be better to be C+F5 with shift modifyer//~v6EzI~
 //v6By:160212 (W32)compiler warning at w7                          //~v6ByI~
 //v6Bj:160213 (W32:BUG)UCS4 was cut to UCS2                        //~v6BjI~
@@ -533,16 +534,16 @@ static	UCHAR 		Ssavesw;                                       //~v034M~
 			if (Sirpassed->EventType==VRECID)	//reached to prev read 0001 entry//~v034R~
             {                                                      //~v034I~
 	  		    if (Stracesw)                                          //~v034R~//~v034I~
-//  	    	    printf("set by passed data %08x\n",Sirpassed);        //~6A23I~//~v034I~//~v139R~//+v6L5R~
-    	    	    printf("set by passed data %p\n",Sirpassed);   //+v6L5I~
+//  	    	    printf("set by passed data %08x\n",Sirpassed);        //~6A23I~//~v034I~//~v139R~//~v6L5R~
+    	    	    printf("set by passed data %p\n",Sirpassed);   //~v6L5I~
 	    	    rc=ukbd_w95keyinfo(&Sinprecsv,Ppkinf,Sirpassed,(int)Sshiftsv);//~v034R~
                 Sirpassed=ukbd_w95getnext(Sirpassed);	//next entry//+v034R~//~v034I~
                 if (rc)	//not ignored                              //~v034I~
 		            return 1;		//set by skipped entry         //~v034R~
 			}                                                      //~v034I~
   		    if (Stracesw)                                          //~v034R~//~v034I~//~v034R~
-//      	    printf("end of passed data %08x\n",Sirpassed);        //~6A23I~//~v034I~//+v034R~//~v034R~//+v6L5R~
-        	    printf("end of passed data %p\n",Sirpassed);       //+v6L5I~
+//      	    printf("end of passed data %08x\n",Sirpassed);        //~6A23I~//~v034I~//+v034R~//~v034R~//~v6L5R~
+        	    printf("end of passed data %p\n",Sirpassed);       //~v6L5I~
             beforeread=Sirpassed;	//to bypass no wait chk        //~v034R~
             Sirpassed=0;                                           //~v034I~
             skipreadsw=1;                                          //~v034I~
@@ -553,8 +554,8 @@ static	UCHAR 		Ssavesw;                                       //~v034M~
 			&&  Sirmore->EventType==VRECID)	//reached to prev read 0001 entry//~v034I~
             {                                                      //~v034I~
 	  		    if (Stracesw)                                      //~v034I~
-//  	    	    printf("set by more data %08x,write=%08x\n",Sirmore,*Sirwrite);//~v034R~//+v6L5R~
-    	    	    printf("set by more data %p,write=%p\n",Sirmore,*Sirwrite);//+v6L5I~
+//  	    	    printf("set by more data %08x,write=%08x\n",Sirmore,*Sirwrite);//~v034R~//~v6L5R~
+    	    	    printf("set by more data %p,write=%p\n",Sirmore,*Sirwrite);//~v6L5I~
 //must char!=0  ureadconsole(Sbuff,1,&readctr);//kick more write   //~v034R~
         	    rc=ukbd_w95keyinfo(&Sinprecsv,Ppkinf,Sirmore,(int)Sshiftsv);//~v034R~
                 Sirmore=ukbd_w95getnext(Sirmore);	//next entry   //~v034I~
@@ -562,8 +563,8 @@ static	UCHAR 		Ssavesw;                                       //~v034M~
     	            return 1;		//set by skipped entry         //~v034R~
 			}                                                      //~v034I~
   		    if (Stracesw)                                          //~v034I~
-//      	    printf("end of more data %08x\n",Sirmore);         //~v034R~//+v6L5R~
-        	    printf("end of more data %p\n",Sirmore);           //+v6L5I~
+//      	    printf("end of more data %08x\n",Sirmore);         //~v034R~//~v6L5R~
+        	    printf("end of more data %p\n",Sirmore);           //~v6L5I~
             beforeread=Sirmore;	//latest afterread                 //~v034I~
             Sirmore=0;                                             //~v034I~
         }                                                          //~v034I~
@@ -573,8 +574,8 @@ static	UCHAR 		Ssavesw;                                       //~v034M~
             	return 0;                                          //~v034I~
 //0001 entry read req                                              //~v034I~
 	    if (Stracesw)                                              //~v034I~
-//  		printf ("beforeread=%08x\n",beforeread);               //~v034I~//+v6L5R~
-    		printf ("beforeread=%p\n",beforeread);                 //+v6L5I~
+//  		printf ("beforeread=%08x\n",beforeread);               //~v034I~//~v6L5R~
+    		printf ("beforeread=%p\n",beforeread);                 //~v6L5I~
         if (skipreadsw)	//already read                             //~v034R~
         {                                                          //~v034I~
         	inprec=*beforeread;                                    //~v034R~
@@ -590,8 +591,8 @@ static	UCHAR 		Ssavesw;                                       //~v034M~
             {                                                      //~v034R~
     	    	Sirpassed=beforeread;		//prev of crated entry //~v034R~
       		    if (Stracesw)                                      //~v034R~
-//  				printf ("detected skipped rec %08x->%08x\n",Sirpassed,afterread);//~v034R~//+v6L5R~
-    				printf ("detected skipped rec %p->%p\n",Sirpassed,afterread);//+v6L5I~
+//  				printf ("detected skipped rec %08x->%08x\n",Sirpassed,afterread);//~v034R~//~v6L5R~
+    				printf ("detected skipped rec %p->%p\n",Sirpassed,afterread);//~v6L5I~
                 continue;					//process following    //~v034R~
             }                                                      //~v034R~
         }                                                          //~v034I~
@@ -633,8 +634,8 @@ static	UCHAR 		Ssavesw;                                       //~v034M~
         {                                                          //~v034I~
 	    	Sirmore=afterread;			//all 8000 entry           //~v034R~
    		    if (Stracesw)                                          //~v034R~
-//  			printf ("detected more rec %08x->%08x\n",afterread,*Sirwrite);//~v034I~//+v6L5R~
-				printf ("detected more rec %p->%p\n",afterread,*Sirwrite);//+v6L5I~
+//  			printf ("detected more rec %08x->%08x\n",afterread,*Sirwrite);//~v034I~//~v6L5R~
+				printf ("detected more rec %p->%p\n",afterread,*Sirwrite);//~v6L5I~
         }                                                          //~v034I~
         else    //nor next data or next is not VREC(8000)          //~v146I~
 //      	if (Sinprecsv.Event.KeyEvent.bKeyDown)	//key down record//~v299R~
@@ -689,7 +690,14 @@ static  USHORT      Sshiftsv;                                      //~v139I~
 #define MAXPEEK 100                                                //~v139M~
 	INPUT_RECORD  peekrec[MAXPEEK];                                //~v139M~
     int eventno=0,peekctr=0;                                           //~v139M~//~v6h6R~
+#ifdef WXE                                                         //~v6U1I~
+#else                                                              //~v6U1I~
+	int focuseventctr=0;                                           //~v6U1I~
+	DWORD eventctr;                                                //~v6U1I~
+	#define LOOP_BREAK 20                                          //+v6U1R~
+#endif                                                             //~v6U1I~
 //****************************                                     //~v139M~
+//  UTRACEP("%s:entry        focuseventctr=%d\n",UTT,focuseventctr);//~v6U1R~
     if (Pwait==IO_NOWAIT)   //peek                                 //~v139M~
     {                                                              //~v139M~
 		eventno=ugetinputeventno();                                //~v139M~
@@ -724,11 +732,26 @@ static  USHORT      Sshiftsv;                                      //~v139I~
 #endif                                                             //~v570I~
 		}                                                          //~v139I~
         		                                                   //~v139I~
+//      UTRACEP("%s:eventtype=%x focuseventctr=%d\n",UTT,inprec.EventType,focuseventctr);//~v6U1R~
         if (inprec.EventType!=KEY_EVENT)                           //~v139M~
 #ifdef WXE                                                         //~v570I~
             return 0;   //retur 0;xekbd return with nop            //~v570I~
 #else                                                              //~v570I~
+		{                                                          //~v6U1I~
+        	if (inprec.EventType==FOCUS_EVENT)                     //~v6U1I~
+        	{		                                               //~v6U1I~
+        		focuseventctr++;                                   //~v6U1I~
+//          	GetNumberOfConsoleInputEvents(Shstdin,&eventctr);  //~v6U1R~
+//          	UTRACEP("%s:focusevent ctr=%d,bSetFocus=%d,numberofevent=%d\n",UTT,focuseventctr,inprec.Event.FocusEvent.bSetFocus,eventctr);//~v6U1R~
+                if (focuseventctr%LOOP_BREAK==0)                   //+v6U1R~
+                {                                                  //~v6U1I~
+	            	GetNumberOfConsoleInputEvents(Shstdin,&eventctr);//~v6U1I~
+	            	UTRACEP("%s:flush by focusevent ctr=%d,bSetFocus=%d,numberofevent=%d\n",UTT,focuseventctr,inprec.Event.FocusEvent.bSetFocus,eventctr);//~v6U1R~
+                	FlushConsoleInputBuffer(Shstdin);              //~v6U1I~
+                }                                                  //~v6U1I~
+        	}                                                      //~v6U1I~
         	continue;	//other event                              //~v139M~
+        }                                                          //~v6U1I~
 #endif                                                             //~v570I~
         if (!inprec.Event.KeyEvent.bKeyDown)                       //~v139R~
         {                                                          //~v146I~
@@ -1166,8 +1189,8 @@ static int pno;                                                    //~v5ncI~
 //      pno--;                                                     //~v034I~
 //  }                                                              //~v034I~
   if (Stracesw2 & KBD_PTRACE)                                      //~v298R~
-//  printf("=%s===readptr=%08x,writeptr=%08x\n",comm,*Sirread,*Sirwrite);//~v034I~//+v6L5R~
-    printf("=%s===readptr=%p,writeptr=%p\n",comm,*Sirread,*Sirwrite);//+v6L5I~
+//  printf("=%s===readptr=%08x,writeptr=%08x\n",comm,*Sirread,*Sirwrite);//~v034I~//~v6L5R~
+    printf("=%s===readptr=%p,writeptr=%p\n",comm,*Sirread,*Sirwrite);//~v6L5I~
   }                                                                //~v139I~
   if (Stracesw2 & KBD_PTRACE)                                      //~v298R~
     for (ii=0;ii<loop;ii++,pc1+=0x14)                              //~v034I~
@@ -1183,8 +1206,8 @@ static int pno;                                                    //~v5ncI~
 	    vkey=(UINT)inprec->Event.KeyEvent.wVirtualKeyCode;         //~v034I~
 	    scan=(UINT)inprec->Event.KeyEvent.wVirtualScanCode;        //~v034I~
 	    state=(UINT)inprec->Event.KeyEvent.dwControlKeyState;      //~v034I~
-//      printf("%08x=#%02d: %04x-%04x,%08x,%04x-%04x,%04x-%04x,%08x\n",//~v034I~//+v6L5R~
-        printf("%p=#%02d: %04x-%04x,%08x,%04x-%04x,%04x-%04x,%08x\n",//+v6L5I~
+//      printf("%08x=#%02d: %04x-%04x,%08x,%04x-%04x,%04x-%04x,%08x\n",//~v034I~//~v6L5R~
+        printf("%p=#%02d: %04x-%04x,%08x,%04x-%04x,%04x-%04x,%08x\n",//~v6L5I~
         pc1,pno+ii,(UINT)typ,(UINT)hh,down,(UINT)rep,(UINT)vkey,(UINT)scan,(UINT)ch,state);//~v034I~
     }                                                              //~v034I~
     else                                                           //~v298I~

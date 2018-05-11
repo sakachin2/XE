@@ -1,5 +1,8 @@
-//*CID://+vbh2R~:                             update#=  457;       //~vbh2R~
+//*CID://+vbj4R~:                             update#=  478;       //~vbj4R~
 //******************************************************************************//~v003I~
+//vbj4:180425 click on selected line cmd history list-->"s"(set on under)//~vbj4I~
+//vbj3:180425 double click on cmd history list-->"x"(exec on under)//~vbj3I~
+//vbj2:180424 popup menu on cmd history list                       //~vbj2I~
 //vbh2:180129 wxe copypasete  clipboad len=ulhlen but copy data width CID dropped,trashdata cap data len drop CID;so dreg data is copyed at paste//~vbh2I~
 //vbd8:171120 (WXE)stdregion by PFK(F6) should disable Paste REP/INS//~vbd8I~
 //vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
@@ -93,6 +96,7 @@
                                                                    //~v003I~
 #define SETFOCUSTIME 50    //50ms between OnSetFocus to LBDown,then do not move cursor//~v69cI~
 static UINT Slastcbfmt;                                            //~vb2NI~
+static int SrowCHL;                                                //~vbj4I~
 //===============================================================================//~@@@@I~
 int  dragoutfile(HGLOBAL Phmem);                                   //~@@@@I~
 void CreateMedium(CLIPFORMAT cfFormat, HANDLE hObject, FORMATETC *pFormatetc, STGMEDIUM *pmedium);//~@@@@I~
@@ -129,6 +133,7 @@ UTRACEP("@@@@mouselbdown flag=%x,Mswkillfocus=%d\n",Pflag,Mswkillfocus);//~v73tR
     Mcpcopysw=1;            //start mouse blocking                 //~v003R~
     Mcppastesw=1;                                                  //~v003R~
     Mcpstart=Ppoint;                                               //~v003I~
+    chkCHLselect(Ppoint);                                          //~vbj4I~
     Mcellcopy1.x=COL(Ppoint.x);                                    //~v003R~
     Mcellcopy1.y=ROW(Ppoint.y);                                    //~v003R~
 //UTRACEP("scroll:lbdown posid=%x,col=%d,row=%d\n",Mlbposid,Mcellcopy1.x,Mcellcopy1.y);//~v69cR~
@@ -278,6 +283,7 @@ UTRACEP("@@@@lbup\n");                                               //~v68bI~//
     {                                                              //~v58iI~
     	if (dragchkrc=wxe_dragselectchk(DRAGOPT_SELECT,Pflag,ROW(Ppoint.y),COL(Ppoint.x),&pcw,&plh),dragchkrc)//~v63hR~
         	mousedragfile(dragchkrc,pcw,plh);                      //~v63hR~
+	  	selectedCHL(Pflag,Ppoint);                                 //~vbj4R~
     	return;                                                    //~v003I~
     }                                                              //~v58iI~
     if (Mlbdblclicksw)	//after dbl click                          //~v5a1I~
@@ -334,7 +340,14 @@ UTRACEP("@@@@rbdown\n");                                             //~v76jI~//
                                                                    //~v68fI~
 	scrpos=Ppoint;                                                 //~v003M~
 	Mpview->ClientToScreen(&scrpos);                               //~v003M~
+  if ((wxe_isCHLLine(0)))                                          //~vbj2R~
+  {                                                                //~vbj2R~
+    Mfloatmenu.LoadMenu(IDR_FLOATING_CHL);	//menu on cmd history list//~vbj2R~
+  }                                                                //~vbj2R~
+  else                                                             //~vbj2R~
+  {                                                                //~vbj2R~
     Mfloatmenu.LoadMenu(IDR_FLOATING);                             //~v003M~
+  }                                                                //~vbj2R~
 	((CMainFrame*)Mpmainframe)->updatemenu(1,&Mfloatmenu);	//update accelerator label//~3103R~
 //  submenu=Mfloatmenu.GetSubMenu(0);                              //~@@@@R~
     menuh=Mfloatmenu.GetSubMenu(0);                                //~@@@@I~
@@ -891,7 +904,15 @@ UTRACEP("@@@@mouse dbl click flag=%x,(%d,%d)\n",nFlags,pt.x,pt.y); //~v68bR~
     col=COL(pt.x);                                                 //~3102I~
     row=ROW(pt.y);                                                 //~3102I~
     Mlbdblclicksw=1;                                               //~v5a1I~
+  if ((wxe_isCHLLine(0)))                                          //~vbj3I~
+  {                                                                //~vbj3I~
+    rc=onfileCHLdblclick();                                        //~vbj3R~
+    capinfo=0;                                                     //~vbj3I~
+  }                                                                //~vbj3I~
+  else                                                             //~vbj3I~
+  {                                                                //~vbj3I~
     rc=wxe_lineselect(nFlags,row,col,&capinfo);                    //~3202R~
+  }                                                                //~vbj3I~
     if (rc==-1)                                                    //~3102I~
     	exitmain();                                                //~3102I~
     if (capinfo)                                                   //~v5a1I~
@@ -1342,3 +1363,62 @@ UTRACEP("%s:updatepastestd Mcpcopysw=%d\n",UTT,Mcpcopysw);         //~vbd2M~
     rc=wxe_capchkselectall();                                      //~vbd2R~
     return rc!=0;                                                  //~vbd2R~
 }//cpupdateselectall                                               //~vbd2M~
+//===============================================================================//~vbj2I~
+BOOL CWxemain::onfileCHL(int Pcmd)                                 //~vbj2I~//+vbj4R~
+{                                                                  //~vbj2I~
+	int rc;                                                        //~vbj2I~
+//****************************                                     //~vbj2I~
+	UTRACEP("%s:cmd=%c\n",UTT,Pcmd);                               //~vbj2I~
+    rc=wxe_CHLcmd(0,Pcmd);                                         //~vbj2I~
+	UTRACEP("%s:rc=%d\n",UTT,rc);                                  //~vbj2I~
+    scrinvalidate();                                               //~vbj2I~
+    return rc==0;                                                  //~vbj2I~
+}                                                                  //~vbj2R~
+//===============================================================================//~vbj3I~
+BOOL CWxemain::onfileCHLdblclick()                                 //~vbj3I~
+{                                                                  //~vbj3I~
+	int rc;                                                        //~vbj3I~
+//****************************                                     //~vbj3I~
+	UTRACEP("%s\n",UTT);                                           //~vbj3I~
+    rc=wxe_CHLcmd(0,'x');                                          //~vbj3I~
+    return rc==0;                                                  //~vbj3I~
+}                                                                  //~vbj3I~
+//===============================================================================//~vbj4I~
+BOOL CWxemain::chkCHLselect(CPoint Ppoint)                         //~vbj4I~
+{                                                                  //~vbj4I~
+	int row,rowold,rc;                                             //~vbj4R~
+//****************************                                     //~vbj4I~
+  	if (!(wxe_isCHLLine(0)))   //oldline                           //~vbj4R~
+    {                                                              //~vbj4I~
+		SrowCHL=0;                                                 //~vbj4I~
+    	return 0;                                                  //~vbj4I~
+    }                                                              //~vbj4I~
+    row=ROW(Ppoint.y);                                             //~vbj4R~
+    rowold=Mcellcopy1.y;                                           //~vbj4I~
+    if (row==rowold)      //click on selected line on CHL          //~vbj4R~
+    {                                                              //~vbj4I~
+		UTRACEP("%s,row=%d\n",UTT,SrowCHL);                        //~vbj4I~
+    	SrowCHL=row;    //chk at lbup                              //~vbj4I~
+        rc=1;                                                      //~vbj4R~
+    }                                                              //~vbj4I~
+    else                                                           //~vbj4I~
+    {                                                              //~vbj4I~
+    	SrowCHL=0;                                                 //~vbj4R~
+        rc=0;                                                      //~vbj4I~
+    }                                                              //~vbj4I~
+    return rc;                                                     //~vbj4R~
+}                                                                  //~vbj4I~
+//===============================================================================//~vbj4I~
+BOOL CWxemain::selectedCHL(UINT Pflag,CPoint Ppoint)               //~vbj4I~
+{                                                                  //~vbj4I~
+	int rc,row;                                                    //~vbj4R~
+//****************************                                     //~vbj4I~
+	UTRACEP("%s,row=\n",UTT);                                      //~vbj4I~
+    if (!SrowCHL)      //click on CHL line                         //~vbj4I~
+    	return 0;                                                  //~vbj4I~
+    row=ROW(Ppoint.y);                                             //~vbj4I~
+    if (row!=SrowCHL)                                              //~vbj4I~
+    	return 0;                                                  //~vbj4I~
+    rc=onfileCHL('s');	//with invalidate                          //~vbj4R~
+    return rc==0;                                                  //~vbj4I~
+}                                                                  //~vbj4I~

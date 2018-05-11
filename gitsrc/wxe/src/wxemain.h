@@ -1,6 +1,9 @@
-//*CID://+vbdnR~:                             update#=  249;       //+vbdnR~
+//*CID://+vbj4R~:                             update#=  255;       //+vbj4R~
 //================================================================================//~v510I~
-//vbdn:171125 disable filemenu depending curent pcw type           //+vbdnI~
+//vbj4:180425 click on selected line cmd history list-->"s"(set on under)//+vbj4I~
+//vbj3:180425 double click on cmd history list-->"x"(exec on under)//~vbj3I~
+//vbj2:180424 popup menu on cmd history list                       //~vbj2I~
+//vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
 //vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
 //vb4q:160810 display ligature/combine mode on "TOP OF LINE"       //~vb4qI~
 //vb4i:160805 vb4f for wxe(specify ligature on/off,combine on/of line by line)//~vb4iI~
@@ -52,7 +55,7 @@
 //v51u:030615 (WXE)wait scroll kick at first 3 time interval       //~v51uI~
 //v51h:030525 (WXE)col/row by font size specification              //~v51hI~
 //v510:030215 (WXE)parameterize interval for scroll by mouse       //~v510I~
-//================================================================================//~v510I~
+//================================================================================
 #pragma once                                                       //~@@@@I~
 #ifndef HEADER_WXEMAIN                                             //~2827R~
 #define HEADER_WXEMAIN                                             //~2827R~
@@ -259,6 +262,11 @@ public :                                                           //~2816I~
 #define PASTE_PASTEV         0x002  //pastev                       //~v689I~
 	int  iniput(WXEINIDATA *pwxei);                                //~2A20R~
 	BOOL cpupdateselectall(void);                                  //~vbd2R~
+	BOOL onfileCHL(int Pcmd);                                      //~vbj2M~//~vbj3R~
+	BOOL onfileCHLdblclick();                                      //~vbj3R~
+	BOOL onfileCHLdblclick(int Pcmd);                              //~vbj3I~
+	BOOL chkCHLselect(CPoint Ppoint);                              //+vbj4I~
+	BOOL selectedCHL(UINT Pflag,CPoint Ppoint);                    //+vbj4I~
 	BOOL cpupdatecopy();                                           //~2824R~
 	BOOL cpupdatecut();                                            //~2824R~
 	BOOL cpupdatepaste();                                          //~2824R~
@@ -452,7 +460,7 @@ int  CWxemain::prttextoutwHeader(CDC *Pdc,int Pyy,char *Pdata,int Plen,int Ppos,
 	BOOL cppastedropchk(int Popt);                                 //~v686I~
 #define DNDDODRAG_COPY 0x01                                        //~v63iI~
 //    scrcombinechk(int Popt,int Pcol,int Plen,int *Ppstarterr,int *Ppendcombine);//not used//~@@@@R~
-	int updateFileMenu(int Popt);                                  //+vbdnI~
+	int updateFileMenu(int Popt);                                  //~vbdnI~
 //********************** private                                   //~2929R~
     CBitmap *Mpbgbitmap;                                           //~2908R~
 	WXEINTF Mwxeintf;                                              //~2831I~

@@ -1,4 +1,4 @@
-//*CID://+vb7eR~:                             update#=  393;       //~vb7eR~
+//*CID://+vbj1R~:                             update#=  399;       //~vbj1R~
 //*************************************************************
 //*xedlcmd6.c                                                      //~v51WR~
 //* %:apply command                                                //~v51WR~
@@ -6,6 +6,7 @@
 //* #:submit/rsh                                                   //~v59eI~
 //* g:grep                                                         //~v76gI~
 //*************************************************************
+//vbj1:180305 cpu8 option to "=" cmd                               //~vb7eI~
 //vb7e:170108 FTP crash by longname                                //~vb7eI~
 //vb2D:160221 LNX compiler warning                                 //~vb2DI~
 //vavN:140405 (W32UNICODE)vavM is not effective,spawn dose also multibyte process(invalid UD to dbcs translation),back to by alias//~vavNI~
@@ -120,6 +121,7 @@
 	#include "xxexei.h"                                            //~v76gI~
 #endif                                                             //~v76gI~
 #include "xetso.h"                                                 //~v8@sI~
+#include "xeopt.h"                                                 //~vbj1R~
 //*******************************************************
 #define CMDFNM	"cf"                                               //~v51WR~
 #define SOFNM	"cfso"                                             //~v51WR~
@@ -150,6 +152,7 @@ static UCHAR Scmdfullpath[_MAX_PATH]="";                           //~v55VR~
 #endif                                                             //~v71NI~
 static PUDLCMD Splcac;                                             //~v51WI~
 static int Sasynccmdseqno;  //suffix for redirect file of $ cmd    //~vamHI~
+static int Scompcmdcpu8=0;                                         //~vbj1R~
 //*******************************************************       //~v04bI~
 //int dlcmdappcmdedit(char *Ppatern,char *Pfnm,char *Poutstr);       //~v51WI~//~vamyR~
 int dlcmdappcmdedit(PUDLCMD Pplc,char *Ppatern,char *Pfnm,char *Poutstr);//~vamyI~
@@ -297,7 +300,7 @@ int dlcmdaclisttso(PUCLIENTWE Ppcw,PUFILEH Ppfh,PUDLCMD Pplc,int Precno)//~v71NI
     		pdh=UGETPDH(plh);                                      //~v71NI~
     		dlcgetfullname(pdh,fullpathname);                      //~v71NI~
 //			xeftpgetwdfname(Ppfh->UFHpuftph,fullpathname,Scmdfullpath);//~v71NR~//~vb7eR~
-  			if (xeftpgetwdfname(Ppfh->UFHpuftph,fullpathname,Scmdfullpath,sizeof(Scmdfullpath))<0)	//longname//+vb7eR~
+  			if (xeftpgetwdfname(Ppfh->UFHpuftph,fullpathname,Scmdfullpath,sizeof(Scmdfullpath))<0)	//longname//~vb7eR~
             	return 4;                                          //~vb7eI~
             uremovenomsg(Scmdfullpath);                            //~v71NR~
           }                                                        //~v8@BI~
@@ -1178,6 +1181,7 @@ int dlcmdcompare(PUCLIENTWE Ppcw,PUDLCMD Pplc1,PUDLCMD Pplc2)      //~v75MR~
 //#define U8OPT2   "/U2"                                           //~vavHR~
 #endif                                                           //~vavHR~//~vavNR~
 //*******************                                              //~v75MI~
+    Scompcmdcpu8=0;                                                //~vbj1R~
 	redirectctr=(int)Pplc1->UDLCparm1;                             //~v75MR~
     pfh=UGETPFHFROMPCW(Ppcw);                                      //~v75MI~
     plh1=Pplc1->UDLCplh;                                           //~v75MI~
@@ -1343,6 +1347,9 @@ int dlcmdcompare(PUCLIENTWE Ppcw,PUDLCMD Pplc1,PUDLCMD Pplc2)      //~v75MR~
 		UCBITOFF(pdh2->UDHflag,UDHFLCMDIN2|UDHFDDSETUP);//set pro at ddsetup//~v75MI~
 //edit/browse redirect file at last                                //~v75MI~
     pc=cmdstr;                                                     //~v75MI~
+  if (Scompcmdcpu8)                                                //~vbj1R~
+    pc+=sprintf(pc,"%c %s %s %s",(dlcmdbecmdid(Ppcw,plc)?'e':'b'),redirectfnm,MODE_UTF8,MODE_IE);//+vbj1R~
+  else                                                             //~vbj1R~
     pc+=sprintf(pc,"%c %s",(dlcmdbecmdid(Ppcw,plc)?'e':'b'),redirectfnm);//~v75MI~
 //  len=(int)((ULONG)pc-(ULONG)cmdstr);                            //~v75MI~//~vafkR~
     len=(int)((ULPTR)pc-(ULPTR)cmdstr);                            //~vafkI~
@@ -1479,6 +1486,11 @@ int dlcmdgetcmdparm(PUCLIENTWE Ppcw,PULINEH Pplh,char *Pparmstr,int *Ppparmlen,c
     {                                                              //~v75MI~
         if (!CMDFLAGCHK(*pc,firstparmsw)) // '-' or '/'            //~v75MI~
             pfnm=pc;                                               //~v75MI~
+        else                                                       //~vbj1R~
+        {                                                          //~vbj1R~
+        	if (!stricmp(pc+1,MODE_UTF8))                          //~vbj1R~
+            	Scompcmdcpu8=1;                                    //~vbj1R~
+        }                                                          //~vbj1R~
     }                                                              //~v75MI~
     if (!pfnm)  //last posparm                                     //~v75MI~
     {                                                              //~v75MI~

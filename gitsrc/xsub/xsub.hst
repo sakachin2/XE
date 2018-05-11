@@ -1,3 +1,8 @@
+//*********  20180510 v129J released  ****************
+//vaj1:180305 xdc-2.29: /CPU8 option:output traler by utf8 to show on xe result of "=" cmd with cpu8 option
+//            xdc.c
+//vaj0:180304 xfc-1.27: /CPU8 option:output traler by utf8 to show on xe result of "=" cmd with cpu8 option
+//            xfc.c
 //*********  20170826 v129H updated   ****************
 //vai1:180208 allow K/M postfix for /Wsize parm
 //            xdc.c

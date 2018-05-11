@@ -1,4 +1,18 @@
-//*********  20180222 v129H update *********************************
+//*********  20180222 v129J released *******************************
+//vbj4:180425 click on selected line cmd history list-->"s"(set on under)
+//            wxemouse.cpp wxemain.h
+//            xxemouse.c
+//vbj3:180425 double click on cmd history list-->"x"(exec on under)
+//            wxemouse.cpp wxemain.h
+//            xxemouse.c
+//vbj2:180424 popup menu on cmd history list
+//            resourceMFC.h wxe.rc wxemouse.cpp wxexei.c/h wxeView.c/h wxemain.h
+//            gxemfrm.c xxeres.h xxexei.c/h gxe.h xxecsub2.c xxemouse.c xxemain.h  
+//vbj1:180305 cpu8 option to "=" cmd(xfc:cpu8 file,xdc:cpu8 filename)
+//            xedlcmd6.c
+//vbj0:180223 (GTK3)use enumprinter as alternative of cupsGetDest
+//            xxecsub2.c gxepage.c
+//*********  20180222 v129H released *******************************
 //vbi9:180221 (GTK3:bug)window size recovery err
 //            xxedef.h xe.c xxecsub.c/h gxemfrm.c
 //vbi8:180221 (GTK3:bug) selected printer is not recovered(index differ by 1 by "Default" entry)

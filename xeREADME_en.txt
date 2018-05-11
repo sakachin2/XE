@@ -1,6 +1,6 @@
-||*CID:||+129HR~:  2018/02/22                update#=  808;           ||+129HR~
+||*CID:||+129JR~:  2018/05/10                update#=  809;           ||+129JR~
 ######################################################################
-[English]    v1.29H                                                   ||+129HR~
+[English]    v1.29J                                                   ||+129JR~
 
 This editor is fit for programmers working on both main-frame and PC.
 Its operation is based on mainframe SPF editor,
@@ -287,7 +287,7 @@ How to execute.
          Or crashes if FileSize>128K                                  ||~129FI~
         .CPLC option registered on profile record was ignored when record mode.||~129FI~
          ("CPLC" option was required each time)                       ||~129FI~
-                                                                      ||+129HI~
+                                                                      ||~129HI~
   .v129G<--129F:(2018/01/30)                                          ||~129GI~
                                                                       ||~129GI~
      1.BUGs                                                           ||~129GI~
@@ -303,28 +303,47 @@ How to execute.
        -(Linux)Adjusted configure.ac through installation to S390x on Hercules emulater.||~129GI~
                And updated TroubleShooting notes(READMEe.txt).        ||~129GI~
                                                                       ||~129FI~
-  .v129H<--129G:(2018/02/22)                                          ||+129HI~
-                                                                      ||+129HI~
-     1.BUGs                                                           ||+129HI~
-       -(gxe:GTK3)printer selection on PrintDialog is applied incorrectly.||+129HI~
-       -(gxe:GTK3)screen size at termination is not recovered correctly and enlarged.||+129HI~
-                                                                      ||+129HI~
-     2.Additional function.                                           ||+129HI~
-       -P=nn(PortNo) option in xehots                                 ||+129HI~
-        .specific to the psftp destination other than default SSH portNo(22).||+129HI~
-       -Command History List.                                         ||+129HI~
-        .Shift+Ctrl+F12 shows CommandHistoryList, use "x" key to execute cmd on the line.||+129HI~
-        .Available commands are                                       ||+129HI~
-          s : set to the command input line after closed the command history panel.||+129HI~
-          S : set to the command input line of the command history panel.||+129HI~
-          t : set on the other panel if screen is split.              ||+129HI~
-              same as "S" if not split                                ||+129HI~
-          x : executhe the command after closed the command history panel.||+129HI~
-          X : execute on the command history panel.                   ||+129HI~
-          y : execute on the other panel if screen is split.          ||+129HI~
-              same as "X" if not split.                               ||+129HI~
-        .Max 40 entry is saved at xe terminate.                       ||+129HI~
-                                                                      ||+129HI~
-     3.Miscellaneous.                                                 ||+129HI~
-       -Function:"R-Retrieve-OfTheScr"(Retrieve command of Next of the panel)||+129HI~
-        had not function key assigned, assign Shift+Alt+F12.          ||+129HI~
+  .v129H<--129G:(2018/02/22)                                          ||~129HI~
+                                                                      ||~129HI~
+     1.BUGs                                                           ||~129HI~
+       -(gxe:GTK3)printer selection on PrintDialog is applied incorrectly.||~129HI~
+       -(gxe:GTK3)screen size at termination is not recovered correctly and enlarged.||~129HI~
+                                                                      ||~129HI~
+     2.Additional function.                                           ||~129HI~
+       -P=nn(PortNo) option in xehots                                 ||~129HI~
+        .specific to the psftp destination other than default SSH portNo(22).||~129HI~
+       -Command History List.                                         ||~129HI~
+        .Shift+Ctrl+F12 shows CommandHistoryList, use "x" key to execute cmd on the line.||~129HI~
+        .Available commands are                                       ||~129HI~
+          s : set to the command input line after closed the command history panel.||~129HI~
+          S : set to the command input line of the command history panel.||~129HI~
+          t : set on the other panel if screen is split.              ||~129HI~
+              same as "S" if not split                                ||~129HI~
+          x : executhe the command after closed the command history panel.||~129HI~
+          X : execute on the command history panel.                   ||~129HI~
+          y : execute on the other panel if screen is split.          ||~129HI~
+              same as "X" if not split.                               ||~129HI~
+        .Max 40 entry is saved at xe terminate.                       ||~129HI~
+                                                                      ||~129HI~
+     3.Miscellaneous.                                                 ||~129HI~
+       -Function:"R-Retrieve-OfTheScr"(Retrieve command of Next of the panel)||~129HI~
+        had not function key assigned, assign Shift+Alt+F12.          ||~129HI~
+                                                                      ||+129JI~
+  .v129J<--129H:(2018/05/10)                                          ||+129JI~
+                                                                      ||+129JI~
+     1.BUGs                                                           ||+129JI~
+                                                                      ||+129JI~
+     2.Additional function.                                           ||+129JI~
+       -CommandHistoryList.                                           ||+129JI~
+        Mouse operation support.                                      ||+129JI~
+        .R-button popups context menu.                                ||+129JI~
+        .Double click works as "x" cmd(execute the command after closed the command history panel).||+129JI~
+        .Click on the selected line works as "s" cmd(set to the command input line after closed the command history panel).||+129JI~
+                                                                      ||+129JI~
+     3.Miscellaneous.                                                 ||+129JI~
+       -Add "CPU8" option to dirlist cmd "="(compare file/directory). ||+129JI~
+                                                                      ||+129JI~
+     4.Tool.                                                          ||+129JI~
+       -xdc v2.29,xfc v1.27                                           ||+129JI~
+        Add "CPU8" option.                                            ||+129JI~
+                                                                      ||+129JI~

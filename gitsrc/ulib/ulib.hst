@@ -1,3 +1,7 @@
+//v6U1:180317 ReadConsoleInputW loop by continued eventrecord eventType=x10(FOCUS_EVENT),try flush
+//            ukbdw.c
+//v6U0:180305 debug assertion failed Expression:_format_char != '\0' at errmsgedit sprintf; count argment count
+//            uerr.c/h
 //*********  20180219 v129H update      ****************
 //v6T7:180220 stack errmsg to errmsg.<pid> and issue notification at initcomp
 //            uerr.c/h uproc2.c utf22.c

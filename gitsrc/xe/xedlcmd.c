@@ -1,4 +1,4 @@
-//*CID://+vb81R~:                             update#=  275;       //~vb81R~
+//*CID://+vb81R~:                             update#=  277;       //~vb81R~
 //*************************************************************
 //*xedlcmd.c                                                    //~5715R~
 //**dir line cmd                                                //~5715R~
@@ -786,7 +786,7 @@ int dlcsrchplh(int Popt,PUFILEH Ppfh,PULINEH Pplh)                 //~vb81I~
         	break;                                                 //~vb81I~
         }                                                          //~vb81I~
 	}                                                              //~vb81I~
-    UTRACEP("%s:rc=index=%d,plh=%p\n",UTT,jj,Pplh);                //+vb81R~
+    UTRACEP("%s:rc=index=%d,plh=%p\n",UTT,jj,Pplh);                //~vb81R~
     return jj;                                                     //~vb81I~
 }//dlcsrchplh                                                      //~vb81I~
 //**************************************************************** //~v54EI~

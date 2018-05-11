@@ -1,7 +1,10 @@
-//*CID://+vbdpR~:                             update#=   16;       //+vbdpR~
-//vbdp:171125 (wxe)del MRU menu, it is supported by =1/=2          //+vbdpI~
+//*CID://+vbj2R~:                             update#=   20;       //~vbj2R~
+//******************************************************************************//~vbj2I~
+//vbj2:180424 popup menu on cmd history list                       //~vbj2I~
+//vbdp:171125 (wxe)del MRU menu, it is supported by =1/=2          //~vbdpI~
 //vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
 //vbd1:171114 (Wxe:BUG)version 1.28-->1.29                         //~vbd0I~//~vbd2R~
+//******************************************************************************//~vbj2I~
 //Microsoft Developer Studio generated resource script.
 //
 #include "resource.h"
@@ -138,6 +141,33 @@ BEGIN
     END
 END
 
+//**************************************                           //~vbj2I~
+//* popup menu on cmd history list          //+vbj2I               //~vbj2I~
+//**************************************                           //~vbj2I~
+IDR_FLOATING_CHL MENU DISCARDABLE                                  //~vbj2I~
+BEGIN                                                              //~vbj2I~
+    POPUP "Floating"                                               //~vbj2I~
+    BEGIN                                                          //~vbj2I~
+        MENUITEM "x:Exec on Under",              ID_CHL_EXE_CLOSED //+vbj2I~
+        MENUITEM "X:     on Current",            ID_CHL_EXE_CURRENT//+vbj2M~
+        MENUITEM "y:     on Split",              ID_CHL_EXE_SPLIT  //+vbj2M~
+        MENUITEM SEPARATOR                                         //+vbj2I~
+        MENUITEM "s:Set on Under",               ID_CHL_SET_CLOSED //+vbj2R~
+        MENUITEM "S:    on Current",             ID_CHL_SET_CURRENT//~vbj2I~
+        MENUITEM "t:    on Split",               ID_CHL_SET_SPLIT  //~vbj2I~
+        MENUITEM SEPARATOR                                         //~vbj2I~
+        MENUITEM "Cut(&T)",                     ID_EDIT_CUT        //~vbj2I~
+        MENUITEM "Copy(&C)",                    ID_EDIT_COPY       //~vbj2I~
+        MENUITEM "Clear(&L)",                   ID_EDIT_CLEAR      //~vbj2I~
+        MENUITEM "Paste(&V)",                   ID_EDIT_PASTE_STD  //~vbj2I~
+        MENUITEM "PasteIns(&I)",                ID_EDIT_PASTE      //~vbj2I~
+        MENUITEM "PasteRep(&R)",                ID_EDIT_PASTE_REP  //~vbj2I~
+        MENUITEM "SelectAll(&A)",               ID_EDIT_SELECTALL  //~vbj2I~
+        MENUITEM SEPARATOR                                         //~vbj2I~
+        MENUITEM "Discard(&D)",                 ID_EDIT_CANCEL     //~vbj2I~
+    END                                                            //~vbj2I~
+END                                                                //~vbj2I~
+                                                                   //~vbj2I~
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -663,8 +693,8 @@ BEGIN
         MENUITEM "Explorer(&E)",                ID_FILE_EXPLORER
         MENUITEM "MS-DOS(&M)",                  ID_FILE_DOS
         MENUITEM "Exit(&X)",                    ID_APP_EXIT
-//      MENUITEM SEPARATOR                                         //+vbdpR~
-//      MENUITEM "Recently Used",               ID_FILE_MRU_FILE1, GRAYED//+vbdpR~
+//      MENUITEM SEPARATOR                                         //~vbdpR~
+//      MENUITEM "Recently Used",               ID_FILE_MRU_FILE1, GRAYED//~vbdpR~
     END
     POPUP "Edit"
     BEGIN

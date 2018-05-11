@@ -1,5 +1,8 @@
-//*CID://+vbd2R~:                             update#=    5;       //~vbd2R~
+//*CID://+vbj2R~:                             update#=    8;       //~vbd2R~//~vbj2R~
+//******************************************************************************//~vbj2I~
+//vbj2:180424 popup menu on cmd history list                       //~vbj2I~
 //vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
+//******************************************************************************//~vbj2I~
 #pragma once                                                       //~@@@@I~
 //{{NO_DEPENDENCIES}}
 // Microsoft Developer Studio generated include file.
@@ -32,6 +35,7 @@
 #define IDR_MAINFRAME_DYN               136
 #define IDB_COPY                        136
 #define IDB_CUT                         138
+#define IDR_FLOATING_CHL                139        //on cmd history list//~vbj2I~
 #define IDB_PASTE_INS                   140
 #define IDB_SAVE                        141
 #define IDB_PRINT                       143
@@ -177,12 +181,19 @@
 #define ID_EDIT_PASTE2                  32794
 #define ID_FILE_EXPLORER                32795
 #define ID_FILE_OPENWITH                32796
-#define ID_EDIT_SELECTALL               32797                      //+vbd2I~
+#define ID_EDIT_SELECTALL               32797                      //~vbd2I~
 #define ID_HELPXE                       32800
 #define ID_EDIT_PASTE_STD               32801
 #define ID_FILE_DNDCOPY                 32802
 #define ID_DUMMY                        32802
 #define ID_DUMMY2                       32803
+                                                                   //~vbj2I~
+#define ID_CHL_SET_CLOSED               32804                      //~vbj2I~
+#define ID_CHL_SET_CURRENT              32805                      //~vbj2I~
+#define ID_CHL_SET_SPLIT                32806                      //~vbj2I~
+#define ID_CHL_EXE_CLOSED               32807                      //+vbj2R~
+#define ID_CHL_EXE_CURRENT              32808                      //+vbj2R~
+#define ID_CHL_EXE_SPLIT                32809                      //+vbj2R~
 
 // Next default values for new objects
 // 

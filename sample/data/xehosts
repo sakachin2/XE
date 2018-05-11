@@ -37,6 +37,8 @@
 # h390  Linux390  user1    PSWD1     SSH=Y
 # w64 SmbSvr      user1    ""        SHARE=d
 # w7p   192.168.2.12 w7user pswd     share=p
+# geocity2 ftp.geocities.jp  sakachin2 pswd      SSH=N
+# centos7r localhost    root pswd  SSH=Y P=2222
 ###################################################################
 #@PSFTP=p:\down\putty063\psftp.exe
 #@SSH=all
@@ -54,3 +56,4 @@ w7suse11 192.168.24.54 sak pswd  SHARE=homes
 dells 192.168.2.17  sak pswd    SSH=Y
 faithxp 192.168.24.53  sak pswd    SSH=Y
 geocity2 ftp.geocities.jp  sakachin2 pswd3      SSH=N
+centos7r localhost    root pswd  SSH=Y P=2222

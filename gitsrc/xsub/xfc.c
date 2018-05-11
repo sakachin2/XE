@@ -1,10 +1,11 @@
-//*CID://+vaa1R~:                             update#=  343;       //+vaa1R~
+//*CID://+vaj0R~:                             update#=  356;       //+vaj0R~
 //***********************************************************
 //* XFC : compare file(win95 missing comp cmd)
 //***********************************************************
-#define VER "V1.26"   //version                                    //~vaa0R~
+#define VER "V1.27"   //version                                    //~vaa0R~//~vaj0R~
 //***********************************************************
-//vaa1:160418 Lnx64 compiler warning                               //+vaa1I~
+//vaj0:180304 /CPU8 option:output triler by utf8 to show on xe result of "=" cmd with cpu8 option//~vaj0I~
+//vaa1:160418 Lnx64 compiler warning                               //~vaa1I~
 //vaa0:160417 Lnx compiler warning                                 //~vaa0I~
 //va9E:160404 compiler warning win64                               //~va9EI~
 //va9u:150529 xfc v1.25 parm count error(by xuerpck),crash when english mode recfm=v too long record//~va9uI~
@@ -436,8 +437,8 @@ long getirecfv(char *Pfnm,FILE *Pfh,char *Pbuff,PUQUEH Ppqh,ULONG Pranges,ULONG 
         recno++;
 //      memset(Pbuff,0,Sbuffsz+1);	//required when EOL missing//~va4eI~//~va79R~//~vaa0R~
         memset(Pbuff,0,(size_t)Sbuffsz+1);	//required when EOL missing//~vaa0I~
-//  	if ((reclen=readrecfv(Pfnm,Pfh,Pbuff,recno))<0)            //~va79R~//+vaa1R~
-    	if ((reclen=readrecfv(Pfnm,Pfh,Pbuff,(int)recno))<0)       //+vaa1I~
+//  	if ((reclen=readrecfv(Pfnm,Pfh,Pbuff,recno))<0)            //~va79R~//~vaa1R~
+    	if ((reclen=readrecfv(Pfnm,Pfh,Pbuff,(int)recno))<0)       //~vaa1I~
         	break;                                                 //~va79I~
         if (!Pranges
 	    ||  ((ULONG)recno>=Pranges && (ULONG)recno<=Prangee))
@@ -1808,18 +1809,18 @@ int bincomp(void)
     if (!(buff2=malloc(BUFFSZ)))
 		uerrexit("malloc failed for buff2,size=%d)",0,BUFFSZ);
 //skip to start pos
-//  pos1=binstartpos(Sfnm1,fh1,&fstat31,Srange1s);                 //+vaa1R~
-    pos1=(FILESZT)binstartpos(Sfnm1,fh1,&fstat31,Srange1s);        //+vaa1I~
-//  pos2=binstartpos(Sfnm2,fh2,&fstat32,Srange2s);                 //+vaa1R~
-    pos2=(FILESZT)binstartpos(Sfnm2,fh2,&fstat32,Srange2s);        //+vaa1I~
+//  pos1=binstartpos(Sfnm1,fh1,&fstat31,Srange1s);                 //~vaa1R~
+    pos1=(FILESZT)binstartpos(Sfnm1,fh1,&fstat31,Srange1s);        //~vaa1I~
+//  pos2=binstartpos(Sfnm2,fh2,&fstat32,Srange2s);                 //~vaa1R~
+    pos2=(FILESZT)binstartpos(Sfnm2,fh2,&fstat32,Srange2s);        //~vaa1I~
   if (Sendoffsp1)                                                  //~va30I~
-//  endoffs1=Srange1e-pos1;                                        //+vaa1R~
-    endoffs1=(FILESZT)Srange1e-pos1;                               //+vaa1I~
+//  endoffs1=Srange1e-pos1;                                        //~vaa1R~
+    endoffs1=(FILESZT)Srange1e-pos1;                               //~vaa1I~
   else                                                             //~va30I~
     endoffs1=FILESZ_MAX-pos1;                                      //~va30I~
   if (Sendoffsp2)                                                  //~va30I~
-//  endoffs2=Srange2e-pos2;                                        //+vaa1R~
-    endoffs2=(FILESZT)Srange2e-pos2;                               //+vaa1I~
+//  endoffs2=Srange2e-pos2;                                        //~vaa1R~
+    endoffs2=(FILESZT)Srange2e-pos2;                               //~vaa1I~
   else                                                             //~va30I~
     endoffs2=FILESZ_MAX-pos1;                                      //~va30I~
 //printf("pos1=%08lx,pos2=%08lx,eoff1=%08lx,eoff2=%08lx\n",pos1,pos2,endoffs1,endoffs2);
@@ -2067,8 +2068,8 @@ UINT getinput(char *Pfnm,FILE *Pfh,char *Pbuff,UINT Preqsz)
 {
 	UINT readlen;
 //****************
-//  readlen=fread(Pbuff,1,Preqsz,Pfh);	//read 1 block             //+vaa1R~
-    readlen=(UINT)fread(Pbuff,1,Preqsz,Pfh);	//read 1 block     //+vaa1I~
+//  readlen=fread(Pbuff,1,Preqsz,Pfh);	//read 1 block             //~vaa1R~
+    readlen=(UINT)fread(Pbuff,1,Preqsz,Pfh);	//read 1 block     //~vaa1I~
 //printf("read=%08x,req=%08x\n",readlen,Preqsz);
     if (readlen<Preqsz)
 		if (ferror(Pfh))
@@ -2135,6 +2136,13 @@ void parmchk(int parmc,char *parmp[])
 	          		Smaxctr=atoi(cptr+1);
                 break;
             case 'C':                                              //~v105I~
+            	if (!stricmp(cptr,"CPU8"))                         //~vaj0R~
+                {                                                  //~vaj0I~
+#ifdef W32                                                         //~vaj0M~
+    				uerrsetopt2(GBL_UERR2_OUTUTF8,0);              //~vaj0R~
+#endif              //Linux ignore,xe may specify                  //~vaj0I~
+                    break;                                         //~vaj0I~
+                }                                                  //~vaj0I~
                 Scmntsw=1;                                         //~v105I~
                 if (*(cptr+1))                                     //~v105I~
                 {                                                  //~va10I~
@@ -2689,6 +2697,12 @@ HELPMSG
 "   %cBn        :バイナリー比較を実行;n は比較中止の不一致バイト数.省略値=%d.\n",//~v143R~
 					CMDFLAG_PREFIX,                                //~v143I~
 					MAXCTR);
+#ifdef W32                                                         //~vaj0I~
+HELPMSG                                                            //~vaj0I~
+"   %cCPU8      :(Win)for XE, msg by UTF8 code.\n",                //~vaj0R~
+"   %cCPU8      :(Win)XE 用、メッセージをUTF8 コードで出力\n",     //~vaj0R~
+					CMDFLAG_PREFIX);                               //~vaj0R~
+#endif                                                             //~vaj0I~
 //HELPMSG                                                          //~va10R~
 //"   %cC[P|N]    :ignore diff in C++ comment(after '//') except full comment line.\n",//~va10R~
 //"   %cC[P|N]    :コメント行以外のC++スタイルのコメント('//で開始')の違いを無視.\n",//~va10R~

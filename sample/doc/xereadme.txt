@@ -1,4 +1,4 @@
-||*CID:||+v129R~:  2018/02/22              update#=  578;             ||+v129R~
+||*CID:||+v129R~:  2018/05/10              update#=  580;             ||~v129R~
 ######################################################################
 [English]    v1.29                                                    ||~v128R~||~v129R~
 
@@ -113,13 +113,13 @@
  v1.20  xcv.exe      Code conversion.                                 ||+124FR~,||~124QR~||~125FR~||~125GR~||~127QR~||~v129R~
                      EUC,SJIS(Japanese:Shift JIS),Unicode,UTF-8,EBCDIC,Any-Codepage.||~124QR~
  v1.2   xcvsjisc.exe Convert SJIS in xe's source file to Octal-notation.||~124FR~
- v2.28  xdc.exe      directory compare tool                           ||~127SR~||~v128R~
+ v2.29  xdc.exe      directory compare tool                           ||~127SR~||~v128R~||~v129R~
  v2.1   xdd.exe      directory delete tool                            ||~128FR~||~v128R~
  v1.12  xdig.exe     directory walk utility                           ||~124FR~||~127AR~||~127QR~||~v129R~
                      tool apply command to all sub-directory/files.
         xdig.txt     doc for xdig                                     ||~124FR~
  v1.12  xds.exe      Directory size display tool                      ||~124RR~||~126BR~||~127AR~||~v129R~||~v129R~
- v1.25  xfc.exe      File compare tool                                ||~127SR~||~v128R~
+ v1.27  xfc.exe      File compare tool                                ||~127SR~||~v128R~||~v129R~
  v1.7   xff.exe      file search by size/timestamp/name.               ||~7B08R~||~127ER~
  v1.19  xfg.exe      Binary file string search & Recursive grep.      ||~127AR~||~128FR~||~v128R~
  v1.4   xfmt.exe     FileLineFormatter. "TC FMT" for huge file.       ||~124QR~||~v125R~
@@ -2438,7 +2438,8 @@ How to start.
   .v129E<--129D:(2018/01/09)                                          ||~v129R~
   .v129F<--129E:(2018/01/23)                                          ||~v129R~
   .v129G<--129F:(2018/01/30)                                          ||~v129I~
-  .v129H<--129G:(2018/02/22)                                          ||+v129R~
+  .v129H<--129G:(2018/02/22)                                          ||~v129R~
+  .v129J<--129H:(2018/05/10)                                          ||+v129I~
                                                                       ||~v129R~
      1.BUGs                                                           ||~v129R~
        -(Windows:64)"&"(spawn executable file) dir cmd crush.         ||~v129R~
@@ -2461,9 +2462,9 @@ How to start.
        -(Linux) On Ubuntu17.10, DirList line command:"!"(start application corresoponding to the file extension)||~v129I~
         failes by "No application defined to the MIME type".          ||~v129I~
        -(Wxe/gxe) Cut&Paste by mouse may paste trash data with length of CID of source line.||~v129I~
-     (129H)                                                           ||+v129I~
-       -(gxe:GTK3)printer selection on PrintDialog is applied incorrectly.||+v129I~
-       -(gxe:GTK3)screen size at termination is not recovered correctly and enlarged.||+v129I~
+     (129H)                                                           ||~v129I~
+       -(gxe:GTK3)printer selection on PrintDialog is applied incorrectly.||~v129I~
+       -(gxe:GTK3)screen size at termination is not recovered correctly and enlarged.||~v129I~
                                                                       ||~v129R~
      2.Additional function.                                           ||~v129I~
                                                                       ||~v129I~
@@ -2522,7 +2523,6 @@ How to start.
         (Wxe,gxe)                                                     ||~v129I~
           ."SelectAll" menuitem was added to File submenu and popup menu on edit panel.
           .Set shotcut key to Ctrl+A and cabnged to Ctrk+Shift+A for SaveAs.
-                                                                      ||~v129I~
      (129E)                                                           ||~v129I~
        -XML tag pairing search                                        ||~v129I~
           .Default shortcut key is Alt+"/"                            ||~v129I~
@@ -2530,7 +2530,6 @@ How to start.
           .Comment portion(from "<!--" to  "-->") is ignored          ||~v129I~
            and recognize nested tag.                                  ||~v129I~
            It is convenient to correct html automation tool generated.||~v129I~
-                                                                      ||~v129I~
      (129H)                                                           ||~v129I~
        -P=nn(PortNo) option in xehots                                 ||~v129I~
         .specific to the psftp destination other than default SSH portNo(22).||~v129I~
@@ -2546,6 +2545,12 @@ How to start.
           y : execute on the other panel if screen is split.          ||~v129I~
               same as "X" if not split.                               ||~v129I~
         .Max 40 entry is saved at xe terminate.                       ||~v129I~
+     (129J)                                                           ||~v129I~
+       -CommandHistoryList.                                           ||~v129I~
+        Mouse operation support.                                      ||~v129I~
+        .R-button popups context menu.                                ||~v129I~
+        .Double click works as "x" cmd(execute the command after closed the command history panel).||~v129I~
+        .Click on the selected line works as "s" cmd(set to the command input line after closed the command history panel).||~v129I~
                                                                       ||~v129I~
      3.Miscellaneous.                                                 ||~v129R~
        -(Windows) add "msi" as executable binary extension            ||~v129R~
@@ -2570,6 +2575,8 @@ How to start.
      (129H)                                                           ||~v129I~
        -Function:"R-Retrieve-OfTheScr"(Retrieve command of Next of the panel)||~v129I~
         had not function key assigned, assign Shift+Alt+F12.          ||~v129I~
+     (129J)                                                           ||~v129I~
+       -Add "CPU8" option to dirlist cmd "="(compare file/directory). ||~v129I~
                                                                       ||~v129I~
      4.Tool.                                                          ||~v129I~
      (129C)                                                           ||~v129I~
@@ -2591,3 +2598,6 @@ How to start.
          Search ICU shared library(DLL or so) on PATH or LD_LIBRARY_PATH.||~v129I~
          If library found, supply ICU version using ICU utility uconv(.exe).||~v129I~
            e.g) xcv x1ebc22 x1ebc22m -b2m -cpeb=cp930 -icu            ||~v129I~
+     (129J)                                                           ||~v129I~
+       -xdc v2.29,xfc v1.27                                           ||~v129I~
+        Add "CPU8" option.                                            ||~v129I~

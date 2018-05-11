@@ -1,8 +1,9 @@
-//*CID://+v6T7R~:                              update#=  296       //~v6T7R~
+//*CID://+v6U0R~:                              update#=  302       //~v6U0R~
 //*************************************************************
 //*uerrexit/uerrmsg/uerrexit_init/uerrmsg_init/ugeterrmsg**
 //*uerrapi1,uerrapi1x,uerrapi0,uerrapi0x                           //~v040R~
 //*************************************************************
+//v6U0:180305 debug assertion failed Expression:_format_char != '\0' at errmsgedit sprintf; count argment count//~v6U0I~
 //v6T7:180220 stack errmsg to errmsg.<pid> and issue notification at initcomp//~v6T7I~
 //v6J1:170206 errmsg loop when UD fmt err(uerrmsg->ufprintf->ufilecvUD2Wnopath->uerrmsg);occued when !UD_MODE()//~v6J1I~
 //v6G3:161212 (Win10) missing error.h , use winerror.h             //~v6G3I~
@@ -727,8 +728,8 @@ char *uerrmsg(char *Pemsg ,char *Pjmsg,... )
 #endif                                                             //~v570I~
         }                                                          //~v570I~
   }	                                                               //~v062I~
-    if (Guerropt2 & GBL_UERR2_INIT_INPROG) //xe init in progress   //+v6T7M~
-		uerrmsg_initstack(pmsg);                                   //+v6T7I~
+    if (Guerropt2 & GBL_UERR2_INIT_INPROG) //xe init in progress   //~v6T7M~
+		uerrmsg_initstack(pmsg);                                   //~v6T7I~
 	return pmsg;
 }//uerrmsg                                                         //~v060R~
 
@@ -771,8 +772,8 @@ char *uerrmsg2(char *Pemsg ,char *Pjmsg,... )                      //~v182I~
 #endif                                                             //~v570I~
         }//Shandle2                                                //~v5nnI~
   }                                                                //~v182I~
-    if (Guerropt2 & GBL_UERR2_INIT_INPROG) //xe init in progress   //+v6T7I~
-		uerrmsg_initstack(pmsg);                                   //+v6T7I~
+    if (Guerropt2 & GBL_UERR2_INIT_INPROG) //xe init in progress   //~v6T7I~
+		uerrmsg_initstack(pmsg);                                   //~v6T7I~
 	return pmsg;                                                   //~v182I~
 }//uerrmsg2                                                        //~v182I~
                                                                    //~v182I~
@@ -1440,9 +1441,26 @@ static int Sdoubleentry=0;
     i+=sprintf(pc+i,"%s",Ptitle);                                  //~v5iwI~
   }	                                                               //~v200I~
 //  sprintf(Smsgsave+i,patern+j,                                   //~v170R~
+#ifdef W32                                                         //~v6U0I~
+    if (Guerropt2 & GBL_UERR2_OUTUTF8    //clear each time         //~v6U0I~
+    &&  Pjmsg && *Pjmsg	&& UCBITCHK(Guerropt,GBL_UERR_DBCSMODE)		//japanese msg and DBCS mode//~v6U0I~
+	&&  !(Suerropt & UERR_FORCE_ENGLISH)                           //~v6U0I~
+    )                                                              //~v6U0I~
+    {                                                              //~v6U0I~
+    	int lenlocale;                                             //~v6U0I~
+    	lenlocale=vsprintf(eucmsg,patern+j,(va_list)(ULPTR)Pparg); //~v6U0I~
+    	ucvssjis2utf(0,0,eucmsg,lenlocale,pc+i,MAXMSGLL-i-1,&chklen,&outlen,&errctr);	//sjis-->utf8 after sprintf to avois assertion by utf8 pattern msg//+v6U0R~
+	    UCBITON(Guerropt2,GBL_UERR2_S2UJMSG);    //conv sjis to utf8 was done//~v6U0I~
+        UTRACED("uerrmsgedit OUTUTF8",pc+i,outlen);                //~v6U0M~
+        i+=outlen;                                                 //~v6U0I~
+    }                                                              //~v6U0I~
+    else                                                           //~v6U0I~
+    	i+=vsprintf(pc+i,patern+j,(va_list)(ULPTR)Pparg);          //~v6U0R~
+#else                                                              //~v6U0I~
     i+=sprintf(pc+i,patern+j,                                      //~v170I~
 	        *(Pparg+0),*(Pparg+1),*(Pparg+2),*(Pparg+3),*(Pparg+4),
             *(Pparg+5),*(Pparg+6),*(Pparg+7),*(Pparg+8),*(Pparg+9));
+#endif                                                             //~v6U0I~
 //UTRACEP("errmsg len=%d\n",i);                                    //~v170R~
 //UTRACED("errmsg ",pc,lenw);                                      //~v170R~
     if (i>=lenw)                                                   //~v170R~

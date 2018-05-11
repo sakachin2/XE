@@ -1,7 +1,8 @@
-//*CID://+vbdnR~:                             update#=  391;       //~vbd8R~//~vbdnR~
+//*CID://+vbj2R~:                             update#=  398;       //~vbj2R~
 //*********************************************************************//~v440I~
 //* wxe interface definition                                       //~v440I~
 //*********************************************************************//~v440I~
+//vbj2:180424 popup menu on cmd history list                       //~vbj2I~
 //vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
 //vbd8:171120 (WXE)stdregion by PFK(F6) should disable PAste REP/INS//~vbd8I~
 //vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
@@ -354,7 +355,9 @@ int wxe_dndcopyfile(int Popt,int Pseq,int Ptot,char *Psource,char *Ptarget);//~v
 	#define XXECCPI_VHEXCSRMASK   0xff00	//vhexcsr pos          //~va3tR~
 	#define XXECCPI_GETVHEXCSR(inf) (((inf) & XXECCPI_VHEXCSRMASK)>>XXECCPI_VHEXCSRSHIFT)//~va3tR~
 	int xxe_getlinenofldsz(int Popt,int Prow,int *Poutcols);       //~vb3pR~
-	int wxe_chkUpdateFileMenu(int Popt);                           //+vbdnR~
+	int wxe_chkUpdateFileMenu(int Popt);                           //~vbdnR~
+	void *wxe_isCHLLine(int Popt);                                 //+vbj2R~
+	int  wxe_CHLcmd(int Popt,int Pcmd);                            //~vbj2R~
                                                                    //~va3DI~
 //*****************************************************************//~v440R~
 #ifdef __cplusplus                                                 //~v440I~
