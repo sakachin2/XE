@@ -1,13 +1,14 @@
-//*CID://+va37R~:                             update#=   53;       //~va37R~
+//*CID://+vak0R~:                             update#=   58;       //~vak0R~
 //***********************************************************
 //* xpe    : print numonic errno
 //***********************************************************
+//vak0:180817 xver1.3: force english if chcp!=932                  //~vak0I~
 //va37:070522 xpe:sys_nerr duplicated                              //~va37I~
 //va2n:060907 xpe:1.1 (WIN)support errorcode by GetLastError()     //~va2nI~
 //*v1.0 020330 first version
 //***********************************************************
 
-#define VER "V1.2"   //version                                     //~va37R~
+#define VER "V1.3"   //version                                     //~va37R~//~vak0R~
 #define PGM "xpe"
 
 //**********************************************/
@@ -32,6 +33,7 @@
 #include <ulib.h>
 #include <uerr.h>
 #include <uedit.h>
+#include <udbcschk.h>                                              //~vak0I~
 //*********************************************************************
 #ifdef AIX                                                         //~v001I~
 	#define MAX_ERRNO_AIX   EOVERFLOW  //     127                  //~v001I~
@@ -60,6 +62,11 @@ int main(int parmc,char *parmp[])
 	char *pc,unknownerrno[32];                                     //~va37R~
 #endif                                                             //~va37I~
 //**********************
+#ifdef W32                                                         //~vak0I~
+  if (!udbcschkcp())		//dbcstbl or cp!=932               //~v150I~//+vak0R~
+    uerrmsg_init("",stdout,UERR_FORCE_ENGLISH);//msg to stdout     //~vak0I~
+  else                                                             //~vak0I~
+#endif                                                             //~vak0I~
 	uerrmsg_init("",stdout,0);//msg to stdout
 	uerrexit_init("",stdout,0,0,0);//stdout only,no pathmsg
     parmchk(parmc,parmp);
@@ -91,7 +98,7 @@ int main(int parmc,char *parmp[])
     #else                                                          //~v001I~
       #ifdef LNX                                                   //~va37I~
             	maxerr=9999;	//sys_errlist entry no (contain errno=0)//~va37I~
-//            	printf("max=%d\n",sys_nerr);	//sys_errlist entry no (contain errno=0)//+va37R~
+//            	printf("max=%d\n",sys_nerr);	//sys_errlist entry no (contain errno=0)//~va37R~
       #else                                                        //~va37I~
             	maxerr=sys_nerr;	//sys_errlist entry no (contain errno=0)//~v001I~
       #endif                                                       //~va37I~
@@ -165,6 +172,7 @@ void parmchk(int parmc,char *parmp[])
 #ifdef W32                                                         //~va2nI~
     int winmax=0;                                                  //~va2nI~
 #endif                                                             //~va2nI~
+    int posparmctr=0;                                              //~vak0I~
 //*************************
   	if (parmc<2 || *parmp[1]=='?')
   	{
@@ -218,7 +226,14 @@ void parmchk(int parmc,char *parmp[])
         		parmerr(cptr-1);
     		}//switch  by first option byte
   		}
+        else                                                       //~vak0I~
+            posparmctr++;                                          //~vak0I~
 	}//for all parm
+    if (!posparmctr)                                               //~vak0I~
+  	{                                                              //~vak0I~
+    	help();                                                    //~vak0I~
+    	exit(0);                                                   //~vak0I~
+  	}                                                              //~vak0I~
     return;
 }//parmchk
 //**********************************************************************

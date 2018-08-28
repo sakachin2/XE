@@ -1,4 +1,4 @@
-//*CID://+vbi3R~:                             update#=  437;       //~vbi3R~
+//*CID://+vbi3R~:                             update#=  438;       //~vbi3R~
 //***********************************************************
 //* xescr.c                                                     //~5513I~
 //***********************************************************   //~v016I~
@@ -2119,11 +2119,13 @@ int scrcell2tocell(char *Pdata,char *Pcell,int Poffs,int Plen)     //~va00R~
 	int ii;                                                        //~va00I~
     char *pc,*pcell;                                               //~va00I~
 //***********************                                          //~va00I~
+    UTRACED("in pdata",Pdata+Poffs,Plen);                          //+vbi3I~
 	for (ii=Plen,pc=Pdata+Poffs,pcell=Pcell+Poffs+Poffs;ii>0;ii--) //~va00R~
     {                                                              //~va00I~
     	*pcell++=*pc++;                                            //~va00R~
         pcell++;                                                   //~va00R~
     }                                                              //~va00I~
+    UTRACED("out cell",Pcell+Poffs*2,Plen);                        //+vbi3I~
     return 0;                                                      //~va00I~
 }//scrcell2tocell                                                  //~va00I~
 #endif                                                             //~va00I~

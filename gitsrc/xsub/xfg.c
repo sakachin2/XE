@@ -1,7 +1,9 @@
-//*CID://+vad2R~:                             update#=  552;       //~vad2R~
+//*CID://+vak4R~:                             update#=  594;       //~vak4R~
 //***********************************************************
 //* xfg     : grep for binary file                                 //~v118R~
 //***********************************************************
+//vak4:180824 xfg 1.20: allow space between "-e" and grep string   //~vak4I~
+//vak3:180824 xfg 1.20: grep hung when srchword start with "-"     //~vak3I~
 //vad2:170107 xfg v1.19 crash when longfilename                    //~vad2I~
 //vab0:161127 xfg1.18:do not apply wild card filemask to ddirname  //~vab0I~
 //vaa0:160417 Lnx compiler warning                                 //~vaa0I~
@@ -72,7 +74,7 @@
 //*        else error                          */
 //**********************************************/
 //***********************************************************
-#define VER "V1.19"  //version                                     //~vad2R~
+#define VER "V1.20"  //version                                     //~vad2R~//~vak3R~
 #define PGMID   "xfg"                                              //~v1.1R~
 #ifdef DOS                                                         //~v11fI~
 	#define RBUFFSZ 16384                                          //~v11fI~
@@ -180,6 +182,7 @@ static int  Sskipslinksw=0; //skip symbolic link                   //~va71R~
 static int  Sdispall;  		//display not found member also        //~0B15I~
 static int  Sgrepsw;  		//display line                         //~v1.1I~
 static int  Sgrepflagsw=0;  //grep parm contain flags              //~va1LI~
+static char *Sgrepflag=""; //grep parm contain flags               //~vak3R~
 static int  Sgreponlysw;	//skip bin search                      //~v119I~
 static int Suerrmsgopt=0;                                          //~v1.1R~
 static	char Spgmver[18];                                          //~v1.1I~
@@ -192,6 +195,7 @@ static UQUEH Sqhxmask; //exclude mask que header                   //~va9xI~
 static UQUEH Sqhimask; //include mask que header                   //~va9yI~
 static int Sswxmask;                                               //~va9xI~
 static int Sswimask;                                               //~va9yI~
+static int Sswgrepsub;                                             //~vak3I~
 //************
 //int xsssub(char *Pfnm,int *Pfilectr,int *Pmatchctr);             //~v124R~
 int xsssub(char *Pfnm);                                            //~v124I~
@@ -234,6 +238,7 @@ int main(int parmc,char *parmp[])
     char fpath[_MAX_PATH];                                         //~v124I~
     char fnm1[_MAX_PATH],*pfnm,*pfnme;                             //~va39I~
     int fnmlen,concatnamesw=0,concatnamewarnsw=0;                  //~va39R~
+    int swexpression=0;                                            //~vak4I~
 //*************************
 	sprintf(Spgmver,"%s:%s:",PGMID,VER);                           //~v1.1R~
   	uerrmsg_init(Spgmver,stdout,0);//default color                 //~v1.1R~
@@ -257,6 +262,7 @@ int main(int parmc,char *parmp[])
 #endif                                                             //~0B16I~
 //      && posparmno<=1)                                           //~va1SR~
         && !flagendsw   //for the case search string start by "-"  //~va1SI~
+        && !swexpression                                           //~vak4I~
         && !posparmno)                                             //~va1SR~
   		{//option
     		ch=*(++cptr);                      //first option byte
@@ -275,6 +281,11 @@ int main(int parmc,char *parmp[])
 //* egrep word    /E*                                              //~v11fR~
 //**************************                                       //~v11dI~
     		case 'E':                                              //~v11fR~
+                if (!*cptr)                                        //~vak4I~
+                {                                                  //~vak4I~
+                	swexpression=1;                                //~vak4I~
+                    break;                                         //~vak4I~
+                }                                                  //~vak4I~
 	  			Sgrepword=cptr;                                    //~v11dI~
                 Sgrepsw=1;                                         //~v11fR~
                 if (*cptr)                                         //~v11dI~
@@ -487,6 +498,16 @@ int main(int parmc,char *parmp[])
   		}
   		else
   		{//positional parmno
+        	if (swexpression)                                      //~vak4I~
+            {                                                      //~vak4I~
+	  			Sgrepword=cptr;                                    //~vak4I~
+                Sgrepsw=2;                                         //~vak4I~
+                Sgrepflagsw=(*cptr=='-');	//contain flag parm    //~vak4I~
+                Sgrepword=xfgenclosegrepstring(cptr);              //~vak4I~
+                Sgrepwordlen=(int)strlen(Sgrepword);               //~vak4I~
+                swexpression=0;                                    //~vak4I~
+                continue;                                          //~vak4I~
+            }                                                      //~vak4I~
     		posparmno++;
     		switch (posparmno)
     		{
@@ -519,11 +540,24 @@ int main(int parmc,char *parmp[])
   		}//option or posparm
 	}//for all parm
   	if (Stestsw)                                                   //~v122I~
-    	ualloc_init(UALLOC_TRACE,"xff.mtr");                       //~v122I~
+    	ualloc_init(UALLOC_TRACE,"xfg.mtr");                       //~v122I~//~vak3R~
 //***no pos parm chk
 	if (posparmno<2)                                               //~v1.1R~
-		uerrexit("search-word and dir/file-name parm required.",
-    			"探索文字列と入力ファイル或いはディレクトリーを指定して下さい");
+//  	uerrexit("search-word and dir/file-name parm required.",   //~vak3R~
+//  			"探索文字列と入力ファイル或いはディレクトリーを指定して下さい");//~vak3R~
+    	uerrexit("search-word and dir/file-name parm required.\n"  //~vak3I~
+#ifdef W32                                                         //~vak3I~
+    			"   (Use %cp for searchword starting with \"-\" or \"/\".)",//~vak3R~
+#else                                                              //~vak3I~
+    			"   (Use %cp for searchword starting with \"-\".)",//~vak3R~
+#endif                                                             //~vak3I~
+    			"探索文字列と入力ファイル或いはディレクトリーを指定して下さい\n"//~vak3R~
+#ifdef W32                                                         //~vak3I~
+    			"   探索文字列が \"-\" か \"/\" で始まるときは %cp で指定してください",//~vak3R~
+#else                                                              //~vak3I~
+    			"   探索文字列が \"-\" で始まるときは %cp で指定してください",//~vak3R~
+#endif                                                             //~vak3I~
+						CMDFLAG_PREFIX);                           //~vak3I~
     if (!Swordno)                                                  //~v11dI~
     {                                                              //~v11dI~
     	if (Sgrepsw!=2)	//no grep word                             //~v11dI~
@@ -737,18 +771,24 @@ int main(int parmc,char *parmp[])
 					CMDFLAG_PREFIX,STR_SEPC);                      //~va39I~
 	if (fnmwarnsw)		//isuue warning cmd flag sequence          //~v124R~
 #ifdef UNX                                                         //~v124I~
-    	uerrmsg("  (Warning:detected file name with starting char is %c)\n",//~v124I~
-        	    "  (注意: %c で始まるファイル名の指定が有ります。)\n",//~v125R~
+//  	uerrmsg("  (Warning:detected file name with starting char is %c)\n",//~v124I~//~vak3R~
+//      	    "  (注意: %c で始まるファイル名の指定が有ります。)\n",//~v125R~//~vak3R~
+    	uerrmsg("  (Warning:detected file name with starting char is \"%c\",\n and all option parameters have to be before filespec.)\n",//~vak3R~
+        	    "  (注意: \"%c\" で始まるファイル名の指定が有ります\nまたすべての Option パラメータはファイル指定の前に指定します)\n",//~vak3R~
 					CMDFLAG_PREFIX);                               //~v124I~
 #else                                                              //~v124I~
-    	uerrmsg("  (Warning:detected file name with starting char is %c or %c)\n",//~v124I~
-        	    "  (注意: %c , %c で始まるファイル名の指定が有ります。)\n",//~v125R~
+//  	uerrmsg("  (Warning:detected file name with starting char is %c or %c)\n",//~v124I~//~vak3R~
+//      	    "  (注意: %c , %c で始まるファイル名の指定が有ります。)\n",//~v125R~//~vak3R~
+    	uerrmsg("  (Warning:detected file name with starting char is \"%c\" or \"%c\",\n and all option parameters have to be before filespec.)\n",//~vak3R~
+        	    "  (注意: \"%c\" , \"%c\" で始まるファイル名の指定が有ります\nまたすべての Option パラメータはファイル指定の前に指定します)\n",//~vak3R~
 					CMDFLAG_PREFIX,CMDFLAG_PREFIX2);               //~v124I~
 #endif                                                             //~v124I~
 //  printf("grep = \"%s\"\n",Sgrepword);                           //~v127R~
   	if (Sgrepsw)                                                   //~v127I~
+	if (Sswgrepsub)                                                //~vak3I~
     {                                                              //~v127I~
-		printf("grep = \"");                                       //~v127I~
+//  	printf("grep = \"");                                       //~v127I~//~vak3R~
+    	printf("grep := %s ",Sgrepflag);                           //~vak3R~
         for (ii=0,pc=Sgrepword;ii<Sgrepwordlen;ii++,pc++)          //~v127I~
         {                                                          //~v127I~
         	if (!*pc)                                              //~v129I~
@@ -759,7 +799,8 @@ int main(int parmc,char *parmp[])
             	printf("\\x%02x",*pc);                             //~v127I~
                                                                    //~v127I~
         }                                                          //~v127M~
-		printf("\"\n");                                            //~v127I~
+//  	printf("\"\n");                                            //~v127I~//~vak3R~
+    	printf("\n");                                              //~vak3I~
     }                                                              //~v127I~
 //    for (ii=0;ii<Swordno;ii++)                                   //~v1.1R~
 //        if (!ii)                                                 //~v1.1R~
@@ -1468,18 +1509,39 @@ int grepsub(char *Pfnm)                                            //~v1.1I~
     int rc;                                                        //~v1.1I~
 //#ifdef USE_SYS                                                   //~v11dR~
 //  char cmd[_MAX_PATH+16];                                        //~v1.1R~//~vad2R~
-    char cmd[_MAX_PATH2+256];       //grepword   etc               //+vad2R~
+    char cmd[_MAX_PATH2+256];       //grepword   etc               //~vad2R~
 //#endif                                                           //~v11dR~
 	FILEFINDBUF3 ffb3;                                             //~v11dI~
+    static int SswgrepwordP;	//"-" prefixed by "\\"             //~vak3I~
 //****************                                                 //~v1.1M~
+    Sswgrepsub=1;                                                  //~vak3I~
     fflush(stdout);                                                //~v1.1I~
     fflush(stderr);                                                //~v1.1I~
 //if (Sgreponlysw)                                                 //~v11dR~
+    caseid="";                                                     //~vak3I~
   if (Sgrepsw==2)                                                  //~v11dI~
         fixid="";                                                  //~v119M~
   else                                                             //~v119M~
+  {                                                                //~vak3I~
     if (Swordno==1)                                                //~v1.1I~
+    {                                                              //~vak3I~
+      if (SswgrepwordP)                                            //~vak3I~
+        fixid="";                                                  //~vak3I~
+      else                                                         //~vak3I~
+      if (*Sgrepword!='-')                                         //~vak3I~
         fixid="F";	//F:fgrep                                      //~v1.1I~
+      else                                                         //~vak3I~
+      {                                                            //~vak3I~
+      	char *newword;                                             //~vak3M~
+        fixid="";                                                  //~vak3I~
+        newword=malloc((size_t)Sgrepwordlen+8);                    //~vak3R~
+        *newword='\\';                                             //~vak3I~
+        UmemcpyZ(newword+1,Sgrepword,(size_t)Sgrepwordlen);        //~vak3I~
+        Sgrepword=newword;                                         //~vak3I~
+        Sgrepwordlen++;                                            //~vak3I~
+        SswgrepwordP=1;                                            //~vak3I~
+      }                                                            //~vak3I~
+    }                                                              //~vak3I~
     else                                                           //~v1.1I~
 //      fixid="";                                                  //~va1SR~
         fixid="E";	//E:extended                                   //~va1SI~
@@ -1487,7 +1549,10 @@ int grepsub(char *Pfnm)                                            //~v1.1I~
         caseid="i"; //i:case insensitive                           //~v1.1R~
     else                                                           //~v1.1I~
         caseid="";                                                 //~v1.1R~
+    }                                                              //~vak3I~
     sprintf(flg,"-n%s%s",fixid,caseid);                            //~va1SI~
+    Sgrepflag=malloc(strlen(flg)+1);                               //~vak3R~
+    strcpy(Sgrepflag,flg);                                         //~vak3R~
 //  strcat(flg," -E");                                             //~va1SR~
 //#ifdef USE_SYS                                                   //~v11dR~
   if (Sgreponlysw)                                                 //~v11dI~
@@ -1670,6 +1735,8 @@ void help(void)
 	HELPMSG "format: %s [%coptions] srch_word filespec [filespec ...]\n",//~va26R~
 			" 形式 : %s [%coptions] 探索文字列 ファイル指定 [ファイル指定...]\n",//~va26R~
 			PGMID,CMDFLAG_PREFIX);                                 //~v1.1R~
+	HELPMSG "*******************************************************************************\n",//~vak3R~
+	        "*******************************************************************************\n");//~vak3R~
 	HELPMSG " srch_word   :string to be searched.\n",              //~va26R~
 			" 探索文字列   :サーチ文字列.\n");                     //~va26R~
 	HELPMSG "              \\& (AND) and/or \\| (OR) (mixed-multiple)concatination is avail.\n",//~va26R~
@@ -1686,7 +1753,7 @@ void help(void)
     HELPMSG "              \"*:\" means all fixed drive.\n",       //~va26R~
             "                \"*:\" で全固定ドライブを意味する。\n");//~va26R~
 #endif                                                             //~v120I~
-	HELPMSG " option      :\n",                                    //~va26R~
+	HELPMSG " options      :\n",                                    //~va26R~//~vak4R~
 			" オプション   :\n");                                  //~va26R~
 	HELPMSG "  %ca          :display All filename.\n",             //~va26R~
 			"  %ca          :文字列を含まないファイル名も\x95\\示\n",//~va26R~
@@ -1694,8 +1761,8 @@ void help(void)
 	HELPMSG "  %cc          :filespec parm is \"%c\" concatinated string.\n",//~va39R~
 	        "  %cc          :ファイル指定パラメータが \"%c\" 連結であることの指定\n",//~va39R~
 						CMDFLAG_PREFIX,STR_SEPC);                  //~va39R~
-	HELPMSG "  %cexxxx      :grep Expression,use when grep by other than  srch_word.\n",//~va26R~
-			"  %cexxxx      :grep 式。探索文字列以外でgrepする時に使用。\n",//~va26R~
+	HELPMSG "  %ce xxxx     :grep Expression,use when grep in the file by other than srch_word.\n",//~va26R~//~vak3R~//~vak4R~
+			"  %ce xxxx     :grep 式。ファイル内を探索文字列以外でgrepする時に使用。\n",//~va26R~//~vak3R~//~vak4R~
 						CMDFLAG_PREFIX);                           //~v124M~
 	HELPMSG "               spacify also flag parm of grep at the top of the string\n",//~va2hR~
 			"               省略値のgrepパラメータ\"-nE\"を避けたい時は、\n");//~va2hR~
@@ -1735,9 +1802,22 @@ void help(void)
 #endif                                                             //~v11dI~
 //    uerrmsg("  %cr          :Recursive subdir search\n",         //~va26R~
 //            "  %cr          :サブDirも探索\n",                   //~va26R~
+#ifdef W32                                                         //~vak3I~
 	HELPMSG "  %cp          :specify before the search string if it start by \"-\" or \"/\".\n",//~va26R~
 			"  %cp          :探索文字列が\"-\"か\"/\"で始まるとき文字列の前に指定する。\n",//~va26R~
 						CMDFLAG_PREFIX);                           //~va1SI~
+	HELPMSG "               For \"-\", simply \"\\\" is prepended before \"-\" as grep word.\n",//~vak3R~
+			"               \"-\" のとき 単純に \"\\\" を \"-\" の前に追加し grep します\n");//~vak3R~
+#else                                                              //~vak3I~
+	HELPMSG "  %cp          :specify before the search string if it start by \"-\".\n",//~vak3I~
+			"  %cp          :探索文字列が\"-\"で始まるとき文字列の前に指定する。\n",//~vak3I~
+						CMDFLAG_PREFIX);                           //~vak3I~
+	HELPMSG "               Simply \"\\\" is prepended before \"-\". as grep word.\n",//~vak3I~
+			"               単純に \"\\\" を \"-\" の前に追加し grep します\n");//~vak3I~
+#endif                                                             //~vak3I~
+	HELPMSG "               Explicitly use %ce option if that is not appropriate.\n",//~vak3I~
+			"               それが抵当でない場合は %ce を指定してください\n",//~vak3I~
+						CMDFLAG_PREFIX);                           //~vak3I~
     HELPMSG "  %cr[n]       :Recursive subdir search. n:sub-directory depth.\n",//~va26R~
             "  %cr[n]       :サブDirも探索。n:探索サブDirのの深さ。\n",//~va26R~
 						CMDFLAG_PREFIX);                           //~v1.1I~
@@ -1788,20 +1868,26 @@ void help(void)
     HELPMSG "         %s -irgt  -F*.c -F*.h -Xold-subdir word .\n",//~vab0I~
             "         %s -irgt  -F*.c -F*.h -Xold-subdir word .\n",//~vab0I~
 							PGMID);                                //~va9yI~
+    HELPMSG "         %s -g -p -xxx .\n",                          //~vak3I~
+            "         %s -g -p -xxx .\n",                          //~vak3I~
+							PGMID);                                //~vak3I~
+    HELPMSG "         %s -g -e \"[-]xxx\\.c\" -p -xxx.c .\n",       //~vak3R~//~vak4R~
+            "         %s -g -e \"[-]xxx\\.c\" -p -xxx.c .\n",       //~vak3R~//~vak4R~
+							PGMID);                                //~vak3I~
 	HELPMSG "         %s -t \"word1\\&word2\\|word3\\&word4\" dir1 dir2 dir3\n",//~va26R~
 	        "         %s -t \"word1\\&word2\\|word3\\&word4\" dir1 dir2 dir3\n",//~va26R~
 							PGMID);                                //~v118I~
 #ifndef UNX                                                        //~v120I~
-	HELPMSG "         %s -rt -e\"[A-Z]*_\" \"\" *:\n",             //~va26R~
-	        "         %s -rt -e\"[A-Z]*_\" \"\" *:\n",             //~va26R~
+	HELPMSG "         %s -rt -e \"[A-Z]*_\" \"\" *:\n",             //~va26R~//~vak4R~
+	        "         %s -rt -e \"[A-Z]*_\" \"\" *:\n",             //~va26R~//~vak4R~
 							PGMID);                                //~v120I~
 #else                                                              //~v120I~
-	HELPMSG "         %s -rt -e\"[A-Z]*_\" \"\" dir1\n",           //~va26R~
-	        "         %s -rt -e\"[A-Z]*_\" \"\" dir1\n",           //~va26R~
+	HELPMSG "         %s -rt -e \"[A-Z]*_\" \"\" dir1\n",           //~va26R~//+vak4R~
+	        "         %s -rt -e \"[A-Z]*_\" \"\" dir1\n",           //~va26R~//+vak4R~
 							PGMID);                                //~v11dI~
 #endif                                                             //~v120I~
-	HELPMSG "         %s -r  -e\"-E word1|word2\" -p \"-word1\\&word2\" dir1\n",//~va26R~
-	        "         %s -r  -e\"-E word1|word2\" -p \"-word1\\&word2\" dir1\n",//~va26R~
+	HELPMSG "         %s -r  -e \"-E word1|word2\" -p \"-word1\\&word2\" dir1\n",//~va26R~//~vak4R~
+	        "         %s -r  -e \"-E word1|word2\" -p \"-word1\\&word2\" dir1\n",//~va26R~//~vak4R~
 							PGMID);                                //~va1QI~
 #ifdef UNX                                                         //~va39I~
 	HELPMSG "         %s -c  _MAX_PATH $INCLUDE\n",                //~va39I~

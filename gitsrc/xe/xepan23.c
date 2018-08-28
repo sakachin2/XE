@@ -1,9 +1,10 @@
-//*CID://+vba0R~:                             update#= 482;        //+vba0R~
+//*CID://+vbkdR~:                             update#= 490;        //~vbkdR~
 //*************************************************************
 //*xepan23.c                                                       //~7620R~
 //*   utility compare,grep                                         //~v76gR~
 //************************************************************* //~5610I~
-//vba0:170624 (BUG:64bit) 3.14 crush by ptrsz                      //+vba0I~
+//vbkd:180619 like vbj1 cpu8 option to =3.12                       //~vbkdI~
+//vba0:170624 (BUG:64bit) 3.14 crush by ptrsz                      //~vba0I~
 //vb4B:160819 (BUG) missing clear Gsubgblopt:XESUB_GBLOPT_WILDPATH flag before return//~vb4BI~
 //vb31:160418 (LNX64)Compiler warning                              //~vb31I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
@@ -90,6 +91,7 @@
 	#include "xeutf2.h"                                            //~va5vI~
 #endif                                                             //~va00I~
 #include "xefsubw.h"                                               //~vaweI~
+#include "xeopt.h"                                                 //~vbkdI~
 //**************************************************************** //~v075I~
 //*comp panel data                                                 //~v76gI~
 typedef struct _UPANCOMP  {							//field def    //~v76gI~
@@ -171,6 +173,9 @@ int panutilerrlinefull(void);                                      //~v76gI~
 //    int panutiliniputDDFMT();                                      //~vaubI~//~vavpR~
 //#endif                                                             //~vaubI~//~vavpR~
 //#endif//AAA                                                        //~vaucI~//~vavpR~
+int pan23chkcpu8option(int Popt,char *Ppoptstr);                   //~vbkdI~
+int	pan23ShowCmdResult(int Popt,PUCLIENTWE Ppcw,char *Pfnm);       //~vbkdI~
+#define P23SCRO_CPU8           0x01 // cpu8 option                 //~vbkdI~
 //**************************************************************** //~v76gI~
 //* ini file put                                                   //~v76gI~
 //* parm1 :pcw                                                     //~v76gI~
@@ -531,6 +536,7 @@ int pancompdraw2(int Popt,PUCLIENTWE Ppcw,PUSCRD Ppsd,int Pyy)     //~v91mR~//~v
     int fnmlen,fldno=0;                                              //~v91mR~//~vaf9R~
     char *pct;                                                     //~va00R~
 //*****************                                                //~v91mI~//~va00I~
+    UTRACEP("%s:row=%d\n",UTT,Pyy);                                //~vba0I~
     ppc=(PUPANELC)Ppcw->UCWppc;                                    //~v91mI~//~va00I~
 	if (!(UCBITCHK(Ppcw->UCWflag,UCWFDRAW)||UCBITCHK(Ppsd->USDflag2,USDF2DRAW)))//~v91mR~//~va00I~
     	return 0;                                                  //~v91mI~//~va00I~
@@ -625,15 +631,15 @@ int pangrepdraw(PUCLIENTWE Ppcw,int Popt)                          //~v76gM~
             {                                                      //~v76gI~
             	idx=yy-PANLUGFILE1;                                //~v76gR~
 #ifdef UTF8SUPPH                                                   //~va0eI~
-//              if (idx<sizeof(helpmsgtb)/4)                       //~va0eI~//+vba0R~
-                if (idx<sizeof(helpmsgtb)/PTRSZ)                   //+vba0I~
+//              if (idx<sizeof(helpmsgtb)/4)                       //~va0eI~//~vba0R~
+                if (idx<sizeof(helpmsgtb)/PTRSZ)                   //~vba0I~
         			pch=helpmsgtb[idx];                            //~va0eI~
                 else                                               //~va0eI~
                 	pch="";                                        //~va0eI~
 				pangrepdataproc(PANUO_SETFLD|PANUO_SETSAVE|PANUO_HELPMSG|yy,Ppcw,&pch,0/*pdbcs*/,0/*outlen*/);	//set to fld//~va0eR~
 #else                                                              //~va0eI~
-//              if (idx<sizeof(helpmsgtb)/4)                       //~v76gR~//+vba0R~
-                if (idx<sizeof(helpmsgtb)/PTRSZ)                   //+vba0I~
+//              if (idx<sizeof(helpmsgtb)/4)                       //~v76gR~//~vba0R~
+                if (idx<sizeof(helpmsgtb)/PTRSZ)                   //~vba0I~
 	                setflddata(Ppcw,yy,PANLUDATAFLD,helpmsgtb[idx]);//~v76gR~
                 else                                               //~v76pI~
 	                setflddata(Ppcw,yy,PANLUDATAFLD,"");    //should clear//~v76pI~
@@ -758,6 +764,7 @@ int pancompexec(PUCLIENTWE Ppcw)                                   //~v76gI~
 //	PUFTPHOST puftph1=(PUFTPHOST)-1,puftph2=(PUFTPHOST)-1;         //~v76pR~//~vafkR~
 	PUFTPHOST puftph1=(PUFTPHOST)(ULPTR)-1,puftph2=(PUFTPHOST)(ULPTR)-1;//~vafkI~
 #endif                                                             //~v76pI~
+	int swcpu8=0;                                                  //~vbkdI~
 //*****************                                                //~v76gI~
     pc=utilopt;                                                    //~v76gR~
     pancompdataproc(PANUO_GETDATA|PANLUCOPT,Ppcw,&pc,0,&leno);     //~v76gR~
@@ -779,6 +786,10 @@ int pancompexec(PUCLIENTWE Ppcw)                                   //~v76gI~
     }                                                              //~v76gI~
     else                                                           //~v76gI~
     {                                                              //~v76gI~
+        if (leno && pan23chkcpu8option(0,pc))                      //~vbkdI~
+        {                                                          //~vbkdI~
+            swcpu8=P23SCRO_CPU8; //           0x01 // cpu8 option  //~vbkdI~
+        }                                                          //~vbkdI~
     	pc=ustrstri(utilopt,PANUOPTNOLIST);                        //~v76gR~
         if (pc)                                                    //~v76gI~
         {                                                          //~v76gI~
@@ -839,11 +850,15 @@ int pancompexec(PUCLIENTWE Ppcw)                                   //~v76gI~
 //edit/browse redirect file at last                                //~v76gI~
     Ppcw->UCWparm=redirectfnm;                                     //~v76gR~
     if (!swnolist)                                                 //~v76gI~
+#ifdef AAA                                                         //+vbkdM~
 #ifdef UTF8SUPPH                                                   //~va00I~
     	func_edit_file2(Ppcw,FEBFIO_UTF8IE); //internal edit call;ignor utf8 trans err//~va00M~
 #else                                                              //~va00M~
     	func_edit_file2(Ppcw,0);	//internal edit call           //~va00I~
 #endif                                                             //~va00I~
+#else                                                              //+vbkdI~
+		pan23ShowCmdResult(swcpu8,Ppcw,redirectfnm);               //+vbkdR~
+#endif                                                             //~vbkdI~
     return rc;                                                     //~v76gI~
 }//pancompexec                                                     //~v76gR~
 #ifdef UTF8SUPPH                                                   //~va1qI~
@@ -2379,3 +2394,28 @@ int pangrepsetflddata_utf8(PUCLIENTWE Ppcw,int Prow,int Pfldno,UCHAR *Pdata)//~v
 //}//panutiliniputDDFMT                                              //~vaubI~//~vavpR~
 //#endif  //LNX                                                      //~vaubI~//~vavpR~
 //#endif  //AAA                                                      //~vaucI~//~vavpR~
+//************************************************************************************//~vbkdI~
+int pan23chkcpu8option(int Popt,char *Ppoptstr)                    //~vbkdI~
+{                                                                  //~vbkdI~
+	int swcpu8;                                                    //~vbkdI~
+//*********************                                            //~vbkdI~
+	swcpu8=ustrstri(Ppoptstr,MODE_UTF8)!=0;                        //~vbkdR~
+    UTRACEP("%s:rc=%d,optstr=%s\n",UTT,swcpu8,Ppoptstr);           //~vbkdI~
+	return swcpu8;                                                 //~vbkdI~
+}//pan23chkcpu8option                                              //~vbkdI~
+//************************************************************************************//~vbkdI~
+int	pan23ShowCmdResult(int Popt,PUCLIENTWE Ppcw,char *Pfnm)        //~vbkdR~
+{                                                                  //~vbkdI~
+    char cmdstr[_MAX_PATH*2+MAXCOLUMN],*pc;                        //~vbkdR~
+    int len,rc;                                                    //~vbkdI~
+//*******************                                              //~vbkdI~
+	pc=cmdstr;                                                     //~vbkdI~
+  	if (Popt & P23SCRO_CPU8)                                       //~vbkdI~
+    	pc+=sprintf(pc,"%c %s %s %s",'e',Pfnm,MODE_UTF8,MODE_IE);  //~vbkdR~
+  	else                                                           //~vbkdI~
+    	pc+=sprintf(pc,"%c %s",'e',Pfnm);                          //~vbkdR~
+    len=(int)((ULPTR)pc-(ULPTR)cmdstr);                            //~vbkdI~
+    rc=funcsetlongcmd(Ppcw,1,cmdstr,len,0); //1:execute(put on cmd buff),0:no output len//~vbkdI~
+    UTRACEP("%s:rc=%d,cmd=%s\n",UTT,rc,cmdstr);                    //~vbkdI~
+    return rc;                                                     //~vbkdI~
+}//pan23ShowCmdResult                                              //~vbkdI~

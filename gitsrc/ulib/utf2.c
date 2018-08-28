@@ -1,9 +1,13 @@
-//*CID://+v6T4R~:                              update#= 1093;      //+v6T4R~
+//*CID://+v6VjR~:                              update#= 1095;      //+v6VjR~
 //*********************************************************************//~7712I~
 //utf2.c                                                           //~7716R~
 //* utf8 data manipulation:process using chof                      //~7712I~
 //*********************************************************************//~7712I~
-//v6T4:180217 f2l option to set dbcs "?" for f2l err               //+v6T4I~
+//v6Vj:180617 xe:vbkb:180618                                       //+v6VjI~
+//            uvbka but cs4(ddfmtlen=2) and errrep(lclen=1) cause err; xeutf_cvf2dd-->utfcvf2dd  may change ddlen=2 to lclen=1, it append 1  slag byte to filename//+v6VjI~
+//            pancmdlf2dd-->xeutf_cvf2dd(lclen=1 of byte one "?")-->utfcvf2dd:lclen short because ddlen=2//+v6VjI~
+//            set dbcs "?" for errrep of ddlen=2 at utfcvf2dd      //+v6VjI~
+//v6T4:180217 f2l option to set dbcs "?" for f2l err               //~v6T4I~
 //v6C6:160404 (Bug)tracing uninitialized area                      //~v6C6I~
 //v6BA:160303 W32:wcstombs and mbrtowc dose not support surrogate pair,use WIdeChar<-->Multibute api//~v6BAI~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
@@ -2701,13 +2705,13 @@ UTRACEP("utfcvf2l wctomb len=%d, out=%02x%02x%02x\n",len,*pco,(chklen>1?*(pco+1)
           &&  (Popt & UTFCVO_ERRREP)  //replace err                //~v644I~
           )                                                        //~v644I~
           {                                                        //~v644I~
-	        if (errchsz<0 && Popt & UTFCVO_ERRREPDBCS)  //set dbcs subchar//+v6T4I~
-            {                                                      //+v6T4I~
-            	UCHAR wkdd[8],wkdddbcs[8];                         //+v6T4I~
-            //**********************  	                           //+v6T4I~
-				utfcvf2dd(0,pc,chklen,wkdd,wkdddbcs,(int)sizeof(wkdd),&errchsz);//+v6T4I~
-            }                                                      //+v6T4I~
-          	                                                       //+v6T4I~
+//*get ddlen to errchsz fo also combining(width=0) char            //+v6VjI~
+//          if (errchsz<0 && Popt & UTFCVO_ERRREPDBCS)  //set dbcs subchar//~v6T4I~//+v6VjR~
+            {                                                      //~v6T4I~
+            	UCHAR wkdd[8],wkdddbcs[8];                         //~v6T4I~
+            //**********************  	                           //~v6T4I~
+				utfcvf2dd(0,pc,chklen,wkdd,wkdddbcs,(int)sizeof(wkdd),&errchsz);//~v6T4I~
+            }                                                      //~v6T4I~
           	if (errchsz==2)	//u2l err ucs is dbcs                  //~v644R~
             {                                                      //~v644I~
 	            *pco++=repch;                                      //~v644I~

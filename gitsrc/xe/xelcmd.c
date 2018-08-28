@@ -1,8 +1,11 @@
-//*CID://+vb87R~:                             update#=   80;       //+vb87R~
+//*CID://+vbm3R~:                             update#=   82;       //~vbkrR~//+vbm3R~
 //*************************************************************
 //*xelcmd.c                                                     //~v03wR~
 //**file line cmd
 //*************************************************************
+//vbm3:180715 (Bug)cause of UFHcmdlinectr=0 and ULHFLINECMD:On, savependlcmd was called twice by max() function//+vbm3I~
+//            1st call reduce UFHpendctr,2nd call recognoze new Slcmd new index is completed annd set cmfctr=0//+vbm3I~
+//vbkr:180629 (Bug) Esc*2 clear pend ctr,so occurs "label not found"//~vbkrI~
 //vb87:170216 inactivate lcmd on excluded line                     //~vb87I~
 //vb84:170215 (BUG)line of status ULHFLINECMD on but not on UFHliencmd[], the line cmd input is ignored//~vb84I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
@@ -386,7 +389,7 @@ int lcmdreset(PUCLIENTWE Ppcw,PUFILEH Ppfh,int Popt)               //~v69WI~
     int lcmdleft=0,resetctr=0;                                     //~v69WR~
     PULINEH plh,*pplh;                                             //~v0hmI~
 //*********************                                            //~v0hmI~
-	Ppfh->UFHpendctr=0;				//clear pending lcmd           //~v0hmI~
+//  Ppfh->UFHpendctr=0;				//clear pending lcmd           //~v0hmI~//~vbkrR~
 	cmdno=Ppfh->UFHcmdlinectr;                                     //~v0hmR~
 	UTRACEP("@@@1 %s:cmdlinectr=%d\n",UTT,Ppfh->UFHcmdlinectr);    //~vah0I~
 	pplh=Ppfh->UFHcmdline;                                         //~v0hmI~
@@ -411,6 +414,7 @@ int lcmdreset(PUCLIENTWE Ppcw,PUFILEH Ppfh,int Popt)               //~v69WI~
 	}                                                              //~v0hmI~
   if (!lcmdleft)                                                   //~v69WI~
   {                                                                //~v69WI~
+    Ppfh->UFHpendctr=0;				//clear pending lcmd           //~vbkrI~
 	Ppfh->UFHcmdlinectr=0;                                         //~v0hmR~
 	UCBITON(Ppfh->UFHflag2,UFHF2LCMDCOMP); //processed             //~v0hmR~
 	UTRACEP("@@@1 %s:lcmdleft ctr=%d\n",UTT,lcmdleft);             //~vah0R~
@@ -436,6 +440,7 @@ int otherclient(PUCLIENTWE Ppcwc,PUCLIENTWE Ppcwo)
 	ULCMD   *plc,*plco;
     int newpendctr;                                                //~vah0I~
 	int rc;                                                     //~v03wR~
+    int rc2;                                                       //+vbm3I~
 //*********************	
 	if (!Ppcwo || Ppcwo->UCWtype!=UCWTFILE)
 		return 0;		//no split status or not file client
@@ -473,7 +478,9 @@ int otherclient(PUCLIENTWE Ppcwc,PUCLIENTWE Ppcwo)
 	if ((rc=savependlcmd(Ppcwo,plco,pfho->UFHpendctr))>=4)      //~v03wR~
 		uerrmsg("Error on another screen",                      //~v03wI~
 				"‚à‚¤ˆê•û‚Ì‰æ–Ê‚ÉŒë‚è‚ ‚è");                    //~v03wI~
-	rc=max(rc,savependlcmd(Ppcwc,Slcmd,pfhc->UFHpendctr));      //~v03uR~
+//  rc=max(rc,savependlcmd(Ppcwc,Slcmd,pfhc->UFHpendctr));      //~v03uR~//+vbm3R~
+    rc2=savependlcmd(Ppcwc,Slcmd,pfhc->UFHpendctr);                //+vbm3I~
+    rc=max(rc,rc2);                                                //+vbm3I~
 	return rc;
 }//otherclient
 //**************************************************************** //~v724R~

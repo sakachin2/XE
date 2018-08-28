@@ -1,9 +1,13 @@
-//*CID://+vb31R~:                             update#=  190;       //+vb31R~
+//*CID://+vbmuR~:                             update#=  224;       //~vbmtR~//~vbmuR~
 //*************************************************************
 //*xecalc3.c
 //* table calc(TC/TCN cmd)
 //*************************************************************
-//vb31:160418 (LNX64)Compiler warning                              //+vb31I~
+//vbmu:180723 TC fmt,support dbcs outdelm string                   //~vbmuI~
+//vbmt:180723 additional to vbmr, \t requires special chk (data=" " and dbcs="\t")//~vbmsI~
+//vbms:180727 (BUG)TC fmt, S(optput delm) option process err(invalid split)//~vbmsI~
+//vbmr:180723 accept \x,\t as TC fmt delmstr                       //~vbmrI~
+//vb31:160418 (LNX64)Compiler warning                              //~vb31I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vaz8:150109 C4244 except ULPTR and ULONG                         //~vaz8I~
 //vafk:120624 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  use ULPTR(unsigned __int64/ULONG)//~vafkI~
@@ -105,6 +109,8 @@
 #include <ucvext.h>                                                //~va79I~
 #include <ucvebc.h>                                                //~va50I~
 #include <ucvebc4.h>                                               //~va79I~
+#include <uedit2.h>                                                //~vbmrI~
+#include <utrace.h>                                                //~vbmtI~
 
 #include "xe.h"
 #include "xescr.h"
@@ -121,6 +127,7 @@
 #include "xefcmd22.h"
 #include "xefcmd3.h"
 #include "xeerr.h"
+#include "xesub.h"                                                 //~vbmuI~
 #ifdef UTF8UCS2                                                    //~va20I~
 	#include "xesub2.h"                                            //~va20I~
 	#include "xeutf2.h"                                            //~va20I~
@@ -175,6 +182,7 @@ static int  Sswrepdelm=0;                                          //~v62KI~
 	static int Sswebcfile,Schspace,SchDQ,SchSQ,Schminus,Schplus;   //~va50R~
 	static int Sswutf8file;                                        //~va5pI~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50I~
+	static int Sswtabdelm;                                         //~vbmsI~
 //*******************************************************
 //int tc_fmtopdchk(PUCLIENTWE Ppcw,int *Pparm,PULINEH *Pplabplh,char *Paligntbl,//~v51xR~
 int tc_fmtopdchk(PUCLIENTWE Ppcw,int *Pparm,PULINEH *Pplabplh,     //~v51xI~
@@ -226,6 +234,10 @@ char *tc_getfieldendaddrquote(int Phandle,char *Prec,char *Pdbcs,int Preclen,cha
 char *tc_getfieldendaddrquote(char *Prec,int Preclen,char *Pdelmstr,char *Pdelmaddr,int Popt);//~v62yR~
 #endif                                                             //~va20R~
 int tc_ishdrline(PULINEH Pplh);                                    //~v62wI~
+int chkhexdelm(void);                                              //~vbmrI~
+char *xecalc3_umempbrk_nonascii_TABCHK(int Popt,int Pswebcfile,int Pswutf8file,int Phandle,char *Pdata,char *Pdbcs,char *Pdelmstr,char *Pdelmstrdbcs,int Plen);//~vbmtR~
+#define MPBRKTABCHKO_TABFOUND      0x01                            //~vbmtI~
+int xecalc3_tabchkDelmstr(char *Pdelmstr,char *Pdelmstrdbcs,int Plen,char *Pdelmstrout,char *Pdelmstrdbcsout,int *Ppoutlen);//~vbmtI~
 //****************************************************************
 // calc body
 //*rc   :0
@@ -405,17 +417,21 @@ int tc_fmtopdchk(PUCLIENTWE Ppcw,int *Pparm,PULINEH *Pplabplh,     //~v51xI~
             return fcmdlabelerr("Need From and To");
     	rc=fcmdgetlabelrange(pfh,labtctr,labt,Pplabplh,0);//not drop cmd
     }
-    Pparm[PARM_SPACELEN]+=(Sswrepdelm==0);	//keep input delm column//~v62KI~
+//  Pparm[PARM_SPACELEN]+=(Sswrepdelm==0);	//keep input delm column//~v62KI~//~vbmsR~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
 //    if (Sswebcfile)                                              //~va5pR~
 //    {                                                            //~va5pR~
 //        ucvebc_a2bfld(0,Sdelmstr,Sdelmstr,strlen(Sdelmstr));     //~va5pR~
 //        ucvebc_a2bfld(0,Soutdelmstr,Soutdelmstr,strlen(Soutdelmstr));//~va5pR~
 //    }                                                            //~va5pR~
+    if (chkhexdelm())                                              //~vbmrI~
+    	return 4;                                                  //~vbmrI~
 //  Sdelmstrlen=strlen(Sdelmstr);                                  //~va5pI~//~vb30R~
     Sdelmstrlen=(int)strlen(Sdelmstr);                             //~vb30I~
 //  Soutdelmstrlen=strlen(Soutdelmstr);                            //~va5pI~//~vb30R~
     Soutdelmstrlen=(int)strlen(Soutdelmstr);                       //~vb30I~
+    Pparm[PARM_SPACELEN]=Soutdelmstrlen;                           //~vbmsR~
+    Pparm[PARM_SPACELEN]+=(Sswrepdelm==0);	//keep input delm column//~vbmsI~
     if (Sswutf8file||Sswebcfile)                                   //~va5pI~
     {                                                              //~va5pI~
     	opt2=XEEBCM2DEO_SAVECT|XEEBCM2DEO_ERRMSG;                  //~va5pI~
@@ -438,6 +454,17 @@ int tc_fmtopdchk(PUCLIENTWE Ppcw,int *Pparm,PULINEH *Pplabplh,     //~v51xI~
         memcpy(Soutdelmstrdbcs,delmdbcs,(UINT)ddlen);              //~va5pR~
         Soutdelmstrlen=ddlen;                                      //~va5pI~
     }                                                              //~va5pI~
+    else                                                           //~vbmuI~
+    {                                                              //~vbmuI~
+    	setdbcstbl(Soutdelmstr,Soutdelmstrdbcs,Soutdelmstrlen);    //~vbmuI~
+    }                                                              //~vbmuI~
+    if (Sswtabdelm)                                                //~vbmtI~
+    {                                                              //~vbmtI~
+		xecalc3_tabchkDelmstr(Sdelmstr,Sdelmstrdbcs,Sdelmstrlen,delmddstr,delmdbcs,&ddlen);//~vbmtR~
+        UmemcpyZ(Sdelmstr,delmddstr,(UINT)ddlen);                  //~vbmtI~
+        UmemcpyZ(Sdelmstrdbcs,delmdbcs,(UINT)ddlen);               //~vbmtI~
+        Sdelmstrlen=ddlen;                                         //~vbmtI~
+    }                                                              //~vbmtI~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50I~
     return rc;
 }//tc_fmtopdchk
@@ -692,10 +719,12 @@ int tc_fmtopdchk3(char *Popd,int *Pparm)
 //          len=min(len,sizeof(Soutdelmstr)-1);                    //~v62KI~//~vb30R~
             len=min(len,(int)sizeof(Soutdelmstr)-1);               //~vb30I~
         	if (*pc=='"')                                          //~v62KI~
-	        	memcpy(Soutdelmstr,pc+1,(UINT)(len-2));            //~v62KR~
+//          	memcpy(Soutdelmstr,pc+1,(UINT)(len-2));            //~v62KR~//~vbmsR~
+            	UmemcpyZ(Soutdelmstr,pc+1,(UINT)(len-2));          //~vbmsR~
             else                                                   //~v62KI~
-	        	memcpy(Soutdelmstr,pc,(UINT)len);                  //~v62KI~
-            *(Soutdelmstr+len)=0;                                  //~v62KI~
+//          	memcpy(Soutdelmstr,pc,(UINT)len);                  //~v62KI~//~vbmsR~
+            	UmemcpyZ(Soutdelmstr,pc,(UINT)len);                //~vbmsR~
+//          *(Soutdelmstr+len)=0;                                  //~v62KI~//~vbmsR~
         }                                                          //~v62KI~
         else                                                       //~v62KI~
         	if (!Sswrepdelm)	// -S only                         //~v62KR~
@@ -876,8 +905,8 @@ int tc_fmtmain(PUCLIENTWE Ppcw,int *Pparm,PULINEH *Plabplh,        //~v51xI~
     uerrmsg("%s:total %ld, updated=%ld,outovf=%ld",0,
         Ppcw->UCWparm,recno,upctr,dataovf);
 #endif //UTF8EBCD raw ebcdic file support                          //~va5pI~
-//  return dataovf;                                                //+vb31R~
-    return (int)dataovf;                                           //+vb31I~
+//  return dataovf;                                                //~vb31R~
+    return (int)dataovf;                                           //~vb31I~
 }//tc_fmtmain
 //****************************************************************
 // get valid plh
@@ -1192,7 +1221,9 @@ char *tc_getfieldendaddr(int *Pparm,char *Prec,char *Ppdbcs,int Preclen,//~v580I
 	#ifdef UTF8EBCD	  //raw ebcdic file support                    //~va50I~
 //      pcwdelm=pcw=UCVEBCUTF_umempbrk(Sswebcfile,swutf8file,pc,pcd,Sdelmstr,rlen);//~va5pR~
 //      pcwdelm=pcw=UCVEBCUTF_umempbrk_nonascii(Sswebcfile,swutf8file,pc,pcd,Sdelmstr,Sdelmstrdbcs,rlen);//~va5pI~//~va79R~
-        pcwdelm=pcw=UCVEBCUTF_umempbrk_nonascii(Sswebcfile,swutf8file,handle,pc,pcd,Sdelmstr,Sdelmstrdbcs,rlen);//~va79I~
+//      pcwdelm=pcw=UCVEBCUTF_umempbrk_nonascii(Sswebcfile,swutf8file,handle,pc,pcd,Sdelmstr,Sdelmstrdbcs,rlen);//~va79I~//~vbmtR~
+        pcwdelm=pcw=xecalc3_umempbrk_nonascii_TABCHK(Sswtabdelm ?  MPBRKTABCHKO_TABFOUND :0,Sswebcfile,swutf8file,handle,pc,pcd,Sdelmstr,Sdelmstrdbcs,rlen);//~vbmtR~
+#define MPBRKTABCHKO_TABFOUND      0x01                            //~vbmtI~
     #else                                                          //~va50I~
         pcwdelm=pcw=UTF_UMEMPBRK(swutf8file,pc,pcd,Sdelmstr,rlen); //~va20I~
 	#endif //UTF8EBCD raw ebcdic file support                      //~va50I~
@@ -1841,11 +1872,15 @@ int tc_fmtdata(PUCLIENTWE Ppcw,PULINEH Pplh,int *Pparm,
           	if (prevdelm)                                          //~v62yR~
             {                                                      //~v62KI~
               if (Sswrepdelm)	//not del input delm               //~v62KI~
+              {                                                    //~vbmuI~
           	    memcpy(wdata,Soutdelmstr,(UINT)spacelen);          //~v62KR~
+          	    memcpy(wdbcs,Soutdelmstrdbcs,(UINT)spacelen);      //~vbmuI~
+              }                                                    //~vbmuI~
               else                                                 //~v62KI~
               {                                                    //~v62KI~
           		*wdata=prevdelm;                                   //~v62yR~
 	          	memcpy(wdata+1,Soutdelmstr,(UINT)(spacelen-1));    //~v62KR~
+          	    memcpy(wdbcs+1,Soutdelmstrdbcs,(UINT)(spacelen-1));//~vbmuI~
               }                                                    //~v62KI~
             }                                                      //~v62KI~
         }                                                          //~v62yI~
@@ -2346,3 +2381,111 @@ int tc_helpfmt(void)
     uerrmsg("TC fmt [[fieldno[-fieldno]][O][R|L|P][N|A][C] ...] [NX] [S[R][outdelmstr]] [H] [D[inpdelms]] Q[d][s] [.lab1 .lab2]",0);//~v62UI~
     return 0;
 }//tc_helpfmt
+//*******************************************************          //~vbmrI~
+//*replace hex notation                                            //~vbmrI~
+//*rc=4 fmt err or contains null                                   //~vbmrI~
+//*******************************************************          //~vbmrI~
+int chkhexdelm(void)                                               //~vbmrI~
+{                                                                  //~vbmrI~
+	char wk1[sizeof(Sdelmstr)];                                    //~vbmrI~
+	char wk2[sizeof(Soutdelmstr)];                                 //~vbmrI~
+    int len1,len2,opt,rc1,rc2,rc;                                  //~vbmrI~
+//***************************************                          //~vbmrI~
+	opt=UEERO_NULLERR|UEERO_MSG;	//err if x00                   //~vbmrR~
+    Sswtabdelm=0;                                                  //~vbmsI~
+	rc1=ueditescrep(opt,Sdelmstr,(int)strlen(Sdelmstr),wk1,sizeof(wk1),&len1);//~vbmrR~
+    if (rc1==1)                                                    //~vbmrI~
+    {                                                              //~vbmsI~
+    	UmemcpyZ(Sdelmstr,wk1,(size_t)len1);                       //~vbmrR~
+        Sswtabdelm=memchr(Sdelmstr,TABCHAR,(size_t)len1)!=0;          //~vbmsI~//~vbmtR~
+    }                                                              //~vbmsI~
+	rc2=ueditescrep(opt,Soutdelmstr,(int)strlen(Soutdelmstr),wk2,sizeof(wk2),&len2);//~vbmrR~
+    if (rc2==1)                                                    //~vbmrI~
+    {                                                              //~vbmtI~
+//  	UmemcpyZ(Sdelmstr,wk2,(size_t)len2);                       //~vbmrR~//~vbmsR~
+       	if (memchr(wk2,TABCHAR,(size_t)len2))                      //~vbmtI~
+        {                                                          //~vbmtI~
+            uerrmsg("error:\"%s\", TAB(\\t=0x09) is invalid for S option(output delm string)",0,//~vbmtR~
+	            	Soutdelmstr);                                  //~vbmtR~
+       		rc2=4;                                                 //~vbmtM~
+        }                                                          //~vbmtI~
+    	UmemcpyZ(Soutdelmstr,wk2,(size_t)len2);                    //~vbmsI~
+    }                                                              //~vbmtI~
+    rc=(rc1>1)+(rc2>1);                                            //~vbmrR~
+    return rc;                                                     //~vbmrI~
+}//chkhexdelm                                                      //~vbmrI~
+//*************************************************************************//~vbmtI~
+//*consider delmstring contains tab char (it is space on plhdata)  //~vbmtI~
+//*************************************************************************//~vbmtI~
+int xecalc3_tabchkDelmstr(char *Pdelmstr,char *Pdelmstrdbcs,int Plen,char *Pdelmstrout,char *Pdelmstrdbcsout,int *Ppoutlen)//~vbmtI~
+{                                                                  //~vbmtI~
+    int delmstrlen,swtabfound=0,ii,delmstrlendroptab=0;            //~vbmtR~
+    char *pc,*pcd,*pco,*pcdo;                                      //~vbmtI~
+//***************************************                          //~vbmtI~
+	delmstrlen=(int)strlen(Pdelmstr);                              //~vbmtI~
+    UTRACED("Pdelmster",Pdelmstr,delmstrlen);                      //~vbmtI~
+    UTRACED("Pdelmsterdbcs",Pdelmstrdbcs,delmstrlen);              //~vbmtI~
+	for (pc=Pdelmstr,pcd=Pdelmstrdbcs,ii=0,pco=Pdelmstrout,pcdo=Pdelmstrdbcsout;ii<delmstrlen;pc++,pcd++,ii++)//~vbmtI~
+    {                                                              //~vbmtI~
+    	swtabfound=0;                                              //~vbmtI~
+    	if (*pc==TABCHAR)   //on delmstr                           //~vbmtI~
+        {                                                          //~vbmtI~
+        	if (*pcd==0)                                           //~vbmtR~
+        		swtabfound=1; //delmstr contains tab               //~vbmtI~
+        }                                                          //~vbmtI~
+        if (!swtabfound)                //drop tab from delmstr    //~vbmtI~
+        {                                                          //~vbmtI~
+        	*pco++=*pc;                                            //~vbmtI~
+        	*pcdo++=*pcd;                                          //~vbmtI~
+            delmstrlendroptab++;                                   //~vbmtI~
+        }                                                          //~vbmtI~
+    }                                                              //~vbmtI~
+    *Ppoutlen=delmstrlendroptab;                                   //~vbmtI~
+    UTRACED("Pdelmsterout",Pdelmstrout,delmstrlendroptab);         //~vbmtI~
+    UTRACED("Pdelmsterdbcsout",Pdelmstrdbcsout,delmstrlendroptab); //~vbmtI~
+    return swtabfound;                                             //~vbmtI~
+}//xecalc3_tabchkDelmstr                                           //~vbmtI~
+//*************************************************************************//~vbmtR~
+//*consider delmstring contains tab char (it is space on plhdata)  //~vbmtR~
+//*************************************************************************//~vbmtI~
+char *xecalc3_umempbrk_nonascii_TABCHK(int Popt,int Pswebcfile,int Pswutf8file,int Phandle,char *Pdata,char *Pdbcs,char *Pdelmstr,char *Pdelmstrdbcs,int Plen)//~vbmtR~
+{
+    int delmstrlen,pos,swtabfound=0;                               //~vbmtR~
+    char *pc,*pcd,*pdata;                                          //~vbmtR~
+//***************************************
+	delmstrlen=(int)strlen(Pdelmstr);                              //~vbmtR~
+    UTRACED("Pdelmster",Pdelmstr,delmstrlen);                      //~vbmtI~
+    UTRACED("Pdelmsterdbcs",Pdelmstrdbcs,delmstrlen);              //~vbmtI~
+    if (!(Popt & MPBRKTABCHKO_TABFOUND))                           //~vbmtR~
+    {                                                              //~vbmtI~
+		pdata=UCVEBCUTF_umempbrk_nonascii(Pswebcfile,Pswutf8file,Phandle,Pdata,Pdbcs,Pdelmstr,Pdelmstrdbcs,Plen);//~vbmtR~
+    }                                                              //~vbmtI~
+    else                                                           //~vbmtI~
+    {                                                              //~vbmtI~
+	    swtabfound=0;                                              //~vbmtI~
+        pcd=memchr(Pdbcs,TABCHAR,(size_t)Plen);                            //~vbmtI~//+vbmuR~
+        pos=Plen;                                                  //~vbmtI~
+        if (pcd)   //tab found                                     //~vbmtI~
+        {                                                          //~vbmtI~
+            pos=PTRDIFF(pcd,Pdbcs);                                //~vbmtI~
+            pc=Pdata+pos;                                          //~vbmtI~
+            if (*pc==' ')                                          //~vbmtI~
+                swtabfound=1; //delmstr contains tab               //~vbmtI~
+        }                                                          //~vbmtI~
+        if (swtabfound)                                            //~vbmtI~
+        {                                                          //~vbmtI~
+        	if (!delmstrlen) //no delm except tab                  //~vbmtI~
+                pdata=Pdata+pos;                                   //~vbmtR~
+            else                                                   //~vbmtI~
+            {                                                      //~vbmtI~
+            	pdata=UCVEBCUTF_umempbrk_nonascii(Pswebcfile,Pswutf8file,Phandle,Pdata,Pdbcs,Pdelmstr,Pdelmstrdbcs,pos-1);//~vbmtR~
+            	if (!pdata)                                        //~vbmtR~
+                	pdata=Pdata+pos;                               //~vbmtR~
+            }                                                      //~vbmtI~
+        }                                                          //~vbmtI~
+        else                                                       //~vbmtI~
+            pdata=UCVEBCUTF_umempbrk_nonascii(Pswebcfile,Pswutf8file,Phandle,Pdata,Pdbcs,Pdelmstr,Pdelmstrdbcs,Plen);//~vbmtR~
+    }                                                              //~vbmtI~
+    UTRACEP("%s:%p=x%02x,swtabfound=%d\n",UTT,pdata,pdata?*pdata:0,swtabfound);//~vbmtR~
+    return pdata;                                                  //~vbmtR~
+}//xecalc3_umempbrk_nonascii_TABCHK                                //~vbmtI~

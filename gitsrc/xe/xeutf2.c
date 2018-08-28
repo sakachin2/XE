@@ -1,7 +1,10 @@
-//*CID://+vb4cR~:                               update#= 1406;     //~vb4cR~
+//*CID://+vbk9R~:                               update#= 1413;     //~vbk9R~
 //*************************************************************    //~v904I~
 //* xeutf.c                                                        //~v904I~
 //*************************************************************    //~v904I~
+//vbk9:180614 (BUG)vhex line update use UTF_GETDDUCS1,it replace when unprintable//~vbk9I~
+//vbk8:180613 show ucs value for errmsg "invalid UCS4 value"(vhex line update,makeucs)//~vbk8I~
+//vbk5:180611 u/v key on vhex line;correct err msg                 //~vbk5I~
 //vb4c:160730 display altch for also cmdline/errmsg                //~vb4cI~
 //vb49:160729 display copyword(Alt+W) for also editr panel if not ebc file//~vb49I~
 //vb2L:160314 (W32) display lang on top menu by ddfmt(for the case consolecp!=system cp,cpinfo is by system cp but display is by chcp code)//~vb2LI~
@@ -699,8 +702,10 @@ int xeutf_charmakeucsvhexdd(int Popt,UCHAR *Pdata,UCHAR *Pdbcs,int Plen,WUCS *Pp
         ucs=(ucs<<8)|lowucs4;                                      //~va3xI~
         if (ucs>UCS4_MAX)  //over 10ffff                           //~va3xR~
         {                                                          //~va3xI~
-            uerrmsg("invalid UCS4 value max is %06x",0,            //~va3xI~
-                     UCS4_MAX);                                    //~va3xI~
+//          uerrmsg("invalid UCS4 value max is %06x",0,            //~va3xI~//~vbk8R~
+//                   UCS4_MAX);                                    //~va3xI~//~vbk8R~
+            uerrmsg("invalid UCS4 value(%06x) max is %06x",0,      //~vbk8I~
+                     ucs,UCS4_MAX);                                //~vbk8I~
             return 8;                                              //~va3xR~
         }                                                          //~va3xI~
   	}//UCS4                                                        //~va3xI~
@@ -763,8 +768,10 @@ int xeutf_chargetvhexdd(int Popt,int Pvhexmode,PUCLIENTWE Ppcw,PULINEH Pplh,int 
         	rc2=4;                                                 //~va20I~
         if (rc2)                                                   //~va20I~
 //      	uerrmsg("invalid csr position for \"u\" key(MakeUcs) on hex line; valid only for ascii or error chars",0);//~va20I~//~va3xR~//~vb2GR~
-            uerrmsg("csr position err for \"u\" key(Make UCS2) on hex line; valid only on 2 column ascii or error chars",//~vb2GI~
-                    "\"u\"キー(UCS2 生成)は2桁\"?\"\x95\\示かASCII文字位置のヘキサ\x95\\示行でのみ入力できます");//~vb2GI~
+//          uerrmsg("csr position err for \"u\" key(Make UCS2) on hex line; valid only on 2 column ascii or error chars",//~vb2GI~//~vbk5R~
+//                  "\"u\"キー(UCS2 生成)は2桁\"?\"\x95\\示かASCII文字位置のヘキサ\x95\\示行でのみ入力できます");//~vb2GI~//~vbk5R~
+            uerrmsg("csr position err for \"u\" key(Make UCS2) on hex line, length<2 or already part of unicode.",//~vbk5I~
+                    "\"u\"キー(UCS2 生成)カー\x83\\ル位置エラー(残り１桁かすでに\x8d\\成済み)");//~vbk5R~
         ucssw=1;                                                   //~va20I~
         chszo=2;                                                   //~va20I~
         chszo+=delpadlen;       //add tab padding tobe deleted     //~va3fR~
@@ -796,8 +803,10 @@ int xeutf_chargetvhexdd(int Popt,int Pvhexmode,PUCLIENTWE Ppcw,PULINEH Pplh,int 
         else                                                       //~va3xI~
         if (rc2)     //rc=8 max ucs4 over,msg issued already       //~va3xI~
 //      	uerrmsg("invalid csr position for \"%c\" key(Make UCS4) on hex line",0,//~va3xI~//~vb2GR~
-            uerrmsg("invalid csr position for \"%c\" key(Make UCS4) on hex line,valid on ly on 3 column \"?\" or ascii.",//~vb2GI~
-                    "\"%c\"キー(UCS4 生成)は3桁の\"?\"\x95\\示かASCII文字上でなればなりません",//~vb2GI~
+//          uerrmsg("invalid csr position for \"%c\" key(Make UCS4) on hex line,valid on ly on 3 column \"?\" or ascii.",//~vb2GI~//~vbk5R~
+//                  "\"%c\"キー(UCS4 生成)は3桁の\"?\"\x95\\示かASCII文字上でなればなりません",//~vb2GI~//~vbk5R~
+            uerrmsg("csr position err for \"%c\" key(Make UCS4) on hex line, length<4 or already part of unicode.",//~vbk5I~
+                    "\"%c\"キー(UCS4 生成)カー\x83\\ル位置エラー(残り<３桁かすでに\x8d\\成済み)",//~vbk5R~
     				CHAR_MAKEUCS4);                                //~va3xI~
         ucssw=-1;                                                  //~va3xI~
         if (mode==CHAROPINS)    //insert mode                      //~va3xI~
@@ -836,7 +845,8 @@ int xeutf_chargetvhexdd(int Popt,int Pvhexmode,PUCLIENTWE Ppcw,PULINEH Pplh,int 
                 {                                                  //~va20R~
                     if (!UDBCSCHK_ISUCSSBCS(dbcsid))               //~va20R~
                         chszo=2;        //old char is 2 column     //~va20R~
-                    ucs=UTF_GETDDUCS1(pdata,pdbcs,rlen);           //~va20R~
+//                  ucs=UTF_GETDDUCS1(pdata,pdbcs,rlen);           //~va20R~//~vbk9R~
+					ucs=utfdd2u1chsz(0,pdata,pdbcs,rlen,0/*chsz*/);//+vbk9R~
 //#ifdef UTF8UCS4                                                    //~va3xI~//~vaw1R~
 #ifdef UTF8UCS416                                                  //~vaw1I~
                   if (UTF_ISUCS4(ucs))                             //~va3xI~
@@ -920,8 +930,10 @@ int xeutf_chargetvhexdd(int Popt,int Pvhexmode,PUCLIENTWE Ppcw,PULINEH Pplh,int 
 #ifdef UTF8UCS416                                                  //~vaw3I~
           if (newucs>UCS4_MAX)  //over 10ffff                      //~va3xI~
           {                                                        //~va3xI~
-            uerrmsg("invalid UCS4 value max is %06x",0,            //~va3xI~
-                     UCS4_MAX);                                    //~va3xI~
+//          uerrmsg("invalid UCS4 value max is %06x",0,            //~va3xI~//~vbk8R~
+//                   UCS4_MAX);                                    //~va3xI~//~vbk8R~
+            uerrmsg("invalid UCS4 value(%06x) max is %06x",0,      //~vbk8I~
+                     newucs,UCS4_MAX);                             //~vbk8I~
         	rc|=XEUTF_VHEXRC_ERR|XEUTF_VHEXRC_ERR_UCS4;//          0x80 //err//~va3xI~
           }                                                        //~va3xI~
           else                                                     //~va3xI~
@@ -1379,10 +1391,10 @@ int xeutfcvl2dd(int Popt,UCHAR *Pdata,int Pdatalen,                //~va20I~
            	   || (ch>0x20 && !swdbcs && !UDBCSCHK_ISPRINT(*pc)) //unprintable by converter//~vb4cR~
 #endif                                                             //~vb4cI~
         	)                                                      //~vb4cI~
-            {                                                      //+vb4cI~
-                UTRACEP("%s:reperr unprintable lc=%02x\n",UTT,*pc);//+vb4cI~
+            {                                                      //~vb4cI~
+                UTRACEP("%s:reperr unprintable lc=%02x\n",UTT,*pc);//~vb4cI~
 		    	*pc=XEUTF_ERRREPCH;                                //~vb4cI~
-            }                                                      //+vb4cI~
+            }                                                      //~vb4cI~
             if (swdbcs)                                            //~vb4cI~
             	ii++,pc++;                                         //~vb4cI~
         }                                                          //~vb4cI~

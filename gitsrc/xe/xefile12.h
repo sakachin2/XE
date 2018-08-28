@@ -1,4 +1,4 @@
-//*CID://+vaj0R~:                             update#=   54;       //~vagmR~//~vaj0R~
+//*CID://+vaj0R~:                             update#=   56;       //+vaj0R~
 //**************************************************************** //~v0baI~
 //xefile12.h                                                       //~v0baI~
 //**************************************************************** //~v0baI~
@@ -106,4 +106,4 @@ int fileisvalidspfline(PUFILEH Ppfh,PULINEH Pplh,int Popt);        //~v0duI~
 //**************************************************************** //~vaj0I~
 int fileadjustfh4cut(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh,int Psaveopt);//~vaj0I~
 #define FACO_OPEN    0x01	//from f14                             //~vaj0I~
-#define FACO_PROFILE 0x02	//update profile                       //+vaj0I~
+#define FACO_PROFILE 0x02	//update profile                       //~vaj0I~

@@ -1,8 +1,9 @@
-//*CID://+vb88R~:                             update#=  136;       //~vb88R~
+//*CID://+vbkdR~:                             update#=  139;       //~vbkdR~
 //*************************************************************
 //*xepan2.c                                                     //~v034R~
 //*   end/cancel/exec/field full/pan000/pan300                  //~v020I~
 //************************************************************* //~5610I~
+//vbkd:180619 like vbj1 cpu8 option to =3.12                       //~vbkdI~
 //vb88:170216 stop lcmd "i" continue mode by cut&paste             //~vb88I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vagA:120918 rc chk for ufullpath                                 //~vagAI~
@@ -295,7 +296,7 @@ int func_exec_pan(PUCLIENTWE Ppcw)
                 {                                                  //~v78SR~
                     if (!rc                                        //~v78SR~
                     &&  !*Gcmdbuff                                 //~v78SR~
-                    &&  plhlcmdi_upundoctr==pfh->UFHupundoctr      //+vb88R~
+                    &&  plhlcmdi_upundoctr==pfh->UFHupundoctr      //~vb88R~
                     &&  !pfh->UFHpendctr                           //~v78SR~
                     )                                              //~v78SR~
                         rc=lcmdisrtcont(0,Ppcw,pfh);               //~v78SR~
@@ -334,10 +335,14 @@ int func_exec_pan(PUCLIENTWE Ppcw)
 		break;                                                  //~v030I~
 	case PANUCOMP  :		//compare                              //~v76gI~
    		if (!*cmd)                                                 //~v76gI~
+        {                                                          //+vbkdI~
 			rc=pancompexec(Ppcw);                                  //~v76gR~
+        	if (*Gcmdbuff)                                         //+vbkdI~
+            	cmd=Gcmdbuff; //cmd to edit redirectfile           //+vbkdI~
+        }                                                          //+vbkdI~
         else                                                       //~v76gI~
             rc=0;                                                  //~v76gI~
-        strcpy(Gcmdbuff,cmd);                                      //~v76gR~
+        strcpy(Gcmdbuff,cmd); //comare set cmd "edit redirect file" //~v76gR~
 		break;                                                     //~v76gI~
 	case PANUGREP  :		//grep                                 //~v76gI~
    		if (!*cmd)                                                 //~v76gI~

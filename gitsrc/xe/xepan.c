@@ -1,8 +1,8 @@
-//*CID://+vbdqR~: update#=  328;                                   //+vbdqR~
+//*CID://+vbmiR~: update#=  337;                                   //+vbmiR~
 //*************************************************************
 //*xepan.c *
 //************************************************************* //~5610I~
-//vbdq:171125 add "MRU" to 1/2 of top menu                         //+vbdqI~
+//vbmi:180807 (W32:Bug)top panel LC line is corrupted,use not OutputW but OutputCharacterW.(See v6C8)//+vbmiI~
 //vb4h:160804 fnm list reverse len is short because strlen stop by 00 of dbcs unicode//~vb4hI~
 //vb4f:160802 (ULIB:v6Ei)specify ligature on/off,combine on/of line by line(used for edit/filename  panel)//~vb4fI~
 //vb4c:160730 display altch for also cmdline                       //~vb4cI~
@@ -194,10 +194,10 @@ static UCHAR Sm042[]="       0.1 (A) SC-CMD   - Assign cmd-string to Short-Cut k
 static UCHAR Sm043[]="       0.2 (B) FUNC-KEY - Change Key Assignment";//~v11jR~
 static UCHAR Sm044[]="       0.3 (C) KEY-FUNC - Browse Key List";  //~v11jR~
 //static UCHAR Sm045[]="       0.5  CMDVERB - Change command verb";//~v0iwR~
-//static UCHAR Sm0_5[]="    1  BROWSE       - Display File(";      //+vbdqR~
-static UCHAR Sm0_5[]="    1  BROWSE       - Display File (MRU list)";//+vbdqI~
-//static UCHAR Sm0_6[]="    2  EDIT         - Edit/Create File";   //+vbdqR~
-static UCHAR Sm0_6[]="    2  EDIT         - Edit File    (MRU list)";//+vbdqI~
+//static UCHAR Sm0_5[]="    1  BROWSE       - Display File(";      //~vbdqR~
+static UCHAR Sm0_5[]="    1  BROWSE       - Display File (MRU list)";//~vbdqI~
+//static UCHAR Sm0_6[]="    2  EDIT         - Edit/Create File";   //~vbdqR~
+static UCHAR Sm0_6[]="    2  EDIT         - Edit File    (MRU list)";//~vbdqI~
 static UCHAR Sm061[]="    3  UTILITY";                             //~v76gI~
 static UCHAR Sm062[]="       3.12(F) COMPARE  - File/Directory Compare";//~v76gR~
 static UCHAR Sm063[]="       3.14(G) SEARCH   - Grep Search";      //~v76gR~
@@ -1538,11 +1538,12 @@ int func_draw_pan(PUCLIENTWE Ppcw)
 #ifdef UTF8SUPPH                                                   //~va00I~
 		{                                                          //~va00I~
 #endif                                                             //~va00I~
+			UTRACEP("%s:i=%d,errflag=0x%x\n",UTT,i,ppc->UPCline[i].UPLerrflag);//~vbdqR~
        		if (errflag=ppc->UPCline[i].UPLerrflag,errflag//err    //~v075R~
             ||  (ppc->UPCid==PANOPTCOLOR                           //~v075R~
 				&& !UCBITCHK(psd->USDflag2,USDF2PROT))) //input line//~v075R~
             {                                                   //~v020I~
-				psd->USDlen+=psd->USDlen;	//double len        //~v020I~
+    			psd->USDlen+=psd->USDlen;	//double len        //~v020I~
 				psd->USDflag=USDFCELLSTR;	//by cell data      //~v020I~
 //*duplicated   psd->USDuvioo=0;                                   //~vb4fR~
 				pc1=psd->USDbuffc;  //copyed                    //~v020R~
@@ -1988,7 +1989,9 @@ int pan000draw(int Popt,PUCLIENTWE Ppcw,PUSCRD Ppsd,int Prow)      //~vb2LI~
     	memcpy(Ppsd->USDdbcs,pdddbcs,ddlen);                       //~vb2LI~
 //  	UCBITON(Ppsd->USDflag3,USDF3NOLIGATURE);                   //~vb2YI~//~vb2ZR~
 //  	UCBITON(Ppsd->USDflag3,USDF3NOLIGATURE);  //draw by NoLigature(viom OutputW all at once append space attr=0x00)//~vb4fR~
-    	Ppsd->USDuvioo|=UVIOO_LIGATURE2;  //draw by NoLigature(viom OutputW all at once append space attr=0x00)//~vb4fR~
+//  	Ppsd->USDuvioo|=UVIOO_LIGATURE2;  //draw by NoLigature(viom OutputW all at once append space attr=0x00)//~vb4fR~//~vb4hR~
+    	Ppsd->USDuvioo|=UVIOO_LIGATURE2|UVIOO_MENULC;  //LC line,use OutputCharacterW//+vbmiR~
+        UTRACEP("%s:USDuvioo=%x\n",UTT,Ppsd->USDuvioo);            //~vb4hR~
     	UTRACED("dddata",pdddata,ddlen);                           //~vb2LI~
     	UTRACED("dddbcs",pdddbcs,ddlen);                           //~vb2LI~
     }                                                              //~vb2LI~

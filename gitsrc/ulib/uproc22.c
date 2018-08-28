@@ -1,8 +1,10 @@
-//*CID://+v6N0R~:                             update#=  420;       //~v6L5R~//~v6N0R~
+//*CID://+v6XaR~:                             update#=  424;       //+v6XaR~
 //************************************************************* //~5825I~
 //*uproc2.c                                                        //~v5euR~
 //* parse-redirect,rsh                                             //~v5euR~
 //*************************************************************    //~v022I~
+//v6Xa:180821 enumproc show fullpath(xp was shoing)                //+v6XaI~
+//v6X6:180819 (W32)enumproc optionally output fullpath exe name    //~v6X6I~
 //v6N0:171114 (Bug)ugetprocessuid have to chk handle=-1 to avoid read wait if xesyscmd was spawned//~v6N0I~
 //v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~v6L5I~
 //v6xr:150118 (BUG of v6xm) 6xm is for W7 only;back to old logic when XP//~v6xrI~
@@ -441,6 +443,8 @@ BOOL uenumpid(int Popt,CB_ENUMPID Pcbfunc,void *Pparm)             //~v5kvI~
       int sww7;                                                    //~v6hjI~
       int cbopt=0;                                                 //~v6xrI~
 //    DWORD cpid;                                                  //~v6xmR~
+      DWORD cpid;                                                  //~v6X6R~
+      int swokPSAPI=0;                                             //~v6X6I~
 //********************************                                 //~v5ivI~
       //Windows 95 or Windows NT?                                  //~v5ivI~
       osver.dwOSVersionInfoSize = sizeof( osver ) ;                //~v5ivI~
@@ -565,6 +569,21 @@ BOOL uenumpid(int Popt,CB_ENUMPID Pcbfunc,void *Pparm)             //~v5kvI~
       // Windows 95                                                //~v5ivI~
       }else if( osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS ) //~v5ivI~
       {                                                            //~v5ivI~
+         	hInstLib = LoadLibraryA( "PSAPI.DLL" ) ;               //~v6X6I~
+            lpfEnumProcessModules=0;                               //~v6X6I~
+            lpfGetModuleFileNameEx=0;                              //~v6X6I~
+         	if( hInstLib == NULL )                                 //~v6X6I~
+            	uerrmsg("uenumpid:PSAPI.DLL is missing, exe-fullpathname not available.",0);//~v6X6I~
+         	else                                                   //~v6X6I~
+         	{                                                      //~v6X6I~
+         		lpfEnumProcessModules = (BOOL(WINAPI *)(HANDLE, HMODULE *,//~v6X6I~
+            						DWORD, LPDWORD)) GetProcAddress( hInstLib,//~v6X6I~
+            						"EnumProcessModules" ) ;       //~v6X6I~
+         		lpfGetModuleFileNameEx =(DWORD (WINAPI *)(HANDLE, HMODULE,//~v6X6I~
+            						LPTSTR, DWORD )) GetProcAddress( hInstLib,//~v6X6I~
+            						"GetModuleFileNameExA" ) ;     //~v6X6I~
+                swokPSAPI=lpfEnumProcessModules && lpfGetModuleFileNameEx;//~v6X6I~
+            }                                                      //~v6X6I~
          hInstLib = LoadLibraryA( "Kernel32.DLL" ) ;               //~v5ivI~
          if( hInstLib == NULL )                                    //~v5ivI~
             return FALSE ;                                         //~v5ivI~
@@ -608,6 +627,23 @@ BOOL uenumpid(int Popt,CB_ENUMPID Pcbfunc,void *Pparm)             //~v5kvI~
          {                                                         //~v5ivI~
             if (pparentpid)                                        //~v5kvI~
             	*pparentpid=procentry.th32ParentProcessID;         //~v5kvI~
+//          if (Popt & UEPI_VERBOSE && swokPSAPI)	//  0x02	//output fullpath exe name//~v6X6I~//+v6XaR~
+            if (swokPSAPI)	//  0x02	//output fullpath exe name //+v6XaI~
+            {                                                      //~v6X6I~
+                cpid=procentry.th32ProcessID;                      //~v6X6I~
+                hProcess = OpenProcess(                            //~v6X6I~
+                   PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,    //~v6X6I~
+                   FALSE, cpid) ;                                  //~v6X6I~
+                if( hProcess != NULL )                             //~v6X6I~
+                {                                                  //~v6X6I~
+                   	if( lpfEnumProcessModules( hProcess, &hMod, sizeof( hMod ), &dwSize2 ) )//~v6X6I~
+                   	{                                              //~v6X6I~
+                      	if( lpfGetModuleFileNameEx( hProcess, hMod, szFileName, sizeof( szFileName ) ) ) //get fullpath//~v6X6I~
+		                   strcpy(procentry.szExeFile,szFileName); //~v6X6R~
+                   	}                                              //~v6X6I~
+                   	CloseHandle( hProcess ) ;                      //~v6X6I~
+                }                                                  //~v6X6I~
+            }                                                      //~v6X6I~
 //          if(Pcbfunc( procentry.th32ProcessID, 0,procentry.szExeFile,Pparm))//~v5ivR~//~v6xrR~
             if(Pcbfunc(cbopt,procentry.th32ProcessID,0,procentry.szExeFile,Pparm))//~v6xrR~
             {                                                      //~v5ivI~
@@ -1004,7 +1040,7 @@ DWORD ugetprocessid(int Popt,ULPTR Pprocesshandle)                 //~v6xnR~
 	DWORD pid;                                                     //~v6xnI~
     char wk[32];                                                   //~v6xnI~
 //*********************                                            //~v6xnI~
-	if ((LONGHANDLE)Pprocesshandle==(LONGHANDLE)-1)                //+v6N0R~
+	if ((LONGHANDLE)Pprocesshandle==(LONGHANDLE)-1)                //~v6N0R~
     	return (DWORD)-1;                                          //~v6N0I~
     pid=GetProcessId((HANDLE)Pprocesshandle);                      //~v6xnI~
     if ((int)pid<=0)                                               //~v6xnI~

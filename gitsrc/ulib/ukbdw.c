@@ -1,7 +1,8 @@
-//CID://+v6U1R~:             update#=  164                         //~v6U1R~
+//CID://+v6VuR~:             update#=  167                         //~v6VuR~
 //*************************************************************
 //*ukbdpeek/ukbdcharin/ukbdsetrate/ukbdsetstate                 //~5104R~
 //*************************************************************
+//v6Vu:180622 UTRACE;support force option off                      //~v6VuI~
 //v6U1:180317 ReadConsoleInputW loop by continued eventrecord eventType=x10(FOCUS_EVENT),try flush//~v6U1I~
 //v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~v6L5I~
 //v6Ez:160826 S+C+F5 shows S+F5, it will be better to be C+F5 with shift modifyer//~v6EzI~
@@ -555,7 +556,7 @@ static	UCHAR 		Ssavesw;                                       //~v034M~
             {                                                      //~v034I~
 	  		    if (Stracesw)                                      //~v034I~
 //  	    	    printf("set by more data %08x,write=%08x\n",Sirmore,*Sirwrite);//~v034R~//~v6L5R~
-    	    	    printf("set by more data %p,write=%p\n",Sirmore,*Sirwrite);//~v6L5I~
+    	    	    UTRACEPF("%s:set by more data %p,write=%p\n",UTT,Sirmore,*Sirwrite);//~v6L5I~//~v6VuR~
 //must char!=0  ureadconsole(Sbuff,1,&readctr);//kick more write   //~v034R~
         	    rc=ukbd_w95keyinfo(&Sinprecsv,Ppkinf,Sirmore,(int)Sshiftsv);//~v034R~
                 Sirmore=ukbd_w95getnext(Sirmore);	//next entry   //~v034I~
@@ -564,7 +565,7 @@ static	UCHAR 		Ssavesw;                                       //~v034M~
 			}                                                      //~v034I~
   		    if (Stracesw)                                          //~v034I~
 //      	    printf("end of more data %08x\n",Sirmore);         //~v034R~//~v6L5R~
-        	    printf("end of more data %p\n",Sirmore);           //~v6L5I~
+        	    UTRACEPF("%s:end of more data %p\n",UTT,Sirmore);           //~v6L5I~//~v6VuR~
             beforeread=Sirmore;	//latest afterread                 //~v034I~
             Sirmore=0;                                             //~v034I~
         }                                                          //~v034I~
@@ -575,7 +576,7 @@ static	UCHAR 		Ssavesw;                                       //~v034M~
 //0001 entry read req                                              //~v034I~
 	    if (Stracesw)                                              //~v034I~
 //  		printf ("beforeread=%08x\n",beforeread);               //~v034I~//~v6L5R~
-    		printf ("beforeread=%p\n",beforeread);                 //~v6L5I~
+    		UTRACEPF("%s:beforeread=%p\n",UTT,beforeread);                 //~v6L5I~//~v6VuR~
         if (skipreadsw)	//already read                             //~v034R~
         {                                                          //~v034I~
         	inprec=*beforeread;                                    //~v034R~
@@ -592,7 +593,7 @@ static	UCHAR 		Ssavesw;                                       //~v034M~
     	    	Sirpassed=beforeread;		//prev of crated entry //~v034R~
       		    if (Stracesw)                                      //~v034R~
 //  				printf ("detected skipped rec %08x->%08x\n",Sirpassed,afterread);//~v034R~//~v6L5R~
-    				printf ("detected skipped rec %p->%p\n",Sirpassed,afterread);//~v6L5I~
+    				UTRACEPF("%s:detected skipped rec %p->%p\n",UTT,Sirpassed,afterread);//~v6L5I~//~v6VuR~
                 continue;					//process following    //~v034R~
             }                                                      //~v034R~
         }                                                          //~v034I~
@@ -608,7 +609,7 @@ static	UCHAR 		Ssavesw;                                       //~v034M~
                 {                                                  //~v034I~
                     reportsw=1;                                    //~v034I~
 		   		    if (Stracesw)                                  //~v034R~
-						printf ("not same sv=%04x and rd=%04x\n",  //~v034R~
+						UTRACEPF("%s:not same sv=%04x and rd=%04x\n",UTT,  //~v034R~//~v6VuR~
 								Sinprecsv.Event.KeyEvent.dwControlKeyState,//~v034R~
     			            	inprec.Event.KeyEvent.dwControlKeyState);   //status changed//~v034R~
                 }                                                  //~v034I~
@@ -635,7 +636,7 @@ static	UCHAR 		Ssavesw;                                       //~v034M~
 	    	Sirmore=afterread;			//all 8000 entry           //~v034R~
    		    if (Stracesw)                                          //~v034R~
 //  			printf ("detected more rec %08x->%08x\n",afterread,*Sirwrite);//~v034I~//~v6L5R~
-				printf ("detected more rec %p->%p\n",afterread,*Sirwrite);//~v6L5I~
+				UTRACEPF("%s:detected more rec %p->%p\n",UTT,afterread,*Sirwrite);//~v6L5I~//~v6VuR~
         }                                                          //~v034I~
         else    //nor next data or next is not VREC(8000)          //~v146I~
 //      	if (Sinprecsv.Event.KeyEvent.bKeyDown)	//key down record//~v299R~
@@ -694,7 +695,7 @@ static  USHORT      Sshiftsv;                                      //~v139I~
 #else                                                              //~v6U1I~
 	int focuseventctr=0;                                           //~v6U1I~
 	DWORD eventctr;                                                //~v6U1I~
-	#define LOOP_BREAK 20                                          //+v6U1R~
+	#define LOOP_BREAK 20                                          //~v6U1R~
 #endif                                                             //~v6U1I~
 //****************************                                     //~v139M~
 //  UTRACEP("%s:entry        focuseventctr=%d\n",UTT,focuseventctr);//~v6U1R~
@@ -743,7 +744,7 @@ static  USHORT      Sshiftsv;                                      //~v139I~
         		focuseventctr++;                                   //~v6U1I~
 //          	GetNumberOfConsoleInputEvents(Shstdin,&eventctr);  //~v6U1R~
 //          	UTRACEP("%s:focusevent ctr=%d,bSetFocus=%d,numberofevent=%d\n",UTT,focuseventctr,inprec.Event.FocusEvent.bSetFocus,eventctr);//~v6U1R~
-                if (focuseventctr%LOOP_BREAK==0)                   //+v6U1R~
+                if (focuseventctr%LOOP_BREAK==0)                   //~v6U1R~
                 {                                                  //~v6U1I~
 	            	GetNumberOfConsoleInputEvents(Shstdin,&eventctr);//~v6U1I~
 	            	UTRACEP("%s:flush by focusevent ctr=%d,bSetFocus=%d,numberofevent=%d\n",UTT,focuseventctr,inprec.Event.FocusEvent.bSetFocus,eventctr);//~v6U1R~
@@ -809,7 +810,7 @@ static UCHAR Sdbcssw;                                              //~v034R~
     UCHAR  ch,scan;                                                //~v034R~
 //**********************                                           //~v034I~
     if (Stracesw & 0x01)                                           //~v034R~
-		printf("ukbd_w95keyinfo-1:%04x,%08x,%04x-%04x,%04x-%04x,%08x\n",//~v034I~
+		UTRACEPF("%s:ukbd_w95keyinfo-1:%04x,%08x,%04x-%04x,%04x-%04x,%08x\n",UTT,//~v034I~//~v6VuR~
             	(UINT)Ppinprec->EventType,                         //~v034I~
             	(UINT)Ppinprec->Event.KeyEvent.bKeyDown,           //~v034I~
             	(UINT)Ppinprec->Event.KeyEvent.wRepeatCount,       //~v034I~
@@ -830,7 +831,7 @@ static UCHAR Sdbcssw;                                              //~v034R~
 //@@@@  if (Svkeytbl[vkey]==VKID_IGNORE)                           //~v034R~
 //@@@@  	return 0;                                              //~v034R~
 	    if (Stracesw & 0x01)                                       //~v034I~
-    		printf("ukbd_w95keyinfo-2:%04x,%08x,%04x-%04x,%04x-%04x,%08x\n",//~v034I~
+    		UTRACEPF("%s:ukbd_w95keyinfo-2:%04x,%08x,%04x-%04x,%04x-%04x,%08x\n",UTT,//~v034I~//~v6VuR~
                 	(UINT)Pp8000rec->EventType,                    //~v034R~
                 	(UINT)Pp8000rec->Event.KeyEvent.bKeyDown,      //~v034R~
                 	(UINT)Pp8000rec->Event.KeyEvent.wRepeatCount,  //~v034R~
@@ -893,8 +894,8 @@ int ukbd_wntkeyinfo(PINPUT_RECORD Ppinprec,PKBDKEYINFO Ppkinfo,int Pshift)//~v13
 //**********************                                           //~v139M~
     if (Stracesw & 0x01)                                           //~v139M~
     {                                                              //~v139M~
-		printf("ukbd_w95keyinfo-1:shift=%08x\n",Pshift);           //~v139M~
-		printf("ukbd_w95keyinfo-1:%04x,%08x,%04x-%04x,%04x-%04x,ucs=%04x,%08x\n",//~v5n8R~
+		UTRACEPF("%s:ukbd_w95keyinfo-1:shift=%08x\n",UTT,Pshift);           //~v139M~//~v6VuR~
+		UTRACEPF("%s:ukbd_w95keyinfo-1:%04x,%08x,%04x-%04x,%04x-%04x,ucs=%04x,%08x\n",UTT,//~v5n8R~//~v6VuR~
             	(UINT)Ppinprec->EventType,                         //~v139M~
             	(UINT)Ppinprec->Event.KeyEvent.bKeyDown,           //~v139M~
             	(UINT)Ppinprec->Event.KeyEvent.wRepeatCount,       //~v139M~
@@ -1000,10 +1001,12 @@ int ukbd_wntkeyinfo(PINPUT_RECORD Ppinprec,PKBDKEYINFO Ppkinfo,int Pshift)//~v13
       }                                                            //~v5ncI~
     }                                                              //~v5imI~
     if (Stracesw)                                                  //~v139R~
-        printf("code conv %02x,%02x-->%02x,%02x\n",                //~v139R~
-                    Ppkinfo->chScan,Ppkinfo->chChar,sc,ch);        //~v139R~
-UTRACEP("code conv %02x,%02x-->%02x,%02x SHIFT=%x\n",              //~v5maI~
+    {                                                              //~v6VuI~
+//      printf("code conv %02x,%02x-->%02x,%02x\n",                //~v139R~//~v6VuR~
+//                  Ppkinfo->chScan,Ppkinfo->chChar,sc,ch);        //~v139R~//~v6VuR~
+UTRACEPF("%s:code conv %02x,%02x-->%02x,%02x SHIFT=%x\n",UTT,              //~v5maI~//~v6VuR~
                    Ppkinfo->chScan,Ppkinfo->chChar,sc,ch,Pshift);  //~v5maI~
+    }                                                              //~v6VuI~
     Ppkinfo->chScan=sc;                                            //~v139R~
     Ppkinfo->chChar=ch;                                            //~v139R~
 	return 1;	//processed                                        //~v139M~
@@ -1139,7 +1142,7 @@ USHORT ukbd_w95shiftconv(PINPUT_RECORD Ppinprec)                   //~v034R~
 	if (istate & CAPSLOCK_ON)                                      //~v034I~
     	ostate|=KBDSTF_CAPSLOCK_ON;                                //~v034I~
     if (Stracesw)                                                  //~v034I~
-		printf("shift conv in=%04x,out=%04x\n",istate,ostate);     //~v034I~
+		UTRACEPF("%s:shift conv in=%04x,out=%04x\n",UTT,istate,ostate);     //~v034I~//~v6VuR~
 	return ostate;                                                 //~v034I~
 }//ukbd_w95shiftconv                                               //~v034R~
                                                                    //~v034I~
@@ -1190,7 +1193,8 @@ static int pno;                                                    //~v5ncI~
 //  }                                                              //~v034I~
   if (Stracesw2 & KBD_PTRACE)                                      //~v298R~
 //  printf("=%s===readptr=%08x,writeptr=%08x\n",comm,*Sirread,*Sirwrite);//~v034I~//~v6L5R~
-    printf("=%s===readptr=%p,writeptr=%p\n",comm,*Sirread,*Sirwrite);//~v6L5I~
+//  printf("=%s===readptr=%p,writeptr=%p\n",comm,*Sirread,*Sirwrite);//~v6L5I~//~v6VuR~
+    UTRACEPF("%s:=%s===readptr=%p,writeptr=%p\n",UTT,comm,*Sirread,*Sirwrite);//~v6VuI~
   }                                                                //~v139I~
   if (Stracesw2 & KBD_PTRACE)                                      //~v298R~
     for (ii=0;ii<loop;ii++,pc1+=0x14)                              //~v034I~
@@ -1207,7 +1211,8 @@ static int pno;                                                    //~v5ncI~
 	    scan=(UINT)inprec->Event.KeyEvent.wVirtualScanCode;        //~v034I~
 	    state=(UINT)inprec->Event.KeyEvent.dwControlKeyState;      //~v034I~
 //      printf("%08x=#%02d: %04x-%04x,%08x,%04x-%04x,%04x-%04x,%08x\n",//~v034I~//~v6L5R~
-        printf("%p=#%02d: %04x-%04x,%08x,%04x-%04x,%04x-%04x,%08x\n",//~v6L5I~
+//      printf("%p=#%02d: %04x-%04x,%08x,%04x-%04x,%04x-%04x,%08x\n",//~v6L5I~//~v6VuR~
+        UTRACEPF("%s:%p=#%02d: %04x-%04x,%08x,%04x-%04x,%04x-%04x,%08x\n",UTT,//~v6VuI~
         pc1,pno+ii,(UINT)typ,(UINT)hh,down,(UINT)rep,(UINT)vkey,(UINT)scan,(UINT)ch,state);//~v034I~
     }                                                              //~v034I~
     else                                                           //~v298I~
@@ -1243,7 +1248,7 @@ DWORD ugetconsolemode(int Pid)                                     //~v6hdI~
 //          else                                                   //~v241R~
 //            printf("\nGetConsoleMode(STD_INPUT) failed(redirect)\n");//~v241R~
             if (!Pid)	//stdin                                    //~v253I~
-            	printf("\nGetConsoleMode(STD_INPUT) failed(redirect)\n");//~v253I~
+            	UTRACEP("\n%s:GetConsoleMode(STD_INPUT) failed(redirect)\n",UTT);//~v253I~//+v6VuR~
             oldmode=0xffffffff;                                    //~v204I~
         }                                                          //~v204I~
         else                                                       //~v204I~
@@ -1418,7 +1423,7 @@ void ureadconsoleinput(PINPUT_RECORD Pinprec,int Pilen,int *Polen) //~v034M~
 	*Polen=(int)readlen;                                           //~v6hdM~
 #endif 	//!WXE                                                     //~v570I~
     if (Stracesw)                                                  //~v034M~
-		printf("ReadConsoleInput: %04x,%08x,%04x-%04x,%04x-%04x,ucs=%04x,%08x(ilen=%d,olen=%d)\n",//~6A22I~//~v5n8R~
+		UTRACEPF("%s:ReadConsoleInput: %04x,%08x,%04x-%04x,%04x-%04x,ucs=%04x,%08x(ilen=%d,olen=%d)\n",UTT,//~6A22I~//~v5n8R~//~v6VuR~
             	(UINT)Pinprec->EventType,                                //~6A22R~//~v034M~
             	(UINT)Pinprec->Event.KeyEvent.bKeyDown,                  //~6A22R~//~v034M~
             	(UINT)Pinprec->Event.KeyEvent.wRepeatCount,              //~6A22R~//~v034M~
@@ -1472,7 +1477,7 @@ void upeekconsoleinput(PINPUT_RECORD Pinprec,int Preqctr,int *Poutctr)//~v139M~
 	*Poutctr=(int)readlen;                                         //~v6hdM~
 #endif 	//!WXE                                                     //~v570I~
     if (Stracesw)                                                  //~v139M~
-		printf("ReadConsoleInput: %04x,%08x,%04x-%04x,%04x-%04x,ucs=%04x,%08x(ilen=%d,olen=%d)\n",//~v5n8R~
+		UTRACEPF("%s:ReadConsoleInput: %04x,%08x,%04x-%04x,%04x-%04x,ucs=%04x,%08x(ilen=%d,olen=%d)\n",UTT,//~v5n8R~//~v6VuR~
             	(UINT)Pinprec->EventType,                          //~v139M~
             	(UINT)Pinprec->Event.KeyEvent.bKeyDown,            //~v139M~
             	(UINT)Pinprec->Event.KeyEvent.wRepeatCount,        //~v139M~
@@ -1503,7 +1508,7 @@ int ugetinputeventno(void)                                         //~v139M~
 		uerrapi1x("GetNumberOfConsoleInputEvents","STD_INPUT",GetLastError());//~v139M~
   #endif                                                           //~v570I~
     if (Stracesw)                                                  //~v139M~
-		printf("GetNumberOfConsoleInputEvents: %d\n",eventno);     //~v139M~
+		UTRACEPF("%s:GetNumberOfConsoleInputEvents: %d\n",UTT,eventno);     //~v139M~//~v6VuR~
 	return eventno;                                                //~v139M~
 }//ugetinputeventno                                                //~v139R~
                                                                    //~v139I~

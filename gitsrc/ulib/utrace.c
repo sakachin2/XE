@@ -1,7 +1,9 @@
-//*CID://+v6J6R~:                              update#=   97;      //~v6J6R~
+//*CID://+v6VuR~:                              update#=  109;      //~v6VuR~
 //***********************************************************************//~v026I~
 //* utrace.c                                                       //~v022R~
 //***********************************************************************
+//v6Vu:180622 UTRACE;support force option off                      //~v6VuI~
+//v6Vi:180617 support __LINE__ for UTRACEP                         //~v6ViI~
 //v6J6:170209 UTRACED 64bit addr                                   //~v6B1I~
 //v6B1:160114 trace,mtrace file no share mode                      //~v6B1I~
 //v6u9:140408 (Win)use UNICODE Api using special filename fmt.     //~v6u9I~
@@ -110,6 +112,7 @@
 #define NO_MACRO_REDIRECT //loop if redirectb UTRACE macro in ufopenW//~v6u9R~
 #include <ulib.h>                                                  //~v022I~
 #include <uerr.h>
+#define GBL_UTRACE  //define global variable                       //~v6ViI~
 #include <utrace.h>                                             //~5829I~
 #include <uproc2.h>                                                //~v5j0R~
 #include <ufile.h>                                                 //~v6B1I~
@@ -152,13 +155,17 @@
 #endif                                                             //~v5j0I~
 //****************************************************************//~6203I~
     static FILE *Sfile=0;           //handle                    //~6203I~
+    static FILE *Sfile_force=0;           //handle                 //~v6VuI~
 #ifdef W32                                                         //~v6B1I~
 	HANDLE Slockhandle;                                            //~v6B1I~
 #else                                                              //~v6B1I~
 	int    Slockhandle;                                            //~v6B1I~
 #endif                                                             //~v6B1I~
     static char Sutracefilename[_MAX_PATH]="utrace.out";           //~v101R~
+    static char Sutracefilename_force[_MAX_PATH];                  //~v6VuI~
     static int Sutraceopt=1;
+    static int Sswputforce;                                        //~v6VuI~
+    static int Sswnoforce=0;                                       //~v6VuI~
     static int Sswnoshare=0;                                       //~v6B1I~
     static int Sebcsw;                                             //~v322R~
     static int  Dumpboundary=1;    //domp boundary is 4 byte
@@ -195,6 +202,8 @@ static void   putline(char *,int);
 static void   printdump(void *,int,void*);
 static int typechk(char,char);  //char type  chk
 char *utracectime(void);                                           //~v57bR~
+int utraceopen_force(void);                                        //~v6VuI~
+void utraceocmsg_force(char *Pmsg);                                //~v6VuI~
 //#ifdef W32                                                       //~v5jaR~
 #if defined(W32)||defined(LNX)                                     //~v5jaI~
 //#ifndef NOMT                                                     //~v5nxR~
@@ -238,6 +247,18 @@ int utrace_init(char *Putracefile,int Popt)                     //~5829R~
 //#endif //ARM                                                       //~v6a0I~//~v6b6R~
 //********************                                          //~5829I~
 	Sswnoshare=0;                                                  //~v6B1I~
+#ifndef ARM                                                        //~v6VuI~
+	if (Popt & UTRACEO_FORCEFNM)                                   //~v6VuI~
+    {                                                              //~v6VuI~
+        strncpy(Sutracefilename_force,Putracefile,_MAX_PATH-1);    //~v6VuI~
+        return 0;                                                  //~v6VuR~
+    }                                                              //~v6VuI~
+#endif                                                             //~v6VuI~
+	if (Popt & UTRACEO_NOFORCE)                                    //~v6VuI~
+    {                                                              //~v6VuI~
+    	Sswnoforce=1;                                              //~v6VuI~
+        Popt &=~UTRACEO_NOFORCE;                                   //~v6VuI~
+    }                                                              //~v6VuI~
 	if (Popt & UTRACEO_NOSHARE)                                    //~v6B1I~
     {	                                                           //~v6B1I~
     	Sswnoshare=1;                                              //~v6B1I~
@@ -278,6 +299,9 @@ int utrace_init(char *Putracefile,int Popt)                     //~5829R~
           if (Sfile!=stdout && Sfile!=stderr)                      //~v323R~
             fclose(Sfile);                                      //~6203R~
             Sfile=0;                                            //~6203R~
+          	if (Sfile_force)                                       //~v6VuI~
+            	fclose(Sfile_force);                               //~v6VuI~
+            Sfile_force=0;                                         //~v6VuI~
         }                                                       //~5829I~
     }                                                           //~5829I~
 //#ifdef ARM                                                         //~v6a0I~//~v6b6R~
@@ -354,22 +378,40 @@ void utracepopf(char *Pfmt,...)                                    //~v6b6I~
     va_list argptr;                                                //~v6b6I~
     int topcrlfctr=0;                                              //~v6b6I~
     char *pc;                                                      //~v6b6I~
+    FILE* pfh;                                                     //~v6VuI~
 //***********************************                              //~v6b6I~
 //    if (!Sutraceopt)                                             //~v6b6I~
 //         return;                                                 //~v6b6I~
 #if defined(W32)||defined(LNX)                                     //~v6b6I~
     LOCK_ENTER()                                                   //~v6b6I~
 #endif                                                             //~v6b6I~
+    if (Sswnoforce)                                                //~v6VuR~
+        return;                                                    //~v6VuI~
+  if (*Sutracefilename_force)                                      //~v6VuI~
+  {                                                                //~v6VuI~
+    if (!Sfile_force)                                              //~v6VuI~
+        utraceopen_force();                                        //~v6VuI~
+    pfh=Sfile_force;                                               //~v6VuI~
+  }                                                                //~v6VuI~
+  else                                                             //~v6VuI~
+  {                                                                //~v6VuI~
     if (!Sfile)                                                    //~v6b6I~
         utraceopen();                                              //~v6b6I~
+    pfh=Sfile;                                                     //~v6VuI~
+  }                                                                //~v6VuI~
+  	if (!pfh)                                                      //~v6VuI~
+    	return;                                                    //~v6VuI~
     for (pc=Pfmt;*pc=='\n';pc++)                                   //~v6b6I~
     {                                                              //~v6b6I~
     	topcrlfctr++;                                              //~v6b6I~
-    	fprintf(Sfile,"\n");                                       //~v6b6I~
+//  	fprintf(Sfile,"\n");                                       //~v6b6I~//~v6VuR~
+    	fprintf(pfh,"\n");                                         //~v6VuI~
     }                                                              //~v6b6I~
-    fprintf(Sfile,"= %s = ",utracectime());                        //~v6b6I~
+//  fprintf(Sfile,"= %s = ",utracectime());                        //~v6b6I~//~v6VuR~
+    fprintf(pfh,"= %s = ",utracectime());                          //~v6VuI~
     va_start(argptr,Pfmt);  //addr of stack parm next of Pfmt      //~v6b6I~
-    vfprintf(Sfile,Pfmt+topcrlfctr,argptr);                        //~v6b6I~
+//  vfprintf(Sfile,Pfmt+topcrlfctr,argptr);                        //~v6b6I~//~v6VuR~
+    vfprintf(pfh,Pfmt+topcrlfctr,argptr);                          //~v6VuI~
 #ifdef ARM                                                         //~v6b6I~
     if (Sutraceopt & UTRACEO_LOGCAT)                               //~v6b6I~
     {                                                              //~v6b6I~
@@ -487,7 +529,8 @@ void utrace (char * Pfile,int Pline,int Ptype,char *Pcomment,void *Paddr,int Ple
 //            (int)ptm->tm_sec,                                    //~v57bR~
 //            (int)tb.millitm,                                     //~v57bR~
 //            comm);                                               //~v57bR~
-    nextpos=sprintf(dump,"= %s = %-12s-%4d %s:",                   //~v57bR~
+//  nextpos=sprintf(dump,"= %s = %-12s-%4d %s:",                   //~v57bR~//~v6ViR~
+    nextpos=sprintf(dump,"= %s = %-12s-%d %s:",                    //~v6ViI~
             utracectime(),                                         //~v57bI~
             Pfile+i+1,Pline,                                       //~v57bR~
             comm);                                                 //~v57bI~
@@ -513,7 +556,8 @@ void utrace (char * Pfile,int Pline,int Ptype,char *Pcomment,void *Paddr,int Ple
 //              (int)datetime.wSecond,                             //~v57bR~
 //              (int)datetime.wMilliseconds/10,                    //~v57bR~
 //              comm);                                             //~v57bR~
-        nextpos=sprintf(dump,"= %s = %-12s-%4d %s:",               //~v57bR~
+//      nextpos=sprintf(dump,"= %s = %-12s-%4d %s:",               //~v57bR~//~v6ViR~
+        nextpos=sprintf(dump,"= %s = %-12s-%d %s:",                //~v6ViI~
                 utracectime(),                                     //~v57bI~
                 Pfile+i+1,Pline,                                   //~v57bR~
                 comm);                                             //~v57bI~
@@ -737,6 +781,39 @@ int utraceopen(void)                                            //~5829I~
     Sutraceopt=0;   //bypass trace                              //~5829I~
     return rc;                                                  //~5829I~
 }//utraceopen                                                   //~5829I~
+//**************************************************************** //~v6VuI~
+//* open trace file for UTRACEPF                                   //~v6VuI~
+//**************************************************************** //~v6VuI~
+int utraceopen_force(void)                                         //~v6VuI~
+{                                                                  //~v6VuI~
+    int rc;                                                        //~v6VuI~
+    FILE *pfh;                                                     //~v6VuI~
+//***********************************                              //~v6VuI~
+   	if (Sswnoshare)                                                //~v6VuI~
+    	pfh=ufileopenexclusivewrite(0,Sutracefilename_force,&Slockhandle);             //open output//~v6VuI~
+   else                                                            //~v6VuI~
+    	pfh=fopen(Sutracefilename_force,"w");             //open output//~v6VuI~
+	Sfile_force=pfh;                                               //~v6VuI~
+    if (pfh)                            //open output              //~v6VuI~
+    {                                                              //~v6VuI~
+        utraceocmsg_force("TRACE_FORCE START AT");                 //~v6VuR~
+    	fprintf(pfh,"= %s = \n",utracectime());                    //~v6VuI~
+ 		fflush(pfh);                                               //~v6VuI~
+        return 0;                                                  //~v6VuI~
+    }                                                              //~v6VuI~
+    rc=errno;                                                      //~v6VuI~
+#ifdef UNX                                                         //~v6VuI~
+    if (rc==EACCES)                                                //~v6VuI~
+    	printf("%s(%s) Open failed(permission denied)\n",          //~v6VuI~
+            	Sutracefilename_force,"w");                        //~v6VuI~
+    else                                                           //~v6VuI~
+#endif //UNX                                                       //~v6VuI~
+    	printf("%s(%s) Open failed(errno=%d)\n",                   //~v6VuI~
+            Sutracefilename_force,"w",rc);                         //~v6VuI~
+    if (!(Sutraceopt & UTRACEO_IGNOREOPENERR))  //not ignore trace opt//~v6VuI~
+        exit(19);                                                  //~v6VuI~
+    return rc;                                                     //~v6VuI~
+}//utraceopen_force                                                //~v6VuI~
 //****************************************************************//~5829I~
 //* open/close msg                                              //~5829I~
 //*parm :start or end msg                                       //~5829I~
@@ -803,6 +880,18 @@ struct    tm* ptm;       //date and time                           //~v321R~
     putline(dump,(int)strlen(dump));                            //~5829I~
     return;                                                     //~5829I~
 }//utraceocmsg                                                  //~5829I~
+//**************************************************************** //~v6VuI~
+//* open/close msg                                                 //~v6VuI~
+//*parm :start or end msg                                          //~v6VuI~
+//*ret  :none                                                      //~v6VuI~
+//**************************************************************** //~v6VuI~
+void utraceocmsg_force(char *Pmsg)                                 //~v6VuI~
+{                                                                  //~v6VuI~
+	Sswputforce=1;                                                 //~v6VuI~
+	utraceocmsg(Pmsg);                                             //~v6VuR~
+    Sswputforce=0;                                                 //~v6VuI~
+    return;                                                        //~v6VuI~
+}//utraceocmsg_force                                               //~v6VuI~
 //********************************************************************
 //* dump edit
 //*   input:
@@ -960,7 +1049,7 @@ static unsigned char Sebc2asc[257]=       //for C4295:could not contain last nul
 #ifdef W32                                                         //~v6J6I~
   	sprintf(ln1,"%016llX",(ULPTR)pc);                              //~v6J6R~
 #else                                                              //~v6J6I~
-  	sprintf(ln1,"%016lx",(ULONG)pc);                               //+v6J6R~
+  	sprintf(ln1,"%016lx",(ULONG)pc);                               //~v6J6R~
 #endif                                                             //~v6J6I~
     *(ln1+16)=' ';                                                 //~v6J6R~
   #else                                                            //~v6J6R~
@@ -1061,7 +1150,15 @@ static unsigned char Sebc2asc[257]=       //for C4295:could not contain last nul
 //**********************************************************************
 void putline(char *area,int count) //v3.5r
 {
-    fwrite(area,1,(UINT)count,Sfile);                           //~6203R~
+	FILE *pfh;                                                     //~v6VuI~
+//*****************************                                    //~v6VuI~
+	if (Sswputforce)                                               //~v6VuR~
+    	pfh=Sfile_force;                                           //~v6VuI~
+    else                                                           //~v6VuI~
+    	pfh=Sfile;                                                 //~v6VuI~
+//      printf("%s:sh=%p\n",UTT,pfh);//@@@@test                    //+v6VuR~
+//  fwrite(area,1,(UINT)count,Sfile);                           //~6203R~//~v6VuR~
+    fwrite(area,1,(UINT)count,pfh);                                //~v6VuI~
     return;
 }//end of pline
 //******************************************
@@ -1142,6 +1239,8 @@ static HANDLE Shcons_stdout;                                       //~v6u9I~
 //*************************************************************    //~v6B1I~
 int utrace_term(int Popt)                                          //~v6B1I~
 {                                                                  //~v6B1I~
+//      printf("%s:sh=%p\n",UTT,Sfile);//@@@@test                  //+v6VuR~
+//      printf("%s:sh_force=%p\n",UTT,Sfile_force);//@@@@test      //+v6VuR~
 	if (Sfile)  //file opened                                      //~v6B1I~
     {                                                              //~v6B1I~
     	utraceocmsg("TRACE CLOSE AT");                             //~v6B1I~
@@ -1149,6 +1248,12 @@ int utrace_term(int Popt)                                          //~v6B1I~
             fclose(Sfile);                                         //~v6B1I~
         Sfile=0;                                                   //~v6B1I~
     }                                                              //~v6B1I~
+	if (Sfile_force)  //file opened                                //~v6VuI~
+    {                                                              //~v6VuI~
+    	utraceocmsg_force("TRACE_FORCE CLOSE AT");                 //~v6VuI~
+        fclose(Sfile_force);                                       //~v6VuI~
+        Sfile_force=0;                                             //~v6VuI~
+    }                                                              //~v6VuI~
     Sutraceopt=0;                                                  //~v6B1I~
     return 0;                                                      //~v6B1I~
 }//utrace_term                                                     //~v6B1I~

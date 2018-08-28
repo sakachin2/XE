@@ -1,7 +1,8 @@
-//*CID://+v6D0R~:                             update#=   35;       //~v6x0R~//~v6D0R~
+//*CID://+v6VxR~:                             update#=   37;       //~v6VxR~
 //******************************************************        //~5B11I~
 //*ufile4.h                                                        //~v050R~
 //******************************************************        //~5B11I~
+//v6Vx:180626 (LNX:BUG)trace file is not protected at xe initial clear//~v6VxI~
 //v6D0:160408 LNX compiler warning                                 //~v6D0I~
 //v6x0:150105 BUG:offset value is long long for fseek error msg    //~v6x0I~
 //v6w1:141122 (Axe:BUG)ufile4 compile err. fsid_t was changed fro ndkr7 to ndkr9//~v6w1I~
@@ -39,9 +40,9 @@
 //**************************************************************** //~v083I~
 typedef  struct _UDISKINFO {                                       //~v083R~
 //      unsigned total_clusters;                                   //~v083R~//~v6D0R~
-        FILESZT  total_clusters;                                   //+v6D0R~
+        FILESZT  total_clusters;                                   //~v6D0R~
 //      unsigned avail_clusters;                                   //~v083I~//~v6D0R~
-        FILESZT  avail_clusters;                                   //+v6D0R~
+        FILESZT  avail_clusters;                                   //~v6D0R~
         unsigned sectors_per_cluster;                              //~v083I~
         unsigned bytes_per_sector;                                 //~v083I~
 #ifdef UNX                                                         //~v348I~
@@ -128,6 +129,10 @@ int ufileisntfs(int Pdriveletter);                                 //~v5b0I~
 int ufsetlock(int Popt,char *Plockfnm);                            //~v5nhI~
 #define UFSLO_LOCK        0x01                                     //~v5nhI~
 #define UFSLO_UNLOCK      0x02                                     //~v5nhI~
+//*******************************************************          //~v6VxI~
+int uflock(int Popt,char *Pfnm,int *Ppfd);                         //+v6VxR~
+#define  UFLO_LOCK        0x01    //enlock                         //+v6VxI~
+#define  UFLO_CLOSE       0x02    //close fd                       //+v6VxI~
 //*******************************************************          //~v6kfI~
 #if defined(W32)||defined(UNX)                                     //~v6kfI~
 //int ufileslinkoutoflinkchk(int Popt,char *Pstartdir,char *Pfnm,char *Pslink);//~v6kpR~

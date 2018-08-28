@@ -22,6 +22,7 @@ a:hover{font-weight:bold;}
   .v129G&lt;--129F:(2018/01/30)
   .v129H&lt;--129G:(2018/02/22)
   .v129J&lt;--129H:(2018/05/10)
+  .v129K&lt;--129J:(2018/08/27)
 </SPAN></PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
     1.BUGs
@@ -47,7 +48,28 @@ a:hover{font-weight:bold;}
        -(Wxe/gxe) Cut&amp;Paste by mouse may paste trash data with length of CID of source line.
 <SPAN STYLE="color:#000000;font-size:12pt;">     (129G)
        </SPAN></SPAN><font size="3"> -(gxe:GTK3)printer selection on PrintDialog is applied incorrectly.</font>
-<font size="3">        -(gxe:GTK3)screen size at termination is not recovered correctly and enlarged.</font>
+<font size="3">        -(gxe:GTK3)screen size at termination is not recovered correctly and enlarged.</font></PRE>
+<PRE><font size="3">    (129K)
+        -Around processing of UTF8 file.
+         .DisplayCellWidth was reviced.
+         .Trouble around displaying UCS4,SpacingCombiningMarks adn NonSpacingMark.
+         .Expanded Maxmum combining up to 8 chracters.(case of Tibtan)   
+          For Linux Console version max is yet 4 characters.
+         .When unicode&gt;=U01000(Windows) or unicode&gt;=U020000(Linux)
+           -Invalid hexcode display on top-left header line.
+           -Could not update on vertical hex display line.
+         .(LNX)When U01000&lt;= unicode &lt;U020000
+           -SBCS(CellWidth=1) was changed to another character at save.
+           -"v" line cmd on vertical hex line(cmd to accept 3 consecutive hex code as unicode) failed.
+         .On =3.12 panel(Compare Tool) was corrupted when filename encoding is UTF8.
+         .(WinConsole)New tool:xcfont can change font of command prompt.
+          It enables to view foreign script suach as Devanagari.
+        -When gb18030, differece of cursor position between charcter and vertical hex line
+         occurs for characters of CelWidth=1.
+        -Consecutive Esc key clear line cmd except label,
+         but cmd specified the labe get error of label not found.
+        -When screen is split, it may occurs that line cmd on edit panel is ignored.
+</font>
 </PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
      2.Additional function.
@@ -91,8 +113,8 @@ a:hover{font-weight:bold;}
             c:char device, b:block device, p:pipe, s:socket
           e.g.) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr
                 (Linux)   f 775 attr ; f u attr
-    (129D)
-      -SelectLine
+     (129D)
+       -SelectLine
          .Command.
             SEL [all] [col1 col2] [.label1 .label2]
               label1/2:line range col1/2:column range
@@ -107,20 +129,20 @@ a:hover{font-weight:bold;}
        (Wxe,gxe)
          ."SelectAll" menuitem was added to File submenu and popup menu on edit panel.
          .Set shotcut key to Ctrl+A and cabnged to Ctrk+Shift+A for SaveAs.</SPAN></PRE>
-<PRE><font size="3">    (</font><SPAN STYLE="color:#000000;font-size:12pt;">129E)
-      -XML tag pairing search
-       .Default shortcut key is Alt+"/"
-       .Use shortcut key on "&lt;" or "&gt;"
-       .Comment portion(from "&lt;!--" to "--&gt;") is ignored
-        and recognize nested tag.
-        It is convenient to correct html automation tool generated.
+<PRE><font size="3">     (</font><SPAN STYLE="color:#000000;font-size:12pt;">129E)
+       -XML tag pairing search
+        .Default shortcut key is Alt+"/"
+        .Use shortcut key on "&lt;" or "&gt;"
+        .Comment portion(from "&lt;!--" to "--&gt;") is ignored
+         and recognize nested tag.
+         It is convenient to correct html automation tool generated.
 
-    (129H)
-      -P=nn(PortNo) option in xehots
-       .specific to the psftp destination other than default SSH portNo(22).
-      -Command History List.
-       .Shift+Ctrl+F12 shows CommandHistoryList, use "x" key to execute cmd on the line.
-       .Available commands are
+     (129H)
+       -P=nn(PortNo) option in xehots
+        .specific to the psftp destination other than default SSH portNo(22).
+       -Command History List.
+        .Shift+Ctrl+F12 shows CommandHistoryList, use "x" key to execute cmd on the line.
+        .Available commands are
          s : set to the command input line after closed the command history panel.
          S : set to the command input line of the command history panel.
          t : set on the other panel if screen is split.
@@ -129,16 +151,20 @@ a:hover{font-weight:bold;}
          X : execute on the command history panel.
          y : execute on the other panel if screen is split.
              same as "X" if not split.
-       .Max 40 entry is saved at xe terminate.
-    (129J)
-      -CommandHistoryList.
-       Mouse operation support.
+        .Max 40 entry is saved at xe terminate.
+     (129J)
+       -CommandHistoryList.
+        Mouse operation support.
          .R-button popups context menu.
          .Double click works as "x" cmd(execute the command after closed the command history panel).
          .Click on the selected line works as "s" cmd(set to the command input line after closed the command history panel).
+     (129K)
+      -TC fmt cmd -D"..." and -S"..." option
+        Accept escape secuence such as \x, \t as Delimeter(\t(0x09) is not allowed for -S).
+        Accept DBCS as -S option.
 
 
-     3.Miscellaneous.
+    3.Miscellaneous.
        -(Windows) add "msi" as executable binary extension
      (129C)
        -(Windows)If LoadLibrary failed for EBCDIC library for ICU(libicuuc.dll),
@@ -163,6 +189,13 @@ a:hover{font-weight:bold;}
         had not function key assigned, assign Shift+Alt+F12.
      (129J)
        -Add "CPU8" option to dirlist cmd "="(compare file/directory).
+     (129K)
+       -3.12 Panel(File/Dir compare)
+         "-CPU8" option was added to view compare result as CPU8 file.
+       -Diplay hex code on top-left for also directory list except ASCII code.
+       -Limit to SBCS for alternative character of "OPT UNICOMB U-xxxx" cmd
+       -Explicit "Force" option is required at save when timestamp was changed from loading time.
+        Re-enter of PF3 is not effective from now, use "SAVe -Force" or "END -force" cmd.
 
      4.Tool.
      (129C)
@@ -187,6 +220,58 @@ a:hover{font-weight:bold;}
      (129J)
        -xdc v2.29,xfc v1.27
         Add "CPU8" option.
+     (129K)
+       -(Win)xkp v1.4
+         Exe name was not fullpath from Windows7, show fullpath.
+       -xfg v1.20
+         grep may hungup when srach string is starting with "-".
+       -(Win)New tool xcfont v1.01 (available from Windows Vista)
+         It chages font of command prompt.
+         Chcp may required depending on font family.
+         For example, to view Devanagari script
+         Change font like as "xcfont Mangal" after "chcp 57002".
+         You can see Devaganari script(U+0900-097f) on xe.
+         For wxe or Linux version you need nothing special.
+--------------------------------------------------------------------------
+xcfont:V1.01(6): Change Current Console Font. (Supported From Vista.)
+xcfont [/options] [ &lt;name&gt; ] [ No=&lt;seqno&gt; ] [ CharSet={&lt;charset&gt;|?} ]
+[ H=&lt;height&gt; ] [ W=&lt;width&gt; ] [ Weight=&lt;weight&gt; ]
+*******************************************************************************
+&lt;name &gt; :Partial string of FontName(StartsWith).
+"*" means current font.
+Prefix:"*" means Contains.
+&lt;seqno&gt; :Select font by SeqNo from listed fonts,
+to allow name is not full specification.
+&lt;charset&gt;:Select filtering by charset.
+List available value by "charset=?".
+&lt;height&gt; :Font Height. "*" means copy from current.
+&lt;width&gt; :Font Width. "*" means copy from current.
+if missing, calculated from height.
+&lt;weight&gt; :Weight. specify Regular/Bold.
+if missing, adopted from selected font.
+/options
+/A:Accept System Selection.
+Not restore even when system set differently from requested.
+/B:Select Not TrueType fonts(Raster) only.
+/D:Detail Query Information.
+/F:Select Fixed Pitch fonts only.
+/Q:Query candidate fonts.
+/T:Select TrueType fonts only.
+/V:Select Variable Pitch fonts only.
+e.g. ----- (all are case insensitive) -----
+xcfont /Q charset=222 ; List fonts of charset:THAI.
+xcfont charset=? ; List available charset .
+xcfont /Qf ; List FixedPitch font.
+xcfont /Q * ; Show current font set.
+xcfont /Q Microsoft ; List fontname starting with "Microsoft".
+xcfont /Q *Sans ; List fontname containing "Sans".
+xcfont Microsoft No=2 ; Select second font listed by "Microsoft".
+xcfont SimSun charset=238 ; Select SimSun with charset:EASTEUROPE.
+xcfont Tahoma H=* ; H=current, W=H*rate of W/H of selected.
+xcfont * H=16 W=10 ; Update current font sizes
+xcfont * Weight=Bold ; Set current font weight to Bold
+chcp 57002 ; 57002:Devanagari, "Mangal" requires it.
+xcfont Mangal H=* ; Codepage will be listed by "xcv /list".
 
 </SPAN></PRE>
 </BODY>

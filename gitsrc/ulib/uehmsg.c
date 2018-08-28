@@ -1,8 +1,9 @@
-//CID://+v6T3R~:     update#=     48                               //~v6T3R~
+//CID://+v6VvR~:     update#=     53                               //~v6VvR~
 // *******************************************************************
 // * uehmsg.c
 // * exception handler set/unset,exception handler itself          //~v6T3R~
 // *******************************************************************
+//v6Vv:180622 show pid on exception msg                            //~v6VvI~
 //v6T3:180217 exception info is 16byte for 64bit                   //~v6T3I~
 //v6F1:160831 W64 try Exception msg                                //~v6F1I~
 //v6hh:120623 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  defines ULPTR(unsigned long long)//~v6hhI~
@@ -46,6 +47,7 @@
 #include <uehmsg.h>
 #include <uehdump.h>                                               //~v032I~
 #include <utrace.h>                                                //~v167I~
+#include <uproc2.h>                                                //~v6VvI~
 
 //********************************************************************
 #define WKMSGSIZE 16384  //msg work alloc size
@@ -312,7 +314,8 @@ static UCHAR *parmpfende	="Process Forced  ";
 static UCHAR constnaj[MAX_FUNCNAME]="関数名不明";                  //~v6F1I~
 static UCHAR constnae[MAX_FUNCNAME]="Function name N/A";           //~v6F1I~
 //static UCHAR constspace[]=" ";                                   //~v022R~
-  static UCHAR msgehmsgtitle[]="Exception Report\n";
+//static UCHAR msgehmsgtitle[]="Exception Report\n";               //~v6VvR~
+static UCHAR msgehmsgtitle[]="Exception Report";                   //~v6VvI~
 #ifdef ULIB64X                                                     //~v6F1I~
   static UCHAR msgprotexaddrj[]                                    //~v6F1I~
          =DUMPTITLEID "アドレス %p(%-24.24s)で%s例外(%08X)\n%n";   //~v6F1I~
@@ -337,14 +340,14 @@ static UCHAR constnae[MAX_FUNCNAME]="Function name N/A";           //~v6F1I~
          =" Not Avail%n";
   static UCHAR msgprotparm1[]
 #ifdef ULIB64X                                                     //+i called//~v6T3R~
-         ="P%1d=%p(%s) %n";  //with description                    //+v6T3M~
-#else                                                              //+v6T3M~
+         ="P%1d=%p(%s) %n";  //with description                    //~v6T3M~
+#else                                                              //~v6T3M~
          ="P%1d=%08X(%s) %n";  //with description               //~5105R~
 #endif                                                             //~v6T3R~
   static UCHAR msgprotparm2[]
 #ifdef ULIB64X                                                     //~v6T3R~
-         ="P%1d=%p %n";      //without description                 //+v6T3I~
-#else                                                              //+v6T3M~
+         ="P%1d=%p %n";      //without description                 //~v6T3I~
+#else                                                              //~v6T3M~
          ="P%1d=%08X %n";      //without description            //~5105R~
 #endif                                                             //~v6T3R~
   static UCHAR msgprotintreg[]
@@ -451,8 +454,9 @@ UCHAR*  uehmsg(PEXCEPTIONREPORTRECORD pexreprec,
 #endif                      //DPMI or not                          //~v032R~
 	msgwk=allocmem;
 //UTRACEP("get  msgwk=%08x\n",msgwk);                              //~v171R~
-	strcpy(msgwk,msgehmsgtitle);
-	msgwk+=sizeof(msgehmsgtitle)-1;
+//  strcpy(msgwk,msgehmsgtitle);                                   //~v6VvR~
+//  msgwk+=sizeof(msgehmsgtitle)-1;                                //~v6VvR~
+    msgwk+=sprintf(msgwk,"%s : pid=%ld\n",msgehmsgtitle,ugetpid());//+v6VvR~
 
 //  if (dbcssw=udbcschk(0x81),dbcssw)                              //~v150R~
     if (dbcssw=udbcschkcp(),dbcssw)                                //~v150I~
@@ -818,8 +822,9 @@ UCHAR*  uehmsg(PEXCEPTIONREPORTRECORD pexreprec,                   //~v6F1I~
    if(apiret)                                                      //~v032I~//~v6F1I~
       uerrexit("HeapAlloc failed,len=%d,rc=%d",0,WKMSGSIZE,apiret);//~v032I~//~v6F1I~
 	msgwk=allocmem;                                                //~v6F1I~
-	strcpy(msgwk,msgehmsgtitle);                                   //~v6F1I~
-	msgwk+=sizeof(msgehmsgtitle)-1;                                //~v6F1I~
+//  strcpy(msgwk,msgehmsgtitle);                                   //~v6F1I~//~v6VvR~
+//  msgwk+=sizeof(msgehmsgtitle)-1;                                //~v6F1I~//~v6VvR~
+    msgwk+=sprintf(msgwk,"%s : pid=%ld\n",msgehmsgtitle,ugetpid());//+v6VvR~
     *msgwk++='\n';                                                 //~v6F1R~
 	msgwk+=uehstacktracemsg(UEHSMO_SYMINIT,pexreprec->ExceptionAddress,msgwk);//~v6F1R~
     if (dbcssw=udbcschkcp(),dbcssw)                                //~v150I~//~v6F1I~

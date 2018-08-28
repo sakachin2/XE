@@ -8,6 +8,7 @@ call      mkvct32.bat     xads       %p1% %p2% %p3%
 rem call  mkvct32.bat     xatrcchk   %p1% %p2% %p3%
 rem call  mkvct32.bat     xagp       %p1% %p2% %p3%
 call      mkvct32.bat     xbc        %p1% %p2% %p3%
+call      mkvct32.bat     xcfont     %p1% %p2% %p3%
 call      mkvct32.bat     xcv        %p1% %p2% %p3%
 call      mkvct32.bat     xcvsjisc   %p1% %p2% %p3%
 rem call  mkvct32.bat     xdbcsenv   %p1% %p2% %p3%

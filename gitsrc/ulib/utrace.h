@@ -1,5 +1,8 @@
-//*CID://+v6B1R~:                             update#=   39;       //~v6B1R~
+//*CID://+v6V9R~:                             update#=   59;       //+v6V9R~
 //**********************************************************************
+//v6X9:180821 snprintf is from msvs2015(err at xp:2010)            //+v6V9I~
+//v6Vu:180622 UTRACE;support force option off                      //~v6VuI~
+//v6Vi:180617 support __LINE__ for UTRACEP                         //~v6ViI~
 //v6B1:160114 trace,mtrace file no share mode                      //~v6B1I~
 //v6w2:141201 (Axe:BUG)undef UTSSTART/UTSEND for amm because eclipse release build(android tool build signed apk) dose not set -DNOTRACE.//~v6wqI~
 //            NDEBUG macro is not applicaple because eclipse set it also normal build//~v6wqI~
@@ -49,14 +52,33 @@
 //    #endif                                                       //~v6wqR~
 //#endif                                                           //~v6wqR~
                                                                    //~v6wqI~
+#define GTRACEHDRSZ 256                                            //~v6ViI~
+                                                                   //~v6ViI~
+#ifdef __cplusplus                                                 //~v440I~//~v6ViM~
+extern  "C"                                                        //~v6ViR~
+{                                                                  //~v6ViI~
+#endif                                                             //~v6ViI~
+                                                                   //~v6ViI~
+#ifdef GBL_UTRACE	                                               //~v6ViM~
+	char Gtracehdr[GTRACEHDRSZ];                                   //~v6ViM~
+#else                                                              //~v6ViM~
+	extern char Gtracehdr[GTRACEHDRSZ];                            //~v6ViI~
+#endif                                                             //~v6ViR~
+                                                                   //~v6ViI~
+#ifdef __cplusplus                                                 //~v6ViI~
+} // cpp extern C                                                  //~v6ViI~
+#endif //cpp                                                       //~v6ViI~
+                                                                   //~v6ViI~
 #ifdef NOTRACE
 	#define UTRACEP_(printfparm)                                   //~v60gM~
   #ifdef LNX                                                       //~v5mqI~
 	#define UTRACEP(p1,p2...)                                      //~v5mqR~
 	#define UTRACEPF(p1,p2...)                                     //~v6a0I~
+	#define UTRACEPF2(...)                                         //~v6VuI~
   #else                                                            //~v5mqI~
 	#define UTRACEP      utracepnop                                //~v041I~
 	#define UTRACEPF     utracepnop                                //~v6a0I~
+	#define UTRACEPF2    utracepnop                                //~v6VuI~
   #endif                                                           //~v5mqI~
 	#define UTRACEI(comment,int)                                //~v014I~
 	#define UTRACES(comment,string,len)                         //~v014I~
@@ -71,6 +93,7 @@
     #define UTRACETIT      "UTRACETIT"                             //~v6u9R~
     #define UTT UTRACETIT   //abridgement                          //~v6u9I~
 #else
+                                                                   //~v6ViI~
 	#ifdef DOS
 		#define UTRACETIT __FILE__
 	#else
@@ -92,9 +115,15 @@
 	    #define PRINTUWCH(prefix,pwucs,postfix)                    //~v6u9I~
     #endif                                                         //~v6u9R~
                                                                    //~v6u9I~
-    #define UTT UTRACETIT   //abridgement                          //~v6u0R~//~v6u9M~
+//  #define UTT UTRACETIT   //abridgement                          //~v6u0R~//~v6u9M~//~v6ViR~
+#if defined(_MSC_VER) && _MSC_VER <1900                            //+v6V9I~
+    #define UTT UTRACETIT   //abridgement                          //+v6V9I~
+#else                                                              //+v6V9I~
+    #define UTT (snprintf(Gtracehdr,GTRACEHDRSZ,"%s-%d",UTRACETIT,__LINE__),Gtracehdr)   //abridgement//~v6ViI~
+#endif                                                             //+v6V9I~
 	#define UTRACEP      utracepop                                 //~v041I~
 	#define UTRACEPF     utracepopf  //write regardless trace option//~v6a0I~
+	#define UTRACEPF2(fmt,...) (UTRACEP(fmt,__VA_ARGS__),UTRACEPF(fmt,__VA_ARGS__))//~v6VuI~
 	#ifdef LNX                                                     //~v60gI~
 		#define UTRACEP_(printfparm) utracepop printfparm; //linux compile err invalid preprocessor token//~v60gI~
 	#else                                                          //~v60gI~
@@ -162,6 +191,8 @@ int  utrace_init(char *Putracefile,int Popt);                   //~5829R~
 	#define UTRACEO_TEMPCLOSE   0x20                               //~v6a0I~
 #endif //ARM                                                       //~v6a0I~
 #define UTRACEO_NOSHARE         0x40     //exclusive write open    //~v6B1I~
+#define UTRACEO_NOFORCE       0x0080     //ignore UTRACEPF(put trace regardless trace option)//~v6VuR~
+#define UTRACEO_FORCEFNM      0x0100     //notify UTRACEPF output filename//~v6VuI~
                                                                    //~v5j0I~
 //**************************************************************** //~v5j0I~
 int  utrace_initmt(void *Psem);                                    //~v5j0R~
@@ -177,8 +208,8 @@ void utracepnop(char *Pfmt,...);                                   //~v041I~
 void utrace (char * Pfile,int Pline,int Ptype,char *Pcomment,void *Paddr,int Plen);//~5807I~
 //***************************************************************  //~v322R~
 void utrace_ebc(char * Pfile,int Pline,int Ptype,char *Pcomment,void *Paddr,int Plen);//~v322R~
-//**************************************************************** //+v6B1M~
-int  utrace_term(int Popt);                                        //+v6B1I~
+//**************************************************************** //~v6B1M~
+int  utrace_term(int Popt);                                        //~v6B1I~
 #ifdef __cplusplus                                                 //~v570I~
 	}                                                              //~v570I~
 #endif                                                             //~v570I~

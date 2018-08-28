@@ -1,9 +1,10 @@
-//CID://+vb7nR~:                         Update#=  659             //~vb31R~//+vb7nR~
+//CID://+vbmjR~:                         Update#=  668             //~vbmjR~
 //*************************************************************
 //*xefile12.c*                                                     //~v0baR~
 //**save,renum-->xefile15                                          //~v0duR~//~va6FR~
 //*************************************************************
-//vb7n:170117 move filename position to last on errmsg for longname//+vb7nI~
+//vbmj:180812 request "Force" option to save updated at other session.//~vbmjI~
+//vb7n:170117 move filename position to last on errmsg for longname//~vb7nI~
 //vb31:160418 (LNX64)Compiler warning                              //~vb31I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vazu:150114 (BUG)partial edit;if save failed,for next save keep UFHelinepos because org file was not changed.//~vazuI~
@@ -358,6 +359,7 @@ int filesave(PUCLIENTWE Ppcw,int Pendsw,PUFILEH Ppfh,PULINEH Pplh1,PULINEH Pplh2
     int swcut;                                                     //~vaj0I~
     int swrecordfile;                                              //~vamFI~
     int optpc;                                                     //~vazsI~
+    int swforce;                                                   //~vbmjI~
 //****************************
 	pfc=Ppcw->UCWpfc;                                              //~v61wI~
     bandlesw=(Pendsw & FSENDSW_BANDLE); //chk bandle used          //~v0ibI~
@@ -384,6 +386,7 @@ int filesave(PUCLIENTWE Ppcw,int Pendsw,PUFILEH Ppfh,PULINEH Pplh1,PULINEH Pplh2
 //  if (wxpcmdsw)                                                  //~v625I~//~va87R~
 //  	vhexlineidsw=0;				//no set lineid at top of line //~v625I~//~va87R~
 #endif                                                             //~v625M~
+    swforce=0;  //for compiler warning                             //+vbmjI~
     if (prtpagesw)                                                 //~v40kI~
     {                                                              //~v40kI~
 //  	scrpcw=(PUCLIENTWE)(ULONG)Pplh2;                           //~v445R~
@@ -407,6 +410,7 @@ int filesave(PUCLIENTWE Ppcw,int Pendsw,PUFILEH Ppfh,PULINEH Pplh1,PULINEH Pplh2
 #endif                                                             //~va0mI~
     	xallsw=(saveopt & FSOC_XALL); //write excluded all line    //~v54YI~
     	nxallsw=(saveopt & FSOC_NXALL); //write excluded all line  //~v54YI~
+    	swforce=((unsigned)saveopt & FSOC_FORCE)!=0; //force write for SAVE/END cmd//~vbmjR~
         if (saveopt & FSOC_NB)                                     //~v76XI~
             bkupopt|=FBRO_NB;                                      //~v76XI~
         else                                                       //~v76XI~
@@ -672,15 +676,18 @@ int filesave(PUCLIENTWE Ppcw,int Pendsw,PUFILEH Ppfh,PULINEH Pplh1,PULINEH Pplh2
         }                                                          //~va36I~
        if (!UCBITCHK(pfh->UFHflag8,UFHF8NOUPDCHK))//force save (::cb at term)//~v70cR~
        {                                                           //~v70cI~
-         if (!scrconfirmchk(GSCRCONFSAVE))   //not yet confirmed   //~v543R~
+//       if (!scrconfirmchk(GSCRCONFSAVE))   //not yet confirmed   //~v543R~//~vbmjR~
+         if (!swforce)   //not yet confirmed                       //~vbmjI~
 //          if (xeftpsave(XEFTPSO_UPDATECHKONLY,Ppcw,pfh))//updated//~v54UR~
 //          if (xefsubupdatechk(Ppcw,pfh))//updated                //~v716R~
             if (rc2=xefsubupdatechk(Ppcw,pfh),rc2)//updated        //~v716I~
             {                                                      //~v543R~
               UCBITON(pfh->UFHflag,UFHFWRITEERR); //dont delete at closefree to manual chk later//~v71RR~
               if (rc2>0)	//not tso err                          //~v716I~
-                uerrmsg("File is updated after load,Use same key to force save,or Esc to cancel",//~v543R~
-                        "ファイルが読み込み時から変更されています。続行する時は再入力,Escで取消");//~v543R~
+//              uerrmsg("File is updated after load,Use same key to force save,or Esc to cancel",//~v543R~//~vbmjR~
+//                      "ファイルが読み込み時から変更されています。続行する時は再入力,Escで取消");//~v543R~//~vbmjR~
+                uerrmsg("File is updated after load,Specify \"/Force\" to SAVe/END cmd,or Esc-Key to Cancel",//~vbmjR~
+                        "ファイルが読み込み時から変更されています。強行するにSAVe/END コマンドで \"/Force\"を指定, Escキーで取消");//~vbmjR~
                 return 8;                                          //~v543R~
             }                                                      //~v543R~
         }                                                          //~v70cI~
@@ -1646,10 +1653,10 @@ int filesave(PUCLIENTWE Ppcw,int Pendsw,PUFILEH Ppfh,PULINEH Pplh1,PULINEH Pplh2
 						"ホストテーブルを更新しました");           //~v53UI~
             else                                                   //~v53UI~
 #endif                                                             //~v53UI~
-//  		uerrmsg("%s was Saved",                             //~5228R~//+vb7nR~
-//  				"%s は保管されました",                      //~5228R~//+vb7nR~
-    		uerrmsg("Saved:%s",                                    //+vb7nI~
-    				"保管されました:%s",                           //+vb7nI~
+//  		uerrmsg("%s was Saved",                             //~5228R~//~vb7nR~
+//  				"%s は保管されました",                      //~5228R~//~vb7nR~
+    		uerrmsg("Saved:%s",                                    //~vb7nI~
+    				"保管されました:%s",                           //~vb7nI~
 					pfh->UFHfilename);                          //~5228R~
           }                                                        //~v53UI~
         }//gprocsterm                                              //~v53UI~
@@ -1732,8 +1739,8 @@ int fileadjustfh4cut(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh,int Psaveopt)//~vaj0R
 		Ppfh->UFHwidth=0;   //force line width=999                 //~v10FI~//~vaj0I~
         UCBITOFF(Ppfh->UFHflag,UFHFCIDON);                         //~vaj0I~
         UCBITON(Ppfh->UFHflag,UFHFCIDOFF);                         //~vaj0I~
-    }                                                              //~vaj0I~
-    strncpy(Ppfh->UFHalias,CUTCMD_2NDCBFNM,sizeof(Ppfh->UFHalias)-1);  //~5224I~//~vaj0I~
+    }                                                              //~vbmjR~
+    strncpy(Ppfh->UFHalias,CUTCMD_2NDCBFNM,sizeof(Ppfh->UFHalias)-1);  //~5224I~//~vaj0I~//~vbmjI~
     UCBITON(Ppfh->UFHflag13,UFHF13CB2);                            //~vaj0I~
     return 0;                                                      //~vaj0M~
 }//adjustfh4cut                                                    //~vaj0M~

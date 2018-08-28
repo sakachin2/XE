@@ -1,7 +1,11 @@
-//*CID://+vbi4R~:                            update#= 1521;        //~vb7dR~//~vbi4R~
+//*CID://+vbkbR~:                            update#= 1533;        //~vbkbR~
 //*************************************************************    //~v904I~
 //* xeutf.c                                                        //~v904I~
 //*************************************************************    //~v904I~
+//vbkb:180618 uvbka but cs4(ddfmtlen=2) and errrep(lclen=1) cause err; xeutf_cvf2dd-->utfcvf2dd  may change ddlen=2 to lclen=1, it append 1  slag byte to filename//~vbkaI~
+//            pancmdlf2dd-->xeutf_cvf2dd(lclen=1 of byte one "?")-->utfcvf2dd:lclen short because ddlen=2//~vbkaI~
+//            set dbcs "?" for errrep of ddlen=2 at utfcvf2dd      //~vbkaI~
+//vbka:180617 (BUG)ucs4; f2l may change ddlen=2 to lclen=1, it append 1  slag byte to filename//~vbiaI~
 //vbi4:180217 set dbcs '?' when f2l err of dbcs(if sbcs '?' err at funcsetlongcmdfromstack xeutf_setbyu8lc->xeutfcvf2dd)//~vbi4I~
 //vb7d:170108 (BUG)malloc size is too large;linux crush by _MAX_PATH=4096//~vb7dI~
 //vb4c:160730 display altch for also cmdline/errmsg                //~vb2HI~
@@ -1799,7 +1803,8 @@ UTRACED("xeutfcvf2lDDW input",Pdata,Pdatalen);                     //~vau5R~
         swerr=0;                                                   //~vau5I~
         utfcvf2dd(opt,pc,u8len,wkdd,wkdddbcs,sizeof(wkdd),&wrtlen);//~vauaI~
     	rc2=utfcvf2l(opt,pco,pc,u8len,&chklen2,&wrtlen2,0/*Ppcharwidth*/);//~vauaR~
-        if (rc2||chklen2!=u8len||wrtlen2!=wrtlen)                  //~vauaR~
+//      if (rc2||chklen2!=u8len||wrtlen2!=wrtlen)                  //~vauaR~//~vbkaR~
+        if (rc2||chklen2!=u8len)                                   //~vbkaI~
         	swerr=1;                                               //~vauaR~
         chklen=u8len;                                              //~vau5I~
         if (swerr)                                                 //~vau5I~
@@ -1809,6 +1814,7 @@ UTRACED("xeutfcvf2lDDW input",Pdata,Pdatalen);                     //~vau5R~
 //                *(pco+1)=XEUTFDD2LC_REPERR; //"."                //~vavjR~
             rc=1;                                                  //~vauaI~
         }                                                          //~vau5I~
+        wrtlen=wrtlen2;    //lclen                                 //~vbkaI~
     }                                                              //~vau5I~
     outlen=(int)((ULPTR)pco-(ULPTR)Poutbuff);                      //~vau5I~
     if (Ppoutlen)                                                  //~vau5I~
@@ -1842,7 +1848,8 @@ UTRACED("input",Pdata,Pdatalen);                                   //~vavsI~
         swerr=0;                                                   //~vavsI~
         utfcvf2dd(opt,pc,u8len,wkdd,wkdddbcs,sizeof(wkdd),&wrtlen);//~vavsI~
     	rc2=utfcvf2l(opt,pco,pc,u8len,&chklen2,&wrtlen2,0/*Ppcharwidth*/);//~vavsI~
-        if (rc2||chklen2!=u8len||wrtlen2!=wrtlen)                  //~vavsI~
+//      if (rc2||chklen2!=u8len||wrtlen2!=wrtlen)                  //~vavsI~//~vbkaR~
+        if (rc2||chklen2!=u8len)                                   //~vbiaI~
         	swerr=1;                                               //~vavsI~
         chklen=u8len;                                              //~vavsI~
         if (swerr)                                                 //~vavsI~
@@ -1852,11 +1859,13 @@ UTRACED("input",Pdata,Pdatalen);                                   //~vavsI~
         if (u8len>1)	//utf8                                     //~vavsI~
         {                                                          //~vavsI~
         	*pct=XEUTFCT_UTF8;                                     //~vavsI~
-            if (wrtlen>1)                                          //~vavsI~
+//          if (wrtlen>1)                                          //~vavsI~//~vbkaR~
+            if (wrtlen2>1)                                         //~vbiaI~
 	        	*(pct+1)=XEUTFCT_UTF8;                             //~vavsI~
         }                                                          //~vavsI~
         else                                                       //~vavsI~
         	*pct=0;                                                //~vavsI~
+        wrtlen=wrtlen2;                                            //~vbkaR~
     }                                                              //~vavsI~
     outlen=(int)((ULPTR)pco-(ULPTR)Poutbuff);                      //~vavsI~
     if (Ppoutlen)                                                  //~vavsI~
@@ -1933,11 +1942,12 @@ int xeutfcvlf2ddAdjust(int Popt,char *Ppu8,int Pu8len,char *Plc,char *Pct,int Pl
 //#endif                                                           //~vaw1R~
             	if (*(plc+1)==XEUTFDD2LC_REPERR && *(pct+1)==XEUTFCT_UTF8) //ucs dbcs//~vaumI~
             		lclen=2;                                       //~vaumI~
-                else                                               //~vaumI~
-                {                                                  //~vaumI~
-            		swerr=1;	//already adjusted                 //~vaumI~
-                	break;                                         //~vaumI~
-                }                                                  //~vaumI~
+//*utfcvf2dd translate u-10a01(ddlen=2,mk_width=0)  to 1 byte "?"; it is not err//~vbkaI~
+//              else                                               //~vaumI~//~vbkaR~
+//              {                                                  //~vaumI~//~vbkaR~
+//          		swerr=1;	//already adjusted                 //~vaumI~//~vbkaR~
+//              	break;                                         //~vaumI~//~vbkaR~
+//              }                                                  //~vaumI~//~vbkaR~
             }                                                      //~vaumI~
             rc=2;                                                  //~vaumI~
           }                                                        //~vaumI~
@@ -3221,7 +3231,9 @@ int xeutf_strlenu8byct(int Popt,char *Pinp,int Pinplen,char *Pdbcs,char *Pcodetb
 {                                                                  //~vaaqI~
 	char *pc,*pct,*pcd,rc=0;                                       //~vaaqR~
 	int lclen=0,reslenlc,reslenu8,u8len=0,codetype;                //~vaumR~
-    char wkdd[4],wkdbcs[4];;                                       //~vau2I~
+//    char wkdd[4],wkdbcs[4];;                                       //~vau2I~//~vbkaR~
+    char wkdd[4],wkdbcs[4];;                                       //~vbkbI~
+//    char wklc[MAX_MBCSLEN];                                        //~vbkaI~//+vbkbR~
 //****************************                                     //~vaaqI~
 	UTRACED("xeutf_strlenu8byct data",Pinp,Pinplen);               //~vaaqR~
 	UTRACED("xeutf_strlenu8byct dbcs",Pdbcs,Plclen);               //~vaaqR~
@@ -3256,7 +3268,9 @@ int xeutf_strlenu8byct(int Popt,char *Pinp,int Pinplen,char *Pdbcs,char *Pcodetb
           }                                                        //~vau2I~
           else                                                     //~vau2I~
           {                                                        //~vau2I~
-          	utfcvf2dd(0,pc,u8len,wkdd,wkdbcs,sizeof(wkdd),&lclen); //~vau2I~
+//        	utfcvf2dd(0,pc,u8len,wkdd,wkdbcs,sizeof(wkdd),&lclen); //~vau2I~//~vbkaR~
+//  		xeutfcvf2lDDW(0,pc,u8len,wklc,sizeof(wklc),&lclen);    //~vbkbR~
+          	utfcvf2dd(0,pc,u8len,wkdd,wkdbcs,sizeof(wkdd),&lclen); //~vbkbR~
             if (!lclen)                                            //~vau2I~
 	          	lclen=1;                                           //~vau2I~
           }                                                        //~vau2I~
@@ -3680,8 +3694,11 @@ int xeutf_setctbyu8lc(int Popt,char *Ppu8,int Plenu8,char *Pplc,int Plenlc,char 
             if (ddlen2==2)                                         //~vau7I~
             {                                                      //~vau7I~
 	        	if (*(plc+1)!=XEUTFDD2LC_REPERR)                   //~vau7I~
-                	break;                                         //~vau7I~
-                chklenlc=2;                                        //~vau7I~
+                {                                                  //~vbkaI~
+//              	break;                                         //~vbkaR~
+//              chklenlc=2;                                        //~vbkaR~
+                  chklenlc=1;                                      //~vbkaI~
+                }                                                  //~vbkaI~
             }                                                      //~vau7I~
             swrepchkokdd=1;                                        //~vau7I~
 	        memset(pct,XEUTFCT_UTF8,(UINT)chklenlc);               //~vau7I~
@@ -3689,9 +3706,9 @@ int xeutf_setctbyu8lc(int Popt,char *Ppu8,int Plenu8,char *Pplc,int Plenlc,char 
         }                                                          //~vau7I~
         if (!xeutf_dbcssubcharcmp(0,plc,reslenlc))                 //~vbi4R~
         {                                                          //~vbi4I~
-    		opt=UTFCVO_ERRRET;  //doubled "?" for err dbcs         //+vbi4I~
-	    	rc2=utfcvf2l(opt,wklc,pu8,chklenu8,0/*chklen*/,&chklenlc,0/*Ppcharwidth*/);//+vbi4I~
-			if (rc2==UTFCVRC_ERRSTOP)                              //+vbi4I~
+    		opt=UTFCVO_ERRRET;  //doubled "?" for err dbcs         //~vbi4I~
+	    	rc2=utfcvf2l(opt,wklc,pu8,chklenu8,0/*chklen*/,&chklenlc,0/*Ppcharwidth*/);//~vbi4I~
+			if (rc2==UTFCVRC_ERRSTOP)                              //~vbi4I~
             {                                                      //~vbi4I~
 	            swrepchkokdd=1;                                    //~vbi4I~
 	        	chklenlc=2;                                        //~vbi4I~

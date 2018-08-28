@@ -1,8 +1,9 @@
-//*CID://+v6BjR~: update#=   66;                                   //+v6BjR~
+//*CID://+v6WnR~: update#=   67;                                   //+v6WnR~
 //******************************************************           //~v600I~
 //*utf2.h                                                          //~v600I~
 //******************************************************           //~v600I~
-//v6Bj:160213 (W32:BUG)UCS4 was cut to UCS2                        //+v6BjI~
+//v6Wn:180724 (v6W9 for gxe) combining char such as u309a(u306f+u309a) exists.//+v6WnI~
+//v6Bj:160213 (W32:BUG)UCS4 was cut to UCS2                        //~v6BjI~
 //v6x5:150108 (warning C4244)ULONG 64 bit for LNX,32 bit for WIN on 64bit cpu,pointr is 64bit for both LNX and WIN.//~v6x5I~
 //v6hh:120623 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  defines ULPTR(unsigned long long)//~v6hhI~
 //v6f9:120423 (Axe)default locale by locale.getDefault().toString()+"."+Charset.defaultCharset(="UTF-8")//~v6f9I~
@@ -86,17 +87,26 @@ int utfctr2offs(int Popt,char *Putf8,char *Pdbcs,char *Pcodetype,int Ppos,int Pu
 //******************************************************           //~v600I~
 //******************************************************           //~v600I~
 #ifdef UTF8UCS2                                                    //~v647I~
-//int mk_wcwidth_cjk(UWCHART ucs);                                   //~v647R~//+v6BjR~
-int mk_wcwidth_cjk(UWUCS ucs);                                     //+v6BjI~
-//int mk_wcwidth_j(UWCHART ucs);                                     //~v647R~//+v6BjR~
-int mk_wcwidth_j(UWUCS ucs);                                       //+v6BjI~
-//int mk_wcwidth(UWCHART ucs);                                       //~v647R~//+v6BjR~
-int mk_wcwidth(UWUCS ucs);                                         //+v6BjI~
+//int mk_wcwidth_cjk(UWCHART ucs);                                   //~v647R~//~v6BjR~
+int mk_wcwidth_cjk(UWUCS ucs);                                     //~v6BjI~
+//int mk_wcwidth_j(UWCHART ucs);                                     //~v647R~//~v6BjR~
+int mk_wcwidth_j(UWUCS ucs);                                       //~v6BjI~
+//int mk_wcwidth(UWCHART ucs);                                       //~v647R~//~v6BjR~
+//int mk_wcwidth(UWUCS ucs);                                         //~v6BjI~//+v6WnR~
+int mk_wcwidth(int Popt,UWUCS ucs);                                //+v6WnI~
+//**Popt=Sutftbopt                                                 //+v6WnI~
+#define SUO_NATIVE  0x01 //use wcwidth                             //+v6WnI~
+#define SUO_CJK     0x02 //use mk_wcwidth_cjk                      //+v6WnI~
+#define SUO_NOJ     0x04 //skip utftbsrch_j                        //+v6WnI~
+#define SUO_NOLOCALEP 0x10 //no locale nonversion chk for isprint  //+v6WnI~
+#define SUO_NOLOCALEW 0x20 //no locale nonversion chk for wcwidth  //+v6WnI~
+#define SUO_NOEUCTB   0x40 //nochk euc tbl                         //+v6WnI~
+#define SUO_CONSOLE   0x80 //old terminal emulator                 //+v6WnI~
 //int mk_wcwidth_combining(wchar_t ucs);                           //~v650R~
-//int mk_wcwidth_combining(UWCHART ucs);                             //~v650I~//+v6BjR~
-int mk_wcwidth_combining(UWUCS ucs);                               //+v6BjI~
-//int mk_wcwidth_adjsbcs(UWCHART ucs);                               //~v6c5R~//+v6BjR~
-int mk_wcwidth_adjsbcs(UWUCS ucs);                                 //+v6BjI~
+//int mk_wcwidth_combining(UWCHART ucs);                             //~v650I~//~v6BjR~
+int mk_wcwidth_combining(UWUCS ucs);                               //~v6BjI~
+//int mk_wcwidth_adjsbcs(UWCHART ucs);                               //~v6c5R~//~v6BjR~
+int mk_wcwidth_adjsbcs(UWUCS ucs);                                 //~v6BjI~
 #else                                                              //~v647I~
 int mk_wcwidth_cjk(wchar_t ucs);                                   //~v600I~
 int mk_wcwidth_j(wchar_t ucs);                                     //~v600I~

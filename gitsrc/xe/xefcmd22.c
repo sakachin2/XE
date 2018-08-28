@@ -1,8 +1,9 @@
-//*CID://+vbc3R~:                             update#=  469;       //~vbc3R~
+//*CID://+vbkyR~:                             update#=  472;       //~vbkyR~
 //*************************************************************
 //*xefcmd.c                                                     //~5504R~
 //*  find/change sub                                               //~v0ewR~
 //****************************************************************//~v013I~
+//vbky:180711 (Bug)memory corrupted by label overflow by Find cmd width -L option.//~vbkyI~
 //vbc3:170822 delete vbc2(it is enough by normal find;reject TS parameter)//~vbc3I~
 //vbc2:170821 add TS   option for find cmd on dirlist              //~vbc2I~
 //vbc1:170820 add ATTR option for find cmd on dirlist              //~vbc1I~
@@ -128,7 +129,7 @@
 #include "xeerr.h"                                                 //~v0eBI~
 #include "xefunct.h"                                               //~vbCBI~
 //*******************************************************
-#define ATTRID           "ATTR"                                    //+vbc3I~
+#define ATTRID           "ATTR"                                    //~vbc3I~
 #define MAXLABEL 2                                                 //~v0hxI~
 #define NONE_SAVED "None"                                          //~vbCBI~
                                                                    //~vbCBI~
@@ -490,7 +491,7 @@ static char *S2ndmerginid="RM";                                    //~v0ePR~
 //static char *Smaxrightid ="MAX";                                 //~v551R~
 static char *Smaxrightid ="MAXEOL";                                //~v551R~
 static char *Seolid      ="EOL";                                   //~v54ZI~
-static char *Sattrid     =ATTRID;                                  //~vbc1I~//+vbc3R~
+static char *Sattrid     =ATTRID;                                  //~vbc1I~//~vbc3R~
 //static char *Stsid       ="TS";                                    //~vbc2I~//~vbc3R~
     PUFILEH pfh;                                                   //~v0eBI~
 	int merginsw,mergin1sw,opdno,ii,len;                           //~v0eBR~
@@ -1492,7 +1493,8 @@ static char Sescseqtbl[]  ="x\a\b\t\n\v\f\r";                      //~v09LR~
 //  	if (ux2s(Pin+1,&hexv))	//err                              //~v0apR~
     	if ((rc=ugethex(Pin+1,Pout,MAXCOLUMN))<0)	//rc is hex len//~v0apI~
         {                                                          //~v09NI~
-			uerrmsg("Hex notaion error(%s)",                       //~v09NI~
+//  		uerrmsg("Hex notaion error(%s)",                       //~v09NI~//~vbc3R~
+    		uerrmsg("Hex notation error(%s)",                      //~vbc3I~
 					"ヘキサ指定エラー(%s)",                        //~v09NI~
 					Pin);                                          //~v09NI~
         	return -1;                                             //~v09NI~
@@ -1753,9 +1755,17 @@ int fcmdsetfoundlinelabel(PULINEH Pplh,char *Plabel)               //~v61hR~
     			"行コマンドが設定されてあるので行ラベルを設定できません。");//~v61hR~
     	return 4;                                                  //~v61hI~
     }                                                              //~v61hI~
+    pfh=UGETPFH(Pplh);                                             //+vbkyI~
+	if (pfh->UFHcmdlinectr==MAXCMDLINE)//linecmd ctr               //~vbkyI~
+	{                                                              //~vbkyI~
+		uerrmsg("-L option:Setlabel:Line cmd max line is %d",      //~vbkyI~
+						"-L option:行コマンドは最大 %d 行まで入力できます",//~vbkyI~
+						MAXCMDLINE);                               //~vbkyI~
+		return 4;                                                  //~vbkyI~
+	}                                                              //~vbkyI~
     UCBITON(Pplh->ULHflag,ULHFLINECMD|ULHFDRAW);//line cmd input   //~v61hR~
     UCBITON(Pplh->ULHflag3,ULHF3ERRLINE);//reverse                 //~v61hI~
-    pfh=UGETPFH(Pplh);                                             //~v61hI~
+//  pfh=UGETPFH(Pplh);                                             //~v61hI~//+vbkyR~
     pfh->UFHcmdline[pfh->UFHcmdlinectr++]=Pplh;  //save cmd line   //~v61hI~
 	UCBITOFF(pfh->UFHflag2,UFHF2LCMDCOMP);//need line command re-evaliation//~vb84I~
 //  Pplh->ULHlinecmd[0]=ULCCMDLABEL;                               //~v61qR~
@@ -1807,7 +1817,7 @@ static UCHAR *Sandopt="[& [!] " WORDandCOLS "2 [-d[[{<|>}]n]]]";   //~va1hI~//~v
 //static UCHAR *Swords=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|8]]|*|*u|*e|*L|*=[M][n]|*\\n|\\x..|P'pics'|regex -g}[{c1 [c2]}|eol|maxeol]";//~va28R~
 //static UCHAR *Swords=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|8]]|*|*u|*e|*ec|*L|*=[M][n]|*\\n|\\x..|P'pics'|regex -g}[{c1 [c2]}|eol|maxeol]";//~va28I~//~vax1R~
 static UCHAR *Swords=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|4|8]]|*|*u|*e|*ec|*L|*=[M][n]|*\\n|\\x..|P'pics'|regex -g}[{c1 [c2]}|eol|maxeol]";//~vax1I~
-static UCHAR *Swordsfind=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|4|8]]|*|*u|*e|*ec|*L|*=[M][n]|*\\n|\\x..|P'pics'|regex -g}[{c1 [c2]}|eol|maxeol" ATTRID "]";//+vbc3I~
+static UCHAR *Swordsfind=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|4|8]]|*|*u|*e|*ec|*L|*=[M][n]|*\\n|\\x..|P'pics'|regex -g}[{c1 [c2]}|eol|maxeol" ATTRID "]";//~vbc3I~
 //#else                                                            //~v539R~
 //static UCHAR *Saround="[/a[-]n] [/b[-]n] [/c]";                  //~v539R~
 ////static UCHAR *Sandopt="[ & [!] word2[\\n] [/d[[{<|>}]n]]]";    //~v539R~
@@ -1882,8 +1892,8 @@ static UCHAR *Swordsfind=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|4
 //    		uerrmsg("{F|I}[NX] [!] " WORDandCOLS " %s %s [-c[{R|L}n][{T|B}n] [-j] [-Llcmd] [-m[n]] [all|allkx|+|-] [-nx] [.l1 .l2]%s",0,//~vbCBR~
 //  				Sandopt,Saround,Swords);                       //~vbCBR~
       		uerrmsg("{F|I}[NX] [!] " WORDandCOLS " %s %s [-c[{R|L}n][{T|B}n] [-j] [-Llcmd] [-m[n]] [all|allkx|+|-] [-nx] [.l1 .l2] %s%s",0,//~vbCBR~
-//  				Sandopt,Saround,pssopt,Swords);                //~vbCBR~//+vbc3R~
-    				Sandopt,Saround,pssopt,Swordsfind);            //+vbc3I~
+//  				Sandopt,Saround,pssopt,Swords);                //~vbCBR~//~vbc3R~
+    				Sandopt,Saround,pssopt,Swordsfind);            //~vbc3I~
         }                                                          //~v40zI~
 	}                                                              //~v11kI~
 ////  uerrmsg("%s %s %s %s [all|+|-] [.l1 .l2] [c1 c2] %s",0,      //~v539R~

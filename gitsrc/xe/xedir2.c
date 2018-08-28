@@ -1,8 +1,9 @@
-//*CID://+vb7jR~:                             update#=  797;       //~vb7jR~
+//*CID://+vbkfR~:                             update#=  836;       //~vbkfR~
 //*************************************************************
 //*xedir.c                                                         //~v09bR~
 //* draw
 //*************************************************************
+//vbkf:180619 display hex notation for also dirlist panel          //~vbkfI~
 //vb7k:170115 dir list;gree attr overflow to "=Rep" when dirname is too long//~vb7jI~
 //vb7j:170115 (Win)_MAX_PATH is ucsctr,mbcs len is more over       //~vb7jI~
 //vb5d:160917 (Bug)find word rebverse was clear by vb3f when dirlist long name was hidden by attr fld.//~vb5dI~
@@ -253,6 +254,7 @@
 #include <uviom.h>                                                 //~vb4fR~
 #ifdef UTF8SUPPH                                                   //~va00I~
 	#include <utf.h>                                                   //~v903I~//~va00I~
+	#include <utf22.h>                                             //~vbkfI~
 #endif                                                             //~va00I~
                                                                    //~v20fI~
 #ifdef UNX                                                         //~v20fI~
@@ -342,6 +344,9 @@ void drawrenameDDFMT2(PUCLIENTWE Ppcw,PULINEH Pplh,PUDIRLH Ppdh,char *Ppsddata,c
 int dirgetfldoffs(PUCLIENTWE Ppcw,PULINEH Pplh,int Pfldno);        //~vawaI~
 int dirsavename_byu8lc(int Popt,PULINEH Pplh,UCHAR *Putf8,int Pu8len,UCHAR *Pplc,int Pbuffsz,int *Ppplclen);//~vawnR~
 int dirgetmixstropt(int Popt,PULINEH Pplh,char *Pdata);            //~vawpI~
+void dirdisplayhex(int Popt,PUCLIENTWE Ppcw,int Pline,PUSCRD Ppsd);//~vbkfR~
+#define DDHO_LINE       0x00                                       //~vbkfI~
+#define DDHO_LAST       0x01                                       //~vbkfR~
 //****************************************************************
 //!dirregist                                                    //~v04dR~
 //*file clientwe and set field def
@@ -652,7 +657,10 @@ int func_draw_dir(PUCLIENTWE Ppcw)
 //  	if (pfh->UFHfindctrms>0 && pfh->UFHfindctrms<=pfh->UFHfindctrme)	//reverse from multi reverse start//~v62cR~
 //      	revctr=pfh->UFHfindctrms;	//reverse from multi reverse start//~v62cR~
 //*draw file line
-	for (line=0;line<drawline;line++,psd++)
+//  for (line=0;line<drawline;line++,psd++)                        //~vbkfR~
+    for (line=0;line<drawline;                                     //~vbkfI~
+				dirdisplayhex(0,Ppcw,line,psd),                    //~vbkfI~
+				line++,psd++)                                      //~vbkfI~
 	{
 		plh=psd->USDbuffc;
 		if (UCBITCHK(plh->ULHflag,ULHFCURFOUND)	//cur found line//~v05wI~
@@ -850,6 +858,7 @@ int func_draw_dir(PUCLIENTWE Ppcw)
 		csronthefld(Ppcw,csrfldtopline,pfc->UFCcsrfldno,        //~v05wR~
                     pfc->UFCcsroffs+len); //move csr            //~v05yR~
 	}                                                           //~v05yI~
+	dirdisplayhex(DDHO_LAST,Ppcw,0/*lineno*/,0/*Ppsd*/);           //~vbkfI~
 //#ifdef WXE                                                       //~v621R~
 ////  Sresizesw=0;    //set once at wakeup                         //~v621R~
 //    UCBITOFF(pfh->UFHflag6,UFHF6RESIZE);   //if resized setup all//~v621R~
@@ -3945,7 +3954,7 @@ static int Sscrolltlen,Sscrollhlen,Sscrolldlen;                    //~v55mI~
     {                                                              //~va00I~
 #ifdef UTF8SUPPH                                                   //~va00I~
 //  	fileutf8vsplithdrattr(0,Ppcw,psd,pfc->UFCpfh,width);       //~va00I~//~vb7jR~
-    	fileutf8vsplithdrattr(0,Ppcw,psd,pfc->UFCpfh,fnmendpos);   //+vb7jR~
+    	fileutf8vsplithdrattr(0,Ppcw,psd,pfc->UFCpfh,fnmendpos);   //~vb7jR~
 #endif                                                             //~va00I~
 		return;                      //if act reset uflde          //~v55mI~
     }                                                              //~va00I~
@@ -4173,3 +4182,142 @@ int dirgetmixstropt(int Popt,PULINEH Pplh,char *Pdata)             //~vawpI~
     UTRACEP("%s:rc=%x,u8=%s\n",UTT,rc,Pdata);                      //~vawpR~
     return rc;                                                     //~vawpI~
 }//dirgetmixstropt                                                 //~vawpI~
+//*****************************************************************//~vbkfI~
+void  dirsethdrhex(int Popt,char *Pphexstr,int Plen,PUSCRD Ppsd)   //~vbkfR~
+{                                                                  //~vbkfI~
+	char *pci,*pco;                                                //~vbkfR~
+    int ii;                                                        //~vbkfI~
+//********************                                             //~vbkfI~
+	if (Ppsd->USDflag==USDFCELLSTR)	//hdr is always this           //~vbkfR~
+    {                                                              //~vbkfI~
+    	for (ii=0,pci=Pphexstr,pco=Ppsd->USDcell;ii<Plen;ii++,pco+=2)//~vbkfR~
+        {                                                          //~vbkfI~
+        	*pco=*pci++;                                           //~vbkfR~
+        }                                                          //~vbkfI~
+    }                                                              //~vbkfI~
+    memcpy(Ppsd->USDdata,Pphexstr,(size_t)Plen);                   //~vbkfI~
+    return;                                                        //~vbkfI~
+}//dirsethdrhex                                                    //~vbkfI~
+//*****************************************************************//~vbkfI~
+//*get hex data on cursor                                          //~vbkfI~
+//*retun :1 ucs, 0:locale code                                     //~vbkfI~
+//*****************************************************************//~vbkfI~
+int dirgethexdata(int Popt,PUSCRD Ppsd,int Pcol/*on plh*/,int *Ppvalue)//~vbkfI~
+{                                                                  //~vbkfI~
+    PULINEH plh;                                                   //~vbkfI~
+    int ucs,col,swucs=1,mblen,len;                                 //~vbkfR~
+    char attr,fg,bg,*pdata,*pdbcs;                                 //~vbkfR~
+    char mbwk[8];                                                  //~vbkfI~
+//******************************                                   //~vbkfI~
+	if (Ppsd->USDflag==USDFCELLSTR)	//hdr is always this           //~vbkfR~
+    {                                                              //~vbkfI~
+	    col=Pcol+UDHLINENOSZ; 	//col on psd                       //~vbkfI~
+    	attr=*(Ppsd->USDcell+col*2+1);                             //~vbkfI~
+    	UTRACEP("%s:SDcell col=%d,attr=0x%x\n",UTT,col,attr);      //~vbkfR~
+        fg=attr & 0x0f;                                            //~vbkfI~
+        bg=(attr & 0xf0)>>4;                                       //~vbkfR~
+		if (fg!=Scolor_lineno && bg!=Scolor_lineno)                //~vbkfI~
+        	swucs=0;                                               //~vbkfI~
+    }                                                              //~vbkfI~
+    plh=Ppsd->USDbuffc;                                            //~vbkfI~
+    pdata=plh->ULHdata+Pcol;                                       //~vbkfI~
+    pdbcs=plh->ULHdbcs+Pcol;                                       //~vbkfI~
+    len=plh->ULHlen;                                               //~vbkfI~
+    ucs=UTF_GETDDUCS1(pdata,pdbcs,len);                            //~vbkfI~
+    if (!swucs)                                                    //~vbkfI~
+    {                                                              //~vbkfI~
+    	swucs=1;                                                   //~vbkfI~
+    	if (!utfcvu2lany1mb(0,(UWUCS)ucs,mbwk,&mblen))             //~vbkfI~
+        {                                                          //~vbkfI~
+		    UTRACEP("%s:ucs=0x%04x,mblen=%d,mb=%02x%02x\n",UTT,ucs,mblen,*mbwk,*(mbwk+1));//~vbkfR~
+        	if (mblen==2)                                          //~vbkfI~
+            {                                                      //~vbkfI~
+				ucs=UBESTR2US(mbwk);                               //~vbkfR~
+                swucs=0;                                           //~vbkfI~
+            }                                                      //~vbkfI~
+            else                                                   //~vbkfI~
+        	if (mblen==1)                                          //~vbkfI~
+            {                                                      //~vbkfI~
+				ucs=*mbwk;                                         //~vbkfR~
+                swucs=0;                                           //~vbkfI~
+            }                                                      //~vbkfI~
+        }                                                          //~vbkfI~
+    }                                                              //~vbkfI~
+    *Ppvalue=ucs;                                                  //~vbkfI~
+    UTRACEP("%s:swucs=%d,ucs=0x%04x\n",UTT,swucs,ucs);             //~vbkfR~
+    return swucs;                                                  //~vbkfI~
+}//dirgethexdata                                                   //~vbkfI~
+//*****************************************************************//~vbkfI~
+void dirdisplayhex(int Popt,PUCLIENTWE Ppcw,int Pline,PUSCRD Ppsd) //~vbkfR~
+{                                                                  //~vbkfI~
+#define HEXEDITLEN 6  //for ucs4  max   "x1x2x3-|fnm"    (No "E")  //~vbkfI~
+static int Sswset=-1;   //org status                               //~vbkfR~
+static char    Shexeditwk[HEXEDITLEN+1];                           //~vbkfR~
+	PUSCRD psd0,psd;                                               //~vbkfI~
+    PULINEH plh;                                                   //~vbkfI~
+	char *pc;                                                      //~vbkfR~
+    int col,hexoptupper,ch;                                        //~vbkfR~
+    int ucs;                                                       //~vbkfI~
+//******************************                                   //~vbkfI~
+    psd0=Ppcw->UCWpsd;                                             //~vbkfI~
+	if (Popt & DDHO_LAST)                                          //~vbkfI~
+    {                                                              //~vbkfI~
+    	if (Sswset<0)                                              //~vbkfI~
+        	return;                                                //~vbkfI~
+    	if (Sswset>0)                                              //~vbkfI~
+        {                                                          //~vbkfI~
+            dirsethdrhex(0,Shexeditwk,HEXEDITLEN,psd0);            //~vbkfI~
+    		UCBITON(psd0->USDflag2,USDF2DRAW);                     //~vbkfI~
+            Sswset=0;                                              //~vbkfI~
+        }                                                          //~vbkfI~
+        else                                                       //~vbkfI~
+        {                                                          //~vbkfI~
+            dirsethdrhex(0,psd0->USDbuffc,HEXEDITLEN,psd0);        //~vbkfR~
+    		UCBITON(psd0->USDflag2,USDF2DRAW);                     //~vbkfI~
+            Sswset=-1;                                             //~vbkfI~
+        }                                                          //~vbkfI~
+        return;                                                    //~vbkfI~
+    }                                                              //~vbkfI~
+    if (Pline==Ppcw->UCWrcsry-Ppcw->UCWfilehdrlineno)              //~vbkfR~
+    {                                                              //~vbkfI~
+    	psd=Ppsd;                                                  //~vbkfI~
+        plh=psd->USDbuffc;                                         //~vbkfI~
+		col=Ppcw->UCWrcsrx-UDHLINENOSZ;                            //~vbkfI~
+        ch=*(plh->ULHdata+col);                                    //~vbkfR~
+    	if (psd->USDflag==USDFCELLSTR	//data line ucs, ULHdata/dbcs is ddfmt//~vbkfI~
+        &&  col>=0                                                 //~vbkfI~
+        &&  plh                                                    //~vbkfI~
+        &&  (*(plh->ULHdbcs+col) || (ch>0 && ch<0x20 ))            //~vbkfR~
+        )                                                          //~vbkfI~
+        {                                                          //~vbkfR~
+            hexoptupper=UCBITCHK(Goptopt,GOPT_HEX_UPPER);          //~vbkfR~
+			dirgethexdata(0,psd,col,&ucs);                         //~vbkfI~
+            if (ucs>>16)  //3 byte ucs or locale code              //~vbkfR~
+            {                                                      //~vbkfR~
+                if (hexoptupper)                                   //~vbkfR~
+                    sprintf(Shexeditwk,"%06X",ucs);                //~vbkfR~
+                else                                               //~vbkfR~
+                    sprintf(Shexeditwk,"%06x",ucs);                //~vbkfR~
+            }//UCS4                                                //~vbkfR~
+            else                                                   //~vbkfR~
+            if (ucs<0x20)                                          //~vbkfI~
+            {//ctrl char                                           //~vbkfI~
+                pc=psd0->USDbuffc;   //"E" or "B"                  //~vbkfI~
+                if (hexoptupper)                                   //~vbkfI~
+                    sprintf(Shexeditwk,"%c---%02X",*pc,ucs);       //~vbkfI~
+                else                                               //~vbkfI~
+                    sprintf(Shexeditwk,"%c---%02x",*pc,ucs);       //~vbkfI~
+            }                                                      //~vbkfI~
+            else                                                   //~vbkfI~
+            {//UCS2                                                //~vbkfR~
+                pc=psd0->USDbuffc;   //"E" or "B"                  //~vbkfI~
+                if (hexoptupper)                                   //~vbkfR~
+                    sprintf(Shexeditwk,"%c-%04X",*pc,ucs);         //~vbkfR~
+                else                                               //~vbkfR~
+                    sprintf(Shexeditwk,"%c-%04x",*pc,ucs);         //~vbkfR~
+            }                                                      //~vbkfR~
+            Sswset=1;                                              //~vbkfI~
+        }                                                          //~vbkfI~
+    }                                                              //~vbkfI~
+    return;                                                        //~vbkfI~
+}//dirdisplayhex                                                   //~vbkfI~

@@ -1,9 +1,10 @@
-//*CID://+vb2DR~:                             update#=  705;       //+vb2DR~
+//*CID://+vbkeR~:                             update#=  710;       //~vbkeR~
 //*************************************************************
 //*xedcmd4.c                                                       //~v638R~
 //* grep,androsend                                                 //~vaa4R~
 //*************************************************************
-//vb2D:160221 LNX compiler warning                                 //+vb2DI~
+//vbke:180619 add msg to display utf8 code filename                //~vbkeI~
+//vb2D:160221 LNX compiler warning                                 //~vb2DI~
 //vavN:140405 (W32UNICODE)vavM is not effective,spawn dose also multibyte process(invalid UD to dbcs translation),back to by alias//~vavNI~
 //vavM:140405 (W32UNICODE)xfc/xdc by spawn(because cmd propt translate filename to bestfit)//~vavMI~
 //vafk:120624 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  use ULPTR(unsigned __int64/ULONG)//~vafkI~
@@ -92,6 +93,7 @@
 #define  XEGBL_DCMD4                                               //~v636I~
 #include "xedcmd4.h"                                               //~v636I~
 #include "xedlcmd.h"                                               //~vaa4I~
+#include "xefsubw.h"                                               //~vbkeI~
 //****************************************************************
 #define GREPPARM      "-n"
 //****************************************************************
@@ -249,8 +251,8 @@ int dcmd_grep(PUCLIENTWE Ppcw)
 		    if (dcmdfullpath(Ppcw,fpath,pfnm))	//support *\,**\,^*,:://~v63wI~
 //  	    	strcpy(cmd+5+offsp+1,fpath);                       //~v644R~
 //  	    	uparsein(fpath,cmd+5+offsp+1,sizeof(cmd)-offsp-6,0,'\"');//~v67NR~
-//    	    	uparseindir(0,fpath,cmd+5+offsp+1,sizeof(cmd)-offsp-6);//~v67NI~//+vb2DR~
-      	    	uparseindir(0,fpath,cmd+5+offsp+1,(int)sizeof(cmd)-offsp-6);//+vb2DI~
+//    	    	uparseindir(0,fpath,cmd+5+offsp+1,sizeof(cmd)-offsp-6);//~v67NI~//~vb2DR~
+      	    	uparseindir(0,fpath,cmd+5+offsp+1,(int)sizeof(cmd)-offsp-6);//~vb2DI~
         }                                                          //~v63wI~
     	if (Ppcw->UCWmenuopt!=PANMOCMD)	//menu 6
     		if (!*redirectfnm&&!*redirectfnm2)	//redeirect parm exist
@@ -438,6 +440,7 @@ int dcmdwritehdrline(char *Pfnm,char *Pmode,char *Phdrline,char *Pcmdudx)//~vavN
     UCHAR fpath[_MAX_PATH],timestamp[32];                          //~v75JI~
 #ifdef W32UNICODE                                                  //~vavNI~
 //    UCHAR cmdlc[_MAX_PATH*4];                                    //~vavNR~
+    UCHAR wku8[_MAX_PATH*2+MAXLINEDATA];                           //+vbkeM~
 #endif                                                             //~vavNI~
 //*******************                                              //~v75JI~
     if (!filefullpath(fpath,Pfnm,_MAX_PATH))                       //~v75JR~
@@ -463,7 +466,12 @@ int dcmdwritehdrline(char *Pfnm,char *Pmode,char *Phdrline,char *Pcmdudx)//~vavN
 #ifdef W32UNICODE                                                  //~vavNI~
 	if (Pcmdudx)                                                   //~vavNI~
       if (strcmp(Pcmdudx,Phdrline))                                //~vavNI~
-	    fprintf(fh,"=== %23s == %s\n\n","(Internal format param filename)",Pcmdudx);//~vavNR~
+      {                                                            //~vbkeI~
+//      fprintf(fh,"=== %23s == %s\n\n","(Internal format param filename)",Pcmdudx);//~vavNR~//~vbkeR~
+        fprintf(fh,"=== %23s == %s\n\n","(Internal format param)",Pcmdudx);//~vbkeI~
+        if (!fsubw_UD2U8(0,Phdrline,strlen(Phdrline),wku8,sizeof(wku8),0/*outu8len*/))//~vbkeI~
+		    fprintf(fh,"=== %23s == %s\n\n"," ",wku8);             //~vbkeR~
+      }                                                            //~vbkeI~
 #endif                                                             //~vavNI~
     fclose(fh);                                                    //~v75JI~
     return 0;                                                      //~v75JI~

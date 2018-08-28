@@ -26,6 +26,7 @@ a:hover{font-weight:bold;}
   .v129G&lt;--129F:(2018/01/30)
   .v129H&lt;--129G:(2018/02/22)
   .v129J&lt;--129H:(2018/05/10)
+  .v129K&lt;--129J:(2018/08/27)
 
      1.BUGs
        -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする
@@ -47,9 +48,29 @@ a:hover{font-weight:bold;}
        -(Linux)Ubuntu17.10 で ディレクトリーリスト行コマンド:&quot;!&quot;(拡張子対応アプリの起動)が
         &quot;MIME タイプアプリ未定義&quot;で失敗する
        -(Wxe/gxe)マウス でのカット＆ペーストでごみが入ることがある</SPAN></PRE>
-<PRE><span class="auto-style1">    (129H)</span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> </SPAN>  </SPAN></PRE>
+<PRE><span class="auto-style1">    (129H)</span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> </SPAN></SPAN></PRE>
 <PRE><span class="auto-style1">     </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">  -(gxe:GTK3)Previewダイアログでプリンター選択が1つ分だけずれる
        -(gxe:GTK3)終了時画面サイズ正しく保存されずに再スタートで大きくなる
+
+    (129K)
+       -UTF8 ファイルの処理の各種問題
+        .文字の表示幅(1セルか2セルか)の見直し
+        .UCS4,SpacingCombiningMarks,NonSpacingMark表示の問題
+        .結合文字は最大8文字まで許容(Tibtan)
+         但しLinux Console版は最大4文字で変わらず
+        .Windowsで &gt;=U01000、Linuxで &gt;=U020000 のときの問題
+         -ヘッダー行に表示するユニコード表示が正しくない
+         -ヘキサ表示行でユニコードを修正できない
+        .(LNX)ユニコードが U01000&lt;= ～ &lt;U020000 の問題
+         -ファイル読み込み時、SBCS(表示幅が１桁)の文字のUTF8コード解釈を誤り、ファイル出力で別の文字にしてしまう
+         -ヘキサ表示行での &quot;v&quot; 行コマンド(連続３桁ヘキサコードをユニコードとして読み直す)が誤る
+        .3.12画面でファイル名がUTF8コードのとき画面表示が乱れる
+        .(WinConsole)新規のツール xcfont で コマンドプロンプトのフォントを変更することにより
+         デバガナリーなどのユニコードをWinコンソール版で表示可能にした
+       -gb18030 で 1桁表示文字の桁ずれ
+       -Esc を 連続２回押すとラベルを残して行コマンドはクリアーされるが
+        ラベル指定のコマンドはラベルが見つからないエラーになる
+       -画面分割してるとき編集の行コマンドが無視されることがある
 
      2.機能追加
 
@@ -136,6 +157,9 @@ a:hover{font-weight:bold;}
           .右ボタンでコンテキストメニュー表示
           .ダブルクリックで &quot;x&quot; コマンド処理(履歴画面は終了してそのあとの画面上でコマンドを実行)
           .選択した行のクリックで &quot;s&quot; コマンド処理( 履歴画面は終了してそのあとの画面のコマンド入力行にセット)
+     (129K)
+       -TC fmt -D&quot;分離文字&quot; -S&quot;出力用分離文字&quot; オプションで \x や \t などのエスケープ文字指定を受け付ける
+        (\t(=0x09) は　-S では使用できません). -SではDBCSを使用できるようにしました
 
     3.その他
        -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加
@@ -161,6 +185,13 @@ a:hover{font-weight:bold;}
        -機能:&quot;次コマンド-画面毎&quot;に機能キーが未割当だった、Shift+Alt+F12 を割り当てる
      (129J)
        -ディレクトリーリスト行コマンド &quot;=&quot;(ファイル内容の比較) で CPU8 オプション指定の追加
+     (129K)
+       -3.12 画面(ファイル/ディレクトリーの比較)に &quot;-CPU8&quot; オプションを追加
+        比較の結果をUTF8ファイルとして表示
+       -ディレクトリーリスト画面でもASCII以外は画面左上に文字のヘキサコードを表示
+       -OPT UNICOMB U-xxxx の 代替表示文字はSBCSのみ認める
+       -ファイル編集の保存時、ファイルのタイムスタンプがロード時と変わっているとき
+        警告しているが、解消は PF3 再入力ではなく &quot;SAVe -Force&quot; または &quot;END -Force&quot; コマンドが必要とする
 
      4.ツール。
      (129C)
@@ -185,6 +216,59 @@ a:hover{font-weight:bold;}
     (129J)
        -xdc v2.29,xfc v1.27
          CPU8 オプション指定の追加
+    (129K)
+       -(Win)xkp v1.4
+          Windows7 から exe 名前がフルパスでなくなっていた
+       -xfg v1.20
+         (Bug)探索文字が &quot;-&quot; で始まるときハングすることがある
+       -(Win)xcfont v1.01 (Windows Vista からサポート)
+         Windows コマンドプロンプトのフォントを変更する
+         フォントによっては chcp でコードページの変更も必要
+         例えば、デバナガリ文字の場合
+         &quot;chcp 57002&quot;とした後 &quot;xcfont Mangal&quot; とする
+         Mangal は ASCII の表示は変わりなく、xe で utf8 ファイルの
+         Devaganari(U+0900-097f) 文字を表示できる   
+         尚、wxeやLinuxではDevanagariの表示で特別なことはする必要がありません
+--------------------------------------------------------------------------
+xcfont:V1.01(6): Change Current Console Font. (Supported From Vista.)
+xcfont [/options] [ &lt;name&gt; ] [ No=&lt;seqno&gt; ] [ CharSet={&lt;charset&gt;|?} ]
+[ H=&lt;height&gt; ] [ W=&lt;width&gt; ] [ Weight=&lt;weight&gt; ]
+*******************************************************************************
+&lt;name &gt; :Partial string of FontName(StartsWith).
+&quot;*&quot; means current font.
+Prefix:&quot;*&quot; means Contains.
+&lt;seqno&gt; :Select font by SeqNo from listed fonts,
+to allow name is not full specification.
+&lt;charset&gt;:Select filtering by charset.
+List available value by &quot;charset=?&quot;.
+&lt;height&gt; :Font Height. &quot;*&quot; means copy from current.
+&lt;width&gt; :Font Width. &quot;*&quot; means copy from current.
+if missing, calculated from height.
+&lt;weight&gt; :Weight. specify Regular/Bold.
+if missing, adopted from selected font.
+/options
+/A:Accept System Selection.
+Not restore even when system set differently from requested.
+/B:Select Not TrueType fonts(Raster) only.
+/D:Detail Query Information.
+/F:Select Fixed Pitch fonts only.
+/Q:Query candidate fonts.
+/T:Select TrueType fonts only.
+/V:Select Variable Pitch fonts only.
+e.g. ----- (all are case insensitive) -----
+xcfont /Q charset=222 ; List fonts of charset:THAI.
+xcfont charset=? ; List available charset .
+xcfont /Qf ; List FixedPitch font.
+xcfont /Q * ; Show current font set.
+xcfont /Q Microsoft ; List fontname starting with &quot;Microsoft&quot;.
+xcfont /Q *Sans ; List fontname containing &quot;Sans&quot;.
+xcfont Microsoft No=2 ; Select second font listed by &quot;Microsoft&quot;.
+xcfont SimSun charset=238 ; Select SimSun with charset:EASTEUROPE.
+xcfont Tahoma H=* ; H=current, W=H*rate of W/H of selected.
+xcfont * H=16 W=10 ; Update current font sizes
+xcfont * Weight=Bold ; Set current font weight to Bold
+chcp 57002 ; 57002:Devanagari, &quot;Mangal&quot; requires it.
+xcfont Mangal H=* ; Codepage will be listed by &quot;xcv /list&quot;.
 
 
 </SPAN></PRE>

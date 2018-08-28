@@ -1,7 +1,8 @@
-//*CID://+v6E2R~:                             update#=  224;       //+v6E2R~
+//*CID://+v6WsR~:                             update#=  227;       //~v6WsR~
 //*********************************************************************//~v600I~
 //* define utf8 data type:to avoid compile err for header file when !UTF8SUPP//~v600R~
 //*********************************************************************//~v600I~
+//v6Ws:180806 for performance COMBINABLE chk after Combining checked.//~v6WsI~
 //v6E2:160718 (W32)by v6E2(ctlen=2 but lclen=1) not usr USUBSTRLEN //~v6E2I~
 //v6BT:160319 (BUG)isalpha is apply to UCHAR only(UTF_COMBINABLE use it for ucs)//~v6BTI~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
@@ -69,6 +70,10 @@
                                                                    //~v5nqI~
 #define UTF16_TO_UCS4(high,low)  \
 		( (((high)&0x3ff)<<10) + ((low)&0x3ff) + 0x10000 )         //~v6f3I~
+#define STR_UTF16_TO_UCS4(pucs,len,pctr) \
+        ( (IS_UTF16_HIGH(*(pucs)) && len>1 && IS_UTF16_LOW(*((pucs)+1))) \
+        	? (*(pctr)=2,UTF16_TO_UCS4(*(pucs),*((pucs)+1)))             \
+            : (*(pctr)=1,*(pucs)))                                 //~v6WsI~
 #define IS_UTF16_HIGH(surrogate)  \
 		( surrogate>=0xd800 && surrogate<0xdc00)                   //~v6f3I~
 #define IS_UTF16_LOW(surrogate)  \

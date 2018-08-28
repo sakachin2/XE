@@ -131,11 +131,16 @@ a:hover{font-weight:bold;}-->
                           H :fieldno guide line is inserted.
                           D[delimiter]:input field seperator. default is &quot; &quot;.
                                        &quot;D&quot; means D&quot;,&quot;.
-                                       multiple char is avail like as D&quot; ,&quot;
+                                       Multiple characters are avail like as D" ,".
+                                       And both " " and "," are delemeter.
+                                       Escape seequence is available like as D"\t\x0a\xff".
                           S[R][outdelm]:field seperator to be set after formatted.
                                         R      :delete input delimiter.
                                         outdelm:string to be inserted.
                                                 default is &quot; &quot;.
+                                                Escape seequence is available except \t(0x09).
+                                                Multiple charcters mean string to be inserted.
+                                                DBCS is allowed.
                 break-key:[type]column1-column2[&gt;|!|&lt;]
                           For opcode=+(Summary),specify break point to
                           set sub-total.Table should be sorted by this

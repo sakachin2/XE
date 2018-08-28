@@ -1,8 +1,9 @@
-//*CID://+vb4yR~:                             update#=  451;       //~vb4yR~
+//*CID://+vbk0R~:                             update#=  452;       //+vbk0R~
 //*************************************************************
 //*xefile6.c  *                                                    //~va00R~
 //* tab                                                            //~v0bzR~
 //*************************************************************
+//vbk0:180531 width0 over(map_entry) is shown as unprintable       //+vbk0I~
 //vb4y:160814 set same attr to UNICOMB UNPR altch for edit panel as dirlist//~vb4yI~
 //vb3x:160621 ffff is treated as dbcsspace on dirlist. tabdisplay set dbcs space to ffff/()//~vb3xI~
 //vb3u:160620 del vb3t;set to FF cause altch translation           //~vb3vI~
@@ -1577,11 +1578,24 @@ UTRACED("tabdisplay dbcs in",Pdbcs,Plen);                          //~va46I~
                 xeutfddwidth4(0,pc,pcd,0/*ucs*/,&width4);          //~va3xR~
                 if (width4<=0)	//unprintable                      //~va3xR~
                 {                                                  //~va3xI~
+                  if (!width4)                                     //+vbk0I~
+                  {                                                //+vbk0I~
+            		if (UTF_COMBINEMODE()||(Goptopt3 & GOPT3_COMBINENP))   //display unprintable//+vbk0I~
+            		{                                              //+vbk0I~
+        		    	rc=1;	//call setlineattr                 //+vbk0I~
+		            }                                              //+vbk0I~
+        			pc++; 	//skip more 1 byte                     //+vbk0I~
+            		pcd++;                                         //+vbk0I~
+                	reslen--;                                      //+vbk0I~
+                  }                                                //+vbk0I~
+                  else                                             //+vbk0I~
+                  {                                                //+vbk0I~
 	          		*pc++=XEUTF_ERRREPCH_NPUCS ; // ':'      //hex code is ucs//~va3xI~
                 	*pcd++=UDBCSCHK_NPUCS1;	//for csr step dbcs    //~va3xI~
 	          		*pc=XEUTF_ERRREPCH_NPUCSW ; // ';'      //hex code is ucs//~va3xI~
                     *pcd=UDBCSCHK_NPUCS2;//                        //~va3xI~
                     reslen--;                                      //~va3xI~
+                  }                                                //+vbk0I~
                 }                                                  //~va3xI~
                 else                                               //~va6sI~
                 {                                                  //~va6sI~
@@ -1685,7 +1699,7 @@ UTRACED("tabdisplay dbcs in",Pdbcs,Plen);                          //~va46I~
             &&  (UTF_COMBINEMODE()||(Goptopt3 & GOPT3_COMBINENP))   //display unprintable//~va3eR~
             )                                                      //~va3eI~
             {                                                      //~va3eI~
-#ifdef AAA  //set replace by altch at file23.c                     //+vb4yR~
+#ifdef AAA  //set replace by altch at file23.c                     //~vb4yR~
               	if (Goptopt3 & GOPT3_COMBINENP)	//display unprintable//~va3eI~
               	{                                                  //~va3eI~
 	          		*pc=XEUTF_ERRREPCH_NPUCS ; // ':'      //hex code is ucs//~va3eI~

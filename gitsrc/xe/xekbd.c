@@ -1,8 +1,9 @@
-//*CID://+vb83R~:                             update#=  281;       //+vb83R~
+//*CID://+vbkmR~:                             update#=  285;       //~vbkmR~
 //************************************************************
 //* xekbd.c                                                     //~5501R~
 //************************************************************  //~5423I~
-//vb83:170206 (BUG)crash 64bit ptr size isckt was not cleared cmdptr//+vb83I~
+//vbkm:180625 UTRACE;add option of ignore FORCE option             //~vbkmI~
+//vb83:170206 (BUG)crash 64bit ptr size isckt was not cleared cmdptr//~vb83I~
 //vb50:160827 accept S+A/C+extended key                            //~vb50I~
 //vb31:160418 (LNX64)Compiler warning                              //~vb31I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
@@ -674,7 +675,11 @@ int kbdproc(void)
     }                                                              //~vaxaI~
     UCBITOFF(pcw->UCWflag3,UCWF3HEXKBDGC); 	//grapth char input by HEX notation//~v79RR~
     if (*Gcmdbuff)
+    {                                                              //+vbkmI~
         keytype=UCWKTCMD;       //call func_cmd                 //~5225R~
+	    inputc[0]=0;                                               //+vbkmI~
+	    inputc[1]=0;                                               //+vbkmI~
+    }                                                              //+vbkmI~
     else
     {
         if (UCBITCHK(Gprocstatus,GPROCSCSRDOWN|GPROCSCSRRIGHT)) //~5423I~
@@ -988,7 +993,7 @@ int kbdproc(void)
             }                                                      //~v78ZR~
     }                                                              //~v78ZI~
 #endif                                                             //~v78ZI~
-UTRACEP("kbdproc keytype=%d,key=%02x%02x\n",keytype,inputc[0],inputc[1]);//~v79RI~
+UTRACEPF2("%s:funccall keytype=%d,key=%02x%02x\n",UTT,keytype,inputc[0],inputc[1]);//write to both .trc and .trc_kbd //~v79RI~//~vbkmR~
     rc=funccall(keytype,inputc,pcw);
   }                                                                //~V768I~
 
@@ -2052,7 +2057,7 @@ int kbdrsckt(FILE *Pfh)                                            //~V48fI~
     for (ii=0,psckt=wsckt,psckt32=wsckt32;ii<SCKTMAXNO;ii++,psckt++,psckt32++)//~va70I~
     {                                                              //~va70I~
     	memcpy(psckt,psckt32,sizeof(SCKT32));                      //~va70I~
-        psckt->SCKTcmd=0;       //8byte ptr                        //+vb83I~
+        psckt->SCKTcmd=0;       //8byte ptr                        //~vb83I~
     }                                                              //~va70I~
 #else                                                              //~va70I~
     if (!(fread(&wsckt,sizeof(wsckt),1,Pfh)))                      //~V48fI~

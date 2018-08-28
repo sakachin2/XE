@@ -1,3 +1,13 @@
+//*********  20180827 v129K updated   ****************
+//vak4:180824 xfg 1.20: allow space between "-e" and grep string
+//vak3:180824 xfg 1.20: grep hung when srchword start with "-"
+//*********  20180822 v129K updated   ****************
+//vak2:180821 xkp 1.4: At XP fullpath was displayed and /l show pid and shortpath by the reason of PSAPI and windows version
+//                     abondan /v and display fullpath alaways
+//vak1:180819 xkp 1.4: bt /V option display fullpathname
+//*********  20180817 v129K updated   ****************
+//vak0:180817 xver1.3: force english if chcp!=932
+//     180817 xcfont 1.01 new
 //*********  20180510 v129J released  ****************
 //vaj1:180305 xdc-2.29: /CPU8 option:output traler by utf8 to show on xe result of "=" cmd with cpu8 option
 //            xdc.c

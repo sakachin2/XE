@@ -1,7 +1,8 @@
-//*CID://+vbi4R~:                             update#=255;         //~vbi4R~
+//*CID://+vbkcR~:                             update#=261;         //~vbkcR~
 //*************************************************************
 //* xefsubw.c                                                      //~vav0R~
 //*************************************************************
+//vbke:180619 add msg to display utf8 code filename                //~vbkcI~
 //vbi4:180217 set dbcs '?' when f2l err of dbcs(if sbcs '?' err at funcsetlongcmdfromstack xeutf_setbyu8lc->xeutfcvf2dd)//~vbi4I~
 //vb4b:160729 (BUG) err msg "Invalid FileNAme Format" when saved cmd stack contains UD format char(0x01 etc)//~vb4bI~
 //vaww:140611 (W32UNICODE:BUG)retrive of 2 opd cmd,2nd displayed as dbcs//~vawvI~
@@ -385,7 +386,7 @@ int fsubw_U8CT2UD(int Popt,char *Pu8,char *Pct,int Plen,char *Poutbuff,int Pbuff
 #else   //AAA                                                      //~vawvI~//~vawwR~
 //**************************************************************** //~vawvI~//~vawwR~
 //enclose u8 string to UD string using ct                          //~vawvI~//~vawwR~
-//from funccmdstack_utf8 only                                      //~vawvI~//~vawwR~//+vbi4R~
+//from funccmdstack_utf8 only                                      //~vawvI~//~vawwR~//~vbi4R~
 //rc:0/4:buffovf                                                   //~vawvI~//~vawwR~
 //**************************************************************** //~vawvI~//~vawwR~
 int fsubw_U8CT2UD(int Popt,char *Pu8,char *Pct,int Plen,int Pctlen,char *Poutbuff,int Pbuffsz,int *Ppoutlen)//~vawvI~//~vawwR~
@@ -405,7 +406,7 @@ int fsubw_U8CT2UD(int Popt,char *Pu8,char *Pct,int Plen,int Pctlen,char *Poutbuf
     else                                                           //~vawwI~
     {                                                              //~vawwI~
     	opt=UFCVO_ENCUTF8WC;       //not enclose f2l err only          //~vawvI~//~vawwR~
-    	opt|=UFCVO_ERRREPDBCS;     //set dbcs subchar for f2l err  //+vbi4I~
+    	opt|=UFCVO_ERRREPDBCS;     //set dbcs subchar for f2l err  //~vbi4I~
     	rc=ufilecvU8CT2UD(opt,Pu8,Pct,Pctlen,Poutbuff,Pbuffsz,&outlen);//~vawvI~//~vawwR~
     	if (rc>=4)                                                    //~vawvI~//~vawwR~
         	UmemcpyZ(Poutbuff,Pu8,min(Pbuffsz,inplen));                   //~vawvI~//~vawwR~
@@ -634,3 +635,28 @@ int fsubw_setflddatadd(int Popt,PUCLIENTWE Ppcw,int Prow,int Pfldno,UCHAR *Pdata
 	rc=setflddatadd(Popt,Ppcw,Prow,Pfldno,pdddata,pdddbcs,ddlen);  //~vavpI~
     return rc;                                                     //~vavpI~
 }//fsubw_setflddatadd                                              //~vavpR~
+//**************************************************************** //~vbkcI~
+//get lc to Gcmdbufflc from UD,from funcrcmdstack                  //~vbkcI~
+//**************************************************************** //~vbkcI~
+int fsubw_UD2U8(int Popt,char *Ppud,int Plen,char *Ppu8,int Pbuffsz,int *Ppoutlen)//~vbkcR~
+{                                                                  //~vbkcI~
+	int outlen,rc2,buffsz,ddlen,opt;                               //~vbkcR~
+    char *pdata,*pdbcs;                                            //~vbkcI~
+//********************                                             //~vbkcI~
+    UTRACED("inp ud",Ppud,Plen);                                   //~vbkcR~
+    buffsz=Plen;                                                   //~vbkcI~
+    pdata=xeutf_buffget(XEUTF_BUFF3,buffsz*2);                     //~vbkcI~
+    UALLOCCHK(pdata,UALLOC_FAILED);                                //~vbkcI~
+    pdbcs=pdata+buffsz;                                            //~vbkcI~
+    rc2=fsubw_UD2DD(0,Ppud,Plen,pdata,pdbcs,buffsz,&ddlen);        //~vbkcI~
+    if (rc2)                                                       //~vbkcR~
+    	return rc2;                                                //~vbkcI~
+    opt=UTFDD2FO_OUTSTRZ;                                          //~vbkcR~
+	rc2=utfcvdd2f(opt,pdata,ddlen,pdbcs,Ppu8,Pbuffsz,&outlen,0/*Ppoutdbcs*/);//~v640R~//~vbkcI~
+    if (rc2>=UTFDD2FRC_ERR)                                        //~va20I~//+vbkcI~
+    	return rc2;                                                //~vbkcI~
+    if (Ppoutlen)                                                  //~vbkcI~
+    	*Ppoutlen=outlen;                                          //~vbkcI~
+    UTRACED("out u8",Ppu8,outlen);                                 //~vbkcR~
+    return 0;                                                      //~vbkcI~
+}//fsubw_UD2DD                                                     //~vbkcI~

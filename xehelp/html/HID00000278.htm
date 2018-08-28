@@ -15,7 +15,7 @@ a:hover{font-weight:bold;}-->
 <SPAN STYLE="color:#000000;font-size:12pt;">    = Termination
 
         {END | RETurn | QUIt | EXIt | CANcel}  [-NB|-BK] [CPU8|CPLC|CPEB] [IE]
-                   [/M{T|P|U|M|E|R|V}] [/F{n[-m]|vfmt}] [-S{r|i|d}]
+                   [/M{T|P|U|M|E|R|V}] [/F{n[-m]|vfmt}] [-S{r|i|d}] [-Force]
 
             EXI   :terminate current screen hierarchy(half of split)
             RET   :return to command prompt(Update is saved)
@@ -56,6 +56,9 @@ a:hover{font-weight:bold;}-->
                              replace both side of space, if available, to SO/SI.
                          i : Inserte SO/SI when translation to EBCDIC.
                          d : Delete SO/SI when translation from EBCDIC.
+              -Force :Warning is issued when timestamp of the file was changed from time of opened
+                      (the file was updated in the other session),
+                      use this option to force save.
 
 #endif
 

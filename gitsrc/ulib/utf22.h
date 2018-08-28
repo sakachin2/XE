@@ -1,8 +1,27 @@
-//*CID://+v6T5R~: update#=  333;                                   //~v6T5R~
+//*CID://+v6X5R~: update#=  386;                                   //~v6X5R~
 //******************************************************           //~v600I~
 //*utf22.h                                                         //~v640R~
 //******************************************************           //~v600I~
-//v6T5:180217 WCons:Cmdline,WriteConsoleOutputW/WriteConsoleOutputCharacterW shrink colomn. Use WriteConsoleOutputChar if avail(when successful cv to locale,also for altch)//+v6T5R~
+//v6X5:180818 (LNX:xe)column shring COMB2SCM(036f+0390) even SPLIT mode,//~v6X5I~
+//v6X0:180813 combining require 2 cell when split such as u309a    //~v6X0I~
+//v6Wu:180806 for also console version:set altch for SCM when COMBINE_NP,green if not adter combinable.//~v6WuI~
+//v6Wr:180804 process SCM same as NSM(NonSpacing Mark)             //~v6WrI~
+//v6Wk:180723 (gxe)ambiguous(width=2) for gxe                      //~v6WkI~
+//v6Wi:180722 u+ad(Soft Hyphen) is wcwidth=0,bu combineprocess A0+ad show on 2 col. trate it as utfwcwidth=1 (unicode category Cf:Format)//~v6WiI~
+//v6Wb:180709 lig:on csr pos differ when wcwidth of ovf ucs(csr pos should shift to right by 1)//~v6WbI~
+//v6W9:180708 dbcs combining char such as u309a(u306f+u309a) exists.//~v6W9I~
+//v6Vz:180626 (LNX:BUG)UTF_GETDDUCS1(utfdd2u1) returns ":;" for unprintable,add UTF_GETDDUCS1NP//~v6VzI~
+//v6Vy:180626 (LNX:BUG)UTF_GETDDUCS1(utfdd2u1) returns ":;" for unprintable,add UTF_GETDDUCS1NP//~v6VyI~
+//v6Vs:180622 allow dbcs to UTF_COMBINABLE                         //~v6VsI~
+//v6Vq:180622 add utf22_isucswidth0(ucs)                           //~v6VqI~
+//v6Vb:180612 add isSpacingCombiningmark                           //~v6VbI~
+//v6Vm:180620 (W32)when surrogate pair err,use utfcvucs2u8(WideCharToMultibyte dose not notify err,but set utf8 of u-fffd)//~v6VmI~
+//v6Vk:180620 (W32)when surrogate pair err,try to set sbcsid.(xe dirlist display fffd)//~v6VkI~
+//v6Vg:180531 (Win) like as (LNX)v6V5, show org ucs for width0 ucs4(>=map entry)//~v6VgI~
+//v6Vb:180612 add isSpacingCombiningmark                           //~v6VbI~
+//v6V5:180531 show org ucs for width0 ucs4(>=map entry)            //~v6V5I~
+//v6V4:180531 apply                                                //~v6W9R~
+//v6T5:180217 WCons:Cmdline,WriteConsoleOutputW/WriteConsoleOutputCharacterW shrink colomn. Use WriteConsoleOutputChar if avail(when successful cv to locale,also for altch)//~v6T5R~
 //v6Fc:160904 in addition to v6F3,also DBCS space altch is changable//~v6FcI~
 //v6F7:160905 (W64) TAB disp char on W64                           //~v6F7I~
 //                  TT font:tab skip colomn err,errmsg OK          //~v6F7I~
@@ -131,6 +150,9 @@
           ((ucsbe)[0]=(UCHAR)((ucs)>>8),(ucsbe)[1]=(UCHAR)((ucs)&0xff))//~v640I~//~v65cR~
 #define UTF_UCS2MAX    0xffff                                      //~v640I~
 #define UTF_GETDDUCS1(pdata,pdbcs,len) 	utfdd2u1(0,pdata,pdbcs,len)//~v640R~
+                                                                   //~v6VyI~
+#define UTF_GETDDUCS1VIO(pdata,pdbcs,len,pchsz)	utfdd2u1vio(0,pdata,pdbcs,len,pchsz)//~v6VzR~
+			                                                       //~v6VyI~
 #ifdef W32                                                         //~v6BjR~
 #define UTF_U2DD1(ucs,pdata,pdbcs,plen) \
 			utfcvu2dd1wUCS4(0,ucs,pdata,pdbcs,plen);               //~v6BjR~
@@ -144,11 +166,15 @@
         || ((ucs)&0xffff)==0xfffe      \
         || ((ucs)>=0xfdd0 && (ucs)<=0xfdef) \
         )                                                          //~v6BTI~
+#ifdef AAA                                                         //~v6VsI~
 #define UTF_COMBINABLE(ucs) \
 		(   \
 		    !UCSIS_NONCHARACTER((ucs)) \
 		 && iswalpha((wint_t)(ucs))   /* ! iswcntrl && ! iswdigit && ! iswpunct && ! iswspace */ \
 		)                                                          //~v6BTI~
+#else                                                              //~v6VsI~
+	#define UTF_COMBINABLE(ucs) utf_iscombinable(0,(ULONG)(ucs))   //~v6VsR~
+#endif                                                             //~v6VsI~
 //*******************************************************************//~v640I~
 typedef struct _UCS2DDMAP {                                        //~v640R~
 //#ifdef UTF8UCS4                                                    //~v65cI~//~v67ZR~
@@ -199,6 +225,7 @@ typedef struct _UCS2DDMAP {                                        //~v640R~
 #else                                                              //~v65cI~
 #define UCS2DDMAP_ENTNO   0x00010000    //tbl size                 //~v640R~
 #endif                                                             //~v65cI~
+#define UTF22_ISOVFUCS(ucs) ((ucs)>=UCS2DDMAP_ENTNO)	//2 cell   //~v6WbI~
 //*******************                                              //~v640I~
 #ifdef UTF22_GBL                                                   //~v640I~
 	UCS2DDMAP Gucs2ddmap[UCS2DDMAP_ENTNO];                         //~v640M~
@@ -220,6 +247,7 @@ int utf_isucswidth0(int Popt,UWUCS Pucs);                          //~v6BYR~
 int utf_isddwidth0(int Popt,char *Pdddata,char *Pdddbcs,int Preslen,int *Ppddwidth);//~v6BYR~
 //*******************************************************************//~v640I~
 int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag,int *Ppwcwidth);//~v640I~
+int utfwwapichkWucs4(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag,int *Ppwcwidth);//~v6V4I~
 //*******************************************************************//~v640I~
 int utfchkdd(int Popt,UCHAR *Ppdbcs,int Plen);                     //~v640I~
 //*******************************************************************//~v640I~
@@ -241,6 +269,7 @@ UWUCS utfdd2u1(int Popt,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen);     //~v6uBI~
 #else                                                              //~v6uBI~
 WUCS utfdd2u1(int Popt,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen);      //~v640R~
 #endif                                                             //~v6uBI~
+int utfdd2u1vio(int Popt,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen,int *Ppchsz);//~v6VzR~
 //*******************************************************************//~v660I~
 #ifdef UTF8EBCD                                                    //~v660I~
   #ifdef UTF8UTF16                                                 //~v6uBI~
@@ -553,6 +582,7 @@ int utfddgetucsctr(int Popt,UCHAR *Ppdbcs,int Plen,int Ppos,int *Ppucsctr);//~v6
 #ifdef W32UNICODE                                                  //~v6uaI~
 	int utf162dd(int Popt,PUWCH Ppdata,int Pctr,UCHAR *Ppoutdata,UCHAR *Ppoutdbcs,int Poutbuffsz,int *Ppoutlen);//~v6uaI~
     #define U162DO_CHKDBCSPRINT   0x01    //chk iswprint for dbcs  //~v6E0I~
+    #define U162DO_REPUCS         0x02    //err rep to fffd        //~v6VkI~
 	int utf_trimascii(int Popt,UCHAR *Pstr,int Plen,UCHAR *Pout,int *Pppos);//~v6u0I~//~v6uaI~
 	#define UTTAO_STRZ          0x01                                   //~v6u0I~//~v6uaI~
 #endif                                                             //~v6uaI~
@@ -581,3 +611,59 @@ int utf162ucs4(int Popt,WUCS *Ppdata,int Pctr,UWUCS *Poutucs4,int Poutbuffsz,int
 #define U162U4O_UCS1      0x01 //return by 1 ucs4                  //~v6BPI~
 //*******************************************************************//~v6T5I~
 ULONG utf22_setunpucsvio(int Popt,ULONG Pucs,int Pdbcsid,int *Prc);//~v6T5I~
+#ifdef LNX                                                         //~v6VgI~
+//*******************************************************************//~v6VgI~//~v6W9M~
+int utf22_iswidth0Ovf(int Popt,int Pch1,int Pch2,int Pdbcsid1,int Pdbcsid2,WUCS *Ppucs);//~v6V5I~
+//*******************************************************************//~v6W9M~
+int utf22_iswidth0DBCS(int Popt,int Pch1,int Pch2,int Pdbcsid1,int Pdbcsid2,WUCS *Ppucs);//~v6W9M~
+//*******************************************************************//~v6VbI~//~v6W9M~
+#else                                                              //~v6VgI~
+//*******************************************************************//~v6W9I~
+//int utf22_iswidth0OvfW(int Popt,UWUCS Pucs4);                      //~v6VgR~//~v6W9R~
+int utf22_iswidth0W(int Popt,UWUCS Pucs4);                         //~v6W9I~
+#endif                                                             //~v6VgI~
+//*******************************************************************//~v6X0I~
+int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs);              //~v6VbI~
+#define UTF4ISCMO_WIDTHMASK 	0x00ff 		//width if WIDTHPARM on//~v6X0I~
+#define UTF4ISCMO_NOSCM2 		0x0100 		//not srch combining2SCM//~v6X0I~
+#define UTF4ISCMO_WIDTHPARM 	0x0200 		//WIDTHMASK contains width//~v6X0I~
+//*******************************************************************//~v6VbI~
+int utf4_isAmbiguous(int Popt,UWUCS Pucs);                         //~v6VbI~
+#define UTF4IAO_SCM 		0x01 		//chk Spacing Combining Mark//~v6VbR~
+//*******************************************************************//~v6WkM~
+#ifdef LNX                                                         //~v6WkI~
+int utf4_isAmbiguous_XXE(int Popt,UWUCS Pucs);                     //~v6WkI~
+#else                                                              //~v6WkI~
+int utf4_isAmbiguous_WXE(int Popt,UWUCS Pucs);                     //~v6WkI~
+#endif                                                             //~v6WkI~
+//*******************************************************************//~v6VbI~
+int utf3_wcwidthXXE(int Popt,UWUCS Pucs,int *Ppflag,int *Pprc);    //~v6VbI~
+//*******************************************************************//~v6VmI~
+#ifdef W32UNICODE                                                  //~v6VmI~
+	int utf162u8(int Popt,PUWCH Ppdata,int Pctr,UCHAR *Ppoutdata,int Poutbuffsz,int *Ppoutlen);//~v6VmI~
+#endif                                                             //~v6VmI~
+//*******************************************************************//~v6VbI~
+#ifdef W32                                                         //~v6VbI~
+#ifndef WXE                                                        //~v6VbI~
+int utf3_wcwidthWXE(int Popt,UWUCS Pucs,int *Ppflag,int *Pprc);    //~v6VbI~
+#endif  //!WXE                                                     //~v6VbI~
+#endif  //W32                                                      //~v6VbI~
+//*******************************************************************//~v6VqI~
+#define UTF_ISWIDTH0(Pdbcsid,Pucs)    utf_iswidth0(0,Pdbcsid,Pucs) //~v6VqI~
+int utf_iswidth0(int Popt,int Pdbcsid,ULONG Pucs);                 //~v6VqR~
+//*******************************************************************//~v6VsI~
+int utf_iscombinable(int Popt,ULONG Pucs);                         //~v6VsR~
+#define UICAO_NOSPACE  0x01   //disallow space as combinable       //~v6WuI~
+//*******************************************************************//~v6WiI~
+int utf4_isFormat(int Popt,UWUCS Pucs);                            //~v6WiI~
+//*******************************************************************//~v6WrI~
+#define UTF_ISCOMBINING(Popt,Pdbcsid,Pucs)    utf_iscombining(Popt,(int)Pdbcsid,(int)Pucs)//~v6WrR~
+int utf_iscombining(int Popt,int Pdbcsid,int Pucs);                //~v6WrR~
+#define UICO_RCCOMB2SCM    0x01    //set rc|=COMB2SCM for cmb2scm  //~v6X5R~
+#define UICRC_SBCS    0x01    //ucs2(1 column)                     //~v6WrR~
+#define UICRC_OVF     0x02    //ucs4(2 column)                     //~v6WrR~
+#define UICRC_SCM     0x04    //SCM 1/2 column                     //~v6WrR~
+//#define UICRC_COMBALL 0x07    //all combining                      //~v6WrI~//~v6X5R~
+#define UICRC_COMB2SCM 0x08   //Mn but SCM for windows angxe       //~v6X5I~
+//*******************************************************************//+v6X5I~
+int mk_wcwidth_combining2SCM(int Popt,UWUCS ucs);                  //+v6X5I~

@@ -15,7 +15,7 @@ a:hover{font-weight:bold;}-->
 <SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = 保存
 
         SAVe    [ファイル名]  [/M{T|P|U|M|E|R|V}] [-x | -nx] [-NB|-BK] [-F{n[-m]|vfmt}]
-                [-CPU8|-CPLC|-CPEB[:codepage]] [-IE] [-S{r|i|d}]
+                [-CPU8|-CPLC|-CPEB[:codepage]] [-IE] [-S{r|i|d}] [-Force]
 
             ファイル名:ワイルドカード指定もOK.
                  (注)  ファイル名を指定しない場合は他のオプションには ファイル名と間違わないように
@@ -57,6 +57,9 @@ a:hover{font-weight:bold;}-->
                        i : EBCDIC への変換の時 SO/SI を挿入する
                        d : EBCDIC から変換の時 SO/SI を削除する
 #endif
+            -Force :ファイルのタイムスタンプが読み込み時と変わっているとき
+                    (現セッションの外で更新された),その旨の警告が出るが
+                    無視して保存するときに指定する
 
             -編集画面は終了せずに表示ファイルの全行を出力します
             -ファイル名指定はディスク フルなどで保存できない時などに

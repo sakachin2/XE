@@ -1,7 +1,8 @@
-//*CID://+va0tR~:**                                                //~va0eR~//~va0tR~
+//*CID://+vbmvR~:**                                                //+vbmvR~
 //****************************************************************
 //xepan2.h                                                         //~v76gR~
 //****************************************************************
+//vbmv:180727 =3.12 helpmsg, add CPU8 option                       //+vbmvI~
 //va0t:090913!maintains locale and utf8 code for panel input(cmdline,panutil)//~va0tI~
 //va0e:090718 (BUG)util cmd,missing clear ini data                 //~va0eI~
 //v77C:080129*english spell chk                                    //~v77CI~
@@ -25,7 +26,11 @@ int panfieldevent(PUCLIENTWE Ppcw,int Peventid);                //~5701R~
 #define PFE_FULL    0                                           //~5701R~
 #define PFE_CLEAR   1                                           //~5701I~
                                                                 //~5701I~
+#ifdef W32                                                         //+vbmvI~
+#define PANUHELPMSG       "  [ [-nolist] [-CPU8].  Enter ? or --help for others.]"//+vbmvI~
+#else                                                              //+vbmvI~
 #define PANUHELPMSG       "  [ -nolist:display rc only.  Enter ? or --help for Help]"//~v76gR~
+#endif                                                             //+vbmvI~
 #define PANUHELPMSGGREP   "  [ Options and Pattern.  Enter ? or --help for Help]"//~v76jR~
 #define PANUHELPMSGOPTFNM "  [ \"-f\" at end of \"Options\" allows 1st line as pattern file. ]"//~v76gR~
 #define PANUHELPMSGFIND   "  [ Try InsertLine key (default:F5) after partial path input. ]"//~v76gR~
@@ -98,8 +103,8 @@ int panutiliniget(FILE *Ppfh);                                     //~v76gI~
 #ifndef CCC                                                        //~va0tI~
 //**************************************************************** //~va0tI~
 	#define BYUTF8_pansetflddata(Popt,Ppcw,Plineid,Pfldid,Pdata) \
-		pansetflddata_utf8(Popt,Ppcw,Plineid,Pfldid,Pdata)         //+va0tR~
-	int pansetflddata_utf8(int Popt,PUCLIENTWE Ppcw,int Prow,int Pfldno,char *Pdata);//+va0tR~
+		pansetflddata_utf8(Popt,Ppcw,Plineid,Pfldid,Pdata)         //~va0tR~
+	int pansetflddata_utf8(int Popt,PUCLIENTWE Ppcw,int Prow,int Pfldno,char *Pdata);//~va0tR~
 #endif                                                             //~va0tI~
 #else                                                              //~va0tI~
 #ifndef CCC                                                        //~va0tI~

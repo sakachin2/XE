@@ -1,8 +1,20 @@
-//*CID://+vba7R~:                             update#=  455;       //+vba7R~
+//*CID://+vbmoR~:                             update#=  505;       //~vbmoR~
 //***************************************************************************//~2818I~
 //* c subrtn for wxe                                               //~2818I~
 //***************************************************************************//~2818I~
-//vba7:170716 (Bug:64bit)upostmsg WPARAM is IntPtr(64bit!=ULONG)   //+vba7I~
+//vbmo:180714 (wxe)multiple SCM support                            //~vbmoI~
+//vbmm:180814 (Bug by ULIB v6Wr) returns >2(length)                //~vbmmI~
+//vbmh:180806 (BUG)invalid display if multiple dbcsspace continued //~vbmhI~
+//vbmg:180806 for performance COMBINABLE chk after Combining checked.//~vbmgI~
+//vbmf:180803 show altch for SCM when COMBINE_NP                   //~vbmfI~
+//vbmd:180730 (wxe)SCM support                                     //~vbmdI~
+//vbmc:180730 (gxe/wxe)attr:green for combining after unprintable like as console version(if ligature on, yet Yellow because update is complex)//~vbmcI~
+//vbkj:180623 ucs4 combining: file23 replace it to Gutfcombaltch for ucs2 if ligature off(xe is always lig:off), leave ucs4 as-is.//~vbkjI~
+//            uviom process ucs4 combining(dbcsid is overflow ucs).//~vbkjI~
+//            wxe need to display altch ucs2/ucs4 if ligature mode, uc4 if non-ligaturemode when COMBINENP.//~vbkjI~
+//vbki:180622 (W32:BUG) UVIOM_MAXCOMBINE(=4) may be short to contain ucs4 combining char(2 ucs for each)//~vbkiI~
+//vbkh:180622 (WXE) ucs4 combining char                            //~vbkhI~
+//vba7:170716 (Bug:64bit)upostmsg WPARAM is IntPtr(64bit!=ULONG)   //~vba7I~
 //vb4A:160815 if UNICOMB UNPR mode and LIGATURE ON, write altch just after base char using GetTextExtentPoint32W//~vb4zI~
 //vb4z:160815 if UNICOMB SPLIT mode and LIGATURE ON, write combining char just after base char using GetTextExtentPoint32W//~vb4zR~
 //vb4j:160806 (W32)OPT UNICOMP UNPR was effective only for file contents(chk at tabdisplay)//~vb4jI~
@@ -110,6 +122,12 @@ int  iniacrnmput(FILE *Pfh);                                       //~2907I~
 int  usetupwd(void);                                               //~2A12I~
 int  usetupwdtemp(void);                                           //~2A12I~
 int csubtextoutWcombining_notcombinemode(int Popt,HDC Phdc,int Pxx,int Pyy,WUCS *Pucs,int Pucsctr);//~vb4AI~
+//#define CTOCO_WIDTH0_UCS4     0x01                                 //~vbkjI~//~vbmfR~
+//#define CTOCO_SCM             0x02                               //~vbmfR~
+#define CTOCO_WIDTH0_UCS4     UICRC_OVF      //0x02                //~vbmfI~
+#define CTOCO_SCM             UICRC_SCM      //0x04                //~vbmfI~
+int csubtextoutw_SCMidx(int Popt,char *Pdata,char *Pdbcs,int Pddlen,WUCS *Ppucs,int Pucsctr,char *Pscmidx);//~vbmdI~
+int csubtextoutw_ligature_SCMidx(int Popt,WUCS *Ppucs,int Pucsctr,char *Pscmidx);//~vbmdR~
 //***************************************************************************//~2831I~
 //init static                                                      //~2831I~
 //***************************************************************************//~2831I~
@@ -447,8 +465,8 @@ ULPTR usetfocus(void)                                              //~vaz7I~
 //**************************************************************** //~v53yI~
 //*rc:ret code                                                     //~v53yI~
 //**************************************************************** //~v53yI~
-//int upostmsg(UINT Pmsg,ULONG Pwparm,ULONG Plparm)                  //~v53yR~//+vba7R~
-int upostmsg(UINT Pmsg,ULPTR Pwparm,ULPTR Plparm)                  //+vba7I~
+//int upostmsg(UINT Pmsg,ULONG Pwparm,ULONG Plparm)                  //~v53yR~//~vba7R~
+int upostmsg(UINT Pmsg,ULPTR Pwparm,ULPTR Plparm)                  //~vba7I~
 {                                                                  //~v53yI~
 //********************************                                 //~v53yI~
 	if (PostMessage(Shwnd,Pmsg,(WPARAM)Pwparm,(LPARAM)Plparm))     //~v53yI~
@@ -458,8 +476,8 @@ int upostmsg(UINT Pmsg,ULPTR Pwparm,ULPTR Plparm)                  //+vba7I~
 //**************************************************************** //~v55DI~
 //*rc:ret code                                                     //~v55DI~
 //**************************************************************** //~v55DI~
-//int upostmsgp(UINT Pmsg,ULONG Pwparm,ULONG Plparm)                 //~v55DI~//+vba7R~
-int upostmsgp(UINT Pmsg,ULPTR Pwparm,ULPTR Plparm)                 //+vba7I~
+//int upostmsgp(UINT Pmsg,ULONG Pwparm,ULONG Plparm)                 //~v55DI~//~vba7R~
+int upostmsgp(UINT Pmsg,ULPTR Pwparm,ULPTR Plparm)                 //~vba7I~
 {                                                                  //~v55DI~
 	HWND hwnd;                                                     //~v55DI~
 //********************************                                 //~v55DI~
@@ -904,19 +922,43 @@ int csubtextoutw_ligature(int Popt,int Plineopt,HDC Phdc,int Px,int Py,WUCS *Pda
     WUCS wkucsdbcsspace[2];                                        //~vb3xI~
     int swdbcsspaceutf8;                                           //~vb3xI~
 #endif                                                             //~vb3xI~
+	ULONG ucs4;                                                    //~vbkjI~
+	ULONG ucs4o;                                                   //~vbmgI~
+    int optucs4w0;                                                 //~vbkjI~
+    int optucs4w0o;                                                //~vbmoI~
+//  char wkscmidx[MAXCOL];                                         //~vbmdR~//~vbmfR~
+//  int scmctr;                                                    //~vbmdI~//~vbmfR~
 //**********************                                           //~va3gI~
     UTRACEP("%s:opt=%x,lineopt=%x,len=%d,xx=%d,yy=%d,ucsctr=%d,dbcslen=%d,cwllw=%d\n",UTT,Popt,Plineopt,Plen,Px,Py,Pucsctr,Plen,Pcellw);//~vb4iR~
     chtypeo=-2;                                                    //~va3gI~
+//    if ( !WXE_COMBINEMODE(Plineopt)   //for also UVIOO_FORCECOMBINE//~vbmdR~//~vbmfR~
+////  &&   !UTF_COMBINEMODE_NP())     //split mode                   //~vbmdI~//~vbmfR~
+//    )                                                            //~vbmfR~
+//    {                                                              //~vbmdI~//~vbmfR~
+//        memset(wkscmidx,0,sizeof(wkscmidx));                       //~vbmdI~//~vbmfR~
+//        scmctr=csubtextoutw_ligature_SCMidx(Popt,Pdata/*ucs*/,Pucsctr,wkscmidx);//~vbmdI~//~vbmfR~
+//    }                                                              //~vbmdI~//~vbmfR~
+//    else                                                           //~vbmdI~//~vbmfR~
+//        scmctr=0;                                                  //~vbmdI~//~vbmfR~
+	ucs4=0;                                                        //~vbmgI~
+	optucs4w0=0;                                                   //~vbmoI~
     for (ii=0,pucs=Pdata,xx=Px,pdbcs=Pdbcs;ii<Pucsctr;ii++,pucs++,pdbcs+=dbcssz)//~va3gR~
     {                                                              //~va3gI~
+    	ucs4o=ucs4; //prev ucs                                     //~vbmgI~
         ucs=*pucs;                                                 //~va3gI~
         utf16low=0;                                                //~vb2HI~
         utf16ctr=1;                                                //~vb2HI~
+//  	optucs4w0=0;                                               //~vbkjI~//~vbmfR~
+        ucs4=ucs;                                                  //~vbmfI~
         if (ii+1<Pucsctr && IS_UTF16_PAIR(ucs,*(pucs+1)))          //~vb2HI~
         {                                                          //~vb2HI~
         	utf16ctr=2;                                            //~vb2HI~
             utf16low=*(pucs+1);                                    //~vb2HI~
+            ucs4=UTF16_TO_UCS4(ucs,utf16low);                      //~vbkjI~
+//  	    optucs4w0=UTF_ISWIDTH0(0/*dbcsid bo meaning to ucs4*/,ucs4)?CTOCO_WIDTH0_UCS4:0;//~vbkjI~//~vbmfR~
         }                                                          //~vb2HI~
+        optucs4w0o=optucs4w0;                                      //~vbmoI~
+		optucs4w0=UTF_ISCOMBINING(0/*opt*/,*pdbcs,ucs4);           //~vbmfI~
         dbcsid=*pdbcs;                                             //~va3gI~
 //      dbcssw=UDBCSCHK_DBCS1STUCS2NW(dbcsid);                     //~va3gR~//~vb2HR~
 //      dbcssw=UDBCSCHK_DBCS1STUCS2NWPO(dbcsid);                   //~vb2HI~//~vb3mR~
@@ -951,9 +993,17 @@ int csubtextoutw_ligature(int Popt,int Plineopt,HDC Phdc,int Px,int Py,WUCS *Pda
 	  	  }                                                        //~vb3xI~
           else                                                     //~vb3xI~
 #endif                                                             //~vb3xI~
+//        if (scmctr && wkscmidx[ii])    //SCM char(split mode)    //~vbmdR~//~vbmfR~
+//          chtype=-3;  //single write                             //~vbmdR~//~vbmfR~
+//        else                                                     //~vbmdI~//~vbmfR~
           {                                                        //~v6uBI~//~vb2PI~
-        	if (UDBCSCHK_ISUCSWIDTH0(dbcsid))	//combine char     //~va3gI~
+//      	if (UDBCSCHK_ISUCSWIDTH0(dbcsid))	//combine char     //~va3gI~//~vbkhR~
+//      	if (UTF_ISWIDTH0(dbcsid,ucs))	//combine char         //~vbkhR~//~vbkjR~
+//      	if (optucs4w0 || UDBCSCHK_ISUCSWIDTH0(dbcsid))	//combine char//~vbkjI~//~vbmfR~
+        	if (optucs4w0)	//combine char                         //~vbmfI~
             {                                                      //~va3gI~
+//            	swcombinable=UTF_COMBINABLE(ucs4o)!=0;             //~vbmgI~//~vbmoR~
+              	swcombinable=optucs4w0o || UTF_COMBINABLE(ucs4o)!=0;//~vbmoI~
 //      		if (swcombinable && UTF_COMBINEMODE())	           //~vb4iR~
         		if (swcombinable && WXE_COMBINEMODE(Plineopt))   //for also UVIOO_FORCECOMBINE//~vb4iI~
                 {                                                  //~va3gI~
@@ -970,10 +1020,10 @@ int csubtextoutw_ligature(int Popt,int Plineopt,HDC Phdc,int Px,int Py,WUCS *Pda
 #else                                                              //~va3gI~
         		chtype=1;						//mix all          //~va3gR~
 #endif                                                             //~va3gI~
-              if (UTF_COMBINABLE(ucs))                             //~va3uI~
-	            swcombinable=1;                                    //~va3uI~
-	          else                                                 //~va3uI~
-				swcombinable=0;                                    //~va3gI~
+//            if (UTF_COMBINABLE(ucs))                             //~va3uI~//~vbmgR~
+//              swcombinable=1;                                    //~va3uI~//~vbmgR~
+//            else                                                 //~va3uI~//~vbmgR~
+//  			swcombinable=0;                                    //~va3gI~//~vbmgR~
             }                                                      //~va3gI~
           }                                                        //~v6uBI~//~vb2PI~
 //        }                                                        //~va3uR~
@@ -990,7 +1040,9 @@ UTRACEP("ligature chtype=%d,old=%d,ucs=%04x,dbcssw=%d,swcombinable=%d\n",chtype,
                 	SIZE sz;                                       //~vb4jI~
             		UTRACEP("%s:at breake;GetTextExtentPoint32W cellsz=%d,drawsz=%d\n",UTT,Pcellw*ligchsz,(GetTextExtentPoint32W(Phdc,pwkucs,ligucsctr,&sz)?sz.cy*1000+sz.cx:0));//~vb4jR~
                 }                                                  //~vb4jI~
-			  if (chtype==-2)	//combining char not combine mode  //~vb4zR~
+//  		  if (chtype==-2||chtype==-3)  //combining char not combine mode or scm split mode//~vbmfR~
+    		  if (chtype==-2)	//combining char not combine mode  //~vb4zR~//~vbmfR~
+                                                                   //~vbmfI~
               {                                                    //~vb4zR~
               	SIZE sz;                                           //~vb4zR~
             	if (GetTextExtentPoint32W(Phdc,pwkucs,ligucsctr,&sz))//~vb4zR~
@@ -1004,6 +1056,19 @@ UTRACEP("ligature chtype=%d,old=%d,ucs=%04x,dbcssw=%d,swcombinable=%d\n",chtype,
               else                                                 //~vb4zR~
 	            xx+=Pcellw*ligchsz;                                //~va3gI~
             }                                                      //~va3gI~
+//            if (chtype==-3) // single SCM(split moed)              //~vbmdI~//~vbmfR~
+//            {                                                      //~vbmdI~//~vbmfR~
+//                SIZE sz;                                           //~vbmdI~//~vbmfR~
+//                TextOutW(Phdc,xx,Py,pucs,utf16ctr);                //~vbmdI~//~vbmfR~
+//                if (GetTextExtentPoint32W(Phdc,pucs,utf16ctr,&sz)) //~vbmdI~//~vbmfR~
+//                {                                                  //~vbmdI~//~vbmfR~
+//                    xx+=sz.cx;                                     //~vbmdI~//~vbmfR~
+//                    UTRACEP("%s:SCM split mode cellsz=%d,drawsz=%d,new xx=%d\n",UTT,Pcellw*utf16ctr,sz.cx,xx);//~vbmdI~//~vbmfR~
+//                }                                                  //~vbmdI~//~vbmfR~
+//                else                                               //~vbmdI~//~vbmfR~
+//                    xx+=Pcellw*utf16ctr;                           //~vbmdI~//~vbmfR~
+//            }                                                      //~vbmdI~//~vbmfR~
+//            else                                                   //~vbmdI~//~vbmfR~
             if (chtype<0)                                          //~va3gI~
             {                                                      //~va3gI~
 #ifndef SSS                                                        //~vb3xI~
@@ -1022,8 +1087,16 @@ UTRACEP("ligature chtype=%d,old=%d,ucs=%04x,dbcssw=%d,swcombinable=%d\n",chtype,
 #endif                                                             //~vb3xI~
               {                                                    //~vb3xI~
                if (chtype==-2) //combining char under not combinemode//~vb4AI~
-				csubtextoutWcombining_notcombinemode(0,Phdc,xx,Py,pucs,utf16ctr);//~vb4AI~
+               {                                                   //~vbkjI~
+//  			csubtextoutWcombining_notcombinemode(0,Phdc,xx,Py,pucs,utf16ctr);//~vb4AI~//~vbkjR~
+    			csubtextoutWcombining_notcombinemode(optucs4w0,Phdc,xx,Py,pucs,utf16ctr);//~vbkjI~
+               }                                                   //~vbkjI~
                else                                                //~vb4AI~
+//             if (chtype==-3) //combining char under not combinemode//~vbmfR~
+//             {                                                   //~vbmfR~
+//  			csubtextoutWcombining_notcombinemode(CTOCO_SCM,Phdc,xx,Py,pucs,utf16ctr);//~vbmfR~
+//             }                                                   //~vbmfR~
+//             else                                                //~vbmfR~
                {                                                   //~vb4AI~
 //          	TextOutW(Phdc,xx,Py,pucs,1);                       //~va3gR~//~vb2HR~
             	TextOutW(Phdc,xx,Py,pucs,utf16ctr);                //~vb2HI~
@@ -1083,16 +1156,25 @@ int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pdata,char *
 {                                                                  //~v907I~//~va20I~
     WUCS wkucs[PRINTCOL_MAX*2],*pucs;                              //~va20R~
     char *pdbcs;                                                   //~va20I~
+    char *pdbcscombinestart;                                       //~vbkhI~
 	int ii,dbcsid,ucsctr,xx,opt,swscr;                             //~va20R~
+	int dbcsid2;                                                   //~vbmgI~
     int jj,kk,wrtctr,dbcssw,dbcssz;                                //~va30R~
-    WUCS wkcombine[UVIOM_MAXCOMBINE+1],*pwkcomb,*pucsw;            //~va30R~
+//  WUCS wkcombine[UVIOM_MAXCOMBINE+1],*pwkcomb,*pucsw;            //~va30R~//~vbkiR~
+    WUCS wkcombine[UVIOM_MAXCOMBINE*2+1],*pwkcomb,*pucsw;          //~vbkiI~
     int utf16ctr;                                                  //~vb2HR~
+    int utf16ctr2;                                                 //~vbkhI~
     UWUCS ucs4;                                                    //~vb2HR~
+    UWUCS ucs42;                                                   //~vbkhI~
 #ifndef SSS                                                        //~vb3xI~
     WUCS wkucsdbcsspace[2];                                        //~vb3xR~
 #endif                                                             //~vb3xI~
 //    COLORREF altchcolor=RGB(255,255,0);                          //~vb4jR~
 //    COLORREF bkhiwhite=RGB(255,255,255);                         //~vb4jR~
+	int w0sz,combinesz;                                            //~vbkhR~
+//    char wkscmidx[MAXCOL*2],*pidx;                                 //~vbmdR~//~vbmfR~
+//    char wkscmidxnocomb[MAXCOL];                                 //~vbmfR~
+//    int scmctr,scmwidth;                                           //~vbmdR~//~vbmfR~
 //**********************                                           //~va20I~
   	opt=UVIO_ERRREP;                                               //~va20I~
 	swscr=!(Popt & CSTOWO_PRINT);//   scr output                   //~va20I~
@@ -1122,6 +1204,9 @@ int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pdata,char *
     )                                                              //~va36I~
     {                                                              //~va30R~
       	UTRACEP("csubtextoutw len=%d,xx=%d,yy=%d,cwllw=%d\n",Plen,Px,Py,Pcellw);//~va30I~
+//      memset(wkscmidx,0,sizeof(wkscmidx));                       //~vbmdI~//~vbmfR~
+//  	scmctr=csubtextoutw_SCMidx(Popt,Pdata,Pdbcs,Plen,wkucs,ucsctr,wkscmidx);//~vbmdI~//~vbmfR~
+//      pidx=wkscmidx;                                             //~vbmdI~//~vbmfR~
         wrtctr=0;                                                  //~@@@@I~
         for (ii=0,pucs=wkucs,xx=Px,pdbcs=Pdbcs;ii<ucsctr;ii+=wrtctr)//~va30R~
         {                                                          //~va30R~
@@ -1130,7 +1215,7 @@ int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pdata,char *
 //          dbcssw=UDBCSCHK_DBCS1STUCS2NWPO(dbcsid);//+unprintable and overflow(ucs4)//~vb2HI~//~vb3mR~
             dbcssw=UDBCSCHK_DBCS1STUCS2NWO(dbcsid);   //for unprintable,utfdd2u set 2 altch(sbcs)//~vb3mI~
             utf162ucs4(U162U4O_UCS1,pucs,ucsctr-ii,&ucs4,(int)sizeof(ucs4),&utf16ctr,0/*outucsctr*/);//~vb2HM~
-      		UTRACEP("csubtextoutw combined ucs ii=%d,dbcsid=%02x,dbcssw=%d,xx=%d,yy=%d,ucs4=%04x,utf16ctr=%d\n",ii,dbcsid,dbcssw,xx,Py,ucs4,utf16ctr);//~va30I~//~vb2HR~//~vb2WR~
+      		UTRACEP("%s:csubtextoutw combined ucs ii=%d,dbcsid=%02x,dbcssw=%d,xx=%d,yy=%d,ucs4=%04x,utf16ctr=%d\n",UTT,ii,dbcsid,dbcssw,xx,Py,ucs4,utf16ctr);//~va30I~//~vb2HR~//~vb2WR~//~vbkhR~
             dbcssz=1+dbcssw;                                       //~va30I~
 #ifndef SSS                                                        //~vb3xI~
       		if (*pucs==DBCSSPACE_ALT2   //ffff                     //~vb3xI~
@@ -1147,33 +1232,88 @@ int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pdata,char *
 	  		}                                                      //~vb3xI~
       		else                                                   //~vb3xI~
 #endif                                                             //~vb3xI~
-            if (!UDBCSCHK_ISUCSWIDTH0(dbcsid)                      //~va30R~
-            &&   ii+1<ucsctr                                       //~va30I~
-            &&   (dbcsid=*(pdbcs+dbcssz),UDBCSCHK_ISUCSWIDTH0(dbcsid))//next is combining char//~va30R~
-            )                                                      //~va30I~
+//    		if (scmctr && (scmwidth=wkscmidx[ii*2],scmwidth))      //~vbmdR~//~vbmfR~
+//    		{                                                      //~vbmdI~//~vbmfR~
+//          	wrtctr=wkscmidx[ii*2+1];                           //~vbmdI~//~vbmfR~
+//      		TextOutW(Phdc,xx,Py,pucs,wrtctr);                  //~vbmdR~//~vbmfR~
+//				UTRACED("textoutw scmstr",pucs,wrtctr*(int)sizeof(WUCS));//~vbmdR~//~vbmfR~
+//      		pucs+=wrtctr;                                      //~vbmdR~//~vbmfR~
+//      		pdbcs+=scmwidth;                                   //~vbmdR~//~vbmfR~
+//      		xx+=scmwidth*Pcellw;                               //~vbmdI~//~vbmfR~
+//    		}                                                      //~vbmdI~//~vbmfR~
+//    		else                                                   //~vbmdI~//~vbmfR~
+//          if (!UDBCSCHK_ISUCSWIDTH0(dbcsid)                      //~va30R~//~vbkhR~
+//          &&   ii+1<ucsctr                                       //~va30I~//~vbkhR~
+//          &&   (dbcsid=*(pdbcs+dbcssz),UDBCSCHK_ISUCSWIDTH0(dbcsid))//next is combining char//~va30R~//~vbkhR~
+//            if (UTF_COMBINABLE(ucs4)                               //~vbkhR~//~vbmgR~
+//            &&   ii+utf16ctr<ucsctr                                //~vbkhI~//~vbmgR~
+//            &&   (dbcsid=*(pdbcs+dbcssz),                          //~vbkhI~//~vbmgR~
+//                    utf162ucs4(U162U4O_UCS1,pucs+utf16ctr,ucsctr-ii-utf16ctr,&ucs42,(int)sizeof(ucs42),&utf16ctr2,0/*outucsctr*/),//~vbkhI~//~vbmgR~
+////                  (w0sz=UTF_ISWIDTH0(dbcsid,ucs42))!=0)//next is combining char//~vbkhR~//~vbmfR~//~vbmgR~
+//                    (w0sz=UTF_ISCOMBINING(0,dbcsid,ucs42))!=0)//next is combining char//~vbmfR~//~vbmgR~
+//            )                                                      //~va30I~//~vbmgR~
+            if ( (ii+utf16ctr<ucsctr)                              //~vbmgI~
+            &&   (dbcsid2=*(pdbcs+dbcssz),                         //~vbmgI~
+            		utf162ucs4(U162U4O_UCS1,pucs+utf16ctr,ucsctr-ii-utf16ctr,&ucs42,(int)sizeof(ucs42),&utf16ctr2,0/*outucsctr*/),//~vbmgI~
+					(w0sz=UTF_ISCOMBINING(0,dbcsid2,ucs42))!=0)//next is combining char//~vbmgI~
+            &&  UTF_COMBINABLE(ucs4)                               //~vbmgI~
+            )                                                      //~vbmgI~
             {                                                      //~va30R~
+            	pdbcscombinestart=pdbcs;                           //~vbkhR~
             	pwkcomb=wkcombine;                                 //~va30I~
                 *pwkcomb++=*pucs++;                                //~va30R~
                 if (utf16ctr>1)                                    //~vb2HI~
 	                *pwkcomb++=*pucs++;                            //~vb2HI~
                 *pwkcomb++=*pucs++;    //1st combine               //~va30I~
-                pdbcs+=dbcssz+1;                                   //~va30I~
+                if (utf16ctr2>1)                                   //~vbkhI~
+	                *pwkcomb++=*pucs++;                            //~vbkhI~
+//              pdbcs+=dbcssz+1;                                   //~va30I~//~vbkhR~
+//              pdbcs+=dbcssz+w0sz;  //combining char colomn(2 for ucs4)//~vbkhI~//~vbmmR~
+                pdbcs+=dbcssz+(w0sz>1?2:1);  //combining char colomn(2 for ucs4),w0sz=4 for SCM//~vbmmI~
 //              wrtctr=2;                                          //~va30I~//~vb2HR~
-                wrtctr=1+utf16ctr;                                 //~vb2HI~
+//              wrtctr=1+utf16ctr;                                 //~vb2HI~//~vbkhR~
+                wrtctr=utf16ctr+utf16ctr2;                         //~vbkhR~
 //*assum combine char is ucs2***                                   //~vb2HI~
-        		for (jj=1,kk=ii+2;jj<UVIOM_MAXCOMBINE && kk<ucsctr;kk++,jj++,pdbcs++)//~va30I~
+//      		for (jj=1,kk=ii+2;jj<UVIOM_MAXCOMBINE && kk<ucsctr;kk++,jj++,pdbcs++)//~va30I~//~vbkhR~
+        		for (jj=1,kk=ii+wrtctr;jj<UVIOM_MAXCOMBINE && kk<ucsctr;kk++,jj++,pdbcs++)//~vbkhI~
                 {                                                  //~va30R~
-		            dbcsid=*pdbcs;                                 //~va30R~
-					if (!UDBCSCHK_ISUCSWIDTH0(dbcsid))             //~va30R~
+//  	            dbcsid=*pdbcs;                                 //~va30R~//~vbmgR~
+    	            dbcsid2=*pdbcs;                                //~vbmgI~
+//  				if (!UDBCSCHK_ISUCSWIDTH0(dbcsid))             //~va30R~//~vbkhR~
+            		utf162ucs4(U162U4O_UCS1,pucs,ucsctr-kk,&ucs42,(int)sizeof(ucs42),&utf16ctr2,0/*outucsctr*/);//~vbkhR~
+//  				if (!(w0sz=UTF_ISWIDTH0(dbcsid,ucs42)))        //~vbkhR~//~vbmfR~
+//  				if (!(w0sz=UTF_ISCOMBINING(0,dbcsid,ucs42)))   //~vbmfR~//~vbmgR~
+    				if (!(w0sz=UTF_ISCOMBINING(0,dbcsid2,ucs42)))  //~vbmgI~
                     	break;                                     //~va30R~
-                    *pwkcomb++=*pucs++;                            //~va30R~
-                    wrtctr++;                                      //~va30I~
+                    *pwkcomb++=*pucs++;                            //~va30R~//~vbkhR~
+    	            if (utf16ctr2>1)                               //~vbkhI~
+                    {                                              //~vbkhI~
+	    	            *pwkcomb++=*pucs++;                        //~vbkhI~
+                        kk++;                                      //~vbkhI~
+                    }                                              //~vbkhI~
+//                  pdbcs+=w0sz-1;                                 //~vbkhR~//~vbmmR~
+                    pdbcs+=(w0sz>1?2:1)-1;                         //~vbmmI~
+//                  wrtctr++;                                      //~va30I~//~vbkhR~
+                    wrtctr+=utf16ctr2;                             //~vbkhR~
                 }                                                  //~va30R~
                 pucsw=wkcombine;	                               //~va30M~
                 TextOutW(Phdc,xx,Py,pucsw,wrtctr);                 //~va30I~
             	UTRACED("csubtextoutw combined ucs2",pucsw,wrtctr*WUCSSZ);//~va30I~//~vb2HR~
-            	xx+=Pcellw*(dbcssw+wrtctr);                        //~va30R~
+//          	xx+=Pcellw*(dbcssw+wrtctr);                        //~va30R~//~vbkhR~
+				combinesz=PTRDIFF(pdbcs,pdbcscombinestart);        //~vbkhI~
+            	xx+=Pcellw*combinesz;                              //~vbkhR~
             }                                                      //~va30R~
+            else                                                   //~vbmcI~
+//          if   ((w0sz=UTF_ISWIDTH0(dbcsid,ucs4))!=0)//next is combining char//~vbmcI~//~vbmfR~
+            if   ((w0sz=UTF_ISCOMBINING(0,dbcsid,ucs4))!=0)//next is combining char//~vbmfR~
+            {                                                      //~vbmcI~
+                wrtctr=utf16ctr;                                   //~vbmcM~
+//  			csubtextoutWcombining_notcombinemode(0,Phdc,xx,Py,pucs,wrtctr);//~vbmcR~//~vbmfR~
+				csubtextoutWcombining_notcombinemode(w0sz,Phdc,xx,Py,pucs,wrtctr);//~vbmfI~
+                pucs+=wrtctr;                                      //~vbmcI~
+                pdbcs+=dbcssz;                                     //~vbmcI~
+            	xx+=Pcellw*dbcssz;                                 //~vbmcM~
+            }                                                      //~vbmcI~
             else                                                   //~va30I~
             {                                                      //~va30I~
 		        wrtctr=1;                                          //~va30R~
@@ -1197,6 +1337,17 @@ int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pdata,char *
         }                                                          //~va30R~
     }                                                              //~va30R~
     else                                                           //~va30R~
+    { //!combinemode                                               //~vbmdI~
+//    if (UTF_COMBINEMODE_NP())	//foe scm,same as combine mode     //~vbmdI~//~vbmfR~
+//    {                                                            //~vbmdI~//~vbmfR~
+//      memset(wkscmidx,0,sizeof(wkscmidx));                       //~vbmdI~//~vbmfR~
+//  	scmctr=csubtextoutw_SCMidx(Popt,Pdata,Pdbcs,Plen,wkucs,ucsctr,wkscmidx);//~vbmdI~//~vbmfR~
+//      pidx=wkscmidx;                                             //~vbmdI~//~vbmfR~
+//    }                                                            //~vbmdI~//~vbmfR~
+//    else                                                         //~vbmdI~//~vbmfR~
+//    	scmctr=0;                                                  //~vbmdI~//~vbmfR~
+//    memset(wkscmidxnocomb,0,sizeof(wkscmidxnocomb));             //~vbmfR~
+//    scmctr=csubtextoutw_ligature_SCMidx(Popt,wkucs,ucsctr,wkscmidxnocomb);//~vbmfR~
 //*not combinemode                                                 //~vb4iI~
     for (ii=0,pucs=wkucs,xx=Px,pdbcs=Pdbcs;ii<ucsctr;ii++,pucs++,pdbcs++,xx+=Pcellw)//~va20I~
     {                                                              //~va20I~
@@ -1209,15 +1360,39 @@ int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pdata,char *
           wkucsdbcsspace[1]=wkucsdbcsspace[0];                     //~vb3xR~
           TextOutW(Phdc,xx,Py,wkucsdbcsspace,2);                   //~vb3xR~
 		  UTRACEP("%s:dbcsspaceutf8 ucs=%04x-->%04x,dbcsid=%02x\n",UTT,*pucs,wkucsdbcsspace[0],*pdbcs);//~vb3xR~
-          pdbcs++;                                                 //~vb3xR~
-          xx+=Pcellw;                                              //~vb3xI~
+//        pdbcs++;                                                 //~vb3xR~//~vbmhR~
+//        xx+=Pcellw;                                              //~vb3xI~//~vbmhR~
 	  }                                                            //~vb3xI~
       else                                                         //~vb3xI~
 #endif                                                             //~vb3xI~
+//      if (scmctr && (scmwidth=wkscmidx[ii*2],scmwidth))            //~vbmdI~//~vbmfR~
+//      {                                                            //~vbmdI~//~vbmfR~
+//        wrtctr=wkscmidx[ii*2+1];                                   //~vbmdI~//~vbmfR~
+//        TextOutW(Phdc,xx,Py,pucs,wrtctr);                          //~vbmdI~//~vbmfR~
+//        UTRACED("textoutw scmstr",pucs,wrtctr*(int)sizeof(WUCS));  //~vbmdI~//~vbmfR~
+//        pucs+=wrtctr-1;                                            //~vbmdI~//~vbmfR~
+//        ii+=wrtctr-1;                                              //~vbmdI~//~vbmfR~
+//        pdbcs+=scmwidth-1;                                         //~vbmdI~//~vbmfR~
+//        xx+=(scmwidth-1)*Pcellw;                                   //~vbmdI~//~vbmfR~
+//        continue;                                                  //~vbmdI~//~vbmfR~
+//      }                                                            //~vbmdI~//~vbmfR~
+//    if (scmctr && wkscmidxnocomb[ii])    //SCM char(split mode)  //~vbmfR~
+//    {                                                            //~vbmfR~
+//          utf162ucs4(U162U4O_UCS1,pucs,ucsctr-ii,&ucs42,(int)sizeof(ucs42),&utf16ctr2,0/*outucsctr*/);//~vbmfR~
+//  	  	csubtextoutWcombining_notcombinemode(CTOCO_SCM,Phdc,xx,Py,pucs,utf16ctr2);//~vbmfR~
+//    }                                                            //~vbmfR~
+//    else                                                         //~vbmdI~//~vbmfR~
       if (ii+1<ucsctr && IS_UTF16_PAIR(*pucs,*(pucs+1)))           //~vb2HR~
       {                                                            //~vb2HI~
+        utf162ucs4(U162U4O_UCS1,pucs,ucsctr-ii,&ucs42,(int)sizeof(ucs42),&utf16ctr2,0/*outucsctr*/);//~vbkjI~
+//     if (UTF_ISWIDTH0(0/*dbcsid bo meaning to ucs4*/,ucs42))     //~vbkjI~//~vbmfR~
+       if (UTF_ISCOMBINING(0,dbcsid,ucs42))                        //~vbmfI~
+			csubtextoutWcombining_notcombinemode(CTOCO_WIDTH0_UCS4,Phdc,xx,Py,pucs,2);//~vbkjR~
+       else                                                        //~vbkjI~
+       {                                                           //~vbkjI~
         TextOutW(Phdc,xx,Py,pucs,2);                               //~vb2HI~
-  		UTRACEP("csubtextoutw ucs ii=%d,dbcsid=%02x,xx=%d,yy=%d,ucs=%04x-%04x\n",ii,dbcsid,xx,Py,*pucs,*(pucs+1));//~vb2HI~
+  		UTRACEP("%s:ucs4 ii=%d,dbcsid=%02x,xx=%d,yy=%d,ucs=%04x-%04x\n",UTT,ii,dbcsid,xx,Py,*pucs,*(pucs+1));//~vb2HI~//~vbmcR~
+       }                                                           //~vbkjI~
         pucs++;                                                    //~vb2HI~
         ii++;                                                      //~vb2HI~
       }                                                            //~vb2HI~
@@ -1239,9 +1414,12 @@ int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pdata,char *
 //        UTRACEP("%s:write combaltch  ii=%d,dbcsid=%02x,xx=%d,yy=%d,ucs=%04x,altchcolor=%x,restorecolor=%x\n",UTT,ii,dbcsid,xx,Py,Gutfcombaltch,altchcolor,Pfgcolor);//~vb4jR~
 //      }                                                          //~vb4jR~
 //      else                                                       //~vb4jR~
+      if (w0sz=UTF_ISCOMBINING(0,dbcsid,*pucs),w0sz)               //~vbmfI~
+		csubtextoutWcombining_notcombinemode(w0sz,Phdc,xx,Py,pucs,1);//~vbmfI~
+      else                                                         //~vbmfI~
       {                                                            //~vb2HI~
         TextOutW(Phdc,xx,Py,pucs,1);                               //~va20I~
-  		UTRACEP("csubtextoutw ucs ii=%d,dbcsid=%02x,xx=%d,yy=%d,ucs=%04x\n",ii,dbcsid,xx,Py,*pucs);//~va20R~
+  		UTRACEP("%s:ucs2 ii=%d,dbcsid=%02x,xx=%d,yy=%d,ucs=%04x\n",UTT,ii,dbcsid,xx,Py,*pucs);//~va20R~//~vbmcR~
       }                                                            //~vb2HI~
 //  	if (UDBCSCHK_DBCS1STUCS2NW(dbcsid)                       //~v640R~//~va20R~//~vb2HR~
     	if (UDBCSCHK_DBCS1STUCS2NWO(dbcsid)	//+Overflow(UCS4)      //~vb2HI~
@@ -1251,6 +1429,7 @@ int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pdata,char *
         	pdbcs++;                                               //~va20I~
             xx+=Pcellw;                                            //~va20I~
         }                                                          //~va20I~
+    }//!combinemode                                                //~vbmdI~
     }                                                              //~va20I~
     return ucsctr;                                                 //~va20R~
 }//csubtextoutw                                                    //~va3gR~
@@ -1521,17 +1700,28 @@ int csubtextoutWW(int Popt,HDC Phdc,int Pxx,int Pyy,UWCH *Pucs,int Pucsctr)//~va
 #endif                                                             //~vavzI~
 #endif                                                             //~v907I~//~va20I~
 //**************************************************************** //~vb4AI~
-//*write altch                                                     //~vb4AI~
+//*write altch for combining and SCM                                                     //~vb4AI~//~vbmfR~
 //**************************************************************** //~vb4AI~
 int csubtextoutWcombining_notcombinemode(int Popt,HDC Phdc,int Pxx,int Pyy,WUCS *Pucs,int Pucsctr)//~vb4AI~
 {                                                                  //~vb4AI~
     COLORREF currentcolor,altchcolor=RGB(0,255,0);   //high green  //~vb4AI~
+    WUCS wkucs[2];                                                 //~vbkjI~
 //**********************                                           //~vb4AI~
     currentcolor=GetTextColor(Phdc);                               //~vb4AI~
     SetTextColor(Phdc,altchcolor);                                 //~vb4AI~
 	if (UTF_COMBINEMODE_NP() && Gutfcombaltch)                     //~vb4AI~
     {                                                              //~vb4AI~
+//    if (Popt & CTOCO_WIDTH0_UCS4)                                //~vbkjI~//~vbmfR~
+      if (Popt & (CTOCO_WIDTH0_UCS4|CTOCO_SCM))                    //~vbmfI~
+      {                                                            //~vbkjI~
+    	wkucs[0]=Gutfcombaltch;                                    //~vbkjI~
+    	wkucs[1]=UVIOM_COMBINE_ALTCH2; // '.' ,not written if Plen==1//~vbkjI~
+    	TextOutW(Phdc,Pxx,Pyy,wkucs,2);                            //~vbkjI~
+      }                                                            //~vbkjI~
+      else                                                         //~vbkjI~
+      {                                                            //~vbkjI~
     	TextOutW(Phdc,Pxx,Pyy,&Gutfcombaltch,1);                   //~vb4AR~
+      }                                                            //~vbkjI~
 	    UTRACEP("%s: UNICOMB UNPR Gutfcombaltch=%04x\n",UTT,Gutfcombaltch);//~vb4AI~
     }                                                              //~vb4AI~
     else                                                           //~vb4AI~
@@ -1542,3 +1732,109 @@ int csubtextoutWcombining_notcombinemode(int Popt,HDC Phdc,int Pxx,int Pyy,WUCS 
     SetTextColor(Phdc,currentcolor);                               //~vb4AI~
     return 0;                                                      //~vb4AI~
 }//csubtextoutWcombining_notcombinemode                            //~vb4AI~
+//===============================================================================//~vbk6I~//~vbmdI~
+//chk spacing combining char                                       //~vbk6I~//~vbmdI~
+//rc  1/0                                                          //~vbk6I~//~vbmdI~
+//===============================================================================//~vbk6I~//~vbmdI~
+int csub_isSpacingCombiningMark(int Popt,int Pucs)            //~vbk6R~//~vbmdI~
+{                                                                  //~vbk6I~//~vbmdI~
+	int rc;                                                        //~vbk6I~//~vbmdI~
+//*****************************                                    //~vbk6I~//~vbmdI~
+	if (UTF8ISASCII(Pucs))                                         //~vbk6I~//~vbmdI~
+    	return 0;                                                  //~vbk6I~//~vbmdI~
+	rc=utf4_isSpacingCombiningMark(0,(UWUCS)Pucs);                 //~vbk6R~//~vbmdI~
+    UTRACEP("%s:rc=%d,ucs=%04x\n",UTT,rc,Pucs);                    //~vbk6R~//~vbmdI~
+    return rc;                                                     //~vbk6I~//~vbmdI~
+}//csub_isSpacingCombiningMark                                     //~vbk6I~//~vbmdI~
+//**************************************************************** //~vbmdI~
+//*get scm combine position tbl                                    //~vbmdI~
+//*output scmidx ddlen(1)+ucsctr(1)                                //~vbmdI~
+//**************************************************************** //~vbmdI~
+int csubtextoutw_SCMidx(int Popt,char *Pdata,char *Pdbcs,int Pddlen,WUCS *Ppucs,int Pucsctr,char *Pscmidx)//~vbmdR~
+{                                                                  //~vbmdI~
+    int ii,chsz,swscm,swscmo,scmctr=0,ucs4,utf16ctr,idx;           //~vbmdR~
+    char *pdata,*pdbcs,*pdbcso,*pidx,*scmstartdbcs;                              //~vbkqR~//~vbmdR~
+    WUCS *scmstart,*pucso,*pucs;                                   //~vbmdR~
+//************************************                             //~vbkqI~//~vbmdI~
+	UTRACEP("%s:opt=%04x,Plen=%d,ucsctr=%d\n",UTT,Popt,Pddlen,Pucsctr);//~vbkqI~//~vbmdR~
+	UTRACED("pucs",Ppucs,Pucsctr*(int)sizeof(WUCS));            //~vbkqI~//~vbmdR~
+	UTRACED("dddata",Pdata,Pddlen);                                //~vbmdI~
+	UTRACED("dddbcs",Pdbcs,Pddlen);                              //~vbkqI~//~vbmdI~
+    scmstart=0;                                                    //~vbmdR~
+    scmstartdbcs=0;                                                //~vbmdR~
+    swscmo=0;                                                      //~vbmdI~
+    pucso=Ppucs;                                                   //~vbmdI~
+    pdbcso=Pdbcs;                                                  //~vbmdI~
+    for (ii=0,pucs=Ppucs,pdata=Pdata,pdbcs=Pdbcs,pidx=Pscmidx;ii<Pucsctr;ii+=utf16ctr,pucs+=utf16ctr,pdata+=chsz,pdbcs+=chsz)//~vbkqR~//~vbmdR~
+    {                                                              //~vbkqI~//~vbmdI~
+    	ucs4=*pucs;                                                //~vbmdI~
+      	if (ii+1<Pucsctr && IS_UTF16_PAIR(ucs4,*(pucs+1)))         //~vbmdI~
+        	utf162ucs4(U162U4O_UCS1,pucs,Pucsctr-ii,&ucs4,(int)sizeof(ucs4),&utf16ctr,0/*outucsctr*/);//~vbmdR~
+        else                                                       //~vbmdI~
+        	utf16ctr=1;                                            //~vbmdI~
+        swscm=csub_isSpacingCombiningMark(0,ucs4);              //~vbkqI~//~vbmdI~
+		UTF_GETDDUCS1VIO(pdata,pdbcs,Pddlen-ii,&chsz);  //~vbm8I~  //~vbmdI~
+        UTRACEP("%s:ucs=%04x,swscm=%d,chsz=%d,scmstartidx=%d,scmlen=%d,chsz=%d\n",UTT,ucs4,swscm,chsz,PTRDIFF(scmstart,Ppucs),PTRDIFF(pdbcs,scmstartdbcs),chsz);             //~vbkqI~//~vbmdR~
+        if (swscm)                                                 //~vbkqR~//~vbmdI~
+        {                                                          //~vbkqI~//~vbmdI~
+            if (!swscmo)                                           //~vbmdR~
+            {                                                      //~vbmdR~
+                scmstart=pucso;                                    //~vbmdR~
+                scmstartdbcs=pdbcso;                               //~vbmdR~
+            }                                                      //~vbmdR~
+        }                                                          //~vbmdI~
+        else                                                       //~vbmdI~
+        {                                                          //~vbmdI~
+        	if (scmstart)                                          //~vbmdR~
+            {                                                      //~vbmdI~
+            	scmctr++;                                          //~vbmdI~
+            	idx=PTRDIFF(scmstart,Ppucs)/(int)sizeof(WUCS);     //~vbmdR~
+            	pidx[idx*2]=(char)PTRDIFF(pdbcs,scmstartdbcs);     //~vbmdI~
+            	pidx[idx*2+1]=(char)(PTRDIFF(pucs,scmstart)/(int)sizeof(WUCS));//~vbmdI~
+                scmstart=0;                                        //~vbmdI~
+            }                                                      //~vbmdI~
+        }                                                          //~vbmdI~
+    	pucso=pucs;                                                //~vbmdM~
+    	pdbcso=pdbcs;                                              //~vbmdM~
+        swscmo=swscm;                                              //~vbmdM~
+    }//for                                                         //~vbkqI~//~vbmdI~
+    if (scmstart)                                                  //~vbmdR~
+    {                                                              //~vbmdI~
+    	scmctr++;                                                  //~vbmdI~
+            	idx=PTRDIFF(scmstart,Ppucs)/(int)sizeof(WUCS);     //~vbmdI~
+            	pidx[idx*2]=(char)PTRDIFF(pdbcs,scmstartdbcs);     //~vbmdI~
+            	pidx[idx*2+1]=(char)(PTRDIFF(pucs,scmstart)/(int)sizeof(WUCS));//~vbmdI~
+    }                                                              //~vbmdI~
+    UTRACEP("%s:scmctr=%d\n",UTT,scmctr);                          //~vbmdR~
+    UTRACED("SCMidx",Pscmidx,Pucsctr*2);                           //~vbmdR~
+    return scmctr;                                                 //~vbmdI~
+}//csubtextoutw_SCMidx                                             //~vbmdI~
+//**************************************************************** //~vbmdI~
+//*get scm combine position tbl                                    //~vbmdI~
+//*output scmidx ddlen(1)+ucsctr(1)                                //~vbmdI~
+//**************************************************************** //~vbmdI~
+int csubtextoutw_ligature_SCMidx(int Popt,WUCS *Ppucs,int Pucsctr,char *Pscmidx)//~vbmdR~
+{                                                                  //~vbmdI~
+    int ii,swscm,scmctr=0,ucs4,utf16ctr;                           //~vbmdI~
+    char *pidx;                                                    //~vbmdI~
+    WUCS *pucs;                                                    //~vbmdI~
+//************************************                             //~vbmdI~
+	UTRACEP("%s:opt=%04x,ucsctr=%d\n",UTT,Popt,Pucsctr);           //~vbmdR~
+	UTRACED("pucs",Ppucs,Pucsctr*(int)sizeof(WUCS));               //~vbmdI~
+    pidx=Pscmidx;                                                  //~vbmdI~
+    for (ii=0,pucs=Ppucs;ii<Pucsctr;ii+=utf16ctr,pucs+=utf16ctr)   //~vbmdI~
+    {                                                              //~vbmdI~
+    	ucs4=*pucs;                                                //~vbmdI~
+      	if (ii+1<Pucsctr && IS_UTF16_PAIR(ucs4,*(pucs+1)))         //~vbmdI~
+        	utf162ucs4(U162U4O_UCS1,pucs,Pucsctr-ii,&ucs4,(int)sizeof(ucs4),&utf16ctr,0/*outucsctr*/);//~vbmdI~
+        else                                                       //~vbmdI~
+        	utf16ctr=1;                                            //~vbmdI~
+        swscm=csub_isSpacingCombiningMark(0,ucs4);                 //~vbmdI~
+        pidx[ii]=(char)swscm;                                            //~vbmdR~//+vbmoR~
+        if (swscm)                                                 //~vbmdI~
+            scmctr++;                                              //~vbmdI~
+    }                                                              //~vbmdI~
+    UTRACEP("%s:scmctr=%d\n",UTT,scmctr);                          //~vbmdI~
+    UTRACED("SCMidx",Pscmidx,Pucsctr);                             //~vbmdI~
+    return scmctr;                                                 //~vbmdI~
+}//csubtextoutw_SCMidx                                             //~vbmdI~

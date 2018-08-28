@@ -1,14 +1,16 @@
-//*CID://+va9tR~:                             update#=   80;       //+va9tR~
+//*CID://+vak2R~:                             update#=   85;       //+vak2R~
 //***********************************************************
 //* xkp    : kill/list process
 //***********************************************************
-//va9t:150529 xkp v1.3 parm count error(by xuerpck)                //+va9tI~
+//vak2:180821 xkp 1.4: At XP fullpath was displayed and /l show pid and shortpath by the reason of PSAPI and windows version//+vak2I~
+//vak1:180819 xkp 1.4: bt /V option display fullpathname           //~vak1I~
+//va9t:150529 xkp v1.3 parm count error(by xuerpck)                //~va9tI~
 //va98:150118 xkp 1.2 cbfunc parm was changed                      //~va98I~
 //va66:120628 (AMD64) VC10(VS2010) LP64 support                    //~va3cI~
 //va3c:070709 xkp:1.1 display parent pid                           //~va3cI~
 //va2m:060907 xkp:1.0 list/kill pid;1st virsion
 //***********************************************************
-#define VER  "1.3"                                                 //~va3cR~//~va98R~//+va9tR~
+#define VER  "1.4"                                                 //~va3cR~//~va98R~//~va9tR~//~vak1R~
    #include <stdio.h>
    #include <stdlib.h>
    #include <conio.h>
@@ -43,6 +45,7 @@ static int Sopt=0;
 #define OPT_BYNAME       0x08
 #define OPT_BYPID        0x10
 #define OPT_VERBOSE      0x20   //display parent pid               //~va3cI~
+//#define OPT_VERBOSE2     0x40   //display parent pid,fullpathname  //~vak1I~//+vak2R~
 
 static char *Sselectname=0;
 //***********************************************************
@@ -99,6 +102,9 @@ int main(int argc,char **argp)
                 if (!*Sselectname)
                     uerrexit("specify name string parameter just after the '-N'",0);
                 break;
+//            case 'V':   //list                                     //~vak1I~//+vak2R~
+//                Sopt|=OPT_VERBOSE2;                                //~vak1I~//+vak2R~
+//                break;                                             //~vak1I~//+vak2R~
             case 'Y':   //list
                 break;
             default:
@@ -140,6 +146,12 @@ int main(int argc,char **argp)
 //  penumcbparm=(void*)(ULONG)enumcbparm;                          //~va3cR~
     penumcbparm=(void*)(ULPTR)enumcbparm;                          //~va3cI~
 //  uenumpid(cbenumpid,penumcbparm);                               //~va3cR~
+//    if (Sopt & OPT_VERBOSE2)                                       //~vak1I~//+vak2R~
+//    {                                                              //~vak1I~//+vak2R~
+//        opt=UEPI_HELPER;                                           //~vak1I~//+vak2R~
+//        opt=UEPI_VERBOSE;                                          //~vak1I~//+vak2R~
+//    }                                                              //~vak1I~//+vak2R~
+//    else                                                           //~vak1I~//+vak2R~
     if (Sopt & OPT_VERBOSE)                                        //~va3cI~
 		opt=UEPI_HELPER;                                           //~va3cI~
     else                                                           //~va3cI~
@@ -266,7 +278,9 @@ int cbenumpid(int Popt,ULONG Ppid,USHORT Ppid16,char *Pfnm,void *Pprm)//~va98I~
         printsw=1;
     if (printsw)
     {
-        if (Sopt & OPT_VERBOSE)                                    //~va3cI~
+//      if (Sopt & OPT_VERBOSE)                                    //~va3cI~//~vak1R~
+//      if (Sopt & (OPT_VERBOSE|OPT_VERBOSE2))                     //~vak1I~//+vak2R~
+        if (Sopt & OPT_VERBOSE)                                    //+vak2I~
 			ppid=*cbparm[0];                                       //~va3cI~
         else                                                       //~va3cI~
         	ppid=-1;                                               //~va3cR~
@@ -287,8 +301,12 @@ int help(void)
     uerrmsg("%s (v%s) list pid/kill process",
     		"%s (v%s) プロセスID を表示あるいは停止",
     		PGM,VER);
-    uerrmsg("Usage:  %s [-L] [-F] [-Sstring] [pid ... ]",
-            "用法 :  %s [-L] [-F] [-Sstring] [pid ... ]",
+//  uerrmsg("Usage:  %s [-L] [-F] [-Sstring] [pid ... ]",          //~vak1R~
+//          "用法 :  %s [-L] [-F] [-Sstring] [pid ... ]",          //~vak1R~
+//    uerrmsg("Usage:  %s [-L] [-F] [-V] [-Sstring] [pid ... ]",     //~vak1I~//+vak2R~
+//            "用法 :  %s [-L] [-F] [-V] [-Sstring] [pid ... ]",     //~vak1I~//+vak2R~
+    uerrmsg("Usage:  %s [-L] [-F] [-Sstring] [pid ... ]",          //+vak2I~
+              "用法 :  %s [-L] [-F] [-Sstring] [pid ... ]",        //+vak2I~
     		PGM);
     uerrmsg(" -F  : Force kill without confirmation.",
             " -F  : 確認無しで停止.");
@@ -301,11 +319,13 @@ int help(void)
             " -L  : 表示のみ. +親PID表示");                        //~va3cI~
     uerrmsg(" -S  : select process by Name which contains the string value.",
             " -S  : 実行モジュールの一部に\"string\"が含まれるプロセスが対象");
+//    uerrmsg(" -V  : exe name by fullpathname.",                    //~vak1I~//+vak2R~
+//            " -V  : 実行モジュールをフルパスで表示");              //~vak1I~//+vak2R~
     uerrmsg(" pid : specify processID's to list or kill.",
-//          " pid : 処理するプロセスIDを指定.",0);                 //+va9tR~
-            " pid : 処理するプロセスIDを指定.");                   //+va9tI~
+//          " pid : 処理するプロセスIDを指定.",0);                 //~va9tR~
+            " pid : 処理するプロセスIDを指定.");                   //~va9tI~
     uerrmsg("       list-up all process if pid missing.",
-//          "       pid指定がないと全プロセスをリストアップ.",0);  //+va9tR~
-            "       pid指定がないと全プロセスをリストアップ.");    //+va9tI~
+//          "       pid指定がないと全プロセスをリストアップ.",0);  //~va9tR~
+            "       pid指定がないと全プロセスをリストアップ.");    //~va9tI~
     return 0;
 }//help

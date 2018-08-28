@@ -35,6 +35,17 @@ $(OBJDIR)xbc.obj:xbc.c  \
                  $(ULIB)udbcschk.h  \
  
 #################
+$(OBJDIR)xcfont.obj:xcfont.c  \
+                    $(ULIB)ulib.h  \
+                    $(ULIB)udbcschk.h  \
+                    $(ULIB)utrace.h  \
+                    $(ULIB)uerr.h  \
+                    $(ULIB)ustring.h  \
+                    $(ULIB)uedit.h  \
+                    $(ULIB)utf.h  \
+                    $(ULIB)ucvucs.h  \
+ 
+#################
 $(OBJDIR)xci.obj:xci.c  \
                  $(ULIB)ulib.h  \
                  $(ULIB)uerr.h  \

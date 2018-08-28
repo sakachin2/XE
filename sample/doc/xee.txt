@@ -1,4 +1,4 @@
-CID:||+v@@@R~:  2018/05/10                 update#=  682;             ||+v@@@R~
+CID:||+v@@@R~:  2018/08/27                 update#=  686;             ||~v@@@R~
 ************************************************************************
 (Index)
     (0).Introduction.
@@ -9,7 +9,7 @@ CID:||+v@@@R~:  2018/05/10                 update#=  682;             ||+v@@@R~
             .Mouse operation.
             .Scroll function.
             .Use Right Ctrl key as Enter(execute) key.
-            .Command History.                                         ||~v@@@I~
+            .Command History.                                         ||~v129R~
             .Tab setting.
             .Line Drawling/Special glyph input
             .Control Character Input                                  ||~v124R~
@@ -454,29 +454,29 @@ CID:||+v@@@R~:  2018/05/10                 update#=  682;             ||+v@@@R~
       To reset temporarily R-Ctl_NewLine option of ini file,specify /Nrr||~v124R~||~v125R~
       cmd line option.                                                ||~v124R~
                                                                       ||~v124R~
-   .Command History                                                   ||~v@@@I~
-                                                                      ||~v@@@I~
-      -Command History is kept and saved only latest 40 entry at xe termination.||~v@@@I~
-      -Use following FunctionKey to retrive the command from history. ||~v@@@I~
-       F12    :when repeated, retrives commands backward from latest. ||~v@@@I~
-               New command input reset position to the latest.        ||~v@@@I~
-       S+F12  :retrives forward to latest.                            ||~v@@@I~
-       C+F12  :re-executes the lastest command.                       ||~v@@@I~
-       A+F12  :retrieves backward selecting only for the panel.       ||~v@@@R~
-       S+A+F12:retrieves forward selecting only for the panel.        ||~v@@@R~
-       S+C+F12:shows command history list panel. use following keys.  ||~v@@@I~
-               s : set to the command input line after closed the command history panel.||~v@@@I~
-               S : set to the command input line of the command history panel.||~v@@@I~
-               t : set on the other panel if screen is split.         ||~v@@@I~
-                   same as "S" if not split                           ||~v@@@I~
-               x : executhe the command after closed the command history panel.||~v@@@I~
-               X : execute on the command history panel.              ||~v@@@I~
-               y : execute on the other panel if screen is split.     ||~v@@@I~
-                   same as "X" if not split.                          ||~v@@@I~
-      -Mouse operation support.                                       ||+v@@@I~
-        .R-button popups context menu.                                ||+v@@@I~
-        .Double click works as "x" cmd(execute the command after closed the command history panel).||+v@@@I~
-        .Click on the selected line works as "s" cmd(set to the command input line after closed the command history panel).||+v@@@I~
+   .Command History                                                   ||~v129R~
+                                                                      ||~v129R~
+      -Command History is kept and saved only latest 40 entry at xe termination.||~v129R~
+      -Use following FunctionKey to retrive the command from history. ||~v129R~
+       F12    :when repeated, retrives commands backward from latest. ||~v129R~
+               New command input reset position to the latest.        ||~v129R~
+       S+F12  :retrives forward to latest.                            ||~v129R~
+       C+F12  :re-executes the lastest command.                       ||~v129R~
+       A+F12  :retrieves backward selecting only for the panel.       ||~v129R~
+       S+A+F12:retrieves forward selecting only for the panel.        ||~v129R~
+       S+C+F12:shows command history list panel. use following keys.  ||~v129R~
+               s : set to the command input line after closed the command history panel.||~v129R~
+               S : set to the command input line of the command history panel.||~v129R~
+               t : set on the other panel if screen is split.         ||~v129R~
+                   same as "S" if not split                           ||~v129R~
+               x : executhe the command after closed the command history panel.||~v129R~
+               X : execute on the command history panel.              ||~v129R~
+               y : execute on the other panel if screen is split.     ||~v129R~
+                   same as "X" if not split.                          ||~v129R~
+      -Mouse operation support.                                       ||~v129R~
+        .R-button popups context menu.                                ||~v129R~
+        .Double click works as "x" cmd(execute the command after closed the command history panel).||~v129R~
+        .Click on the selected line works as "s" cmd(set to the command input line after closed the command history panel).||~v129R~
 
 #ifdef LNX                                                            ||~v124R~
                                                                       ||~v124R~
@@ -2436,7 +2436,7 @@ CID:||+v@@@R~:  2018/05/10                 update#=  682;             ||+v@@@R~
                           ICMD=passive toggles passive and active mode.
         SSH={Y|N}        :use PSFTP as FTP client(Y) or not(N)        ||~127ER~
         SHARE=shraename  :shared resource name. specify when the remote is Samba server or Windows.||~126FI~
-        P=prtNo          :specify port number other than SSH default(22) if needed.||~v@@@I~
+        P=prtNo          :specify port number other than SSH default(22) if needed.||~v129R~
                                                                       ||~126FI~
 sample)
 
@@ -2480,7 +2480,7 @@ sample)
     # w64   SmbSvr      user1    ""      SHARE=d                      ||~126FR~
 	# w7p   192.168.2.12 w7user pswd     share=p                      ||~126FR~
 	# gcty  ftp.geocities.jp ybbusr pswd SSH=N                        ||~v128R~
-    # centos7r localhost    root pswd  SSH=Y P=2222                   ||~v@@@I~
+    # centos7r localhost    root pswd  SSH=Y P=2222                   ||~v129R~
     ###################################################################
 
     (Note) Because using ftp to access remote,proper environment setup is required.
@@ -5093,7 +5093,7 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
 ************************************************************************
 
 [Table 1-R] Function-Key default assignment/by key sequence
-    You can see this on xe by "=C" command.                           ||~v@@@I~
+    You can see this on xe by "=C" command.                           ||~v129R~
  +-------+--------------+--------------+--------------+--------------+
  |  Key  |     Base     |    Shift     |     Alt      |    Ctrl      |
  +-------+--------------+--------------+--------------+--------------+
@@ -5121,7 +5121,7 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
  |F3     |End           |Save          |              |              |
  |F4     |Return        |Quit          |              |              |
  |F5     |Re-Find (*5)  |Re-Find(rev)  |              |              |
- |                          (Shift+)-->|FindPSF-rev   |FindPSP-rev   |||~v@@@I~
+ |                          (Shift+)-->|FindPSF-rev   |FindPSP-rev   |||~v129R~
  |F6     |Re-Change     |Re-Chng(rev)  |RgnStart/End  | (*3)         |
  |       |Size option   |              |              | (*3)         |
  |F7     |Page Up       |Prev Panel    |BlockStart/End|SameAsLeft    |
@@ -5131,8 +5131,8 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
  |       |Linecmd Cut   |FileDescript'n|              |              | (*3)
  |F11    |Scroll Right  |Column gauge  |              |Hex input mode| (*3)
  |       |Linecmd Paste |LongFileName  |              |              | (*3)
- |F12    |Retrieve      |Retrieve(rev) |RetrieveScr   |Repeat cmd    |||~v124R~||~v@@@R~
- |                          (Shift+)-->|RetrieveScrRev|CmdHistoryList|||~v@@@I~
+ |F12    |Retrieve      |Retrieve(rev) |RetrieveScr   |Repeat cmd    |||~v124R~||~v129R~
+ |                          (Shift+)-->|RetrieveScrRev|CmdHistoryList|||~v129R~
  |       |              |              |              |              |
  |a      |              |              |Input Shortcut|              |||~v124R~
  |b      |              |              |BLK Start/End |              |
@@ -5222,7 +5222,7 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
 (*6)These keys are used to send filename from dir-list panel to utility panel.
                                                                       
 [Table 1] Function-Key default assignment                                  
-    You can see this on xe by "=B" command.                           ||~v@@@I~
+    You can see this on xe by "=B" command.                           ||~v129R~
  +-----------------+--------+---------------------------------------+
  |Function         |Command |Key assign(*:Fixed,you cannot change)  |
  +-----------------+--------+---------------------------------------+
@@ -5323,10 +5323,10 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
  |do.(Caseinsense) |IX      |                       #4              |
  |Re-Find          |        |F5                     #4              |
  |Re-Find(reverse) |        |Shift+F5               #4  #5          |
- |Find SplitScr    |        |Ctrl+F5                                | ||~v@@@I~
- |Find SplitScr-rev|        |Shift+Ctrl+F5                          | ||~v@@@I~
- |Find OnTheScr    |        |Alt+F5                                 | ||~v@@@I~
- |Find OnTheScr-rev|        |Shift+Alt+F5                           | ||~v@@@I~
+ |Find SplitScr    |        |Ctrl+F5                                | ||~v129R~
+ |Find SplitScr-rev|        |Shift+Ctrl+F5                          | ||~v129R~
+ |Find OnTheScr    |        |Alt+F5                                 | ||~v129R~
+ |Find OnTheScr-rev|        |Shift+Alt+F5                           | ||~v129R~
  |WordFindFwdCase  |FWF     |Ctl+] , Alt+Shift+]                    | ||~v124R~
  |WordFindBwdCase  |FWB     |Ctl+[ , Alt+Shift+[                    | ||~v124R~
  |WordFindFwdNoCase|IWF     |Alt+[                                  | ||~v124R~
@@ -5338,8 +5338,8 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
  |Retrieve(reverse)|        |Shift+F12              #6              |
  |Repeat-cmd       |        |Ctl+F12                                |
  |RetrieveOfTheScr |        |Alt+F12                                |
- |RetrOfTheScrRev  |        |Shift+Alt+F12                          | ||~v@@@I~
- |CmdHistoryList   |CHL     |Shift+Ctrl+F12                         | ||~v@@@R~
+ |RetrOfTheScrRev  |        |Shift+Alt+F12                          | ||~v129R~
+ |CmdHistoryList   |CHL     |Shift+Ctrl+F12                         | ||~v129R~
  |Exchange-exclude |FLI (XX)|                                       | ||~v124R~
  |Line-no display  |NUM     |                                       |
  |CapsLock         |CAP     |                                       |
@@ -6087,6 +6087,8 @@ by screen expansion)
        .Options    : specify option parameter of the tool.            
                      Execute the tool with no operand when "?" is specified.
                      diff displays help message by --help option.     
+                     -nolist  :output one line msg notifies return code.||~v@@@I~
+                     -CPU8    :Windows only, shou result as UTF8 encoded file.||+v@@@R~
         Curr Dir   : display current directory.                       
 #ifndef UNX                                                           
                      Current directory of the drive of the cursor line is displayed.
@@ -7111,7 +7113,7 @@ by screen expansion)
    = Termination
 
         {END | RETurn | QUIt | EXIt | CANcel}  [-NB|-BK] [CPU8|CPLC|CPEB] [IE]||~v125R~||~v125R~
-                   [/M{T|P|U|M|E|R|V}] [/F{n[-m]|vfmt}] [-S{r|i|d}]            ||~v125R~||~127BR~
+                   [/M{T|P|U|M|E|R|V}] [/F{n[-m]|vfmt}] [-S{r|i|d}] [-Force]            ||~v125R~||~127BR~||~v@@@R~
 
             EXI   :terminate current screen hierarchy(half of split)  
             RET   :return to command prompt(Update is saved)
@@ -7153,6 +7155,9 @@ by screen expansion)
                              replace both side of space, if available, to SO/SI.||~v125R~
                          i : Inserte SO/SI when translation to EBCDIC.||~v125R~
                          d : Delete SO/SI when translation from EBCDIC.||~v125R~
+              -Force   :Warning is issued when timestamp of the file was changed from time of opened||~v@@@I~
+                        (the file was updated in the other session),  ||~v@@@I~
+                        use this option to force save.                ||~v@@@I~
                                                                       ||~v125R~
 #endif                                                                ||~v124R~
 
@@ -8120,11 +8125,12 @@ by screen expansion)
                                                                       ||~v125R~
                COMB, SPLIT, UNPR : display combined, split and alternate character each.||~v125R~
                                                                       ||~v128R~
-               Following 3 operand is for Linux Console version only and specify how to write to screen when split mode.||~v128R~
+               Following 3 operand is for Linux Console version only and specify how to write to screen||~v@@@R~
+               when split mode and combine.(when combine mode, applied only when csr is on the line.)||~v@@@R~
                  SHADOW : write combining character with base character of the left side.||~v125R~
                  ITSELF : write combining character itself as single. ||~v125R~
                  PADDING: write tab display character which is cleared by "TAB OFF" cmd||~v125R~
-               U-xxxx : any unicode you prefere.                      ||~v128R~
+               U-xxxx : any SBCS unicode you prefer.                      ||~v128R~||~v@@@R~
                U-00 will restore default value(':'(u-3a)).            ||~v128R~
                Cmd with no operand shows current status.              ||~v128R~
                                                                       ||~v125R~
@@ -8319,7 +8325,7 @@ by screen expansion)
    =  Save file
 
         SAVe    [file-name] [/M{T|P|U|M|E|R|V}] [-x | -nx] [-NB] [-F{n[-m]|vfmt}]              ||~v124R~||~v125R~||~v125R~||~127BR~
-                [-CPU8|-CPLC|-CPEB[:codepage]] [IE] [-S{r|i}d}]                                    ||~v125R~||~v125R~||~v125R~
+                [-CPU8|-CPLC|-CPEB[:codepage]] [IE] [-S{r|i}d}] [-Force]                                   ||~v125R~||~v125R~||~v125R~||~v@@@R~
 
           file-name : wild card avail to rename.
                                                                       ||~v125R~
@@ -8362,8 +8368,10 @@ by screen expansion)
                            replace both side of space, if available, to SO/SI.||~v125R~
                        i : Inserte SO/SI when translation to EBCDIC.  ||~v125R~
                        d : Delete SO/SI when translation from EBCDIC. ||~v125R~
-                                                                      ||~v125R~
 #endif                                                                ||~v124R~
+            -Force   :Warning is issued when timestamp of the file was changed from time of opened||~v@@@I~
+                        (the file was updated out of this session),   ||+v@@@R~
+                        use this option to force save and close panel.||~v@@@I~
                                                                       ||~v124R~
             -Without terminating edit screen,write all line to the file.
             -Use file-name operand when it cannnot be saved because disk
@@ -8409,11 +8417,13 @@ by screen expansion)
                                                                       ||~v129I~
             -label1/2:line range  col1/2:column range                 ||~v129I~
              numeric specification for both label 1 and 2 are accepted as lineno.||~v129I~
-             Block mode with col1/2, Range mode without col1/2.       ||~v129I~
-             "Selct All" without label/column.                        ||~v129I~
+             Block mode if col1/2 specified, Range mode if col1/2 is not specified.       ||~v129I~||~v@@@R~
+             "Select All" if both label and column is not specified.                        ||~v129I~||~v@@@R~
                e.g.) sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;       ||~v129I~
-            -Select range to Cut/Copy/Paste on Edit panel.            ||~v129I~
-             Under range mode, selected range itself is target of Paste Range mode.||~v129I~
+            -Select block/range to Cut/Copy/Paste on Edit panel.            ||~v129I~||~v@@@R~
+             You can paste just after selection of block.             ||~v@@@I~
+             For range mode, selected range itself is target of Paste Range mode.||~v129I~||~v@@@R~
+             So you need to save the region(Alt+F9) before paste(Alt+F8/Alt+Ins).||+v@@@R~
             -Abridged format command "S" is not available             ||~v129I~
              "S" means "SAVe" on Browse/Edit panel.                   ||~v129I~
 
@@ -9120,11 +9130,16 @@ by screen expansion)
                           H :fieldno guide line is inserted.
                           D[delimiter]:input field seperator. default is " ".
                                        "D" means D",".
-                                       multiple char is avail like as D" ,"
+                                       Multiple characters are avail like as D" ,".||~v@@@R~
+                                       And both " " and "," are delemeter.||~v@@@I~
+                                       Escape seequence is available like as D"\t\x0a\xff".||~v@@@I~
                           S[R][outdelm]:field seperator to be set after formatted.
                                         R      :delete input delimiter.
                                         outdelm:string to be inserted.
                                                 default is " ".
+                                                Escape seequence is available except \t(0x09).||~v@@@I~
+                                                Multiple charcters mean string to be inserted.||~v@@@I~
+                                                DBCS is allowed.      ||~v@@@I~
                 break-key:[type]column1-column2[>|!|<]                ||~v124R~
                           For opcode=+(Summary),specify break point to
                           set sub-total.Table should be sorted by this

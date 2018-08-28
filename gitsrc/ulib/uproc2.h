@@ -1,7 +1,9 @@
-//*CID://+v6xrR~:                              update#=  114;      //~v6xrR~
+//*CID://+v6XaR~:                              update#=  117;      //+v6XaR~
 //************************************************************* //~5825I~
 //*proc2.h                                                         //~v5ebR~
 //************************************************************* //~5825I~
+//v6Xa:180821 enumproc show fullpath(xp was shoing)                //+v6XaI~
+//v6X6:180819 (W32)enumproc optionally output fullpath exe name    //~v6X6I~
 //v6xr:150118 (BUG of v6xm) 6xm is for W7 only;back to old logic when XP//~v6xrI~
 //v6xp:150116 (BUG:LNX)kill parm is not thread_t but pid_t         //~v6xpI~
 //v6xn:150116 (BUG:W64)ugetpidfromhandle() fails on Windows7.use GetProcessId()//~v6xnI~
@@ -123,13 +125,14 @@ int ucriticalsection(int Popc,ULPTR Ppsem);                        //~v6hhR~
 #endif //!NOMT                                                     //~v5ncI~
                                                                    //~v5ncI~
 //*************************************************************    //~v5ivI~
-//typedef int (CB_ENUMPID)(ULONG Ppid,USHORT Ppid16,char *Pcmd,void *Pparm);//~v5ivR~//+v6xrR~
-typedef int (CB_ENUMPID)(int Popt,ULONG Ppid,USHORT Ppid16,char *Pcmd,void *Pparm);//+v6xrI~
-#define CBEPIO_KERNEL_LOGIC     0x01	//enum by kernel logic     //+v6xrI~
+//typedef int (CB_ENUMPID)(ULONG Ppid,USHORT Ppid16,char *Pcmd,void *Pparm);//~v5ivR~//~v6xrR~
+typedef int (CB_ENUMPID)(int Popt,ULONG Ppid,USHORT Ppid16,char *Pcmd,void *Pparm);//~v6xrI~
+#define CBEPIO_KERNEL_LOGIC     0x01	//enum by kernel logic     //~v6xrI~
 //*ret true:continue enum,false:stop enum                          //~v5ivI~
 //int uenumpid(CB_ENUMPID Pcbfunc,void *Pparm);                    //~v5kvR~
 int uenumpid(int Popt,CB_ENUMPID Pcbfunc,void *Pparm);             //~v5kvI~
 #define UEPI_HELPER 0x01                                           //~v5kvI~
+//#define UEPI_VERBOSE  0x02  //output fullpath exe name             //~v6X6R~//+v6XaR~
 //*************************************************************    //~v5ivI~
 int getprocstatus(ULONG Phandle);                                  //~v5ivI~
 #endif  //W32||LNX                                                 //~v5jaR~

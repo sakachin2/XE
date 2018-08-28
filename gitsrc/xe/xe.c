@@ -1,8 +1,10 @@
-//*CID://+vbi9R~:                              update#=  418;      //~vbi6R~//+vbi9R~
+//*CID://+vbmkR~:                              update#=  458;      //~vbmkR~
 //*************************************************************
 //*XE.c*                                                           //~v641R~
 //*************************************************************
-//vbi9:180221 (GTK3:bug)window size recovery err                   //+vbi9I~
+//vbmk:180813 for test,try mk_wcwidth_cjk(ambiguous:Wide DBCS) for visibility chk. use /YJ option//~vbmkI~
+//vbkm:180625 UTRACE;add option of ignore FORCE option             //~vbkmI~
+//vbi9:180221 (GTK3:bug)window size recovery err                   //~vbi9I~
 //vbi6:180220 stack all errmsg before init end to errmsg.<pid>     //~vbi6I~
 //vbf0:180109 WriteConsoleOutputW(used for cpu8 ligaturemode) shrinks line on Windows10(OK on XP),prohibit ligature on for Windows10//~vbf0I~
 //vbda:171121*(gxe)display GTK3/GTK2 on titlemsg/about dialog      //~vbdaI~
@@ -308,6 +310,7 @@
 #include "xefcmd7.h"                                               //~vba2I~
 //*******************************************************
 #define NULLCOMP 256                                            //~v01cI~
+#define UTRACE_FORCE_FNMSUFFIX  "_kbd"                             //~vbkmI~
 //*******************************************************       //~4C19I~
 UEXITFUNC uexitfunc;
 //#ifdef DOS                                                       //~v095R~
@@ -315,6 +318,9 @@ UEXITFUNC uexitfunc;
 #else
 void uehexit(int,PUEXREGREC);//exit func
 #endif
+int xecleartrcfile(int Popt,char *Pfnm);                           //~vbkmI~
+#define XCTFO_COUNT_MASK           0xff                            //~vbkmR~
+#define XCTFO_KBD_KEEP_COUNT       5          //keep max 5 file if not clear specified//~vbkmR~
 //*******************************************************
 #ifndef UNX                                                        //~v195I~
   #ifndef WXE                                                      //~v500I~
@@ -332,6 +338,7 @@ void titlemsg(void);
 static  char Spgmver[16];
 static  int  Smalloctrcopt=0;                                      //~v53UR~
 static  int  Stesttrcopt=0;                                        //~v53UR~
+static  int  StesttrcoptClear;                                     //~vbkmI~
 static  int  Sinitend;  //entered getchar loop                  //~4C27I~
 static  UCHAR *Sinifile=0;    //.ini use option                    //~v53UR~
 static  int Suerrmsgopt=0;                                         //~v53UR~
@@ -993,9 +1000,9 @@ if (Preqtype==WXE_REQ_TERM)                                        //~v500I~
     uharderr(-1);   //reset hard err                               //~v099I~
 #else                                                              //~v099I~
 #endif                                                             //~v099I~
-#ifndef XXE                                                                   //~v500I~//+vbi9R~
+#ifndef XXE                                                                   //~v500I~//~vbi9R~
     utrace_term(0);  //close utrace file and stop utrace                                                //~v500I~//~vb26M~
-#endif                                                             //+vbi9I~
+#endif                                                             //~vbi9I~
 //#ifdef WXE                                                       //~v641R~
 #ifdef WXEXXE                                                      //~v641I~
 }//WXE_REQ_TERM                                                    //~v500I~
@@ -1049,7 +1056,10 @@ void uexitfunc(char * Pmsg,void * Pvoid)                           //~v07wR~
 #endif                                                             //~v69EI~
         if (Sinitend)   //entered getchar loop                  //~4C27I~
             if (!UCBITCHK(Gopt,GOPTNOABENDIFERREXIT))           //~5430R~
+            {                                                      //~vbkmI~
+//  		    utrace_term(0);  //it will be closed at ueh.c      //~vbkmR~
                 uabend(1,0,0,0);    //_fcloseall at ueh.c       //~v03jR~
+            }                                                      //~vbkmI~
     }                                                              //~v099I~
 #endif                                                          //~5204I~
     return;
@@ -1257,7 +1267,9 @@ int xecleartrcfile(int Popt,char *Pfnm)                            //~vb26R~
 #ifdef LNX                                                         //~vb26I~
     uid_t myuid;                                                   //~vb26I~
 #endif                                                             //~vb26I~
+	int keepctr,keptctr=0;                                         //~vbkmI~
 //*****************                                                //~vb26I~
+	keepctr=Popt & XCTFO_COUNT_MASK;                               //~vbkmI~
 #ifdef LNX                                                         //~vb26I~
     ugetugid(&myuid,NULL);                                         //~vb26R~
 #endif                                                             //~vb26I~
@@ -1266,13 +1278,22 @@ int xecleartrcfile(int Popt,char *Pfnm)                            //~vb26R~
     	pathlen=0;                                                 //~vb26I~
     UmemcpyZ(fpath,Pfnm,(size_t)pathlen);                          //~vb26R~
 	pos=(int)strlen(Pfnm)-pathlen-1;	//except last "*"          //~vb26R~
-    fno=udirlistnomsg(Pfnm,FILE_NORMAL,&pudl0,0/*no sort*/);       //~vb26R~
+  if (keepctr)                                                     //~vbkmR~
+    fno=udirlistnomsg(Pfnm,FILE_NORMAL,&pudl0,-'D'); //date descendant order//~vbkmM~
+  else                                                             //~vbkmM~
+    fno=udirlistnomsg(Pfnm,FILE_NORMAL,&pudl0,0/*no sort*/);       //~vbkmI~
     for (ii=0,pudl=pudl0;ii<fno;ii++,pudl++)                       //~vb26I~
     {                                                              //~vb26I~
 #ifdef LNX                                                         //~vb26I~
         if (pudl->uid!=myuid)                                      //~vb26R~
         	continue;                                              //~vb26I~
 #endif                                                             //~vb26I~
+		if (keepctr)	//specified                                //~vbkmI~
+        {                                                          //~vbkmI~
+        	keptctr++;                                             //~vbkmI~
+            if (keptctr<=keepctr)                                  //~vbkmR~
+            	continue;                                          //~vbkmI~
+        }                                                          //~vbkmI~
     	pname=pudl->name;                                          //~vb26I~
     	len=(int)strlen(pname)-pos;                                //~vb26I~
         if (len>0                                                  //~vb26I~
@@ -1302,6 +1323,7 @@ int  xetraceinit(void)                                             //~v79zI~
 {                                                                  //~v79zI~
     int rc;                                                        //~v79zI~
     char wkfname[_MAX_PATH];                                       //~v79zI~
+    char wkfname2[_MAX_PATH];                                      //~vbkmI~
     ULONG pid;                                                     //~vb26I~
 //********************                                             //~v79zI~
 #ifdef ARM                                                         //~vb26I~
@@ -1324,14 +1346,28 @@ int  xetraceinit(void)                                             //~v79zI~
     sprintf(wkfname,"%s%s%s.trc",Gworkdir,PGMID,Sostype);          //~vb26I~
 #else                                                              //~vb26I~
 	sprintf(wkfname,"%s%s%s.trc.*",Gworkdir,PGMID,Sostype);        //~vb26I~
-    if (Stesttrcopt)	//open trace file                          //~vb26I~
+//  if (Stesttrcopt)	//open trace file                          //~vb26I~//~vbkmR~
+    if (Stesttrcopt & ~UTRACEO_NOFORCE)                            //~vbkmI~
 		xecleartrcfile(0,wkfname);                                 //~vb26R~
 //  sprintf(wkfname,"%s%s%s.trc",Gworkdir,PGMID,Sostype);          //~v08xR~//~vb26R~
     sprintf(wkfname,"%s%s%s.trc.%ld",Gworkdir,PGMID,Sostype,pid);  //~vb26I~
+	sprintf(wkfname2,"%s%s%s.trc%s.*",Gworkdir,PGMID,Sostype,UTRACE_FORCE_FNMSUFFIX);//~vbkmR~
+	if (StesttrcoptClear)                                          //~vbkmM~
+		xecleartrcfile(0,wkfname2); //clear all                    //~vbkmR~
+    else                                                           //~vbkmI~
+		xecleartrcfile(XCTFO_KBD_KEEP_COUNT,wkfname2);             //~vbkmI~
+                                                                   //~vbkmI~
+    if (!(Stesttrcopt & UTRACEO_NOFORCE))                          //~vbkmM~
+    {                                                              //~vbkmI~
+	    sprintf(wkfname2,"%s%s%s.trc%s.%ld",Gworkdir,PGMID,Sostype,UTRACE_FORCE_FNMSUFFIX,pid);//~vbkmI~
+		utrace_init(wkfname2,UTRACEO_FORCEFNM);                    //~vbkmM~
+    }                                                              //~vbkmI~
 #endif  //!ARM                                                     //~vb26I~
-    if (Stesttrcopt)       //specified                             //~v07iM~
+//  if (Stesttrcopt)       //specified                             //~v07iM~//~vbkmR~
+    if ((Stesttrcopt & ~UTRACEO_NOFORCE))                          //~vbkmI~
     {                                                              //~v716I~
-        Stesttrcopt=2;     //ignore open err                       //~v07iM~
+//      Stesttrcopt=2;     //ignore open err                       //~v07iM~//~vbkmR~
+        Stesttrcopt=UTRACEO_IGNOREOPENERR; //   0x02               //~vbkmR~
         Gotheropt|=GOTHERO_TRACEON; //notify to xe3270             //~v716I~
     }                                                              //~v716I~
 //  if (rc=utrace_init(wkfname,Stesttrcopt),rc) //to be called also to set notrace//~v69GI~//~vb26R~
@@ -1472,6 +1508,17 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
                     case 'a':                                      //~v07iM~
                         UCBITON(Gopt3,GOPT3TESTABEND);//abend by double Esc//~v07iM~
                         break;                                     //~v07iM~
+#ifdef ARM                                                         //~vbkmI~
+#else                                                              //~vbkmI~
+                    case 'C':                                      //~vbkmI~
+                    case 'c':                                      //~vbkmI~
+                        StesttrcoptClear=1;    //clear utrace FORCE file//~vbkmI~
+                        break;                                     //~vbkmI~
+                    case 'N':      //No force                      //~vbkmI~
+                    case 'n':                                      //~vbkmI~
+                  		Stesttrcopt|=UTRACEO_NOFORCE;//       0x0080     //ignore UTRACEPF(put trace regardless trace option)//~vbkmR~
+                        break;                                     //~vbkmI~
+#endif                                                             //~vbkmI~
                     case 'E':                                      //~v07iM~
                     case 'e':                                      //~v07iM~
                         UCBITON(Gopt3,GOPT3TESTEXIT);//uerrexit by double Esc//~v07iM~
@@ -1524,6 +1571,9 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
     #endif                                                         //~vad0I~
 #endif                                                             //~vad0I~
 //#ifdef LNX                                                         //~v7a7I~//~va0DR~
+                    case 'J':  //force mk_wcwidth_cjk()            //~vbmkI~
+                        Swcinitopt|=UDCWCIO_CJK;                   //~vbmkI~
+                        break;                                     //~vbmkI~
 #ifdef UTF8SUPPH                                                   //~va0DI~
                     case 'M':  //no utf8 kbd input process         //~v7a7I~
                         Swcinitopt&=~UDCWCIO_KBDNOUTF8;            //~v7a7I~
@@ -2077,6 +2127,8 @@ void parmproc(int Pparmc,char *Pparmp[])
                         break;                                     //~vad0I~
     #endif                                                         //~vad0I~
 #endif                                                             //~vad0I~
+                    case 'J':  //parmproc00 processed              //~vbmkI~
+                        break;                                     //~vbmkI~
                     case 'L':                                      //~v0flI~
                         lfnreq=1;         // /Yl requested         //~v0flI~
                         break;                                     //~v0flI~
@@ -2168,6 +2220,8 @@ void parmproc(int Pparmc,char *Pparmp[])
                         break;                                     //~vad0I~
 	#endif                                                         //~vad0I~
 #endif                                                             //~vad0I~
+                    case 'J':  //parmproc00 processed              //~vbmkI~
+                        break;                                     //~vbmkI~
                     case 'L':                                      //~v0flI~
                         lfnreq=2;         // /Nl requested         //~v0flI~
                         break;                                     //~v0flI~
@@ -2501,8 +2555,10 @@ void help(void)
 //          "           x   :0:トレースなし(省略値),1:統計,2:トレ－ス(%s%s%s.mtr),\n",//~v53sR~//~vaj8R~
     HELPMSG "           x   :0:no memory trace(default),1:statistic,\n",//~vaj8I~
             "           x   :0:トレースなし(省略値),1:統計,\n");   //~vaj8R~
-    HELPMSG "               :2:trace(%s%s%s.mtr),\n",              //~vaj8I~
-            "               :2:トレ－ス(%s%s%s.mtr),\n",           //~vaj8I~
+//  HELPMSG "               :2:trace(%s%s%s.mtr),\n",              //~vaj8I~//~vbkmR~
+//          "               :2:トレ－ス(%s%s%s.mtr),\n",           //~vaj8I~//~vbkmR~
+    HELPMSG "               :2:trace(%s%s%s.mtr.[pid]),\n",        //~vbkmI~
+            "               :2:トレ－ス(%s%s%s.mtr.[pid]),\n",     //~vbkmI~
 				Gworkdir,PGMID,Sostype);                           //~v53rI~
     HELPMSG "               :3:2 level return addr print on tarce file.\n",//~v53sR~
             "               :3:2階層上まで戻りアドレスをトレースファイルに書く。\n");//~v53sR~
@@ -2516,13 +2572,29 @@ void help(void)
 //          "           t   :0:デバッグ用トレースなし(省略値),1:トレ－ス(%s%s%s.trc)\n",//~v53rI~//~vaj8R~
     HELPMSG "           t   :0:no debug trace(default)\n",         //~vaj8I~
             "           t   :0:デバッグ用トレースなし(省略値)\n"); //~vaj8I~
-    HELPMSG "               :1:write trace(%s%s%s.trc)\n",         //~vaj8I~
-            "               :1:トレ－ス(%s%s%s.trc)\n",            //~vaj8I~
+//  HELPMSG "               :1:write trace(%s%s%s.trc)\n",         //~vaj8I~//~vbkmR~
+//          "               :1:トレ－ス(%s%s%s.trc)\n",            //~vaj8I~//~vbkmR~
+    HELPMSG "               :1:write trace(%s%s%s.trc.[pid])\n",   //~vbkmI~
+            "               :1:トレ－ス(%s%s%s.trc.[pid])\n",      //~vbkmR~
 				Gworkdir,PGMID,Sostype);                           //~v53rI~
     HELPMSG "           o   :a:abend by doubled Esc key, e:exit by doubled Esc key,\n",//~v53rR~
             "           o   :a:Escキー2回連続でabendする, e:Escキー2回連続でexitする,\n");//~v53rR~
-    HELPMSG "               :k:keyboard trace(W95 only).\n",       //~v53rR~
-            "               :k:キーボードトレースする(W95のみ)。\n");//~v53rR~
+//  HELPMSG "               :k:keyboard trace(W95 only).\n",       //~v53rR~//~vbkmR~
+//          "               :k:キーボードトレースする(W95のみ)。\n");//~v53rR~//~vbkmR~
+#ifdef W32                                                         //~vbkmI~
+  #ifndef WXE                                                      //~vbkmI~
+    HELPMSG "               :k:Write Windows keyboard trace.(xe only)\n",//~vbkmR~
+            "               :k:Windowsキーボードトレースをとる(xeのみ)\n");//~vbkmR~
+  #endif                                                           //~vbkmI~
+#endif                                                             //~vbkmI~
+    HELPMSG "               :n:NO write _kbd trace(%s%s%s.trc%s.[pid])\n",//~vbkmI~
+            "               :n:_kbd トレ－ス(%s%s%s.trc%s.[pid])出力なし\n",//~vbkmI~
+				Gworkdir,PGMID,Sostype,UTRACE_FORCE_FNMSUFFIX);    //~vbkmI~
+    HELPMSG "               :c:remove old _kbd trace files.\n",    //~vbkmI~
+            "               :c:古い_kbd トレースファイルを削除\n");//~vbkmI~
+    HELPMSG "               :keep latest %d files if not specified.\n",//~vbkmR~
+            "               :指定のない場合は直近の%dファイルを保持\n",//~vbkmR~
+			XCTFO_KBD_KEEP_COUNT); //       5          //keep max 5 file if not clear specified//~vbkmI~
   }                                                                //~v53rI~
     HELPMSG "  %cE           :Edit mode open(default)\n",          //~v21cR~
             "  %cE           :編集モードでファイルを開く(省略値)\n",//~v21cR~
@@ -2660,6 +2732,16 @@ void help(void)
 #endif                                                             //~vad0I~
   }                                                                //~vad0I~
 #endif                                                             //~vad0I~
+  if (Sdebughelp)                                                  //~vbmkI~
+  {                                                                //~vbmkI~
+    HELPMSG "      x=j (%cNj):Try CJK cell width for wide SBCS for UTF8 file\n",//~vbmkR~
+            "      x=j (%cNj):UTF8ファイルの幅広SBCSにたいし CJK \x95\\示幅を試す\n",//~vbmkR~
+            CMDFLAG_PREFIX);                                       //~vbmkM~
+    HELPMSG "               :Use cell width of CJK env. even env. is not CJK console.\n",//~vbmkR~
+            "               :文字幅をCJK コン\x83\\ール環境でないときもそれに合わせて\x95\\示\n");//~vbmkI~
+    HELPMSG "               :Some char requires 2 cell to display on Console.\n",//+vbmkR~
+            "               :コン\x83\\ール版ではある種の文字は2桁で\x95\\示しないと見えない\n");//~vbmkR~
+  }                                                                //~vbmkI~
 #ifdef DPMI                                                        //~v0flI~
     HELPMSG "      x=l (/Yl):Long filename use if avail or not\n", //~v11ER~
             "      x=l (/Yl):可\x94\\なら長いファイル名を使用する/しない\n");//~v11ER~

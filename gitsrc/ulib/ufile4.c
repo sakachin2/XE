@@ -1,8 +1,10 @@
-//*CID://+v6J0R~:                             update#=  268;       //~v6J0R~
+//*CID://+v6W4R~:                             update#=  281;       //~v6W4R~
 //*************************************************************
 //*ufile4.c                                                        //~v083R~
 //*  utempnam udirwalk ugetdiskfree ufileishpfs ufileisvfat ufileisntfs//~v5i0R~
 //*************************************************************
+//v6W4:180702 protect utrace file when opened by xe for browse     //~v6W4I~
+//v6Vx:180626 (LNX:BUG)trace file is not protected at xe initial clear//~v6VxI~
 //v6J0:170205 malloc udirlist filename to  allow more large number of fine in the dir//~v6J0I~
 //v6H1:161231 filename >_MAX_PATH occurse when moved directory on xe(native cmd issue error fo5r xcopy /move)//~v6H1I~
 //            and it cause fpath area overflow then 0c4            //~v6H1I~
@@ -94,8 +96,10 @@
                                                                    //~v063I~
 //*******************************************************
 #ifdef UNX                                                         //~v327I~
+	#include <unistd.h>                                            //~v6VxI~
 	#include <sys/vfs.h>                                           //~v327I~
 	#include <sys/stat.h>                                          //~v56rI~
+	#include <sys/file.h>                                          //~v6VxI~
     #include <fcntl.h>  //_USE_LFN macro                           //~v5nhI~
 #else                                                              //~v327I~
 #ifdef DOS
@@ -875,8 +879,8 @@ int udirwalksub(char *Pdir,PUDIRLIST Ppudirlist,int Plevel)        //~v201R~
                 }                                                  //~v6k4I~
 //              *(pudirlists+dirctr++)=*pudirlist;                 //~v063I~//~v6qaR~
 //              UDIRLIST_COPY((pudirlists+dirctr++),pudirlist);	//pslink of from-pudl point to dummy//~v6qaI~//~v6uCR~
-//              UDIRLIST_COPY_NEW_SLINKNAME((pudirlists+dirctr++),pudirlist);	//pslink of from-pudl point to dummy//~v6uCR~//+v6J0R~
-                UDIRLIST_COPY((pudirlists+dirctr++),pudirlist);	//pslink of from-pudl point to dummy//+v6J0I~
+//              UDIRLIST_COPY_NEW_SLINKNAME((pudirlists+dirctr++),pudirlist);	//pslink of from-pudl point to dummy//~v6uCR~//~v6J0R~
+                UDIRLIST_COPY((pudirlists+dirctr++),pudirlist);	//pslink of from-pudl point to dummy//~v6J0I~
             }//for all subdir                                      //~v063I~
 //          ufree(pudirlist0);                                     //~v063I~//~v6qaR~
             UDIRLIST_FREE(pudirlist0);                             //~v6qaI~
@@ -1603,6 +1607,7 @@ int ufileisMSMounted(int Popt,char *Pfnm)                          //~v6uVR~
 #endif                                                             //~v6uVI~
 //*******************************************************          //~v5nhI~
 //*ufsetlock                                                       //~v5nhI~
+//*!this func creates file,use uflock                              //~v6VxI~
 //*r0:success                                                      //~v5nhI~
 //*******************************************************          //~v5nhI~
 int ufsetlock(int Popt,char *Plockfnm)                             //~v5nhI~
@@ -1648,3 +1653,44 @@ int ufsetlock(int Popt,char *Plockfnm)                             //~v5nhI~
     return rc;                                                     //~v5nhI~
 #endif //!DOS                                                      //~v5nuI~
 }//ufsetlock                                                       //~v5nhI~
+#ifdef LNX                                                         //~v6VxI~
+//*************************************************************    //~v6VxI~
+//*try exclusive lock without blocking                             //~v6VxI~
+//*!!! don't use UTRACE because utraceopr call this func before open complete//~v6W4I~
+//*rc:-errno:open err,0:locked,else errno by flock()               //~v6VxR~
+//*************************************************************    //~v6VxI~
+int uflock(int Popt,char *Pfnm,int *Ppfd)                                    //~8626I~//~v6VxR~
+{                                                                  //~8626I~//~v6VxM~
+	int flag,fd,rc;                                                //~8626R~//~v6VxM~
+//**********************	                                       //~8626I~//~v6VxM~
+	if (Popt & UFLO_CLOSE)                                         //~v6VxI~
+    {                                                              //~v6VxI~
+    	fd=*Ppfd;                                                  //~v6VxI~
+		rc=close(fd);                                              //~v6VxI~
+        if (rc<0)                                                  //~v6VxI~
+        	rc=errno;                                              //~v6VxI~
+        else                                                       //~v6VxI~
+        	rc=0;                                                  //~v6VxI~
+//		UTRACEP("%s:close rc=%d\n",UTT,rc);                        //~v6VxI~//~v6W4R~
+        return rc;                                                 //~v6VxI~
+    }                                                              //~v6VxI~
+	flag=O_WRONLY;                                                 //~8626R~//~v6VxM~
+	fd=open(Pfnm,flag);                                            //~8626R~//~v6VxM~
+    if (Ppfd)                                                      //~v6W4I~
+    	*Ppfd=fd;                                                  //~v6W4I~
+    if (fd<0)                                                      //~v6VxI~
+    {                                                              //~v6VxI~
+//		UTRACEP("%s:lock open err errno=%d,fnm=%s\n",UTT,errno,Pfnm);//~v6VxI~//~v6W4R~
+        return -errno;                                             //~v6VxR~
+    }                                                              //~v6VxI~
+    flag=LOCK_EX|LOCK_NB;                                          //~8626I~//~v6VxM~
+    rc=flock(fd,flag);                                             //~8626R~//~v6VxM~
+// 	UTRACEP("%s:flock rc=%d,errno=%d,fnm=%s\n",UTT,rc,errno,Pfnm); //~v6W4R~
+    if (rc<0)                                                      //~v6VxI~
+        rc=errno;                                           //~v6VxI~//~v6W4R~
+    else                                                           //~v6W4I~
+    	rc=0;                                                      //~v6W4I~
+//	UTRACEP("%s:lock rc=%d,fnm=%s\n",UTT,rc,Pfnm);                 //~v6VxI~//~v6W4R~
+    return rc;                                                     //~8626I~//~v6VxI~//~v6W4R~
+}//uflock                                                                  //~8626I~//~v6VxI~
+#endif                                                             //~v6VxI~

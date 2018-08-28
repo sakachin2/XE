@@ -1,3 +1,140 @@
+//*********  20180827 v129K updated  *******************************
+//vbmv:180727 =3.12 helpmsg, add CPU8 option
+//            xepan2.h
+//vbmu:180727 TC fmt,support dbcs outdelm string
+//            xecalc3.c
+//vbmt:180727 additional to vbmr, \t requires special chk (data=" " and dbcs="\t")
+//            xecalc3.c
+//vbms:180727 (BUG)TC fmt, S(optput delm) option process err(invalid split)
+//            xecalc3.c
+//vbmr:180723 accept \x,\t as TC fmt delmstr
+//            xecalc3.c
+//vbmq:180722 set opt unicomb status on dirlist hdrline
+//            xeopt2.c
+//*********  20180822 v129K updated  *******************************
+//vbmp:180720 (gxe)combining char of geom-width=0 may come as 2nd glyph(but still 1st gryph str)
+//            wxecsub.c
+//*********  20180817 v129K updated  *******************************
+//vbmo:180714 (wxe)multiple SCM support
+//            wxecsub.c
+//vbmm:180814 (Bug by ULIB v6Wr) returns >2(length)
+//            wxecsub.c
+//vbmk:180813 for test,try mk_wcwidth_cjk(ambiguous:Wide DBCS) for visibility chk. use /YJ option
+//            xe.c (+ulib)
+//vbmj:180812 request "Force" option to save/end cmd updated at other session.
+//            xefile12.c xefile5.c/h
+//vbmi:180807 (W32:Bug)top panel LC line is corrupted,use not OutputW but OutputCharacterW.(See v6C8)   
+//            xepan.c xescr.h
+//vbmh:180806 (BUG)invalid display if multiple dbcsspace continued
+//            wxecsub.c
+//vbmg:180806 for performance COMBINABLE chk after Combining checked.
+//            wxecsub.c
+//vbmf:180803 show altch for SCM when COMBINE_NP
+//            wxecsub.c xxescr.c xxecsub2.c xxecsub.c
+//vbme:180731 (gxe)multiple SCM support
+//            xxescr.c xxecsub2.c xxecsub.h
+//vbmd:180730 (wxe)SCM support
+//            wxecsub.c
+//vbmc:180730 (gxe/wxe)attr:green for combining after unprintable like as console version
+//            xxescr.c xxecsub.h wxecsub.c
+//vbmb:180723 (gxe:bug of vbma)unicomb:NP dose not show altch
+//            xxescr.c xxecsub2.c xxecsub.h
+//vbma:180723 (gxe)colomn shift to left if ligature occured, correct it when Ligature:Off.(If selected Mono-space-font, no problem)
+//            xxescr.c
+//vbm9:180722 (BUG)utf8 file u-2Exx treated as ERRREPCH(2e) and shown by green.
+//            xxefile23.c
+//vbm8:180716 (gxe:Bug)combine may reduce glyphctr(u306f+u399a) 
+//            xxescr.c xxecsub2.c xecsub.h
+//vbm7:180716 (gxe:Bug)Lig:Off,split show unprintable+combine ": ;"(intermediate space exist)
+//            xxescr.c
+//vbm6:180716 (gxe:Bug)OVF width0 has single space to display when Lig:Off,UNICOMB:COMBINE
+//            xxecsub2.c
+//vbm5:180715 (gxe:Bug)lineno fld and top unprintable(":;") is same color so ligature not applied. So,cut strput by linenosize>
+//            xxexei.c/h xxescr.c
+//vbm4:180715 (gxe:Bug)Lig:Off and UNICOMB=COMB; combining char disappear whe base is dbcs
+//            xxecsub.c
+//vbm3:180715 (Bug)cause of UFHcmdlinectr=0 and ULHFLINECMD:On, savependlcmd was called twice by max() function
+//            1st call reduce UFHpendctr,2nd call recognoze new Slcmd new index is completed annd set cmfctr=0
+//            xelcmd.c
+//vbm2:180714 (gxe)SCM support for ligature:On
+//            xxescr.c
+//vbm1:180714 (gxe:Bug)OVF width0 has no space to display when Lig:On,UNICOMB:COMBINE
+//            xxecsub2.c
+//vbm0:180714 (gxe:Bug)Lig:On,unicomb:Split;splyt char displayed on next char
+//            xxecsub2.c
+//vbkz:180714 (Bug)CV cmd;LNX should treate M(of such as F2M/M2F/F2E/E2F) as default locale such as eucjp,GB18030
+//            xefcmd5.c
+//vbky:180711 (Bug)memory corrupted by label overflow by Find cmd width -L option.
+//            xefcmd22.c
+//vbkx:180708 (LNX:Bug)opt uncomb;itself/shadow is not notified to ulib when change to comb from UNPR
+//            xeopt2.c
+//vbkw:180704 (gxe)try to keep col width for the case of u-0327 has 2 glyph(width=xx and width=0)
+//            #ifdef SSS; xxescr.c xxecsub.h xxecsub2.c
+//vbkv:180703 (gxe)the case comb+comb, split mode may not show 2nd comb (u01b5+0327+0308) write at once because attr is same
+//            u0327 has 2 glyph(width=xx and width=0)
+//            xxescr.c
+//vbku:180703 after pango_set_text combine char width may be 0,csub_setcombineLayout missed to set CSUB_GEOMID_COMBINE 
+//            xxecsub2.c
+//*********  20180702 v129K updated  *******************************
+//vbkt:180702 (BUG)"opt unicomb unp" set unpchar 763ba3a4.(UNP is invalid,UNPR is valid, but assumed Uxxxx)
+//            xeopt2.c
+//vbks:180701 SCM; try u200c(ZWNJ:zero width no join) between combined and combining when Ligature:Off split mode
+//            xxescr.c xxecsub2.c
+//vbkr:180629 (Bug) Esc*2 clear pend ctr,so occurs "label not found" 
+//            xelcmd.c
+//vbkq:180628 (XXE)for also nocombine mode Spacing Combining Marks(SCM) unicode(if not combined,it becomes glyphctr=2)
+//            xxescr.c xxecsub2.c xxecsub.h
+//vbkp:180627 (gxe)do ligature for also width0 under COMBINE_NP mode
+//            xxescr.c xxecsub2.c xxecsub.h
+//vbkn:180627 (gxe)width=0 char over 0x20000 was not treated as combining
+//            xxescr.c xxecsub.h
+//vbkm:180625 UTRACE;add option of ignore FORCE option 
+//            xe.c xekbd.c 
+//vbkj:180623 ucs4 combining: file23 replace it to Gutfcombaltch for ucs2 if ligature off(Windows:xe is always lig:off), leave ucs4 as-is.
+//            uviom process ucs4 combining(dbcsid is overflow ucs).
+//            wxe need to display altch ucs2/ucs4 if ligature mode, ucs4 if non-ligaturemode when COMBINENP.
+//            wxecsub.c
+//vbki:180622 (W32:BUG) UVIOM_MAXCOMBINE(=4) may be short to contain ucs4 combining char(2 ucs for each)
+//            wxecsub.c
+//vbkh:180622 (WXE) ucs4 combining char
+//            wxecsub.c
+//vbkg:180619 (W32) hex code is not displayed on dirlist for surrogate pair err(0x2e is set to plhdata),try set sbcsid 
+//            xedir4.c
+//vbkf:180619 display hex notation for also dirlist panel
+//            xedir2.c
+//vbke:180619 add msg to display utf8 code filename
+//            xedcmd4.c xefsubw.c/h
+//vbkd:180619 like vbj1 cpu8 option to =3.12
+//            xepan23.c xepan2.c
+//vbkc:180619 (BUG)panutil collapse sddata by setting sdlen(width*2)=USDcell size
+//            xepan22.c
+//vbkb:180618 vbka but cs4(ddfmtlen=2) and errrep(lclen=1) cause err; xeutf_cvf2dd-->utfcvf2dd  may change ddlen=2 to lclen=1, it append 1  slag byte to filename
+//            pancmdlf2dd-->xeutf_cvf2dd(lclen=1 of byte one "?")-->utfcvf2dd:lclen short because ddlen=2
+//            set dbcs "?" for errrep of ddlen=2 at utfcvf2dd
+//            xeutf.c  ulib\utf22.c
+//vbka:180617 (BUG)ucs4; f2l may change ddlen=2 to lclen=1, it append 1  slag byte to filename
+//            xeutf.c
+//vbk9:180614 (BUG)vhex line update use UTF_GETDDUCS1,it replace when unprintable
+//            xeutf2.c
+//vbk8:180613 show ucs value for errmsg "invalid UCS4 value"(vhex line update,makeucs)
+//            xeutf2.c
+//vbk7:180613 (BUG)csrpos ucs display; shown altch for OVF ucs
+//            xefile23.c
+//vbk6:180612 (XXE)Spacing Combining Marks unicode(if not combined,it becomes glyphctr=2)
+//            xxescr.c xxecsub.h xxecsub2.c
+//vbk5:180611 u/v key on vhex line;correct err msg
+//            xeutf2.c
+//vbk4:180611 (XXE)when Ligature:OFF unicomb:COM,combining char was separated because geometry->width!=0 for combining char
+//            xxescr.c xxecsub2.c xxecsub.h
+//vbk3:180610 (XXE) PangoGeometry:x_offset is "horizontal offset from nominal character position"
+//            it may point leading space. So set 0 to x_offset(current value:(cellwidth-glyphwidth)/2 drow font right justified
+//            xxecsub2.c
+//vbk2:180605 (LNX:Console)shadow/itself/padding option is effectiv also when OPT2COMBINE when csr is on it(uviom_setcombine1)
+//            xeopt2.c
+//vbk1:180605 (LNX:Console:Bug)"combine split [shadow|itself]" was not notified to uviom at init(left as 0:padding)
+//            xeopt2.c
+//vbk0:180531 width0 over(map_entry) is shown as unprintable
+//            xefile6.c
 //*********  20180222 v129J released *******************************
 //vbj4:180425 click on selected line cmd history list-->"s"(set on under)
 //            wxemouse.cpp wxemain.h

@@ -1,9 +1,10 @@
-//*CID://+vb2ER~:                             update#=  667;       //+vb2ER~
+//*CID://+vbkzR~:                             update#=  674;       //~vbkzR~
 //*************************************************************
 //*xefcmd5.c*                                                      //~v47AR~
 //**file cmd CV                                                    //~v47AR~
 //*************************************************************
-//vb2E:160229 LNX64 compiler warning                               //+vb2EI~
+//vbkz:180714 (Bug)CV cmd;LNX should treate M(of such as F2M) as default locale such as eucjp,GB18030//~vbkzI~
+//vb2E:160229 LNX64 compiler warning                               //~vb2EI~
 //vb2D:160221 LNX compiler warning                                 //~vb2DI~
 //vaz9:150111 msg change for more easy to understand of "Use EBC command" after cv b2b//~vaz9I~
 //vaz6:150108 CPEB option ignored(invalid use of USTRHEADIS_IC; parm was not literal but char *)//~vaz6I~
@@ -123,6 +124,7 @@
 #include <uparse.h>                                                //~v50iI~
 #include <uedit.h>                                                 //~v50iI~
 #include <ustring.h>                                               //~v55KI~
+#include <utf.h>                                                   //~vbkzI~
                                                                    //~v50iI~
 #ifndef DOSDOS                                                     //~v50iI~
 	#include <ucvucs.h>                                            //~v50iI~
@@ -831,23 +833,51 @@ static UCHAR *Swordtbl="E2S\0S2E\0Z\0E2E\0S2S\0J2S\0J2E\0S2J\0E2J\0" \
 #ifdef UTF8SUPPH                                                    //~v90vI~//~va05I~
         case 37: //E2F                                             //~v90vI~//~va05I~
 			ucsconvsw=1;                                           //~v90vI~//~va05I~
+#ifdef LNX                                                         //~vbkzI~
+            convtype=UCSCONV_A2A;  //any to any                    //~vbkzI~
+            icuok=1;                                               //~vbkzI~
+            strcpy(Scpto,LOCALEID_UTF8);                           //~vbkzI~
+            strcpy(Scpfrom,"eucjp");  //dropped .utf8 from setlocale()//+vbkzR~
+#else                                                              //~vbkzI~
             ucsopt|=UCVUCS_EUC;                                    //~v90vI~//~va05I~
             convtype=UCSCONV_S2F;                                  //~v90vI~//~va05I~
+#endif                                                             //~vbkzI~
             break;                                                 //~v90vI~//~va05I~
         case 38: //F2E                                             //~v90vI~//~va05I~
 			ucsconvsw=1;                                           //~v90vI~//~va05I~
+#ifdef LNX                                                         //+vbkzI~
+            convtype=UCSCONV_A2A;  //any to any                    //+vbkzI~
+			icuok=1;                                               //+vbkzI~
+            strcpy(Scpfrom,LOCALEID_UTF8);                         //+vbkzI~
+            strcpy(Scpto,"eucjp");  //dropped .utf8 from setlocale()//+vbkzI~
+#else                                                              //+vbkzI~
             ucsopt|=UCVUCS_EUC;                                    //~v90vI~//~va05I~
             convtype=UCSCONV_F2S;                                  //~v90vI~//~va05I~
+#endif                                                             //+vbkzI~
             break;                                                 //~v90vI~//~va05I~
         case 39: //M2F                                             //~v91NI~//~va05I~
 			ucsconvsw=1;                                           //~v91NI~//~va05I~
             ucsopt|=UCVUCS_MB;                                     //~v91NI~//~va05I~
+#ifdef LNX                                                         //~vbkzR~
+            convtype=UCSCONV_A2A;  //any to any                    //~vbkzR~
+            icuok=1;                                               //~vbkzR~
+            strcpy(Scpto,LOCALEID_UTF8);                           //~vbkzR~
+            strcpy(Scpfrom,Gdefaultlocalecode);  //dropped .utf8 from setlocale()//~vbkzR~
+#else                                                              //~vbkzR~
             convtype=UCSCONV_S2F;                                  //~v91NI~//~va05I~
+#endif                                                             //~vbkzR~
             break;                                                 //~v91NI~//~va05I~
         case 40: //F2M                                             //~v91NI~//~va05I~
 			ucsconvsw=1;                                           //~v91NI~//~va05I~
             ucsopt|=UCVUCS_MB;                                     //~v91NI~//~va05I~
+#ifdef LNX                                                         //~vbkzI~
+            convtype=UCSCONV_A2A;  //any to any                    //~vbkzI~
+			icuok=1;                                               //~vbkzI~
+            strcpy(Scpfrom,LOCALEID_UTF8);                         //~vbkzR~
+            strcpy(Scpto,Gdefaultlocalecode);  //dropped .utf8 from setlocale()//~vbkzR~
+#else                                                              //~vbkzI~
             convtype=UCSCONV_F2S;                                  //~v91NI~//~va05I~
+#endif                                                             //~vbkzI~
             break;                                                 //~v91NI~//~va05I~
 #endif                                                             //~v90vI~//~va05I~
         case 41: //B2M                                             //~v79tR~
@@ -1572,8 +1602,8 @@ UTRACEP("maxlen=%d,maxcont=%d\n",maxlen,maxcontlen);               //~v50eI~
             if (Sotheropt & OOPT_UTF8)	//F2B                      //~vaacI~
             {                                                      //~vaacI~
             	optb2b=XEEBCO_ERRREP;                              //~vaacI~
-//				rc=xeebc_f2b(optb2b,Sebcopt,Sebchandle,pdataw,convlen,&pebcdata,&len2);//~vaacR~//~vaadR~//+vb2ER~
-  				rc=xeebc_f2b(optb2b,(int)Sebcopt,Sebchandle,pdataw,convlen,&pebcdata,&len2);//+vb2EI~
+//				rc=xeebc_f2b(optb2b,Sebcopt,Sebchandle,pdataw,convlen,&pebcdata,&len2);//~vaacR~//~vaadR~//~vb2ER~
+  				rc=xeebc_f2b(optb2b,(int)Sebcopt,Sebchandle,pdataw,convlen,&pebcdata,&len2);//~vb2EI~
                 UTRACEP("fcmd5 F2B rc=%d\n",rc);                   //~vaacI~
                 pdataw=pebcdata;                                   //~vaacI~
                 break;                                             //~vaacI~
@@ -1616,8 +1646,8 @@ UTRACEP("maxlen=%d,maxcont=%d\n",maxlen,maxcontlen);               //~v50eI~
                 optb2b=XEEBCO_ERRREP;                              //~vaacR~
                 if (binfsw)                                        //~vaacR~
                     optb2b|=XEEBCO_BIN; //no DBCS                  //~vaacR~
-//              rc=xeebc_b2f(optb2b,Sebcopt,Sebchandle,pdataw,convlen,&putf8data,&len2);//~vaacR~//+vb2ER~
-                rc=xeebc_b2f(optb2b,(int)Sebcopt,Sebchandle,pdataw,convlen,&putf8data,&len2);//+vb2EI~
+//              rc=xeebc_b2f(optb2b,Sebcopt,Sebchandle,pdataw,convlen,&putf8data,&len2);//~vaacR~//~vb2ER~
+                rc=xeebc_b2f(optb2b,(int)Sebcopt,Sebchandle,pdataw,convlen,&putf8data,&len2);//~vb2EI~
                 UTRACEP("fcmd5 B2F rc=%d\n",rc);                   //~vaacR~
                 pdataw=putf8data;                                  //~vaacR~
                 break;                                             //~vaacR~
@@ -1844,8 +1874,8 @@ int fcmdhex2ascii(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh,LONG *Pplineno,int Perrc
             }                                                      //~v78RI~
             splitch=-1;                                            //~v78RI~
 //  	  	rc2=ucvebc2asc(Sebcopt|socontsw,pbuff,0,pbuff,cvlen,Perrch,&cvlen);	//evc->asc conv//~v78RI~//~va7FR~
-//  	  	rc2=ucvebc2asc_handle(Sebcopt|socontsw,Sebchandle,pbuff,0,pbuff,cvlen,Perrch,&cvlen);	//evc->asc conv//~va7FR~//+vb2ER~
-    	  	rc2=ucvebc2asc_handle((int)Sebcopt|socontsw,Sebchandle,pbuff,0,pbuff,cvlen,Perrch,&cvlen);	//evc->asc conv//+vb2EI~
+//  	  	rc2=ucvebc2asc_handle(Sebcopt|socontsw,Sebchandle,pbuff,0,pbuff,cvlen,Perrch,&cvlen);	//evc->asc conv//~va7FR~//~vb2ER~
+    	  	rc2=ucvebc2asc_handle((int)Sebcopt|socontsw,Sebchandle,pbuff,0,pbuff,cvlen,Perrch,&cvlen);	//evc->asc conv//~vb2EI~
             if (rc2 & EBC2ASC_RC_SIPEND)                           //~v78RI~
             {	                                                   //~v78RI~
             	if (rc2 & EBC2ASC_RC_HALFBYTE)	//last split dbcs  //~v78RI~
@@ -1955,8 +1985,8 @@ int fcmdhexconv(int Popt,PULINEH Pplh,UCHAR *Pdata,int Plen,int Poffs,int Pcvlen
     if (Popt&EBC2ASC_A2E)                                          //~v59sI~
       if (!(Sebcopt & EBC2ASC_DBCS)) //no DBCS consideration       //~v78RI~
 //  	ucvebc2asc(Sebcopt,Ppout,0,Ppout,binlen,Perrch,&binlen);	//evc->asc conv//~v59sR~//~va7FR~
-//  	ucvebc2asc_handle(Sebcopt,Sebchandle,Ppout,0,Ppout,binlen,Perrch,&binlen);	//evc->asc conv//~va7FI~//+vb2ER~
-    	ucvebc2asc_handle((int)Sebcopt,Sebchandle,Ppout,0,Ppout,binlen,Perrch,&binlen);	//evc->asc conv//+vb2EI~
+//  	ucvebc2asc_handle(Sebcopt,Sebchandle,Ppout,0,Ppout,binlen,Perrch,&binlen);	//evc->asc conv//~va7FI~//~vb2ER~
+    	ucvebc2asc_handle((int)Sebcopt,Sebchandle,Ppout,0,Ppout,binlen,Perrch,&binlen);	//evc->asc conv//~vb2EI~
     *Poutlen=binlen;                                               //~v51NI~
     return 0;                                                      //~v51NI~
 }//fcmdhexconv                                                     //~v51NI~
@@ -1996,8 +2026,8 @@ int fcmdmulthexconv(int Popt,PULINEH Pplh,UCHAR *Pdata,int Plen,UCHAR *Ppout,int
 	    if (Popt&EBC2ASC_A2E)                                      //~v59sI~
           if (!(Sebcopt & EBC2ASC_DBCS)) //no DBCS consideration   //~v78RI~
 //  		ucvebc2asc(Sebcopt,pco,0,pco,binlen,Perrch,&binlen);	//evc->asc conv//~v59sR~//~va7FR~
-//  		ucvebc2asc_handle(Sebcopt,Sebchandle,pco,0,pco,binlen,Perrch,&binlen);	//evc->asc conv//~va7FI~//+vb2ER~
-    		ucvebc2asc_handle((int)Sebcopt,Sebchandle,pco,0,pco,binlen,Perrch,&binlen);	//evc->asc conv//+vb2EI~
+//  		ucvebc2asc_handle(Sebcopt,Sebchandle,pco,0,pco,binlen,Perrch,&binlen);	//evc->asc conv//~va7FI~//~vb2ER~
+    		ucvebc2asc_handle((int)Sebcopt,Sebchandle,pco,0,pco,binlen,Perrch,&binlen);	//evc->asc conv//~vb2EI~
         if (reslen==chklen)	//reached to eol                       //~v54QI~
         	delmsw=2;                                              //~v54QI~
         else                                                       //~v54QI~
@@ -2092,8 +2122,8 @@ int fcmdxnotehexconv(int Popt,PULINEH Pplh,UCHAR *Pdata,int Plen,UCHAR *Ppout,in
 	    if (Popt&EBC2ASC_A2E)                                      //~v59sI~
           if (!(Sebcopt & EBC2ASC_DBCS)) //no DBCS consideration   //~v78RI~
 //  		ucvebc2asc(Sebcopt,pco,0,pco,binlen,Perrch,&binlen);	//evc->asc conv//~v59sR~//~va7FR~
-//  		ucvebc2asc_handle(Sebcopt,Sebchandle,pco,0,pco,binlen,Perrch,&binlen);	//evc->asc conv//~va7FI~//+vb2ER~
-    		ucvebc2asc_handle((int)Sebcopt,Sebchandle,pco,0,pco,binlen,Perrch,&binlen);	//evc->asc conv//+vb2EI~
+//  		ucvebc2asc_handle(Sebcopt,Sebchandle,pco,0,pco,binlen,Perrch,&binlen);	//evc->asc conv//~va7FI~//~vb2ER~
+    		ucvebc2asc_handle((int)Sebcopt,Sebchandle,pco,0,pco,binlen,Perrch,&binlen);	//evc->asc conv//~vb2EI~
         pco+=binlen;                                               //~v55KI~
         pc2+=chklen;	//input pos                                //~v55KI~
         if (*Shexnotationpost)	//postfix specified                //~v55KR~

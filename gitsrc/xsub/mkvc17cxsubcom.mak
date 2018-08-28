@@ -30,7 +30,7 @@ OBJDIR=$(OBJLIB)^\
 INCPATH=/I$(INCULIBH) $(VCINC)
 XDA=g:\src\xsub\xda\src
 
-VCLIB=$(VCLIBPATH) AdvAPI32.lib user32.lib shell32.lib
+VCLIB=$(VCLIBPATH) AdvAPI32.lib user32.lib shell32.lib Gdi32.lib
 
 UTF8SUPP=/DUTF8SUPPH /DUTF8EBCD /DUTF8UCS2        #use utf8 .h file
 

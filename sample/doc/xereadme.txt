@@ -1,4 +1,4 @@
-||*CID:||+v129R~:  2018/05/10              update#=  580;             ||~v129R~
+||*CID:||+v@@@R~:  2018/08/27              update#=  585;             ||~v@@@R~
 ######################################################################
 [English]    v1.29                                                    ||~v128R~||~v129R~
 
@@ -109,6 +109,7 @@
  v1.3   xeacb.exe    For Windows/Linux Only,Syntax Highlight Browser. ||~124GI~,||~124GR~||~v125R~||~126JR~||~v128R~
  v1.1   xads.exe     For Windows Only,Access to NTFS ADS(Alternative Data Stream).||~v128R~
  v1.5   xbc.exe      Basic calculator.
+ v1.01  xcfont.exe   (Window only)Change font on command prompt.      ||~v@@@I~
  v1.1   xci.exe      C/C++/Java text file indentation                 ||~126JR~||~127CR~
  v1.20  xcv.exe      Code conversion.                                 ||+124FR~,||~124QR~||~125FR~||~125GR~||~127QR~||~v129R~
                      EUC,SJIS(Japanese:Shift JIS),Unicode,UTF-8,EBCDIC,Any-Codepage.||~124QR~
@@ -121,11 +122,11 @@
  v1.12  xds.exe      Directory size display tool                      ||~124RR~||~126BR~||~127AR~||~v129R~||~v129R~
  v1.27  xfc.exe      File compare tool                                ||~127SR~||~v128R~||~v129R~
  v1.7   xff.exe      file search by size/timestamp/name.               ||~7B08R~||~127ER~
- v1.19  xfg.exe      Binary file string search & Recursive grep.      ||~127AR~||~128FR~||~v128R~
+ v1.20  xfg.exe      Binary file string search & Recursive grep.      ||~127AR~||~128FR~||~v128R~||~v@@@R~
  v1.4   xfmt.exe     FileLineFormatter. "TC FMT" for huge file.       ||~124QR~||~v125R~
  v2.8   xfs.exe      Split large file,it enable backup large file to  ||~124RR~||~127QR~||~v128R~
                      diskets.
- v1.3   xkp.exe      (Windows) display process-id and kill process.   ||~127QR~||~v128R~
+ v1.4   xkp.exe      (Windows) display process-id and kill process.   ||~127QR~||~v128R~||~v@@@R~
  v1.5   xlow.exe     Rename UpperCase file name to LowerCase.         ||~127AR~
  v1.2   xmj.exe      2 file matching.                                 ||~v125R~
  v1.2   xpe.exe      Display comment of errno(libc error code).
@@ -2439,7 +2440,8 @@ How to start.
   .v129F<--129E:(2018/01/23)                                          ||~v129R~
   .v129G<--129F:(2018/01/30)                                          ||~v129I~
   .v129H<--129G:(2018/02/22)                                          ||~v129R~
-  .v129J<--129H:(2018/05/10)                                          ||+v129I~
+  .v129J<--129H:(2018/05/10)                                          ||~v129I~
+  .v129K<--129J:(2018/08/27)                                          ||~v@@@I~
                                                                       ||~v129R~
      1.BUGs                                                           ||~v129R~
        -(Windows:64)"&"(spawn executable file) dir cmd crush.         ||~v129R~
@@ -2465,6 +2467,26 @@ How to start.
      (129H)                                                           ||~v129I~
        -(gxe:GTK3)printer selection on PrintDialog is applied incorrectly.||~v129I~
        -(gxe:GTK3)screen size at termination is not recovered correctly and enlarged.||~v129I~
+     (129K)                                                           ||~v@@@I~
+       -Around processing of UTF8 file.                               ||~v@@@I~
+         .DisplayCellWidth was reviced.                               ||~v@@@I~
+         .Trouble around displaying UCS4,SpacingCombiningMarks adn NonSpacingMark.||~v@@@I~
+         .Expanded Maxmum combining up to 8 chracters.(case of Tibtan)||~v@@@I~
+          For Linux Console version max is yet 4 characters.          ||~v@@@I~
+         .When unicode>=U01000(Windows) or unicode>=U020000(Linux)    ||~v@@@I~
+            -Invalid hexcode display on top-left header line.         ||~v@@@I~
+            -Could not update on vertical hex display line.           ||~v@@@I~
+         .(LNX)When U01000<= unicode <U020000                         ||~v@@@I~
+            -SBCS(CellWidth=1) was changed to another character at save.||~v@@@I~
+            -"v" line cmd on vertical hex line(cmd to accept 3 consecutive hex code as unicode) failed.||~v@@@I~
+         .On =3.12 panel(Compare Tool) was corrupted when filename encoding is UTF8.||~v@@@I~
+         .(WinConsole)New tool:xcfont can change font of command prompt.||~v@@@I~
+          It enables to view foreign script suach as Devanagari.      ||~v@@@I~
+       -When gb18030, differece of cursor position between charcter and vertical hex line||~v@@@I~
+        occurs for characters of CelWidth=1.                          ||~v@@@I~
+       -Consecutive Esc key clear line cmd except label,              ||~v@@@I~
+        but cmd specified the labe get error of label not found.      ||~v@@@I~
+       -When screen is split, it may occurs that line cmd on edit panel is ignored.||~v@@@I~
                                                                       ||~v129R~
      2.Additional function.                                           ||~v129I~
                                                                       ||~v129I~
@@ -2551,6 +2573,10 @@ How to start.
         .R-button popups context menu.                                ||~v129I~
         .Double click works as "x" cmd(execute the command after closed the command history panel).||~v129I~
         .Click on the selected line works as "s" cmd(set to the command input line after closed the command history panel).||~v129I~
+     (129K)                                                           ||~v@@@I~
+       -TC fmt cmd -D"..." and -S"..." option                         ||~v@@@I~
+        Accept escape secuence such as \x, \t as Delimeter(\t(0x09) is not allowed for -S).||~v@@@I~
+        Accept DBCS as  -S option.                                    ||~v@@@I~
                                                                       ||~v129I~
      3.Miscellaneous.                                                 ||~v129R~
        -(Windows) add "msi" as executable binary extension            ||~v129R~
@@ -2577,6 +2603,13 @@ How to start.
         had not function key assigned, assign Shift+Alt+F12.          ||~v129I~
      (129J)                                                           ||~v129I~
        -Add "CPU8" option to dirlist cmd "="(compare file/directory). ||~v129I~
+     (129K)                                                           ||~v@@@I~
+       -3.12 Panel(File/Dir compare)                                  ||~v@@@I~
+        "-CPU8" option was added to view compare result as CPU8 file. ||~v@@@I~
+       -Diplay hex code on top-left for also directory list except ASCII code.||~v@@@I~
+       -Limit to SBCS for alternative character of "OPT UNICOMB U-xxxx" cmd||~v@@@I~
+       -Explicit "Force" option is required at save when timestamp was changed from loading time.||~v@@@I~
+        Re-enter of PF3 is not effective from now, use "SAVe -Force" or "END -force" cmd.||~v@@@I~
                                                                       ||~v129I~
      4.Tool.                                                          ||~v129I~
      (129C)                                                           ||~v129I~
@@ -2601,3 +2634,55 @@ How to start.
      (129J)                                                           ||~v129I~
        -xdc v2.29,xfc v1.27                                           ||~v129I~
         Add "CPU8" option.                                            ||~v129I~
+     (129K)                                                           ||~v@@@I~
+       -(Win)xkp v1.4                                                 ||~v@@@I~
+        Exe name was not fullpath from Windows7, show fullpath.       ||~v@@@I~
+       -xfg v1.20                                                     ||~v@@@I~
+        grep may hungup when srach string is starting with "-".       ||~v@@@I~
+       -(Win)New tool xcfont v1.01 (available from Windows Vista)     ||~v@@@I~
+        It chages font of command prompt.                             ||~v@@@I~
+        Chcp may required depending on font family.                   ||~v@@@I~
+        For example, to view Devanagari script                        ||~v@@@I~
+        Change font like as "xcfont Mangal" after "chcp 57002".       ||~v@@@I~
+        You can see Devaganari script(U+0900-097f) on xe.             ||+v@@@R~
+        For wxe or Linux version you need nothing special.            ||~v@@@I~
+        --------------------------------------------------------------------------||~v@@@I~
+        xcfont:V1.01(6): Change Current Console Font. (Supported From Vista.)||~v@@@I~
+         xcfont  [/options] [ <name> ] [ No=<seqno> ] [ CharSet={<charset>|?} ]||~v@@@I~
+                            [ H=<height> ] [ W=<width> ] [ Weight=<weight> ]||~v@@@I~
+        *******************************************************************************||~v@@@I~
+         <name >  :Partial string of FontName(StartsWith).            ||~v@@@I~
+                   "*" means current font.                            ||~v@@@I~
+                   Prefix:"*" means Contains.                         ||~v@@@I~
+         <seqno>  :Select font by SeqNo from listed fonts,            ||~v@@@I~
+                   to allow name is not full specification.           ||~v@@@I~
+         <charset>:Select filtering by charset.                       ||~v@@@I~
+                   List available value by "charset=?".               ||~v@@@I~
+         <height> :Font Height. "*" means copy from current.          ||~v@@@I~
+         <width>  :Font Width. "*" means copy from current.           ||~v@@@I~
+                   if missing, calculated from height.                ||~v@@@I~
+         <weight> :Weight. specify Regular/Bold.                      ||~v@@@I~
+                   if missing, adopted from selected font.            ||~v@@@I~
+          /options                                                    ||~v@@@I~
+             /A:Accept System Selection.                              ||~v@@@I~
+                Not restore even when system set differently from requested.||~v@@@I~
+             /B:Select Not TrueType fonts(Raster) only.               ||~v@@@I~
+             /D:Detail Query Information.                             ||~v@@@I~
+             /F:Select Fixed Pitch fonts only.                        ||~v@@@I~
+             /Q:Query candidate fonts.                                ||~v@@@I~
+             /T:Select TrueType fonts only.                           ||~v@@@I~
+             /V:Select Variable Pitch fonts only.                     ||~v@@@I~
+         e.g. ----- (all are case insensitive) -----                  ||~v@@@I~
+           xcfont /Q charset=222     ; List fonts of charset:THAI.    ||~v@@@I~
+           xcfont charset=?          ; List available charset .       ||~v@@@I~
+           xcfont /Qf                ; List FixedPitch font.          ||~v@@@I~
+           xcfont /Q *               ; Show current font set.         ||~v@@@I~
+           xcfont /Q Microsoft       ; List fontname starting with "Microsoft".||~v@@@I~
+           xcfont /Q *Sans           ; List fontname containing "Sans".||~v@@@I~
+           xcfont Microsoft No=2     ; Select second font listed by "Microsoft".||~v@@@I~
+           xcfont SimSun charset=238 ; Select SimSun with charset:EASTEUROPE.||~v@@@I~
+           xcfont Tahoma H=*         ; H=current, W=H*rate of W/H of selected.||~v@@@I~
+           xcfont * H=16 W=10        ; Update current font sizes      ||~v@@@I~
+           xcfont * Weight=Bold      ; Set current font weight to Bold||~v@@@I~
+           chcp 57002                ; 57002:Devanagari, "Mangal" requires it.||~v@@@I~
+           xcfont Mangal H=*         ; Codepage will be listed by "xcv /list".||~v@@@I~

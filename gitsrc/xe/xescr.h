@@ -1,7 +1,8 @@
-//CID://+vbi3R~:      update#=   33                                //~vbi3R~
+//CID://+vbmiR~:      update#=   35                                //+vbmiR~
 //****************************************************************
 //xescr.h                                                          //~va00R~
 //****************************************************************//~5611I~
+//vbmi:180807 (W32:Bug)top panel LC line is corrupted,use not OutputW but OutputCharacterW.(See v6C8)//+vbmiI~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
@@ -136,13 +137,16 @@ typedef struct _USCRD {
 #define USDF2VHEXLINE2  0x80                    //virtical hex display line2//~v60vI~
                         UCHAR   USDnattr0;      //additional nattr data
                         UCHAR   USDnattr;       //attr data for nattr
+                                                                   //~vbi3I~
                         UCHAR   USDflag3;       //attr data for nattr//~v780I~
 #define USDF3SYNTAX     0x01                    //draw by syntax highlight//~v780I~
 //#define USDF3NOLIGATURE 0x02                    //non ligaturemode//~vb4fR~
 //#define USDF3DDFMT      0x02                    //dd fmt for cmdline when containing utf8 code//~vaanR~//~vaarR~
 //                      UCHAR   USDrsv[3];                         //~vb4fR~
-                        UCHAR   USDuvioo;       //UVIOO_XX for ligature/combine line by line(see uviom.h)//~vb4fI~
-                        UCHAR   USDrsv[2];                         //~vb4fI~
+//                      UCHAR   USDuvioo;       //UVIOO_XX for ligature/combine line by line(see uviom.h)//~vb4fI~//+vbmiR~
+//                      UCHAR   USDrsv[2];                         //~vb4fI~//+vbmiR~
+                        UCHAR   USDrsv[1];                         //+vbmiR~
+                        USHORT  USDuvioo;       //UVIOO_XX for ligature/combine line by line(see uviom.h)//+vbmiR~
                         int     USDlen;         //write len for data
                         int     USDoff;         //write data offset
                         int     USDnattr0len;   //additional nattr len

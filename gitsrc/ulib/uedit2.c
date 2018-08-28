@@ -1,9 +1,10 @@
-//CID://+v6T2R~:                             update#=  111;        //~v6D2R~//~v6T2R~
+//CID://+v6XcR~:                             update#=  129;        //~v6XcR~
 //*************************************************************
 //*uedit2.c
 //*  uasciidump,ueditfattr,uxdumpline,ugetdtparm(date/time parm)   //~v5czR~
 //*  uxdumpstr                                                     //~v6BfI~
 //*************************************************************
+//v6Xc:180823 add ueditescrep,process \a,\x..                      //~v6XcI~
 //v6T2:180211 add ueditNowFileTime (current time -->FTIME/FDATE)   //~v6T2I~
 //v6D2:160423 LNX compiler warning for bitmask assignment(FDATE,FTIE)//~v6D2I~
 //v6BM:160313 (W32) compiler warning                               //~v6BMI~
@@ -81,6 +82,7 @@
 #include <uque.h>                                                  //~v59eI~
 #include <uftp.h>                                                  //~v59eI~
 #include <ucvucs.h>                                                //~v5i5I~
+#include <utrace.h>                                                //~v6XcI~
 //#ifdef UTF8SUPP                                                    //~v5n8I~//~v62jR~
 #ifdef UTF8SUPPH                                                   //~v62jI~
 #include <utf.h>                                                   //~v5i9I~
@@ -1162,7 +1164,7 @@ int ueditNowFileTime(int Popt,FDATE *Ppfdate,FTIME *Ppftime)       //~v6T2I~
 //**************                                                   //~v6T2I~
     utimeedit((UCHAR*)(ULPTR)UET_ILONG,uldttm); //each int byte YYyymmdd+hhmmssth//~v6T2I~
     dt=(UINT)uldttm[0];                                            //~v6T2I~
-    yy=(int)((dt>>24)*100+((dt>>16)& 255));                        //+v6T2R~
+    yy=(int)((dt>>24)*100+((dt>>16)& 255));                        //~v6T2R~
     mm=(yy>>8)&255;                                                //~v6T2I~
     dd=yy&255;                                                     //~v6T2I~
   	if (yy>1980)                                                   //~v6T2I~
@@ -1171,9 +1173,104 @@ int ueditNowFileTime(int Popt,FDATE *Ppfdate,FTIME *Ppftime)       //~v6T2I~
     	yy2=0;                                                     //~v6T2I~
     ueditsetfdateUSHORT(0,yy2,mm,dd,Ppfdate);                      //~v6T2R~
     tm=(UINT)uldttm[1];                                            //~v6T2I~
-    hh=(int)(tm>>24);                                              //+v6T2R~
+    hh=(int)(tm>>24);                                              //~v6T2R~
     mn=(tm>>16)&255;                                               //~v6T2I~
     ss=(tm>>8)&255;                                                //~v6T2I~
     ueditsetftimeUSHORT(0,hh,mn,ss,Ppftime);                       //~v6T2R~
     return 0;                                                      //~v6T2I~
 }//ueditsetftime                                                   //~v6T2I~
+//**********************************************************************//~v6XcI~
+//* rep escseq such as \a, \x ...                                  //~v6XcI~
+//* \x should be len=2                                             //~v6XcI~
+//* rc:0 no esc,1:done,4:hex err,8 fmt err,16:buff ovf             //~v6XcR~
+//**********************************************************************//~v6XcI~
+int ueditescrep(int Popt,char *Pin,int Plen,char *Pout,int Pbuffsz,int *Ppoutlen)//~v6XcI~
+{                                                                  //~v6XcI~
+static char Sescseqid[]="XABTNVFR\"\'\\";                                //~v09LR~//~v6XcR~
+static char Sescseqtbl[]  ="x\a\b\t\n\v\f\r\"\'\\";                      //~v09LR~//~v6XcR~
+    char *pc,*pci,*pco;                                                      //~v09NR~//~v6XcR~
+    int ii,reslen,hexlen,outlen;                                                        //~v0apI~//~v6XcR~
+    int rc=0;                                                        //~v09NI~//~v6XcR~
+    char wk[32];                                                   //~v6XcR~
+//*********************************                                //~v09LI~//~v6XcI~
+ 	if (!*Pin)		//null                                         //~v433I~//~v6XcI~
+		return 0;                                                  //~v433I~//~v6XcI~
+    for(pci=Pin,pco=Pout,reslen=Pbuffsz,ii=0;ii<Plen;ii++,pci++)   //~v6XcR~
+    {                                                              //~v6XcI~
+    	if (reslen<=0)                                             //~v6XcI~
+        {                                                          //~v6XcI~
+        	rc=16;                                                 //~v6XcR~
+            break;                                                 //~v6XcI~
+        }                                                          //~v6XcI~
+ 		if (*pci!='\\')                                            //~v6XcI~
+        {                                                          //~v6XcI~
+        	*pco++=*pci;                                           //~v6XcI~
+            reslen--;                                              //~v6XcI~
+			continue;                                              //~v6XcI~
+        }                                                          //~v6XcI~
+        if (ii+1>=Plen)                                            //~v6XcI~
+        {                                                          //~v6XcI~
+            rc=8;                                                  //~v6XcI~
+            break;                                                 //~v6XcI~
+        }                                                          //~v6XcI~
+        pci++;                                                     //~v6XcI~
+        ii++;                                                      //~v6XcI~
+ 		if (!(pc=strchr(Sescseqid,toupper(*pci))))                 //~v6XcI~
+        {                                                          //~v6XcI~
+            rc=8;                                                  //~v6XcI~
+            break;                                                 //~v6XcI~
+        }                                                          //~v6XcI~
+    	if (*pc=='X')	//x or X                                       //~v09LR~//~v6XcI~
+    	{                                                              //~v09LI~//~v6XcI~
+    		if ((hexlen=ugethex(pci+1,wk,2))<0)	//rc is hex len//~v0apI~//~v6XcR~
+        	{                                                          //~v09NI~//~v6XcI~
+            	UTRACED("pci",pci+1,2);                            //~v6XcR~
+            	if (Popt & UEERO_MSG)                              //~v6XcI~
+    				uerrmsg("Hex notation error(%s)",                      //~vbc3I~//~v6XcR~
+							"ヘキサ指定エラー(%s)",                        //~v09NI~//~v6XcR~
+							Pin);                                          //~v09NI~//~v6XcR~
+                rc=4;                                              //~v6XcI~
+        		break;                                             //~v6XcI~
+			}                                                          //~v09NI~//~v6XcI~
+            UTRACED("wk",wk,hexlen);                               //~v6XcR~
+            pci+=hexlen*2;                                         //~v6XcR~
+            ii+=hexlen*2;                                          //~v6XcR~
+            if (Popt & UEERO_NULLERR)                              //~v6XcI~
+            {                                                      //~v6XcI~
+            	if (memchr(wk,0,(size_t)hexlen))                   //+v6XcR~
+                {                                                  //~v6XcI~
+	            	if (Popt & UEERO_MSG)                          //~v6XcI~
+    					uerrmsg("Hex notation error(%s), containing NULL",//~v6XcI~
+								"ヘキサ指定エラー, NULL が含まれています(%s)",//~v6XcI~
+								Pin);                              //~v6XcI~
+                	rc=4;                                          //~v6XcR~
+        			break;                                         //~v6XcR~
+                }                                                  //~v6XcI~
+            }                                                      //~v6XcI~
+            if (hexlen>reslen)                                     //~v6XcI~
+            {                                                      //~v6XcI~
+	        	rc=8;                                              //~v6XcI~
+    	        break;                                             //~v6XcI~
+            }                                                      //~v6XcI~
+            memcpy(pco,wk,(size_t)hexlen);                         //+v6XcR~
+            pco+=hexlen;                                           //~v6XcI~
+            reslen-=hexlen;                                        //~v6XcI~
+            rc=1;                                                  //~v6XcI~
+    	}                                                              //~v09LI~//~v6XcR~
+    	else                                                           //~v09LI~//~v6XcR~
+    	{                                                              //~v09LI~//~v6XcR~
+        	*pco++=Sescseqtbl[PTRDIFF(pc,Sescseqid)];              //~v6XcI~
+            reslen--;                                              //~v6XcI~
+        	rc=1;                                                      //~v09NI~//~v6XcR~
+        }                                                          //~v6XcI~
+	}                                                              //~v09LI~//~v6XcI~
+    if (rc==8)                                                     //~v6XcI~
+        if (Popt & UEERO_MSG)                                      //~v6XcI~
+    		uerrmsg("EscapeSeq Format err(%s)",0,                  //~v6XcI~
+							Pin);                                  //~v6XcI~
+    outlen=PTRDIFF(pco,Pout);                                      //~v6XcR~
+    *Ppoutlen=outlen;                                              //~v6XcI~
+    UTRACED("inp",Pin,Plen);                                       //~v6XcI~
+    UTRACED("out",Pout,outlen);                                    //~v6XcI~
+    return rc;                                                     //~v09NR~//~v6XcI~
+}//ueditescrep                                                     //~v6XcR~

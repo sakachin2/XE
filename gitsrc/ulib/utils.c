@@ -1,4 +1,4 @@
-//*CID://+v6G3R~:                              update#=  237;      //~v6G3R~
+//*CID://+v6G3R~:                              update#=  238;      //~v6G3R~
 //*************************************************************
 //*uerrexit/uerrmsg/uerrexit_init/uerrmsg_init                     //~v5nnR~
 //*************************************************************
@@ -31,11 +31,11 @@
 #else
   #ifdef W32                                                       //~v053I~
    #ifndef MGW32                                                   //~v5ncI~
-#ifdef WIN10                                                   //+v6BkI//+v6G3M~
-	#include <winerror.h>                                          //+v6G3M~
-#else                                                              //+v6G3M~
+#ifdef WIN10                                                   //+v6BkI//~v6G3M~
+	#include <winerror.h>                                          //~v6G3M~
+#else                                                              //~v6G3M~
     #include <error.h>                                             //~v5iyI~
-#endif                                                             //+v6G3I~
+#endif                                                             //~v6G3I~
    #endif //!MGW32                                                 //~v5ncI~
 #define _WINERROR_      //protect winerror.h(partialy duplicated definie with error.h)//~v5iyR~
     #include <windows.h>                                           //~v175I~
@@ -64,6 +64,7 @@
                                                                    //~v324I~
 //#include <upopup.h>                                              //~v5nxR~
 //#include <uvio.h>                                                //~v5nxR~
+#define GBL_UTRACE  //define global variable                       //+v6G3I~
 #include <utrace.h>                                                //~v170I~
 //#include <ualloc.h>                                              //~v5nxR~
 #include <uedit.h>                                                 //~v5nxR~

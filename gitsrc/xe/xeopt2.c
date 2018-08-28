@@ -1,9 +1,14 @@
-//*CID://+vbi3R~:                             update#=  438;       //+vbi3R~
+//*CID://+vbmqR~:                             update#=  450;       //~vbmqR~
 //*************************************************************
 //*xeopt2.c                                                        //~7B24R~
 //* Mode                                                           //~v90wR~
 //*************************************************************
-//vbi3:180211 supprt command history list                          //+vbi3I~
+//vbmq:180722 set opt unicomb status on dirlist hdrline            //~vbmqI~
+//vbkx:180708 (LNX:Bug)opt uncomb;itself/shadow is not notified to ulib when change to comb from UNPR//~vbkxI~
+//vbkt:180702 (BUG)"opt unicomb unp" set unpchar 763ba3a4.(UNP is invalid,UNPR is valid, but assumed Uxxxx)//~vbktI~
+//vbk2:180605 (LNX:Console)shadow/itself/padding option is effectiv also when OPT2COMBINE when csr is on it(uviom_setcombine1)//~vbk2I~
+//vbk1:180605 (LNX:Console:Bug)"combine itself" was not notified to uviom at init//~vbk1I~
+//vbi3:180211 supprt command history list                          //~vbi3I~
 //vbf0:180109 WriteConsoleOutputW(used for cpu8 ligaturemode) shrinks line on Windows10(OK on XP),prohibit ligature on for Windows10//~vbf0I~
 //vbCD:160825 for also locale file display ligature mode like as vb4q//~vb4qI~
 //vb4q:160810 display ligature/combine mode on "TOP OF LINE"       //~vb4qI~
@@ -109,6 +114,7 @@
 #include <ucvebc4.h>                                               //~va79I~
 #include <utrace.h>                                                //~vb4jI~
 #include <udos.h>                                                  //~vbf0I~
+#include <uedit.h>                                                 //~vbktI~
 
 #include "xe.h"
 #include "xescr.h"                                                 //~v90wM~
@@ -195,6 +201,7 @@ void xeopt2init(void)                                              //~v91sI~
   if (Goptopt3 &  GOPT3_COMBINENP)                                 //~vb4nI~
 	uviom_notify(UVIOMNO_ALTCH,GoptcombaltchNP,0/*2nd parm*/);     //~vb4nI~
   else                                                             //~vb4nI~
+	uviom_notify(UVIOMNO_ALTCH,Goptcombaltch,0/*2nd parm*/);       //~vbk1I~
 #else                                                              //~vb4nI~
 	uviom_notify(UVIOMNO_ALTCH,Goptcombaltch,0/*2nd parm*/);       //~vb4jR~
 #endif                                                             //~vb4jR~
@@ -283,6 +290,26 @@ int optcombinehelpsub(int Popt,char **Ppcombine,char **Ppligature,char *Paltch)/
    }                                                               //~vb4nI~
 #endif                                                             //~va3sI~
   }//!combine                                                      //~vb4nI~
+#if defined(LNX) && !defined(XXE)                                  //~vbk2I~
+  else                                                             //~vbk2I~
+  {                                                                //~vbk2I~
+    switch(Goptcombaltch)                                          //~vbk2I~
+    {                                                              //~vbk2I~
+    case UVIOM_ALTCHPADDING:                                       //~vbk2I~
+        paltch="(" OPT_COMBPADDING ")";                            //~vbk2I~
+        break;                                                     //~vbk2I~
+	case UVIOM_ALTCHSHADOW:                                        //~vbk2I~
+        paltch="(" OPT_COMBSHADOW ")";                             //~vbk2I~
+    	break;                                                     //~vbk2I~
+    case UVIOM_ALTCHITSELF:                                        //~vbk2I~
+        paltch="(" OPT_COMBITSELF ")";                             //~vbk2I~
+        break;                                                     //~vbk2I~
+    default:                                                       //~vbk2I~
+    	sprintf(altch,"(U-%04x)",Goptcombaltch);                   //~vbk2I~
+        paltch=altch;                                              //~vbk2I~
+    }                                                              //~vbk2I~
+  }                                                                //~vbk2I~
+#endif                                                             //~vbk2I~
  }//!O2SHLCO_LIGATUREONLY                                          //~vbCDR~
   	*Ppcombine=pmodecombine;                                       //~vb4qR~
   	*Ppligature=pmodeligature;                                     //~vb4qR~
@@ -351,6 +378,7 @@ static UCHAR *Swordtblcomb=OPT_COMBCOMBINE "\0"                    //~va3sR~
                        ;                                           //~va3sI~
     UCHAR *pc;                                                     //~va3sR~
     int   opdno,ii,opid;                                           //~va3sR~
+    int len;                                                       //~vbktI~
 //#if defined(LNX) && !defined(XXE)                                //~vb4qR~
     LONG oldaltch,newaltch;                                        //~va3sR~
 #if defined(LNX) && !defined(XXE)                                  //~vb4qR~
@@ -400,12 +428,21 @@ static UCHAR *Swordtblcomb=OPT_COMBCOMBINE "\0"                    //~va3sR~
         {                                                          //~va3sR~
         case 0: //unicode Xxxxx                                    //~va3sR~
 //#if defined(LNX) && !defined(XXE)                                //~vb4nR~
-        	if (toupper(*pc)=='U')                                 //~va3sI~
+//      	if (toupper(*pc)=='U')                                 //~va3sI~//~vbktR~
+            len=(int)strlen(pc+1);                                 //~vbktI~
+        	if (toupper(*pc)=='U'                                  //~vbktI~
+            &&  unumlen(pc+1,UNUMLEN_HEX,len)==len)                //~vbktR~
             {                                                      //~va3sI~
             	pc++;                                              //~va3sR~
             	if (*pc=='-')                                      //~va3sR~
                 	pc++;                                          //~va3sR~
             	sscanf(pc,"%4lx",&newaltch);                       //~va3sR~
+                if (utfwcwidth(0,(ULONG)newaltch,0)!=1)            //~vbktR~
+                {                                                  //~vbktI~
+                    uerrmsg("U%s is not column width==1",0,        //~vbktR~
+                        pc);                                       //~vbktI~
+	        		return 4;                                      //~vbktR~
+                }                                                  //~vbktI~
 //          	Goptcombaltch=newaltch;                            //~va3sR~//~vb2ER~
 //#ifdef W32                                                       //~vb4nR~
 #if defined(LNX) && !defined(XXE)                                  //~vb4nI~
@@ -602,6 +639,10 @@ int func_optcombine(PUCLIENTWE Ppcw)                               //~va30I~
 		uviom_notify(UVIOMNO_ALTCH,Goptcombaltch,0/*2nd parm*/);   //~vb4nI~
 #endif                                                             //~vb4nI~
 	}                                                              //~vb4nI~
+    else                                                           //~vbkxI~
+    {                                                              //~vbkxI~
+		uviom_notify(UVIOMNO_ALTCH,Goptcombaltch,0/*2nd parm*/);   //~vbkxI~
+    }                                                              //~vbkxI~
     UTRACEP("%s:new opt2=%0x,opt3=%0x,Gulibutfmode=%0x\n",UTT,Goptopt2,Goptopt3,Gulibutfmode);//~vb4jI~
     optresethdrligcomb(0,Ppcw);                                    //~vb4qR~
 	scrfulldraw(Ppcw);                                             //~va30I~
@@ -1297,8 +1338,8 @@ void filesetlocaleid(PUFILEH Ppfh)                                 //~v915M~
 //    if (cvlen)                                                     //~va79I~//~va7LR~
 //        memcpy(pc+CVNAMEPOS,cvname,(UINT)cvlen);                   //~va79I~//~va7LR~
     UCBITON(plh->ULHflag,ULHFDRAW); //redraw                       //~v915I~
-  if (Ppfh->UFHtype!=UFHTCMDHIST)                                  //+vbi3I~
-  {                                                                //+vbi3I~
+  if (Ppfh->UFHtype!=UFHTCMDHIST)                                  //~vbi3I~
+  {                                                                //~vbi3I~
  	if (PFH_ISEBC(Ppfh))                                           //~va7LI~
 		opt2setebccvname(0,Ppfh);                                  //~va7LI~
     else                                                           //~vb4qR~
@@ -1306,7 +1347,7 @@ void filesetlocaleid(PUFILEH Ppfh)                                 //~v915M~
 		opt2sethdrligcomb(0,Ppfh);                                 //~vb4qR~
     else                                                           //~vbCDR~
 		opt2sethdrligcomb(O2SHLCO_LIGATUREONLY,Ppfh);              //~vbCDR~
-  }                                                                //+vbi3I~
+  }                                                                //~vbi3I~
     return;                                                        //~v915I~
 }//filesetlocaleid                                                 //~v915M~
 //*******************************************************          //~va7KI~
@@ -1468,6 +1509,7 @@ void dirsetlocaleid(int Popt,PUFILEC Ppfc,char *Ppsddata)          //~v91hI~
         plh=UGETQEND(pqh);                                         //~v91hI~
         UCBITON(plh->ULHflag,ULHFDRAW); //redraw                   //~v91hI~
     }                                                              //~v91hI~
+	opt2sethdrligcomb(0,pfh);                                      //+vbmqR~
     return;                                                        //~v91hI~
 }//dirsetlocaleid                                                  //~v91hI~
 #ifdef UTF8SUPP                                                    //~va00I~
@@ -1796,6 +1838,9 @@ int opt2sethdrligcomb(int Popt,PUFILEH Ppfh)                       //~vb4qR~
     cvlen=(int)strlen(altch);                                      //~vb4qR~
     memset(altch+cvlen,'*',sizeof(altch)-(size_t)cvlen);           //~vb4qR~
     *(altch+sizeof(altch)-1)=0;                                    //~vb4qR~
+  if (Ppfh->UFHtype==UFHTDIR)                                      //~vbmqI~
+    cvlen=sprintf(optligcomb,"Unicomb: %s %s",pmodecombine,altch); //~vbmqI~
+  else                                                             //~vbmqI~
   if (Popt & O2SHLCO_LIGATUREONLY)                                 //~vbCDR~
     cvlen=sprintf(optligcomb,"Lig:%s ",pmodeligature);             //~vbCDI~
   else                                                             //~vbCDI~
@@ -1825,6 +1870,12 @@ int optresethdrligcomb(int Popt,PUCLIENTWE Ppcw)                   //~vb4qR~
         {                                                          //~vb4qR~
             pfc=pcw->UCWpfc;                                       //~vb4qR~
             pfh=pfc->UFCpfh;                                       //~vb4qR~
+  			if (pfh->UFHtype==UFHTDIR)                             //+vbmqR~
+            {                                                      //~vbmqI~
+				UCBITON(pcw->UCWflag,UCWFDRAW);//redraw            //~vbmqI~
+                opt2sethdrligcomb(0,pfh);                          //~vbmqI~
+            }                                                      //~vbmqI~
+            else                                                   //~vbmqI~
             if (FILEUTF8MODE(pfh))                                 //~vb4qR~
             {                                                      //~vb4qR~
 				UCBITON(pcw->UCWflag,UCWFDRAW);//redraw            //~vb4qR~

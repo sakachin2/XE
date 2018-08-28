@@ -1,8 +1,9 @@
-//*CID://+vbi3R~:                             update#=  621;       //~vbi3R~
+//*CID://+vbkcR~:                             update#=  627;       //~vbkcR~
 //*************************************************************
 //*xepan2.c
 //*   filename list process
 //*************************************************************
+//vbkc:180619 (BUG)panutil collapse sddata by setting sdlen(width*2)=USDcell size//~vbkcI~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vb4g:160804 like vb3d,set hdr attr not to the char but to pathname to draw at uviom by Ligature same as dir member//~vb4gR~
 //vb4f:160802 (ULIB:v6Ei)specify ligature on/off,combine on/of line by line(used for edit/filename  panel)//~vb4fI~
@@ -487,6 +488,7 @@ int pansetfnmattr(PUCLIENTWE Ppcw,PUSCRD Ppsd,int Prow,int Pfldid,char *Pcodetyp
     int len,ii,sdlen,fldoffs,fldlen,fldend,fnmend,netfnmlen;       //~va00I~
 	char *pct2,*pattr2,*pc2,ct,*psddata,attr2;                     //~vb4gR~
     int jj,len0,len2;                                              //~vb4gR~
+    int pospath;                                                   //~vbkcR~
 //*****************                                                //~va00I~
 	UTRACEP("%s:fldid=%x,row=%d,lclen=%d\n",UTT,Pfldid,Prow,Plclen);//~vb4gR~
 //  Ppsd->USDuvioo=UVIOO_FORCELIGATURE|UVIOO_COMBINE;              //~vb4gR~
@@ -508,6 +510,7 @@ int pansetfnmattr(PUCLIENTWE Ppcw,PUSCRD Ppsd,int Prow,int Pfldid,char *Pcodetyp
 	pattr=Ppsd->USDcell;                                           //~va00I~
     psddata=Ppsd->USDdata;                                         //~vb4gI~
     UTRACED("USDdata",psddata,sdlen);                              //~vb4gR~
+    UTRACED("USDcell",pattr,sdlen);                              //~vbi3I~//~vbkcR~
     UTRACED("pct",pct,netfnmlen);                                  //~vb4gI~
     if (Ppsd->USDflag==USDFCELLSTR)	//err attr set                 //~va00I~
     {                                                              //~va00I~
@@ -516,6 +519,7 @@ int pansetfnmattr(PUCLIENTWE Ppcw,PUSCRD Ppsd,int Prow,int Pfldid,char *Pcodetyp
         len=min(len,fldlen);                                       //~va00I~
         len=min(len,netfnmlen);                                    //~va00I~
         len0=len;                                                  //~vb4gI~
+        pospath=len0;                                              //~vbkcR~
 		for (;len>0;len--,pattr+=2)     //char+attr                //~va00I~
         {                                                          //~va00I~
 	       	if (*pct++==XEUTFCT_UTF8)                              //~va00R~
@@ -523,7 +527,8 @@ int pansetfnmattr(PUCLIENTWE Ppcw,PUSCRD Ppsd,int Prow,int Pfldid,char *Pcodetyp
 //         		*pattr=(*pattr & 0xf0) | fgutf8;  //fg+bg	set green//~va00R~//~vb30R~
            		*pattr=(char)((*pattr & 0xf0) | fgutf8);  //fg+bg	set green//~vb30I~
                 attr2=*pattr;	                                   //~vb4gI~
-                for (len2=len+1,pct2=pct-2,pattr2=pattr-2,pc2=psddata+fldoffs+len0-len-1;len2<=len0;len2--,pct2--,pattr2-=2,pc2--)//~vb4gR~
+//              for (len2=len+1,pct2=pct-2,pattr2=pattr-2,pc2=psddata+fldoffs+len0-len-1;len2<=len0;len2--,pct2--,pattr2-=2,pc2--)//~vb4gR~//~vbkcR~
+                for (len2=len+1,pct2=pct-2,pattr2=pattr-2,pc2=psddata+fldoffs+len0-len-1;len2<=pospath;len2++,pct2--,pattr2-=2,pc2--)//~vbkcR~
                 {                                                  //~vb4gI~
                     if (*pct2)                                     //~vb4gI~
                         break;                                     //~vb4gI~
@@ -537,15 +542,19 @@ int pansetfnmattr(PUCLIENTWE Ppcw,PUSCRD Ppsd,int Prow,int Pfldid,char *Pcodetyp
                     if (ct && ct!=XEUTFCT_UTF8) //locale dbcs      //~vb4gI~
                         break;                                     //~vb4gI~
                     if (!ct && (*pc2==DIR_SEPC||*pc2==FTP_DIR_SEPC))//~vb4gI~
+                    {                                              //~vbkcI~
+                    	pospath=len-1;                             //~vbkcR~
                         break;                                     //~vb4gI~
+                    }                                              //~vbkcI~
                     *pattr=attr2;                                  //~vb4gR~
                 }                                                  //~vb4gI~
             }                                                      //~vb4gI~
         }                                                          //~va00I~
-    UTRACED("out reverse SDcell",Ppsd->USDcell,len0+fldoffs);      //~vb4gR~
+    UTRACED("out reverse SDcell",Ppsd->USDcell,len0*2);      //~vb4gR~//+vbkcR~
     }                                                              //~va00I~
     else                                                           //~va00I~
     {                                                              //~va00I~
+        sdlen/=2;   //sdlen=byte length to cell count              //~vbkcI~
     	Ppsd->USDflag=USDFCELLSTR3;	//USDdata and USDcell          //~va00I~
 //dup   Ppsd->USDuvioo=UVIOO_LIGATURE|UVIOO_COMBINE;               //~vb4fI~
     	pattr++;                                                   //~va00I~
@@ -589,7 +598,7 @@ int pansetfnmattr(PUCLIENTWE Ppcw,PUSCRD Ppsd,int Prow,int Pfldid,char *Pcodetyp
             else                                                   //~va00I~
             	*pattr=nattr;                                      //~va00I~
         }                                                          //~va00I~
-    UTRACED("out SDcell",Ppsd->USDcell,fnmend);                    //~vb4gI~
+    UTRACED("out SDcell",Ppsd->USDcell,sdlen*2);                    //~vb4gI~//+vbkcR~
     }                                                              //~va00I~
     return 0;                                                      //~va00I~
 }//pansetfnmattr                                                   //~va00I~
@@ -1854,14 +1863,14 @@ int pan300rstack(FILE *Pfh)
             return 8;
 		cmdlen=(int)wkint;
     	pc=UALLOCM((UINT)(cmdlen));
-        UTRACEP("%s:cmdlen=%d\n",UTT,cmdlen);                      //+vbi3I~
+        UTRACEP("%s:cmdlen=%d\n",UTT,cmdlen);                      //~vbi3I~
 	    UALLOCCHK(pc,UALLOC_FAILED);
 	  	if (!fread(pc,(UINT)cmdlen,1,Pfh))
         {
             ufree(pc);
             return 8;
         }
-        UTRACED("rstack",pc,cmdlen);                               //+vbi3I~
+        UTRACED("rstack",pc,cmdlen);                               //~vbi3I~
 #ifdef UTF8SUPPH                                                   //~va1yI~
 	  if (!pan300chklcentry(0,pc,cmdlen))	//lc entry, updated previous//~va1yI~
 #endif                                                             //~va1yI~

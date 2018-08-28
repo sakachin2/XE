@@ -1,5 +1,7 @@
-//*CID://+v6HiR~:                                   update#=  698; //~v6HiR~
+//*CID://+v6WdR~:                                   update#=  704; //~v6WdR~
 //***********************************************************************
+//v6Wd:180713 (Lnx:BUG)cv -m2m -f:utf8 -t:gb18030 fail for u-00de-->81308937(len=4)//~v6WdI~
+//v6Vm:180620 (W32)when surrogate pair err,use utfcvucs2u8(WideCharToMultibyte dose not notify err,but set utf8 of u-fffd)//~v6VmI~
 //v6Hi:170118 (Win:BUG)buff overflow was not checked               //~v6HiI~
 //v6E1:160718 (W32)WideCharToMultiByte dose not set err            //~v6E1I~
 //            cv F8F0->a0,F8F1->fd,F8F2->fe,F8F3->ff and it is reversible//~v6E1I~
@@ -832,7 +834,7 @@ int ucvext_wincp2ucss(int Popt,ULONG Pconverter,UCHAR *Ppmbs,UCHAR *Ppdbcs,int P
                 }                                                  //~v5n8I~
                 else                                               //~v5n8I~
                 {                                                  //~v6BjI~
-                    if (UTF_ISUCS4(ucs4))                          //+v6HiR~
+                    if (UTF_ISUCS4(ucs4))                          //~v6HiR~
                     {                                              //~v6HiI~
                         if (pucs+1>=pucse)                         //~v6HiI~
                         {                                          //~v6HiI~
@@ -1392,7 +1394,13 @@ int ucvext_winucs2cp(int Popt,ULONG Pconverter,USHORT *Ppucs,int Pucsctr,UCHAR *
 //        wctmbopt|=UWCTMBO_SETSUBCHRC;//      0x01  //reverse chk //~v6E1R~
   if (Pconverter==CP_UTF8)                                         //~v6r1I~
 //  bytectr=WideCharToMultiByte(Pconverter,opt,Ppucs,Pucsctr,Ppmbs,Pbuffsz,NULL/*subchar*/,NULL/*default used*/);//~v6r1I~//~v6BIR~
+#ifdef TEST                  //@@@@test                            //~v6VmR~
     bytectr=uWideCharToMultiByte(0,Pconverter,opt,Ppucs,Pucsctr,Ppmbs,Pbuffsz,NULL/*subchar*/,NULL/*default used*/,&lasterr);//~v6BII~
+#else                                                              //~v6VmR~
+  {                                                                //~v6VmR~
+	lasterr=utf162u8(0,Ppucs,Pucsctr,Ppmbs,Pbuffsz,&bytectr);      //~v6VmR~
+  }                                                                //~v6VmR~
+#endif                                                             //~v6VmR~
   else                                                             //~v6r1I~
 //  bytectr=WideCharToMultiByte(Pconverter,opt,Ppucs,Pucsctr,Ppmbs,Pbuffsz,NULL/*subchar*/,&errrepflag);//~v6k4I~//~v6BFR~
 //  bytectr=WideCharToMultiByte(Pconverter,opt,Ppucs,Pucsctr,Ppmbs,Pbuffsz,NULL/*subchar*/,perrrepflag);//~v6BFI~//~v6BIR~
@@ -1476,13 +1484,13 @@ int ucvext_iconvucs2local1(int Popt,ULPTR Pconverter,UWUCS Pucs,UCHAR *Ppmbs,int
 //    UTRACEP("ucvext_iconvucs2local hiconv=%x,iconv rc=%d ilen=%d,olen=%d\n",hiconv,rciconv,ilen,olen);//~v62NR~//~v6m2R~
 //    UTRACED("ucvext_iconvucs2local",wkmbs,sizeof(wkmbs));          //~v5mtR~//~v6m2R~
     	len=(int)((ULONG)pco-(ULONG)pco0);                         //~v6uMI~
-	if (!rciconv && UCS_IS80FF(Pucs) && len>2)                     //~v6uMI~
-    {                                                              //~v6uMI~
-		UTRACED("%s:ERR iconv IS80FF to EUC ucs=%x\n",UTT,Pucs);   //~v6uMI~
-		UTRACED("ERR iconv IS80FF to EUC",pco0,len);               //~v6uMI~
-		rc=4;                                                      //~v6uMI~
-    }                                                              //~v6uMI~
-    else                                                           //~v6uMI~
+//    if (!rciconv && UCS_IS80FF(Pucs) && len>2)                     //~v6uMI~//~v6WdR~
+//    {                                                              //~v6uMI~//~v6WdR~
+//        UTRACED("%s:ERR iconv IS80FF to EUC ucs=%x\n",UTT,Pucs);   //~v6uMI~//~v6WdR~
+//        UTRACED("ERR iconv IS80FF to EUC",pco0,len);               //~v6uMI~//~v6WdR~
+//        rc=4;                                                      //~v6uMI~//~v6WdR~
+//    }                                                              //~v6uMI~//~v6WdR~
+//    else                                                           //~v6uMI~//~v6WdR~
 	if (rciconv==(size_t)-1)                                       //~v5mTI~
 	{                                                              //~v5mTI~
 		UTRACEP("ERR iconvucs2local1 err=%d\n",errno);             //~v5mTI~
@@ -2160,6 +2168,7 @@ static int Scodepage_invalidflags;                                 //~v6BHI~
     if (!ctr)                                                      //~v6BHI~
 	    lasterr=GetLastError();                                    //~v6BHR~
     UTRACEP("%s:MultibyteToWideChar opt=%x,cp=%d,mb=%02x,len=%d,ctr=%d,ucs=%x,lasterr=%d\n",UTT,opt,Pconverter,*Ppebc,Pinplen,ctr,Ppucs?*Ppucs:0,lasterr);//~v6BHR~//~v6E1R~
+    UTRACED("out Ppucs",Ppucs,ctr*(int)sizeof(WUCS));              //+v6WdI~
     if (lasterr==ERROR_INVALID_FLAGS)                              //~v6BHR~
     {                                                              //~v6BHI~
     	if ((int)Pconverter!=Scodepage_invalidflags)               //~v6BHI~

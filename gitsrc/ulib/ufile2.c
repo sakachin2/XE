@@ -1,9 +1,10 @@
-//*CID://+v6J3R~:                             update#=  444;       //+v6J3R~
+//*CID://+v6W4R~:                             update#=  452;
 //************************************************************* //~5903R~
 //*ufile2.c                                                        //~v5d7R~
 //*  uxdelete,uremove,urename,urename2,uattrib,umkdir,urmdir       //~v520R~
 //************************************************************* //~5617I~
-//v6J3:170206 change errmsg for longname(move filename at end)     //+v6J3I~
+//v6W4:180702 protect utrace file when opened by xe for browse     //~v6W4I~
+//v6J3:170206 change errmsg for longname(move filename at end)     //~v6J3I~
 //v6Ht:170122 (Win)reset v6Ho and force delete by /r option because if renamed at RONLYCHK phase,remains if user canceled//~v6HtI~
 //v6Hq:170121 umkdir not apierr but exist msg                      //~v6HqI~
 //v6Ho:170120 (Win)unconditionally delete too long name file(because prefix \\?\ allow up to 32K)//~v6HoI~
@@ -416,10 +417,10 @@ int urmdir(UCHAR *Pdirname)                                     //~5909I~
                 STD_FNM(fullpath));                                //~v6ygI~
         return rc;                                              //~5909I~
     case ENOTEMPTY:                                                //~v6H1I~
-//      uerrmsg("%s is not empty",                                 //~v6H1I~//+v6J3R~
-//              "%s ‚Í ‹ó‚Å‚È‚¢",                                  //~v6H1I~//+v6J3R~
-        uerrmsg("Not empty dir:%s",                                //+v6J3I~
-                "‹ó‚Å‚È‚¢Dir:%s",                                  //+v6J3I~
+//      uerrmsg("%s is not empty",                                 //~v6H1I~//~v6J3R~
+//              "%s ‚Í ‹ó‚Å‚È‚¢",                                  //~v6H1I~//~v6J3R~
+        uerrmsg("Not empty dir:%s",                                //~v6J3I~
+                "‹ó‚Å‚È‚¢Dir:%s",                                  //~v6J3I~
                 STD_FNM(fullpath));                                //~v6H1I~
         return rc;                                                 //~v6H1I~
     }                                                           //~5909I~
@@ -3009,9 +3010,10 @@ FILE *ufileopenexclusivewrite(int Popt,char *Pfnm,int *Pphandle)   //~v6B1I~
     }                                                              //~v6B1I~
     if (Pphandle)                                                  //~v6B1I~
     	*Pphandle=fh;                                              //~v6B1I~
+    uflock(0,Pfnm,0/*Ppfd at close*/);                             //~v6W4R~
 #endif                                                             //~v6B1I~
     return pfh;                                                    //~v6B1I~
-}//ufiledelifnotopened                                             //~v6B1I~
+}//ufileopenexclusivewrite                                         //~v6W4R~
 //*********************************************************************//~v6B1I~
 //* delete file if writable(not exclusively write open)            //~v6B1I~
 //*********************************************************************//~v6B1I~
@@ -3022,7 +3024,10 @@ int ufiledelifnotopened(int Popt,char *Pfnm,int Ppid)              //~v6B1R~
     char *pstrerrno;                                               //~v6B1R~
 #ifdef W32                                                         //~v6B1I~
 #else                                                              //~v6B1I~
+#ifdef AAA                                                         //~v6W4I~
 	char pathproc[32];                                             //~v6B1I~
+#endif                                                             //~v6W4I~
+    int fd,swlocked;                                               //~v6W4I~
 #endif                                                             //~v6B1I~
 //**********************************                               //~v6B1I~
 #ifdef W32                                                         //~v6B1I~
@@ -3052,9 +3057,17 @@ int ufiledelifnotopened(int Popt,char *Pfnm,int Ppid)              //~v6B1R~
     	fprintf(stderr,"ufiledelifnotopened:remove failed for %s errno=%d(%s)\n",Pfnm,interrno,pstrerrno);//~v6B1I~
     }                                                              //~v6B1I~
 #else //!WIN                                                       //~v6B1I~
+#ifdef AAA                                                         //~v6W4I~
 	sprintf(pathproc,"/proc/%d",Ppid);                             //~v6B1I~
 	rc=(int)ufstat(pathproc,0/*no ffb3*/);                         //~v6B1R~
     if (rc==ENOENT)  //not fount                                   //~v6B1I~
+#else                                                              //~v6W4I~
+	swlocked=uflock(0,Pfnm,&fd)==0;	                               //~v6W4R~
+//  UTRACEP("%s:swlocked=%d\n",UTT,swlocked);                      //~v6W4R~
+    if (fd>0)                                                      //~v6W4I~
+		uflock(UFLO_CLOSE,Pfnm,&fd);                               //~v6W4R~
+	if (swlocked)                                                  //~v6W4R~
+#endif                                                             //~v6W4I~
     {                                                              //~v6B1I~
         rc=unlink(Pfnm);   //-1 if err,0:ok                        //~v6B1R~
         if (rc<0)             //err                                //~v6B1R~

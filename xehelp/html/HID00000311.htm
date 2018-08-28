@@ -15,7 +15,7 @@ a:hover{font-weight:bold;}-->
 <SPAN STYLE="color:#000000;font-size:12pt;">    =  Save file
 
         SAVe    [file-name] [/M{T|P|U|M|E|R|V}] [-x | -nx] [-NB] [-F{n[-m]|vfmt}]
-                [-CPU8|-CPLC|-CPEB[:codepage]] [IE] [-S{r|i}d}]
+                [-CPU8|-CPLC|-CPEB[:codepage]] [IE] [-S{r|i}d}] [-Force]
 
           file-name : wild card avail to rename.
             (Note) When save to itself, file-name parameter is not requited.
@@ -59,6 +59,9 @@ a:hover{font-weight:bold;}-->
                        d : Delete SO/SI when translation from EBCDIC.
 
 #endif
+            -Force :Warning is issued when timestamp of the file was changed from time of opened
+                    (the file was updated out of this session),
+                    use this option to force save and close panel.
 
             -Without terminating edit screen,write all line to the file.
             -Use file-name operand when it cannnot be saved because disk

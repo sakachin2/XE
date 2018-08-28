@@ -1,8 +1,19 @@
-//*CID://+v6T4R~:                             update#=  609;       //+v6T4R~
+//*CID://+v6XOR~:                             update#=  630;       //+v6XOR~
 //*********************************************************************//~v600I~
 //* utf8 data manipulation                                         //~v600I~
 //*********************************************************************//~v600I~
-//v6T4:180217 f2l option to set dbcs "?" for f2l err               //+v6T4I~
+//v6X0:180813 combining require 2 cell when split such as u309a    //+v6XOI~
+//vbmk:180813 (XE)for test,try mk_wcwidth_cjk(ambiguous:Wide DBCS) for visibility chk. use /YJ option//~vbmkI~
+//v6Wm:180724 utfwcwidth return len=1 for Category "Cf"(wcwidth=0)  if ucs<ENTNO(2 if ucs>=ENTNO).//~v6WmI~
+//            determin combining for ucs>=ENTNOv should not use wcwidth==0 but combining definition//~v6WmI~
+//v6Wk:180723 (gxe)ambiguous(width=2) for gxe                      //~v6WkI~
+//v6Wi:180722 u+ad(Soft Hyphen) is wcwidth=0,bu combineprocess A0+ad show on 2 col. trate it as utfwcwidth=1 (unicode category Cf:Format)//~v6WiI~
+//v6W9:180708 dbcs combining char such as u309a(u306f+u309a) exists.//~v6W9I~
+//v6Vb:180612 add isSpacingCombiningmark                           //~v6VbI~
+//v6V7:180606 do not modify by wcwidth api,acept it only for return by mk_wcwidth//~v6V7I~
+//v6V4:180531 apply mk_wcwidth also for ucs4(>=map entry)          //~v6V4I~
+//v6V1:180518 char width adjust to ubuntu 17.10(kernel 4.13.0)     //~v6V1I~
+//v6T4:180217 f2l option to set dbcs "?" for f2l err               //~v6T4I~
 //v6K8:170331 (LNX)ubuntu lts uerrexit at udbcschk_wclocalereset after udbcschk_chklocale//~v6K8I~
 //            because iconv_open failed for "eucjp", iconv --list show "EUCJP".//~v6K8I~
 //            cause is libiconv114 was installed to /usr/local for Axe//~v6K8I~
@@ -75,6 +86,7 @@
 //v600:070710 (UTF8)new typdef                                     //~v600I~
 //*********************************************************************//~v600I~
 //************************************************                 //~v600I~
+#define UB1710	//test under ub17.10(kernel4.13.0)                 //~v6V1M~
 //************************************************                 //~v600I~
 //#ifdef UTF8SUPP                                                    //~v60aI~//~v650R~
 #ifdef UTF8SUPPH                                                   //~v650I~
@@ -580,6 +592,8 @@ extern  "C"                                                        //~v60aI~
 //  #define GULIBUTF_WINSURROGATE 0x00800000  //parm to uccvutf2ucs; set surrogate pare for ucs4(>0x10000)//~v6r4I~//~v6uBR~
     #define GULIBUTF_NOFPATHCONV  0x00800000  //bypass iocharset check for ufullpathCP//~v6B9I~
 	#define GULIBUTFCOMBINE_NP    0x01000000  //altch mode         //~v6EkI~
+	#define GULIBUTFAPIWIDTH0     0x02000000  //accept wcwidth()=0 for not on utf4:combine tbl//~v6V1I~
+	#define GULIBUTF_CJK          0x04000000  //force mk_wcwidth_cjk//~vbmkI~
 //**************************************************************************//~v600I~
 	#define UTF_INIT(opt) utf_init(opt);                           //~v600I~
 	int  utf_init(int Popt);                                       //~v600I~
@@ -614,6 +628,7 @@ int utfmb2wc(int Popt,UCHAR *Pdata,int Plen,ULONG *Ppucs,int *Ppreadlen,int *Ppw
 int utfwcwidth(ULONG Pucs);                                      //~v62UR~//~v62XR~
 #else                                                              //~v62XI~
 int utfwcwidth(int Popt,ULONG Pucs,int *Ppflag);                   //~v62UR~
+int utfwcwidthNoMap(int Popt,ULONG Pucs,int *Ppflag);              //~v6V4I~
 #ifdef UTF8UCS2                                                    //~v640I~
 	#define UTFWWO_APILAST   0x01     //use api at last            //~v640R~
 	#define UTFWWO_NOCJKU    0x02     //user adjust tbl            //~v640R~
@@ -627,6 +642,10 @@ int utfwcwidth(int Popt,ULONG Pucs,int *Ppflag);                   //~v62UR~
 	#define UTFWWO_APICHK4   0x0200   //set unprintable by wcwidth for ucs4//~v65cI~
 	#define UTFWWO_ADJSBCS   0x0400   //to avoid sbcstbl overflow,chk dbcs tbl after unprintable chk by wcwidth//~v6c5R~
 	#define UTFWWO_APIW0     0x0800   //for ARM ignore mkwidth when wcwidth()=0//~v6c5I~
+	#define UTFWWO_MK_WCWIDTH 0x1000   //by mk_wcwidth() adjustable by wcwidth()//~v6V7I~
+	#define UTFWWO_MK_AMBIGUOUS 0x2000   //by mk_wcwidth() adjustable by wcwidth()//~v6V7I~
+//	#define UTFWWO_MK_COMB      0x4000   //defined as combining char at utf4.c//~v6W9I~//~v6WmR~
+	#define UTFWWO_FORMAT       0x8000   //defined as Format    char at utf4.c//~v6WiI~
 #endif                                                             //~v640I~
 #endif                                                             //~v62XI~
 #define UTFWWF_F2C1     0x80   //WideSBCS; font width=2,distance to next column=1//~v62UR~//~v640R~
@@ -636,7 +655,16 @@ int utfwcwidth(int Popt,ULONG Pucs,int *Ppflag);                   //~v62UR~
 #ifdef UTF8UCS416                                                  //~v6uBI~
 #define UTFWWF_SBCSOVF  0x04   //sbcsid tbl overflow sbcsUCS or UCS over 0x00040000//~v65cI~
 #endif                                                             //~v65cI~
-#define UTFWWF_FLAGMASK 0xffffffcc   //1100.1100                   //~v62UR~
+//#define UTFWWF_FLAGMASK 0xffffffcc   //1100.1100                   //~v62UR~//~v6V7R~
+#define UTFWWF_FLAGMASK      0x00ffffcc   //1100.1100              //~v6V7I~
+#define UTFWWF_SCM           0x00001000   //unicode:Spacing Combining Mark//~v6VbI~
+#define UTFWWF_SBCSF         0x00002000   //ignore wcwidth()=2 and force width=1//~v6WkI~
+#define UTFWWF_COMB          0x00004000   //defined combining char //~v6WmI~
+#define UTFWWF_COMB2SCM      0x00008000   //combining but trate as SCM//+v6XOI~
+#define UTFWWF_RC_MK_WCWIDTH 0x01000000   //datatype by mk_wcwidth //~v6V7I~
+//#define UTFWWF_RC_MK_COMB    0x02000000   //defied as combining    //~v6W9I~//~v6WmR~
+#define UTFWWF_RC_FORMAT     0x04000000   //category Cf            //~v6WiI~
+#define UTFWWF_RC_MASK       0xff000000                            //~v6V7I~
 #define UTFWWF_LENMASK  0x03         //0000.0011                   //~v62UR~
     #endif //COMPCHKXE_NOUTF8                                      //~v5npR~
 #endif //WCSUPP                                                    //~v5n0I~
@@ -682,7 +710,7 @@ int utftbterm(void);                                               //~v600I~
 #define UTFCVO_OUTWIDTH    0x020000          //f2dd;return chklen if outarea overflow//~v6btI~
 #define UTFCVO_BUFFSZPARM  0x040000          //outlen parm contains outbuff size to protect buff overflow//~v6hGI~
 #define UTFCVO_CHKLCWIDTH  0x080000          //chk ddwidth and lcwidth,if err rep by errch//~v6t1I~
-#define UTFCVO_ERRREPDBCS  0x100000          //set dbcs subchar for f2l err//+v6T4I~
+#define UTFCVO_ERRREPDBCS  0x100000          //set dbcs subchar for f2l err//~v6T4I~
 //#ifdef W32                                                         //~v6ueI~//~v6uBR~
 //#define UTFCVO_UCS4W       0x100000          //parm type is WUCS but data is ULONG//~v6ueI~//~v6uBR~
 //#endif                                                             //~v6ueI~//~v6uBR~

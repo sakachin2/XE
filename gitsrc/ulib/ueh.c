@@ -1,6 +1,7 @@
-//CID://+v6K2R~:       update#=  22                                //+v6K2R~
+//CID://+v6VwR~:       update#=  29                                //~v6VwR~
 // *******************************************************************
-//v6K2:170311 (Win)take windows process dump when exception(requires regedit setting)//+v6K2I~
+//v6Vw:180622 write exception msg to UTRACE                        //~v6VwI~
+//v6K2:170311 (Win)take windows process dump when exception(requires regedit setting)//~v6K2I~
 //v6F1:160831 W64 try Exception msg                                //~v6F1I~
 //v6hi:120628 VC10x64 no exception handling                        //~v6hiI~
 //v6hh:120623 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  defines ULPTR(unsigned long long)//~v6hhI~
@@ -344,9 +345,9 @@ LONG WINAPI uw95exh(LPEXCEPTION_POINTERS Pw95exptrs)               //~v022I~
     printf("%s:uexhdlr rc=%d\n",UTT,rc);                           //~v6F1R~
 //  printf("\nreturn ueh callctr=%d,rc=%08x\n",callctr,rc);        //~v022R~
     if (rc==XCPT_CONTINUE_SEARCH)	//popup msg                    //~v022I~
-#ifdef TRACE                                                       //+v6K2R~
-    	rc=EXCEPTION_CONTINUE_SEARCH;  //popup msg and take dump   //~v6F1I~//+v6K2I~
-#else                                                              //~v6F1I~//+v6K2M~
+#ifdef TRACE                                                       //~v6K2R~
+    	rc=EXCEPTION_CONTINUE_SEARCH;  //popup msg and take dump   //~v6F1I~//~v6K2I~
+#else                                                              //~v6F1I~//~v6K2M~
     	rc=EXCEPTION_EXECUTE_HANDLER;  //no popup msg              //~v022I~
 #endif                                                             //~v6F1I~
 //#endif //!ULIB64X                                                  //~v6hiR~//~v6F1R~
@@ -763,6 +764,7 @@ extern int main(int,char*[]);                                      //~v6F1I~
 //*uerrexit msg save for new uerrmsg on e.h                        //~v6F1I~
     if (exitmsg)                                                   //~v6F1I~
     {                                                              //~v6F1I~
+    	UTRACEPF2("%s:last errmsg=%s\n",UTT,exitmsg);              //~v6VwR~
     	len=(int)strlen(exitmsg)+1;                                //~v6F1I~
         msgwk=exitmsg;	//save for pvoid* use                      //~v6F1I~
 		exitmsg=HeapAlloc(GetProcessHeap(),                        //~v6F1I~
@@ -789,6 +791,8 @@ UTRACEP("befoe uehmsg,Spepatbl=%08x\n",Spepatbl);                  //~v6F1I~
 //purr->UERGparm=&Spepatbl;       //for debug memory leak//@@@@    //~v6F1R~
      	msgwk=uehmsg(pexreprec,&purr->UERGsys,pctxrec,Spepatbl,exitmsg);//~v6F1I~
                             //abend information msgbox             //~v6F1I~
+        if (msgwk)                                                 //~v6VwI~
+	    	UTRACEPF2("%s:%s\n",UTT,msgwk);                        //+v6VwR~
 UTRACEP("after uehmsg,Spepatbl=%08x\n",Spepatbl);                  //~v6F1I~
 #ifdef AAA //@@@@test                                              //~v6F1R~
    if (purr->UERGdumpfn)                                           //~v6F1I~
@@ -825,6 +829,7 @@ UTRACEP("before uehdump,Spepatbl=%08x\n",Spepatbl);                //~v6F1I~
 		purr->UERGuxfunc(2,purr);			//user exit            //~v6F1I~
    purr->UERGflag &=~UERGFEHINP ; //in progress reset              //~v6F1I~
    pexreprec->fHandlerFlags|=EH_NONCONTINUABLE;//request dont retry//~v6F1I~
+   utrace_term(0);  //before fcloseall,write closed msg to trace file//~v6K2I~//~v6VwI~
    fcloseall();                                                    //~v6F1I~
    return (XCPT_CONTINUE_SEARCH);                                  //~v6F1I~
                                                                    //~v6F1I~

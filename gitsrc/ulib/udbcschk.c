@@ -1,11 +1,13 @@
-//*CID://+v6HvR~:                              update#=  796;      //+v6HvR~
+//*CID://+vbmkR~:                              update#=  799;      //~vbmkR~
 //**************************************************
 //*DBCS first byte chk
 //*parm :char to be checked
 //*     :if 0,return 1 if dbcs environment exist                   //~v024I~
 //*rc   :0-not DBCS first byte,1:DBCS first byte
 //**************************************************
-//v6Hv:170127 (Lnx:BUG)crush by mem not alloc at term(Sxprintcmd was destroyed by Slocale at udbcschk.c by long locale when export LANG=C//+v6HvI~
+//vbmk:180813 (XE)for test,try mk_wcwidth_cjk(ambiguous:Wide DBCS) for visibility chk. use /YJ option//~vbmkI~
+//v6Wv:180807 (W32:Bug) console version on chcp=50221, utfcvf2l output string is over MACMBCSLEN by esc seq such as "Esc$B!)"//~v6WvI~
+//v6Hv:170127 (Lnx:BUG)crush by mem not alloc at term(Sxprintcmd was destroyed by Slocale at udbcschk.c by long locale when export LANG=C//~v6HvI~
 //v6C5:160404 correct english msg "Warining"--"Warning"            //~v6C5I~
 //v6BQ:160314 (W32)for top menu lang name disply,translate sys codepage to console codepage//~v6BQI~
 //v6BG:131217 udbcschk_localeisdbcs is not never called            //~v6BGI~
@@ -329,6 +331,8 @@ int udbcschk_wcinit(int Popt,char *Pplocale)                       //~v5n8R~
         return 0;                                                  //~v5nvI~
     }                                                              //~v5nvI~
     Gudbcschk_flag&=~UDBCSCHK_BEFOREINIT;	//wcinit called        //~v5nvI~
+	if (Popt & UDCWCIO_CJK)                                        //~vbmkI~
+		Gulibutfmode|=GULIBUTF_CJK; //          0x04000000  //force mk_wcwidth_cjk//~vbmkI~
 #ifdef LNX                                                         //~v637I~
   #ifndef XXE   //console version                                  //~v637I~
 	if (udbcschktty())                                             //~v637I~
@@ -2366,7 +2370,7 @@ char *udbcschk_setlocale(int Popt,int Ptype,char *Plocale)         //~v627R~
 	static UCHAR Slocale[MAXLOCALESZ+1];                           //~v62UR~
 	static UCHAR Slocaleenv[MAXLOCALESZ+1];                        //~v62UR~
     char  *pc,*penv;                                               //~v627R~
-    char  *pc2;                                                    //+v6HvI~
+    char  *pc2;                                                    //~v6HvI~
 //***************                                                  //~v627I~
     if (!Plocale)                                                  //~v627I~
     {                                                              //~v627I~
@@ -2376,17 +2380,17 @@ char *udbcschk_setlocale(int Popt,int Ptype,char *Plocale)         //~v627R~
 #ifdef ARM                                                         //~v6a0I~
       else                                                         //~v6a0I~
       {                                                            //~v6f7I~
-//    	strcpy(Slocale,ulibarm_getlocale());                       //+v6HvR~
-      	strncpy(Slocale,ulibarm_getlocale(),MAXLOCALESZ);          //+v6HvI~
+//    	strcpy(Slocale,ulibarm_getlocale());                       //~v6HvR~
+      	strncpy(Slocale,ulibarm_getlocale(),MAXLOCALESZ);          //~v6HvI~
 		pc=setlocale(Ptype,Slocale);    //@@@@test                 //~v6f7I~
       }                                                            //~v6f7I~
 #endif                                                             //~v6a0I~
-		pc2=strchr(Slocale,';'); //may be a fmt of "LC_CTYPE="C;LC_NUMERIC=..."//+v6HvI~
-        if (pc2)                                                   //+v6HvI~
-        	*pc2=0;                                                //+v6HvI~
-		pc2=strchr(Slocale,'=');                                   //+v6HvI~
-        if (pc2)                                                   //+v6HvI~
-        	strcpy(Slocale,pc2+1);                                 //+v6HvI~
+		pc2=strchr(Slocale,';'); //may be a fmt of "LC_CTYPE="C;LC_NUMERIC=..."//~v6HvI~
+        if (pc2)                                                   //~v6HvI~
+        	*pc2=0;                                                //~v6HvI~
+		pc2=strchr(Slocale,'=');                                   //~v6HvI~
+        if (pc2)                                                   //~v6HvI~
+        	strcpy(Slocale,pc2+1);                                 //~v6HvI~
 		if (!*Slocaleenv)                                          //~v6f3I~
         	strcpy(Slocaleenv,Slocale);	//save env for the case UDCSLO_GETENV//~v6f3I~
     }                                                              //~v627I~
@@ -2684,4 +2688,9 @@ int udbcschk_lcbychcp(int Popt,char *Psrc,char *Ptgt,int Pbuffsz)  //~v6BQI~
 	UTRACEP("%s:cv done tgt=%s\n",UTT,Ptgt);                       //~v6BQI~
     return 0;                                                      //~v6BQI~
 }//udbcschk_lcbychcp                                               //~v6BQI~
+//****************************************************************************************//~v6WvI~
+int udbcschk_getcp(void)                                           //~v6WvI~
+{                                                                  //~v6WvI~
+	return Scodepage;                                              //~v6WvI~
+}//udbcschk_getcp                                                  //~v6WvI~
 #endif  //W32                                                      //~v6BAI~

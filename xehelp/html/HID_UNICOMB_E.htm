@@ -20,11 +20,12 @@ a:hover{font-weight:bold;}-->
              OPT UNICOMB [ COMB | SPLIT | UNPR ] [ SHADOW | ITSELF | PADDING | U-xxxx ]
 
                COMB, SPLIT, UNPR : display combined, split and alternate character each.
-               Following 3 operand is for Linux Console version only and specify how to write to screen when split mode.
+               Following 3 operand is for Linux Console version only and specify how to write to screen
+               when split mode and combine.(when combine mode, applied only when csr is on the line.)
                  SHADOW : write combining character with base character of the left side.
                  ITSELF : write combining character itself as single.
                  PADDING: write tab display character which is cleared by &quot;TAB OFF&quot; cmd
-               U-xxxx : any unicode you prefere.
+               U-xxxx : any SBCS unicode you prefere.
                U-00 will restore default value(':'(u-3a)).
                Cmd with no operand shows current status.
 

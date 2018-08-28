@@ -1,3 +1,184 @@
+//*********  20180827 v129K updated     ****************
+//v6Xd:180825 (Bug:Lnx)ufileopenexclusivewrite call uflock(0) cause loop whe utaceinit
+//            ufile2.c
+//v6Xc:180823 add ueditescrep,process \a,\x..
+//            uedit2.c/h
+//*********  20180822 v129K updated     ****************
+//v6Xb:180822 gb18030:dbcs by gb18030 but display width=1, pos differ with hex line
+//            uviom.c
+//v6Xa:180821 enumproc show fullpath(xp was shoing)
+//            uproc2.h uproc22.h
+//v6X9:180821 snprintf is from msvs2015(err at xp:2010)
+//            utrace.h
+//v6X8:180821 uviom_iscombining coding miss, effect is LNX only (swcombinable=0 by setting ucs=0)
+//            uviom.c
+//v6X7:180820 MXCOMBINE=8 for tibetan who says. but 4 for LNX Console by curses limitation
+//            uviom.h
+//v6X6:180819 (W32)enumproc optionally output fullpath exe name
+//            uproc22.c uproc2.h
+//v6X5:180818 (LNX:xe)column shrink COMB2SCM(036f+0390) even SPLIT mode,
+//            uviom.c utf22.c/h utf4.c
+//v6X4:180818 uerrhelpmsg:breakmag is corrupted by sjis2euc on utf8 env(GBL_UERR_SJIS2EUC is set by uerrmsgedit for currentline)
+//            uerr.c
+//*********  20180817 v129K updated     ****************
+//v6X3:180816 Hangul 1160-11ff is not combining(Category:Lo:Letter,Other) but combined actualy(u1109+u1161), On W32 Suctbj adjust as DBCS if ISDBCS_J() 
+//            utf4.c utf3.c
+//v6X2:180814 (Lnx)dbcs padding char(",") should be attr green for padding of combining (lig off column adjusting)
+//            uviom.c
+//v6X1:180814 (Bug:Win console)SCM was not combined
+//            uviom.c
+//v6X0:180813 combining require 2 cell when split such as u309a
+//            utf4.c utf22.h utf.h
+//vbmk:180813 (XE)for test,try mk_wcwidth_cjk(ambiguous:Wide DBCS) for visibility chk. use /YJ option
+//            udbcschk.c utf.h utf3.c
+//v6Wz:180811 (W32)add strstriW and memicmpW
+//            ulibdefw.h
+//v6Wy:180807 (W32:Bug)on chcp=57008(Kannada), OutputCharacter could not show Wide char,use OutputCharacterW
+//            uviom.c
+//v6Wx:180807 (W32:Bug)chk fails of combine char over max
+//            uviom.c
+//v6Ww:180807 (W32:Bug)top panel LC line is corrupted,use not OutputW but OutputCharacterW.(See v6C8)   
+//            uviom.c/h
+//v6Wv:180807 (W32:Bug) console version on chcp=50221, utfcvf2l output string is over MACMBCSLEN by esc seq such as "Esc$B!)"
+//            utf22.c udbcschk.c/h
+//v6Wu:180806 for also console version:set altch for SCM when COMBINE_NP,green if not adter combinable.
+//            uviom.c/h utf22.c/h 
+//v6Wt:180806 SCM is not combinable
+//            utf22.c
+//v6Ws:180806 for performance COMBINABLE chk after Combining checked.
+//            uviom.c ulibdefu.h
+//v6Wr:180804 process SCM same as NSM(NonSpacing Mark)
+//            utf22.c/h
+//v6Wq:180803 Format is not always width=1(u+06dd:End of Ayah is dbcs size)
+//            utf4.c utf3.c
+//v6Wp:180802 adjust wcwidth on Win10
+//            utf3.c utf4.c
+//v6Wn:180724 (v6W9 for gxe) combining char such as u309a(u306f+u309a) exists.
+//            utf3.c utf4.c utf2.h
+//v6Wm:180724 utfwcwidth return len=1 for Category "Cf"(wcwidth=0)  if ucs<ENTNO(2 if ucs>=ENTNO).
+//            determin combining for ucs>=ENTNOv should not use wcwidth==0 but combining definition
+//            utf.h utf22.c
+//v6Wk:180723 (gxe)ambiguous(width=2) for gxe
+//            utf3.c utf4.c utf22.h utf.h
+//v6Wj:180722 Combining Enclosed Mark(u0488,..) should be added to combining
+//            utf4.c
+//v6Wi:180722 u+ad(Soft Hyphen) is wcwidth=0,bu combineprocess A0+ad show on 2 col. trate it as utfwcwidth=1 (unicode category Cf:Format)
+//            utf22.c/h utf4.c utf.h utf3.c
+//v6Wh:180722 modify utfwcwidth 2-->1 for ambiguous for wcwidth=1
+//            utf3.c
+//v6Wg:180721 (Bug)By v6v7 ud7b0 is sbcs , it need to be dbcs on japanese console
+//            utf4.c
+//v6Wf:180718 chk combining also gxe(not console) 
+//            utf4.c
+//v6We:180716 (Lnx:BUG)combining was not shown if it folloing unprintable(:;)
+//            uviom.c
+//v6Wd:180713 (Lnx:BUG)cv -m2m -f:utf8 -t:gb18030 fail for u-00de-->81308937(len=4)
+//            ucvext2.c
+//v6Wc:180711 NCM(NonspacingCombiningmark) by //www.fileformat.info/info/unicode/category/Mn/list.htm
+//            utf4.c
+//v6Wb:180709 lig:on csr pos differ when wcwidth of ovf ucs(csr pos should shift to right by 1)
+//            uviom.c utf22.h 
+//v6Wa:180709 lig:off combine mode(shadow);2nd shadow base is space by prev shadow padding by the reason of v6W8 allowed space as combinable
+//            uviom.c 
+//v6W9:180708 dbcs combining char such as u309a(u306f+u309a) exists.
+//            uviom.c utf22.c/h utf4.c utf.h utf3.c
+//v6W8:180708 (LNX)try dbcs+combining
+//            uviom.c utf22.c
+//v6W7:180708 (LNX)assign 2 column for shadow for ovf combining 
+//            uviom.c
+//v6W6:180708 (LNX:xe)try break to prev char of shadow to clear prev combining image-->did not work, so do refresh after spcae clear
+//            uviom.c
+//v6W5:180706 (LNX:xe)Lig:off and combine mode;try combining char not to set base but to set u00a0 on next cell
+//            .when SHADOW,using a0 for shadow hides combining char(A,A,B), Base+combining show combining with next char(A,A,B+combining). choose the latter for both Lig On/Off(#ifndef VVV).
+//             if write A,A+combine,' ',B , it shows B+combine but combining char on B did not disapear whe csr moved on it.(#ifdef YYY)
+//            uviom.c
+//v6W4:180702 protect utrace file when opened by xe for browse
+//            ufile2.c ufile4.c
+//*********  20180702 v129K updated     ****************
+//v6W3:180702 (Bug)Addional to v6V6(Lnx&Console,Ligon+Combine mode, combine char was not shown) for the combine mode csrpos
+//            uviom.c
+//v6W2:180701 (LNX)Bug of v6V5;Lig:off and combine mode, combineing char disappears wghen csr is on the line
+//            uviom.c
+//v6W1:180701 (LNX)try u00a0 as combining base when split mode
+//            uviom.c
+//v6W0:180629 (LNX)try SCM for console version-->did not work
+//            uviom.c
+//v6Vz:180626 (LNX:BUG)UTF_GETDDUCS1(utfdd2u1) returns ":;" for unprintable,add UTF_GETDDUCS1NP
+//            utf22.c.h
+//v6Vy:180626 (LNX:BUG)upto u20000,sbcs is dbcswidth=1(combineNP should replace to single byte)
+//            utf22.c
+//v6Vx:180626 (LNX:BUG)trace file is not protected at xe initial clear; no problemm, currentry working but added uflock function
+//            ufile4.c/h
+//v6Vw:180622 write exception msg to UTRACE
+//            ueh.c uerr.c
+//v6Vv:180622 show pid on exception msg
+//            uehmsg.c
+//v6Vu:180622 UTRACE;support force option off
+//            utrace.c/h ukbdw.c
+//v6Vt:180622 (BUG)checking Pucs==Solducs bypass UCODETB_UNP chking
+//            utf3.c
+//v6Vs:180622 allow dbcs to UTF_COMBINABLE
+//            utf22.h
+//v6Vr:180622 move v6Vn(define ambiguous) to common to xe and wxe(Suctbj), visible for xe if defined as WIDE
+//            utf3.c
+//v6Vq:180622 add utf22_isucswidth0(ucs)
+//            utf22.c/h
+//v6Vp:180621 (BUG)utfwcwidth returns 1 for combining char
+//            utf3.c utf22.c
+//v6Vo:180621 (W32:BUG)Suctbj UCODEID_UNPF should return -1 like as Suctbj_cjk
+//            utf3.c
+//v6Vn:180620 (WXE)define ambiguous for wxe
+//            utf3.c
+//v6Vm:180620 (W32)when surrogate pair err,use utfcvucs2u8(WideCharToMultibyte dose not notify err,but set utf8 of u-fffd)
+//            utf22.c/h ucvext2.c
+//v6Vk:180620 (W32)when surrogate pair err,try to set sbcsid.(xe dirlist display fffd)  
+//            utf22.c
+//v6Vj:180617 xe:vbkb:180618
+//            uvbka but cs4(ddfmtlen=2) and errrep(lclen=1) cause err; xeutf_cvf2dd-->utfcvf2dd  may change ddlen=2 to lclen=1, it append 1  slag byte to filename
+//            pancmdlf2dd-->xeutf_cvf2dd(lclen=1 of byte one "?")-->utfcvf2dd:lclen short because ddlen=2
+//            set dbcs "?" for errrep of ddlen=2 at utfcvf2dd
+//            utf2.c
+//v6Vi:180617 support __LINE__ for UTRACEP
+//            utrace.c/h utils.c
+//v6Vh:180531 (Win:Bug) uviowrtcellW1_Errmsg; simple loop ctrl miss,errmsg green attr was lost
+//            uviom.c
+//v6Vg:180531 (Win) like as (LNX)v6V5, show org ucs for width0 ucs4(>=map entry)(W32 console version dose not support ligature:On)
+//            uviom.c/h utf22.c/h
+//v6Vf:180615 (LNX:Bug)like v6Ve sbcsid=SBCS(DBCS is ok) of 0x010000<ucs<0x20000, cut dd value (ddlen=2-->1)
+//            utf22.c
+//v6Ve:180614 (LNX:Bug)utfcvu2dd1:xechar:makeucs4 fail for 0x010000<ucs<0x20000
+//            utf22.c
+//v6Vd:180613 (LNX:Bug)for ucs4(>u+ffff), ddcht2cchar set 1 cell unpritable. it causes column unmatch
+//            uviom.c
+//v6Vc:180613 (LNX:Bug)when Ligature:ON,Unicomb:Combine, Wide SBCS(ex u093b) was shown as 1cell
+//            uviom.c
+//v6Vb:180612 add isSpacingCombiningmark
+//            utf22.h utc4.c utf3.c utf.h utf22.c
+//v6Va:180609 (LNX)when wcwidth=2 for defined as WIDE sbcs, displayed by 3 column,so reset wide to normal dbcs
+//            utf22.c
+//v6V9:180608 (LNX)unicode tbl,move Suctb_euc(_console) to Suctbl_utf8(_XXE)
+//            del sbcs from ambiguous,add wide to_utf8 if not ambiguous
+//            uviom use move+add_wchnstr for utf8 file
+//            uviom use mvaddchnstr for localefile(euc) width UDBCSCHK_DBCS1/2
+//            utf3.c
+//v6V8:180606 additional to v6V7,allow adjust ambiguous by wcwidth=0
+//            utf4.c utf.h utf22.c
+//v6V7:180606 do not modify by wcwidth api,acept it only for return by mk_wcwidth
+//            utf4.c utf.h utf3.c utf22.c
+//v6V6:180603 (Bug)Lnx&Console,Ligon+Combine mode, combine char was not shown
+//            uviom.c
+//v6V5:180531 show org ucs for width0 ucs4(>=map entry)
+//            utf22.c/h uviom.c/h
+//v6V4:180531 apply mk_wcwidth also for ucs4(>=map entry)
+//            utf22.c/h utf3.c utf.h
+//v6V3:180530 ucs4(OVF) print as dbcs even when wcwidth=1 if utfwcwidth=2
+//            uviom.c
+//v6V2:180522 unicode display test on ub17.10
+//            utf3.c
+//v6V1:180518 char width adjust to ubuntu 17.10(kernel 4.13.0)
+//            (LNX)set width=0 when wcwidth=0 if not defined as combinable on utf4
+//            utf22.c utf3.c utf4.c utf.h
+//*********  20180512 v129J released    ****************
 //v6U1:180317 ReadConsoleInputW loop by continued eventrecord eventType=x10(FOCUS_EVENT),try flush
 //            ukbdw.c
 //v6U0:180305 debug assertion failed Expression:_format_char != '\0' at errmsgedit sprintf; count argment count

@@ -1,7 +1,8 @@
-//*CID://+vazsR~:                             update#=  103;       //+vazsR~
+//*CID://+vbmjR~:                             update#=  104;       //~vazsR~//+vbmjR~
 //**************************************************************** //~v08qI~
 //xefile5.h                                                        //~v08qI~
 //**************************************************************** //~v08qI~
+//vbmj:180812 request "Force" option to save updated at other session.//+vbmjI~
 //vazs:150114 (BUG)partial edit;if outfile!=0(save to another file) original file endposition is not changed.=>outfile length did not expand at 2nd save//~vazsI~
 //vajb:130804 vhdr len for utf8 code len                           //~vajbI~
 //vaj0:130710 localfile:recfm=V support (E /mV F{MFH|RDW})         //~vaj0I~
@@ -90,6 +91,7 @@ int filesaveoptionchk(PUCLIENTWE Ppcw,PUFILEH Ppfh,int *Pretopt,UCHAR **Ppfnm,//
 	#define FSOC_EOL_NOTRECORDV (FSOC_EOL_OPT-FSOC_EOL_RECORDV)    //~vaj0R~
 	#define FSOC_RETLRECLV  	0x20000000		//format parm of recfm=V//~vaj0R~
 	#define FSOC_FILESAVE   	0x40000000		//filecvwrite from filesave//~vajbI~
+	#define FSOC_FORCE      	0x80000000		//Force for SAVE and END cmd//+vbmjI~
                                                                    //~va79I~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50I~
 #endif                                                             //~v92nI~//~v76XI~

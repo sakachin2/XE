@@ -1,9 +1,10 @@
-//*CID://+vbg0R~:                             update#=  699;       //+vbg0R~
+//*CID://+vbmjR~:                             update#=  708;       //~vbmjR~
 //*************************************************************    //~v08qI~
 //*xefile5.c*                                                      //~v08qI~
 //* miscellenious function                                         //~v08qI~
 //*************************************************************    //~v08qI~
-//vbg0:180123 (BUG)errmsg "conflict recordmode and CPU8" evenif profile record has cplc option,rejected at optopn prechk//+vbg0I~
+//vbmj:180812 request "Force" option to save updated at other session.
+//vbg0:180123 (BUG)errmsg "conflict recordmode and CPU8" evenif profile record has cplc option,rejected at optopn prechk//~vbg0I~
 //vbc0:170814 reject FixedRecordLength mode for CPU8 file(because record Length!=Column width)//~vbc0I~
 //vb60:161127 select 1st entry when no filename operand (S [-n] n:line number)//~vb60I~
 //vb2E:160229 LNX64 compiler warning                               //~vb2EI~
@@ -792,6 +793,8 @@ int filesaveoptionchkcp(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh,char *Pcpopt,int *
             }//for                                                 //~va6HI~
             break;                                                 //~va6HI~
         case 'F':       //lrecl                                    //~va6QI~
+            if (!stricmp(pc2,"Force"))                             //~vbmjI~
+                break;                                             //~vbmjI~
     		if (!(Popt & FSOCCO_GETLRECL))	//get lrecl parm       //~va6QI~
             	return -1;                                         //~va6QI~
 			rc2=filegetparmlrecl(0,Ppfh,pc2,&lrecl);               //~va6QI~
@@ -965,6 +968,8 @@ int filesaveoptionchk(PUCLIENTWE Ppcw,PUFILEH Ppfh,int *Pretopt,UCHAR **Ppfnm,//
                 retopt|=FSOC_NB;                                   //~v76XR~
             if (!stricmp(pc2,"BK"))                                //~v76XR~
                 retopt|=FSOC_BK;                                   //~v76XR~
+            if (!stricmp(pc2,"Force"))                             //~vbmjI~
+                retopt=(int)((unsigned)retopt |FSOC_FORCE);        //+vbmjR~
 #ifdef UTF8SUPPH                                                   //~v92nI~//~va00R~
 #ifdef UTF8SUPPH                                                   //~va00I~
 //          switch(filesaveoptionchkcp(0,Ppcw,Ppfh,pc2,&retopt))   //~va00R~//~va6cR~
@@ -1125,6 +1130,17 @@ int filesaveoptionchk(PUCLIENTWE Ppcw,PUFILEH Ppfh,int *Pretopt,UCHAR **Ppfnm,//
                         continue;                                  //~v76XI~
                     }                                              //~v76XI~
                 }                                                  //~v76XI~
+            if (!stricmp(pc2,"Force"))                             //~vbmjM~
+            {                                                      //~vbmjM~
+            	if (pft->FTfuncid==FUNCID_SAVE||pft->FTfuncid==FUNCID_END)
+            		retopt=(int)((unsigned)retopt|FSOC_FORCE);     //+vbmjR~
+                else                                               //~vbmjM~
+                {                                                  //~vbmjM~
+			    	uerrmsg("\"Force\" option is for SAVe/END cmd",//~vbmjM~
+        					"\"Force\" オプションは SAVe/END コマンド用です");
+        				return 4;                                  //~vbmjM~
+                }                                                  //~vbmjM~
+            }                                                      //~vbmjM~
 #ifdef UTF8SUPPH                                                   //~va00M~
             if (pft->FTfuncid==FUNCID_SAVE)                        //~va00I~
             {                                                      //~va00I~
@@ -2649,8 +2665,8 @@ int fileoptionchk(PUCLIENTWE Ppcw,PUFILEH Ppfh,UCHAR Popt,int Pbinsw)//~v75HI~
         UCBITOFF(Ppfh->UFHflag5,UFHF5DROPTAB);   //tab clear at save//~va5YI~
     }                                                              //~va50R~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50R~
-  if (!Sswprechk)		//not prechk(after profile chk)            //+vbg0I~
-  {                                                                //+vbg0I~
+  if (!Sswprechk)		//not prechk(after profile chk)            //~vbg0I~
+  {                                                                //~vbg0I~
     if (UCBITCHK(Ppfh->UFHflag8,UFHF8UTF8))                        //~vbc0I~
     {                                                              //~vbc0I~
     	if (UCBITCHK(Ppfh->UFHflag10,UFHF10RECORD))	//record mode read//~vbc0I~
@@ -2660,7 +2676,7 @@ int fileoptionchk(PUCLIENTWE Ppcw,PUFILEH Ppfh,UCHAR Popt,int Pbinsw)//~v75HI~
             return 4;                                              //~vbc0I~
         }                                                          //~vbc0I~
     }                                                              //~vbc0I~
-  }                                                                //+vbg0I~
+  }                                                                //~vbg0I~
 	if (UCBITCHK(Ppfh->UFHflag7,UFHF7FIXLRECL))                    //~v71VI~
 #ifdef UTF8EBCD   //raw ebcdic file support                        //~va5YI~
       if (!UCBITCHK(Ppfh->UFHflag10,UFHF10EBC))//not EBC file      //~va5YI~

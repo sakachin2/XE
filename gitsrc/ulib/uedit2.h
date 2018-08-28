@@ -1,7 +1,8 @@
-//CID://+v6D2R~:         update#=     5;                           //~v6D2R~
+//CID://+v6XcR~:         update#=     7;                           //~v6D2R~//~v6XcR~
 //*******************************************************          //~v163I~
 //*uedit2.h                                                        //~v5i5R~
 //*******************************************************          //~v163I~
+//v6Xc:180823 add ueditescrep,process \a,\x..                      //~v6XcI~
 //v6D2:160423 LNX compiler warning for bitmask assignment(FDATE,FTIE)//~v6D2I~
 //v6Bf:160211 add uedit2:uxdumpstr                                 //~v6BfI~
 //v6d7:120209 (SMB)adjust for target:Windows                       //~v6d7I~
@@ -106,6 +107,9 @@ int uxdumpstr(int Popt,char *Pinp,int Plen,char *Pout,int Pbuffsz,int *Ppoutlen)
 int ueditsetfdateUSHORT(int Popt,int Pyy,int Pmm,int Pdd,FDATE *Ppfdate);//~v6D2R~
 //*******************************************************          //~v6D2I~
 int ueditsetftimeUSHORT(int Popt,int Phh,int Pmm,int Pss,FTIME *Ppftime);//~v6D2R~
-//*******************************************************          //~v6T2I~//+v6D2M~
-int ueditNowFileTime(int Popt,FDATE *Ppfdate,FTIME *Ppftime);      //~v6T2I~//+v6D2M~
+//*******************************************************          //~v6T2I~//~v6D2M~
+int ueditNowFileTime(int Popt,FDATE *Ppfdate,FTIME *Ppftime);      //~v6T2I~//~v6D2M~
 #endif                                                             //~v6D2I~
+int ueditescrep(int Popt,char *Pin,int Plen,char *Pout,int Pbuffsz,int *Ppoutlen);//~v6XcI~
+#define UEERO_NULLERR  0x01     //err if contains \x00             //~v6XcI~
+#define UEERO_MSG      0x02     //err msg                          //+v6XcI~

@@ -1,6 +1,12 @@
-//*CID://+v6FcR~:                             update#=  164;       //+v6FcR~
+//*CID://+v6X7R~:                             update#=  182;       //+v6X7R~
 //******************************************************           //~v5n8I~
-//v6Fc:160904 in addition to v6F3,also DBCS space altch is changable//+v6FcI~
+//v6X7:180820 MXCOMBINE=8 for tibetan who says. but 4 for LNX Console by curses limitation//+v6X7I~
+//v6Ww:180807 (W32:Bug)top panel LC line is corrupted,use not OutputW but OutputCharacterW.(See v6C8)//~v6WuI~
+//v6Wu:180806 for also console version:set altch for SCM when COMBINE_NP,green if not adter combinable.//~v6WuI~
+//v6Wr:180804 process SCM same as NSM(NonSpacing Mark)             //~v6WrI~
+//v6Vg:180531 (Win) like as (LNX)v6V5, show org ucs for width0 ucs4(>=map entry)(W32 console version dose not support ligature:On)//~v6VgI~
+//v6V5:180531 show org ucs for width0 ucs4(>=map entry)            //~v6V5I~
+//v6Fc:160904 in addition to v6F3,also DBCS space altch is changable//~v6FcI~
 //v6Eq:160812 lineopt should be cleared by USDFNCELL               //~v6EqI~
 //v6Ep:160812 (WXE)errmsg lineopt;strput called intermediate of errmsg string by attr change,it should not Col but msg len//~v6EpI~
 //v6Eo:160811 (XXE)v6ei for XXE(specify ligature on/off,combine on/of line by line(used for edit/filename  panel)//~v6EoI~
@@ -30,10 +36,19 @@
 //v62U:091030_GB18030 merge                                        //~v62UI~
 //v5n8:080916 (CJK)IME support for CJK other than Japanese         //~v5n8I~
 //*******************************************************          //~v5n8I~
+#define UVIOM_COMBINE_ALTCH2 '.'                                   //~v6V5I~
 #ifndef UVIOMDEFONLY                                               //~v6EmI~
 #ifndef __cplusplus                                                //~v6EjI~
 #ifdef WCSUPP                                                      //~v5n8I~
+#ifdef W32                                                         //+v6X7I~
+		#define UVIOM_MAXCOMBINE  8                                //+v6X7I~
+#else                                                              //+v6X7I~
+    #ifdef XXX                                                     //+v6X7I~
+		#define UVIOM_MAXCOMBINE  8                                //+v6X7I~
+    #else                                                          //+v6X7I~
 #define UVIOM_MAXCOMBINE  4                                        //~v653R~
+    #endif                                                         //+v6X7I~
+#endif                                                             //+v6X7I~
 #define UVIOM_MAXCOL      240 //sync with xe.h                     //~v652I~
 #define UVIOM_BUFFSZ      2                                        //~v5n8R~
 #ifdef UVIOW_GBLDEF                                                //~v5n8I~
@@ -71,9 +86,9 @@
 #define UVIOMO2_PADOFF        0x02 //DBCS padding display alternative char//~v62UR~
 //#define UVIOMO2_LIGATURE      0x04 //ligature                    //~v653R~
 #define UVIOMO2_NONSPACECOMBINE 0x08 //non spacing combining diacritical mark supported//~v656I~
-#define UVIOMO2_NOTIFY_DBCSSPACEALT 0x0100 //dbcsspacealt was changed//+v6FcI~
-                                                                   //+v6FcI~
-                                                                   //+v6FcI~
+#define UVIOMO2_NOTIFY_DBCSSPACEALT 0x0100 //dbcsspacealt was changed//~v6FcI~
+                                                                   //~v6FcI~
+                                                                   //~v6FcI~
 #define UVIOM_NONSPACECOMBINEMODE()  (Guviomopt2 & UVIOMO2_NONSPACECOMBINE)//~v656R~
 //#define UVIOM_SPLITMODE()  (!UTF_COMBINEMODE() && UVIOM_NONSPACECOMBINEMODE())//~v656I~//~v658R~
 //#define UVIOM_SPLITTABLEMODE()  (UTF_COMBINEMODE() && UVIOM_NONSPACECOMBINEMODE())//~v656I~//~v658R~
@@ -142,7 +157,14 @@
 #ifdef UTF8UCS2                                                    //~v650I~
 //int uvio_getcombinectr(int Popt,int Pucs,int Pchwidth,UCHAR *Ppdbcs,int Plen);//~v650R~//~v6BTR~
 //#ifdef WWW                                                         //~v6BYI~//~v6BZR~
-int uvio_getcombinectr(int Popt,WUCS Pucs,int Pchwidth,UCHAR *Ppdbcs,int Plen);//~v6BTI~
+#ifdef LNX                                                         //~v6V5R~
+    #ifndef XXE                                                    //~v6V5I~
+int uvio_getcombinectr(int Popt,WUCS Pucs,int Pchwidth,chtype *Ppcht,UCHAR *Ppdbcs,int Plen);//~v6V5R~
+    #endif                                                         //~v6V5I~
+#else                                                              //~v6V5R~
+//int uvio_getcombinectr(int Popt,WUCS Pucs,int Pchwidth,UCHAR *Ppdbcs,int Plen);//~v6BTI~//~v6VgR~
+	int uvio_getcombinectr(int Popt,WUCS *Ppucs,int Pchwidth,UCHAR *Ppdbcs,int Plen,int *Ppstrucsctr,int *Ppstrwidth);//~v6VgR~
+#endif                                                             //~v6V5R~
 //#else                                                              //~v6BYI~//~v6BZR~
 //    #ifdef LNX                                                     //~v6BYI~//~v6BZR~
 //    #ifndef XXE                                                    //~v6BYI~//~v6BZR~
@@ -164,10 +186,12 @@ int uvio_getcombinectr(int Popt,WUCS Pucs,int Pchwidth,UCHAR *Ppdbcs,int Plen);/
 #define UVIOO_CMDLINE            0x40       //special for cmdline  //~v6EiR~
 #define UVIOO_ERRMSG             0x80       //special for uerrmsg  //~v6EiI~
 #define UVIOO_VSPLIT2ND        0x0100       //2nd of split screen  //~v6EiR~
+#define UVIOO_MENULC           0x0200       //MENU LC line         //~v6WuI~
 #define UVIOO_ERRMSG2          0x0400       //errmsg 2ndline       //~v6EpI~
 #define UVIOO_FULLSCR          0x1000       //all pcw is draw full //~v6EiR~
 #define UVIOO_BUFFWRITE        0x2000       //from uvio_w95buffwrite//~v6EiI~
 #define UVIOO_NOSAVE           0x4000       //no save lineopt,for vsplit line//~v6EqI~
+#define UVIOO_COMBINEOFF       0x8000       //combine mode to uviowrtcellW1_cpu8file_NoLigatureNoCombine//~v6WuI~
 #define UVIOO_MASK             0xffff       //0xffff0000 is free   //~v6EiI~
 //#ifdef WXE                                                       //~v6EoR~
 #ifdef WXEXXE                                                      //~v6EoI~
@@ -186,9 +210,14 @@ int uvio_getcombinectr(int Popt,WUCS Pucs,int Pchwidth,UCHAR *Ppdbcs,int Plen);/
 //#define ATTR_COMBINE_FG2  0x0E //0x06    //yellow(!=2)//WinCon 1st combinechar//~v6EiR~
 #define ATTR_COMBINE_FG2  0x0b   //highlight green(!=2(green for utf8 char))//WinCon 2nd combinechar//~v6EiR~
 #define ATTR_COMBINENP_FG 0x0a   //for combine altch,highlight green/+v6EiM~//~v6EiR~
+#define ATTR_COMBINE_FG_UCS4 0x03  //highlight green UCS4 width0 2nd padding//~v6V5I~
                                                                    //~v6EmI~
 #if defined(LNX) && !defined(XXE)                                  //~v6EmI~
 	#define UVIOM_ALTCHPADDING  0 //split mode display char        //~v6EmM~
 	#define UVIOM_ALTCHSHADOW   1 //display shadow                 //~v6EmM~
 	#define UVIOM_ALTCHITSELF   2 //display combining char itself  //~v6EmM~
 #endif                                                             //~v6EmI~
+//***************************************************************  //~v6WrI~
+int uviom_getcombaltchUcs(int Popt,WUCS *Ppucs);                   //~v6WrI~
+int uviom_getcombaltchU8(int Popt,char *Pu8,char *Ppdddata,char *Ppdddbcs,int *Ppddlen);//~v6WrR~
+#define UVIOM_GCAC_2CELL   0x01      //2cell out                   //~v6WrI~

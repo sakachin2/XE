@@ -15,7 +15,8 @@ a:hover{font-weight:bold;}-->
 <SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = 終了
 
         {END | RETurn | QUIt | EXIt | CANcel}  [-NB|-BK] [CPU8|CPLC|CPEB] [IE]
-                     [/M{T|P|U|M|E|R|V}] [/F{n[-m]|vfmt}] [-S{r|i|d}]
+                     [/M{T|P|U|M|E|R|V}] [/F{n[-m]|vfmt}] [-S{r|i|d}] [-Force]
+
 
             EXI     :分割区画を終了,更新ファイルは保存されます
             RET     :コマンドプロンプトに戻る,更新ファイルは保存されます
@@ -54,6 +55,9 @@ a:hover{font-weight:bold;}-->
                              SO/SI の時可能であれば前後のスペースを置換する
                          i : EBCDIC への変換の時 SO/SI を挿入する
                          d : EBCDIC から変換の時 SO/SI を削除する
+              -Force :ファイルのタイムスタンプが読み込み時と変わっているとき
+               (現セッションの外で更新された),その旨の警告が出るが
+               無視して保存終了するときに指定する
 #endif
 
 </SPAN></PRE>

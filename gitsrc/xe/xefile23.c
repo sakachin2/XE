@@ -1,8 +1,10 @@
-//*CID://+vbi3R~:                             update#=  665;       //~vbi3R~
+//*CID://+vbm9R~:                             update#=  671;       //~vbm9R~
 //*************************************************************
 //*xefile23.c  *                                                   //~v69DR~
 //* draw(func_draw_file/setlineattr)                               //~v69DI~
 //*************************************************************
+//vbm9:180722 (BUG)utf8 file u-2Exx treated as ERRREPCH(2e) and shown by green.//~vbm9I~
+//vbk7:180613 (BUG)csrpos ucs display; shown altch for OVF ucs     //~vbk7I~
 //vbi3:180211 supprt command history list                          //~vbi3R~
 //vb5j:160919 (W32) when Lig:On and Comb:SPLIT,altch should be green//~vb5jI~
 //vb5a:160913 (W32)locale file ligature support                    //~vb5aI~
@@ -398,6 +400,7 @@ int setattraroundcsrpos(int Popt,UCHAR *Pdbcs,USHORT *Pattr,int Ppos,int Pwidth,
 int setattraroundcsrpos(int Popt,UCHAR *Pdbcs,UCHAR *Pattr,int Ppos,int Pwidth,int Pcolor);//~va3rI~
 #endif                                                             //~va3rI~
 //void filecolsdisp(PUCLIENTWE Ppcw,PUSCRD Ppsd,int Pfullsw);      //~v69DR~
+int f23_isutf8dbcssplit(int Popt,char *Pdbcs,int Pcol,int Pwidth); //~vbm9I~
 //****************************************************************
 // file_draw
 //*setup screen line data
@@ -1257,7 +1260,7 @@ UTRACEP("filedraw row=%d,col=%d,csrcol=%d,line=%d,plhlineno=%d,drawflag=%x\n",Pp
             }                                                      //~va7jI~
           	if (vhexpsdid)//vhex display hex line sw               //~v60vI~
 				memset(pc,' ',(UINT)(linenosz-1));                 //~v60vI~
-	        if (UCBITCHK(plh->ULHflag6,ULHF6CHLCPU8CMD))           //+vbi3R~
+	        if (UCBITCHK(plh->ULHflag6,ULHF6CHLCPU8CMD))           //~vbi3R~
      	       *(pc+linenosz-1)=U8CMDID;                           //~vbi3I~
 			pc+=linenosz;                                       //~v069R~
 			pcd+=linenosz;                                      //~v069R~
@@ -1518,7 +1521,10 @@ UTRACEP("SETLINEATTR lineno=%d,drawsw=%d\n",plh->ULHlinenor,UCBITCHK(plh->ULHfla
                     if (*pcd==TABCHAR)                             //~va45I~
         	        	ucs=TABCHAR;                               //~va45R~
                     else                                           //~va20I~
-                    	ucs=(int)UTF_GETDDUCS1(pc,pcd,plhcsr->ULHlen-csrpos);//~va20R~
+                    {                                              //~vbk7I~
+//                  	ucs=(int)UTF_GETDDUCS1(pc,pcd,plhcsr->ULHlen-csrpos);//~va20R~//~vbk7R~
+                    	ucs=(int)utfdd2u1chsz(0,pc,pcd,plhcsr->ULHlen-csrpos,0/*&chsz*/);//~vbk7I~
+                    }                                              //~vbk7I~
                     if (*pcd==UDBCSCHK_F2LERR||UTF8ISASCII(ucs))   //~va20R~
                     {                                              //~va20I~
 //#ifdef UTF8UCS4                                                    //~va3xI~//~vaw1R~
@@ -2211,7 +2217,8 @@ void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
 #endif                                                             //~vb3xR~
             if (*pc==XEUTF_ERRREPCH                                //~vb28I~
             &&  (                                                  //~vb28R~
-                    UDBCSCHK_ISUCSDBCS(*pcd) //dbcs or ucs4        //~vb28R~
+//                  UDBCSCHK_ISUCSDBCS(*pcd) //dbcs or ucs4        //~vb28R~//~vbm9R~
+			        f23_isutf8dbcssplit(0,pcd,ii,width)            //~vbm9R~
                  || UDBCSCHK_DBCSCOLS(*pcd)  //1st,pad,2nd         //~vb28R~
                 )        //bondary is already replaced by "."      //~vb28I~
                )                                                   //~vb28I~
@@ -2485,7 +2492,8 @@ void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
 #endif                                                             //~vb3xI~
             if (*pc==XEUTF_ERRREPCH                                //~vb28I~
             &&  (                                                  //~vb28I~
-                    UDBCSCHK_ISUCSDBCS(*pcd) //dbcs or ucs4        //~vb28I~
+//                  UDBCSCHK_ISUCSDBCS(*pcd) //dbcs or ucs4        //~vb28I~//~vbm9R~
+			        f23_isutf8dbcssplit(0,pcd,ii,width)	           //~vbm9R~
                  || UDBCSCHK_DBCSCOLS(*pcd)  //1st,pad,2nd         //~vb28I~
                 )        //bondary is already replaced by "."      //~vb28I~
                )                                                   //~vb28I~
@@ -3046,3 +3054,18 @@ UTRACEP("setattraroundcsrpos pos=%d,colr=%d\n",Ppos,Pcolor);       //~va3rR~
     return 0;                                                      //~va3rI~
 }//setattraroundcsrpos                                             //~va3rR~
 #endif // AAA //no user                                            //~vb4yI~
+//*************************************************************    //~vbm9I~
+//*chk "."(2e) is result of dbcs split of utf8 file                //~vbm9I~
+//*************************************************************    //~vbm9I~
+int f23_isutf8dbcssplit(int Popt,char *Pdbcs,int Pcol,int Pwidth)  //~vbm9I~
+{                                                                  //~vbm9I~
+	int rc=0;                                                      //~vbm9I~
+//*******************                                              //~vbm9I~
+	if (Pcol==0)                                                   //~vbm9I~
+    	rc=UDBCSCHK_DBCS2NDUCS2NWPO(*Pdbcs);                       //~vbm9I~
+    else                                                           //~vbm9I~
+	if (Pcol==Pwidth-1)                                            //+vbm9R~
+    	rc=UDBCSCHK_DBCS1STUCS2NWPO(*Pdbcs);                       //~vbm9I~
+    UTRACEP("%s:rc=%d,Pcol=%d,width=%d,dbcsid=%x\n",UTT,rc,Pcol,Pwidth,*Pdbcs);//~vbm9R~
+    return rc;                                                     //~vbm9I~
+}//f23_isdbcssplit                                                 //~vbm9I~
