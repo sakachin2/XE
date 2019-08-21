@@ -1,24 +1,24 @@
 V129G 2018/01/30 
 (A) Automake package installation step
 
-    You may update configure before ./configure
+    You may update configure before running  ./configure
         packagehelpdir   :html help install dir     (current=/usr/local/share/gnome/help/gxe)
         packagepixmapsdir:icon image install dir    (current=/usr/local/share/pixmaps/gxe)
         ./configure --bindir=PATH  for bin dir      (current=/usr/local/bin)
 
-    (1)tar -zxvf gxe-v.rr.tar.gz    (v.rr : version)
-    (2)cd gxe-v.rr
-    (3)./configure
-    (4)make
-    (5)make install  (by root user or "sudo make install" on ubuntu) 
+    (1) tar -zxvf gxe-v.rr.tar.gz    (v.rr : version)
+    (2) cd gxe-v.rr
+    (3) ./configure
+    (4) make
+    (5) make install  (by root user or "sudo make install" on ubuntu or other Debian based OS) 
 
        Only following bins are installed to avoid naming contention,
        install manualy other utility as your favour.
          gxe, xe, xprint, gxp, xfc, xdc
-    (6)Enter gxe on command line. 
+    (6) Enter gxe on command line. 
        To check help html, enter "help" or "?" on 2nd line after (g)xe started.
        Browser will show help documents.
-    (7)ssh
+    (7) ssh
        To execute on remote host, ssh(d) setup may be required.
            local :/etc/ssh/ssh_config
                       set "SendEnv LANG LC_*"

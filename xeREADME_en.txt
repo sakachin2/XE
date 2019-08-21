@@ -3,14 +3,14 @@
 [English]    v1.29K                                                   ||~129JR~||+129KR~
 
 This editor is fit for programmers working on both main-frame and PC.
-Its operation is based on mainframe SPF editor,
+It's operation is based on mainframe SPF editor,
 and like as other editor on PC, convenient short-cut key operation is hybrid.
 
-    .Available to Windows and Linux.
+    .Available for Windows and Linux.
     .Supports Fixed-Length and Variable-Length record file.
-    .Suppors text file encoded by UTF8 and EBCDIC(requires ICU installation).
+    .Supports text file encoded by UTF8 and EBCDIC(requires ICU installation).
     .Supports binary file edit. Vertical 2 line and horizontal dump format.
-    .Filer fuction (apply Delete, Rename, Copy, Move, Execute, ...) is available.
+    .Filer function (apply Delete, Rename, Copy, Move, Execute, ...) is available.
     .Supports Remote file access using ftp,samba,rsh,ssh,fuse.
     .Optionally update-tag:CID(ChangeID) is automatically appended to updated lines.
 
@@ -22,30 +22,31 @@ LICENSE: use GNU GPL
                                    http://www.geocities.jp/sakachin2/index.htm
                                    GitHub: sakachin2/XE
 
-For windows, "xe.exe" is console application and "wxe.exe" is GUI application.
-   wxe.exe is WTL/ATL application(requires no MFC library) compiled on vs2010Express.
-   Thorse are included in w64binGit.zip.
-For Linux "xe" is console application and "gxe" is GUI application.
+For windows, "xe.exe" is a console application and "wxe.exe" is a GUI application.
+   wxe.exe is a WTL/ATL application(requires no MFC library) compiled on vs2010Express.
+   Those are included in w64binGit.zip.
+
+For Linux "xe" is a console application and "gxe" is a GUI application.
    Untar gxe-x.xx.tar.gz, and make binary by ./configure && make.
+
 Following command line tools are also included.
-   xads         For Windows Only,Access to NTFS ADS(Alternative Data Stream).
+
+   xads         (Windows) Access to NTFS ADS(Alternative Data Stream).
    xbc          Basic calculator.
-   xcfont       (Windows)change command prompt font.                  ||+129KI~
+   xcfont       (Windows) Change command prompt font.            ||+129KI~
    xci          C/C++/Java text file indentation
    xcv          Code conversion.                                 ||+124FR~,
-                EUC,SJIS(Japanese:Shift JIS),Unicode,UTF-8,EBCDIC,Any-Codepage.
+                EUC, SJIS(Japanese:Shift JIS), Unicode, UTF-8, EBCDIC, Any-Codepage.
    xcvsjisc     Convert SJIS in xe's source file to Octal-notation.
-   xdc          directory compare tool
-   xdd          directory delete tool
-   xdig         directory walk utility
-                tool apply command to all sub-directory/files.
+   xdc          Directory compare tool
+   xdd          Directory delete tool
+   xdig         Directory walk utility (apply command to all sub-directory/files)
    xds          Directory size display tool
    xfc          File compare tool
-   xff          file search by size/timestamp/name.
+   xff          sFfile search by size/timestamp/name.
    xfg          Binary file string search & Recursive grep.
    xfmt         FileLineFormatter. "TC FMT" for huge file.
-   xfs          Split large file,it enable backup large file to
-                diskets.
+   xfs          Split large file,it enable backup large file to diskettes.
    xkp          (Windows) display process-id and kill process.
    xlow         Rename UpperCase file name to LowerCase.
    xmj          2 file matching.
@@ -61,17 +62,20 @@ Following command line tools are also included.
    gxp          (Linux)xprint using GTKPrint
 
 Other contents.
+
   xehelp:
     Html files for Help.
     put it WorkDirectory, set "xehelp=..." environment variable
     or use -hd commandline parameter.
     Under linux you can put it in /usr/local\/shareLinux(see xelnxe.txt).
+
   sample/doc:
     Manual text files.
       xej.txt/xee.txt
       xereadmj.txt/xereadme.txt
       xelnxj.txt/xelnxe.txt(For Linux)
       xewxej.txt/xewxee.txt(For wxe and gxe)
+
   sample/data:
       xehosts      setup file for remote access.
       xesynw.cfg   (Win)setup file to use syntax highlight.
@@ -96,13 +100,16 @@ How to execute.
 
   (Windows)
 
-  ．Create WorkDirectory, default is c:\xe_wd, avoid default value when c:\ is protected.
+  . Create WorkDirectory, default is c:\xe_wd, avoid default value when c:\ is protected.
     e.g)  "mkdir d:\xe_wd"
-  ．Put zip file in the WorkDirectory, then unzip it.
-      copy xehosts etc. from sample\data to the WorkDirectory if you use those function.
+
+  . Put zip file in the WorkDirectory, then unzip it.
+      Copy xehosts etc. from sample\data to the WorkDirectory if you use those function.
       Put dummy file consist of one comment line(starting by "#" when you do not use the function.
+
   . Put executable binary on PATH environment valiable.
       Windows10 case:ControlPanel-->System and Security-->System-->Advanced Setting-->EnvironmentVariable:PATH
+
   . Set WorkDirectory to environment variable xe.
       Or, prepare .bat file
       e.g) xe.bat
@@ -110,27 +117,35 @@ How to execute.
                xe.exe
              OR
                xe.exe /wd:\xe010
-  ．Start by "xe [file-spec]".
+
+  . Start by "xe [file-spec]".
       "xe /?" shows commandline parameters.
+
   . Above is also applied to wxe.
 
+
   (Linux)
-  .On terminal emulator, install xe.
+
+  . On terminal emulator, install xe.
       tar -zxvf gxe-1.xx.tar.gz
       cd
       ./configure
       make
       sudo make install   -->install to /usr/local/bin
+
     See sample/READMEj.txt when install trouble occured.
     If you want, install manually other binary from src/xsub folder than installed by "make install".
-  .Create WorkDirectory at home.
+
+  . Create WorkDirectory at home.
       mkdir ~/xe_wdnnnnn     nnnnn は ユーザーID番号
-    Copy setup files such as xehosts from sample folder to the WorkDirectory if you use the function.
-    If you do not use the function, create dummy file containing one comment record starting with "#".
-  ．Start xe by "xe [file-spec]
+      Copy setup files such as xehosts from sample folder to the WorkDirectory if you use the function.
+      If you do not use the function, create dummy file containing one comment record starting with "#".
+
+  . Start xe by "xe [file-spec]
       "xe -?" shows command line parameter
       Terminal emulator defines shortcut key such as  F1, F10 and ModifierKey(Shift/Alt/Ctrl) combination.
       If you want use  such key, disable shortcut by terminal emulator settings.
+
   . gxe is no affected terminal emulator setting.
 
 ######################################################################
