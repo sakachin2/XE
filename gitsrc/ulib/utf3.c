@@ -1,4 +1,4 @@
-//*CID://+v6X3R~:                             update#=  679;       //~v6X3R~
+//*CID://+v6X3R~:                             update#=  682;       //~v6X3R~
 //*********************************************************************//~7712I~
 //utf3.c                                                           //~7817R~
 //* utf8 data manipulation:os library                              //~7712R~
@@ -459,7 +459,7 @@ UTRACEP("wcwidth only width=%d for ucs=%x\n",wcw,Pucs);   //better to return lar
   }//!UCS4                                                         //~v65cI~
     if (Ppflag)                                                    //~v62UR~
     	*Ppflag=flag;                                              //~v62UR~
-UTRACEP("%s: return len=%d,flag=%x,ucs=%x\n",UTT,len,flag,Pucs);     //~v6a0R~//~v6uER~//~v6VnR~//~v6VrR~
+//UTRACEP("%s: return len=%d,flag=%x,ucs=%x\n",UTT,len,flag,Pucs);     //~v6a0R~//~v6uER~//~v6VnR~//~v6VrR~//~v6X3R~
     return len;                                                    //~v62UR~
 }//utfwcwidth                                                      //~v6VbR~
 #ifdef UTF8UTF16     //W32                                              //~v6uBI~//~v6V4I~
@@ -1851,7 +1851,10 @@ int utftbsrch_j(ULONG Pucs)                                        //~7925I~
     else                                                           //~v6VoI~
     if (datatype==UCODETB_WIDE)                                    //~v6VoI~
         datatype=(UTFWWF_F2C1|2);  //wide font                     //~v6VoI~
+  if (datatype)                                                    //~v6X3I~
+  {                                                                //+v6X3I~
     UTRACEP("%s:ucs=%06x,datatype=%x\n",UTT,Pucs,datatype);        //~v6WpR~
+  }                                                                //+v6X3I~
     return datatype;                                               //~7925I~
 }//utftbsrch_j                                                     //~7925I~
 #endif	//W32                                                      //~v640I~
@@ -3118,7 +3121,7 @@ int utf3_wcwidthXXE(int Popt,UWUCS Pucs,int *Ppflag,int *Pprc)     //~v6VbI~
 //******************************************************           //~v6VbI~
 int utf3_wcwidthXXE(int Popt,UWUCS Pucs,int *Ppflag,int *Pprc)     //~v6VbI~
 {                                                                  //~v6VbI~
-	int len,flag,opt,swconsole;                               //~v6VbI~//+v6X3R~
+	int len,flag,opt,swconsole;                               //~v6VbI~//~v6X3R~
 //*****************                                                //~v6VbI~
 	swconsole=Sutftbopt & SUO_CONSOLE;                             //~v6VbI~
 	Sutftbopt &= ~SUO_CONSOLE;	//parm to utftbsrch_jeuc;          //~v6VbI~
@@ -3131,7 +3134,7 @@ int utf3_wcwidthXXE(int Popt,UWUCS Pucs,int *Ppflag,int *Pprc)     //~v6VbI~
 	Sutftbopt |= swconsole;                                        //~v6VbI~
     if (Ppflag)                                                    //~v6VbI~
     	*Ppflag=flag;                                              //~v6VbI~
-    UTRACEP("%s:ucs=%06x,UDBCSCHK_UTF8=%d,rc=len=%d,flag=%\n",UTT,Pucs,(Gudbcschk_flag & UDBCSCHK_UTF8)!=0,len,flag);//~v6VbI~//+v6X3R~
+    UTRACEP("%s:ucs=%06x,UDBCSCHK_UTF8=%d,rc=len=%d,flag=%\n",UTT,Pucs,(Gudbcschk_flag & UDBCSCHK_UTF8)!=0,len,flag);//~v6VbI~//~v6X3R~
     return len;                                                    //~v6VbI~
 }//utf3_wcwidthXXE                                                 //~v6VbI~
 #endif	//!AAA                                                     //~v6VbI~

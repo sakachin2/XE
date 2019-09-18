@@ -1,4 +1,10 @@
-//*********  20180827 v129K updated     ****************
+//*********  20180917 v129L release     ****************
+//v6Y1:190809 gnome2 obsoleted use gio
+//            uproc3.c
+//*********  20180902 v129L updated     ****************
+//v6Y0:180823 additional to v6Xc,accept unicode specification as \uxxxx,add utfcvu2dd()
+//            utf22.c
+//*********  20180828 v129K release     ****************
 //v6Xd:180825 (Bug:Lnx)ufileopenexclusivewrite call uflock(0) cause loop whe utaceinit
 //            ufile2.c
 //v6Xc:180823 add ueditescrep,process \a,\x..

@@ -1,4 +1,4 @@
-//*CID://+vbj1R~:                             update#=  399;       //~vbj1R~
+//*CID://+vbp0R~:                             update#=  401;       //~vbj1R~//~vbp0R~
 //*************************************************************
 //*xedlcmd6.c                                                      //~v51WR~
 //* %:apply command                                                //~v51WR~
@@ -6,6 +6,7 @@
 //* #:submit/rsh                                                   //~v59eI~
 //* g:grep                                                         //~v76gI~
 //*************************************************************
+//vbp0:180922 &(spawn) to msi get errmsg "not found or not executable",add "try !" to execute default app for the extension//~vbp0I~
 //vbj1:180305 cpu8 option to "=" cmd                               //~vb7eI~
 //vb7e:170108 FTP crash by longname                                //~vb7eI~
 //vb2D:160221 LNX compiler warning                                 //~vb2DI~
@@ -852,7 +853,9 @@ int dlcmdspawn(PUCLIENTWE Ppcw,PUDLCMD Pplc,PUDLCMD Pplcdummy)     //~v662I~
     rc=uextchk(cmdstr);                                            //~v662I~
     if (!rc||rc==9)		//ext err or no extention                  //~v662I~
     {                                                              //~v662I~
-    	uerrmsg("filename extension error",0);                     //~v662I~
+//    	uerrmsg("filename extension error",0);                     //~v662I~//~vbp0R~
+      	uerrmsg("filename extension error, try \"!\" line cmd if default app is defined to the filename extension.",//~vbp0I~
+      	        "拡張子エラー、この拡張子に関連付けされたアプリがある場合は \"!\" 行コマンドを試してください");//~vbp0I~
         return 4;                                                  //~v662I~
     }                                                              //~v662I~
 #endif                                                             //~v662I~
@@ -870,6 +873,9 @@ int dlcmdspawn(PUCLIENTWE Ppcw,PUDLCMD Pplc,PUDLCMD Pplcdummy)     //~v662I~
 #endif                                                             //~v662I~
         Ppcw->UCWparm=cmdstr;                                      //~v662I~
         rc=dcmd_spawn(Ppcw);                                       //~v662I~
+        if (rc)                                                    //~vbp0I~
+      		uerrmsgcat(";try \"!\" line cmd if default app is defined to the filename extension.",//+vbp0R~
+      	        "、この拡張子に関連付けされたアプリがある場合は \"!\" 行コマンドを試してください");//~vbp0I~
 #ifdef FTPSUPP                                                     //~v662I~
   	}//local submit                                                //~v662I~
 #endif                                                             //~v662I~
@@ -1348,7 +1354,7 @@ int dlcmdcompare(PUCLIENTWE Ppcw,PUDLCMD Pplc1,PUDLCMD Pplc2)      //~v75MR~
 //edit/browse redirect file at last                                //~v75MI~
     pc=cmdstr;                                                     //~v75MI~
   if (Scompcmdcpu8)                                                //~vbj1R~
-    pc+=sprintf(pc,"%c %s %s %s",(dlcmdbecmdid(Ppcw,plc)?'e':'b'),redirectfnm,MODE_UTF8,MODE_IE);//+vbj1R~
+    pc+=sprintf(pc,"%c %s %s %s",(dlcmdbecmdid(Ppcw,plc)?'e':'b'),redirectfnm,MODE_UTF8,MODE_IE);//~vbj1R~
   else                                                             //~vbj1R~
     pc+=sprintf(pc,"%c %s",(dlcmdbecmdid(Ppcw,plc)?'e':'b'),redirectfnm);//~v75MI~
 //  len=(int)((ULONG)pc-(ULONG)cmdstr);                            //~v75MI~//~vafkR~

@@ -1,4 +1,23 @@
-//*********  20180827 v129K updated  *******************************
+//*********  20180917 v129L release  *******************************
+//vbp5:190914 gdk_beep deprecated at GTK3 use gdk_display_beep
+//            xxexei.c
+//vbp4:190913 gnome2 obsoleted
+//            support.c main.c interface.c xxecsub2.c
+//vbp3:190709 (WinCons)no ime line needed anymore for screen height
+//            xescr.c
+//vbp2:181028 (Bug)Alt+"/" did not stop at "/>" (e.g. <tag .... />) when next is not space but crlf; ==>pair not found
+//            and did not skip search </tag ... /> misunderstand as nested
+//            xefcmd24.c
+//vbp1:181028 new lineno specification:Select --[n];  select member from last
+//            xedir3.c xefile5.c
+//vbp0:180922 &(spawn) to msi get errmsg "not found or not executable",add "try !" to execute default app for the extension
+//            xedlcmd6.c
+//*********  20180902 v129L updated  *******************************
+//vbn1:180901 tc fmt, numeric is err as delm char, it may disturb when "N" option specified
+//            xecalc3.c
+//vbn0:180901 addtiotional to vbmr,accept unicode specification \uxxxx, for delm dbcs not allowed,for outdelm allow dbcs by \u____ fmt
+//            xecalc3.c
+//*********  20180828 v129K released *******************************
 //vbmv:180727 =3.12 helpmsg, add CPU8 option
 //            xepan2.h
 //vbmu:180727 TC fmt,support dbcs outdelm string

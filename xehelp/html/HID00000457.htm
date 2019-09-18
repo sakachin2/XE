@@ -27,6 +27,7 @@ a:hover{font-weight:bold;}
   .v129H&lt;--129G:(2018/02/22)
   .v129J&lt;--129H:(2018/05/10)
   .v129K&lt;--129J:(2018/08/27)
+  .v129L&lt;--129J:(2019/09/18)
 
      1.BUGs
        -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする
@@ -71,6 +72,8 @@ a:hover{font-weight:bold;}
        -Esc を 連続２回押すとラベルを残して行コマンドはクリアーされるが
         ラベル指定のコマンドはラベルが見つからないエラーになる
        -画面分割してるとき編集の行コマンドが無視されることがある
+    (129L)
+       -Alt+&quot;/&quot;(xml,html の &lt;tag &gt; のペアリング探索 のバグ
 
      2.機能追加
 
@@ -160,6 +163,10 @@ a:hover{font-weight:bold;}
      (129K)
        -TC fmt -D&quot;分離文字&quot; -S&quot;出力用分離文字&quot; オプションで \x や \t などのエスケープ文字指定を受け付ける
         (\t(=0x09) は　-S では使用できません). -SではDBCSを使用できるようにしました
+     (129L)
+       -CPU8(UTF8ファイル)では TC fmt -D&quot;分離文字&quot; -S&quot;出力用分離文字&quot; オプションで
+        ユニコード(\Uxxxx)指定を受け付ける
+          例） tc fmt d\u00c1
 
     3.その他
        -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加
@@ -192,6 +199,10 @@ a:hover{font-weight:bold;}
        -OPT UNICOMB U-xxxx の 代替表示文字はSBCSのみ認める
        -ファイル編集の保存時、ファイルのタイムスタンプがロード時と変わっているとき
         警告しているが、解消は PF3 再入力ではなく &quot;SAVe -Force&quot; または &quot;END -Force&quot; コマンドが必要とする
+     (129L)
+       -(Linux)debian10などgnome2が廃止になったことへの対応
+       -(Linux)cupsの PPD api が非推になったことへの対応
+       -(Windows)コンソール版の画面の最下行、昔はIME用の行だった、これを表示用に変更
 
      4.ツール。
      (129C)
@@ -269,6 +280,9 @@ xcfont * H=16 W=10 ; Update current font sizes
 xcfont * Weight=Bold ; Set current font weight to Bold
 chcp 57002 ; 57002:Devanagari, &quot;Mangal&quot; requires it.
 xcfont Mangal H=* ; Codepage will be listed by &quot;xcv /list&quot;.
+</SPAN></PRE>
+<PRE><span class="auto-style1">    </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">(129L)
+       -(Windows) xlow 1.6 (ファイル名を大文字/小文字に変更）のバグ
 
 
 </SPAN></PRE>

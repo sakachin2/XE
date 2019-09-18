@@ -1,8 +1,9 @@
-//*CID://+vbe0R~:                             update#=  507;       //+vbe0R~
+//*CID://+vbp2R~:                             update#=  511;       //~vbp2R~
 //*************************************************************
 //*xefcmd24.c                                                      //~v42hR~
 //*  same,xx,ppsrch                                                //~v42hR~
 //****************************************************************
+//vbp2:181028 (Bug)Alt+"/" did not stop at "/>" (e.g. <tag .... />) when next is not space but crlf; ==>pair not found//~vbp2I~
 //vbe0:171231 add function to search xml tag pair                  //~vbe0I~
 //vb86:170216 display cmdline ctr excluded(fcmd:x,xx; lcmd x)      //~vb86I~
 //vb2E:160229 LNX64 compiler warning                               //~vb2EI~
@@ -2443,6 +2444,8 @@ int getxmltype(int Popt,char *Pdata,char *Pdbcs,int Plen,int Poffs,char *Pname,c
                     return 0;                                      //~vbe0I~
                 ctr++;                                             //~vbe0I~
         	}                                                      //~vbe0I~
+            if (type==XMLT_START)	// <xxx+crlf>                  //~vbp2I~
+            	type=XMLT_STARTATTR;   //search </xxx or />        //~vbp2I~
             namelen=ctr;                                           //~vbe0I~
         }                                                          //~vbe0I~
     	posnext=PTRDIFF(pc,Pdata)+1;                               //~vbe0I~
@@ -2873,6 +2876,12 @@ int xmlsrchwordnest(int Popt,PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Pd
             }                                                      //~vbe0I~
             if (offs2>0 && *(plh2->ULHdata+offs2-1)==XML_TAG1 && !*(plh2->ULHdbcs+offs2-1)) // <xxx//~vbe0I~
             {                                                      //~vbe0I~
+                offs3=offs2;                                       //~vbp2I~
+                plh3=plh2;                                         //+vbp2I~
+	            rc=xmlsrchwordsub(Popt,Ppcw,&plh3,&offs3,1/*dest:forward*/,">",0/*dbcs*/,1/*srchwordlen*/);//+vbp2R~
+              if (!rc && offs3>0 && *(plh3->ULHdata+offs3-1)==XML_TAGT && !*(plh3->ULHdbcs+offs3-1)) // "/>"//+vbp2R~
+                ;  //it is closed like <xxx ... />                 //~vbp2I~
+              else                                                 //~vbp2I~
                 nestctr--;                                         //~vbe0I~
                 if (!nestctr)                                      //~vbe0I~
                 {                                                  //~vbe0I~
@@ -2942,7 +2951,16 @@ int xmlsrchwordnest(int Popt,PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Pd
                 }                                                  //~vbe0I~
                 else                                               //~vbe0I~
                 if (offs2>0 && *(plh2->ULHdata+offs2-1)==XML_TAG1 && !*(plh2->ULHdbcs+offs2-1)) // <xxx//~vbe0I~
-                    nestctr++;                                     //~vbe0I~
+                {                                                  //~vbp2I~
+                	offs3=offs2;                                   //~vbp2I~
+	                rc=xmlsrchwordsub(Popt,Ppcw,&plh2,&offs3,Pdest,">",0/*dbcs*/,1/*srchwordlen*/);//+vbp2R~
+                	if (rc)                                        //~vbp2I~
+                    	return 4;                                  //~vbp2I~
+                	if (offs3>0 && *(plh2->ULHdata+offs3-1)==XML_TAGT && !*(plh2->ULHdbcs+offs3-1)) // "/>"//+vbp2R~
+                    	;                                          //~vbp2I~
+                    else                                           //~vbp2I~
+                    	nestctr++;                                     //~vbe0I~//~vbp2R~
+                }                                                  //~vbp2I~
                 plh=plh2;                                          //~vbe0I~
                 offs=offs2+Pnamelen;                               //~vbe0R~
             }//nest loop                                           //~vbe0I~

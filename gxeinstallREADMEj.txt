@@ -1,4 +1,4 @@
-V129G 2018/01/30 
+V129G 2019/09/18 
 (A)Automake パッケージ 導入手順。
 
     ディストリビューションによっては導入先フォルダーを変更する必要があるかもしれません。
@@ -64,6 +64,9 @@ V129G 2018/01/30
              install libgnomeprint-devel
         ===> install libgnomeui-dev
              install libgnomeprint2.2-dev  (ubuntu8)
+     OR (gnome2 が廃止されたディストリビューションの場合）
+        ./configure enable-libgnome2=no を使用する (glib2.0-dev install required)
+        gio.h が見つからないと出る場合も同様
     (6) pkg-config was not found
         ===> install pkg-config
     (7) CHK_INSTALL_GTK3...no and  CHK_INSTALL_GTK2..no

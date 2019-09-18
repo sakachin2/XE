@@ -1,4 +1,4 @@
-//*CID://+v6VuR~:                              update#=  109;      //~v6VuR~
+//*CID://+v6VuR~:                              update#=  111;      //~v6VuR~
 //***********************************************************************//~v026I~
 //* utrace.c                                                       //~v022R~
 //***********************************************************************
@@ -1156,7 +1156,7 @@ void putline(char *area,int count) //v3.5r
     	pfh=Sfile_force;                                           //~v6VuI~
     else                                                           //~v6VuI~
     	pfh=Sfile;                                                 //~v6VuI~
-//      printf("%s:sh=%p\n",UTT,pfh);//@@@@test                    //+v6VuR~
+//      printf("%s:sh=%p\n",UTT,pfh);//@@@@test                    //~v6VuR~
 //  fwrite(area,1,(UINT)count,Sfile);                           //~6203R~//~v6VuR~
     fwrite(area,1,(UINT)count,pfh);                                //~v6VuI~
     return;
@@ -1239,8 +1239,8 @@ static HANDLE Shcons_stdout;                                       //~v6u9I~
 //*************************************************************    //~v6B1I~
 int utrace_term(int Popt)                                          //~v6B1I~
 {                                                                  //~v6B1I~
-//      printf("%s:sh=%p\n",UTT,Sfile);//@@@@test                  //+v6VuR~
-//      printf("%s:sh_force=%p\n",UTT,Sfile_force);//@@@@test      //+v6VuR~
+//      printf("%s:sh=%p\n",UTT,Sfile);//@@@@test                  //~v6VuR~
+//      printf("%s:sh_force=%p\n",UTT,Sfile_force);//@@@@test      //~v6VuR~
 	if (Sfile)  //file opened                                      //~v6B1I~
     {                                                              //~v6B1I~
     	utraceocmsg("TRACE CLOSE AT");                             //~v6B1I~

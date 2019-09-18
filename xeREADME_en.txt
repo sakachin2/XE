@@ -1,6 +1,6 @@
-||*CID:||+129KR~:  2018/08/27                update#=  810;           ||~129JR~||+129KR~
+||*CID:||+129KR~:  2019/09/18                update#=  811;           ||~129JR~||+129KR~
 ######################################################################
-[English]    v1.29K                                                   ||~129JR~||+129KR~
+[English]    v1.29L                                                   ||~129JR~||+129KR~
 
 This editor is fit for programmers working on both main-frame and PC.
 Its operation is based on mainframe SPF editor,
@@ -30,7 +30,7 @@ For Linux "xe" is console application and "gxe" is GUI application.
 Following command line tools are also included.
    xads         For Windows Only,Access to NTFS ADS(Alternative Data Stream).
    xbc          Basic calculator.
-   xcfont       (Windows)change command prompt font.                  ||+129KI~
+   xcfont       (Windows)change command prompt font.                  ||~129KI~
    xci          C/C++/Java text file indentation
    xcv          Code conversion.                                 ||+124FR~,
                 EUC,SJIS(Japanese:Shift JIS),Unicode,UTF-8,EBCDIC,Any-Codepage.
@@ -348,49 +348,67 @@ How to execute.
        -xdc v2.29,xfc v1.27                                           ||~129JI~
         Add "CPU8" option.                                            ||~129JI~
                                                                       ||~129JI~
-  .v129K<--129J:(2018/08/27)                                          ||+129KI~
+  .v129K<--129J:(2018/08/27)                                          ||~129KI~
+     1.BUGs                                                           ||~129KI~
+       -Around processing of UTF8 file.                               ||~129KI~
+         .DisplayCellWidth was reviced.                               ||~129KI~
+         .Trouble around displaying UCS4,SpacingCombiningMarks adn NonSpacingMark.||~129KI~
+         .Expanded Maxmum combining up to 8 chracters.(case of Tibtan)||~129KI~
+          For Linux Console version max is yet 4 characters.          ||~129KI~
+         .When unicode>=U01000(Windows) or unicode>=U020000(Linux)    ||~129KI~
+            -Invalid hexcode display on top-left header line.         ||~129KI~
+            -Could not update on vertical hex display line.           ||~129KI~
+         .(LNX)When U01000<= unicode <U020000                         ||~129KI~
+            -SBCS(CellWidth=1) was changed to another character at save.||~129KI~
+            -"v" line cmd on vertical hex line(cmd to accept 3 consecutive hex code as unicode) failed.||~129KI~
+         .On =3.12 panel(Compare Tool) was corrupted when filename encoding is UTF8.||~129KI~
+         .(WinConsole)New tool:xcfont can change font of command prompt.||~129KI~
+          It enables to view foreign script suach as Devanagari.      ||~129KI~
+       -When gb18030, differece of cursor position between charcter and vertical hex line||~129KI~
+        occurs for characters of CelWidth=1.                          ||~129KI~
+       -Consecutive Esc key clear line cmd except label,              ||~129KI~
+        but cmd specified the labe get error of label not found.      ||~129KI~
+       -When screen is split, it may occurs that line cmd on edit panel is ignored.||~129KI~
+                                                                      ||~129KI~
+     2.Additional function.                                           ||~129KI~
+       -TC fmt cmd -D"..." and -S"..." option                         ||~129KI~
+        Accept escape secuence such as \x, \t as Delimeter(\t(0x09) is not allowed for -S).||~129KI~
+        Accept DBCS as  -S option.                                    ||~129KI~
+     3.Miscellaneous.                                                 ||~129KI~
+       -3.12 Panel(File/Dir compare)                                  ||~129KI~
+        "-CPU8" option was added to view compare result as CPU8 file. ||~129KI~
+       -Diplay hex code on top-left for also directory list except ASCII code.||~129KI~
+       -Limit to SBCS for alternative character of "OPT UNICOMB U-xxxx" cmd||~129KI~
+       -Explicit "Force" option is required at save when timestamp was changed from loading time.||~129KI~
+        Re-enter of PF3 is not effective from now, use "SAVe -Force" or "END -force" cmd.||~129KI~
+                                                                      ||~129KI~
+     4.Tool.                                                          ||~129KI~
+       -(Win)xkp v1.4                                                 ||~129KI~
+        Exe name was not fullpath from Windows7, show fullpath.       ||~129KI~
+       -xfg v1.20                                                     ||~129KI~
+        grep may hungup when srach string is starting with "-".       ||~129KI~
+       -(Win)New tool xcfont v1.01 (available from Windows Vista)     ||~129KI~
+        It chages font of command prompt.                             ||~129KI~
+        Chcp may required depending on font family.                   ||~129KI~
+        For example, to view Devanagari script                        ||~129KI~
+        Change font like as "xcfont Mangal" after "chcp 57002".       ||~129KI~
+        You can see Devaganari(U+0900-097f) on xe.                    ||~129KI~
+        For wxe or Linux version you need nothing special.            ||~129KI~
+                                                                      ||+129KI~
+  .v129L<--129K:(2019/09/18)                                          ||+129KI~
+                                                                      ||+129KI~
      1.BUGs                                                           ||+129KI~
-       -Around processing of UTF8 file.                               ||+129KI~
-         .DisplayCellWidth was reviced.                               ||+129KI~
-         .Trouble around displaying UCS4,SpacingCombiningMarks adn NonSpacingMark.||+129KI~
-         .Expanded Maxmum combining up to 8 chracters.(case of Tibtan)||+129KI~
-          For Linux Console version max is yet 4 characters.          ||+129KI~
-         .When unicode>=U01000(Windows) or unicode>=U020000(Linux)    ||+129KI~
-            -Invalid hexcode display on top-left header line.         ||+129KI~
-            -Could not update on vertical hex display line.           ||+129KI~
-         .(LNX)When U01000<= unicode <U020000                         ||+129KI~
-            -SBCS(CellWidth=1) was changed to another character at save.||+129KI~
-            -"v" line cmd on vertical hex line(cmd to accept 3 consecutive hex code as unicode) failed.||+129KI~
-         .On =3.12 panel(Compare Tool) was corrupted when filename encoding is UTF8.||+129KI~
-         .(WinConsole)New tool:xcfont can change font of command prompt.||+129KI~
-          It enables to view foreign script suach as Devanagari.      ||+129KI~
-       -When gb18030, differece of cursor position between charcter and vertical hex line||+129KI~
-        occurs for characters of CelWidth=1.                          ||+129KI~
-       -Consecutive Esc key clear line cmd except label,              ||+129KI~
-        but cmd specified the labe get error of label not found.      ||+129KI~
-       -When screen is split, it may occurs that line cmd on edit panel is ignored.||+129KI~
+       -Bug of function Alt+"/" (<tag > pairing search for xml/html text)||+129KI~
                                                                       ||+129KI~
      2.Additional function.                                           ||+129KI~
-       -TC fmt cmd -D"..." and -S"..." option                         ||+129KI~
-        Accept escape secuence such as \x, \t as Delimeter(\t(0x09) is not allowed for -S).||+129KI~
-        Accept DBCS as  -S option.                                    ||+129KI~
+       -TC fmt cmd on UTF8 file.                                      ||+129KI~
+        accept unicode specification for -D:input splitter and -S:output splitter.||+129KI~
+        e.g) tc fmt d\u00c1                                           ||+129KI~
+                                                                      ||+129KI~
      3.Miscellaneous.                                                 ||+129KI~
-       -3.12 Panel(File/Dir compare)                                  ||+129KI~
-        "-CPU8" option was added to view compare result as CPU8 file. ||+129KI~
-       -Diplay hex code on top-left for also directory list except ASCII code.||+129KI~
-       -Limit to SBCS for alternative character of "OPT UNICOMB U-xxxx" cmd||+129KI~
-       -Explicit "Force" option is required at save when timestamp was changed from loading time.||+129KI~
-        Re-enter of PF3 is not effective from now, use "SAVe -Force" or "END -force" cmd.||+129KI~
+       -(Linux)on debian10, gnome2 is obsoleted.                      ||+129KI~
+       -(Linux)PPD api is deprecated at cups-1.6.                     ||+129KI~
+       -(Windows)Last line of panel of console version was for IME on Windows95.||+129KI~
                                                                       ||+129KI~
      4.Tool.                                                          ||+129KI~
-       -(Win)xkp v1.4                                                 ||+129KI~
-        Exe name was not fullpath from Windows7, show fullpath.       ||+129KI~
-       -xfg v1.20                                                     ||+129KI~
-        grep may hungup when srach string is starting with "-".       ||+129KI~
-       -(Win)New tool xcfont v1.01 (available from Windows Vista)     ||+129KI~
-        It chages font of command prompt.                             ||+129KI~
-        Chcp may required depending on font family.                   ||+129KI~
-        For example, to view Devanagari script                        ||+129KI~
-        Change font like as "xcfont Mangal" after "chcp 57002".       ||+129KI~
-        You can see Devaganari(U+0900-097f) on xe.                    ||+129KI~
-        For wxe or Linux version you need nothing special.            ||+129KI~
+       -(Windows) xlow (covert case of filenameÅj1.6 (bug corrected)  ||+129KI~

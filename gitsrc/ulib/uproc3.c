@@ -1,8 +1,9 @@
-//*CID://+v6G2R~:                              update#=  453;      //~v6G2R~
+//*CID://+v6Y1R~:                              update#=  477;      //~v6Y1R~
 //************************************************************* //~5825I~
 //*uproc3.c                                                        //~v5kkR~
 //* ushellexec,uprocconnect                                        //~v5jaR~
 //*************************************************************    //~v022I~
+//v6Y1:190809 gnome2 obsoleted use gio                             //~v6Y1I~
 //v6G2:161211 (UB16.04)mim_get_default_application_type is deprecated and link faile by undefined symbol//~v6G2I~
 //v6xi:150115 conversion warning                                   //~v6xiI~
 //v6x7:150109 (warning C4244) additional to v6x5 but avoid warning only//~v6x7I~
@@ -59,15 +60,21 @@
 //#endif //NOCURSES                                                //~v6j0R~
 #endif //ARMXXE                                                    //~v6a0I~
                                                                    //~v5g9R~
-   #ifndef ARM                                                     //~v6a0I~
-//	#include <libgnomevfs/gnome-vfs.h>                             //~v5g9I~
-    #include <libgnomevfs/gnome-vfs-init.h>                        //~v5g9R~
-	#include <libgnomevfs/gnome-vfs-utils.h>                       //~v5g9R~
-//	#include <libgnomevfs/gnome-vfs-mime-info.h>                   //~v5g9I~
-	#include <libgnomevfs/gnome-vfs-mime-handlers.h>               //~v5g9I~
-	#include <libgnomevfs/gnome-vfs-mime.h>                        //~v5g9I~
-	#include <libgnomevfs/gnome-vfs-file-info.h>                   //~v6G2R~
-	#include <libgnomevfs/gnome-vfs-ops.h>                         //~v6G2I~
+   #ifndef ARM 
+     #ifndef NOGNOME2                                                    //~v6a0I~
+	#include <libgnomevfs/gnome-vfs.h>                             //~v5g9I~
+      #include <libgnomevfs/gnome-vfs-init.h>                        //~v5g9R~
+   	#include <libgnomevfs/gnome-vfs-utils.h>                       //~v5g9R~
+  	#include <libgnomevfs/gnome-vfs-mime-info.h>                   //~v5g9I~
+  	#include <libgnomevfs/gnome-vfs-mime-handlers.h>               //~v5g9I~
+  	#include <libgnomevfs/gnome-vfs-mime.h>                        //~v5g9I~
+  	#include <libgnomevfs/gnome-vfs-file-info.h>                   //~v6G2R~
+  	#include <libgnomevfs/gnome-vfs-ops.h>
+     #else //NOGNOME2                                              //~v6Y1I~
+		#include <glib.h>                                          //~v6Y1R~
+		#include <gio/gio.h>                                       //~v6Y1I~
+//		#include <gio/gappinfo.h>                                  //+v6Y1R~
+     #endif                          //~v6G2I~
    #endif //ARM                                                    //~v6a0I~
   #endif                                                           //~v59jI~
 	#include <sys/stat.h>                                          //~v327I~
@@ -213,6 +220,7 @@ char *ushellexecerrmsg(ULONG Perrid)                               //~v5byI~
 #ifdef LNX                                                         //~v5g9M~
 #ifndef ARM                                                        //~v6a0I~
 #ifndef XSUB                                                       //~v6j0I~
+#ifndef NOGNOME2                                                   //~v6Y1M~
 //**************************************************************** //~v5g9I~
 //* initialize for gnome vfs                                       //~v5g9I~
 //**************************************************************** //~v5g9I~
@@ -222,11 +230,13 @@ int uproc_gvfsinit(void)                                           //~v5g9I~
 //******************                                               //~v5g9I~
 	if (Sinitsw)                                                   //~v5g9I~
     	return 0;                                                  //~v5g9I~
+#ifndef NOGNOME2
 	if (!gnome_vfs_init())                                         //~v5g9I~
     {                                                              //~v5g9I~
 		uerrmsg("gnome_vfs_init failed",0);                        //~v5g9I~
 		return -1;                                                 //~v5g9I~
 	}                                                              //~v5g9I~
+#endif
     Sinitsw=1;                                                     //~v5g9I~
     return 0;                                                      //~v5g9I~
 }//uproc_gvfsinit                                                  //~v5g9I~
@@ -237,7 +247,7 @@ int ushellexecsub(char *Pfpath,char *Pcmd,int Ptermuse);           //~v5g9I~
 //* rc:1 requre terminal for chkonly option                        //~v5g9M~
 //**************************************************************** //~v5g9M~
 int ushellexec(int Popt,char *Pfnm)                                //~v5g9I~
-{                                                                  //~v5g9M~
+{
 int ushellexecsub(char *Pfpath,char *Pcmd,int Ptermuse);           //~v5g9I~
 #ifdef AAA                                                         //~v6G2I~
     GnomeVFSMimeActionType actiontype;                             //~v5g9M~
@@ -289,7 +299,7 @@ int ushellexecsub(char *Pfpath,char *Pcmd,int Ptermuse);           //~v5g9I~
     	return -1;		//no mime type defined                     //~v5g9M~
     }                                                              //~v5g9I~
     papp=gnome_vfs_mime_get_default_application(pmimetype);        //~v5jnI~
-    UTRACEP("%s,getdefault app mimetype=%s,papp=%p\n",UTT,pmimetype,papp);//+v6G2R~
+    UTRACEP("%s,getdefault app mimetype=%s,papp=%p\n",UTT,pmimetype,papp);//~v6G2R~
     if (!papp)                                                     //~v6G2I~
     {                                                              //~v6G2I~
         optfi=GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE|GNOME_VFS_FILE_INFO_GET_MIME_TYPE;//~v6G2I~
@@ -376,7 +386,8 @@ int ushellexecsub(char *Pfpath,char *Pcmd,int Ptermuse);           //~v5g9I~
     if (papp)                                                      //~v5gbI~
 		gnome_vfs_mime_application_free(papp);                     //~v5gbR~
 //printf("use term");                                              //~v5g9R~
-    return rc;                                                     //~v5g9M~
+    return rc;
+	return 0;//TODO
 }//ushellexec                                                      //~v5g9I~
 //**************************************************************** //~v5g9M~
 //* ulnxlaunchapp                                                  //~v5g9M~
@@ -427,6 +438,268 @@ int ushellexecsub(char *Pfpath,char *Pcmd,int Ptermsimid)          //~v5g9R~
         ufree(cmdparsev);                                          //~v5jnI~
     return rc;  //return pid                                       //~v5g9R~
 }//ushellexecsub                                                   //~v5g9I~
+#else //!NOGNOME2                                                  //~v6Y1R~
+//**************************************************************** //~v6Y1I~
+//* send file to associated application                            //~v6Y1I~
+//* rc:1 requre terminal for chkonly option                        //~v6Y1I~
+//**************************************************************** //~v6Y1I~
+int ushellexec(int Popt,char *Pfnm)                                //~v6Y1I~
+{                                                                  //~v6Y1I~
+//int ushellexecsub(char *Pfpath,char *Pcmd,int Ptermuse);         //~v6Y1I~
+	int ushellexecsub(GAppInfo *Papp,char *Pparm);                 //~v6Y1I~
+	int ushellexecsubcmdline(GAppInfo *Papp,char *Pcmd,char *Pparm);//~v6Y1I~
+//  GnomeVFSMimeApplication *papp;                                 //~v6Y1I~
+    char /*pmimetype,*/*puri,*pparmname/*pdircmd=0,*pcmd,*pname*/; //~v6Y1I~
+    char fpath[_MAX_PATH];                                         //~v6Y1I~
+    int rc=0/*,termsw,simid,termid,actiontypeerr=0,reqterm*/;      //~v6Y1I~
+//#define MIME_DIR  "x-directory/"                                 //~v6Y1I~
+//#define MIME_DIR_CMD  "nautilus"                                 //~v6Y1I~
+//  GnomeVFSFileInfo finf;                                         //~v6Y1I~
+//  GnomeVFSFileInfoOptions optfi;                                 //~v6Y1I~
+//  char *pmimetypeslow;                                           //~v6Y1I~
+//*********************                                            //~v6Y1I~
+    GFile *gfh;                                                    //~v6Y1I~
+    GFileInfo *gfi;                                                //~v6Y1I~
+    GError    *gerr;                                               //~v6Y1I~
+    GAppInfo  *papp;                                               //~v6Y1I~
+    const char *pmimetype,*pname;                                  //~v6Y1R~
+    const char *pcmd;                                              //~v6Y1I~
+    int swCmdLine=0;                                               //~v6Y1R~
+//*********************                                            //~v6Y1I~
+//    termid=ukbdl_gettermid();                                    //~v6Y1I~
+//    if ((termid & TERM_IDMASK)==TERM_TTYLCONS)                   //~v6Y1I~
+//    {                                                            //~v6Y1I~
+//        if (!(Popt & USHEXE_NOMSG))                              //~v6Y1I~
+//            uerrmsg("Open With Application is not avail on console screen",0);//~v6Y1I~
+//        return -1;      //no mime type defined                   //~v6Y1I~
+//    }                                                            //~v6Y1I~
+//    simid=termid&TERM_SIMID;                                     //~v6Y1I~
+//    if (uproc_gvfsinit())                                        //~v6Y1I~
+//        return -1;                                               //~v6Y1I~
+    if(!ufullpath(fpath,Pfnm,sizeof(fpath)))                       //~v6Y1I~
+        return -1;                                                 //~v6Y1I~
+    if (uftpisremote(fpath,0))  //gnome_vfs assersion fail for "hostid:/" format//~v6Y1I~
+        return -1;                                                 //~v6Y1I~
+    if (ufstat(fpath,0))                                           //~v6Y1I~
+    {                                                              //~v6Y1I~
+        uerrmsg("%s not found",0,                                  //~v6Y1I~
+                fpath);                                            //~v6Y1I~
+        return -1;                                                 //~v6Y1I~
+    }                                                              //~v6Y1I~
+    gfh=g_file_new_for_path(Pfnm);  //    g_object_unref() later   //~v6Y1I~
+    char *pfpath=g_file_get_path(gfh);                             //~v6Y1I~
+    if (!pfpath)                                                   //~v6Y1I~
+        return -1;                                                 //~v6Y1I~
+   	UTRACEP("ushellexec fpath=%s\n",fpath);                        //~v6Y1R~
+//  puri=gnome_vfs_get_uri_from_local_path(fpath);  // file:///root/... fmt//~v6Y1I~
+    puri=g_file_get_uri(gfh);	//g_free() later                   //~v6Y1I~
+  	UTRACEP("ushellexec uri=%s\n",puri);                           //~v6Y1R~
+    if (!puri)                                                     //~v6Y1I~
+    {                                                              //~v6Y1I~
+        uerrmsg("ushellexec:uri format err(%s)",0,                 //~v6Y1I~
+                fpath);                                            //~v6Y1I~
+        g_object_unref(gfh);                                       //~v6Y1I~
+        return -1;                                                 //~v6Y1I~
+    }                                                              //~v6Y1I~
+//  pmimetype=gnome_vfs_get_mime_type(puri);                       //~v6Y1I~
+    gfi=g_file_query_info(gfh,"standard::*",0/*flag*/,NULL/*Gcancelable*/,&gerr);//g_onbject_unref() later//~v6Y1I~
+    if (gfi)                                                       //~v6Y1I~
+    {                                                              //~v6Y1I~
+    	pmimetype=g_file_info_get_content_type(gfi);               //~v6Y1I~
+    }                                                              //~v6Y1I~
+    else                                                           //~v6Y1I~
+    {                                                              //~v6Y1I~
+        UTRACEP("gfi is null\n");                                  //~v6Y1R~
+    	pmimetype=0;                                               //~v6Y1I~
+    }                                                              //~v6Y1I~
+    if (!pmimetype)                                                //~v6Y1I~
+    {                                                              //~v6Y1I~
+        if (!(Popt & USHEXE_NOMSG))                                //~v6Y1I~
+            uerrmsg("MIME type not defined for %s",0,              //~v6Y1I~
+                        puri);                                     //~v6Y1I~
+        return -1;      //no mime type defined                     //~v6Y1I~
+    }                                                              //~v6Y1I~
+	UTRACEP("ushellexec mimetype=%s desc=%s\n",pmimetype,g_content_type_get_description(pmimetype));//~v6Y1R~
+//  papp=gnome_vfs_mime_get_default_application(pmimetype);        //~v6Y1I~
+    papp=g_app_info_get_default_for_type(pmimetype,FALSE/*must support uri*/);//~v6Y1I~
+//    if (!papp)                                                   //~v6Y1I~
+//    {                                                            //~v6Y1I~
+//        optfi=GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE|GNOME_VFS_FILE_INFO_GET_MIME_TYPE;//~v6Y1I~
+//        gnome_vfs_get_file_info(puri,&finf,optfi);               //~v6Y1I~
+//        pmimetypeslow=finf.mime_type;                            //~v6Y1I~
+//        papp=gnome_vfs_mime_get_default_application(pmimetypeslow);//~v6Y1I~
+//        UTRACEP("%s,fileinfo slow mimetype=%s,papp=%p\n",UTT,pmimetypeslow,papp);//~v6Y1I~
+//        if (papp)                                                //~v6Y1I~
+//            pmimetype=pmimetypeslow;                             //~v6Y1I~
+//    }                                                            //~v6Y1I~
+    if (!papp)    //no application defined                         //~v6Y1I~
+    {                                                              //~v6Y1I~
+//        actiontypeerr=1;                                         //~v6Y1I~
+//        if (actiontypeerr)                                       //~v6Y1I~
+//        {                                                        //~v6Y1I~
+            if (!(Popt & USHEXE_NOMSG))                            //~v6Y1I~
+                uerrmsg("default action is not defined for MIME type:%s",0,//~v6Y1I~
+                            pmimetype);                            //~v6Y1I~
+        	g_object_unref(gfh);                                   //~v6Y1I~
+        	g_object_unref(gfi);                                   //~v6Y1I~
+            if (puri)                                              //~v6Y1I~
+			    g_free(puri);                                      //~v6Y1I~
+            return -1;      //no application binded                //~v6Y1I~
+//        }                                                        //~v6Y1I~
+    }//application not defined                                     //~v6Y1I~
+	UTRACEP("ushellexec app name=%s\n",g_app_info_get_name(papp)); //~v6Y1R~
+	UTRACEP("ushellexec app display name=%s\n",g_app_info_get_display_name(papp));//~v6Y1R~
+	UTRACEP("ushellexec app description=%s\n",g_app_info_get_description(papp));//~v6Y1R~
+	UTRACEP("ushellexec app executable=%s\n",g_app_info_get_executable(papp));//~v6Y1R~
+	UTRACEP("ushellexec app cmdline=%s\n",g_app_info_get_commandline(papp));//~v6Y1R~
+	pname=g_app_info_get_executable(papp);                         //~v6Y1I~
+//    if (pdircmd)                                                 //~v6Y1I~
+//    {                                                            //~v6Y1I~
+//        papp=0;                                                  //~v6Y1I~
+//        pparmname=fpath;                                         //~v6Y1I~
+//        reqterm=0;                                               //~v6Y1I~
+//        pname=pcmd=pdircmd;                                      //~v6Y1I~
+//    }                                                            //~v6Y1I~
+//    else                                                         //~v6Y1I~
+//    {                                                            //~v6Y1I~
+//      papp=gnome_vfs_mime_get_default_application(pmimetype);    //~v6Y1I~
+//printf("mimetype:%s papp=%p\n",pmimetype,papp);                  //~v6Y1I~
+//printf("id=%s,name=%s,command=%s,can_open_multiple_files=%d,expects_uris=%d,requires_terminal=%d\n",//~v6Y1I~
+//papp->id,papp->name,papp->command,papp->can_open_multiple_files,papp->expects_uris,papp->requires_terminal);//~v6Y1I~
+		UTRACEP("ushellexec isSupportFiles=%d,isSupportUri=%d\n",g_app_info_supports_files(papp),g_app_info_supports_uris(papp));//~v6Y1R~
+//      if (papp->expects_uris==GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS) ////~v6Y1I~
+        if (g_app_info_supports_uris(papp))                        //~v6Y1I~
+            pparmname=puri;                                        //~v6Y1I~
+        else                                                       //~v6Y1I~
+//      if (papp->expects_uris==GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_PATHS) ////~v6Y1I~
+        if (g_app_info_supports_files(papp))                       //~v6Y1I~
+            pparmname=fpath;                                       //~v6Y1I~
+        else                                                       //~v6Y1I~
+        {                                                          //~v6Y1I~
+            if (!(Popt & USHEXE_NOMSG))                            //~v6Y1I~
+                uerrmsg("parameter type for default application(%s) for MIME type:%s is not local-pathname nor uri",0,//~v6Y1I~
+//                          papp->name,pmimetype);                 //~v6Y1I~
+							pname,pmimetype);                      //~v6Y1I~
+        	g_object_unref(gfh);                                   //~v6Y1I~
+        	g_object_unref(gfi);                                   //~v6Y1I~
+            if (puri)                                              //~v6Y1I~
+			    g_free(puri);                                      //~v6Y1I~
+            return -1;      //no application binded                //~v6Y1I~
+        }                                                          //~v6Y1I~
+//      pcmd=papp->command;                                        //~v6Y1I~
+//      pname=papp->name;                                          //~v6Y1I~
+//      reqterm=(papp->requires_terminal!=0);                      //~v6Y1I~
+//    }                                                            //~v6Y1I~
+    if (Popt & USHEXE_CHKONLY)                                     //~v6Y1I~
+//      rc=reqterm;     //terminal requred as rc                   //~v6Y1I~
+        rc=1;           //associated                               //~v6Y1I~
+    else                                                           //~v6Y1I~
+    {                                                              //~v6Y1I~
+//        termsw=reqterm || (Popt & USHEXE_FORCETERM);             //~v6Y1I~
+//        if (termsw)                                              //~v6Y1I~
+//        {                                                        //~v6Y1I~
+//            if (!simid)                                          //~v6Y1I~
+//                simid=TERM_OTHERSIM;                             //~v6Y1I~
+//        }                                                        //~v6Y1I~
+//        else                                                     //~v6Y1I~
+//            simid=0;    //no term required                       //~v6Y1I~
+//        rc=ushellexecsub(pparmname,pcmd,simid);                  //~v6Y1I~
+#if (GLIB_CHECK_VERSION(2,50,0))                                   //~v6Y1R~
+      if (swCmdLine)                                               //~v6Y1I~
+      {                                                            //~v6Y1I~
+		pcmd=g_app_info_get_commandline(papp);                     //~v6Y1I~
+		rc=ushellexecsubcmdline(papp,(char*)pcmd,pparmname);       //~v6Y1I~
+      }                                                            //~v6Y1I~
+      else                                                         //~v6Y1I~
+	    rc=ushellexecsub(papp,pparmname);                          //~v6Y1R~
+#else                                                              //~v6Y1R~
+		pcmd=g_app_info_get_commandline(papp);                     //~v6Y1I~
+		rc=ushellexecsubcmdline(papp,(char*)pcmd,pparmname);       //~v6Y1R~
+#endif                                                             //~v6Y1I~
+//      if (rc>0)   //pid                                          //~v6Y1I~
+        if (rc>0)   //TRUE                                         //~v6Y1I~
+            if (!(Popt & USHEXE_NOMSG))                            //~v6Y1I~
+//              uerrmsg("sent \"%s\" to %s(pid=%d)",0,             //~v6Y1I~
+//                      Pfnm,pname,rc);                            //~v6Y1I~
+                uerrmsg("sent \"%s\" to %s",0,                     //~v6Y1I~
+                        Pfnm,pname);                               //~v6Y1I~
+    }                                                              //~v6Y1I~
+//  if (papp)                                                      //~v6Y1I~
+//      gnome_vfs_mime_application_free(papp);                     //~v6Y1I~
+    g_object_unref(gfh);                                           //~v6Y1I~
+    g_object_unref(gfi);                                           //~v6Y1I~
+    if (puri)                                                      //~v6Y1I~
+        g_free(puri);                                              //~v6Y1I~
+//printf("use term");                                              //~v6Y1I~
+    return rc;                                                     //~v6Y1I~
+}//ushellexec                                                      //~v6Y1I~
+#if (GLIB_CHECK_VERSION(2,50,0))                                   //~v6Y1I~
+//**************************************************************** //~v6Y1I~
+void asyncCB(GObject *Pobj,GAsyncResult *Presult,gpointer Puserdata)//~v6Y1I~
+{                                                                  //~v6Y1I~
+	GError *gerr;                                                  //~v6Y1I~
+//  gboolean rc;                                                   //~v6Y1R~
+//  rc=g_app_info_launch_default_for_uri_finish(Presult,&gerr); //used in callback//~v6Y1R~
+    g_app_info_launch_default_for_uri_finish(Presult,&gerr); //used in callback//~v6Y1I~
+	UTRACEP("ushellexecsub asyncCB\n");                            //~v6Y1R~
+}                                                                  //~v6Y1I~
+//**************************************************************** //~v6Y1I~
+//* ulnxlaunchapp                                                  //~v6Y1I~
+//*(gnome_vfs_mine_application_launch is supported from gnome_vfs v2.4;rh9 is v2.0)//~v6Y1I~
+//* apwan assciated appl                                           //~v6Y1I~
+//* rc:                                                            //~v6Y1I~
+//**************************************************************** //~v6Y1I~
+int ushellexecsub(GAppInfo *Papp,char *Pparm)                      //~v6Y1I~
+{                                                                  //~v6Y1I~
+	GError *gerr;                                                  //~v6Y1I~
+    GList *parms=NULL;                                             //~v6Y1R~
+//  GAsyncResult *result;                                          //~v6Y1R~
+    gboolean rc;                                                   //~v6Y1I~
+    int swAsync=1;  //sync failed for html                         //~v6Y1R~
+    //*****************                                            //~v6Y1I~
+	UTRACEP("ushellexecsub parm=%s\n",Pparm);                      //~v6Y1R~
+	if (g_app_info_supports_uris(Papp))                            //~v6Y1I~
+    {                                                              //~v6Y1I~
+        if (swAsync)                                               //~v6Y1I~
+        {                                                          //~v6Y1I~
+      		g_app_info_launch_default_for_uri_async(Pparm,NULL/*context*/,NULL/*cancelable*/,asyncCB/*GAsyncReadyCallBack*/,NULL/*userData*/);//~v6Y1R~
+        	rc=TRUE;	//async support from 2.50                  //~v6Y1R~
+        }                                                          //~v6Y1I~
+        else                                                       //~v6Y1I~
+        {                                                          //~v6Y1I~
+	    	parms=g_list_append(parms,Pparm);                      //~v6Y1R~
+			rc=g_app_info_launch_uris(Papp,parms,NULL/*context*/,&gerr);//~v6Y1I~
+		}                                                          //~v6Y1I~
+		UTRACEP("ushellexecsub lauch_uri_async\n");                //~v6Y1I~
+    }                                                              //~v6Y1I~
+    else                                                           //~v6Y1I~
+    {                                                              //~v6Y1I~
+    	parms=g_list_prepend(NULL,Pparm);                          //~v6Y1I~
+    	rc=g_app_info_launch(Papp,parms,NULL/*context*/,&gerr);    //~v6Y1I~
+    }                                                              //~v6Y1I~
+	UTRACEP("ushellexecsub rc=%d,parm=%s\n",rc,Pparm);             //~v6Y1R~
+    return rc;                                                     //~v6Y1I~
+}//ushellexecsub                                                   //~v6Y1I~
+#endif  //GLIB_CHECK_VERSION                                       //~v6Y1M~
+//**************************************************************** //~v6Y1I~
+int ushellexecsubcmdline(GAppInfo *Papp,char *Pcmd,char *Pparm)    //~v6Y1I~
+{                                                                  //~v6Y1I~
+    int rc;                                                        //~v6Y1I~
+    char *pc;                                                      //~v6Y1I~
+    char cmdinterm[_MAX_PATH+_MAX_PATH];                           //~v6Y1I~
+//*********************                                            //~v6Y1I~
+	strcpy(cmdinterm,Pcmd);                                        //~v6Y1I~
+    pc=strchr(cmdinterm,'%');                                      //~v6Y1I~
+    strcpy(pc,Pparm);                                              //~v6Y1I~
+	strcat(pc," 2>&1 >/dev/null &");                               //~v6Y1R~
+    UTRACEP("ushellexecsubcmdline cmd=%s\n",cmdinterm);            //~v6Y1R~
+    rc=system(cmdinterm);                                          //~v6Y1I~
+    UTRACEP("system rc=%u\n",rc);                                  //~v6Y1R~
+    rc=rc!=-1 && rc!=127;       //-1:chiled not created,127:child process could not execute shell//~v6Y1I~
+    UTRACEP("ushellexecsubcmdline rc=%d\n",rc);                    //~v6Y1R~
+    return rc;                                                     //~v6Y1I~
+}//ushellexecsubcmdline                                            //~v6Y1I~
+#endif                                                             //~v6Y1I~
 #endif //!XSUB                                                     //~v6j0I~
 #endif //ARM                                                       //~v6a0I~
 //**************************************************************** //~v5gcI~

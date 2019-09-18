@@ -139,12 +139,14 @@ a:hover{font-weight:bold;}-->
                                        エスケープ文字指定もOK
                                        例えば D&quot;\t\xa0\xff&quot; は
                                        0x09,0xa0,0xff のすべてが分離文字
-                         S[R][outdelm]:出力用フィールド間分離文字。
+                                       unicodeは 例えば D\u00c1 のように措定する
+                          S[R][outdelm]:出力用フィールド間分離文字。
                                         R      :入力の分離文字は削除する。
                                         outdelm:フィールド間に挿入する分離文字
                                                 省略値は&quot; &quot;
                                                 エスケープ文字は\t=0x09いがいはOK
                                                 複数文字指定はその文字列を出力,DBCSもOK
+                                                unicodeは 例えば D\u00c1 のように措定する
                             例。 TC fmt 1-3f 2r
                 breakkey :[type]column1-column2[&gt;|!|&lt;]
                           opcode=+(合計の計算)のときに小計を表示する。

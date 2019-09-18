@@ -1,8 +1,9 @@
-//*CID://+vbmjR~:                             update#=  708;       //~vbmjR~
+//*CID://+vbp1R~:                             update#=  716;       //~vbp1R~
 //*************************************************************    //~v08qI~
 //*xefile5.c*                                                      //~v08qI~
 //* miscellenious function                                         //~v08qI~
 //*************************************************************    //~v08qI~
+//vbp1:181028 new lineno specification:Select --[n];  select member from last//~vbp1I~
 //vbmj:180812 request "Force" option to save updated at other session.
 //vbg0:180123 (BUG)errmsg "conflict recordmode and CPU8" evenif profile record has cplc option,rejected at optopn prechk//~vbg0I~
 //vbc0:170814 reject FixedRecordLength mode for CPU8 file(because record Length!=Column width)//~vbc0I~
@@ -969,7 +970,7 @@ int filesaveoptionchk(PUCLIENTWE Ppcw,PUFILEH Ppfh,int *Pretopt,UCHAR **Ppfnm,//
             if (!stricmp(pc2,"BK"))                                //~v76XR~
                 retopt|=FSOC_BK;                                   //~v76XR~
             if (!stricmp(pc2,"Force"))                             //~vbmjI~
-                retopt=(int)((unsigned)retopt |FSOC_FORCE);        //+vbmjR~
+                retopt=(int)((unsigned)retopt |FSOC_FORCE);        //~vbmjR~
 #ifdef UTF8SUPPH                                                   //~v92nI~//~va00R~
 #ifdef UTF8SUPPH                                                   //~va00I~
 //          switch(filesaveoptionchkcp(0,Ppcw,Ppfh,pc2,&retopt))   //~va00R~//~va6cR~
@@ -1133,7 +1134,7 @@ int filesaveoptionchk(PUCLIENTWE Ppcw,PUFILEH Ppfh,int *Pretopt,UCHAR **Ppfnm,//
             if (!stricmp(pc2,"Force"))                             //~vbmjM~
             {                                                      //~vbmjM~
             	if (pft->FTfuncid==FUNCID_SAVE||pft->FTfuncid==FUNCID_END)
-            		retopt=(int)((unsigned)retopt|FSOC_FORCE);     //+vbmjR~
+            		retopt=(int)((unsigned)retopt|FSOC_FORCE);     //~vbmjR~
                 else                                               //~vbmjM~
                 {                                                  //~vbmjM~
 			    	uerrmsg("\"Force\" option is for SAVe/END cmd",//~vbmjM~
@@ -3171,7 +3172,8 @@ int fileedithelp(int Pcmdid)                                       //~v11iR~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
 //  strcat(opts," [" LANGOPT_UTF8 "|" LANGOPT_LOCALE "|" LANGOPT_ASIS "|" MODE_EBC "] ...Hit Esc-key\n");//~va50I~//~va79R~
 //  strcat(opts," [" LANGOPT_UTF8 "|" LANGOPT_LOCALE "|" LANGOPT_ASIS "|" MODE_EBC "[:converter]] ...Hit Esc-key\n");//~va79R~//~vagER~
-    strcat(opts," [" LANGOPT_UTF8 "|" LANGOPT_LOCALE "|" LANGOPT_ASIS "|" MODE_EBC "[:converter] [" MODE_IE "] [" MODE_FNU8 "|" MODE_FNLC "|" MODE_FNAS "]...Hit Esc-key\n");//~vagER~
+//  strcat(opts," [" LANGOPT_UTF8 "|" LANGOPT_LOCALE "|" LANGOPT_ASIS "|" MODE_EBC "[:converter] [" MODE_IE "] [" MODE_FNU8 "|" MODE_FNLC "|" MODE_FNAS "]...Hit Esc-key\n");//~vagER~//+vbp1R~
+    strcat(opts," [" LANGOPT_UTF8 "|" LANGOPT_LOCALE "|" LANGOPT_ASIS "|" MODE_EBC "[:converter] [" MODE_IE "] [" MODE_FNU8 "|" MODE_FNLC "|" MODE_FNAS "]...Hit Esc\n");//+vbp1I~
 #else                                                              //~va50I~
     strcat(opts," [" LANGOPT_UTF8 "|" LANGOPT_LOCALE "|" LANGOPT_ASIS "] ...Hit Esc-key\n");//~v78wR~//~va00I~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50I~
@@ -3191,10 +3193,15 @@ int fileedithelp(int Pcmdid)                                       //~v11iR~
 #else                                                              //~v91QI~//~va00I~
 //  uerrmsg("%c[B|C|H|I|J|K|L|N] {file|dir} %s [L] [Ln] [[o][n[t]]-[m[t]]] [/M[m|p|u|t]%s[b|c|h|k][n][o|L][x][width[s]]]",0,//~v78rR~//~va5eR~
 //  uerrmsg("%c[B|C|H|I|J|K|L|N] {file|dir} %s [L] [Ln] [[o][n[t]]-[m[t]]] [/M[m|p|u|t|r]%s[b|c|h|k][n][o|L][x][width[s]]]",0,//~vaj0R~
+  if (Pcmdid=='S')	//select                                       //~vbp1I~
+    uerrmsg("%c[B|C|H|I|J|K|L|N] [name|-n|--[n]] %s [L] [Ln] [[o][n[t]]-[m[t]]] [/M[m|p|u|t|e|r|v]%s[b|c|h|k][n][o|L][x][width[s]]]",0,//~vbp1R~
+    		Pcmdid,wopt2,wopt);                                    //~vbp1I~
+  else                                                             //~vbp1I~
     uerrmsg("%c[B|C|H|I|J|K|L|N] {file|dir} %s [L] [Ln] [[o][n[t]]-[m[t]]] [/M[m|p|u|t|e|r|v]%s[b|c|h|k][n][o|L][x][width[s]]]",0,//~vaj0I~
+    		Pcmdid,wopt2,wopt);                                    //~vbp1I~
 #endif                                                             //~v91QI~//~va00I~
 //  		Pcmdid,wopt);                                          //~v616R~
-    		Pcmdid,wopt2,wopt);                                    //~v78rR~
+//  		Pcmdid,wopt2,wopt);                                    //~v78rR~//~vbp1R~
     return 4;                                                      //~v11iI~
 }//fileedithelp                                                    //~v11iI~
 //**************************************************************** //~v47TI~

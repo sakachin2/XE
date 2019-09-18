@@ -1,7 +1,8 @@
-//*CID://+vbi3R~:                             update#=  438;       //~vbi3R~
+//*CID://+vbp3R~:                             update#=  439;       //+vbp3R~
 //***********************************************************
 //* xescr.c                                                     //~5513I~
 //***********************************************************   //~v016I~
+//vbp3:190709 (WinCons)no ime line needed anymore for screen height//+vbp3I~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
 //vb7o:170119 (Bug)Errmsg top 2 byte corrupted when msg is over 2line(MAXCOL*2)//~vb7oI~
@@ -528,10 +529,10 @@ static	VIOINTENSITY intensbgh={6,2,1};	//backbround highlight
                                                                    //~v0hgI~
 #else                                                              //~v085I~
 #ifdef W32                                                         //~v085I~
-  #ifndef WXE                                                      //~v500R~
-  	if (UCBITCHK(Gscrstatus,GSCRSDBCS))	//not englist mode         //~v0hgI~
-	Gscrheight--;						//imm line                 //~v085I~
-  #endif //!WXE                                                    //~v500R~
+//#ifndef WXE                                                      //~v500R~//+vbp3R~
+//	if (UCBITCHK(Gscrstatus,GSCRSDBCS))	//not englist mode         //~v0hgI~//+vbp3R~
+//  Gscrheight--;						//imm line                 //~v085I~//+vbp3R~
+//#endif //!WXE                                                    //~v500R~//+vbp3R~
 #endif                                                             //~v085I~
 #endif                                                             //~v085I~
 //  psd=Spuscrd=UALLOCM((UINT)(USCRDSZ*Gscrheight*2));//data control tbl//~v04dR~//~vb2zR~
@@ -2119,13 +2120,13 @@ int scrcell2tocell(char *Pdata,char *Pcell,int Poffs,int Plen)     //~va00R~
 	int ii;                                                        //~va00I~
     char *pc,*pcell;                                               //~va00I~
 //***********************                                          //~va00I~
-    UTRACED("in pdata",Pdata+Poffs,Plen);                          //+vbi3I~
+    UTRACED("in pdata",Pdata+Poffs,Plen);                          //~vbi3I~
 	for (ii=Plen,pc=Pdata+Poffs,pcell=Pcell+Poffs+Poffs;ii>0;ii--) //~va00R~
     {                                                              //~va00I~
     	*pcell++=*pc++;                                            //~va00R~
         pcell++;                                                   //~va00R~
     }                                                              //~va00I~
-    UTRACED("out cell",Pcell+Poffs*2,Plen);                        //+vbi3I~
+    UTRACED("out cell",Pcell+Poffs*2,Plen);                        //~vbi3I~
     return 0;                                                      //~va00I~
 }//scrcell2tocell                                                  //~va00I~
 #endif                                                             //~va00I~

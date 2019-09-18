@@ -1,8 +1,9 @@
-//*CID://+v6X5R~:                             update#=  452;       //~v6WvR~//~v6X5R~
+//*CID://+v6Y0R~:                             update#=  462;       //~v6Y0R~
 //*********************************************************************//~7712I~
 //utf2.c                                                           //~7716R~
 //* utf8 data manipulation:process using chof                      //~7712I~
 //*********************************************************************//~7712I~
+//v6Y0:180823 additional to v6Xc,accept unicode specification as \uxxxx,add utfcvu2dd()//~v6Y0I~
 //v6X5:180818 (LNX:xe)column shring COMB2SCM(036f+0390) even SPLIT mode,//~v6X5I~
 //v6Wv:180807 (W32:Bug) console version on chcp=50221, utfcvf2l output string is over MACMBCSLEN by esc seq such as "Esc$B!)"//~v6WvI~
 //v6Wu:180806 for also console version:set altch for SCM when COMBINE_NP,green if not adter combinable.//~v6WuI~
@@ -757,7 +758,7 @@ int utfucsmapinit(int Popt)                                        //~v640I~
 //#endif                                                           //~v@@@R~
 //  	width=utfwcwidth(opt,ii,&flag);                            //~v640R~//~v6B4R~
     	width=utfwcwidth(opt,(ULONG)ii,&flag);                     //~v6B4I~
-    	UTRACEP("%s:ucs=%04x=width=%2d\n",UTT,ii,width);           //~v6BYR~//~v@@@R~
+//        UTRACEP("%s:ucs=%04x=width=%2d\n",UTT,ii,width);           //~v6BYR~//~v@@@R~//~v6Y0R~
         if (width<0)                                               //~v640I~
         {                                                          //~v640I~
 	        sbcsid=UCSDDID_UNP;                                    //~v640R~
@@ -843,7 +844,7 @@ int utfucsmapinit(int Popt)                                        //~v640I~
         	sbcsid=UCSDDID_DBCS;                                   //~v640I~
             dbcsctr++;                                             //~v@@@I~
         }                                                          //~v@@@I~
-  UTRACEP("mapinit sbcsid ucs=%04x,sbcsid=%04x,width=%d\n",ii,sbcsid,width);//~v@@@R~
+//UTRACEP("%s:sbcsid ucs=%04x,sbcsid=%04x,width=%d,flag=x%x\n",UTT,ii,sbcsid,width,flag);//~v@@@R~//+v6Y0R~
 //      pud->UCS2DDsbcsid=(WUCS)sbcsid;                            //~v640I~//~v6B4R~
         pud->UCS2DDsbcsid=(USHORT)sbcsid;                          //~v6B4I~
     }                                                              //~v640I~
@@ -1942,6 +1943,65 @@ UTRACED("utfcvf2dd out data",Ppoutdata,outlen);                    //~v640I~
 UTRACED("utfcvf2dd out dbcs",Ppoutdbcs,outlen);                    //~v640I~
     return rc;                                                     //~v640I~
 }//utfcvf2dd                                                       //~v640I~
+//*******************************************************          //~v6Y0I~
+//*UINT4 ucs2dd                                                    //~v6Y0I~
+//*******************************************************          //~v6Y0I~
+int utfcvu2dd1UWUCS(int Popt,UWUCS Pucs,UCHAR *Ppdddata,UCHAR *Ppdddbcs,int *Ppoutlen)//~v6Y0I~
+{                                                                  //~v6Y0I~
+	int charwidth,rc;                                              //~v6Y0R~
+//*********************                                            //~v6Y0I~
+#ifdef UTF8UTF16	//W32                                          //~v6Y0R~
+	if (Pucs>UTF_UCS2MAX)                                          //~v6Y0I~
+		rc=utfcvu2dd1wUCS4(0,(ULONG)Pucs,Ppdddata,Ppdddbcs,&charwidth);//~v6Y0I~
+    else                                                           //~v6Y0I~
+#endif                                                             //~v6Y0I~
+		rc=utfcvu2dd1(Popt,(WUCS)Pucs,Ppdddata,Ppdddbcs,&charwidth);//~v6Y0R~
+    UTRACEP("%s:rc=%d,ucs=x%04x,outlen=%d\n",UTT,rc,Pucs,charwidth);//~v6Y0I~
+    UTRACED("dddata",Ppdddata,charwidth);                          //~v6Y0I~
+    UTRACED("dddbcs",Ppdddbcs,charwidth);                          //~v6Y0I~
+    *Ppoutlen=charwidth;                                           //~v6Y0I~
+    return rc;                                                     //~v6Y0I~
+}//utfcvu2dd1UWUCS                                                 //~v6Y0I~
+//*******************************************************          //~v6Y0I~
+//*convert ucs(UINT4) string to  DD fmt                            //~v6Y0I~
+//*rc:buff overflow,dbcs,unp,utf8                                  //~v6Y0I~
+//*******************************************************          //~v6Y0I~
+int utfcvu2dd(int Popt,UWUCS/*UINT4*/*Ppucs,int Pucsctr,UCHAR *Ppoutdata,UCHAR *Ppoutdbcs,int Poutbuffsz,int *Ppoutlen)//~v6Y0I~
+{                                                                  //~v6Y0I~
+    UWUCS ucs,*pucs;                                               //~v6Y0R~
+    int ii,rc=0,reslen,outlen,ddlen;                               //~v6Y0R~
+    UCHAR *pco,*pcdo;                                              //~v6Y0R~
+    UCHAR wcdbcs[2],wcdata[2];                                     //~v6Y0I~
+//****************************                                     //~v6Y0I~
+UTRACED("input   ",Ppucs,Pucsctr*(int)sizeof(UWUCS));              //~v6Y0I~
+    pco=Ppoutdata;                                                 //~v6Y0I~
+    pcdo=Ppoutdbcs;                                                //~v6Y0I~
+    for (pucs=Ppucs,ii=0,reslen=Poutbuffsz;ii<Pucsctr;ii++,pucs++) //~v6Y0I~
+    {                                                              //~v6Y0I~
+    	ucs=*pucs;                                                 //~v6Y0I~
+		rc|=utfcvu2dd1UWUCS(Popt,ucs,wcdata,wcdbcs,&ddlen);        //~v6Y0R~
+        reslen-=ddlen;                                             //~v6Y0I~
+        if (reslen<0)                                              //~v6Y0I~
+        {	                                                       //~v6Y0I~
+			rc|=UTFCVFDRC_OVF;   //buffser overflow                //~v6Y0I~
+            break;                                                 //~v6Y0I~
+        }                                                          //~v6Y0I~
+        *pco++=wcdata[0];                                          //~v6Y0I~
+        *pcdo++=wcdbcs[0];                                         //~v6Y0I~
+        if (ddlen>1)                                               //~v6Y0I~
+        {                                                          //~v6Y0I~
+	        *pco++=wcdata[1];                                      //~v6Y0I~
+    	    *pcdo++=wcdbcs[1];                                     //~v6Y0I~
+        }                                                          //~v6Y0I~
+    }                                                              //~v6Y0I~
+    outlen=PTRDIFF(pco,Ppoutdata);                                 //~v6Y0I~
+    if (Ppoutlen)                                                  //~v6Y0I~
+	    *Ppoutlen=outlen;                                          //~v6Y0I~
+UTRACEP("%S:rc=%d\n",UTT,rc);                                      //~v6Y0I~
+UTRACED("out data",Ppoutdata,outlen);                              //~v6Y0I~
+UTRACED("out dbcs",Ppoutdbcs,outlen);                              //~v6Y0I~
+    return rc;                                                     //~v6Y0I~
+}//utfcvu2dd                                                       //~v6Y0I~
 //**************************************************               //~v640I~
 //*get 1 ucs from data/dbcs DDucs format                           //~v640I~
 //*re ucs                                                          //~v640I~
@@ -4204,7 +4264,7 @@ int utfddnumlen(int Popt,char *Pstr,char *Pdbcs,int Plen)          //~v640R~
     return ii;                                                     //~v640I~
 }//utfddnumlen                                                     //~v640I~
 #ifdef XXE                                                         //~v6uLR~
-#ifdef AAA //csubddcombine has no user                             //+v6X5I~
+#ifdef AAA //csubddcombine has no user                             //~v6X5I~
 //**************************************************************** //~v650I~
 //*from wxecsub.c                                                  //~v6uBI~
 //*chk width0 combination                                          //~v650I~
@@ -4283,7 +4343,7 @@ int utfddcombine(int Popt,char *Pdata,char *Pdbcs,char *Pcombineid,int Plen,int 
     UTRACED("csubchkw0 combineid",Pcombineid,Plen);                //~v650I~
     return rc;                                                     //~v650R~
 }//utfddcombine                                                    //~v650I~
-#endif // AAA //csubddcombine has no user                          //+v6X5I~
+#endif // AAA //csubddcombine has no user                          //~v6X5I~
 #endif  //XXE                                                      //~v6uLR~
 #ifdef AAA                      //no caller                        //~v6C2I~
 //**************************************************************** //~v650I~

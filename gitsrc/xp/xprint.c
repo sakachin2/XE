@@ -1,7 +1,8 @@
-//*CID://+v9e7R~:                             update#=  398;       //~v9e7R~
+//*CID://+v9h1R~:                             update#=  404;       //~v9h1R~
 //***********************************************************
 //* XPRINT : file print utility                                    //~v801R~
 //***********************************************************
+//v9h1:190913 no neeed input file when query printer               //~v9h1I~
 //v9e7:170826 compiler warning                                     //~v9e7I~
 //v9e5:170826 get dll suffix by uconv --version                    //~v9e5I~
 //v9e4:170812 print params on trailer                              //~v9e4I~
@@ -380,6 +381,7 @@ extern int colmax1;          	//maxcolomn for  pich 5cpi;var on xpesc.c//~v917I~
        FILE *Gmsgfile;        //output to stdout for comp msg etc  //~v90mR~
 #define STDOUTID  "-"		    //output filename of stdout        //~v90mR~
 #define STDOUTID2 "--"		    //output filename of stdout,also for comp msg//~v90mR~
+#define QUERY_PRINTER "?"                                          //~v9h1I~
 //*********************************************************************//~v90bI~
 //*********************************************************************//~v74lM~
 static int Sstdoutsw=0;      //print output to stdout              //~v90mR~
@@ -476,6 +478,7 @@ int main(int parmc,char *parmp[])                 //v1.3 rep
     int swyn8=0;                                                   //~v960I~
     int swtabparm=0;                                               //~v96DI~
     int swparmsave;                                                //~v9e4I~
+    int swQueryPrinter=0;                                          //~v9h1I~
 //*************************
 #ifdef W32UNICODE                                                  //~v990I~
     SET_UDMODE();  //filename by UD format                         //~v990I~
@@ -548,8 +551,8 @@ for (parmno=1;parmno<parmc;parmno++)  //v2.6add
     {                                                              //~v96iI~
         cptr+=sizeof(PARM_EOLPRINT)-1;                             //~v96iI~
         if (!*cptr)                                                //~v96iM~
-//      	optionerr("EndOfLine print char option",parmp[parmno]);  //errmsg and exit v3.8r//~v96iM~//+v9e7R~
-        	optionerr("EndOfLine print char",parmp[parmno]);  //errmsg and exit v3.8r//+v9e7I~
+//      	optionerr("EndOfLine print char option",parmp[parmno]);  //errmsg and exit v3.8r//~v96iM~//~v9e7R~
+        	optionerr("EndOfLine print char",parmp[parmno]);  //errmsg and exit v3.8r//~v9e7I~
         eolprintfmt=cptr;                                          //~v96iR~
         continue;                                                  //~v96iI~
     }                                                              //~v96iI~
@@ -602,8 +605,8 @@ for (parmno=1;parmno<parmc;parmno++)  //v2.6add
       		pebccfgfname=cptr+1;                                   //~v953I~
 	        break;                                                 //~v940I~
         default:                                                   //~v940I~
-//      	optionerr("EBCDIC cfg filename option",parmp[parmno]);  //errmsg and exit v3.8r//~v940I~//+v9e7R~
-        	optionerr("EBCDIC cfg filename",parmp[parmno]);  //errmsg and exit v3.8r//+v9e7I~
+//      	optionerr("EBCDIC cfg filename option",parmp[parmno]);  //errmsg and exit v3.8r//~v940I~//~v9e7R~
+        	optionerr("EBCDIC cfg filename",parmp[parmno]);  //errmsg and exit v3.8r//~v9e7I~
         }                                                          //~v940I~
     break;                                                         //~v940I~
 #endif                                                             //~v940I~
@@ -1416,8 +1419,10 @@ for (parmno=1;parmno<parmc;parmno++)  //v2.6add
           Sstdoutsw=1;          //to stdout                        //~v90mR~
           Gmsgfile=stdout;    //compmsg to stdout                  //~v926I~
         }                                                          //~v926I~
-        else                                                       //~v926I~
+        else                                                       //~v9h1I~
         {                                                          //~v926I~
+          if (!strcmp(qfile,QUERY_PRINTER))                        //+v9h1I~
+          	swQueryPrinter=1;                                      //+v9h1I~
           Sstdoutsw=0;          //reset prev parm efect            //~v926I~
           Gmsgfile=stdout;    //compmsg to stdout                  //~v926I~
         }                                                          //~v926I~
@@ -1812,11 +1817,16 @@ for (parmno=1;parmno<parmc;parmno++)  //v2.6add
 //***no pos parm chk v6.7a
 	if (!posparmno)
 	{
+     if (!swQueryPrinter)                                          //~v9h1I~
+     {                                                             //~v9h1I~
 	  if (dbcsenv)	//DBCS mode
       	printf("%s:%s:入力ファイルを指定して下さい\n",pgmid,ver);
 	  else			//SBCS mode
       	printf("%s:%s:specify file name to be printed.\n",pgmid,ver);
       uexit(4);                                                 //~v742R~
+     }                                                             //~v9h1I~
+     else                                                          //~v9h1I~
+        parmfname="";                                              //~v9h1I~
 	}
     if (UCBITCHK(swsw3,SW3SCRPRT))                                 //~v96uR~
     {                                                              //~v96uI~

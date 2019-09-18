@@ -134,6 +134,7 @@ a:hover{font-weight:bold;}-->
                                        Multiple characters are avail like as D" ,".
                                        And both " " and "," are delemeter.
                                        Escape seequence is available like as D"\t\x0a\xff".
+                                       Unicode pattern is, e.g. D\u00c1.
                           S[R][outdelm]:field seperator to be set after formatted.
                                         R      :delete input delimiter.
                                         outdelm:string to be inserted.
@@ -141,7 +142,8 @@ a:hover{font-weight:bold;}-->
                                                 Escape seequence is available except \t(0x09).
                                                 Multiple charcters mean string to be inserted.
                                                 DBCS is allowed.
-                break-key:[type]column1-column2[&gt;|!|&lt;]
+                                                Unicode pattern is, e.g. D\u00c1.
+               break-key:[type]column1-column2[&gt;|!|&lt;]
                           For opcode=+(Summary),specify break point to
                           set sub-total.Table should be sorted by this
                           field when &quot;&gt;&quot;(Ascending:default) or &quot;&lt;&quot;(descending)

@@ -1,7 +1,8 @@
-//*CID://+v9e5R~:                             update#=  335;       //~v9e5R~
+//*CID://+v9h1R~:                             update#=  337;       //+v9h1R~
 //***********************************************************
 //* xphlp.c : help sub                                          //~5A10R~//~v983R~
 //***********************************************************
+//v9h1:190913 no neeed input file when query printer               //+v9h1I~
 //v9e5:170826 get dll suffix by uconv --version                    //~v9e5I~
 //v9e0:170807 v9.38 tabchar support(tabon:c/x__/u__)               //~v9e0I~
 //v98p:140219 helpmsg print dbcs on xterm                          //~v98pI~
@@ -246,12 +247,12 @@ void helpabridge(void)
 							CMDFLAG_PREFIX),buff));                //~v96eI~
 #ifdef W32                                                         //~v9e5I~
     hline((sprintf(buff,                                           //~v9e5I~
-          "              ;その場合は uconv.exe, ICU .dll にPATH を通すこと。\n"//+v9e5R~
-							              ),buff));                //+v9e5R~
+          "              ;その場合は uconv.exe, ICU .dll にPATH を通すこと。\n"//~v9e5R~
+							              ),buff));                //~v9e5R~
 #else                                                              //~v9e5I~
     hline((sprintf(buff,                                           //~v9e5I~
-          "              ;その場合は uconv に PATH  ICU .so に LD_LIBRARY_PATH を通す\n"//+v9e5R~
-							              ),buff));                //+v9e5R~
+          "              ;その場合は uconv に PATH  ICU .so に LD_LIBRARY_PATH を通す\n"//~v9e5R~
+							              ),buff));                //~v9e5R~
 #endif                                                             //~v9e5I~
     hline((sprintf(buff,                                           //~v953I~
           "   %c%s=cp   ;cp : EBCDIC コードページ\n",              //~v953R~
@@ -319,7 +320,8 @@ void helpabridge(void)
 #ifdef MMM                                                         //~v98hI~
           "   %cE[w]/form[L][/[O]{{T|B}|{L|R}}[ss[P]]];用紙サイズ。L:横向き。\n",//~v98aI~
 #else                                                              //~v98hI~
-          "   %cE[w]/form[L][/[M]{{T|B}|{L|R}}[ss[P]]];用紙サイズ。L:横向き。\n",//~v98hI~
+//        "   %cE[w]/form[L][/[M]{{T|B}|{L|R}}[ss[P]]];用紙サイズ。L:横向き。\n",//+v9h1R~
+          "   %cE/form[L][/[M]{{T|B}|{L|R}}[ss[P]]];用紙サイズ。L:横向き。\n",//+v9h1I~
 #endif                                                             //~v98hI~
 						CMDFLAG_PREFIX),buff));                    //~v977I~
     hline("              ;form を ? とすると使用可\x94\x5cな用紙サイズをリストする、\n");//~v983I~
@@ -375,7 +377,8 @@ void helpabridge(void)
 #endif                                                             //~v907I~
 #ifdef GTKPRINT                                                    //~v970I~
     hline((sprintf(buff,                                           //~v970I~
-          "              ;例。 %cEw/A4 %cE/B5 %cE/A4L %cE/LegalL/T10 %cE/b5jis/br\n",//~v973I~//~v977R~//~v98hR~
+//        "              ;例。 %cEw/A4 %cE/B5 %cE/A4L %cE/LegalL/T10 %cE/b5jis/br\n",//~v973I~//~v977R~//+v9h1R~
+          "              ;例。 %cE/A4 %cE/B5 %cE/A4L %cE/LegalL/T10 %cE/b5jis/br\n",//+v9h1I~
 						CMDFLAG_PREFIX,CMDFLAG_PREFIX,CMDFLAG_PREFIX,CMDFLAG_PREFIX,CMDFLAG_PREFIX),buff));//~v970I~//~v973R~//~v97aR~
 #ifdef MMM                                                         //~v98hI~
     hline((sprintf(buff,
@@ -887,7 +890,8 @@ void helpabridge(void)
 //        "  %cE[w]/form[L];PaperSize[Landscape]. (2-page/sheet is by %cY2)\n",              //~v970I~//~v973R~//~v977R~
 //        "  %cE[w]/form[L][/[P]{T|B|L|R}[ss]];PaperSize[Landscape].\n",//~v97aI~//~v97bR~
 //        "  %cE[w]/form[L][/{{T|B}|{L|R}}[ss]];PaperSize[Landscape].\n",//~v98aR~
-          "  %cE[w]/form[L][/[M]{{T|B}|{L|R}}[ss[P]]];PaperSize[Landscape].\n",//~v98aI~//~v98hR~
+//        "  %cE[w]/form[L][/[M]{{T|B}|{L|R}}[ss[P]]];PaperSize[Landscape].\n",//~v98aI~//~v9e5R~
+          "  %cE/form[L][/[M]{{T|B}|{L|R}}[ss[P]]];PaperSize[Landscape].\n",//~v9e5I~
 						CMDFLAG_PREFIX),buff));                    //~v970I~//~v973R~//~v977R~
     hline("             ;? for form is used to list available paper size,\n");//~v983I~
     hline("             ;partial string may be OK if uniquely match(gxp version only).\n");//~v983I~
@@ -945,7 +949,8 @@ void helpabridge(void)
 #endif                                                             //~v907I~
 #ifdef GTKPRINT                                                    //~v970I~
     hline((sprintf(buff,                                           //~v970I~
-          "             ;ex) %cEw/A4 %c/B5 %cE/A4L %cE/LegalL/T10 %cE/b5jis/br\n",        //~v970I~//~v973R~//~v977R~//~v98hR~
+//        "             ;ex) %cEw/A4 %c/B5 %cE/A4L %cE/LegalL/T10 %cE/b5jis/br\n",        //~v970I~//~v973R~//~v977R~//~v9e5R~
+          "             ;ex) %cE/A4 %c/B5 %cE/A4L %cE/LegalL/T10 %cE/b5jis/br\n",//~v9e5I~
 						CMDFLAG_PREFIX,CMDFLAG_PREFIX,CMDFLAG_PREFIX,CMDFLAG_PREFIX,CMDFLAG_PREFIX),buff));//~v970I~//~v973R~//~v97aR~
 #ifdef MMM                                                         //~v98hI~
     hline((sprintf(buff,                                           //~v98aI~

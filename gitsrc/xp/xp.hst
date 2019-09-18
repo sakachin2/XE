@@ -1,3 +1,8 @@
+*** 129L release 2019/09/17 ******************************************************************
+//v9h1:190913 no neeed input file when query printer
+//            xprint.c xphlp.c 
+//v9h0:190913 gnome2 obsoleted
+//            xplnxp.c
 *** 129G release 2018/01/30 ******************************************************************
 //v9g0:180129 (Ubuntu 17.10:gcc7.2)Lnx warning not reachable
 //            xplnxp.c

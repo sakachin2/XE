@@ -1,7 +1,8 @@
-//*CID://+v6X5R~: update#=  386;                                   //~v6X5R~
+//*CID://+v6Y0R~: update#=  388;                                   //~v6Y0R~
 //******************************************************           //~v600I~
 //*utf22.h                                                         //~v640R~
 //******************************************************           //~v600I~
+//v6Y0:180823 additional to v6Xc,accept unicode specification as \uxxxx,add utfcvu2dd()//~v6Y0I~
 //v6X5:180818 (LNX:xe)column shring COMB2SCM(036f+0390) even SPLIT mode,//~v6X5I~
 //v6X0:180813 combining require 2 cell when split such as u309a    //~v6X0I~
 //v6Wu:180806 for also console version:set altch for SCM when COMBINE_NP,green if not adter combinable.//~v6WuI~
@@ -323,6 +324,8 @@ int utfcvu2dd1(int Popt,WUCS Pucs,UCHAR *Ppoutdata,UCHAR *Ppoutdbcs,int *Ppoutle
 #ifdef W32UNICODE                                                  //~v6uBI~
 int utfcvu2dd1wUCS4(int Popt,ULONG Pulucs,UCHAR *Ppoutdata,UCHAR *Ppoutdbcs,int *Ppoutlen);//~v6uBI~
 #endif                                                             //~v6uBI~
+int utfcvu2dd1UWUCS(int Popt,UWUCS Pucs,UCHAR *Ppdddata,UCHAR *Ppdddbcs,int *Ppoutlen);//+v6Y0I~
+int utfcvu2dd(int Popt,UWUCS/*UINT4*/*Ppucs,int Pucsctr,UCHAR *Ppoutdata,UCHAR *Ppoutdbcs,int Poutbuffsz,int *Ppoutlen);//~v6Y0I~
 //*******************************************************************//~v640I~
 int utfddoffs2pos(int Popt,char *Pdata,char *Pdbcs,int Plen,int Poffs,int *Pppos);//~v640I~
 #define  UTFDDO2PO_INITPOS     0x01    //input start position on Pppos//~v640I~
@@ -665,5 +668,5 @@ int utf_iscombining(int Popt,int Pdbcsid,int Pucs);                //~v6WrR~
 #define UICRC_SCM     0x04    //SCM 1/2 column                     //~v6WrR~
 //#define UICRC_COMBALL 0x07    //all combining                      //~v6WrI~//~v6X5R~
 #define UICRC_COMB2SCM 0x08   //Mn but SCM for windows angxe       //~v6X5I~
-//*******************************************************************//+v6X5I~
-int mk_wcwidth_combining2SCM(int Popt,UWUCS ucs);                  //+v6X5I~
+//*******************************************************************//~v6X5I~
+int mk_wcwidth_combining2SCM(int Popt,UWUCS ucs);                  //~v6X5I~

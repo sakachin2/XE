@@ -1,4 +1,4 @@
-//*CID://+v6J0R~:                             update#=109;         //~v6J0R~
+//*CID://+v6J0R~:                             update#=113;         //~v6J0R~
 //******************************************************
 //*ulibdefw.h
 //******************************************************           //~v6uYI~
@@ -183,14 +183,14 @@
 //#define memcmpW(f1,f2)   wmemcmp(f1,f2)                          //~v6w0R~
 #define memcmpW(f1,f2,ctr)   wmemcmp(f1,f2,ctr)                    //~v6w0I~
 //#define memicmpW(f1,f2)  _wmeimcmp(f1,f2)                        //~v6w0R~
-//#define memicmpW(f1,f2,ctr)  _wmeimcmp(f1,f2,ctr)                  //~v6w0I~//+v6J0R~
+//#define memicmpW(f1,f2,ctr)  _wmeimcmp(f1,f2,ctr)                  //~v6w0I~//~v6J0R~
 #define memicmpW(tgt,src,wktgt,wksrc,ctr) /*prepare enough size of work buff because _wcsupr update in the replace*/ \
-		(strcpyW(wktgt,tgt),strcpyW(wksrc,src),_wcsupr(wktgt),_wcsupr(wksrc),memcmpW(wktgt,wksrc,ctr))//~8811R~//+v6J0M~
+		(strcpyW(wktgt,tgt),strcpyW(wksrc,src),_wcsupr(wktgt),_wcsupr(wksrc),memcmpW(wktgt,wksrc,ctr))//~8811R~//~v6J0M~
 #define strcpyW(tgt,src)   memcpy(tgt,src,strszW(src)+(int)UWCHSZ)
 #define strpbrkW(tgt,src)  wcspbrk(tgt,src)
 #define strstrW(tgt,src)   wcsstr(tgt,src)                         //~v6w0I~
 #define strstriW(tgt,src,wktgt,wksrc) /*prepare enough size of work buff because _wcsupr update in the replace*/ \
-		(strcpyW(wktgt,tgt),strcpyW(wksrc,src),strstrW(_wcsupr(wktgt),_wcsupr(wksrc)))//+v6J0I~
+		(strcpyW(wktgt,tgt),strcpyW(wksrc,src),strstrW(_wcsupr(wktgt),_wcsupr(wksrc)))//~v6J0I~
 #define strspnW(tgt,src)   wcsspn(tgt,src)  //return ctr           //~v6A0I~
 #define memcpyWctr(tgt,src,ctr)    memcpy(tgt,src,ctr2szW(ctr))    //~v6u9I~
 #define UmemcpyZWctr(tgt,src,ctr)  memcpyWctr(tgt,src,ctr),*((PUWCH)(tgt)+(ctr))=0//~v6u0R~//~v6u9R~
@@ -293,3 +293,9 @@
 #define strncpyW_ASCII(Ppw,Ppc,Pctr) STRNCPY_ZW_ASCII(Ppw,Ppc,Pctr,0)//~v6u9M~
 //=====================
 #endif //W32                                                       //~v6u9I~
+#ifdef W32                                                         //~v6J0I~
+	#define UmemchrW4(tgt,ucs4,ctr)  ucvucs_memchrW4(tgt,ucs4,ctr) //+v6J0R~
+	UWUCS*ucvucs_memchrW4(UWUCS *Ppucs,UWUCS Pucs4,int Pucsctr);   //~v6J0R~
+#else                                                              //~v6J0I~
+	#define UmemchrW4 wmemchr                                      //+v6J0R~
+#endif                                                             //~v6J0R~

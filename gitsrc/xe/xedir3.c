@@ -1,8 +1,9 @@
-//*CID://+vbd7R~:                             update#=  269;       //~vbd7R~
+//*CID://+vbp1R~:                             update#=  274;       //~vbp1R~
 //*************************************************************
 //*xedir.c*
 //* execute key,dlcmd cut and paste,pathup,pathdown,linetop,lineend//~v55NR~
 //*************************************************************
+//vbp1:181028 new lineno specification:Select --[n];  select member from last//~vbp1I~
 //vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //vb60:161127 select 1st entry when no filename operand (S [-n] n:line number)//~vb60I~
 //vb35:160529 (BUG)locate cmd on dirlist fail when path is wildcard on root dir//~vb35I~
@@ -153,7 +154,7 @@
 #include "xetso.h"                                                 //~v717I~
 #include "xechar12.h"                                              //~va0WI~
 #include "xeutf.h"                                                 //~vawcI~
-#include "xecap.h"                                                 //+vbd7I~
+#include "xecap.h"                                                 //~vbd7I~
 //*******************************************************
 #define SELECT_MODE(browsefuncid,editfuncid) (((browsefuncid)<<8)|(editfuncid & 255))//~v61mI~
 #define SAVEDATAPOS 2                                              //~v07eM~
@@ -901,8 +902,8 @@ int func_select(PUCLIENTWE Ppcw)                                   //~v09wI~
 //****************************                                     //~v09wI~
   	pfc=Ppcw->UCWpfc;                                              //~v611I~
     pfh=pfc->UFCpfh;                                               //~v611I~
-    if (Ppcw->UCWtype==UCWTFILE)                                   //+vbd7R~
-    	return capselectallfilecmd(Ppcw,pfh);                      //+vbd7R~
+    if (Ppcw->UCWtype==UCWTFILE)                                   //~vbd7R~
+    	return capselectallfilecmd(Ppcw,pfh);                      //~vbd7R~
     if (!(opdfname=Ppcw->UCWparm))//pparseout 1st parm             //~v09wR~
     {                                                              //~v611I~
 		plh=UGETQEND(&pfh->UFHlineque);	//last                     //~v611I~
@@ -1674,10 +1675,24 @@ int getlinenumbername(PUFILEH Ppfh,char *Popd,char *Pmembername)	//~vb60I~
 	*Pmembername=0;	//id of not selected                           //~vb60I~
 	if (*Popd!=CMDFLAG_PREFIX && *Popd!=CMDFLAG_PREFIX2)           //~vb60R~
     	return 0;                                                  //~vb60I~
+  	if (*(Popd+1)=='?'||*(Popd+1)=='h')                            //~vbp1I~
+    	return fileedithelp('S');                                  //~vbp1R~
+  if (*(Popd+1)=='-')                                              //~vbp1I~
+  {                                                                //~vbp1I~
+    len=(int)strlen(Popd+2);                                       //~vbp1I~
+    if (unumlen(Popd+2,0/*digit*/,len)!=len)                       //~vbp1I~
+    	return 0;                                                  //~vbp1I~
+    lineno=atoi(Popd+2);                                           //~vbp1I~
+//	lineno=UGETQCTR(&Ppfh->UFHlineque)-2-lineno;	//from last    //+vbp1R~
+  	lineno=(int)UGETQCTR(&Ppfh->UFHlineque)-2-lineno;	//from last//+vbp1I~
+  }                                                                //~vbp1I~
+  else                                                             //~vbp1I~
+  {                                                                //~vbp1I~
     len=(int)strlen(Popd+1);                                       //~vb60I~
     if (unumlen(Popd+1,0/*digit*/,len)!=len)                       //~vb60I~
     	return 0;                                                  //~vb60I~
     lineno=atoi(Popd+1);                                           //~vb60I~
+  }                                                                //~vbp1I~
 	plh=UGETQTOP(&Ppfh->UFHlineque);	//1st                      //~vb60I~
     for (ii=1;plh=UGETQNEXT(plh),plh;ii++)                         //~vb60I~
     {                                                              //~vb60I~

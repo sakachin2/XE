@@ -1,4 +1,4 @@
-||*CID:||+v@@@R~:  2018/08/27                update#=  816;           ||~v@@@R~
+||*CID:||+v129R~:  2019/09/18                update#=  820;           ||~v129R~
 ######################################################################
 [Japanese]    v1.29  (Refer xereadme.txt for English)                 ||~127SR~||~v128R~||~v129R~
 
@@ -105,7 +105,7 @@
  v1.3   xeacb.exe    (Win/Linux版のみ)シンタックスハイライト-ブラウザー。||~124GR~||~v125R~||~125BR~||~v128R~
  v1.1   xads.exe     (Win版のみ)NTFSファイルシステムのADS(Alternative Data Stream)アクセス。||~v128R~
  v1.5   xbc.exe      簡易計算ツール。
- v1.01  xcfont.exe   (Win版のみ)コマンドプロンプトのフォント変更      ||~v@@@I~
+ v1.01  xcfont.exe   (Win版のみ)コマンドプロンプトのフォント変更      ||~v129R~
  v1.1   xci.exe      C/C++/Javaテキストファイルのインデンテーション   ||~127CR~
  v1.20  xcv.exe      コード変換ツール。(SJIS,EUC,Unicode,UTF-8,EBCDIC,任意のコードページ)||~127QR~||~v129R~
  v1.2   xcvsjisc.exe ソースファイル中のSJISコードを８進表記に変換する。||~124FR~
@@ -118,12 +118,12 @@
  v1.12  xds.exe      ディレクトリーサイズ表示ツール                   ||~127AR~||~v129R~
  v1.27  xfc.exe      ファイル比較ツール                               ||~127SR~||~v128R~||~v129R~
  v1.7   xff.exe      サイズ、タイムスタンプによるファイルサーチ       ||~7B08R~||~127ER~
- v1.20  xfg.exe      テキスト/バイナリ－(Recursive)ファイル文字列探索 ||~127AR~||~v128R~||~128ER~||~v128R~||~v@@@R~
+ v1.20  xfg.exe      テキスト/バイナリ－(Recursive)ファイル文字列探索 ||~127AR~||~v128R~||~128ER~||~v128R~||~v129R~
  v1.4   xfmt.exe     ファイルフィールドフォーマッター                 ||~124QR~||~v125R~
  v2.8   xfs.exe      ファイルの分割/統合.大きなファイルのディスケットへの||~124RR~||~127QR~||~v128R~
                      バックアップ/リストアーに使えます
- v1.4   xkp.exe      (WIN)プロセスIDの表示とプロセスのkill            ||~127QR~||~v128R~||~v@@@R~
- v1.5   xlow.exe     大文字ファイル名を小文字に改名。                 ||~127AR~
+ v1.4   xkp.exe      (WIN)プロセスIDの表示とプロセスのkill            ||~127QR~||~v128R~||~v129R~
+ v1.6   xlow.exe     大文字ファイル名を小文字に改名。                 ||~127AR~||+v129R~
  v1.2   xmj.exe      2 ファイルマッチング。                           ||~v125R~
  v1.2   xpe.exe      errno(libcのエラー番号)の説明を表示する。
  v1.6   xts.exe      ファイルのタイムスタンプの表示/変更              ||~126JR~
@@ -2335,7 +2335,8 @@
   .v129G<--129F:(2018/01/30)                                          ||~v129I~
   .v129H<--129G:(2018/02/22)                                          ||~v129R~
   .v129J<--129H:(2018/05/10)                                          ||~v129I~
-  .v129K<--129J:(2018/08/27)                                          ||~v@@@I~
+  .v129K<--129J:(2018/08/27)                                          ||~v129R~
+  .v129L<--129J:(2019/09/18)                                          ||~v129R~
                                                                       ||~128CI~
      1.BUGs                                                           ||~v129R~
        -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする||~v129R~
@@ -2365,26 +2366,29 @@
      (129H)                                                           ||~v129I~
        -(gxe:GTK3)Previewダイアログでプリンター選択が1つ分だけずれる  ||~v129I~
        -(gxe:GTK3)終了時画面サイズ正しく保存されずに再スタートで大きくなる||~v129I~
-                                                                      ||~v@@@I~
-     (129K)                                                           ||~v@@@I~
-       -UTF8 ファイルの処理の各種問題                                 ||~v@@@I~
-         .文字の表示幅(1セルか2セルか)の見直し                        ||~v@@@I~
-         .UCS4,SpacingCombiningMarks,NonSpacingMark表示の問題         ||~v@@@I~
-         .結合文字は最大8文字まで許容(Tibtan)                         ||~v@@@I~
-          但しLinux Console版は最大4文字で変わらず                    ||~v@@@I~
-         .Windowsで >=U01000、Linuxで >=U020000 のときの問題          ||~v@@@I~
-            -ヘッダー行に表示するユニコード表示が正しくない           ||~v@@@I~
-            -ヘキサ表示行でユニコードを修正できない                   ||~v@@@I~
-         .(LNX)ユニコードが U01000<= ～ <U020000 の問題               ||~v@@@I~
-            -ファイル読み込み時、SBCS(表示幅が１桁)の文字のUTF8コード解釈を誤り、ファイル出力で別の文字にしてしまう||~v@@@I~
-            -ヘキサ表示行での "v" 行コマンド(連続３桁ヘキサコードをユニコードとして読み直す)が誤る||~v@@@I~
-         .3.12画面でファイル名がUTF8コードのとき画面表示が乱れる      ||~v@@@I~
-         .(WinConsole)新規のツール xcfont で コマンドプロンプトのフォントを変更することにより||~v@@@I~
-          デバガナリーなどのユニコードをWinコンソール版で表示可能にした||~v@@@I~
-       -gb18030 で 1桁表示文字の桁ずれ                                ||~v@@@I~
-       -Esc を 連続２回押すとラベルを残して行コマンドはクリアーされるが||~v@@@I~
-        ラベル指定のコマンドはラベルが見つからないエラーになる        ||~v@@@I~
-       -画面分割してるとき編集の行コマンドが無視されることがある      ||~v@@@I~
+                                                                      ||~v129R~
+     (129K)                                                           ||~v129R~
+       -UTF8 ファイルの処理の各種問題                                 ||~v129R~
+         .文字の表示幅(1セルか2セルか)の見直し                        ||~v129R~
+         .UCS4,SpacingCombiningMarks,NonSpacingMark表示の問題         ||~v129R~
+         .結合文字は最大8文字まで許容(Tibtan)                         ||~v129R~
+          但しLinux Console版は最大4文字で変わらず                    ||~v129R~
+         .Windowsで >=U01000、Linuxで >=U020000 のときの問題          ||~v129R~
+            -ヘッダー行に表示するユニコード表示が正しくない           ||~v129R~
+            -ヘキサ表示行でユニコードを修正できない                   ||~v129R~
+         .(LNX)ユニコードが U01000<= ～ <U020000 の問題               ||~v129R~
+            -ファイル読み込み時、SBCS(表示幅が１桁)の文字のUTF8コード解釈を誤り、ファイル出力で別の文字にしてしまう||~v129R~
+            -ヘキサ表示行での "v" 行コマンド(連続３桁ヘキサコードをユニコードとして読み直す)が誤る||~v129R~
+         .3.12画面でファイル名がUTF8コードのとき画面表示が乱れる      ||~v129R~
+         .(WinConsole)新規のツール xcfont で コマンドプロンプトのフォントを変更することにより||~v129R~
+          デバガナリーなどのユニコードをWinコンソール版で表示可能にした||~v129R~
+       -gb18030 で 1桁表示文字の桁ずれ                                ||~v129R~
+       -Esc を 連続２回押すとラベルを残して行コマンドはクリアーされるが||~v129R~
+        ラベル指定のコマンドはラベルが見つからないエラーになる        ||~v129R~
+       -画面分割してるとき編集の行コマンドが無視されることがある      ||~v129R~
+                                                                      ||~v129R~
+     (129L)                                                           ||~v129R~
+       -Alt+"/"(xml,html の <tag > のペアリング探索 のバグ            ||~v129R~
                                                                       ||~v129I~
                                                                       ||~v129I~
      2.機能追加                                                       ||~v129R~
@@ -2474,10 +2478,15 @@
         .右ボタンでコンテキストメニュー表示                           ||~v129I~
         .ダブルクリックで "x" コマンド処理(履歴画面は終了してそのあとの画面上でコマンドを実行)||~v129I~
         .選択した行のクリックで  "s" コマンド処理( 履歴画面は終了してそのあとの画面のコマンド入力行にセット)||~v129I~
-                                                                      ||~v@@@I~
-     (129K)                                                           ||~v@@@I~
-       -TC fmt -D"分離文字" -S"出力用分離文字" オプションで \x や \t などのエスケープ文字指定を受け付ける||~v@@@I~
-        (\t(=0x09)は -S では使用できません). -SではDBCSを使用できるようにしました||+v@@@R~
+                                                                      ||~v129R~
+     (129K)                                                           ||~v129R~
+       -TC fmt -D"分離文字" -S"出力用分離文字" オプションで \x や \t などのエスケープ文字指定を受け付ける||~v129R~
+        (\t(=0x09)は -S では使用できません). -SではDBCSを使用できるようにしました||~v129R~
+                                                                      ||~v129R~
+     (129L)                                                           ||~v129R~
+       -CPU8(UTF8ファイル)では TC fmt -D"分離文字" -S"出力用分離文字" オプションで||~v129R~
+        ユニコード(\Uxxxx)指定を受け付ける                            ||~v129R~
+        例） tc fmt d\u00c1                                           ||~v129R~
                                                                       ||~v129R~
      3.その他                                                         ||~v129R~
        -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加        ||~v129R~
@@ -2502,13 +2511,17 @@
        -機能:"次コマンド-画面毎"に機能キーが未割当だった、Shift+Alt+F12 を割り当てる||~v129I~
      (129J)                                                           ||~v129I~
        -ディレクトリーリスト行コマンド "="(ファイル内容の比較) で CPU8 オプション指定の追加||~v129I~
-     (129K)                                                           ||~v@@@I~
-       -3.12 画面(ファイル/ディレクトリーの比較)に "-CPU8" オプションを追加||~v@@@I~
-        比較の結果をUTF8ファイルとして表示                            ||~v@@@I~
-       -ディレクトリーリスト画面でもASCII以外は画面左上に文字のヘキサコードを表示||~v@@@I~
-       -OPT UNICOMB U-xxxx の 代替表示文字はSBCSのみ認める            ||~v@@@I~
-       -ファイル編集の保存時、ファイルのタイムスタンプがロード時と変わっているとき||~v@@@I~
-        警告しているが、解消は PF3 再入力ではなく "SAVe -Force" または "END -Force" コマンドが必要とする||+v@@@R~
+     (129K)                                                           ||~v129R~
+       -3.12 画面(ファイル/ディレクトリーの比較)に "-CPU8" オプションを追加||~v129R~
+        比較の結果をUTF8ファイルとして表示                            ||~v129R~
+       -ディレクトリーリスト画面でもASCII以外は画面左上に文字のヘキサコードを表示||~v129R~
+       -OPT UNICOMB U-xxxx の 代替表示文字はSBCSのみ認める            ||~v129R~
+       -ファイル編集の保存時、ファイルのタイムスタンプがロード時と変わっているとき||~v129R~
+        警告しているが、解消は PF3 再入力ではなく "SAVe -Force" または "END -Force" コマンドが必要とする||~v129R~
+     (129L)                                                           ||~v129R~
+       -(Linux)debian10などgnome2が廃止になったことへの対応           ||~v129R~
+       -(Linux)cupsの PPD api が非推になったことへの対応              ||~v129R~
+       -(Windows)コンソール版の画面の最下行、昔はIME用の行だった、これを表示用に変更||~v129R~
                                                                       ||~v129I~
      4.ツール。                                                       ||~v129R~
      (129C)                                                           ||~v129R~
@@ -2533,56 +2546,58 @@
      (129J)                                                           ||~v129I~
        -xdc v2.29,xfc v1.27                                           ||~v129I~
         CPU8 オプション指定の追加                                     ||~v129I~
-     (129K)                                                           ||~v@@@I~
-       -(Win)xkp v1.4                                                 ||~v@@@I~
-        Windows7 から exe 名前がフルパスでなくなっていた              ||~v@@@I~
-       -xfg v1.20                                                     ||~v@@@I~
-        (Bug)探索文字が "-" で始まるときハングすることがある          ||~v@@@I~
-       -(Win)xcfont v1.01 (Windows Vista からサポート)                ||~v@@@I~
-        Windows コマンドプロンプトのフォントを変更する                ||~v@@@I~
-        フォントによっては chcp でコードページの変更も必要            ||~v@@@I~
-        例えば、デバナガリ文字の場合                                  ||~v@@@I~
-        "chcp 57002"とした後 "xcfont Mangal" とする                   ||~v@@@I~
-        Mangal は ASCII の表示は変わりなく、xe で utf8 ファイルの     ||~v@@@I~
-        Devaganari(U+0900-097f) 文字を表示できる                      ||~v@@@I~
-        尚、wxeやLinuxではDevanagariの表示で特別なことはする必要がありません||~v@@@I~
-        --------------------------------------------------------------------------||~v@@@I~
-        xcfont:V1.01(6): Change Current Console Font. (Supported From Vista.)||~v@@@I~
-         xcfont  [/options] [ <name> ] [ No=<seqno> ] [ CharSet={<charset>|?} ]||~v@@@I~
-                            [ H=<height> ] [ W=<width> ] [ Weight=<weight> ]||~v@@@I~
-        *******************************************************************************||~v@@@I~
-         <name >  :Partial string of FontName(StartsWith).            ||~v@@@I~
-                   "*" means current font.                            ||~v@@@I~
-                   Prefix:"*" means Contains.                         ||~v@@@I~
-         <seqno>  :Select font by SeqNo from listed fonts,            ||~v@@@I~
-                   to allow name is not full specification.           ||~v@@@I~
-         <charset>:Select filtering by charset.                       ||~v@@@I~
-                   List available value by "charset=?".               ||~v@@@I~
-         <height> :Font Height. "*" means copy from current.          ||~v@@@I~
-         <width>  :Font Width. "*" means copy from current.           ||~v@@@I~
-                   if missing, calculated from height.                ||~v@@@I~
-         <weight> :Weight. specify Regular/Bold.                      ||~v@@@I~
-                   if missing, adopted from selected font.            ||~v@@@I~
-          /options                                                    ||~v@@@I~
-             /A:Accept System Selection.                              ||~v@@@I~
-                Not restore even when system set differently from requested.||~v@@@I~
-             /B:Select Not TrueType fonts(Raster) only.               ||~v@@@I~
-             /D:Detail Query Information.                             ||~v@@@I~
-             /F:Select Fixed Pitch fonts only.                        ||~v@@@I~
-             /Q:Query candidate fonts.                                ||~v@@@I~
-             /T:Select TrueType fonts only.                           ||~v@@@I~
-             /V:Select Variable Pitch fonts only.                     ||~v@@@I~
-         e.g. ----- (all are case insensitive) -----                  ||~v@@@I~
-           xcfont /Q charset=222     ; List fonts of charset:THAI.    ||~v@@@I~
-           xcfont charset=?          ; List available charset .       ||~v@@@I~
-           xcfont /Qf                ; List FixedPitch font.          ||~v@@@I~
-           xcfont /Q *               ; Show current font set.         ||~v@@@I~
-           xcfont /Q Microsoft       ; List fontname starting with "Microsoft".||~v@@@I~
-           xcfont /Q *Sans           ; List fontname containing "Sans".||~v@@@I~
-           xcfont Microsoft No=2     ; Select second font listed by "Microsoft".||~v@@@I~
-           xcfont SimSun charset=238 ; Select SimSun with charset:EASTEUROPE.||~v@@@I~
-           xcfont Tahoma H=*         ; H=current, W=H*rate of W/H of selected.||~v@@@I~
-           xcfont * H=16 W=10        ; Update current font sizes      ||~v@@@I~
-           xcfont * Weight=Bold      ; Set current font weight to Bold||~v@@@I~
-           chcp 57002                ; 57002:Devanagari, "Mangal" requires it.||~v@@@I~
-           xcfont Mangal H=*         ; Codepage will be listed by "xcv /list".||~v@@@I~
+     (129K)                                                           ||~v129R~
+       -(Win)xkp v1.4                                                 ||~v129R~
+        Windows7 から exe 名前がフルパスでなくなっていた              ||~v129R~
+       -xfg v1.20                                                     ||~v129R~
+        (Bug)探索文字が "-" で始まるときハングすることがある          ||~v129R~
+       -(Win)xcfont v1.01 (Windows Vista からサポート)                ||~v129R~
+        Windows コマンドプロンプトのフォントを変更する                ||~v129R~
+        フォントによっては chcp でコードページの変更も必要            ||~v129R~
+        例えば、デバナガリ文字の場合                                  ||~v129R~
+        "chcp 57002"とした後 "xcfont Mangal" とする                   ||~v129R~
+        Mangal は ASCII の表示は変わりなく、xe で utf8 ファイルの     ||~v129R~
+        Devaganari(U+0900-097f) 文字を表示できる                      ||~v129R~
+        尚、wxeやLinuxではDevanagariの表示で特別なことはする必要がありません||~v129R~
+        --------------------------------------------------------------------------||~v129R~
+        xcfont:V1.01(6): Change Current Console Font. (Supported From Vista.)||~v129R~
+         xcfont  [/options] [ <name> ] [ No=<seqno> ] [ CharSet={<charset>|?} ]||~v129R~
+                            [ H=<height> ] [ W=<width> ] [ Weight=<weight> ]||~v129R~
+        *******************************************************************************||~v129R~
+         <name >  :Partial string of FontName(StartsWith).            ||~v129R~
+                   "*" means current font.                            ||~v129R~
+                   Prefix:"*" means Contains.                         ||~v129R~
+         <seqno>  :Select font by SeqNo from listed fonts,            ||~v129R~
+                   to allow name is not full specification.           ||~v129R~
+         <charset>:Select filtering by charset.                       ||~v129R~
+                   List available value by "charset=?".               ||~v129R~
+         <height> :Font Height. "*" means copy from current.          ||~v129R~
+         <width>  :Font Width. "*" means copy from current.           ||~v129R~
+                   if missing, calculated from height.                ||~v129R~
+         <weight> :Weight. specify Regular/Bold.                      ||~v129R~
+                   if missing, adopted from selected font.            ||~v129R~
+          /options                                                    ||~v129R~
+             /A:Accept System Selection.                              ||~v129R~
+                Not restore even when system set differently from requested.||~v129R~
+             /B:Select Not TrueType fonts(Raster) only.               ||~v129R~
+             /D:Detail Query Information.                             ||~v129R~
+             /F:Select Fixed Pitch fonts only.                        ||~v129R~
+             /Q:Query candidate fonts.                                ||~v129R~
+             /T:Select TrueType fonts only.                           ||~v129R~
+             /V:Select Variable Pitch fonts only.                     ||~v129R~
+         e.g. ----- (all are case insensitive) -----                  ||~v129R~
+           xcfont /Q charset=222     ; List fonts of charset:THAI.    ||~v129R~
+           xcfont charset=?          ; List available charset .       ||~v129R~
+           xcfont /Qf                ; List FixedPitch font.          ||~v129R~
+           xcfont /Q *               ; Show current font set.         ||~v129R~
+           xcfont /Q Microsoft       ; List fontname starting with "Microsoft".||~v129R~
+           xcfont /Q *Sans           ; List fontname containing "Sans".||~v129R~
+           xcfont Microsoft No=2     ; Select second font listed by "Microsoft".||~v129R~
+           xcfont SimSun charset=238 ; Select SimSun with charset:EASTEUROPE.||~v129R~
+           xcfont Tahoma H=*         ; H=current, W=H*rate of W/H of selected.||~v129R~
+           xcfont * H=16 W=10        ; Update current font sizes      ||~v129R~
+           xcfont * Weight=Bold      ; Set current font weight to Bold||~v129R~
+           chcp 57002                ; 57002:Devanagari, "Mangal" requires it.||~v129R~
+           xcfont Mangal H=*         ; Codepage will be listed by "xcv /list".||~v129R~
+     (129L)                                                           ||~v129R~
+       -(Windows) xlow 1.6 (ファイル名を大文字/小文字に変更）のバグ   ||~v129R~

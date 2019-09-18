@@ -1,6 +1,6 @@
-//*CID://+v6X5R~:                             update#=  227;       //+v6X5R~
+//*CID://+v6X5R~:                             update#=  229;       //~v6X5R~
 //*********************************************************************//~v62XI~
-//v6X5:180818 (LNX:xe)column shring COMB2SCM(036f+0390) even SPLIT mode,//+v6X5I~
+//v6X5:180818 (LNX:xe)column shring COMB2SCM(036f+0390) even SPLIT mode,//~v6X5I~
 //v6X3:180816 Hangul 1160-11ff is not combining(Category:Lo:Letter,Other) but combined actualy(u1109+u1161), On W32 Suctbj adjust as DBCS if ISDBCS_J()//~v6X3I~
 //v6X0:180813 combining require 2 cell when split such as u309a    //~v6X0I~
 //v6Wq:180803 Format is not always width=1(u+06dd:End of Ayah is dbcs size)//~v6WqI~
@@ -116,7 +116,7 @@ struct interval {                                                  //~7719I~
   int last;                                                        //~7719I~
 };                                                                 //~7719I~
 //************************************************************     //~v6X0I~
-//int mk_wcwidth_combining2SCM(int Popt,UWUCS ucs);                  //~v6X0R~//+v6X5R~
+//int mk_wcwidth_combining2SCM(int Popt,UWUCS ucs);                  //~v6X0R~//~v6X5R~
 //************************************************************     //~v6X0I~
 /* auxiliary function for binary search in interval table */       //~7719I~
 #ifdef UTF8UCS2                                                    //~v647R~
@@ -896,7 +896,7 @@ int mk_wcwidth(int Popt,UWUCS ucs)                                 //~v6WnI~
       (ucs >= 0xffe0 && ucs <= 0xffe6) ||
       (ucs >= 0x20000 && ucs <= 0x2fffd) ||
       (ucs >= 0x30000 && ucs <= 0x3fffd)));
-	UTRACEP("%s:rc=%x,ucs=%06x\n",UTT,rc,ucs);                     //~v6WqI~
+//    UTRACEP("%s:rc=%x,ucs=%06x\n",UTT,rc,ucs);                     //~v6WqI~//+v6X5R~
     return rc;                                                     //~v6WqI~
 }
 #endif
@@ -2115,7 +2115,7 @@ int mk_wcwidth_cjk(UWUCS ucs)                                      //~v6VbI~
 //        if (!mk_wcwidth_combining(ucs)) //rc=0:combining           //~v6W9R~//~v6WnR~
 ////          return UTFWWF_RC_MK_WCWIDTH|UTFWWF_RC_MK_COMB; //by mk_wcwidth() adjustable by wcwidth() but not for combining//~v6W9R~//~v6WmR~//~v6WnR~
 //            return UTFWWF_RC_MK_WCWIDTH|UTFWWF_COMB; //by mk_wcwidth() adjustable by wcwidth() but not for combining//~v6WmI~//~v6WnR~
-        UTRACEP("%s:%06x ambigouous\n",UTT,ucs);                   //~v6WnI~
+//      UTRACEP("%s:%06x ambigouous\n",UTT,ucs);                   //~v6WnI~//~v6X5R~
     	return rc|UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v6W9I~
     }                                                              //~v6W9I~
 #endif                                                             //~v6W9I~

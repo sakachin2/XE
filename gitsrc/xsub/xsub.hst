@@ -1,3 +1,7 @@
+//*********  20190917 v129L release   ****************
+//vam2:190914 xlow 1.6: (Lnx:compile err) by vam1
+//vam1:181105 xlow 1.6: (Windows:Bug) checking shortname(valid for DOS version only) 
+//vam0:181105 xlow 1.6: (Windows) failes on FAT
 //*********  20180827 v129K updated   ****************
 //vak4:180824 xfg 1.20: allow space between "-e" and grep string
 //vak3:180824 xfg 1.20: grep hung when srchword start with "-"

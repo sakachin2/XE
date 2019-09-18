@@ -23,6 +23,7 @@ a:hover{font-weight:bold;}
   .v129H&lt;--129G:(2018/02/22)
   .v129J&lt;--129H:(2018/05/10)
   .v129K&lt;--129J:(2018/08/27)
+  .v129L&lt;--129K:(2018/09/18)
 </SPAN></PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
     1.BUGs
@@ -69,6 +70,8 @@ a:hover{font-weight:bold;}
         -Consecutive Esc key clear line cmd except label,
          but cmd specified the labe get error of label not found.
         -When screen is split, it may occurs that line cmd on edit panel is ignored.
+     (129L)
+        -Bug of function Alt+"/" (&lt;tag &gt; pairing search for xml/html text)
 </font>
 </PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
@@ -159,9 +162,13 @@ a:hover{font-weight:bold;}
          .Double click works as "x" cmd(execute the command after closed the command history panel).
          .Click on the selected line works as "s" cmd(set to the command input line after closed the command history panel).
      (129K)
-      -TC fmt cmd -D"..." and -S"..." option
+       -TC fmt cmd -D"..." and -S"..." option
         Accept escape secuence such as \x, \t as Delimeter(\t(0x09) is not allowed for -S).
         Accept DBCS as -S option.
+     (129L)
+       -TC fmt cmd on UTF8 file.
+        accept unicode specification for -D:input splitter and -S:output splitter.
+        e.g) tc fmt d\u00c1
 
 
     3.Miscellaneous.
@@ -196,6 +203,10 @@ a:hover{font-weight:bold;}
        -Limit to SBCS for alternative character of "OPT UNICOMB U-xxxx" cmd
        -Explicit "Force" option is required at save when timestamp was changed from loading time.
         Re-enter of PF3 is not effective from now, use "SAVe -Force" or "END -force" cmd.
+     (129L)
+        -(Linux)on debian10, gnome2 is obsoleted.
+        -(Linux)PPD api is deprecated at cups-1.6.
+        -(Windows)Last line of panel of console version was for IME on Windows95.
 
      4.Tool.
      (129C)
@@ -272,6 +283,9 @@ xcfont * H=16 W=10 ; Update current font sizes
 xcfont * Weight=Bold ; Set current font weight to Bold
 chcp 57002 ; 57002:Devanagari, "Mangal" requires it.
 xcfont Mangal H=* ; Codepage will be listed by "xcv /list".
+     </SPAN></PRE>
+<PRE><font size="3">    </font><SPAN STYLE="color:#000000;font-size:12pt;">(129L)
+        -(Windows) xlow (covert case of filename）1.6 (bug corrected)
 
 </SPAN></PRE>
 </BODY>

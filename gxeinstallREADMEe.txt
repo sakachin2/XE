@@ -1,4 +1,4 @@
-V129G 2018/01/30 
+V129L 2019/09/18 
 (A) Automake package installation step
 
     You may update configure before ./configure
@@ -63,6 +63,9 @@ V129G 2018/01/30
         ===> install libgnomeui-dev
              install libgnomeprint2.2-dev  (ubuntu8)
         (mutual dependency may start another package instalation)
+     OR (gnome2 may obsoleted on the distribution)
+        Use ./configure enable-libgnome2=no (glib2.0-dev install required)
+        In that case, "gio.h" is missing will be shown.
     (6) pkg-config was not found
         ===> install pkg-config
     (7) CHK_INSTALL_GTK3...no and  CHK_INSTALL_GTK2..no
