@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>SPF file(Line-Numbered file)</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    - SPF(Line-Numbered 80byte fixed length) file.
+     .Special case of <a href="HID00000238.htm">margin</a> specified file.
+      This type file has line number field on the line end and
+      all line has same length.
+      Specify option=(N) on <a href="HID00000237.htm">CID header</a> line.
+      It is easy,on PC,to maintenance main frame punched card file
+      (80 byte fixed record length text file).
+      Line number field(on Right margin) is input protected and
+      page shift scroll width is limitted up to the line end.
+      EB/BB/SB cmd(alias of <a href="HID00000277.htm">Edit</a>/<a href="HID00000260.htm">Browse</a>/<a href="HID00000313.htm">Select</a> cmd with /Mn option)
+      treat file without CID header as Line-Numbered-File
+     .Line number field format is nnnnssuu.
+      nnnn:line number  ss:suffix  uu:update level
+      Maximum update level number among all lines is assigned to the
+      file,and File update level number +1 is set to all updated line
+      when save.
+      Size of line number display column on the left of screen is
+      set to 7 at file open and of nnnnsss format.
+     .If invalid line(wrong length,not numeric line number field,line
+      number sequence err) exist at open,use <a href="HID00000304.htm">RENum cmd</a> to correct it
+      (cutting or space padding to the fixed length then renumber).
+     .Line number field protection is reset when wrong line detected
+      at copy operation by <a href="HID00000267.htm">Copy cmd</a>/<a href="HID00000342.htm">Copy line cmd</a>.
+     .Update level number is displayed or changed by <a href="HID00000324.htm">VER cmd</a>.
+      If file update level is changed downward,each line update level
+      is changed downward relative to the level of command operand
+      at save file(max is the level,min is 1).If it is changed to
+      upward,only updated line is set to the new level.
+      This operation is <a href="HID00000322.htm">undo-able</a>.
+     .All Tab is replaced by space at save.
+     .Also CID can be set to Line-Numbered-File.
+     .<a href="HID00000226.htm">COBOL</a> is one of Line-Numbered-File.
+      COBOL lineno is on col1-6.Col 73-80 is optionally line number column.
+      Without option=(n),CID may set on the 73-80 column.
+      Col1-6 may be optionally all space.
+      Renum,num clear,indentation and display start offset function
+      consider COBOL file.
+</SPAN></PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>Margin</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    - Margin.
+     .Support margin if option=(Mnn) on <a href="HID00000237.htm">CID header</a> line.
+      Column 1-nn is Left margin(or In-margin),(nn+1)-end of line is Right
+      margin(or Out-of margin).
+     .Fn[-m] option of <A href="HID00000277.htm">edit command</A> allows to set margin.
+      F means fixed record length and n is record length,m is margin.
+     .<A href="HID00000740.htm">Bounds</A> command set margin for some command sensitive to such margin.
+     .Different display attr is set for Left and Right margin.
+     .CID position can be on Left or Right margin.
+      If CID is in Left margin,CID is not set for the line where data exist
+      on that pos.
+      If CID pos is in right margin or no margin defined,CID is appended
+      when CID pos is filled by data.
+      For <a href="HID00000265.htm">CID CLEAR/SHIFT command</a>,CID search range is limmited to
+      the margin.
+      In the case CID pos is in Left margin,it may not be right end of left
+      margin. You can use the next column of CID as line continuationID column.
+     .Right margin protection.
+      Option is specified on CID header line like as option=(Px).
+      x:0=Not protected, 1:Protected.
+      (Specify like as option=(M72,P0) for multiple options)
+     .Interference.
+      Expansion and contraction act on the margin only,but overflow
+      except space and tab from Left margin is rejected.
+     .Search range specification support on <a href="HID00000282.htm">Find</a>/<a href="HID00000262.htm">Change</a> command.
+      Margin can be specified as range operand.
+</SPAN></PRE>
+</BODY>
+</HTML>

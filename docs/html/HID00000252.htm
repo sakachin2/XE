@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>(D)DirectoryList</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">*********************
+*(D) Directory List *
+*********************
+
+#ifdef UNX
+
+   EDIT---|/tmp (95-09-17 16:54) ------....-----------------------Rep
+   ===&gt;                                ....                  ===&gt;HALF
+   ****|********** TOP OF LIST ********....***************************
+   _001|: /                       x400           649,728 /  1,457,664
+   _002||: tmp                    777-t    00-03-25  22:07 root/toot
+   _003|||. DISPCHAR C            644--    00-12-17  13:19 bin/bin
+   _004|||. DOSFF    MAK          755--    00-12-16  09:49 akir/users
+   _005|||- FC10                  644--    00-12-15  23:10 eiko/users
+   _006||||- IIIII                755--    00-12-25  23:07 youi/users
+   _007|||||+ IU                  755--    00-12-25  23:06 mich/users
+   _008|||||+ LL                  755--    00-12-25  23:06 oosa/users
+   _009|||||. UFILET   C          755--    00-12-25  22:12 izum/users
+   _010||||+ IU                   755--    00-12-25  23:06 ohts/users
+   _011||||.@JKKJ                 755--    00-12-29  11:49 ikeu/users
+
+#else
+
+   EDIT---|G:\src (95-09-17 16:54) ----....-----------------------=Rep
+   ===&gt;                                ....                  ===&gt;HALF
+   ****|********** TOP OF LIST ********....***************************
+   _001|: G:\                     x800           649,728 /  1,456,664
+   _002||- src                    ----     94-11-17  22:07          0
+   _003|||. DISPCHAR C            ----     94-12-17  13:19        300
+   _004|||. DOSFF    MAK          ----     94-08-06  09:49        280
+   _005|||- FC10                  ----     95-09-15  23:10          0
+   _006||||- IIIII                ----     95-09-15  23:07          0
+   _007|||||+ IU                  ----     95-09-15  23:06          0
+   _008|||||+ LL                  ----     95-09-15  23:06          0
+   _009|||||. UFILET   C          A---     95-09-15  22:12      5,066
+   _010||||+ IU                   ----     95-09-15  23:06          0
+   _011||||. JKKJ                 A---     95-09-09  11:49          8
+   _012||||. JKKJ2                A---     95-08-29  21:51        219
+   _013||||+ LL                   ----     95-09-15  23:06          0
+   _014||||. UFILET   C           A---     95-09-15  22:12      5,066
+
+#endif
+
+(Line 1 and 2 is same as EDIT/BROWSE except column of cursor is not
+displayed)
+(display width is by minimum 80 column,filename column is expanded
+by screen expansion)
+
+   col  1: <a href="HID00000339.htm">directory line command</a> input column
+        2: line number column
+           *D*/*R*/*M* is displayed when <a href="HID00000364.htm">Deleted</a>/<a href="HID00000376.htm">Renamed</a>/<a href="HID00000372.htm">Moved</a> for each.
+        5: (|) not updated, (*) updated line(by <a href="HID00000361.htm">"A"</a>/<a href="HID00000364.htm">"D"</a>/<a href="HID00000376.htm">"R"</a>/<a href="HID00000372.htm">"M"</a> line
+           cmd or ended edit screen saving file.)
+        6: directory hierarchy list
+           File-type, File-name, Attribute, New-name, File-date,
+           File-time and Size are displayed.
+#ifdef UNX
+           Sift+F6 exchange File size and UserName/GroupName.
+           @ is prefix of symbolic link file.
+           Shift+F11 display link destination file name.
+#endif
+           For root-directory line,disk free space is displayed.
+           (number on attribute column is cluster size by hex digit)
+           That is updated automaticaly by line command  operation in
+           the screen.
+           Enter space in cmd input column to update free space info
+           for external operation.
+         - File-type:indentation by its hierarchical path.
+             (:) directory on the path up to root.
+             (+) directory,not expanded.
+             (-) directory,expanded.(reverse when excluded by x cmd)
+             (.) normal file
+         - File-name:indentation is option on <a href="HID00000209.htm">INI file</a>.
+                     Sort sequence is BASE and EXT for FAT,
+#ifdef UNX
+                     case sensitive fullname for <a href="HID00000547.htm">LFN</a>.
+                     But,case insensitive for files on floppy disket.
+#else
+                      case insensitive fullname for LFN.
+#endif
+         - Attribute:You can input in the field when <a href="HID00000361.htm">Attribute</a> line
+           command was typed.
+         - New-name :space between Attribute and File-date column.
+           When typed <a href="HID00000392.htm">Expand</a>(-,&gt;),Rename(r),Copy(c) and Move(m) line
+           command,it is cleared and you can type as following.
+           File name mask for Expand,New file name for rename,target
+           name for Copy and Move.
+           And saved file name may be displayed after deleted
+           if <a href="HID00000549.htm">Undelete option</a> is effective.
+           Copy target filename is cleared by space(' ') line cmd.
+           To repeat same target for Copy or Move command,use F10(copy)
+           and F11(paste) key.
+           It is used for the line of <a href="HID00000374.htm">"o" cmd</a> with edit/browse parm.
+         - If long file name is hidden by attribute column,use S+F11 to
+           uncover long name. Next S+F11 will re-hide it.
+         - By S+F10 key,the file description is displayed on rename field
+           up to the end of line.
+                --&gt;<a href="HID00000244.htm">(1).Function-Key default assignment, Functions and Keys,</a> #14
+
+</SPAN></PRE>
+</BODY>
+</HTML>

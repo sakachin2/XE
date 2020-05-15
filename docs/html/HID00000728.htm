@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>CAP-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;">     = CapsLock
+
+        CAP [ON|OFF] [TSO|DEFAULT|CMD]
+
+            TSO     :set default for <A href="HID_TSOE_E.htm">TSO file</A>.
+            DEFAULT :set default for the file other than TSO file.
+            CMD     :When files is CAPs ON, extend the effect of CAP-ON also
+                     to command input line.
+
+            -Fix input letter to uppercase.
+             To input lowercase use Shift-key.
+             CapsLocks key is effective on the other place than the file contents.
+             (Note)Because linux console version can not detect shift key,
+                   &quot;CAP ON&quot; exchange upper and lower case.
+                   When CapsLock is off &quot;CAP ON&quot;'s effect is same as the other version.
+                   When CapsLock is on,&quot;CAP ON&quot; put lowercase without shift-key
+                   and put uppercase with shift-key.
+            -Without TSO/DEFAULT,set for the file currently opened.
+             And toggles status if no operand specified.
+            -Default is TSO:ON, DEFAULT:OFF, CMD:OFF.
+
+
+            -See also <a href="HID00000277.htm">EDIt</a> command CAP/NOCAP option.
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

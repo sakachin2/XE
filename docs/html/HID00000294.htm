@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>LOCate</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    = Locate to the line.
+
+        LOCate  { { [L]line-no | [O]offset } [C] | .label }
+
+               (Use this format for <a href="HID00000251.htm">Browse/Edit screen</a>)
+
+               Jump to the line with the line-no or offset depending
+               on type of line number column if no L/O is specified.
+
+               C : lineno/offset of current updated status.
+                   if omitted, that of status of at opened.
+               .label:search the line with this label.
+
+        LOCate  {filename|timestamp|filesize}
+
+               (Use this format for <a href="HID00000252.htm">Directory-list screen</a>. See <a href="HID00000314.htm">SORt</a> cmd.)
+
+              filename :When dirlist is sorted by filename,
+                        jump to the line with the filename nearest to the
+
+                        LOCate is executed also by typing char key the field just after
+                        line-cmd column to before the attr column.
+                        Until other than char key such as Esc is pressed,prefixing continues.
+
+#ifdef UNX
+                        file-name by case-sensitive sequence.
+#else
+                        file-name by case-insensitive sequence.
+#endif
+              timestamp:When dirlist is sorted by timestamp,
+                        specify yymmdd[-hhmm] format timestamp
+              filesize :When dirlist is sorted by filesize,
+                        specify filesize.
+</SPAN></PRE>
+</BODY>
+</HTML>

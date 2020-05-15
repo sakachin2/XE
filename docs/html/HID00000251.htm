@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>(C)EDIT/BROWSE</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;"> ********************
+*(C) EDIT/BROWSE   *
+********************
+          0        1         2         3           6         7         8
+          12345678901234567890123456789012      789012345678901234567890
+
+       1  EDIT---|G:\X1.C (95-05-13 10:44) .... ------ 001-(012)-072=Rep
+       2  ===&gt;                             ....                ===&gt;HALF
+       3  *******|*e*rw*fd** TOP OF FILE * .... ************************
+       4  0001000*int main(int argc,char *p....   //main        //~5513R
+       5  0002000|{
+       :
+
+       row 1     :Header,message display line
+          col  1 : (EDIT) or (BROWSE)
+                   Display hex notation when csr is on the file line area.
+                   ex).  E---31- (for SBCS)  ,  E-81A0-  (for DBCS)
+                   When entered <a href="HID00000284.htm">hex input mode</a>,x_ is diplayed and
+                   1st digit follow after input like as xA_.
+               8 : (|) not yet updated,  (*) updated
+               9 : file name
+              64 : record column of left end of screen(start from 1)
+              69 : record column of the cursor position
+              74 : record column of right end of screen
+              77 : (=) cursor step right mode, (|) cursor step down mode
+              78 : (Rep) replace mode, (Ins) <a href="HID00000288.htm">insert mode</a>
+                   (&quot;REP&quot; and &quot;INS&quot; for DOS version,
+                    &quot;rep&quot; and &quot;ins&quot; for GCC version)
+
+       row 2     :Command input line
+          col  5 : command input field
+              76 : scroll display/input field.
+                   You can overtype P(age),C(sr),nn(line number) etc.
+                   to change scroll volume.
+
+       row 3     :file display line
+          col  1 : line number
+                   lines for <a href="HID00000322.htm">UNDO</a> are brightened at column1 of line-no
+                   when UNDO key is pressed.
+                   line number column width is changable by <a href="HID00000298.htm">NUM</a> command.
+               8 : (|) not updated line,  (*) updated line
+                   (-) long line split top line not updated
+                   (+) long line split top line     updated
+                   (.) long line split continued line not updated
+                   (:) long line split continued line     updated
+                   (Long line over 32760 bytes is split by each 32760
+                    bytes lines. For DOS version max is 999)
+                   current update level lines when column 7 brightened
+                   (level is advanced by Execute Key)
+               9 : file lines display field
+                   See <a href="HID00000319.htm">TAB command</a> about to display Tab char(0x09).
+                   Tab char is trated same as space for <a href="HID00000282.htm">Find cmd</a>.
+                   Control char except Tab is displayed by special
+                   char with same attribute as lineno column.
+                   Those are 0x00,0x08,0x0a,0x0c,0x0d,0x11,0x13,0x18,
+                   0x7f,0x80,0xa0,0xfd,0xfe,-xff under Japanese mode,
+                   0x00,0xff only under english mode.
+                   These are defined on <a href="HID00000209.htm">INI file</a>.
+
+          File information on &quot;TOP OF LINE&quot; is as followings.
+
+                *******|*e*rw*fd** TOP OF FILE * .... ************************
+
+             e: encoding
+                E:EBCDIC
+                e:EBCDIC binary
+                b:binary
+                U:UTF8, opened with CPU8 option.
+                u:UTF8, without CPU8 but parent directory is opened with CPU8.
+                L:Locale code, opened with CPLC option.
+                l:other than else.
+             r: read option of /M
+                v:/Mv, variable record length.
+                r:/Mr, fixed recordlength.
+                p:/Mp, PC file, End-Of-Line is 0x0d0a.
+                t:with /Mt or without both /Mp and /Mu, End-Of-Line is 0x0a or 0x0d0a.
+                u:/Mu, Unix file, End-Of-Line is 0x0a.
+                m:/Mm, Mac file, End-OfLine is 0x0d.
+                e:/Me, EBCDIC, End-Of-Line is 0x15.
+                b:/Mb, binary
+             w: If write mode of /M is diffrent of read mode,
+                id of mode like as read mode.
+             f: filename encoding.
+              (Linux)
+                U:UTF8, by FNU8 option.
+                u:UTF8, without FNU8, the device's mount option IOCHARSET is explicitly
+                  or implicitly UTF8 or parent directory is opened by FNU8.
+                L:Locale code by FNLC option.
+                l:other than else.
+              (Windows)
+                U:with FNU8,failed to translate UTF16 to locale code.
+                U:without FNU8,failed to translate UTF16 to locale code.
+                L:Locale code by FNLC option.
+                l:other than else.
+
+             d: dirmode(Linux only)
+                u:device's mount option IOCHARSET is explicitly or implicitly UTF8.
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

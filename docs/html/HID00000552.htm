@@ -1,0 +1,24 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text-html; ">
+<TITLE>ASCII mode</TITLE>
+<STYLE TYPE="text/css">a:hover{font-weight:bold;}</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">           -<a href="HID00000219.htm">Binary file</a> display code option
+
+             OPT ASCII [off | on]
+
+              off :display code>=0x80 as it is.(<a href="HID00000217.htm">DBCS</a> may be displayed)
+              on  :display code>=0x80 as unprintable char.
+#ifdef AIX
+              initial value is on.
+#else
+              initial value is off.
+#endif
+
+</SPAN></DIV>
+</PRE>
+</BODY>
+</HTML>

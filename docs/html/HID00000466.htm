@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>xdig</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;"> **********************************************************************
+*XDIG:utility apply command to all sub-directories
+**********************************************************************
+
+[Function]
+
+    Use this tool to apply command(.exe or .cmd/.bat script file) to
+    all sub-directory and/or file.
+    For example,using this tool you can search word in all sub-directory
+    by applying grep,
+    Redirection function is also effective to gather stdout/stderr output.
+    On DOS,lacking of stderr redirection function,it will be useful when
+    execute tool which write err message to stderr.
+
+[Usage]
+
+     parameter enclosed by [ ] is optional.
+
+XDIG [directory] [file-mask] [dir-mask] [/options]  //cmd-string
+
+     -directory :directory on which command-string is executed.
+                 It is not required when use cmd output redirection only.
+     -file-mask :file selective wild card mask
+                 default is *.*
+                 this may be cancatinated to directory wit \.
+     -dir-mask  :sub-directory selective wild card mask
+                 default is *.*
+     -cmd-string:specify command with its parms
+                 All parm to XDIG must be specified before //,
+                 all word following // is treated part of command.
+                 ex. //grep search-word *.c
+                 @ of first char on cmd string mean cmd file specification.
+                 Cmd string is accepted from first line of the cmd file.
+                 You cannot specify any parm after cmd file specification.
+                 ex. //@cmdfile
+
+                 Special parameter can be used for each directory/file name.
+                 %f%:file name, %d%:pathname, %fp%:fullpath name.
+                 (When /Pd %f% is replaced to dir-name)
+                 ex. //lc %f%
+         (note)  % is treated differrently in BAT file and in cmd line
+                 input. In BAT file,specify like as %%f%%.
+                 But under Windows95,use double % in cmd line also.
+
+     -options   :(case insensitive)
+       /1file   :redirection of stdout(/12 mean redirection stdout to stderr)
+       /2file   :redirection of stderr(/21 mean redirection stderr to stdout)
+#ifdef UNX
+#else  //!UNX
+       /Aattr   :file/dir selective attribute mask
+                 attr=S,H,D(default is SH).'+'/'-' can  be prefixed.
+                 ex. /Asd,  /A-s
+#endif //!UNX
+       /Llevel  :dig directory up to the depth(0 mean starting dir)
+       /O[-]ord :cmd apply file sequence in a directory.
+                 N:name,E:extention+name,D:date,S:size,0:as is.
+                 (default is 'N')
+                 - mean reverse order except for 0.
+       /Papply  :potatoes type.(default is 'f')
+                 f:File, d:Dir, b:Both, n:None(for use redirection)
+       /Ysw,/Nsw:toggle type switch options.
+                 sw are as following,default is in ( )
+#ifdef UNX
+#else  //!UNX
+              c :get 'C'onfirm before each cmd call.(/Nc)
+#endif //!UNX
+#ifdef UNX
+              d :apply to special file(pipe,socket,device).(/Nd)
+#endif
+              e :call also when directory is 'E'mpty(/Ne)
+              h :c'H'ange directory for each call(/Yh)
+              n :set 'N'ull value when no parm data for %f%,%fp%(/Nn)
+                 The case is when /Pd is specified or /Ye and dir is empty.
+#ifdef UNX
+              k :process symbolic link(/Yk)
+              m :Output symbolic link err msg (/Ym)
+#endif
+              t :'T'race executed command text and subdir(/Yt)
+              x :execute command as e'X'e type(/Nx)
+                 In the case invalid extention name is specified.
+[ex.]
+
+ -all sub-directory operation
+  XDIG  dirabc /21 /Pd //grep &quot;srch-word&quot; %d%
+
+ -file operation using comd file.
+  XDIG dirabc *.c  //@foo
+
+ -redirection only
+  XDIG /2wkf //getstder parm1
+
+[Change History]
+  v1.4 (98/11/03)
+       -Display filename on trace msg
+       -(BUG) errornous process of /L parameter(stop depth of directory level)
+  v1.5 (99/11/12)
+       -(BUG)%fp% is not replaced /when /Pd.
+  v1.6 (00/09/30)
+       -Linux support.
+  v1.7 (03/02/10)
+       -(UNX)Symbolic link,special file  consideration.
+  v1.8 (06/08/29)
+       -%fb%:basename specification support
+</SPAN><BR></PRE>
+</BODY>
+</HTML>

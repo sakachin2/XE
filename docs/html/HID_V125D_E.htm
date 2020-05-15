@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html;>
+<META http-equiv=" Content-Style-Type">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>V125D-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:font 12pt;">***** V125D ***** 2010/03/23
+
+.(BUG)
+   -(wxe/gxe) C&amp;P:line or word copy data was shorten by double click on UTF8 file.  
+   -(WinCon) Palette number can not be change by the error msg &quot;RGB value can not change&quot;
+    (Report from Jason@us)
+   -If pallette number of Edit-file is same as one of Browse-file, no reverse box by C&amp;P or Find word was not shown.
+   -(wxe) C&amp;P: invalid translation of copy data when copying clipboard by double click.
+   -Find cmd miss the word near the left/right edge for UTF8 file.
+   -(LNX) if LANG environment variable is not UTF8 for CJK, UTF8 char is show by unprinatable.
+   -(LNX) if LANG environment variable is not UTF8, 3 byte or 4 byte DBCS is not inserted to the file line.
+   -(gxe)DBCS space is not displayed by alternative char even when TAB on status.
+   -Hex Input box on top-left is disappear by cursor move.
+   -Invalid sort for UTF8 file when case insensitive option was specified.
+   -Invalid match to DBCS for IFInd cmd on dir list 
+
+.Unicode range was expanded from BMP(UCS2, 16 bit up to 0xffff) to 21bit UCS4(max 0x10ffff)
+
+   -Ristriction.
+      Windows version yet supports UCS2 only. UCS4 is treated as error char and value is kept.
+      UCS4 Over 0x20000 occupy 2 column regardless font width and you can not change 
+      the width on cfg file(see UnicodeTbl parameter on ini file).
+   -You can make UCS from 2 byte ascii.
+    On vertical hex line (see HEX cmd), use &quot;u&quot; key to generate UCS2, &quot;v&quot; kety to generate UCS4.
+   -Hex code input.(toggled by Ctrl+F11 key)
+    To input unicode start by &quot;u&quot;(UCS2) or &quot;v&quot;(UCS4) key.
+    Data is send to file contents area after 2 byte input when started by &quot;u&quot; key,
+    3 byte input when started by &quot;v&quot; key.
+    &quot;x&quot; key is used to send prematured data. 
+    &quot;u&quot; or &quot;v&quot; key send prematured data and start new char specification.
+    For UTF8 file, data is assumed as UCS2 widthout &quot;u&quot; key.  
+    (To input 3 byte or 4 byte DBCS to locale file, send twice)
+  -Unicode input on command input line.
+   You can input UTF8 code using Hex-input-mode into cmd input line,
+   dir-list rename input field, Utility panel(=3.12, =3.14), filename list panel(=1, =2). 
+   Switch to Hex-Input-Mode using Ctrl+F11, start UCS input by &quot;u&quot;/&quot;v&quot; key.
+   Without starting &quot;u&quot; or &quot;v&quot; key, diffrent from the case csr is on file text area without starting &quot;u&quot; or &quot;v&quot; key,
+   Input char is send just to those area.
+   Enter twice &quot;u&quot; or &quot;v&quot; to input the char.
+  -Change cmd:Explicitly specfy U4 parameter if hex notaion of replacing string is UCS4.
+     ex).  C abc  \x10fffd   u4
+   If missing U4, replacing string is assumed as UCS2
+     ex).  C abc  \x30203021
+  -Native RAW CODE input method.
+   You can use IME to imput RAW unicode.
+     But, Linux console version cannot detect it if the code can not be translated to locale code
+          when LANG environment is not UTF8.
+          Windows console version can not utilize Windows RAW CODE Input method
+          Use HexInputMode in this case.
+   (Ref.) How to input RAW Unicode
+      (Linux)  :Select Other--&gt;RAW CODE on SCIM setting.
+                To use NumPad key NumLock On is required.
+      (Windows):-Pressing Alt key, press &quot;+&quot; key on NumPad.
+                 Keeping Alt key pressed, continue to key in unicode by hex digit.
+                 UCS code is send to the cursor position when Alt key is released.
+                 To utilize this method, you may be required to registry setting.
+                 Replace or Insert the key EnableHexNumpad with value &quot;1&quot; (data type is REG_SZ:string)
+                 into the entry of HKEY_CURRENT\Control Panel\Input Method.
+                -For JapaneseIME (Microsoft IME standard 2002 in my case).
+                 Swithing translation mode, enter unicode like as U3042 the press F5 key.  
+                 This may not be available on command prompt.
+
+.Other miscellenious.
+
+  -SORt cmd:
+     D[S|I|X] option for UTF8 file.
+     Treatement of DBCS split by key position specification.
+       S: assume as &quot; &quot;(space), I: include split left or right byte, X: exclude the split char.
+     And, collating sequence is Unicode for UTF8 file.
+
+  -&quot;S&quot;(split) line cmd replace DBCS to 2 space when the DBCS is split.
+   When cursor is on the Hex line(vertical hex display mode),space replacement is not be done
+   like as line split by Shift+Enter key.
+
+  -HEX cmd new option to move cursor zigzag.
+     HEX [ On | Off | YZ | NZ ]
+       YZ:When cursor is on hex line of vertical hex display mode,
+          cursor moves to like as upper--&gt;lower--&gt;upper of next column after char input.
+          Even if CharacterInsertMode, input on lower line replace the hexdigit
+          on the cursor without inserting new character. 
+       NZ:back to usual cursor move mode.
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

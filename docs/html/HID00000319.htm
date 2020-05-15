@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>TAB</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    = <a href="HID00000214.htm">Tab</a> display
+
+        TAB {on [altch] | off | clear | =default | nn [asdefault] }
+            on      :display tab char and <a href="HID00000217.htm">DBCS</a>(Japanese) space.
+                     Char used to display tab and its following space
+                     is customaizable by <a href="HID00000209.htm">.INI file</a> parameter.
+                     Default is Tab       :Up-arrow
+                                Tab-skip  :Right arrow
+                                DBCS space:shadow box
+            off     :tab char is not displayed.
+                     Special char for un-displayable char
+                     is always displayed regardless this option.
+            clear   :remove tab with space remained.
+            =default:set this file's tabctr to the default setting.
+            nn      :Tab column interval,default is 4.
+                     With &quot;asdefault&quot;, set default tabctr.
+                     Without &quot;asdefault&quot;, set the tabctr of currentry opened
+                     and profile record is updated.
+                     Tab key cause cursor jump not to next tab column
+                     but jump to next field when default tab column is 0.
+                     Maximum 12.
+                     1 is forced to the file opened by record mode.
+            altch   :Change char to display TAB/DBCS-space char.
+                     On Windows command prompt, unicode charcter display-column-width depends its font settiong.
+                     If you use ASCII char as alt-displaying-char of TAB and TAB padding space char.
+                     If you yet use prefered unicode for TAB and TAB padding, use this altch option.
+                     On wxe,gxe,Linux xe, it may not be occur.
+                     Default is U-21be(display TAB:0x09), U-21c0(Display spaces skipped by TAB)
+                     and U-2591(DBCS-space),
+                     This option overrides following INI file options.
+                       (J)Tab_disp_char  =FFFF #(FFFF)# Tab display char for Japanese mode. (FFFF means U-21be &amp; U-21c0)
+                       (E)Tab_disp_char  =FFFF #(FFFF)# Tab display char for English  mode. (FFFF means U-21be &amp; U-21c0)
+                       DBCSspace_dispchar=FF #(FF)# DBCS space display char. (FF means U-2591)
+                     &quot;tab on 000&quot; is used to back to default(u21be-21c0,2591) or INI settings.
+                     ex)  tab on &quot;^-&quot; ,   tab on u25b8-25b9 ,  tab on &quot;^-!&quot; ,  tab on u25b8-25b9-21be.
+                     When Non-ASCII is specified as altch, &quot;xpr -tabon&quot; cmd use the altch
+                     for printing CPU8 file and use 0x18 and 0x1a for non-CPU8 file.
+
+</SPAN></PRE>
+</BODY>
+</HTML>

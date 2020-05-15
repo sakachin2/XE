@@ -1,0 +1,281 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>UTF8 support-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;">#if defined(W32)||defined(LNX)
+
+   .UTF8 Support.
+
+     .You can view/edit UTF8 encoded file.
+      Linux version can process UTF8 encoded file name.
+      Environment LANG:utf8 is required, for ex, LANG=ex_US.utf8.
+      Windows actualy manages filename by UTF-16,
+      windows version can process filename containing surrogate pair code.
+      Both version treates up to u-0x10ffff(21 bit UCS4).
+
+     .UTF8 string is shown by colour of green.
+#ifdef W32
+      Filname on dir-list is shown by colour of green when translation to locale coed from utf8 failed.
+      See case of Linux for dir-list of remote(not Windows-Share but FTP).
+#endif
+#ifdef LNX
+      Filname on dir-list is shown by colour of green when filename encoding is utf8.
+      If valid as both charset of UTF8 and locale code, codepage is selected as following priority(High to Low).
+            EDIt cmd : e xxx FN{U8|LC|AS}
+            cmdline parameter : xe  -UN{8|L}
+            UTF cmd : UTF FN CP{U8|LC|AS}
+            Linux:LANG env-vvar for Linux, Windows:locale for local, UTF8 for remote FTP.
+#endif
+
+      Keyboard input mode Locale or UTF8 is switched by &quot;UTF SWKBD&quot; cmd or Alt+u.
+      When &quot;=u=&gt;&quot; is shown on cmdline, keyboard is UTF8 code input mode.
+      Keyboard:UTF8 mode is effective at folllowing cases.
+        -Copy word under the cursor on UTF8 or EBC file by Ctrl+w
+        -Paste to field other than file contents area from clipboard created from UTF8 or EBC file.
+
+
+     .Browse/Edit UTF8 encoded file.
+
+       -Input into file contents area is UCS regardless of A+u status.
+        And translated to UTF8 when writeback.
+
+       -Unprintable UCS is displayed by alternative char &quot;:;&quot;.
+        Invalid byte code as UTF8 is displayed by &quot;?&quot;.
+        Original byte code is kept in both vcase and write back as it is.
+
+       -No translation is done for the file opened by binary mode(eb/eh cmd).
+        All bytes are interpreted as locale code.
+
+       -Hex cmd display UCS code.
+        ASCII char is one column on both char line and hex line.
+        Non-ASCII char is 2(UCS2) or 3(UCS4) column on hex line.
+        Char line column width is one or two depending to each code point.
+        So, line length of char line and hex line may differ.
+        Alt+g(Cursor Jump) key is used to switch to corresponding column.
+
+       -Unicode input from keyboard.
+        On Asian DBCS environment,IME may supports input of almost codepoint.
+        Xe supports hex notation input. Use Ctrl+F11 to switch to Hexcode input mode.
+        at 4th hex digits of u-xxxx input completed, the UCS2 is transfered into
+        the cursor position. For u-00xx, &quot;x&quot; key may be used after 2 hex digits input.
+        For UCS4,6 digit required, start by &quot;v&quot; key before hex digit input.
+        Prematured input is send by &quot;u&quot;,&quot;v&quot; or &quot;x&quot; key.
+
+        And, when vertical hex display mode by HEX cmd,
+        &quot;u&quot; key on hex line synthesis 2 byte to one UCS2 code.
+        For ex, at 2 spaces(0x20,0x20) position, &quot;u&quot; key on upper or lower hex line
+        changes 2 spaces to one u-2020(cross?).
+        &quot;v&quot; key on hex line synthesis 3 byte to one UCS4 code.
+
+        Unicode input on command input line.
+           You can input UTF8 code using Hex-input-mode into cmd input line,
+           dir-list rename input field, Utility panel(=3.12, =3.14), filename list panel(=1, =2).
+           Switch to Hex-Input-Mode using Ctrl+F11, start UCS input by &quot;u&quot;/&quot;v&quot; key.
+           Without starting &quot;u&quot; or &quot;v&quot; key, diffrent from the case csr is on file text area without starting &quot;u&quot; or &quot;v&quot; key,
+           Input char is send just to those area.
+           Enter twice &quot;u&quot; or &quot;v&quot; to input the char.
+           Cut&amp;Paste or Ctrl+w may be used copy UTF8 string from a line of UTF8 file opened.
+
+        Native RAW CODE input method.
+           You can use IME to imput RAW unicode.
+             But, Linux console version cannot detect it if the code can not be translated to locale code
+                  when LANG environment is not UTF8.
+                  Windows console version can not utilize Windows RAW CODE Input method
+                  Use HexInputMode in this case.
+           (Ref.) How to input RAW Unicode
+              (Linux)  :Select Other--&gt;RAW CODE on SCIM setting.
+                        To use NumPad key NumLock On is required.
+              (Windows):-Pressing Alt key, press &quot;+&quot; key on NumPad.
+                         Keeping Alt key pressed, continue to key in unicode by hex digit.
+                         UCS code is send to the cursor position when Alt key is released.
+                         To utilize this method, you may be required to registry setting.
+                         Replace or Insert the key EnableHexNumpad with value &quot;1&quot; (data type is REG_SZ:string)
+                         into the entry of HKEY_CURRENT\Control Panel\Input Method.
+                        -For JapaneseIME (Microsoft IME standard 2002 in my case).
+                         Swithing translation mode, enter unicode like as U3042 the press F5 key.
+                         This may not be available on command prompt.
+                        -You may get &quot;?&quot; for the code could not be translated to locale code.
+                         Use HEX Input Mode(<A href="HID00000284.htm">XIN</A> cmd) in that case.
+
+       -Additional cmd option for UTF8 support.
+
+           -Edit/Browse/Select  [CPU8|CPLC|CPAS] [IE]
+              CPU8: Open as UTF8 file.
+              CPLC: Open as locale code file.
+              CPAS: by the LANG environment. Default.
+
+                CPxx option is save to profile.
+                No need to specify for the 2nd open.
+                Default is CPAS, and CPxx option for the directory is default of the file in the directory.
+                You can confirm the open option by the id *U/*u/*L/*l/*b on the header filename line.
+                (&quot;b&quot; means binary mode open.)
+                Uppercase means explicit CPxx specification including the case by saved value in the profile.
+                Re-load by CPLC when translation error if no CPU8 option or CPU8 is not registered on profile.
+                UTF cmd can chage the default and CPLC reload option.
+
+              IE  : You can not open by edit mode if translation error occured.
+                    To force open, use &quot;IE&quot; option.
+                    Not translated code are loaded as it is and displayed by &quot;?&quot;.
+                    You can open by browse mode even if translation error occured.
+                    Error position is searched by &quot;f *ec&quot; cmd.
+
+
+
+           -End/Save/Replaxe/Create/Append [CPLC | CPU8 [IE]]
+              CPU8/CPLC:specifies output file encoding.
+                        translation will be done if requred, the write back.
+              IE       : ignore translation error, error code is replaced by &quot;?&quot;.
+
+           -Copy/Move source-file [CPLC | CPU8 [IE]]
+              CPU8/CPLC: Copy/Move &quot;source-file&quot; after tarnslated if required.
+              IE       : continue copy operation ignoring translation error.
+                         those char are copied as it is and dispalyed by &quot;?&quot;.
+                         This option is not required when target file is opened by with &quot;IE&quot; option.
+
+           -Find/Change cmd.
+
+             .Find/Ifind [U[B|L|8]]
+              Change     [U[B|L|8|4]]
+                  U   : option prefix.
+                  B/L : Search UCS2 by BigEndian/LittleEndian mode. default depends on the O/S(&quot;L&quot; for 80x86 strings).
+                        ex) &quot;F 123 UB&quot; searchs 0x'003100320033',
+                            &quot;F 123 LB&quot; searchs 0x'310032003300'.
+                  8   : Search UTF8 code.
+                        Keyboard input code depends on A+u status indicated by cmdline prefix.
+                        &quot;=u=&gt;&quot;  means UTF8, &quot;===&gt;&quot; means locale code.
+                        Search UTF8 code by U8 option when locale code mode.
+                        Use &quot;U8&quot; option to search UTF8 code on the file opened with CPLC
+                        and keyboard is locale mode.
+                          ex). F x U8
+                           Assuem &quot;x&quot; is locale code, 0xa0 as a example,
+                           this cmd search 0xc2a0 (UTF8 code correspondingto 0xa0).
+                  4   : hex notaion of replacing string is UCS4.
+                          ex).  C abc  \x10fffd   u4
+                        If missing U4 on CHAnge cmd on UTF8 file, replacing string is assumed as UCS2
+                          ex).  C abc  \x30203021
+             .Find *ec
+                  *ec : Search the code position failed to translated from UTF8 at open.
+                        *e is also avail to search the line containing error until the line is updated.
+             .Change *ec *
+                  *   : Change translation error code byte by byte.
+                        Replacing char &quot;*&quot; means to reset translation error status.
+                        The code was not reset are written as it is,
+                        the code was reset are translated to UTF8 as locale code at write back.
+
+                        Any replacing string is allowed for *ec.
+             .Char boundary is considered for \x__ notation of search/replace
+              string for UTF8 file. it should be 4 bytes multiple.
+              aa of \xaabb dose not match to yy of u-xxyy.
+              it may match to xx of u-xxyy.
+              ex) c \x30003000 \x20202020
+
+           -SORt cmd.
+              D[S|I|X] option for UTF8 file.
+              Treatement of DBCS split by key position specification.
+                S: assume as &quot; &quot;(space), I: include split left or right byte, X: exclude the split char.
+              And, collating sequence is Unicode for UTF8 file.
+
+           -Use &quot;o&quot; line cmd on dirlist if CPxx option required.
+            Specify CPxx on the rename field like as Select cmd.
+            Line cmd &quot;[&quot; and &quot;]&quot; means Open with CPLC and CPU8 option each.
+
+       -Use locale code for line(box) character specification in the ::xe___.ini.xxx file(___:os type, xxx:locale id).
+
+       -UTF related setting.
+
+           - UTF { {ALTCPLC | NOALTCPLC } | SWKBD | FILE | FN } [ CPU8 | CPLC | CPAS ]
+
+              ALTCPLC / NOALOTCPLC : When without CPU8 option including registered on profile,
+                                     reload by CPLC or not if UTF8 translation err occured.
+
+              SWKBD:KBD Input translation(Locale code&lt;--&gt;UTF8)
+
+                Alt+u is shortcut of &quot;UTF SWKBD&quot; cmd.
+                &quot;===&gt;&quot; of cmd input line is changed to &quot;=u=&gt;&quot;.
+                =u=&gt;:keyboard input is interpreted as UTF8.
+              FILE/FN:Set default of text of file/filename encoding.
+                      Use CPAS to reset it.
+                      Option setting is save to ini file.
+                      -U option of cmdline override this temporary.
+
+              You can mix UTF8 and locale code on command input line, filename input(=1 or =2) panel
+              and utility panel(=3.12 or =3.14).
+              Use this shortcut key when file pathename is mix of UTF8 and locale code.
+              (Note) If the mix is in a path, UTF8 detection may fail.
+                     (Intermediate ASCII code may help as UTF8 encoding seperator)
+              Input to the file contents is, anyway, by locale code.
+
+              Cmd line parameter -Nm is used to process UTF8 code byte by byte.
+
+           -  <A href="HID_UNICOMB_E.htm">OPT UNICOMB</A> [ COMB | SPLIT | UNPR ] [ SHADOW | ITSELF | PADDING | U-xxxx ]
+
+              Set what is sent to screen for combining character.
+              Alt+&quot;:&quot; is also avalable to switch display mode of combining characters.
+
+       -Command line option.
+            xe [/U{F|N}{8|L}]
+              UF  : set default encoding of file text.
+              UN  : set default encoding of fileanme.
+
+              -default encoding is set by UTF cmd, This option override the UTF cmd setting.
+              -About file text encoding.
+               CPU8/CPLC optionon Edit/Browse file/directory cmd is save to profile.
+               Priority among those setting are as following.
+                open cmd option-&gt;profile-&gt;cmdline option-&gt;UTF8 cmd setting.
+                And last is LANG environment valiable for Linux.
+
+       -Use ini file to adjust char display column width.
+
+         .Font width may vary depending the language environment.
+          If input char is displayed other than cursor position, use this function.
+          At first, confirm char width by displaying the file utf8data.0000-ffff
+          in sample dir.
+         .Specify code table file naem in ini file
+          Font width may differ between console version(on DOS prompt/Terminal emurator) and
+          GUI version.
+
+          Mapping table is used for SBCS(1 column font width) codepoint.
+          If this table is overflowed, those codepoints is trated as DBCS(occupy 2 column).
+          When following warning is issued, define not used SBCS range as DBCS,
+          like as, for ex, &quot;2 e000-f8ff&quot;.
+             &quot;Warning:UCS map tbl overflow. Treate this range as DBCS(adjustable by ini file).&quot;
+
+               UnicodeTbl=&quot;::xeuctb&quot; #(&quot;&quot;)# Unicode Codepoint File:SBCS/DBCS/Unprintable specification
+               UnicodeTbl_Console=&quot;::xeuctb.cons&quot; #(&quot;&quot;)# Unicode Codepoint File for console version
+
+         .sample format
+
+               #################################################
+               # Unicode character type specification file
+               #   Specify file name on ini file
+               #   You need specify only to change default
+               ## Line Format ##################################
+               # unicode character type specification file
+               # type start-end
+               # type     : 0:Unprintable, 1:printable single column character, 2:printable wide(double column) character,
+               #            #:comment
+               # start-end: unicode range by hex digit notation. Lines should be accendant sequence.
+               # Ex) 2 01cb-01e3
+
+       -Others.
+         .Sort sequence is UCS2 order.
+         .CV cmd is for locale file only.
+         .Command(=6) panel is CPAS, Shortcut key definition(=0.1) panel is CPLC.
+
+#endif
+
+
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

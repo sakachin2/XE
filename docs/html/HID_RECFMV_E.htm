@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>VariableRecordLength File-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;">   .VariableLengthRecord file.
+
+     -supported record header format:
+        RDW:LLZZ format(2 byte length filed+0x0000, length is containing header length),default.
+        H  :2 byte LL including header length itself.
+        HD :halfword LL not including header length.
+        F  :fullword LL including header length itself.
+        FD :fullword LL not including header length.
+        MF :Microfocus convetion.
+            System record at top of the file indicates header length is halfword or fullword.
+            (I do not care role of system record, don't upload the file updated by xe.)
+
+        If &quot;record format error&quot; is issued, check it by opening the file by EB or EH  command.
+        LOCate command will moves cursor to the specified hex offset.
+
+        &quot;TOP OF FILE&quot;/END OF FILE&quot; line indicate &quot;v&quot; at col=4 for VRL file.
+
+        /Mv and /Fvfmt is saved to profile.
+        Once opened by Browse/Edit with these option, no need to specify it at next open.
+        SAVe/CREate/REPlace/END command also save it for the output file.
+
+     -Option parameter on each command.
+
+        Browse /Mv  /Fvfmt
+            vfmt:record header format
+              ex)  B vfile /Mv /Frdw
+        Edit e /Mrv /Fvfmt
+            r=v:read as vfmt
+            w=v:save as vfmt
+              ex)  E vfile /Mv /Fh
+            You can chage record mode by specifing both &quot;r&quot; and &quot;w&quot;.
+              ex)  E vfile /Mvr /F130 /Ff (load as vfmt=F, save as RECFM=F+LRECL=130)
+            END command is also used to change record format.
+        END  /Mv /Fvfmt
+            Use to change record type of the file from ones of at opened.
+            but new vfmt should not be MFH.
+          ex)  END /Mv /Ff (Save the text file as vfmt=F file)
+        SAVe filename /Mv /Fvfmt
+             filename required with  /Mv or /F option.
+             ex) S vfile CPEB=CP930 /Mv /Fh (save from non-EBCDIC file to EBCDIC file of vfmt=F)
+                &quot;S lctxtfile /Mt&quot; after &quot;E ebcvfile /Mv /Frdw CPEB=CP939&quot; (create locale code text file from RECFM=V EBCDIC file)
+        CRE/REP/APP filename /Mv /Fvfmt
+             For APPend, both /M and /F is required if source and target file record type is different.
+             For CREate/REPlace, source file profile is applied if /M or /F is not specified.
+             ex) REP ebcvf cpeb=CP930 /Mv /Ff nx
+        COPy filename /Mv /Fvfmt
+         Specify record format of copy source file, which is omittable if registerd on the profile.
+             ex) COPy ebcvf cpeb=CP930 /Mv /Ff
+        XPR  filename [/Vvfmt|/Rlrecl]
+             /V:specify format of RECFM=V file, /R:specify LRECL for RECFM=F file.
+             No need to specify when registered on profile.
+             And no need for printing of the opened file(&quot;XPRint *&quot; or &quot;XPRint **&quot;)
+
+
+
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

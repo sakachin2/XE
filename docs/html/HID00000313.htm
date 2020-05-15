@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>SELect/S</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    = File select
+
+        {SELect | ST | SB | SH | SN | SC(=SL) | SCN(=Si) | SK | SKN(=SJ)}
+               [file-name | -lineno]   [options...]
+
+            -Effective on <a href="HID00000252.htm">dir-list panel</a> only.
+             Depending on directory open command,<a href="HID00000277.htm">EDIt</a> or <a href="HID00000260.htm">BROwse</a> cmd is
+             issued with concatenated filename of operand and directory
+             name which is displayed on header line.
+             if dir has only one member file-name parameter may be omitted.
+            -Select command verb for the file to be opened.
+             See EDIt command for also operands.
+            -&quot;-lineno&quot;
+             Lineno of dir-list as alternative of file-name.
+             Selects 1st member if both file-name and lineno is missing.</SPAN></PRE>
+<PRE>
+&nbsp;</PRE>
+<PRE>
+     <SPAN STYLE="color:#000000;font-size:12pt;">= Line select
+
+        SELect [all] [col1 col2] [.label1 .label2]
+
+            -label1/2:line range col1/2:column range
+             numeric specification for both label 1 and 2 are accepted as lineno.
+             Block mode if col1/2 specified, Range mode if col1/2 is not specified.
+             "Select All" if both label and column is not specified.
+               e.g.) sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;
+            -Select block/range to Cut/Copy/Paste on Edit panel.
+             You can paste just after selection of block.
+             For range mode, selected range itself is target of Paste Range mode.
+             So you need to save the region(Alt+F9) before paste(Alt+F8/Alt+Ins).
+            -Abridged format command "S" is not available
+             "S" means "SAVe" on Browse/Edit panel.
+
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

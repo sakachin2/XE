@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>PROfile cmd-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">   = Profile
+
+     PROfile cmd is for displaying or writing the profile record.
+
+             PRO {?|*|path|ext} [save|reset] [all | tab | cols | numfld | syn]&quot;
+                ?     :Help
+                *     :for the profile record of the file currentry opend.
+                path  :for the profile record of the parent directory of the file currentry opened.
+                ext   :for the profile record of the extension name of currentry opened file.
+                  Display the profile when no othe option is followed.
+                  Default is &quot;*&quot; when other options are following.
+                save  :Write to the profile record.
+                       This is default when other options are following.
+                reset :Delete profile record.
+                       Then write the profile when other options are following.
+                all   :All profile are written to the profile record.
+                tab   :write tabclear status from current file.
+                cols  :write cols on/off and type of cols from current file.
+                numfld:write folowing SPF related options.
+                       NUMSTD(Col.73-80 is line-number field), its protection(P0/P1)
+                       COBNUM(col.1-6 is COBOL line number field), its numeric check,
+                       Fxx[-yy](Fixed line length and its margin).
+                syn   :related to SyntaxHighlight.
+        For ex,
+           To set <A href="HID00000037.htm">SPF</A>(80 byte fixed length width line number on col 73-80) profile to dir1,
+           open a file in the dir by &quot;EN dir1\samp1&quot; then enter &quot;PRO path save&quot;.
+           The &quot;E dir1\samp2&quot; is same as &quot;EN dir1\samp2&quot;.
+           This is applyed also to Select line cmd on dir-list panel.
+           To set <A href="HID00000226.htm">COBOL</A>(80 byte fixed length with COBOL line number on col.1-6) profile to
+           all file with extension name &quot;cob&quot;, open a file with extension &quot;cob(&quot;EC samp3.cob&quot;)
+           then enter &quot;PRO ext save&quot;.
+           To see contents of profile record, use &quot;PRO {*|path|ext}&quot;.
+
+
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>line drawing chars</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    .Line Drawling/Special glyph input
+
+      Use Graphic Char.(Alt+1,...or Ctrl+numerickey pad) <a href="HID00000204.htm">Chapter-(1)</a>
+      <a href="HID00000269.htm">CursorDownKey</a>(Alt+BS) is convenient to draw vertical line.
+
+      It depends on codepage which codepoint draws line.
+      IBM PC De fact standard was CP437(DOS LatinUS) which assignes 0xb3 etc.
+      In japan,from the need to assign many codepoints for hankaku-katakana
+      IBM Japanese DOS assigned 0x01 etc. to line drawing character.
+      MS-Windows selected CP1252(WinLAtin1) which is superset of ISO-8859-1,
+      and line drawing characters are shifted out by European language character.
+      But as OEM codepage,you may be able to see line drawing character.
+      xe use IBM Japanese DOS under Japanese environment or else use CP437.
+#if defined(LNX) &amp;&amp; !defined(XXE)   //Linux Console version
+      Linux Console version use ncurses ACS to draw lines.
+      You have to select to draw line or display European complex character.
+      OPT <a href="HID00000732.htm">LINECH</a> [on|off]
+      If On,some codepoint of Japanese DOS or CP437 are used to draw lines.
+      Set off if &gt;0xa0 is effective codepoint on e.g. ISO8859-1.
+#endif
+      &quot;Line Drawing Character&quot; code assignment is changed by the file on work directory.
+      It is used to input a set of phrase,usual special glyph code which is bother to type.
+         Ini file naming convention is xelch__.ini[.locale]
+           __ : version ID ex) win,gcc,wxe,lnx,gtk.
+           locale: for Linux version (lnx and gtk) only.  ex) &quot;ja_JP&quot;
+                   It is gotten by Linux &quot;locale&quot; command.
+           The filename is displayed on the bottom line of =0.2 panel.
+         Each line of the file specify output string of the Alt+n key combination
+           It is comment line if started by &quot;#&quot;.
+           Process end if encountered the line with &quot;//&quot; at top of the line.
+           This function is at first intended to output line-drawing-character,
+           but now it output any string up to 100 byte.
+           n=xxxx[,yyyy]
+             n: 1,2,...9,h,v :conbination key with Alt key.
+                ex) 1 is for Alt+&quot;1&quot; , h is for Alt+&quot;-&quot;, v is for Alt+&quot;^&quot;.
+                To nullify previous setting,place the line without string such as &quot;1=&quot;.
+                Specify line comment if needed after &quot;//&quot; of each line.
+             xxxx,yyyy:Specify string to be written by the key combination.
+                       Start by 0x if use hex notation.
+                       Enclose by quation if the string contains delimiter like as space.
+                       If both xxxx and yyyy is specified,xxxx is written
+                       without Shift key,yyyy with Shift key combination.
+                       ex). xxxx by Alt+1,yyyy by Alt+Shift+1.
+                       For unicode, use u-xxx1[,xxxx2,...]  format.
+#if defined(LNX)|| !defined(XXE))
+                       Linux Console version can not detect shift key,
+                       xxxx is used when OPT LINECH on, yyyy is used when OPT LINECH off.
+#endif
+                       UTF-8 string is supported by another modules(xeu,wxeu,gxeu).
+
+          Ini file example.
+
+              1=0xa8b1
+              2=0xa8b5
+              3=0xa8b0
+              4=0xa8b2
+              5=0xa8b6
+              6=0xa8b4
+              7=0xa8ae
+              8=0xa8b3
+              9=0xa4af
+              h=0xa8ac
+              v=0xa8ad
+             //jpn euc  dbcs
+             2=u-102222,47; u2550  //input ucs4, A+2:u102222+u47, S+A+2: u2550
+             1=&quot;This is my cliches.&quot;,&quot;Best Regards.&quot;
+             1=84af 2=84b3 3=84ae 4=84b0 5=84b4 6=84b2 7=84ac 8=84b1 9=84ad h=84aa v=84ab  (jpn sjis dbcs)
+             1=c0 2=c1 3=d9 4=c3 5=c5 6=b4 7=da 8=c2 9=bf h=c4 v=b3  (cp437)
+             1=03 2=15 3=04 4=19 5=10 6=17 7=01 8=16 9=02 h=06 v=05  (jpn DOS)
+             1=e29494 2=e294b4 3=e29498 4=e2949c 5=e294bc 6=e294a4 7=e2948c 8=e294ac 9=e29490 h=e29480 v=e29482 (utf)
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

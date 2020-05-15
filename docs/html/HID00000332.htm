@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>XPRint/PR</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;"> #ifdef UNX
+   = XPRint {in-file | * | ** | ***} [-tabon] [-xprintoption -...]
+
+       Xprint_Command_LNX is required on <a href="HID00000209.htm">ini file</a>.
+       XPRint command simply execute that command with specified opd.
+
+#else
+   = XPRint {in-file | * | ** | ***} [out-file(PRN)] [-tabon] [/xprintoption /...]
+
+       XPRINT.EXE must be on PATH env.
+       PATH may be set by <a href="HID00000693.htm">SET</a> cmd.
+       See <a href="HID00000465.htm">xpe.txt</a> for detail of XPRINT.EXE
+ #ifdef WXE
+   = WXP (same operand format as XPRint except /xprintoption)
+ #endif
+#endif
+
+       On <a href="HID00000251.htm">edit/browse screen</a>,following special file is supported.
+       *   :print currently opened.
+       **  :print currently opened.excluded line is printed as you see.
+            Hex mode displayed screen is also supported.
+            Column gauge is printed if displayed.
+            To print <a href="HID00000703.htm">vertical HEX</a> format,use ** or *** parameter.
+            For <a href="HID00000219.htm">binary file</a> ctl-char is printed as &quot;.&quot;.
+            Or use /Md xprint option when not ** case to replace
+            ctl-char by &quot;.&quot;.
+       *** :print a current screen page.
+
+       -tabon:screen print(&quot;XPR **/***&quot;) send alternative display
+         char for tab(0x09) or dbcs space when <a href="HID00000319.htm">tab display mode</a> is ON.
+         if -tabon is not specified space is send to printer for
+         tab and DBCS space alternative display char.
+
+       .label range speification supported with * and **.
+       (note) tab may not be printed and line is shrinked if printer
+              dose not support tab display char when tab display mode is on
+              by "<a href="HID00000319.htm">Tab</a> on" cmd. Use "Tab off" before xprint in that case.
+       <a href="HID00000218.htm">remote file</a> is printed on local.
+</SPAN></PRE>
+</BODY>
+</HTML>

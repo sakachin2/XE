@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>ReadMe(E)</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;">||*CID:||+v129R~:  2019/08/18      
+######################################################################
+[English]    v1.29
+
+##This editor is fit for programmers working on both main-frame and PC.
+  Its operation is based on mainframe SPF editor,
+  and like as other editor on PC convenient short-cut key operation is hybrid.
+  Each version offer common operation on the different OS, DOS,OS/2,AIX,Windows,Linux.
+
+      .Automatic updated lines tagging optionally.
+      .Sort, Formatting, code conversion,...
+      .Fixed/Variable Length Record file(wit no CR/LF) support.
+      .Direct(Without code translation) edit UTF8,EBCDIC file.
+      .Binary editor(Vertical or Horizontal HEX line)
+      .Filer(Folder Listing,Delete,Rename,Copy,Launch,...)
+      .Remote access
+         ftp,samba,rsh,ssh,fuse,TSO3270
+         Access to Linux/390 using fuse(Dokan package on Windows).
+         Access to Windows from Linux using samba(smbclient).
+      .64 bit(Linux/Windows version only)
+      .Linux/390 version is tested on Hecules emulator.
+         make on Linux/390 by &quot;./configure &amp;&amp; make&quot; from src.tgz.]
+
+
+    <B>LICENSE: use GNU GPL</B>
+
+                            By Mizumaki-machi (sakachin2@yahoo.co.jp)
+
+                            http://hp.vector.co.jp/authors/VA010562
+                            http://www.geocities.jp/sakachin2/index.htm
+
+  (note). DOS version is limitted by 640kb.
+            Pgm is too fat now,DOS version may not work by 640k memory
+            limitation. Please keep old version.
+            DOS version withdrawn at v1.13.  Use GCC if available.
+            DOS version is contained in GCC version.
+          GCC version is DOS Extender version(no 640k limit).
+            It is compiled by DJGPP/GCC v2 original downloaded from
+            nifty FEXT forum. It is required DPMI server.
+            Windows and OS/2 is one of DPMI server. So this works
+            on the DOS box. QEMM etc. is one of DPMI server under DOS.
+            CWSDPMI is for DOS prepared from Nifty FEXT LIB-13(original)
+            #449 CSDPMI3B.ZIP,download and place it on PATH.
+            (CWSDPMI is by C.W.Sandamann)
+          WIN version are GUI and Win32 CONSOLE application version.
+            Console version works on command prompt and mouse is not supported.
+            Set CommandPrompt to use TrueType Font.
+            WTL/ATL version(MFC is not used) is compiled on vs2010Express,
+            32bit and 64bit version is prepared.
+          There are 2 executable for Linux,GUI version(gxe) and
+            TerminalEmulator version(xe), and support floppy disk.
+            Linux version is tested on RedHat v9/FedoraCore4 only.
+          AIX version works through TeraTerm(*), telnet from linux
+            and on aixterm and dtterm.
+            Someone use puTTY(terminal emulator on Windows),I heard.
+            Initial setup required,see xeaixe.doc.
+            AIX version is up to v1.18.
+
+            (*)TeraTerm is freeware by T.Teranishi.
+
+     Test is done mainly for Windows version and AIX version.
+     Other version is just cheked to work except the function native to
+     the version.
+
+##Following files are archived in to each version.
+      See also xelnxj.txt/xelnxe.txt for Linux version(xelnx___.tgz),
+      and xewxej.txt/xewxee.txt for gxe mouse operation.
+      See xeaixj.doc/xeaixe.doc for AIX version(xeaix___.tgz).
+
+        gnugpl.txt   Copy of GNU GPL.
+        xereadmj.txt README for Japanese.
+        xereadme.txt this file.
+        xej.txt      Japanese manual.
+        xee.txt      english manual.
+ v1.29  xe.exe       executable binary file
+ v1.29  wxe.exe      Windows GUI version.
+ v1.29  gxe.exe      Linux Xwindows version.
+        xehelp\      Help file directory for Windows/Linux version.
+                     Put o workdir or specify the place by env-var &quot;xehelp&quot;
+                     or by /hd command line parameter.
+                     See xelnxe.txt for additional place for linux version.
+        xewxej.txt   doc for Windows GUI version.(Japanese)
+        xewxee.txt   doc for Windows GUI version.
+        xehosts      sample hosts file for remote file access.
+        xe3270.cfg   (Win/Linux)TurnkeyMVS access config file.
+        xesynw.cfg   (Win/Linux)SyntaxHighlight config file.
+        /xesynl.cfg
+        cobol.lang   (Win/Linux)SyntaxHighlight,cobol language definition.
+        gnu-source-highlight-mingw.tgz
+                     (Win)GNU source-highlight v2.9 compiled on MinGW.
+                     This allows ssource-highlight execution without cygwin installation.
+        xeshm        (Win/Linux)resident process version from gnu-source-highlight v2.9.
+        xe.bat       sample batch file to select DOS,GCC or WIN
+                     version xe.exe checking OS version.
+ v1.1   XE4S001Z's   Followings are Win/Linux version only.
+                     XE4S001Z is optionally used to display SPF information
+                     on the dir-list when access Turnkey-MVS PDS.
+                     To install,assemble .asm file or submit .jcl to install
+                     LoadModule from .aws file.
+                     See also xee.txt <A href="HID_TSOE_E.htm">(0)-(D)-TSO support</A>.
+        XE4S001Z.asm HOST ASSEMBLER source
+        XE4S001Z.aws AWS file created from LoadModule by awsutil.
+        XE4S001Z.jcl submit jcl to install LoadModule XE4S001Z from .aws file.
+
+ v9.38  <A href="HID00000465.htm">xprint</A>.exe   text file print program
+        xprint.sh    wrapper shell to use xprint on Linux.
+        gxp          (Linux)xprint using GTKPrint
+        xpj.txt      xprint Japanese document file
+        xpe.txt      xprint english document file
+
+ v1.3   xeacb.exe     For Windows/Linux Only,Syntax Highlight Browser. ||~124GI~,
+ v1.1   xads.exe     For Windows Only,Access to NTFS ADS(Alternative Data Stream).
+ v1.5   xbc.exe      Basic calculator.
+ v1.01  xcfont.exe   (Window only)Change font on command prompt.
+ v1.1   xci.exe      C/C++/Java text file indentation
+ v1.20  <A href="HID_XCV_E.htm">xcv</A>.exe      Code conversion.                                 ||+124FR~,
+                     EUC,SJIS(Japanese:Shift JIS),Unicode,UTF-8,EBCDIC,Any-Codepage.
+ v1.2   xcvsjisc.exe Convert SJIS in xe's source file to Octal-notation.
+ v2.29  xdc.exe      directory compare tool
+ v2.1   xdd.exe      directory delete tool
+ v1.12  <A href="HID00000466.htm">xdig</A>.exe     directory walk utility
+                     tool apply command to all sub-directory/files.
+        xdig.txt     doc for xdig
+ v1.12  xds.exe      Directory size display tool
+ v1.27  xfc.exe      File compare tool
+ v1.7   xff.exe      file search by size and timestamp.
+ v1.20  xfg.exe      Binary file string search &amp; Recursive grep.
+ v1.4   <A href="HID_XFMT_E.htm">xfmt</A>.exe     FileLineFormatter. &quot;TC FMT&quot; for huge file.
+ v2.8   xfs.exe      Split large file,it enable backup large file to
+                     diskets.
+ v1.4   xkp.exe      (Windows) display process-id and kill process.
+ v1.6   xlow.exe     Rename UpperCase file name to LowerCase.
+ v1.2   xmj.exe      2 file matching.
+ v1.2   xpe.exe      Display comment of errno(libc error code).
+ v1.6   xts.exe      Set/Display File timestamp
+ v1.08  xver.exe     Set ERRORLEVEL from OS version
+
+How to start.
+
+  (See xelnxe.txt for Linux version,xeaixe.doc for AIX version).
+
+  . Melt zip file on a work directory(unzip xe___)
+    Default word dir is c:\xe_wd.
+  . Move .exe files to any directory specified on the PATH environment
+    variable,or set PATH to the work directory.
+  . Set name of the work directory to environment variable.
+      Set as following in config.sys(OS/2)/autoexec.bat(DOS or Windows)
+      or command file(.cmd/.bat) you created to start xe.
+      ex.  xe=d:\xe010
+  . Enter xe [file-name] to start this editor.
+      &quot;xe /?&quot; help you about command line parameter.
+  . XE___.DMP is written to work directory when internal err detected
+    (DOS version) or when xe is ABENDed(OS/2,WIN,DJGPP version).
+    I'll be very happy if you could send the file by mail when dumped.
+
+## How to operate,How to customize parameter file.
+  . See xee.txt
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>(A-1)Menu</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;"> ********************
+*(A) Menu          *
+********************
+
+     1    -------------- MENU ----------------------------------------
+     2    ===&gt;
+#ifdef UNX
+     3                                                hostname = myhost
+#else
+     3
+#endif
+     4    0  PARM         - Parameter Change
+     5       <a href="HID00000246.htm">0.0</a>  (0) COLOR   - Palette and Color
+     6       <a href="HID00000247.htm">0.1</a>  (A) Fn-CMD  - Assign cmd-string to PFkey
+     7       <a href="HID00000248.htm">0.2</a>  (B) FUNC-KEY- Change Key Assignment
+     8       <a href="HID00000249.htm">0.3</a>  (C) KEY-FUNC- Browse Key List
+     9    <a href="HID00000250.htm">1</a>  BROWSE       - Display File
+    10    <a href="HID00000250.htm">2</a>  EDIT         - Edit/Create File
+    11    <a href="HID00000253.htm">6</a>  COMMAND      - Edit Command Result
+    12    X  EXIT         - Save and Split End
+    13    R  RETURN       - Save and Exit
+    14    Q  QUIT         - Quit and Exit
+
+       row 1     :Header,message display line
+       row 2     :Command input line
+                  Enter Option like as 0,1,2...
+                  You can also enter command <a href="HID00000277.htm">EDIt</a> etc.
+       row 4-14  :Options
+                  0  PARM     :Set parameter
+                     0.0  (0) COLOR   : adjust color
+                     0.1  (A) Fn-CMD  : set Command-Key
+                     0.2  (B) FUNC-KEY: Change Key Assignment
+                     0.3  (c) KEY-FUNC: Browse Key List
+                  1  BROWSE   :Display file name input panel to browse
+                  2  EDIT     :Display file name input panel to edit
+                  6  COMMAND  :Display DOS command result Edit screen
+                  X  EXIT     :Save and End one of split screen.
+                               same as RETURN if not split.
+                  R  RETURN   :Save all files and return to cmd prompt
+                  Q  QUIT     :Cancel all files and return to cmd prompt
+
+</SPAN></PRE>
+</BODY>
+</HTML>

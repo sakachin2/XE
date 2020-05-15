@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>COBOL file</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    .COBOL file.
+      It is COBOL file if <a href="HID00000237.htm">CID</a> header contains option=(..,cob,..)
+      or opened by <a href="HID00000277.htm">EC</a>,<a href="HID00000260.htm">BC</a> or <a href="HID00000313.htm">SC</a> cmd.
+      Line number is col 1-6,4 digit lineno and 2 digit suffix,
+      which is set at file save for inserted lines.
+      <a href="HID00000304.htm">Renum cmd</a> set on this field.
+      If you want to accept any char in the col 1-6,specify CID header
+      line of option=(..,cobk,..) or use EK,BK or SK cmd.
+      Col 73-80 is also lineno if CID header contains
+      &quot;option=(..,n,..)&quot; or opened by ECN,BCN,SCN,EKN,BKN or SKN cmd.
+      Without Num option,CID is optionally set on Col73-80.
+      Left most column displayed and indentation pos of inserted line
+      is col 7.(tab stop pos may be set by <a href="HID00000266.htm">COL cmd</a>)
+      Cob type file is also <a href="HID00000037.htm">SPF</a> type file,cobk(my naming in xe) type
+      file is a margined file and has no limitation of line length is
+      fixed to 80 if option=(n) is not specified.
+      Default CID pos of cobk type file is col 73.
+ +-----------+-------------+----------+-------------+-----------+---------+
+ |CID Header | Edit cmd    | Line cmd | Col.1-6     | Col.73-80 | LineLen |
+ +-----------+-------------+----------+-------------+-----------+---------+
+ |cob,n      |BCN/ECN/SCN/ |i/I       |COBOL lineNo |SPF lineNo |80 Fixed |
+ |           |Bi/Ei/Si     |          |             |           |         |
+ |cobj,n     |BKN/EKN/SKN/ |j/J       |any          |SPF lineNo |80 Fixed |
+ |           |BJ/EJ/SJ     |          |             |           |         |
+ |cobk       |BK/EK/SK     |k/K       |any          |any        |any      |
+ |cob        |BC/EC/SC     |l/L       |COBOL lineNo |any        |80 Fixed |
+ |           |BL/EL/SL     |          |             |           |         |
+ |n          |BN/EN/SN     |n/N       |any          |SPF lineNo |80 Fixed |
+ |f80        |B8/E8/S8     |8         |any          |any        |80 Fixed |
+ +-----------+-------------+----------+-------------+-----------+---------+
+
+     Line cmd for filenamelist screen is same as dirlist screen.
+
+     To set CapsLock use <a href="HID00000728.htm">CAP</a> command or EDIt command width CAP option.
+     <a href="HID00000730.htm">&quot;U&quot;</a> edit-line-command also support lower-case--&gt;uppercase translation.
+</SPAN></PRE>
+</BODY>
+</HTML>

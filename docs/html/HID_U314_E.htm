@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>3.14 grep-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">******************************
+*(F-2) Utility:Search        *
+******************************
+
+          ------ Grep Search -----------------------------------------------------------=Rep
+          ===&gt;
+
+           Options  =&gt;  [ Enter ? or --help for Help]
+
+           Curr Dir --G:\src\mfc\wxe\Release
+
+           FileSpec1=&gt;  [ Try InsertLine key (default:F5) after partial path input. ]
+                   2=&gt;  [ Then use Send keys (default:A+i/r/d/Up/Down) or &quot;^&quot; lcmd. ]
+                   3=&gt;  [ &quot;-f&quot; at end of &quot;Options&quot; allows 1st line as pattern file. ]
+                   4=&gt;  [ Drag &amp; Drop is also available.                            ]
+                   5=&gt;  [ Use RESet cmd (or Esc twice) to clear.                    ]
+                   6=&gt;
+                   7=&gt;
+                   8=&gt;
+                   9=&gt;
+                  10=&gt;
+                  11=&gt;
+                  12=&gt;
+                  13=&gt;
+                  14=&gt;
+                  15=&gt;
+
+       .Execute &quot;Search-tool Options FileSpec1 FileSpec2 ...&quot; by Execute-key,
+        then display stdout on Edit panel.
+        Default command is &quot;grep&quot;. Setup <A href="HID00000209.htm">ini file</A> if you want to use your own tool.
+             Search_Cmd        =&quot;grep&quot; #(&quot;grep&quot;)# String search cmd.
+
+       .Options     : specify option parameter of the tool.
+                      Execute the tool with no operand when &quot;?&quot; is specified.
+                      grep display detail help by --help option.
+                      To use expression file parameter,specify -f at end of Options line,
+                      and set the expression file name on FileSpec1 line.
+        Curr Dir    : display current directory.
+#ifndef UNX
+                      Current directory of the drive of the cursor line is displayed.
+#endif
+        FileSpec1-15: Specify file/directory parameter of the tool.
+                      Find Key(default:F5) splits screen then open dir-list of you specified.
+                      With no input on the line,open the dir-list of Curr Dir.
+                      From dir-list on other side of split screen,you can send file name.
+                      Use Alt+i(Insert/r(Replace)/d(Delete)/Up(Cursor Up)/Down(Cursor down).
+                      Line command &quot;^&quot; send filename according to the status of KeyInputMode(Ins/Rep).
+                      Insert means input to null line,Replace means override the line reversed.
+#ifndef WXE/XXE
+                      You can set filename by mouse Drag&amp;Drop.
+                      Drag from dir-list or Explorer/Nautilus, drop on the line to be set.
+#endif
+                      <A href="HID00000306.htm">RESet</A> command or Esc key twice clears all input.
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

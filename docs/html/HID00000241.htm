@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>Command-Key</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    - Command-Key.
+     .F1 to F12 which is not assigned to any function is available for
+      Command-Key.Command-Key setup is on the screen from <a href="HID00000247.htm">menu 0.1</a>.
+     .Multiple command is delimited by &quot;;&quot;. Last &quot;;&quot; mean execute each
+      command  sequentialy when Fn key pressed. If command string dose
+      not end with &quot;;&quot;,command string is set to command line.
+      Those are executed by next Execute key. Long command over width
+      of command input field is avail.
+     ..Available command list is on <a href="HID00000254.htm">[Table-1]</a>. When command verb is not
+      assigned you can set it by <a href="HID00000209.htm">INI file</a>.
+      Use <a href="HID00000300.htm">POS command</a> for cursor movement. Starting cursor position is
+      top of command input column.
+      Use <a href="HID00000292.htm">KEY command</a> for char input. Input on command input field is not
+      effective. To execute line command input on lineno field,ENT command
+      is to be followed after KEY command.
+     .Parameter replacement using %1,%2,... is supported.
+      It is replaced by pre-entered words on command input field.
+     .ex) pos 3,1;key d3;ent;
+          pos 10,<a href="HID00000285.htm">hsp</a>;=6;grep %1 *.c;
+#ifdef LNX
+     .Do not assign from Alt+F1 to Alt+F6 which is used as Console
+      switch key.
+#endif
+</SPAN></PRE>
+</BODY>
+</HTML>

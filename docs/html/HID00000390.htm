@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>.(set current dir)</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">      . (chdir ):set current drive and current directory from the line.
+                set from the parent directory when specified on the line
+                of normal file.
+
+            #ifdef W32
+                UNC format(\\server1\\dir1\...) is treated under the psude drive &quot;\:&quot;.
+                &quot;.&quot; is applyed to the line of shared folder,
+                current drive is set to &quot;\:&quot; and current dir is set to the shared folder.
+                Then, \:file means \\server1\dir1\file, \:\file means \\server1\file.
+            #endif
+</SPAN></PRE>
+</BODY>
+</HTML>

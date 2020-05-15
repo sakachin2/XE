@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html;>
+<META http-equiv=" Content-Style-Type">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>V125H-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:font 12pt;">v125H *** 2010/08/04
+.(BUG)
+   -(S390)BigEndian version may crash when openning print-dialog.
+   -(WXE)In the environment other than Japanese, some code point is shown as unprintable
+         if EBCDIC converter is not configured.(thanks to dsk1@de)
+   -(WXE)chaset setting of &quot;Setup&quot; dialog was ignored.
+   -Error of process of overtyping of error on rename field of dir-list.
+
+.64bit support.
+   -Compiled and tested on FC11-s390x on Hercules emulator.
+    (See ReadMe:Trouble shooting about process to upgrage from FC11-S390x to FC12)
+    It is not tested on Little Endian environment.
+.Other miscellanious.
+    -xe
+       .relieve table overflow of SBCS mapping table for UTF8,EBCDIC file display.
+       .Tested on sshfs and Dokan sshfs for Windows.
+    -xprint v9.18
+       .(BUG)UTF8 file print may fail sometimes.
+    -xcv    v1.14
+       .(BUG)Input EOL-id was dropped except for EBCDIC file.
+       .Accept Ins/Rep option for -S(SOSI) parm to enable to override mapping file for B2M/M2B translation.
+
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>Restriction</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;"> (5)Restriction.
+
+#ifdef XXE
+    .See xewxee.txt about mouse operation.
+#else
+    .No mouse support when console mode(not under X).
+     There are some diference from <a href="HID00000595.htm">WXE version</a> mouse operation under X.
+     (No mouse support when fullscreen console mode it is not under X).
+
+     &quot;Click&quot; means button release until 200ms after button down.
+     &quot;PUSH&quot; means continued button down over 200ms.
+       .Left button:
+             -set text cursor(caret) position.
+             -set copy range of Cut&amp;Paste by &quot;PUSH&quot;ing on file edit/browse screen.
+             (XXE version specify range of Cut&amp;Paste by mouse movement(drag).
+              Linux version use middle button to paste.
+              No function support for scroll by continuing to push at the
+              edge of screen)
+             -If pushed while the 3 times of scroll interval at the
+              edge of screen,scroll starts.
+       .Right button:
+             -Not used.
+             (WXE use it to popup menu.)
+       .Middle button:
+             -Use to paste clipboard contents.
+              2 paste mode,insert and replace,are supported.
+                   middle button:Insert mode
+              Ctrl+middle button:Replace mode
+              At insert mode,insert lines when text cursor is on
+              the Line-Number column,insert the block into the
+              position shifting right half of the line to the right.
+              (XXE version insert by Shift+LeftButton,replace by Ctrl+LeftButton.)
+              Wheel scrolls verticaly.
+              Shift+wheel scrolls horizontally.
+              Ctrl+wheel jumps to top/last page of the file.
+              Scroll count is fixed to 3 lines/columns.
+       .Left Button Double Click:
+             -Save and exit when double click on the title area.
+              Cancel and exit by Ctrl+Left Button Double Click.
+             -Select line at the panel of <a href="HID00000245.htm">menu</a>,<a href="HID00000250.htm">file name select</a> and <a href="HID00000252.htm">dir-list</a>.
+              At the panel filename select and dir-list,open the file
+              by reverse Edit/Browse mode of current panel when Ctrl key is
+              combined. (WXE version use Shift+ for Ctrl+.)
+             -At <a href="HID00000251.htm">Browse/Edit file panel</a>,the line(when cursor is on the
+              line-number column) or word(when cursor is on the file contexts
+              area) is copied to Cut&amp;Paste board.
+    .Under console,xe restore original keyboard assignment when last
+     session closed.
+     If key-assignment is not recovered by any trouble,
+     remove &quot;rm /tmp/lockfile_ukbdlnxc&quot;(key assignment saved at first
+     start of xe) then reboot machine.
+
+    .Or,keyboard setting is restored by loadkeys command,
+     ex,&quot;loadkeys defkeymap&quot;.
+     Mapping file is /usr/lib/kbd/keytables/*.map.
+     For the case your setting is to use the other mapping file,
+     save your mapping at first login after reboot using,for ex,
+     &quot;dumpkeys &gt;~/dumpkeys.org&quot;.
+     To reset to original enter &quot;loadkeys ~/dumpkeys.org&quot;.
+     Keyboard setting effect not only to the session but all
+     console session.
+     Especially take care when kon is last session closed.
+
+    .Under Japanese:kon(Kanji ON Linux console),Keyboard setting is not changed
+     by API.(I don't know how to change the mapping on pty.)
+     Once exit to normal console,executed &quot;loadkeys xej106.map&quot;,
+     then re-enter to kon.
+     Or switch to another console by Alt+Fn(n:1--6) then start xe
+     and back to original console leaving the xe active.
+     If these setting is missed,screen corrupted by Shift+PgDn etc.
+     Those key is conflict between shell's operation and xe's one.
+    .A few combination key is not avail for xe even X <a href="HID00000573.htm">xelnxres.xxx</a>,
+     <a href="HID00000574.htm">xelnxkey.xxx</a> and <a href="HID00000575.htm">xexmap.xxx</a> is used.
+
+      TuboLinux-V6.0
+        gnome-terminal.
+          S+F1--&gt;S+F12,S+Up/Down/Left/Rightm,C+Ins,C+Del,C+F7--&gt;C+F9
+      RedHat-v8.0
+        gnome-terminal.
+          S+F1--&gt;S+F12,S+Up/Down/Left/Rightm,C+Ins,C+Del,C+F7--&gt;C+F9
+      RedHat-v9
+        gnome-terminal.
+          S+BackSpace
+
+      From v1.15,Ctrl+CharKey is available for function key.
+      Default assignment is as following.
+          C_t=S_TAB,C_b=S_BS,C_x=S_ENTER,C_a=S_INS,
+          C_d=S_DEL,C_e=S_END,C_p=S_PGUP,C_n=S_PGDN,
+          C_u=S_UP,C_f=S_DOWN,C_l=S_LEFT,C_r=S_RIGHT
+      These area available by OPT cmd,&quot;<a href="HID00000558.htm">OPT CCFUNC</a> ON".
+      It may be a solution for available key insufficiency.
+      For RedHat9 gnome-terminal,no X-setup(xmodmap file) may not be used.
+#endif
+</SPAN></PRE>
+</BODY>
+</HTML>
