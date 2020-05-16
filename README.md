@@ -4,6 +4,7 @@ SPF like Editor xe           2019/09/18 V129L
     This editor is fit for programmers working on both main-frame and PC.
     Its operation is based on mainframe SPF editor,
     and like as other editor on PC, convenient short-cut key operation is hybrid.
+    How-To-Use is in docs/URL.txt, Copy-Paste the URL to your browser.
 
         .Available to Windows(32bit version is up to 129K) and Linux.
         .Supports Fixed-Length and Variable-Length record file.
@@ -17,6 +18,7 @@ SPF like Editor xe           2019/09/18 V129L
 
     メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。
     ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。
+    説明書は docs フォルダーの URL.txt の URL を ブラウザーにコピー・貼り付けしてください
 
         .Windows版(32bit版はV129Kで終了)、Linux版あり
         .改行コードなしの固定長レコード/可変長ファイルサポート。
