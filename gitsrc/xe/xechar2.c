@@ -1,9 +1,10 @@
-//*CID://+vb2DR~:                             update#=  262;       //+vb2DR~
+//*CID://+vbq0R~:                             update#=  263;       //+vbq0R~
 //*************************************************************
 //*xechar2.c
 //* del/bs/erase eol/erase tol/clear tol/split line/tab insert  //~5111I~
 //*******************************************************************//~v07sI~
-//vb2D:160221 LNX compiler warning                                 //+vb2DI~
+//vbq0:200418 del excluded by S+Del                                //+vbq0I~
+//vb2D:160221 LNX compiler warning                                 //~vb2DI~
 //vaw1:140523 (Win:UNICODE)dbcsid:overflow for ucs4 on Windows     //~vaw1I~
 //vaf9:120607 (WTL)Bug found by vs2010exp(used uninitialized variable),avoid warning C4701//~vaf9I~
 //vaa7:111117 (gcc4.6)Warning:unused-but-set                       //~vaa7I~
@@ -689,6 +690,7 @@ int func_delline_file(PUCLIENTWE Ppcw)                          //~5111I~
 		return errbrowsemode();                                    //~v098I~
 	plh=((PUSCRD)Ppcw->UCWpsd+Ppcw->UCWrcsry)->USDbuffc;        //~5111I~
 	if (plh->ULHtype!=ULHTDATA)                                 //~5111I~
+	  if (plh->ULHtype!=ULHTEXCLUDE)                               //+vbq0I~
    		return 4;				//not data line                 //~5111I~
     pfh=UGETPFH(plh);                                           //~5111I~
 	UPCTRREQ(pfh);//next time updatectr up                      //~5225I~
@@ -2058,8 +2060,8 @@ int charcap2(PUCLIENTWE Ppcw,int Pmode,UCHAR *Pdata,UCHAR *Pdbcs,int Psrclen,//~
                   if (!ignovfspcsw                                 //~v676I~
 #ifdef UTF8UCS2                                                    //~va20R~
 	#ifdef UTF8EBCD	  //raw ebcdic file support                    //~va50I~
-//                || (int)UCVEBCUTF_umemspnc_space(swebcfile,swutf8file,Pdata+Psrclen,Pdbcs+Psrclen,(UINT)len2)!=len2)//~va50I~//+vb2DR~
-                  || (int)UCVEBCUTF_umemspnc_space(swebcfile,swutf8file,Pdata+Psrclen,Pdbcs+Psrclen,len2)!=len2)//+vb2DI~
+//                || (int)UCVEBCUTF_umemspnc_space(swebcfile,swutf8file,Pdata+Psrclen,Pdbcs+Psrclen,(UINT)len2)!=len2)//~va50I~//~vb2DR~
+                  || (int)UCVEBCUTF_umemspnc_space(swebcfile,swutf8file,Pdata+Psrclen,Pdbcs+Psrclen,len2)!=len2)//~vb2DI~
     #else                                                          //~va50I~
                   || (int)UTF_UMEMSPNC(swutf8file,Pdata+Psrclen,Pdbcs+Psrclen,' ',(UINT)len2)!=len2)//~va20R~
 	#endif //UTF8EBCD raw ebcdic file support                      //~va50I~

@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>V129H-J</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+
+129H:2018/02/22
+
+     1.BUGs
+       -(gxe:GTK3)Previewダイアログでプリンター選択が1つ分だけずれる
+       -(gxe:GTK3)終了時画面サイズ正しく保存されずに再スタートで大きくなる
+
+     2.機能追加
+       -xehosts で P=nn(ポートNoオプション)サポート
+        .psftp で 宛先ごとにデフォルト SSH ポート(22)以外を指定したいとき使用する
+       -コマンド履歴リストサポート
+        .Shift+Ctrl+F12 でコマンド履歴を表示,任意の行上で "x" で実行
+        .この画面のライン上で使用できるコマンドキーは
+          s : 履歴画面は終了してそのあとの画面のコマンド入力行にセット
+          S : 履歴画面は終了せず履歴画面のコマンド入力行にセット
+          t : 画面分割の他方の画面のコマンド入力行にセット
+              分割していないときは "S" と同じ
+          x : 履歴画面は終了してそのあとの画面上でコマンドを実行
+          X : 履歴画面は終了せず履歴画面上でコマンドを実行
+          y : 画面分割の他方の画面でコマンドを実行
+              分割していないときは "X" と同じ
+        .xe終了時に保存されるエントリー数は最大40
+
+     3.その他
+       -機能:"次コマンド-画面毎"に機能キーが未割当だった、Shift+Alt+F12 を割り当てる
+
+</SPAN></PRE>
+</BODY>
+</HTML>

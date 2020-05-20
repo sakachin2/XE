@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>Ajagoc-J:jagoclient Android porting</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+gnugo 3.8 の Ajagoc用 Android 移植版 です。 2011/05/16
+gnugo には手を加えていません
+
+次のウェブサイトを参考に NDK-r5b でクロスコンパイルしました
+  1)www.bekatul.info/content/native-c-application-android
+  2)osdir.com/ml/android-ndk/2010-07/msg00606.html
+
+Directory 構成
+
+    ** Linux-FC12
+    +home3
+       +android
+          +android-sdk-linux_x86 
+       +androidndk
+          +android-ndk-r5b (NDK パッケージ)
+          +Projects
+              +Agnugo
+                  .Makefile
+                  .mk.cygwin
+                  +jni
+                      .Android.mk
+                      +gnu-3.8 (gnugo tgz 展開)
+                           .configure
+                            :
+                            :
+                  +libs
+                  +obj
+
+    ** Windows-cygwin
+    x:
+      +android
+          +android-sdk-windows
+      +androidndkW
+          +android-ndk-r5b (NDK パッケージ)
+          +Projects
+              +Agnugo
+                  .Makefile.cygwin
+                  .mk.cygwin
+                  +jni
+                      .Android.mk
+                      +gnu-3.8 (gnugo tgz 展開)
+                           .configure
+                            :
+                            :
+                  +libs
+                  +obj
+
+手順
+
+   (1) gnugo を展開し &quot;./configure --disable-color &amp;&amp; make&quot; 
+   　  make で 追加の c ソースファイルが作成されます
+       --disable-color を指定しないと ncurses ライブラリを要求されます
+   (2) Makefile のある位置で
+       mk.cygwin(Window) ないし make(Linux) する
+   (3) エミュレーターにインストールし(&quot;make install&quot;)
+       &quot;adb shell&quot; でエミュレーターに入り　&quot;/data/tmp/Agnugo --help&quot; で確認
+
+(注)
+   実機はSHARP-is01のみです(API-1.6)
+   is01は libm が NDK のlibm に比べて不足があり
+   &quot;CANNOT LINK EXECUTABLE (__aeabi_fadd 無し)&quot;でこけます
+   エミュレーターでの稼動確認しかできていません
+</SPAN></PRE>
+</BODY>
+</HTML>

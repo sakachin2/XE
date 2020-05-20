@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>Ajagoc-J:jagoclient Android porting</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+Ajagoc(JagoClient Android Version) v1.12    2013/05/21
+
+====================
+
+jagoclient v5.1 の アンドロイド移植版です。
+(オリジナルは rene-grothmann@de さん作成) 
+Bluetooth 通信を追加しました
+
+４つのプレーモードがあります
+
+(1)WINGなどの碁サーバーに接続して対局
+     トップ画面で接続先を選択して&quot;接続&quot;、&quot;入場者&quot;を選択して対局を申し込む
+     接続先は WING(wing.gr.jp) の場合 日本語は port=2525、英語は port=1515 に&quot;編集&quot;で設定する
+     対局一覧から、他人の対局を観戦することも出来ます
+
+   まず最初は '接続' ボタンを押して 'guest' と入力してみてください。
+
+(2)碁サーバーを経由せず特定のパートナーと対局
+     サーバーになる人がメニュー --&gt; パートナー で &quot;サーバー開始&quot;
+     もう一方の対局者は&quot;パートナー接続&quot;ボタンでパートナーリストに切り替え
+     リストからパートナーを選択し&quot;接続&quot;--&gt;&quot;対局&quot;、相手が &quot;承諾&quot; すると対局開始となります
+     対局要求はどちらからでも出来ます
+     パートナーのIPアドレスは編集で設定しておきます
+      (端末のIPアドレスは &quot;パートナー接続&quot;--&gt;&quot;パートナーを開く&quot;で表示されます)
+     設定は下記(注)参照、メニュー --&gt; ヘルプ --&gt; &quot;パートナー接続&quot;も参照
+     但しルーターが&quot;プライバシーセパレーター&quot;を設定しているとそのルーター配下の端末間は通信できません
+     Blutooth通信では無線LANなしで対面対局できます
+     下記 (注)&quot;Bluetoothを使用したパートナー接続&quot;を参照
+(3)ローカルビュー
+     トップ画面のメニューから、アクション、ローカル基盤
+     対局ではなく、単に碁盤です
+     名人の棋譜を並べたり、sgfファイルを読んで対局を再現したりします
+     端末が大画面なら対面での対局にも、また最初の画面操作を練習にもつかえます
+(4)ロボットとの対戦
+     トップ画面のメニューから、アクション、GMPで対戦
+     Agnugo が相手します。現バージョンは 3.8です
+     Agnugoはgnugoの移植版です
+
+                               sakachin2@gmail.com
+
+====================
+
+操作方法。
+
+  &quot;メニュー&quot; : オプションメニューを表示
+                 Stop :アプリケーションの停止
+                 Close:現在の画面を閉じる
+                 Help :ヘルプメニューを表示。
+  &quot;戻る&quot;     : 一つ前の画面に戻る
+               メニュー、ダイアログが表示されていればそれが閉じられます
+  &quot;検索&quot;     : Enterと見なします(省略時設定）
+               途中で検索したい時は&quot;ホーム&quot;キーで切り替えてから
+               &quot;検索&quot;してください。&quot;起動中アプリ&quot;ボタンで戻れます。
+
+  タイトルバータッチ
+    中央:コンテキストメニュー（画面毎のメニュー）表示.
+         例えば、トップ画面ではアクションからプレーモードを選択
+    左端:前の画面を表示。左端からタイトルバー高さの2倍まで
+    右端:次の画面を表示。右端からタイトルバー高さの4倍まで
+         但しローカルビュー横画面の時は、右端2倍までは反応しない
+    長押し(1秒)でオプションメニュー表示
+
+  碁盤上の操作
+    ボタン
+      &quot;方向&quot;(Up/Down/Left/Right)でカーソル移動
+      &quot;センター&quot;ボタン、&quot;Enter&quot;/&quot;検索&quot;キーで着手決定
+    タッチ
+      碁盤の枠内をクリックするとそこにカーソル移動
+      スライド(ドラッグ)操作でその方向に移動
+      カーソル位置を再タッチして着手を決定
+      決定は碁盤の下の位置表示の黄色ボタンを押してもよい
+
+      下端のアイコンが小さいのでキーボードが使える場合は
+      キーボードショートカットのヘルプを見て下さい
+      但し方向キーは省略時設定ではAjagocが取るので使えません
+
+  入場者、対局一覧上では長押しでその行の入場者、対局に対する
+  コンテキストメニューを表示
+
+(注)
+  .日本語以外のユーザーは wing.gr.jp/1515 に接続してください
+   また言語(Langauge)をen_USに設定する(トップ画面のコンテキストメニュー:オプション(Options)--&gt;言語(Set Language)
+   ログインしたら一度 &quot;term e&quot; コマンドを入力する.
+
+  .画面の縦/横は碁盤を開いた時の状態に固定されます
+
+  .コンテキストメニューは碁盤画面以外ではボタン、リストなどのない空き隅を
+   長押しした場合も表示されることがあります
+
+  .Fnキーはメニューの&quot;ファンクションキー&quot;で設定した定型文を入力行にセットするために
+   使用できますがFnキーがない場合は、数字１文字のみを入力した後
+   Enterキーまたはセンターボタンを押してください。 &quot;0&quot; は F10 です
+
+  .フォント変更の参考、概略次のように使用されています
+     (メニュー項目はアンドロイドのもので変更できません)
+     基盤    : 座標など碁盤上の文字
+     画面    : サーバー/パートナー/入場者/対局リスト,メーセージ表示
+     大時計  : 碁盤パネルの残り時間表示(表示はオプション)
+     メニュー: ボタン、入力エリア、チョイス(DropDown)、ダイアログ、
+               碁盤パネルの着手情報行
+
+  .パートナー接続設定例
+     サーバー側：
+       Top画面 --&gt;　メニュー --&gt; パートナー --&gt; サーバーポート:6970
+     クライアント側：
+       Top画面 --&gt; メニュー --&gt; パートナー --&gt; あなたの名前　:hoge-c
+       Top画面 --&gt; パートナー接続 --&gt; 追加
+               名前　  :hoge-s
+               サーバー:サーバーIPアドレス
+               ポート　:6970
+
+  .Bluetoothを使用したパートナー接続
+     (&quot;Bluetooth&quot; メニューは android 2.0からです)
+     先に、サーバー側：(どちらか一方がサーバーになる)
+       Top画面 --&gt; メニュー --&gt; Bluetooth --&gt; 接続を受付ける
+     次に、クライアント側：(他方)
+       Top画面 --&gt; メニュー --&gt; Bluetooth --&gt; 接続
+       (デバイスの選択ダイアログのリストにサーバーのデバイスが表示されない場合
+        サーバー側で&quot;発見可能に設定&quot;の操作の後、&quot;デバイスの検索&quot;を押す)
+
+     ペアリング許可ダイアログが出たら両方で&quot;はい&quot;と答える
+     (ペアリングはandroidの&quot;設定&quot;から予め設定しておくことも出来ます)
+     接続画面に変わり、どちらかが対戦ボタンを押すとゲームが始まる
+     メニュー -&gt; 対局の終了 -&gt; 対局終了 で 死に石を揚げることが出来ます
+
+  .碁盤の色、座標の変更は全画面書き直しのため重たい処理です、
+   切断後の再接続、終局画面も同様です、一服してください
+
+  .メモリーの制約も考えられます、終了した碁盤は閉じてください
+
+  .Ajagocオプション
+   top画面にAjagoc Options を追加しています
+     方向キーショートカット
+       トラックボールがあるので方向キーを使わない場合はONにする
+     検索キーで着手決定
+       キーボードがあるので検索ボタンをEnterとしたくない場合はOFFにする
+
+====================
+
+インストール
+
+  Android Market から導入する以外に手持ちのapkファイルを直接導入する方法
+  (1)micro SD 経由の場合
+     1.&quot;Apkinstaller&quot;などのインストーラーをAndroid Marketから端末に導入
+     2.目的のapkファイルをmicro SDカード内にコピー
+     3.1.のインストーラーを起動してメッセージに従い導入
+  (2)android SDK付属のツールadbを使用する場合 
+     1.PCと端末をUSBケーブルで接続
+       USBドライバーはSDKのusb_driverフォルダーから導入
+     2.端末で &quot;設定&quot;--&gt;&quot;アプリケーション&quot;、&quot;提供元不明のアプリ&quot;を有効にする
+     3.&quot;adb install apkファイルフルパス&quot;を実行
+
+  ロボット(GMPプロトコル)がリニュアルした場合は
+  名前をAgnugo 以外にするか /data/data/com.Ajagoc/files以外の場所にインストールして
+  それをGMP接続画面の &quot;碁プロトコルサーバー&quot; でフルパス名を指定してください
+
+====================
+
+国際化及び設定
+
+  オリジナルのヘルプファイルは組み込んでいますが
+  ヘルプファイルを次の場所におくことで追加、修正することができます
+  複数言語を使用する場合は about_de.txt の様にサフィックスを付けて
+  切り替えを可能にしますサフィックスは現在
+  _de,_fr,_it,_pl,_ru,_ja が用意されています(aboutAjagocは_jaのみ)
+
+  (ロケール設定はヘルプを参照)
+
+    /sdcard/Ajagoc/jagoclient/helptexts/xxxxx.txt
+
+         about.txt  aboutAjagoc.txt  advanced.txt  board.txt  channels.txt configure.txt
+         confpartner.txt  encoding.txt filter.txt  firewall.txt  fkeys.txt  games.txt
+         gmp.txt  help.txt  keyboard.txt  language.txt  mail.txt  moves.txt  obsplay.txt
+         overview.txt  partner.txt  playing.txt  port.txt  relayserver.txt  server.txt
+         sgf.txt  sound.txt  teaching.txt  terminal.txt variations.txt  who.txt
+         windows.txt yourname.txt
+
+  ボタンのラベルなどの修正は次の場所に置いてください
+    /sdcard/Ajagoc/jagoclient/foreign/<A href="JagoResource.htm">JagoRsource.properties</A>
+  複数言語を使用する場合は サフィックスを付けたものを用意
+    /sdcard/Ajagoc/jagoclient/foreign/<A href="JagoResource_ja.htm">JagoRsource_xx.properties</A>
+
+  サーバーリストなどの修正は次の場所に置いてください(画面からも追加修正可能)
+    /sdcard/Ajagoc/xxxx.cfg
+      go.cfg, server.cfg, partner.cfg, filter.cfg
+
+====================
+
+  ソース・コード
+    http://www.geocities.jp/sakachin2/index.htm
+
+</SPAN></PRE>
+</BODY>
+</HTML>

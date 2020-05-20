@@ -1,7 +1,11 @@
-//*CID://+vak4R~:                             update#=  594;       //~vak4R~
+//*CID://+van0R~:                             update#=  625;       //~van5R~//~van0R~
 //***********************************************************
 //* xfg     : grep for binary file                                 //~v118R~
 //***********************************************************
+//van5:200518 xfg 1.21:(Bug) xfg -exxx "" dir -->search current dir by fullpath of "".//~van5I~
+//van2:200420 xfg 1.21:(Win:Bug)redirect filename(c:\xfg2) is protected now//~van2I~
+//van1:200420 xfg 1.21:(Bug)err msg:specify word and file when -e parm.//~van1I~
+//van0:200419 xfg 1.21:search word by CPU8/CPLC                    //~van0I~
 //vak4:180824 xfg 1.20: allow space between "-e" and grep string   //~vak4I~
 //vak3:180824 xfg 1.20: grep hung when srchword start with "-"     //~vak3I~
 //vad2:170107 xfg v1.19 crash when longfilename                    //~vad2I~
@@ -126,6 +130,7 @@
     #include <ucvucs.h>                                            //~va2hI~
     #include <utrace.h>                                            //~va2hI~
     #include <uque.h>                                              //~va9xI~
+    #include <utf.h>                                               //~van0R~
     #include <ustring.h>                                           //~va9xI~
 //*********************************************************************
 #define MAXWORDNO       100                                        //~v1.1R~
@@ -196,6 +201,11 @@ static UQUEH Sqhimask; //include mask que header                   //~va9yI~
 static int Sswxmask;                                               //~va9xI~
 static int Sswimask;                                               //~va9yI~
 static int Sswgrepsub;                                             //~vak3I~
+static int langID=0;                                               //~van0I~
+    #define LANGID_CPU8  1                                         //~van0M~
+    #define LANGID_CPLC  2                                         //~van0I~
+    #define LANG_CPU8  "CPU8"                                      //~van0M~
+    #define LANG_CPLC  "CPLC"                                      //~van0M~
 //************
 //int xsssub(char *Pfnm,int *Pfilectr,int *Pmatchctr);             //~v124R~
 int xsssub(char *Pfnm);                                            //~v124I~
@@ -218,6 +228,7 @@ int chkMask(int Popt,UQUEH *Ppqh,PUDIRLIST Ppudl);                 //~vab0I~
 #define CMO_EXCEPTDIR 0x02                                         //~vab0I~
 void printxmask();                                                 //~va9xI~
 void printimask();                                                 //~va9yI~
+int chkLang(void);                                                 //~van0I~
 //*********************************************************************
 int main(int parmc,char *parmp[])
 {
@@ -239,8 +250,11 @@ int main(int parmc,char *parmp[])
     char fnm1[_MAX_PATH],*pfnm,*pfnme;                             //~va39I~
     int fnmlen,concatnamesw=0,concatnamewarnsw=0;                  //~va39R~
     int swexpression=0;                                            //~vak4I~
+    int opt;                                                       //~van0I~
 //*************************
 	sprintf(Spgmver,"%s:%s:",PGMID,VER);                           //~v1.1R~
+	opt=UDCWCIO_INTERNAL;	//bypass UDBCSCHK_EXPLICIT and utfucsmapinit(0);//~van0I~
+    udbcschk_wcinit(opt,0);                                        //~va6//~van0I~
   	uerrmsg_init(Spgmver,stdout,0);//default color                 //~v1.1R~
 	uerrexit_init(Spgmver,stdout,0,0,0);//no mapfile,no exit,no exit parm//~v1.1R~
 
@@ -255,6 +269,8 @@ int main(int parmc,char *parmp[])
 	for (parmno=1;parmno<parmc;parmno++)
 	{
   		cptr=parmp[parmno];
+        if (!*cptr)                                                //~van5I~
+        	continue;                                              //~van5I~
 #ifdef UNX                                                         //~0B16I~
   		if(*cptr=='-'                                              //~v116R~
 #else                                                              //~0B16I~
@@ -265,7 +281,18 @@ int main(int parmc,char *parmp[])
         && !swexpression                                           //~vak4I~
         && !posparmno)                                             //~va1SR~
   		{//option
+            UTRACEP("main parm chk cptr=%s\n",cptr);               //~van0M~
     		ch=*(++cptr);                      //first option byte
+            if (!stricmp(cptr,LANG_CPU8))                          //~van0M~
+            {                                                      //~van0M~
+            	langID=LANGID_CPU8;                                //~van0M~
+                continue;                                          //~van0M~
+            }                                                      //~van0M~
+            if (!stricmp(cptr,LANG_CPLC))                          //~van0M~
+            {                                                      //~van0M~
+            	langID=LANGID_CPLC;                                //~van0M~
+                continue;                                          //~van0M~
+            }                                                      //~van0M~
     		if (*(++cptr)==':')               // /o:x format       //~va1NR~
       			cptr++;                         //skip :
             ch=(UCHAR)toupper(ch);                                 //~v11fR~
@@ -508,6 +535,8 @@ int main(int parmc,char *parmp[])
                 swexpression=0;                                    //~vak4I~
                 continue;                                          //~vak4I~
             }                                                      //~vak4I~
+            if (Sgrepsw==2)                                        //~van1R~
+                posparmno++;    //it is 1st pos parm               //~van1R~
     		posparmno++;
     		switch (posparmno)
     		{
@@ -568,8 +597,10 @@ int main(int parmc,char *parmp[])
 #ifdef UNX                                                         //~v11dI~
         utempnam("/tmp","xfg",Stempfnm);                           //~v11dI~
 #else                                                              //~v11dI~
-        utempnam("c:\\","xfg",Stempfnm);                           //~v11eR~
+//      utempnam("c:\\","xfg",Stempfnm);                           //~v11eR~//~van2R~
+        utempnam("","xfg",Stempfnm);                               //~van2I~
 #endif                                                             //~v11dI~
+        UTRACEP("tempfname=%s\n",Stempfnm);                        //~van2I~
     }                                                              //~v11dI~
                                                                    //~v11dI~
 	if (Sgrepsw)// grep option                                     //~va2hI~
@@ -578,6 +609,8 @@ int main(int parmc,char *parmp[])
         	uerrexit("grep option and unicode option is mutualy exclusive",//~va2hI~
                      "grerp オプションとユニコードオプションは同時指定できません");//~va2hI~
     }                                                              //~va2hI~
+    if (chkLang())                                                 //~van0I~
+    	return 4;                                                  //~van0I~
 //if (!Sgreponlysw)                                                //~v11dR~
 //if (Sgrepsw!=2)// /G with no word                                //~va1KR~
   if (!Sgreponlysw)                                                //~va1KI~
@@ -1758,6 +1791,12 @@ void help(void)
 	HELPMSG "  %ca          :display All filename.\n",             //~va26R~
 			"  %ca          :文字列を含まないファイル名も\x95\\示\n",//~va26R~
 						CMDFLAG_PREFIX);                           //~v1.1I~
+	HELPMSG "  %ccplc       :search by the string translated to Local-code.\n",//~van0I~
+	        "  %ccplc       :指定された文字列をローカルコードに変換して探索\n",//~van0I~
+						CMDFLAG_PREFIX,STR_SEPC);                  //~van0I~
+	HELPMSG "  %ccpu8       :search by the string translated to UTF8.\n",//~van2I~
+	        "  %ccpu8       :指定された文字列をUTF8に変換して探索\n",//~van2I~
+						CMDFLAG_PREFIX,STR_SEPC);                  //~van2I~
 	HELPMSG "  %cc          :filespec parm is \"%c\" concatinated string.\n",//~va39R~
 	        "  %cc          :ファイル指定パラメータが \"%c\" 連結であることの指定\n",//~va39R~
 						CMDFLAG_PREFIX,STR_SEPC);                  //~va39R~
@@ -1882,8 +1921,8 @@ void help(void)
 	        "         %s -rt -e \"[A-Z]*_\" \"\" *:\n",             //~va26R~//~vak4R~
 							PGMID);                                //~v120I~
 #else                                                              //~v120I~
-	HELPMSG "         %s -rt -e \"[A-Z]*_\" \"\" dir1\n",           //~va26R~//+vak4R~
-	        "         %s -rt -e \"[A-Z]*_\" \"\" dir1\n",           //~va26R~//+vak4R~
+	HELPMSG "         %s -rt -e \"[A-Z]*_\" \"\" dir1\n",           //~va26R~//~vak4R~
+	        "         %s -rt -e \"[A-Z]*_\" \"\" dir1\n",           //~va26R~//~vak4R~
 							PGMID);                                //~v11dI~
 #endif                                                             //~v120I~
 	HELPMSG "         %s -r  -e \"-E word1|word2\" -p \"-word1\\&word2\" dir1\n",//~va26R~//~vak4R~
@@ -1898,5 +1937,121 @@ void help(void)
 	        "         %s -c  _MAX_PATH \"%%INCLUDE%%\"\n",         //~va39R~
 							PGMID);                                //~va39I~
 #endif                                                             //~va39I~
+	HELPMSG "         %s -cpu8  ｡｢｣､   dir1\n",                    //~van2R~
+	        "         %s -cpu8  あいう dir1\n",                    //~van2R~
+							PGMID);                                //~van2I~
 	return;
 }//help
+//**********************************************************************//~van0I~
+int chkLang(void)                                                  //~van0R~
+{                                                                  //~van0I~
+	char *utf8wk,*pc;                                              //~van0R~
+    int opt,chklen,rc=0,rc2,ii,len,lenu8,lenlc;                    //~van0R~
+//    char localecode[MAXLOCALESZ];                                //~van0R~
+//*******************                                              //~van0I~
+    UTRACEP("chkLang langID=%d\n",langID);                         //~van0I~
+	if (!langID)                                                   //~van0I~
+    	return 0;                                                  //~van0R~
+//    memset(localecode,0,sizeof(localecode));                     //~van0R~
+//    rc2=utfcvlocaleinit(UTFCLIO_DEFAULTCHK,localecode);          //~van0R~
+//    UTRACEP("chkLang utfcvlocaleinit rc=%d,localecode=%s\n",rc2,localecode);//~van0R~
+//    if (rc2)                                                     //~van0R~
+//        uerrexit("failed to get default locale",0);              //~van0R~
+    if (langID==LANGID_CPU8)                                       //~van0I~
+    {                                                              //~van0I~
+#ifdef W32                                                         //~vaj0M~//~van2I~
+    	uerrsetopt2(GBL_UERR2_OUTUTF8,0);              //~vaj0R~   //~van2I~
+#endif              //Linux ignore,xe may specify                  //~vaj0I~//~van2I~
+        if (Sgrepwordlen)                                          //~van0I~
+        {                                                          //~van0I~
+            UTRACEP("chkLang grepword=%s\n",Sgrepword);            //~van0R~
+            lenu8=Sgrepwordlen*UTF8_MAXCHARSZ;                     //~van0R~
+            utf8wk=umalloc((size_t)lenu8);                         //~van0R~
+            opt=UTFCVO_BUFFSZPARM|UTFCVO_ERRRET; //outbuff size parm specified//~van0I~
+            rc2=utfcvl2f(opt,utf8wk,Sgrepword,0/*init offs*/,Sgrepwordlen,0/*out choftbl*/,0/*out dbcstbl*/,&chklen,&lenu8/*outlen*/,0/*pcharcnt*/,0/*char width*/);//locale coed validity chk//~va00I~//~van0R~
+            if (rc2>=UTFCVRC_ERR)                                  //~van0R~
+                rc=4;                                              //~van0R~
+            else                                                   //~van0R~
+            {                                                      //~van0R~
+                *(utf8wk+lenu8)=0;                                 //~van0I~
+                Sgrepword=utf8wk;                                  //~van0R~
+                Sgrepwordlen=(int)strlen(utf8wk);                  //~van0R~
+                UTRACED("chkLang grepword UTF8",Sgrepword,Sgrepwordlen);//~van0R~
+            }                                                      //~van0R~
+        }                                                          //~van0I~
+        for (ii=0;ii<Swordno;ii++)                                 //~van0R~
+        {                                                          //~van0R~
+        	pc=Sword[ii];                                          //~van0I~
+            if (pc)                                                //~van0I~
+            {                                                      //~van0I~
+                len=(int)*(pc+1);                                  //~van0R~
+                UTRACED("chkLang searchword=",pc,len+3);           //~van0R~
+                if (len)                                           //~van0R~
+                {                                                  //~van0R~
+                    lenu8=len*UTF8_MAXCHARSZ+3;                    //~van0R~
+                    utf8wk=umalloc((size_t)lenu8);                 //~van0R~
+            		opt=UTFCVO_BUFFSZPARM|UTFCVO_ERRRET; //outbuff size parm specified//~van0I~
+                    rc2=utfcvl2f(opt,utf8wk+2,pc+2,0/*init offs*/,len/*strz*/,0/*out choftbl*/,0/*out dbcstbl*/,&chklen,&lenu8/*outlen*/,0/*pcharcnt*/,0/*char width*/);//locale coed validity chk//~van0R~
+                    if (rc2>=UTFCVRC_ERR)                          //~van0R~
+                        rc=4;                                      //~van0R~
+                    else                                           //~van0R~
+                    {                                              //~van0R~
+	                    *utf8wk=*pc;         //and/or              //~van0I~
+    	                *(utf8wk+1)=(UCHAR)lenu8; //len            //~van0I~
+    	                *(utf8wk+2+lenu8)=0;                       //~van0I~
+                        Sword[ii]=utf8wk;                          //~van0R~
+                        UTRACED("chkLang searchword UTF8",Sword[ii],2+lenu8+1);//~van0R~
+                    }                                              //~van0R~
+                }                                                  //~van0R~
+            }                                                      //~van0I~
+        }                                                          //~van0R~
+	}                                                              //~van0M~
+    else    //CPLC                                                 //~van0I~
+    {                                                              //~van0I~
+        if (Sgrepwordlen)                                          //~van0I~
+        {                                                          //~van0I~
+            UTRACEP("chkLang grepword U8=%s\n",Sgrepword);         //~van0I~
+            lenu8=Sgrepwordlen*UTF8_MAXCHARSZ;                     //~van0I~
+            utf8wk=umalloc((size_t)lenu8);                         //~van0R~
+            opt=UTFCVO_ERRRET; //outbuff size parm specified       //~van0I~
+			rc2=utfcvf2l(opt,utf8wk,Sgrepword,Sgrepwordlen,&chklen,&lenlc,NULL/*Ppcharwidth*/);//~vaucR~//~van0I~
+            if (rc2>=UTFCVRC_ERR)                                  //~van0I~
+                rc=4;                                              //~van0I~
+            else                                                   //~van0I~
+            {                                                      //~van0I~
+                *(utf8wk+lenlc)=0;                                 //~van0I~
+                Sgrepword=utf8wk;                                  //~van0I~
+                Sgrepwordlen=lenlc;                                //~van0I~
+                UTRACED("chkLang grepword LC",Sgrepword,Sgrepwordlen);//~van0I~
+            }                                                      //~van0I~
+        }                                                          //~van0I~
+        for (ii=0;ii<Swordno;ii++)                                 //~van0I~
+        {                                                          //~van0I~
+        	pc=Sword[ii];                                          //~van0I~
+            if (pc)                                                //~van0I~
+            {                                                      //~van0I~
+                len=(int)*(pc+1);                                  //~van0I~
+                UTRACED("chkLang searchword U8=",pc,len+3);        //~van0I~
+                if (len)                                           //~van0I~
+                {                                                  //~van0I~
+                    lenu8=len*UTF8_MAXCHARSZ+3;                    //~van0I~
+                    utf8wk=umalloc((size_t)lenu8);                 //+van0R~
+            		opt=UTFCVO_ERRRET; //outbuff size parm specified//~van0I~
+					rc2=utfcvf2l(opt,utf8wk+2,pc+2,len,&chklen,&lenlc,NULL/*Ppcharwidth*/);//~van0I~
+                    if (rc2>=UTFCVRC_ERR)                          //~van0I~
+                        rc=4;                                      //~van0I~
+                    else                                           //~van0I~
+                    {                                              //~van0I~
+	                    *utf8wk=*pc;         //and/or              //~van0I~
+    	                *(utf8wk+1)=(UCHAR)lenlc; //len            //~van0I~
+    	                *(utf8wk+2+lenlc)=0;                       //~van0I~
+                        Sword[ii]=utf8wk;                          //~van0I~
+                        UTRACED("chkLang searchword LC",Sword[ii],2+lenlc+1);//~van0I~
+                    }                                              //~van0I~
+                }                                                  //~van0I~
+            }                                                      //~van0I~
+        }                                                          //~van0I~
+	}                                                              //~van0I~
+    UTRACEP("chkLang rc=%d\n",rc);                                 //~van0I~
+    return rc;                                                     //~van0I~
+}//help                                                            //~van0I~

@@ -1,6 +1,6 @@
-||*CID:||+129KR~:  2019/09/18                update#=  811;           ||~129JR~||+129KR~
+||*CID:||+129MR~:  2020/05/17                update#=  812;           ||~129JR~||~129KR~||+129MR~
 ######################################################################
-[English]    v1.29L                                                   ||~129JR~||+129KR~
+[English]    v1.29M                                                   ||~129JR~||~129KR~||+129MR~
 
 This editor is fit for programmers working on both main-frame and PC.
 Its operation is based on mainframe SPF editor,
@@ -394,21 +394,50 @@ How to execute.
         Change font like as "xcfont Mangal" after "chcp 57002".       ||~129KI~
         You can see Devaganari(U+0900-097f) on xe.                    ||~129KI~
         For wxe or Linux version you need nothing special.            ||~129KI~
-                                                                      ||+129KI~
-  .v129L<--129K:(2019/09/18)                                          ||+129KI~
-                                                                      ||+129KI~
-     1.BUGs                                                           ||+129KI~
-       -Bug of function Alt+"/" (<tag > pairing search for xml/html text)||+129KI~
-                                                                      ||+129KI~
-     2.Additional function.                                           ||+129KI~
-       -TC fmt cmd on UTF8 file.                                      ||+129KI~
-        accept unicode specification for -D:input splitter and -S:output splitter.||+129KI~
-        e.g) tc fmt d\u00c1                                           ||+129KI~
-                                                                      ||+129KI~
-     3.Miscellaneous.                                                 ||+129KI~
-       -(Linux)on debian10, gnome2 is obsoleted.                      ||+129KI~
-       -(Linux)PPD api is deprecated at cups-1.6.                     ||+129KI~
-       -(Windows)Last line of panel of console version was for IME on Windows95.||+129KI~
-                                                                      ||+129KI~
-     4.Tool.                                                          ||+129KI~
-       -(Windows) xlow (covert case of filenameÅj1.6 (bug corrected)  ||+129KI~
+                                                                      ||~129KI~
+  .v129L<--129K:(2019/09/18)                                          ||~129KI~
+                                                                      ||~129KI~
+     1.BUGs                                                           ||~129KI~
+       -Bug of function Alt+"/" (<tag > pairing search for xml/html text)||~129KI~
+                                                                      ||~129KI~
+     2.Additional function.                                           ||~129KI~
+       -TC fmt cmd on UTF8 file.                                      ||~129KI~
+        accept unicode specification for -D:input splitter and -S:output splitter.||~129KI~
+        e.g) tc fmt d\u00c1                                           ||~129KI~
+                                                                      ||~129KI~
+     3.Miscellaneous.                                                 ||~129KI~
+       -(Linux)on debian10, gnome2 is obsoleted.                      ||~129KI~
+       -(Linux)PPD api is deprecated at cups-1.6.                     ||~129KI~
+       -(Windows)Last line of panel of console version was for IME on Windows95.||~129KI~
+                                                                      ||~129KI~
+     4.Tool.                                                          ||~129KI~
+       -(Windows) xlow (covert case of filenameÅj1.6 (bug corrected)  ||~129KI~
+                                                                      ||+129MI~
+  .v129M<--129L:(2020/05/17)                                          ||+129MI~
+                                                                      ||+129MI~
+     1.BUGs                                                           ||+129MI~
+       -Function:"Search word on the cursor" (Alt/Ctrl+"["/"]")       ||+129MI~
+        e.g) Search "ABC+DEFG" if cusror is on the "+" of "ABC+DEFG", ||+129MI~
+        search "ABC" if on the "C".                                   ||+129MI~
+        Repeating the same key finds next.                            ||+129MI~
+        Intermediate PgDn/PgUp/PgLeft(F10)/PgRight(F11) key looses    ||+129MI~
+        concatinated word search effect at start.                     ||+129MI~
+       -exe cmd (sequencially execute cmds in the specified file) may crush.||+129MI~
+        e.g) xe crush by "exe ! cmdfile" on dir list panel.           ||+129MI~
+        "exe ! cmdfile <s *.html" is valid.                           ||+129MI~
+       -SORt cmd on dir list panel.                                   ||+129MI~
+        Descendant option(/Ot-,/Os-) works but ascendant option(/Ot,/Os) did not.||+129MI~
+                                                                      ||+129MI~
+     2.Additional function.                                           ||+129MI~
+                                                                      ||+129MI~
+     3.Miscellaneous.                                                 ||+129MI~
+       -Accept Shift+Del on also excluded line(- n line excluded ---).||+129MI~
+                                                                      ||+129MI~
+     4.Tool.                                                          ||+129MI~
+       -xfg v1.21 (Serach string in the directory)                    ||+129MI~
+          ./cpu8, /cplc option is added to search by translated string.||+129MI~
+          .(Win)"-e" option cause crush.(Temporally file was plased on c:\ which is protected on Windows10)||+129MI~
+       -xdig v1.13 (Applay the commands to all files in the directory)||+129MI~
+          .Accept parameter sign other than %.                        ||+129MI~
+           e.g) By /C$, $fp$ in the cmd string is replaced to fullpath name of the file in the directory.||+129MI~
+          .%rp% is added for path name relative to starting directory.||+129MI~

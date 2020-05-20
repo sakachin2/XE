@@ -1,8 +1,9 @@
-//*CID://+vb80R~:                             update#=  193;       //~vb80R~
+//*CID://+vbq4R~:                             update#=  195;       //~vbq4R~
 //*************************************************************
 //*xedir.c                                                      //~5821R~
 //* exec fname panel,end,cancel                                 //~v020R~
 //*************************************************************
+//vbq4:200515 (Bug)exe cmd abend at cmderr() when last is end cmd because it free Ppcw. have to chk UCWF3EXECMD on dir also//~vbq4I~
 //vb80:170205 reduce dirlist sz                                    //~vb7hI~
 //vb7h:170114 (BUG)0c4 when shortname is too long(UDHalias overflow)//~vb7hI~
 //vb78:170104 dirload crash:appended \* to get dirlist overflow _MAX_MAT//~vb78I~
@@ -157,6 +158,7 @@
 #include "xecap.h"                                                 //~v08cI~
 #include "xeini3.h"                                                //~v11zI~
 #include "xefunc.h"                                                //~v137I~
+#include "xefunc2.h"                                               //+vbq4I~
 #include "xetso.h"                                                 //~v716I~
 //****************************************************************
 int dirclosefree(PUFILEC Ppfc);
@@ -183,6 +185,8 @@ int func_end_dir(PUCLIENTWE Ppcw)                               //~5820M~
 	PUFILEC pfc;                                                //~5820M~
 	PUFILEH pfh;                                                   //~v09zI~
 //***************                                               //~5820M~
+	if (UCBITCHK(Ppcw->UCWflag3,UCWF3EXECMD))	//execmd owner     //~vbq4I~
+    	return funcerrexecmdinprog();  //dont free pcw             //~vbq4I~
 	rc=0;                                                       //~5820M~
 	pfc=Ppcw->UCWpfc;                                           //~5820M~
 	pfh=pfc->UFCpfh;                                               //~v09zI~
@@ -205,6 +209,8 @@ int func_cancel_dir(PUCLIENTWE Ppcw)                            //~5820M~
 	PUFILEC pfc;                                                //~5820M~
 	PUFILEH pfh;                                                   //~v09zI~
 //***************                                               //~5820M~
+	if (UCBITCHK(Ppcw->UCWflag3,UCWF3EXECMD))	//execmd owner     //~vbq4I~
+    	return funcerrexecmdinprog();  //dont free pcw             //~vbq4I~
 	pfc=Ppcw->UCWpfc;                                           //~5820M~
 	pfh=pfc->UFCpfh;                                               //~v09zI~
     if (pfh->UFHupctr)                                             //~v09zM~
@@ -571,7 +577,7 @@ int dirgetlist(PUFILEH Ppfh,UCHAR *Pfilemask,UINT Popt,PUDIRLIST *Pppudirlist)//
 //  	udirlwk=*pudirlist0;   	//save top                      //~v030I~//~vb80R~
 //  	*pudirlist0=*pudirlist; //top is parent                 //~v030I~//~vb80R~
 //  	*pudirlist=udirlwk;         //second is current         //~v030I~//~vb80R~
-    	ufile_udirlist_swap(0,pudirlist,pudirlist0); //second is current//+vb80R~
+    	ufile_udirlist_swap(0,pudirlist,pudirlist0); //second is current//~vb80R~
     }                                                           //~v030I~
     *Pppudirlist=pudirlist0;                                    //~v030R~
 	return filectr;   //restore                                 //~v030I~

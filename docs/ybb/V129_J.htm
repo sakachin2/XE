@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>V129-J</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+
+129:2017/04/01  v129(v128K)<--v128 の変更
+
+  !!! Windows10でNTTセキュリティーツールを使用していますが ディレクトリーリストでJPGファイルの削除をしていると
+      "ランサムウェアーのブロック" がでて xe.exe が終了させられます
+      このメッセージが出たら許可を与えてください
+
+  !!! この対応によりini ファイルのサイズが変わるので一旦 ini ファイルを削除してください
+      (ワークディレクトリーのファイル Win=::XE!SAVE!, Linux=::xe_save_)
+
+       -Alt+n (nは1-9,h,v) キーでの文字入力機能でユニコード指定をサポート
+        ::xelch{win|lnx}.ini[.locale] ファイルで u-xxxx指定する
+            例) 2=u-102222,41; u2550
+       -EDIt/BROwse/SELect コマンド、ディレクトリーリストの Open 行コマンドの
+        FN{U8|LC} オプション指定でファイル名をコード変換する(UTF8<-->ロケールコード)。
+        Alt+u キーで入力キーのコード変換をする手間を省ける。
+        ファイル名のコードページタイプは "TOP-OF-LINE" 行に表示
+        表示例。
+            *****|*l*t**Lu** TOP OF LINE *******************************
+                        ^^
+                        ||
+                        |+--------->LinuxでデレクトリーがあるデバイスのIOCHARSETがutf8か特に指定が無い場合
+                        +---------->ファイル名のコードタイプ
+     (128C)
+       -WXP コマンドに /tabon オプション追加
+       -(Lnx)iniファイルのDisp_trans_tbl(コンソール版の表示不能文字の指定）パラメータの
+        省略値の変更、制御文字(<0x20)の大部分は表示可能とした。
+        (注)Windowsコンソール版ではコマンドプロンプトのフォント設定によっては
+            制御文字(<0x20)を表示可能にすると制御文字の表示桁数が２桁になって
+            表示位置がずれる場合があります。
+            適当なフォントを設定するかiniファイルで表示不能にする(Disp_trans_tbl)、
+            代替表示文字を指定する(Disp_trans_char)などの対応が必要になります
+     (128D)
+       - Find コマンド 画面別 機能
+        . { FINd | IFInd | FNX | INX } [find-options] [-{PSP|PSF}[X|R|D]]
+            PSP:この分割画面で有効（分割してない場合でもよい）
+            PSF:このファイル/ディレクトリーリストでのみ有効
+            X:-PSPX/-PSFX のみを指定し、直近に使用したした PSP/PSF コマンドを実行する
+            R:-PSPR/-PSFR のみを指定し、直近に使用したした PSP/PSF コマンドをコマンド行にセットする
+            D:-PSPD/-PSFD のみを指定し、現在有効な PSP/PSF コマンドを表示する
+        . PSD コマンド (オペランドなし)
+            現在有効なPSP/PSF オプション付き Find コマンドを表示
+            STDの表示は通常のFind コマンド
+
+        . Ctrl+F5 は PSP コマンドで再探索、Alt+F5 は PSF コマンドで最探索
+          Ctrl+Shift+F5, Alt+Shift+F5 はそれぞれ 前探索/後探索を切り替える
+          PFキーを使うときコマンド行に find-options を指定すると
+          F5/C+F5/A+F5に違いはなくオペランドの-PSP/-PSFオプションの有無が機能を分ける
+          PSF コマンドの記憶ははファイルを閉じたときに失われ、
+          PSP は次のスタート時に直近の２つを 分割画面1/2として設定する
+
+        . Linux では Alt+F5 は 規定のショートカットキーとして使用されている場合があります
+          Linux の 設定-->ショートカット で無効にするか xe の =0.2 画面で機能割り当てキーを変更してください
+
+        . これにより一つのファイルで３つの探索ができる
+             F abcS
+             F abcP -psp
+             F abcF -psf
+          とした後
+          F5 で abcS を、Ctrl+F5 で abcP を、Alt+F5 で abcF を探索する
+          それぞれの探索を継続するには同じキーを使用する
+          例えば "F abcP -psp", C+F5, C+F5, S+C+F5
+        . Changeコマンドはサポートしていません
+        . -PSP などを文字列として探索する場合は引用符を使用する, 例えば  F "-PSP"
+     
+       - ::linech.ini ファイル(A+1,2,... など罫線用キーに入力文字列を指定する)で
+         コメント行(start with "#")をサポート
+       - 結合文字列の表示方法の変更
+          コマンド
+            Linux コンソール版
+              OPT UNICOMB [ COMB | SPLIT | UNPR ] [ SHADOW | ITSELF | PADDING | U-xxxx ]
+           それ以外
+              OPT UNICOMB [ COMB | SPLIT | UNPR ] [ U-xxxx ]
+        . Linux コンソール版以外で U-xxxx (UNPRモードのとき結合文字を代替表示する文字)指定をサポート
+          また、U-00 で省略値(':'=u-3a)に戻す
+          ファイル編集画面では':'固定だったが U-xxxx 指定の文字を表示する
+          gxeでも UNPR モードを反映させる
+        . コマンド入力行ではキーボードで修正できるように常にSPLIT モード(２桁で別々に表示)扱いとする
+        . wxe/gxeでは Edit/Browse 画面ではCOMB モードでないときも Ligature ON のときは左詰表示する
+        . Windole console版 xe を使うときはコマンドプロンプトのフォントは TrueType を選んでください
+       - ::xehosts(リモートファイルアクセス用ホスト定義ファイル)
+         ipaアドレスパラメータでURLが指定できるようにオペランド長制限を緩和
+     (128E)
+       - Shift+Alt+Fn, Shift+Ctrl+Fn キーの利用
+        . =0.2 画面 あるいは INI ファイル(::xe.ini) で 設定可能
+        . Linux の場合 ショートカット キーとして設定されている場合もあるので
+          その場合 これらのキーを利用する場合は Linux の設定の変更が必要になります
+          Shiftキー無し(A+Fn,C+Fn)がショートカットキー設定されている場合
+          そちらもソートカットキーを無効にする必要があるかもしれません
+        . Fn(n:1-12)以外にも方向キー、Ins,Del も使用できます
+
+       - Tab コマンド altch オプション追加
+        . Windows コマンドプロンプトは Properties-->Font の設定によっては
+          TAB表示文字の字幅が異なり桁位置が不正になることがあります
+          表示文字に ASCII 文字を設定すれば桁ずれの問題はなくなりますが
+          適切なユニコードを使用したい場合に altch オプションを使用してください
+          wxe,gxe,Linux xe では桁ずれは起こらないと思います
+        . TAB { on [altch] | off | clear | =default | nn [asdefault] }
+        . altch で TAB/DBCS空白 表示文字を変更
+          INI file の下記の指定を上書きします
+            (J)Tab_disp_char  =FFFF #(FFFF)# Tab display char for Japanese mode. (FFFF means U-21be & U-21c0)
+            (E)Tab_disp_char  =FFFF #(FFFF)# Tab display char for English  mode. (FFFF means U-21be & U-21c0)
+            DBCSspace_dispchar=FF #(FF)# DBCS space display char. (FF means U-2591)
+        . "tab on 000" で省略値(u21be-21c0,2591)あるいは INI 設定に戻ります
+        . 例)  tab on "^-" ,   tab on u25b8-25b9 ,  tab on "^-!" ,  tab on u25b8-25b9-21be.
+        . altch に ASCII でない文字を指定したとき "xpr -tabon" コマンドの TAB 印刷文字は
+          CPU8 ファイルではその altch が使用されますが、そうでない場合は 0x18 と 0x1a が
+          使用されます
+     
+       - A+PgDn, A+PgUp キーを Top-Of-File, End-Of-File にそれぞれ追加割り当て
+       -(W32)Console版でコマンドプロンプトのフォントがプロポーショナルのときも
+        カラムゲージ行、縦ヘキサ行は固定幅にする
+       -(Lnx:Console版) Debian で使用されているキーの組み合わせを追加
+        (Debian では A+F1 など使用できなかった)
+     (128F)
+       - Select コマンド
+        . 行番号指定:  S -lineno
+          行番号指定がない場合ディレクトリーリストの最初のメンバーを開く
+          ex)  "S -5" で 行番号 5 のメンバーを開く
+     (128G)
+       -制限値を超えたファイルパス名の処理
+        .(Win)Linuxのファイル名はMAX:4096、サンバサーバーに NET USE コマンドでつないだとき
+         長いファイル名にを処理できるように対応
+        .(Win)WindowsではレジストリーのNTFS long path を設定すれば
+         ファイル名は特殊な形式を使うことで32Kまで処理できるので
+         ローカルファイルの長いファイル名にも対応
+        .(LNX)削除の場合のみ改名でパスを短くできる場合は
+         改名後に削除するようにした
+     (128K)
+       -XBC コマンド
+        .最大１０演算を可能にする
+         e.g. xbc 200/3.3*35.7 , xbc 1+2+3+4+5+6+7+8+9+10
+        .XBC コマンドの時間計算で HH>24 の時日数も表示
+       -コマンド追加
+        "LIG" を リガチャーモード(A+";"), "CMB" をコンバインモード(A+":")に
+
+ ツール。
+       -xfg v1.18
+        ./F で対象のファイル名のワイルドカード指定が複数指定可能
+        ./X パラメータ(対象外のファイル名指定)サポート
+        .ワイルドカードマスクはサブディレクトリー自体には適用しない
+         サブディレクトリーを対象外にしたいときは -X で指定する
+         例) xfg -rgt -fABC* -xAsubdir word
+        .(BUG)長いファイル名があるとクラッシュ
+       -xdc v2.26
+        ./F+ で追加の対象のファイル名のワイルドカード指定が可能
+        ./X パラメータ(対象外のファイル名指定)サポート
+       -xdd v2.1
+        .-q[n] オプション追加
+         削除メッセージを 10**n 件毎に出力する、n の指定なしは 3(=1000件)
+        ./r オプションで長すぎるパス名の削除を行う
+       -xprint v9.34
+        .(Win) UCS4(ユニコード>u-ffff)サポート
+</SPAN></PRE>
+</BODY>
+</HTML>

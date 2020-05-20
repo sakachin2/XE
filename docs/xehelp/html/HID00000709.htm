@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>GREp</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = GREp   [grep オプション]  { * | ファイル指定 }
+
+        .パラメータ形式は各OSのNativeのgrepコマンドに同じ。
+         表示/編集画面で画面内を探索するときはファイル名は
+         &quot;*&quot; を指定する。
+         ファイル名には *\(現表示Dir),^*\(画面分割の他方のDir)指定も可。
+        .表示/編集画面では現画面内を探索し該当する行にフラグをセット、
+         該当行は&quot;Find *G&quot;で探す。
+         それ以外の画面では結果は::#goに保存される。
+         コマンド結果表示画面ではこのファイルの内容が画面表示される。
+       （注）.現画面検索では -n オプションで行番号が &quot;nnn:&quot;形式で
+              表示されるgrepユーティリティーに限って利用できます。
+
+              現画面検索のこの機能は残されていますが、Findコマンドに
+              -g オプションが追加されました。こちらを使用してください。
+
+             .Linuxでは経路にスペースを含むDirがありワイルドカード指定
+              するときは、grep &quot;a b.dir&quot;/*.c のように指定してください。
+              grep &quot;a b.dir/*.c&quot;はエラーになります。
+        Windows10では find コマンドが使用できますがパラメータの形式が異なります。
+          gre c:\Windows\System32\find.exe %1 %2 %3 %4
+        などと定義し、=6 の画面で
+          gre /N /I "search-word" <a href="file:///c:/user/srctext">c:\user\srctext</a>
+        のように使用します。探索文字列は引用符で囲んでください。
+
+</SPAN></PRE>
+</BODY>
+</HTML>

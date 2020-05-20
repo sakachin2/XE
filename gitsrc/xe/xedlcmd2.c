@@ -1,4 +1,4 @@
-//*CID://+vb7aR~:                             update#=  253;       //~vb7aR~
+//*CID://+vbq5R~:                             update#=  256;       //+vbq5R~
 //*************************************************************
 //*xedlcmd2.c
 //* each dir line cmd process                                   //~5731R~
@@ -6,6 +6,8 @@
 //* cur dir(.)/expandall(>)/free(f)/view(v)/view edit(w)        //~v04lR~
 //* toggle size display byte count<-->line count                   //~v10rI~
 //*************************************************************
+//vbq5:200516 (Bug)dir sort /ot is err                             //+vbq5I~
+//vbq1:200418 "-" dlcmd sort option chk more(/ot[ is not err)      //~vbq1I~
 //vb7a:170104 msg errtoolong for filename is errtoolongpath        //~vb7aI~
 //vb2E:160229 LNX64 compiler warning                               //~vb2EI~
 //vb2s:160206 (Win)target err msg if slinkerr                      //~vb2sI~
@@ -181,7 +183,7 @@
 #include <utrace.h>                                                //~vaa0I~
 #include <ufilew.h>                                                //~vavHI~
 #include <utf.h>                                                   //~vawyI~
-#include <ufemsg.h>                                                //+vb7aI~
+#include <ufemsg.h>                                                //~vb7aI~
 
 #include "xe.h"
 #include "xescr.h"
@@ -259,7 +261,7 @@ int dlcmdselecttext(PUCLIENTWE Ppcw,PUDLCMD Pplc,PUDLCMD Pplcdummy)//~v50GI~
     	return dlcmdbinbefuncid(Ppcw,Pplc,FUNCID_BROWSETEXT);	// /Mx//~v61eR~
 }//dlcmdselecttext                                                 //~v50GI~
 //**************************************************************** //~v47QI~
-// dlcmdopenm                                                      //~v47QI~
+// dlcmdopen                                                       //~v47QI~//~vbq1R~
 // process open dlcmd                                              //~v47QI~
 //*rc   :0                                                         //~v47QI~
 //**************************************************************** //~v47QI~
@@ -1518,7 +1520,24 @@ int dlcmdgetexpopt(char *Pparm,int *Ppsortopt)                     //~v57fM~
     }                                                              //~v57fM~
     pc++;                                                          //~v57jR~
     if (*pc=='-')   	// "/os-" patern                           //~v57jR~
+    {                                                              //~vbq1I~
     	reversesw=1;                                               //~v57jR~
+        if (*(pc+1))                                               //~vbq1I~
+        {                                                          //~vbq1I~
+	    	uerrmsg("invalid sort option(%s)",                     //~vbq1I~
+	                "\x83\\ートオプションエラー(%s)",              //~vbq1I~
+	                    psortopt);                                 //~vbq1I~
+	        return 4;                                              //~vbq1I~
+        }                                                          //~vbq1I~
+    }                                                              //~vbq1I~
+    else                                                           //~vbq1I~
+    if (*pc)                                                       //+vbq5I~
+    {                                                              //~vbq1I~
+    	uerrmsg("invalid sort option(%s)",                         //~vbq1I~
+	                "\x83\\ートオプションエラー(%s)",              //~vbq1I~
+	                    psortopt);                                 //~vbq1I~
+	    return 4;                                                  //~vbq1I~
+    }                                                              //~vbq1I~
     if (reversesw)                                                 //~v57fM~
         if (sortopt)                                               //~v57fM~
         	sortopt=sortopt|UDHSOREVERSE;                          //~v57fM~

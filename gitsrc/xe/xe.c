@@ -1,7 +1,8 @@
-//*CID://+vbmkR~:                              update#=  458;      //~vbmkR~
+//*CID://+vbq7R~:                              update#=  464;      //~vbq7R~
 //*************************************************************
 //*XE.c*                                                           //~v641R~
 //*************************************************************
+//vbq7:200516 option to bypass useteh for MS visual studio exception handling(request restart visual studio)//~vbq7I~
 //vbmk:180813 for test,try mk_wcwidth_cjk(ambiguous:Wide DBCS) for visibility chk. use /YJ option//~vbmkI~
 //vbkm:180625 UTRACE;add option of ignore FORCE option             //~vbkmI~
 //vbi9:180221 (GTK3:bug)window size recovery err                   //~vbi9I~
@@ -407,6 +408,7 @@ static int Sscrparm[2]={0,0};         //screen height parm         //~v47rI~
 #ifdef WXE                                                         //~v7ahI~
     static int  Shelpsw;                                           //~v7ahI~
 #endif                                                             //~v7ahI~
+    static int Sskipuseteh;                                        //~vbq7I~
 //*******************************************************
 //*main 
 //*******************************************************
@@ -692,10 +694,13 @@ UTRACEP("Gunxflag=%x\n",Gunxflag);                                 //~v79HI~
     uregrec.UERGdumpfn=dumpfname;       //map file name            //~v61nI~
     uregrec.UERGuxfunc=uehexit;                                    //~v61nI~
     uregrec.UERGparm=0;     //user parm to exit func               //~v61nI~
+  if (!Sskipuseteh)                                                //~vbq7I~
+  {                                                                //~vbq7I~
     #ifdef UNX                                                     //~v61nI~
       uregrec.UERGsys.PPrevSignalHandler=0;     //no handler,back to OS//~v61nI~
     #endif                                                         //~v61nI~
     useteh(&uregrec);/*exception handler unset*/                   //~v61nI~
+  }                                                                //~vbq7I~
   #endif                                                           //~v61nI~
 #endif	//!WXE                                                     //~v61nI~
 ////ualloc trace init                                                //~v07iM~
@@ -971,6 +976,8 @@ if (Preqtype==WXE_REQ_TERM)                                        //~v500I~
 #endif                                                             //~vafpI~
     }//debug option
     Sinitend=0;         //avoid abend at uexitfunc              //~5111I~
+  if (!Sskipuseteh)                                                //~vbq7I~
+  {                                                                //~vbq7I~
 #ifdef DOS                                                      //~5111I~
     #ifdef DPMI                 //DPMI version                     //~v095I~
         ureseteh(&uregrec);/*exception handler unset*/             //~v095I~
@@ -981,6 +988,7 @@ if (Preqtype==WXE_REQ_TERM)                                        //~v500I~
     ureseteh(&uregrec);/*exception handler unset*/              //~5111I~
   #endif //!WXE                                                    //~v500I~
 #endif                                                          //~5111I~
+  }                                                                //~vbq7I~
 //*printf last errmsg when quit
     if (!UCBITCHK(Gopt,GOPTPOPUPERRMSG))    //not popup err msgsw
         if (errmsg=ugeterrmsg(),errmsg) //uerrmsg called
@@ -1563,6 +1571,9 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
                 {                                                  //~v79zI~
                     switch (toupper(*cptr))                        //~v79zI~
                     {                                              //~v79zI~
+                    case 'E':  //use ICU as local converetr        //~vbq7I~
+                        Sskipuseteh=0;                             //~vbq7I~
+                        break;                                     //~vbq7I~
 #ifdef LNX                                                         //~vad0I~
     #if !defined(XXE) && !defined(ARM)                             //~vad0I~
                     case 'I':  //use ICU as local converetr        //~vad0I~
@@ -1602,6 +1613,9 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
                 {                                                  //~v79zI~
                     switch (toupper(*cptr))                        //~v79zI~
                     {                                              //~v79zI~
+                    case 'E':  //use ICU as local converetr        //~vbq7I~
+                        Sskipuseteh=1;                             //~vbq7I~
+                        break;                                     //~vbq7I~
 #ifdef LNX                                                         //~vad0I~
     #if !defined(XXE) && !defined(ARM)                             //~vad0I~
                     case 'I':  //use ICU as local converetr        //~vad0I~
@@ -2121,6 +2135,8 @@ void parmproc(int Pparmc,char *Pparmp[])
                         UCBITOFF(Gopt,GOPTNOABENDIFERREXIT);//abend at uerrexit//~5430R~
                         break; 
 #endif                                                          //~5430I~
+                    case 'E':                                      //~vbq7I~
+                        break;                                     //~vbq7I~
 #ifdef LNX                                                         //~vad0I~
     #if !defined(XXE) && !defined(ARM)                             //~vad0I~
                     case 'I':  //use ICU as local converetr        //~vad0I~
@@ -2214,6 +2230,8 @@ void parmproc(int Pparmc,char *Pparmp[])
                         UCBITON(Gopt,GOPTNOABENDIFERREXIT);//abend at uerrexit//~5430R~
                         break;                                  //~4C24I~
 #endif                                                          //~5430I~
+                    case 'E':                                      //~vbq7I~
+                        break;                                     //~vbq7I~
 #ifdef LNX                                                         //~vad0I~
     #if !defined(XXE) && !defined(ARM)                             //~vad0I~
                     case 'I':  //use ICU as local converetr        //~vad0I~
@@ -2716,6 +2734,12 @@ void help(void)
             "      x=d (%cYd):内部エラー検知の時ダンプをとる/とらない\n",//~v7a7R~
 			CMDFLAG_PREFIX);                                       //~v7a7I~
 #endif                                                          //~5430I~
+  if (Sdebughelp)                                                  //~vbq7I~
+  {                                                                //~vbq7I~
+    HELPMSG "      x=e (%cYe):set exception handler.\n",           //+vbq7R~
+            "      x=e (%cYe):例外ハンドラーを設定する\n",         //+vbq7R~
+			CMDFLAG_PREFIX);                                       //~vbq7I~
+  }                                                                //~vbq7I~
 #ifdef LNX                                                         //~vad0I~
   if (Sdebughelp)                                                  //~vad0I~
   {                                                                //~vad0I~
@@ -2739,7 +2763,7 @@ void help(void)
             CMDFLAG_PREFIX);                                       //~vbmkM~
     HELPMSG "               :Use cell width of CJK env. even env. is not CJK console.\n",//~vbmkR~
             "               :文字幅をCJK コン\x83\\ール環境でないときもそれに合わせて\x95\\示\n");//~vbmkI~
-    HELPMSG "               :Some char requires 2 cell to display on Console.\n",//+vbmkR~
+    HELPMSG "               :Some char requires 2 cell to display on Console.\n",//~vbmkR~
             "               :コン\x83\\ール版ではある種の文字は2桁で\x95\\示しないと見えない\n");//~vbmkR~
   }                                                                //~vbmkI~
 #ifdef DPMI                                                        //~v0flI~

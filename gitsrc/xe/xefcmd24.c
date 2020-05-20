@@ -1,8 +1,10 @@
-//*CID://+vbp2R~:                             update#=  511;       //~vbp2R~
+//*CID://+vbq6R~:                             update#=  518;       //~vbq6R~
 //*************************************************************
 //*xefcmd24.c                                                      //~v42hR~
 //*  same,xx,ppsrch                                                //~v42hR~
 //****************************************************************
+//vbq6:200516 (Bug)word of errmsg of "Alt+] not found" corrupted   //~vbq6I~
+//vbq3:200420 Alt/Ctrl+[/](search word); miss prev word containing splitter by pgdn/up/left/right//~vbp3I~
 //vbp2:181028 (Bug)Alt+"/" did not stop at "/>" (e.g. <tag .... />) when next is not space but crlf; ==>pair not found//~vbp2I~
 //vbe0:171231 add function to search xml tag pair                  //~vbe0I~
 //vb86:170216 display cmdline ctr excluded(fcmd:x,xx; lcmd x)      //~vb86I~
@@ -189,7 +191,7 @@ int ppsrchsub2(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Pppsrch,int Ppps
 int ppsrchmac(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int *Ppmactype,int *Ppdest);//~v45tR~
 int ppsrchmacrochk(int Pinitsw,PULINEH Pplh,int *Ppoffset,int *Prevlen,//~v45tI~
 					int *Ppmactype,int *Ppdest,int *Pporgdest);    //~v45tI~
-int fcmdgetword(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffs,int *Pplen,int Pmaxlen,char *Pdelm);//~v77EI~
+int fcmdgetword(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffs,int *Pplen,int Pmaxlen,char *Pdelm);//~v77EI~//~vbp3R~
 int fcmdsrchwordopdchk(PUCLIENTWE Ppcw,char *Pdelm);               //~v77EI~
 int ppsrchword(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Pswcase,int Pdest);//~v77EI~
 ////****************************************************************//~v49bR~
@@ -1714,7 +1716,10 @@ int fcmdcvsrchword(int Popt,PUCLIENTWE Ppcw,UCHAR *Pdbcs,UCHAR **Pperrmsgsrchwor
     {                                                              //~va20I~
     	Ssrchwordlen=Sswlendd;                                     //~va20I~
         memcpy(Ssrchword,Sswdd,(UINT)Ssrchwordlen);                //~va20I~
+      if (Sothopt & SEARCH_UCS2WORD)   //Ssrchword is saved as utf8str on ini file//+vbq6I~
         pemsrchword=Sswu8;                                         //~va20I~
+      else                                                         //+vbq6I~
+        pemsrchword=Sswlc;                                         //+vbq6I~
     }                                                              //~va20I~
     else                                                           //~va20I~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
@@ -1786,7 +1791,7 @@ static USHORT Sfuncid=0;                                           //~v77ER~
         default:                                                   //~v77EI~
         	return 4;                                              //~v77EI~
         }                                                          //~v77EI~
-    	if (rc=fcmdgetword(Ppcw,&plh,&offs,&len,sizeof(Ssrchword)-1,delm),rc)//~v77MR~
+    	if (rc=fcmdgetword(Ppcw,&plh,&offs,&len,sizeof(Ssrchword)-1,delm),rc)//~v77MR~//~vbp3R~
     		return rc;                                             //~v77ER~
         Ssrchwordlen=len;                                          //~v77EI~
         Ssrchwordoffs=offs;                                        //~v77EI~
@@ -1867,7 +1872,8 @@ static USHORT Sfuncid=0;                                           //~v77ER~
         else                                                       //~va50I~
     		uerrmsg("%s:\"%s\" Not Found",                         //~va50R~
 					"%s:\"%s\" ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ",                  //~va50I~
-        			pft->FTcmd,Ssrchword);                         //~va50I~
+//      			pft->FTcmd,Ssrchword);                         //~va50I~//~vbq6R~
+        			pft->FTcmd,pemsrchword);                       //~vbq6I~
 #else                                                              //~va50I~
     	uerrmsg("%s:\"%s\" Not Found",                             //~v77MR~
 				"%s:\"%s\" ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ",                      //~v77MR~
@@ -2160,10 +2166,12 @@ int fcmdsrchwordopdchk(PUCLIENTWE Ppcw,char *Pdelm)                //~v77ER~
 //*******************************************************          //~v77EM~
 //* get search word                                                //~v77EM~
 //*******************************************************          //~v77EM~
-int fcmdgetword(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffs,int *Pplen,int Pmaxlen,char *Pdelm)//~v77EI~
+int fcmdgetword(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffs,int *Pplen,int Pmaxlen,char *Pdelm)//~v77EI~//~vbp3R~
 {                                                                  //~v77EM~
 	int rc=0,offs=0;                                                 //~v77MR~//~vaf9R~
+    int swSamePos=0;                                               //~vbp3I~
     PULINEH plh;                                                   //~v77MI~
+    PULINEH plh2;                                                  //~vbp3I~
 //*******************                                              //~v77EM~
 	*Pplen=0;                                                      //~v77EM~
 	switch (((PUPANELC)Ppcw->UCWppc)->UPCid)                       //~v77EM~
@@ -2177,12 +2185,25 @@ int fcmdgetword(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffs,int *Pplen,int Pmaxle
             {                                                      //~v77MI~
             	if (!CSRONFILEDATA(Ppcw))       //csr not on filedata//~v77MR~
 					fcmdgetstartplhoffs(Ppcw,&plh,&offs,0/*no minus return*/);//~v77MI~
+                else                                               //~vbp3I~
+                {                                                  //~vbp3I~
+					if (fcmdgetstartplhoffs(Ppcw,&plh2,&offs,0/*no minus return*/)==0)  //csr is on client area//~vbp3I~
+                    {                                              //~vbp3I~
+                    	if (plh2 && (offs+Ssrchwordlen)<=plh2->ULHlen)//~vbp3I~
+                        	if (!memcmp(Ssrchword,plh2->ULHdata+offs,(size_t)Ssrchwordlen))//~vbp3R~
+                            {                                      //~vbp3I~
+                            	plh=plh2;                          //~vbp3I~
+                                swSamePos=1;                       //~vbp3I~
+                            }                                      //~vbp3I~
+                    }                                              //~vbp3I~
+                }                                                  //~vbp3I~
             }                                                      //~v77MI~
           if (plh)      //                                         //~v77MI~
           {                                                        //~v77MI~
           	*Ppplh=plh;                                            //~v77MI~
             *Ppoffs=offs;                                          //~v77MR~
             *Pplen=Ssrchwordlen;                                   //~v77MI~
+          if (!swSamePos)                                          //~vbp3I~
 			Ssrchstat|=SS_WORD_REUSE;                              //~v77MI~
           }                                                        //~v77MI~
           else                                                     //~v77MI~
@@ -2877,9 +2898,9 @@ int xmlsrchwordnest(int Popt,PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Pd
             if (offs2>0 && *(plh2->ULHdata+offs2-1)==XML_TAG1 && !*(plh2->ULHdbcs+offs2-1)) // <xxx//~vbe0I~
             {                                                      //~vbe0I~
                 offs3=offs2;                                       //~vbp2I~
-                plh3=plh2;                                         //+vbp2I~
-	            rc=xmlsrchwordsub(Popt,Ppcw,&plh3,&offs3,1/*dest:forward*/,">",0/*dbcs*/,1/*srchwordlen*/);//+vbp2R~
-              if (!rc && offs3>0 && *(plh3->ULHdata+offs3-1)==XML_TAGT && !*(plh3->ULHdbcs+offs3-1)) // "/>"//+vbp2R~
+                plh3=plh2;                                         //~vbp2I~
+	            rc=xmlsrchwordsub(Popt,Ppcw,&plh3,&offs3,1/*dest:forward*/,">",0/*dbcs*/,1/*srchwordlen*/);//~vbp2R~
+              if (!rc && offs3>0 && *(plh3->ULHdata+offs3-1)==XML_TAGT && !*(plh3->ULHdbcs+offs3-1)) // "/>"//~vbp2R~
                 ;  //it is closed like <xxx ... />                 //~vbp2I~
               else                                                 //~vbp2I~
                 nestctr--;                                         //~vbe0I~
@@ -2953,10 +2974,10 @@ int xmlsrchwordnest(int Popt,PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Pd
                 if (offs2>0 && *(plh2->ULHdata+offs2-1)==XML_TAG1 && !*(plh2->ULHdbcs+offs2-1)) // <xxx//~vbe0I~
                 {                                                  //~vbp2I~
                 	offs3=offs2;                                   //~vbp2I~
-	                rc=xmlsrchwordsub(Popt,Ppcw,&plh2,&offs3,Pdest,">",0/*dbcs*/,1/*srchwordlen*/);//+vbp2R~
+	                rc=xmlsrchwordsub(Popt,Ppcw,&plh2,&offs3,Pdest,">",0/*dbcs*/,1/*srchwordlen*/);//~vbp2R~
                 	if (rc)                                        //~vbp2I~
                     	return 4;                                  //~vbp2I~
-                	if (offs3>0 && *(plh2->ULHdata+offs3-1)==XML_TAGT && !*(plh2->ULHdbcs+offs3-1)) // "/>"//+vbp2R~
+                	if (offs3>0 && *(plh2->ULHdata+offs3-1)==XML_TAGT && !*(plh2->ULHdbcs+offs3-1)) // "/>"//~vbp2R~
                     	;                                          //~vbp2I~
                     else                                           //~vbp2I~
                     	nestctr++;                                     //~vbe0I~//~vbp2R~

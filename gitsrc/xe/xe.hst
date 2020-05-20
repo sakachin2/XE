@@ -1,4 +1,21 @@
-//*********  20180917 v129L release  *******************************
+//*********  20200517 v129M release  *******************************
+//vbq7:200516 option to bypass useteh for MS visual studio exception handling(request restart visual studio)
+//            xe.c
+//vbq6:200516 (Bug)word of errmsg of "Alt+] not found" corrupted(UTF8 and Locale)
+//            xefcmd24.c
+//vbq5:200516 (Bug)dir sort /ot is err
+//            xedlcmd2.c xedir3.c
+//vbq4:200515 (Bug)exe cmd abend at cmderr() when last is end cmd because it free Ppcw. have to chk UCWF3EXECMD on dir also
+//            xedir.c
+//vbq3:200420 Alt/Ctrl+[/](search word); miss prev word containing splitter by pgdn/up/left/right
+//            xefcmd24.c
+//vbq2:200418 change warning msg; to find label pattern such as .a with label, issue warning enclose by parenthesys.
+//            xefcmd22.c
+//vbq1:200418 "-" dlcmd sort option chk more(/ot[ is not err)
+//            xedlcmd2.c
+//vbq0:200418 del excluded by S+Del
+//            xechar2.c
+//*********  20190917 v129L release  *******************************
 //vbp5:190914 gdk_beep deprecated at GTK3 use gdk_display_beep
 //            xxexei.c
 //vbp4:190913 gnome2 obsoleted

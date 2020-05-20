@@ -1,7 +1,9 @@
-//*CID://+vae1R~:                             update#=   36;       //~vae1R~
+//*CID://+van4R~:                             update#=   50;       //~van4R~
 //***********************************************************
 //* XDig : apply program into dir/subdir
 //***********************************************************
+//van4:200516 xdig 1.13:/Cx parm for alternative of %, e.g $fp$ by /C$.//~van4I~
+//van3:200515 xdig 1.13:%rp% support(path relative to starting dir)//~van3I~
 //vae1:170206 xdig v1.12 (BUG of 64bit) ptrsize is 8 byte          //~vae1I~
 //vaa1:160418 Lnx64 compiler warning                               //~vaa1I~
 //va99:150119 xdig v1.11 Win64 spawn returns intptr                //~va99I~
@@ -46,7 +48,7 @@
 //v121 970302 redirect only function(no dir parm)                  //~v121I~
 //***********************************************************
 
-#define VER "V1.12"  //version                                     //+vae1R~
+#define VER "V1.13"  //version                                     //~vae1R~//~van3R~
 #define PGM "XDIG"
 
 //**********************************************/
@@ -97,6 +99,7 @@
 //*********************************************************************
 static char *Spgm=PGM,*Sver=VER;
 static char *Sdir,*Sfilemask="",*Sdirmask="";
+static int Stopfpathlen;	//top dir fpathlen                     //~van3I~
 static char **Scmdarg0;
 static char Sfilesw=1;          //default file call
 static char Sdirsw,Semptysw,Scdsw=1,Sredirectsw,Srevsortsw,Sredironlysw;//~v121R~
@@ -118,7 +121,9 @@ static char Sredirectf2fp[_MAX_PATH];
 static char Sfnmask[_MAX_PATH];				//mask from dir name   //~v131I~
 static FILE *Smsgfh;
 //static char *Scmdrepword[]={"%d%","%f%","%fp%",0};               //~va2jR~
-static char *Scmdrepword[]={"%d%","%f%","%fp%","%fb%",0};          //~va2jI~
+//static char *Scmdrepword[]={"%d%","%f%","%fp%","%fb%",0};          //~va2jI~//~van3R~
+static char *Scmdrepword[]={"%d%","%f%","%fp%","%fb%","%rp%",0};   //rp:[4]//~van3I~
+static int Ssw_altsign;                                            //+van4I~
 #ifdef UNX                                                         //~v171I~
 	static int  Sspfsw=0;		//special filesw                   //~v171I~
 #endif                                                             //~va71I~
@@ -247,7 +252,10 @@ int applycmd(char *Pdir,char *Pfullpath,UDIRLIST *Ppudirlist,
 static char S1stsw=1;                                              //~v124I~
 //**************************
     if (S1stsw)                                                    //~v124I~
+    {                                                              //~van3I~
         setredirect(0);    //redirect                              //~v124I~
+        Stopfpathlen=(int)strlen(Pdir);                            //~van3I~
+    }                                                              //~van3I~
 //  if (Straceopt)//command text printf                            //~v140R~
     if (Sdirtraceopt)//command text printf                         //~v140I~
         if ((!Pfullpath)        //fileentry or empty call              //~v124R~
@@ -654,7 +662,8 @@ char **cmdedit(char *Pdir,char *Pfile,char *Pfullpath)
     char basename[_MAX_PATH],*pc;                                  //~va2jI~
     char *cmdstri;
 //  char *data[3];                                                 //~va2jR~
-    char *data[4];                                                 //~va2jI~
+//  char *data[4];                                                 //~va2jI~//~van3R~
+    char *data[5];                                                 //~van3I~
 //************
 //repl word
         if (Sexetype==1)        //use spawn;
@@ -685,9 +694,12 @@ char **cmdedit(char *Pdir,char *Pfile,char *Pfullpath)
     if (pc=strchr(basename,'.'),pc)                                //~va2jI~
     	*pc=0;                                                     //~va2jI~
     data[3]=basename;                                              //~va2jI~
+    data[4]=Pdir+Stopfpathlen;          //%rp%                     //~van3I~
                                                                    //~v138I~
 //  opt=Snullsw;                                                   //~v130R~
     opt=(Snullsw|WORDREP_IC);           //case incensitive             //~v130I~
+    if (Ssw_altsign)                                               //+van4I~
+        opt|=WORDREP_ALTSIGN;                                      //+van4I~
         for (ii=0;ii<argno;ii++)
         ppcmdo[ii]=uwordrep(opt,ppcmdi[ii],Scmdrepword,data,0,0);//no ctr output
     ppcmdo[argno]=0;    //last null
@@ -732,6 +744,7 @@ void parmchk(int parmc,char *parmp[])
 #endif //!UNX                                                      //~v141I~
     int pathlen;                                                   //~v131I~
     char **ppcmdstr=0;
+    char parmchar=0;                                               //~van4I~
 //*************************
     if (parmc<2 || *parmp[1]=='?')
     {
@@ -866,6 +879,12 @@ void parmchk(int parmc,char *parmp[])
                         }//all attr char
                 break;
 #endif //!UNX                                                      //~v141I~
+//**************************                                       //~van4I~
+//* parm char                                                      //~van4I~
+//**************************                                       //~van4I~
+            case 'C':                                              //~van4I~
+                parmchar=*(++cptr);                                //~van4I~
+                break;                                             //~van4I~
 //**************************
 //* stop dir level /L      *
 //**************************
@@ -1202,6 +1221,18 @@ void parmchk(int parmc,char *parmp[])
 					CMDFLAG_PREFIX);                               //~v174I~
 //*cmd string create
         getcmd(cmdparmno,ppcmdstr);
+    if (parmchar!=0)                                               //~van4I~
+    {                                                              //~van4I~
+        Ssw_altsign=1;                                             //+van4I~
+    	int ii;                                                    //~van4I~
+    	for (ii=0;;ii++)                                           //~van4I~
+        {                                                          //~van4I~
+			if (!Scmdrepword[ii])                                  //~van4R~
+            	break;                                             //~van4I~
+			*Scmdrepword[ii]=parmchar;                             //~van4R~
+			*(Scmdrepword[ii]+(int)strlen(Scmdrepword[ii])-1)=parmchar;//~van4R~
+		}                                                          //~van4I~
+    }                                                              //~van4I~
 }//parmchk
 //**********************************************************************
 //* write option err msg  v3.8a
@@ -1251,9 +1282,16 @@ void help(void)
 //"             use %s,%s,%s for pathname,file-name,fullpath each.\n",//~va2jR~
 //"             %s,%s,%s を各々経路名,ファイル名,フルパス名に使用可.\n",//~va2jR~
 //                                        Scmdrepword[0],Scmdrepword[1],Scmdrepword[2],Scmdrepword[3]);//~va2jR~
-"             use %s,%s,%s,%s for path,file,fullpath,base name each.\n",//~va2jR~
-"             %s,%s,%s,%s を各々経路,ファイル,フルパス,ベース名に使用可.\n",//~va2jR~
-                                        Scmdrepword[0],Scmdrepword[1],Scmdrepword[2],Scmdrepword[3]);//~va2jI~
+//"             use %s,%s,%s,%s for path,file,fullpath,base name each.\n",//~va2jR~//~van3R~
+//"             %s,%s,%s,%s を各々経路,ファイル,フルパス,ベース名に使用可.\n",//~va2jR~//~van3R~
+//                                        Scmdrepword[0],Scmdrepword[1],Scmdrepword[2],Scmdrepword[3]);//~va2jI~//~van3R~
+"             use %s,%s,%s,%s,%s for path,file,fullpath,base name each.\n",//~van3I~
+"             %s,%s,%s,%s,%s を各々経路,ファイル,フルパス,ベース名に使用\n",//~van3R~
+                                        Scmdrepword[0],Scmdrepword[1],Scmdrepword[2],Scmdrepword[3],Scmdrepword[4]);//~van3I~
+        HELPMSG                                                    //~van3I~
+"             %s is relative path from top dir(top is \"\").\n",   //~van3I~
+"             %s は トップDirからの相対パス、トップは \"\"\n",     //~van3I~
+                                        Scmdrepword[4]);           //~van3I~
         HELPMSG                                                    //~v138I~
 "             (%s is replaced to dir-name when %cPd.)\n",          //~v141R~
 "             (%s は %cPd のときはディレクトリー名に置換されます.)\n",//~v141R~
@@ -1285,6 +1323,10 @@ void help(void)
 "            :attr=S,H,D(default is SH).'+'/'-' can  be prefixed.\n",//~v131R~
 "            :attr=S,H,D(省略値は SH),'+'/'-'を前付けできる\n");
 #endif //!UNX                                                      //~v174M~
+        HELPMSG                                                    //~van4I~
+"    %cCx     :change parameter sign to x. (e.g) $fp$ by %cC$.\n", //~van4I~
+"    %cCx     :パラメータ指定文字に x を使う、例えば %cC$ で $fp$\n",//~van4I~
+				CMDFLAG_PREFIX,CMDFLAG_PREFIX);                    //~van4I~
         HELPMSG
 "    %cLlevel :dig directory up to the depth(0 mean starting dir,Default=4096)\n",//~v141R~
 "    %cLlevel :掘り下げるディレクトリーの深さ(0が開始ディレクトリー,省略値=4096)\n",//~v141R~
@@ -1361,8 +1403,8 @@ void help(void)
 				CMDFLAG_PREFIX);                                   //~v173I~
 #endif                                                             //~v172I~
         HELPMSG
-"          n :set null value when no parm data for %s,%s(%cNn)\n", //~v141R~
-"          n :%s,%sにデータが無い時それをNULLに置換する(%cNn)\n",  //~v141R~
+"          n :set null value when no parm data for %s,%s,... (%cNn)\n", //~v141R~//~van4R~
+"          n :%s,%sなどにデータが無い時それをNULLに置換する(%cNn)\n",  //~v141R~//~van4R~
                 Scmdrepword[1],Scmdrepword[2],CMDFLAG_PREFIX);     //~v141R~
 //        HELPMSG                                                  //~v140R~
 //"          t :trace executed command text and subdir(/Yt)\n",    //~v140R~
@@ -1400,6 +1442,14 @@ void help(void)
 "       %s %c2wkf %c%cgetstder parm1                  ::redirection only\n",//~v141R~
 "       %s %c2wkf %c%cgetstder parm1                     ::リダイレクション\n",//~v141R~
         Spgm,CMDFLAG_PREFIX,CMDFLAG_PREFIX,CMDFLAG_PREFIX);        //~v141R~
+        HELPMSG                                                    //~van3I~
+"       %s topdir *.html %cNh %c%cxcv %%fp%% outdir%c%%rp%%%c%%f%% %cs2f   ::relative path\n",//~van3R~
+"       %s topdir *.html %cNh %c%cxcv %%fp%% outdir%c%%rp%%%c%%f%% %cs2f   ::相対パス\n",//~van3R~
+        Spgm,CMDFLAG_PREFIX,CMDFLAG_PREFIX,CMDFLAG_PREFIX,DIR_SEPC,DIR_SEPC,CMDFLAG_PREFIX);//~van3R~
+        HELPMSG                                                    //~van4I~
+"       %s d1 *.html %cNh %cC$ %c%cxcv $fp$ d2%c$rp$%c$f$ %cs2f ::alternative sign\n",//~van4R~
+"       %s d1 *.html %cNh %cC$ %c%cxcv $fp$ d2%c$rp$%c$f$ %cs2f ::パラメータ文字\n",//~van4R~
+        Spgm,CMDFLAG_PREFIX,CMDFLAG_PREFIX,CMDFLAG_PREFIX,CMDFLAG_PREFIX,DIR_SEPC,DIR_SEPC,CMDFLAG_PREFIX);//~van4I~
         titlemsg();
         return;
 }//help

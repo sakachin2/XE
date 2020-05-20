@@ -1,4 +1,4 @@
-//*CID://+vb31R~:                                    update#=  111;//~vb31R~
+//*CID://+vb31R~:                                    update#=  112;//~vb31R~
 //*************************************************************
 //*xefcmd23.c
 //*  find sub                                                      //~v635R~
@@ -616,7 +616,7 @@ int fcmdsplitrep(PUCLIENTWE Ppcw,PULINEH Pplh,int Pspanlen)
 //* parm3 :output record pos search strat                       //~4C30I~
 //* parm4 :0:line search sw                                        //~v47iR~
 //* rc    :0:csr is  on client area, 4:csr is out of client area   //~v47iI~
-//         1:cout of client area but line is on client area        //~v09eI~
+//         1:out of client area but line is on client area        //~v09eI~//+vb31R~
 //****************************************************************//~4C30I~
 int fcmdgetstartplhoffs(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Popt)//~v47iR~
 {                                                               //~4C30I~
@@ -1894,8 +1894,8 @@ int fcmd_bitcodetype(int Popt,char *Pcodetype,char *Pbitarray,int Pctlen,int Pbi
                 bitoffs=ii%8;                                      //~va5wI~
                 ctbit=(0x80>>bitoffs);                             //~va5wI~
 //              Pbitarray[byteoffs]|=ctbit;                        //~va5wR~//~vb30R~
-//              Pbitarray[byteoffs]|=(char)ctbit;                  //+vb31R~
-                Pbitarray[byteoffs]=(char)(Pbitarray[byteoffs]|ctbit);//+vb31I~
+//              Pbitarray[byteoffs]|=(char)ctbit;                  //~vb31R~
+                Pbitarray[byteoffs]=(char)(Pbitarray[byteoffs]|ctbit);//~vb31I~
             }                                                      //~va5wI~
         }//for                                                     //~va5wI~
     }                                                              //~va5wI~

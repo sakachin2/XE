@@ -1,4 +1,4 @@
-||*CID:||+v129R~:  2019/09/18              update#=  587;             ||~v129R~
+||*CID:||+v129R~:  2020/05/17              update#=  589;             ||~v129R~
 ######################################################################
 [English]    v1.29                                                    ||~v128R~||~v129R~
 
@@ -116,18 +116,18 @@
  v1.2   xcvsjisc.exe Convert SJIS in xe's source file to Octal-notation.||~124FR~
  v2.29  xdc.exe      directory compare tool                           ||~127SR~||~v128R~||~v129R~
  v2.1   xdd.exe      directory delete tool                            ||~128FR~||~v128R~
- v1.12  xdig.exe     directory walk utility                           ||~124FR~||~127AR~||~127QR~||~v129R~
+ v1.13  xdig.exe     directory walk utility                           ||~124FR~||~127AR~||~127QR~||+v129R~
                      tool apply command to all sub-directory/files.
         xdig.txt     doc for xdig                                     ||~124FR~
  v1.12  xds.exe      Directory size display tool                      ||~124RR~||~126BR~||~127AR~||~v129R~||~v129R~
  v1.27  xfc.exe      File compare tool                                ||~127SR~||~v128R~||~v129R~
  v1.7   xff.exe      file search by size/timestamp/name.               ||~7B08R~||~127ER~
- v1.20  xfg.exe      Binary file string search & Recursive grep.      ||~127AR~||~128FR~||~v128R~||~v129R~
+ v1.21  xfg.exe      Binary file string search & Recursive grep.      ||~127AR~||~128FR~||~v128R~||+v129R~
  v1.4   xfmt.exe     FileLineFormatter. "TC FMT" for huge file.       ||~124QR~||~v125R~
  v2.8   xfs.exe      Split large file,it enable backup large file to  ||~124RR~||~127QR~||~v128R~
                      diskets.
  v1.4   xkp.exe      (Windows) display process-id and kill process.   ||~127QR~||~v128R~||~v129R~
- v1.6   xlow.exe     Rename UpperCase file name to LowerCase.         ||~127AR~||+v129R~
+ v1.6   xlow.exe     Rename UpperCase file name to LowerCase.         ||~127AR~||~v129R~
  v1.2   xmj.exe      2 file matching.                                 ||~v125R~
  v1.2   xpe.exe      Display comment of errno(libc error code).
  v1.6   xts.exe      Set/Display File timestamp                       ||~124KR~||~126JR~
@@ -2442,7 +2442,8 @@ How to start.
   .v129H<--129G:(2018/02/22)                                          ||~v129R~
   .v129J<--129H:(2018/05/10)                                          ||~v129I~
   .v129K<--129J:(2018/08/27)                                          ||~v129R~
-  .v129L<--129K:(2018/09/18)                                          ||~v129I~
+  .v129L<--129K:(2019/09/18)                                          ||~v129R~
+  .v129M<--129L:(2020/05/17)                                          ||~v129I~
                                                                       ||~v129R~
      1.BUGs                                                           ||~v129R~
        -(Windows:64)"&"(spawn executable file) dir cmd crush.         ||~v129R~
@@ -2488,8 +2489,22 @@ How to start.
        -Consecutive Esc key clear line cmd except label,              ||~v129R~
         but cmd specified the labe get error of label not found.      ||~v129R~
        -When screen is split, it may occurs that line cmd on edit panel is ignored.||~v129R~
+                                                                      ||~v129I~
      (129L)                                                           ||~v129I~
        -Bug of function Alt+"/" (<tag > pairing search for xml/html text)||~v129I~
+                                                                      ||~v129I~
+     (129M)                                                           ||~v129I~
+       -Function:"Search word on the cursor" (Alt/Ctrl+"["/"]")       ||~v129I~
+        e.g) Search "ABC+DEFG" if cusror is on the "+" of "ABC+DEFG", ||~v129I~
+        search "ABC" if on the "C".                                   ||~v129I~
+        Repeating the same key finds next.                            ||~v129I~
+        Intermediate PgDn/PgUp/PgLeft(F10)/PgRight(F11) key looses    ||~v129I~
+        concatinated word search effect at start.                     ||~v129I~
+       -exe cmd (sequencially execute cmds in the specified file) may crush.||~v129I~
+        e.g) xe crush by "exe ! cmdfile" on dir list panel.           ||~v129I~
+        "exe ! cmdfile <s *.html" is valid.                           ||~v129I~
+       -SORt cmd on dir list panel.                                   ||~v129I~
+        Descendant option(/Ot-,/Os-) works but ascendant option(/Ot,/Os) did not.||~v129I~
                                                                       ||~v129R~
      2.Additional function.                                           ||~v129I~
                                                                       ||~v129I~
@@ -2617,10 +2632,14 @@ How to start.
        -Limit to SBCS for alternative character of "OPT UNICOMB U-xxxx" cmd||~v129R~
        -Explicit "Force" option is required at save when timestamp was changed from loading time.||~v129R~
         Re-enter of PF3 is not effective from now, use "SAVe -Force" or "END -force" cmd.||~v129R~
+                                                                      ||~v129I~
      (129L)                                                           ||~v129I~
        -(Linux)on debian10, gnome2 is obsoleted.                      ||~v129I~
        -(Linux)PPD api is deprecated at cups-1.6.                     ||~v129I~
        -(Windows)Last line of panel of console version was for IME on Windows95.||~v129I~
+                                                                      ||~v129I~
+     (129M)                                                           ||~v129I~
+       -Accept Shift+Del on also excluded line(- n line excluded ---).||~v129I~
                                                                       ||~v129I~
      4.Tool.                                                          ||~v129I~
      (129C)                                                           ||~v129I~
@@ -2697,5 +2716,15 @@ How to start.
            xcfont * Weight=Bold      ; Set current font weight to Bold||~v129R~
            chcp 57002                ; 57002:Devanagari, "Mangal" requires it.||~v129R~
            xcfont Mangal H=*         ; Codepage will be listed by "xcv /list".||~v129R~
+                                                                      ||~v129I~
      (129L)                                                           ||~v129I~
        -(Windows) xlow (covert case of filenamej1.6 (bug corrected)  ||~v129I~
+                                                                      ||~v129I~
+     (129M)                                                           ||~v129I~
+       -xfg v1.21 (Serach string in the directory)                    ||~v129I~
+          ./cpu8, /cplc option is added to search by translated string.||~v129I~
+          .(Win)"-e" option cause crush.(Temporally file was plased on c:\ which is protected on Windows10)||~v129I~
+       -xdig v1.13 (Applay the commands to all files in the directory)||~v129I~
+          .Accept parameter sign other than %.                        ||~v129I~
+           e.g) By /C$, $fp$ in the cmd string is replaced to fullpath name of the file in the directory.||~v129I~
+          .%rp% is added for path name relative to starting directory.||~v129I~

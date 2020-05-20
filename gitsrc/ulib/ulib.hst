@@ -1,4 +1,7 @@
-//*********  20180917 v129L release     ****************
+//*********  20200517 v129M release     ****************
+//v6Z0:200516 uwordrep option alternative parm sign
+//            uedit.c/h
+//*********  20190917 v129L release     ****************
 //v6Y1:190809 gnome2 obsoleted use gio
 //            uproc3.c
 //*********  20180902 v129L updated     ****************

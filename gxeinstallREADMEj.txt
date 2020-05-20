@@ -1,4 +1,4 @@
-V129G 2019/09/18 
+V129M 2020/05/17 
 (A)Automake パッケージ 導入手順。
 
     ディストリビューションによっては導入先フォルダーを変更する必要があるかもしれません。
@@ -64,9 +64,6 @@ V129G 2019/09/18
              install libgnomeprint-devel
         ===> install libgnomeui-dev
              install libgnomeprint2.2-dev  (ubuntu8)
-     OR (gnome2 が廃止されたディストリビューションの場合）
-        ./configure enable-libgnome2=no を使用する (glib2.0-dev install required)
-        gio.h が見つからないと出る場合も同様
     (6) pkg-config was not found
         ===> install pkg-config
     (7) CHK_INSTALL_GTK3...no and  CHK_INSTALL_GTK2..no
@@ -436,3 +433,15 @@ V129G 2019/09/18
 
     Gtk-WARNING **: Calling IsInhibited failed: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.gnome.SessionManager was not provided by any .service files
             -->無害なので無視する
+(I) Rspberry PI  2020/05/16
+   configure エミュレーターでテストしました（image:"2020-02-13-raspbian-full" on QEMU3.1.0）
+     ./configure で以下のエラーがありました
+        term.h not found
+        -->#apt-get install libncurses-dev
+        cups/cups.h not found
+        -->#apt-get install libcups2-dev
+        install GTK2 or GTK3
+        -->#apt-get install libgtk-3-dev
+        select libgnome2 or glib-2.0
+        -->#apt-get install glib-2.0
+        ==>./configure 成功

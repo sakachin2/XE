@@ -1,4 +1,4 @@
-CID:||+v129R~:  2019/09/18                 update#=  687;             ||+v129R~
+CID:||+v129R~:  2020/04/18                 update#=  690;             ||~v129R~||+v129R~
 ************************************************************************
 (Index)
     (0).Introduction.
@@ -4360,6 +4360,12 @@ sample)
         %@   :all remaining parameters not used by %n up to the position.||~127ER~
         %* and %^ is replaced to space if the screen is not file/dir panel.||~127ER~
         e.g. grep %1 %^>::tmp; e ::tmp;                                ||~127ER~||~v128R~
+                                                                      ||+v129R~
+             Find.exe cmd is available on Windows 10 as alternative of grep.||+v129R~
+             Register cmd like as aollowing.                          ||+v129R~
+               gre c:\Windows\System32\find.exe %1 %2 %3 %4           ||+v129R~
+             Use it on =6 panel like s following. (Quotation is required for search word)||+v129R~
+               gre /N /I "search-word" c:\user\srctext                ||+v129R~
 
       POS/HOM command is for cursor movement.                         ||~127ER~
       Starting cursor position is top of command input column.        ||~127ER~
@@ -6087,8 +6093,8 @@ by screen expansion)
        .Options    : specify option parameter of the tool.            
                      Execute the tool with no operand when "?" is specified.
                      diff displays help message by --help option.     
-                     -nolist  :output one line msg notifies return code.||+v129R~
-                     -CPU8    :Windows only, shou result as UTF8 encoded file.||+v129R~
+                     -nolist  :output one line msg notifies return code.||~v129R~
+                     -CPU8    :Windows only, shou result as UTF8 encoded file.||~v129R~
         Curr Dir   : display current directory.                       
 #ifndef UNX                                                           
                      Current directory of the drive of the cursor line is displayed.
@@ -7113,7 +7119,7 @@ by screen expansion)
    = Termination
 
         {END | RETurn | QUIt | EXIt | CANcel}  [-NB|-BK] [CPU8|CPLC|CPEB] [IE]||~v125R~||~v125R~
-                   [/M{T|P|U|M|E|R|V}] [/F{n[-m]|vfmt}] [-S{r|i|d}] [-Force]            ||~v125R~||~127BR~||+v129R~
+                   [/M{T|P|U|M|E|R|V}] [/F{n[-m]|vfmt}] [-S{r|i|d}] [-Force]            ||~v125R~||~127BR~||~v129R~
 
             EXI   :terminate current screen hierarchy(half of split)  
             RET   :return to command prompt(Update is saved)
@@ -7155,9 +7161,9 @@ by screen expansion)
                              replace both side of space, if available, to SO/SI.||~v125R~
                          i : Inserte SO/SI when translation to EBCDIC.||~v125R~
                          d : Delete SO/SI when translation from EBCDIC.||~v125R~
-              -Force   :Warning is issued when timestamp of the file was changed from time of opened||+v129R~
-                        (the file was updated in the other session),  ||+v129R~
-                        use this option to force save.                ||+v129R~
+              -Force   :Warning is issued when timestamp of the file was changed from time of opened||~v129R~
+                        (the file was updated in the other session),  ||~v129R~
+                        use this option to force save.                ||~v129R~
                                                                       ||~v125R~
 #endif                                                                ||~v124R~
 
@@ -8125,12 +8131,12 @@ by screen expansion)
                                                                       ||~v125R~
                COMB, SPLIT, UNPR : display combined, split and alternate character each.||~v125R~
                                                                       ||~v128R~
-               Following 3 operand is for Linux Console version only and specify how to write to screen||+v129R~
-               when split mode and combine.(when combine mode, applied only when csr is on the line.)||+v129R~
+               Following 3 operand is for Linux Console version only and specify how to write to screen||~v129R~
+               when split mode and combine.(when combine mode, applied only when csr is on the line.)||~v129R~
                  SHADOW : write combining character with base character of the left side.||~v125R~
                  ITSELF : write combining character itself as single. ||~v125R~
                  PADDING: write tab display character which is cleared by "TAB OFF" cmd||~v125R~
-               U-xxxx : any SBCS unicode you prefer.                      ||~v128R~||+v129R~
+               U-xxxx : any SBCS unicode you prefer.                      ||~v128R~||~v129R~
                U-00 will restore default value(':'(u-3a)).            ||~v128R~
                Cmd with no operand shows current status.              ||~v128R~
                                                                       ||~v125R~
@@ -8325,7 +8331,7 @@ by screen expansion)
    =  Save file
 
         SAVe    [file-name] [/M{T|P|U|M|E|R|V}] [-x | -nx] [-NB] [-F{n[-m]|vfmt}]              ||~v124R~||~v125R~||~v125R~||~127BR~
-                [-CPU8|-CPLC|-CPEB[:codepage]] [IE] [-S{r|i}d}] [-Force]                                   ||~v125R~||~v125R~||~v125R~||+v129R~
+                [-CPU8|-CPLC|-CPEB[:codepage]] [IE] [-S{r|i}d}] [-Force]                                   ||~v125R~||~v125R~||~v125R~||~v129R~
 
           file-name : wild card avail to rename.
                                                                       ||~v125R~
@@ -8369,9 +8375,9 @@ by screen expansion)
                        i : Inserte SO/SI when translation to EBCDIC.  ||~v125R~
                        d : Delete SO/SI when translation from EBCDIC. ||~v125R~
 #endif                                                                ||~v124R~
-            -Force   :Warning is issued when timestamp of the file was changed from time of opened||+v129R~
-                        (the file was updated out of this session),   ||+v129R~
-                        use this option to force save and close panel.||+v129R~
+            -Force   :Warning is issued when timestamp of the file was changed from time of opened||~v129R~
+                        (the file was updated out of this session),   ||~v129R~
+                        use this option to force save and close panel.||~v129R~
                                                                       ||~v124R~
             -Without terminating edit screen,write all line to the file.
             -Use file-name operand when it cannnot be saved because disk
@@ -8417,13 +8423,13 @@ by screen expansion)
                                                                       ||~v129I~
             -label1/2:line range  col1/2:column range                 ||~v129I~
              numeric specification for both label 1 and 2 are accepted as lineno.||~v129I~
-             Block mode if col1/2 specified, Range mode if col1/2 is not specified.       ||~v129I~||+v129R~
-             "Select All" if both label and column is not specified.                        ||~v129I~||+v129R~
+             Block mode if col1/2 specified, Range mode if col1/2 is not specified.       ||~v129I~||~v129R~
+             "Select All" if both label and column is not specified.                        ||~v129I~||~v129R~
                e.g.) sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;       ||~v129I~
-            -Select block/range to Cut/Copy/Paste on Edit panel.            ||~v129I~||+v129R~
-             You can paste just after selection of block.             ||+v129R~
-             For range mode, selected range itself is target of Paste Range mode.||~v129I~||+v129R~
-             So you need to save the region(Alt+F9) before paste(Alt+F8/Alt+Ins).||+v129R~
+            -Select block/range to Cut/Copy/Paste on Edit panel.            ||~v129I~||~v129R~
+             You can paste just after selection of block.             ||~v129R~
+             For range mode, selected range itself is target of Paste Range mode.||~v129I~||~v129R~
+             So you need to save the region(Alt+F9) before paste(Alt+F8/Alt+Ins).||~v129R~
             -Abridged format command "S" is not available             ||~v129I~
              "S" means "SAVe" on Browse/Edit panel.                   ||~v129I~
 
@@ -9130,17 +9136,17 @@ by screen expansion)
                           H :fieldno guide line is inserted.
                           D[delimiter]:input field seperator. default is " ".
                                        "D" means D",".
-                                       Multiple characters are avail like as D" ,".||+v129R~
-                                       And both " " and "," are delemeter.||+v129R~
-                                       Escape seequence is available like as D"\t\x0a\xff".||+v129R~
-                                       Unicode pattern is, e.g. D\u00c1.||+v129I~
+                                       Multiple characters are avail like as D" ,".||~v129R~
+                                       And both " " and "," are delemeter.||~v129R~
+                                       Escape seequence is available like as D"\t\x0a\xff".||~v129R~
+                                       Unicode pattern is, e.g. D\u00c1.||~v129I~
                           S[R][outdelm]:field seperator to be set after formatted.
                                         R      :delete input delimiter.
                                         outdelm:string to be inserted.
                                                 default is " ".
-                                                Escape seequence is available except \t(0x09).||+v129R~
-                                                Multiple charcters mean string to be inserted.||+v129R~
-                                                DBCS is allowed.      ||+v129R~
+                                                Escape seequence is available except \t(0x09).||~v129R~
+                                                Multiple charcters mean string to be inserted.||~v129R~
+                                                DBCS is allowed.      ||~v129R~
                 break-key:[type]column1-column2[>|!|<]                ||~v124R~
                           For opcode=+(Summary),specify break point to
                           set sub-total.Table should be sorted by this
@@ -13659,6 +13665,12 @@ by screen expansion)
                .On Linux,space embeding path name is troublesome,
                 specify like as  <grep "a b.dir"/*.c>,
                 <grep "a b.dir/*.c"> may fail.
+                                                                      ||+v129R~
+         Find.exe cmd is available on Windows 10 as alternative of grep.||+v129R~
+         Register cmd like as aollowing.                              ||+v129R~
+           gre c:\Windows\System32\find.exe %1 %2 %3 %4               ||+v129R~
+         Use it on =6 panel like s following. (Quotation is required for search word)||+v129R~
+           gre /N /I "search-word" c:\user\srctext                    ||+v129R~
 #ifdef UNX
 
    = MKDir   -Mmode dir-name [dir-name...]

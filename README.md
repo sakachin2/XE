@@ -1,5 +1,5 @@
 # XE
-SPF like Editor xe           2019/09/18 V129L
+SPF like Editor xe           2020/05/17 V129M
 
     This editor is fit for programmers working on both main-frame and PC.
     Its operation is based on mainframe SPF editor,
@@ -14,7 +14,7 @@ SPF like Editor xe           2019/09/18 V129L
         .Supports Remote file access using ftp,samba,rsh,ssh,fuse.
         .Optionally update-tag:CID(ChangeID) is automatically appended to updated lines.
 *********************************************************************************************
-(Japanese)                   2019/09/18 V129L
+(Japanese)                   2020/05/17 V129M
 
     メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。
     ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。

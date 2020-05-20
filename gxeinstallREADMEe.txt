@@ -1,4 +1,4 @@
-V129L 2019/09/18 
+V129M 2020/05/17 
 (A) Automake package installation step
 
     You may update configure before ./configure
@@ -435,3 +435,15 @@ V129L 2019/09/18
 
     Gtk-WARNING **: Calling IsInhibited failed: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.gnome.SessionManager was not provided by any .service files
             -->Not harmfull,ignorable.
+(I) Rspberry PI  2020/05/16
+   configure on Emulator: image:"2020-02-13-raspbian-full" on QEMU3.1.0.
+     ./configure get some err as followings.
+        term.h not found
+        -->#apt-get install libncurses-dev
+        cups/cups.h not found
+        -->#apt-get install libcups2-dev
+        install GTK2 or GTK3
+        -->#apt-get install libgtk-3-dev
+        select libgnome2 or glib-2.0
+        -->#apt-get install glib-2.0
+        ==>./configure completed

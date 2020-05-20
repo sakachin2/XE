@@ -1,3 +1,10 @@
+//*********  20200517 v129M release   ****************
+//van5:200518 xfg 1.21:(Bug) xfg -exxx "" dir -->search current dir by fullpath of "".
+//van4:200516 xdig 1.13:/Cx parm for alternative of %, e.g $fp$ by /C$.
+//van3:200515 xdig 1.13:%rp% support(path relative to starting dir)
+//van2:200420 xfg 1.21:(Win:Bug)redirect filename(c:\xfg2) is protected now
+//van1:200420 xfg 1.21:(Bug)err msg:specify word and file when -e parm.
+//van0:200419 xfg 1.21:search word by CPU8/CPLC
 //*********  20190917 v129L release   ****************
 //vam2:190914 xlow 1.6: (Lnx:compile err) by vam1
 //vam1:181105 xlow 1.6: (Windows:Bug) checking shortname(valid for DOS version only) 

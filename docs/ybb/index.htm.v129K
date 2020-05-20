@@ -1,0 +1,1244 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>                                                 
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+
+<META http-equiv="Content-Style-Type" content="text/css">
+<META name="Keywords" content="SPF,SPF editor,AIX editor,Linux editor,disassemble,unassemble,sudoku,xe,gxe,wxe,kill,ADS,Alternative Data Stream,turnkey,MVS,3270,emulator,TSO,TSOE,UTF8,UTF-8,CJK,zh_CN,ko_KR,eucKR,Syntax Highlight,Linux/390,EBCDIC,ANDROID,jagoclient,gnugo,NDK,Samba,smbclient,JCIFS,Axe,Raspberry Pi,Raspbian">
+<TITLE>MIZUMAKI-machi Freewares update</TITLE>
+<style type="text/css">
+.auto-style1 {
+	color: #FF0033;
+}
+.auto-style2 {
+	margin-left: 0px;
+}
+</style>
+</HEAD>
+<BODY bgcolor="#889988" alink="#ff0000">
+<BLOCKQUOTE><IMG src="logo3.gif" width="402" height="37" border="0" alt="Welcome to My HomePage">
+<DIV align="left"><A href="#Japanese"><IMG src="logo8.gif" width="216" height="22" border="0" alt="==>Japanese(日本語）
+"></A><B>&lt;--(Click)</B></DIV>
+<BR>
+<FONT size="+2"><B>GNU GPL is applied for all in this page.</B></FONT><BR>
+<DIV align="right"><FONT size="+2" color="#006666"><B>MIZUMAKI-machi</B></FONT></DIV>
+</BLOCKQUOTE>
+<P><FONT color="#990033" size="6"><BLINK><U>TemporalyFixUpdate &amp; SourceCode Page</U><BR>
+</BLINK></FONT></P>
+<!-- <P><IMG src="@geocounter" border="0"></P> -->
+<P><B><script language="javascript" type="text/javascript" src="http://counter1.fc2.com/counter.php?id=25073462&main=1"></script></B></P>
+<NOSCRIPT><B><img src="http://counter1.fc2.com/counter_img.php?id=25073462&main=1" /></B></NOSCRIPT>
+<P><B>( From 2014-06-25 )</B></P>
+<P align="right"><BR>
+<B>since:2005/05/03</B><BR>
+<B>Update:<FONT size="+2">2017/08/28JST</FONT></B></P>
+
+<P>
+<B>UpdateLog</B><BR>
+</P>
+
+
+<B>
+<FONT color="#FF0000">
+2018/08/28
+</FONT>
+<FONT color="#000000">
+xe129K(Win,Linux) --&gt;
+<A href="V129K_E.htm">Details</A></FONT>
+</FONT>
+</B>
+<BR>
+<BR>
+
+<FONT color="#000000">
+2018/05/12
+</FONT>
+<FONT color="#000000">
+xe129J(Win,Linux) --&gt;
+<A href="V129J_E.htm">Details</A></FONT>
+</FONT>
+<BR>
+
+2018/03/09
+<FONT color="#000000">
+VBI2KWRT V2.06 --&gt;
+<A href="VBI2KWRT/V206E.htm">Details</A>
+</FONT>
+<BR>
+
+<FONT color="#000000">
+2018/02/27</FONT>
+<FONT color="#000000">
+VBI2KWRT V2.05 --&gt;
+<A href="VBI2KWRT/V205E.htm">Details</A>
+</FONT>
+<BR>
+
+<FONT color="#000000">
+2018/02/22</FONT>
+<FONT color="#000000">
+xe129H(Win,Linux) --&gt;
+<A href="V129H_E.htm">Details</A></FONT>
+<BR>
+
+<FONT color="#000000">
+2018/01/30</FONT>
+<FONT color="#000000">
+xe129G(Win,Linux) --&gt;
+<A href="V129G_E.htm">Details</A></FONT>
+<BR>
+
+<FONT color="#000000">
+2018/01/23</FONT>
+<FONT color="#000000">
+xe129F(Win,Linux) --&gt;
+<A href="V129F_E.htm">Details</A></FONT>
+<BR>
+
+<FONT color="#000000">
+2018/01/09</FONT>
+xe129E(Win,Linux) --&gt;
+<A href="V129E_E.htm">Details</A></FONT>
+<BR>
+
+<FONT color="#000000">
+2018/01/09</FONT>
+VBI2KWRT V2.04 --&gt;
+<A href="VBI2KWRT/v204E.htm">Details</A>
+<BR>
+
+2017/12/31 VBI2KWRT V2.03 --&gt;
+<A href="VBI2KWRT/README_E.htm">Details</A>
+<BR>
+<FONT color="#000000">2017/12/31</FONT>
+VBImage2Kana V1.16 --&gt;
+<A href="VBI2K/V116E.htm">Details</A>
+<BR>
+<FONT color="#000000">2017/12/04</FONT>
+xe129D(Win,Linux) --&gt;
+<A href="V129D_E.htm">Details</A></FONT>
+<BR>
+
+<FONT color="#000000">2017/10/28</FONT>
+VBImage2Kana V1.15 --&gt;
+<A href="VBI2K/V115E.htm">Details</A>
+<BR>
+
+<FONT color="#000000">2017/09/27
+VBImage2Kana V1.14 --&gt;
+<FONT color="#ff3333">
+<A href="VBI2K/V114E.htm">Details</A></FONT> <br>2017/09/23
+</FONT>
+VBImage2Kana<FONT color="#000000"> V1.03 --&gt;
+</FONT>
+<FONT color="#ff3333">
+<A href="VBI2K/V103E.htm">Details</A></FONT></B>
+<BR>
+<FONT color="#000000">
+<FONT color="#000000">2017/09/07
+</FONT>
+xe129C(Win,Linux,Axe) --&gt;
+<FONT color="#ff3333">
+<A href="V129C_E.htm">Details</A></FONT><br>2017/07/30
+</FONT>
+<FONT color="#000000">xe129B(Win,Linux) --&gt;
+</FONT>
+<FONT color="#ff3333">
+<A href="V129B_E.htm">Details</A></FONT></B>
+<FONT color="#ff0033">
+<BR>
+<FONT color="#000000">2017/06/26
+xe129A(Win,Linux) --&gt;
+</FONT>
+<FONT color="#ff3333">
+<A href="V129A_E.htm">Details</A></FONT></FONT>
+<FONT color="#ff0033"><BR>
+<FONT color="#000000">2017/06/21
+VBImage2kana ( --&gt;
+</FONT>
+<FONT color="#ff3333">
+<A href="VBI2K/VBI2K_101E.htm">Details</A>
+</FONT>
+<FONT color="#000000">)
+</FONT>
+</FONT><br>
+<FONT color="#ff0033">
+<FONT color="#000000">2017/04/01
+xe129(Win,Linux,srcAxe) ( --&gt;
+</FONT>
+<FONT color="#ff3333">
+<A href="V129_E.htm">Details</A>
+</FONT>
+<FONT color="#000000">)
+</FONT>
+</FONT><br>
+<FONT color="#ff0033">
+<FONT color="#000000">2017/02/18
+xe128H(Win,Linux) ( --&gt;
+</FONT>
+<FONT color="#ff3333">
+<A href="V128H_E.htm">Details</A>
+</FONT>
+<FONT color="#000000">)</FONT></FONT><FONT color="#000000">
+</FONT><BR>
+<FONT color="#ff0033">
+<FONT color="#000000">2017/02/02
+</FONT>
+<FONT color="#000000">xe128G(Win,Linux) ( --&gt;
+</FONT>
+<FONT color="#ff3333">
+<A href="V128G_E.htm">Details</A>
+</FONT>
+<FONT color="#000000">)
+</FONT>
+</FONT>
+<BR>
+<FONT color="#ff3333"><FONT color="#ff0033"><FONT color="#ff3333">
+<FONT color="#ff0033"><FONT color="#ff3333"><FONT color="#ff0033">
+<FONT color="#ff3333"><FONT color="#ff0033"><FONT color="#ff3333">
+<FONT color="#ff0033"><FONT color="#000000">2016/12/21 xe128F(Win,Linux) ( --&gt; </FONT><FONT color="#ff3333"><A href="V128F_E.htm">Details</A></FONT><FONT color="#000000">)</FONT><BR>
+</FONT><FONT color="#000000">2016/09/19</FONT><FONT color="#ff0033"> </FONT><FONT color="#000000">xe128E(Win,Linux) ( --&gt;</FONT>
+<FONT color="#ff0033"><A href="V128E_E.htm">Details</A><FONT color="#000000">)</FONT></FONT><BR>
+<FONT color="#ff0033"><FONT color="#ff3333"><FONT color="#ff0033"><FONT color="#ff3333"><FONT color="#ff0033"><FONT color="#ff3333"><FONT color="#ff0033"><FONT color="#ff3333"><FONT color="#ff0033"><FONT color="#ff3333"><FONT color="#ff0033"><FONT color="#ff3333"><FONT color="#ff0033"><FONT color="#ff3333"><FONT color="#ff0033"><FONT color="#ff3333"><FONT color="#ff0033"><FONT color="#ff3333"><FONT color="#ff0033"><FONT color="#ff3333"><FONT color="#ff0033"><FONT color="#ff3333"><FONT color="#ff0033"><FONT color="#ff3333"><FONT color="#ff0033"><FONT color="#ff3333"><FONT color="#000000">2016/08/25</FONT><FONT color="#ff0033"> </FONT><FONT color="#000000">xe128D(Win,Linux) ( --&gt;</FONT>
+<FONT color="#ff0033"><A href="V128D_E.htm">Details</A></FONT>
+<FONT color="#000000">)</FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT><BR>
+</FONT><FONT color="#000000">2016/06/25 xe128C(Win,Linux) ( --&gt;</FONT>
+<FONT color="#ff0033"><A href="V128C_E.htm">Details</A></FONT>
+<FONT color="#000000">)</FONT></FONT><BR>
+</FONT><FONT color="#000000">2016/04/07</FONT><FONT color="#ff0033"> </FONT><FONT color="#000000">xe128B(Win,Linux) ( --&gt;</FONT>
+<FONT color="#ff0033"><A href="V128B_E.htm">Details</A></FONT>
+<FONT color="#000000">)</FONT></FONT><BR>
+</FONT><FONT color="#000000">2015/06/02</FONT><FONT color="#ff0033"> </FONT><FONT color="#000000"><FONT color="#000000">xe128A(Win,Linux,Axe) ( --&gt;</FONT></FONT>
+<FONT color="#ff0033"><A href="V128A_E.htm">Details</A></FONT><FONT color="#000000"><FONT color="#000000">)</FONT></FONT><FONT color="#000000"><FONT color="#000000"><BR>
+2015/03/17</FONT></FONT><FONT color="#ff0033"><FONT color="#ff3333"> </FONT><FONT color="#000000">xe128(Win,Linux) ( --&gt;<A href="V128_E.htm">Details</A><B> </B>)<B><BR>
+</B></FONT><FONT color="#ff3333"><FONT color="#ff0033"><FONT color="#000000">2015/03/09</FONT><FONT color="#ff3333"><B> </B></FONT><FONT color="#000000"><FONT color="#000000">xe127S(Win,Linux) ( --&gt;</FONT></FONT><FONT color="#ff3333"><A href="V127S_E.htm">Details</A> </FONT><FONT color="#000000"><FONT color="#000000">)</FONT></FONT></FONT></FONT></FONT></FONT><BR>
+</FONT><FONT color="#000000">2015/01/20 xe127R(Win,Linux) ( --&gt;<A href="V127R_E.htm">Details</A> )<BR>
+</FONT><FONT color="#000000">2015/01/19 xe127Q(Win,Linux) ( --&gt;<A href="V127Q_E.htm">Details</A> )</FONT></FONT><BR>
+</FONT><FONT color="#000000">2014/12/25 xe127P(Win,Linux) ( --&gt;<A href="V127P_E.htm">Details</A> )</FONT><BR>
+</FONT><FONT color="#000000">2014/09/08</FONT><FONT color="#ff3333"><FONT color="#000000"> Afuego(--&gt;<A href="Afuego_E.htm">Details</A> )</FONT><B><BR>
+</B></FONT><FONT color="#000000">2014/07/09<FONT color="#000000"></FONT></FONT><FONT color="#ff3333"><FONT color="#000000"> xe127N(Axe) ( --&gt;<A href="V127N_E.htm">Details</A> )</FONT><BR>
+</FONT><FONT color="#000000">2014/06/25 xe127M+(Win,Linux,RspberryPi) ( --&gt;<A href="V127M_E.htm">Details</A> )<BR>
+2014/03/22</FONT><FONT color="#ff3333"> <FONT color="#000000">xe127L(Win,Linux,RaspberryPi) ( --&gt;</FONT><A href="V127L_E.htm">Details</A> <FONT color="#000000">)</FONT><BR>
+</FONT><FONT color="#000000">2014/02/22</FONT><FONT color="#ff3333"> </FONT><FONT color="#000000">xe127K(Linux) ( --&gt;</FONT><FONT color="#ff3333"><A href="V127K_E.htm">Details</A> </FONT><FONT color="#000000">)<BR>
+</FONT><FONT color="#000000">2014/02/20</FONT> xe127J(Linux,Raspberry Pi) ( --&gt;<A href="V127J_E.htm">Details</A> )<BR>
+<FONT color="#000000">2014/02/17</FONT> xe127H(Linux) ( --&gt;<A href="V127H_E.htm">Details</A> )<BR>
+<FONT color="#000000">2014/01/01</FONT> xe127G(Win,Linux) ( --&gt;<A href="V127G_E.htm">Details</A> )<BR>
+<FONT color="#000000">2013/12/20</FONT> xe127F(Linux) ( --&gt;<A href="V127F_E.htm">Details</A> )<BR>
+<FONT color="#000000">2013/12/14</FONT> xe127E(Win,Linux) ( --&gt;<A href="V127E_E.htm">Details</A> )<BR>
+<FONT color="#000000">2013/11/25</FONT> xe127D(Win,Linux) ( --&gt;<A href="V127D_E.htm">Details</A> )<BR>
+<FONT color="#000000">2013/09/08</FONT> <FONT color="#000000">!!-important-!!</FONT> xe127C(Linux) ( --&gt;<A href="V127C_E.htm">Details</A> )<BR>
+<FONT color="#000000">2013/08/17</FONT> xe127B(Win/Linux) ( --&gt;<A href="V127B_E.htm">Details</A> )<BR>
+<FONT color="#000000">2013/07/07</FONT><B> </B>xe127A(Win/Linux/Axe) ( --&gt;<A href="V127A_E.htm">Details</A> )<FONT color="#000000"><BR>
+2013/05/22</FONT><B> </B>xe126L(Win/Linux), Ajagoc v112 ( --&gt;<A href="V126L_E.htm">Details</A> )<FONT color="#000000"><BR>
+2012/12/19</FONT> xe126K(Linux), Ajagoc v108 ( --&gt;<A href="V126K_E.htm">Details</A> )<FONT color="#000000"><FONT color="#ff3333"><FONT color="#000000"><BR>
+2012/11/04</FONT></FONT> xcifb(C/C++/Java-Indentation tool)<BR>
+<FONT color="#ff3333"><FONT color="#000000"><FONT color="#000000">2012/09/23</FONT></FONT></FONT><B> </B>xe126J(Win/Linux/Android)(-&gt;<A href="V126J_E.htm">Details</A>)<BR>
+2012/07/19 NumberPlacePuzzle AndroidVersionv1.1(--&gt;<A href="20120719-E.htm">Detail</A>)<FONT color="#000000"><BR>
+2012/07/15</FONT></FONT><FONT color="#cc0000"><B> </B></FONT><FONT color="#000000"><FONT color="#000000">xe126H(Win/Linux/Android) (--&gt;</FONT></FONT><FONT color="#cc0000"><A href="V126H_E.htm">Details</A></FONT><FONT color="#000000"><FONT color="#000000">)</FONT><BR>
+2012/05/14</FONT><FONT color="#cc0000"> <FONT color="#000000">xe v126G(Win/Linux/Android) (--&gt;<A href="V126G_E.htm">Details</A>), AjagocV091<BR>
+</FONT></FONT><FONT color="#000000">2012/04/03</FONT><FONT color="#cc0000"> <FONT color="#000000">xe v126F(Win/Linux/Android) (--&gt;<A href="V126F_E.htm">Details</A>)</FONT></FONT><BR>
+<FONT color="#000000">2012/01/28</FONT><FONT color="#cc0000"> <FONT color="#000000">xe v126E(Android:Tested on Android3 and 4) (--&gt;<A href="V126E_E.htm">Details</A>)<BR>
+</FONT><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000">2012/01/18</FONT></FONT><FONT color="#cc0000"><B> </B><FONT color="#000000">xe v126D(Win/Linux/Android) (--&gt;<A href="V126D_E.htm">Details</A>)</FONT></FONT><BR>
+<FONT color="#000000">2011/11/22</FONT><FONT color="#cc0000"><B> </B><FONT color="#000000">xe v126C(LinuxSourcePkg, Linux 64bit binary)</FONT></FONT><BR>
+2011/11/06</FONT><FONT color="#cc0000"> <FONT color="#000000">Android Version Bug Fix</FONT></FONT><BR>
+<FONT color="#000000">2011/11/05</FONT><FONT color="#cc0000"> <FONT color="#000000">xe v1.26B(Win/Linux/Android)</FONT></FONT></FONT><BR>
+</FONT><FONT color="#000000"><FONT color="#000000">2011/05/25</FONT></FONT><FONT color="#cc0000"><B> </B><FONT color="#000000">xe v1.26A(Win/Linux)</FONT><BR>
+<FONT color="#000000"><FONT color="#000000">2011/05/24</FONT><FONT color="#cc0000"> <FONT color="#000000">Ajagoc</FONT></FONT>(jago client Android porting) Sources<BR>
+2011/05/17</FONT></FONT><B> </B>Android porting of Jagoclient and Gnugo<FONT color="#cc0000"><FONT color="#000000">(BugFix:Close by OptionMenu)<BR>
+</FONT></FONT><FONT color="#cc0000"><FONT color="#000000">2011/01/05</FONT></FONT><B><FONT color="#cc0000"><FONT color="#cc0000"><FONT color="#000000"> </FONT></FONT></FONT></B><FONT color="#cc0000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#000000">v1.25K(Win/Lnx)</FONT></FONT></FONT></FONT></FONT></FONT><B><FONT color="#cc0000"><FONT color="#cc0000"><FONT color="#000000"><BR>
+</FONT></FONT></FONT></B><FONT color="#cc0000"><FONT color="#000000">2010/12/18 NumberPlacePuzzle Android version v1.0</FONT></FONT><FONT color="#cc0000"><FONT color="#000000"><BR>
+<FONT color="#000000">2010/09/13</FONT><FONT color="#cc0000"><FONT color="#000000"> v1.25J(Win/Lnx)</FONT></FONT><BR>
+</FONT></FONT><FONT color="#000000">2010/08/24</FONT><FONT color="#cc0000"><B><FONT color="#000000"> </FONT></B><FONT color="#000000">Correction of broken HTML link(Update.125H/G)<FONT color="#000000">.<BR>
+2010/08/14</FONT><FONT color="#cc0000"><FONT color="#000000"> v1.25H(Win/Lnx)</FONT></FONT><BR>
+<FONT color="#000000">2010/07/27</FONT><FONT color="#cc0000"><FONT color="#000000"> v1.25G(Win/Lnx)</FONT><BR>
+</FONT><FONT color="#000000">2010/07/01</FONT><FONT color="#cc0000"><FONT color="#000000"> v1.25F(Win/Lnx)</FONT></FONT><BR>
+</FONT></FONT><FONT color="#000000"><FONT color="#000000">2010/03/26</FONT></FONT><B><FONT color="#cc0000"><FONT color="#000000"> </FONT></FONT></B><FONT color="#cc0000"><FONT color="#000000">v1.25E(Win/Lnx)<BR>
+2010/03/24</FONT><FONT color="#cc0000"><FONT color="#000000"> v1.25D(Win/Lnx)<FONT color="#cc0000"> </FONT><FONT color="#000000">and LinkInfo of Linux/390 rpm</FONT><FONT color="#cc0000"><BR>
+</FONT><FONT color="#000000">2010/02/23</FONT><FONT color="#cc0000"><FONT color="#000000"> v1.25C(Win/Lnx)</FONT></FONT><BR>
+</FONT></FONT><FONT color="#000000">2010/01/21</FONT><FONT color="#cc0000"><FONT color="#000000"> v1.25B(Win/Lnx), and v1.22 source was updated(Split cmd BUG) for AIX user<BR>
+</FONT></FONT><FONT color="#000000">2009/11/28 v1.22 source was updated(Make error was fixed) for AIX user<BR>
+</FONT></FONT><FONT color="#000000"><FONT color="#000000">2009/11/2</FONT></FONT><FONT color="#000000"><FONT color="#000000">2</FONT></FONT><FONT color="#cc0000"><FONT color="#000000"> v1.25A Win/Linux uploaded<BR>
+</FONT></FONT><FONT color="#000000">2009/09/22</FONT><FONT color="#cc0000"><FONT color="#000000"> v1.22 source was uploaded to fix BUG of aixV118<BR>
+</FONT></FONT><FONT color="#000000"><FONT color="#000000">2009/06/06</FONT></FONT><FONT color="#cc0000"><B><FONT color="#000000"> </FONT></B><FONT color="#000000">xe390 package(bin+src,tested Debian4 on Hercules emulator)v1.24 is uploaded</FONT></FONT><BR>
+<FONT color="#000000">2009/06/06</FONT><FONT color="#cc0000"><B><FONT color="#000000"> </FONT></B><FONT color="#000000">xe v1.24S is released as v1.24</FONT><FONT color="#cc0000"><BR>
+<FONT color="#000000">...........................<B>..</B><A href="xehelp/html/HID_SYNH_E.htm">SyntaxHighlight</A><B> </B>,<B> </B></FONT></FONT></FONT><A href="xehelp/html/HID_NLS_E.htm">NLS Support</A>(Chinese/Korean) ,<A href="xehelp/html/HID00000218.htm"> remote access</A> , <A href="xehelp/html/HID_TSOE_E.htm">tn3270 connection with S390 TSO/E</a> , <A href="xehelp/html/HID_PROF_E.htm">Profile cmd</a><BR>
+<BR>
+2007/10/06 xe v1.23N is released as formal v1.23.<BR>
+2007/03/05 puttykm(patch to puTTY enable key-remapping) was uploaded<BR>
+</P>
+<H2 align="left">Freewares<BR>
+</H2>
+<UL>
+  <LI>
+  <H2>Editor （Hybrid Editor XE) --&gt;<a href="xehelp/indexe.htm">Help-Html</a> 
+  <FONT color="#FF0000">v1.29K</FONT></H2>
+</UL>
+<BLOCKQUOTE>This editor is fit for programmers working on both main-frame and PC.<BR>
+Its operation is based on mainframe SPF editor, and like as other editor on PC,<BR>
+convenient short-cut key operation is hybrid.<BR>
+Basic filer operation is also provided such as Delete/Copy/Move/Print.<BR>
+It can also manipulate binary file.(Dump format or 3 line virtical Hex
+display mode)<BR>
+Powerfull data file edit function is provided to analyze logfile etc by
+Excel.<BR>
+Each version offer common operation on the differrent OS, DOS,OS/2,Windows,
+Linux and AIX.<BR>
+Windows,Linux,AIX version support remote access by ftp/rsh.<BR>
+Using s3270+IND$FILE+TSO,Win/Linux version support to access TSO file.<BR>
+  Win/Linux version support open by application such as  excel,explorer<BR>
+  /OpenOffice,Nortilus using filename extension association.<BR>
+<BR>
+<B>.Sample panel</B> of wxe(Windows GUI Version)<BR>
+<BR>
+...Eidt panel<BR>
+<BR>
+<IMG src="xescr2n.JPG" width="859"  height="933" border="0"><BR>
+<BR>
+...Eidt panel(After Syntax Highlight setup)<BR>
+<BR>
+<IMG src="xescr2nsh.JPG" width="859"  height="933" border="0"><BR>
+<BR>
+
+...Directory List panel<BR>
+<BR>
+<IMG src="xescr3.JPG" width="859" height="926" border="0"><BR>
+<BR>
+...Splitted screen. File History List panel and Command panel(after executed
+grep command)<B><BR>
+<BR>
+<IMG src="xescr1-6.JPG" width="859" height="926" border="0"><BR>
+<BR>
+******************************************************************** <BR>
+Android Version <BR>
+</B>
+<UL>
+  <LI><B>EditPanel:Vertical</B>
+    <DL>
+       <DT>
+             <IMG src="Axe/axe_vee.png" width="540" height="855"><BR>
+    </DL>
+  <LI><B>EditPanel:Horizontal</B>
+    <DL>
+       <DT>
+             <IMG src="Axe/axe_hee.png" width="851" height="536"><BR>
+    </DL>
+  <LI><B>xe's Keyboard</B>
+    <DL>
+       <DT>
+             <IMG src="Axe/axe_vkbde.png" width="540" height="848"><BR>
+    </DL>
+<LI><B>Keyboard when Flick Char Display Mode</B>
+    <DL>
+       <DT>
+             <IMG src="Axe/axe_kbd_plain.png" width="482" height="363"><BR>
+    </DL>
+
+ <LI><B>Keyboard:Symbol</B>
+    <DL>
+       <DT>
+             <IMG src="Axe/axe_kbd_sym.png" width="497" height="384"><BR>
+    </DL>
+ <LI><B>Keboard:AltGr</B>
+    <DL>
+       <DT>
+             <IMG src="Axe/axe_kbd_altg.png" width="499" height="385"><BR>
+    </DL>
+  <LI><B>Keyboard:Shift+AltGr</B>
+    <DL>
+       <DT>
+             <IMG src="Axe/axe_kbd_altgs.png" width="499" height="385"><BR>
+    </DL>
+  <LI><B>Keyboard:Fn Key</B>
+    <DL>
+       <DT>
+             <IMG src="Axe/axe_kbd_fn.png" width="483" height="363"><BR>
+    </DL>
+
+
+</UL>
+<B>********************************************************************<BR>
+Following commandline tools are also packed in archivefile</B>.<BR>
+<UL>
+  <LI>xprint
+  <DL>
+    <DT>text file print
+  </DL>
+  <LI>xads
+  <DL>
+    <DT>Acess Windows NTFS ADS (Alternative Data Stream) 
+  </DL>
+  <LI>xbc
+  <DL>
+    <DT>Basic calculator. support LongDecimal,Timestamp conversion etc.
+  </DL>
+  <LI>xcv
+  <DL>
+    <DT>Code conversion.(EUC,JIS(Kanji),SJIS(Shift JIS),Unicode,UTF-8,EBCDIC,HexDigit)
+  </DL>
+  <LI>xdc
+  <DL>
+    <DT>directory compare
+  </DL>
+  <LI>xdd
+  <DL>
+    <DT>directory cleanup
+  </DL>
+  <LI>xdig
+  <DL>
+    <DT>directory walk and apply commands.
+  </DL>
+  <LI>xds
+  <DL>
+    <DT>display directory size
+  </DL>
+  <LI>xfc
+  <DL>
+    <DT>file compare
+  </DL>
+  <LI>xff
+  <DL>
+    <DT>file search by name,latest modified date.
+  </DL>
+  <LI>xfg
+  <DL>
+    <DT>binary file string search
+  </DL>
+  <LI>xfmt
+  <DL>
+    <DT>text file field formating and selection.
+  </DL>
+  <LI>xfs
+  <DL>
+    <DT>large file split 
+  </DL>
+  <LI>xkp (windows version only)
+  <DL>
+    <DT>list and kill process 
+  </DL>
+  <LI>xmj
+  <DL>
+    <DT>file marge and join lines
+  </DL>
+  <LI>xpe
+  <DL>
+    <DT>display comment of errno,GetLastError()
+  </DL>
+  <LI>xts
+  <DL>
+    <DT>set file modified timestamp
+  </DL>
+  
+</UL>
+</BLOCKQUOTE>
+<BLOCKQUOTE>
+<P><BR>
+<B><FONT size="+2">Formal released Version</Font></B>(Same as ones on //hp.vector.co.jp/authors/VA010562/)</P>
+<UL>
+<LI><FONT color="#000000">(2005/04/30) </FONT><A href="XED113B.LZH">XE for DOS v1.13b </A>
+<LI><FONT color="#ffff00">(2009/06/06) </FONT><A href="XEGCC124.ZIP">XE for GCC v1.24 </A>
+<LI><FONT color="#ffff00">(2009/06/06) </FONT><A href="XEOS2124.ZIP">XE for OS/2 v1.24</A>
+<!--<LI><FONT color="#ffff00">(2013/05/23) </FONT><A href="xewin127base.zip">XE for Win v1.27 base</A>  -->
+<LI><FONT color="#000000">(2005/07/04) </FONT><A href="xeaix118.tgz">XE for AIX v1.18 </A> Make v122 source(see following section) by yourself to fix BUG (TAB:0x09
+  is replaced to SPACE:0x20 when binary mode edit).
+<!--<LI><FONT color="#ffff00">(2013/05/23) </FONT><A href="xelnx127base.tgz">XE for Linux v1.27 base</A> -->
+</UL>
+</BLOCKQUOTE>
+<BLOCKQUOTE><FONT color="#ff0000"><FONT color="#ff0000"><FONT color="#ff0000"><B><FONT size="+2" color="#ff0000"><FONT color="#ff0000"><FONT color="#ff0000"><BLINK><FONT size="+2" color="#cccc00">Latest Version</FONT></BLINK></FONT></FONT></FONT></B></FONT></FONT></FONT> (update log up after v.126 formal release) ...BUG reports==&gt;&gt;e-mail
+addr in readme file(xereadme.txt) _(..)_<BR>
+<BR>
+<!-- comment v125x ==========<BR>
+*** deleted 2011/11/22
+********************* v125 comment -->
+<FONT size="+3"><B>Download</B></FONT><BR>
+<BR>
+	<span class="auto-style1">
+
+	<FONT color="#ffff00"><B><FONT color="#FF0000">2018/08/28</FONT></B></FONT>
+	</span>
+	<A href="xewin129.zip">xewin129.zip</A>..Windows Binary by 
+	msvs2010Express(32)/msvs2017Community(64)<BR>
+<!--
+<FONT color="#cccc00"><FONT color="#cccc00"><B><FONT color="#cccc00"><FONT color="#cccc00"><FONT color="#cccc00"><FONT color="#cccc00"><FONT color="#cccc00"><FONT color="#cccc00"><FONT color="#cccc00"><FONT color="#cccc00"><FONT color="#cccc00"><FONT color="#cccc00"><FONT color="#cccc00"><FONT color="#ff0033">2013/05/22</FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></B></FONT></FONT><A href="xelnx126.tgz">xelnx126.tgz</A>..Linux Binary compiled on FC5<BR>
+<FONT color="#ff0033"><B>2013/05/22</B></FONT><A href="xelnx64_126.tgz">xelnx64_126.tgz</A>..Linux Binary compiled on OpenSUSE11.2 x64<BR>
+-->
+
+	<FONT color="#ffff00"><B><FONT color="#FF0000">2018/08/28 </FONT></B></FONT><A href="gxe-1.29.tar.gz">gxe-1.29.tar.gz</A>
+..Linux source package(configure&amp;&amp;make;#make install--&gt;/usr/local/bin).Use to make binary for also <B>S390(x).</B>
+ ==&gt;<B><A href="README_E.htm">TroubleShooting?</A></B><BR>
+<FONT color="#ffff00"><FONT color="#ffff00"><B><FONT color="#ffff00"><FONT color="#ffff00">2014/06/24</FONT></FONT></B></FONT></FONT>
+<A href="binraspgtk3.tgz">binraspgtk3.tgz</A> <B> </B>binaries for<B> Raspbian/Raspberry Pi </B><BR>
+<FONT color="#ffff00"><B><FONT color="#FFFF00">2017/09/07</FONT></B></FONT>
+<A href="Axe/AxeV119.apk">AxeV119.apk</A> <B>AndroidVersion</B>:minimum 
+	target=API-16<BR>
+<FONT color="#ffff00"><B><FONT color="#ffff00"><FONT color="#FFFF00">2017/09/07</FONT></FONT></B></FONT> <A href="Axe/AxeAsset.zip">AxeAsset.zip</A> split <B>asset</B> files(help Html,Utilities) for <B>Axe</B>(Download by Menu--&gt;Settings--&gt;AdditionalAssets)<br>
+
+    <B><FONT color="#FFFF00">2017/12/31</FONT></B>
+    <IMG src="VBI2K/Icon-i2k.ico" width="32" height="32" border="0">
+	<A href="VBI2K/VBI2K.zip">VBI2K.zip</A> VBImage2kana Binary by VB10Express(build 
+	x32 at x64OS)--&gt;<a href="VBI2K/README_E.htm">README</a><br> <BR>    
+
+    <B><FONT color="#FFFF00">2018/03/09</FONT></B>
+    <IMG src="VBI2KWRT/Icon-i2kWRT.png" width="32" height="32" border="0">
+	<A href="VBI2KWRT/SetupVBI2KWRT.msi">SetupVBI2KWRT.msi</A> VBI2KWRT installer(Windows10:MSVS2017Community)
+	)--&gt;<a href="VBI2KWRT/README_E.htm">README</a><br> <BR>    
+
+--------------------------------------------------------------------------------<FONT color="#ffff00"><BR>
+</FONT></BLOCKQUOTE>
+<UL>
+  <LI>
+  <H2>GNU source highlight, binary compiled on MinGW</H2>
+  <DL>
+    <DT>Xe calls GNU source-highlight for the function of syntax highlighting..
+    <DT>This is for the sake of avoiding necessity of cygwin environment to be
+    installed,and made some performance gain.
+    <DD>(For Linux version xe, install source-highit yourself)
+  </DL>
+  <DL>
+    <DT><FONT color="#ffff00"><FONT color="#ffff00"><B>2008/03/21</B></FONT></FONT><A href="gnu-source-highlight-mingw.tgz">gnu-source-highlight-mingw.tgz</A>
+  </DL>
+  <LI>
+  <H2>puTTY patch to enable key-mapping</H2>
+  <DL>
+    <DT>Using key-mapping file, You can send any string to remote console application.
+    <DD>(Mainly for xe AIX version user)
+    <DT><FONT color="#ffff00">2007/03/05</FONT><FONT color="#990033"> </FONT><A href="puttykm.tgz">puttykm.tgz</A>(contains source file)
+  </DL>
+  <LI>
+  <H2>Intel-x86 DisAssembler</H2>
+  <DL>
+    <DT>DOS interruption,WindowsAPI,OS/2API name are displayed.<BR>
+    Supported file magic type are MZ,PE,NE,LE,LX,W3,W4(EXE/DLL/VxD).
+    <DT><FONT color="#000000">-<FONT color="#000000"><FONT color="#000000">2005/12/18</FONT></FONT></FONT> All SourecCodeOpened
+    <DT><FONT color="#ffff00">-2006/05/18</FONT><FONT color="#cc3300"> </FONT><FONT color="#000000">v1.2</FONT>
+    <DD>.(BUG)PE imported function name may not be printed in some case.
+    <DD>.new /FP option for the convenience of preparing DLL function name
+    <DD>.Unicode String search and skip decode..
+  </DL>
+</UL>
+<PRE>        <A href="XDAOS2.LZH">XDAOS2 v1.1 (2000/06/03)</A>
+        <A href="XDAWIN.LZH">XDAWIN v1.1 (2000/06/03)</A>
+        <A href="xdawin12.zip">XDAWIN v1.2 (2006/05/18)</A>
+        </PRE>
+<UL>
+  <LI>
+  <H2>C-Function-Call-Tree-Listing</H2>
+  <DL>
+    <DT>List function-call-tree(parent-child and child-parent relation) from the
+    .c/.h files in a directory.
+  </DL>
+</UL>
+<BLOCKQUOTE>.2002/06/22 <A href="xftwin10.lzh">XFT v1.0</A> Initial release version.<BR>
+<B><FONT color="#cc0000"><FONT color="#ffff00">-2006/05/15</FONT></FONT></B> <A href="xftwin12.zip">xft v1.2</A> (BUG)ABEND when incomplete function call definition by #define macro.<BR>
+</BLOCKQUOTE>
+<UL>
+  <LI>
+  <H2>C/C++/Java-Indentation(Windws/Linux)</H2>
+  <DL>
+    <DT>    It takes into consideration of macro statement(such as #if) effects,<BR>
+    and adjustable by commandline parameter.<BR>
+    It depends GNU tool flex,bison.<BR>
+    (cygwin for Windows is required when you update xcifb.l/xcifb.y)<BR>
+  </DL>
+</UL>
+<BLOCKQUOTE>.<B><FONT color="#ffcc00">2012/11/04</FONT></B> <A href="xcifbup.zip">xcifb</A> v1.0 Initial release version.<BR>
+</BLOCKQUOTE>
+<UL>
+  <LI>
+  <H2 align="left">Numbers Place Puzzle</H2>
+  <DL>
+    <DT>Make Quetion and show Answer.
+    <DT>This puzzle is as followin(Fill space  by digit 1-9 without duplication
+    in row,col and 3x3 box) <BR>
+  </DL>
+  <B>*Java Version Snapshot</B><BR>
+  Question <BR>
+  <IMG src="NPBeforee.JPG" width="590" height="545" border="0">
+  <DL>
+    <DD>Answer
+   <BR>
+    <DT><IMG src="NPAftere.JPG" width="590" height="545" border="0">
+  </DL>
+  <H2 align="left"><A href="wnp.zip">wnp v1.2 :</A><FONT color="#ffff00" size="-1">2008/01/24</FONT> No password version(96d894aa)<BR>
+  <FONT color="#003333"><A href="wnpj.tgz">wnp v1.2(java version)</A></FONT> <FONT size="-1">2005/12/22</FONT>.<BR>
+  </H2>
+  <B>*Android Version Snapshot</B><BR>
+  <BR>
+  After Make<BR>
+  <IMG src="NPA21E320480.png" width="320" height="480" border="2"><BR>
+  <BR>
+  Menu Button--&gt;Option <BR>
+  <IMG src="NPA21EOPT320480.png" width="320" height="480" border="2"><BR>
+  <BR>
+  Menu Button--&gt;File<BR>
+  <IMG src="NPA21EFILE320480.png" width="320" height="480" border="2"> <BR>
+  <H2 align="left"><FONT color="#003333"><A href="NPA21V01za.apk.zip">NPA21V01za.apk.zip</A></FONT> <FONT size="-1" color="#ffcc33">2012/07/19</FONT>.<BR>
+  </H2>
+  1.unzip it.<BR>
+  2.install to terminal(SmartPhone) from PC by &quot;adb -s TERMID install
+  xxx.apk&quot;<BR>
+  (adb is tool of android SDK. Get TERMID by &quot;adb devices&quot; after
+  terminal is connected through USB)<BR>
+  <LI><B><FONT size="6">Ajagoc</FONT></B>(<FONT size="5">J<B>agoclient</B></FONT><B> Android porting</B>)<BR>
+  <DL>
+    <DD><FONT color="#ff9900"><B>(Note) Password is sent without encrypted like as jagoclient, it is easily peeped.</B></FONT>
+    <DD><FONT color="#ff9900"><B>You should assign new password for Jago only, never share with the other
+    purpos.</B></FONT>
+    <DD><FONT color="#ff9900"><B>I have no resposibility for any damage caused by using this software</B></FONT>.
+    <DD><BR>
+  </DL>
+  <DL>
+    <DD>Top Panel<BR>
+    <DT><IMG src="Ajagoc/Top_E.png" border="1"><BR>
+  </DL>
+  <BR>
+  <DL>
+    <DD>Connected Panel　　　　　　　　　　　　　　Whos Panel 　　　　　　　　　　Games
+    Panel<BR>
+    <DT><IMG src="Ajagoc/Connect_E.png" border="1"> <IMG src="Ajagoc/Who_E.png" border="1"><IMG src="Ajagoc/Games_E.png" border="1"><BR>
+    　　
+    <DD>Matching board (Portrate)　
+    <DT><IMG src="Ajagoc/Match_VE.png" border="1"><BR>
+    <DD>Matching board (Landscape)
+    <DT><IMG src="Ajagoc/Match_HE.png" border="1"><BR>
+  </DL>
+  <BR>
+  <DL>
+    <DD><FONT size="5"><B>Download</B></FONT>
+    <DT><FONT color="#cccc00"><FONT color="#cccc00"><FONT color="#cccc00"><FONT color="#cccc00"><FONT color="#cccc00"><FONT color="#cccc00"><FONT color="#cccc00"><B>2013/05/22</B></FONT></FONT></FONT></FONT></FONT></FONT></FONT> <A href="Ajagoc/AjagocV112za.apk.zip">AjagocV112za.apk.zip</A>====<A href="Ajagoc/Ajagoc_E.htm">About Ajagoc </A>(unzip to get apk)
+    <DT><FONT color="#ffff33"><FONT color="#cccc00"><FONT color="#cccc00"><FONT color="#cccc00"><B>2013/05/</B></FONT><B>22</B></FONT></FONT></FONT><B><FONT color="#ff0000"> </FONT></B><A href="Ajagoc/zipAjagocSrcV112.zip">zipAjagocSrcV112.zip</A> ====<A href="Ajagoc/AjagocSrc_E.htm">README</A> (Java Sources)
+  </DL>
+  <LI>
+  <DL>
+    <DT><B><FONT size=" 6">Agnugo (Gnugo Android porting)<BR>
+    <FONT size="5">Download</FONT>
+       </FONT></B>
+  </DL>
+  <DL>
+    <DT><B><FONT color="#ffff00">2011/05/16</FONT></B> <A href="Ajagoc/zipAgnugoRel.zip">zipAgnugoRel.zip</A>====<A href="Ajagoc/Agnugo_E.htm">About Agnugo</A> 
+  </DL>
+ <BR> 
+<DL>
+    <DT><B><FONT size=" 6">Afuego (fuego Android porting)<BR>
+    <FONT size="5">Download</FONT>
+       </FONT></B>
+  </DL>
+  <DL>
+    <DT><FONT color="#ffff00"><B>2014/09/08</B></FONT> <A href="Ajagoc/Afuego.up.tgz">Afuego.up.tgz</A>====<A href="Afuego_E.htm">About Afuego</A> 
+  </DL>
+
+</UL>
+<P>**************************************************************************************************</P>
+<UL>
+  <LI>
+  <H2>****Sources****<BR>
+  <BR>
+  <FONT color="#000000">Note::Source contains Japanese chacter code for error message.<BR>
+  That may bother your editor.<BR>
+  Use translation tool &quot;xcvsjisc&quot; which convert Japanese Constant
+  to Octal<BR>
+  Notation. </FONT>xcvsjisc's source is in xsub group,exe is enclosed with xe.<BR>
+  <BR>
+  <FONT size="+2">v1.22</FONT><BR>
+  <FONT color="#ffff00" size="-1">2010/01/21</FONT><A href="aixmkxeV122.tgz"> <FONT size="-1">aixmkxeV122.tgz</FONT></A> <FONT size="-1"><B>v1.22 source ulib and xe　to Fix BUG of AIX version v118, see README.en.<BR>
+  .......................Make error,SPLit cmd BUG was corrected by the reports
+  from Mrs.Bilbao@es.Thanks(Use 32bit Option)</B></FONT><BR>
+  <BR>
+  <BR>
+  <FONT size="+2">Others</FONT><FONT color="#000000" size="-1"><BR>
+  2006/05/18</FONT><A href="xda12src.tgz">   <FONT size="-1">xda12src.tgz</FONT></A> <FONT size="-1"><B>xda source</B></FONT><BR>
+  <FONT color="#000000" size="-1">2006/01/09</FONT><A href="wnp12src.tgz">   <FONT size="-1">wnp12src.tgz</FONT></A> <FONT size="-1"><B>wnp(NumberPlacePuzzle) v12(Windows version) source</B></FONT><BR>
+  <FONT color="#000000" size="-1">2006/01/09</FONT><A href="wnp012src.tgz">   <FONT size="-1">wnp012src.tgz</FONT></A> <FONT size="-1"><B>wnp(NumberPlacePuzzle) v12(java version) source</B></FONT><FONT size="-1"><BR>
+  </FONT><BR>
+  <FONT size="+2">v1.24<BR>
+  </FONT><FONT color="#000000" size="-1">2009/06/06</FONT><A href="xesrc124all.zip"> <FONT size="-1">xesrc124all.zip</FONT></A> <FONT size="-1"><B>xe v1.24 all sources</B></FONT><BR>
+  <BR>
+  v1.29<BR>
+  <FONT color="#ff3333" size="-1"><B> <FONT color="#FF0000" size="-1">2018/08/28</FONT> </B></FONT>
+  <B><A href="gitsrc.zip"><FONT size="-1">gitsrc.zip</FONT></A></B> <FONT size="-1"><B>xe v1.29 all sources(xe,ulib,xsub,xp,wxe)</B></FONT> <B>for your compilation on windows</B><FONT color="#cccc00" size="-1"><B><BR>
+  </B></FONT><FONT color="#ff3333" size="-1"><B> 
+  <FONT color="#FFFF00" size="-1">2017/09/07</FONT></B></FONT> <B>
+  Android version:Android Studio project source==&gt;See GitHub sakachin2/Axe</B><BR>
+  <FONT color="#ffff00"><FONT color="#ff0000" size="-1"><FONT color="#ffff33"><FONT color="#ffff33"><B>2012/07/19</B></FONT></FONT></FONT></FONT> <A href="zipnpa21src.zip"><B>zipnpa21src.zip</B></A> <B>NumberPlacePuzzle(Android) v1.1,</B> <B>eclipse project</B></H2>
+
+  <b><FONT color="#FFFF00" size="-1">2017/12/31</FONT></b>
+  <B><A href="VBI2K/VBI2Ksrc.zip">VBI2Ksrc.zip</A> VBImage2kana MSVS2010 project source</B>
+  <BR>
+  <b><FONT color="#FFFF00" size="-1">2018/03/09</FONT></b>
+  <B><A href="VBI2KWRT/VBI2KWRTsrc.zip">VBI2KWRTsrc.zip</A> VBI2KWRT MSVS2017 Community project source</B>
+  <BR>
+
+</UL>
+<HR size="23">
+<H3 align="left"><BR>
+<BR>
+<FONT size="6" face="ＭＳ 明朝"><A name="Japanese"><IMG src="logo3.gif" width="402" height="37" border="0" alt="Welcome to My HomePage"></A>　<BR>
+</FONT><FONT size="5" face="ＭＳ 明朝">ライセンス：このページ内の全てのものにＧＮＵ ＧＰＬが適用されます</FONT><FONT size="6" face="ＭＳ 明朝"><BR>
+</FONT><FONT size="5" color="#1c4a1f" face="ＭＳ 明朝"><B>水巻マチ</B></FONT><BR>
+</H3>
+<P align="right"><FONT color="#990033" size="6"><BLINK><U>バグ修正など更新版用ページ</U></BLINK></FONT><BR>
+<BR>
+<BR>
+<B>since:2005/05/03</B><BR>
+<B>Update:<FONT size="+2">2018/08/28JST</FONT></B></P>
+<P>
+<B>変更履歴</B>
+</B>
+</P>
+<P class="auto-style2">
+
+<B>
+<FONT color="#FF0000">
+2018/08/28
+</FONT>
+<FONT color="#000000">
+xe v1.29K(Win,Linux,Axe) --&gt;
+<A href="V129K_J.htm">詳細</A>
+</FONT>
+</B>
+<BR>
+<BR>
+
+<FONT color="#000000">
+2018/05/12
+</FONT>
+<FONT color="#000000">
+xe v1.29J(Win,Linux,Axe) --&gt;
+<A href="V129J_J.htm">詳細</A>
+</FONT>
+<BR>
+
+2018/03/09
+<FONT color="#000000">
+VBI2KWRT V2.06 --&gt;
+<a href="VBI2KWRT/V206J.htm">詳細</a>
+</FONT>
+<BR>
+
+<FONT color="#000000">
+2018/02/27</FONT>
+<FONT color="#000000">
+VBI2KWRT V2.05 --&gt;
+<a href="VBI2KWRT/V206J.htm">詳細</a>
+</FONT>
+<BR>
+
+<FONT color="#000000">2018/02/22</FONT>
+<FONT color="#000000">
+xe v1.29H(Win,Linux,Axe) --&gt;
+<A href="V129H_J.htm">詳細</A>
+</FONT>
+<BR>
+
+<FONT color="#000000">2018/01/30</FONT>
+<FONT color="#000000">
+xe v1.29G(Win,Linux,Axe) --&gt;
+<A href="V129G_J.htm">詳細</A>
+</FONT>
+<BR>
+
+<FONT color="#000000">2018/01/23</FONT>
+<FONT color="#000000">
+xe v1.29F(Win,Linux,Axe) --&gt;
+<A href="V129F_J.htm">詳細</A>
+</FONT>
+<BR>
+
+<FONT color="#000000">2018/01/09
+xe v1.29E(Win,Linux,Axe) --&gt;
+<A href="V129E_J.htm">詳細</A>
+</FONT>
+<BR>
+
+<FONT color="#000000">2018/01/09</FONT>
+VBI2KWRT V2.04 --&gt;
+<A href="VBI2KWRT/v204J.htm">詳細</A>
+<BR>
+
+2017/12/31 VBI2KWRT V2.03 --&gt;
+<A href="VBI2KWRT/README_J.htm">詳細</A>
+<BR>
+2017/12/31
+VBImage2Kana V1.16 --&gt;
+<A href="VBI2K/V116J.htm">詳細</A>
+<BR>
+2017/12/04
+xe v1.29D(Win,Linux,Axe) --&gt;
+<A href="V129D_J.htm">詳細</A>
+<BR>
+2017/10/28
+VBImage2Kana V1.15 --&gt;
+<A href="VBI2K/V115J.htm">詳細</A>
+<FONT color="#000000">
+<BR>
+2017/09/27
+VBImage2Kana V1.14 --&gt;
+<FONT color="#ff3333"><A href="VBI2K/V114J.htm">詳細</A></FONT>
+<BR>
+2017/09/23</FONT>
+VBImage2Kana V1.03 --&gt;
+<FONT color="#ff3333"><A href="VBI2K/V103J.htm">詳細</A></FONT>
+<BR>
+2017/09/07
+xe v1.29C(Win,Linux,Axe) --&gt;
+<FONT color="#ff3333"><A href="V129C_J.htm">詳細</A></FONT>
+<BR>
+2017/07/30
+xe v1.29B(Win,Linux) --&gt;
+<FONT color="#ff3333"><A href="V129B_J.htm">詳細</A></FONT>
+<BR>
+
+2017/06/26
+xe v1.29A(Win,Linux) --&gt;
+<FONT color="#ff3333"><A href="V129A_J.htm">詳細</A></FONT>
+<BR>
+2017/06/21
+VBImage2kana--&gt;
+<FONT color="#ff3333"><A href="VBI2K/VBI2K_101J.htm">詳細</A></FONT>
+<B>
+</B>
+<B>
+<br>
+</B>2017/04/01 xe v1.29(Win,Linux,srcAxe)--&gt;
+<A href="V129_J.htm">詳細</A><br>
+2017/02/18 xe v1.28H(Win,Linux)--&gt;
+<A href="V128H_J.htm">詳細</A><BR>
+<FONT color="#000000">2016/02/02</FONT> <FONT color="#000000">xe v1.28G(Win,Linux)--&gt;</FONT>
+<A href="V128G_J.htm">詳細</A><BR>
+<FONT color="#cc0000"><FONT color="#000000">2016/12/21 <FONT color="#000000">xe v1.28F(Win,Linux)--&gt;</FONT> <A href="V128F_J.htm">詳細<BR>
+</A><FONT color="#000000"><FONT color="#000000">2016/09/19 xe v1.28E(Win,Linux)--&gt;</FONT></FONT><FONT color="#ff0000">
+<A href="V128E_J.htm">詳細</A></FONT><FONT color="#000000"><FONT color="#000000"><BR>
+2016/08/25<B> </B></FONT></FONT><FONT color="#ff0000"><FONT color="#000000">xe v1.28D(Win,Linux)--&gt;</FONT>
+<A href="V128D_J.htm">詳細</A></FONT></FONT><BR>
+</FONT><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000">2016/06/25</FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><B> </B></FONT><FONT color="#000000"><FONT color="#000000">xe v1.28C(Win,Linux)--&gt;</FONT></FONT><FONT color="#cc0000">
+<A href="V128C_J.htm">詳細<BR>
+</A></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000">2016/04/07<FONT color="#000000"><B></B></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><B> </B></FONT><FONT color="#000000">xe v1.28B(Win,Linux)--&gt;</FONT><FONT color="#ff0000">
+<A href="V128B_J.htm">詳細</A></FONT><BR>
+<FONT color="#000000"><FONT color="#000000">2015/06/02</FONT></FONT><FONT color="#ff0000"><B> </B></FONT><FONT color="#000000"><FONT color="#000000">xe v1.28A(Win<B>,</B>Linux,Axe)--&gt;</FONT></FONT><FONT color="#ff0000">
+<A href="V128A_J.htm">詳細</A></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT><BR>
+<FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#cc0000"><FONT color="#000000">2015/03/17 xe v1.28(Win,Linux)--&gt;</FONT><FONT color="#ff0000"><A href="V128_J.htm">詳細</A></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT><BR>
+<FONT color="#000000"><FONT color="#000000">2</FONT></FONT><FONT color="#ff0000"><FONT color="#000000">015/03/09</FONT><FONT color="#cc0000"> </FONT><FONT color="#000000">xe v1.27S(Win,Linux)--&gt;</FONT><FONT color="#cc0000"><A href="V127S_J.htm">詳細</A></FONT></FONT></FONT></FONT></FONT></FONT><BR>
+</FONT><FONT color="#000000">2015/01/20 xe v1.27R(Win,Linux)--&gt;</FONT><FONT color="#cc0000"><A href="V127R_J.htm">詳細</A></FONT></FONT></FONT><BR>
+</FONT><FONT color="#000000">2015/01/19 xe v1.27Q(Win,Linux)--&gt;<A href="V127Q_J.htm">詳細</A></FONT></FONT><BR>
+</FONT><FONT color="#000000">2014/12/25</FONT></FONT><FONT color="#330000"><B><FONT color="#000000"> </FONT></B><FONT color="#000000">xe v1.27P(Win,Linux)--&gt;<A href="V127P_J.htm">詳細<BR>
+</A></FONT>2014/09/08<FONT color="#000000"> Afuego--&gt;<A href="Afuego_J.htm">詳細</A></FONT><B><BR>
+</B></FONT><FONT color="#000000">2014/07/09</FONT><FONT color="#cc0000"><FONT color="#000000"> xe v1.27N(Axe)--&gt;<A href="V127N_J.htm">詳細</A></FONT><BR>
+</FONT><FONT color="#000000">2014/06/25<FONT color="#000000"></FONT></FONT><FONT color="#cc0000"><FONT color="#000000"> xe v1.27M+(Win,Linux,RaspberryPi)--&gt;<A href="V127M_J.htm">詳細<BR>
+</A></FONT></FONT><FONT color="#000000">2014/03/22</FONT><FONT color="#cc0000"><FONT color="#000000"> xe v1.27L(Win,Linux,RaspberryPi)--&gt;<A href="V127L_J.htm">詳細<BR>
+</A></FONT></FONT><FONT color="#000000"><FONT color="#000000">2014/02/22</FONT></FONT><FONT color="#cc0000"><FONT color="#000000"> xe v1.27K(Linux)--&gt;<A href="V127K_J.htm">詳細</A></FONT><B><BR>
+</B></FONT><FONT color="#000000">2014/02/20</FONT><FONT color="#cc0000"><FONT color="#000000"> xe v1.27J(Linux,ラズベリーパイ)--&gt;<A href="V127J_J.htm">詳細</A></FONT><BR>
+</FONT><FONT color="#000000">2014/02/17</FONT><FONT color="#cc0000"><FONT color="#000000"> xe v1.27H(Linux)--&gt;<A href="V127H_J.htm">詳細</A></FONT><BR>
+</FONT><FONT color="#000000">2014/01/01</FONT><FONT color="#cc0000"><FONT color="#000000"> xe v1.27G(Win,Linux)--&gt;<A href="V127G_J.htm">詳細<BR>
+</A></FONT></FONT><FONT color="#000000">2013/12/31</FONT><FONT color="#cc0000"><FONT color="#000000"> xe v1.27F(Linux)--&gt;<A href="V127F_J.htm">詳細</A></FONT><BR>
+</FONT><FONT color="#000000">2013/12/14</FONT><FONT color="#cc0000"><FONT color="#000000"> xe v1.27E(Win,Linux)(--&gt;<A href="V127E_J.htm">詳細</A>)</FONT><B><BR>
+</B></FONT><FONT color="#000000">2013/11/25</FONT><FONT color="#cc0000"><FONT color="#000000"> xe v1.27D(Win,Linux)(--&gt;<A href="V127D_J.htm">詳細</A>)</FONT><BR>
+</FONT><FONT color="#000000">2013/09/08<FONT color="#000000"> !! </FONT></FONT><FONT color="#000000"><FONT color="#000000"><FONT color="#000000">重要 !!</FONT></FONT></FONT><FONT color="#cc0000"><FONT color="#cc0000"><FONT color="#000000"> xe v1.27C(Linux)(--&gt;<A href="V127C_J.htm">詳細</A>)</FONT><BR>
+</FONT><FONT color="#000000">2013/08/17</FONT><FONT color="#cc0000"><FONT color="#000000"> xe v1.27B(Win/Linux/Axe)(--&gt;</FONT></FONT><FONT color="#000000"><FONT color="#000000"><A href="V127B_J.htm">詳細</A></FONT></FONT><FONT color="#cc0000"><B><FONT color="#000000">)<BR>
+</FONT></B></FONT><FONT color="#000000">2013/07/07</FONT><FONT color="#cc0000"><FONT color="#000000"> xe v1.27A(Win/Linux/Axe)(--&gt;</FONT><A href="V127A_J.htm">詳細</A><FONT color="#000000">)</FONT><BR>
+</FONT><FONT color="#000000">2013/05/22 </FONT></FONT><FONT color="#000000">xe v1.26L(Win/Linux), Ajagoc v112(--&gt;</FONT><FONT color="#cc0000"><A href="V126L_J.htm">詳細</A></FONT><FONT color="#000000">)</FONT><BR>
+<FONT color="#000000"><FONT color="#000000"><FONT color="#000000">2012/12/19</FONT><FONT color="#cc0000"><FONT color="#000000"> </FONT></FONT>xe v1.26K(Linux), Ajagoc v108 (--&gt;<FONT color="#cc0000"><A href="V126K_J.htm">詳細</A></FONT><B>)<BR>
+</B>2012/11/04</FONT></FONT><B><FONT color="#000000"> </FONT></B><FONT color="#000000">xcifb(C/C++/Java Indentation tool)</FONT><FONT color="#cc0000"><BR>
+<FONT color="#000000"><FONT color="#000000">2012/09/23</FONT></FONT><B><FONT color="#000000"> </FONT></B><FONT color="#000000">xe v1.26J(Win/Linux/Android)(--&gt;<A href="V126J_J.htm">詳細</A>)</FONT><BR>
+</FONT><FONT color="#000000"><FONT color="#000000"><FONT color="#000000">2012/07/19</FONT></FONT></FONT><FONT color="#cc0000"><FONT color="#000000"><B> </B>ナンプレAndroid版ｖ１．１(--&gt;<A href="20120719-J.htm">詳細</A>)<BR>
+<FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#000000">2012/07/15 xe v1.26H(Win/Linux/Android)</FONT><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"> (--&gt;<A href="V126H_J.htm">詳細</A>)<BR>
+</FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT><FONT color="#000000">2012/05/14</FONT><FONT color="#cc0000"> <FONT color="#000000">xe v1.26G(Win/Linux/Android)<FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"> (--&gt;<A href="V126G_J.htm">詳細</A>), AjagocV091<BR>
+</FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT><FONT color="#000000">2012/04/03</FONT><FONT color="#cc0000"> <FONT color="#000000">xe v1.26F(Win/Linux/Android)<FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#000000"> (--&gt;<A href="V126F_J.htm">詳細</A>)</FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT><BR>
+<FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000"><FONT color="#000000">2012/01/28</FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT><B><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"> </FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></B><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000">xe v1.26E(Android、アンドロイド３と４でテスト)<FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"> (--&gt;<A href="V126E_J.htm">詳細</A>)<BR>
+2012/01/18 xe v1.26D(Win/Linux/Android) (--&gt;<A href="V126D_J.htm">詳細</A>)<BR>
+2011/11/22<FONT color="#cc0000"> <FONT color="#000000">xe v1.26C(LinuxSourcePkg,Linux64ビットバイナリー)<FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><BR>
+2011/11/06 Android version BugFix</FONT></FONT></FONT></FONT><BR>
+<FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000">2011/11/05<FONT color="#cc0000"> </FONT>xe v1.26B(Win/Linux/Android<FONT color="#000000">)</FONT></FONT></FONT></FONT></FONT><BR>
+</FONT></FONT>2011/05/25 <FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000">xe v1.26A(Win/Linux)<BR>
+</FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT><FONT color="#000000">2011/05/24</FONT><FONT color="#cc0000"> <FONT color="#000000">Ajagoc Sources</FONT></FONT><BR>
+<FONT color="#ff0000"><FONT color="#000000"><FONT color="#000000">2011/05/17</FONT></FONT></FONT><FONT color="#000000"><B> </B>Jagocliant と gnugo のアンドロイド移植版</FONT><FONT color="#000000">(BugFix:OptionMenuからのClose)<BR>
+2011/01/05</FONT><B> </B></FONT></FONT><FONT color="#000000">v1.25K (Win/Lnx)<BR>
+2010/12/18</FONT><FONT color="#cc0000"><FONT color="#000000"> ナンプレ　アンドロイド(Android)版ｖ１．０<FONT color="#000000"><BR>
+2010/09/13<FONT color="#000000"> </FONT></FONT><FONT color="#cc0000"><FONT color="#000000">v1.25J (Win/Lnx)<BR>
+</FONT></FONT><FONT color="#000000">2010/08/14</FONT></FONT><B><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000"> </FONT></FONT></FONT></B><FONT color="#000000"><FONT color="#cc0000"><FONT color="#000000">v1.25H (Win/Lnx)</FONT></FONT><BR>
+</FONT></FONT><FONT color="#000000">2010/07/27</FONT><FONT color="#cc0000"><FONT color="#000000"> v1.25G (Win/Lnx)<BR>
+</FONT></FONT><FONT color="#000000">2010/07/01</FONT><FONT color="#cc0000"><FONT color="#000000"> v1.25F (Win/Lnx)<BR>
+<FONT color="#000000">2010/03/26</FONT><FONT color="#cc0000"><FONT color="#000000"> v1.25E(Win/Lnx)</FONT></FONT><BR>
+</FONT></FONT><FONT color="#000000">2010/03/24</FONT><FONT color="#cc0000"><FONT color="#000000"> v1.25D(Win/Lnx)<FONT color="#cc0000"> </FONT>と Linux/390 rpm</FONT></FONT><FONT color="#000000"><FONT color="#000000">(By Dirk)へのリンク情報<BR>
+</FONT>2010/02/23</FONT><FONT color="#cc0000"><FONT color="#000000"> v1.25C(Win/Lnx)<BR>
+</FONT></FONT><FONT color="#000000">2010/01/21</FONT><FONT color="#cc0000"><FONT color="#000000"> v1.25B(Win/Lnx),  v1.22 <FONT color="#cc0000"><FONT color="#000000">ソース更新</FONT></FONT>(AIX版Split cmd BUG)。<BR>
+</FONT></FONT><FONT color="#000000">2009/11/28</FONT><FONT color="#cc0000"><FONT color="#000000"> ＡＩＸユーザー用v1.22 ソース更新(Makeの失敗を修正)<BR>
+</FONT></FONT><FONT color="#000000">2009/11/22</FONT><FONT color="#cc0000"><FONT color="#000000"> v1.25A Win/Linux アップロード</FONT><BR>
+</FONT><FONT color="#000000">2009/09/22</FONT><FONT color="#cc0000"><FONT color="#000000"> v1.22 ソースをアップロード(AIX版v118 のバグ修正用)<BR>
+</FONT></FONT><FONT color="#000000">2009/06/06</FONT><FONT color="#cc0000"><B><FONT color="#000000"> </FONT></B><FONT color="#000000">xe390 パッケージ(bin+src,Hercules S390エミュレータ上のDebian4でテスト)v1.24
+アップロード</FONT></FONT><BR>
+<FONT color="#cc0000"><FONT color="#000000">2009/06/06</FONT></FONT><FONT color="#000000"><FONT color="#000000"><B> </B>xe v1.24Sをv1.24として正式リリース<FONT color="#cc0000"><FONT color="#cc0000"><FONT color="#000000"> <BR>
+........................<A href="xehelp/html/HID_SYNH_J.htm">シンタックスハイライト</A> , </FONT></FONT></FONT><A href="xehelp/html/HID_NLS_J.htm">NLS サポート</A>(中韓) ,<A href="xehelp/html/HID00000020.htm">リモートファイルアクセス</A> , <A href="xehelp/html/HID_TSOE_J.htm">tn3270でS390-TSO/E アクセス</A> , <A href="xehelp/html/HID_PROF_J.htm">Profileコマンド</A><BR>
+</FONT></FONT><BR>
+2007/10/06 xe v1.23Mをv1.23として正式リリース アップロード<BR>
+2007/03/05 puttykm(puTTYのキーマッピング機能パッチ) アップロード<BR>
+<BR>
+<BR>
+<B>自作ソフト<BR>
+</B></P>
+<UL>
+  <LI>
+  <H2>エディター (Hybrid Editor XE)--&gt;<a href="xehelp/indexj.htm">ヘルプHTML</a> 
+  <FONT color="#FF0000">v1.29K</FONT></H2>
+</UL>
+<BLOCKQUOTE>メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。<BR>
+ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。<BR>
+バイナリーエディター（ダンプ形式と３行平行表示形式と２種類サポート）,ファイラーとしても使えます。<BR>
+LogfileなどをExcelで解析できるように編集する機能も強力。<BR>
+各版がDOS, OS/2, Windows, Linux, AIX で共通の操作を提供。<BR>
+Windows, Linux, AIX版ではftp/rshによるリモートアクセスサポート。<BR>
+Windows, LinuxX版ではS3270+IND$FILE+TSOを利用してTSOファイルアクセスをサポート<BR>
+WIN版/Linux版は拡張子による関連付けを利用した、<BR>
+excel,explorer/OpenOffice,Nortilus等との連携もサポート<BR>
+<BR>
+<B>.wxe (WindowsGUI版) 画面サンプル</B><BR>
+<BR>
+...編集画面<BR>
+<BR>
+<IMG src="xescr2n.JPG" width="859" height="933" border="0"><BR>
+<BR>
+...編集画面(シンタックスハイライト設定した場合)<BR>
+<BR>
+<IMG src="xescr2nsh.JPG" width="859"  height="933" border="0"><BR>
+<BR>
+...ディレクトリーリスト画面<BR>
+<BR>
+<IMG src="xescr3.JPG" width="859" height="926" border="0"><BR>
+<BR>
+...画面分割の上が編集ファイル履歴選択画面、下がコマンド画面(grepを実行した結果の表示)<B><BR>
+<BR>
+<IMG src="xescr1-6.JPG" width="859" height="926" border="0"><BR>
+<BR>
+<BR>
+******************************************************************** <BR>
+Android 版 <BR>
+</B>
+<UL>
+  <LI><B>編集画面：縦</B>
+  <DL>
+    <DT><IMG src="Axe/axe_vej.png" width="540" height="857"><BR>
+  </DL>
+  <LI><B>編集画面：横</B>
+  <DL>
+    <DT><IMG src="Axe/axe_hej.png" width="855" height="535"><BR>
+  </DL>
+  <LI><B>xe用のキーボード</B>
+  <DL>
+    <DT><IMG src="Axe/axe_vkbde.png" width="540" height="857"><BR>
+  </DL>
+  <LI><B>フリック文字表示モードの時</B>
+  <DL>
+    <DT><IMG src="Axe/axe_kbd_plain.png" width="482" height="363"><BR>
+  </DL>
+  <LI><B>キーボード：SYM(シンボル)</B>
+  <DL>
+    <DT><IMG src="Axe/axe_kbd_sym.png" width="497" height="384"><BR>
+  </DL>
+  <LI><B>キーボード：AltGr</B>
+  <DL>
+    <DT><IMG src="Axe/axe_kbd_altg.png" width="499" height="385"><BR>
+  </DL>
+  <LI><B>キーボード：シフト+AltGr</B>
+  <DL>
+    <DT><IMG src="Axe/axe_kbd_altgs.png" width="499" height="385"><BR>
+  </DL>
+  <LI><B>キーボード：Fnキー表示</B>
+  <DL>
+    <DT><IMG src="Axe/axe_kbd_fn.png" width="483" height="363"><BR>
+  </DL>
+</UL>
+<B>********************************************************************<BR>
+<BR>
+次のコマンドラインツールも同梱<BR>
+</B>
+<UL>
+  <LI><B>xprint</B>
+  <DL>
+    <DT><B>テキストファイル印刷</B>
+  </DL>
+  <LI><B>xads</B>
+  <DL>
+    <DT><B>Windows NTFS の ADS (Alternative Data Stream)をアクセスする。</B>
+  </DL>
+  <LI><B>xbc</B>
+  <DL>
+    <DT><B>簡易四則計算。ダブルワード（８バイト）精度、内部タイムスタンプ値の変換もサポート</B>
+  </DL>
+  <LI><B>xcv</B>
+  <DL>
+    <DT><B>コード変換(EUC,SJIS,JIS,Unicode,UTF-8,EBCDIC,HexDigit)</B>
+  </DL>
+  <LI><B>xdc</B>
+  <DL>
+    <DT><B>ディレクトリーの比較</B>
+  </DL>
+  <LI><B>xdd</B>
+  <DL>
+    <DT><B>ディレクトリーの掃除</B>
+  </DL>
+  <LI><B>xdig</B>
+  <DL>
+    <DT><B>ディレクトリーの階層を追ってコマンドを適用する。</B>
+  </DL>
+  <LI><B>xds</B>
+  <DL>
+    <DT><B>ディレクトリーのサイズ表示</B>
+  </DL>
+  <LI><B>xfc</B>
+  <DL>
+    <DT><B>ファイル内容の差異表示</B>
+  </DL>
+  <LI><B>xff</B>
+  <DL>
+    <DT><B>ファイル名、タイムスタンプによるファイル探索.</B>
+  </DL>
+  <LI><B>xfg</B>
+  <DL>
+    <DT><B>文字列を含む（バイナリー）ファイルの探索</B>
+  </DL>
+  <LI><B>xfmt</B>
+  <DL>
+    <DT><B>テキストファイルのフィールドの桁あわせ（整列）、抽出</B>
+  </DL>
+  <LI><B>xfs</B>
+  <DL>
+    <DT><B>巨大ファイルの分割統合</B>
+  </DL>
+  <LI><B>xkp (Windows版のみ)</B>
+  <DL>
+    <DT><B>プロセスを表示、停止(kill)</B>
+  </DL>
+  <LI><B>xmj</B>
+  <DL>
+    <DT><B>２つのファイルの行照合、連結</B>
+  </DL>
+  <LI><B>xpe</B>
+  <DL>
+    <DT><B>APIで設定されるerrno,GetLastError()の値の説明を表示</B>
+  </DL>
+  <LI><B>xts</B>
+  <DL>
+    <DT><B>ファイルのタイムスタンプを設定</B>
+  </DL>
+</UL>
+</BLOCKQUOTE>
+<BLOCKQUOTE>
+<P><BR>
+<B><FONT size="+2">正式リリース版</FONT></B>(//hp.vector.co.jp/authors/VA010562/と同じ)</P>
+<UL>
+  <LI><FONT color="#000000">(2005/04/30) </FONT><A href="XED113B.LZH">XE for DOS v1.13b </A>
+  <LI><FONT color="#ffff00">(2009/06/07) </FONT><A href="XEGCC124.ZIP">XE for GCC v1.24 </A>
+  <LI><FONT color="#ffff00">(2009/06/07) </FONT><A href="XEOS2124.ZIP">XE for OS/2 v1.24</A>
+ <!-- <LI><FONT color="#ffff00">(2013/05/23) </FONT><A href="xewin127base.zip">XE for Win v1.27 base</A>-->
+  <LI><FONT color="#000000">(2005/07/04) </FONT><A href="xeaix118.tgz">XE for AIX v1.18 </A>バイナリ編集でタブ(0x09)がスペース(0x20)に置き換わるバグの修正版はv122ソース(以下に掲載)をmakeしてください。
+ <!-- <LI><FONT color="#ffff00">(2013/05/23) </FONT><A href="xelnx127base.tgz">XE for Linux v1.27 base</A>-->
+</UL>
+</BLOCKQUOTE>
+<BLOCKQUOTE><FONT color="#990033"><B><FONT size="+2"><BLINK><FONT size="+2" color="#cccc00">バグ修正版</FONT></BLINK></FONT></B></FONT>(V1.26正式版以降の修正履歴) ...BUGを見つけたら===&gt;&gt;アドレスはreadme(xereadmj.txt)
+_(..)_。<BR>
+<BR>
+<!-- ********************** v125 comment 
+*** deleted 2011/11/22
+**********v125 comment --><B><FONT size="+3">ダウンロード</FONT></B><BR>
+<BR>
+	<FONT color="#ff0000"><B>
+<FONT color="#FF0000">2018/08/28</FONT></B></FONT>
+	<A href="xewin129.zip">xewin129.zip</A>..Windows Binary,msvs2010Express(32)/msvs2017Community(64)でコンパイル<BR>
+	<FONT color="#ff0000"><B>
+<FONT color="#FF0000">2018/08/28</FONT> </B></FONT>
+	<A href="gxe-1.29.tar.gz">gxe-1.29.tar.gz</A> ..Linux source package(自分でconfigure&amp;&amp;make;#make installする)。
+<B>S390(x)</B>でも試してみてください
+<BR>
+ ==&gt;<B><A href="README_J.htm">インストールトラブル?</A></B><BR>
+<FONT color="#ffff00"><B>2014/06/24</B></FONT></FONT><FONT color=" #cccc00"><A href="binraspgtk3.tgz"> binraspgtk3.tgz</A></FONT><B><FONT color=" #cccc00"> </FONT></B><FONT color="#000000"><FONT color=" #cccc00"><FONT color="#000000"><B>ラズベリーパイ</B>用のバイナリー</FONT></FONT>(<B>Raspbian</B>)<BR>
+</FONT><FONT color="#cccc00"><B><FONT color="#cccc00"><FONT color="#ffff00"><FONT color="#ffff00">
+	<FONT color="#FFFF00">2017/09/04</FONT></FONT></FONT></FONT></B></FONT><FONT color=" #cccc00">
+<A href="Axe/AxeV119.apk">AxeV119.apk</A> </FONT><FONT color="#000000"><FONT color=" #cccc00"><B><FONT color="#000000">Android 版 </FONT></B></FONT>MinTarget:APIレベル</FONT>16<FONT color="#cccc00"><BR>
+<FONT color="#ffff00"><FONT color="#ffff00"><FONT color="#ffff00"><B><FONT color="#ffff00"><FONT color="#ffff00"><FONT color="#ffff00"><FONT color="#ffff00"><FONT color="#ffff00"><FONT color="#ffff00"><FONT color="#ffff00"><FONT color="#ffff00"><FONT color="#ffff00"><FONT color="#ffff00"><FONT color="#ffff00">
+	<FONT color="#FFFF00">2017/09/07</FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></B></FONT></FONT></FONT></FONT><FONT color=" #cccc00"> <A href="Axe/AxeAsset.zip">AxeAsset.zip</A> </FONT><FONT color="#000000"><B>Axe</B>.apkから<B>アセット</B>ファイル(Help html,Utilities)を分離(Menu--&gt;設定--&gt;追加のAssets でダウンロードしてください)</FONT>
+<br>
+
+    <B><FONT color="#FFFF00">2017/12/31</FONT> </B>
+    <IMG src="VBI2K/Icon-i2k.ico" width="32" height="32" border="0">
+	<A href="VBI2K/VBI2K.zip">VBI2K.zip</A> VBImage2kana Binary by VB10Express(x86 build on x64) 
+	--&gt;<a href="VBI2K/README_J.htm">README</a><BR>
+
+    <B><FONT color="#FFFF00">2018/03/09</FONT> </B>
+    <IMG src="VBI2KWRT/Icon-i2kWRT.png" width="32" height="32" border="0">
+	<A href="VBI2KWRT/SetupVBI2KWRT.msi">SetupVBI2KWRT.msi</A> VBI2KWRT installer by Windows10 MSVS2017 Community
+	--&gt;<a href="VBI2KWRT/README_J.htm">README</a><BR>
+
+    <FONT color=" #cccc00"><BR>
+<!--
+<B><FONT color="#cc0000">2010/09/13</FONT></B>
+<A href="gxe-1.25-J.i586.rpm">gxe-1.25-J.i586.rpm</A>..Linux Binary RPM for rpm distribution user, OpenSuse11.1で作成.<BR>
+<FONT color="#cc0000"><B>2010/09/13</B></FONT>
+<A href="gxe-1.25-J.src.rpm">gxe-1.25-J.src.rpm</A>..Linux SRPM, OpenSuse11.1で作成 <B><FONT color="#ffff00"><BR>
+</FONT></B><FONT color="#000000"><B><BR>-</B></FONT>
+--><B><FONT color="#000000">--------------------------------------------------------------------------------</FONT><FONT color="#ffff00"><BR>
+</FONT></B></FONT></BLOCKQUOTE>
+<UL>
+  <LI>
+  <H2>GNU source highlight, MinGWバイナリー</H2>
+  <DL>
+    <DT>xeは syntax highlight 機能を実現するため GNU source-highlight を使用していますが、cygwin版は遅いのとcygwinの導入が
+    <DT>必要なため Win版用に MinGW上でコンパイルしたものをUpします。
+    <DT>(Ｌｉｎｕｘ版用は各自でsource-highlightを導入してください)
+    <DT><FONT color="#ffff00"><FONT color="#ffff00"><B>2008/03/21</B></FONT></FONT><FONT color="#990033"> </FONT><A href="gnu-source-highlight-mingw.tgz">gnu-source-highlight-mingw.tgz</A>
+  </DL>
+</UL>
+<UL>
+  <LI>
+  <H2>puTTY patch to enable key-mapping</H2>
+  <DL>
+    <DT>マッピングファイルを指定して、任意の文字列をリモートのコンソールアプリケーションに送るパッチ。
+    <DT>修正元は日本語パッチなし。ソースも含まれているので、自分で適用してください。
+    <DD>(主にAIX版のxeユーザー向)
+    <DT><FONT color="#ffff00">2007/03/05</FONT><FONT color="#990033"> </FONT><A href="puttykm.tgz">puttykm.tgz</A>
+  </DL>
+</UL>
+<UL>
+  <LI>
+  <H2>Intel-x86 逆アセンブラー</H2>
+  <DL>
+    <DT>DOS 割り込み、WindowsAPI,OS/2API の名前をコメント表示<BR>
+    サポートするファイルのマジックは MZ,PE,NE,LE,LX,W3,W4 で EXE/DLL/VxDを解析
+    <DD><FONT color="#000000">-<FONT color="#000000"><FONT color="#000000"><FONT color="#000000">2005/12/18</FONT></FONT></FONT></FONT> 全ソースコード開示
+    <DD><FONT color="#ffff00">-<FONT color="#ffff00"><FONT color="#ffff00"><FONT color="#ffff00">2005/12/18</FONT></FONT></FONT></FONT> v1.2
+    <DD>.(BUG)インポート関数名が表示されないケースがある
+    <DD>.追加のインポート関数名設定の利便性からDLLごとにメンバー設定する(/FP)オプション追加
+    <DD>.ユニコード文字列も探してDecondingをバイパスする。
+  </DL>
+</UL>
+<PRE>        <A href="XDAOS2.LZH">XDAOS2 v1.1 (2000/06/03)</A>
+        <A href="XDAWIN.LZH">XDAWIN v1.1 (2000/06/03)</A>
+        <A href="xdawin12.zip">XDAWIN v1.2 (2006/05/18)</A></PRE>
+<UL>
+  <LI>
+  <H2>C-関数呼び出しツリー</H2>
+  <DL>
+    <DT>ディレクトリー内の.h/.cファイルから関数呼び出し構造(親--&gt;子、子--&gt;親)を表示
+  </DL>
+</UL>
+<BLOCKQUOTE>.2002/06/22 <A href="xftwin10.lzh">XFT v1.0</A> 第1版<BR>
+<B><FONT color="#cc0000"><FONT color="#ff0000"><FONT color="#ffff00">2007/05/15</FONT></FONT></FONT></B> <A href="xftwin12.zip">xft v1.2</A> (BUG)#defineで不完全な関数CALLを定義をした時ABENDする。
+</BLOCKQUOTE>
+<UL>
+  <LI>
+  <H2>C タイプ(C++,Java) のソースファイル インデンテーション プログラム (Linux/Windows)</H2>
+  <DL>
+    <DT><BR>
+    #if など マクロもある程度考慮します、<BR>
+    うまくない時はコマンドラインパラメータで調整してください<BR>
+    GNUツール flex/bisonに依存します。xcifb.l/xcifb.y を修正する場合は,<BR>
+    これが必要で Windows では cygwin に含まれています
+  </DL>
+</UL>
+<BLOCKQUOTE>.<B><FONT color="#ffcc00">2012/11/04</FONT></B> <A href="xcifbup.zip">xcifb</A> 第1版<BR>
+</BLOCKQUOTE>
+<UL>
+  <LI>
+  <H2 align="left">パズル：ナンプレ</H2>
+  <DL>
+    <DT>ナンプレを作って遊ぶ
+    <DT>以下はナンプレの例(空白に縦、横、3x3の箱の中で重複のない様に1-9 の数字を入れる
+      <BR>
+    <DT>j<B>ava版スナップショット</B>
+    <DT>問題       <BR>
+    <IMG src="NPBeforej.JPG" width="590" height="545" border="0">
+    <DD>解答 <BR>
+    <DT><IMG src="NPAfterj.JPG" width="590" height="545" border="0">
+  </DL>
+  <H2 align="left"><A href="wnp.zip">wnp v1.2 :</A><FONT color="#ffff00" size="-1">2008/01/24</FONT> パスワードなし版(96d894aa)<BR>
+  <FONT color="#003333"><A href="wnpj.tgz">wnp v1.2(java 版)</A></FONT> <FONT size="-1">2005/12/22</FONT><BR>
+  </H2>
+  <B>*アンドロイド(Android) 版 スナップショット</B><BR>
+  <BR>
+  &quot;作問”後<BR>
+  <IMG src="NPA21J320480.png" width="320" height="480" border="2"><BR>
+  <BR>
+  メニューボタン--&gt;設定<BR>
+  <IMG src="NPA21JOPT320480.png" width="320" height="480" border="2"><BR>
+  <BR>
+  メニューボタン--&gt;ファイル<BR>
+  <IMG src="NPA21JFILE320480.png" width="320" height="480" border="2"> <BR>
+  <H2 align="left"><FONT color="#003333"><A href="NPA21V01za.apk.zip">NPA21V01za.apk.zip</A></FONT> <FONT size="-1" color="#cccc00">2012/07/19</FONT>.<BR>
+  </H2>
+  1.zipファイルをunzip。<BR>
+  2.PCから端末(スマートフォン)にインストール。 &quot;adb -s TERMID install
+  xxx.apk&quot;<BR>
+  (adb は android SDKに含まれるtoolです。 TERMID は 端末USB接続後　&quot;adb
+  devices&quot; で調べる。<BR>
+  <LI><B><FONT size="6">Ajagoc</FONT></B>　(<B><FONT size="5">jagoclien</FONT>t Android 移植版</B>)<BR>
+  <DL>
+    <DD><FONT color="#ff9900"><B>(Note) オリジナルと同様パスワードは暗号化されずに通信されます、簡単に盗み見ることが出来ます.</B></FONT>
+    <DD><FONT color="#ff9900"><B>パスワードはJago専用に新規割り当てしてください。他との共用は絶対に避けてください。</B></FONT>
+    <DD><FONT color="#ff9900"><B>このソフトの使用によるいかなるダメージにも責任は終えませんことを承知おきください</B></FONT>.
+  </DL>
+  .<BR>
+  <DL>
+    <DD>開始画面<BR>
+    <DT><IMG src="Ajagoc/Top_J.png" border="1"><BR>
+  </DL>
+  <BR>
+  <DL>
+    <DD>接続画面　　　　　　　　　　　　　　　　　入場者画面 　　　　　　 　　　　　　　
+    　 対局一覧画面<BR>
+    <DT><IMG src="Ajagoc/Connect_J.png" border="1"> <IMG src="Ajagoc/Who_J.png" border="1"><IMG src="Ajagoc/Games_J.png" border="1"><BR>
+    　　
+    <DD>対局画面：縦　
+    <DT><IMG src="Ajagoc/Match_VJ.png" border="1"><BR>
+    <DD>対局画面：横
+    <DT><IMG src="Ajagoc/Match_HJ.png" border="1"><BR>
+  </DL>
+  <BR>
+  <DL>
+    <DD><FONT size="5"><B>ダウンロード</B></FONT>
+    <DT><FONT color="#cc3300"><FONT color="#cccc00"><FONT color="#ff0000"><FONT color="#ffcc33"><FONT color="#cc0000"><FONT color="#cccc00"><FONT color="#cccc00"><B>2013/05/22</B></FONT></FONT></FONT></FONT></FONT></FONT></FONT> <A href="Ajagoc/AjagocV112za.apk.zip">AjagocV112za.apk.zip</A>====<A href="Ajagoc/Ajagoc_J.htm">About Ajagoc</A>(unzipするとapkが得られます)
+    <DT><FONT color="#cccc00"><B>2013/05/22</B></FONT><B><FONT color="#ff0000"> </FONT></B><A href="Ajagoc/zipAjagocSrcV112.zip">zipAjagocSrcV112.zip</A> ====<A href="Ajagoc/AjagocSrc_J.htm">README</A> (Java ソースファイル)
+  </DL>
+  <LI><B><FONT size="6">Agnugo </FONT></B>(<B><FONT size="5">gnugo</FONT> Android porting</B>)<BR>
+  <DL>
+    <DD><FONT size="5"><B>ダウンロード</B></FONT>
+    <DT><B><FONT color="#ffff00">2011/05/16</FONT></B> <A href="Ajagoc/zipAgnugoRel.zip">zipAgnugoRel.zip</A>====<A href="Ajagoc/Agnugo_J.htm">About Agnugo</A> 
+  </DL>
+<LI><B><FONT size="6">Afuego </FONT></B>(<B><FONT size="5">fuego</FONT> Android porting</B>)<BR>
+  <DL>
+    <DD><FONT size="5"><B>ダウンロード</B></FONT>
+    <DT><B><FONT color="#ffff00">2014/09/08</FONT></B> <A href="Ajagoc/Afuego.up.tgz">Afuego.up.tgz</A>====<A href="Afuego_J.htm">About Afuego</A> 
+  </DL>
+
+ 
+</UL>
+<P>************************************************************************************************:**</P>
+<UL>
+  <LI>
+  <H2><FONT size="6">ソース</FONT> <BR>
+  <FONT size="+2"><FONT size="+2">v1.22</FONT><BR>
+  </FONT><FONT size="+2" color="#ffff00"><FONT size="-1">2010/01/2</FONT><FONT color="#ffff00" size="-1">1</FONT></FONT><FONT size="+2"><A href="aixmkxeV122.tgz"> <FONT size="-1">aixmkxeV122.tgz</FONT></A> <FONT size="-1"><B>v1.22 ソース(ＡＩＸ版v118のバグの修正用、解凍したらREADME.enを見て下さい。自分でmake)<BR>
+  .......................<FONT size="+2"><FONT size="-1">Bilbao@esさんの報告により</FONT></FONT>Makeのエラー,SPLitコマンドバグを訂正しました(32Bitオプションでコンパイルしてください)。多謝<BR>
+  </B></FONT>Other</FONT><FONT size="-1"><BR>
+  <FONT color="#000000">2006/05/18</FONT><FONT color="#990033"> </FONT><A href="xda12src.tgz"><FONT size="-1">xda12src.tgz</FONT></A> <FONT size="-1"><B>xda v1.2 ソース</B></FONT><BR>
+  <FONT color="#000000">2006/01/09</FONT><FONT color="#990033"> </FONT><A href="wnp12src.tgz"><FONT size="-1">wnp12src.tgz</FONT></A> <FONT size="-1"><B>wnp(ナンバープレースパズル) v12(Windows version) source</B></FONT><BR>
+  <FONT color="#000000">2006/01/09</FONT><FONT color="#990033"> </FONT><A href="wnp012src.tgz"><FONT size="-1">wnp012src.tgz</FONT></A> <FONT size="-1"><B>wnp(ナンバープレースパズル) v12(java version) source</B></FONT></FONT><FONT size="-1"> <BR>
+  <FONT size="+2">v1.24<BR>
+  </FONT><FONT color="#000000" size="-1">2009/06/06</FONT><A href="xesrc124all.zip"> <FONT size="-1">xesrc124all.zip</FONT></A> <B>v1.24 xe関連全ソース</B><BR>
+  </FONT>
+  <BR>
+  v1.29<BR>
+  <FONT color="#ffff00" size="-1"><B> 
+  <FONT color="#FF0000" size="-1">2018/08/28</FONT> </B></FONT>
+  <A href="gitsrc.zip"><FONT size="-1"><B>gitsrc.zip</B></FONT></A> <FONT size="-1"><B>xe v1.29 all sources(xe,ulib,xsub,xp,wxe)</B></FONT><B> ：Windowsで自分でMakeする人用</B><FONT color="#cccc00"><FONT color="#cccc00"><B><FONT size="-1" color="#cccc00"><BR>
+  <FONT color="#FFFF00" size="-1">2017/09/07</FONT></FONT></B></FONT></FONT><FONT color="#ffcc00"><B><FONT size="-1" color="#ff3333"> </FONT></B></FONT><B>
+  Android版Android Studio プロジェクトソース==&gt;GitHub sakachin2/Axe にあります</B><BR>
+  <FONT color="#ff0000" size="-1"><FONT color="#ffff33"><B>2012/07/19</B></FONT></FONT> <A href="zipnpa21src.zip"><B>zipnpa21src.zip</B></A> <B>ナンプレ(アンドロイド版) v1.1 eclipse project</B><BR>
+
+	<B><FONT color="#FFFF00" size="-1">2017/12/31</FONT></B>
+  <A href="VBI2K/VBI2Ksrc.zip"><B>VBI2Ksrc.zip</B></A> <B>VBImage2kana MSVS2010 
+  Project source</B>
+   <BR>
+	<B><FONT color="#FFFF00" size="-1">2018/03/09</FONT></B>
+  <A href="VBI2KWRT/VBI2KWRTsrc.zip"><B>VBI2KWRTsrc.zip</B></A> <B>VBI2KWRT MSVS2017 Community Project source</B>
+  </H2>
+</UL>
+</BODY>
+</HTML>

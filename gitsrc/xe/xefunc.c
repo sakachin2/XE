@@ -1,4 +1,4 @@
-//*CID://+vbi3R~:                             update#=  380;       //~vbi3R~
+//*CID://+vbi3R~:                             update#=  381;       //~vbi3R~
 //*************************************************************
 //*xefunc.c
 //************************************************************* //~v020I~
@@ -1409,7 +1409,8 @@ static UCHAR Sspecialeditcmd[]=PGMID;                              //~v55cR~
     if (!cmdlen)                                                   //~v67DI~
     	return 0;                                                  //~v67DI~
   }                                                                //~v161I~
-	UTRACED("func_cmd",wkbuff,(int)cmdlen);                     //~v035R~
+	UTRACEP("func_cmd Ppcw=%p\n",Ppcw);                     //~v035R~//+vbi3R~
+	UTRACED("func_cmd",wkbuff,(int)cmdlen);                        //+vbi3I~
                                                                 //~v035I~
     if (*wkbuff=='=')           //menu call                     //~5504I~
     	return callmenu(Ppcw,wkbuff+1);                         //~5504I~

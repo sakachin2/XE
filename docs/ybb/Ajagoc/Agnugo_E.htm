@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>Ajagoc-E:jagoclient Android poting</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">
+
+Android porting of gnugo 3.8 for Ajagoc.       2011/05/16
+gnugo package is not touched, used as original itself. 
+
+cross compiled by NDK-r5b referencing following web-site. 
+  1)www.bekatul.info/content/native-c-application-android
+  2)osdir.com/ml/android-ndk/2010-07/msg00606.html
+
+Directory structure
+    ** Linux-FC12
+    +home3
+       +android
+          +android-sdk-linux_x86 
+       +androidndk
+          +android-ndk-r5b (NDK package)
+          +Projects
+              +Agnugo
+                  .Makefile
+                  .mk.cygwin
+                  +jni
+                      .Android.mk
+                      +gnu-3.8 (expand gnugo tgz)
+                           .configure
+                            :
+                            :
+                  +libs
+                  +obj
+
+    ** Windows-cygwin
+    x:
+      +android
+          +android-sdk-windows
+      +androidndkW
+          +android-ndk-r5b (NDK package)
+          +Projects
+              +Agnugo
+                  .Makefile.cygwin
+                  .mk.cygwin
+                  +jni
+                      .Android.mk
+                      +gnu-3.8 (expand gnugo tgz)
+                           .configure
+                            :
+                            :
+                  +libs
+                  +obj
+
+Procedure.
+
+    (1) expand gnugo source package, then &quot;./configure --disable-color &amp;&amp; make&quot; 
+        Some additional c file will be made. 
+        --disable-color is to avoid ncurses linking.
+    (2) at the position Makefile is placed, 
+        make(Linux) or mk.cygwin(Windows)
+    (3) install to emulator(&quot;make install&quot;)
+        After enterer emulator(&quot;adb shell&quot;), try &quot;/data/tmp/Agnugo --help&quot;.
+
+(Note)
+    My terminal is SHARP-is01(API-1.6)
+    is01's libm is lacking some function compared with NDK libm,
+    so it crashes by &quot;CANNOT LINK EXECUTABLE(__aeabi_fadd is missing).
+    I tested only on emulator.
+</SPAN></PRE>
+</BODY>
+</HTML>

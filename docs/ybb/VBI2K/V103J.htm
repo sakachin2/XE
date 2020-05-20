@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>VBI2K-V102-J</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+
+V1.03 : 変更点                                      2017/09/23
+
+・置換キー(省略値:F5)による置換で、イメージ読み取りで間違えやすい文字を2文字追加
+    ソ(カタカナ:so) <--> ン(カタカナ:n)
+    十(色) <--> ＋(プラス) 
+
+V1.02 : 変更点                                      2017/09/20
+
+・漢字ー＞かな変換を行単位でしていたので行の切れ目で正しく変換できない不具合の対応
+・3ヵ月、霞ヶ浦など カケヵヶを含む語、三ツなどツッを含むにも対応
+・簡易辞書のサポート
+・置換キー(省略値:F5)による置換で、イメージ読み取りで間違えやすい文字を追加
+    リ(カタカナ)<-->り(ひらがな)
+    ヘ(カタカナ)<-->へ(ひらがな)
+    ベ(カタカナ)<-->べ(ひらがな)
+    工(業) --> エ(ネルギー) -->ェ -->工(業)      (漢字に戻る)
+    力(士) --> カ(エル) -->ヵ --> 力(士)         (漢字に戻る)
+    一(番) --> (カ)ー --> ─(横線) --> 一(番)    (漢字に戻る)
+    夕(焼け) <--> タ(オル)                  
+    二(人) <--> ニ(ンジン) 
+    八(幡) <--> ハ(チ) 
+    口(癖) <--> ロ(ンドン) 
+
+</SPAN></PRE>
+</BODY>
+</HTML>

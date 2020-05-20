@@ -1,8 +1,9 @@
-//*CID://+vbkyR~:                             update#=  472;       //~vbkyR~
+//*CID://+vbq2R~:                             update#=  477;       //~vbq2R~
 //*************************************************************
 //*xefcmd.c                                                     //~5504R~
 //*  find/change sub                                               //~v0ewR~
 //****************************************************************//~v013I~
+//vbq2:200418 to find label pattern such as .a with label, issue warning enclose by parenthesys.//+vbq2R~
 //vbky:180711 (Bug)memory corrupted by label overflow by Find cmd width -L option.//~vbkyI~
 //vbc3:170822 delete vbc2(it is enough by normal find;reject TS parameter)//~vbc3I~
 //vbc2:170821 add TS   option for find cmd on dirlist              //~vbc2I~
@@ -765,7 +766,8 @@ static char *Sattrid     =ATTRID;                                  //~vbc1I~//~v
 //    }                                                            //~v43pR~
 //*set result                                                      //~v0eBI~
 	if (labctr&1)	//odd number                                   //~v0hxI~
-    	return fcmdlabelerr("Need From/To");                       //~v0hxR~
+//  	return fcmdlabelerr("Need From/To");                       //~v0hxR~//~vbq2R~
+    	return fcmdlabelerr("Need From/To, or Enclose search word by parenthesis");//~vbq2R~
 	opdno=0;                                                       //~v0eBI~
 	if (op1p)                                                      //~v0eBI~
 	{                                                              //~v0eBI~
@@ -1755,7 +1757,7 @@ int fcmdsetfoundlinelabel(PULINEH Pplh,char *Plabel)               //~v61hR~
     			"行コマンドが設定されてあるので行ラベルを設定できません。");//~v61hR~
     	return 4;                                                  //~v61hI~
     }                                                              //~v61hI~
-    pfh=UGETPFH(Pplh);                                             //+vbkyI~
+    pfh=UGETPFH(Pplh);                                             //~vbkyI~
 	if (pfh->UFHcmdlinectr==MAXCMDLINE)//linecmd ctr               //~vbkyI~
 	{                                                              //~vbkyI~
 		uerrmsg("-L option:Setlabel:Line cmd max line is %d",      //~vbkyI~
@@ -1765,7 +1767,7 @@ int fcmdsetfoundlinelabel(PULINEH Pplh,char *Plabel)               //~v61hR~
 	}                                                              //~vbkyI~
     UCBITON(Pplh->ULHflag,ULHFLINECMD|ULHFDRAW);//line cmd input   //~v61hR~
     UCBITON(Pplh->ULHflag3,ULHF3ERRLINE);//reverse                 //~v61hI~
-//  pfh=UGETPFH(Pplh);                                             //~v61hI~//+vbkyR~
+//  pfh=UGETPFH(Pplh);                                             //~v61hI~//~vbkyR~
     pfh->UFHcmdline[pfh->UFHcmdlinectr++]=Pplh;  //save cmd line   //~v61hI~
 	UCBITOFF(pfh->UFHflag2,UFHF2LCMDCOMP);//need line command re-evaliation//~vb84I~
 //  Pplh->ULHlinecmd[0]=ULCCMDLABEL;                               //~v61qR~
@@ -1817,7 +1819,8 @@ static UCHAR *Sandopt="[& [!] " WORDandCOLS "2 [-d[[{<|>}]n]]]";   //~va1hI~//~v
 //static UCHAR *Swords=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|8]]|*|*u|*e|*L|*=[M][n]|*\\n|\\x..|P'pics'|regex -g}[{c1 [c2]}|eol|maxeol]";//~va28R~
 //static UCHAR *Swords=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|8]]|*|*u|*e|*ec|*L|*=[M][n]|*\\n|\\x..|P'pics'|regex -g}[{c1 [c2]}|eol|maxeol]";//~va28I~//~vax1R~
 static UCHAR *Swords=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|4|8]]|*|*u|*e|*ec|*L|*=[M][n]|*\\n|\\x..|P'pics'|regex -g}[{c1 [c2]}|eol|maxeol]";//~vax1I~
-static UCHAR *Swordsfind=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|4|8]]|*|*u|*e|*ec|*L|*=[M][n]|*\\n|\\x..|P'pics'|regex -g}[{c1 [c2]}|eol|maxeol" ATTRID "]";//~vbc3I~
+//static UCHAR *Swordsfind=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|4|8]]|*|*u|*e|*ec|*L|*=[M][n]|*\\n|\\x..|P'pics'|regex -g}[{c1 [c2]}|eol|maxeol" ATTRID "]";//~vbc3I~//~vbkyR~
+static UCHAR *Swordsfind=" ...Hit Esc Key\n " WORDandCOLS ": {word[\\n] [U[B|L|4|8]]|*|*u|*e|*ec|*L|*=[M][n]|*\\n|\\x..|P'pics'|regex -g}[{c1 [c2]}|eol|maxeol|" ATTRID "]";//~vbkyI~
 //#else                                                            //~v539R~
 //static UCHAR *Saround="[/a[-]n] [/b[-]n] [/c]";                  //~v539R~
 ////static UCHAR *Sandopt="[ & [!] word2[\\n] [/d[[{<|>}]n]]]";    //~v539R~

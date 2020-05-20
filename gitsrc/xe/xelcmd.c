@@ -230,6 +230,7 @@ int filelinecmd(PUCLIENTWE Ppcw)
 	}
     Scmdno-=delctr;	//deleted                                   //~v055I~
   	qsort(Slcmd,(UINT)Scmdno,sizeof(ULCMD),lcmdlinenocomp); //sort by lineno//~v0hxR~
+
 	lcmdproc(Ppcw);
 //*copy pending lcmd to malloc area for file copy cmd etc
 	rc=savependlcmd(Ppcw,Slcmd,Scmdno);

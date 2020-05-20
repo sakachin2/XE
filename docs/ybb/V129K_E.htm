@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html;>
+<META http-equiv=" Content-Style-Type">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>V129K-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:font 12pt;">
+
+129K:2018/08/27
+
+     1.BUGs
+       -Around processing of UTF8 file.
+         .DisplayCellWidth was reviced.
+         .Trouble around displaying UCS4,SpacingCombiningMarks adn NonSpacingMark.
+         .Expanded Maxmum combining up to 8 chracters.(case of Tibtan)
+          For Linux Console version max is yet 4 characters.
+         .When unicode>=U01000(Windows) or unicode>=U020000(Linux)
+            -Invalid hexcode display on top-left header line.
+            -Could not update on vertical hex display line.
+         .(LNX)When U01000<= unicode <U020000
+            -SBCS(CellWidth=1) was changed to another character at save.
+            -"v" line cmd on vertical hex line(cmd to accept 3 consecutive hex code as unicode) failed.
+         .On =3.12 panel(Compare Tool) was corrupted when filename encoding is UTF8.
+         .(WinConsole)New tool:xcfont can change font of command prompt.
+          It enables to view foreign script suach as Devanagari.
+       -When gb18030, differece of cursor position between charcter and vertical hex line
+        occurs for characters of CelWidth=1.
+       -Consecutive Esc key clear line cmd except label,
+        but cmd specified the labe get error of label not found.
+       -When screen is split, it may occurs that line cmd on edit panel is ignored.
+
+     2.Additional function.
+       -TC fmt cmd -D"..." and -S"..." option
+        Accept escape secuence such as \x, \t as Delimeter(\t(0x09) is not allowed for -S).
+        Accept DBCS as  -S option.
+     3.Miscellaneous.
+       -3.12 Panel(File/Dir compare)
+        "-CPU8" option was added to view compare result as CPU8 file.
+       -Diplay hex code on top-left for also directory list except ASCII code.
+       -Limit to SBCS for alternative character of "OPT UNICOMB U-xxxx" cmd
+       -Explicit "Force" option is required at save when timestamp was changed from loading time.
+        Re-enter of PF3 is not effective from now, use "SAVe -Force" or "END -force" cmd.
+
+     4.Tool.
+       -(Win)xkp v1.4
+        Exe name was not fullpath from Windows7, show fullpath.
+       -xfg v1.20
+        grep may hungup when srach string is starting with "-".
+       -(Win)New tool xcfont v1.01 (available from Windows Vista)
+        It chages font of command prompt.
+        Chcp may required depending on font family.
+        For example, to view Devanagari script
+        Change font like as "xcfont Mangal" after "chcp 57002".
+        You can see Devaganari(U+0900-097f) on xe.
+        For wxe or Linux version you need nothing special.
+        --------------------------------------------------------------------------
+        xcfont:V1.01(6): Change Current Console Font. (Supported From Vista.)
+         xcfont  [/options] [ <name> ] [ No=<seqno> ] [ CharSet={<charset>|?} ]
+                            [ H=<height> ] [ W=<width> ] [ Weight=<weight> ]
+        *******************************************************************************
+         <name >  :Partial string of FontName(StartsWith).
+                   "*" means current font.
+                   Prefix:"*" means Contains.
+         <seqno>  :Select font by SeqNo from listed fonts,
+                   to allow name is not full specification.
+         <charset>:Select filtering by charset.
+                   List available value by "charset=?".
+         <height> :Font Height. "*" means copy from current.
+         <width>  :Font Width. "*" means copy from current.
+                   if missing, calculated from height.
+         <weight> :Weight. specify Regular/Bold.
+                   if missing, adopted from selected font.
+          /options
+             /A:Accept System Selection.
+                Not restore even when system set differently from requested.
+             /B:Select Not TrueType fonts(Raster) only.
+             /D:Detail Query Information.
+             /F:Select Fixed Pitch fonts only.
+             /Q:Query candidate fonts.
+             /T:Select TrueType fonts only.
+             /V:Select Variable Pitch fonts only.
+         e.g. ----- (all are case insensitive) -----
+           xcfont /Q charset=222     ; List fonts of charset:THAI.
+           xcfont charset=?          ; List available charset .
+           xcfont /Qf                ; List FixedPitch font.
+           xcfont /Q *               ; Show current font set.
+           xcfont /Q Microsoft       ; List fontname starting with "Microsoft".
+           xcfont /Q *Sans           ; List fontname containing "Sans".
+           xcfont Microsoft No=2     ; Select second font listed by "Microsoft".
+           xcfont SimSun charset=238 ; Select SimSun with charset:EASTEUROPE.
+           xcfont Tahoma H=*         ; H=current, W=H*rate of W/H of selected.
+           xcfont * H=16 W=10        ; Update current font sizes
+           xcfont * Weight=Bold      ; Set current font weight to Bold
+           chcp 57002                ; 57002:Devanagari, "Mangal" requires it.
+           xcfont Mangal H=*         ; Codepage will be listed by "xcv /list".
+
+</SPAN></PRE>
+</BODY>
+</HTML>

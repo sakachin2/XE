@@ -1,4 +1,4 @@
-//*CID://+vbi3R~:                             update#=  151;       //~vbi3R~
+//*CID://+vbi3R~:                             update#=  154;       //+vbi3R~
 //*************************************************************
 //*xefile3.c*
 //* execute key                                                 //~4C23R~
@@ -1329,7 +1329,7 @@ int filecharcsr(PUCLIENTWE Ppcw)                                //~5423R~
     PUFILEH pfh;                                                   //~v0d7I~
 //****************************                                  //~5423M~
 //  if (UCBITCHK(Gscrstatus,GSCRSCSRDOWN))                         //~va3RR~
-	if (Gotherstatus & GOTHERS_CHLPOPUP)//CommandHistoryList popup at return from funccall,UCWreason is not avail becaquse Ppcw may be freeed//+vbi3R~
+	if (Gotherstatus & GOTHERS_CHLPOPUP)//CommandHistoryList popup at return from funccall,UCWreason is not avail becaquse Ppcw may be freeed//~vbi3R~
     {                                                              //~vbi3I~
     	return 0;	//pcw will be freed                            //~vbi3I~
     }                                                              //~vbi3I~

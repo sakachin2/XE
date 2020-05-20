@@ -1,7 +1,8 @@
-//CID://+v6T1R~:        update#=14                                 //+v6T1R~
+//CID://+v6Z0R~:        update#=15                                 //+v6Z0R~
 //*******************************************************
 //*uedit.h                                                         //~v57WR~
 //*******************************************************
+//v6Z0:200516 uwordrep option alternative parm sign                //+v6Z0I~
 //v6T1:180210 add ueditKMG(edit Kiro,mega,Giga value)              //~v6T1I~
 //v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~v6L5I~
 //v6xk:150115 (BUG:W32)spwanxx deplicated,use _spawnxx(return intptr_t, Linux returns int pid)//~v6xkI~
@@ -61,6 +62,7 @@ char *uwordrep(int Popt,char *Pinp,char **Pkwd,char **Pdata,int *Prepctr,int *Pn
 #define WORDREP_IC  			0x01	//ignore case              //~v066I~
 #define WORDREP_UNMATCHNULL  	0x02	//rep by null if unmatch kwd(%...%)//~v066I~
 #define WORDREP_NODATANULL  	0x04	//rep by null if no data ptr//~v066I~
+#define WORDREP_ALTSIGN     	0x08	//alternative parmsign     //+v6Z0I~
                                                                    //~v066I~
 //******************************************************************//~v025I~
 int ugethex(char *Phex,char *Pbin,int Plen);                       //~v025I~

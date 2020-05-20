@@ -1,4 +1,4 @@
-//CID://+v9h0R~:        update#=   1059                            //~v9h0R~
+//CID://+v9h0R~:        update#=   1060                            //~v9h0R~
 //**********************************************************************
 //* xplnxp.c                                                       //~v980R~
 //**********************************************************************
@@ -4574,7 +4574,7 @@ GList *lnx_getppdlist(int Popt,char *Pprinter)                     //~v988I~
 //      uerrexit("printer:%s is defined(ppdOpenFile failed)",pppdnm);//~v992R~
         uerrexit("printer:%s is defined(ppdOpenFile failed)",0,pppdnm);//ifdef NNN//~v992I~
     formno=ppd->num_sizes;                                         //~v988I~
-    UTRACEP("lnx_getppdlist ppd count=%d\n",formno);         //~v988R~//+v9h0R~
+    UTRACEP("lnx_getppdlist ppd count=%d\n",formno);         //~v988R~//~v9h0R~
     ppgsz=ppd->sizes;                                              //~v988I~
     if (!formno)                                                   //~v988I~
 //      uerrexit("No PaperSize is defined on printer:%s",Pprinter);//~v992R~
@@ -4703,7 +4703,7 @@ int lnx_srchGtkPaperSize_212(int Popt,char *Pprinter,char *Ppform,PFRECT Ppfmarg
                 ppgsz.bottom=fmargin.bottom;                       //~v985R~
                 ppgsz.left=fmargin.left;                           //~v985R~
                 ppgsz.right=fmargin.right;                         //~v985R~
-                UTRACEP("lnx_srchGtkPaperSize_212 name=%s,w=%f,h=%f,t=%f,b=%f,l=%f,r=%f\n",pname,ppgsz.width,ppgsz.length,ppgsz.top,ppgsz.bottom,ppgsz.left,ppgsz.right);//~v988R~//+v9h0R~
+                UTRACEP("lnx_srchGtkPaperSize_212 name=%s,w=%f,h=%f,t=%f,b=%f,l=%f,r=%f\n",pname,ppgsz.width,ppgsz.length,ppgsz.top,ppgsz.bottom,ppgsz.left,ppgsz.right);//~v988R~//~v9h0R~
                 pps=getCustomPapersize(Ppform,(char *)pname,&ppgsz,&fmargin);//~v981R~
             }                                                      //~v981R~
             ppsfound=pps;                                          //~v984I~
@@ -4737,11 +4737,11 @@ int lnx_srchGtkPaperSize_212(int Popt,char *Pprinter,char *Ppform,PFRECT Ppfmarg
 #endif                                                             //~v98hI~
     		*Ppfmargin=fmargin;                                    //~v981I~
         }                                                          //~v98hI~
-    	UTRACEP("lnx_srchGtkPaperSize_212 iscustom=%d,w=%f point,h=%f point\n",//~v981I~//+v9h0R~
+    	UTRACEP("lnx_srchGtkPaperSize_212 iscustom=%d,w=%f point,h=%f point\n",//~v981I~//~v9h0R~
     			pps?gtk_paper_size_is_custom(pps):0,               //~v981I~
 				pps?gtk_paper_size_get_width(pps,GTK_UNIT_POINTS):0.0,//~v981I~
 				pps?gtk_paper_size_get_height(pps,GTK_UNIT_POINTS):0.0);//~v981I~
-    	UTRACEP("lnx_srchGtkPaperSize_212 papersize by mm w~%f,h=%f \n",//~v98aI~//+v9h0R~
+    	UTRACEP("lnx_srchGtkPaperSize_212 papersize by mm w~%f,h=%f \n",//~v98aI~//~v9h0R~
 				pps?gtk_paper_size_get_width(pps,GTK_UNIT_MM):0.0, //~v98aI~
 				pps?gtk_paper_size_get_height(pps,GTK_UNIT_MM):0.0);//~v98aI~
 	}                                                              //~v981I~
@@ -4983,7 +4983,7 @@ int getMediaCount(cups_dest_t *Pdest,http_t *Phttp,cups_dinfo_t *Pdinfo)//~v9h0I
 {
 	int ctr,flags=0;                                               //~v9h0I~
     //***********************
-	ctr=cupsGetDestMediaCount(Phttp,Pdest,Pdinfo,flags);           //~v9h0I~
+	ctr=cupsGetDestMediaCount(Phttp,Pdest,Pdinfo,(unsigned)flags); //+v9h0R~
 	UTRACEP("getMediaCount mediaCtr=%d\n",ctr);                    //~v9h0I~
     return ctr;                                                    //~v9h0I~
 }                                                                  //~v9h0I~
@@ -4995,15 +4995,15 @@ PageSize *getPageSize(cups_dest_t *Pdest,http_t *Phttp,cups_dinfo_t *Pdinfo)//~v
   	cups_size_t   size;                                            //~v9h0I~
     PageSize *ppgsz,*ppgsz0;                                       //~v9h0I~
     //***********************                                      //~v9h0I~
-	count = cupsGetDestMediaCount(Phttp,Pdest,Pdinfo,flags);       //~v9h0I~
+	count = cupsGetDestMediaCount(Phttp,Pdest,Pdinfo,(unsigned)flags);//+v9h0R~
 	UTRACEP("getPageSize mediaCtr=%d\n",count);                    //~v9h0I~
     for (ii=0;ii<count;ii++)                                       //~v9h0I~
     {                                                              //~v9h0I~
-    	if (cupsGetDestMediaByIndex(Phttp,Pdest,Pdinfo,ii,flags,&size))//~v9h0I~
+    	if (cupsGetDestMediaByIndex(Phttp,Pdest,Pdinfo,ii,(unsigned)flags,&size))//+v9h0R~
         {                                                          //~v9h0I~
           	if (strcmp(dupchk,size.media))                         //~v9h0I~
             {                                                      //~v9h0I~
-	        	UTRACEP("getPageSize  %s (%s)\n", size.media, cupsLocalizeDestMedia(Phttp,Pdest,Pdinfo,flags,&size));//~v9h0I~
+	        	UTRACEP("getPageSize  %s (%s)\n", size.media, cupsLocalizeDestMedia(Phttp,Pdest,Pdinfo,(unsigned)flags,&size));//+v9h0R~
                 nondupctr++;                                       //~v9h0I~
 	            strcpy(dupchk,size.media);                         //~v9h0I~
             }                                                      //~v9h0I~
@@ -5011,22 +5011,22 @@ PageSize *getPageSize(cups_dest_t *Pdest,http_t *Phttp,cups_dinfo_t *Pdinfo)//~v
       	else                                                       //~v9h0I~
 	        UTRACEP("getPageSize error");                          //~v9h0I~
     }                                                              //~v9h0I~
-    ppgsz0=ppgsz=(PageSize*)umalloc(SZ_PAGESIZE*nondupctr);        //~v9h0R~
+    ppgsz0=ppgsz=(PageSize*)umalloc(SZ_PAGESIZE*(size_t)nondupctr);//+v9h0R~
     *dupchk=0;                                                     //~v9h0I~
     for (ii=0;ii<count;ii++)                                       //~v9h0I~
     {                                                              //~v9h0I~
-    	if (cupsGetDestMediaByIndex(Phttp,Pdest,Pdinfo,ii, flags, &size))//~v9h0I~
+    	if (cupsGetDestMediaByIndex(Phttp,Pdest,Pdinfo,ii,(unsigned)flags, &size))//+v9h0R~
         {                                                          //~v9h0I~
           	if (strcmp(dupchk,size.media))                         //~v9h0I~
             {                                                      //~v9h0I~
-            	ppgsz->displayname=(char*)cupsLocalizeDestMedia(Phttp,Pdest,Pdinfo,flags,&size);//~v9h0M~
+            	ppgsz->displayname=(char*)cupsLocalizeDestMedia(Phttp,Pdest,Pdinfo,(unsigned)flags,&size);//+v9h0R~
             	strncpy(ppgsz->ppdsz.name,size.media,sizeof(ppgsz->ppdsz.name));//~v9h0R~
-            	ppgsz->ppdsz.width=size.width;                     //~v9h0R~
-            	ppgsz->ppdsz.length=size.length;                   //~v9h0R~
-            	ppgsz->ppdsz.top=size.top;                         //~v9h0R~
-            	ppgsz->ppdsz.left=size.left;                       //~v9h0R~
-            	ppgsz->ppdsz.bottom=size.bottom;                   //~v9h0R~
-            	ppgsz->ppdsz.right=size.right;                     //~v9h0R~
+            	ppgsz->ppdsz.width=(float)size.width;              //+v9h0R~
+            	ppgsz->ppdsz.length=(float)size.length;            //+v9h0R~
+            	ppgsz->ppdsz.top=(float)size.top;                  //+v9h0R~
+            	ppgsz->ppdsz.left=(float)size.left;                //+v9h0R~
+            	ppgsz->ppdsz.bottom=(float)size.bottom;            //+v9h0R~
+            	ppgsz->ppdsz.right=(float)size.right;              //+v9h0R~
                 ppgsz++;                                           //~v9h0I~
 	            strcpy(dupchk,size.media);                         //~v9h0I~
             }                                                      //~v9h0I~
@@ -5034,7 +5034,7 @@ PageSize *getPageSize(cups_dest_t *Pdest,http_t *Phttp,cups_dinfo_t *Pdinfo)//~v
     }                                                              //~v9h0I~
     return ppgsz0;                                                 //~v9h0R~
 }                                                                  //~v9h0I~
-//************************************************************************************//+v9h0I~
+//************************************************************************************//~v9h0I~
 GtkPaperSize *lnx_srchGtkPaperSize(int Popt,char *Pprinter,char *Ppform,PFRECT Ppfmargin)//~v9h0I~
 {                                                                  //~2B03aI~//~v9h0I~
     int ii=0,formno;                                               //~v9h0I~
@@ -5085,10 +5085,11 @@ GtkPaperSize *lnx_srchGtkPaperSize(int Popt,char *Pprinter,char *Ppform,PFRECT P
         if (!formno)                                               //~v9h0I~
             uerrexit("No form is defined on printer:%s",0,Pprinter);//~v9h0I~
         pPageSz=getPageSize(pppdnm/*dest*/,ppd/*http*/,dinfo);     //~v9h0R~
-        pPageSz0=pPageSz0;                                         //~v9h0R~
+//      pPageSz0=pPageSz0;                                         //+v9h0R~
+        pPageSz0=pPageSz;                                          //+v9h0I~
 	    Scupspaperlistsize=formno;                                 //~v9h0I~
 //      for (ii=formno;ii>0;ii--,ppgsz++)                          //~v9h0R~
-        for (ii=formno;ii>0;ii--,pPageSz++)                        //+v9h0R~
+        for (ii=formno;ii>0;ii--,pPageSz++)                        //~v9h0R~
         {                                                          //~v9h0I~
 //          UTRACEP("lnx_srchGtkPaperSize name=%s,w=%f,h=%f,t=%f,b=%f,l=%f,r=%f\n",ppgsz->name,ppgsz->width,ppgsz->length,ppgsz->top,ppgsz->bottom,ppgsz->left,ppgsz->right);//~v9h0R~
 //          pdisplayname=getdisplayname(ppd,ppgsz->name);          //~v9h0R~
@@ -5175,7 +5176,7 @@ GtkPaperSize *lnx_srchGtkPaperSize(int Popt,char *Pprinter,char *Ppform,PFRECT P
 				pps?gtk_paper_size_get_width(pps,GTK_UNIT_POINTS):0.0,//~v9h0I~
 				pps?gtk_paper_size_get_height(pps,GTK_UNIT_POINTS):0.0);//~v9h0I~
 	}                                                              //~v9h0I~
-    ufree(pPageSz0);                                               //~v9h0R~
+    ufree(pPageSz0);                                               //+v9h0I~
     return pps;                                                    //~v9h0I~
 }//lnx_srchGtkPaperSize                                            //~v9h0I~
 #endif  //NOPPD                                                    //~v9h0I~

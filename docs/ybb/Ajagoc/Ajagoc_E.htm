@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; ">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>Ajagoc-E:jagoclient Android poting</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">
+Ajagoc(JagoClient Android Version) v1.12    2013/05/21
+
+====================
+This is jagoclient v5.1 porting to Android.
+(Original was made by rene-grothmann@de.)
+And Bluetooth comunication function is added.
+
+Go is a board game played from ancient times at east Asia.
+There are 4 playing mode.
+
+(1) Through Go server such as WING.
+      Connect to selected server on top panel,
+      request match to the slected 'who' on 'whoes' panel.
+      WING server(wing.gr.jp) port is 1515(2525 for Japanese user). 
+      It is editable by &quot;Edit&quot; button.
+      You can observe other player's match selecting from 'games' panel.
+
+   At first, select server, push 'Connect' button then enter 'guest'.
+
+(2) Match with the known partner.
+      Without server, pear to pear matching with partner IP address is known.
+      (Your IP address is shown by &quot;Partner Connection&quot;--&gt;&quot;Open Partners&quot;)
+      One starts server by Menu --&gt; Partner --&gt; &quot;Start Server&quot;.
+      The other, after switching to partner list panel, &quot;Connect&quot; to the partner.
+      Match will start when client &quot;Game&quot; --&gt; &quot;Request&quot;, then server replys &quot;Accept&quot; 
+      Partner connection panel with &quot;Match&quot; button is message board.
+      See also (Note) bellow and Menu button --&gt; Help --&gt; Partner Connections.
+      Rooter's setting &quot;Privacy Separator&quot; will prohibit communication among terminals under it.
+      Bluetooth enables Peer-to-peer matching without wireless-LAN environment.
+      See Note:&quot;Partner Connection Using Bluetooth&quot; bellow.
+(3) LocalView
+      Top panel menu, Action--&gt;LocalView.
+      This is symply a board view.
+      Use it to study Go-Meister's record, review sgf file.
+      It may be for also training of board operation,
+      or face-to-face matching if your terminal screen is big enough.
+(4) Match with Robot
+      Top panel menu, Action--&gt;GMP match
+      Your opponent is Agnugo which is my Android porting of gnugo.
+      Current GnuGo version is 3.8
+                               sakachin2@gmail.com
+====================
+Operation
+  &quot;Menu&quot;   : Diaply Option-Menu.
+               Stop :terminate application
+               Close:close current panel.
+               Help :display Help-Menu
+  &quot;Back&quot;   : Back to previous panel.
+             Menu/Dialog is closed if opened.
+  &quot;Search&quot; : Treated  as &quot;Enter&quot; (Default setting)
+             To google, use it after switching to home by &quot;Home&quot; button.
+             Back to Go by &quot;Apps now running&quot; button. 
+
+  &quot;TitleBar&quot; touch
+      Center   :display Context-Menu(Menu for each panel).
+                ex. on top Panel, Action--&gt;Select playing mode.
+      LeftEdge :back to previous panel. up to TitlebarHeight*2 from left edge. 
+      RightEdge:back to next panel. up to TitlebarHeight*4 from right edge.
+                For landscape Local-View panel, free upto TitlebarHeight*2 from right edge.
+      long press(1 second) shows Option-Menu.
+
+  On Go-Board
+    Buttons
+      &quot;Direction&quot;(Up/Down/Left/Right) buttons move Cursor.
+      &quot;Center&quot; button or &quot;Enter&quot;/&quot;Search&quot; key  sets a stone.
+    Touch
+      A Click on board moves Cursor at the position.
+      Slide(drag) moves Cursor to the direction. 
+      Touch on the Cursor position set stone.
+      Click on small yellow button bellow the board also set stone.
+
+      Iconbar is rather small, see Help of &quot;keyboard-shortcut&quot;
+      if you have keyboard.
+      Direction key is not avail because it is intercepted by Ajagoc as default.
+
+  Whos and Games panel shows list of who and match,
+  long press on a line shows Context-Menu about the Who/Game.
+
+Note.
+  .WING server is wing.gr.jp/1515 for Non-Japanese user.
+   set Langauge:en_US by TopPanel-ContextMenu:Options--&gt;Set Language
+   once enter &quot;term e&quot; command just after login successed.
+
+  .Portrait or Lanscape is fixed to the status at board opened.
+
+  .Context-Menu will be pop-up also by long press at non-clickable position
+   such as button, list except on Go-board panel.
+
+  .Fn key is used to set pre-defined string (through Menu--FunctionKey) to input field.
+   When your terminal has no Fn key,
+   use Center-button or Enter-key just after only one digit &quot;0&quot;--&gt;&quot;9&quot;.(&quot;0&quot; is for F10)
+
+  .Font Change Reference, roughly speaking, used as following. 
+     (Menu Item is Android native, is not changed)
+     Board  : Text on Board such as coordinates.
+     Fixed  : Server/partner/Whos/Games list, Message Display.
+     Big    : Optional Clock showing remaining time.
+     Normal : Button, Input field, Choice(DdropDownList), Dialog,
+              Information line on Board panel.
+    
+  .Partner Connection setup sample
+     Server:
+       Top panel --&gt; Menu --&gt; Partner --&gt; Server Port:6970 
+     Client:
+       Top panel --&gt; Menu --&gt; Partner --&gt; Your Name  :foo-c
+       Top panel --&gt; Partner Connections --&gt; Add
+                 Name   :foo-s
+                 Server :server IP address
+                 Port   :6070
+
+  .Partner Connection Using Bluetooth
+     (Menu:Bluetooth is from android:2.0)
+     Server:(on side of partner)
+       Top panel --&gt; Menu --&gt; Bluetooth --&gt; Accept Connect
+     Then 
+     Client:(the other size)
+       Top panel --&gt; Menu --&gt; Bluetooth --&gt; Connect
+       (If ,by &quot;Connect&quot;, server-device is not listed on device selection dialog,
+       push &quot;Scan Device&quot; after &quot;Make Discoverable&quot; at Server device.)
+
+     Reply &quot;Yes&quot; if pairing confirmation dialog is opened.
+     (Pairing can be set previously from android's &quot;Settings&quot;.)
+     Request &quot;Game&quot; from one of device on Connection panel.
+     Menu--&gt;Finish Game-&gt;End Game,then prisoners will be removed.
+
+  .Change of Board Color or Cordinates option are time consuming process.
+   It is so for Reconection after line-error or End-of-Game panel, be patient.
+
+  .Memory size limit may be severe, close ended game board.
+
+  .Ajagoc Options.
+   Added to menu of top panel.
+     Direction Key as Shortcut.
+       Set ON to use direction keys as shortcut key
+       if your terminal has trackball.
+     Use Serach key as Enter
+       Set OFF not to use Search button as Enter key,
+       if your terminal has hardware keyboard.
+
+====================
+Install
+
+  Except through Android Market, you can install apk file you have. 
+    (1)through micro SD
+       1.Install installer such as &quot;Apkinstaller&quot; from Android Market
+         into your terminal.
+       2.Copy your apk file into micro SD card
+       3.Install your apk by starting the installer
+  OR
+    (2)using adb(one of android SDK tools)
+       1.Connect your terminal to a PC SDK was installed
+         (Install USB driver from &lt;SDK&gt;usb_driver folder)
+       2.On your terminal, set ON &quot;Unknown sources&quot;(&quot;Settings&quot;--&gt;&quot;Applications&quot;)
+       3.On PC, execute &quot;adb install apk-file-fullpath&quot;
+
+  When you got strengthen renewal version of gnugo(or other GMP protocol robot),
+  change name other than Agnugo or install it to other than /data/data/com.Ajagoc/files.
+  And specify fullpath name on GMP connection panel.
+
+====================
+Nationalization and Configuration.
+
+  Original help text files are included.
+  You can add or modify help text by placing another file
+  on the foloowing folder.
+  If you use multiple locale, put file with name suffixed
+  like as about_de.txt.
+  Originally _de,_fr,_it,_pl,_ru,_ja is prepared.(aboutAjagoc is _ja only)
+
+  (See help about Locale Switching)
+
+    /sdcard/Ajagoc/jagoclient/helptexts/xxxxx.txt
+
+         about.txt  aboutAjagoc.txt  advanced.txt  board.txt  channels.txt configure.txt
+         confpartner.txt  encoding.txt filter.txt  firewall.txt  fkeys.txt  games.txt
+         gmp.txt  help.txt  keyboard.txt  language.txt  mail.txt  moves.txt  obsplay.txt
+         overview.txt  partner.txt  playing.txt  port.txt  relayserver.txt  server.txt
+         sgf.txt  sound.txt  teaching.txt  terminal.txt variations.txt  who.txt
+         windows.txt yourname.txt
+
+  Button label is modified by following folder.
+    /sdcard/Ajagoc/jagoclient/foreign/<A href="JagoResource.htm">JagoRsource.properties</A>&quot;
+  For multiple locale prepare following file.
+    /sdcard/Ajagoc/jagoclient/foreign/<A href="JagoResource_de.htm">JagoRsource_xx.properties</A>
+
+  Server list is modified by following file.(Panel operation enable to add/modify list)
+    /sdcard/Ajagoc/xxxx.cfg
+      go.cfg, server.cfg, partner.cfg, filter.cfg
+
+====================
+  Open Source
+    http://www.geocities.jp/sakachin2/index.htm
+</SPAN></PRE>
+</BODY>
+</HTML>

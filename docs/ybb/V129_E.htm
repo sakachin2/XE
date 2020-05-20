@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html;>
+<META http-equiv=" Content-Style-Type">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>V129-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:font 12pt;">
+
+129:2017/04/01 Summary of update of V129(v128K)<--v128
+
+   !!! Security tool installed on my Windows10 terminates xe.exe
+       when deleting e.g JPG files on dir-list issuing msg "Blocked Ransomware".
+       Permit xe.exe when this msg issued.
+
+   !!! Ini file format was changed, you need to once delete ini file by this modification.
+       (ini file: Win=::XE!SAVE!, Linux=::xe_save_)
+
+       -Unicode input by Alt+n (n:1-9,h,v)
+        use u-xxxx format in the file ::xelch{win|lnx}.ini[.locale]
+            ex) 2=u-102222,41; u2550
+       -On EDIt/BROwse/SELect cmd and "o" cmd on dirlist,
+        translates filename encoding(UTF8<-->locale code) by FN{U8|LC} option,
+        for the abridgement of input key mode changing by Alt+u key.
+        Filename encoding is displayed on the line of "TOP-OF-LINE".
+        ex).
+            *****|*l*t**Lu** TOP OF LINE *******************************
+                        ^^
+                        ||
+                        |+--------->by IOCHARSET mount option of the directory's device.
+                        +---------->Filename encoding(U/L/u/l)
+     (128C)
+       -WXP cmd;option /tabon was added.
+       -(Lnx)Deafualt value of Disp_trans_tbl on ini file(non-displayable character parameter)
+        was changed. Control character(<0x20) may be almost displayable.
+        (Note)Font setting of CommandPrompt profile may be cause of shift of character position.
+              Select proper font.
+              Or set properly Display_tans_tbl/Displaytrans_char parameter of ini file.
+     (128D)
+       - Find cmd new option.
+        . { FINd | IFInd | FNX | INX } [find-options] [-{PSP|PSF}[X|R|D]]
+            PSP:applyed to the split screen, applyed also to not split screen.
+            PSF:applyed to the Edit/Browse file/directory panel.
+            X:specify -PSPX/-PSFX alone, excecute latest PSP/PSF command.
+            R:specify -PSPX/-PSFX alone, set latest PSP/PSF command to cmd line.
+            D:specify -PSPX/-PSFX alone, display PSP/PSF command effective now.
+        . PSD (no operand) command
+            Display PSP/PSF/STD command effective now.
+            STD:normal Find cmd.
+
+        . Ctrl+F5 (re)find using PSP cmd, Alt+F5 (re)find using PSF cmd.
+          Ctrl+Shift+F5, Alt+Shift+F5 switches search direction.
+          If find cmd operand is set on cmd line,
+          PSP/-PSF option is selected from cmd line regardress function key used(F5, C+F5 or A+F5).
+          PSF cmd saved is lost when the file is closed.
+          Latest two PSP cmds saved are recovered at restart as for SPLIT(1) and SPLIT(2).
+        . On Linux, Alt+F5 may be assinged as default shortcut key.
+          Inactivate it by Linux Settings-->Shortcut, chnage Function-Key assignmeny on xe =0.2 panel.
+
+        . This function enable 3 pattern's search on a file.
+          After followings
+             F abcS
+             F abcP -psp
+             F abcF -psf
+          F5 searches "abcS", Ctrl+F5 searches "abcP" and Alt+F5 searches "abcF".
+          To continue search same pattern, use same key.
+          (ex) "F abcP -psp", C+F5, C+F5, S+C+F5
+        . Change cmd is not supported.
+        . Enclose by quotation to search "-PSP" itself. (ex) F "-PSP".
+     
+       - ::linech.ini file is used to convinient unicode input enabling graphic line character
+         which assigned to A+1,2.. key.
+         Comment line(start width "#") is supported.
+       - Modification to displaying unicode combining character.
+          Command
+            Linux console version.
+              OPT UNICOMB [ COMB | SPLIT | UNPR ] [ SHADOW | ITSELF | PADDING | U-xxxx ]
+            the other
+              OPT UNICOMB [ COMB | SPLIT | UNPR ] [ U-xxxx ]
+        . supports U-xxxx (alternative character code to display combining character under UNPR mode).
+          And U-00 means restore default value(':'=u-3a).
+          It is applyed to Edit/Browse panel.(previously it was fixed to ':').
+          gxe also supports UNPR mode.
+        . On 2nd(command input) line,to enable to modify command,use always SPLIT mode
+        . On Edit/Browse panel,wxe/gxe apply ligature mode even when not COMB mode.
+        . Select TrueType font for command prompt to use Windows console version xe.
+       - ::xehosts(hots file for remote file access function)
+         expands operand length limit to enable to spacify not IP addr but URL.
+     (128E)
+       - Utilizes Shift+Alt+Fn, Shift+Ctrl+Fn keys.
+        . Specify on =0.2 panel or INI file(::xe.ini).
+        . Linux may define those keys as shortcut.
+          In that case, to utilize these keys change Linux Settings->Shortcut.
+          When key widthout Shift(A+Fn,C+Fn) is defined as shortcut,
+          it mey be required to set it disable.
+        . Destination(Up,Down,Left,Right), Ins, Del keys are also accepted.
+
+       - Tab cmd, new altch option.
+        . On Windows command prompt, unicode charcter display-column-width depends its Properties-->Font setting.
+          If you use ASCII char as alt-displaying-char of TAB and TAB padding space char.
+          If you yet use prefered unicode for TAB and TAB padding, use this altch option.
+          On wxe,gxe,Linux xe, it may not be occur.
+        . TAB { on [altch] | off | clear | =default | nn [asdefault] }
+          [altch] option overrides following INI file options.
+            (J)Tab_disp_char  =FFFF #(FFFF)# Tab display char for Japanese mode. (FFFF means U-21be & U-21c0)
+            (E)Tab_disp_char  =FFFF #(FFFF)# Tab display char for English  mode. (FFFF means U-21be & U-21c0)
+            DBCSspace_dispchar=FF #(FF)# DBCS space display char. (FF means U-2591)
+        . "tab on 000" is used to back to default(u21be-21c0,2591) or INI settings.
+        . ex)  tab on "^-" ,   tab on u25b8-25b9 ,  tab on "^-!" ,  tab on u25b8-25b9-21be.
+        . When Non-ASCII is specified as altch, "xpr -tabon" cmd use the altch
+          for printing CPU8 file and use 0x18 and 0x1a for non-CPU8 file.
+     
+       - Key A+PgDn and  A+PgUp is assigned to Top-Of-File and  End-Of-File each.
+       - (W32)Draw Col gauge line, vertical hex line by fixed pitch even when
+         propotional font is set to cmd prompt property.
+       -(Lnx:Console) Curses string for key combination of Debian is registed.
+        (A+F1,.. was not available on Debian previously)
+     (128F)
+       - Select command.
+        . new lineno option:  "S -lineno" (1st member if lineno is missing)
+          ex)  "S -5" to open member of lineno=5.
+     (128G)
+       -Deal long path name file/directory.
+        .(Win)File system connected by "NET USE" cmd on Linux Samba Server
+         has longer path name than windows local file.
+        .(Win)Windows support long path name up to 32KB
+         by using ""\\?\" prefix if set registory "NTFS long path".
+        .(LNX)If available to rename directory containing long path name,
+         delete after rename.
+     (128K)
+       -XBC command.
+        .accept multiple(Max 10) operator.
+         e.g. xbc 200/3.3*35.7 , xbc 1+2+3+4+5+6+7+8+9+10
+        .XBC time calculation output days when hors>24.
+       -command verb "LIG" to toggle ligature mode(A+";" key)
+        and "CMB" to toggle combine mode(A+":" key) was added.
+
+ Tools.
+       -xfg v1.18
+        .new option
+          /F :file selection wildcard mask.
+          /X :excluding file wildcard mask.
+        .Wildcard mask is not applied to sub-dir name itself.
+         To exclude th sub-dir, use -X option.
+         ex) xfg -rgt -fABC* -xAsubdir word
+        .(BUG)Crushes wby long path name.
+       -xdc v2.26
+        .new option
+          /F+ :file selection wildcard mask.
+          /X  :excluding file wildcard mask.
+       -xdd v2.1
+        .new -q[n] option.
+         Displays msg each 10**n deletion, n=3(=1000) when n is missing.
+        ./r option is required to delete too long path name.
+       -xprint v9.34
+        .(Win) support UCS4(unicode>u-ffff).
+
+</SPAN></PRE>
+</BODY>
+</HTML>
