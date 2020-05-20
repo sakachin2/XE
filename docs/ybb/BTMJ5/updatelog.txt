@@ -1,0 +1,20 @@
+//2020/05/09 v102 release ***************************************************
+//2020/05/09 va08:Sound:Ron may delayed for client.
+                  UARon
+//2020/05/08 va07:close menu in game when preference selected
+                  MenuInGame
+//2020/04/27 va06:BGM
+                  Sound BGMList GConst Tables MainActivity Status GC PredSetting PrefSettingEnum 
+//2020/04/26 va05:sound effect at positioning tile get
+                  WRiver
+//2020/04/16 va04:rule sync faile by msgseqno overrun
+                  When client restart-reconnected after changed rule locally, rule sync required but 61(GCM_SETTING_RESP) is rejected by msgno overrun.
+                  UARestart
+//2020/04/16 va03:alert suspendrequested
+                  CompleteDlg SuspendAlert DrawnDlgLast DarwnDlhHW
+//2020/04/13 va02:At Server,BackButton dose not work when client app canceled by androiud-Menu button
+                  do ioerr process at connection failure IOErr at inter-Round.
+                  GC MenuInGameDlg SuspendIOErrReqDlg Status UARestart BTMulti
+//2020/04/13 va01:toast "socket closed" at WDA close
+                  wifi\WDA
+//v101 2020/04/12 Google Play first release

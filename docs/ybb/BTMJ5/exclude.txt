@@ -1,0 +1,4 @@
+DevConUp\
+app\release\
+app\src\androidTest\
+app\src\test\
