@@ -1,8 +1,11 @@
-//*CID://+v6X4R~:                              update#=  313       //~v6X4R~
+//*CID://+v70nR~:                              update#=  321       //~v70nR~
 //*************************************************************
 //*uerrexit/uerrmsg/uerrexit_init/uerrmsg_init/ugeterrmsg**
 //*uerrapi1,uerrapi1x,uerrapi0,uerrapi0x                           //~v040R~
 //*************************************************************
+//v70n:200902 (ARM)uerrexit by locale                              //~v70nI~
+//v70k:200802 (ARM:BUG)uerrmsg always english mode                 //~v70kI~
+//v702:200615 ARM compiler warning                                 //~v702I~
 //v6X4:180818 uerrhelpmsg:breakmag is corrupted by sjis2euc on utf8 env(GBL_UERR_SJIS2EUC is set by uerrmsgedit for currentline)//~v6X4I~
 //v6Vw:180622 write exception msg to UTRACE                        //~v6VwI~
 //v6U0:180305 debug assertion failed Expression:_format_char != '\0' at errmsgedit sprintf; count argment count//~v6U0I~
@@ -272,8 +275,10 @@ static UEXITFUNC *Sexitfunc;
 static UPOPUPMSG *Supopupmsg;	//upopupmsg func addr           //~5902R~
 static void *Sexitparm;
 static UCHAR Sexitmapfile[_MAX_PATH];                              //~v101R~
+#ifndef ARM                                                        //~v702I~
 static FILE *Sfhstack;                                             //~v6T7I~
 static char *Sworkdir;                                             //~v6T7I~
+#endif                                                             //~v702M~
 //****************************
 static unsigned char Sattr2='\x17';	//default:white char on blue back ground
 //******************************************************
@@ -336,6 +341,7 @@ void ubell(void)
 	int sec,ms;                                                    //~v530R~
 //*****************
 //	uviowrttty(Sbell,1);                                        //~5902R~
+	UTRACEP("%s:opt=%x\n",UTT,Sbellopt);                           //~v702I~
     if (!Sbellopt)                                                 //~v293I~
         return;                                                    //~v293I~
     if (Spbellctr)		//bellctr chk required                     //~v297I~
@@ -515,7 +521,9 @@ static char Sentrysw=0;                                            //~v50VR~
 #ifdef LNX                                                         //~v6v0R~
 	Guerropt2|=GBL_UERR2_UTF8STDO;   //for xsub(not xe),printf to stdout of LNX UTF8 env;cv sjis2utf8 for Pjmsg//~v6v0R~
 #endif                                                             //~v6v0R~
+//  UTRACEDIFNZ("uerrexit Pjmsg",Pjmsg,strlen(Pjmsg));             //~v70nR~
 	pmsg=uerrmsgedit(Stitle1,Pemsg,Pjmsg,parm);                    //~v060R~
+//  UTRACEDIFNZ("uerrexit msg",pmsg,strlen(pmsg));                 //~v70nR~
 #if defined(WXE)||defined(LNX)  //*W32 console has exception handler, put trace from it//~v6VwR~
     UTRACEPF2("%s:msg=%s\n",UTT,pmsg);                             //~v6VwR~
     utrace_term(0);                                                //~v6VwI~
@@ -968,9 +976,9 @@ static int Slastcrlfsw=0;                 //last written crlf      //~v50VR~
 //  UGETSTDARG(unsigned long,parm,Pjmsg,UERRMSG_MAXPARM);          //~v5nDI~//~v6hhR~
 	UGETSTDARG(ULPTR,        parm,Pjmsg,UERRMSG_MAXPARM);          //~v6hhR~
 #ifdef LNX                                                         //~v6v0R~
-#ifdef AAA                                                         //+v6X4R~
+#ifdef AAA                                                         //~v6X4R~
 	if (Pjmsg)     //sis2utf8                                      //~v6v0R~
-#endif                                                             //+v6X4R~
+#endif                                                             //~v6X4R~
 		Guerropt2|=GBL_UERR2_UTF8STDO;   //for xsub(not xe),printf to stdout of LNX UTF8 env;cv sjis2utf8 for Pjmsg//~v6v0R~
 #endif                                                             //~v6v0R~
 	pmsg=uerrmsgedit("",Pemsg,Pjmsg,parm);	//no title             //~v060R~
@@ -1255,7 +1263,12 @@ static int Sdoubleentry=0;
 //#endif                                                           //~v591R~
 			UCBITON(Guerropt,GBL_UERR_DBCSMODE);	//not yet chked//~v060I~
 		else                                                       //~v060I~
+        {                                                          //~v70kI~
+		  if (Gudbcschk_flag & UDBCSCHK_FORCEUCJ)    //euc         //~v70kI~
+			UCBITON(Guerropt,GBL_UERR_DBCSMODE);	//not yet chked//~v70kR~
+          else                                                     //~v70kI~
 			UCBITOFF(Guerropt,GBL_UERR_DBCSMODE);	//not yet chked//~v060I~
+        }                                                          //~v70kI~
 		UCBITON(Guerropt,GBL_UERR_DBCSSET);	//not yet chked        //~v060I~
 	}                                                              //~v060I~
 #ifdef UNX                                                         //~v50uI~

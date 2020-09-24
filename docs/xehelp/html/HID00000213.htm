@@ -73,30 +73,30 @@ a:hover{font-weight:bold;}-->
           0001000*int main(int argc,char *p....   //main        //~5513R
           0002000|{
 
-    Filename once opened is listed in FileNameInput screen,file is
+    Filename once opened is listed in FileNameInput screen, file is
     reopened by selecting from the list.
 
    .See <a href="HID00000205.htm">Chapter-(2)</a> for detail description of each screen.
     For all screen,2nd line start with ===&gt; is comman dinput line.
     All commnad should be input on this line.
-    On first <a href="HID00000245.htm">MENU screen</a> entering &quot;e filename&quot; on this line,2nd screen
-    (FileNameInput screen) can be bypassed.&quot;e&quot; is abridge of EDIt cmd.
+    On first <a href="HID00000245.htm">MENU screen</a> entering &quot;e filename&quot; on this line, 2nd screen
+    (FileNameInput screen) can be bypassed. &quot;e&quot; is abridge of EDIt cmd.
     Detail of command is on <a href="HID00000206.htm">Chapter-(3)</a>.
-    And moreover,on command prompt screen entering "xe filename"
+    And moreover, on command prompt screen entering "xe filename"
     skip also 1st MENU screen.
     Command line parameter is on <a href="HID00000210.htm">Chapter-(7)</a>.
 
    .Edit screen is optionally divided to left and right half by char &quot;|&quot;.
-    Left half is Line-no column,right half is contents of file to edit.
-    To edit file,use edit key on the area of right half.
+    Left half is Line-no column, right half is contents of file to edit.
+    To edit file, use edit key on the area of right half.
     ex). End key truncate line at the cursor.
     Edit key's detail is on <a href="HID00000204.htm">Chapter-(1)</a>.
-    On left lineno column,line command is avail to edit file line by line.
-    ex) enter <a href="HID00000343.htm">dd</a> on the line-no column of both first and last line of
-        the range to be deleted and enter execute key.
+    On left line-no column, line command is avail to edit file line by line.
+    e.g.) Enter <a href="HID00000343.htm">dd</a> on the line-no column of both first and last line of
+          the range to be deleted and enter execute key.
     Detail description of line command on edit screen is <a href="HID00000335.htm">Chapter-(4)-(A)</a>.
 
-   .If directory name is used on <a href="HID00000277.htm">EDIt command</a>,following <a href="HID00000252.htm">directory screen</a> is
+   .If directory name is used on <a href="HID00000277.htm">EDIt command</a>, following <a href="HID00000252.htm">directory screen</a> is
     appeared.
 
 #ifdef UNX
@@ -147,7 +147,7 @@ a:hover{font-weight:bold;}-->
    .Long filename hidden under the attribute column is uncovered or
     re-hidden by Shift+F11.
 #ifdef UNX
-    For symbolic link,which is identified by prefix &quot;@&quot;,S+F11 display
+    For symbolic link, which is identified by prefix &quot;@&quot;,S+F11 display
     target(actual) file name.
 #endif
 
@@ -183,7 +183,7 @@ a:hover{font-weight:bold;}-->
     or specification on <a href="HID00000209.htm">INI file</a>.
     Note) Default change by version up has no effect when old version
           ini file remains.
-    To display <a href="HID00000249.htm">key sequential function assignment</a>,enter "0.3" on top menu.
+    To display <a href="HID00000249.htm">key sequential function assignment</a>, enter "0.3" on top menu.
     Other parameter may be set by INI file. <a href="HID00000209.htm">See Chapter-(6)</a>.
 
    .Entering 6 on MENU screen shows following <a href="HID00000253.htm">CommandResult</a> screen.
@@ -200,8 +200,8 @@ a:hover{font-weight:bold;}-->
    .This sample is result of dir *.c entered on command line.
     This screen make possible to edit result of any command avail on .
     command prompt screen.
-    This screen has no lineno column as default,but <a href="HID00000298.htm">NUM</a>command make
-    lineno column displayed and line command is usable same as on Edit
+    This screen has no line-no column as default, but <a href="HID00000298.htm">NUM</a>command make
+    line-no column displayed and line command is usable same as on Edit
     screen.
 </SPAN></PRE>
 </BODY>

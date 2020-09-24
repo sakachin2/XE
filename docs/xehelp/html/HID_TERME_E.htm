@@ -16,9 +16,9 @@ a:hover{font-weight:bold;}-->
      xe(console version) can access remote file without file transfer
      through terminal emulator such as PuTTY, TeraTerm.
      These emulator sends Escape-Sequence-String like as ^[11~ for corressponding
-     function key operartion.
-     But all modifier conbinations(Shift/Control+Fn) are not supported.
-     And Esc-String varies depending tetminal type supported such as VT100, Linux.
+     function key operation.
+     But all modifier combinations(Shift/Control+Fn) are not supported.
+     And Esc-String varies depending terminal type supported such as VT100, Linux.
      PuTTY with terminal type=SCO allow all Shift/Control+Fn combination.
      (
          To inactivate this setting, use --NOSCO option.
@@ -38,7 +38,7 @@ a:hover{font-weight:bold;}-->
      Specify it by command line like as  &quot;xe --k::addfuncmapfile&quot;,
      or specify on &quot;LNX_Keymap&quot; parameter on ini file like as LNX_Keymap = ::addfucmapfile.
      For validation of your keymap file,
-     check output from xekbchk after,for ex, &quot;xekbchk --stmpf --kaddfuncmapfile&quot;.
+     check output from xekbchk after, e.g., &quot;xekbchk --stmpf --kaddfuncmapfile&quot;.
 
      *****
      &quot;Sample Kemap File&quot;
@@ -53,7 +53,7 @@ a:hover{font-weight:bold;}-->
         #end of file
 
         Note. &quot;^[&quot; is notation of 0x1b.
-              PuTTY sends,for ex, 0x1b.1b.5b.31.33.7e by Alt+F3.
+              PuTTY sends, e.g., 0x1b.1b.5b.31.33.7e by Alt+F3.
               This pattern is 0x1b(Alt)+F3, which is not required to be registered.
               xe dose not support Multiple modifier like as A+C+Fn.
 

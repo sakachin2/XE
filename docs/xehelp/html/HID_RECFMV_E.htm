@@ -19,7 +19,7 @@ a:hover{font-weight:bold;}-->
         HD :halfword LL not including header length.
         F  :fullword LL including header length itself.
         FD :fullword LL not including header length.
-        MF :Microfocus convetion.
+        MF :Microfocus convention.
             System record at top of the file indicates header length is halfword or fullword.
             (I do not care role of system record, don't upload the file updated by xe.)
 
@@ -41,7 +41,7 @@ a:hover{font-weight:bold;}-->
             r=v:read as vfmt
             w=v:save as vfmt
               ex)  E vfile /Mv /Fh
-            You can chage record mode by specifing both &quot;r&quot; and &quot;w&quot;.
+            You can change record mode by specifying both &quot;r&quot; and &quot;w&quot;.
               ex)  E vfile /Mvr /F130 /Ff (load as vfmt=F, save as RECFM=F+LRECL=130)
             END command is also used to change record format.
         END  /Mv /Fvfmt
@@ -57,7 +57,7 @@ a:hover{font-weight:bold;}-->
              For CREate/REPlace, source file profile is applied if /M or /F is not specified.
              ex) REP ebcvf cpeb=CP930 /Mv /Ff nx
         COPy filename /Mv /Fvfmt
-         Specify record format of copy source file, which is omittable if registerd on the profile.
+         Specify record format of copy source file, which is omittable if registered on the profile.
              ex) COPy ebcvf cpeb=CP930 /Mv /Ff
         XPR  filename [/Vvfmt|/Rlrecl]
              /V:specify format of RECFM=V file, /R:specify LRECL for RECFM=F file.

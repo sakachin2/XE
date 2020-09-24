@@ -1,4 +1,4 @@
-//*CID://+vbi3R~:                            update#=  123;        //~vbi3R~
+//*CID://+vbi3R~:                            update#=  125;        //~vbi3R~
 //*************************************************************
 //* xeini3.c
 //*************************************************************
@@ -358,6 +358,7 @@ int inisaveopt(void)
         saveopt2.UIS2eolcontid=(UCHAR)Gopteolcont;                 //~v60nI~
         saveopt2.UIS2scrollfkt=(long)Ginitscroll[4];               //~v71vR~
         strncpy(saveopt2.UIS2localecode,Glocalecode,sizeof(saveopt2.UIS2localecode));//~v779I~
+        UTRACEP("%s:Goptopt2=%x,Goptopt3=%x\n",UTT,Goptopt2,Goptopt3);//+vbi3R~
 #ifdef UTF8UCS2                                                    //~va3sI~
 //	#ifdef LNX                                                     //~vb4rR~
   	#if defined(LNX) && !defined(XXE)                              //~vb4rI~
@@ -465,7 +466,7 @@ void inisavelastfile(PUFILEC Ppfc)                                 //~v11zR~
     PUFILEH pfh;                                                   //~v11zI~
 //*********************************                                //~v11zI~
     pfh=Ppfc->UFCpfh;                                              //~v11zI~
-    switch(pfh->UFHtype)                                           //+vbi3R~
+    switch(pfh->UFHtype)                                           //~vbi3R~
     {                                                              //~vbi3I~
     case UFHTCLIPBOARD:          //clipboard file in work dir      //~vbi3I~
     case UFHTKFI      :          //key func ini file in work dir   //~vbi3I~
@@ -589,6 +590,7 @@ int inigetopt(void)                                                //~v11yR~
                 Goptopt=saveopt2.optflag;                          //~v44mR~
        			Goptopt2=saveopt2.optflag2;                        //~v779I~
        			Goptopt3=saveopt2.optflag3;                        //~va3eI~
+                UTRACEP("%s:Goptopt2=%x,Goptopt3=%x\n",UTT,Goptopt2,Goptopt3);//+vbi3R~
 #ifdef UTF8UCS2                                                    //~va3sM~
 #ifdef W32                                                         //~vb2EI~
         	  if (saveopt2.UIS2combaltch)                          //~vb2EI~

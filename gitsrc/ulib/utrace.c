@@ -1,7 +1,10 @@
-//*CID://+v6VuR~:                              update#=  111;      //~v6VuR~
+//*CID://+v70qR~:                              update#=  121;      //~v70qR~
 //***********************************************************************//~v026I~
 //* utrace.c                                                       //~v022R~
 //***********************************************************************
+//v70q:200919 (ARM)add gettraceopt                                 //~v70qI~
+//v709:200616 ARM:threadID of utrace by gettid():Kernel:int not by pthread_self():Posix pthread_t:handle//~v709I~
+//v706:200616 ARM:redirect UTRACE to LOGPD                         //~v706I~
 //v6Vu:180622 UTRACE;support force option off                      //~v6VuI~
 //v6Vi:180617 support __LINE__ for UTRACEP                         //~v6ViI~
 //v6J6:170209 UTRACED 64bit addr                                   //~v6B1I~
@@ -135,6 +138,7 @@
 #else                                                              //~v6J6R~
 #define LINEHEXPOS   9+FP_OFF_SZ        //hex dump start colomn    //~v026R~
 #endif                                                             //~v6J6R~
+#define LOGCAT_TAG "UTRACE"                                        //~v706I~
 //****************************************************************
 //#ifdef W32                                                       //~v5jaR~
 #if defined(W32)||defined(LNX)                                     //~v5jaI~
@@ -143,6 +147,20 @@
 	#define LOCK_ENTER()                                           //~v5ncI~
 	#define LOCK_LEAVE()                                           //~v5ncI~
   #else                                                            //~v5ncI~
+   #ifdef ARM                                                      //~v706I~
+	#define LOCK_ENTER()    if (Sseminitsw) {   \
+    											if (!(Sutraceopt & UTRACEO_LOGCAT)) \
+												 ucriticalsection(CRITSEC_ENTER,(/*ULONG*/ULPTR)Spsem); \
+											}                      //~v706I~
+	#define LOCK_LEAVE()    if (Sseminitsw) {   \
+    											if (!(Sutraceopt & UTRACEO_LOGCAT)) \
+                                                {                                   \
+													if (Sfile)	\
+ 														fflush(Sfile); \
+												 	ucriticalsection(CRITSEC_LEAVE,(/*ULONG*/ULPTR)Spsem); \
+                                                }                                   \
+											}                      //~v706I~
+   #else    //!ARM                                                 //~v706I~
 	#define LOCK_ENTER()    if (Sseminitsw) {   \
 												 ucriticalsection(CRITSEC_ENTER,(/*ULONG*/ULPTR)Spsem); \
 											}                      //~v5j0I~
@@ -151,6 +169,7 @@
  													fflush(Sfile); \
 												 ucriticalsection(CRITSEC_LEAVE,(/*ULONG*/ULPTR)Spsem); \
 											}                      //~v5j0I~
+   #endif                                                          //~v706I~
   #endif //!NOMT                                                   //~v5ncI~
 #endif                                                             //~v5j0I~
 //****************************************************************//~6203I~
@@ -234,6 +253,13 @@ int utrace_initmt(void *Ppsem)                                     //~v5j0I~
 }                                                                  //~v5j0I~
   #endif //!NOMT                                                   //~v5ncI~
 #endif                                                             //~v5j0I~
+//**************************************************************** //~v70qR~
+#ifdef ARM                                                         //~v70qR~
+int utrace_getopt()                                                //~v70qR~
+{                                                                  //~v70qR~
+    return Sutraceopt;                                             //~v70qR~
+}                                                                  //~v70qR~
+#endif                                                             //+v70qI~
 //****************************************************************
 //*parm1 :trace file name
 //*parm2 :trace option  0:inactive, 1:active, 2:ignore open err //~5807R~
@@ -342,6 +368,15 @@ void utracepop(char *Pfmt,...)                                     //~v041R~
 //***********************************                           //~6203I~
     if (!Sutraceopt)                                            //~6203I~
          return;                                                //~6203I~
+#ifdef ARM                                                         //~v706I~
+    if (Sutraceopt & UTRACEO_LOGCAT)                               //~v706I~
+    {                                                              //~v706I~
+	    va_start(argptr,Pfmt);  //addr of stack parm next of Pfmt  //~v706I~
+		__android_log_vprint(ANDROID_LOG_DEBUG,LOGCAT_TAG,Pfmt+topcrlfctr,argptr);//~v706R~
+	    va_end(argptr);                                            //~v706I~
+	    return;                                                    //~v706I~
+    }                                                              //~v706I~
+#endif                                                             //~v706I~
 //#ifdef W32                                                       //~v5jaR~
 #if defined(W32)||defined(LNX)                                     //~v5jaR~
     LOCK_ENTER()                                                   //~v5j0I~
@@ -357,12 +392,12 @@ void utracepop(char *Pfmt,...)                                     //~v041R~
     va_start(argptr,Pfmt);  //addr of stack parm next of Pfmt   //~6203R~
 //  vfprintf(Sfile,Pfmt,argptr);                                //~6203I~//~v5nyR~
     vfprintf(Sfile,Pfmt+topcrlfctr,argptr);                        //~v5nyI~
-#ifdef ARM                                                         //~v6a0I~
-    if (Sutraceopt & UTRACEO_LOGCAT)                               //~v6b6R~
-    {                                                              //~v6b6R~
-		__android_log_vprint(ANDROID_LOG_DEBUG,"UTRACEP",Pfmt+topcrlfctr,argptr);//~v6a0I~
-    }                                                              //~v6b6R~
-#endif //ARM                                                       //~v6a0I~
+//#ifdef ARM                                                         //~v6a0I~//~v706R~
+//    if (Sutraceopt & UTRACEO_LOGCAT)                               //~v6b6R~//~v706R~
+//    {                                                              //~v6b6R~//~v706R~
+//        __android_log_vprint(ANDROID_LOG_DEBUG,"UTRACEP",Pfmt+topcrlfctr,argptr);//~v6a0I~//~v706R~
+//    }                                                              //~v6b6R~//~v706R~
+//#endif //ARM                                                       //~v6a0I~//~v706R~
     va_end(argptr);                                                //~v5nDI~
 //#ifdef W32                                                       //~v5jaR~
 #if defined(W32)||defined(LNX)                                     //~v5jaR~
@@ -382,6 +417,15 @@ void utracepopf(char *Pfmt,...)                                    //~v6b6I~
 //***********************************                              //~v6b6I~
 //    if (!Sutraceopt)                                             //~v6b6I~
 //         return;                                                 //~v6b6I~
+#ifdef ARM                                                         //~v706I~
+    if (Sutraceopt & UTRACEO_LOGCAT)                               //~v706I~
+    {                                                              //~v706I~
+	    va_start(argptr,Pfmt);  //addr of stack parm next of Pfmt  //~v706I~
+		__android_log_vprint(ANDROID_LOG_DEBUG,LOGCAT_TAG,Pfmt+topcrlfctr,argptr);//~v706R~
+	    va_end(argptr);                                            //~v706I~
+	    return;                                                    //~v706I~
+    }                                                              //~v706I~
+#endif                                                             //~v706I~
 #if defined(W32)||defined(LNX)                                     //~v6b6I~
     LOCK_ENTER()                                                   //~v6b6I~
 #endif                                                             //~v6b6I~
@@ -412,12 +456,12 @@ void utracepopf(char *Pfmt,...)                                    //~v6b6I~
     va_start(argptr,Pfmt);  //addr of stack parm next of Pfmt      //~v6b6I~
 //  vfprintf(Sfile,Pfmt+topcrlfctr,argptr);                        //~v6b6I~//~v6VuR~
     vfprintf(pfh,Pfmt+topcrlfctr,argptr);                          //~v6VuI~
-#ifdef ARM                                                         //~v6b6I~
-    if (Sutraceopt & UTRACEO_LOGCAT)                               //~v6b6I~
-    {                                                              //~v6b6I~
-		__android_log_vprint(ANDROID_LOG_DEBUG,"UTRACEP",Pfmt+topcrlfctr,argptr);//~v6b6I~
-    }                                                              //~v6b6I~
-#endif //ARM                                                       //~v6b6I~
+//#ifdef ARM                                                         //~v6b6I~//~v706R~
+//    if (Sutraceopt & UTRACEO_LOGCAT)                               //~v6b6I~//~v706R~
+//    {                                                              //~v6b6I~//~v706R~
+//        __android_log_vprint(ANDROID_LOG_DEBUG,"UTRACEP",Pfmt+topcrlfctr,argptr);//~v6b6I~//~v706R~
+//    }                                                              //~v6b6I~//~v706R~
+//#endif //ARM                                                       //~v6b6I~//~v706R~
     va_end(argptr);                                                //~v6b6I~
 #if defined(W32)||defined(LNX)                                     //~v6b6I~
     LOCK_LEAVE()                                                   //~v6b6I~
@@ -682,7 +726,7 @@ struct    tm* ptm;       //date and time                           //~v57bI~
     ptm=localtime(&tb.time);    //date and time                    //~v57bI~
   #ifdef ARM                                                       //~v6a0I~
 //  #define gettid() syscall(__NR_gettid)                          //~v6a0R~
-    #define gettid() pthread_self()                                //~v6a0I~
+//  #define gettid() pthread_self()                      //~v6a0I~ //~v709R~
     sprintf(Seditwk,"%08x-%2.2d:%2.2d:%2.2d.%3.3d",                //~v6a0R~
             (int)gettid(),                                         //~v6a0I~
             (int)ptm->tm_hour,                                     //~v6a0I~
@@ -747,6 +791,11 @@ int utraceopen(void)                                            //~5829I~
   if (!strcmp(Sutracefilename,"stderr"))                           //~v323R~
     Sfile=stderr;                                                  //~v323R~
   else                                                             //~v323R~
+#ifdef ARM                                                         //~v706I~
+  if ((Sutraceopt & UTRACEO_LOGCAT))                               //~v706I~
+    Sfile=stdout;      //set temporally as opened id (!Sfile)      //~v706I~
+  else                                                             //~v706I~
+#endif                                                             //~v706I~
   {                                                                //~v6B1I~
    if (Sswnoshare)                                                 //~v6B1I~
     Sfile=ufileopenexclusivewrite(0,Sutracefilename,&Slockhandle);             //open output//~v6B1M~
@@ -789,6 +838,11 @@ int utraceopen_force(void)                                         //~v6VuI~
     int rc;                                                        //~v6VuI~
     FILE *pfh;                                                     //~v6VuI~
 //***********************************                              //~v6VuI~
+#ifdef ARM                                                         //~v706I~
+  	if ((Sutraceopt & UTRACEO_LOGCAT))                             //~v706I~
+    	pfh=stdout;      //set temporally as opened id (!Sfile)    //~v706I~
+  	else                                                           //~v706I~
+#endif                                                             //~v706I~
    	if (Sswnoshare)                                                //~v6VuI~
     	pfh=ufileopenexclusivewrite(0,Sutracefilename_force,&Slockhandle);             //open output//~v6VuI~
    else                                                            //~v6VuI~
@@ -1152,6 +1206,13 @@ void putline(char *area,int count) //v3.5r
 {
 	FILE *pfh;                                                     //~v6VuI~
 //*****************************                                    //~v6VuI~
+#ifdef ARM                                                         //~v706I~
+  	if ((Sutraceopt & UTRACEO_LOGCAT))                             //~v706I~
+  	{                                                              //~v706I~
+		__android_log_print(ANDROID_LOG_DEBUG,LOGCAT_TAG,"%*s",count,area);//~v706R~
+        return;                                                    //~v706I~
+  	}                                                              //~v706I~
+#endif                                                             //~v706I~
 	if (Sswputforce)                                               //~v6VuR~
     	pfh=Sfile_force;                                           //~v6VuI~
     else                                                           //~v6VuI~

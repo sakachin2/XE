@@ -1,8 +1,9 @@
-//*CID://+v6XOR~:                             update#=  630;       //+v6XOR~
+//*CID://+v70gR~:                             update#=  632;       //~v6XOR~//~v70gR~
 //*********************************************************************//~v600I~
 //* utf8 data manipulation                                         //~v600I~
 //*********************************************************************//~v600I~
-//v6X0:180813 combining require 2 cell when split such as u309a    //+v6XOI~
+//v70g:200715 (BUG)utfcvl2f retrns err when wcwidth=0 and output char same as input. it should set utf8 even width=0//~v70gI~
+//v6X0:180813 combining require 2 cell when split such as u309a    //~v6XOI~
 //vbmk:180813 (XE)for test,try mk_wcwidth_cjk(ambiguous:Wide DBCS) for visibility chk. use /YJ option//~vbmkI~
 //v6Wm:180724 utfwcwidth return len=1 for Category "Cf"(wcwidth=0)  if ucs<ENTNO(2 if ucs>=ENTNO).//~v6WmI~
 //            determin combining for ucs>=ENTNOv should not use wcwidth==0 but combining definition//~v6WmI~
@@ -660,7 +661,7 @@ int utfwcwidthNoMap(int Popt,ULONG Pucs,int *Ppflag);              //~v6V4I~
 #define UTFWWF_SCM           0x00001000   //unicode:Spacing Combining Mark//~v6VbI~
 #define UTFWWF_SBCSF         0x00002000   //ignore wcwidth()=2 and force width=1//~v6WkI~
 #define UTFWWF_COMB          0x00004000   //defined combining char //~v6WmI~
-#define UTFWWF_COMB2SCM      0x00008000   //combining but trate as SCM//+v6XOI~
+#define UTFWWF_COMB2SCM      0x00008000   //combining but trate as SCM//~v6XOI~
 #define UTFWWF_RC_MK_WCWIDTH 0x01000000   //datatype by mk_wcwidth //~v6V7I~
 //#define UTFWWF_RC_MK_COMB    0x02000000   //defied as combining    //~v6W9I~//~v6WmR~
 #define UTFWWF_RC_FORMAT     0x04000000   //category Cf            //~v6WiI~
@@ -717,12 +718,14 @@ int utftbterm(void);                                               //~v600I~
 #ifdef W32UNICODE                                                  //~v6unI~
 #define UTFCVO_ALLOWSUBCH  0x200000          //continue even if rep to subch//~v6unR~
 #endif                                                             //~v6unI~
+#define UTFCVO_WIDTH0RC    0x400000          //notify on rcif width0//+v70gI~
                                                                    //~v61bM~
 #define UTFCVRC_ALLASCII 0x01         //dbcs found                 //~v61bI~
 #define UTFCVRC_DBCS     0x02         //dbcs found                 //~v61bI~
 #define UTFCVRC_KANA     0x04         //EUC hankana found          //~v61bI~
 #define UTFCVRC_ASCIIRET 0x08         //EUC hankana found          //~v61bI~
 #define UTFCVRC_UTF8RET  0x10         //EUC hankana found          //~v62tI~
+#define UTFCVRC_WIDTH0   0x20         //contains Width=0 char      //~v70gI~
 //#define UTFCVRC_ERR      0x10         //err                      //~v62tR~
 //#define UTFCVRC_ERRSTOP  0x20         //err                      //~v62tR~
 //#define UTFCVRC_ERROVF   0x40         //outbuff ovf(for any1)    //~v62tR~

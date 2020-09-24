@@ -1,8 +1,10 @@
-//*CID://+v6W4R~:                             update#=  452;
+//*CID://+v705R~:                             update#=  455;       //~v705R~
 //************************************************************* //~5903R~
 //*ufile2.c                                                        //~v5d7R~
 //*  uxdelete,uremove,urename,urename2,uattrib,umkdir,urmdir       //~v520R~
 //************************************************************* //~5617I~
+//v705:200616 ARM compiler warning;conditionally not initialized   //~v705I~
+//v702:200615 ARM compiler warning                                 //~v702I~
 //v6W4:180702 protect utrace file when opened by xe for browse     //~v6W4I~
 //v6J3:170206 change errmsg for longname(move filename at end)     //~v6J3I~
 //v6Ht:170122 (Win)reset v6Ho and force delete by /r option because if renamed at RONLYCHK phase,remains if user canceled//~v6HtI~
@@ -1083,9 +1085,11 @@ int ufilewildxdel(UCHAR *Pfullpath,PUDIRLIST Ppudirlist,PVOID Pparm)//~5B12M~
 {                                                               //~5B12M~
     unsigned attrmask;                                          //~5B12M~
     int      eachconfsw;                                           //~v281I~
+#ifndef ARMXXE                                                     //~v702I~
     int      reply;                                                //~v281I~
     char datewk[12];                                               //~v294I~
     char timewk[8];                                                //~v294I~
+#endif                                                             //~v702I~
 //#ifdef W32                                                       //~v6H9R~
 //  char wkfpath[_MAX_PATH*2];                                     //~v6q0R~//~v6H9R~
     char wkfpath[_MAX_PATH2_LONG];                                 //~v6H9I~
@@ -3063,10 +3067,13 @@ int ufiledelifnotopened(int Popt,char *Pfnm,int Ppid)              //~v6B1R~
     if (rc==ENOENT)  //not fount                                   //~v6B1I~
 #else                                                              //~v6W4I~
 	swlocked=uflock(0,Pfnm,&fd)==0;	                               //~v6W4R~
-//  UTRACEP("%s:swlocked=%d\n",UTT,swlocked);                      //~v6W4R~
+    rc=swlocked ? 0 : ENOENT;                                      //+v705I~
+    UTRACEP("%s:swlocked=%d,fd=%d\n",UTT,swlocked,fd);                      //~v6W4R~//+v705R~
     if (fd>0)                                                      //~v6W4I~
+      rc=                                                          //+v705I~
 		uflock(UFLO_CLOSE,Pfnm,&fd);                               //~v6W4R~
-	if (swlocked)                                                  //~v6W4R~
+//  if (swlocked)                                                  //~v6W4R~//+v705R~
+    if (!rc)                                                       //+v705I~
 #endif                                                             //~v6W4I~
     {                                                              //~v6B1I~
         rc=unlink(Pfnm);   //-1 if err,0:ok                        //~v6B1R~

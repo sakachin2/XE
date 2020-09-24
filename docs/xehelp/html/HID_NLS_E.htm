@@ -16,10 +16,10 @@ a:hover{font-weight:bold;}-->
 
    .NLS support.
 
-      Internal error message is by english only except on Japanese environment.
+      Internal error message is by English only except on Japanese environment.
       This issue is about file encoding and screen display language.
 
-      See &quot;<A href="HID00000217.htm">Japanese DBCS,Code conversion</A>&quot; about Japanese.
+      See &quot;<A href="HID00000217.htm">Japanese DBCS, Code conversion</A>&quot; about Japanese.
 
       For Linux console version,
       set &quot;<A href="HID00000732.htm">OPT LINECH</A> OFF&quot; not to use ACS(LineDrawingCharacter) if your language
@@ -37,7 +37,7 @@ a:hover{font-weight:bold;}-->
         For GUI version, use /C cmdline parameter like as &quot;xe /c1252&quot;.
         Then select CharSet from &quot;Other&quot; combobox, ANSI for ISO-8859-1.
         Beforehand, you have to add the language through Windows-Constrol-panel.
-        And change language sslection through Language-bar.
+        And change language selection through Language-bar.
       Linux:
         You have to set codepage of terminal emulator such as gnome-terminal for console version.
         You have set LANG environment matched to terminal emulator encoding
@@ -49,17 +49,17 @@ a:hover{font-weight:bold;}-->
         For gxe/wxe, selected font may supports ligature.
         Ligature means to combine two glyph to one glyph for some combination such as &quot;fi&quot;, &quot;ff&quot;.
         If this chkbox is Off, keep mono-spacing.
-        If On, cursor position mey be unmatch with display postion,
+        If On, cursor position may be unmatched with display position,
         gxe/wxe accepts ligature to utf8 and locale code file,
         xe displays the character at the cursor position byte offset.
-        &quot;<A href="HID_UNICOMB_E.htm">OPT LIGATURE</A>&quot; cmd or <a href="HID_LIG_E.htm">LIG</a> cmd(A+&quot;;&quot; key) is avalable.
+        &quot;<A href="HID_UNICOMB_E.htm">OPT LIGATURE</A>&quot; cmd or <a href="HID_LIG_E.htm">LIG</a> cmd(A+&quot;;&quot; key) is available.
           Ligature is applied to UTF8 file only for console version.
           Ligature is not applied for the file opened as binary file.
-        I heared that in some language glyphs split are un-readble without ligature.
-        Try with combination with Unicode combining chracter option
+        I heard that in some language glyphs split are un-readable without ligature.
+        Try with combination with Unicode combining character option
         which is set by &quot;<A href="HID_LIGATURE_E.htm">OPT UNICOMB</A>&quot; cmd or <a href="HID_CMB_E.htm">CMB</a> cmd(A+&quot;:&quot; key).
 
-      A+u key(&quot;UTF SWKB&quot; as cmd) switches treatement of kbd input between <A href="HID_UTF8_E.htm">UTF8</A> and locale code.
+      A+u key(&quot;UTF SWKB&quot; as cmd) switches treatment of kbd input between <A href="HID_UTF8_E.htm">UTF8</A> and locale code.
       See &quot;UTF8 support&quot; for detail.
 
       -----------------------------------------------------------------------
@@ -67,7 +67,7 @@ a:hover{font-weight:bold;}-->
       Followings are about Chinese and Korean DBCS support.
 
       I tested CN and KR. I can only recognize those glyph but can not understand it,
-      especialy HUNGL,
+      especially HUNGL,
       Please send me experience reports if it seems strange for you.
       My test environments is WindowsXP Japanese version and Linux FC5.
       The locale code selected is displayed on the top menu.
@@ -75,9 +75,9 @@ a:hover{font-weight:bold;}-->
       For Linux,
         4 byte DBCS of GB18030 or SS3-Kanji of EUC is followed by padding char like as tab padding.
         TAB cmd controls display status of DBCS padding chars also.
-        Printing of padding is controled by WWScrPrt chkbox on Setup disalog of gxe.
+        Printing of padding is controlled by WWScrPrt chkbox on Setup dialog of gxe.
         To input 3 or 4 byte DBCS using HexInputMode(toggled by C+F11),
-        send twice by 2+1(1+2) or 2+2.(use &quot;x&quot; key to send prematured byte).
+        send twice by 2+1(1+2) or 2+2.(use &quot;x&quot; key to send premature byte).
 
       C/J keyboard setup on WindowsXP Japanese version.
         Control-panel--&gt;locale and language--&gt;Detail button on language tab
@@ -85,10 +85,10 @@ a:hover{font-weight:bold;}-->
         Search Web-document about detail operation.
 
         For wxe, set codepage on Charset of setup dialog.
-        Select &quot;Other&quot; radio button and slect codepage from combobox,
+        Select &quot;Other&quot; radio button and select codepage from combobox,
         or enter codepage on textbox referencing wingdi.h.
         And select Fontstyle.
-        For xe console version,set property of &quot;command prompt&quot;.
+        For xe console version, set property of &quot;command prompt&quot;.
         Click mouse right button on &quot;command prompt&quot; icon(Not left top icon of command prompt screen).
         Set current codepage on &quot;Option&quot; tab
         Use chcp cmd if no codepage prepared for the property.
@@ -100,9 +100,9 @@ a:hover{font-weight:bold;}-->
           (To change default: Control panel--&gt;locale and language--&gt;Detail button on language tab--&gt;key setting )
           LeftAlt+Shift: switch IME on language bar.
                          mouse is usable for GUI application.
-          Korean MS-IME2002     R-Alt: English/Numeric&lt;--&gt;Hangul  Alt+^: Single &lt;--&gt;Double width Englist/Numeric letter.
-          CN(Simplified) PinYin Shift: Translation On&lt;--&gt;Off      Shift+Space: Single &lt;--&gt;Double width Englist/Numeric letter.
-                                Ctrl+Space: Englist/Numeric&lt;--&gt;IME mode
+          Korean MS-IME2002     R-Alt: English/Numeric&lt;--&gt;Hangul  Alt+^: Single &lt;--&gt;Double width English/Numeric letter.
+          CN(Simplified) PinYin Shift: Translation On&lt;--&gt;Off      Shift+Space: Single &lt;--&gt;Double width English/Numeric letter.
+                                Ctrl+Space: English/Numeric&lt;--&gt;IME mode
           CN(Big5) Phonetic     Same as PinYin.
 
         Windows CodePage &amp; Font
@@ -142,10 +142,10 @@ a:hover{font-weight:bold;}-->
 
         Linux(FedoraCore 5)
           Change selected language(Desktop--&gt;Administration--&gt;Language), then logout/login.
-          Note. If you changed terminal emulator(eg. gnome-terminal) encoding,
+          Note. If you changed terminal emulator(e.g. gnome-terminal) encoding,
                 Change also locale environment like as &quot;export LANG=xxx&quot;.
 
-      Addtional commandline option.
+      Additional command-line option.
         -C  : change locale charset.
 
               Windows : Codepage.    ex) -c949  -cGerman_Germany.1252
@@ -158,12 +158,12 @@ a:hover{font-weight:bold;}-->
                 Use this option like as &quot;xe -c437&quot;. &gt;0x'80' char will be displayed by &quot;.&quot;.
 
               Linux  :Charset        ex) -cGBK, -ciso88591 -czh_CN.GB18030
-                Available charset is diplayed by xcv cmd or &quot;iconv --list&quot;.
+                Available charset is displayed by xcv cmd or &quot;iconv --list&quot;.
 
                 Default Charset is get from LANG environment if the Charset is not UTF8.
                 ex) iso88591 when LANG is &quot;de_DE.iso88591&quot;.
                 If the Charset is UTF8 charset is selected as following.
-                (selects available charset from the lefthand)
+                (selects available charset from the left-hand)
                     Locale     Charset
                     ------     -------
                      zh_CN     GB18030,GBK,GB2312
@@ -194,12 +194,12 @@ a:hover{font-weight:bold;}-->
                    ----------------------  ----------------    ------
                    EUC-JP.UTF8 + -cEUC-KR  aaa2( by KR)     &quot;yy&quot;
                    EUC-JP      + -cEUC-KR  a4a2( by JP)     &quot;xx&quot;
-                     yy(JapaneseHiragana) and xx(Hangul) is not displayed by ASCII screen.
+                     yy(Japanese Hiragana) and xx(Hangul) is not displayed by ASCII screen.
                      xe console version may display space by the reason of terminal emulator font selection)
 
         -Yw : For WideCharAPI Test. Use WideChar API for also when env is JP like as env is CN or KR
               (kbd input is UCS2 and accept as UTF8 code translated)
-        -Nm : Accept UTF8 byte seqence with no translation when LANG environment is UTF8.
+        -Nm : Accept UTF8 byte sequence with no translation when LANG environment is UTF8.
               For Windows version, requires -Ym at same time.
 
 #endif // W32 || LNX

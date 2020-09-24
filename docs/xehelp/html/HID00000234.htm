@@ -26,14 +26,14 @@ a:hover{font-weight:bold;}-->
         <a href="HID00000316.htm">SPLit</a> strdelm:split line at the point before/after the string.
         JOIn x/nx:join each excluded/not excluded part to a line.
         <a href="HID00000320.htm">TC</a> FMT  :field alignment for use of cut &amp; paste.
-                 for huge file cannot be opened by xe,use xfmt utility.
+                 for huge file cannot be opened by xe, use xfmt utility.
         TC ~    :alive count calculation.
-                 ex) count parallel session at each SYN event time
-                     for the line containing SYN &amp; FIN time editted
-                     from TCP/IP trace.
-                 for huge file cannot be opened by xe,use xfmt/xmj
-                 utility. ex,reduce file size by picking-up some required
-                 fields and lines. then join lines by matching key.
+                 e.g.) count parallel session at each SYN event time
+                       for the line containing SYN &amp; FIN time edited
+                       from TCP/IP trace.
+                 For huge file cannot be opened by xe, use xfmt/xmj
+                 utility to reduce file size by picking-up some required
+                 fields and lines, then join lines by matching key.
         <a href="HID00000280.htm">EXE</a>     :execute multiple sequence of cmd.
                  useful to apply same sequence of cmd to multiple
                  files. to create cmd file <a href="HID00000705.htm">cmd log file</a> may be useful.
@@ -110,10 +110,10 @@ dd  | MSGID    SEV MSG TYPE
 
      (When record lines are not same between each record type,
       extract all lines belong to the record type then join it.
-     To extract the record lines,exclude all lines by <a href="HID00000279.htm">"x all"</a>.
-     Then,for ex. a record is constructed by 5 lines,enter "<a href="HID00000286.htm">i</a> CP1164 -a4".
+     To extract the record lines, exclude all lines by <a href="HID00000279.htm">"x all"</a>.
+     Then, for ex., a record is constructed by 5 lines,enter "<a href="HID00000286.htm">i</a> CP1164 -a4".
      -a4 means display found line and following 4 lines.
-     After that,extract the record by <a href="HID00000271.htm">"del x all"</a> and append to a file
+     After that, extract the record by <a href="HID00000271.htm">"del x all"</a> and append to a file
      using <a href="HID00000257.htm">APPend cmd</a>. repeat that for all record type.)
 
 jj  | CPF1124 Info       JOB 956017 18:25:14 started
@@ -232,7 +232,7 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
 0027| CPF1124 Info       JOB 956022 18:25:43 started        ... 18:25:43.245872
 
 (6) Sort by recordID,in this case that is msgid.
-    Each record has different msg format,sort to use <a href="HID00000545.htm">Cut &amp; Paste</a>.
+    Each record has different msg format, sort to use <a href="HID00000545.htm">Cut &amp; Paste</a>.
 
     cmd input line===&gt;<a href="HID00000314.htm">sort</a> 2-8
 
@@ -255,10 +255,10 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
 
 (7) Arrange field of each record to Sort by JOB number.
 
-    To arrange use Cut &amp; Paste. If file has many lines,exclude intermediate
+    To arrange use Cut &amp; Paste. If file has many lines, exclude intermediate
     lines using &quot;x&quot; line cmd for convenient operation.
     Or use shift line cmd such as <a href="HID00000355.htm">"("</a>.
-    When cursor is in the file contents area,shift effect is limited to the
+    When cursor is in the file contents area, shift effect is limited to the
     left or right half of the cursor position.
 
   |
@@ -326,7 +326,7 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
 0015| CPF1124 Info       JOB 956020  started  18:25:40.826792 CPF1164 Comp       JOB 956020 Ended.    18:25:41.794896
 0021| CPF1124 Info       JOB 956021  started  18:25:41.836736 CPF1164 Comp       JOB 956021 Ended.    18:25:43.195912
 
-(10) Arrange for <a href="HID00000320.htm">TC cmd</a> remaining nessesary fields by Cut &amp; Paste.
+(10) Arrange for <a href="HID00000320.htm">TC cmd</a> remaining necessary fields by Cut &amp; Paste.
 
   |
   |
@@ -354,7 +354,7 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
 0015| JOB 956020  started  18:25:40.826792 Ended.    00:00:01.794896
 0021| JOB 956021  started  18:25:41.836736 Ended.    00:00:02.195912
 
-(12) Calculate record count and average,min and max of elapsed time.
+(12) Calculate record count and average, min and max of elapsed time.
 
     cmd input line===&gt;tc 49-63+ amm aft
 

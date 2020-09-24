@@ -1,7 +1,8 @@
-//CID://+v6VuR~:             update#=  167                         //~v6VuR~
+//CID://+v701R~:             update#=  175                         //~v701R~
 //*************************************************************
 //*ukbdpeek/ukbdcharin/ukbdsetrate/ukbdsetstate                 //~5104R~
 //*************************************************************
+//v701:200611 usystem hung warning                                 //~v701I~
 //v6Vu:180622 UTRACE;support force option off                      //~v6VuI~
 //v6U1:180317 ReadConsoleInputW loop by continued eventrecord eventType=x10(FOCUS_EVENT),try flush//~v6U1I~
 //v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~v6L5I~
@@ -88,6 +89,7 @@
 #include <ucvebc.h>                                                //~v5n8I~
 #include <ucvext.h>                                                //~v5n8I~
 #include <utf.h>                                                   //~v6BeI~
+#include <uproc.h>                                                 //~v701I~
 #ifdef UTF8SUPPH                                                   //~v5n8I~
 	#include <ucvucs.h>                                            //~v5n8I~
 #endif                                                             //~v5n8I~
@@ -747,8 +749,12 @@ static  USHORT      Sshiftsv;                                      //~v139I~
                 if (focuseventctr%LOOP_BREAK==0)                   //~v6U1R~
                 {                                                  //~v6U1I~
 	            	GetNumberOfConsoleInputEvents(Shstdin,&eventctr);//~v6U1I~
-	            	UTRACEP("%s:flush by focusevent ctr=%d,bSetFocus=%d,numberofevent=%d\n",UTT,focuseventctr,inprec.Event.FocusEvent.bSetFocus,eventctr);//~v6U1R~
+	            	UTRACEP("%s:flush by focusevent ctr=%d,bSetFocus=%d,numberofevent=%d,GuprocStat=%x\n",UTT,focuseventctr,inprec.Event.FocusEvent.bSetFocus,eventctr,GuprocStat);//~v6U1R~//~v701R~
                 	FlushConsoleInputBuffer(Shstdin);              //~v6U1I~
+//                  if (GuprocStat & GUPS_SYSTEMCALL) //may already returned from system call//~v701R~
+                    {                                              //~v701R~
+    					uerrmsg("System call might fail(No cmd response), retry the cmd.",0);//~v701R~
+                    }                                              //~v701I~
                 }                                                  //~v6U1I~
         	}                                                      //~v6U1I~
         	continue;	//other event                              //~v139M~
@@ -927,6 +933,7 @@ int ukbd_wntkeyinfo(PINPUT_RECORD Ppinprec,PKBDKEYINFO Ppkinfo,int Pshift)//~v13
 	scan=                                                          //~v139M~
     Ppkinfo->chScan=(UCHAR)Ppinprec->Event.KeyEvent.wVirtualScanCode,//~v139M~
     Ppkinfo->chChar=(UCHAR)Ppinprec->Event.KeyEvent.uChar.AsciiChar;//~v139M~
+UTRACEP("%s:event scan=x%x,char=x%x\n",UTT,Ppkinfo->chScan,Ppkinfo->chChar);//+v701I~
                                                                    //~v139R~
     if (shift & (KBDSTF_RIGHTSHIFT|KBDSTF_LEFTSHIFT))              //~v139I~
     {                                                              //~v6EzI~
@@ -946,6 +953,7 @@ int ukbd_wntkeyinfo(PINPUT_RECORD Ppinprec,PKBDKEYINFO Ppkinfo,int Pshift)//~v13
         jj=3;       //alt                                          //~v139I~
     else                                                           //~v139I~
         jj=0;       //normal                                       //~v139I~
+UTRACEP("%s:shift=x%x,jj=%d\n",UTT,shift,jj);                      //~v701R~
 //ext  key conversion                                              //~v139I~
     if (!Ppkinfo->chChar                                           //~v139R~
 	&&   (Ppinprec->Event.KeyEvent.dwControlKeyState & ENHANCED_KEY))//~v139R~
@@ -982,6 +990,7 @@ int ukbd_wntkeyinfo(PINPUT_RECORD Ppinprec,PKBDKEYINFO Ppkinfo,int Pshift)//~v13
         ||  jj==3)	//alt                                          //~v139R~
         {                                                          //~v139I~
             scanchar=Sscanconvtbl[scan][jj];                       //~v139R~
+UTRACEP("%s:scanchar=x%x,scan=%x,jj=%d\n",UTT,scanchar,scan,jj);   //~v701R~
             sc=(scanchar>>8);                                      //~v139R~
             ch=(scanchar & 255);                                   //~v139R~
             if (!ch || ch==0xe0)                                   //~v139R~
@@ -1248,7 +1257,7 @@ DWORD ugetconsolemode(int Pid)                                     //~v6hdI~
 //          else                                                   //~v241R~
 //            printf("\nGetConsoleMode(STD_INPUT) failed(redirect)\n");//~v241R~
             if (!Pid)	//stdin                                    //~v253I~
-            	UTRACEP("\n%s:GetConsoleMode(STD_INPUT) failed(redirect)\n",UTT);//~v253I~//+v6VuR~
+            	UTRACEP("\n%s:GetConsoleMode(STD_INPUT) failed(redirect)\n",UTT);//~v253I~//~v6VuR~
             oldmode=0xffffffff;                                    //~v204I~
         }                                                          //~v204I~
         else                                                       //~v204I~

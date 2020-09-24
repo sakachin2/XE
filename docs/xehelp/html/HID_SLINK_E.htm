@@ -16,21 +16,21 @@ a:hover{font-weight:bold;}-->
 #if defined(W32)||defined(UNX)
 
    .Symbolic Link(Junction).
-      xe treates symbolic linc(and JunctionP/MountP for Windows) as following.
+      xe treats symbolic link(and JunctionP/MountP for Windows) as following.
        -Identified by prefix &quot;@&quot; on dir-list, S+F11 display target file name.
          '?' prefix of target name means link error.
          Target not found is a Link error,
            and looped link for Linux.
-         For Windows, looped link is checked at at copy with /LT (copy target)option.
-       -Copy command applys to only link entry as default
-          (Timestamp is kept for Windows, since kernel 2.6.22(lutimes is available) for Linux).
+         For Windows, looped link is checked at copy with /LT (copy target)option.
+       -Copy command applies to only link entry as default
+          (Timestamp is kept for Windows, since kernel 2.6.22 for Linux).
           Copies actual file/directory if /LT option specified.
        -Move command ha no /LT option, move always link entry.
        -Delete command delete link entry only.
 
      Native command processing is as following.
           Windows now supports Junction Point/Mount Point/Symbolic Link on NTFS.
-            Administrator privilege is requred to create symbolic link(Execute command prompt as administrator)
+            Administrator privilege is required to create symbolic link(Execute command prompt as administrator)
 
           Windows:copy command:copy actual file/directrory
                   xcopy command:copy actual entry if /B is not specified

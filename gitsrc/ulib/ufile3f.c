@@ -1,8 +1,9 @@
-//*CID://+v6H7R~:                             update#=  679;       //~v6H7R~
+//*CID://+v702R~:                             update#=  680;       //~v6H7R~//+v702R~
 //*************************************************************
 //*ufile3f.c                                                       //~v5azR~
 //*  FTP version of uxcopy,uxmove
 //*************************************************************
+//v702:200615 ARM compiler warning                                 //+v702I~
 //v6H7:170108 FTP crush by long name                               //~v6H7I~
 //v6G3:161212 (Win10) missing error.h , use winerror.h             //~v6G3I~
 //v6Di:160625 for compiler warning,-Wformat-security(not literal printf format)//~v6DiI~
@@ -179,7 +180,7 @@ typedef struct _UFTPPARM  {
 //*******************************************************
 static int  Sr2rflags=0;                                           //~v5cvI~
 //static UCHAR Sr2rtmptgt[_MAX_PATH];                                //~v5cvR~//~v6H7R~
-static UCHAR Sr2rtmptgt[FTP_MAXPATH];                              //+v6H7R~
+static UCHAR Sr2rtmptgt[FTP_MAXPATH];                              //~v6H7R~
 //*******************************************************
 int uftpxcopyr2r(PUFTPHOST Ppuftphs,PUFTPHOST Ppuftpht,            //~v5azI~
 			UCHAR *Psource,UCHAR *Ptarget,int Popt,unsigned Pattrmask);//~v5azI~
@@ -2063,7 +2064,8 @@ int uftpsmbj_copycallback(PUFTPPARM Ppvoid,PUSMBJCMDPARM Ppusmbjcp)//~v6daR~
     int appendsw,append2fsw,targetfsw;                             //~v6daM~
     char *ptfpath,*pfnm,*psfpath,*pnewtgt,*pappendto=NULL;         //~v6hcR~
 //  char lcdpath[_MAX_PATH],cdpath[_MAX_PATH],appendopd[_MAX_PATH+1+_MAX_PATH];//~v6daM~//~v6H7R~
-    char lcdpath[FTP_MAXPATH],cdpath[FTP_MAXPATH],appendopd[FTP_MAXPATH2+1];//~v6H7I~
+//  char lcdpath[FTP_MAXPATH],cdpath[FTP_MAXPATH],appendopd[FTP_MAXPATH2+1];//~v6H7I~//+v702R~
+    char lcdpath[FTP_MAXPATH],cdpath[FTP_MAXPATH]                          ;//+v702I~
 //***********************************                              //~v6daM~
     pufp=(PUFTPPARM)Ppvoid;                                        //~v6daR~
     opt=pufp->UFPopt;                                              //~v6daM~

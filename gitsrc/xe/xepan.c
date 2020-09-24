@@ -1,8 +1,8 @@
-//*CID://+vbmiR~: update#=  337;                                   //+vbmiR~
+//*CID://+vbmiR~: update#=  338;                                   //~vbmiR~
 //*************************************************************
 //*xepan.c *
 //************************************************************* //~5610I~
-//vbmi:180807 (W32:Bug)top panel LC line is corrupted,use not OutputW but OutputCharacterW.(See v6C8)//+vbmiI~
+//vbmi:180807 (W32:Bug)top panel LC line is corrupted,use not OutputW but OutputCharacterW.(See v6C8)//~vbmiI~
 //vb4h:160804 fnm list reverse len is short because strlen stop by 00 of dbcs unicode//~vb4hI~
 //vb4f:160802 (ULIB:v6Ei)specify ligature on/off,combine on/of line by line(used for edit/filename  panel)//~vb4fI~
 //vb4c:160730 display altch for also cmdline                       //~vb4cI~
@@ -1779,11 +1779,11 @@ int pancmdlf2dd(int Popt,PUSCRD Ppsd,PUPANELC Pppc,UFLDE *Ppfle,UCHAR *Pwkct,int
     u8len=(int)strlen(pu8);                                        //~va5jI~
 //  lclen=(int)strlen(Pppc->UPCline[CMDLINENO].UPLbuff)-fldposs;   //~va5jR~//~vaarR~
     lclen=(int)strlen(plc+fldposs);                                //~vaarR~
-UTRACEP("pancmdl2fdd lclen=%d,u8len=%d\n",lclen,u8len);            //~vaanI~//~vaarM~
-UTRACED("pancmdl2fdd cmddata",plc,lclen);                          //~vaarI~
-UTRACED("pancmdl2fdd cmddatabyutf8",pu8,u8len);                              //~vaanI~//~vaarI~
-UTRACED("pancmdl2fdd cmdcodetb",pct,lclen);                              //~vaanI~//~vaarI~
-UTRACED("pancmdl2fdd cmddbcs",pcd,lclen);                          //~vaarI~
+UTRACEP("pancmdlf2dd lclen=%d,u8len=%d\n",lclen,u8len);            //~vaanI~//~vaarM~//+vbmiR~
+UTRACED("pancmdlf2dd cmddata",plc,lclen);                          //~vaarI~//+vbmiR~
+UTRACED("pancmdlf2dd cmddatabyutf8",pu8,u8len);                              //~vaanI~//~vaarI~//+vbmiR~
+UTRACED("pancmdlf2dd cmdcodetb",pct,lclen);                              //~vaanI~//~vaarI~//+vbmiR~
+UTRACED("pancmdlf2dd cmddbcs",pcd,lclen);                          //~vaarI~//+vbmiR~
 //  if (!memchr(pct,XEUTFCT_UTF8,lclen)) //contains utf8 code      //~vaarI~//~vb30R~
     if (!memchr(pct,XEUTFCT_UTF8,(size_t)lclen)) //contains utf8 code//~vb30I~
     {                                                              //~vaarI~
@@ -1990,7 +1990,7 @@ int pan000draw(int Popt,PUCLIENTWE Ppcw,PUSCRD Ppsd,int Prow)      //~vb2LI~
 //  	UCBITON(Ppsd->USDflag3,USDF3NOLIGATURE);                   //~vb2YI~//~vb2ZR~
 //  	UCBITON(Ppsd->USDflag3,USDF3NOLIGATURE);  //draw by NoLigature(viom OutputW all at once append space attr=0x00)//~vb4fR~
 //  	Ppsd->USDuvioo|=UVIOO_LIGATURE2;  //draw by NoLigature(viom OutputW all at once append space attr=0x00)//~vb4fR~//~vb4hR~
-    	Ppsd->USDuvioo|=UVIOO_LIGATURE2|UVIOO_MENULC;  //LC line,use OutputCharacterW//+vbmiR~
+    	Ppsd->USDuvioo|=UVIOO_LIGATURE2|UVIOO_MENULC;  //LC line,use OutputCharacterW//~vbmiR~
         UTRACEP("%s:USDuvioo=%x\n",UTT,Ppsd->USDuvioo);            //~vb4hR~
     	UTRACED("dddata",pdddata,ddlen);                           //~vb2LI~
     	UTRACED("dddbcs",pdddbcs,ddlen);                           //~vb2LI~

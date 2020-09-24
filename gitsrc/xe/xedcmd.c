@@ -1,8 +1,9 @@
-//*CID://+vb7nR~:                             update#=  371;       //~vb7nR~
+//*CID://+vbriR~:                             update#=  372;       //+vbriR~
 //*************************************************************
 //*xedcmd.c                                                     //~v041R~
 //* drive,cd,xdelete,rmdir,mkdir,rename,attrib,xcopy,xmove      //~v05oR~
 //*************************************************************
+//vbri:200831 (Bug)editfattr overflow work when UFEA_DIR option from dcmdattrchange//+vbriI~
 //vb7n:170117 move filename position to last on errmsg for longname//~vb7nI~
 //vb7g:170114 (Win)longname support(expand buffsz)                 //~vb7gI~
 //vb76:170103 add "use force option" to readonly/toolongname err msg//~vb76I~
@@ -1409,10 +1410,10 @@ int dcmdrmdir(PUCLIENTWE Ppcw,UCHAR *Pfullpath,PUDIRLH Ppdh)    //~v05uR~
         else                                                    //~v05oI~
             return 4;       //not found etc                     //~v05oI~
     }                                                           //~v05oI~
-//  uerrmsg("directory %s was deleted",                          //~v03zI~//~vawKR~//+vb7nR~
-//          "ディレクトリー %s を削除",                         //~v03zI~//+vb7nR~
-    uerrmsg("Deleted:%s",                                          //+vb7nI~
-            "削除済:%s",                                           //+vb7nI~
+//  uerrmsg("directory %s was deleted",                          //~v03zI~//~vawKR~//~vb7nR~
+//          "ディレクトリー %s を削除",                         //~v03zI~//~vb7nR~
+    uerrmsg("Deleted:%s",                                          //~vb7nI~
+            "削除済:%s",                                           //~vb7nI~
 //          Pfullpath);                                         //~v03zI~//~vb08R~
             STD_FNM(Pfullpath));                                   //~vb08I~
     return 0;                                                   //~v03zI~
@@ -2754,7 +2755,8 @@ int dcmdattrchng(UCHAR *Pfullpath,ULONG Pattron,ULONG Pattroff,ULONG *Pattrout)/
 //#endif                                                           //~v53QR~
 {                                                               //~v03zI~
 //  UCHAR attrstring[UDDATTRSZ+1],attrstring2[UDDATTRSZ+1];        //~v53QR~
-    UCHAR attrstring[UDDATTRSZMAX+1],attrstring2[UDDATTRSZMAX+1];     //unix:5,else 4://~v53QR~
+//  UCHAR attrstring[UDDATTRSZMAX+1],attrstring2[UDDATTRSZMAX+1];     //unix:5,else 4://~v53QR~//+vbriR~
+    UCHAR attrstring[UDDATTRSZMAX+4],attrstring2[UDDATTRSZMAX+4];     //unix:5,else 4://+vbriI~
     int efaopt=0;                                                  //~v47CR~
 #ifdef LNX                                                         //~v47DI~
     ULONG oldattr,newattr,reqattr;                                 //~v47DI~
@@ -2862,7 +2864,8 @@ int dcmdattrchng_ftp(int Popt,PUFTPHOST Ppuftph,UCHAR *Pfullpath,ULONG Pattron,U
 //**************************************************************** //~v59fI~
 int dcmdattrchngunix(UCHAR *Pfullpath,ULONG Pattron,ULONG Pattroff,ULONG *Pattrout)//~v59fR~
 {                                                                  //~v59fI~
-    UCHAR attrstring[UDDATTRSZMAX+1],attrstring2[UDDATTRSZMAX+1];     //unix:5,else 4://~v59fI~
+//  UCHAR attrstring[UDDATTRSZMAX+1],attrstring2[UDDATTRSZMAX+1];     //unix:5,else 4://~v59fI~//+vbriR~
+    UCHAR attrstring[UDDATTRSZMAX+4],attrstring2[UDDATTRSZMAX+4];     //unix:5,else 4://+vbriI~
     int efaopt=0;                                                  //~v59fI~
     ULONG oldattr,newattr,reqattr;                                 //~v59fI~
 //********************                                             //~v59fI~

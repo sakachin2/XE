@@ -1,4 +1,4 @@
-//*CID://+v6WdR~:                                   update#=  704; //~v6WdR~
+//*CID://+v6WdR~:                                   update#=  706; //~v6WdR~
 //***********************************************************************
 //v6Wd:180713 (Lnx:BUG)cv -m2m -f:utf8 -t:gb18030 fail for u-00de-->81308937(len=4)//~v6WdI~
 //v6Vm:180620 (W32)when surrogate pair err,use utfcvucs2u8(WideCharToMultibyte dose not notify err,but set utf8 of u-fffd)//~v6VmI~
@@ -1478,7 +1478,8 @@ int ucvext_iconvucs2local1(int Popt,ULPTR Pconverter,UWUCS Pucs,UCHAR *Ppmbs,int
     olen=sizeof(wkmbs);                                            //~v5mTI~
     pci=(char*)(ULONG)wkucs;                                       //~v5mTR~
     pco=pco0=wkmbs;                                                //~v5mTI~
-//    UTRACEP("ucvext_iconvucs2local hiconv=%p,ucs=%04x\n",hiconv,Pucs);//~v5mTI~//~v6m2R~
+    UTRACEP("ucvext_iconvucs2local hiconv=%p,ucs=%04x\n",hiconv,Pucs);//~v5mTI~//~v6m2R~//~v6WdR~
+    UTRACED("ucvext_iconvucs2local pci",pci,(int)ilen);            //+v6WdR~
 //  rciconv=iconv(hiconv,ICONV_PCTYPE(&pci),&ilen,&pco,&olen);     //~v5n8R~//~v5ntR~
     rciconv=iconv(hiconv,ICONV_PCTYPE(&pci),ICONV_SZTYPE(&ilen),&pco,ICONV_SZTYPE(&olen));//~v5ntI~
 //    UTRACEP("ucvext_iconvucs2local hiconv=%x,iconv rc=%d ilen=%d,olen=%d\n",hiconv,rciconv,ilen,olen);//~v62NR~//~v6m2R~
@@ -2168,7 +2169,7 @@ static int Scodepage_invalidflags;                                 //~v6BHI~
     if (!ctr)                                                      //~v6BHI~
 	    lasterr=GetLastError();                                    //~v6BHR~
     UTRACEP("%s:MultibyteToWideChar opt=%x,cp=%d,mb=%02x,len=%d,ctr=%d,ucs=%x,lasterr=%d\n",UTT,opt,Pconverter,*Ppebc,Pinplen,ctr,Ppucs?*Ppucs:0,lasterr);//~v6BHR~//~v6E1R~
-    UTRACED("out Ppucs",Ppucs,ctr*(int)sizeof(WUCS));              //+v6WdI~
+    UTRACED("out Ppucs",Ppucs,ctr*(int)sizeof(WUCS));              //~v6WdI~
     if (lasterr==ERROR_INVALID_FLAGS)                              //~v6BHR~
     {                                                              //~v6BHI~
     	if ((int)Pconverter!=Scodepage_invalidflags)               //~v6BHI~

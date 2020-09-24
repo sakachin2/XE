@@ -1,4 +1,4 @@
-//*CID://+v6BjR~:                                   update#=  726; //+v6BjR~
+//*CID://+v6BjR~:                                   update#=  729; //~v6BjR~
 //***********************************************************************
 //v6Bx:160212 (LNX)compiler warning at suse64                      //~v6BxI~
 //v6Bs:160222 (BUG)ucvext_icuebc2ucs get U_BUFFER_OVERFLOW_ERROR for 0efcfc0f at ucvext_setupsubch when cp932(cp930 is ok)//~v6BsI~
@@ -416,7 +416,7 @@ int ucvext_icuucs2local1(int Popt,ULPTR Pconverter,UWUCS/*ucs4*/Pucs,UCHAR *Ppmb
     int swsubch=0,rc2;                                             //~v66DR~
     int ucsctr;                                                    //~v6BjR~
 //***************************
-UTRACEP("ucvext_icuucs2local1 converter=%p\n",Pconverter);         //~v6hhR~
+UTRACEP("ucvext_icuucs2local1 Popt=x%x,converter=%p\n",Popt,Pconverter);         //~v6hhR~//+v6BjR~
     if (!(Popt & EBC2ASC_LOCALCV))	//local converter
     {                                                              //~v66FI~
 //  	return udbcschk_ucs2mb1(Popt,Pucs,Ppmbs,Ppoutlen);         //~v66FR~
@@ -1533,6 +1533,7 @@ int ucvext_icumb2ucs1(int Popt,ULPTR Pconverter,char *Ppmbs,int Pinplen,int *Ppc
     int rc=0;                                                      //~v6f3I~
 //***************************                                      //~v6f3I~
 UTRACEP("ucvext_icumb2ucs1 opt=%x,converter=%x len=%d,mb=%02x\n",Popt,Pconverter,Pinplen,*Ppmbs);//~v6f3I~
+UTRACED("ucvext_icumb2ucs1 Ppmbcs",Ppmbs,Pinplen);                //~v6BjI~
     if (UTF8ISASCII(*Ppmbs))                                       //~v6f3I~
     {                                                              //~v6f3I~
         *Ppchklen=1;                                               //~v6f3I~
@@ -1550,7 +1551,7 @@ UTRACEP("ucvext_icumb2ucs1 opt=%x,converter=%x len=%d,mb=%02x\n",Popt,Pconverter
 	{                                                              //~v6f3I~
 //      ucvext_icureset(0,(ULONG)converter);                       //~v6f3R~//~v6hhR~
         ucvext_icureset(0,(ULPTR)converter);                       //~v6hhI~
-		UTRACEP("icumb2uvcs1 ERR=%08x=%s\n",(UINT)err,ucvext_icuuerrname(err));//~v6f3I~
+		UTRACEP("icumb2ucs1 ERR=%08x=%s\n",(UINT)err,ucvext_icuuerrname(err));//~v6f3I~//~v6BjR~
         if (err==U_TRUNCATED_CHAR_FOUND)                           //~v6f3I~
 			rc=UCEICL2U1ORC_DBCSSPLIT;//           -11             //~v6f3I~
         else                                                       //~v6f3I~
@@ -1561,11 +1562,11 @@ UTRACEP("ucvext_icumb2ucs1 opt=%x,converter=%x len=%d,mb=%02x\n",Popt,Pconverter
     	utf16h=wkutf16[0];                                         //~v6f3I~
     	utf16l=wkutf16[1];                                         //~v6f3I~
     	if (IS_UTF16_PAIR(utf16h,utf16l))                          //~v6f3I~
-//          *Ppucs=(WUCS)UTF16_TO_UCS4(utf16h,utf16l);             //~v6f3I~//+v6BjR~
-            *Ppucs=(UWUCS)UTF16_TO_UCS4(utf16h,utf16l);            //+v6BjI~
+//          *Ppucs=(WUCS)UTF16_TO_UCS4(utf16h,utf16l);             //~v6f3I~//~v6BjR~
+            *Ppucs=(UWUCS)UTF16_TO_UCS4(utf16h,utf16l);            //~v6BjI~
         else                                                       //~v6f3I~
-//          *Ppucs=(WUCS)utf16h;                                   //~v6f3I~//+v6BjR~
-            *Ppucs=(UWUCS)utf16h;                                  //+v6BjI~
+//          *Ppucs=(WUCS)utf16h;                                   //~v6f3I~//~v6BjR~
+            *Ppucs=(UWUCS)utf16h;                                  //~v6BjI~
         chklen=Pinplen;                                            //~v6f3I~
         if (Popt & UCVEXTO_SETSUBCHRC)                             //~v6f3I~
         	if (*Ppucs==UDBCSCHK_SUBCHAR_DBCS||*Ppucs==UDBCSCHK_SUBCHAR_SBCS)//~v6f3R~
@@ -1607,6 +1608,7 @@ UTRACED("icuucs2mb1 converter",Pconverters,2*sizeof(ULONG));      //~v6f4I~//~v6
     api=Spfuncfromucs;  //ucnv_fromUChars;                         //~v6f3R~
 //  converter=(UConverter*)Pconverter;                             //~v6f3R~//~v6f7R~
     converter=(UConverter*)Pconverters[ICULCPL_CONVERTER];         //~v6f7R~
+	UTRACEP("%s:converter=%p\n",UTT,converter);                    //~v6BjI~
 //  len=(*api)(converter,Ppmbs,MAX_MBCSLEN,wkutf16,utf16ctr,&err); //~v6f3R~//~v6foR~
 //  len=(*api)(converter,mbs,MAX_MBCSLEN,wkutf16,utf16ctr,&err);   //~v6foI~//~v6BkR~
     len=(int)(*api)(converter,mbs,MAX_MBCSLEN,wkutf16,(UINT)utf16ctr,&err);//~v6BkI~
@@ -1625,6 +1627,7 @@ UTRACED("icuucs2mb1 converter",Pconverters,2*sizeof(ULONG));      //~v6f4I~//~v6
         memcpy(Ppmbs,mbs,(size_t)len);                             //~v6BkI~
         if (Popt & UCVEXTO_SETSUBCHRC)                             //~v6f7R~
         {                                                          //~v6uNI~
+			UTRACEP("%s:subch=%s\n",UTT,(char*)Pconverters[ICULCPL_SUBCH]);//~v6BjI~
 //        	if (!strcmp(Ppmbs,(char*)Pconverters[ICULCPL_SUBCH]))  //~v6f7R~//~v6fpR~
           	if (!memcmp(Ppmbs,(char*)Pconverters[ICULCPL_SUBCH],strlen((char*)Pconverters[ICULCPL_SUBCH])))//~v6foI~//~v6fpR~
             	rc=UCVEXTRC_SUBCH;                                 //~v6f7R~

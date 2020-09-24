@@ -1,10 +1,13 @@
-//*CID://+vbmkR~:                              update#=  799;      //~vbmkR~
+//*CID://+v70kR~:                              update#=  803;      //+v70kR~
 //**************************************************
 //*DBCS first byte chk
 //*parm :char to be checked
 //*     :if 0,return 1 if dbcs environment exist                   //~v024I~
 //*rc   :0-not DBCS first byte,1:DBCS first byte
 //**************************************************
+//v70k:200802 (ARM:BUG)uerrmsg always english mode                 //+v70kI~
+//v70g:200715 (BUG)utfcvl2f retrns err when wcwidth=0 and output char same as input. it should set utf8 even width=0//~v70gI~
+//v705:200616 ARM compiler warning;conditionally not initialized   //~v705I~
 //vbmk:180813 (XE)for test,try mk_wcwidth_cjk(ambiguous:Wide DBCS) for visibility chk. use /YJ option//~vbmkI~
 //v6Wv:180807 (W32:Bug) console version on chcp=50221, utfcvf2l output string is over MACMBCSLEN by esc seq such as "Esc$B!)"//~v6WvI~
 //v6Hv:170127 (Lnx:BUG)crush by mem not alloc at term(Sxprintcmd was destroyed by Slocale at udbcschk.c by long locale when export LANG=C//~v6HvI~
@@ -680,10 +683,20 @@ int udbcschk_wclocalereset(int Popt,char *Pplocale)                //~v5n8I~
         if (ustrstri(Pplocale,"EUC") && ustrstri(Pplocale,"JP"))   //~v5nvR~
         {                                                          //~v5nvI~
 			Gudbcschk_flag |=UDBCSCHK_FORCEUCJ;                    //~v5nvI~
+#ifdef ARM            	                                           //+v70kI~
+			if (Gudbcschk_flag & UDBCSCHK_UTF8)                    //+v70kI~
+            {                                                      //+v70kI~
+				Gudbcschk_flag |=UDBCSCHK_UTF8J;                   //+v70kI~
+				Gudbcschk_flag &=~UDBCSCHK_UTF8E;                  //+v70kI~
+            }                                                      //+v70kI~
+#endif                                                             //+v70kI~
         }                                                          //~v5nvI~
     }                                                              //~v5nvI~
     memcpy(Sleadbyte,leadbyte,sizeof(Sleadbyte));                  //~v5n8I~
   }                                                                //~v62WI~
+  else                                                             //~v705I~
+    cp=437;     //Scodepage is not unsed on LNX                    //~v705I~
+                                                                   //~v705I~
     memcpy(Sconverters,converters,sizeof(Sconverters));            //~v5n8I~
     UTRACED("converters",Sconverters,sizeof(Sconverters));         //~v5n8R~
 //  cp=437;                                                        //~v5n8I~//~v5nvR~
@@ -1427,6 +1440,10 @@ int udbcschk_mb2ucs1(int Popt,UCHAR *Pstr,int Plen,int *Ppreadlen,UWUCS *Ppucs)/
     case UDBCSCHK_DBCS1ST:                                         //~v5mQI~
         rc=1;                                                      //~v5mQI~
         break;                                                     //~v5mQI~
+    case UDBCSCHK_NONSPACE:    //'0'                               //~v70gI~
+//*     keep readlen                                               //~v70gI~
+    	rc=0;                  //no err                            //~v70gI~
+        break;                                                     //~v70gI~
     default:                                                       //~v5mQI~
     	readlen=1;                                                 //~v5mQI~
         rc=4;                                                      //~v5mQI~
@@ -1487,10 +1504,10 @@ int udbcschk_ucs2mb1(int Popt,UWUCS/*ucs4*/ Pucs,UCHAR *Pmbs,int *Ppoutlen)//~v6
 //  len=(int)wcrtomb(Pmbs,wc,&mbs);   //                           //~v5mQI~//~v6BjR~
 #ifdef W32                                                         //~v6BAI~
     len=uwctombW(0,wucs,wkmbs);   //                               //~v6BAR~
-UTRACEP("udbcschk_ucs2mb uwctombW Pucs=%04x,mblen=%d mbs=%02x,%02x,%02x,%02x\n",Pucs,len,*wkmbs,len>1?*(wkmbs+1):0,len>2?*(wkmbs+2):0,len>3?*(wkmbs+3):0);//~v6BAR~
+UTRACEP("udbcschk_ucs2mb1 uwctombW Pucs=%04x,mblen=%d mbs=%02x,%02x,%02x,%02x\n",Pucs,len,*wkmbs,len>1?*(wkmbs+1):0,len>2?*(wkmbs+2):0,len>3?*(wkmbs+3):0);//~v6BAR~//~v70gR~
 #else                                                              //~v6BAI~
     len=(int)wcstombs(wkmbs,wc,sizeof(wkmbs));   //                //~v6BjI~
-UTRACEP("udbcschk_ucs2mb wcrtomb Pucs=%04x,wc[0]=%04x,len=%d mbs=%02x,%02x\n",Pucs,wc[0],len,*Pmbs,*(Pmbs+1));//~v5mQR~//~v66DR~//~v6BwR~
+UTRACEP("udbcschk_ucs2mb1 wcrtomb Pucs=%04x,wc[0]=%04x,len=%d mbs=%02x,%02x\n",Pucs,wc[0],len,*Pmbs,*(Pmbs+1));//~v5mQR~//~v66DR~//~v6BwR~//~v70gR~
 #endif                                                             //~v6BAM~
     if (len>0)                                                     //~v5mQI~
     {                                                              //~v6BjI~

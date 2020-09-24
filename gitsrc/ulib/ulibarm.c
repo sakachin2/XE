@@ -1,5 +1,6 @@
-//*CID://+v6K1R~:                             update#=  481;       //~v6K1R~
+//*CID://+vc1cR~:                             update#=  483;       //~v6K1R~//~vc1cR~
 //**************************************************               //~v6a0I~
+//vc1c 2020/06/19 ARM;/proc/version access denied, use Build.VERSION.SDK_INT R RELEASE//~vc1cI~
 //v6K1:170225 (ARM)ftime obsoleted at POSIX2008; linker fail by undefined reference by this reason?//~v6K1I~
 //v6z0:150529 by xuerpck(uerrmsg parmchk)                          //~v6z0I~
 //v6hc:120613 (ARM)avoid uninitialized variable warning by gcc 4.4.3 on FC12(copile optio -Ox is required also)//~v6hcI~
@@ -290,7 +291,7 @@ int uviol_konchk2(void)                                            //~v6a0I~
     return 1;                                                      //~v6a0I~
 }//uviol_konchk2                                                   //~v6a0I~
 #endif  //NOCURSES                                                 //~v6a0R~
-#ifdef ARM                                                         //+v6K1I~
+#ifdef ARM                                                         //~v6K1I~
 //*******************************************************          //~v6K1I~
 //*ftime is obsoleted POSIX2008                                    //~v6K1I~
 //*******************************************************          //~v6K1I~
@@ -307,4 +308,12 @@ int ftime(struct timeb * Ptb)                                      //~v6K1R~
         Ptb->dstflag=tz.tz_dsttime;                                //~v6K1R~
     return 0;                                                      //~v6K1I~
 }//ftime                                                           //~v6K1I~
-#endif //ARM                                                       //+v6K1I~
+//*******************************************************          //~vc1cI~
+void setArmOSVersion(int Popt,int PapiLevel,int PapiRelease)       //+vc1cR~
+{                                                                  //~vc1cI~
+//*********************                                            //~vc1cI~
+	GarmApiLevel=PapiLevel;                                        //+vc1cR~
+	GarmApiRelease=PapiRelease;                                    //~vc1cI~
+    UTRACEP("%s:api=%d,rel=%d\n",UTT,PapiLevel,PapiRelease);       //+vc1cI~
+}                                                                  //~vc1cI~
+#endif //ARM                                                       //~v6K1I~

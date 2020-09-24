@@ -67,6 +67,18 @@ a:hover{font-weight:bold;}-->
              install libgnomeprint-devel
         ===&gt; install libgnomeui-dev
              install libgnomeprint2.2-dev  (ubuntu8)
+    (6) pkg-config was not found
+        ===> install pkg-config
+    (7) CHK_INSTALL_GTK3...no and  CHK_INSTALL_GTK2..no
+        ==>apt-file --package-only search gtk+-2.0
+           apt-file --package-only search gtk+-3.0
+           apt-get install libgtk2.0-dev
+             or 
+           apt-get install libgtk-3-dev
+    (8) CHK_EXIST_GTK3_LIBGNOME2... no
+        ===> install libgnome2-dev
+    (9) can not find -lncursesw
+        ===> apt-get install libncursesw5-dev
 
   (B2) makeのエラー。
 
@@ -289,6 +301,148 @@ a:hover{font-weight:bold;}-->
      &quot;e N:\&quot;のようにアクセスする。
 
 
+(E) インストールログ：fc14.s390x           2011/11/10
+   00). (Linux)
+        -IPLイメージは "fedora-14-s390x-20100925"
+         (fedora-14-s390x.img はサイズが小さくすぐDiskFullになる) 
+        -Herclese は "hercules-3.07-1.i686.rpm"
+        -"hercles.cnf" の修正
+          0120 3390 image-file-name
+          (000C 3505 files(generic.prm,kernel..) は IPL 120 では使用しない)
+        -hosts登録("/etc/hosts")
+           192.168.200.3 s390x
+        	
+   01). (s390x)
+        #adduser useruser
+        #asswd  useruser
+   02). (s390x)
+        -DNS サーバー修正("/etc/resolv.conf")
+          search example.com
+          nameserver xxx.xxx.xxx.xxx 
+          nameserver yyy.yyy.yyy.yyy    <--if secondary exists
+            (/etc/resolv.conf は IPL で元に戻る
+             固定する場合 /etc/sysconfig/network-scripts/ifcfg-ctc0 を修正
+               DNS1=xxx.xxx.xxx.xxx
+               DNS2=yyy.yyy.yyy.yyy
+            )
+        -sshのXサーバー設定("/etc/ssh/sshd_config")
+          X11Forwarding yes
+   03). (s390x)
+        -yum リポジトリー修正(http://fedoraproject.org/wiki/Architectures/s390xの記述に従う)
+          [fedora]
+          name=Fedora $releasever - $basearch
+          baseurl=http://s390.koji.fedoraproject.org/mash/rawhide/s390x/os/
+          enabled=1
+          gpgcheck=0
+   ==> yum 失敗,ping が "host prohibit"
+   04). (Linux)
+        -iptableの REJECT 指定を除く
+          #iptables -S         ->エントリー番号の確認
+          #iptables -D INPUT n1  (n1 は INPUT チェインのエントリー番号(1から始まる))
+          #iptables -D FORWARD n2  (n2 は FORWARDチェインのエントリー番号)
+          #iptables -S         ->削除の確認
+   05). (Linux)
+        -gxe-vvv-tar.gz を s390 に送る
+		  scp $SRCPATH/gxe-vvv.tar.gz useruser@s390x:gxe-vvv.tar.gz
+   06). (s390x)
+        -tgzを展開しconfigure
+          $tar -zxvf gxe-vvv.tar.gz        （/home/useruserで と仮定）
+          $cd  gxe-vvv
+          $./configure
+   ==> no acceptable C compiler
+        -C の導入
+          #yum install gcc.s390x
+   ==> term.h not found
+        -ncursesの導入
+          #yum install ncurses-devel.s390x
+   ==> yum WARNING: refresh-packagekit" inport failed
+          #yum install PackageKit-yum-plugin.s390x
+   ==> cups/cups.h not found
+        -cupsの導入
+          #yum install cups-devel.s390x
+   ==> no package libgnomeui,gnome-vfs-module,libgnomeprint,libgnomeprintui
+        -それぞれlibを導入
+          #yum install libgnomeui-devel.s390x
+          #yum install libgnomeprintui22-devel.s390x
+          (処理が遅く yum がハングしたら, #yum-complete-transaction)
+   06). (s390x)
+        -make
+   ==> unknown type name ppd_file_t
+        -cups/cups.h が ppd.hを #include してない（Bugか)
+        -gxe's xxecsub2 ：明示的に ppd.h を#include する
+   ==> ld fails dlsym@@GLIBC_2.2...
+        -ld の使用が fc13 から変更になった
+         2.so of "o.o"-->"1.so"-->"2.so" のケースで "2.so" を明示的にlinkしなければならない
+        -gxeの Makefile 修正 (-ldl, -lX11)
+   ==> WARNING:unused but set
+        -gcc4.6 からのオプション(-Wunused-but-set-variable:省略値)
+        -configure.in修正済(gcc のバージョン>=4.6のとき-Wno-unused-but-set を指定
+         必要なら "./configure --enable-unused-but-set=yes" でconfigure してください
+   07). (Linux)
+        -gxeのテスト
+   ==> cannot open display:
+        #yum install xorg-x11-xauth.s390x
+        (linuxでのxhostコマンド s390x での DISPLAY=設定は ssh の場合不要)
+   ==> 日本語が表示されない
+        #yum groupinstall "Japanese Support"
+   ==> GConf WARNING client failed to connect to the D-BUS deaemon
+        #yum install dbus-x11.s390x
+   ==> failed to load module pk-gtk-module
+        #yum install PackageKit-gtk-module.s390x
+   ==> xe: search for gnome-terminal failed
+        #yum install gnome-terminal.s390x
+   ==> IPP request failed with status 1280
+        -libgnomeprint の CUPSポーリングが利用可能なプリンターなしで失敗
+        -これは無視する
+   ==> ポップアップダイアログ:An error occurred while loading or saving configuration information.
+        -ルートユーザーのときに出る、"su" 出はなく "su -"を使う
+   ==> GnomeUI-Warning:While connecting to session manager:None of authentication protocols specified are supported.
+        -ルートユーザーのときに出る、"su" 出はなく "su -"を使う
+   ==> Gtk-Message: Failed to load module "gnomebreakpad"
+        -yum install bug-buddy (/usr/lib64/gtk-2.0/libgnomebreakpad)
+        もし bug-buddy がなければ無視。(バグレポート用)
+
+(F) Ubunto11.10_x64 インストールテスト      2011/11/21
+   make
+   ==> undefined symbol gnome_vfs_mime_get_default...
+        libgnomevfs2-extra をインストール
+   ==> dlopen@@GLIBC_2.1 undefined 
+        もし発生したら MAkefile の LDFLAG を調整してください("-ldl" など)
+   gxe 実行
+   ==> Gtk-WARNING: Funable to locate theme engine in gtk-modules "pixbuf"
+        "aptitude install gtk-engine-pixbuf"
+
+(G) OpenSuse12.1_x64 インストールテスト 2011/11/22
+	cups-devel, libgnomeui-devel, libgnomeprintui-devel を導入
+    (DVD から os を導入後 リポジトリーを更新:"download.opensuse.org/distribution/12.1/repo/oss/suse")
+
+(H) Deb Debian jessie 3.10 xfce インストールテスト 2014/02/14
+    xfce4-terminal
+    	ショートカットキー変更 F1=ヘルプ, F11=全画面, F10=メニュー
+        	xfce4-appearance-settingsを実行、 設定, "メニューのショートカットキーを変更可能にする" をチェック
+        	xfce4-appearance-settingsを実行、 設定, "メニューのショートカットキーを変更可能にする" をチェック
+        	xfce4-terminal のメニューで
+            	ヘルプ-->目次("F1" が表示されている)メニュー項目の上で"Del"キーを押す
+            	表示-->全画面表示("F11"が表示されている)メニュー項目上で"Del"を押す
+                (この操作で ~/.config/xfce4/terminal/accels.scm が作成sれる)
+                編集-->設定(E)-->上級者(V), "メニューショートカットキーを無効にする"をオンにする
+	WARNING **: Couldn't register with accessibility bus: Did not receive a reply. Possible causes include: the remote application did not send a reply, the message bus security policy blocked the reply, the reply timeout expired, or the network connection was broken.
+            -->どこかで export NO_AT_BRIDGE=1 で環境変数を設定する
+
+    Gtk-WARNING **: Calling IsInhibited failed: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.gnome.SessionManager was not provided by any .service files
+            -->無害なので無視する
+(I) Rspberry PI  2020/05/16
+   configure エミュレーターでテストしました（image:"2020-02-13-raspbian-full" on QEMU3.1.0）
+     ./configure で以下のエラーがありました
+        term.h not found
+        -->#apt-get install libncurses-dev
+        cups/cups.h not found
+        -->#apt-get install libcups2-dev
+        install GTK2 or GTK3
+        -->#apt-get install libgtk-3-dev
+        select libgnome2 or glib-2.0
+        -->#apt-get install glib-2.0
+        ==>./configure 成功
 
 
 </SPAN></PRE>

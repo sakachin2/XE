@@ -1,8 +1,10 @@
-//*CID://+vb4rR~:                             update#=  112;       //+vb4rR~
+//*CID://+vbr9R~:                             update#=  115;       //~vbr9R~
 //****************************************************************//~6104I~
 //xeopt.h                                                       //~6104I~
 //****************************************************************//~6104I~
-//vb4r:160811 (XXE) v4f for XXE((ULIB:v6Ei)specify ligature on/off,combine on/of line by line(used for edit/filename  panel))//+vb4rI~
+//vbra:200731 set default for GUM2_KBDUTF8                         //+vbr9I~
+//vbr9:200729 (BUG)Goptopt2 flag duplicated of GOPT2_ALLFILELOCALE and GOPT2_COMBINE by 0x20//~vbr9I~
+//vb4r:160811 (XXE) v4f for XXE((ULIB:v6Ei)specify ligature on/off,combine on/of line by line(used for edit/filename  panel))//~vb4rI~
 //vb4q:160810 display ligature/combine mode on "TOP OF LINE"       //~vb4qI~
 //vb4o:160809 set default to COMBINE mode                          //~vb4oI~
 //vb4n:160808 (LNX)UNPR char was lost when change to split mode    //~vb4nI~
@@ -82,7 +84,9 @@ XEOPT_EXT UCHAR  Goptopt XEOPT_INIT(GOPT_CAPLOCK_TSO);             //~v71LM~
                                                                    //~v768I~
 //XEOPT_EXT UCHAR  Goptopt2;                                       //~vb4oR~
 #ifdef UTF8SUPPH                                                    //~v91dM~//~va00I~
+#ifdef AAA                                                         //+vbr9I~
 #define GOPT2_MODEINPUTL2U    0x01   //convert input locale to utf //~v90zI~//~va00I~
+#endif                                                             //+vbr9I~
 //#define GOPT2_MODEINPUTU2L  0x02   //convert input locale from utf//~v90zI~//~va00I~//~va1pR~
 #define GOPT2_ALLFNUTF8       0x02   //all filename is utf8 encoded//~va1pR~
 #define GOPT2_ALLFILEUTF8     0x04   //all file is utf8 encoded    //~v90zI~//~va00I~
@@ -93,19 +97,25 @@ XEOPT_EXT UCHAR  Goptopt XEOPT_INIT(GOPT_CAPLOCK_TSO);             //~v71LM~
 #define GOPT2_NOCONTINS       0x08   //NO cotinued insert line option//~v78SR~
 #define GOPT2_CIDCOPY         0x10   //"c" lcmd copy also CID      //~va02I~
 #ifdef UTF8UCS2                                                    //~va30I~
-#define GOPT2_COMBINE         0x20   //diacritical mark combine mode//~va30I~
+//#define GOPT2_COMBINE         0x20   //diacritical mark combine mode//~va30I~//~vbr9R~
 #endif                                                             //~va30I~
 #define GOPT2_NORETRYCPLC     0x80   //no retry if cpu8 err        //~va1NR~
                                                                    //~vb4oI~
-XEOPT_EXT UCHAR  Goptopt2 XEOPT_INIT(GOPT2_COMBINE);               //~vb4oR~
+//XEOPT_EXT UCHAR  Goptopt2 XEOPT_INIT(GOPT2_COMBINE);               //~vb4oR~//~vbr9R~
+XEOPT_EXT UCHAR  Goptopt2;                                         //~vbr9I~
                                                                    //~vb4oI~
 //#ifdef UTF8UCS2                                                  //~va3TR~
-XEOPT_EXT UCHAR  Goptopt3;                                         //~va3eI~
+//XEOPT_EXT UCHAR  Goptopt3;                                         //~va3eI~//~vbr9R~
 #ifdef UTF8UCS2                                                    //~va3TI~
 #define GOPT3_COMBINENP       0x01   //display combine char as not printable//~va3eI~
 #define GOPT3_LIGATURE        0x02   //for console version         //~va3hR~
 #endif                                                             //~va3TI~
 #define GOPT3_VHEXCSRZIGZAG   0x04   //csr movement on vhexline,zigzag mode//~va3TI~
+#define GOPT3_COMBINE         0x08   //diacritical mark combine mode//~vbr9I~
+#define GOPT3_KBDUTF8BYCMD    0x10   //KBDUTF8 by SWKBD cmd        //+vbr9I~
+#define GOPT3_KBDLCBYCMD      0x20   //KBDLC   by SWKBD cmd        //+vbr9I~
+                                                                   //~vbr9I~
+XEOPT_EXT UCHAR  Goptopt3 XEOPT_INIT(GOPT3_COMBINE);               //~vbr9M~
                                                                    //~va3sI~
 #ifdef UTF8UCS2                                                    //~va3TI~
 #define XEOPT_DEFAULT_COMBALTCH XEUTF_ERRREPCH_NPUCS      //":"    //~vb4mI~
@@ -114,12 +124,12 @@ XEOPT_EXT UCHAR  Goptopt3;                                         //~va3eI~
 XEOPT_EXT int Goptcombaltch XEOPT_INIT(XEOPT_DEFAULT_COMBALTCH); // ':' when OPT UNICOMB UNPR//~vb4mI~
 #else                                                              //~vb4jI~
 //XEOPT_EXT int Goptcombaltch;    //see uviom.h for value          //~vb4oR~
-#ifdef XXE                                                         //+vb4rI~
-XEOPT_EXT int Goptcombaltch     XEOPT_INIT(XEOPT_DEFAULT_COMBALTCH); // ':' when OPT UNICOMB UNPR//+vb4rI~
-#else                                                              //+vb4rI~
+#ifdef XXE                                                         //~vb4rI~
+XEOPT_EXT int Goptcombaltch     XEOPT_INIT(XEOPT_DEFAULT_COMBALTCH); // ':' when OPT UNICOMB UNPR//~vb4rI~
+#else                                                              //~vb4rI~
 XEOPT_EXT int Goptcombaltch     XEOPT_INIT(UVIOM_ALTCHITSELF);     //~vb4oI~
 XEOPT_EXT int GoptcombaltchNP   XEOPT_INIT(XEOPT_DEFAULT_COMBALTCH); // ':' when OPT UNICOMB UNPR//~vb4nI~
-#endif //!XXE                                                      //+vb4rI~
+#endif //!XXE                                                      //~vb4rI~
 #endif                                                             //~vb4jI~
                                                                    //~va3sI~
 #endif                                                             //~va3eI~

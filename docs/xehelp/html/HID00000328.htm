@@ -19,7 +19,7 @@ a:hover{font-weight:bold;}-->
 
             -Value1/2:  [type]digit.
                type: z:decimal, x:hexadecimal, o:octal, t:hhmmss.xxx fmt.
-               Decimal is up to 19 digit,and may contain seperator &quot;,&quot;.
+               Decimal is up to 19 digit,and may contain separator &quot;,&quot;.
                If type is ommitted,decimal when all digit is 0 to 9,
                hexadecimal when all is valid hexadecimal digit,
                t when hh:mm:ss format.
@@ -30,13 +30,13 @@ a:hover{font-weight:bold;}-->
                Overflow is ignored when Hex/Octal calc,
                specify like as 0x00..12345678*0x100 to get double word result.
             -value3..: up to 10 operators except !,&lt;,&gt;,&amp;,|,^ .
-               operator has no priority, calculated sequencially left to right.
+               operator has no priority, calculated sequentially left to right.
             -operation:  +,-,*,!,/,%,  &lt;,&gt;,|,&amp;,^.
                ('!':power, '&lt;','&gt;':shift, '^':exclusive OR.)
                Shift or bit operation is not valid for time.
                If operation missing,do base conversion.
                Operand with type!=t is treated as seconds when calculated
-               with time operand.Multiply and divide between times is also
+               with time operand. Multiply and divide between times is also
                by the value of seconds.
                Doubleword precision is for +,-,*,/,% only.
                Overflow is move up to doubleword precision for decimal calc,
@@ -46,11 +46,11 @@ a:hover{font-weight:bold;}-->
                z:decimal by zzz,zz9, uz:unsigned decimal by zzz,zz9,
                t:hh:mm:ss.xxx edit fmt,
                l(lower L):convert to clock from a word(seconds from 1970)
-               or double word(Mainframe TOD.In double word bit 51 is
+               or double word(Mainframe TOD. In double word bit 51 is
                unit of micro second).
                When mainframe HOST-TOD is before 2000/01/01,
                it is displayed as elapsed second from 1900/01/01.
-               If ommitted,hexadecimal for decimal,decimal for octal
+               If omitted,hexadecimal for decimal,decimal for octal
                and hexadecimal and number of second for type=t.
                Result of divide for decimal,precision is 1 up.
                for x or o,residual is displayed.

@@ -1,7 +1,9 @@
-//*CID://+vbq7R~:                              update#=  464;      //~vbq7R~
+//*CID://+vbrcR~:                              update#=  467;      //+vbrcR~
 //*************************************************************
 //*XE.c*                                                           //~v641R~
 //*************************************************************
+//vbrc:200801 (ARM)default is CPU8 file and filename               //~vbr1I~
+//vbr1:200615 ARM compiler warning                                 //~vbr1R~
 //vbq7:200516 option to bypass useteh for MS visual studio exception handling(request restart visual studio)//~vbq7I~
 //vbmk:180813 for test,try mk_wcwidth_cjk(ambiguous:Wide DBCS) for visibility chk. use /YJ option//~vbmkI~
 //vbkm:180625 UTRACE;add option of ignore FORCE option             //~vbkmI~
@@ -339,7 +341,9 @@ void titlemsg(void);
 static  char Spgmver[16];
 static  int  Smalloctrcopt=0;                                      //~v53UR~
 static  int  Stesttrcopt=0;                                        //~v53UR~
+#ifndef ARM                                                        //~vbr1R~
 static  int  StesttrcoptClear;                                     //~vbkmI~
+#endif                                                             //~vbr1R~
 static  int  Sinitend;  //entered getchar loop                  //~4C27I~
 static  UCHAR *Sinifile=0;    //.ini use option                    //~v53UR~
 static  int Suerrmsgopt=0;                                         //~v53UR~
@@ -1171,7 +1175,9 @@ int  xegetworkdir(void)                                            //~v79zI~
 {                                                                  //~v79zI~
     char *pc;                                                      //~v79zI~
 #ifdef UNX                                                         //~v79zI~
+  #ifndef ARM                                                      //~vbr1R~
     char fpathwk[_MAX_PATH];                                       //~v79zI~
+  #endif                                                           //~vbr1R~
 	uid_t uid;                                                     //~v79zI~
 	gid_t gid;                                                     //~v79zI~
 #endif                                                             //~v79zI~
@@ -1331,8 +1337,10 @@ int  xetraceinit(void)                                             //~v79zI~
 {                                                                  //~v79zI~
     int rc;                                                        //~v79zI~
     char wkfname[_MAX_PATH];                                       //~v79zI~
+#ifndef ARM                                                        //~vbr1R~
     char wkfname2[_MAX_PATH];                                      //~vbkmI~
     ULONG pid;                                                     //~vb26I~
+#endif  //!ARM                                                     //~vbr1R~
 //********************                                             //~v79zI~
 #ifdef ARM                                                         //~vb26I~
     sprintf(wkfname,"%s%s%s.mtr",Gworkdir,PGMID,Sostype);          //~vb26I~
@@ -1657,7 +1665,11 @@ int  parmproc0(int Pparmc,char *Pparmp[])                          //~v501R~
     int posparmno=0,flagsw;                                        //~v19DI~
 //#endif                                                           //~v79MR~
 #ifdef UTF8SUPPH                                                   //~va00I~
+#ifdef ARM                                                         //+vbrcI~
+    int utfopt=XEUTFIO_FILE|XEUTFIO_DIRU8;                         //+vbrcI~
+#else                                                              //+vbrcI~
     int utfopt=0;                                                  //~va00I~
+#endif                                                             //+vbrcI~
 #endif                                                             //~va00I~
 //********************                                          //~5429I~
     for (parmno=1;parmno<Pparmc;parmno++)                       //~5429I~
@@ -2736,8 +2748,8 @@ void help(void)
 #endif                                                          //~5430I~
   if (Sdebughelp)                                                  //~vbq7I~
   {                                                                //~vbq7I~
-    HELPMSG "      x=e (%cYe):set exception handler.\n",           //+vbq7R~
-            "      x=e (%cYe):例外ハンドラーを設定する\n",         //+vbq7R~
+    HELPMSG "      x=e (%cYe):set exception handler.\n",           //~vbq7R~
+            "      x=e (%cYe):例外ハンドラーを設定する\n",         //~vbq7R~
 			CMDFLAG_PREFIX);                                       //~vbq7I~
   }                                                                //~vbq7I~
 #ifdef LNX                                                         //~vad0I~

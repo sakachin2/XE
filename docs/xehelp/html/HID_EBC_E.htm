@@ -20,12 +20,12 @@ a:hover{font-weight:bold;}-->
       You can use external converter such as ICU/iconv for EBCDIC translation.
       <A href="HID00000270.htm">CV cmd</A>(<A href="HID_XCV_E.htm">XCV</A> is embedded tool for translation) and <A href="HID_TSOE_E.htm">xe3270 FTP</A> utilize those converter.
       Prepare parameter file for it, followings are description for the parameter file.
-      (See &quot;<A href="HID_EBCF_E.htm">EBCDIC file support</A>&quot; about editting direct EBCDIC file.)
+      (See &quot;<A href="HID_EBCF_E.htm">EBCDIC file support</A>&quot; about editing direct EBCDIC file.)
 
       ****************************************************************************
 
         This file defines EBCDIC translation parameter
-        which is use for EBCDIC fiel support, CV edit cmd, xe3270 FTP, XCV utility.
+        which is use for EBCDIC file support, CV edit cmd, xe3270 FTP, XCV utility.
         Links to this file is CHARSET_CFG parameter in the xe3270.cfg for xe3270 FTP,
         /MF:mapfile parameter for XCV cmd.
         For EBCDIC file support and CV edit cmd, specify on <A href="HID00000209.htm">INI file</A>.
@@ -38,14 +38,14 @@ a:hover{font-weight:bold;}-->
               For xe3270 FTP, you can specify those parameters in this file if required.
               SJIS_OPT, SOSI_A2E and SOSI_E2A are the only effective parameters.
          (b). Translation using external(ICU) or system(Windows NLS API or Linux iconv) converter.
-              You may use standalone tool,uconv of ICU or iconv of Linux.
+              You may use standalone tool, uconv of ICU or iconv of Linux.
               Use this file to use these converter in xe3270 FTP.
               This file may be used from CV and XCV cmd to adjust translation by those converter.
               MAP_A2E/MAP_E2A is applied to the specific codepoint.
               You can get the list of charset by &quot;uconv -l&quot; (ICU), &quot;iconv -l&quot;(iconv).
-              List of codepage of Windows or ICU converter is gotton by &quot;xcv -List&quot;
+              List of codepage of Windows or ICU converter is gotten by &quot;xcv -List&quot;
               (It seems to be no DBCS EBCDIC codepage in Windows,ICU will be required for DBCS user).
-         (c). Apply mapping after and downlowd and before upload by s3270+IND$FILE transfer.
+         (c). Apply mapping after and download and before upload by s3270+IND$FILE transfer.
               MAP_A2F is applied before upload and MAP_F2A is applied after download
               to adjust the s3270 translation.
               Other option than MAP_A2F and MAP_F2A are ignored.
@@ -54,7 +54,7 @@ a:hover{font-weight:bold;}-->
           .For DBCS user.
               IND$FILE dose not support DBCS(DoubleByteCharSet) translation.
               (s3270 made by --enable-DBCS option translates screen data only.)
-              So, xe3270 translates FTP data using internal/external converter, then send/receive by binaly mode.
+              So, xe3270 translates FTP data using internal/external converter, then send/receive by binary mode.
               It supports fixed-record-length DATASET MEMBER only.
               For variable-record length DATASET(MEMBER) SBCS translation is applied,
               and you can adjust it using (c) of above.
@@ -74,7 +74,7 @@ a:hover{font-weight:bold;}-->
               Codepoints defined there are mapped without using converter.
 
           .For SBCS user.
-              s3270 supports some translation tabe by --charset option.
+              s3270 supports some translation table by --charset option.
               (See http://x3270.bgp.nu/s3270-man.html for supported charset)
               It seems there are no need to install external converter for s3270 FTP.
               If there are some code points which dose not fit to your environments,
@@ -86,7 +86,7 @@ a:hover{font-weight:bold;}-->
                   [PCcode]&lt;-{MAP_F2A}&lt;-[PCcode]&lt;-(s3270)&lt;===[PCcode]&lt;-(IND$FILE)&lt;-[EBCDIC]
 
               You can also use SBCS_CHARSET and MAP_A2E/MAP_E2A for fixed-record-length DATASET MEMBER.
-              If CONVERTER=1 and and SBCS_CHARSET is specified,
+              If CONVERTER=1 and SBCS_CHARSET is specified,
               SBCS translation is done like as DBCS translation for fixed-record-length DATASET MEMBER..
               If SBCS_CHARSET is DEFAULTMAP, translation is done without using converter
               by mapping table same as of s3270(ISO-8859-1 and CP037).
@@ -97,13 +97,13 @@ a:hover{font-weight:bold;}-->
           long lines are split and short lines are expanded at translation to EBCDIC.
           NO EndOfLineID(0x0a) is written(XCV cmd support /Mseteol option).
           &quot;N&quot; option means last 8 byte of line-number-field.
-          Expanded line by insertion of SO/SI for DBCS is shrinked
+          Expanded line by insertion of SO/SI for DBCS is shrunk
           to the LRECL if space is available before the line-number-field.
           The line number field overflowed the LRECL will be cut if &quot;N&quot; specified.
           For xe3270 FTP, set profile:NUMSTD by PRO cmd.
           (Open a MENBER with /Mn option,then enter &quot;PRO path save&quot;)
 
-          When translated from EBCDIC,lines are read by binary mode(0x0a is also translated)
+          When translated from EBCDIC, lines are read by binary mode(0x0a is also translated)
           and EOL-ID is written.
 
         By /Mseteol option of <A href="HID_XCV_E.htm">XCV</A> cmd EOL-ID is append to each line for both To and From EBCDIC case.
@@ -134,7 +134,7 @@ a:hover{font-weight:bold;}-->
         #   CONVERTER      : Converter selection                      
         #                    0 : SBCS translation by MAP_A2F and MAP_F2A mapping
         #                        Other option than MAP_A2F and MAP_F2A will be ignored.
-        #                    1 : converter is ICU (ICU instalation is required)
+        #                    1 : converter is ICU (ICU installation is required)
         #                    2 : converter is iconv(Linux) or WideCharToMultibyte/MultiByteToWideChar(Windows)
         #                                                             
         #                    For 1 and 2, apply CHARSET_DBCS, CHARSET_DBCS (LOCAL_CHARSET)
@@ -142,7 +142,7 @@ a:hover{font-weight:bold;}-->
         #                    MAP_A2F and MAP_F2A will be ignored.     
         #                      sample                                 
         #                         CONVERTER   1           # apply converter
-        #   ICU_DLL_SUFFIX : .dll/.so library name sufix.             
+        #   ICU_DLL_SUFFIX : .dll/.so library name suffix.             
         #                    This is required if &quot;CONVERTER 1&quot;.       
         #                    Required when following default is not proper.
         #                       Android     : /system/lib
@@ -153,7 +153,7 @@ a:hover{font-weight:bold;}-->
         #                                             GetWindowsDirectory(): c:\Windows
         #                      sample                                 
         #                         ICU_DLL_SUFFIX 44          # if dllname is icuuc40.dll
-        #   ICU_API_SUFFIX : ICU api name sufix.                      
+        #   ICU_API_SUFFIX : ICU api name suffix.                      
         #                    This is required if &quot;CONVERTER 1&quot;.       
         #                    Required when default dll/so library is not available.
         #                    For ex, real name of &quot;ucnv_open&quot; is ucnv_open_4_0 on icuuc40.dll
@@ -168,7 +168,7 @@ a:hover{font-weight:bold;}-->
         #                     ex)(Linux)   ICU_DATA=/system/usr/icu:/data/data/yourcnvs
         #                        (Windows) ICU_DATA=w:\icu\icu562\icu\bin;w:\icu\icu481\icu\bin
         #                    Put your cnv file into sub-folder yourcnvs/icudt__l  ; __ is version like as icudt44l.
-        #                    (Windows) search ICU library(dll) also in ICU_DATA folder and in ICU_DATA enviromnent variable.
+        #                    (Windows) search ICU library(dll) also in ICU_DATA folder and in ICU_DATA environment variable.
         #                    (Linux) set path to the .so to LD_LIBRARY_PATH.
         #                                                             
         #   DBCS_CHARSET   : Defines EBCDIC charset name to translate UCS&lt;--&gt;EBCDIC which supports DBCS.
@@ -176,14 +176,14 @@ a:hover{font-weight:bold;}-->
         #                    If missing this parameter All chars are translated byte by byte.
         #                    (Note) DBCS=OTHER parameter in the xehosts file is required for xe3270 FTP.
         #                      sample                                 
-        #                         DBCS_CHARSET cp939     #Jpanese
+        #                         DBCS_CHARSET cp939     #Japanese
         #                         DBCS_CHARSET cp933     #Korean Mixed EBCDIC
         #                         DBCS_CHARSET cp935     #Chinese(Simplified) Mixed EBCDIC
         #                         DBCS_CHARSET cp937     #Chinese(Traditional)Mixed EBCDIC
         #   SBCS_CHARSET   : Defines EBCDIC charset name to translate UCS2&lt;--&gt;EBCDIC
         #                    You can get the list of charset by &quot;uconv -l&quot; (ICU), &quot;iconv -l&quot;(iconv).
-        #                    If DBCS_CHARSET can translate also SBCS,no need to specify SBCS_CHARSET.
-        #                    &quot;DEFAULTMAP&quot; means to use internal mapping table cotrresponding to
+        #                    If DBCS_CHARSET can translate also SBCS, no need to specify SBCS_CHARSET.
+        #                    &quot;DEFAULTMAP&quot; means to use internal mapping table corresponding to
         #                    iso8859-1&lt;--&gt;EBCDIC US same as IBM37,swaplfnl.
         #                    ibm37,swaplfnl is s390 standard.
         #                      EBCDIC-0x25&lt;--&gt;ASCII-0x85, EBCDIC-0x15&lt;--&gt;ASCII&lt;--&gt;0x0a
@@ -193,8 +193,8 @@ a:hover{font-weight:bold;}-->
         #                      For CONVERTER=2 on Windows.
         #                        SBCS_CHARSET 1047           #EBCDIC latin
         #   LOCAL_CHARSET  : defines local charset name to translate UCS2&lt;--&gt;local codepage
-        #                    If SBCS_CHARSET is DEFAULTMAP,this parameter is ignored
-        #                    If missing, Codepage is determined by environment valiable(LANG,codepage).
+        #                    If SBCS_CHARSET is DEFAULTMAP, this parameter is ignored
+        #                    If missing, Codepage is determined by environment variable(LANG, codepage).
         #                    For Axe, ICU is used.
         #                      sample                                 
         #                         LOCAL_CHARSET ISO-8859-1     #use external converter
@@ -203,8 +203,8 @@ a:hover{font-weight:bold;}-->
         #                        LOCAL_CHARSET   932          #JP
         #   MAP_E2A/MAP_A2E: mapping to adjust SBCS translation for each codepoint.
         #                    For ex,. 0x7e is tilde on iso-8859-1 upper-bar on cp897.
-        #                    And 0xa0 is upper-bar and 0xa1 is tilede on CP1027(EBCDIC),
-        #                    0xa1 is upper-bar and 0xa0 is tilede on cp290(EBCDIC),
+        #                    And 0xa0 is upper-bar and 0xa1 is tilde on CP1027(EBCDIC),
+        #                    0xa1 is upper-bar and 0xa0 is tilde on cp290(EBCDIC),
         #                    When CP1027 is not supported by s3270 specify as following
         #                    with &quot;s3270 -charset CP290&quot;              
         #                      sample                                 
@@ -219,14 +219,14 @@ a:hover{font-weight:bold;}-->
         #                      sample                                 
         #                         MAP_A2F  0xaf: ~      # upload 0xaf(upper bar) as 0x7e(tilde)
         #                         MAP_F2A  0x1f: .      # convert downloaded 0x1f to printable char
-        #   SUCHAR_SBCS    : substitution charscter by unicode for the case single byte translation error.
+        #   SUCHAR_SBCS    : substitution character by unicode for the case single byte translation error.
         #                    default is U001a.                        
-        #   SUCHAR_DBCS    : substitution charscter by unicode for the case double byte translation error.
+        #   SUCHAR_DBCS    : substitution character by unicode for the case double byte translation error.
         #                    default is Ufffd.                        
         #                    ICU subchar of codepage-&gt;unicode translation is fixed to 0x1a and 0xfffd.
         #                    ICU subchar of codepage&lt;-unicode translation is defined on each .ucm file of ICU.
-        #                    xe accept both for EBCDIC&lt;-&gt;unicode  and local codepage&lt;-&gt;unicode if specifed.
-        #                    So,SUBCHAR_SBCS and SUBCHAR_DBCS is applied to following 2 case.
+        #                    xe accept both for EBCDIC&lt;-&gt;unicode  and local codepage&lt;-&gt;unicode if specified.
+        #                    So, SUBCHAR_SBCS and SUBCHAR_DBCS is applied to following 2 case.
         #                      LOCAL_CHARSET is not specified.(wcr2mb and mbrtowc are used)
         #                      &quot;CONVERTER 2&quot; is specified.(system converters are used)
         #                    If xe detected error, output is result of translation of this substitution char.
@@ -242,7 +242,7 @@ a:hover{font-weight:bold;}-->
         #   SUBCHAR_S2D    : replace converter output by substitution char when SBCS is translated to pc-codepage DBCS.
         #                    1 : replace by SBCS substitution char.   
         #                    0 : allow multibyte output. (Default)    
-        #   SJIS_OPT       : Specify options for SJIS(japanese) translation.
+        #   SJIS_OPT       : Specify options for SJIS(Japanese) translation.
         #                    Effective only for case (a) of xe3270 FTP(for the case DBCS=CP939 or CP930 in the xehosts file)
         #                    For CV and XCV cmd, cmdline parameter override this parameter.
         #                    IBM  :map EBCDIC kanji to SJIS-IBM area (Default)
@@ -250,7 +250,7 @@ a:hover{font-weight:bold;}-->
         #                    JIS78:SJIS 1978 version                  
         #                    JIS83:SJIS 1983 version (Default)        
         #                    ENG_EXT :Japanese English Extension(CP939=CP1027)
-        #                    KANA_EXT:Japanese katakana Extension(CP930=CP290)
+        #                    KANA_EXT:Japanese Katakana Extension(CP930=CP290)
         #                      sample                                 
         #                         SJIS_OPT      NEC                   
         #                         SJIS_OPT      JIS78                 
@@ -264,7 +264,7 @@ a:hover{font-weight:bold;}-->
         #                    SHIFT:(xe3270 Only) more over REP operation, delete following space by the inserted count.
         #                      sample                                 
         #                         SOSI_A2E      REP
-        #   SOSI_E2A       : SO/SI treatement when translate DBCS from EBCDIC
+        #   SOSI_E2A       : SO/SI treatment when translate DBCS from EBCDIC
         #                    It can be overridden command option of CV/XCV/SAVe/REPlace/COPy/... cmd.
         #
         #                    Default is REP.                          
@@ -328,7 +328,7 @@ a:hover{font-weight:bold;}-->
         #        CONVERTER          1
         #        ICU_DLL_SUFFIX    44
         #        ICU_API_SUFFIX   _44
-        #        DBCS_CHARSET     cp1388          //chinese simplified. superset of cp935
+        #        DBCS_CHARSET     cp1388          //Chinese simplified. superset of cp935
         #
         ## Use API (Windows:MultiByteToWideChar/WideCharToMultibute)
         #

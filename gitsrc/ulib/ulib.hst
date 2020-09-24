@@ -1,3 +1,59 @@
+//*********  20200923 v129N release     ****************
+//v70q:200919 (ARM)add gettraceopt
+//            utrace.c/h
+//v70p:200919 (ARM)sjis msg was converted by androidstudio
+//            uallocl.c
+//v70n:200919 (ARM)uerrexit by locale 
+//            uerr.c
+//v70n:200902 (ARM)$tmp as shortcut to /data/local/tmp
+//            ufile1l.c
+//v70m:200820 (ARM:BUG)save and load ucsmap missing width0top
+//            utf22.c
+//v70k:200802 (ARM:BUG)uerrmsg always english mode
+//            udbcschk.c uerr.c
+//v70j:200725 (ARM)add ucode2str to avoid logcat terminate by ctrl char output 
+//            uedit2.c/h
+//v70i:200716 (ARM)Ucs.java' wcwidth is proper than adjsbcs
+//            utf22.c utf4.c
+//v70h:200716 (BUG)if width0ctr==0, all non dbcs ucs is determined as width0
+//            utf22.c
+//v70g:200715 (BUG)utfcvl2f retrns err when wcwidth=0 and output char same as input. it should set utf8 even width=0
+//            utf2.c utf.h udbcschk.c
+//v70f:200715 (BUG)utcctr2offs have to consider 3/4 byte dbcs
+//            utf2.c
+//v70e:200715 (LNX,Axe)Axe use icu as local converter and icu can translate u-00a4 to 8fa2f0(3 byte locale code)
+//            utfpos2offs called from charfldeditu8 because curcol<enndcol. utfpos2offs have to count 1d2(dbcstbl)
+//            utf2.c
+//v70d:200625 (LNX)setenv may destroy env,use putenv
+//            udos2.c/h
+//v70c:200625 (ARM)=6 cmd;cmd not found, setenv in not work
+//            uproc.c
+//v70b:200616 ARM:use /sdcard for /emultate/legacy/..
+//            ufile1l.c
+//v70a:200616 ARM:sprintf chk variable boundary by __vsprintf_chk and signal(6):abort
+//            But finally,it can be avoided by -D_FORTIFY_SOURCE=1(compile warning only).  
+//            -D_FORTIFY_SOURCE=2 chk at runtime then abort.
+//            ustring.h
+//v709:200616 ARM:threadID of utrace by gettid():Kernel:int not by pthread_self():Posix pthread_t:handle
+//            utf22.c
+//v708:200616 ARM:fopen(/proc/version) failed and signal(6) caused
+//            utf22.c
+//v707:200616 ARM:MALLOC fmt is unknown
+//            uallocl.c
+//v706:200616 ARM:redirect UTRACE to LOGPD 
+//            utrace.c/h
+//v705:200616 ARM compiler warning;conditionally not initialized
+//            udbcschk.c ufile2.c
+//v704:200615 coding bug for all
+//            uftp.c
+//v703:200615 ARM coding bug
+//            ufile1l.c
+//v702:200615 ARM compiler warning
+//            ucvext.c uerr.c ufile2.c ufile2f.c ufile3f.c ufile2l.c ukbdl.c utf2.c
+//v701:200611 usystem hung warning
+//            uproc.c/h ukbdw.c
+//v700:200610 Axe:chtype not defined
+//            utf22.c uviom.c
 //*********  20200517 v129M release     ****************
 //v6Z0:200516 uwordrep option alternative parm sign
 //            uedit.c/h

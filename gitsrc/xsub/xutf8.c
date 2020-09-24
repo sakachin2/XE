@@ -1,11 +1,13 @@
-//*CID://+vaa0R~:                             update#=  200;       //+vaa0R~
+//*CID://+vaa0R~:                             update#=  210;       //~vaa0R~
 //*************************************************************
 //*xutf8                                                           //~va3eR~
 //*write file utf8 code file of the unicode range specified by parameter
 //*************************************************************
-#define VER "1.2"                                                  //~va3kR~//+vaa0R~
+//vap2:200921 xutf8 v1.3:dispaly utf8 by hxe notation              //~vaa0I~
+//*************************************************************    //~vaa0I~
+#define VER "1.3"                                                  //~va3kR~//~vaa0R~
 //*************************************************************    //~va3eI~
-//vaa0:160417 Lnx compiler warning                                 //+vaa0I~
+//vaa0:160417 Lnx compiler warning                                 //~vaa0I~
 //va3k:080125 xutf8 v1.1 compiler warning for 0x5c                 //~va3kI~
 //va3e:070922 xutf8 v1.0 new                                       //~va3eI~
 //*************************************************************
@@ -26,7 +28,9 @@
 #define MAXRANGE 100
 //********************                                             //~va3eI~
 static int Srange1[MAXRANGE],Srange2[MAXRANGE];
-static int  Srangeno=0,Swidth=0,Slfrange,Sheadersw=0;              //~va3eR~
+//static int  Srangeno=0,Swidth=0,Slfrange,Sheadersw=0;              //~va3eR~//~vaa0R~
+static int  Srangeno=0,Swidth=1,Slfrange,Sheadersw=0;              //~vaa0I~
+static int  Shexutf8sw=0,Sf2usw=0;                                 //+vaa0R~
 static char *Spgm="xutf8";
 static char *Sver=VER;
 //*************************************************************
@@ -38,6 +42,9 @@ int main(int parmc,char * parmp[])
 {
 	char utf8[8];
     int ucs1,ucs2,ucs,ii,cnt,len,lfsw=0;                           //~va3eR~
+    int jj,sw1st,chklen,rc;                                        //+vaa0R~
+    unsigned uch;                                                  //+vaa0I~
+    UWUCS ucs0;                                                    //+vaa0I~
 //**********************
 	parmchk(parmc,parmp);
     if (Sheadersw)                                                 //~va3eI~
@@ -46,6 +53,34 @@ int main(int parmc,char * parmp[])
     {
     	ucs1=Srange1[ii];
     	ucs2=Srange2[ii];
+      if (Sf2usw)                                                  //+vaa0I~
+      {                                                            //+vaa0I~
+      	uch=ucs1;                                                  //+vaa0I~
+        sw1st=0;                                                   //+vaa0I~
+        len=0;                                                     //+vaa0I~
+      	for (jj=0;jj<4;jj++)                                       //+vaa0I~
+        {                                                          //+vaa0I~
+        	if (sw1st || uch & 0xff000000)                         //+vaa0I~
+            {                                                      //+vaa0I~
+            	utf8[len++]=uch>>24;                               //+vaa0I~
+                sw1st=1;                                           //+vaa0I~
+            }                                                      //+vaa0I~
+            uch=uch<<8;                                            //+vaa0I~
+        }                                                          //+vaa0I~
+        utf8[len]=0;                                               //+vaa0I~
+        rc=uccvutf2ucs(UCVUCS_UCS4,utf8,len,&ucs0,&chklen);        //+vaa0I~
+        if (rc)                                                    //+vaa0I~
+        {                                                          //+vaa0I~
+            uerrmsg("\n%x is invalid utf8 code",0,                 //+vaa0I~
+						ucs1);                                     //+vaa0I~
+            break;                                                 //+vaa0I~
+        }                                                          //+vaa0I~
+        for (jj=0;jj<len;jj++)                                     //+vaa0I~
+            printf("%02x",utf8[jj]);                               //+vaa0I~
+        printf("=u-%06X\n",ucs0);                                  //+vaa0I~
+      }                                                            //+vaa0I~
+      else                                                         //+vaa0I~
+      {                                                            //+vaa0I~
     	for (ucs=ucs1,cnt=0;ucs<=ucs2;ucs++,cnt++)
         {
             len=uccvucs2utf(ucs,utf8);                             //~va3eR~
@@ -57,7 +92,14 @@ int main(int parmc,char * parmp[])
             }                                                      //~va3eI~
             *(utf8+len)=0;
             if (lfsw && Sheadersw)                                 //~va3eI~
-            	printf("%06x:",ucs);                               //~va3eR~
+//            	printf("%06x:",ucs);                               //~va3eR~//~vaa0R~
+              	printf(" %06x:",ucs);                              //~vaa0I~
+            if (Shexutf8sw)                                        //~vaa0I~
+            {                                                      //~vaa0I~
+            	for (jj=0;jj<len;jj++)                             //~vaa0I~
+            		printf("%02x",utf8[jj]);                       //~vaa0R~
+            	printf("=");                                       //~vaa0I~
+            }                                                      //~vaa0I~
             printf("%s",utf8);
             lfsw=0;
             if (Swidth && (cnt+1)%Swidth==0)                       //~va3eR~
@@ -72,6 +114,7 @@ int main(int parmc,char * parmp[])
 		    	printf("\n");
                 lfsw=1;                                            //~va3eI~
             }                                                      //~va3eI~
+      }                                                            //+vaa0I~
     }
 	return 0;
 }//charin
@@ -171,9 +214,14 @@ void parmchk(int parmc,char *parmp[])
         	Srange2[Srangeno]=ucs2;
         	Srangeno++;
             break;
+        case 1:                                                    //~vaa0I~
+        	Srange1[Srangeno]=ucs1;                                //~vaa0I~
+        	Srange2[Srangeno]=ucs1;                                //~vaa0I~
+        	Srangeno++;                                            //~vaa0I~
+            break;                                                 //~vaa0I~
         default:
-//          len=strlen(cptr);                                      //+vaa0R~
-            len=(int)strlen(cptr);                                 //+vaa0I~
+//          len=strlen(cptr);                                      //~vaa0R~
+            len=(int)strlen(cptr);                                 //~vaa0I~
 	        for (pc=cptr+len-1;len>0;len--,pc--)                   //~va3eI~
             {                                                      //~va3eI~
             	if (toupper(*pc)=='R')                             //~va3eR~
@@ -182,6 +230,12 @@ void parmchk(int parmc,char *parmp[])
             	if (toupper(*pc)=='H')                             //~va3eI~
             		Sheadersw=1;	//linefeed for each range      //~va3eI~
                 else                                               //~va3eI~
+            	if (toupper(*pc)=='X')                             //~vaa0I~
+            		Shexutf8sw=1;	//linefeed for each range      //~vaa0I~
+                else                                               //~vaa0I~
+            	if (toupper(*pc)=='U')                             //+vaa0I~
+            		Sf2usw=1;	                                   //+vaa0I~
+                else                                               //+vaa0I~
                 	break;                                         //~va3eI~
             }                                                      //~va3eI~
             if (len)
@@ -219,8 +273,10 @@ void help(void)
 "%s : %s=(%c)= 指定の範囲のユニコードに対応するUTF8コードを標準出力に書く。\n",//~va3eR~
                 Spgm,Sver,OSTYPE);
         HELPMSG
-"fmt  : %s xxx1-yyy1 [xxx2-yyy2 ...] [[nn][R][H]]\n",              //~va3eR~
-"形式 : %s xxx1-yyy1 [xxx2-yyy2 ...] [[nn][R][H]]\n",              //~va3eR~
+//"fmt  : %s xxx1-yyy1 [xxx2-yyy2 ...] [[nn][R][H]]\n",              //~va3eR~//~vaa0R~
+//"形式 : %s xxx1-yyy1 [xxx2-yyy2 ...] [[nn][R][H]]\n",              //~va3eR~//~vaa0R~
+"fmt  : %s xxx1[-yyy1] [xxx2[-yyy2] ...] [[nn][R][H][X][U]\n",     //~vaa0R~
+"形式 : %s xxx1[-yyy1] [xxx2[-yyy2] ...] [[nn][R][H][X][U]]\n",    //~vaa0R~
                 Spgm);
         HELPMSG
 "  xxxx-yyyy :unicode range by hex notation.\n",
@@ -234,9 +290,19 @@ void help(void)
         HELPMSG                                                    //~va3eI~
 "  H         :print unicode as line header.\n",                    //~va3eI~
 "  H         :各行に最初にユニコードのヘキサ\x95\\記を出力。\n");  //~va3kR~
+        HELPMSG                                                    //~vaa0M~
+"  X         :print utf8 code hex notation.\n",                    //~vaa0M~
+"  X         :utf8コードのヘキサ\x95\\記を出力。\n");              //~vaa0M~
+        HELPMSG                                                    //~vaa0I~
+"  U         :translate hex-utf8 to unicode.\n",                   //~vaa0I~
+"  U         :utf8ヘキサ\x95\\記をユニコードに変換。\n");          //+vaa0R~
         HELPMSG
-"ex)%s 00-100  ; %s  00-100 2000-2fff 32r ; %s 3000-3800 16H",     //~va3eR~
-"例)%s 00-100  ; %s  00-100 2000-2fff 32r ; %s 3000-3800 16H",     //~va3eR~
-				Spgm,Spgm,Spgm);                                   //~va3eR~
+"ex)%s 00-100  ; %s  00-100 2000-2fff 32r ; %s 3000-3800 16H\n",     //~va3eR~//+vaa0R~
+"例)%s 00-100  ; %s  00-100 2000-2fff 32r ; %s 3000-3800 16H\n",     //~va3eR~//+vaa0R~
+                Spgm,Spgm,Spgm);                                   //~va3eR~//~vaa0R~
+        HELPMSG                                                    //~vaa0I~
+"   %s 3040 X ; %s e38182 U",                                      //~vaa0R~
+"   %s 3040 X ; %s e38182 U",                                      //~vaa0R~
+                Spgm,Spgm);                                        //~vaa0R~
 	return;
 }//help

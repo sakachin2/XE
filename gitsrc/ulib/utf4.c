@@ -1,5 +1,6 @@
-//*CID://+v6X5R~:                             update#=  229;       //~v6X5R~
+//*CID://+v70iR~:                             update#=  237;       //~v6X5R~//~v70iR~
 //*********************************************************************//~v62XI~
+//v70i:200716 Ucs.java' wcwidth is proper than adjsbcs             //~v70iI~
 //v6X5:180818 (LNX:xe)column shring COMB2SCM(036f+0390) even SPLIT mode,//~v6X5I~
 //v6X3:180816 Hangul 1160-11ff is not combining(Category:Lo:Letter,Other) but combined actualy(u1109+u1161), On W32 Suctbj adjust as DBCS if ISDBCS_J()//~v6X3I~
 //v6X0:180813 combining require 2 cell when split such as u309a    //~v6X0I~
@@ -896,7 +897,7 @@ int mk_wcwidth(int Popt,UWUCS ucs)                                 //~v6WnI~
       (ucs >= 0xffe0 && ucs <= 0xffe6) ||
       (ucs >= 0x20000 && ucs <= 0x2fffd) ||
       (ucs >= 0x30000 && ucs <= 0x3fffd)));
-//    UTRACEP("%s:rc=%x,ucs=%06x\n",UTT,rc,ucs);                     //~v6WqI~//+v6X5R~
+//    UTRACEP("%s:rc=%x,ucs=%06x\n",UTT,rc,ucs);                     //~v6WqI~//~v6X5R~
     return rc;                                                     //~v6WqI~
 }
 #endif
@@ -2183,17 +2184,25 @@ int mk_wcwidth_adjsbcs(UWUCS ucs)                                  //~v6BjI~
 // !!! if updated , update also Axe/Ucs.java !!!                   //~v6c5I~
     static const struct interval Sdbcstb[] = {                     //~v6c5R~
          { 0x2e80, 0x2eff }  //128:CJK Radicals Supplement         //~v6c5R~
+#ifdef AAA //TODO test   private only                              //~v70iI~
         ,{ 0x2f00, 0x2fdf }  //224:Kangxi Radicals                 //~v6c5R~
         ,{ 0x3400, 0x4dbf }  //6112:CJK Unified Ideographs Extensions//~v6c5R~
         ,{ 0xa000, 0xa48f }  //1168:Yi Syllables                   //~v6c5R~
         ,{ 0xa490, 0xa4cf }  //64:Yi Radicals                      //~v6c5I~
         ,{ 0xac00, 0xd7af }  //11184:Hangle syllables              //~v6k2I~
+#endif                                                             //~v70iI~
         ,{ 0xe000, 0xf8ff}   //6400:private                        //~v6c5I~
         };                                                         //~v6c5R~
 	if (Gulibutfmode & GULIBUTF_JAVAWCWIDTH)//char width(sbcs or dbcs) determined not by mk_wcwidth() but by Java wcwidth()//~v6c5I~
     {                                                              //~v6c5I~
+//  	int ww=wcwidth(ucs);                    //TODO test        //~v6X5R~
+//      UTRACEP("%s:ucs=x%4x,ww=%d\n",UTT,ucs,ww);	//TODO test    //~v6X5R~
     	if (bisearch(ucs,Sdbcstb,sizeof(Sdbcstb) / sizeof(struct interval) - 1))//~v6c5R~
+        {                                                          //+v70iI~
+			UTRACEP("%s:dbcs ucs=x%4x\n",UTT,ucs);	//TODO test    //+v70iI~
         	return 2;                                              //~v6c5R~
+        }                                                          //+v70iI~
+		UTRACEP("%s:sbcs ucs=x%4x\n",UTT,ucs);	//TODO test        //+v70iI~
     	return 1;                                                  //~v6c5I~
     }                                                              //~v6c5I~
 //*copy from mk_wcwidth, compining and unprintable will be chked after by Java wcwidth()//~v6c5I~

@@ -1,6 +1,8 @@
-//*CID://+v6S1R~:                                   update#= 1000; //~v6M4R~//+v6S1R~
+//*CID://+v702R~:                                   update#= 1007; //~v702R~
 //***********************************************************************
-//v6S1:180129 (Ubuntu 17.10:gcc7.2)Lnx warning iswprint is not defined(wctype.h required)//+v6S1I~
+//v70d:200625 setenv for icu should be append mode                 //~v70dI~
+//v702:200615 ARM compiler warning                                 //~v702I~
+//v6S1:180129 (Ubuntu 17.10:gcc7.2)Lnx warning iswprint is not defined(wctype.h required)//~v6S1I~
 //v6M5:170825 for xcv,xprint;create EBC cfg by uconv output        //~v6M5I~
 //v6M4:170825 try get icu version by uconv cmd if ICU_DLL_SUFFIX,ICU_API_SUFFIX both are not specified//~v6M4I~
 //v6M3:170824 (Lnx) putenv to LD_LIRARY_PATH is not effective(loader chk it at pgm startup and ignore putenv after startup)//~v6M3I~
@@ -1244,7 +1246,8 @@ char *addarmdatadir(PUCVEXTCFG Ppcfg,char *Ppenvicudata)           //~v6bqI~
 {                                                                  //~v6bqI~
 	int len1=0,len2,len,msgsw,rc,opt;                              //~v6bqR~
     ULONG newattr;                                                 //~v6bqI~
-    char *pswfile,picufolder[_MAX_PATH],pswfilefpath[_MAX_PATH];   //~v6bqI~
+//  char *pswfile,picufolder[_MAX_PATH],pswfilefpath[_MAX_PATH];   //~v6bqI~//~v702R~
+    char          picufolder[_MAX_PATH],pswfilefpath[_MAX_PATH];   //~v702I~
     char copytgt[_MAX_PATH],copysrc[_MAX_PATH];                    //~v6bqR~
     char *newenv,*psuffix,*pc;                                     //~v6bqR~
     char buff[_MAX_PATH+128];                                      //~v6bqI~
@@ -1273,6 +1276,7 @@ char *addarmdatadir(PUCVEXTCFG Ppcfg,char *Ppenvicudata)           //~v6bqI~
     newenv=getenv(ICU_DATAENVNAME);    //putenv should not free source string, setenv(not in Windows) copyed to env//~v6bqI~
     psuffix=Ppcfg->UCECapisuffix;                                  //~v6bqI~
     UTRACEP("addarmdatadir newenv=%s,apisuffix=%s\n",newenv,psuffix);//~v6bqR~
+//  listenv();//TODO test                                          //~v70dR~
     if (*psuffix=='_')                                             //~v6bqI~
     	psuffix++;                                                 //~v6bqI~
     if (!*psuffix)                                                 //~v6bqI~
@@ -1323,19 +1327,27 @@ int setdatadir(PUCVEXTCFG Ppcfg)                                   //~v6bpI~
 	int rc=0;                                                      //~v6bpI~
     char *dir;                                                     //~v6bpI~
 #ifdef TEST_GETDIR                                                 //~v6c3I~
-    char *getdir=0;                                                //~v6c3I~
+//  char *getdir=0;                                                //~v6c3I~//~v702R~
 #ifdef ARM                                                         //~v6c3I~
+#ifdef XXE                                                         //+v702I~
+    char *getdir;                                                  //+v702M~
+#endif                                                             //+v702I~
     UErrorCode uerrc=U_ZERO_ERROR;                                 //~v6c3I~
     UDataFileAccess access=UDATA_FILES_FIRST;	//0:efault,android may changed it to UDATA_ONLY_PACKAGES(1)//~v6c3R~
 #endif                                                             //~v6c3I~
 #endif                                                             //~v6c3I~
 //******************                                               //~v6bpI~
 #ifdef TEST_GETDIR                                                 //~v6c3I~
+#ifdef ARM                                                         //~v702I~
+#ifdef XXE                                                         //~v702I~
+    getdir=0;                                                      //~v702I~
 	if (Spfuncgetdatadir)                                          //~v6c3I~
     {                                                              //~v6c3I~
-        getdir=getdir;                                             //~v6n0I~
+//      getdir=getdir;                                             //~v6n0I~//~v702R~
 	    getdir=(*Spfuncgetdatadir)();                              //~v6c3I~
     }                                                              //~v6c3I~
+#endif                                                             //~v702I~
+#endif                                                             //~v702I~
 #ifdef ARM                                                         //~v6c3I~
 	if (Spfuncfileaccess)                                          //~v6c3I~
     {                                                              //~v6c3I~
@@ -1372,10 +1384,12 @@ int setdatadir(PUCVEXTCFG Ppcfg)                                   //~v6bpI~
 #ifdef TEST_GETDIR                                                 //~v6c3I~
 			if (Spfuncgetdatadir)                                  //~v6c3I~
     		{                                                      //~v6c3I~
-	    		getdir=(*Spfuncgetdatadir)();                      //~v6c3I~
+//      		getdir=(*Spfuncgetdatadir)();                      //~v6c3I~//~v702R~
+        		UTRACEP("%s:getdir=%p\n",UTT,(*Spfuncgetdatadir)());//~v702I~
     		}                                                      //~v6c3I~
 #endif                                                             //~v6c3I~
         }                                                          //~v6bpI~
+//  listenv();	//TODO test                                        //~v70dR~
     return rc;                                                     //~v6bpI~
 }//setdatadir                                                      //~v6bpI~
 //*************************************************************************
@@ -1910,6 +1924,7 @@ int ucvext_loaddll_icudata(int Popt,char *Pdllname,char *Penvvar,ULPTR *Pphandle
     char fpath[_MAX_PATH]={0};                                     //~v6M2R~
     int opt=0;                                                     //~v6M2I~
 //**********************************                               //~v6M2I~
+    UTRACEP("%s:envvar=%s,dllname=%s\n",Penvvar,Pdllname);         //~v70dI~
     pc=Penvvar;                                                    //~v6M2I~
     for (;*pc;pc+=len+1)                                           //~v6M2I~
     {                                                              //~v6M2I~
@@ -1938,6 +1953,7 @@ int ucvext_loaddll_icudata(int Popt,char *Pdllname,char *Penvvar,ULPTR *Pphandle
         if (pc2)                                                   //~v6M2I~
 			*pc2=ENV_SEPC;                                         //~v6M2I~
     }                                                              //~v6M2I~
+//  listenv();//TODO test                                          //~v70dR~
     if (rc)                                                        //~v6M2R~
     {                                                              //~v6M2I~
   	    uerrmsg("ICU library %s not found on ICU_DATA path:%s",0,  //~v6M2I~
@@ -1951,6 +1967,7 @@ int ucvext_loaddll_icudata(int Popt,char *Pdllname,char *Penvvar,ULPTR *Pphandle
         opt|=UPLD_DELEMSG|UPLD_SETICUDATAENV;         //ugeterrmsg to delete previous uerrmsg//~v6M2R~
 		rc=uproc_loaddllpath(opt,fpath,0,0,Pphandle);              //~v6M2R~
     }                                                              //~v6M2I~
+//  listenv();//TODO test                                          //~v70dR~
     UTRACEP("%s:rc=%d,so=%s,paths=%s,fpath=%s\n",UTT,rc,Pdllname,Penvvar,fpath);//~v6M2R~
     return rc;                                                     //~v6M2I~
 }//ucvext_loaddll_icudata                                          //~v6M2I~
@@ -2250,8 +2267,8 @@ int ucvext_icuenumcvname(int Popt,char *Pdllversion,char* Pprocversion)
 char *ucvext_icuuerrname(UErrorCode Puerr)
 {
 	char *perrmsg;
-//static char Serrnum[8];                                          //+v6S1R~
-static char Serrnum[16];                                           //+v6S1I~
+//static char Serrnum[8];                                          //~v6S1R~
+static char Serrnum[16];                                           //~v6S1I~
 //***********************
 	if (Spfuncuerrname)
     	perrmsg=(*Spfuncuerrname)(Puerr);
@@ -2321,10 +2338,12 @@ int ucvext_getstdcharset(int Popt,char *Pcharset)                  //~v6f9R~
     char *pzhtwcs[]={"Big5-HKSCS","Big5",0};//when on green console//~v6f9R~
     char *pothercs[]={"ISO-8859-1",0};//when on green console      //~v6f9R~
     char **ppc=0;                                                  //~v6f9I~
+#ifndef ARM                                                        //~v702I~
     char *pc;                                                      //~v6f9I~//~v6fbR~
+#endif                                                             //~v702I~
     int rc;                                                  //~v6f9R~//~v6fbR~
 #ifdef ARM                                                         //~v6fbI~
-    char charset[MAXLOCALESZ];                                     //~v6fbR~
+//  char charset[MAXLOCALESZ];                                     //~v6fbR~//~v702R~
 #endif                                                             //~v6fbI~
     char locale[MAXLOCALESZ];                                      //~v6fbI~
 //************************                                         //~v6f9I~

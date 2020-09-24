@@ -1,8 +1,9 @@
-//*CID://+vb3kR~:                             update#=  605;       //+vb3kR~
+//*CID://+vbraR~:                             update#=  611;       //~vbraR~
 //*********************************************************************
 //* xeutf.h
 //*********************************************************************
-//vb3k:160608 (LNX:BUG)dir list display 2 sbcs for unprintable ucs //+vb3kI~
+//vbra:200730 (ARM)ARM input is always utf8, delete A_u and UTF SWKBD//~vbraI~
+//vb3k:160608 (LNX:BUG)dir list display 2 sbcs for unprintable ucs //~vb3kI~
 //vb2k:160130 membername on dirlist is FNLC but edit panelfile name is FNU8.//~vb2kI~
 //            dirsetlocalename call dirsetddfmtname(DSDFO_L2DD) if not all utf8,//~vb2kI~
 //            fileutf8setfilenamecodetype call xeutf_getlocalepathname and GUM_MIXWORDMODE allow UTF8/LC mixed in a pathname.//~vb2kI~
@@ -88,113 +89,113 @@
 //*********************************************************************            ]//~v901R~
 //*********************************************************************            ]//~v901R~
 #ifdef UTF8SUPP                                                    //~v901R~
-//*********************************************************************            ]//~v901R~
-#ifdef  GLOBAL_XEUTF                                               //~v90rR~
-  #define XEUTFGBL_EXT                                             //~v90rI~
-#else                                                              //~v90rI~
-  #define XEUTFGBL_EXT extern                                      //~v90rI~
-#endif                                                             //~v90rI~
-    XEUTFGBL_EXT  CHOFTYPE Gwkchoftype[_MAX_PATH*2+1];             //~v90rR~
-	XEUTFGBL_EXT  int     Gutfmode;			//utf flag from Gdbcschk_flag//~v917I~
-    #define XEUTF8MODE() (Gutfmode)                                //~v917M~
-                                                                   //~v917I~
-	XEUTFGBL_EXT  int     Gutfmode2;	//utf flag from Gdbcschk_flag//~v917I~
-    #define  GUM2_KBDU2L			0x0001      //kbd input convert utf8 to locale//~v91sR~
-    #define  GUM2_KBDL2U			0x0002      //kbd input convert locale to utf8//~v91sR~
-	#define  GUM2_ALLFILEUTF8CLP  	0x0004   //all file by cmdline parm//~v917I~
-	#define  GUM2_MODEINPUTL2UCLP   0x0008   //convert input locale to utf by cmdline option//~v917I~
-//**                                                               //~v90rI~
-                                                                   //~v90nI~
-    #define XEUTF_VARNAME(notutf8name,utf8name)  utf8name          //~v904R~
-    #define XEUTF_DDCWORKSZ(sz)   ((sz)*UTF8_MAXCHARSZ*(1+1+CHOFSZ)+CHOFSZ) //data+dbcs+chof area size//~v904R~
-    #define XEUTF_DDCWORKDBCS(pwork,sz)   (pwork+(sz)*UTF8_MAXCHARSZ)//~v904I~
-    #define XEUTF_DDCWORKCHOF(pwork,sz)   (PCHOFTYPE)(ULONG)(pwork+(sz)*UTF8_MAXCHARSZ*2)//~v904I~
-    #define XEUTF_UTCCAST(name)    (PUTCHARS)(ULONG)name           //~v901R~
-                                                                   //~v901I~
-    #define XEUTF_DEFPARMNAME       parm_temp                      //~v901R~
-    #define XEUTF_PARMDEF           UTC_SPDEFI(XEUTF_DEFPARMNAME)  //~v901R~
-    #define XEUTF_PARMDEF_          XEUTF_PARMDEF;                 //~v901R~
-    #define XEUTF_PARMRD_(type_name)  type_name;	   //redefine for UTCPARMD2//~v901R~
-    #define XEUTF_PARMRDSET_(setstmt) setstmt;                     //~v901R~
-    #define XEUTF_PARMRDSETD_(pc,putch) pc=putch->data;            //~v901R~
-                                                                   //~v901I~
-    #define XEUTF_UTCD(type,name)        UTC_SDEF(name)            //~v901I~
-                                                                   //~v901I~
-    #define XEUTF_PUTCD(type,name)       UTC_SPDEFI(name)          //~v901R~
-    #define XEUTF_PUTCDTL(name)          UTC_SPDEFI(name)          //~v90nI~
-    #define XEUTF_PUTCDT(type,name)      UTC_SPDEFI(name);type     //~v901R~
-    #define XEUTF_PUTCDTC(type,name)     UTC_SPDEFI(name)          //~v901I~
-    #define XEUTF_PUTCDM(type,name)     ;UTC_SPDEFI(name);type     //~v901I~
-    #define XEUTF_PUTCDMC(type,name)    ;UTC_SPDEFI(name)          //~v901I~
-    #define XEUTF_PUTCDL(name)          ;UTC_SPDEFI(name)          //~v901R~
-    #define XEUTF_PUTCDLIV(name,iv)     ;UTC_SPDEFI(name)       //,*pc=iv//~v901R~
-                                                                   //~v901I~
-    #define XEUTF_UTCDEF(type,name,sz) UCHAR name##_data[(sz)*UTF8_MAXCHARSZ];\
-                            USHORT name##_chof[((sz)+1)*CHOFSZ];\
-                            UTCHARS name##_utch=UTCVAL(name##_data,name##_chof,0);\
-                            PUTCHARS name=&name##_utch             //~v901R~
-    #define XEUTF_UTCDEFL(name,sz)  ;UCHAR name##_data[(sz)*UTF8_MAXCHARSZ];\
-                            USHORT name##_chof[((sz)+1)*CHOFSZ];\
-                            UTCHARS name##_utch=UTCVAL(name##_data,name##_chof,0);\
-                            PUTCHARS name=&name##_utch             //~v904I~
-    #define XEUTF_UTCDEF_UTCDATA(name) name##_data                 //~v901R~
-                                                                   //~v901I~
-//param setting                                                    //~v901I~
-    #define XEUTF_UTCparmP(Psrc,Ppos)  \
-			(UTCsetP(XEUTF_DEFPARMNAME,Psrc,Ppos)) //set cpos temporary//~v901I~
-    #define XEUTF_UTCparmPL(Psrc,Ppos,Plenc)  \
-			(UTCsetPL(XEUTF_DEFPARMNAME,Psrc,Ppos,Plenc)) //set cpos temporary//~v904I~
-    #define XEUTF_UTCparmMP(Psrc,Ppos)  \
-			(UTCsetMP(XEUTF_DEFPARMNAME,Psrc,Ppos)) //set cpos temporary//~v904I~
-    #define XEUTF_UTCparmD(Psrc)  /*define default parm by XEUTF_PUCTDI_DEFPARM0 */\
-			(UTCsetD(XEUTF_DEFPARMNAME,Psrc)) //set cpos temporary //~v901R~
-    #define XEUTF_UTCparmAD(Psrc)  /*define default parm by XEUTF_PUCTDI_DEFPARM0 */\
-			(UTCsetDCL(XEUTF_DEFPARMNAME,Psrc,UTCCHOFASCII,0)) //set cpos temporary//~v904R~
-    #define XEUTF_UTCparmADL(Psrc,len)  /*define default parm by XEUTF_PUCTDI_DEFPARM0 */\
-			(UTCsetDCL(XEUTF_DEFPARMNAME,Psrc,UTCCHOFASCII,len))   //~v904R~
-    #define XEUTF_UTCparmUDL(Psrc,lenutf) \
-			(UTCsetUDCL(XEUTF_DEFPARMNAME,Psrc,Gwkchoftype,lenutf))//~v90rR~
-                                                                   //~v90rI~
-    #define XEUTF_UTCparmLCUDL(Psrc,lenutf) \
-			xeutf_lcudl(0,XEUTF_DEFPARMNAME,Psrc,Gwkchoftype,lenutf)//~v90rR~
-	PUTCHARS xeutf_lcudl(int Popt,PUTCHARS Pputc,char *Pdata,PCHOFTYPE Ppchof,int Plenutf);//~v90rR~
-                                                                   //~v90rI~
-    #define XEUTF_UTCparmDC(Pdata,Pchof)  /*set data/chof/utflen*/\
-			(UTCsetDC(XEUTF_DEFPARMNAME,Pdata,Pchof)) //set cpos temporary//~v901R~
-    #define XEUTF_UTCparmDCL(Pdata,Pchof,Pwidth)  /*set data/chof/utflen*/\
-			(UTCsetDCL(XEUTF_DEFPARMNAME,Pdata,Pchof,Pwidth)) //set cpos temporary//~v901I~
-    #define XEUTF_UTCparmULHdataP(Pplh,pos)\
-			(UTCsetP(XEUTF_DEFPARMNAME,PLHDATAP(Pplh),pos)) //set cpos temporary//~v901I~
-//init                                                             //~v901I~
-    #define XEUTF_UTCINIT_(Pputc,Pdata,Pchof,Pwidth) \
-			UTCsetDCL(Pputc,Pdata,Pchof,Pwidth);                   //~v901R~
-    #define XEUTF_UTCINIT0(putc)              putc->lenc=putc->cpos=0 /*reset before 1st UTCmemcpy*///~v904R~
-    #define XEUTF_UTCINIT0C(putc)             XEUTF_UTCINIT0(putc) //~v904I~
-    #define XEUTF_UTCINIT0_(putc)             XEUTF_UTCINIT0(putc);//~v904I~
-    #define XEUTF_UTCSETP(pc,putc,src,pos)    UTCsetP(putc,src,pos)//~v904I~
-    #define XEUTF_SET_USDDATA_LENC_(psd,len)   PSDDATAP(psd)->lenc=len;//~v901R~
-	#define XEUTF_REPEXPAND_(Pplh,Plenc)   xeutf_repexpand(Pplh,Plenc);//~v904I~
-	#define XEUTF_PARMU2L_(Pplh,Pputc,Pplenutf) \
-         if (!PLHUTF8MODE(Pplh) && UTCUTF8MODE(Pputc)) /*set utf8 data to locale plh*/\
-         	*(Pplenutf)=UTCLENUTFCHOFFROMCPOS(Pputc),UTCCHOF(Pputc)=0//~v91gR~
-	#define XEUTF_KBDISL2U() \
-					(   (!UTF8MODEENV()) \
-					 && (   (Gutfmode2 & GUM2_KBDL2U) \
-                        ) \
-                    )                                              //~v91sI~
-	#define XEUTF_KBDISU2L() \
-					(   ( UTF8MODEENV())  \
-					 && (   (Gutfmode2 & GUM2_KBDU2L)  \
-                        ) \
-                    )                                              //~v91sI~
-	#define XEUTF_KBDISUTF8() \
-					(    UTF8MODEENV() \
-					 && !XEUTF_KBDISU2L() \
-                    )                                              //~v91sI~
-	#define XEUTF_KBDISLOCALE() \
-					(   !UTF8MODEENV() \
-					 && !XEUTF_KBDISL2U() \
-                    )                                              //~v91sI~
+////*********************************************************************            ]//~v901R~//~vbraR~
+//#ifdef  GLOBAL_XEUTF                                               //~v90rR~//~vbraR~
+//  #define XEUTFGBL_EXT                                             //~v90rI~//~vbraR~
+//#else                                                              //~v90rI~//~vbraR~
+//  #define XEUTFGBL_EXT extern                                      //~v90rI~//~vbraR~
+//#endif                                                             //~v90rI~//~vbraR~
+//    XEUTFGBL_EXT  CHOFTYPE Gwkchoftype[_MAX_PATH*2+1];             //~v90rR~//~vbraR~
+//    XEUTFGBL_EXT  int     Gutfmode;         //utf flag from Gdbcschk_flag//~v917I~//~vbraR~
+//    #define XEUTF8MODE() (Gutfmode)                                //~v917M~//~vbraR~
+//                                                                   //~v917I~//~vbraR~
+//    XEUTFGBL_EXT  int     Gutfmode2;    //utf flag from Gdbcschk_flag//~v917I~//~vbraR~
+////  #define  GUM2_KBDU2L            0x0001      //kbd input convert utf8 to locale//~v91sR~//~vbraR~
+////  #define  GUM2_KBDL2U            0x0002      //kbd input convert locale to utf8//~v91sR~//~vbraR~
+//    #define  GUM2_ALLFILEUTF8CLP    0x0004   //all file by cmdline parm//~v917I~//~vbraR~
+//    #define  GUM2_MODEINPUTL2UCLP   0x0008   //convert input locale to utf by cmdline option//~v917I~//~vbraR~
+////**                                                               //~v90rI~//~vbraR~
+//                                                                   //~v90nI~//~vbraR~
+//    #define XEUTF_VARNAME(notutf8name,utf8name)  utf8name          //~v904R~//~vbraR~
+//    #define XEUTF_DDCWORKSZ(sz)   ((sz)*UTF8_MAXCHARSZ*(1+1+CHOFSZ)+CHOFSZ) //data+dbcs+chof area size//~v904R~//~vbraR~
+//    #define XEUTF_DDCWORKDBCS(pwork,sz)   (pwork+(sz)*UTF8_MAXCHARSZ)//~v904I~//~vbraR~
+//    #define XEUTF_DDCWORKCHOF(pwork,sz)   (PCHOFTYPE)(ULONG)(pwork+(sz)*UTF8_MAXCHARSZ*2)//~v904I~//~vbraR~
+//    #define XEUTF_UTCCAST(name)    (PUTCHARS)(ULONG)name           //~v901R~//~vbraR~
+//                                                                   //~v901I~//~vbraR~
+//    #define XEUTF_DEFPARMNAME       parm_temp                      //~v901R~//~vbraR~
+//    #define XEUTF_PARMDEF           UTC_SPDEFI(XEUTF_DEFPARMNAME)  //~v901R~//~vbraR~
+//    #define XEUTF_PARMDEF_          XEUTF_PARMDEF;                 //~v901R~//~vbraR~
+//    #define XEUTF_PARMRD_(type_name)  type_name;       //redefine for UTCPARMD2//~v901R~//~vbraR~
+//    #define XEUTF_PARMRDSET_(setstmt) setstmt;                     //~v901R~//~vbraR~
+//    #define XEUTF_PARMRDSETD_(pc,putch) pc=putch->data;            //~v901R~//~vbraR~
+//                                                                   //~v901I~//~vbraR~
+//    #define XEUTF_UTCD(type,name)        UTC_SDEF(name)            //~v901I~//~vbraR~
+//                                                                   //~v901I~//~vbraR~
+//    #define XEUTF_PUTCD(type,name)       UTC_SPDEFI(name)          //~v901R~//~vbraR~
+//    #define XEUTF_PUTCDTL(name)          UTC_SPDEFI(name)          //~v90nI~//~vbraR~
+//    #define XEUTF_PUTCDT(type,name)      UTC_SPDEFI(name);type     //~v901R~//~vbraR~
+//    #define XEUTF_PUTCDTC(type,name)     UTC_SPDEFI(name)          //~v901I~//~vbraR~
+//    #define XEUTF_PUTCDM(type,name)     ;UTC_SPDEFI(name);type     //~v901I~//~vbraR~
+//    #define XEUTF_PUTCDMC(type,name)    ;UTC_SPDEFI(name)          //~v901I~//~vbraR~
+//    #define XEUTF_PUTCDL(name)          ;UTC_SPDEFI(name)          //~v901R~//~vbraR~
+//    #define XEUTF_PUTCDLIV(name,iv)     ;UTC_SPDEFI(name)       //,*pc=iv//~v901R~//~vbraR~
+//                                                                   //~v901I~//~vbraR~
+//    #define XEUTF_UTCDEF(type,name,sz) UCHAR name##_data[(sz)*UTF8_MAXCHARSZ];//~vbraR~
+//                            USHORT name##_chof[((sz)+1)*CHOFSZ]; //~vbraR~
+//                            UTCHARS name##_utch=UTCVAL(name##_data,name##_chof,0);//~vbraR~
+//                            PUTCHARS name=&name##_utch             //~v901R~//~vbraR~
+//    #define XEUTF_UTCDEFL(name,sz)  ;UCHAR name##_data[(sz)*UTF8_MAXCHARSZ];//~vbraR~
+//                            USHORT name##_chof[((sz)+1)*CHOFSZ]; //~vbraR~
+//                            UTCHARS name##_utch=UTCVAL(name##_data,name##_chof,0);//~vbraR~
+//                            PUTCHARS name=&name##_utch             //~v904I~//~vbraR~
+//    #define XEUTF_UTCDEF_UTCDATA(name) name##_data                 //~v901R~//~vbraR~
+//                                                                   //~v901I~//~vbraR~
+////param setting                                                    //~v901I~//~vbraR~
+//    #define XEUTF_UTCparmP(Psrc,Ppos)                            //~vbraR~
+//            (UTCsetP(XEUTF_DEFPARMNAME,Psrc,Ppos)) //set cpos temporary//~v901I~//~vbraR~
+//    #define XEUTF_UTCparmPL(Psrc,Ppos,Plenc)                     //~vbraR~
+//            (UTCsetPL(XEUTF_DEFPARMNAME,Psrc,Ppos,Plenc)) //set cpos temporary//~v904I~//~vbraR~
+//    #define XEUTF_UTCparmMP(Psrc,Ppos)                           //~vbraR~
+//            (UTCsetMP(XEUTF_DEFPARMNAME,Psrc,Ppos)) //set cpos temporary//~v904I~//~vbraR~
+//    #define XEUTF_UTCparmD(Psrc)  /*define default parm by XEUTF_PUCTDI_DEFPARM0 *///~vbraR~
+//            (UTCsetD(XEUTF_DEFPARMNAME,Psrc)) //set cpos temporary //~v901R~//~vbraR~
+//    #define XEUTF_UTCparmAD(Psrc)  /*define default parm by XEUTF_PUCTDI_DEFPARM0 *///~vbraR~
+//            (UTCsetDCL(XEUTF_DEFPARMNAME,Psrc,UTCCHOFASCII,0)) //set cpos temporary//~v904R~//~vbraR~
+//    #define XEUTF_UTCparmADL(Psrc,len)  /*define default parm by XEUTF_PUCTDI_DEFPARM0 *///~vbraR~
+//            (UTCsetDCL(XEUTF_DEFPARMNAME,Psrc,UTCCHOFASCII,len))   //~v904R~//~vbraR~
+//    #define XEUTF_UTCparmUDL(Psrc,lenutf)                        //~vbraR~
+//            (UTCsetUDCL(XEUTF_DEFPARMNAME,Psrc,Gwkchoftype,lenutf))//~v90rR~//~vbraR~
+//                                                                   //~v90rI~//~vbraR~
+//    #define XEUTF_UTCparmLCUDL(Psrc,lenutf)                      //~vbraR~
+//            xeutf_lcudl(0,XEUTF_DEFPARMNAME,Psrc,Gwkchoftype,lenutf)//~v90rR~//~vbraR~
+//    PUTCHARS xeutf_lcudl(int Popt,PUTCHARS Pputc,char *Pdata,PCHOFTYPE Ppchof,int Plenutf);//~v90rR~//~vbraR~
+//                                                                   //~v90rI~//~vbraR~
+//    #define XEUTF_UTCparmDC(Pdata,Pchof)  /*set data/chof/utflen*///~vbraR~
+//            (UTCsetDC(XEUTF_DEFPARMNAME,Pdata,Pchof)) //set cpos temporary//~v901R~//~vbraR~
+//    #define XEUTF_UTCparmDCL(Pdata,Pchof,Pwidth)  /*set data/chof/utflen*///~vbraR~
+//            (UTCsetDCL(XEUTF_DEFPARMNAME,Pdata,Pchof,Pwidth)) //set cpos temporary//~v901I~//~vbraR~
+//    #define XEUTF_UTCparmULHdataP(Pplh,pos)                      //+vbraR~
+//            (UTCsetP(XEUTF_DEFPARMNAME,PLHDATAP(Pplh),pos)) //set cpos temporary//~v901I~//~vbraR~
+////init                                                             //~v901I~//~vbraR~
+//    #define XEUTF_UTCINIT_(Pputc,Pdata,Pchof,Pwidth)             //~vbraR~
+//            UTCsetDCL(Pputc,Pdata,Pchof,Pwidth);                   //~v901R~//~vbraR~
+//    #define XEUTF_UTCINIT0(putc)              putc->lenc=putc->cpos=0 /*reset before 1st UTCmemcpy*///~v904R~//~vbraR~
+//    #define XEUTF_UTCINIT0C(putc)             XEUTF_UTCINIT0(putc) //~v904I~//~vbraR~
+//    #define XEUTF_UTCINIT0_(putc)             XEUTF_UTCINIT0(putc);//~v904I~//~vbraR~
+//    #define XEUTF_UTCSETP(pc,putc,src,pos)    UTCsetP(putc,src,pos)//~v904I~//~vbraR~
+//    #define XEUTF_SET_USDDATA_LENC_(psd,len)   PSDDATAP(psd)->lenc=len;//~v901R~//~vbraR~
+//    #define XEUTF_REPEXPAND_(Pplh,Plenc)   xeutf_repexpand(Pplh,Plenc);//~v904I~//~vbraR~
+//    #define XEUTF_PARMU2L_(Pplh,Pputc,Pplenutf)                  //~vbraR~
+//         if (!PLHUTF8MODE(Pplh) && UTCUTF8MODE(Pputc)) /*set utf8 data to locale plh*///~vbraR~
+//            *(Pplenutf)=UTCLENUTFCHOFFROMCPOS(Pputc),UTCCHOF(Pputc)=0//~v91gR~//~vbraR~
+//    #define XEUTF_KBDISL2U()                                     //~vbraR~
+//                    (   (!UTF8MODEENV())                         //~vbraR~
+//                     && (   (Gutfmode2 & GUM2_KBDL2U)            //~vbraR~
+//                        )                                        //~vbraR~
+//                    )                                              //~v91sI~//~vbraR~
+//    #define XEUTF_KBDISU2L()                                     //~vbraR~
+//                    (   ( UTF8MODEENV())                         //~vbraR~
+//                     && (   (Gutfmode2 & GUM2_KBDU2L)            //~vbraR~
+//                        )                                        //~vbraR~
+//                    )                                              //~v91sI~//~vbraR~
+//    #define XEUTF_KBDISUTF8()                                    //~vbraR~
+//                    (    UTF8MODEENV()                           //~vbraR~
+//                     && !XEUTF_KBDISU2L()                        //~vbraR~
+//                    )                                              //~v91sI~//~vbraR~
+//    #define XEUTF_KBDISLOCALE()                                  //~vbraR~
+//                    (   !UTF8MODEENV()                           //~vbraR~
+//                     && !XEUTF_KBDISL2U()                        //~vbraR~
+//                    )                                              //~v91sI~//~vbraR~
 //*********************************************************************//~v901R~
 #else //!UTF8                                                      //~v901R~
 //*********************************************************************//~v901R~
@@ -371,10 +372,10 @@ char *xeutf_getutf8str(int Popt,char *Pstr,int Pdatalen,char *Poutbuff,PCHOFTYPE
 #endif                                                             //~va00I~
 #define XEUTF_ERRREPCH   '.'      //should be <0x30 to avoid matching with GB18030 DBCS byte//~va1ER~
 #define XEUTF_ERRREPCH_F2LFILE    '?'      //f2l err replace on plh//~va00I~
-//#define XEUTF_ERRREPCH_NPUCS      ':'      //f2l err replace on plh//~va20I~//+vb3kR~
-//#define XEUTF_ERRREPCH_NPUCSW     ';'      //width is not of wcwidth(for test)//~va20I~//+vb3kR~
-#define XEUTF_ERRREPCH_NPUCS     UDBCSCHK_ERRREPCH_NPUCS   //   ':'      //f2l err replace on plh//+vb3kI~
-#define XEUTF_ERRREPCH_NPUCSW    UDBCSCHK_ERRREPCH_NPUCSW  //   ';'      //width is not of wcwidth(for test)//+vb3kI~
+//#define XEUTF_ERRREPCH_NPUCS      ':'      //f2l err replace on plh//~va20I~//~vb3kR~
+//#define XEUTF_ERRREPCH_NPUCSW     ';'      //width is not of wcwidth(for test)//~va20I~//~vb3kR~
+#define XEUTF_ERRREPCH_NPUCS     UDBCSCHK_ERRREPCH_NPUCS   //   ':'      //f2l err replace on plh//~vb3kI~
+#define XEUTF_ERRREPCH_NPUCSW    UDBCSCHK_ERRREPCH_NPUCSW  //   ';'      //width is not of wcwidth(for test)//~vb3kI~
 #define XEUTF_DBCSCHSZ   2                 //dbcs size             //~va0wI~
 //*********************************************************************//~va00I~
 //int xeutf_getlocalepathname(int Popt,char *Pfpath,int Ppathlen,char *Poutbuff,char *Pcodetype,int Poutbuffsz,int *Ppoutlen);//~vauaR~

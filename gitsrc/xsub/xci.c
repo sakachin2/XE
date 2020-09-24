@@ -1,8 +1,9 @@
-//*CID://+vaa1R~:                            update#=  998;        //~vaa1R~
+//*CID://+vap0R~:                            update#=  999;        //+vap0R~
 //*************************************************************
 //*xci
 //* C source text indentation shift
 //*************************************************************
+//vap0:200616 Axe compiler warning;                                //+vap0I~
 //vaa1:160418 Lnx64 compiler warning                               //~vaa1I~
 //vaa0:160417 Lnx compiler warning                                 //~vaa0I~
 //va76:130622 compiler warning and err by ndk-r9                   //~va76I~
@@ -255,7 +256,7 @@ void parmprechk(int parmc,char *parmp[]);
 int opdchk(int Popdno,char **Ppopd);
 FILE *openoutfile(char **Pppfnmo,char *Prename);
 //int fmtmain();                                                   //~vaa1R~
-int fmtmain(INDWORK *Pindwk);                                      //+vaa1R~
+int fmtmain(INDWORK *Pindwk);                                      //~vaa1R~
 int help(int Popt);
 int fmtopdchk4(char *Popd);
 int opderr(char *Pparm);
@@ -1682,7 +1683,8 @@ UTRACEP("updateStmtNest DOWHILE\n");
 	case UCSNO_CATCH:
 UTRACEP("updateStmtNest UCSNO_CATCH nest=%d,stmttype=%d\n",nest,Pindwk->IDWstmttype[nest]);
         stmttype=Pindwk->IDWstmttype[nest];
-        if (stmttype==CST_TRY||CST_CATCH)
+//      if (stmttype==CST_TRY||CST_CATCH)                          //+vap0R~
+        if (stmttype==CST_TRY||stmttype==CST_CATCH)                //+vap0I~
         {
 			newind=resetEntry(0/*keep status*/,Pindwk,nest,CST_CATCH);
 			INDLEVEL_UP(nest);

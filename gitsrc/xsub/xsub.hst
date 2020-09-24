@@ -1,3 +1,10 @@
+//*********  20200923 v129N release   ****************
+//vap2:200921 xutf8 v1.3:dispaly utf8 by hex notation
+//            xutf8.c
+//vap1:200919 by xuerpchk
+//            xcfont.c
+//vap0:200616 Axe compiler warning;
+//            xci.c xdc.c
 //*********  20200517 v129M release   ****************
 //van5:200518 xfg 1.21:(Bug) xfg -exxx "" dir -->search current dir by fullpath of "".
 //van4:200516 xdig 1.13:/Cx parm for alternative of %, e.g $fp$ by /C$.

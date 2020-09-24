@@ -1,7 +1,8 @@
-//*CID://+vbi3R~:                             update#=  381;       //~vbi3R~
+//*CID://+vbr5R~:                             update#=  390;       //~vbr5R~
 //*************************************************************
 //*xefunc.c
 //************************************************************* //~v020I~
+//vbr5:200721 (ARM)logcat hung at utrace output([0x1a..) , it may be Esc[//~vbr5I~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg//~vbdsI~
 //vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
@@ -168,6 +169,7 @@
 #include <uparse.h>                                                //~v0b2R~
 #include <ustring.h>                                               //~v161I~
 #include <uedit.h>                                                 //~v55WI~
+#include <uedit2.h>                                                //+vbr5I~
 #include <ucalc2.h>                                                //~v560I~
 #include <utf.h>                                                   //~vawtI~
                                                                 //~5318I~
@@ -898,7 +900,8 @@ static int Sccfuncmsgctr=0;                                        //~v75zI~
 	int opt;                                                       //~va1rI~
 #endif                                                             //~va1rI~
 //*********************
-
+//  UTRACEP("xefunc.funccall keytype=%d,key=%s,UCWflg2=0x%x,keydata=%s,ut8=%s\n",Pkeytype,Pkey,Ppcw->UCWflag2,Ppcw->UCWkeydata,Ppcw->UCWkeydata_utf8str);//~vbi3R~//~vbr5R~
+    UTRACEP("xefunc.funccall keytype=%d,key=%s,UCWflg2=0x%x,keydata=%s,utf8=%s\n",Pkeytype,ucode2str(0,Pkey,0),Ppcw->UCWflag2,ucode2str(1,Ppcw->UCWkeydata,0),ucode2str(2,Ppcw->UCWkeydata_utf8str,0));//~vbr5R~
     if (Ppcw->UCWsplitid==Gscrcurclient)//not draw other client case//~v012R~
     {			//protect other client rcsr destroy             //~v012R~
 	Ppcw->UCWrcsrx	=Gcsrposx-Ppcw->UCWorgx;	//relative pos-x//~5128R~
@@ -1409,8 +1412,8 @@ static UCHAR Sspecialeditcmd[]=PGMID;                              //~v55cR~
     if (!cmdlen)                                                   //~v67DI~
     	return 0;                                                  //~v67DI~
   }                                                                //~v161I~
-	UTRACEP("func_cmd Ppcw=%p\n",Ppcw);                     //~v035R~//+vbi3R~
-	UTRACED("func_cmd",wkbuff,(int)cmdlen);                        //+vbi3I~
+	UTRACEP("func_cmd Ppcw=%p\n",Ppcw);                     //~v035R~//~vbi3R~
+	UTRACED("func_cmd",wkbuff,(int)cmdlen);                        //~vbi3I~
                                                                 //~v035I~
     if (*wkbuff=='=')           //menu call                     //~5504I~
     	return callmenu(Ppcw,wkbuff+1);                         //~5504I~

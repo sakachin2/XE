@@ -25,16 +25,16 @@ a:hover{font-weight:bold;}-->
          Boost regex may be also required on which source-highlight depends.
          (http://www.boost.org)
          source-highlight compiled on cygwin is little bit slow,
-         Binary compiled on MinGW was upploaded to my HP at 2008/03/21.
+         Binary compiled on MinGW was uploaded to my HP at 2008/03/21.
          There is no need to install cygwin if you use it.
 
-         My derived version &quot;xeshm&quot; is also offerred for perfomance gain.
+         My derived version &quot;xeshm&quot; is also offered for performance gain.
          This version is resident sub-process to avoid process initialization load.
          xeshm uses StartApp class of source-highlight version2.9.
          Windows version is compiled on MingW, Linux version is compiled on FC12.
          Latest version of source-highlight is v2.10.
          Original source-highlight can be called from xe as one time process.
-         If you use xewhm data-directory hove to be of v2.9.
+         If you use xeshm data-directory hove to be of v2.9.
          In config file, specify not SHCMD option but SHCMDR.
          See mkxeshm.mingw to make xeshm.
 
@@ -44,12 +44,12 @@ a:hover{font-weight:bold;}-->
          The windows version is installer.
          xe use command-line binary, leave GUI version even if its compilation failed.
          This is not depend on boost package, installation is easy.
-         It suport many variety of language such as COBOL, PLI.
+         It support many variety of language such as COBOL, PLI.
          To customize color, use CMAP option of xe's cfg file.
          This tool is relatively small and light.
          So, it is open-source but I did not create resident mode version.
 
-         xe Windows version package contains Highligh package in &quot;sample&quot; directory.
+         xe Windows version package contains Highlight package in &quot;sample&quot; directory.
          Put data directory at where the exe file existing or specify it
          by --data-dir= parameter.
          Linux version's default folder is /usr/share/highlight.
@@ -67,10 +67,10 @@ a:hover{font-weight:bold;}-->
 
     (ANSI Esc sequence style code is NORMAL:0, BOLD:1, UNDERLINE:4, BLINK:5, REVERSE:7, INVISIBLE:8. About color code see later.)
     (xeacb is also used as utility to browse file contains ANSI Esc sequence code.)
-    (Note.) Some anti-wirus-soft watches external process i/o
+    (Note.) Some anti-virus-soft watches external process i/o
             and that may be cause of syntax highlight's slow response.
 
-    When lines are updated,syntax re-evaluation is not done immediately. Re-evaluation is done by Ctrl+s key as default.
+    When lines are updated, syntax re-evaluation is not done immediately. Re-evaluation is done by Ctrl+s key as default.
     You can set ENTER key as trigger of re-evaluation by the cost of response delay.
     For best response.
       1.No trigger setting of ENTER key.
@@ -91,15 +91,15 @@ a:hover{font-weight:bold;}-->
             ALL               : Re-evaluation is done regardless update after previous evaluation and UPDONLY_EXT setting in .cfg file.
             RESET             : Use to re-read config file.
             ENTER             : Set ENTER key as trigger of re-evaluation for current file on the screen.
-                                To keep good response,re-evaluation is done only for the updated lines
+                                To keep good response, re-evaluation is done only for the updated lines
                                 without consideration of multiline syntax.
-                                To evaluate multiline syntax,execute &quot;SYN ON&quot;(Ctrl+s) cmd.
+                                To evaluate multiline syntax, execute &quot;SYN ON&quot;(Ctrl+s) cmd.
             ENTERA            : Set ENTER key as trigger of re-evaluation for current file on the screen.
                                 Re-evaluation is done for all lines with consideration of multiline syntax
                                 cost of slow response.
             ON [lang-type]    : Do re-evaluation for all lines of the file except the case
                                 the extension is defined on UPDONLY_EXT of cfg file.
-                                lang-type is used to change lang type of the file.
+                                lang-type is used to change language type of the file.
             OFF               : Stop syntax highlight for the file.
 
        &quot;SYN ON&quot; is done if operand missing or function key Ctrl+s is used as default assignment.
@@ -123,8 +123,8 @@ a:hover{font-weight:bold;}-->
     #
     ### execution 
     #
-    #  select highight command from SHCMD or SHCMDR or SHCMDA
-    #     SHCMDA is recomended(installation required,&quot;sample&quot; dir contains required files(highlight-3.7)
+    #  select highlight command from SHCMD or SHCMDR or SHCMDA
+    #     SHCMDA is recommended(installation required, &quot;sample&quot; dir contains required files(highlight-3.7)
     #
     #     SHCMD=       :Specify source-highlight command
     #                   default &quot;source-highlight -f esc&quot;. &quot;-f esc&quot; (outlang:esc) is always appended.
@@ -139,37 +139,37 @@ a:hover{font-weight:bold;}-->
     #     ENTER =      :Specify file line count threshold to use Enter key as trigger of SyntaxHighlight re-evaluation.
     #                   If the file line count is under this value at open,
     #                   Enter key is treated as trigger of re-evaluation of updated lines..
-    #                   You can change triger ON/OFF status by SYN cmd later.
+    #                   You can change trigger ON/OFF status by SYN cmd later.
     #                   0 :Do not use as trigger. Use Ctrl+s to evaluate syntax.
     #                   -1:No line count limit.(Default)
     ### file type 
     #     OPEN  =      :SyntaxHighlight mode at opening file.
-    #                   &quot;Y&quot;:SyntaxHighlight mode if the extention is listed by OPEN_EXT
+    #                   &quot;Y&quot;:SyntaxHighlight mode if the extension is listed by OPEN_EXT
     #                   &quot;N&quot;:always No SyntaxHighlight mode at open
     #                   &quot;A&quot;:always SyntaxHighlight mode at open
-    #     OPEN_EXT=    :Specify file extention list for the case of OPEN=y.
+    #     OPEN_EXT=    :Specify file extension list for the case of OPEN=y.
     #                   ex) OPEN_EXT=c cpp h hpp
-    #     UPDONLY_EXT= :Specify file extention list to limit evaluation by &quot;SYN ON&quot;(Ctrl+s) cmd to updated lines only.
+    #     UPDONLY_EXT= :Specify file extension list to limit evaluation by &quot;SYN ON&quot;(Ctrl+s) cmd to updated lines only.
     #                   If the language has no multiline syntax such as /* */ comment in c-like language,
     #                   You get better response by limiting syntax evaluation to updated lines only.
-    #                   If you set ENTER key as trigger of re-evaluation,there is no need to use &quot;SYN ON&quot; cmd
+    #                   If you set ENTER key as trigger of re-evaluation, there is no need to use &quot;SYN ON&quot; cmd
     #                   because updated lines evaluation is done by ENTER key.
-    #                   If you not want to set ENTER key trigger,and evaluate by &quot;SYN ON&quot;(Ctrl+S) cmd each time
+    #                   If you not want to set ENTER key trigger, and evaluate by &quot;SYN ON&quot;(Ctrl+S) cmd each time
     #                   even the language has multiline syntax, register extension in this list.
-    #                   For all lines re-evaluation,&quot;SYN ALL&quot; cmd is used in this case.
+    #                   For all lines re-evaluation, &quot;SYN ALL&quot; cmd is used in this case.
     #                   ex) UPDONLY_EXT=cob
-    #     PATH_EXT_xxx=:For the file with missing or improper extension name,specify extention name.
+    #     PATH_EXT_xxx=:For the file with missing or improper extension name, specify extension name.
     #                   xxx:max 7 byte extension name. Specify 1 pathname/line.
     #                   All files in the directory is assumed as xxx is its extension name.
     #                   ex) PATH_cob=d:\src\cobs
     #                       PATH_syslog=d:\logs\windows\actlog
     ### color
-    #     BG=          :BackGround color palette number.
+    #     BG=          :Background color palette number.
     #                   You can check the palette color on =0.0 panel.
     #                   Valid value is &quot;0&quot; to &quot;15&quot;(Windows) or &quot;1 to &quot;7&quot;(Linux).
-    #     BG_BROWSE    :BackGround color palette number for browse panel
+    #     BG_BROWSE    :Background color palette number for browse panel
     #                   Default is same as BG
-    #     FG=          :ForeGround color palette number
+    #     FG=          :Foreground color palette number
     #                   Valid value is &quot;0&quot; to &quot;15&quot;
     #     BG_EOL=      :Background color for the right of EndOfLine.
     #                   Default is same as BG(Edit) or BG_BROWSE(Browse)
@@ -177,9 +177,9 @@ a:hover{font-weight:bold;}-->
     #                   Default is same as BG(Edit) or BG_BROWSE(Browse)
     #     BG_UPD=      :Background color for updated and not yet re-evaluated line.
     #                   Default:0(black)
-    #     BG_REVERSE_EDIT=  :Background color for reverse on edit panel(Find cmd,Cut&amp;Paste)
+    #     BG_REVERSE_EDIT=  :Background color for reverse on edit panel(Find cmd, Cut&amp;Paste)
     #                        Default:14(yellow) except linux console version(6:brown)
-    #     BG_REVERSE_BROWSE=:Background color for reverse on browse panel(Find cmd,Cut&amp;Paste)
+    #     BG_REVERSE_BROWSE=:Background color for reverse on browse panel(Find cmd, Cut&amp;Paste)
     #                        Default:15(white) except Linux console version(6:brown)
     #     CMAP  =      :Color palette re-mapping. Remap ANSI color number to xe's palette.
     #                   Specify from color palette number from 0 to max 15 each.
@@ -192,7 +192,7 @@ a:hover{font-weight:bold;}-->
     #     ITALIC_ESC = :ANSI esc code for italic.
     #                   Notify value specified on esc.lang file of source-highlight as ANSI font style code:italic. 
     #                   Valid value is one digit except reserved &quot;1&quot;:bold, &quot;4&quot;:underline.
-    #                   Default is &quot;5&quot;:blink. (If you use this default,specify it on esc.outlang).
+    #                   Default is &quot;5&quot;:blink. (If you use this default, specify it on esc.outlang).
     #     C_BOLD     = :treatment of font style:1(BOLD) for console version xe
     #                   &quot;H&quot;:HighIntensity, &quot;N&quot;:Ignore.  Default is &quot;H&quot;.
     #     C_UNDERLINE= :treatment of font style:4(UNDERLINE) for console version xe. Not supported for Linux version.
@@ -250,12 +250,12 @@ a:hover{font-weight:bold;}-->
 
        See source-highlight previously shown about detail information.
        This section is brief description related to xe.
-       (source-highlight v2.8 has no configuration gfor COBOL.
+       (source-highlight v2.8 has no configuration for COBOL.
         cobol.lang later shown is for myself, copy it into data-dir when you use it.)
 
        .lang.map
 
-        Each lines are extention = lang-file format to map extention to inputfile language syntax file.
+        Each lines are extension = lang-file format to map extension to input file language syntax file.
         following lines are for the c-like language.
         ###
             cpp = cpp.lang
@@ -267,13 +267,13 @@ a:hover{font-weight:bold;}-->
             H = cpp.lang
             hpp = cpp.lang
 
-        To utilize COBOL,on assumption its extension is cob,insert following line into lang.map file.
+        To utilize COBOL,on assumption its extension is cob, insert following line into lang.map file.
         (cobol.lang is described later.)
             cob  = cobol.lang 
 
        .cpp.lang
          
-        c-like language syntax(how to determine keyword,comment etc.) is coded by source-syntax and 
+        c-like language syntax(how to determine keyword, comment etc.) is coded by source-syntax and 
         regular-expression syntax.
 
         ###
@@ -312,7 +312,7 @@ a:hover{font-weight:bold;}-->
 
        .default.style
          
-         How(color and font style) to display the comment,keyword etc. is coded in this file.
+         How(color and font style) to display the comment, keyword etc. is coded in this file.
          You can select the other file by specifying --style-file= parameter on SHCMD of xe config file.
 
         ###
@@ -335,7 +335,7 @@ a:hover{font-weight:bold;}-->
             italics &quot;$style&quot;
          is modified to
             italics &quot;5$style&quot;
-         &quot;5&quot; is xe's default,that may any value except 0(Normal),1(Bold),4(Underline)
+         &quot;5&quot; is xe's default, that may any value except 0(Normal),1(Bold),4(Underline)
          if you specify it on ITALIC_ESC= line of xe config file.
 
          See later (f) for ANSI definition for color esc code.
@@ -383,17 +383,17 @@ a:hover{font-weight:bold;}-->
             # BB is one of these:
             # 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
             #
-            # Any of AA,FF,BB may be omited.
+            # Any of AA,FF,BB may be omitted.
             #
             # To reset do default color/attribute we need to print
             # &quot;\033[m&quot;
 
        .cobol.outlang
 
-         keyword list is selceted from vim configuration.
+         keyword list is selected from vim configuration.
          To leave Col.1-6 not as comment, delete following line.
             comment='^.{6}'                                #col.1-6:comment 
-         I don't know how to commentize Col.73-80.
+         I don't know how to set Col.73-80 to comment column.
 
         ###
 

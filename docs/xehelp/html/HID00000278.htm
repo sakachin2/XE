@@ -21,7 +21,7 @@ a:hover{font-weight:bold;}-->
             RET   :return to command prompt(Update is saved)
             QUI   :return to command prompt(Update is abandoned)
             END   :terminate current screen(Update is saved)
-            CAN   :terminate current screen(Update is abondaned)
+            CAN   :terminate current screen(Update is abandaned)
 
             -NB   :(END cmd only)skip temporarily backup at file save.
                    To protect from file corruption by ABEND at file write,
@@ -48,13 +48,13 @@ a:hover{font-weight:bold;}-->
               -Fn[-m]  :record mode record size and margin.
                         Use to change to record mode or change record size.
                         F0 resets record mode.
-              -Fvfmt   :VariableLengthRecord file record header formt. See Edit command.
+              -Fvfmt   :VariableLengthRecord file record header format. See Edit command.
               -S{r|i|d}: SO/SI option
                          r : When current screen is EBCDIC file and cmd option is CPLC/CPU8,
                              replace SO/SI to a space.
                              When current screen is not EBCDIC and cmd option is CPEB,
                              replace both side of space, if available, to SO/SI.
-                         i : Inserte SO/SI when translation to EBCDIC.
+                         i : Insert SO/SI when translation to EBCDIC.
                          d : Delete SO/SI when translation from EBCDIC.
               -Force :Warning is issued when timestamp of the file was changed from time of opened
                       (the file was updated in the other session),

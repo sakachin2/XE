@@ -1,10 +1,11 @@
-//*CID://+v6BxR~:                             update#=   79;       //+v6BxR~
+//*CID://+v702R~:                             update#=   80;       //+v702R~
 //************************************************************* //~5903R~
 //*ufile2l.c                                                       //~0827R~
 //*  UNIX version of                                               //~0827R~
 //      umkdir,urmdir,uattrib,ugetftime,usetftime,ucopypathinfo    //~0827R~
 //************************************************************* //~5617I~
-//v6Bx:160212 (LNX)compiler warning at suse64                      //+v6BxI~
+//v702:200615 ARM compiler warning                                 //+v702I~
+//v6Bx:160212 (LNX)compiler warning at suse64                      //~v6BxI~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
 //v6ht:120729 (LNX)display odd number file time stamp              //~v6htI~
 //v6b8:111022 (ARM)android-uchmod fail on sdcard(VFAT);chmod is not effective on VFAT but it may cause permission err;it is also for not ARM//~v6b8I~
@@ -251,13 +252,13 @@ int uattrib(UCHAR *Pfname,ULONG Pattron,ULONG  Pattroff,ULONG  *Poutattr)//~0827
   }                                                                //~v55nR~
   else                                                             //~v55nR~
   {                                                                //~v55nR~
-//  mode=FILE_GETMODE(fstat30.attrFile);                           //~v380R~//+v6BxR~
-    mode=(mode_t)FILE_GETMODE(fstat30.attrFile);                   //+v6BxI~
+//  mode=FILE_GETMODE(fstat30.attrFile);                           //~v380R~//~v6BxR~
+    mode=(mode_t)FILE_GETMODE(fstat30.attrFile);                   //~v6BxI~
 //printf("curr  mode=%08x(o%o)\n",mode,mode);                      //~0901R~
-//  modeon=FILE_GETMODE(Pattron);                                  //~v380R~//+v6BxR~
-    modeon=(mode_t)FILE_GETMODE(Pattron);                          //+v6BxI~
-//  modeoff=FILE_GETMODE(Pattroff);                                //~v380R~//+v6BxR~
-    modeoff=(mode_t)FILE_GETMODE(Pattroff);                        //+v6BxI~
+//  modeon=FILE_GETMODE(Pattron);                                  //~v380R~//~v6BxR~
+    modeon=(mode_t)FILE_GETMODE(Pattron);                          //~v6BxI~
+//  modeoff=FILE_GETMODE(Pattroff);                                //~v380R~//~v6BxR~
+    modeoff=(mode_t)FILE_GETMODE(Pattroff);                        //~v6BxI~
     if (modeon || modeoff)                                         //~0827R~
     {                                                           //~5903I~
         mode&=~modeoff;                                            //~0827R~
@@ -316,8 +317,8 @@ int uattrxchk(UCHAR *Pfname,int Popt)                              //~0902I~
 #endif                                                             //~v59pI~
     if (rc=(int)ufstat(Pfname,&fstat30),rc)                        //~0902I~
         return rc;                                                 //~0902I~
-//  mode=FILE_GETMODE(fstat30.attrFile);                           //~0902R~//+v6BxR~
-    mode=(mode_t)FILE_GETMODE(fstat30.attrFile);                   //+v6BxI~
+//  mode=FILE_GETMODE(fstat30.attrFile);                           //~0902R~//~v6BxR~
+    mode=(mode_t)FILE_GETMODE(fstat30.attrFile);                   //~v6BxI~
     ugetugid(&uid,&gid);                                           //~0902I~
     if (!(mode & S_IXOTH)                                          //~0902I~
     &&   ((gid!=fstat30.gid && uid)||!(mode & S_IXGRP))            //~0902R~
@@ -476,7 +477,8 @@ int usetftime2(UCHAR *Pfname,time_t Patime,time_t Pmtime)          //~v365I~
 //**************************************************************** //~v6b8I~
 int ustatisvfat(char *Pfpath,FILEFINDBUF3 *Ppffb3)                 //~v6b8R~
 {                                                                  //~v6b8I~
-	int rc=0,fsid;                                                 //~v6b8R~
+//  int rc=0,fsid;                                                 //~v6b8R~//+v702R~
+    int rc=0     ;                                                 //+v702I~
 //**********************                                           //~v6b8I~
 //    fsid=Ppffb3->fsid & 0xff;                                    //~v6b8R~
 //    rc=(                                                         //~v6b8R~
@@ -539,8 +541,8 @@ int ucopypathinfo(UCHAR *Psource,UCHAR *Ptarget)                //~5910I~
 #ifdef ARM                                                         //~v6b8I~
    if (!ustatisvfat(Ptarget,&ffb3t))	//avoid for sdcard         //~v6b8R~
 #endif                                                             //~v6b8I~
-//  rc+=ufilesetmod(Ptarget,FILE_GETMODE(ffb3.attrFile)); //all off then set on//~v365R~//+v6BxR~
-    rc+=ufilesetmod(Ptarget,(mode_t)FILE_GETMODE(ffb3.attrFile)); //all off then set on//+v6BxI~
+//  rc+=ufilesetmod(Ptarget,FILE_GETMODE(ffb3.attrFile)); //all off then set on//~v365R~//~v6BxR~
+    rc+=ufilesetmod(Ptarget,(mode_t)FILE_GETMODE(ffb3.attrFile)); //all off then set on//~v6BxI~
   }                                                                //~v6b8I~
     UTRACEP("ucopypathinfo after usetftime atime=%x,mtime=%x\n",ffb3t.atime,ffb3t.mtime);//~v6htI~
 	ufstat(Ptarget,&ffb3t);//test@@@@                              //~v6htI~

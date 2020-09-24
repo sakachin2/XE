@@ -20,17 +20,17 @@ a:hover{font-weight:bold;}-->
 #ifdef UTF8SUPP
 
             <A href="HID_UTF8_E.htm">CPU8</A>/CPLC:encoding of source file.
-             /<A href="HID_EBCF_E.htm">CPEB</A>    Copy/Move &quot;source-file&quot; after tarnslated.
+             /<A href="HID_EBCF_E.htm">CPEB</A>    Copy/Move &quot;source-file&quot; after translated.
                       Profile is checked, so you may not be required to specify CPxx option.
 
                       You can other codepage than specified on cfg file using CPEB:codepage format.
                       When you don't want to translate by the codepage registered on profile,
-                      use &quot;B&quot; option to &quot;A&quot;(After) or &quot;B&quot;(Before) line cmd specifing copy target position.
+                      use &quot;B&quot; option to &quot;A&quot;(After) or &quot;B&quot;(Before) line cmd specifying copy target position.
                           ex)  MOV ebcf1
                                :
                                BB
             IE       : continue copy operation ignoring translation error.
-                       those char are copied as it is and dispalyed by &quot;?&quot;.
+                       those char are copied as it is and displayed by &quot;?&quot;.
                        This option is not required when target file is opened by with &quot;IE&quot; option.
             /M       :EOL-ID of copy source file.
                       P:0d0a(PC file)
@@ -45,7 +45,7 @@ a:hover{font-weight:bold;}-->
                            replace both side of space, if available, to SO/SI.
                            When current screen is not EBCDIC and cmd option is CPEB,
                            replace SO/SI to a space.
-                       i : Inserte SO/SI when translation to EBCDIC.
+                       i : Insert SO/SI when translation to EBCDIC.
                        d : Delete SO/SI when translation from EBCDIC.
 #endif
             -Copy all line of the file onto the specified position

@@ -1,8 +1,9 @@
-//*CID://+vbkfR~:                             update#=  836;       //~vbkfR~
+//*CID://+vbr2R~:                             update#=  846;       //~vbr2R~
 //*************************************************************
 //*xedir.c                                                         //~v09bR~
 //* draw
 //*************************************************************
+//vbr2:200620 ARM:abort at sprintf(__builtin___vsprintf_chk)       //~vbr2I~
 //vbkf:180619 display hex notation for also dirlist panel          //~vbkfI~
 //vb7k:170115 dir list;gree attr overflow to "=Rep" when dirname is too long//~vb7jI~
 //vb7j:170115 (Win)_MAX_PATH is ucsctr,mbcs len is more over       //~vb7jI~
@@ -187,7 +188,7 @@
 //v07s:960825:new ulib.h/ulibdef.h(no need base def by os2.h)      //~v07sI~
 //            to speed up compile,drop include(caused by WIN95 modify)//~v07sI~
 //v07l:960713:(BUG)also for other than PATHLEN(strpbrk,strchr etc) //~v07lI~
-//            bug when "‰\a.*" cause mask display only "a.*"       //~v07lI~
+//            bug when "‰\a.*" cause mask display only "a.*"       //+vbr2I~
 //v07g:960707:printed msg on dir list                              //~v07gI~
 //v07e:960629:dir lcmd copy(PF10 and PF11)                         //~v07eI~
 //            rensmasv for also copy                               //~v07eI~
@@ -1786,7 +1787,13 @@ void dirddsetup(PUCLIENTWE Ppcw,PULINEH Pplh,PUPANELL Pppl)        //~v07eR~
                 ucalc_dwmult(disktotsz,clustersz);                 //~v49hI~
 #endif                                                             //~v50HI~
 //  	    	sprintf(pdd->UDDattr,"x%X",(UINT)clustersz);       //~v59TR~
-    	    	sprintf(pddexpand->UDDattr,"x%X",(UINT)clustersz); //~v59TI~
+//  	    	sprintf(pddexpand->UDDattr,"x%X",(UINT)clustersz); //~v59TI~//~vbr2R~
+//              UMEMSPRINTF(pddexpand->UDDattr,UDDATTRSZ,"x%*X",UDDATTRSZ-1,(UINT)clustersz);//~vbr2R~
+    	    	sprintf(pddexpand->UDDattr,"x%X",(UINT)clustersz);    //TODO test//~vbr2I~
+//                {                                                //~vbr2I~
+//                    char wk[UDDATTRSZ+1];                        //~vbr2R~
+//                    snprintf(wk,UDDATTRSZ+1,"x%*X",UDDATTRSZ-1,(UINT)clustersz);//~vbr2I~
+//                }                                                //~vbr2I~
 //          	unumedit((ULONG)diskfreesz,"z,zzz,zzz,zz9/",pdd->UDDdate);//~v49hI~
 //          	unumedit((ULONG)disktotsz,"z,zzz,zzz,zz9",pdd->UDDsize);//~v49hI~
 #ifdef DOSDOS                                                      //~v50HI~

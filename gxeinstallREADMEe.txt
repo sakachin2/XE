@@ -1,4 +1,4 @@
-V129M 2020/05/17 
+V129N 2020/09/23 
 (A) Automake package installation step
 
     You may update configure before ./configure
@@ -29,7 +29,7 @@ V129M 2020/05/17
        To start gxe(X-appl) on remote, use -X option.
            ssh -X user@host.
        gxe at s390
-       		--> WARNING **:Couldn't connect to accessibility bus: Failed to connect to socet /tmp/dbus-xxx
+       		--> WARNING **:Couldn't connect to accessibility bus: Failed to connect to socket /tmp/dbus-xxx
        		==>export NO_AT_BRIDGE=1
 (B) trouble shooting.
         tested--RH9, FC5, Kubuntu6, Ubuntu7, openSUSE10, Vine4, TurbolinuxFUJItrial
@@ -42,7 +42,7 @@ V129M 2020/05/17
         ===> install gcc
              on debian8.10: apt-get install build-essential
     (2) crt1.o no such file   (Debian 4.0) 
-        (suffix of development package differ for each disto)
+        (suffix of development package differ for each distro)
         ===> install libglib2.0-dev
         ===> install libc6-dev (ubuntu8)
     (3) "term.h" not found
@@ -62,7 +62,7 @@ V129M 2020/05/17
              install libgnomeprint-devel
         ===> install libgnomeui-dev
              install libgnomeprint2.2-dev  (ubuntu8)
-        (mutual dependency may start another package instalation)
+        (mutual dependency may start another package installation)
      OR (gnome2 may obsoleted on the distribution)
         Use ./configure enable-libgnome2=no (glib2.0-dev install required)
         In that case, "gio.h" is missing will be shown.
@@ -152,7 +152,7 @@ V129M 2020/05/17
 
     (6) WARNING **: failed request with status 200
         ===> Ignore.
-             I do not know why, but it may be not harmfull.
+             I do not know why, but it may be not harmful.
 
     (7) GnomePrintCupsPlugin-WARNING **: failed iconv dose not support ppd character encoding: ISOLatin1, trying CSISOLatin1
         ===> Ignore.
@@ -199,7 +199,7 @@ V129M 2020/05/17
             I heared that "metacity" append this.
             The reason, I think, is that X-server daemon is executing as root.
 
-    (16)corrupted font is dislayed at s390x ssh.
+    (16)corrupted font is displayed at s390x ssh.
         ssh pass locale to remote according to AcceptEnv/SendEnv specification on /etc/ssh/ssh(d).
         ssh console show DBCS but it seems that another setup may be required for X-appl.
         ===>yum install "@Japanese Support" or yum groupinstall "Japanese Support".
@@ -217,19 +217,19 @@ V129M 2020/05/17
 
  !!! See (E)-FC14 for latest !!!
 
-    Install requred package over FC11 preinstalled DASD (http://secondary.fedoraproject.org/pub/alt/spins/S390/)
+    Install required package over FC11 preinstalled DASD (http://secondary.fedoraproject.org/pub/alt/spins/S390/)
             ref           http://katzkichi-katzkichi.blogspot.com/2010/01/linux.html   (Japanese Page)
             pkg-download  //s390.koji.fedoraproject.org/koji
 
     (1) yum -y install libgnomeprint22-devel.s390x (pre-test for "yum upgrade")
           --> UnicodeDecodeError: 'ascii' codec can't decode byte 0xe5 in position 154: ordinal not in range(128)
-              ==> Craete new file.
+              ==> Create new file.
                       /usr/lib/python2.6/site-packages/sitecustomize.py
                          import sys
                          sys.setdefaultencoding("utf-8")
           (yum install)
           --> Destination Host Prohibit
-              ==> rerease firewall.
+              ==> release firewall.
                       "iptables -F"
           (yum install)
           --> ERROR with rpm_check_debug vs depsolve
@@ -287,7 +287,7 @@ V129M 2020/05/17
             @@@ echo "0.0.0600,0.0.0601" > /sys/bus/ccwgroup/drivers/ctcm/group
             @@@ echo 1 > /sys/bus/ccwgroup/drivers/ctcm/0.0.0600/online
         (restart)
-        --->"udevd error geting buffer for inotify"
+        --->"udevd error getting buffer for inotify"
         ===>yum -Uvh *udev*145-14* (update from release-7)
         --->Completed!   
 

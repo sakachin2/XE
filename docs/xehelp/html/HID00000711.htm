@@ -18,7 +18,7 @@ a:hover{font-weight:bold;}-->
          *\(currently opened dir) or ^*\(opened dir on the other split
          screen) notification is avail in file-spec.
         .On browse/edit screen, &quot;*&quot; file-spec parameter is used to
-         search in current screen. Flaged line is searched by &quot;F *G&quot;.
+         search in current screen. Flagged line is searched by &quot;F *G&quot;.
          On the other case,grep result is saved to temp file &quot;::#go&quot;.
          On cmd result screen,::#go is displayed on the screen.
          (Note).grep search on current screen is currently supported
@@ -28,11 +28,11 @@ a:hover{font-weight:bold;}-->
                 This function is yet remains,but use Find cmd with -g option.
                 (No external process is generated).
 
-               .On Linux,space embeding path name is troublesome,
+               .On Linux,space embedding path name is troublesome,
                 specify like as  &lt;grep &quot;a b.dir&quot;/*.c&gt;,
                 &lt;grep &quot;a b.dir/*.c&quot;&gt; may fail.
          Find.exe cmd is available on Windows 10 as alternative of grep.
-         Register cmd like as aollowing.
+         Register cmd like as following.
             gre c:\Windows\System32\find.exe %1 %2 %3 %4
          Use it on =6 panel like s following. (Quotation is required for search word)
             gre /N /I "search-word" c:\user\srctext

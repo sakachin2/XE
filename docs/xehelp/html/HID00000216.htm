@@ -12,9 +12,9 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">   .Control Character Input
-      0x00(Ctrl+2),0x01-0x1f(Ctrl+A-Ctrl+-) is avail for input
+      0x00(Ctrl+2), 0x01-0x1f(Ctrl+A-Ctrl+-) is avail for input
       control char(&lt;0x20).These character input is optionally prohibitted
-      by <A href="HID00000209.htm">.INI</A> specifiaction(Valid_Ctrl_char)             <a href="HID00000209.htm">Chapter-(6)</a>
+      by <A href="HID00000209.htm">.INI</A> specifiaction (Valid_Ctrl_char)             <a href="HID00000209.htm">Chapter-(6)</a>
       Those are displayed by special char if there is no corresponding
       char on the codepage. Use of special char is also set by .INI file
       (Disp_trans_tbl,Disp_trans_char)                   Chapter-(6)
@@ -29,7 +29,7 @@ a:hover{font-weight:bold;}-->
             is checked.
 
 #if defined(WXE) || defined(XXE)
-            If Accelerator CheckBox is checked,some CCFUNC key is
+            If Accelerator CheckBox is checked, some CCFUNC key is
             intercepted by Windows or Gnome.
             ex, Ctrl+a is InsertLine by CCFUNC ON if accelerator is off.
             If accelerator is on,Ctrl+a is popup SaveAs dialog.
@@ -40,9 +40,9 @@ a:hover{font-weight:bold;}-->
       Original Hex code of char under current cursor is always displayed
       at column 5(3 for <a href="HID00000217.htm">DBCS</a>) of the top line.
       Input by hex digit is also avail if turned to <a href="HID00000284.htm">HEX input mode</a>(Ctrl+F11).
-      At column 1 of the top line,&quot;x&quot; is diplayed when HEX input mode.
-      1st digit of byte is diplayed following the &quot;x&quot;.
-      If the value is same as 1st byte of DBCS,use x key to transfer the
+      At column 1 of the top line, &quot;x&quot; is displayed when HEX input mode.
+      1st digit of byte is displayed following the &quot;x&quot;.
+      If the value is same as 1st byte of DBCS, use x key to transfer the
       byte.
       HEX code input is accepted only when cursor is in the area of
       file edit under HEX input mode.

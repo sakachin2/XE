@@ -1,8 +1,9 @@
-//*CID://+vbi6R~:                             update#=  316;       //~vbi6R~
+//*CID://+vbraR~:                             update#=  320;       //~vbraR~
 //*************************************************************
 //*xefunct.c                                                       //~v663R~
 //* func definition tbl                                         //~5216R~
 //************************************************************* //~v020I~
+//vbra:200730 (ARM)ARM input is always utf8, delete A_u and UTF SWKBD//~vbraI~
 //vbi6:180219 R-Retrieve-OfTheScr was not assigned key, use S+A+F12//~vbi6I~
 //vbi5:180219 correct word of functbl, Regin-->Region,accept both for ini read//~vbi5I~
 //vbi3:180211 supprt command history list                          //~vbi3I~
@@ -1432,7 +1433,7 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
 //  	{0        ,0,0,0},NULL_NOFLAG},                            //~v670I~//~vbi6R~
     	{KEY_A_F12,0,0,0},                                         //~vbi6I~
     	/*FTkflag*/{FTSHIFT,0,0,0},/*FTflag2*/0,{0}},              //~vbi6I~
-	{"CmdHistoryList"        ,"コマンド履歴"    ,                  //~vbi3R~//+vbi6R~
+	{"CmdHistoryList"        ,"コマンド履歴"    ,                  //~vbi3R~//~vbi6R~
         FUNCID_CMDHISTU8,                                          //~vbi3R~
         0,0,          //flag,char,                                 //~vbi3I~
 		{func_cmdhistu8,func_cmdhistu8,func_cmdhistu8},            //~vbi3R~
@@ -1571,7 +1572,11 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
         0,0,          //flag,char,                                 //~va0xI~
 		{func_mode,func_mode,func_mode},                           //~va0xI~
 		"UTF","",                                                  //~va0xI~
+//#ifdef ARM                                                       //+vbraR~
+//        NULL_CMDONLY},                                           //+vbraR~
+//#else                                                            //+vbraR~
     	{KEY_A_u,0,0,0},NULL_NOFLAG},                              //~va0xI~
+//#endif                                                           //+vbraR~
 #endif                                                             //~va0xI~
 #ifdef UTF8UCS2                                                    //~va30I~
 	{"Combine-W0-UniChar"       ,"0幅-UniChar-結合" ,              //~va30I~

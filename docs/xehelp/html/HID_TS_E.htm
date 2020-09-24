@@ -7,7 +7,18 @@
 <TITLE>Trouble-E</TITLE>
 <STYLE TYPE="text/css">
 <!--
-a:hover{font-weight:bold;}-->
+a:hover{font-weight:bold;}
+p.MsoPlainText
+	{margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	font-size:10.5pt;
+	font-family:"ＭＳ 明朝";
+	margin-left: 0mm;
+	margin-right: 0mm;
+	margin-top: 0mm;
+}
+ -->
 </STYLE>
 </HEAD>
 <BODY bgcolor="#FFFFE2">
@@ -38,7 +49,10 @@ a:hover{font-weight:bold;}-->
                       set &quot;AcceptEnv LANG LC_*&quot;
                       set &quot;X11Forwarding yes&quot;
        To start gxe(X-appl) on remote, use -X option.
-           ssh -X user@host.
+           ssh -X <a href="mailto:user@host">user@host</a>.
+       gxe at s390
+          --&gt; WARNING **:Couldn't connect to accessibility bus: Failed to connect to socket /tmp/dbus-xxx
+          ==&gt;export NO_AT_BRIDGE=1
 
 (B) trouble shooting.
         tested--RH9, FC5, Kubuntu6, Ubuntu7, openSUSE10, Vine4, TurbolinuxFUJItrial
@@ -50,7 +64,7 @@ a:hover{font-weight:bold;}-->
     (1) no acceptable C compiler found in $PATH
         ===&gt; install gcc
     (2) crt1.o no such file   (Debian 4.0) 
-        (suffix of development package differ for each disto)
+        (suffix of development package differ for each distro)
         ===&gt; install libglib2.0-dev
         ===&gt; install libc6-dev (ubuntu8)
     (3) ncurses.h not found.
@@ -67,8 +81,50 @@ a:hover{font-weight:bold;}-->
              install libgnomeprint-devel
         ===&gt; install libgnomeui-dev
              install libgnomeprint2.2-dev  (ubuntu8)
-        (mutual dependency may start another package instalation)
-
+        (mutual dependency may start another package installation)
+</SPAN></PRE>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>
+(6) pkg-config was not found<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>===&gt; install pkg-config<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>
+(7) CHK_INSTALL_GTK3...no and<span style="mso-spacerun:yes">&nbsp; </span>
+CHK_INSTALL_GTK2..no<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>==&gt;apt-file --package-only search gtk+-2.0<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>apt-file --package-only search gtk+-3.0<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>apt-get install libgtk2.0-dev<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>or <o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>apt-get install libgtk-3-dev<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>
+(8) CHK_EXIST_GTK3_LIBGNOME2... no<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>===&gt; install libgnome2-dev<o:p></o:p></span></p>
+<PRE><SPAN STYLE="color:#000000;font-size:font 12pt;">
   (B2) &quot;make&quot; error
 
     (1) &quot;term.h&quot; not found
@@ -144,7 +200,7 @@ a:hover{font-weight:bold;}-->
 
     (6) WARNING **: failed request with status 200
         ===&gt; Ignore.
-             I do not know why, but it may be not harmfull.
+             I do not know why, but it may be not harmful.
 
     (7) GnomePrintCupsPlugin-WARNING **: failed iconv dose not support ppd character encoding: ISOLatin1, trying CSISOLatin1
         ===&gt; Ignore.
@@ -189,7 +245,7 @@ a:hover{font-weight:bold;}-->
             I heared that &quot;metacity&quot; append this.
             The reason, I think, is that X-server daemon is executing as root.
 
-    (16)corrupted font is dislayed at s390x ssh.
+    (16)corrupted font is displayed at s390x ssh.
         ssh pass locale to remote according to AcceptEnv/SendEnv specification on /etc/ssh/ssh(d).
         ssh console show DBCS but it seems that another setup may be required for X-appl.
         ===&gt;yum install &quot;@Japanese Support&quot; or yum groupeinstall &quot;Japanese Support&quot;.
@@ -201,20 +257,25 @@ a:hover{font-weight:bold;}-->
         Usualy DISPLAY is assigned by ssh.
 
 (C) FC11.s390x upgrade trouble shooting.
-
-    Install requred package over FC11 preinstalled DASD (http://secondary.fedoraproject.org/pub/alt/spins/S390/)
+</SPAN></PRE>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;</span>!!! See (E)-FC14 for 
+latest !!!<o:p></o:p></span></p>
+<PRE><SPAN STYLE="color:#000000;font-size:font 12pt;">
+    Install required package over FC11 preinstalled DASD (http://secondary.fedoraproject.org/pub/alt/spins/S390/)
             ref           http://katzkichi-katzkichi.blogspot.com/2010/01/linux.html   (Japanese Page)
             pkg-download  //s390.koji.fedoraproject.org/koji
 
     (1) yum -y install libgnomeprint22-devel.s390x (pre-test for &quot;yum upgrade&quot;)
           --&gt; UnicodeDecodeError: 'ascii' codec can't decode byte 0xe5 in position 154: ordinal not in range(128)
-              ==&gt; Craete new file.
+              ==&gt; Create new file.
                       /usr/lib/python2.6/site-packages/sitecustomize.py
                          import sys
                          sys.setdefaultencoding(&quot;utf-8&quot;)
           (yum install)
           --&gt; Destination Host Prohibit
-              ==&gt; rerease firewall.
+              ==&gt; release firewall.
                       &quot;iptables -F&quot;
           (yum install)
           --&gt; ERROR with rpm_check_debug vs depsolve
@@ -248,7 +309,7 @@ a:hover{font-weight:bold;}-->
         When selected new kernel(FC12) on hercules console.
         ---&gt;Boot wait by &quot;No root device&quot;.   ===&gt;give-up
         When selected old kernel(FC11)
-        ---&gt;CTC �G���[
+        ---&gt;CTC �G���[
         ===&gt;Add 3 line to /etc/rc.sysinit(&quot;@@@&quot; flaged lines) (This is existed before upgrade to FC12)
                 # /bin/bash
                 #
@@ -272,7 +333,7 @@ a:hover{font-weight:bold;}-->
             @@@ echo &quot;0.0.0600,0.0.0601&quot; &gt; /sys/bus/ccwgroup/drivers/ctcm/group
             @@@ echo 1 &gt; /sys/bus/ccwgroup/drivers/ctcm/0.0.0600/online
         (restart)
-        ---&gt;&quot;udevd error geting buffer for inotify&quot;
+        ---&gt;&quot;udevd error getting buffer for inotify&quot;
         ===&gt;yum -Uvh *udev*145-14* (update from release-7)
         ---&gt;Completed!   
 
@@ -290,7 +351,601 @@ a:hover{font-weight:bold;}-->
      Dokan sshfs(Windows version sshfs) assigns driveID using GUI window.
      Access file likeas &quot;e N:\&quot;.
 
-
+</SPAN></PRE>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;">(E) xe install log to fc14.s390x<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>2011/11/10<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>00). 
+(Linux)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-base image is "fedora-14-s390x-20100925"<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>(fedora-14-s390x.img is cause disk full soon at package installation) <o:p></o:p>
+</span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-hercules is "hercules-3.07-1.i686.rpm"<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-adjust "hercles.cnf" <o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>0120 3390 image-file-name<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>(000C 3505 files(generic.prm,kernel..) are not used when IPL 120)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-update hosts(add entry to "/etc/hosts")<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>192.168.200.3 s390x<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>01). 
+(s390x)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#adduser useruser<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#asswd<span style="mso-spacerun:yes">&nbsp; </span>useruser<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>02). 
+(s390x)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-update DNS server("/etc/resolv.conf") reset at each IPL<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>search example.com<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>nameserver xxx.xxx.xxx.xxx <o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>nameserver yyy.yyy.yyy.yyy<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span>&lt;--if secondary exists<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>(/etc/resolv.conf is reset at each IPL<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>to fix it, update /etc/sysconfig/network-scripts/ifcfg-ctc0<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>DNS1=xxx.xxx.xxx.xxx<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>DNS2=yyy.yyy.yyy.yyy<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-update allow Xfowarding("/etc/ssh/sshd_config")<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>X11Forwarding yes<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;-- change from "no"<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>03). 
+(s390x)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-update yum repository according 
+http://fedoraproject.org/wiki/Architectures/s390x<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[fedora]<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>name=Fedora $releasever - $basearch<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>baseurl=http://s390.koji.fedoraproject.org/mash/rawhide/s390x/os/<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>enabled=1<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>gpgcheck=0<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; yum 
+fails, ping to web fails by host prohibit<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>04). 
+(Linux)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-drop REJECT entry from iptable entry<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#iptables -S<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-&gt;chk entry numver in the sequence<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#iptables -D INPUT n1<span style="mso-spacerun:yes">&nbsp; </span>(n1 is 
+entry number in INPUT chain(starting from 1))<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#iptables -D FORWARD n2<span style="mso-spacerun:yes">&nbsp; </span>(n2 
+is entry number in FORWARD chain(starting from 1))<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#iptables -S<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-&gt;confirmation<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>05). 
+(Linux)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-send gxe-vvv-tar.gz to s390<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-tab-count:2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style="mso-spacerun:yes">&nbsp; </span>scp $SRCPATH/gxe-vvv.tar.gz 
+useruser@s390x:gxe-vvv.tar.gz<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>06). 
+(s390x)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-expand tgz,configure<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>$tar -zxvf gxe-vvv.tar.gz<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>at /home/useruser<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>$cd<span style="mso-spacerun:yes">&nbsp; </span>gxe-vvv<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>$./configure<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; no 
+acceptable C compiler<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-install C <o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#yum install gcc.s390x<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; 
+term.h not found<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-install ncurses<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#yum install ncurses-devel.s390x<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; yum 
+WARNING: refresh-packagekit" inport failed<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#yum install PackageKit-yum-plugin.s390x<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; 
+cups/cups.h not found<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-install cups<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#yum install cups-devel.s390x<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; no 
+package libgnomeui,gnome-vfs-module,libgnomeprint,libgnomeprintui<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-install libs<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#yum install libgnomeui-devel.s390x<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#yum install libgnomeprintui22-devel.s390x<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>(if yum hunged, #yum-complete-transaction)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>06). 
+(s390x)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-make<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; 
+unknown type name ppd_file_t<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-cups/cups.h now dose not include ppd.h<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-gxe's xxecsub2 is corrected to include ppd.h<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; ld 
+fails dlsym@@GLIBC_2.2...<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-ld spec changed at fc13<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>2.so of "o.o"--&gt;"1.so"--&gt;"2.so" should not be implicit<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;</span>-gxe's 
+Makefile is corrected to add "-ldl"<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; 
+WARNING:unused but set<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-from gcc4.6 new option -Wunused-but-set-variable(default)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-configure.in was changed to set -Wno-unused-but-set if gcc version&gt;=4.6<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>if required use config option like as "./configure 
+--enable-unused-but-set=yes"<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>07). 
+(Linux)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-test xe<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-test gxe<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>ssh useruser@s390x gxe<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; 
+cannot open display:<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#yum install xorg-x11-xauth.s390x<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>(xhost on linux and setup DISPLAY= on s390x is done by ssh)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; 
+Japanese character is corrupted<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#yum groupinstall "Japanese Support"<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; 
+GConf WARNING client failed to connect to the D-BUS deaemon<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#yum install dbus-x11.s390x<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; 
+failed to load module pk-gtk-module<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#yum install PackageKit-gtk-module.s390x<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; xe: 
+search for gnome-terminal failed<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>#yum install gnome-terminal.s390x<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; IPP 
+request failed with status 1280<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-libgnomeprint is polling CUPS but no printer available.<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-ignore it<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; 
+Popup Dialog:An error occurred while loading or saving configuration 
+information.<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-Use<span style="mso-spacerun:yes">&nbsp; </span>not "su" but "su -".<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; 
+GnomeUI-Warning:While connecting to session manager:None of authentication 
+protocols specified are supported.<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-Use<span style="mso-spacerun:yes">&nbsp; </span>not "su" but "su -".<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; 
+Gtk-Message: Failed to load module "gnomebreakpad"<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>-yum install bug-buddy (/usr/lib64/gtk-2.0/libgnomebreakpad)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>if not found, ignore it(this is of bug reporting system)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><o:p>&nbsp;</o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;">(F) xe install log to Ubunto11.10_x64<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>2011/11/21<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>make<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; 
+undefined symbol gnome_vfs_mime_get_default...<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>install libgnomevfs2-extra<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; 
+dlopen@@GLIBC_2.1 undefined <o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>adjust LDFLAG of Makefile<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>run gxe<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>==&gt; 
+Gtk-WARNING: unable to locate theme engine in gtk-modules "pixbuf"<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>"aptitude install gtk-engine-pixbuf"<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><o:p>&nbsp;</o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;">(G) xe install test to OpenSuse12.1_x64<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>2011/11/22<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>installed cups-devel, libgnomeui-devel, libgnomeprintui-devel<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>
+(repository updated is required after DVD 
+installation:"download.opensuse.org/distribution/12.1/repo/oss/suse")<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><o:p>&nbsp;</o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;">(H) xe install test to Debian jessie 3.10 xfce<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>
+xfce4-terminal<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>
+<span style="mso-tab-count:
+1">&nbsp;&nbsp;&nbsp; </span>change shortcut key F1=help, F11=fullscreen, 
+F10=Menu<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>run xfce4-appearance-settings, Settings, chk on "Enable editable 
+accelerators"<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>on xfce4-terminal,<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp; </span>
+Help--&gt;Contents(showing "F1" at end), press "</span><st1:State><st1:place><span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:&quot;ＭＳ ゴシック&quot;">Del</span></st1:place></st1:State><span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:&quot;ＭＳ ゴシック&quot;">" 
+key on the MenuItem.<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp; </span>
+View--&gt;Fullscreen(showing "F11" at end), press "</span><st1:State><st1:place><span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:&quot;ＭＳ ゴシック&quot;">Del</span></st1:place></st1:State><span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:&quot;ＭＳ ゴシック&quot;">" 
+key on the MenuItem.<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>(This is registered on ~/.config/xfce4/terminal/accels.scm)<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Edit--&gt;Preference(E)--&gt;Advanced(V), check on "Disable MenuShortcut"<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>WARNING **: Couldn't register with accessibility bus: Did not receive a 
+reply. Possible causes include: the remote application did not send a reply, the 
+message bus security policy blocked the reply, the reply timeout expired, or the 
+network connection was broken.<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>--&gt;export NO_AT_BRIDGE=1 at elsewhere<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><o:p>&nbsp;</o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>
+Gtk-WARNING **: Calling IsInhibited failed: 
+GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name 
+org.gnome.SessionManager was not provided by any .service files<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>--&gt;Not harmfull,ignorable.<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;">(I) Rspberry PI<span style="mso-spacerun:yes">&nbsp; </span>
+2020/05/16<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp; </span>
+configure on Emulator: image:"2020-02-13-raspbian-full" on QEMU3.1.0.<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;
+</span>./configure get some err as followings.<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>term.h not found<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>--&gt;#apt-get install libncurses-dev<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>cups/cups.h not found<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>--&gt;#apt-get install libcups2-dev<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>install GTK2 or GTK3<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;</span>--&gt;#apt-get install libgtk-3-dev<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>select libgnome2 or glib-2.0<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>--&gt;#apt-get install glib-2.0<o:p></o:p></span></p>
+<p class="MsoPlainText">
+<span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
+&quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>==&gt;./configure completed<o:p></o:p></span></p>
+<PRE><SPAN STYLE="color:#000000;font-size:font 12pt;">
 
 
 </SPAN></PRE>

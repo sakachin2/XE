@@ -1,5 +1,6 @@
-//*CID://+v6XbR~:                            update#= 2436;        //~v6XbR~
+//*CID://+v700R~:                            update#= 2439;        //~v700R~
 //*************************************************************    //~v6VdR~
+//v700:200610 Axe:chtype not defined                               //~v700I~
 //v6Xb:180822 gb18030:dbcs by gb18030 but display width=1, pos differ with hex line//~v6XbI~
 //v6X8:180821 uviom_iscombining coding miss, effect is LNX only (swcombinable=0 by setting ucs=0)//~v6X8I~
 //v6X5:180818 (LNX:xe)column shring COMB2SCM(036f+0390) even SPLIT mode,//~v6X5I~
@@ -366,9 +367,11 @@ int uviowrtcellW1_cpu8file_Ligature(int Popt,WUCS *Ppucs,int Pucsctr,UCHAR *Ppda
 int uviowritelocale_ifavail(int Popt,WUCS *Ppucs,int Pucsctr,char *Ppdbcs,USHORT *Ppattr,int Plen,SMALL_RECT *Pptgtrect);//~v6T5I~
 #endif                                                             //~v6T5I~
 #ifdef LNX                                                         //~v6V5I~
+	#ifndef XXE                                                    //~v700M~
 int uviom_ISUCSWIDTH0(int Popt,chtype *Pcht,UCHAR *Ppdbcs,int Plen,WUCS *Ppucs4);
 #define IUW0O_COMB2SCM_COMB    0x01    //comb2scm is combining     //~v6X5I~
 int uviom_iscombining(int Popt,chtype *Ppcht,UCHAR *Ppdbcs,int Plen,WUCS *Ppucs4,int *Ppchsz);//~v6WuI~
+	#endif                                                         //~v700I~
 #else //W32                                                        //~v6VgI~
 int uviom_ISUCSWIDTH0W(int Popt,WUCS *Ppucs,UCHAR *Ppdbcs,int Plen);//~v6VgI~
 int uviom_iscombining(int Popt,WUCS *Ppucs,UCHAR *Ppdbcs,int Plen,int *Ppucs4,int *Ppchsz);//~v6WuI~
@@ -2272,8 +2275,8 @@ UTRACEP("%s:write dbcsspaceutf8F ucs=%04x,col=%d\n",UTT,*pucs,tgtpos.X);//~v6DhI
           if (swcombinemode)//utf8 combine mode ucs2 and ucs4      //~v6VgI~
 #endif                                                             //~v6VgI~
           {                                                        //~v650I~
-            strwidth=0; //for compiler warning                     //+v6XbI~
-            strucsctr=0; //for compiler warning                    //+v6XbI~
+            strwidth=0; //for compiler warning                     //~v6XbI~
+            strucsctr=0; //for compiler warning                    //~v6XbI~
 	        attr=pattr0[col];                                      //~v653R~
 //* after fill space and WriteConsoleOutputAttribute for the line  //~v650I~
 //* write non space padding for combining char                     //~v650I~
@@ -8121,6 +8124,7 @@ int uviowrtcellW1_cpu8file_Ligature(int Popt,WUCS *Ppucs,int Pucsctr,UCHAR *Ppda
 #endif//QQQ                                                        //~v6G0I~
 #endif                                                             //~v6G0I~
 #ifdef LNX                                                         //~v6V5I~
+	#ifndef XXE                                                    //+v700I~
 //***************************************************************************//~v6V5I~
 //UDBCSCHK_ISUCSWIDTH0 for also ucs4                               //~v6V5I~
 //rc:1:ucs2,2:ucs4,0:!width0                                       //~v6V5I~
@@ -8160,6 +8164,7 @@ int uviom_ISUCSWIDTH0(int Popt,chtype *Ppcht,UCHAR *Ppdbcs,int Plen,WUCS *Ppucs4
     UTRACEP("%s:rc=%d,dbcsid=%02x,ucs=%04x\n",UTT,rc,*Ppdbcs,ucs); //~v6V5I~
     return rc;                                                     //~v6V5I~
 }//uviom_ISUCSWIDTH0                                               //~v6V5I~
+	#endif	//!XXE                                                 //+v700I~
 #ifndef XXE                                                        //~v6WuI~
 //***************************************************************************//~v6WuI~
 //chk combining(NSCM and SCM)                                      //~v6WuI~
@@ -8338,7 +8343,7 @@ int uviom_wrtSCMW(int Popt,int Pprevucs,int Pidx,int Pucs4,WUCS *Ppucs,USHORT *P
     USHORT wkattr[2],attr;                                         //~v6WuI~
 //***********************                                          //~v6WuI~
 	UTRACEP("%s:Popt=%x,prevucs=%04x,idx=%d,ucs=%06x,X=%d,Y=%d\n",UTT,Popt,Pprevucs,Pidx,Pucs4,Ptgtpos.X,Ptgtpos.Y);//~v6WuI~
-    ucsalt=0;	//for compiler warning                             //+v6XbI~
+    ucsalt=0;	//for compiler warning                             //~v6XbI~
     swnp=UTF_COMBINEMODE_NP() && uviom_getcombaltchUcs(0,&ucsalt); //~v6WuR~
 	swcombine=!swnp && Pidx && !(Popt & UVIOO_COMBINEOFF) && utf_iscombinable(UICAO_NOSPACE,(ULONG)Pprevucs);//~v6WuR~
     if (swcombine)                                                 //~v6WuI~

@@ -1,9 +1,10 @@
-//*CID://+vbq2R~:                             update#=  477;       //~vbq2R~
+//*CID://+vbrmR~:                             update#=  478;       //+vbrmR~
 //*************************************************************
 //*xefcmd.c                                                     //~5504R~
 //*  find/change sub                                               //~v0ewR~
 //****************************************************************//~v013I~
-//vbq2:200418 to find label pattern such as .a with label, issue warning enclose by parenthesys.//+vbq2R~
+//vbrm:200918 by xuerpchk(uerr fmt chk)                            //+vbrmI~
+//vbq2:200418 to find label pattern such as .a with label, issue warning enclose by parenthesys.//~vbq2R~
 //vbky:180711 (Bug)memory corrupted by label overflow by Find cmd width -L option.//~vbkyI~
 //vbc3:170822 delete vbc2(it is enough by normal find;reject TS parameter)//~vbc3I~
 //vbc2:170821 add TS   option for find cmd on dirlist              //~vbc2I~
@@ -1954,7 +1955,8 @@ int fcmderrPSnotsaved(PUCLIENTWE Ppcw,int Ppstype)                 //~vbCBI~
     	sprintf(wkedit,"(%d)",Ppcw->UCWsplitid+1);                 //~vbCBR~
     else                                                           //~vbCBI~
     	wkedit[0]=0;                                               //~vbCBI~
-    uerrmsg("No saved cmd for %s",                                 //~vbCBI~
+//  uerrmsg("No saved cmd for %s",                                 //~vbCBI~//+vbrmR~
+    uerrmsg("No saved cmd for %s%s",                               //+vbrmI~
         	"%s%s ‚Å•Û‘¶‚³‚ê‚½ƒRƒ}ƒ“ƒh‚Í‚ ‚è‚Ü‚¹‚ñ",               //~vbCBR~
             popd,wkedit);                                          //~vbCBR~
     return 4;                                                      //~vbCBI~

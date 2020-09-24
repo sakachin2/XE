@@ -1,8 +1,13 @@
-//*CID://+v6VjR~:                              update#= 1096;      //~v6VjR~
+//*CID://+v70gR~:                              update#= 1111;      //~v70gR~
 //*********************************************************************//~7712I~
 //utf2.c                                                           //~7716R~
 //* utf8 data manipulation:process using chof                      //~7712I~
 //*********************************************************************//~7712I~
+//v70g:200715 (BUG)utfcvl2f retrns err when wcwidth=0 and output char same as input. it should set utf8 even width=0//~v70gI~
+//v70f:200715 (BUG)utcctr2offs have to consider 3/4 byte dbcs      //~v70fI~
+//v70e:200715 (LNX,Axe)Axe use icu as local converter and icu can translate u-00a4 to 8fa2f0(3 byte locale code)//~v70eI~
+//            utfpos2offs called from charfldeditu8 because curcol<enndcol. utfpos2offs have to count 1d2(dbcstbl)//~v70eI~
+//v702:200615 ARM compiler warning                                 //~v702I~
 //v6Vj:180617 xe:vbkb:180618                                       //~v6VjI~
 //            uvbka but cs4(ddfmtlen=2) and errrep(lclen=1) cause err; xeutf_cvf2dd-->utfcvf2dd  may change ddlen=2 to lclen=1, it append 1  slag byte to filename//~v6VjI~
 //            pancmdlf2dd-->xeutf_cvf2dd(lclen=1 of byte one "?")-->utfcvf2dd:lclen short because ddlen=2//~v6VjI~
@@ -214,7 +219,7 @@ int umbtowc(UWUCS *Ppucs,char *Pinp,int Pinplen)                   //~v6BjI~
     char mb[MAX_MBCSLEN+1];                                          //~v62hR~//~v62xR~
 #endif
 #ifdef ARM  //mbtowc is noy supported yet                          //~v6a0I~
-	mbstate_t mbs;                                                 //~v6a0I~
+//  mbstate_t mbs;                                                 //~v6a0I~//~v702R~
 #endif                                                             //~v6a0I~
 //*******************************                                  //~v62hI~
     UTRACED("inp",Pinp,Pinplen);                                   //~v6BkI~
@@ -278,12 +283,17 @@ int utfpos2offs(int Popt,char *Putf8,char *Pdbcs,char *Pcodetype,int Ppos,int Pu
 {                                                                  //~v620I~
     int ii,ch,utf8chsz=0,utf8len,utf8offs,reslen,rc;               //~v6h4R~
     char *pc,*pdbcs,*pct;                                          //~v62kR~
+    char lastdbcs=0;                                               //~v70eI~
 //****************************                                     //~v620I~
     if (!(utf8len=Putf8len))                                       //~v620I~
 	    utf8len=(int)strlen(Putf8);                                //~v620I~
+    UTRACED("utfpos2offs utf8",Putf8,Putf8len);                    //~v702I~
+    UTRACED("utfpos2offs pdbcs",Pdbcs,Ppos);                       //~v702I~
+    UTRACED("utfpos2offs codetb",Pcodetype,Ppos);                  //~v702I~
     pct=Pcodetype;                                                 //~v62kI~
     for (pc=Putf8,pdbcs=Pdbcs,ii=0,utf8offs=0,reslen=utf8len;ii<Ppos && reslen>0;ii++,pdbcs++)//~v620I~
     {                                                              //~v620I~
+//      UTRACEP("%s:ii=%d,offs=%d,pos=%d,reslen=%d,dbcs=%x,utf8=%x\n",UTT,ii,utf8offs,Ppos,reslen,*pdbcs,*pc);//~v702R~
         if (pct)                                                   //~v62kI~
         {                                                          //~v62kI~
         	if (*pct!=UTFCT_UTF8)                                  //~v62kI~
@@ -301,12 +311,20 @@ int utfpos2offs(int Popt,char *Putf8,char *Pdbcs,char *Pcodetype,int Ppos,int Pu
         	continue;                                              //~v62UR~
     	if (*pdbcs==UDBCSCHK_DBCS2ND)                              //~v620R~
         	continue;                                              //~v620I~
+        lastdbcs=*pdbcs;                                           //~v70eI~
     	ch=*pc;                                                    //~v620I~
     	utf8chsz=UTF8CHARLENERR1(ch);	//next if invalid utf8     //~v620I~
     	pc+=utf8chsz;                                              //~v620I~
         utf8offs+=utf8chsz;                                        //~v620I~
         reslen-=utf8chsz;                                          //~v620I~
     }                                                              //~v620I~
+UTRACEP("%s:lastdbcs=%c,ii=%d,Ppos=%d\n",UTT,lastdbcs,ii,Ppos);    //~v70eI~
+    if (lastdbcs==UDBCSCHK_DBCS1ST)                                //~v70eR~
+        for (;ii<Ppos;ii++,pdbcs++)                                //~v70eI~
+        {                                                          //~v70eI~
+            if (*pdbcs!=UDBCSCHK_DBCSPAD && *pdbcs!=UDBCSCHK_DBCS2ND)//~v70eI~
+                break;                                             //~v70eI~
+        }                                                          //~v70eI~
     if (ii<Ppos)   //out of range                                  //~v620I~
         rc=4;                                                      //~v620I~
     else                                                           //~v620I~
@@ -341,6 +359,7 @@ int utfctr2offs(int Popt,char *Putf8,char *Pdbcs,char *Pcodetype,int Ppos,int Pu
     pct=Pcodetype;                                                 //~v6bsI~
     for (pc=Putf8,pcd=Pdbcs,ii=0,reslen=utf8len;ii<Ppos && reslen>0;ii++)//~v6bsI~
     {                                                              //~v6bsI~
+UTRACEP("%s:ii=%d,Ppos=%d,pc=x%x,dbcs=%c,ct=%p=x%x\n",UTT,ii,Ppos,*pc,*pcd,pct,*pct);//~v70eR~
         dbcsid=*pcd;                                               //~v6bsI~
         if (*pct!=UTFCT_UTF8)                                      //~v6bsI~
         {                                                          //~v6bsI~
@@ -364,8 +383,11 @@ int utfctr2offs(int Popt,char *Putf8,char *Pdbcs,char *Pcodetype,int Ppos,int Pu
             reslen-=utf8chsz;                                      //~v6bsI~
             if (dbcsid==UDBCSCHK_DBCS1ST)                          //~v6bsR~
             {                                                      //~v6bsI~
+              while(UDBCSCHK_DBCSNOT1ST(*pcd))                     //~v70fR~
+              {                                                    //~v70fR~
             	pcd++;                                             //~v6bsI~
                 pct++;                                             //~v6bsR~
+              }                                                    //~v70fR~
             }                                                      //~v6bsI~
 //#ifdef W32UNICODE //surrogate pair is 4 "?"                      //~v6ueR~
 //            else                                                 //~v6ueR~
@@ -378,6 +400,7 @@ int utfctr2offs(int Popt,char *Putf8,char *Pdbcs,char *Pcodetype,int Ppos,int Pu
 //#endif                                                           //~v6ueR~
         }                                                          //~v6bsI~
     }                                                              //~v6bsI~
+//UTRACEP("%s:loop out ii=%d,Ppos=%d,pc=x%x,dbcs=%c,ct=%p=x%x\n",UTT,ii,Ppos,*pc,*pcd,pct,*pct);//~v70eR~//~v70fR~
     if (ii<Ppos)   //out of range                                  //~v6bsI~
         rc=4;                                                      //~v6bsI~
 //  *Ppoffs=(ULONG)pc-(ULONG)Putf8;                                //~v6bsI~//~v6hhR~
@@ -1449,7 +1472,8 @@ UTRACED("utfl2f inp",Pinp,Pinplen);                                //~v60dI~//~v
         {                                                          //~v61bI~
             if (dbcschksw)	//requested                            //~v61bI~
             {                                                      //~v61bI~
-            	if (utfwcwidth(ucs)<=0)                            //~v61bR~
+//          	if (utfwcwidth(ucs)<=0)                            //~v61bR~//+v70gR~
+            	if (utfwcwidth(ucs)<0)                             //+v70gI~
             		chklen=-1;	//err                              //~v61bI~
             }                                                      //~v61bI~
         }                                                          //~v61bI~
@@ -1473,11 +1497,17 @@ UTRACED("utfl2f inp",Pinp,Pinplen);                                //~v60dI~//~v
         else                                                       //~v61bI~
         if (udbcschkrc==UDBCSCHK_SBCS)                             //~v61bI~
         	chklen=1;                                              //~v61bI~
+        else                                                       //~v70gI~
+        if (udbcschkrc==UDBCSCHK_NONSPACE)    //'0'                //~v70gI~
+        {                                                          //~v70gI~
+			if (Popt & UTFCVO_WIDTH0RC)                            //~v70gI~
+	            rc|=UTFCVRC_WIDTH0;	//keep chklen of udbcschk_locale1//~v70gI~
+        }                                                          //~v70gI~
         else                                                       //~v61bI~
         	chklen=-1;	//set err                                  //~v61bI~
 #endif                                                             //~v61bM~
 //#endif  //UTF8SUPPH                                              //~v620R~
-        if (chklen<0) //conversion failed                          //~v60dM~//+v6VjR~
+        if (chklen<0) //conversion failed                          //~v60dM~//~v6VjR~
         {                                                          //~v60dM~
         	if (Popt & UTFCVO_ERRRET)  //return if err             //~v61bR~
             {                                                      //~v60dM~

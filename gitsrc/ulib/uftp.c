@@ -1,8 +1,9 @@
-//*CID://+v6T0R~:                             update#=  831;       //~v6T0R~
+//*CID://+v704R~:                             update#=  833;       //~v704R~
 //*************************************************************
 //*ufile1f.c
 //* get remote file/dir info by ftp
 //*************************************************************
+//v704:200615 coding bug for all                                   //~v704I~
 //v6T0:180129 xehosts;Port option support                          //~v6T0I~
 //v6L3:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~v6L3I~
 //v6J0:170205 malloc udirlist filename to  allow more large number of fine in the dir//~v6J0I~
@@ -233,7 +234,8 @@ int uftplshome(PUFTPHOST Ppuftph,int Popt,char *Pfpnm,PUDIRLIST Ppudl)//~v61cR~
     	uftp_udirlist_setname(0,Ppuftph,Ppudl,Pfpnm,0);            //~v6J0R~
     else                                                           //~v61cI~
 //  if (rc==ENOENT)                                                //~v61mR~
-    if (rc==ENOENT||ERROR_PATH_NOT_FOUND)                          //~v61mI~
+//  if (rc==ENOENT||ERROR_PATH_NOT_FOUND)                          //~v61mI~//~v704R~
+    if (rc==ENOENT||rc==ERROR_PATH_NOT_FOUND)                      //~v704I~
     {                                                              //~v61cI~
 //  	memset(Ppudl,0,UDIRLISTSZ); //clear value set before name compare//~v61cI~//~v6qaR~
 //  	UDIRLIST_WK_INIT(*Ppudl,(Ppudl)->slinkdummy); //clear value set before name compare//~v6qaR~//~v6J0R~
@@ -1841,7 +1843,7 @@ int uftpgethostsdata(int Popt,char *Pdata,int Plen,PUFTPHOST Ppufh)//~v6qeI~
         	rc=4;                                                  //~v5mBI~
         }                                                          //~v5mBI~
     }                                                              //~v5mBI~
-    UTRACEP("%s:portno=%d\n",UTT,Ppufh->UFTPHport);                //+v6T0R~
+    UTRACEP("%s:portno=%d\n",UTT,Ppufh->UFTPHport);                //~v6T0R~
     ufree(pbuff);
     if (pargc0)                                                    //~v5a7I~
 	    ufree(pargc0);                                             //~v5a7I~
@@ -2196,4 +2198,4 @@ int uftp_udirlist_setname(int Popt,PUFTPHOST Ppufh,PUDIRLIST Ppudl,char *Pname,s
 	rc|=(rc2<<8);                                                  //~v6J0R~
 #endif                                                             //~v6J0I~
 	return rc;                                                     //~v6J0R~
-}//uftpnodesrch                                                    //~v6J0I~
+}//uftp_udirlist_setname                                           //+v704R~

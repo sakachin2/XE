@@ -1,4 +1,4 @@
-//*CID://+v6X3R~:                             update#=  682;       //~v6X3R~
+//*CID://+v6X3R~:                             update#=  685;       //~v6X3R~
 //*********************************************************************//~7712I~
 //utf3.c                                                           //~7817R~
 //* utf8 data manipulation:os library                              //~7712R~
@@ -304,7 +304,7 @@ int utfwcwidth(int Popt,ULONG Pucs,int *Ppflag)                    //~v62UR~
 //****************                                                 //~v62UR~
 //#ifdef UTF8UCS4                                                    //~v65cR~//~v6uBR~
 //#ifdef TEST    //@@@@test                                                    //~v6C3I~//~v6V1R~//~v6VbR~//~v6VoR~
-if (Pucs==0x0300||Pucs==0x23ce||Pucs==0x093f||Pucs==0xe000||Pucs==0x1161||Pucs==0x01d16d||Pucs==0x20001||Pucs==0xe0001)//@@@@test//~v6V2R~//~v6VbR~//~v6VoR~//~v6VtR~
+if (Pucs==0x2f00||Pucs==0x0300||Pucs==0x23ce||Pucs==0x093f||Pucs==0xe000||Pucs==0x1161||Pucs==0x01d16d||Pucs==0x20001||Pucs==0xe0001)//@@@@test//~v6V2R~//~v6VbR~//~v6VoR~//~v6VtR~//+v6X3R~
 {                                                                  //~v6VoI~
       UTRACEP("ucs=%04x\n",Pucs);                                  //~v6BCR~//~v6C3R~
 }                                                                  //~v6VoI~
@@ -761,7 +761,7 @@ int utfwcwidthsub(ULONG Pucs)                                      //~v62UR~
     if (UDBCSCHK_ISDBCS())	//CJK(including JP)                    //~v62UR~
     {                                                              //~v62UR~
 #ifdef UTF8UCS2	//for latin UTF8                                   //~v640I~
-      if (!(Popt & UTFWWO_NOCJKU))	//adjust tbl by test           //~v640I~
+       if (!(Popt & UTFWWO_NOCJKU))	//adjust tbl by test           //~v640I~
 #endif                                                             //~v640I~
       {                                                            //~v640I~
     	datatype=utftbsrch_cjk(Pucs);//ajust by test               //~v62UR~
@@ -1852,9 +1852,9 @@ int utftbsrch_j(ULONG Pucs)                                        //~7925I~
     if (datatype==UCODETB_WIDE)                                    //~v6VoI~
         datatype=(UTFWWF_F2C1|2);  //wide font                     //~v6VoI~
   if (datatype)                                                    //~v6X3I~
-  {                                                                //+v6X3I~
+  {                                                                //~v6X3I~
     UTRACEP("%s:ucs=%06x,datatype=%x\n",UTT,Pucs,datatype);        //~v6WpR~
-  }                                                                //+v6X3I~
+  }                                                                //~v6X3I~
     return datatype;                                               //~7925I~
 }//utftbsrch_j                                                     //~7925I~
 #endif	//W32                                                      //~v640I~

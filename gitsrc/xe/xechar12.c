@@ -1,9 +1,9 @@
-//*CID://+vb2DR~:                             update#=   67;       //+vb2DR~
+//*CID://+vb2DR~:                             update#=   75;       //~vb2DR~
 //*************************************************************
 //*xechar12.c                                                      //~va1qR~
 //*utf8 char input edit for cmdline,panutil etc                    //~va1qI~
 //*************************************************************
-//vb2D:160221 LNX compiler warning                                 //+vb2DI~
+//vb2D:160221 LNX compiler warning                                 //~vb2DI~
 //vb2C:160221 W32 compiler warning                                 //~vb2CI~
 //vaw1:140523 (Win:UNICODE)dbcsid:overflow for ucs4 on Windows     //~vaw1I~
 //vafk:120624 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  use ULPTR(unsigned __int64/ULONG)//~vafkI~
@@ -99,8 +99,8 @@ void chartabclear(UCHAR *Pdbcs,int Plen)                        //~5125I~
 	for (reslen=Plen,pdbcs=Pdbcs;reslen>0;)                        //~va1qI~
     {                                                              //~va1qI~
 //*no TABCHAR on dbcstbl for ebcfile                               //~va3KI~
-//  	pdbcsn=memchr(pdbcs,TABCHAR,reslen);                       //~va1qI~//+vb2DR~
-    	pdbcsn=memchr(pdbcs,TABCHAR,(size_t)reslen);               //+vb2DI~
+//  	pdbcsn=memchr(pdbcs,TABCHAR,reslen);                       //~va1qI~//~vb2DR~
+    	pdbcsn=memchr(pdbcs,TABCHAR,(size_t)reslen);               //~vb2DI~
         if (!pdbcsn)                                               //~va1qI~
         	break;                                                 //~va1qI~
 //      chklen=(int)((ULONG)pdbcsn-(ULONG)pdbcs);                  //~va1qI~//~vafkR~
@@ -118,8 +118,8 @@ void chartabclear(UCHAR *Pdbcs,int Plen)                        //~5125I~
     }                                                              //~va1qI~
 	for (reslen=Plen,pdbcs=Pdbcs;reslen>0;)                        //~va1qI~
     {                                                              //~va1qI~
-//  	pdbcsn=memchr(pdbcs,TABPADCHAR,reslen);                    //~va1qI~//+vb2DR~
-    	pdbcsn=memchr(pdbcs,TABPADCHAR,(size_t)reslen);            //+vb2DI~
+//  	pdbcsn=memchr(pdbcs,TABPADCHAR,reslen);                    //~va1qI~//~vb2DR~
+    	pdbcsn=memchr(pdbcs,TABPADCHAR,(size_t)reslen);            //~vb2DI~
         if (!pdbcsn)                                               //~va1qI~
         	break;                                                 //~va1qI~
 //      chklen=(int)((ULONG)pdbcsn-(ULONG)pdbcs);                  //~va1qI~//~vafkR~
@@ -204,6 +204,7 @@ int chargetkbdutf8(int Popt,PUCLIENTWE Ppcw,UCHAR **Pputf8,int *Pputf8len,int *P
 	UCHAR *keyindata,*keyindata_utf8;                              //~va0WI~
 	int keyindatalen,keyindatalen_utf8,kbdct,opt;                  //~va0WI~
 //*******************************                                  //~va0WI~
+    UTRACEP("%s:opt=x%x,Gutfmode2x%x,UCWflag3=x%x,UCWflag2=x%x\n",UTT,Popt,Gutfmode2,Ppcw->UCWflag3,Ppcw->UCWflag2);//+vb2DI~
 	keyindata_utf8=keyindata=Ppcw->UCWkeydata;                     //~va0WI~
 //  keyindatalen_utf8=keyindatalen=Ppcw->UCWkeytype;               //~va1cR~
     if (Popt & CFEUO_LENPARM)                                      //~va1cR~
@@ -288,8 +289,8 @@ int chargetkbdutf8(int Popt,PUCLIENTWE Ppcw,UCHAR **Pputf8,int *Pputf8len,int *P
     if (!UTF8ISASCII(*(Ppcw->UCWkeydata_utf8str)))                 //~va3KR~
     {                                                              //~va3KI~
     	keyindata_utf8=Ppcw->UCWkeydata_utf8str;                   //~va3KI~
-//  	keyindatalen_utf8=strlen(keyindata_utf8);                  //~va3KI~//+vb2DR~
-    	keyindatalen_utf8=(int)strlen(keyindata_utf8);             //+vb2DI~
+//  	keyindatalen_utf8=strlen(keyindata_utf8);                  //~va3KI~//~vb2DR~
+    	keyindatalen_utf8=(int)strlen(keyindata_utf8);             //~vb2DI~
         kbdct=XEUTFCT_UTF8;                                        //~va3KI~
     }                                                              //~va3KI~
   }                                                                //~va3KI~
@@ -312,8 +313,8 @@ int chargetkbdutf8(int Popt,PUCLIENTWE Ppcw,UCHAR **Pputf8,int *Pputf8len,int *P
 		if (UCBITCHK(Ppcw->UCWflag2,UCWF2UTF8STR))  //kbdinput by utf8 str//~va10R~
     	{                                                          //~va10I~
     		keyindata_utf8=Ppcw->UCWkeydata_utf8str;               //~va10I~
-//  		keyindatalen_utf8=strlen(keyindata_utf8);              //~va10I~//+vb2DR~
-    		keyindatalen_utf8=(int)strlen(keyindata_utf8);         //+vb2DI~
+//  		keyindatalen_utf8=strlen(keyindata_utf8);              //~va10I~//~vb2DR~
+    		keyindatalen_utf8=(int)strlen(keyindata_utf8);         //~vb2DI~
         }                                                          //~va10I~
         else                                                       //~va10I~
         {                                                          //~va10I~
@@ -337,7 +338,7 @@ int chargetkbdutf8(int Popt,PUCLIENTWE Ppcw,UCHAR **Pputf8,int *Pputf8len,int *P
 	    *Pputf8len=keyindatalen_utf8;                              //~va0WR~
     if (Ppcodetype)                                                //~va0WI~
 	    *Ppcodetype=kbdct;                                         //~va0WR~
-    UTRACEP("charfldeditu8 codetype=%d\n",kbdct);                  //~va0XI~
+    UTRACEP("%s:kbdct=%d\n",UTT,kbdct);                  //~va0XI~ //+vb2DR~
     return (kbdct==XEUTFCT_UTF8);                                  //~va0WI~
 }//chargetkbdutf8                                                  //~va0WI~
 //**************************************************               
@@ -409,7 +410,8 @@ static UCHAR Sdbcsidgb4[]=UDBCSCHK_DBCSIDSTRGB4;                   //~va1cR~
   {                                                                //~va0xI~
     kbdct=0;                                                       //~va0xI~
   }                                                                //~va0xI~
-UTRACEP("charfldeditu8 kbdct=%x,ucwflag2=%x,gutfmode=%x,keyindatalen=%d,keyindatalenutf8=%d\n",kbdct,Ppcw->UCWflag2,Gutfmode2,keyindatalen,keyindatalen_utf8);//~va0xM~//~va0NR~
+UTRACEP("%s:curcol=%d,endcol=%d\n",UTT,Pcurcol,Pendcol);           //~vb2DR~
+UTRACEP("charfldeditu8 kbdct=%x,ucwflag2=%x,gutfmode=%x,keyindatalen=%d,keyindatalenutf8=%d\n",kbdct,Ppcw->UCWflag2,Gutfmode2,keyindatalen,keyindatalen_utf8);//~vb2DI~
 UTRACEP("keyindata=%x,keyindata_utf8=%x\n",*keyindata,*keyindata_utf8);//~va0NI~
 //	pc=Pbuff+Pcurcol;                                              //~vaanR~
 //	pcd=Pdbcs+Pcurcol;                                             //~vaanR~
@@ -418,14 +420,14 @@ UTRACEP("keyindata=%x,keyindata_utf8=%x\n",*keyindata,*keyindata_utf8);//~va0NI~
     pcd0=Pdbcs+Pstartcol;                                          //~va0tR~
     pcu0=Pbuffutf8; //use from top                                 //~va0tR~
     pct0=Pcodetype;                                                //~va0tR~
-//  tgtlenu8=ustrnlen(pcu0,Pbuffszu8);                             //~vaanI~//+vb2DR~
-    tgtlenu8=(int)ustrnlen(pcu0,(UINT)Pbuffszu8);                  //+vb2DI~
+//  tgtlenu8=ustrnlen(pcu0,Pbuffszu8);                             //~vaanI~//~vb2DR~
+    tgtlenu8=(int)ustrnlen(pcu0,(UINT)Pbuffszu8);                  //~vb2DI~
     if (opt0 & CFEO_OPTCMDLINE)     //mixed fld update                             //~va0tI//~vaanR~
     {                                                              //~vaanM~
 		rc2=cmdlinepos2offs(0,Ppcw,pcu0,pcd0,pct0,Pstartcol,Pcurcol,tgtlenu8,&offsu8,&ddstrlen,&u8pos,&paddlen);//~vaanR~//~vaarR~
 		if (rc2>=0)	//ddfmt                                        //~vaanM~
         {                                                          //~vaanM~
-UTRACEP("cmdlinepos2offs curcol=%d-->%d\n",Pcurcol,u8pos+Pstartcol);//~vaanR~
+UTRACEP("%s:after cmdlinepos2offs curcol=%d-->%d\n",UTT,Pcurcol,u8pos+Pstartcol);//~vaanR~//~vb2DR~
         	Pcurcol=u8pos+Pstartcol;                               //~vaanR~
         }                                                          //~vaanM~
     }                                                              //~vaanM~
@@ -436,9 +438,9 @@ UTRACEP("cmdlinepos2offs curcol=%d-->%d\n",Pcurcol,u8pos+Pstartcol);//~vaanR~
     lenl=Pcurcol-Pstartcol;	//lefthand of cursor                   //~va0tR~
     lenlc=Pendcol-Pstartcol;	//lefthand of cursor               //~va0tR~
 //  tgtlenu8=ustrnlen(pcu0,Pbuffszu8);                             //~va0tR~//~vaanR~
-UTRACED("plc",pc0,(int)strlen(pc0));                                    //~va0tR~//+vb2DR~
-UTRACED("pdbcs",pcd0,(int)strlen(pc0));                                 //~va0tR~//+vb2DR~
-UTRACED("pct",pct0,(int)strlen(pc0));                                   //~va0tR~//+vb2DR~
+UTRACED("plc",pc0,(int)strlen(pc0));                                    //~va0tR~//~vb2DR~
+UTRACED("pdbcs",pcd0,(int)strlen(pc0));                                 //~va0tR~//~vb2DR~
+UTRACED("pct",pct0,(int)strlen(pc0));                                   //~va0tR~//~vb2DR~
 UTRACED("pu8",pcu0,tgtlenu8);                                      //~va0tR~
     if (lenr>0)	//                                                 //~va0tR~
     {                                                              //~va0tR~
@@ -720,10 +722,10 @@ UTRACED("pu8",pcu0,tgtlenu8);                                      //~va0tR~
 #endif                                                             //~va0tR~
 //----------                                                       //~va0tR~
 	scrclearconfirmmsg();	//clear confirmation msg               
-UTRACED("OUT plc",pc0,(int)strlen(pc0));                                //~va0tR~//+vb2DR~
-UTRACED("OUT pdbcs",pcd0,(int)strlen(pc0));                             //~va0tR~//+vb2DR~
-UTRACED("OUT pct",pct0,(int)strlen(pc0));                               //~va0tR~//+vb2DR~
-UTRACED("OUT pu8",pcu0,(int)strlen(pcu0));                                  //~va0tR~//~va0NR~//+vb2DR~
+UTRACED("OUT plc",pc0,(int)strlen(pc0));                                //~va0tR~//~vb2DR~
+UTRACED("OUT pdbcs",pcd0,(int)strlen(pc0));                             //~va0tR~//~vb2DR~
+UTRACED("OUT pct",pct0,(int)strlen(pc0));                               //~va0tR~//~vb2DR~
+UTRACED("OUT pu8",pcu0,(int)strlen(pcu0));                                  //~va0tR~//~va0NR~//~vb2DR~
 	return 0;                                                      
 }//charfldeditu8                                                  //+va0tR//~va0tR~
 //**************************************************               //~vaanM~
@@ -738,14 +740,21 @@ int cmdlinepos2offs(int Popt,PUCLIENTWE Ppcw,UCHAR *Pputf8,UCHAR *Ppdbcs,UCHAR *
     char *dddbcs;                                                  //~vaanM~
     int pos,paddlen;                                               //~vaarI~
 //*******************                                              //~vaanM~
+    UTRACEP("%s:startcol=%d,curcol=%d,u8len=%d\n",UTT,Pstartcol,Pcurcol,Pu8len);//~vb2DI~
+    UTRACED("cmdlinepos2offs Pputf8",Pputf8,12);	//TODO test    //~vb2DR~
+    UTRACED("cmdlinepos2offs Ppdbcs",Ppdbcs,12);	//TODO test    //~vb2DR~
+    UTRACED("cmdlinepos2offs Pcodetb",Pcodetb,12);	//TODO test    //~vb2DR~
 	psd=Ppcw->UCWpsd+CMDLINENO;                                    //~vaanM~
     UTRACEP("cmdlinepos2offs psd=%p,flag3=%d\n",psd,psd->USDflag3);//~vaanM~
 //  if (!(psd->USDflag3 & USDF3DDFMT))                             //~vaanM~//~vaarR~
 	if (!UCBITCHK(Ppcw->UCWflag2,UCWF2CMDLINEDD))                  //~vaarI~
     	return -1;                                                 //~vaanM~
+    UTRACED("cmdlinepos2offs Putf8",Pputf8,Pu8len);                //~vb2DI~
 	dddbcs=psd->USDdbcs+Pstartcol;                                 //~vaanM~
     ucslen=psd->USDddfldlen;                                       //~vaanM~
     pos=Pcurcol-Pstartcol;                                         //~vaarI~
+    UTRACEP("cmdlinepos2offs pos=%d,ucslen=%d,curcol=%d,startcol=%d\n",pos,ucslen,Pcurcol,Pstartcol);//~vb2DI~
+    UTRACED("cmdlinepos2offs dddbcs",dddbcs,pos);                  //~vb2DI~
     if (pos>ucslen)                                                //~vaarI~
     	paddlen=pos-ucslen;                                        //~vaarI~
     else                                                           //~vaarI~
@@ -755,6 +764,9 @@ int cmdlinepos2offs(int Popt,PUCLIENTWE Ppcw,UCHAR *Pputf8,UCHAR *Ppdbcs,UCHAR *
     rc=utfddgetucsctr(0,dddbcs,ucslen,Pcurcol-Pstartcol,&ucsctr);  //~vaanM~
     if (rc>1)	//ddfmt err                                        //~vaanM~
     	return -1;                                                 //~vaanM~
+    UTRACEP("cmdlinepos2offs utfddgetucsctr ucsctr=%d\n",ucsctr);  //~vb2DI~
+    UTRACED("cmdlinepos2offs Pdbcs",Ppdbcs,Pu8len);                //~vb2DI~
+    UTRACED("cmdlinepos2offs Pcodetb",Pcodetb,Pu8len);             //~vb2DI~
 	utfctr2offs(0,Pputf8,Ppdbcs,Pcodetb,ucsctr,Pu8len,&offsu8,&width);//~vaanM~//~vaarR~
     *Ppu8offs=offsu8;                                              //~vaanM~
     *Ppddlen=ucslen;                                               //~vaanM~

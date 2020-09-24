@@ -1,7 +1,8 @@
-//*CID://+v6M2R~:                             update#=  151;       //~v6M0R~//~v6M2R~
+//*CID://+v701R~:                             update#=  154;       //~v701R~
 //************************************************************* //~5825I~
 //*proc.h                                                       //~5A10R~
 //************************************************************* //~5825I~
+//v701:200611 usystem hung warning                                 //~v701I~
 //v6M2:170824 (Bug)v6M0 faile if path is multiple devided by ";"/":"//~v6M2I~
 //v6M0:170808 err "LoadLibrary failed for icuucxx"-=>loaddll using ICU_DATA param//~v6M0I~
 //v6H8:170109 (BUG)FTP del dir fail(remains subdir)                //~v6H8I~
@@ -53,6 +54,13 @@
 //v064:970210:uexecchk function add(current and path search for chk executable)//~v064I~
 //*951010 new                                                   //~5A10I~
 //************************************************************* //~5A10I~
+#ifdef UPROC_GBLDEF                                                //+v701R~
+           int GuprocStat;                                         //+v701R~
+#else                                                              //~v39kR~//+v701R~
+    extern int GuprocStat;                                         //+v701R~
+#endif                                                             //~v62XI~//+v701R~
+#define GUPS_SYSTEMCALL  0x01                                      //+v701R~
+                                                                   //~v701I~
 #define UPROC_MAX_CMDSVRCMD  4096                                  //~v5ezR~
 #define UPROC_MAX_CMDSVRCMD2 (UPROC_MAX_CMDSVRCMD+32)	//overhead //~v5ezR~
 #define UPROC_MAX_CMDSVRBUF  (UPROC_MAX_CMDSVRCMD2+_MAX_PATH+_MAX_PATH)	//redirect specificatione//~v5ezR~
@@ -243,7 +251,7 @@ int uproc_loaddll(int Popt,char *Pdllname,char *Pversion,ULPTR *Pphandle);//~v6h
 #define UPLD_NOW      0x02         //RTLD_NOW                      //~v6f8I~
 #define UPLD_ALTPATH  0x04         //LoadLibraryEx with LOAD_WITH_ALTERED_SEARCH_PATH//~v6M0I~
 #define UPLD_DELEMSG  0x08         //ugeterrmsg to delete previous uerrmsg//~v6M2I~
-#define UPLD_SETICUDATAENV 0x10    //Linux:set also ICU_DATA env var//+v6M2R~
+#define UPLD_SETICUDATAENV 0x10    //Linux:set also ICU_DATA env var//~v6M2R~
 int uproc_loaddllpath(int Popt,char *Ppath,char *Pdllname,char *Pversion,ULPTR *Pphandle);//~v6M0I~
 //*************************************************************************//~v5mPI~
 //int uproc_getdllproc(int Popt,ULONG Phandle,char *Pprocname,char *Pprocver,ULONG *Ppprocaddr);//~v5mPI~//~v6hhR~

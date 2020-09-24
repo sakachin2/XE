@@ -1,8 +1,9 @@
-//*CID://+vbi3R~:                             update#=  545;       //~vbi3R~
+//*CID://+vbrgR~:                             update#=  548;       //+vbrgR~
 //************************************************************* //~5428I~
 //* xefunc2.c
 //*        func_char,quit,term,exit,reset,retrieve,help,key,exe    //~v55nR~
 //*************************************************************
+//vbrg:200824 (AXE)xehelp is now included in assets folder         //+vbrgI~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vb86:170216 display cmdline ctr excluded(fcmd:x,xx; lcmd x)      //~vb86I~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
@@ -944,6 +945,7 @@ UTRACEP("funct2getinputgc rc=%d,type=%d,data=%x%x\n",rc,Ppcw->UCWkeytype,*Ppcw->
 #else                                                              //~va3xI~
     UCBITOFF(Ppcw->UCWflag3,UCWF3HEXKBD);                          //~v778R~
 #endif                                                             //~va3xI~
+	UTRACEP("%s:after func_char rc=%d,reason=0x%x\n",UTT,rc,Ppcw->UCWreason);//~vbi3R~
     if (rc)                                                        //~v778R~
 		return rc;
     if (Ppcw->UCWreason==UCWREASON_CHLNOSPLIT)                     //~vbi3I~
@@ -1427,8 +1429,10 @@ int func_help(PUCLIENTWE Ppcw)                                  //~5428I~
 	        if (ufstat(fpathwk2,0))                                //~v71AM~
             {                                                      //~v71AM~
 #ifdef ARM                                                         //~vaghI~
-		    	uerrmsg("%s not found, did you installed AxeAsset(Settings->Download additional Asset)",//~vaghI~
-    	        		"%s が見つかりません、AxeAssetは導入済？(設定-->追加のAssetダウンロード)",//~vaghI~
+//  	    	uerrmsg("%s not found, did you installed AxeAsset(Settings->Download additional Asset)",//~vaghI~//+vbrgR~
+//  	        		"%s が見つかりません、AxeAssetは導入済？(設定-->追加のAssetダウンロード)",//~vaghI~//+vbrgR~
+    	    	uerrmsg("%s not found.",                           //+vbrgI~
+    	        		"%s が見つかりません",                     //+vbrgI~
         	            	fpathwk2);                             //~vaghI~
 #else                                                              //~vaghI~
 		    	uerrmsg("%s not found(\"%cHD\" command line parameter err)",//~v71AM~
@@ -2375,7 +2379,7 @@ int funcretrieve(PUCLIENTWE Ppcw,int Pdest)                     //~v04hR~
 	return rc;                                                  //~v04hR~
 }//funcretrieve                                                 //~5114I~
 //**************************************************************** //~vbi3I~
-int funcretrievepsc(int Popt,PUCLIENTWE Ppcw,PUSCMD Ppsc,void *Pplh)//+vbi3R~
+int funcretrievepsc(int Popt,PUCLIENTWE Ppcw,PUSCMD Ppsc,void *Pplh)//~vbi3R~
 {                                                                  //~vbi3I~
     int datalen,pos;                                               //~vbi3R~
 //**************************************************               //~vbi3I~

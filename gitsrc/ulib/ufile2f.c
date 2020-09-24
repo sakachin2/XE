@@ -1,9 +1,10 @@
-//*CID://+v6H7R~:                             update#=  410;       //~v6H7R~
+//*CID://+v702R~:                             update#=  411;       //+v702R~
 //************************************************************* //~5903R~
 //*ufile2f.c                                                       //~v56jR~
 //*  FTP  version of                                               //~v56jR~
 //      rename,remove,umkdir,urmdir,uattrib,ugetftime,usetftime,ucopypathinfo//~v56jR~
 //************************************************************* //~5617I~
+//v702:200615 ARM compiler warning                                 //+v702I~
 //v6H7:170108 FTP crush by long name                               //~v6H7I~
 //v6Dk:160625 (BUG)ftp may clash when cmd failed                   //~v6DkI~
 //v6Di:160625 for compiler warning,-Wformat-security(not literal printf format)//~v6DiI~
@@ -1508,7 +1509,7 @@ int uftpsmbj_multirenamesub(int Popt,PUFWF2PARM Ppvoid,UQUEH *Ppqh)//~v6daI~
     PUFWF2PARM pwf2p;                                              //~v6daI~
     int rc=0,reqctr,ii,filectr=0;                                  //~v6daI~
 	PUFTPMULTIRENAME pfmr;                                         //~v6daI~
-    UCHAR renameopd[FTP_MAXPATH+FTP_MAXPATH+4];                    //~v6daI~
+//  UCHAR renameopd[FTP_MAXPATH+FTP_MAXPATH+4];                    //~v6daI~//+v702R~
     UCHAR newname[FTP_MAXPATH];                                    //~v6daI~
     PUFTPHOST puftph;                                              //~v6daI~
 //***********************************                              //~v6daI~
@@ -1706,7 +1707,7 @@ int uxdelsubftp(UCHAR *Pfile,ULONG Pattr,unsigned Pattrmask,int Pdeldirsw,FILESZ
 //read only process                                                //~v6H7I~
     (*Spdelfctr)++;        //processed ctr(contain skip ctr)       //~v6H7R~
 	UTRACEP("%s delfctr=%d,attr=%x,fnm=%s\n",UTT,*Spdelfctr,Pattr,Pfile);//~v6H7R~
-//  slinksw=FILE_ISSLINK(Pattr);                                   //+v6H7R~
+//  slinksw=FILE_ISSLINK(Pattr);                                   //~v6H7R~
     ronlysw=UCBITCHK(Pattr,FILE_READONLY);                         //~v6H7I~
 #ifdef UNX                                                         //~v6H7I~
     if (Pattr & FILE_WILDNAME)                                     //~v6H7I~

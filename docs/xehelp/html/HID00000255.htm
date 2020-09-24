@@ -46,7 +46,7 @@ a:hover{font-weight:bold;}-->
  +--------+--------+------------------------------------------------+
  |<a href="HID00000599.htm">d:</a>      |        |set default drive, d is drive letter(a,B,c etc.)|
  |        |        |  #ifdef W32                                    |
- |        |        |    &quot;\:&quot; means pshude drive for shared file     |
+ |        |        |    &quot;\:&quot; means pseudo drive for shared file     |
  |        |        |  #endif                                        |
  +--------+--------+------------------------------------------------+
  #ifdef WXEXXE
@@ -58,7 +58,7 @@ a:hover{font-weight:bold;}-->
    - These command in the [Table 5] is processed internaly not
      passing control to shell processor,which have slightly difference
      with native shell command process.
-     Do not use &quot;<a href="HID00000273.htm">DOS</a>&quot; or its abrebiation &quot;&gt;&quot; to process internaly,
+     Do not use &quot;<a href="HID00000273.htm">DOS</a>&quot; or its abbreviation &quot;&gt;&quot; to process internally,
      To use native command of same verb,specify &quot;DOS&quot; or &quot;&gt;&quot;.
      ex. &quot;DEL abc&quot; is processed by XE,&quot;&gt;DEL abc&quot; is processed by shell.
    - Use &quot;DOS&quot; or &quot;&gt;&quot; to execute other commands not listed on the table.
@@ -86,21 +86,21 @@ a:hover{font-weight:bold;}-->
      termination code is displayed with command text.
      Some command return non zero value even if process is normary
      terminated. If so,you should clear command input line.
-     Check ::so using &quot;E ::so&quot; or &quot;B ::so&quot;.If you are openning multiple
+     Check ::so using &quot;E ::so&quot; or &quot;B ::so&quot;.If you are opening multiple
 #ifdef UNX
      session it may be ::so_,::so__,...etc.
 #else
      session it may be ::so!,::so!!,...etc.
 #endif
    - Under <a href="HID00000253.htm">Command Result Edit screen</a>,contents of ::so is copied after
-     the end of currently editting file. The line previously displayed
+     the end of currently editing file. The line previously displayed
      are scroll-upped then latest command result are displayed on the
      top of the screen.
      Files used by this screen is from ::so0 up to ::so9,and used
      circularly each time command edit screen opened.
-   - Some command may return other than 0 even if it is normaly
+   - Some command may return other than 0 even if it is normally
      processed. Input command string may remain on the command input line
-     if return code is not 0.You must clear it manualy.
+     if return code is not 0.You must clear it manually.
    - You can specify redirection to commands.
    - *\, **\ and ^*\ are useful as pathname of filename.
       *\  : id of directory containing source file/directory.

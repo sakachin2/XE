@@ -33,7 +33,7 @@ a:hover{font-weight:bold;}-->
                  You can select letter case by &quot;opt HEX {upper|lower}&quot; cmd.
              EN :<a href="HID00000239.htm">SPF file</a>(Col.73-80 is line-number,line length is fixed
                  to 80 byte. Last 2 digit(col.79-80) is line update counter
-                 automaticaly maintained.
+                 automatically maintained.
              EC :80 byte <a href="HID00000226.htm">COBOL</a> file with col.1-6 is line-number.
                  EL is alias.
              EK :80 byte COBOL file with col.1-6 is space.
@@ -51,7 +51,7 @@ a:hover{font-weight:bold;}-->
             NOCAP:Upper-case translation is not done.
                   Use to deny default setting by CAP command.
             TC   :TabClear. Tab is replaced by some count of space at save.
-                  Count is as you see and controled by TAB command.
+                  Count is as you see and controlled by TAB command.
             NOTC :Use to deny the default TC option for the file opened by
                   en command.
             NB   :skip temporarily backup at file save.
@@ -67,13 +67,13 @@ a:hover{font-weight:bold;}-->
             Fn[-m]:set max line length to n and left margin to m.
                    Column over n is protected to input.
                    Use n=0 to deny the protection for TSO file with RECFM=Fx.
-            Fvfmt:VariableLengthRecord file record header formt.
+            Fvfmt:VariableLengthRecord file record header format.
                     RDW:LLZZ format(2 byte length filed+0x0000, length is containing header length),default.
                     H  :2 byte LL including header length itself.
                     HD :halfword LL not including header length.
                     F  :fullword LL including header length itself.
                     FD :fullword LL not including header length.
-                    MF :Microfocus convetion.
+                    MF :Microfocus convention.
                         System record at top of the file indicates header length is halfword or fullword.
                         (I do not care role of system record, don't upload the file updated by xe.)
 
@@ -91,7 +91,7 @@ a:hover{font-weight:bold;}-->
               (&quot;b&quot; means binary mode open.)
               Uppercase means explicit CPxx specification including the case by saved value in the profile.
               Re-load by CPLC when translation error if no CPU8 option or CPU8 is not registered on profile.
-              UTF cmd can chage the default and CPLC reload option.
+              UTF cmd can change the default and CPLC reload option.
 
             IE  : You can not open by edit mode if translation error occured.
                   To force open, use &quot;IE&quot; option.
@@ -108,7 +108,7 @@ a:hover{font-weight:bold;}-->
                   xe display by locale code if utf16--&gt;locale code translation succeeded,
                   else display by unicode with color green.
 
-            Use &quot;O&quot; dirlist line cmd to specify diffrent option with dirlist opened.
+            Use &quot;O&quot; dirlist line cmd to specify different option with dirlist opened.
 #endif
 
             -L  :when open using wild card,list not file but dir list
@@ -128,7 +128,7 @@ a:hover{font-weight:bold;}-->
                             For ex, if /Mpt is specified, single 0x0a is not EOL-ID
                             but it is new EOL-ID at next open after saved.
                      (Note) &quot;ET&quot; cmd check 0x15 as EOL character for EBCDIC file.
-                            Othe other hands, /Mt recognize 0x0a and 0x0d0a as EOL character.
+                            On the other hands, /Mt recognize 0x0a and 0x0d0a as EOL character.
               M:Mac  mode  :0x0d   is line delimitter.
               E:EBCDIC mode:0x15   is line delimiter.
               R:<A href="HID_RECORD_E.htm">Fixed Length Record mode</A>

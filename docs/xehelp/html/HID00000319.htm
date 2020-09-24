@@ -17,7 +17,7 @@ a:hover{font-weight:bold;}-->
         TAB {on [altch] | off | clear | =default | nn [asdefault] }
             on      :display tab char and <a href="HID00000217.htm">DBCS</a>(Japanese) space.
                      Char used to display tab and its following space
-                     is customaizable by <a href="HID00000209.htm">.INI file</a> parameter.
+                     is customizable by <a href="HID00000209.htm">.INI file</a> parameter.
                      Default is Tab       :Up-arrow
                                 Tab-skip  :Right arrow
                                 DBCS space:shadow box
@@ -28,16 +28,16 @@ a:hover{font-weight:bold;}-->
             =default:set this file's tabctr to the default setting.
             nn      :Tab column interval,default is 4.
                      With &quot;asdefault&quot;, set default tabctr.
-                     Without &quot;asdefault&quot;, set the tabctr of currentry opened
+                     Without &quot;asdefault&quot;, set the tabctr of current opened
                      and profile record is updated.
                      Tab key cause cursor jump not to next tab column
                      but jump to next field when default tab column is 0.
                      Maximum 12.
                      1 is forced to the file opened by record mode.
             altch   :Change char to display TAB/DBCS-space char.
-                     On Windows command prompt, unicode charcter display-column-width depends its font settiong.
+                     On Windows command prompt, unicode character display-column-width depends its font settiong.
                      If you use ASCII char as alt-displaying-char of TAB and TAB padding space char.
-                     If you yet use prefered unicode for TAB and TAB padding, use this altch option.
+                     If you yet use preferred unicode for TAB and TAB padding, use this altch option.
                      On wxe,gxe,Linux xe, it may not be occur.
                      Default is U-21be(display TAB:0x09), U-21c0(Display spaces skipped by TAB)
                      and U-2591(DBCS-space),

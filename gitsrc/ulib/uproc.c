@@ -1,9 +1,11 @@
-//*CID://+v6L2R~:                             update#=  341;       //+v6L2R~
+//*CID://+v70cR~:                             update#=  350;       //~v70cR~
 //************************************************************* //~5825I~
 //*uproc.c                                                         //~v5anR~
 //* usystem,uspawnl,uspawnlp,uspawnvp,uexecchk                     //~v065R~
 //*************************************************************    //~v022I~
-//v6L2:170624 (Win) add msi as executable                          //+v6L2I~
+//v70c:200625 =6 cmd;cmd not found, setenv in not work             //~v70cI~
+//v701:200611 usystem hung warning                                 //~v6L2I~
+//v6L2:170624 (Win) add msi as executable                          //~v6L2I~
 //v6L1:170624 (BUG:64bit) "&" dirlist cmd 0c4(ptr size4 and 8)     //~v6L1I~
 //v6yc:150314 change errmsg for xesyscmd breaked case              //~v6ycI~
 //v6xk:150115 (BUG:W32)spwanxx deplicated,use _spawnxx(return intptr_t, Linux returns int pid)//~v6xkI~
@@ -130,7 +132,10 @@
                                                                    //~v022I~
 #include <ulib.h>                                               //~5825I~
 #include <uerr.h>                                               //~5A10I~
+                                                                   //~v6L2I~
+#define UPROC_GBLDEF                                               //~v6L2I~
 #include <uproc.h>                                              //~5A10I~
+                                                                   //~v6L2I~
 #include <uproc2.h>                                                //~v5maI~
 #include <ufile.h>                                                 //~v064I~
 #include <ufile2.h>                                                //~v59dI~
@@ -147,6 +152,7 @@
 	#ifdef LNX                                                     //~v5g9I~
 		#include <ukbdl.h>                                         //~v5g9I~
 	#endif                                                         //~v5g9I~
+	#include <ulibarm.h>                                           //~v70cI~
 #else                                                              //~v61pI~
     #ifdef WINCON                                                  //~v61pI~
 		#include <ukbd.h>                                          //~v61pI~
@@ -167,7 +173,7 @@ static char *Sextlist[]={                                          //~v064M~
 #ifdef DOS                                                         //~v064M~
 #else                                                              //~v064M~
                         "cmd",                                     //~v064M~
-                        "msi",                                     //+v6L2R~
+                        "msi",                                     //~v6L2R~
 #endif                                                             //~v064M~
                         "bat"};                                    //~v064M~
 #endif //!UNX                                                      //~v327I~
@@ -345,14 +351,25 @@ int usystem(char *Pcmd)                                         //~5A10I~
     char *pc;                                                   //~5A15I~
 //*********************                                         //~5A10I~
     UTRACED("Pcmd",Pcmd,(int)strlen(Pcmd));                        //~v6xiR~
+    UTRACEP("%s:Pcmd=%s,envPATH=%s\n",UTT,Pcmd,getenv("PATH"));      //~v701I~//~v70cR~
+//#ifdef ARM                                                       //+v70cR~
+//    #ifdef XXE                                                   //+v70cR~
+//        setArmEnvPATH();    //TODO test                          //+v70cR~
+//    #endif                                                       //+v70cR~
+//#endif                                                           //+v70cR~
+    GuprocStat|=GUPS_SYSTEMCALL;                                   //~v701R~
 #ifdef W32UNICODE                                                  //~v6upI~
 //    if (strchr(Pcmd,UD_NOTLC))                                   //~v6upR~
 //        rc=usystemW(0,Pcmd);                                     //~v6upR~
 //    else                                                         //~v6upR~
     	rc=system(Pcmd);                                           //~v6upI~
+    GuprocStat&=~GUPS_SYSTEMCALL;                                  //~v701R~
     if (rc)                                                        //~v6upI~
 #else                                                              //~v6upI~
-    if (rc=system(Pcmd),rc)                                     //~5A15R~
+//  if (rc=system(Pcmd),rc)                                        //~v701R~
+    rc=system(Pcmd);                                               //~v701R~
+    GuprocStat&=~GUPS_SYSTEMCALL;                                  //~v701R~
+    if (rc)                                                        //~v701R~
 #endif                                                             //~v6upI~
     {                                                           //~5A15I~
         pc=strpbrk(Pcmd," ,");      //search delm               //~5A15I~

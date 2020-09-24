@@ -1,4 +1,4 @@
-//*CID://+vaw1R~:                             update#=   85;       //~vaw1R~
+//*CID://+vaw1R~:                             update#=   88;       //~vaw1R~
 //************************************************************* //~5225I~
 // xecsr.c ***                                                  //~v05TR~
 //*************************************************************
@@ -575,6 +575,7 @@ int csronthefld(PUCLIENTWE Ppcw,int Prow,int Pfldno,int Poffs)  //~5223R~
 {
 	PUFLD pfl;
 //****************************
+	UTRACEP("%s:row=%d,fldno=%d,offs=%d\n",UTT,Prow,Pfldno,Poffs);//~vaw1I~
 	if (Pfldno==FROMLEFT)                                       //~v05wI~
 		Ppcw->UCWrcsrx=Poffs;                                   //~v05wI~
     else                                                        //~v05wI~
@@ -997,6 +998,7 @@ int func_right(PUCLIENTWE Ppcw)
 void csrcharright(PUCLIENTWE Ppcw)                              //~5423I~
 {                                                               //~5423I~
 //***************                                               //~5423I~
+	UTRACEP("%s",UTT);                                             //~vaw1I~
 	UCBITON(Gprocstatus,GPROCSCSRRIGHT);                        //~5423I~
 	return ;                                                    //~5423I~
 }//csrcharright                                                 //~5423I~
@@ -1017,7 +1019,7 @@ int prevposchk(void)
 		Gcsrposx=Sprevposx;
 //#ifdef WXE                                                       //~v64iR~
 //#ifdef UTF8UCS4                                                    //~va3xR~//~vaw1R~
-#ifdef UTF8UCS416       //FIXME test surrogate:FIXED               //+vaw1R~
+#ifdef UTF8UCS416       //FIXME test surrogate:FIXED               //~vaw1R~
 	#ifdef WXEXXE                                                  //~va3xR~
 		switch (UDBCSCHK_TEMPDBCSID(Gscrdbcstbl[Gcsrposy*Gscrbuffwidth+Gcsrposx]))//~va3xR~
 	#else                                                          //~va3xR~
@@ -1075,7 +1077,7 @@ int prevposchk(void)
   		Sprevposx=0;	//for the case kbd inpctr                  //~v09WI~
 //#ifdef WXE                                                       //~v64iR~
 //#ifdef UTF8UCS4                                                    //~va3xR~//~vaw1R~
-#ifdef UTF8UCS416       //FIXME test surrogate :FIXED              //+vaw1R~
+#ifdef UTF8UCS416       //FIXME test surrogate :FIXED              //~vaw1R~
 	#ifdef WXEXXE                                                  //~va3xR~
 		switch (UDBCSCHK_TEMPDBCSID(Gscrdbcstbl[Gcsrposy*Gscrbuffwidth+Gcsrposx]))//~va3xR~
 	#else                                                          //~va3xR~
@@ -1431,7 +1433,7 @@ int func_csrstep(PUCLIENTWE Ppcw)                               //~5225I~
             else                                                //~5225I~
             {                                                   //~5225I~
 				uerrmsg("Specify On/Off operand,toggle if no operand",//~5225I~
-						"オペランドに ON/OFF を指定して下さい,無指定は反転");//~5225I~
+						"オペランドに ON/OFF を指定して下さい,無指定は反転");//+vaw1I~
 				return 4;                                       //~5225I~
         	}                                                   //~5225I~
     }                                                           //~5225I~
@@ -1443,10 +1445,10 @@ int func_csrstep(PUCLIENTWE Ppcw)                               //~5225I~
                                                                 //~5423I~
 	if (UCBITCHK(Gscrstatus,GSCRSCSRDOWN))                      //~5225R~
     	uerrmsg("Now,Cursor mode is step-to-down",              //~5225I~
-    			"縦書きモードに設定");                          //~5225I~
+    			"縦書きモードに設定");                             //+vaw1I~
 	else                                                        //~5225I~
     	uerrmsg("Now,Cursor mode is step-to-right",             //~5225I~
-    			"横書きモードに設定");                          //~5225I~
+    			"横書きモードに設定");                             //+vaw1I~
 	return 0;                                                   //~5225I~
 }//func_csrstep                                                 //~5225I~
                                                                 //~5225I~

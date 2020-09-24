@@ -16,7 +16,7 @@ a:hover{font-weight:bold;}-->
    .Remote file access.
 
     #if defined(W32)
-      .UNC notation is availabe between Windows for shared files.
+      .UNC notation is available between Windows for shared files.
 
        ex). \\server/ip-addr\shared-folder\...\file-name
             If password required to login, use explorer or
@@ -26,7 +26,7 @@ a:hover{font-weight:bold;}-->
        maximum logon user count(XP-Home:5, XP-Pro:10),
        confirm it by &quot;net config server&quot; cmd.
        Timeout can be set by &quot;&quot;net config server /autodisconnect:&quot; cmd.
-       Network serach may be cause of delays of getting file.
+       Network search may be cause of delays of getting file.
        To check server name use &quot;net view&quot; cmd.
        &quot;net view \\server&quot; lists shared folders.
 
@@ -39,15 +39,15 @@ a:hover{font-weight:bold;}-->
           ControlPnel--&gt;Management--&gt;Service, Select WebClient and set invalid.)
        You may set accept/reject port:80 on server side to avoid timeout wait.
 
-       Special treatement to UNC notation.
-         All UNC format has psude drive &quot;\:&quot;.
-         You can set current-drive and current-path bu CD cmd or &quot;.&quot; line cmd
+       Special treatment to UNC notation.
+         All UNC format has psuedo drive &quot;\:&quot;.
+         You can set current-drive and current-path by CD cmd or &quot;.&quot; line cmd
          on dir-list.
-         ex) after &quot;cd \\server\dir&quot;,
-             \:abc is \\server\dir\abc, \:\abc is \\server\abc.
-             after \: if once CD seeiong completed.
-             (&quot;.&quot; line cmd set both current drive and path)
-             xyz is \\server\dir\xyz.
+         e.g) After &quot;cd <a href="file://server/dir">\\server\dir</a>&quot;,
+              \:abc is \\server\dir\abc, \:\abc is <a href="file://server/abc">\\server\abc</a>.
+              After \: if once CD setting completed,
+              (&quot;.&quot; line cmd set both current drive and path)
+              xyz is \\server\dir\xyz.
          Current-drive is not saved, but
          current-dir setting for \: is saved and effective on the next session.
          /R cmdline option recovers current drive for also drive &quot;\:&quot;.
@@ -71,7 +71,7 @@ a:hover{font-weight:bold;}-->
         For the case you have no privilege to mount shared resource,
         register remote (Samba or Windows) server in ::xehosts.
           ex)  &quot;w764  192.168.8.22 usrskt pswd  share=sharename
-        share parameter means to use smbclient(Linux version)/JCIFS(Android version)  to acess the remote system.
+        share parameter means to use smbclient(Linux version)/JCIFS(Android version)  to access the remote system.
         Android version's NODe cmd without password option is used for asynchronous connection test.
           NODe hodtID
         Samba is faster than FTP.
@@ -94,9 +94,9 @@ a:hover{font-weight:bold;}-->
            mkdir /WinDriveE
            mount -t cifs //192.168.1.12/E /WinDriveE -o username=yourname
          Now you can access Windows share name by &quot;xe /WinDriveE&quot;
-      .<a href="HID00000317.htm">SUBmit cmd</a> for remote file is executed localy except <A href="HID_TSOE_E.htm">TSO file</A>.
+      .<a href="HID00000317.htm">SUBmit cmd</a> for remote file is executed locally except <A href="HID_TSOE_E.htm">TSO file</A>.
        TSO file is executed on the system.
-      .<a href="HID00000332.htm">XPRrint</a> cmd for remote file prints localy.
+      .<a href="HID00000332.htm">XPRrint</a> cmd for remote file prints locally.
       .command line parameter for ftp.
           /Fx[t][:hosts]  :x=0:FTP is not used, x=1:FTP avail(without log)
                            x=w:output ftplog, x=a:ftplog by append mode.
@@ -107,8 +107,8 @@ a:hover{font-weight:bold;}-->
        -write comment after #
          except for puTTY option.
            #@PSFTP=  : PSFTP command  if psftp is not on PATH environment.
-           #@SSH=all : means the following entrys's default SSH option is SSH=Y.
-           To commentout these line specify as following.
+           #@SSH=all : means the following lien's default SSH option is SSH=Y.
+           To comment out these line specify as following.
              ##@PSFTP=~/psftp
              ##@SSH=all
        -operand is remoteid, remote address, userID, password in this sequence
@@ -116,11 +116,11 @@ a:hover{font-weight:bold;}-->
        -remoteid is 2 to 8 byte. CaseSensitive except for TSO system.
        -remote address is ip-address or host name on native hosts file.
         you can use URL format.dress or host name on native hosts file.
-       -if password is not required,code &quot;&quot; in the position.
+       -if password is not required, code &quot;&quot; in the position.
        -optional parameter following password.(keyword=value format)
         HOME=/xxx/yyy    :home dir
         TZ=[-]xxx/yyy    :time zone. ex) TZ=-0900
-                          File date is exchanged by GMT,but in Japan
+                          File date is exchanged by GMT, but in Japan
                           AIX is set to GMT=JST. So TZ=0000 should be
                           specified.
         DBCS={EUC|SJIS|  :required when ls subcmd of ftp output is Japanese.
@@ -142,8 +142,8 @@ a:hover{font-weight:bold;}-->
                           with &quot;no route to host&quot;.
                           ICMD=passive toggles passive and active mode.
         SSH={Y|N}        :use PSFTP as FTP client(Y) or not(N)
-        SHARE=shraename  :shared resource name. specify when the remote is Samba server or Windows.
-        P=prtNo          :specify port number other than SSH default(22) if needed.
+        SHARE=sharname   :shared resource name. specify when the remote is Samba server or Windows.
+        P=portNo         :specify port number other than SSH default(22) if needed.
 
 sample)
 
@@ -155,7 +155,7 @@ sample)
     #@PSFTP=g:\src\putty060\psftp.exe   #specify PSFTP command string if psftp.exe is not on %PATH%
     ##@PSFTP=/home3/putty-0.62/unix/psftp #(Linux sample)
     ##@PSFTP=~/psftp                    #This is comment because this line data dose not start by &quot;#@xxx&quot; pattern.
-    #@SSH=all                           #specify to use PSFTP as default for the following destionation after this lines.
+    #@SSH=all                           #specify to use PSFTP as default for the following destination after this lines.
     ##@SSH=all                          #This is a sample of comment out of #@xxx statement
     #
     # RemoteID  RemoteAddress UserID  Password [option] #Comment
@@ -170,11 +170,11 @@ sample)
     #                                         (specify charset by CHARSET_CFG parm on xe3270.cfg)
     #         :TSO=portno  :ex. TSO=3270       TurnkeyMVS destination port may be 3270
     #                           TSO=3270S      &quot;S&quot; is submit option(use TSO SUBMIT cmd)
-    #                                          without &quot;S&quot;,use sub tool of TurnkeyMVS
+    #                                          without &quot;S&quot;, use sub tool of TurnkeyMVS
     #                           TSO=23R        R means target is Real MVS(TSO/E through tn3270))
     #                                          (use TSO SUBMIT cmd.)
     #         :LS=&quot;xx&quot;/NLST:ex. LS=NLST        specify any &quot;list directory&quot; cmd string(max 12 byte).
-    #                                          default is dir,NLST means &quot;ls -la&quot;.
+    #                                          default is dir, NLST means &quot;ls -la&quot;.
     #         :ICMD=&quot;cmds&quot; :ex. ICMD=&quot;passive&quot; specify cmd to be issued after opened session
     #                                          insert &quot;\n&quot; between commands when multiple.
     #         :SSH={Y|N}   :ex. SSH=Y          use PSFTP for this destination. &quot;N&quot;:use FTP.
@@ -190,9 +190,9 @@ sample)
     # centos7r localhost root pswd SSH=Y P=2222
     ###################################################################
 
-    (Note) Because using ftp to access remote,proper environment setup is required.
-           DNS may cause slow responce because xe open session each access.
-           To avoid DNS reference,register your local address on remote /etc/hosts.
+    (Note) Because using ftp to access remote, proper environment setup is required.
+           DNS may cause slow response because xe open session each access.
+           To avoid DNS reference, register your local address on remote /etc/hosts.
            And confirm resolve sequence of /etc/host.conf is host then DNS
            like as &quot;order hosts,bind&quot;.
 
@@ -203,13 +203,13 @@ sample)
              ... avc: denied { read } for ... comm=&quot;vsftpd&quot; name=&quot;home&quot; ...
            Current configuration status is shown by &quot;getsebool -a&quot;.
            To allow to list /home,enter &quot;setsebool -P ftp_home_dir 1&quot;.
-           Even if ftp_home_dir is off,LS=NLST option on xehosts file will enable
+           Even if ftp_home_dir is off, LS=NLST option on xehosts file will enable
            to get the attribute of sub-dir of /home if &quot;ls -la&quot; cmd return the entry &quot;.&quot;(current dir).
            And configure to chroot to out of home dir.
            These depends on your system.
 
           .Tiny FTP v0.52d(By Mr. H.Nomura)
-           When remote is TinyFTP daemon,adjust the configuration as following.
+           When remote is TinyFTP daemon, adjust the configuration as following.
              Setup-&gt;System Setup-&gt;reconnection  &quot;connection check interval&quot;:OFF
              Setup-&gt;User   Setup-&gt;prohibit      all &quot;directory operation&quot; OFF
              Setup-&gt;User   Setup-&gt;name          &quot;use password&quot;:ON
@@ -227,14 +227,14 @@ sample)
                 Set ssh=Y as default for the destination after this line.
             dest1 192.168.2.5  user pswd  ssh=Y
                 Specify ssh=Y(use PSFTP) or ssh=N(use FTP) for each destination.
-                If missing,#@SSH= is applied as default.
+                If missing, #@SSH= is applied as default.
           (Note)
             .Specify like as ##@PSFTP=... to comment out.
-            .At first SSH connection to the destination,use native psftp command on console window
+            .At first SSH connection to the destination, use native psftp command on console window
              to save host-key in cache.(ex. psftp -l USER -pw PSWD)
-             (You may be requested reply of &quot;yes/no&quot; to cashe SSH key, it could not reply from xe)
-             -xe use -batch option of psftp,but Windows version will hang up if no host-key
-              is in cache. Linux version end with error,so xe display the error reason.
+             (You may be requested reply of &quot;yes/no&quot; to cache SSH key, it could not reply from xe)
+             -xe use -batch option of psftp, but Windows version will hang up if no host-key
+              is in cache. Linux version end with error, so xe display the error reason.
             .psftp current version dose not display slink information on dir-list.
             .::xehost update is effective from the next session.
 

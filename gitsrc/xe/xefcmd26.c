@@ -1,8 +1,9 @@
-//*CID://+vbc1R~:                             update#=  846;       //~vbc1R~
+//*CID://+vbr1R~:                             update#=  847;       //~vbc1R~//+vbr1R~
 //*************************************************************
 //*xefcmd2.c                                                       //~v53FR~
 //*  find/change/exclude                                           //~v11kR~
 //****************************************************************////~v438R~
+//vbr1:200615 ARM compiler warning                                 //+vbr1I~
 //vbc2:170821 add TS   option for find cmd on dirlist              //~vbc2I~
 //vbc1:170820 add ATTR option for find cmd on dirlist              //~vbc1I~
 //vb5c:160917 (Bug)"find all" loop when not lomg name mode and match with overriden part by attr fld.//~vb5cI~
@@ -1007,7 +1008,8 @@ int linesrchstringsub(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw
 //*******************                                              //~v13oI~
               if (binfsw                                           //~v13pR~
               &&  ((int)Srangeid2==RANGENOPARM))                   //~v437R~
-                offset=offset;                                     //~v13pI~
+//              offset=offset;                                     //~v13pI~//+vbr1R~
+                ;                                                  //+vbr1I~
               else                                                 //~v13pI~
 				if (offset>plh->ULHlen)                             //~5107I~
 					offset=plh->ULHlen;                             //~5107I~
@@ -4086,8 +4088,8 @@ int fcmdfind_dirattr(int Popt,int Psubcmdid,PUCLIENTWE Ppcw,PUDIRLH Ppdh,PUDIRLD
     {                                                              //~vbc1I~
         if (!(Ppdh->UDHattr & FILE_DIRECTORY))                     //~vbc1I~
         	return 4;                                              //~vbc1I~
-        if (Ppdh->UDHtype==UDHTPARENT)                             //+vbc1I~
-        	return 4;                                              //+vbc1I~
+        if (Ppdh->UDHtype==UDHTPARENT)                             //~vbc1I~
+        	return 4;                                              //~vbc1I~
         if (Psubcmdid==SUBCMD_PREV)                                //~vbc1I~
         {                                                          //~vbc1I~
             if (offset<Pnameoffs-2)                                //~vbc1I~

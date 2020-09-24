@@ -76,17 +76,17 @@ a:hover{font-weight:bold;}-->
 
                      Also for B2F, it will be required to change EOL code to (CR)LF.
 
-            B2B     :trnaslation between diffrent EBCDIC codepage.
+            B2B     :translation between different EBCDIC codepage.
                      Specify target codepage by CPEB:tgtcp( source codepage is of the file)
                      Translation is done using ICU or iconv(for Linux) according to ::xeebc.map spcification
 
             SETCP   :change current file's codepage.
                      Translated file is displayed using the codepage.
-                     Widthout SETCP, after translation to the codepage, code is displayed using original codepage.
+                     Without SETCP, after translation to the codepage, code is displayed using original codepage.
                      Use &quot;EBC SETCP:codepage&quot; cmd to change codepage without translation.
             M2M     :translation between any codepage.
                      Specify codepage codepage in -f:charset -t:charset option.
-                     Avalable codepage/charset are list by
+                     Available codepage/charset are list by
                        &quot;xe -c?&quot;   (Windows)
                        &quot;iconv -l&quot; (Linux)
                        &quot;uconv -l&quot; (ICU).
@@ -139,7 +139,7 @@ a:hover{font-weight:bold;}-->
                           ex). -H0x'     -Hx'xx'
              -S[a | d | i | r | m | s | bcs]
                  a     :assume SO on the top of line.
-                 bcs   :SBCS mode(no DBCS coinsideration)
+                 bcs   :SBCS mode(no DBCS consideration)
                  d     :delete SO(0x0e)/SI(0x0f) for B2x.
                         SO/SI is not set for x2B.
                  i     :for x2B, insert SO(0x0e)/SI(0x0f).
@@ -152,7 +152,7 @@ a:hover{font-weight:bold;}-->
                  default is replace SO/SI by space for B2x, insert SO/SI for x2B.
                  xeebc.map defines default for B2M/M2B/B2F/F2B.
              err-rep-char:substitution char for conversion error.
-                          Char and HEX notation. for SBCS annd DBCS.
+                          Char and HEX notation. for SBCS and DBCS.
                           ex) xcv f2s &quot;.&quot;
                               xcv m2b  &quot;6f&quot; &quot;4040&quot;
                               xcv b2m   &quot;?-&quot;

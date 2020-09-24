@@ -13,7 +13,7 @@ a:hover{font-weight:bold;}-->
 <BODY bgcolor="#FFFFE2">
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">   .User command.
 
-      Select option 0.1 on <a href="HID00000245.htm">MENU screen</a>,then set Command-Key.
+      Select option 0.1 on <a href="HID00000245.htm">MENU screen</a>, then set Command-Key.
                                                           <a href="HID00000247.htm">Chapter-(2)-(A3)</a>
       =0.1 panel shows function-keys the function is not assigned.
       You can assign your command string to those keys(User-Command-Key).
@@ -42,21 +42,21 @@ a:hover{font-weight:bold;}-->
         for execution by next Enter-key.
 
       Alias-cmd:
-        3byte command verb and commandstrings defines user command.
+        3byte command verb and command string defines user command.
         ex) ac1 e %1;c word1 word2 all;end
             &quot;ac1 fnm1&quot; will execute 3 commands.
 
       Parameter replacement using %n,%*,%^,%@ is supported.
         %1-%9:It is replaced by pre-entered words on command input line.
               or alias command's parameters.
-        %*   :fullpath name currentry opened.
-        %^   :fullpath name currentry opened on the other split screen.
+        %*   :fullpath name currently opened.
+        %^   :fullpath name currently opened on the other split screen.
         %@   :all remaining parameters not used by %n up to the position.
         %* and %^ is replaced to space if the screen is not file/dir panel.
         ex) grep %1 %^&gt;::tmp; e ::tmp;
 </SPAN></PRE>
 <PRE><font size="3">          </font><SPAN STYLE="color:#000000;font-size:12pt;">Find.exe cmd is available on Windows 10 as alternative of grep.
-          Register cmd like as aollowing.
+          Register cmd like as following.
               gre c:\Windows\System32\find.exe %1 %2 %3 %4
           Use it on =6 panel like s following. (Quotation is required for search word)
               gre /N /I "search-word" c:\user\srctext
@@ -76,8 +76,8 @@ a:hover{font-weight:bold;}-->
 
       All command is optionally logged to file &quot;::cl&quot; by &quot;<a href="HID00000705.htm">OPT CMDLOG</a> [ON|OFF]&quot;
       ::cl may be used to create EXE cmd file.
-      (for OS/2 or GCC,once close by &quot;OPT CMDLOG OFF&quot;,then open ::cl)
-      Edit line cmd <a href="HID00000706.htm">&quot;#/##&quot;</a>  is for executing commands on the lines of currentry opened file.
+      (for OS/2 or GCC, once close by &quot;OPT CMDLOG OFF&quot;, then open ::cl)
+      Edit line cmd <a href="HID00000706.htm">&quot;#/##&quot;</a>  is for executing commands on the lines of currently opened file.
 
 </SPAN></PRE>
 </BODY>

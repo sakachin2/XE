@@ -17,20 +17,20 @@ a:hover{font-weight:bold;}-->
         {COPy | PASte}  [filename]  [ CPLC | CPU8 | CPEB[:codepage] ] [IE]
                     [/M{T|P|U|M|E|R|V}] [/F{nn|vfmt}] [-S{r|i|d}]
 
-            <A href="HID_UTF8_E.htm">CPU8</A>/CPLC: Copy/Move &quot;source-file&quot; after tarnslated if required.
+            <A href="HID_UTF8_E.htm">CPU8</A>/CPLC: Copy/Move &quot;source-file&quot; after translated if required.
              /<A href="HID_EBCF_E.htm">CPEB</A>     Copy the file after translating from specified encoding to encoding of current file.
                        Profile is checked for copy source file, so you may not be required to specify CPxx option.
                        For PASte,codepage at CUT is applied using profile.
 
                        You can other codepage than specified on cfg file using CPEB:codepage format.
                        When you don't want to translate by the codepage registered on profile,
-                       use &quot;B&quot; option to &quot;A&quot;(After) or &quot;B&quot;(Before) line cmd specifing copy target position.
+                       use &quot;B&quot; option to &quot;A&quot;(After) or &quot;B&quot;(Before) line cmd specifying copy target position.
                           ex)  COP ebcf1
                                :
                                AB
 
             IE       : continue copy operation ignoring translation error.
-                       those char are copied as it is and dispalyed by &quot;?&quot;.
+                       those char are copied as it is and displayed by &quot;?&quot;.
                        This option is not required when target file is opened by with &quot;IE&quot; option.
             /M       :EOL-ID of copy source file.
                       P:0d0a(PC file)
@@ -41,13 +41,13 @@ a:hover{font-weight:bold;}-->
                       R:fixed length record mode. Specify LRECL by /Fnn option.
                       V:variable length record mode. Specify record header type by /Fvfmt.
             /Fnn     :LRECL
-            /Fvfmt   :VariableLengthRecord file record header formt. See Edit command.
+            /Fvfmt   :VariableLengthRecord file record header format. See Edit command.
             -S{r|i|d}: SO/SI option
                        r : When current screen is EBCDIC file and cmd option is CPLC/CPU8,
                            replace both side of space, if available, to SO/SI.
                            When current screen is not EBCDIC and cmd option is CPEB,
                            replace SO/SI to a space.
-                       i : Inserte SO/SI when translation to EBCDIC.
+                       i : Insert SO/SI when translation to EBCDIC.
                        d : Delete SO/SI when translation from EBCDIC.
 
             -PASte cmd ignores CPxx options.

@@ -1,4 +1,4 @@
-//*CID://+v6R1R~:                             update#=  250;       //~v6R1R~
+//*CID://+v6R1R~:                             update#=  251;       //~v6R1R~
 //*************************************************************
 //*ufile5.c                                                        //~v205R~
 //*  ufgets,ufgetsinit udoseditname ufileeditname                  //~v340R~
@@ -246,7 +246,7 @@ int ufgetsinit(int Pmode,unsigned int Pbuffsz,int Pbinrate,int Poptbinwidth)//~v
       else                                                         //~v6m0I~
       {                                                            //~v6R1I~
         if ((Smode & UFGETS_RECORD) && Poptbinwidth>IOBSZ && Poptbinwidth<IOBSZRMAX)//~v6R1I~
-        Pbuffsz=(UINT)Poptbinwidth;                                //+v6R1R~
+        Pbuffsz=(UINT)Poptbinwidth;                                //~v6R1R~
         else                                                       //~v6R1I~
         Pbuffsz=IOBSZ;
       }                                                            //~v6R1I~
@@ -2389,7 +2389,7 @@ int ufseek(FILE *Pfh,FILESZT Ppos,int Pbase)                       //~v6xeI~
   #endif                                                           //~v6xeI~
 #endif                                                             //~v6xeI~
 	return rc;                                                     //~v6xeI~
-}//ufseel                                                          //~v6xeI~
+}//ufseek                                                          //~v6xeI~//+v6R1R~
 //*********************************************************        //~v6xeI~
 FILESZT uftell(FILE *Pfh)                                          //~v6xeI~
 {                                                                  //~v6xeI~

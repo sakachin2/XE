@@ -1,7 +1,9 @@
-//*CID://+dateR~:                             update#=  152;
+//*CID://+vap1R~:                             update#=  153;       //+vap1R~
 //***********************************************************************************
 //xcfont:change console font
 //***********************************************************************************
+//vap1:200919 by xuerpchk                                          //+vap1I~
+//***********************************************************************************//+vap1I~
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -689,7 +691,8 @@ int cvl2u(int Popt,char *Plcdata,int Plen,WUCS *Ppucs,int Pbuffsz,int *Ppucsctr)
     rc=utfcvl2f(0,wku8,Plcdata,0/*initoffs*/,(int)strlen(Plcdata),0/*pchof*/,0/*pdbcs*/,&chklen,&u8len,0/*charctr*/,0/*charwidth*/);
     if (rc>=UTFCVRC_ERR)
     {
-    	uerrexit("Unicode translation error(%s)",Plcdata);
+//  	uerrexit("Unicode translation error(%s)",Plcdata);         //+vap1R~
+    	uerrexit("Unicode translation error(%s)",0,Plcdata);       //+vap1I~
     }
     rc=ucvsutf2ucs(0,UCVUCS_LE,wku8,u8len,(UCHAR*)Ppucs,Pbuffsz,&chklen,&outlen,&errctr);
     ucsctr=outlen/sizeof(WUCS);
@@ -772,7 +775,7 @@ void parmchk(int parmc,char **parmp)
                 }
                 else
                 {
-                	if (unumlen(pval,0,strlen(pval))!=(int)strlen(pval))//+8828R~
+                	if (unumlen(pval,0,strlen(pval))!=(int)strlen(pval))//~8828R~
                 		optionerr(0,cptr);
                 	Scharset=atoi(pval);
                 }
@@ -781,7 +784,7 @@ void parmchk(int parmc,char **parmp)
         	if (USTRHEADIS_IC(cptr,PARM_FONTINDEX))
         	{
             	pval=cptr+sizeof(PARM_FONTINDEX)-1;
-                if (unumlen(pval,0,strlen(pval))!=(int)strlen(pval))//+8828R~
+                if (unumlen(pval,0,strlen(pval))!=(int)strlen(pval))//~8828R~
                 	optionerr(0,cptr);
                 Sfontnameidx=atoi(pval);
             }
@@ -795,7 +798,7 @@ void parmchk(int parmc,char **parmp)
                 }
                 else
                 {
-                	if (unumlen(pval,0,strlen(pval))!=(int)strlen(pval))//+8828R~
+                	if (unumlen(pval,0,strlen(pval))!=(int)strlen(pval))//~8828R~
                 		optionerr(0,cptr);
                 	SfontH=atoi(pval);
                     if (!SfontH)
@@ -812,7 +815,7 @@ void parmchk(int parmc,char **parmp)
                 }
                 else
                 {
-                	if (unumlen(pval,0,strlen(pval))!=(int)strlen(pval))//+8828R~
+                	if (unumlen(pval,0,strlen(pval))!=(int)strlen(pval))//~8828R~
                 		optionerr(0,cptr);
                 	SfontW=atoi(pval);
                     if (!SfontW)

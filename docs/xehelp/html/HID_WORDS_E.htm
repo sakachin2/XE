@@ -16,7 +16,7 @@ a:hover{font-weight:bold;}-->
 
         { FWF | FWB | IWF | IWF } [ AN | SP | DQ | SQ | (x | x( | )x | x) ]
 
-        As default,function keys are assinged.
+        As default, function keys are assigned.
         To use options such as SP, DQ ... put those option on command input line
         the use these function key.
 
@@ -24,7 +24,7 @@ a:hover{font-weight:bold;}-->
             Bwd     FWB: C+[, A+S+[     IWB: A+[
             Fwd     FWF: C+], A+S+]     IWF: A+]
 
-          AN:all puctuation(Default)
+          AN:all punctuation(Default)
              @, _, $ and locale specific are not punctuation character.
              On Japanese Environment, DBCS delimiter will be checked
              such as DBCS space.
@@ -37,7 +37,7 @@ a:hover{font-weight:bold;}-->
              If &quot;(&quot; or &quot;)&quot; is delimiter,specify like as &quot;\(..(&quot; , &quot;\)..(&quot; , &quot;\(..)&quot; , &quot;\)..)&quot;.
              If '&quot;' is delimiter specify like as &quot;&quot;(.
              &quot;x&quot; may be multibyte string.
-             Nearest delimiter is applyed when &quot;x&quot; is not found.
+             Nearest delimiter is applied when &quot;x&quot; is not found.
 
           ex)  Assume the cursor is on &quot;d&quot; of  a string ...  abc -=def*ghi-klm+ nop;
               SP      : &quot;-def*ghi-klm+&quot;
@@ -49,14 +49,14 @@ a:hover{font-weight:bold;}-->
               (-  +)  : &quot;-=def*ghi-klm+&quot;
 
         Search the word on cursor position,and continue to search same word as long as pressing these key.
-        Once intercepted by other key, new word is selcted from the cursor position.
-        Following cmd verb is assinged for each, FWB,FWF,IWB,IWF.
+        Once intercepted by other key, new word is selected from the cursor position.
+        Following cmd verb is assigned for each, FWB,FWF,IWB,IWF.
         And you can specify word delimiter type on cmd line(from the first if function key is used).
 
         If the cursor is on the reversed range by mouse drag or Cut&amp;Paste function key,
         the whole string in the range is searched.
         If cursor is out of file contents area such as cmd line or lineno field,
-        serach the same word as previously selected.
+        search the same word as previously selected.
         This allow to search in the other file in the same session.
 
 

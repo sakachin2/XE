@@ -1,7 +1,11 @@
-//*CID://+vbkmR~:                             update#=  285;       //~vbkmR~
+//*CID://+vbrkR~:                             update#=  291;       //+vbrkR~
 //************************************************************
 //* xekbd.c                                                     //~5501R~
 //************************************************************  //~5423I~
+//vbrk:200918 (AXE)first time scrgetcw fails, allow it             //+vbrkI~
+//vbrf:200821 A+a/A+q(shortcut/query) repeat err(not alpnumeric stop repeat)//~vbrfI~
+//vbr5:200721 (ARM)logcat hung at utrace output([0x1a..) , it may be Esc[//~vbr5I~
+//vbr1:200615 ARM compiler warning                                 //~vbr1I~
 //vbkm:180625 UTRACE;add option of ignore FORCE option             //~vbkmI~
 //vb83:170206 (BUG)crash 64bit ptr size isckt was not cleared cmdptr//~vb83I~
 //vb50:160827 accept S+A/C+extended key                            //~vb50I~
@@ -346,12 +350,15 @@ static UINT Sw95consolemode_stdi;   //for restore console mode at entry//~v0h2R~
     #endif //!WXE                                                  //~V500I~
 #endif                                                             //~v08jI~
 //#ifndef UNX                                                      //~v78NR~
+//#ifndef XXE                                                      //~vbr1R~
+#ifndef ARMXXE                                                     //~vbr1I~
 static  KBDINFO Skbdinfo={10,                   //cb:length        //~v09tM~
                           KEYBOARD_BINARY_MODE,     //fsMask:sysstate//~v09tM~
                           0,                        //chTurnAround //~v09tM~
                           0,                        //fsInterim    //~v09tM~
                           0};                   //fsState:shiftstate//~v09tM~
 //#endif //!UNX                                                    //~v78NR~
+#endif                                                             //~vbr1I~
 static FKCTT Sfkctt;                                               //~v0ijR~
 static UCHAR Sfkctindex[256];                                      //~v0ijI~
 static int   Sshortcutstatus=0;                                    //~V48fR~
@@ -639,7 +646,8 @@ int kbdproc(void)
     KBDKEYINFO keyinf,keyinf2;
 //#ifdef UTf8SUPPH                                                   //~vva1cI~//~vaf8R~
 #ifdef UTF8SUPPH                                                   //~vva1cI~//~vaf8I~
-    UCHAR inputc[MAX_MBCSLENLC+1];                                 //~vva1cI~//~va1cR~
+//  UCHAR inputc[MAX_MBCSLENLC+1];                                 //~vva1cI~//~va1cR~//~vbr5R~
+    UCHAR inputc[MAXSTRINPUT+1];                                 //~vva1cI~//~vbr5I~
 #else                                                              //~vva1cI~//~va1cR~
     UCHAR inputc[3];
 #endif                                                             //~vva1cI~//~va1cR~
@@ -658,7 +666,8 @@ int kbdproc(void)
 //*********************
 //#ifdef UTf8SUPPH                                                   //~vva1cI~//~vaf8R~
 #ifdef UTF8SUPPH                                                   //~vva1cI~//~vaf8I~
-    inputc[MAX_MBCSLENLC]=0;                                       //~vva1cI~//~va1cR~
+//  inputc[MAX_MBCSLENLC]=0;                                       //~vva1cI~//~va1cR~//~vbr5R~
+    memset(inputc,0,sizeof(inputc));                               //~vbr5R~
     keyinf.bNlsShift=0;  //for getnextgc                           //~va1cR~
 #else                                                              //~vva1cI~//~va1cR~
     inputc[2]=0;
@@ -668,18 +677,20 @@ int kbdproc(void)
     pcw=scrgetcw(0);        //get current client                   //~v0ijI~
     if (!pcw)                                                      //~v0ijI~
     {                                                              //~vaxaI~
+#ifndef ARM                                                        //+vbrkI~
         uerrexit("kbdproc:internal logic err,No work exits",0);    //~v0ijI~
+#endif                                                             //+vbrkI~
 #ifdef ARM                                                         //~vaxaI~
         return -1;                                                 //~vaxaI~
 #endif                                                             //~vaxaI~
     }                                                              //~vaxaI~
     UCBITOFF(pcw->UCWflag3,UCWF3HEXKBDGC); 	//grapth char input by HEX notation//~v79RR~
     if (*Gcmdbuff)
-    {                                                              //+vbkmI~
+    {                                                              //~vbkmI~
         keytype=UCWKTCMD;       //call func_cmd                 //~5225R~
-	    inputc[0]=0;                                               //+vbkmI~
-	    inputc[1]=0;                                               //+vbkmI~
-    }                                                              //+vbkmI~
+	    inputc[0]=0;                                               //~vbkmI~
+	    inputc[1]=0;                                               //~vbkmI~
+    }                                                              //~vbkmI~
     else
     {
         if (UCBITCHK(Gprocstatus,GPROCSCSRDOWN|GPROCSCSRRIGHT)) //~5423I~
@@ -1188,8 +1199,10 @@ int kbdscedit(PUCLIENTWE Ppcw,char Psckey)                         //~V48fI~
 	pcmd=psckt->SCKTcmd;                                           //~V48iI~
     if (!(cmdlen=psckt->SCKTcmdlen))                               //~V48fI~
     {                                                              //~V48fI~
-		Sshortcutstatus=(KBD_SC_PEND|querymodesw);	//accept retry //~V48fI~
-        uerrmsg("\"%c\" is not defined,retry",0,                   //~V48fI~
+//  	Sshortcutstatus=(KBD_SC_PEND|querymodesw);	//accept retry //~V48fI~//~vbrfR~
+//      uerrmsg("\"%c\" is not defined,retry",0,                   //~V48fI~//~vbrfR~
+        uerrmsg("\"%c\" is not defined as Shortcut Key on =0.1 panel",//~vbrfI~
+                "\"%c\" はショートカットキー定義(=0.1画面)されていません",//~vbrfI~
 					Psckey);                                       //~V48fI~
         return -1;                                                 //~V48fR~
     }                                                              //~V48fI~

@@ -1,7 +1,8 @@
-//CID://+v6J0R~:         update#=     20                           //~v6J0R~
+//CID://+v6J0R~:         update#=     21                           //~v6J0R~
 //*******************************************************
 //*ustring.h
 //*******************************************************
+//v70a:200616 ARM:sprintf chk wariable boundary by __vsprintf_chk and signal(6):abort//+v6J0I~
 //v6J0:170205 malloc udirlist filename to  allow more large number of fine in the dir//~v6J0I~
 //v6H3:170105 (BUG)crash when too long name;it should chk strlen   //~v6H3I~
 //v6D0:160408 LNX compiler warning                                 //~v6D0I~
@@ -61,6 +62,14 @@
                 else                                           \
                 	memcpy(to,from,strsz+1); /*with last null*/\
 		} while(0)                                                 //~v6J0I~
+#define UMEMSPRINTF(dest,destsz,fmt,...)                    \
+                do {/*bypass appending last null char*/    \
+                    char wk[destsz+2];                     \
+                  /*UTRACED("xedir2.wk before",wk,destsz+2);*/ \
+                    snprintf(wk,destsz+1,fmt,__VA_ARGS__);\
+                  /*UTRACED("xedir2.wk after",wk,destsz+2);*/ \
+                    memcpy(dest,wk,destsz);                \
+                }  while(0)                                        //+v6J0I~
 //#define USTRLENC(src,ch,wkpc)  ((wkpc=strchr(src,ch))?((ULONG)wkpc-(ULONG)(src)):strlen(src))//~v5mwR~//~v6hhR~
 #define USTRLENC(src,ch,wkpc)  ((wkpc=strchr(src,ch))?((ULPTR)wkpc-(ULPTR)(src)):strlen(src))//~v6hhI~
 //#define USTRLENCINC(src,ch,wkpc)  ((wkpc=strchr(src,ch))?((ULONG)wkpc-(ULONG)(src)+1):strlen(src))//~v5mwR~//~v6hhR~

@@ -13,8 +13,8 @@ a:hover{font-weight:bold;}-->
 <BODY bgcolor="#FFFFE2">
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
    .Scroll function.
-      Edit/Browse panel is scrolled both direction,directory list and
-      filename input panel is scrolled veritcal only.
+      Edit/Browse panel is scrolled both direction, directory list and
+      filename input panel is scrolled vertical only.
       Scroll unit of filename input panel is fixed to page-size.
       Key usage to scroll screen is as following.
 
@@ -22,15 +22,15 @@ a:hover{font-weight:bold;}-->
         Screen is not scrolled even when cursor reached to the edge of screen as default.
         If FREECSR mode is set OFF by OPT command(&quot;OPT freecsr off&quot;),
         scroll occurs at the edge of screen by the unit of half of page size.
-        If keyboard is in the status of ScrollLock on,scroll unit is 1 line/column.
+        If keyboard is in the status of ScrollLock on, scroll unit is 1 line/column.
       Shift+Up/Down
         Vertical scroll by one line.
       PgDn/PgUp
         Vertical scroll by the unit of value in the scroll-size field
         on the 2nd line. The field is over-writable and valid value is
-        PAGE,HALF,CSR,MAX,numeric-value. CSR means scroll to move the line/column
+        PAGE, HALF, CSR, MAX, numeric-value. CSR means scroll to move the line/column
         of the current cursor position to the edge of screen.
-      F10/F11(this function key assignment is changable)
+      F10/F11(this function key assignment is changeable)
         Horizontal scroll by the value of scroll-size field.
       Shift+PgDn/PgUp
         Jump to Top/Last page of the file.
@@ -42,7 +42,7 @@ a:hover{font-weight:bold;}-->
 
 #if defined(WXE) || defined(LNX)
       Using mouse.
-        Wheel of mouse scrolls verticaly,Shift+wheel scrolls horizontaly
+        Wheel of mouse scrolls vertically, Shift+wheel scrolls horizontally
           and Ctrl+wheel jumps to the top/last page of file.
         wxe support tile wheel mouse to scroll horizontaly by tilting
           the middle button.

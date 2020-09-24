@@ -19,7 +19,7 @@ a:hover{font-weight:bold;}-->
          Region mode is same as Windows standard cut and paste.
          Using Alt+F6,region is from the latter half of the start line to
          the first half of the end line.
-         Alt+F6 is also used to specify target range,so you should
+         Alt+F6 is also used to specify target range, so you should
          explicitly copy to clipboard by A+F9 when closed copy source range.
          After A+F7,A+F9 is implicit for the case pasting by A+F8,A+Ins.
          Block mode is by using &quot;Block Start/End&quot;(Alt+F7,Alt+b),
@@ -31,36 +31,36 @@ a:hover{font-weight:bold;}-->
          Alt+w is one of block mode and copy the word delimited by space.
          Ctl+w copy the word to clipboard then paste on at end of cmd line text.
         -There are 4 copy mode.
-         Ctrl+v paste like as Windows standard,replace range if exist or
+         Ctrl+v paste like as Windows standard, replace range if exist or
          insert region at the cursor position.
          (Notes) When target region is not specified and copy source range is specified by block mode(Alt+F7),
-                 taget line is split like as source lines have EOL.
+                 target line is split like as source lines have EOL.
                  With Ctrl+v, use region mode(Alt+F6) to specify source data.
          Insertion by &quot;Block Insert&quot;(Alt+Ins,Alt+c),
          override paste by &quot;Block Copy Over&quot;(Alt+F8,Alt+p) and
          override space char only by &quot;Block Over Space&quot;(Alt+o).
          &quot;Block Cut Move&quot;(Alt+m) and &quot;Block Clear Move&quot;(Alt+n) do
          insertion.
-        -There are 2 block mode insert operation,right shift and line insertion.
+        -There are 2 block mode insert operation, right shift and line insertion.
          It takes line insertion in the following case.
          (You can also insert line under block mode)
          .&quot;Line Insert Copy&quot;(Alt+i),&quot;Line Insert Cut Move&quot;(Alt+j),
           &quot;Line Insert Clear Move&quot;(Alt+k)
          .&quot;Block Insert&quot;(Alt+Ins,Alt+c),&quot;Block Cut Move&quot;(Alt+m) and
           &quot;Block Clear Move&quot;(Alt+n) if cursor is on line-no filed.
-        -There are 3 delete operation;box cut,box space clear and line
+        -There are 3 delete operation; box cut, box space clear and line
          deletion.
          &quot;Block Clear&quot;(Alt+End) and &quot;Block Clear Move&quot;(Alt+n) leave
          space block or space lines.
          &quot;Block Cut&quot;(Alt+Del,Alt+d) and &quot;Block Cut Move&quot;(Alt+m) delete
-         lines under line mode,cut and shift to left under block mode.
-         Unlike windows Del/BackSpace is not effective for Ctrl+v region,
+         lines under line mode, cut and shift to left under block mode.
+         Unlike windows Del/Backspace is not effective for Ctrl+v region,
          use Alt+Del.
-        -Block/lines are copied to clipboard,it can be used to copy
+        -Block/lines are copied to clipboard, it can be used to copy
          repeatedly any times. It is also available across sessions.
-         Block is copied to ClipBoard at the time copy/del(move) is done.
+         Block is copied to Clipboard at the time copy/del(move) is done.
          To cut the block from the file which will be close(End/Cancel),
-         use &quot;Block Save&quot;(Alt+F9) to save block to ClipBoard.
+         use &quot;Block Save&quot;(Alt+F9) to save block to Clipboard.
          And then execute copy/del(move) function.
          Consecutive &quot;Block Save&quot; is avail until copy/del(move) is done.
         -&quot;Line Insert Copy&quot;(Alt+i) may be used to copy a file into the
@@ -68,7 +68,7 @@ a:hover{font-weight:bold;}-->
          (ex. <a href="HID00000253.htm">command result screen</a>)
          By using Execute key after entered <a href="HID00000267.htm">COPy</a> or <a href="HID00000296.htm">MOVe</a> command,
          message is displayed requesting to specify destination line.
-         In this situation move cursor to the desitination line then
+         In this situation move cursor to the destination line then
          use "Line Insert Copy"(Alt+i) to copy file after the line.
         -"Line Marking"(Alt+h) may be used to create/replace a file
          from the current edit file under line-no not displayed mode.

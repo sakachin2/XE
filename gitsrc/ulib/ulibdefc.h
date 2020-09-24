@@ -1,7 +1,8 @@
-//*CID://+v6L5R:                              update#=  164;       //~v6L5R
+//*CID://+vc16R:                              update#=  166;       //~vc16R
 //*********************************************************************//~v131I~
 //* define --common to DOS/OS2/WIN95/UNX/LNX                       //~v321R~
 //*********************************************************************//~v131I~
+//vc16 2020/06/15 arm64 is required for play store                 //~vc16I
 //v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~v6L5I
 //v6G3:161212 (Win10) missing error.h , use winerror.h             //~v6BkI
 //v6Bk:160220 (LNX)compiler warning                                //~v6xkI
@@ -64,6 +65,15 @@
 	#endif                                                         //~v690I~
 #endif                                                             //~v690I~
 //******                                                           //~v690I~
+#ifdef ARM                            //wchar_t:char if APIlevel<9 //~v6a0I~//~vc16I
+    #ifdef __aarch64__                                             //+vc16R
+        #define ARM64                                              //~vc16I
+	    #define ULIB64   //LP64(64bit ptr,long,32bit int)          //~vc16I
+    #else                                                          //~vc16I
+        #define ARM32                                              //~vc16I
+    #endif                                                         //~vc16I
+#endif                                                             //~vc16I
+//******                                                           //~v690I~//~vc16I
 #ifdef __LP64__ //by -m64 cpl parm                                 //~v690I~
 //*Linux 64bit(also long is 64bit)                                 //~v6uYI
     #define ULIB64  //internal use                                 //~v690I~
@@ -84,7 +94,7 @@
 	typedef          long long SLPTR;                              //~v6hhI~
 	#define  	LONGHANDLE intptr_t         //64bit                //~v6xkR
     #ifdef W32                                                     //~v6L5I
-    	#define  FMT_PTR(type)  "ll" type                          //+v6L5R
+    	#define  FMT_PTR(type)  "ll" type                          //~v6L5R
     #endif                                                         //~v6L5I
 #else       //32bit or LP64(ptr:64,long:64                         //~v6hhI~
 	typedef unsigned long      ULPTR;                              //~v6hhI~
@@ -95,7 +105,7 @@
 		#define LONGHANDLE int 			//32bit                    //~v6xkR
     #endif                                                         //~v6xkI
     #ifdef W32                                                     //~v6L5I
-    	#define  FMT_PTR(type)  "l"  type                          //+v6L5R
+    	#define  FMT_PTR(type)  "l"  type                          //~v6L5R
     #endif                                                         //~v6L5I
 #endif                                                             //~v6hhI~
 //*"long" is 8 byte on 64bit                                       //~v6a0I~

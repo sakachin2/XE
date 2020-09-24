@@ -1,4 +1,4 @@
-//*CID://+v6W4R~:                             update#=  281;       //~v6W4R~
+//*CID://+v6W4R~:                             update#=  288;       //~v6W4R~
 //*************************************************************
 //*ufile4.c                                                        //~v083R~
 //*  utempnam udirwalk ugetdiskfree ufileishpfs ufileisvfat ufileisntfs//~v5i0R~
@@ -425,7 +425,7 @@ int  udirwalk(int Popt,char *Pstartdir,char *Pdirmask,char *Pfilemask,//~v063I~
             if (ufstat(fullpath,&fstat3))                          //~v063I~
             {                                                      //~v063I~
                 uerrmsg("%s is not found",                         //~v063I~
-                        "%s がみつかりません",                     //~v063I~
+                        "%s がみつかりません",                     //~v6W4I~
                         fullpath);                                 //~v063I~
                 rc=UDIRWALK_RC_NOTF;                               //~v063I~
             }                                                      //~v063I~
@@ -433,7 +433,7 @@ int  udirwalk(int Popt,char *Pstartdir,char *Pdirmask,char *Pfilemask,//~v063I~
                 if (!(fstat3.attrFile & FILE_DIRECTORY))           //~v063I~
                 {                                                  //~v063I~
                     uerrmsg("%s is not directory",                 //~v063I~
-                            "%s はディレクトリーではありません",   //~v063I~
+                            "%s はディレクトリーではありません",   //~v6W4I~
                             fullpath);                             //~v063I~
                     rc=UDIRWALK_RC_NOTDIR;                         //~v063I~
                 }                                                  //~v063I~
@@ -537,7 +537,7 @@ int  udirwalk(int Popt,char *Pstartdir,char *Pdirmask,char *Pfilemask,//~v063I~
         if (!Scallctr)                                             //~v063I~
         {                                                          //~v063I~
             uerrmsg("%s has no such file/dir (dir-mask=%s,file-mask=%s)\n",//~v063I~
-                    "%s には該当がありません(dir-mask=%s,file-mask=%s)\n",//~v063I~
+                    "%s には該当がありません(dir-mask=%s,file-mask=%s)\n",//~v6W4I~
                     Pstartdir,Sdirmask,Sfilemask);                 //~v063I~
             rc=UDIRWALK_RC_EMPTY;                                  //~v063I~
         }                                                          //~v063I~
@@ -1105,7 +1105,7 @@ int ufileslinkoutoflinkchk(int Popt,char *Pstartdir,char *Pfnm,char *Pslink,char
     if (rc==4)                                                     //~v6kfR~
         if (!(Gufile_opt & GFILEOPT_NOSLINKERRMSG))                //~v6kfR~
             uerrmsg("Relative symlink may be invalid after copy(%s-->%s)",//~v6kfR~
-                    "相対指定のsymlinkは無効になる可\x94\\性があります(%s-->%s)",//~v6kfR~
+                    "相対指定のsymlinkは無効になる可\x94\\性があります(%s-->%s)",//~v6W4R~
                       Pfnm,Pslink);                                //~v6kfR~
     return rc;                                                     //~v6kfR~
 }//ufileslinkoutoflinkchk                                          //~v6kfR~
@@ -1229,14 +1229,14 @@ int ufileslinkloopchk(int Popt,char *Pdir,char *Pmember,char *Pslink)//~v6k4I~
         	if (rc==4)                                             //~v6k4I~
 //  			uerrmsg("Symbolic Link loop;(%s%c%s --> %s%s%s)",  //~v6k4R~//~v6r5R~
     			uerrmsg("Symbolic Link loop;(%s%s%s --> %s%s%s)",  //~v6r5I~
-                        "リンクループ(%s%s%s --> %s%s%s)",         //~v6k4R~
+                        "リンクループ(%s%s%s --> %s%s%s)",         //+v6W4I~
                 	      Pdir,(*Pmember?DIR_SEPS:""),Pmember,Pslink,psep,pfpathslink);//~v6k4R~
             else                                                   //~v6k4I~
             {                                                      //~v6k4I~
 			  if (!(Popt & UFSLCO_NODUPMSG)) //bypass to issue duplicated err msg//~v6k4I~
 //  			uerrmsg("Symbolic Link duplicated(%s%c%s --> %s%s%s)",//~v6k4R~//~v6r5R~
     			uerrmsg("Symbolic Link duplicated(%s%s%s --> %s%s%s)",//~v6r5I~
-                        "リンク重複(%s%s%s --> %s%s%s)",           //~v6k4R~
+                        "リンク重複(%s%s%s --> %s%s%s)",           //+v6W4I~
                 	      Pdir,(*Pmember?DIR_SEPS:""),Pmember,Pslink,psep,pfpathslink);//~v6k4R~
             }                                                      //~v6k4I~
     	}                                                          //~v6k4I~
@@ -1286,7 +1286,10 @@ unsigned int ugetdiskfree(char *Pfname,UDISKINFO *Pudiskinfo)      //~v327I~
         errno=rc;                                                  //~v50GI~
     }                                                              //~v50GI~
     else                                                           //~v50GI~
-    	rc=statfs(pfn,&sfs);                                       //~v50GR~
+    {                                                              //~v6W4I~
+//  	rc=statfs("/sdcard",&sfs); //TODO test                                       //~v50GR~//~v6W4R~
+    	rc=statfs(pfn,&sfs);                                       //~v6W4I~
+    }                                                              //~v6W4I~
     if (rc)                                                        //~v50GI~
     {                                                              //~v327I~
     	rc=errno;                                                  //~v327I~

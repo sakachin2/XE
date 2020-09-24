@@ -38,7 +38,7 @@ a:hover{font-weight:bold;}-->
               opd1/2/3:[type]{column1-column2|constant-value} or [type]:fieldno
                   type:data type.
                        d(decimal), x(hexadecimal), o(octal), t(time),
-                       z(comma seperated decimal string)
+                       z(comma separated decimal string)
                        Time should be by the fmt of hhmmss,hh:mm:ss or
                        hh.mm.ss.
                        If type missing,it is assumed as time when fmt is
@@ -56,7 +56,7 @@ a:hover{font-weight:bold;}-->
                          Sub-total line is set by placing '=' on the
                          top byte of data field, or inserted by
                          specifying break-key or count option.
-                         Sub-total line position is controled by option.
+                         Sub-total line position is controlled by option.
                       = :-When operand3 is missing.
                             This command set operand1 table. It is used
                             after table is set by <a href="HID00000545.htm">Cut&amp;Paste</a> key.
@@ -82,7 +82,7 @@ a:hover{font-weight:bold;}-->
                       --:Set each difference value from the previous line.
                           (ex) TC o10-19--
                       +=,-=,*=,/=,%=,~=
-                        :Operand 1 is ovrrided by calculated result.
+                        :Operand 1 is ovrridden by calculated result.
                           (ex) TC 10-19*=20-21
                       ~ :count &quot;ACTIVE&quot; lines
                          use in the case all log record has start and end time
@@ -104,7 +104,7 @@ a:hover{font-weight:bold;}-->
                          To set 1 for true and 0 for false,use TF option.
                          To set 0 for true and 1 for false,use FT option.
                       /conv type:O:octal, X:hex, T:Clock, D:decimal,
-                                 Z:FMT(comma seperated)decimal,
+                                 Z:FMT(comma separated)decimal,
                                  U:unsigned D, UZ:unsigned Z, L:TimeStamp--&gt;Clock
                       FMT:table column alignment by space delimiter.
                           R :Right justified. Default unless attended to fieldNo.
@@ -121,7 +121,7 @@ a:hover{font-weight:bold;}-->
                                tc fmt  r 3l l        ==&gt; r r l l l
                                tc fmt  3r            ==&gt; - - r - -
                           N :Numeric FieldSearch is to align at numeric
-                             field. the numric field and all fields before
+                             field. the numeric field and all fields before
                              the numeric field is treated as a field.
                           A :reset &quot;N&quot; flag
                           C :compress intermediate spaces of all following
@@ -129,18 +129,18 @@ a:hover{font-weight:bold;}-->
                              the numeric field.
                           O :do not align from this field.
                           H :fieldno guide line is inserted.
-                          D[delimiter]:input field seperator. default is &quot; &quot;.
+                          D[delimiter]:input field separator. default is &quot; &quot;.
                                        &quot;D&quot; means D&quot;,&quot;.
                                        Multiple characters are avail like as D" ,".
                                        And both " " and "," are delemeter.
-                                       Escape seequence is available like as D"\t\x0a\xff".
+                                       Escape sequence is available like as D"\t\x0a\xff".
                                        Unicode pattern is, e.g. D\u00c1.
-                          S[R][outdelm]:field seperator to be set after formatted.
+                          S[R][outdelm]:field separator to be set after formatted.
                                         R      :delete input delimiter.
                                         outdelm:string to be inserted.
                                                 default is &quot; &quot;.
-                                                Escape seequence is available except \t(0x09).
-                                                Multiple charcters mean string to be inserted.
+                                                Escape sequence is available except \t(0x09).
+                                                Multiple characters mean string to be inserted.
                                                 DBCS is allowed.
                                                 Unicode pattern is, e.g. D\u00c1.
                break-key:[type]column1-column2[&gt;|!|&lt;]
@@ -203,7 +203,7 @@ a:hover{font-weight:bold;}-->
               -With break-key or count.
                Existing sub-total line(data field stating with char '=')
                is deleted without &quot;ign&quot; option,ignored with &quot;ign&quot; option.
-               New sub-total line is insered according to the break.
+               New sub-total line is inserted according to the break.
                Inserting position is optionally specified. If no insert
                position,it is inserted into the break position.
               -Without break-key nor count.

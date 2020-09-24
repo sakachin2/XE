@@ -1,7 +1,8 @@
-//*CID://+vaj1R~:                             update#=  681;       //~vaj1R~
+//*CID://+vap0R~:                             update#=  682;       //+vap0R~
 //***********************************************************
 //* XDComp : directory status compare                              //~v1.aR~
 //***********************************************************
+//vap0:200616 Axe compiler warning;                                //+vap0I~
 //vaj1:180305 xdc-2.29: /CPU8 option:output triler by utf8 to show on xe result of "=" cmd with cpu8 option//~vaj1I~
 //vai1:180208 allow K/M postfix for /Wsize parm                    //~vai1I~
 //vai0:180208 (Bug) crash when /Wsize parm is too short<1026) (crash before sizechk)//~vai0I~
@@ -146,7 +147,7 @@
 //*             -dir2 only subdir display
 //***********************************************************
 
-#define VER "V2.29"   //version                                    //~vad1R~//+vaj1R~
+#define VER "V2.29"   //version                                    //~vad1R~//~vaj1R~
 //#ifdef UNX                                                         //~v2.3I~//~va9eR~
 	#define PGM "xdc"                                              //~v2.3I~
 //#else                                                              //~v2.3I~//~va9eR~
@@ -3668,7 +3669,7 @@ for (parmno=1;parmno<parmc;parmno++)
           if (rcen==2)                                             //~va9eI~
           	Dir2=Sfnmpathcopy2;                                    //~va9eI~
           fprc=ufullpath(fpath,Dir1,sizeof(fpath));                //~va1dI~
-          fprc=fprc;    //for compiler warning                     //~va52I~
+//        fprc=fprc;    //for compiler warning                     //~va52I~//+vap0R~
 #ifndef UNX                                                        //~v23cI~
 //        if (ufullpath(fpath,Dir1,sizeof(fpath))                  //~va1dR~
           if (fprc                                                 //~va1dI~

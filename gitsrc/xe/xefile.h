@@ -1,7 +1,8 @@
-//CID://+vbi3R~:                                      Update#=  330//~vbi3R~
+//CID://+vbr3R~:                                      Update#=  332//~vbr3R~
 //****************************************************************
 //xefile.h                                                         //~v10LR~
 //****************************************************************
+//vbr3:200620 ARM:sdcard permission chk                            //~vbr3I~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vb88:170216 stop lcmd "i" continue mode by cut&paste             //~vb7kI~
 //vb7k:170115 dir list;gree attr overflow to "=Rep" when dirname is too long//~vb7kI~
@@ -364,7 +365,7 @@ typedef struct _ULINEH {
 #define ULHF6WXPWKVHEX         0x02     //wxp **/*** cmd work file vhex line//~va87I~
 #define ULHF6EBCDBCSCONCAT1    0x04     //split/tflow join dropped intermediate si//~va8wI~
 #define ULHF6EBCDBCSCONCAT2    0x08     //split/tflow join dropped intermediate so//~va8wI~
-#define ULHF6CHLCPU8CMD        0x10     //CmdHistoryList:utf8 cmd string//+vbi3I~
+#define ULHF6CHLCPU8CMD        0x10     //CmdHistoryList:utf8 cmd string//~vbi3I~
                         UCHAR  ULHrsv[1];                          //~va87I~
                         UCHAR  ULHsynflag;     //see xesyn.h for EQU definition//~v780I~
                         int    ULHsynlineno;   //line seqno written to source-highlignt//~v786R~
@@ -557,6 +558,7 @@ typedef struct _UFILEH {                        //file hdr
 #define UFHF9CIDAPPENDN 0x20    //no cid append mode               //~v79UI~
 #ifdef ARM                                                         //~vag1I~
 #define UFHF9SDCARD     0x10    //file is on sdcard path           //~vag1I~
+#define UFHF9SDNOTGRANT 0x08    //write permission not granted     //+vbr3R~
 #endif                                                             //~vag1I~
 #ifdef FTPSUPP                                                     //~v54pI~
                         UCHAR   UFHrsv11[2];    //boundary align   //~vag2I~

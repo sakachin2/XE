@@ -29,6 +29,7 @@ a:hover{font-weight:bold;}
   .v129K&lt;--129J:(2018/08/27)
   .v129L&lt;--129J:(2019/09/18)
   .v129M&lt;--129L:(2020/05/17)
+  .v129N&lt;--129M:(2020/09/23)
 
      1.BUGs
        -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする
@@ -86,6 +87,12 @@ a:hover{font-weight:bold;}
         "exe ! cmdfile &amp;lt;s *.html" が正しい
        -Dirリスト画面上で SORt コマンドで 降順オプション(/Ot-,/Os-) は 効くが
         昇順(/Ot,/Os)が効かない。
+
+    (129N)
+       -3バイト(EUC 8fxxyy),4バイト(GB18030) DBCSでコマンド行のカーソル位置付けを誤る//+@@@1R~
+       -結合文字（文字幅=0)が表示されないことがある //+@@@1R~
+       -"OPT unicomb comb" コマンドと "UTF file" コマンドのフラグ操作がバッティングしていた//+@@@1I~
+       -(Linux) directory list の "a"(Attrib) 行コマンド で クラッシュすることがある//+@@@1I~
 
      2.機能追加
 
@@ -217,6 +224,10 @@ a:hover{font-weight:bold;}
        -(Windows)コンソール版の画面の最下行、昔はIME用の行だった、これを表示用に変更
      (129M)
        -Shift+Del キーが 非表示行 (- n line excluded ---)上でも使えるようにした
+     (129N)
+       -Axe(Android版) 対応 //+@@@1R~
+       -Windows console版で grep などの外部コマンド呼び出しが応答なしになることがある。//+@@@1I~
+        それを検知したら警告を出す。 //+@@@1I~
 
      4.ツール。
      (129C)

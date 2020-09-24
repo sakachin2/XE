@@ -1,6 +1,8 @@
-//*CID://+v6V9R~:                             update#=   59;       //+v6V9R~
+//*CID://+v70qR~:                             update#=   65;       //~v70qR~
 //**********************************************************************
-//v6X9:180821 snprintf is from msvs2015(err at xp:2010)            //+v6V9I~
+//v70q:200919 (ARM)add gettraceopt                                 //~v70qI~
+//v706:200616 ARM:redirect UTRACE to LOGPD                         //~v706I~
+//v6X9:180821 snprintf is from msvs2015(err at xp:2010)            //~v6V9I~
 //v6Vu:180622 UTRACE;support force option off                      //~v6VuI~
 //v6Vi:180617 support __LINE__ for UTRACEP                         //~v6ViI~
 //v6B1:160114 trace,mtrace file no share mode                      //~v6B1I~
@@ -116,11 +118,11 @@ extern  "C"                                                        //~v6ViR~
     #endif                                                         //~v6u9R~
                                                                    //~v6u9I~
 //  #define UTT UTRACETIT   //abridgement                          //~v6u0R~//~v6u9M~//~v6ViR~
-#if defined(_MSC_VER) && _MSC_VER <1900                            //+v6V9I~
-    #define UTT UTRACETIT   //abridgement                          //+v6V9I~
-#else                                                              //+v6V9I~
+#if defined(_MSC_VER) && _MSC_VER <1900                            //~v6V9I~
+    #define UTT UTRACETIT   //abridgement                          //~v6V9I~
+#else                                                              //~v6V9I~
     #define UTT (snprintf(Gtracehdr,GTRACEHDRSZ,"%s-%d",UTRACETIT,__LINE__),Gtracehdr)   //abridgement//~v6ViI~
-#endif                                                             //+v6V9I~
+#endif                                                             //~v6V9I~
 	#define UTRACEP      utracepop                                 //~v041I~
 	#define UTRACEPF     utracepopf  //write regardless trace option//~v6a0I~
 	#define UTRACEPF2(fmt,...) (UTRACEP(fmt,__VA_ARGS__),UTRACEPF(fmt,__VA_ARGS__))//~v6VuI~
@@ -193,9 +195,16 @@ int  utrace_init(char *Putracefile,int Popt);                   //~5829R~
 #define UTRACEO_NOSHARE         0x40     //exclusive write open    //~v6B1I~
 #define UTRACEO_NOFORCE       0x0080     //ignore UTRACEPF(put trace regardless trace option)//~v6VuR~
 #define UTRACEO_FORCEFNM      0x0100     //notify UTRACEPF output filename//~v6VuI~
+#ifdef ARM                                                         //~v70qI~
+#define UTRACEO_NOTREMAP      0x0200     //no sdcard permission    //~v70qI~
+#endif //ARM                                                       //~v70qI~
                                                                    //~v5j0I~
 //**************************************************************** //~v5j0I~
 int  utrace_initmt(void *Psem);                                    //~v5j0R~
+//**************************************************************** //~v70qI~
+#ifdef ARM                                                         //~v70qI~
+int utrace_getopt();                                               //~v70qI~
+#endif //ARM                                                       //~v70qI~
                                                                 //~v014I~
 //****************************************************************//~v014I~
 void utracepop(char *Pfmt,...);                                    //~v041R~

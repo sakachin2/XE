@@ -1,8 +1,9 @@
-//*CID://+v5c1R~:                             update#=    4;       //+v5c1R~
+//*CID://+v70dR~:                             update#=    6;       //~v70dR~
 //******************************************************
 //*udos2.h
 //******************************************************
-//v6c1:120120 udos_setenv:to append to $PATH,specify explicit option(duplicated fpr ICUDATA)//+v5c1I~
+//v70d:200625 (LNX)setenv may destroy env,use putenv               //+v70dI~
+//v6c1:120120 udos_setenv:to append to $PATH,specify explicit option(duplicated fpr ICUDATA)//~v5c1I~
 //v6bo:111214 putenv(dont free)/setenv(copyed, can be free)        //~v6boI~//~v5kpM~
 //v5kp:070613 (BUG)repeated rctl is effective only once(need keyup)//~v5kpI~
 //v566:020703 new function of drive id list for xff all            //~v566I~
@@ -26,4 +27,6 @@ int ugetdrivetype(char Pdriveid,int Pmsgopt);
 #endif                                                             //~v5kpI~
 //*******************************************************          //~v6boI~//~v5kpM~
 int udos_setenv(int Popt,char *Pkey,char *Pvalue);                 //~v6boI~//~v5kpM~
-#define UDSE_PREPEND 0x01    //for $PATH, prepend to old env       //+v5c1I~
+#define UDSE_PREPEND 0x01    //for $PATH, prepend to old env       //~v5c1I~
+//*******************************************************          //~v70dI~
+void listenv();                                                    //~v70dI~

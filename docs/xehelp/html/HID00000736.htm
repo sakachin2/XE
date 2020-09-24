@@ -19,7 +19,7 @@ a:hover{font-weight:bold;}-->
        quit  :terminate xe3270.
               If this command is not effective,kill it by tool xkp.exe.
        Logon :TSO Logon.
-              This is not needed at normal case,Logon is automaticaly done
+              This is not needed at normal case,Logon is automatically done
               at first Edit/Browse command to the destination.
               When used on =6 panel,the panel switches to TSO mode.
               With FS option,output of TSO command is displayed by full screen mode.
@@ -34,7 +34,7 @@ a:hover{font-weight:bold;}-->
               Or use to free thread entry when system+UserID count reached
               to maximum 10.
        Reply :Use to write on the TSO screen when &quot;REENTER-&quot; is issued.
-              (xe automaticaly reply to REENTER caused by DSName format error)
+              (xe automatically reply to REENTER caused by DSName format error)
               Note) Ensure &quot;\n&quot; at the end of string for Enter key.
                     S3270 accepts other special string such as
                     \t(TAB), \r(Newline), \f(Clear).
@@ -50,7 +50,7 @@ a:hover{font-weight:bold;}-->
               be supported by Turnkey MVS TSO.
        Free  :Release DataSet allocation.
        SPF   :update SPF information
-              DataSet parameter is requied to specify member(wild card is accepted).
+              DataSet parameter is required to specify member(wild card is accepted).
               option format is as following
 
                [V=xx] [M=xx] [DT0=yymmdd] [DTM=[yymmdd[hhtmss]]] [LC] [LC0[=xx]] [UID[=userid]]
@@ -72,7 +72,7 @@ a:hover{font-weight:bold;}-->
            =6.h01
          is same effect as logon to remote then open the panel shows 3270 screen.
          logoff command switches back to local command mode.
-         For the case of duplcation of TSO command and xe cmd,
+         For the case of duplication of TSO command and xe cmd,
          use &gt;(DOS cmd prefix) like as
            &gt;LISTA\n
              \n appended at end of the line means Enter key.

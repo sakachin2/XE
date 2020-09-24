@@ -1,7 +1,9 @@
-//*CID://+v6BxR~:                             update#=   35;       //~v6BxR~
+//*CID://+v70pR~:                             update#=   48;       //+v70pR~
 //*************************************************************
 //*ualloc/ucalloc/ufree/umalloc16/ucalloc16/ufree16/uallocsz
 //*************************************************************    //~v366I~
+//v70p:200919 (ARM)sjis msg was converted by androidstudio         //+v70pI~
+//v707:200616 ARM:MALLOC fmt is unknown                            //~v707I~
 //v6Bx:160212 (LNX)compiler warning at suse64                      //~v6BxI~
 //v6B1:160114 trace,mtrace file no share mode                      //~v6B1I~
 //v6q9:131203 (BUG)freesizeerr() for large dir(10,000 entry) by udirlist malloc size is over 24bit//~v6q9I~
@@ -171,7 +173,7 @@
 #include <ufemsg.h>                                                //~v352I~
 #include <ufile.h>                                                 //~v6B1I~
 #include <ufile2.h>                                                //~v6B1I~
-#define MAX_MALLOC 0x40000000     //1GB                            //+v6BxI~
+#define MAX_MALLOC 0x40000000     //1GB                            //~v6BxI~
 //*******************************************************
 #define         UALLOCTRCFILE "ualloc.trc"
 #ifdef MALLOCCHK                                                   //~v6deI~
@@ -355,7 +357,8 @@ void *umalloc(size_t Psize)
 //****************************
     if (!Psize)
                 uerrexit("umalloc:request length is 0",
-                                 "umalloc:óvãÅí∑Ç™ 0");
+//                               "umalloc:ÔøΩvÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ 0");//+v70pR~
+                                 "umalloc:óvãÅí∑Ç™ 0");            //+v70pI~
     pvoid=malloc(Psize);
     if (!pvoid)
     {
@@ -363,7 +366,8 @@ void *umalloc(size_t Psize)
                 if (Sallocret)
         {
                 uerrmsg("!! storage shortage(reqsize=%d,current total=%ld) !!",
-                        "!! ãLâØàÊïsë´(óvãÅí∑=%u,äÑÇËìñçœÇ›çáåví∑=%ld) !!",
+//                      "!! ÔøΩLÔøΩÔøΩÔøΩÔøΩsÔøΩÔøΩ(ÔøΩvÔøΩÔøΩÔøΩÔøΩ=%u,ÔøΩÔøΩÔøΩËìñÔøΩœÇ›çÔøΩÔøΩvÔøΩÔøΩ=%ld) !!",//+v70pR~
+                        "!! ãLâØàÊïsë´(óvãÅí∑=%u,äÑÇËìñçœÇ›çáåví∑=%ld) !!",//+v70pI~
                         Psize,Salloclen-Sfreelen+Salloc16len-Sfree16len);
             return 0;
 
@@ -373,6 +377,7 @@ void *umalloc(size_t Psize)
                 exit(UALLOC_FAILED);
     }
         Sallocctr++;
+//      UTRACED("uallocl.umalloc padd-64",pvoid-64,64+Psize);      //~v6BxR~//~v707R~
 //      Salloclen+=(Ssizewk=(long)(ULONG)(UINT)uallocsz(Psize));   //~v389R~
         Salloclen+=(Ssizewk=(long)(ULONG)(UINT)ufreesz(pvoid));    //~v389I~
 //      uallocmapset((char*)pvoid-SIZEPOS,Ssizewk);                //~v6B1R~
@@ -401,7 +406,8 @@ void *ucalloc(size_t Pno,size_t Psize)
 //****************************
     if (!(total=Psize*Pno))
                 uerrexit("ucalloc:request length is 0",
-                                 "ucalloc:óvãÅí∑Ç™ 0");
+//                               "ucalloc:ÔøΩvÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ 0");//+v70pR~
+                                 "ucalloc:óvãÅí∑Ç™ 0");            //+v70pI~
     pvoid=calloc(Pno,Psize);
     if (!pvoid)
     {
@@ -409,7 +415,8 @@ void *ucalloc(size_t Pno,size_t Psize)
                 if (Sallocret)
         {
                 uerrmsg("!! storage shortage(reqsize=%u,current total=%ld) !!",
-                        "!! ãLâØàÊïsë´(óvãÅí∑=%d,äÑÇËìñçœÇ›çáåví∑=%ld) !!",
+//                      "!! ÔøΩLÔøΩÔøΩÔøΩÔøΩsÔøΩÔøΩ(ÔøΩvÔøΩÔøΩÔøΩÔøΩ=%d,ÔøΩÔøΩÔøΩËìñÔøΩœÇ›çÔøΩÔøΩvÔøΩÔøΩ=%ld) !!",//+v70pR~
+                        "!! ãLâØàÊïsë´(óvãÅí∑=%d,äÑÇËìñçœÇ›çáåví∑=%ld) !!",//+v70pI~
 //                              Pno*Psize,Gualloc_amount+Gualloc16_amount);
                         Pno*Psize,Salloclen-Sfreelen+Salloc16len-Sfree16len);
             return 0;
@@ -441,6 +448,40 @@ void *ucalloc(size_t Pno,size_t Psize)
 //*ufree
 //* parm chk and free
 //******************************************************
+#ifdef ARM                                                         //~v707I~
+void ufree(void *Paddr)                                            //~v707I~
+{                                                                  //~v707I~
+static int Sfreeerr;                                               //~v707I~
+//****************************                                     //~v707I~
+    if (!Paddr)                                                    //~v707I~
+                uerrexit("ufree:Null addr parm",                   //~v707I~
+//                               "ufree:NULL ÔøΩAÔøΩhÔøΩÔøΩÔøΩXÔøΩpÔøΩÔøΩÔøΩÔøΩÔøΩ[ÔøΩ^");//~v707I~//+v70pR~
+                                 "ufree:NULL ÉAÉhÉåÉXÉpÉâÉÅÅ[É^"); //+v70pI~
+    if (	(                                                      //~v707I~
+				(ULONG)Paddr & 0x07	//boundary err                 //~v707I~
+         	)                                                      //~v707I~
+	   )                                                           //~v707I~
+                if (!Sfreeerr)                                     //~v707I~
+                {                                                  //~v707I~
+                        Sfreeerr=1;                                //~v707I~
+                        uerrexit("ufree:%08lX is not malloc area",0,//~v707I~
+                                          Paddr);                  //~v707I~
+                }                                                  //~v707I~
+        Sfreectr++;                                                //~v707I~
+        Sfreelen+=(Ssizewk=(long)(ULONG)(UINT)ufreesz(Paddr));     //~v707I~
+        if (Sallocopt)                                             //~v707I~
+        {                                                          //~v707I~
+                if (Shfile)                                        //~v707I~
+                {                                                  //~v707I~
+                                Smaxlenwk=Salloclen-Sfreelen;      //~v707I~
+                                fprintf(Shfile,"free    :addr=%08lX,len=%08lX,cur-tot=%08lX\n",//~v707I~
+                                               (unsigned long)Paddr,Ssizewk,Smaxlenwk+Smaxlenwk16);//~v707I~
+                }                                                  //~v707I~
+        }                                                          //~v707I~
+        free(Paddr);                                               //~v707I~
+        return;                                                    //~v707I~
+}//ufree                                                           //~v707I~
+#else                                                              //~v707I~
 void ufree(void *Paddr)
 {
 static int Sfreeerr;
@@ -449,14 +490,17 @@ static int Sfreeerr;
 //****************************
     if (!Paddr)
                 uerrexit("ufree:Null addr parm",
-                                 "ufree:NULL ÉAÉhÉåÉXÉpÉâÉÅÅ[É^");
+//                               "ufree:NULL ÔøΩAÔøΩhÔøΩÔøΩÔøΩXÔøΩpÔøΩÔøΩÔøΩÔøΩÔøΩ[ÔøΩ^");//+v70pR~
+                                 "ufree:NULL ÉAÉhÉåÉXÉpÉâÉÅÅ[É^"); //+v70pI~
 #ifdef LNX                                                         //~v40iI~
+//  UTRACED("uallocl.ufree   padd-64",Paddr-64,96);                //~v6BxR~//~v707R~
     pcurr=(ULONG*)(void*)((char*)Paddr-SIZEPOS);                   //~v366R~
 //  pnext=(ULONG*)(void*)((ULONG)pcurr+(*pcurr & ~PREV_INUSE));    //~v5miR~
 //  pnext=(ULONG*)(void*)((ULONG)pcurr+(*pcurr & ~SIZE_MASK));     //~v6B1R~
     pnext=(ULONG*)(void*)((ULONG)pcurr+(*pcurr & ~(ULONG)SIZE_MASK));//~v6B1I~
 	if (((ULONG)pcurr>>12)==((ULONG)pnext>>12))//chk same page only//~v5mgI~
     	nextv1=*pnext;                                             //~v5mgR~
+// 	UTRACEP("%s:uallocl.ufree addr=%p,pcurr=%p,pnext=%p\n",UTT,Paddr,pcurr,pnext);//~v6BxI~//~v707R~
     curv1=*pcurr;                                                  //~v5mgI~
     if (	(                                                      //~v366R~
 				(ULONG)Paddr & 0x07	//boundary err                 //~v366R~
@@ -480,7 +524,8 @@ static int Sfreeerr;
 					    curv2=*pcurr;                              //~v5mgI~
                         Sfreeerr=1;
                         uerrexit("ufree:%08lX is not malloc area(next=%p,nextv1=%08lx,nextv2=%08lx,curv1=%08lx,curv2=%08lx)",//~v5mgR~
-                                         "ufree:%08lX ÇÕ malloc Ç≥ÇÍÇƒÇ¢Ç‹ÇπÇÒ(next=%p,nextv1=%08lx,nextv2=%08lx,curv1=%08lx,curv2=%08lx)",//~v5mgR~
+//                                       "ufree:%08lX ÔøΩÔøΩ malloc ÔøΩÔøΩÔøΩÔøΩƒÇÔøΩÔøΩ‹ÇÔøΩÔøΩÔøΩ(next=%p,nextv1=%08lx,nextv2=%08lx,curv1=%08lx,curv2=%08lx)",//~v5mgR~//+v70pR~
+                                         "ufree:%08lX ÇÕ malloc Ç≥ÇÍÇƒÇ¢Ç‹ÇπÇÒ(next=%p,nextv1=%08lx,nextv2=%08lx,curv1=%08lx,curv2=%08lx)",//+v70pI~
                                           Paddr,pnext,nextv1,nextv2,curv1,curv2);//~v5mgR~
                 }
 #else   //!LNX                                                     //~v40iI~
@@ -499,13 +544,16 @@ static int Sfreeerr;
                         }
                         else
                                 uerrexit("ufree:%08lX is length 0 at free",
-                                                 "ufree:%08lX ÇÕ ÉtÉäÅ[éûÇÃí∑Ç≥Ç™ 0",
+//                                               "ufree:%08lX ÔøΩÔøΩ ÔøΩtÔøΩÔøΩÔøΩ[ÔøΩÔøΩÔøΩÃíÔøΩÔøΩÔøΩÔøΩÔøΩ 0",//+v70pR~
+                                                 "ufree:%08lX ÇÕ ÉtÉäÅ[éûÇÃí∑Ç≥Ç™ 0",//+v70pI~
                                                   Paddr);
                 }                                                  //~v568I~
         }
         free(Paddr);
+// 		UTRACED("uallocl.ufree  after free padd-64",Paddr-64,96);  //~v6BxR~//~v707R~
         return;
 }//ufree
+#endif	//!ARM                                                     //~v707I~
 
 //*******************************************************
 //*uallocsz
@@ -538,6 +586,9 @@ int uallocsz(size_t Plen)
 //******************************************************
 int ufreesz(void *Ppvoid)
 {
+#ifdef ARM                                                         //~v707I~
+	return 0;                                                      //~v707I~
+#else                                                              //~v707I~
 #ifdef LNX                                                         //~v40iI~
     int freesz;
 //***********************
@@ -546,10 +597,11 @@ int ufreesz(void *Ppvoid)
 //  freesz&=0xfffffffc;		//drop 0x03(mmap and prev-inuse)       //~v6B1R~
     freesz=(int)((UINT)freesz & 0xfffffffc);		//drop 0x03(mmap and prev-inuse)//~v6B1I~
 #ifndef ULIB64                                                     //~v6q9R~
-//  if (freesz>>24)                                                //+v6BxR~
-    if (freesz>MAX_MALLOC)                                         //+v6BxI~
+//  if (freesz>>24)                                                //~v6BxR~
+    if (freesz>MAX_MALLOC)                                         //~v6BxI~
         ufreesizeerr(Ppvoid);
 #endif                                                             //~v6q9R~
+    UTRACEP("%s:uallocl.ufreesz=%d\n",UTT,freesz);                 //~v6BxR~
     return freesz;
 #else                                                              //~v40iI~
     int freesz;                                                    //~v567R~
@@ -558,6 +610,7 @@ int ufreesz(void *Ppvoid)
     freesz=*(unsigned int *)(void*)((unsigned char*)Ppvoid-SIZEPOS);//~v567R~
     return freesz;                                                 //~v567R~
 #endif                                                             //~v40iI~
+#endif	//!ARM                                                     //~v707I~
 }//ufreesz
 
 //*******************************************************
@@ -608,7 +661,8 @@ void ufreesizeerr(void *Paddr)
 {
 //***********************
     uerrexit("ufree:%08lX is destroyed",
-                 "ufree:%08lX Ç™âÛÇÍÇƒÇ¢Ç‹Ç∑",
+//               "ufree:%08lX ÔøΩÔøΩÔøΩÔøΩÔøΩƒÇÔøΩÔøΩ‹ÇÔøΩ",       //+v70pR~
+                 "ufree:%08lX Ç™âÛÇÍÇƒÇ¢Ç‹Ç∑",                     //+v70pI~
               Paddr);
         return;
 }//ufreesizeerr
@@ -622,7 +676,8 @@ void umallocsizeerr(size_t Psize)
 {
 //***********************
     uerrexit("umalloc:%08X is over 1MB limit for a request",
-                 "umalloc:%08X ÇÕ1âÒÇÃêßå¿í∑(1MB)í¥Ç≈Ç∑",
+//               "umalloc:%08X ÔøΩÔøΩ1ÔøΩÔøΩÃêÔøΩÔøΩÔøΩÔøΩÔøΩ(1MB)ÔøΩÔøΩÔøΩ≈ÇÔøΩ",//+v70pR~
+                 "umalloc:%08X ÇÕ1âÒÇÃêßå¿í∑(1MB)í¥Ç≈Ç∑",          //+v70pI~
               Psize);
         return;
 }//umallocsizeerr

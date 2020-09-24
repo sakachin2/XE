@@ -1,9 +1,10 @@
-//CID://+v6XcR~:                             update#=  129;        //~v6XcR~
+//CID://+v70jR~:                             update#=  134;        //~v6XcR~//~v70jR~
 //*************************************************************
 //*uedit2.c
 //*  uasciidump,ueditfattr,uxdumpline,ugetdtparm(date/time parm)   //~v5czR~
 //*  uxdumpstr                                                     //~v6BfI~
 //*************************************************************
+//v70j:200725 add ucode2str to avoid logcat terminate by ctrl char output//~v70jI~
 //v6Xc:180823 add ueditescrep,process \a,\x..                      //~v6XcI~
 //v6T2:180211 add ueditNowFileTime (current time -->FTIME/FDATE)   //~v6T2I~
 //v6D2:160423 LNX compiler warning for bitmask assignment(FDATE,FTIE)//~v6D2I~
@@ -184,6 +185,57 @@ int uasciidump(int Popt,UCHAR *Pout,UCHAR *Pinp,int Pinplen)       //~v163R~
 	}                                                              //~v163I~
 	return 0;                                                      //~v163R~
 }//uasciidump
+//*******************************************************          //~v70jI~
+char *ucode2str(int Popt,UCHAR *Pinp,int Pinplen)                  //~v70jI~
+{                                                                  //~v70jI~
+	UCHAR *pco,*pci,*pcie,ch;                                      //~v70jI~
+    int len;                                                       //~v70jI~
+#define MAX_CHARDUMP 128                                           //~v70jI~
+    static UCHAR wk0[MAX_CHARDUMP+12];                             //~v70jR~
+    static UCHAR wk1[MAX_CHARDUMP+12];                             //~v70jI~
+    static UCHAR wk2[MAX_CHARDUMP+12];                             //~v70jI~
+    UCHAR  *pwk;                                                   //~v70jI~
+//******************                                               //~v70jI~
+    if (!Pinp)                                                     //~v70jI~
+    	return "null";                                             //~v70jI~
+	if (Pinplen)                                                   //~v70jI~
+    	len=Pinplen;                                               //~v70jI~
+    else                                                           //~v70jI~
+    	len=(int)strlen(Pinp);                                     //+v70jR~
+    pci=Pinp;                                                      //~v70jI~
+    pcie=Pinp+len;                                                 //~v70jI~
+    switch(Popt & 0x0f)                                            //~v70jI~
+    {                                                              //~v70jI~
+    case 0:                                                        //~v70jI~
+    	pwk=wk0;                                                   //~v70jR~
+    	break;                                                     //~v70jI~
+    case 1:                                                        //~v70jI~
+    	pwk=wk1;                                                   //~v70jI~
+    	break;                                                     //~v70jI~
+    case 2:                                                        //~v70jI~
+    	pwk=wk2;                                                   //~v70jI~
+    	break;                                                     //~v70jI~
+    default:                                                       //~v70jI~
+    	return "parm err";                                         //~v70jI~
+    }                                                              //~v70jI~
+    pco=pwk;                                                       //~v70jI~
+    while (pci<pcie)           /* 1 line setup*/                   //~v70jI~
+    {                                                              //~v70jI~
+        ch=*pci++;                                                 //~v70jI~
+		if (ch>=0x20)                                              //~v70jI~
+        	*pco++=ch;                                             //~v70jI~
+        else                                                       //~v70jI~
+            pco+=sprintf(pco,"-0x%02x-",ch);                       //~v70jI~
+        if (pco>pwk+MAX_CHARDUMP)                                  //~v70jR~
+        {                                                          //~v70jI~
+        	strcpy(pco,"...");                                     //~v70jI~
+            break;                                                 //~v70jI~
+        }                                                          //~v70jI~
+	}//for loop                                                    //~v70jI~
+    if (pci<pcie)           /* 1 line setup*/                      //~v70jI~
+        *pco=0;                                                    //~v70jI~
+    return pwk;                                                    //~v70jR~
+}//ucode2str                                                       //~v70jI~
 //#ifdef UTF8SUPP                                                    //~v5k4I~//~v62jR~
 #ifdef UTF8SUPPH                                                   //~v62jI~
 //*******************************************************          //~v5i9I~
@@ -1237,7 +1289,7 @@ static char Sescseqtbl[]  ="x\a\b\t\n\v\f\r\"\'\\";                      //~v09L
             ii+=hexlen*2;                                          //~v6XcR~
             if (Popt & UEERO_NULLERR)                              //~v6XcI~
             {                                                      //~v6XcI~
-            	if (memchr(wk,0,(size_t)hexlen))                   //+v6XcR~
+            	if (memchr(wk,0,(size_t)hexlen))                   //~v6XcR~
                 {                                                  //~v6XcI~
 	            	if (Popt & UEERO_MSG)                          //~v6XcI~
     					uerrmsg("Hex notation error(%s), containing NULL",//~v6XcI~
@@ -1252,7 +1304,7 @@ static char Sescseqtbl[]  ="x\a\b\t\n\v\f\r\"\'\\";                      //~v09L
 	        	rc=8;                                              //~v6XcI~
     	        break;                                             //~v6XcI~
             }                                                      //~v6XcI~
-            memcpy(pco,wk,(size_t)hexlen);                         //+v6XcR~
+            memcpy(pco,wk,(size_t)hexlen);                         //~v6XcR~
             pco+=hexlen;                                           //~v6XcI~
             reslen-=hexlen;                                        //~v6XcI~
             rc=1;                                                  //~v6XcI~

@@ -1,4 +1,4 @@
-﻿2020/05/20 6:31:22 にビルドを開始しました。
+﻿2020/09/23 20:46:10 にビルドを開始しました。
      1>ノード 2 上のプロジェクト "W:\MSVS2017CProjects\wxe\wxe\wxe.vcxproj" (Rebuild ターゲット)。
      1>_PrepareForClean:
          ファイル "Release\x64\wxe.tlog\wxe.lastbuildstate" を削除しています。
@@ -204,7 +204,7 @@
        ResourceCompile:
          C:\Program Files (x86)\Windows Kits\10\bin\10.0.15063.0\x86\rc.exe /D NDEBUG /l"0x0409" /IRelease\x64\ /nologo /fo"Release\x64\wxe.res" g:\src\mfc\wxe2010\wxe.rc 
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x64\link.exe /ERRORREPORT:PROMPT /OUT:"Release\x64\wxe.exe" /INCREMENTAL:NO /NOLOGO Htmlhelp.Lib Imm32.Lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"Release\x64\wxe.pdb" /MAP /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"Release\x64\wxe.lib" /MACHINE:X64 Release\x64\wxe.res
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x64\link.exe /ERRORREPORT:PROMPT /OUT:"Release\x64\wxe.exe" /INCREMENTAL:NO /NOLOGO Htmlhelp.Lib Imm32.Lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"Release\x64\wxe.pdb" /MAP /SUBSYSTEM:WINDOWS /STACK:"4194304" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"Release\x64\wxe.lib" /MACHINE:X64 Release\x64\wxe.res
          Release\x64\u3270.obj
          Release\x64\u32702.obj
          Release\x64\u32703.obj
@@ -391,4 +391,4 @@
     0 個の警告
     0 エラー
 
-経過時間 00:01:00.00
+経過時間 00:01:01.71

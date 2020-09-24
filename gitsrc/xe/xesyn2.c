@@ -1,9 +1,10 @@
-//*CID://+vba1R~:                             update#=  300;       //+vba1R~
+//*CID://+vbrjR~:                             update#=  304;       //~vbrjR~
 //*************************************************************
 //*xesyn2.c                                                        //~v780R~
 //*syntax highlight                                                //~v780I~
 //*************************************************************
-//vba1:170625 (BUG) syntaxh,podelmtbl overflow crash for long record of xesynl.cfg//+vba1I~
+//vbrj:200903 (AXE)highlight cmd;dir parm using $HOME              //~vbrjI~
+//vba1:170625 (BUG) syntaxh,podelmtbl overflow crash for long record of xesynl.cfg//~vba1I~
 //vb89:170217 create if not found. ::xehosts ::xesync_.cfg         //~vb89I~
 //vaz8:150109 C4244 except ULPTR and ULONG                         //~vaz8I~
 //vap0:131215 (ARM)warning strict aliasing                         //~vap0I~
@@ -118,6 +119,9 @@ int lineproc(char *Pbuffinp,int Pleninp,char *Pbuffoutc,char *Pbuffouts,int *Ppo
 int xesyn_serverinit(int Popt,char *Pcmdname);                     //~v78GR~
 int xesyn_shreq(int Popt,char *Pcmd);                              //~v78GR~
 int xesyn_serverterm(int Popt);                                    //~v78GR~
+#ifdef ARM                                                         //~vbrjI~
+char *repHomeDir(char *Pcmd);                                      //~vbrjI~
+#endif //ARM                                                       //~vbrjI~
                                                                    //~v78mI~
 #endif //SYNSUPP                                                   //~v780I~
 #ifdef SYNSUPP                                                     //~v780M~
@@ -377,10 +381,10 @@ int synchkcfgrec(char *Pdata)                                      //~v780R~
 {                                                                  //~v780I~
     char   *pc,*pcv;                                               //~v780I~
     int    wordno,rc,color,opid,chv,ii;                            //~v780R~
-//  UCHAR  powkpo[MAX_CONFRECSZ],*powkpop;                         //~v780R~//+vba1R~
-    UCHAR  powkpo[MAX_CONFRECSZ*2],*powkpop;                       //+vba1I~
-//  char   powkdt[MAX_CONFRECSZ];                                  //~v780I~//+vba1R~
-    char   powkdt[MAX_CONFRECSZ*UPODELMTBLSZ];                     //+vba1I~
+//  UCHAR  powkpo[MAX_CONFRECSZ],*powkpop;                         //~v780R~//~vba1R~
+    UCHAR  powkpo[MAX_CONFRECSZ*2],*powkpop;                       //~vba1I~
+//  char   powkdt[MAX_CONFRECSZ];                                  //~v780I~//~vba1R~
+    char   powkdt[MAX_CONFRECSZ*UPODELMTBLSZ];                     //~vba1I~
     void *pvoid;                                                   //~vap0I~
     PUPODELMTBL pupod;                                             //~v780I~
 #define SYNCFG_OPENLIST  "OPEN_EXT"                                //~v780I~
@@ -454,6 +458,9 @@ static UCHAR *Swordtbl="SHCMD\0" "BG\0" "FG\0"                     //~v780I~
         }                                                          //~v780I~
         if (!(pc=ustrdup(0,pcv,0)))                                //~v780R~
             return 4;                                              //~v780I~
+#ifdef ARM                                                         //~vbrjI~
+        pc=repHomeDir(pc);                                         //~vbrjI~
+#endif                                                             //~vbrjI~
 //  	if (opid==1)                                               //~v78GR~
 //  	if (opid==1||opid==25)                                     //~v78GR~//~v7atR~
     	if (opid==1||opid==25||opid==26)                           //~v7atI~
@@ -1670,4 +1677,55 @@ int xesyn_serverterm(int Popt)                                     //~v78GR~
 	rc=uproc_shserverterm(0,0,0,0);                                //~v78GR~
     return rc;                                                     //~v78GR~
 }//xesyn_serverterm                                                //~v78GR~
+#ifdef ARM                                                         //~vbrjI~
+//***********************************************************************//~vbrjI~
+//*replace $HOME                                                   //~vbrjI~
+//***********************************************************************//~vbrjI~
+char *repHomeDir(char *Pcmd)                                       //~vbrjI~
+{                                                                  //~vbrjI~
+	char *pc,*pc2,*phome,*pcmd,*pcmd0;                             //+vbrjR~
+    int len,lenhome,ctr=0;                                         //~vbrjI~
+//****************************                                     //~vbrjI~
+	phome=getenv("HOME");                                          //~vbrjI~
+    UTRACEP("%s: $HOME=%s,Pcmd=%s\n",UTT,phome,Pcmd);              //~vbrjR~
+	len=(int)strlen(Pcmd)+1;                                       //~vbrjI~
+	lenhome=(int)strlen(phome);                                    //~vbrjI~
+	for (pc=Pcmd;pc;pc=pc2)                                        //~vbrjI~
+    {                                                              //~vbrjI~
+    	pc2=strstr(pc,"$HOME");                                    //~vbrjR~
+        if (pc2)                                                   //~vbrjI~
+        {                                                          //~vbrjI~
+        	len+=lenhome-5;                                        //~vbrjR~
+            pc2+=5;                                                //~vbrjI~
+            ctr++;                                                 //~vbrjI~
+        }                                                          //~vbrjI~
+        else                                                       //~vbrjI~
+        	break;                                                 //~vbrjI~
+    }                                                              //~vbrjI~
+    if (!ctr)                                                      //~vbrjI~
+    	return Pcmd;                                               //~vbrjI~
+    pcmd=umalloc(len);                                             //~vbrjI~
+    pcmd0=pcmd;                                                    //+vbrjI~
+	for (pc=Pcmd;pc;pc=pc2)                                        //~vbrjI~
+    {                                                              //~vbrjI~
+    	pc2=strstr(pc,"$HOME");                                    //~vbrjR~
+        if (pc2)                                                   //~vbrjI~
+        {                                                          //~vbrjI~
+        	len=PTRDIFF(pc2,pc);                                   //~vbrjI~
+            memcpy(pcmd,pc,(size_t)len);                           //~vbrjI~
+            memcpy(pcmd+len,phome,(size_t)lenhome);                //~vbrjI~
+            pcmd+=len+lenhome;                                     //~vbrjR~
+            pc2+=5;                                                //~vbrjI~
+        }                                                          //~vbrjI~
+        else                                                       //~vbrjI~
+        {                                                          //~vbrjI~
+        	len=(int)strlen(pc);                                   //~vbrjI~
+            UmemcpyZ(pcmd,pc,(size_t)len);                         //~vbrjI~
+            break;                                                 //~vbrjI~
+        }                                                          //~vbrjI~
+    }                                                              //~vbrjI~
+    UTRACEP("%s: rc=%s\n",UTT,pcmd0);                              //+vbrjR~
+    return pcmd0;                                                  //+vbrjR~
+}                                                                  //~vbrjI~
+#endif                                                             //~vbrjI~
 #endif //SYNSUPP                                                   //~v780I~

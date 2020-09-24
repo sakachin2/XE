@@ -1,9 +1,10 @@
-//*CID://+v6BkR~:                             update#=   29;       //~v6BkR~
+//*CID://+v70dR~:                             update#=   44;       //~v70dR~
 //*************************************************************
 //*udos2.c
 //*************************************************************
 //*ugetdrivetype
 //*************************************************************
+//v70d:200625 (LNX)setenv may destroy env,use putenv               //~v70dI~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
 //v6n0:130816 compiler warning;set but not used                    //~v6n0I~
 //v6c1:120120 udos_setenv:to append to $PATH,specify explicit option(duplicated fpr ICUDATA)//~v6c1I~
@@ -64,6 +65,17 @@ void udos2(void)
 {
 	return;
 }
+//*****************************************************************//~v6BkI~
+void listenv()                                                     //~v70dR~
+{                                                                  //~v70dR~
+    extern char **environ;                                         //~v70dR~
+    char *pc,**ppc;                                                //~v70dR~
+	UTRACEP("%s:environ=%p\n",UTT,environ);                        //~v70dR~
+    for (ppc=environ;pc=*ppc,pc;ppc++)                             //~v70dR~
+    {                                                              //~v70dR~
+    	UTRACEP("%s:%p=%s\n",UTT,pc,pc);                           //~v70dR~
+    }                                                              //~v70dR~
+}                                                                  //~v70dR~
 //*****************************************************************//~v566I~
 //*get drive id list                                               //~v566I~
 //*ugetdrivelist                                                   //~v566I~
@@ -274,7 +286,7 @@ int ugetdrivetype(char Pdriveid,int Pmsgopt)
     if (rc<0)
 	    if (Pmsgopt & UDDC_ERRMSG)
     	    uerrmsg("Invalid drive id - %c(rc=%d)",
-        	        "無効なドライブです - %c(rc=%d)",
+        	        "無効なドライブです - %c(rc=%d)",              //+v70dI~
             	    Pdriveid,msgrc);
 	return rc;
 }//ugetdrivetype
@@ -321,16 +333,16 @@ int udos_setenv(int Popt,char *Pkey,char *Pvalue)                  //~v6boI~
 	char *old,*new;                                                //~v6boI~
 //  int oldlen,addlen,keylen,rc;                                   //~v6n0R~
     int oldlen,addlen,       rc;                                   //~v6n0I~
-#ifdef W32                                                         //~v6n0I~
+//#ifdef W32                                                         //~v6n0I~//~v70dR~
     int keylen;                                                    //~v6n0I~
-#endif                                                             //~v6n0I~
+//#endif                                                             //~v6n0I~//~v70dR~
 //#ifdef W32                                                       //~v6boR~
 //    char buff[1024];    //for test                               //~v6boR~
 //#endif                                                           //~v6boR~
 //*******************                                              //~v6boI~
-#ifdef W32                                                         //~v6n0I~
+//#ifdef W32                                                         //~v6n0I~//~v70dR~
 	keylen=(int)strlen(Pkey);                                      //~v6boI~
-#endif                                                             //~v6n0I~
+//#endif                                                             //~v6n0I~//~v70dR~
     addlen=(int)strlen(Pvalue);                                    //~v6boI~
 	old=getenv(Pkey);                                              //~v6boI~
 	UTRACEP("udos_setenv old=%p=%s\n",old,old);                    //~v6boR~
@@ -354,7 +366,12 @@ int udos_setenv(int Popt,char *Pkey,char *Pvalue)                  //~v6boI~
     else                                                           //~v6boI~
     {                                                              //~v6boI~
 //  	new=umalloc(oldlen+addlen+4);    //dont free for pputenv until exit//~v6boI~//~v6BkR~
+#ifdef AAA                                                         //~v70dI~
     	new=umalloc((size_t)(oldlen+addlen+4));    //dont free for pputenv until exit//~v6BkI~
+#else                                                              //~v70dI~
+    	new=umalloc((size_t)(keylen+oldlen+addlen+4));    //dont free for pputenv until exit//~v70dI~
+#endif                                                             //~v70dI~
+#ifdef AAA                                                         //~v70dM~
       if (Popt & UDSE_PREPEND)                                     //~v6c1I~
       {                                                            //~v6c1I~
 #ifdef UNX                                                         //~v6boI~
@@ -365,6 +382,12 @@ int udos_setenv(int Popt,char *Pkey,char *Pvalue)                  //~v6boI~
       }                                                            //~v6c1I~
       else                                                         //~v6c1I~
     	new=Pvalue;                                                //~v6c1I~
+#else                                                              //~v70dI~
+      if (Popt & UDSE_PREPEND)                                     //~v70dI~
+    	sprintf(new,"%s=%s%c%s",Pkey,Pvalue,';',old);              //~v70dI~
+      else                                                         //~v70dI~
+    	sprintf(new,"%s=%s",Pkey,Pvalue);                          //~v70dI~
+#endif                                                             //~v70dI~
     }                                                              //~v6boI~
 #endif                                                             //~v6boI~
 #ifdef W32                                                         //~v6boI~
@@ -376,10 +399,21 @@ int udos_setenv(int Popt,char *Pkey,char *Pvalue)                  //~v6boI~
 //    GetEnvironmentVariable(Pkey,buff,sizeof(buff));              //~v6boR~
 //    UTRACEP("GetEnvironmentValiable after =%s\n",buff);          //~v6boR~
 #else                                                              //~v6boI~
+//  listenv();	//TODO test                                        //~v6BkI~//~v70dR~
+#ifdef AAA                                                         //~v70dI~
+	rc=putenv(new);                                                //~v70dI~
+#else                                                              //~v70dI~
 	rc=setenv(Pkey,new,1/*override*/);                             //~v6boR~
     if (new!=Pvalue)                                               //~v6boI~
     	ufree(new);	//copyed to env                                //~v6boI~
-    UTRACEP("after setenv rc=%d,errno=%d,new=%p,Pvalue=%p,key=%s,getenv=%s\n",rc,errno,new,Pvalue,Pkey,getenv(Pkey));//~v6boI~//+v6BkR~
+#endif                                                             //~v70dI~
+    UTRACEP("after setenv rc=%d,errno=%d,new=%p,Pvalue=%p,key=%s,getenv=%p=%s\n",rc,errno,new,Pvalue,Pkey,getenv(Pkey),getenv(Pkey));//~v6boI~//~v6BkR~
+//  listenv();	//TODO test                                        //~v6BkI~//~v70dR~
+//    new=umalloc(1024);  //TODO test  //dont free for pputenv until exit       //~v6BkI~//~v70dR~
+//    sprintf(new,"PATH=%s",Pvalue);                                 //~v6BkI~//~v70dR~
+//    rc=putenv(new);                                                //~v6BkI~//~v70dR~
+//    UTRACEP("after putenv rc=%d,errno=%d,new=%p=%s,Pvalue=%p,getenv=%p=%s\n",rc,errno,new,new,Pvalue,getenv(Pkey),getenv(Pkey));//~v6BkR~//~v70dR~
+//    listenv();  //TODO test                                        //~v6BkI~//~v70dR~
 #endif                                                             //~v6boI~
     return rc;                                                     //~v6boI~
 }//udos_setenv                                                     //~v6boI~

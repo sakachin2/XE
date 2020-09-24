@@ -1,8 +1,9 @@
-//*CID://+v6BkR~:                             update#=  221;       //+v6BkR~
+//*CID://+v702R~:                             update#=  222;       //+v702R~
 //*************************************************************
 //ukbdl.c    (intf between ukbd and ukbdlnxc)                      //~v57BR~
 //*kbd get for linux console screen
 //*************************************************************
+//v702:200615 ARM compiler warning                                 //+v702I~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
 //v6Be:160207 utf8 char input emulation                            //~v6B2I~
 //v6s2:140213 add xfce4-terminal as terminal emulator              //~v6s2I~
@@ -103,9 +104,11 @@
 #endif                                                             //~v5n8I~
                                                                    //~v384I~
 //*********************************************************************
+#ifndef ARMXXE                                                     //+v702I~
 static int Sfd;		//fd returned by init                          //~v39bR~
 static int Sgetchinit=0,Sgetcheinit=0;                             //~v555R~
 static struct termios Soldgetch,Soldgetche;                        //~v39bI~
+#endif                                                             //+v702I~
 	iconv_t *Sphiconv;                                             //~v5n8R~
 //* udbcschk:Sconverters; if LOCALICU mode Ptr to list of UConverters and Subchars*//~v6f7I~
 	int   Swcstat=0;                                               //~v5n8R~
@@ -1008,8 +1011,8 @@ int ukbd_simutf8_f2l(int Popt,char *Putf8,int Plen,char *Ppout,int Pbuffsz,int *
     int wwuc;                                                      //~v6BeR~
     char errrep;                                                   //~v6BeR~
 //***************************************                          //~v6BeR~
-//  errrep=(char)Popt & UKSF2LO_ERRREPCH;                          //+v6BkR~
-    errrep=(char)(Popt & UKSF2LO_ERRREPCH);                        //+v6BkI~
+//  errrep=(char)Popt & UKSF2LO_ERRREPCH;                          //~v6BkR~
+    errrep=(char)(Popt & UKSF2LO_ERRREPCH);                        //~v6BkI~
     for (rc=1;;)                                                   //~v6BeR~
     {                                                              //~v6BeR~
         opt=UCVUCS_UCS4; //accept ucs4                             //~v6BeR~

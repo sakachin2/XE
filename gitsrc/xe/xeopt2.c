@@ -1,8 +1,10 @@
-//*CID://+vbmqR~:                             update#=  450;       //~vbmqR~
+//*CID://+vbraR~:                             update#=  466;       //~vbraR~
 //*************************************************************
 //*xeopt2.c                                                        //~7B24R~
 //* Mode                                                           //~v90wR~
 //*************************************************************
+//vbra:200731 set default for GUM2_KBDUTF8                         //~vbraI~
+//vbr9:200729 (BUG)Goptopt2 flag duplicated of GOPT2_ALLFILELOCALE and GOPT2_COMBINE by 0x20//~vbr9I~
 //vbmq:180722 set opt unicomb status on dirlist hdrline            //~vbmqI~
 //vbkx:180708 (LNX:Bug)opt uncomb;itself/shadow is not notified to ulib when change to comb from UNPR//~vbkxI~
 //vbkt:180702 (BUG)"opt unicomb unp" set unpchar 763ba3a4.(UNP is invalid,UNPR is valid, but assumed Uxxxx)//~vbktI~
@@ -177,10 +179,23 @@ void xeopt2init(void)                                              //~v91sI~
         	Gutfmode2|=GUM2_KBDL2U; //ignore MODEINPUTL2U          //~v91sR~
     }                                                              //~v91sI~
 #else                                                              //~va10R~
+#ifdef AAA                                                         //~vbraI~
     if (Goptopt2 & GOPT2_MODEINPUTL2U)  //KBDUTF8 saved            //~va10I~
         Gutfmode2|=GUM2_KBDUTF8; 		//kbd mode is utf8         //~va10I~
+#else                                                              //~vbraI~
+#ifdef ARM                                                         //~vbraI~
+	if (XEUTF8MODE_ENV_FORCE())                                    //~vbraR~
+        Gutfmode2|=GUM2_KBDUTF8; 		//kbd mode is utf8         //~vbraI~
+#endif                                                             //~vbraI~
+    if (Goptopt3 & GOPT3_KBDUTF8BYCMD)  //KBDUTF8 saved            //~vbraI~
+        Gutfmode2|=GUM2_KBDUTF8; 		//kbd mode is utf8         //~vbraI~
+    else                                                           //~vbraI~
+    if (Goptopt3 & GOPT3_KBDLCBYCMD)    //!KBDUTF8 saved           //~vbraI~
+        Gutfmode2&=~GUM2_KBDUTF8; 		//kbd mode is utf8         //~vbraI~
+#endif                                                             //~vbraI~
 #ifdef UTF8UCS2                                                    //~va30I~
-    if (Goptopt2 & GOPT2_COMBINE)                                  //~va30I~
+//  if (Goptopt2 & GOPT2_COMBINE)                                  //~va30I~//~vbr9R~
+    if (Goptopt3 & GOPT3_COMBINE)                                  //~vbr9I~
     	Gulibutfmode|=GULIBUTFCOMBINE;                             //~va30R~
 //#if defined(W32) && !defined(WXE)	//winconsole version           //~va3jR~
     if (Goptopt3 &  GOPT3_LIGATURE)                                //~va3hI~
@@ -208,7 +223,7 @@ void xeopt2init(void)                                              //~v91sI~
 //#endif                                                           //~va3jR~
 #endif                                                             //~va30I~
 #endif                                                             //~va10I~
-    UTRACEP("%s:new opt2=%0x,opt3=%0x,Gulibutfmode=%0x\n",UTT,Goptopt2,Goptopt3,Gulibutfmode);//~vb4jI~
+    UTRACEP("%s:new Goptopt2=%0x,Goptopt3=%0x,Gulibutfmode=%0x\n",UTT,Goptopt2,Goptopt3,Gulibutfmode);//~vb4jI~//+vbraR~
     return;                                                        //~v91sI~
 }//xeopt2init                                                      //~v91sI~
 #ifdef UTF8UCS2                                                    //~va30I~
@@ -238,7 +253,8 @@ int optcombinehelpsub(int Popt,char **Ppcombine,char **Ppligature,char *Paltch)/
 	char altch[12];                                                //~va3sR~
 //#endif                                                           //~vb4qR~
 //*********************************                                //~va3sI~
-    if (Goptopt2 & GOPT2_COMBINE)                                  //~va3sI~
+//  if (Goptopt2 & GOPT2_COMBINE)                                  //~va3sI~//~vbr9R~
+    if (Goptopt3 & GOPT3_COMBINE)                                  //~vbr9I~
     	pmodecombine=OPT_COMBCOMBINE;                              //~va3sI~
     else                                                           //~va3sI~
     {                                                              //~va3sI~
@@ -258,7 +274,8 @@ int optcombinehelpsub(int Popt,char **Ppcombine,char **Ppligature,char *Paltch)/
  }                                                                 //~vbCDR~
  else                                                              //~vbCDR~
  {                                                                 //~vbCDR~
-  if (!(Goptopt2 & GOPT2_COMBINE))                                 //~vb4nI~
+//if (!(Goptopt2 & GOPT2_COMBINE))                                 //~vb4nI~//~vbr9R~
+  if (!(Goptopt3 & GOPT3_COMBINE))                                 //~vbr9I~
   {                                                                //~vb4nM~
    if (Goptopt3 & GOPT3_COMBINENP)    //UNPR                       //~vb4nI~
    {                                                               //~vb4nI~
@@ -462,9 +479,11 @@ static UCHAR *Swordtblcomb=OPT_COMBCOMBINE "\0"                    //~va3sR~
 	        return errinvalid(pc);                                 //~va3sI~
             break;                                                 //~va3sR~
         case 1: //combine                                          //~va3sR~
-		    if (Goptopt2 & GOPT2_COMBINE)                          //~va3sI~
+//  	    if (Goptopt2 & GOPT2_COMBINE)                          //~va3sI~//~vbr9R~
+    	    if (Goptopt3 & GOPT3_COMBINE)                          //~vbr9I~
                 return erralready();                               //~va3sR~
-    		Goptopt2 |= GOPT2_COMBINE;                             //~va3sI~
+//  		Goptopt2 |= GOPT2_COMBINE;                             //~va3sI~//~vbr9R~
+    		Goptopt3 |= GOPT3_COMBINE;                             //~vbr9I~
     		Gulibutfmode|=GULIBUTFCOMBINE;                         //~va3sI~
 //    		Goptopt3 &= ~GOPT3_COMBINENP;     //ON and printable   //~va3sI~//~vb2eR~
       		Goptopt3 &= (UCHAR)(~GOPT3_COMBINENP);     //ON and printable//~vb2eI~
@@ -474,17 +493,20 @@ static UCHAR *Swordtblcomb=OPT_COMBCOMBINE "\0"                    //~va3sR~
     		if (Goptopt3 & GOPT3_COMBINENP)     //altchar mode     //~va3sI~
                 return erralready();                               //~va3sI~
 //	    	Goptopt2 &= ~GOPT2_COMBINE;                            //~va3sI~//~vb2eR~
-  	    	Goptopt2 &= (UCHAR)(~GOPT2_COMBINE);                   //~vb2eI~
+//	    	Goptopt2 &= (UCHAR)(~GOPT2_COMBINE);                   //~vb2eI~//~vbr9R~
+  	    	Goptopt3 &= (UCHAR)(~GOPT3_COMBINE);                   //~vbr9I~
     		Gulibutfmode&=~GULIBUTFCOMBINE;                        //~va3sI~
     		Goptopt3 |= GOPT3_COMBINENP;     //ON and printable    //~va3sI~
     		Gulibutfmode|=GULIBUTFCOMBINE_NP;                      //~vb4jR~
             break;                                                 //~va3sI~
         case 3: //split                                            //~va3sI~
     		if (!(Goptopt3 & GOPT3_COMBINENP)     //altchar mode   //~va3sI~
-            &&  !(Goptopt2 & GOPT2_COMBINE))                       //~va3sI~
+//          &&  !(Goptopt2 & GOPT2_COMBINE))                       //~va3sI~//~vbr9R~
+            &&  !(Goptopt3 & GOPT3_COMBINE))                       //~vbr9I~
                 return erralready();                               //~va3sI~
 //      	Goptopt2 &= ~GOPT2_COMBINE;                            //~va3sI~//~vb2eR~
-        	Goptopt2 &= (UCHAR)(~GOPT2_COMBINE);                   //~vb2eI~
+//      	Goptopt2 &= (UCHAR)(~GOPT2_COMBINE);                   //~vb2eI~//~vbr9R~
+        	Goptopt3 &= (UCHAR)(~GOPT3_COMBINE);                   //~vbr9I~
     		Gulibutfmode&=~GULIBUTFCOMBINE;                        //~va3sI~
 //  		Goptopt3 &= ~GOPT3_COMBINENP;     //ON and printable   //~va3sI~//~vb2eR~
     		Goptopt3 &= (UCHAR)(~GOPT3_COMBINENP);     //ON and printable//~vb2eI~
@@ -531,11 +553,13 @@ int func_optcombine(PUCLIENTWE Ppcw)                               //~va30I~
 	char wkcombch[24],*pcombtype;                                  //~vb4kR~
 //*********************************                                //~va30I~
     UTRACEP("%s:old opt2=%0x,opt3=%0x,Gulibutfmode=%0x\n",UTT,Goptopt2,Goptopt3,Gulibutfmode);//~vb4jI~
-    if (Goptopt2 & GOPT2_COMBINE)                                  //~va30R~
+//  if (Goptopt2 & GOPT2_COMBINE)                                  //~va30R~//~vbr9R~
+    if (Goptopt3 & GOPT3_COMBINE)                                  //~vbr9I~
     {                                                              //~va30I~
 //*combine-->split                                                 //~vb4kI~
 //  	Goptopt2 &= ~GOPT2_COMBINE;                                //~va30I~//~vb2eR~
-    	Goptopt2 &= (UCHAR)(~GOPT2_COMBINE);                       //~vb2eI~
+//  	Goptopt2 &= (UCHAR)(~GOPT2_COMBINE);                       //~vb2eI~//~vbr9R~
+    	Goptopt3 &= (UCHAR)(~GOPT3_COMBINE);                       //~vbr9I~
     	Gulibutfmode&=~GULIBUTFCOMBINE;                            //~va30M~
 //  	Goptopt3 &= ~GOPT3_COMBINENP;     //ON and printable //~va3dI~//~va3eM~//~vb2eR~
     	Goptopt3 &= (UCHAR)(~GOPT3_COMBINENP);     //ON and printable//~vb2eI~
@@ -582,7 +606,8 @@ int func_optcombine(PUCLIENTWE Ppcw)                               //~va30I~
       if (Goptopt3 & GOPT3_COMBINENP)   //non printable            //~va3eM~
       {                                                            //~va3eM~
 //*UNPR-->COMBINE                                                  //~vb4kI~
-    	Goptopt2 |= GOPT2_COMBINE;                                 //~va30I~
+//  	Goptopt2 |= GOPT2_COMBINE;                                 //~va30I~//~vbr9R~
+    	Goptopt3 |= GOPT3_COMBINE;                                 //~vbr9I~
     	Gulibutfmode|=GULIBUTFCOMBINE;                             //~va30M~
 //  	Goptopt3 &= ~GOPT3_COMBINENP;     //ON and printable       //~va3eI~//~vb2eR~
     	Goptopt3 &= (UCHAR)(~GOPT3_COMBINENP);     //ON and printable//~vb2eI~
@@ -702,213 +727,213 @@ int func_optligature(PUCLIENTWE Ppcw)                              //~va3dI~
 #endif                                                             //~va3dI~
 }//func_optligature                                                //~va3dR~
 #endif                                                             //~va30I~
-#ifdef UTF8SUPP                                                    //~va0xI~
-//****************************************************************
-//!func_opt
-//* option commnad
-//*parm1:pcw(UCWparm:operand)
-//*retrn:rc
-//****************************************************************
-int func_mode(PUCLIENTWE Ppcw)                                     //~v90wR~
-{                                                                  //~v90wI~
-static UCHAR *Swordtbl=MODE_UTF8 "\0"                              //~v90wI~
-					   MODE_LOCALE "\0"                            //~v90wI~
-					   MODE_ASIS "\0"                              //~v915I~
-					   MODE_SWKBD "\0"                             //~v917I~
-                       ;                                           //~v90wI~
-    int ii,opdno,swcp=0,rc=0,swfile,swdir,oldutf8,newutf8;         //~v91hR~
-    int swnocpchange=0,oldutf8p,swsetutf8p=0;                      //~v92iR~
-    PUFILEC pfc=0;                                                 //~v90wI~
-    PUFILEH pfh=0;                                                 //~v90wI~
-    char *pc,*pnewcp;                                              //~v90wI~
-//*********************************                                //~v90wI~
-    if (!XEUTF8MODE())                                             //~v90wI~
-    {                                                              //~v90wI~
-//  	uerrmsg("Mode cmd is not avail when UTF8 mode prohibit by cmdline option",//~v91HR~
-//  	        "Modeコマンドはコマンドラインオプション指定により使用できません");//~v91HR~
-        errnotsupported("UTF cmd","Non-UTF8 mode");                //~v929R~
-        return 4;                                                  //~v90wI~
-    }                                                              //~v90wI~
-//*operand chk                                                     //~v90wI~
-  if (Ppcw->UCWkeytype==UCWKTCMD)                                  //~v917I~
-  {                                                                //~v917I~
-    opdno=Ppcw->UCWopdno;                                          //~v90wI~
-    pc=Ppcw->UCWopdpot;                                            //~v90wI~
-  }                                                                //~v917I~
-  else                                                             //~v917I~
-  {                                                                //~v917I~
-  	opdno=1;                                                       //~v917I~
-    pc=MODE_SWKBD;		//by A+u key                               //~v917I~
-  }                                                                //~v917I~
-    swfile=(Ppcw->UCWtype==UCWTFILE);                              //~v91hR~
-    swdir=(Ppcw->UCWtype==UCWTDIR);                                //~v91hI~
-    if (swfile                                                     //~v91hR~
-    ||  swdir)                                                     //~v91hR~
-    {                                                              //~v90wI~
-		pfc=Ppcw->UCWpfc;                                          //~v90wI~
-		pfh=pfc->UFCpfh;                                           //~v90wI~
-    }                                                              //~v90wI~
-    oldutf8=((swfile && FILEUTF8MODE(pfh)) || (swdir && UCBITCHK(pfc->UFCflag2,UFCF2UTF8)));//~v91hR~
-    oldutf8p=((swfile && UCBITCHK(pfh->UFHflag8,UFHF8UTF8P))       //~v92iI~
-          ||  (swdir  && UCBITCHK(pfc->UFCflag2,UFCF2UTF8P)));     //~v92iI~
-	if (!opdno)		//operand                                      //~v90wI~
-    {                                                              //~v90wI~
-        rc=funcmodehelp();                                         //~v90wI~
-        if (pfh)                                                   //~v90wI~
-        {                                                          //~v90wI~
-        	if (oldutf8)                                           //~v91hR~
-            	uerrmsgcat("; This file's mode is %s",0,MODE_UTF8);//~v90wR~
-            else                                                   //~v90wI~
-	    	  if (UTF8MODEENV()) //env is utf8(linux locale=utf8)  //~v91hR~
-            	uerrmsgcat("; This file's mode is %s",0,MODE_LOCALE);//~v90wR~
-              else                                                 //~v915I~
-            	uerrmsgcat("; This file's mode is %s",0,MODE_ASIS);//~v915I~
-        }                                                          //~v90wI~
-        return rc;                                                 //~v90wI~
-    }                                                              //~v90wI~
-	for (ii=0;ii<opdno;ii++,pc+=strlen(pc)+1)	//next operand addr//~v90wI~
-	{                                                              //~v90wI~
-        swcp=wordtblisrch(pc,Swordtbl);                            //~v917R~
-        if (!swcp)                                                 //~v917R~
-        	return errinvalid(pc);                                 //~v90wI~
-//*process                                                         //~v90wI~
-      if (swcp==4)                                                 //~v917I~
-      {                                                            //~v917I~
-	    if (UTF8MODEENV()) //env is utf8(linux locale=utf8)        //~v91hR~
-        {                                                          //~v917I~
-        	Gutfmode2^=GUM2_KBDU2L;    //sawp u2l<-->utf           //~v91sR~
-	    	if (Ppcw->UCWkeytype==UCWKTCMD)                        //~v917I~
-            {                                                      //~v917I~
-            	if (Gutfmode2 & GUM2_KBDU2L)                       //~v91sR~
-                	uerrmsg("Kbd switched to U2L conversion mode",0);//~v917R~
-                else                                               //~v917I~
-                	uerrmsg("Kbd switched to UTF8 mode",0);        //~v917R~
-            }                                                      //~v917I~
-#ifdef LNX                                                         //~v91dI~
-            else                                                   //~v91dI~
-    		{                                                      //~v91dI~
-	        	rc=utfcvlocaleinit(UTFCLIO_NULLCHKONLY,Glocalecode);	//notify to ulib//~v91dI~
-            }                                                      //~v91dI~
-#endif                                                             //~v91dI~
-        }                                                          //~v917I~
-        else                                                       //~v917I~
-        {                                                          //~v917I~
-        	Gutfmode2^=GUM2_KBDL2U;    //swap l2u<-->locale        //~v91sR~
-	    	if (Ppcw->UCWkeytype==UCWKTCMD)                        //~v917I~
-            {                                                      //~v917I~
-            	if (Gutfmode2 & GUM2_KBDL2U)                       //~v91sR~
-                	uerrmsg("Kbd switched to L2U conversion mode",0);//~v917R~
-                else                                               //~v917I~
-                	uerrmsg("Kbd switched to Locale mode",0);      //~v917R~
-            }                                                      //~v917I~
-        }                                                          //~v917I~
-		UCBITON((Ppcw->UCWpsd+CMDLINENO)->USDflag2,USDF2DRAW);  //redraw for by A+u//~v917I~
-      }                                                            //~v917I~
-      else                                                         //~v917I~
-      {                                                            //~v917I~
-    	if (!pfh)                                                  //~v90wI~
-        {                                                          //~v90wI~
-        	uerrmsg("Use on File/Dir panel",                       //~v91hR~
-            		"ファイル/Dir 画面で使用してください");        //~v91hR~
-            return 4;                                              //~v90wI~
-        }                                                          //~v90wI~
-        if (swcp==1)	//to UTF8                                  //~v90wI~
-        {                                                          //~v90wI~
-			fcmdprofupdaterecord(FPURO_CP,pfh->UFHfilename,0,1/*utf8*/,0/*intval2*/);//~v78wR~
-        	if (oldutf8)                                           //~v91hR~
-//          	return erralready();                               //~v92iR~
-    			swnocpchange=1;                                    //~v92iI~
-            if (!oldutf8p)                                         //~v92iI~
-                swsetutf8p=1;	//set UTF8P on                     //~v92iI~
-            newutf8=1;                                             //~v91hI~
-            pnewcp=MODE_UTF8;                                      //~v90wR~
-        }                                                          //~v90wI~
-        else             //to locale                               //~v90wI~
-        if (swcp==3)	//ASIS                                     //~v915I~
-        {                                                          //~v915I~
-			fcmdprofupdaterecord(FPURO_CP,pfh->UFHfilename,0,0/*asis*/,0/*intval2*/);//~v78wR~
-	    	if (UTF8MODEENV()) //env is utf8(linux locale=utf8)    //~v91hR~
-            {                                                      //~v915I~
-        		if (oldutf8)                                       //~v91hR~
-//          		return erralready();                           //~v92iR~
-    				swnocpchange=1;                                //~v92iI~
-	            newutf8=1;                                         //~v91hI~
-            }                                                      //~v915I~
-            else                                                   //~v915I~
-            {                                                      //~v915I~
-        		if (!oldutf8)                                      //~v91hR~
-//          		return erralready();                           //~v92iR~
-    				swnocpchange=1;                                //~v92iI~
-	            newutf8=0;                                         //~v91hI~
-            }                                                      //~v915I~
-            if (oldutf8p)                                          //~v92iI~
-                swsetutf8p=-1;	//set UTF8P off                    //~v92iI~
-            pnewcp=MODE_ASIS;                                      //~v915I~
-        }                                                          //~v915I~
-        else             //to locale                               //~v915I~
-        {                                                          //~v90wI~
-			fcmdprofupdaterecord(FPURO_CP,pfh->UFHfilename,0,-1/*locale*/,0/*intval2*/);//~v78wR~
-        	if (!oldutf8)                                          //~v91hR~
-//          	return erralready();                               //~v92iR~
-    			swnocpchange=1;                                    //~v92iI~
-	        newutf8=0;                                             //~v91hI~
-            pnewcp=MODE_LOCALE;                                    //~v90wR~
-            if (!oldutf8p)                                         //~v92iI~
-                swsetutf8p=1;	//set UTF8P on;                    //~v92iI~
-        }                                                          //~v90wI~
-        if (newutf8)                                               //~v91hR~
-            if (swfile)                                            //~v91hI~
-	    		UCBITON(pfh->UFHflag8,UFHF8UTF8);                  //~v91hI~
-            else                                                   //~v91hI~
-                UCBITON(pfc->UFCflag2,UFCF2UTF8);                  //~v91hI~
-        else                                                       //~v91hI~
-            if (swfile)                                            //~v91hI~
-	    		UCBITOFF(pfh->UFHflag8,UFHF8UTF8);                 //~v91hI~
-            else                                                   //~v91hI~
-                UCBITOFF(pfc->UFCflag2,UFCF2UTF8);                 //~v91hR~
-        if (swsetutf8p>0)                                          //~v92iR~
-        {                                                          //~v92iI~
-            if (swfile)                                            //~v92iI~
-	    		UCBITON(pfh->UFHflag8,UFHF8UTF8P);                 //~v92iI~
-            else                                                   //~v92iI~
-                UCBITON(pfc->UFCflag2,UFCF2UTF8P);                 //~v92iI~
-        }                                                          //~v92iI~
-        else             //utf8 or locale                          //~v92iR~
-        if (swsetutf8p<0)                                          //~v92iI~
-        {                                                          //~v92iI~
-            if (swfile)                                            //~v92iI~
-	    		UCBITOFF(pfh->UFHflag8,UFHF8UTF8P);  //explicitly specified id//~v92iI~
-            else                                                   //~v92iI~
-                UCBITOFF(pfc->UFCflag2,UFCF2UTF8P);                //~v92iI~
-        }                                                          //~v92iI~
-                                                                   //~v92iI~
-//  }//loop by operand no                                          //~v92pR~
-    if (swnocpchange && !swsetutf8p)                               //~v92iR~
-    {                                                              //~v92iI~
-        uerrmsg("CodePage is NOT changed, but registered to profile record",//~v92iI~
-            	"コードページの変更はありませんがプロファイルに記録しました");//~v92iR~
-    }                                                              //~v92iI~
-    else                                                           //~v92iI~
-    {                                                              //~v92iI~
-      if (swfile)                                                  //~v91hR~
-      {                                                            //~v91hI~
-		filesetlocaleid(pfh);                                      //~v915I~
-       if (!swnocpchange)                                          //~v92iI~
-        funcmoderesetdbcstbl(Ppcw,pfh);                            //~v90wR~
-      }                                                            //~v91hI~
-      else                                                         //~v91hM~
-		dirsetlocaleid(0,pfc,0/*psddata*/);                        //~v91hM~
-        uerrmsg("CodePage changed to %s",                          //~v90wI~
-            		"コードページを %s に変更",                    //~v90wI~
-				pnewcp);                                           //~v90wI~
-//    }//!swkbd                                                    //~v92pR~
-    }                                                              //~v92iI~
-    }//!swkbd(swcp==4)                                             //~v92pI~
-//  }//loop by operand no                                          //~v92iR~
-    }//loop by operand no                                          //~v92pI~
-	return rc;                                                     //~v91dR~
-}//func_mode                                                       //~v90wR~
-#endif  //UTF8SUPP                                                 //~va0xR~
+//#ifdef UTF8SUPP                                                    //~va0xI~//~vbraR~
+////****************************************************************//~vbraR~
+////!func_opt                                                      //~vbraR~
+////* option commnad                                               //~vbraR~
+////*parm1:pcw(UCWparm:operand)                                    //~vbraR~
+////*retrn:rc                                                      //~vbraR~
+////****************************************************************//~vbraR~
+//int func_mode(PUCLIENTWE Ppcw)                                     //~v90wR~//~vbraR~
+//{                                                                  //~v90wI~//~vbraR~
+//static UCHAR *Swordtbl=MODE_UTF8 "\0"                              //~v90wI~//~vbraR~
+//                       MODE_LOCALE "\0"                            //~v90wI~//~vbraR~
+//                       MODE_ASIS "\0"                              //~v915I~//~vbraR~
+//                       MODE_SWKBD "\0"                             //~v917I~//~vbraR~
+//                       ;                                           //~v90wI~//~vbraR~
+//    int ii,opdno,swcp=0,rc=0,swfile,swdir,oldutf8,newutf8;         //~v91hR~//~vbraR~
+//    int swnocpchange=0,oldutf8p,swsetutf8p=0;                      //~v92iR~//~vbraR~
+//    PUFILEC pfc=0;                                                 //~v90wI~//~vbraR~
+//    PUFILEH pfh=0;                                                 //~v90wI~//~vbraR~
+//    char *pc,*pnewcp;                                              //~v90wI~//~vbraR~
+////*********************************                                //~v90wI~//~vbraR~
+//    if (!XEUTF8MODE())                                             //~v90wI~//~vbraR~
+//    {                                                              //~v90wI~//~vbraR~
+////      uerrmsg("Mode cmd is not avail when UTF8 mode prohibit by cmdline option",//~v91HR~//~vbraR~
+////              "Modeコマンドはコマンドラインオプション指定により使用できません");//~v91HR~//~vbraR~
+//        errnotsupported("UTF cmd","Non-UTF8 mode");                //~v929R~//~vbraR~
+//        return 4;                                                  //~v90wI~//~vbraR~
+//    }                                                              //~v90wI~//~vbraR~
+////*operand chk                                                     //~v90wI~//~vbraR~
+//  if (Ppcw->UCWkeytype==UCWKTCMD)                                  //~v917I~//~vbraR~
+//  {                                                                //~v917I~//~vbraR~
+//    opdno=Ppcw->UCWopdno;                                          //~v90wI~//~vbraR~
+//    pc=Ppcw->UCWopdpot;                                            //~v90wI~//~vbraR~
+//  }                                                                //~v917I~//~vbraR~
+//  else                                                             //~v917I~//~vbraR~
+//  {                                                                //~v917I~//~vbraR~
+//    opdno=1;                                                       //~v917I~//~vbraR~
+//    pc=MODE_SWKBD;      //by A+u key                               //~v917I~//~vbraR~
+//  }                                                                //~v917I~//~vbraR~
+//    swfile=(Ppcw->UCWtype==UCWTFILE);                              //~v91hR~//~vbraR~
+//    swdir=(Ppcw->UCWtype==UCWTDIR);                                //~v91hI~//~vbraR~
+//    if (swfile                                                     //~v91hR~//~vbraR~
+//    ||  swdir)                                                     //~v91hR~//~vbraR~
+//    {                                                              //~v90wI~//~vbraR~
+//        pfc=Ppcw->UCWpfc;                                          //~v90wI~//~vbraR~
+//        pfh=pfc->UFCpfh;                                           //~v90wI~//~vbraR~
+//    }                                                              //~v90wI~//~vbraR~
+//    oldutf8=((swfile && FILEUTF8MODE(pfh)) || (swdir && UCBITCHK(pfc->UFCflag2,UFCF2UTF8)));//~v91hR~//~vbraR~
+//    oldutf8p=((swfile && UCBITCHK(pfh->UFHflag8,UFHF8UTF8P))       //~v92iI~//~vbraR~
+//          ||  (swdir  && UCBITCHK(pfc->UFCflag2,UFCF2UTF8P)));     //~v92iI~//~vbraR~
+//    if (!opdno)     //operand                                      //~v90wI~//~vbraR~
+//    {                                                              //~v90wI~//~vbraR~
+//        rc=funcmodehelp();                                         //~v90wI~//~vbraR~
+//        if (pfh)                                                   //~v90wI~//~vbraR~
+//        {                                                          //~v90wI~//~vbraR~
+//            if (oldutf8)                                           //~v91hR~//~vbraR~
+//                uerrmsgcat("; This file's mode is %s",0,MODE_UTF8);//~v90wR~//~vbraR~
+//            else                                                   //~v90wI~//~vbraR~
+//              if (UTF8MODEENV()) //env is utf8(linux locale=utf8)  //~v91hR~//~vbraR~
+//                uerrmsgcat("; This file's mode is %s",0,MODE_LOCALE);//~v90wR~//~vbraR~
+//              else                                                 //~v915I~//~vbraR~
+//                uerrmsgcat("; This file's mode is %s",0,MODE_ASIS);//~v915I~//~vbraR~
+//        }                                                          //~v90wI~//~vbraR~
+//        return rc;                                                 //~v90wI~//~vbraR~
+//    }                                                              //~v90wI~//~vbraR~
+//    for (ii=0;ii<opdno;ii++,pc+=strlen(pc)+1)   //next operand addr//~v90wI~//~vbraR~
+//    {                                                              //~v90wI~//~vbraR~
+//        swcp=wordtblisrch(pc,Swordtbl);                            //~v917R~//~vbraR~
+//        if (!swcp)                                                 //~v917R~//~vbraR~
+//            return errinvalid(pc);                                 //~v90wI~//~vbraR~
+////*process                                                         //~v90wI~//~vbraR~
+//      if (swcp==4)                                                 //~v917I~//~vbraR~
+//      {                                                            //~v917I~//~vbraR~
+//        if (UTF8MODEENV()) //env is utf8(linux locale=utf8)        //~v91hR~//~vbraR~
+//        {                                                          //~v917I~//~vbraR~
+//            Gutfmode2^=GUM2_KBDU2L;    //sawp u2l<-->utf           //~v91sR~//~vbraR~
+//            if (Ppcw->UCWkeytype==UCWKTCMD)                        //~v917I~//~vbraR~
+//            {                                                      //~v917I~//~vbraR~
+//                if (Gutfmode2 & GUM2_KBDU2L)                       //~v91sR~//~vbraR~
+//                    uerrmsg("Kbd switched to U2L conversion mode",0);//~v917R~//~vbraR~
+//                else                                               //~v917I~//~vbraR~
+//                    uerrmsg("Kbd switched to UTF8 mode",0);        //~v917R~//~vbraR~
+//            }                                                      //~v917I~//~vbraR~
+//#ifdef LNX                                                         //~v91dI~//~vbraR~
+//            else                                                   //~v91dI~//~vbraR~
+//            {                                                      //~v91dI~//~vbraR~
+//                rc=utfcvlocaleinit(UTFCLIO_NULLCHKONLY,Glocalecode);    //notify to ulib//~v91dI~//~vbraR~
+//            }                                                      //~v91dI~//~vbraR~
+//#endif                                                             //~v91dI~//~vbraR~
+//        }                                                          //~v917I~//~vbraR~
+//        else                                                       //~v917I~//~vbraR~
+//        {                                                          //~v917I~//~vbraR~
+//            Gutfmode2^=GUM2_KBDL2U;    //swap l2u<-->locale        //~v91sR~//~vbraR~
+//            if (Ppcw->UCWkeytype==UCWKTCMD)                        //~v917I~//~vbraR~
+//            {                                                      //~v917I~//~vbraR~
+//                if (Gutfmode2 & GUM2_KBDL2U)                       //~v91sR~//~vbraR~
+//                    uerrmsg("Kbd switched to L2U conversion mode",0);//~v917R~//~vbraR~
+//                else                                               //~v917I~//~vbraR~
+//                    uerrmsg("Kbd switched to Locale mode",0);      //~v917R~//~vbraR~
+//            }                                                      //~v917I~//~vbraR~
+//        }                                                          //~v917I~//~vbraR~
+//        UCBITON((Ppcw->UCWpsd+CMDLINENO)->USDflag2,USDF2DRAW);  //redraw for by A+u//~v917I~//~vbraR~
+//      }                                                            //~v917I~//~vbraR~
+//      else                                                         //~v917I~//~vbraR~
+//      {                                                            //~v917I~//~vbraR~
+//        if (!pfh)                                                  //~v90wI~//~vbraR~
+//        {                                                          //~v90wI~//~vbraR~
+//            uerrmsg("Use on File/Dir panel",                       //~v91hR~//~vbraR~
+//                    "ファイル/Dir 画面で使用してください");        //~v91hR~//~vbraR~
+//            return 4;                                              //~v90wI~//~vbraR~
+//        }                                                          //~v90wI~//~vbraR~
+//        if (swcp==1)    //to UTF8                                  //~v90wI~//~vbraR~
+//        {                                                          //~v90wI~//~vbraR~
+//            fcmdprofupdaterecord(FPURO_CP,pfh->UFHfilename,0,1/*utf8*/,0/*intval2*/);//~v78wR~//~vbraR~
+//            if (oldutf8)                                           //~v91hR~//~vbraR~
+////              return erralready();                               //~v92iR~//~vbraR~
+//                swnocpchange=1;                                    //~v92iI~//~vbraR~
+//            if (!oldutf8p)                                         //~v92iI~//~vbraR~
+//                swsetutf8p=1;   //set UTF8P on                     //~v92iI~//~vbraR~
+//            newutf8=1;                                             //~v91hI~//~vbraR~
+//            pnewcp=MODE_UTF8;                                      //~v90wR~//~vbraR~
+//        }                                                          //~v90wI~//~vbraR~
+//        else             //to locale                               //~v90wI~//~vbraR~
+//        if (swcp==3)    //ASIS                                     //~v915I~//~vbraR~
+//        {                                                          //~v915I~//~vbraR~
+//            fcmdprofupdaterecord(FPURO_CP,pfh->UFHfilename,0,0/*asis*/,0/*intval2*/);//~v78wR~//~vbraR~
+//            if (UTF8MODEENV()) //env is utf8(linux locale=utf8)    //~v91hR~//~vbraR~
+//            {                                                      //~v915I~//~vbraR~
+//                if (oldutf8)                                       //~v91hR~//~vbraR~
+////                  return erralready();                           //~v92iR~//~vbraR~
+//                    swnocpchange=1;                                //~v92iI~//~vbraR~
+//                newutf8=1;                                         //~v91hI~//~vbraR~
+//            }                                                      //~v915I~//~vbraR~
+//            else                                                   //~v915I~//~vbraR~
+//            {                                                      //~v915I~//~vbraR~
+//                if (!oldutf8)                                      //~v91hR~//~vbraR~
+////                  return erralready();                           //~v92iR~//~vbraR~
+//                    swnocpchange=1;                                //~v92iI~//~vbraR~
+//                newutf8=0;                                         //~v91hI~//~vbraR~
+//            }                                                      //~v915I~//~vbraR~
+//            if (oldutf8p)                                          //~v92iI~//~vbraR~
+//                swsetutf8p=-1;  //set UTF8P off                    //~v92iI~//~vbraR~
+//            pnewcp=MODE_ASIS;                                      //~v915I~//~vbraR~
+//        }                                                          //~v915I~//~vbraR~
+//        else             //to locale                               //~v915I~//~vbraR~
+//        {                                                          //~v90wI~//~vbraR~
+//            fcmdprofupdaterecord(FPURO_CP,pfh->UFHfilename,0,-1/*locale*/,0/*intval2*/);//~v78wR~//~vbraR~
+//            if (!oldutf8)                                          //~v91hR~//~vbraR~
+////              return erralready();                               //~v92iR~//~vbraR~
+//                swnocpchange=1;                                    //~v92iI~//~vbraR~
+//            newutf8=0;                                             //~v91hI~//~vbraR~
+//            pnewcp=MODE_LOCALE;                                    //~v90wR~//~vbraR~
+//            if (!oldutf8p)                                         //~v92iI~//~vbraR~
+//                swsetutf8p=1;   //set UTF8P on;                    //~v92iI~//~vbraR~
+//        }                                                          //~v90wI~//~vbraR~
+//        if (newutf8)                                               //~v91hR~//~vbraR~
+//            if (swfile)                                            //~v91hI~//~vbraR~
+//                UCBITON(pfh->UFHflag8,UFHF8UTF8);                  //~v91hI~//~vbraR~
+//            else                                                   //~v91hI~//~vbraR~
+//                UCBITON(pfc->UFCflag2,UFCF2UTF8);                  //~v91hI~//~vbraR~
+//        else                                                       //~v91hI~//~vbraR~
+//            if (swfile)                                            //~v91hI~//~vbraR~
+//                UCBITOFF(pfh->UFHflag8,UFHF8UTF8);                 //~v91hI~//~vbraR~
+//            else                                                   //~v91hI~//~vbraR~
+//                UCBITOFF(pfc->UFCflag2,UFCF2UTF8);                 //~v91hR~//~vbraR~
+//        if (swsetutf8p>0)                                          //~v92iR~//~vbraR~
+//        {                                                          //~v92iI~//~vbraR~
+//            if (swfile)                                            //~v92iI~//~vbraR~
+//                UCBITON(pfh->UFHflag8,UFHF8UTF8P);                 //~v92iI~//~vbraR~
+//            else                                                   //~v92iI~//~vbraR~
+//                UCBITON(pfc->UFCflag2,UFCF2UTF8P);                 //~v92iI~//~vbraR~
+//        }                                                          //~v92iI~//~vbraR~
+//        else             //utf8 or locale                          //~v92iR~//~vbraR~
+//        if (swsetutf8p<0)                                          //~v92iI~//~vbraR~
+//        {                                                          //~v92iI~//~vbraR~
+//            if (swfile)                                            //~v92iI~//~vbraR~
+//                UCBITOFF(pfh->UFHflag8,UFHF8UTF8P);  //explicitly specified id//~v92iI~//~vbraR~
+//            else                                                   //~v92iI~//~vbraR~
+//                UCBITOFF(pfc->UFCflag2,UFCF2UTF8P);                //~v92iI~//~vbraR~
+//        }                                                          //~v92iI~//~vbraR~
+//                                                                   //~v92iI~//~vbraR~
+////  }//loop by operand no                                          //~v92pR~//~vbraR~
+//    if (swnocpchange && !swsetutf8p)                               //~v92iR~//~vbraR~
+//    {                                                              //~v92iI~//~vbraR~
+//        uerrmsg("CodePage is NOT changed, but registered to profile record",//~v92iI~//~vbraR~
+//                "コードページの変更はありませんがプロファイルに記録しました");//~v92iR~//~vbraR~
+//    }                                                              //~v92iI~//~vbraR~
+//    else                                                           //~v92iI~//~vbraR~
+//    {                                                              //~v92iI~//~vbraR~
+//      if (swfile)                                                  //~v91hR~//~vbraR~
+//      {                                                            //~v91hI~//~vbraR~
+//        filesetlocaleid(pfh);                                      //~v915I~//~vbraR~
+//       if (!swnocpchange)                                          //~v92iI~//~vbraR~
+//        funcmoderesetdbcstbl(Ppcw,pfh);                            //~v90wR~//~vbraR~
+//      }                                                            //~v91hI~//~vbraR~
+//      else                                                         //~v91hM~//~vbraR~
+//        dirsetlocaleid(0,pfc,0/*psddata*/);                        //~v91hM~//~vbraR~
+//        uerrmsg("CodePage changed to %s",                          //~v90wI~//~vbraR~
+//                    "コードページを %s に変更",                    //~v90wI~//~vbraR~
+//                pnewcp);                                           //~v90wI~//~vbraR~
+////    }//!swkbd                                                    //~v92pR~//~vbraR~
+//    }                                                              //~v92iI~//~vbraR~
+//    }//!swkbd(swcp==4)                                             //~v92pI~//~vbraR~
+////  }//loop by operand no                                          //~v92iR~//~vbraR~
+//    }//loop by operand no                                          //~v92pI~//~vbraR~
+//    return rc;                                                     //~v91dR~//~vbraR~
+//}//func_mode                                                       //~v90wR~//~vbraR~
+//#endif  //UTF8SUPP                                                 //~va0xR~//~vbraR~
 //**************************************************************** //~va0xI~
 //!func_mode                                                       //~va7KR~
 //* utf8 mode setting                                              //~va7KR~
@@ -988,6 +1013,11 @@ static UCHAR *Swordtbl=                                            //~va0xR~
       switch(swcp)                                                 //~va1pI~
       {                                                            //~va1pI~
       case 1:	//SWKBD                                            //~va1pI~
+//#ifdef ARM                                                       //~vbraR~
+//            uerrmsg("SWKBD is not valid, Axe's kbd is always UTF8 input",//~vbraR~
+//                    "SWKBD は Axe では無効です、Axeは入力は UTF8 固定です");//~vbraR~
+//            return 4;                                            //~vbraR~
+//#else                                                            //~vbraR~
         Gutfmode2^=GUM2_KBDUTF8;    //swap                         //~va10I~
         if (Ppcw->UCWkeytype==UCWKTCMD)                            //~va10I~
         {                                                          //~va10I~
@@ -996,12 +1026,26 @@ static UCHAR *Swordtbl=                                            //~va0xR~
             else                                                   //~va10I~
                 uerrmsg("Kbd switched to Locale mode",0);          //~va10I~
         }                                                          //~va10I~
+#ifdef AAA                                                         //~vbraI~
         if (Gutfmode2 & GUM2_KBDUTF8)                              //~va10I~
             Goptopt2|=GOPT2_MODEINPUTL2U;	//save to ini file     //~va10I~
         else                                                       //~va10I~
 //          Goptopt2&=~GOPT2_MODEINPUTL2U;                         //~va10I~//~vb2eR~
             Goptopt2&=(UCHAR)(~GOPT2_MODEINPUTL2U);                //~vb2eI~
+#else                                                              //~vbraI~
+        if (Gutfmode2 & GUM2_KBDUTF8)                              //~vbraI~
+        {                                                          //~vbraI~
+	    	Goptopt3|=GOPT3_KBDUTF8BYCMD;                          //~vbraI~
+	    	Goptopt3&=(UCHAR)(~GOPT3_KBDLCBYCMD);                  //~vbraR~
+        }                                                          //~vbraI~
+        else                                                       //~vbraI~
+        {                                                          //~vbraI~
+	    	Goptopt3&=(UCHAR)(~GOPT3_KBDUTF8BYCMD);                //~vbraR~
+	    	Goptopt3|=GOPT3_KBDLCBYCMD;                            //~vbraI~
+        }                                                          //~vbraI~
+#endif                                                             //~vbraI~
 		scrfulldraw(Ppcw);                                         //~va1tI~
+//#endif //!ARM                                                    //~vbraR~
         break;                                                     //~va1pI~
       case 2:	//FILE                                             //~va1pI~
       	cpopt=1;                                                   //~va1pI~
@@ -1509,7 +1553,7 @@ void dirsetlocaleid(int Popt,PUFILEC Ppfc,char *Ppsddata)          //~v91hI~
         plh=UGETQEND(pqh);                                         //~v91hI~
         UCBITON(plh->ULHflag,ULHFDRAW); //redraw                   //~v91hI~
     }                                                              //~v91hI~
-	opt2sethdrligcomb(0,pfh);                                      //+vbmqR~
+	opt2sethdrligcomb(0,pfh);                                      //~vbmqR~
     return;                                                        //~v91hI~
 }//dirsetlocaleid                                                  //~v91hI~
 #ifdef UTF8SUPP                                                    //~va00I~
@@ -1587,198 +1631,199 @@ int funcmodehelp(void)                                             //~v90wR~//~v
     opt_modestatus(0,Goptopt2);                                    //~va1pR~
     return 0;                                                      //~v91yR~//~va0xI~
 }//funcmodehelp                                                    //~v90wR~//~va0xI~
-#ifdef UTF8SUPP                                                    //~va0xI~
-//**************************************************************** //~v90wI~
-//!opt_mode                                                        //~v90wI~
-//* ut8 kbd input mode                                             //~v90wI~
-//*retrn:rc                                                        //~v90wI~
-//**************************************************************** //~v90wI~
-int opt_mode(PUCLIENTWE Ppcw,PUOPTWTBL Ppot,int Popdno)            //~v90wI~
-{                                                                  //~v90wI~
-    int opid,ii,opto,optn,optm,swfile=0,swkbd=0;                   //~v90zR~
-    int localechangesw=0;                                          //~v91dI~
-    int cpfilesw=0;                                                //~v91yI~
-    int localesetsw=0;                                             //~v91dI~
-    UCHAR *pc;                                                     //~v90wI~
-    UCHAR localecode[MAXLOCALESZ]={0};                             //~v91dR~
-static UCHAR *Swordtbl[]={"KBD","FILE",                            //~v916R~
-						MODE_OPTENV,     //#3 kbd env              //~v916I~
-						MODE_UTF8,      //#4 file utf8             //~v90zI~
-						MODE_LOCALE,      //#5                     //~v90zR~
-						MODE_OPTUTF8,   //#6 kbd utf8              //~v90zI~
-						MODE_OPTLOCALE, //#7                       //~v90zI~
-						MODE_ASIS,      //#8                       //~v916I~
-						MODE_OPTCPFILE, //#9 as cp of file for file data//~v916I~
-						MODE_OPTNOCPFILE, //#10                    //~v916I~
-                        "LOCALE",       //#11                      //~v91dR~
-						0};                                        //~v90zI~
-//*********************************                                //~v90wI~
-    if (!XEUTF8MODE())                                             //~v91yI~
-        return errnotsupported("OPT UTF cmd","Non-UTF8 mode");     //~v929R~
-	optm=GOPT2_MODEINPUTL2U                                        //~v90zI~
-		|GOPT2_MODEINPUTU2L                                        //~v90zI~
-		|GOPT2_MODEINPUTCPFILE                                     //~v916I~
-		|GOPT2_ALLFILEUTF8                                         //~v90zR~
-		|GOPT2_ALLFILELOCALE                                       //~v916I~
-        ;                                                          //~v90zI~
-    opto=Goptopt2 & optm;                                          //~v90zI~
-	if (!(pc=Ppcw->UCWparm))                                       //~v90wI~
-    {                                                              //~v90wI~
-#ifdef LNX                                                         //~v91dI~
-    	uerrmsg("OPT UTF [[FILE] {%s|%s|%s}]  [[KBD] {%s|%s|%s}[%s|%s]] [LOCALE localeid]",0,//~v929R~
-#else                                                              //~v91dI~
-    	uerrmsg("OPT UTF [[FILE] {%s|%s|%s}]  [[KBD] {%s|%s|%s}[%s|%s]]",0,//~v929R~
-#endif                                                             //~v91dI~
-				MODE_UTF8,MODE_LOCALE,MODE_ASIS,MODE_OPTUTF8,MODE_OPTLOCALE,//~v916R~
-				MODE_OPTENV,MODE_OPTCPFILE,MODE_OPTNOCPFILE);      //~v916R~
-        opt_modestatus(0,opto);                                    //~v90zI~
-		return 0;                                                  //~v90wI~
-    }                                                              //~v90wI~
-	for (ii=0;ii<Popdno;ii++,pc+=strlen(pc)+1)	//next operand addr//~v90zI~
-	{                                                              //~v90zI~
-        switch(opid=wordtbllistisrch(pc,Swordtbl),opid)            //~v90zR~
-        {                                                          //~v90zI~
-        case 0: //eol char                                         //~v90zI~
-	        return errinvalid(pc);                                 //~v90zI~
-            break;                                                 //~v90zI~
-        case 1: //KBD                                              //~v90zI~
-        	swkbd=1;                                               //~v90zI~
-            break;                                                 //~v90zI~
-        case 2: //FILE                                             //~v90zI~
-        	swfile=1;                                              //~v90zI~
-            break;                                                 //~v90zI~
-        case 3: //ENV (kbd)                                        //~v916R~
-            UCBITOFF(Goptopt2,(GOPT2_MODEINPUTL2U|GOPT2_MODEINPUTU2L));//~v916R~
-            break;                                                 //~v90zI~
-        case 4: //file utf8                                        //~v90zI~
-            UCBITON(Goptopt2,GOPT2_ALLFILEUTF8);                   //~v90zI~
-            UCBITOFF(Goptopt2,GOPT2_ALLFILELOCALE);                //~v916I~
-            break;                                                 //~v90zI~
-        case 5: //file local                                       //~v90zI~
-            UCBITOFF(Goptopt2,GOPT2_ALLFILEUTF8);                  //~v90zI~
-            UCBITON(Goptopt2,GOPT2_ALLFILELOCALE);                 //~v916I~
-            break;                                                 //~v90zI~
-        case 6: //kbd l2u                                          //~v90zI~
-          	if (!UTF8MODEENV())                                    //~v91sI~
-    	    	Gutfmode2|=GUM2_KBDL2U;                            //~v91sI~
-            UCBITON(Goptopt2,GOPT2_MODEINPUTL2U);                  //~v90zR~
-            UCBITOFF(Goptopt2,GOPT2_MODEINPUTU2L);                 //~v90zR~
-            break;                                                 //~v90zI~
-        case 7: //kbd u2l                                          //~v90zI~
-          	if (UTF8MODEENV())                                     //~v91sR~
-    	    	Gutfmode2|=GUM2_KBDU2L;                            //~v91sI~
-            UCBITON(Goptopt2,GOPT2_MODEINPUTU2L);                  //~v90zR~
-            UCBITOFF(Goptopt2,GOPT2_MODEINPUTL2U);                 //~v90zR~
-            break;                                                 //~v90zI~
-        case 8: //file asis                                        //~v916I~
-            UCBITOFF(Goptopt2,(GOPT2_ALLFILEUTF8|GOPT2_ALLFILELOCALE));//~v916I~
-            break;                                                 //~v916I~
-        case 9: //cpfile                                           //~v916I~
-            UCBITON(Goptopt2,GOPT2_MODEINPUTCPFILE);               //~v916R~
-            cpfilesw=1;                                            //~v91yI~
-            break;                                                 //~v916I~
-        case 10: //nocpfile                                        //~v916I~
-            UCBITOFF(Goptopt2,GOPT2_MODEINPUTCPFILE);              //~v916I~
-            cpfilesw=1;                                            //~v91yI~
-            break;                                                 //~v916I~
-        case 11: //locale                                          //~v91dI~
-#ifdef LNX                                                         //~v91dI~
-        	pc+=strlen(pc)+1;                                      //~v91dR~
-            ii++;                                                  //~v91dI~
-          if (ii<Popdno)                                           //~v91dI~
-          {                                                        //~v91dI~
-            strncpy(localecode,pc,MAXLOCALESZ-1);                  //~v91dR~
-            *(localecode+MAXLOCALESZ-1)=0;                         //~v91dR~
-            if (ustrstri(localecode,"UTF"))                        //~v91dI~
-            {                                                      //~v91dI~
-            	uerrmsg("\"%s\" is invalid,specify locale code converted to/from UTF-8",0,//~v91dR~
-                         localecode);                              //~v91dI~
-                return 4;                                          //~v91dI~
-            }                                                      //~v91dI~
-            localesetsw=1;                                         //~v91dI~
-          }                                                        //~v91dI~
-            break;                                                 //~v91dI~
-#else                                                              //~v91dI~
-    		uerrmsg("LOCALE settting is only for Linux version",0);//~v91dI~
-            return 4;                                              //~v91dI~
-#endif                                                             //~v91dI~
-        }//opd                                                     //~v90zI~
-	}//loop by operand no                                          //~v90zI~
-#ifdef LNX                                                         //~v91dI~
-    if (localesetsw)                                               //~v91dM~
-    {                                                              //~v91dI~
-    	if (utflocalechk(0,localecode))                            //~v91dR~
-        {                                                          //~v91dI~
-        	uerrmsg("LOCALE %s is invalid. confirm it by \"iconv --list\" cmd",0,//~v91dR~
-            		localecode);                                   //~v91dI~
-            return 4;                                              //~v91dI~
-        }                                                          //~v91dI~
-        localechangesw=stricmp(localecode,Glocalecode);            //~v91dR~
-        strncpy(Glocalecode,localecode,MAXLOCALESZ-1);             //~v91dR~
-        utfcvlocaleinit(0,Glocalecode);	//notify to ulib           //~v91dR~
-    }                                                              //~v91dM~
-#endif                                                             //~v91dI~
-                                                                   //~v91dI~
-    optn=Goptopt2 & optm;                                          //~v90zI~
-//  opt_modestatus((opto!=optn)+1,optn);                             //~v90zI~//~v91dR~
-    opt_modestatus(((opto!=optn)||localechangesw)+1,optn);         //~v91dI~
-    if (cpfilesw)                                                  //~v91yI~
-		UCBITON(Ppcw->UCWflag,UCWFDRAW);	//redraw cpfileID      //~v91yI~
-	return 0;                                                      //~v90wI~
-}//opt_mode                                                        //~v90wI~
-//**************************************************************** //~v90zI~
-//!opt_mode                                                        //~v90zI~
-//* utf8mode display                                               //~v90zI~
-//**************************************************************** //~v90zI~
-int opt_modestatus(int Pcase,int Popt)                             //~v90zI~
-{                                                                  //~v90zI~
-	char statusmsg[128],*pc;                                       //~v90zR~
-    int pos=0;                                                     //~v90zI~
-//*******************                                              //~v90zI~
-    if (UCBITCHK(Popt,GOPT2_ALLFILEUTF8))                          //~v90zI~
-    	pc=MODE_UTF8;                                              //~v90zI~
-    else                                                           //~v90zI~
-    if (UCBITCHK(Popt,GOPT2_ALLFILELOCALE))                        //~v916I~
-    	pc=MODE_LOCALE;                                            //~v90zI~
-    else                                                           //~v916I~
-    	pc=MODE_ASIS;                                              //~v916I~
-    pos=sprintf(statusmsg,"%s",pc);                                //~v916R~
-    if (UCBITCHK(Popt,GOPT2_MODEINPUTL2U))                         //~v90zR~
-    	pc=MODE_OPTUTF8;                                           //~v90zI~
-    else                                                           //~v90zI~
-    if (UCBITCHK(Popt,GOPT2_MODEINPUTU2L))                         //~v90zR~
-    	pc=MODE_OPTLOCALE;                                         //~v90zI~
-    else                                                           //~v90zI~
-        pc=MODE_OPTENV;                                            //~v916R~
-    pos+=sprintf(statusmsg+pos,", %s",pc);                         //~v916R~
-    if (UCBITCHK(Popt,GOPT2_MODEINPUTCPFILE))                      //~v916M~
-    	pc=MODE_OPTCPFILE;                                         //~v916M~
-    else                                                           //~v916I~
-    	pc=MODE_OPTNOCPFILE;                                       //~v916I~
-    pos+=sprintf(statusmsg+pos,", %s",pc);                         //~v916I~
-#ifdef LNX                                                         //~v91dI~
-	if (*Glocalecode)                                              //~v91dI~
-		pos+=sprintf(statusmsg+pos,", LOCALE=%s",Glocalecode);     //~v91dR~
-    else                                                           //~v91dI~
-    	if (UDBCSCHK_ISUTF8J())                                    //~v91dI~
-			pos+=sprintf(statusmsg+pos,", LOCALE is %s as Japanese default.",//~v91dR~
-                         LOCALE_EUC);                              //~v91dR~
-        else                                                       //~v91dI~
-			pos+=sprintf(statusmsg+pos,", LOCALE is not defined.");//~v91dR~
-#endif	                                                           //~v91dR~
-	if (!Pcase)                                                     //~v90zI~//~v90zR~
-    	uerrmsgcat("; current: %s",0,                              //~v91dR~
-        			statusmsg);                                    //~v90zI~
-    else                                                           //~v90zI~
-	if (Pcase==1) //opto==optn                                     //~v90zI~//~v90zR~
-    	uerrmsg("Not changed: %s",0,          //~v90zI~            //~v91dR~
-        			statusmsg);                                    //~v90zI~
-    else                                                           //~v90zI~
-    	uerrmsg("Changed: %s",0,              //~v90zI~//+v90zR~   //~v91dR~
-        			statusmsg);                                    //~v90zI~
-    return 0;                                                      //~v90zI~
-}//opt_modestatus                                                  //~v90zI~
-#endif //UTF8SUPP                                                  //~va00I~
+//#ifdef UTF8SUPP                                                    //~va0xI~//~vbraR~
+////**************************************************************** //~v90wI~//~vbraR~
+////!opt_mode                                                        //~v90wI~//~vbraR~
+////* ut8 kbd input mode                                             //~v90wI~//~vbraR~
+////*retrn:rc                                                        //~v90wI~//~vbraR~
+////**************************************************************** //~v90wI~//~vbraR~
+//int opt_mode(PUCLIENTWE Ppcw,PUOPTWTBL Ppot,int Popdno)            //~v90wI~//~vbraR~
+//{                                                                  //~v90wI~//~vbraR~
+//    int opid,ii,opto,optn,optm,swfile=0,swkbd=0;                   //~v90zR~//~vbraR~
+//    int localechangesw=0;                                          //~v91dI~//~vbraR~
+//    int cpfilesw=0;                                                //~v91yI~//~vbraR~
+//    int localesetsw=0;                                             //~v91dI~//~vbraR~
+//    UCHAR *pc;                                                     //~v90wI~//~vbraR~
+//    UCHAR localecode[MAXLOCALESZ]={0};                             //~v91dR~//~vbraR~
+//static UCHAR *Swordtbl[]={"KBD","FILE",                            //~v916R~//~vbraR~
+//                        MODE_OPTENV,     //#3 kbd env              //~v916I~//~vbraR~
+//                        MODE_UTF8,      //#4 file utf8             //~v90zI~//~vbraR~
+//                        MODE_LOCALE,      //#5                     //~v90zR~//~vbraR~
+//                        MODE_OPTUTF8,   //#6 kbd utf8              //~v90zI~//~vbraR~
+//                        MODE_OPTLOCALE, //#7                       //~v90zI~//~vbraR~
+//                        MODE_ASIS,      //#8                       //~v916I~//~vbraR~
+//                        MODE_OPTCPFILE, //#9 as cp of file for file data//~v916I~//~vbraR~
+//                        MODE_OPTNOCPFILE, //#10                    //~v916I~//~vbraR~
+//                        "LOCALE",       //#11                      //~v91dR~//~vbraR~
+//                        0};                                        //~v90zI~//~vbraR~
+////*********************************                                //~v90wI~//~vbraR~
+//    if (!XEUTF8MODE())                                             //~v91yI~//~vbraR~
+////      return errnotsupported("OPT UTF cmd","Non-UTF8 mode");     //~v929R~//~vbmqR~//~vbraR~
+//        return errnotsupported("UTF cmd","Non-UTF8 mode");         //~vbmqI~//~vbraR~
+//    optm=GOPT2_MODEINPUTL2U                                        //~v90zI~//~vbraR~
+//        |GOPT2_MODEINPUTU2L                                        //~v90zI~//~vbraR~
+//        |GOPT2_MODEINPUTCPFILE                                     //~v916I~//~vbraR~
+//        |GOPT2_ALLFILEUTF8                                         //~v90zR~//~vbraR~
+//        |GOPT2_ALLFILELOCALE                                       //~v916I~//~vbraR~
+//        ;                                                          //~v90zI~//~vbraR~
+//    opto=Goptopt2 & optm;                                          //~v90zI~//~vbraR~
+//    if (!(pc=Ppcw->UCWparm))                                       //~v90wI~//~vbraR~
+//    {                                                              //~v90wI~//~vbraR~
+//#ifdef LNX                                                         //~v91dI~//~vbraR~
+//        uerrmsg("OPT UTF [[FILE] {%s|%s|%s}]  [[KBD] {%s|%s|%s}[%s|%s]] [LOCALE localeid]",0,//~v929R~//~vbraR~
+//#else                                                              //~v91dI~//~vbraR~
+//        uerrmsg("OPT UTF [[FILE] {%s|%s|%s}]  [[KBD] {%s|%s|%s}[%s|%s]]",0,//~v929R~//~vbraR~
+//#endif                                                             //~v91dI~//~vbraR~
+//                MODE_UTF8,MODE_LOCALE,MODE_ASIS,MODE_OPTUTF8,MODE_OPTLOCALE,//~v916R~//~vbraR~
+//                MODE_OPTENV,MODE_OPTCPFILE,MODE_OPTNOCPFILE);      //~v916R~//~vbraR~
+//        opt_modestatus(0,opto);                                    //~v90zI~//~vbraR~
+//        return 0;                                                  //~v90wI~//~vbraR~
+//    }                                                              //~v90wI~//~vbraR~
+//    for (ii=0;ii<Popdno;ii++,pc+=strlen(pc)+1)  //next operand addr//~v90zI~//~vbraR~
+//    {                                                              //~v90zI~//~vbraR~
+//        switch(opid=wordtbllistisrch(pc,Swordtbl),opid)            //~v90zR~//~vbraR~
+//        {                                                          //~v90zI~//~vbraR~
+//        case 0: //eol char                                         //~v90zI~//~vbraR~
+//            return errinvalid(pc);                                 //~v90zI~//~vbraR~
+//            break;                                                 //~v90zI~//~vbraR~
+//        case 1: //KBD                                              //~v90zI~//~vbraR~
+//            swkbd=1;                                               //~v90zI~//~vbraR~
+//            break;                                                 //~v90zI~//~vbraR~
+//        case 2: //FILE                                             //~v90zI~//~vbraR~
+//            swfile=1;                                              //~v90zI~//~vbraR~
+//            break;                                                 //~v90zI~//~vbraR~
+//        case 3: //ENV (kbd)                                        //~v916R~//~vbraR~
+//            UCBITOFF(Goptopt2,(GOPT2_MODEINPUTL2U|GOPT2_MODEINPUTU2L));//~v916R~//~vbraR~
+//            break;                                                 //~v90zI~//~vbraR~
+//        case 4: //file utf8                                        //~v90zI~//~vbraR~
+//            UCBITON(Goptopt2,GOPT2_ALLFILEUTF8);                   //~v90zI~//~vbraR~
+//            UCBITOFF(Goptopt2,GOPT2_ALLFILELOCALE);                //~v916I~//~vbraR~
+//            break;                                                 //~v90zI~//~vbraR~
+//        case 5: //file local                                       //~v90zI~//~vbraR~
+//            UCBITOFF(Goptopt2,GOPT2_ALLFILEUTF8);                  //~v90zI~//~vbraR~
+//            UCBITON(Goptopt2,GOPT2_ALLFILELOCALE);                 //~v916I~//~vbraR~
+//            break;                                                 //~v90zI~//~vbraR~
+//        case 6: //kbd l2u                                          //~v90zI~//~vbraR~
+//            if (!UTF8MODEENV())                                    //~v91sI~//~vbraR~
+//                Gutfmode2|=GUM2_KBDL2U;                            //~v91sI~//~vbraR~
+//            UCBITON(Goptopt2,GOPT2_MODEINPUTL2U);                  //~v90zR~//~vbraR~
+//            UCBITOFF(Goptopt2,GOPT2_MODEINPUTU2L);                 //~v90zR~//~vbraR~
+//            break;                                                 //~v90zI~//~vbraR~
+//        case 7: //kbd u2l                                          //~v90zI~//~vbraR~
+//            if (UTF8MODEENV())                                     //~v91sR~//~vbraR~
+//                Gutfmode2|=GUM2_KBDU2L;                            //~v91sI~//~vbraR~
+//            UCBITON(Goptopt2,GOPT2_MODEINPUTU2L);                  //~v90zR~//~vbraR~
+//            UCBITOFF(Goptopt2,GOPT2_MODEINPUTL2U);                 //~v90zR~//~vbraR~
+//            break;                                                 //~v90zI~//~vbraR~
+//        case 8: //file asis                                        //~v916I~//~vbraR~
+//            UCBITOFF(Goptopt2,(GOPT2_ALLFILEUTF8|GOPT2_ALLFILELOCALE));//~v916I~//~vbraR~
+//            break;                                                 //~v916I~//~vbraR~
+//        case 9: //cpfile                                           //~v916I~//~vbraR~
+//            UCBITON(Goptopt2,GOPT2_MODEINPUTCPFILE);               //~v916R~//~vbraR~
+//            cpfilesw=1;                                            //~v91yI~//~vbraR~
+//            break;                                                 //~v916I~//~vbraR~
+//        case 10: //nocpfile                                        //~v916I~//~vbraR~
+//            UCBITOFF(Goptopt2,GOPT2_MODEINPUTCPFILE);              //~v916I~//~vbraR~
+//            cpfilesw=1;                                            //~v91yI~//~vbraR~
+//            break;                                                 //~v916I~//~vbraR~
+//        case 11: //locale                                          //~v91dI~//~vbraR~
+//#ifdef LNX                                                         //~v91dI~//~vbraR~
+//            pc+=strlen(pc)+1;                                      //~v91dR~//~vbraR~
+//            ii++;                                                  //~v91dI~//~vbraR~
+//          if (ii<Popdno)                                           //~v91dI~//~vbraR~
+//          {                                                        //~v91dI~//~vbraR~
+//            strncpy(localecode,pc,MAXLOCALESZ-1);                  //~v91dR~//~vbraR~
+//            *(localecode+MAXLOCALESZ-1)=0;                         //~v91dR~//~vbraR~
+//            if (ustrstri(localecode,"UTF"))                        //~v91dI~//~vbraR~
+//            {                                                      //~v91dI~//~vbraR~
+//                uerrmsg("\"%s\" is invalid,specify locale code converted to/from UTF-8",0,//~v91dR~//~vbraR~
+//                         localecode);                              //~v91dI~//~vbraR~
+//                return 4;                                          //~v91dI~//~vbraR~
+//            }                                                      //~v91dI~//~vbraR~
+//            localesetsw=1;                                         //~v91dI~//~vbraR~
+//          }                                                        //~v91dI~//~vbraR~
+//            break;                                                 //~v91dI~//~vbraR~
+//#else                                                              //~v91dI~//~vbraR~
+//            uerrmsg("LOCALE settting is only for Linux version",0);//~v91dI~//~vbraR~
+//            return 4;                                              //~v91dI~//~vbraR~
+//#endif                                                             //~v91dI~//~vbraR~
+//        }//opd                                                     //~v90zI~//~vbraR~
+//    }//loop by operand no                                          //~v90zI~//~vbraR~
+//#ifdef LNX                                                         //~v91dI~//~vbraR~
+//    if (localesetsw)                                               //~v91dM~//~vbraR~
+//    {                                                              //~v91dI~//~vbraR~
+//        if (utflocalechk(0,localecode))                            //~v91dR~//~vbraR~
+//        {                                                          //~v91dI~//~vbraR~
+//            uerrmsg("LOCALE %s is invalid. confirm it by \"iconv --list\" cmd",0,//~v91dR~//~vbraR~
+//                    localecode);                                   //~v91dI~//~vbraR~
+//            return 4;                                              //~v91dI~//~vbraR~
+//        }                                                          //~v91dI~//~vbraR~
+//        localechangesw=stricmp(localecode,Glocalecode);            //~v91dR~//~vbraR~
+//        strncpy(Glocalecode,localecode,MAXLOCALESZ-1);             //~v91dR~//~vbraR~
+//        utfcvlocaleinit(0,Glocalecode); //notify to ulib           //~v91dR~//~vbraR~
+//    }                                                              //~v91dM~//~vbraR~
+//#endif                                                             //~v91dI~//~vbraR~
+//                                                                   //~v91dI~//~vbraR~
+//    optn=Goptopt2 & optm;                                          //~v90zI~//~vbraR~
+////  opt_modestatus((opto!=optn)+1,optn);                             //~v90zI~//~v91dR~//~vbraR~
+//    opt_modestatus(((opto!=optn)||localechangesw)+1,optn);         //~v91dI~//~vbraR~
+//    if (cpfilesw)                                                  //~v91yI~//~vbraR~
+//        UCBITON(Ppcw->UCWflag,UCWFDRAW);    //redraw cpfileID      //~v91yI~//~vbraR~
+//    return 0;                                                      //~v90wI~//~vbraR~
+//}//opt_mode                                                        //~v90wI~//~vbraR~
+////**************************************************************** //~v90zI~//~vbraR~
+////!opt_mode                                                        //~v90zI~//~vbraR~
+////* utf8mode display                                               //~v90zI~//~vbraR~
+////**************************************************************** //~v90zI~//~vbraR~
+//int opt_modestatus(int Pcase,int Popt)                             //~v90zI~//~vbraR~
+//{                                                                  //~v90zI~//~vbraR~
+//    char statusmsg[128],*pc;                                       //~v90zR~//~vbraR~
+//    int pos=0;                                                     //~v90zI~//~vbraR~
+////*******************                                              //~v90zI~//~vbraR~
+//    if (UCBITCHK(Popt,GOPT2_ALLFILEUTF8))                          //~v90zI~//~vbraR~
+//        pc=MODE_UTF8;                                              //~v90zI~//~vbraR~
+//    else                                                           //~v90zI~//~vbraR~
+//    if (UCBITCHK(Popt,GOPT2_ALLFILELOCALE))                        //~v916I~//~vbraR~
+//        pc=MODE_LOCALE;                                            //~v90zI~//~vbraR~
+//    else                                                           //~v916I~//~vbraR~
+//        pc=MODE_ASIS;                                              //~v916I~//~vbraR~
+//    pos=sprintf(statusmsg,"%s",pc);                                //~v916R~//~vbraR~
+//    if (UCBITCHK(Popt,GOPT2_MODEINPUTL2U))                         //~v90zR~//~vbraR~
+//        pc=MODE_OPTUTF8;                                           //~v90zI~//~vbraR~
+//    else                                                           //~v90zI~//~vbraR~
+//    if (UCBITCHK(Popt,GOPT2_MODEINPUTU2L))                         //~v90zR~//~vbraR~
+//        pc=MODE_OPTLOCALE;                                         //~v90zI~//~vbraR~
+//    else                                                           //~v90zI~//~vbraR~
+//        pc=MODE_OPTENV;                                            //~v916R~//~vbraR~
+//    pos+=sprintf(statusmsg+pos,", %s",pc);                         //~v916R~//~vbraR~
+//    if (UCBITCHK(Popt,GOPT2_MODEINPUTCPFILE))                      //~v916M~//~vbraR~
+//        pc=MODE_OPTCPFILE;                                         //~v916M~//~vbraR~
+//    else                                                           //~v916I~//~vbraR~
+//        pc=MODE_OPTNOCPFILE;                                       //~v916I~//~vbraR~
+//    pos+=sprintf(statusmsg+pos,", %s",pc);                         //~v916I~//~vbraR~
+//#ifdef LNX                                                         //~v91dI~//~vbraR~
+//    if (*Glocalecode)                                              //~v91dI~//~vbraR~
+//        pos+=sprintf(statusmsg+pos,", LOCALE=%s",Glocalecode);     //~v91dR~//~vbraR~
+//    else                                                           //~v91dI~//~vbraR~
+//        if (UDBCSCHK_ISUTF8J())                                    //~v91dI~//~vbraR~
+//            pos+=sprintf(statusmsg+pos,", LOCALE is %s as Japanese default.",//~v91dR~//~vbraR~
+//                         LOCALE_EUC);                              //~v91dR~//~vbraR~
+//        else                                                       //~v91dI~//~vbraR~
+//            pos+=sprintf(statusmsg+pos,", LOCALE is not defined.");//~v91dR~//~vbraR~
+//#endif                                                             //~v91dR~//~vbraR~
+//    if (!Pcase)                                                     //~v90zI~//~v90zR~//~vbraR~
+//        uerrmsgcat("; current: %s",0,                              //~v91dR~//~vbraR~
+//                    statusmsg);                                    //~v90zI~//~vbraR~
+//    else                                                           //~v90zI~//~vbraR~
+//    if (Pcase==1) //opto==optn                                     //~v90zI~//~v90zR~//~vbraR~
+//        uerrmsg("Not changed: %s",0,          //~v90zI~            //~v91dR~//~vbraR~
+//                    statusmsg);                                    //~v90zI~//~vbraR~
+//    else                                                           //~v90zI~//~vbraR~
+//        uerrmsg("Changed: %s",0,              //~v90zI~//+v90zR~   //~v91dR~//~vbraR~
+//                    statusmsg);                                    //~v90zI~//~vbraR~
+//    return 0;                                                      //~v90zI~//~vbraR~
+//}//opt_modestatus                                                  //~v90zI~//~vbraR~
+//#endif //UTF8SUPP                                                  //~va00I~//~vbraR~
 //**************************************************************** //~va1pI~
 //!opt_mode                                                        //~va1pI~
 //Pcase:0:current status display, 1:not changwed, 2:status changed //~va1pI~
@@ -1870,7 +1915,7 @@ int optresethdrligcomb(int Popt,PUCLIENTWE Ppcw)                   //~vb4qR~
         {                                                          //~vb4qR~
             pfc=pcw->UCWpfc;                                       //~vb4qR~
             pfh=pfc->UFCpfh;                                       //~vb4qR~
-  			if (pfh->UFHtype==UFHTDIR)                             //+vbmqR~
+  			if (pfh->UFHtype==UFHTDIR)                             //~vbmqR~
             {                                                      //~vbmqI~
 				UCBITON(pcw->UCWflag,UCWFDRAW);//redraw            //~vbmqI~
                 opt2sethdrligcomb(0,pfh);                          //~vbmqI~

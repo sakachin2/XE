@@ -1,9 +1,10 @@
-//*CID://+vba5R~:                             update#=  647;       //+vba5R~
+//*CID://+vbrdR~:                             update#=  649;       //~vbrdR~
 //************************************************************* //~v051I~
 //*xedcmd2.c                                                       //~v58JR~
 //* xprint,system,submit,spawn                                     //~v51XR~
 //************************************************************* //~v051I~
-//vba5:170716 (Bug)did not chk spawn rc                            //+vba5I~
+//vbrd:200801 (ARM)del wxp cmd because print dialog not supported  //~vbrdI~
+//vba5:170716 (Bug)did not chk spawn rc                            //~vba5I~
 //vb7e:170108 FTP crash by longname                                //~vb7eI~
 //vb72:161212 (Win10) missing error.h , use winerror.h             //~vb72I~
 //vb4u:160812 lineopt should be cleared when back to menu from file panel//~vb4uI~
@@ -438,6 +439,9 @@ int dcmd_fpathredirect(PUCLIENTWE Ppcw,char *Pfnmstdo,char *Pfnmstde);//~v592I~
 //**************************************************************** //~v54yI~
 int dcmd_wxp(PUCLIENTWE Ppcw)                                      //~v54yI~
 {                                                                  //~v54yI~
+#ifdef ARM                                                         //~vbrdI~
+	return errnotsupported("wxp","Axe");                           //+vbrdR~
+#else                                                              //~vbrdI~
 	PUCLIENTWE pcw;                                                //~v54yI~
 	PUFILEH pfh;                                                   //~v54yI~
 	PUFILEC pfc;                                                   //~va87R~
@@ -593,8 +597,9 @@ int dcmd_wxp(PUCLIENTWE Ppcw)                                      //~v54yI~
     rc=wxe_wxpreq(opt,orgfnm,pfh);                                 //~va87I~
 #endif                                                             //~vav9I~
     return rc;                                                     //~v54yI~
+#endif                                                             //~vbrdI~
 }//dcmd_wxp                                                        //~v54yI~
-#endif                                                             //~v54yI~
+#endif //!ARM                                                             //~v54yI~//~vbrdR~
 //****************************************************************//~v051I~
 //!xprint command                                               //~v051R~
 //*ret  :rc                                                     //~v051I~
@@ -920,7 +925,7 @@ int dcmd_spawn(PUCLIENTWE Ppcw)                                    //~v51vI~
 //  uerrmsg("\"%s\" started,pid=%d",                               //~vazwR~
 //  		"\"%s\" ‹N“®,pid=%d",                                  //~vazwR~
 //          pc,rc);                                                //~vazwR~
-  if (rc>=0)                                                       //+vba5I~
+  if (rc>=0)                                                       //~vba5I~
     uerrmsg("\"%s\" started,pid=%d(0x%x)",                         //~vazwR~
     		"\"%s\" ‹N“®,pid=%d(0x%x)",                            //~vazwR~
             pc,pid,pid);                                           //~vazwR~

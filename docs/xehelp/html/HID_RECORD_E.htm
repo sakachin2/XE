@@ -14,7 +14,7 @@ a:hover{font-weight:bold;}-->
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
    .FixedLengthRecord file.
 
-     -EndOfLineID(LF/NL) is not usualy used on mainframe world.
+     -EndOfLineID(LF/NL) is not usually used on mainframe world.
       Line is split by record length associated to each file.
       This option is used to edit the file downloaded from mainframe host.
      -<A href="HID00000277.htm">E</A> filename /M[m|p|u|t|R][m|p|u|e|R] /Fn[-m]
@@ -22,7 +22,7 @@ a:hover{font-weight:bold;}-->
             p:EOL-ID=0x0d0a, u:EOL-ID=0x0a, m:EOL-ID=0x0d
             e:EOL-ID=<A href="HID_EBCF_E.htm">EBCDIC</A>-NL(0x15)
          Fn[-m]:Record length and margin.
-           ex). F80-72.  record length:80, Col.73-80 is righ margin
+           ex). F80-72.  record length:80, Col.73-80 is right margin
       ex). &quot;e file1 /Mr /F80-72 P0&quot;
      -Record mode read each lines by fixed length specified on Fn[-m] option, write no EOL-ID.
       Record mode option and record length parameter is registered to profile.
@@ -49,19 +49,19 @@ a:hover{font-weight:bold;}-->
                reverse operation of ex.1)
      -/M write option is effective for REP cmd for the file if no /M, /F option specified.
        For ex, &quot;rep file2 cplc&quot; for the file opened by &quot;e file1 cpeb /mr f80&quot;,
-       short record is expnded to the LRECL, record mode and LREC are registered to file2's profile record.
+       short record is expanded to the LRECL, record mode and LREC are registered to file2's profile record.
        If file1 is opened by &quot;e file1 cpeb /mrp&quot;, EOLid is appended to all lines.
      -Record mode is assumed for <A href="HID_EBCF_E.htm">EBCDIC</A> file opened by <A href="HID00000277.htm">E8</A> cmd.
      -Inserting character into the line could not expand the line over the record length.
      -TAB counter is forced to 1 at open.
-      For file opened with /Fxx only(lines have EndOfLine char), TAB is relaced to a spce at save.
-      For file opened with /Mr and /Fxx(lines have no EOL), TAB is notrelaced to spce at save.
+      For file opened with /Fxx only(lines have EndOfLine char), TAB is replaced to a space at save.
+      For file opened with /Mr and /Fxx(lines have no EOL), TAB is not replaced to space at save.
       TC|NOTC option is used to change default action.
      -Display width of UTF8 encoded Record mode files is not fixed to the record length.
       Record length is of UTF8 code. Display width is shorter than record length
       when record contains non-ASCII char, and you can expand the line up to
       displayWidth==recordLength. At save the line is split by UTF8Length==recordLength.
-      (FixedLength text file(line is split by EndOfLine char) is not split even if overflow occured.)
+      (FixedLength text file(line is split by EndOfLine char) is not split even if overflow occurred.)
 
 </SPAN></PRE>
 </BODY>

@@ -1,4 +1,4 @@
-//*CID://+v6Y1R~:                              update#=  477;      //~v6Y1R~
+//*CID://+v6Y1R~:                              update#=  478;      //~v6Y1R~
 //************************************************************* //~5825I~
 //*uproc3.c                                                        //~v5kkR~
 //* ushellexec,uprocconnect                                        //~v5jaR~
@@ -73,7 +73,7 @@
      #else //NOGNOME2                                              //~v6Y1I~
 		#include <glib.h>                                          //~v6Y1R~
 		#include <gio/gio.h>                                       //~v6Y1I~
-//		#include <gio/gappinfo.h>                                  //+v6Y1R~
+//		#include <gio/gappinfo.h>                                  //~v6Y1R~
      #endif                          //~v6G2I~
    #endif //ARM                                                    //~v6a0I~
   #endif                                                           //~v59jI~
@@ -387,7 +387,7 @@ int ushellexecsub(char *Pfpath,char *Pcmd,int Ptermuse);           //~v5g9I~
 		gnome_vfs_mime_application_free(papp);                     //~v5gbR~
 //printf("use term");                                              //~v5g9R~
     return rc;
-	return 0;//TODO
+//  return 0;//TODO                                                //+v6Y1R~
 }//ushellexec                                                      //~v5g9I~
 //**************************************************************** //~v5g9M~
 //* ulnxlaunchapp                                                  //~v5g9M~

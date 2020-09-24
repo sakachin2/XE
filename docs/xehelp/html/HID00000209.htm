@@ -41,16 +41,16 @@ a:hover{font-weight:bold;}-->
        Check duplication with also default assignment when duplication
        error msg is issued.
        You cannot reset fixed assignment indicated by (*).
-       Functions require operand is basicaly for command name only,
+       Functions require operand is basically for command name only,
        key may not be assigned.
       .Combinations keys Alt+, Ctrl+, Shift+Alt+ and Shift+Ctrl+ are available.
        Shift+Alt+ and Shif+Ctrl+ combination are available only to Fn, Ins, Del and
        destination keys(Up, Down, Left, Right).
       .Linux may define those keys as shortcut.
        In that case, to utilize these keys change Linux Settings-&gt;Shortcut.
-       When key widthout Shift(A+Fn,C+Fn) is defined as shortcut,
+       When key without Shift(A+Fn,C+Fn) is defined as shortcut,
        it mey be required to set it disable.
-      .Changes on <A href="HID00000248.htm">=0.2 pannel</A> are saved to ::xe!save! at end of process,
+      .Changes on <A href="HID00000248.htm">=0.2 panel</A> are saved to ::xe!save! at end of process,
        and effective at next startup, INI file is not updated.
        When you are using INI file(::xe.ini exists), assignment by INI file is
        effective(override up to number of defined key on INI file).
@@ -90,7 +90,15 @@ a:hover{font-weight:bold;}-->
        .<a href="HID00000199.htm">R-Ctl_ENTER</a>        =0
          assign(1) Right-Ctrl key to function "Execute+Next line" and
          Enter key to function "Next line",or not(0).
-#endif
+<SPAN STYLE="color:#000000;font-size:12pt;">         Alternative of "R-Ctrl_ENTER=1" is -Yr command line option.
+         Or use "OPT RCTL ON" command or set checkbox "R-Ctrl" to ON
+         for gxe/wxe.
+</SPAN>#endif
+       .R-Ctl_NewLine =0
+         assign Right-Ctrl key to function "Next-Line".
+         Enter key is yet assigned to function "Execute+Next-line". 
+         Note)Typamatic for Right-Ctrl key is not effective for OS/2 and
+         gxe version. R-Ctrl is not used for Linux console version.
 
        .InsertLine_Indent  =1
          Indent cursor positioning under the first non space char of
@@ -125,7 +133,7 @@ a:hover{font-weight:bold;}-->
          1:write EOF
          2:write when input file has it and write for new file
          3:write when input file has it and write no EOF for new file
-         (note)When patial file edit case by end line parameter
+         (note)When partial file edit case by end line parameter
                last part of file is copied,so this parm is ignored and
                EOF char is written when input file has it.
 #endif
@@ -207,7 +215,7 @@ a:hover{font-weight:bold;}-->
 
 
          (J):for Japanese mode screen, (E):for English mode screen
-         Specify un-displayable char table.Un-displayable char is
+         Specify un-displayable char table. Un-displayable char is
          displayed using special char specified on Disp_trans_char
          parameter.
          Use xxx_wxe parameter for wxe and gxe.

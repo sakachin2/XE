@@ -1,7 +1,10 @@
-//*CID://+v6H2R~:                             update#=  400;       //~v6H2R~
+//*CID://+v70bR~:                             update#=  410;       //~v70bR~
 //*************************************************************
 //*ufile1l.c                                                       //~v59nR~
 //*************************************************************
+//v70n:200902 (ARM)$tmp as shortcut to /data/local/tmp             //~v70bI~
+//v70b:200616 ARM:use /sdcard for /emultate/legacy/..              //~v70bI~
+//v703:200615 ARM coding bug                                       //~v703R~
 //v6H2:170103 (BUG)uparsefname cut last 1 byte for len=259(_MAX_MATH-1)//~v6H2I~
 //v6H1:161231 filename >_MAX_PATH occurse when moved directory on xe(native cmd issue error fo5r xcopy /move)//~v6H1I~
 //            and it cause fpath area overflow then 0c4            //~v6H1I~
@@ -128,6 +131,7 @@
 #endif                                                             //~v59nI~
 #include <utf.h>                                                   //~v6B9I~
 #include <uedit2.h>                                                //~v6D2I~
+#include <ulibarm.h>                                               //~v70bI~
 //*******************************************************
 #define SPECIAL_DIRID    '.'                                       //~v341I~
 #define MAXHDIR 100
@@ -254,7 +258,7 @@ unsigned int ufstat(char *Ppfile,FILEFINDBUF3 *Ppffb3)
 //          return ufilenopermission("lstat",Ppfile,rc);           //~v50EI~//~v6B6R~
             return (unsigned)ufilenopermission("lstat",Ppfile,rc); //~v6B6I~
         if (rc==ENAMETOOLONG)                                      //~v6H1I~
-    		return (unsigned)ufileTooLongFullpathName2(rc,Ppfile,"");//+v6H2R~
+    		return (unsigned)ufileTooLongFullpathName2(rc,Ppfile,"");//~v6H2R~
         if(rc!=ENOENT && rc!=ENOTDIR) //not found or no more file  //~v390R~
 //          return ufileapierr("stat",Ppfile,rc);                  //~v50ER~
 //          return ufileapierr("lstat",Ppfile,rc);                 //~v50EI~//~v6B6R~
@@ -565,7 +569,37 @@ void ufilegetftime(FTIME* Pft,FDATE *Pfd,time_t Ptime_t)           //~v364I~
 //*parm 3:output buff len
 //*return:output buff addr or NULL if err
 //*******************************************************
+                                                                   //~v70bI~
 char *ufullpath(char *Pfullpath,char *Pfilename,size_t Plen)
+#if defined(ARM) && defined(XXE)                                   //~v70bR~
+{                                                                  //~v70bI~
+	char *pfpath;                                                  //~v70bI~
+    char wk[_MAX_PATH];                                            //~v70bI~
+    char wk2[_MAX_PATH];                                           //~v70bI~
+    int rc;                                                        //~v70bI~
+	char *ufullpathARMsub(char *Pfullpath,char *Pfilename,size_t Plen);//~v70bI~
+//*************************                                        //~v70bI~
+    if (USTRHEADIS(Pfilename,ARM_TMPID) && getenv(ENV_TMPDIR))     //~v70bR~
+    {                                                              //~v70bI~
+    	strcpy(wk2,getenv(ENV_TMPDIR));                            //~v70bR~
+        strcat(wk2,Pfilename+sizeof(ARM_TMPID));                   //~v70bR~
+		pfpath=ufullpathARMsub(Pfullpath,wk2,Plen);                //~v70bI~
+    }                                                              //~v70bI~
+    else                                                           //~v70bI~
+	pfpath=ufullpathARMsub(Pfullpath,Pfilename,Plen);              //~v70bI~
+    if (pfpath)                                                    //~v70bI~
+    {                                                              //~v70bI~
+		rc=ufullpathAltSD(UFPASDO_SETRC_CHANGED,Pfullpath,wk);   //jniu//~v70bR~
+        if (rc & UFPASDRC_RC_CHANGED)                              //~v70bR~
+        {                                                          //~v70bI~
+        	UTRACEP("%s:ARM:%s replaced to %s\n",UTT,Pfullpath,wk);//~v70bI~
+        	strcpy(Pfullpath,wk);                                  //~v70bI~
+        }                                                          //~v70bI~
+    }                                                              //~v70bI~
+	return pfpath;                                                 //~v70bI~
+}                                                                  //~v70bI~
+char *ufullpathARMsub(char *Pfullpath,char *Pfilename,size_t Plen) //~v70bI~
+#endif                                                             //~v70bI~
 {
 //  char wk[_MAX_PATH],*pwk,*home;                                 //~v6hLR~
     char wk[_MAX_PATH+8],*pwk,*home;	//8:redundancy for add "/" //~v6hLI~
@@ -774,6 +808,7 @@ char *ufullpath(char *Pfullpath,char *Pfilename,size_t Plen)
     	return 0;                                                  //~v6m8I~
     }                                                              //~v6m8I~
     strcpy(Pfullpath,wk);                                          //~0827R~
+    UTRACEP("%s:rc=%s,pfnm=%s\n",UTT,Pfullpath,Pfilename);         //~v70bR~
     return Pfullpath;                                              //~0827R~
 }//ufullpath
 //*******************************************************
@@ -1656,7 +1691,8 @@ int filesrchmountpointARM(char *Pfilename,struct mntent *Pmnt,char *Pbuff,int Pb
     char fsname[256],dir[_MAX_PATH],mnttype[256],mntopt[256];      //~v6B5I~
     char buff[1024];                                               //~v6B5I~
 //*****************************************                        //~v6B5I~
-    memset(Pmnt,sizeof(struct mntent),0);                          //~v6B5I~
+//  memset(Pmnt,sizeof(struct mntent),0);                          //~v6B5I~//~v703R~
+    memset(Pmnt,0,sizeof(struct mntent));                          //~v703I~
     memset(fsname,0,sizeof(fsname));                               //~v6B5I~
     memset(dir,0,sizeof(dir));                                     //~v6B5I~
     memset(mnttype,0,sizeof(mnttype));                             //~v6B5I~

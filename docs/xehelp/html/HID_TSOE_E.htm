@@ -15,8 +15,14 @@ a:hover{font-weight:bold;}-->
 
    .TSO support.
 
-          It is available to download,update then upload the file on TSO/E using tn3270+s3270+ind$file.
-          Use this function if you favour although 3270-FTP response is slow a little bit.
+<FONT color="#FF0000">
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! Deprecated                                  !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+</FONT>
+
+          It is available to download, update then upload the file on TSO/E using tn3270+s3270+ind$file.
+          Use this function if you favorite although 3270-FTP response is slow a little bit.
           For a while you should try this function on your private DataSet.
 
      !!!  THERE IS NO WARRANTY IN THIS FREE SOFTWARE !!!
@@ -24,8 +30,8 @@ a:hover{font-weight:bold;}-->
           I'm not responsible for any DAMAGEs caused by using this software.
 
           Due to my environment, only Windows version was tested.
-          And the logon procedure initialy calls ISPF primary options menu.
-          Adjust logon procedure definition in xe3270.cfg if youre environment is
+          And the logon procedure initially calls ISPF primary options menu.
+          Adjust logon procedure definition in xe3270.cfg if your environment is
           native TSO READY mode
 
             (--For TurnkeyMVS--)
@@ -42,7 +48,7 @@ a:hover{font-weight:bold;}-->
 #endif
             (--For TurnkeyMVS--)
               If you use x3270,install x3270 and setup xe3270.cfg to use x3270.
-              When x3270 is used,you can see the x3270 screen,but xe loose the focus
+              When x3270 is used,you can see the x3270 screen, but xe loose the focus
               in some linux version. In that case you may minimize the x3270 window.
               #ifdef W32
                   You need to start X-server process before starting xe3270 if you use x3270.
@@ -55,14 +61,14 @@ a:hover{font-weight:bold;}-->
             APVUFILE supports DBCS(DoubleByteCharacterSet), but IND$FILE converts
             ASCII to EBCDIC byte bye byte.
             See (6) about DBCS environment,
-            or if you have a problem of ASCII space(0x20) is not conveted to EBCDIC blank(0x40).
+            or if you have a problem of ASCII space(0x20) is not converted to EBCDIC blank(0x40).
 
             (--For TurnkeyMVS--)
                 Warning:ind$file106 returns &quot;TRANS00file not opened&quot;
                 if HostFile D/S or member dose not exist, but ind$file111 wait infinitely.
-                xe confirm the existance by LISTDS command in order to avoid infinite wait.
+                xe confirm the existence by LISTDS command in order to avoid infinite wait.
 
-            At first,It is better to do connection test using s3270 alone as following.
+            At first, it is better to do connection test using s3270 alone as following.
               .Start s3270 with no operand.
               .Enter
                  connect hostname:23
@@ -73,7 +79,7 @@ a:hover{font-weight:bold;}-->
                Status line changed to indicate connected (4th char='C')?
                &quot;ascii&quot; command is used to see current screen.
                You can see logon prompt screen?
-              .Logon procedure depends on youre environments.
+              .Logon procedure depends on your environments.
                Keyboard-Input-Strings are entered by &quot;String&quot; cmd.
                For ex, to input &quot;LOGON UID001&quot;, enter as following.
                  String &quot;LOGON UID001\n&quot;
@@ -109,7 +115,7 @@ a:hover{font-weight:bold;}-->
             (--For TurnkeyMVS--)
               Specify as TSO=3270.
               TunkeyMVS prepares submit tool to enable submit local file.
-              If you did not setup for submit tool,specify TSO=3270S to use TSO SUBMIT cmd
+              If you did not setup for submit tool, specify TSO=3270S to use TSO SUBMIT cmd
 
             If missing &quot;TSO=xxxx&quot;, target is tcpip:ftp remote such as linux.
             Host-id(first item) for TSO is case insensitive.
@@ -165,14 +171,14 @@ a:hover{font-weight:bold;}-->
                             NOPUTCONF :By the same reason,download the uploaded file to confirm that is same as
                                        uploaded source file.
                                        NOPUTCONF option skips those process.
-                            (With confirm option,detected error is register on ::xe3270ftp.errlog with append mode.
-                             For a while,you would be better to do with confirm option and check errlog)
+                            (With confirm option, detected error is register on ::xe3270ftp.errlog with append mode.
+                             For a while, you would be better to do with confirm option and check errlog)
               TEXT_PRELOGON:String to detect VTAM LOGON prompt screen.
                             xe3270 starts its logon procedure if found this string.
                             Without this option, when TSO session was lost by x22 ABEND,
                             you will get UNSUPPORTED FUNCTION error msg.
               LOGON_CMD    :defines xe3270 logon procedure.
-                            Without this option,xe enter as following
+                            Without this option, xe enter as following
                               logon %userid%/%pswd%\n
                               (%userid% and %pswd% is replaced by those of defined on ::xehosts)
                             xe3270 execute these line sequentially.
@@ -181,15 +187,15 @@ a:hover{font-weight:bold;}-->
                             If &quot;String to be detected&quot; is specified and not found after &quot;Retry count&quot; snap
                             of screen, logon procedure terminate.
                             Default of retry count is 8 and it means about 3 seconds(sum of 100 to 700ms)
-                            Append &quot;\n&quot; at last of string,that means Enter key.
+                            Append &quot;\n&quot; at last of string, that means Enter key.
                             For ex,  LOGON_CMD = &quot;LOGON %user%\n&quot;
                             You can specify 3270 Actions(3270 cmd) using &quot;Action&quot; prefix.
                             For ex.
                               LOGON_CMD = &quot;Action MoveCursot(6,10)&quot;
                             For only Enter action, you can omit action prefix.
                               LOGON_CMD = Enter
-                            See manuals of s3270,x3270-script for the other actions such as EraseEOF, Attn.
-                            If you want to fill multiple fields,omit last \n.
+                            See manuals of s3270, x3270-script for the other actions such as EraseEOF, Attn.
+                            If you want to fill multiple fields, omit last \n.
                             After moving on the screen using Home, Tab etc. action,
                             use Enter action finally.
                             s3270 supports also \t(TAB) and \r(Newline) \f(Clear).
@@ -235,8 +241,8 @@ a:hover{font-weight:bold;}-->
                                                                      # and continue to next procedure.
                               LOGON_CMD = Enter,READY               #change to native TSO READY mode by Enter key.
                                                                     #any TSO cmd cause disconnection in this status.
-                              LOGON_CMD = ISPF\n,&quot;OPTION ===&gt;&quot;      #but ISPF is only avalable cmd,
-                                                                    #change to english mode ISPF primary options menu panel.
+                              LOGON_CMD = ISPF\n,&quot;OPTION ===&gt;&quot;      #but ISPF is only available cmd,
+                                                                    #change to English mode ISPF primary options menu panel.
                               LOGON_CMD = &quot;=6\n&quot;,&quot;COMMAND SHELL&quot;    #change to command shell panel.
 
             LOGOFF_CMD     :define xe3270 LOGOFF procedure.
@@ -255,17 +261,17 @@ a:hover{font-weight:bold;}-->
 
                             Ex-2. (define LOG/LIST panel input)
                               logoff_cmd       = &quot;=X\n&quot;,BATCH       #detect LOG/LIST option input panel
-                              logoff_cmd       = &quot;2\n&quot;,&quot;*** VTAM&quot;   #Input LOG/LIST option,then wait ISPF exit.
+                              logoff_cmd       = &quot;2\n&quot;,&quot;*** VTAM&quot;   #Input LOG/LIST option, then wait ISPF exit.
 
             LOGON_ERR      :defines error message to be detected in LOGON procedure and related actions.
                             define 3270 action without &quot;Action&quot; unlike procedure definition.
-                            actions are concatinated using separator &quot;;&quot;.
-                            Action &quot;CONTINUE&quot; is psude action to do action when the string was detected.
+                            actions are concatenated using separator &quot;;&quot;.
+                            Action &quot;CONTINUE&quot; is pseudo action to do action when the string was detected.
                             The string is not the error indication but continue to the next procedure.
                             In the next example, if &quot;HIT THE ENTER KEY&quot; is detected,
                             do the action &quot;Enter&quot; the continue to next procedure.
                             Prefix &quot;_&quot; means that the string is checked if LOGON_CMD string is not found.
-                            Widthout &quot;_&quot;, the string is checked before LOGON_CMD string.
+                            Without &quot;_&quot;, the string is checked before LOGON_CMD string.
                             (LOGON fail if both LOGON_CMD and LOGON_ERR string are detected)
                             Ex.
                               LOGON_ERR = IKJ56425I,&quot;logoff\n&quot;      #USERID IN-USE
@@ -280,12 +286,12 @@ a:hover{font-weight:bold;}-->
 
             RETRY_UPLOAD   :read-check retry count when read check after put failed (without NOPUTCONFORM option)
                             Max:4 Min:0 Default:2
-            RETRY_DOWNLOAD :read retry count when dual read unmatch (without NOGETCONFIRM option)
+            RETRY_DOWNLOAD :read retry count when dual read un-match (without NOGETCONFIRM option)
                             Max:4 Min:0 Default:2
             SPF_LEVEL      :process level of SPF information of PDS members.
                             0:CMD_MEMBLIST is not used. TSO LISTDS is used to get member list.
                             1:SPF info is displayed on dir-list using XE4S001Z
-                            2:SPF info is maintenanced using XE4S001Z
+                            2:SPF info is maintained using XE4S001Z
                             default is 0 without CMD_MEMBLIST or 2 with CMD_MEMMLIST specified
             CMD_MEMBLIST   :TSO command to get PDS memberlist
                             Default is TSO native &quot;LISTDS&quot; command
@@ -294,7 +300,7 @@ a:hover{font-weight:bold;}-->
                               CMD_MEMBLIST  = &quot;call 'TEST01.load.asm(xe4s001z)'&quot;
             PS_UPLOAD      :Allow DSNAME as upload target
                             1:allow 0:prohibit(default)
-                            I worried about &quot;1&quot; may accidentaly cause corruption of PDS directory.
+                            I worried about &quot;1&quot; may accidentally cause corruption of PDS directory.
                             But when transfer target is DSNAME of PDS, it may be rejected by
                               TRANS17   Missing or incorrect TSO data set name: file transfer canceled
                             PS_UPLOAD=1 may have no problem.
@@ -375,7 +381,7 @@ a:hover{font-weight:bold;}-->
             #     SPF_LEVEL      :process level of SPF information
             #                     0:CMD_MEMBLIST is not used.
             #                     1:SPF info is displayed on dir-list using XE4S001Z
-            #                     2:SPF info is maintenanced using XE4S001Z
+            #                     2:SPF info is maintained using XE4S001Z
             #                     default is 0 without CMD_MEMBLIST or 2 with CMD_MEMBLIST specified
             #     CMD_MEMBLIST   :TSO command to get PDS memberlist
             #                     Default is TSO native &quot;LISTDS&quot; command
@@ -383,7 +389,7 @@ a:hover{font-weight:bold;}-->
             #                       ex)  CMD_MEMBLIST  = &quot;call 'herc01.load.asm(xe4s001z)'&quot;
             #     PS_UPLOAD      :Allow DSNAME as upload target
             #                     1:allow 0:prohibit(default)
-            #                     &quot;1&quot; may accidentaly cause corruption of PDS directory.
+            #                     &quot;1&quot; may accidentally cause corruption of PDS directory.
             #     RSH_ECHO       :Echo output to RSH screen to also xe3270 screen.
             #                      1:Echo ON(Default),  0:Echo OFF.
             #     CHASET_CFG     :FTP translation parameter filename
@@ -420,7 +426,7 @@ a:hover{font-weight:bold;}-->
             #text_prelogon   =&quot;Welcome to MVS3.8J&quot;    # Turnkey-MVS VTAM panel detection
             text_prelogon      =&quot;*** (T4)&quot;            #VTAM panel detection
             text_prelogon      =&quot;UNSUPPORTED FUNCTION&quot;  #VTAM panel detection
-            ###### LOGON procedure for the case initialy ISPF panel opened #########
+            ###### LOGON procedure for the case initially ISPF panel opened #########
             #
                LOGON_CMD.t4j = &quot;Action Reset&quot;           # Reset protection error status
                LOGON_CMD.t4j = &quot;Action Clear&quot;           # confirm string input availability
@@ -453,8 +459,8 @@ a:hover{font-weight:bold;}-->
                                                             # and continue to next procedure.
                LOGON_CMD.t4e = Enter,READY,3               #change to native TSO READY mode by Enter key.
                                                        #any TSO cmd cause disconnection in this status.
-               LOGON_CMD.t4e = ISPF\n,&quot;OPTION ===&gt;&quot;        #but ISPF is only avalable cmd,
-                                                       #change to english mode ISPF primary options menu panel.
+               LOGON_CMD.t4e = ISPF\n,&quot;OPTION ===&gt;&quot;        #but ISPF is only available cmd,
+                                                       #change to English mode ISPF primary options menu panel.
                LOGON_CMD.t4e = &quot;=6\n&quot;,&quot;COMMAND SHELL&quot;      #change to command shell panel.
             #define action if detected error msg in logon procedure
              LOGON_ERR   = IKJ56425I,&quot;logoff\n&quot;            #REJECT BY ALREADY LOGON
@@ -473,7 +479,7 @@ a:hover{font-weight:bold;}-->
             #                                      #detect VTAM LOGON prompting panel
             ##SPF LOG/LIST option set required case
             #logoff_cmd    = &quot;=X\n&quot;,BATCH       #detect LOG/LIST option input panel
-            #logoff_cmd    = &quot;2\n&quot;,&quot;*** VTAM&quot;   #Input LOG/LIST option,then wait ISPF exit.
+            #logoff_cmd    = &quot;2\n&quot;,&quot;*** VTAM&quot;   #Input LOG/LIST option, then wait ISPF exit.
             #
             #TIMEOUT_CONNECT = 20
              TIMEOUT_LOGON   = 20
@@ -496,7 +502,7 @@ a:hover{font-weight:bold;}-->
               //         DD   DSN=SYS1.AMODGEN,DISP=SHR
             (SYSPARM=NOSNAP is required to make ULSNAP debug macro to NOP)
             Or, try to LKED appended OBJECT.
-            Upload XE4S001Z.obj by binaly mode of LRECL=80,then execute LKED.
+            Upload XE4S001Z.obj by binary mode of LRECL=80,then execute LKED.
 
               //TESTLKED  PROC MBR=                                                   00040000
               //********************************************************************//00050000
@@ -543,7 +549,7 @@ a:hover{font-weight:bold;}-->
             between xe and 3270 emulator.
 #ifdef LNX
             Terminal emulator on which xe3270 start is set by ini file.
-            Default is determined by searching gnome-terminal,konsole and xterm in this sequence.
+            Default is determined by searching gnome-terminal, konsole and xterm in this sequence.
 #endif
             NamedPipe with multiple instances is used to communicate with xe.
             Thread starts for each target(system + TSO-UserID) and communicate with
@@ -557,7 +563,7 @@ a:hover{font-weight:bold;}-->
             New command xe's &quot;<A href="HID00000736.htm">TSO</A>&quot; supports to handle communication trouble.
 
             Same command but different syntax can be entered through xe3270 DOS prompt screen,
-            Use 3270 cmd such as String,Enter,PA(1) etc. on the screen
+            Use 3270 cmd such as String, Enter, PA(1) etc. on the screen
             to respond to 3270 prompt such as ENTER-,REENTER-.
 
         (2-2) Remote Shell.
@@ -581,8 +587,8 @@ a:hover{font-weight:bold;}-->
              Logoff command switches back to local command mode.
              (&quot;TSO xxx logoff&quot;  xxx:destination)
 
-             Not the same opration as real SPF panel,taking some labor,
-             you can constrol ISPF panel.
+             Not the same operation as real SPF panel, taking some labor,
+             you can control ISPF panel.
              Input strings on the cursor position and s3270 Action commands
              are entered from command line of xe's panel.
              xe check at first the string on command input line,
@@ -604,15 +610,15 @@ a:hover{font-weight:bold;}-->
                &gt;&gt;Home
              are s3270 Action cmd.
 
-             You can omit &quot;Action&quot; preffix for the following actions,
+             You can omit &quot;Action&quot; prefix for the following actions,
              and xe supports abridged cmd.
              Action cmds are case insensitive.
-             ex) eraseeof
-                 EEOF
-                 &gt;EEOF
-                 &gt;&gt;H
-                 &gt;&gt;D
-                 &gt;Ins
+             e.g.) eraseeof
+                   EEOF
+                   &gt;EEOF
+                   &gt;&gt;H
+                   &gt;&gt;D
+                   &gt;Ins
 
              Some letters are alternative of key typing in the string input.
                Enter : \n,  TAB : \t,  Newline : \r,  Clear : \f
@@ -637,7 +643,7 @@ a:hover{font-weight:bold;}-->
                &quot;Insert&quot;       &quot;&quot;       //set insert mode
                &quot;Key&quot;          &quot;&quot;       //(keysym) insert key keysym
                &quot;Left&quot;         &quot;&gt;L&quot;     //move cursor left
-               &quot;MoveCursor&quot;   &quot;MVC&quot;    //(row, col) move cursor to (row,col)
+               &quot;MoveCursor&quot;   &quot;MVC&quot;    //(row, col) move cursor to (row, col)
                &quot;Newline&quot;      &quot;NL&quot;     //move cursor to first field on next line (or send ASCII LF)
                &quot;PA&quot;           &quot;&quot;       //PA n/PA(n)  Program Attention AID (n from 1 to 3)
                &quot;PF&quot;           &quot;&quot;       //PF n/PF(n)  Program Function AID (n from 1 to 24)
@@ -650,11 +656,11 @@ a:hover{font-weight:bold;}-->
                &quot;Transfer&quot;     &quot;FTP&quot;    //(option=value...) file transfer
                &quot;Up&quot;           &quot;&gt;U&quot;     //move cursor up
 
-               (Note). Sor far there is no way to detect Insert-mode-status.
+               (Note). There is no way to detect Insert-mode-status.
                        So, Insert key is assigned to ToggleIsert.
 
              In TSO mode local command can be entered by prefixing &quot;:&quot;
-             For example,&quot;:grep ABC *.c&quot;.
+             For example, &quot;:grep ABC *.c&quot;.
 
          (b) You can change keyboard mode to 3270 like.
 
@@ -691,7 +697,7 @@ a:hover{font-weight:bold;}-->
              Press again to back to xe's keyboard mode.
              &quot;3270&quot; at top-left corner indicates 3270 mode.
              Following table is key and 3270 function.
-             These ae little bit different from PCOM defualt
+             These are little bit different from PCOM default
              for the co-operation with xe.
              For ex, &quot;Attn&quot; is by Shift+Esc, cursor movement by Shift+arrow-key.
              Screen is protected, input from command input line.
@@ -723,7 +729,7 @@ a:hover{font-weight:bold;}-->
              | R-Ctrl   ||Enter/NewLine|            |             |           |
              | Esc      ||             |Attn        |SysReq       |           |
              | Tab      ||Tab          |BackTab     |             |           |
-             | BackSpace||Erase        |            |             |           |
+             | Backspace||Erase        |            |             |           |
              | a        ||             |            |Action       |           |
              | c        ||             |            |Reset        |           |
              | q        ||             |            |(TSO-kbd)    |           |
@@ -753,13 +759,13 @@ a:hover{font-weight:bold;}-->
 
              (Note). Right-Ctrl key option changes the function of Enter key
                      and R-Ctrl key.
-                     For other keys,basically xe process the key when
+                     For other keys, basically xe process the key when
                      strings are  remains on command input line.
 
-                     Enter/Rctrl:For execute function,xe process the string
+                     Enter/Rctrl:For execute function, xe process the string
                                  if cursor is on the cmd input line and data remains on the line.
                      Home       :jump to xe's home is cursor is not on there.
-                     BackSpace  :xe process the key if cursor is on the cmd input line
+                     Backspace  :xe process the key if cursor is on the cmd input line
                                  but not on home position
                      Ins/Del/End:xe process the key if cursor is on the cmd input line
                                   and data remains on the line.
@@ -791,9 +797,9 @@ a:hover{font-weight:bold;}-->
               .When reached to maximum 3270 session count.
                  &quot;no available 3270 device&quot;
                  ---&gt;close one of opened TSO(3270 emulator) session to yield to xe.
-                     Or,run &quot;setupterm&quot; to increase device count.
-                     &quot;startterm&quot; defines intial start session count,and
-                     SYS1.VTAMLST defines terminal initialy activated.
+                     Or, run &quot;setupterm&quot; to increase device count.
+                     &quot;startterm&quot; defines initial start session count,and
+                     SYS1.VTAMLST defines terminal initially activated.
               .When TSO is not active.
                  &quot;APPLICATION IS INACTIVE&quot;
                  ---&gt;&quot;S TSO&quot; from MVS console
@@ -812,7 +818,7 @@ a:hover{font-weight:bold;}-->
                    You can check current screen using snap cmd from xe3270 DOS prompt screen.
             .When duplicated UserID logon.
               &quot;IKJ56425I LOGON REJECTED, USERID xxxx INUSE&quot;
-              ---&gt;&quot;logoff&quot; is issues internaly when native TSO READY mode.
+              ---&gt;&quot;logoff&quot; is issues internally when native TSO READY mode.
                   Configure xe3270.cfg to issue logoff when SPF mode.
                   &quot;C U=xxxx&quot; from another TSO session if you have multiple userID
                   will immediately release the UserID which is interrupted.
@@ -823,18 +829,18 @@ a:hover{font-weight:bold;}-->
             .File I/O.
               Following error msg issued if DATASET or member is not found.
                 TRANS17   Missing or incorrect TSO data set name: file transfer canceled
-              When ABEND such as x37 occued, following msg issued.
+              When ABEND such as x37 occurred, following msg issued.
                 TRANS19   Error reading or writing to host disk: file transfer canceled
               Unlike with TurnkeyMVS, indefinite wait will not occur.
 
               (--For TurnkeyMVS--)
                 ind$file v106 returns FILE00 when FILE-NOT-FOUND. Other version may cause infinite wait.
                 xe confirm existency before issue transfer request.
-                See MVS console whether ABEND S013 etc ocuured.
+                See MVS console whether ABEND S013 etc occurred.
 
             .When timeout received.
-              Connection timeout is set to 10 seconds,Transfer timeout is infinite.
-              Even when timeout msg is retuned,thread may be waiting 3270 response.
+              Connection timeout is set to 10 seconds, transfer timeout is infinite.
+              Even when timeout msg is retuned, thread may be waiting 3270 response.
               Until 3270 returns response thread is busy and is not available to accept cmd.
               When xe3270 dose not respond to any input from xe3270 DOS prompt screen,
               once cancel TSO user.
@@ -849,7 +855,7 @@ a:hover{font-weight:bold;}-->
               #endif
 
 
-            If file save failed,xe dose not end the panel.
+            If file save failed, xe dose not end the panel.
             Save temporarily to local file then exit xe.
             Later you may restore to original destination.
 
@@ -858,13 +864,13 @@ a:hover{font-weight:bold;}-->
            .TSO file is opened with option CAP ON as default.
             To deny it use [CAP|NOCAP] option of Edit command
             or change the default by CAP command.
-            To enter lowercase letter when CAP ON,use Shift key.
+            To enter lowercase letter when CAP ON, use Shift key.
 
            .E/B command is treated as EN/BN for the file with RECFM=Fx,LRECL=80.
             For COBOL file,'N' is yet required like as ECN to maintenance automatically line number field.
             Alias command function allow to abbreviate optional parameter specification
             such as /P1(protect col.73-80 field).
-            For the file col.73-80 is not line-number but a part of data,it is convenient
+            For the file col.73-80 is not line-number but a part of data, it is convenient
             to specify f80 option to open. You may use e8 command as alternative.
             No conversion is done when upload/download if opened by binary mode
             (EB,EH command).
@@ -874,11 +880,11 @@ a:hover{font-weight:bold;}-->
            .Filename referencing function corresponds to MVS file naming convention.
             PC file naming specification is also available.
             *\ --&gt; *.  **\ --&gt; **.   ^*\ --&gt; ^*.
-            ex) &quot;e *(m2)&quot; opens  h01:'a.b.c(m2)'  on the screen opened  h01:'a.b.c(m1)',
-                **.d(m3) means  h01:'a.b.d(m3)'.
-                &quot;e ^*(m2)&quot; on the 2nd panel opens  h01:'a.b.c(m2)'  when  h01:'a.b.c(m1)'
-                is opened on the 1st panel of the split screen,
-                ^*.**(m4)  means  h01:'a.b(m4)'.
+            e.g.) &quot;e *(m2)&quot; opens  h01:'a.b.c(m2)'  on the screen opened  h01:'a.b.c(m1)',
+                  **.d(m3) means  h01:'a.b.d(m3)'.
+                  &quot;e ^*(m2)&quot; on the 2nd panel opens  h01:'a.b.c(m2)'  when  h01:'a.b.c(m1)'
+                  is opened on the 1st panel of the split screen,
+                  ^*.**(m4)  means  h01:'a.b(m4)'.
 
            .JCL submitting is done using TSO SUBMIT cmd.
             On edit panel,updated contents is uploaded to the submit work DataSet
@@ -903,16 +909,16 @@ a:hover{font-weight:bold;}-->
 
               JCL submitting is available using sub.bat provided by Turnkey-MVS.
               Call sub.bat from xe's SUB command.(place sub.bat on proper PATH).
-              On the panel JCL file is opened,enter simply &quot;SUB&quot;.
-              On the panel local file is opened,enter &quot;SUB sub *&quot;.
+              On the panel JCL file is opened, enter simply &quot;SUB&quot;.
+              On the panel local file is opened, enter &quot;SUB sub *&quot;.
               Alias command may be used for abbreviation.
-              for example,after defined &quot;Alias:JCL SUB sub.bat *&quot; on =0.1 panel,
+              For example, after defined &quot;Alias:JCL SUB sub.bat *&quot; on =0.1 panel,
               &quot;JCL&quot; cmd submit the local file to TSO.
-              If you want to use &quot;SUB&quot; to submit to TSO,you have to change
-              the command verb of submit function on ini file,then define
+              If you want to use &quot;SUB&quot; to submit to TSO, you have to change
+              the command verb of submit function on ini file, then define
               &quot;SUB&quot; as alias command.
-              To submit from dir-list,use &quot;#&quot; line cmd. Input on rename field
-              is ignored. When using &quot;%&quot; linecmd,enter &quot;sub&quot;(tool name prepared
+              To submit from dir-list, use &quot;#&quot; line cmd. Input on rename field
+              is ignored. When using &quot;%&quot; linecmd, enter &quot;sub&quot;(tool name prepared
               by Turnkey-MVS) on rename field.
 
            .About SPF information.
@@ -920,24 +926,24 @@ a:hover{font-weight:bold;}-->
             SPF information is displayed on dir-list panel for the PDS member
             with RECFM=Fx and LRECL=80.
             To display line count or files size is toggled by F6 key.
-            For SPF file line count is initialy displayed.
+            For SPF file line count is initially displayed.
             Use S+F6 to display USERID.
             xe keeps the SPF information dropped by uploading by IND$FILE.
             And MM(modification level) is updated as following.
               If the member's COL73-80 is valid line-number, max value of COL79-80
               is assumed as MM value of the member.
-              When the member update session end,the MM+1 is back to the PDS directory.
-              If the other member is replaced by Save/Replace command,the MM value is
+              When the member update session end, the MM+1 is back to the PDS directory.
+              If the other member is replaced by Save/Replace command, the MM value is
               set to that member. When copy source has no SPF information such as PC file
-              or when append to that member,target members MM is 1 up.
-              By XCOpy command SPF info is copied,by XAPpend command target MM is 1 up.
+              or when append to that member, target members MM is 1 up.
+              By XCOpy command SPF info is copied, by XAPpend command target MM is 1 up.
             &quot;a&quot; line command is used to update Version and Modification level of the member.
             SPF subcommand of xe's TSO command may be used to update SPF info of
             whole(WILDCARD &quot;*&quot;/&quot;?&quot; is also supported) member of the PDS.
-            For ex.,use it to set SPF info at once for the PDS with no SPF info.
+            For ex., use it to set SPF info at once for the PDS with no SPF info.
             Line count is gotten by reading the member.
-            (RPF may require CreationDate,LastUpdateDate,Userid to display on the PDS list)
-            To execute XE4S001Z as batch job,refer the following description to specify parameter.
+            (RPF may require CreationDate, LastUpdateDate, Userid to display on the PDS list)
+            To execute XE4S001Z as batch job, refer the following description to specify parameter.
             (copied from header part of source file XE4S001Z)
 
             *(2)* UPDATE  SPF INFORMATION ON PDS DIRECTORY *********************    00330030
@@ -985,13 +991,13 @@ a:hover{font-weight:bold;}-->
 
       (5) Limitation and Warning.
 
-         !! .To update PDS directory,the dataset should be allocated exclusively.
+         !! .To update PDS directory, the dataset should be allocated exclusively.
              (currently XE4S001z use DISP=OLD and dose not use RESERVE macro)
              Try again after closing SPF session.
             .Upload is for PDS member only as default.
              Specify PS_UPLOAD parameter of xe3270.cfg to do it.
             .Long lines are split when upload to the file with RECFM=F(B).
-             When uploading by binary mode,null char is appended to fill the
+             When uploading by binary mode, null char is appended to fill the
              line up to the record length if RECFM=Fx.
          !! .With TurnkeyMVS, I do not know the reason but file transfer sometimes miss,duplication
              or lack, some amount (it may be 24*76=1844) of lines.
@@ -1001,12 +1007,12 @@ a:hover{font-weight:bold;}-->
              NOPUTCONFIRM and NOGETCONFIRM option of cfg file will set to bypass these step.
 
              xe3270 download twice for get request from xe and if both is same
-             returns &quot;success&quot;. If unmatch is detected,retry until the count
-             specified by xe3270.cfg exausted.
+             returns &quot;success&quot;. If unmatch is detected, retry until the count
+             specified by xe3270.cfg exhausted. 
              (retry will be stopped by Timeout)
-             If the retry count exausted,the file for investigation is left in the
+             If the retry count exhausted, the file for investigation is left in the
              temp dir(TEMP environment variable for Windows or /tmp for Linux).
-             Those file nameing is xe3270pc.xxxxxxxx.GETn.y.(xxxxxxxx:Member name)
+             Those file naming is xe3270pc.xxxxxxxx.GETn.y.(xxxxxxxx:Member name)
              Usually you may retry the download request.
              For the case whole PDS download by xcopy command is interrupted,
              you may continue the xcopy adding /y- (skip the existing file) option.
@@ -1019,13 +1025,13 @@ a:hover{font-weight:bold;}-->
              (--For TurnkeyMVS--)
                Warning:RPF(V1M5R3) set HHMM only and dose not set SS in the directory.
 
-             When binary mode,Null character appending is checked and
+             When binary mode, null character appending is checked and
              allow it as successful and the fact is displayed on the xe3270 DOS-prompt.
              And optionally logged.
-             If 2 file is unmatch,Send&amp;Receive are retried by the count specified at xe3270.cfg.
-             If retry count is exausted,the file for investigation are left on
-             temp dir. Those file nameing is xe3270pc.xxxxxxxx.PUTGETn.y.(xxxxxxxx:Membername)
-             If put request is of save of file edit,save is rejected but
+             If 2 file is unmatch, Send&amp;Receive are retried by the count specified at xe3270.cfg.
+             If retry count is exhausted, the file for investigation are left on
+             temp dir. Those file naming is xe3270pc.xxxxxxxx.PUTGETn.y.(xxxxxxxx:Membername)
+             If put request is of save of file edit, save is rejected but
              contents are save on workdir(::xeftpwd) by the naming of
              xxxxxxxx.timestamp even after you canceled save.
              Usually you may retry to upload request except following case.
@@ -1041,13 +1047,13 @@ a:hover{font-weight:bold;}-->
               (Timestamp check or compare by re-downloading depending on SPF_LEVEL option).
               Warning is issued before force to upload.
               SPF cannot detect that the file is downloaded, so the uploaded file
-              may be overrided by SPF save operation.
+              may be overridden by SPF save operation.
               xe provides &quot;TSO Alloc/Free&quot; command for the case dataset is a private.
-              If unmatch detected,both files are kept on work-dir(::xeftpwd)
+              If un-match detected, both files are kept on work-dir(::xeftpwd)
               by the naming of xxxxxxxx.timestamp and xxxxxxxx.timestamp.UPDATECHK
               but you should save current update to another file.
 
-         !! .xe3270 depends on TSO logon procedure and reposnce messages from LISTDS cmd etc.
+         !! .xe3270 depends on TSO logon procedure and response messages from LISTDS cmd etc.
              You can freely modify xe3270?.c
 
       (6) DBCS environments.
@@ -1142,15 +1148,15 @@ a:hover{font-weight:bold;}-->
               }
 
             .DBCS is not supported by IND$FILE
-             (APVUFILE will do. See next item about xe's DBCS(Jpanese only) support.)
+             (APVUFILE will do. See next item about xe's DBCS(Japanese only) support.)
              -charset option of s3270 is for keyboard input and screen output.
              For ftp, ASCII&lt;--&gt;EBCDIC translation is done byte by byte using table defined in X3270.xad.
              On the other hands, without DBCS charset for -charset option,
              TSO LOGON procedure may fail by DIALOG ERROR(SPF panel not found) depending on HOST environments.
-             (If client dose not notify that client is DBCS env, //ISPPALT DD is not serched for the panel
+             (If client dose not notify that client is DBCS env, //ISPPALT DD is not searched for the panel
              for DBCS)
-             But fortunately,Enter key on the dialog error panel changes the screen to native TSO READY mode.
-             On this screen,only ISPF cmd is accepted and it opens primary options menu of English.
+             But fortunately, Enter key on the dialog error panel changes the screen to native TSO READY mode.
+             On this screen, only ISPF cmd is accepted and it opens primary options menu of English.
              Command shell panel is now available for xe.
              See sample xe's logon procedure definition in xe3270.cfg.
 
@@ -1203,15 +1209,15 @@ a:hover{font-weight:bold;}-->
                    SBCS codepage of cp930 is CP290, CP2017 is of CP939.
                    DBCS option is JIS83+IBM (See <A href="HID00000270.htm">CV command</A>)
               Supports only RECFM=F(B)
-              After downloading with bynary mode,splits to lines by LRECL.
+              After downloading with binary mode, splits to lines by LRECL.
               EBCDIC-&gt;SJIS conversion are done for those lines.
               SO(0x0e) and SI(0x0f) is replaced to spaces(0x20).
-              When uploading,SJIS-&gt;EBCDIC conversion is done line by line.
+              When uploading, SJIS-&gt;EBCDIC conversion is done line by line.
               SO/SO are inserted replacing space(0x20) of both sides.
-              If no space exists on the boundary,SO/SO are inserted expanding length.
+              If no space exists on the boundary, SO/SO are inserted expanding length.
               Following continued space is deleted by expanded length if exist.
               Single space is left as delimiter.
-              Finally,if the line length is over LRECL,the overflow part is cut
+              Finally if the line length is over LRECL, the overflow part is cut
               if the length before conversion is lower than or equal to the LRECL.
               If the length before translation is larger than LRECL,
               those line is split to multiple lines without considering DBCS split.
@@ -1224,7 +1230,7 @@ a:hover{font-weight:bold;}-->
               are translated to 2 byte code(0x8e+xx).
               When host file contains hankaku-katakana line length expands over the LRECL.
               xe issues warning of LRECL error.
-              By uploading, line length may shrink under the LRECL and transfered with
+              By uploading, line length may shrink under the LRECL and transferred with
               padding space up to the LRECL.
               Accordingly, Number field on COL.73-80 may not be kept.
               For the file opened as SPF file(80 byte fixed LRECL with STD line number field),

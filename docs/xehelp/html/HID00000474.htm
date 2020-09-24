@@ -25,6 +25,7 @@ a:hover{font-weight:bold;}
   .v129K&lt;--129J:(2018/08/27)
   .v129L&lt;--129K:(2018/09/18)
   .v129M&lt;--129L:(2020/05/17)
+  .v129N&lt;--129M:(2020/09/23)
 </SPAN></PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
     1.BUGs
@@ -33,7 +34,7 @@ a:hover{font-weight:bold;}
        -(Win64) Erroneous calculation when Datatype is X(Hex),O(octal).
        -(Win64) DragDrop between split panels(file copy) crashes.
      (129D)
-       -(Linux)Under GTK3 environmentt, Accelerator option on Setup dialog was not work.
+       -(Linux)Under GTK3 environment, Accelerator option on Setup dialog was not work.
        -(Wxe)Crash when File-&gt;New menuitem was selected.
      (129E)
        -(Windows Console version) Japanese Error msg on header line may be corrupted.
@@ -45,7 +46,7 @@ a:hover{font-weight:bold;}
         .CPLC option registered on profile record was ignored when record mode.
          ("CPLC" option was required each time)
      (129G)
-       -(Linux) On Ubuntu17.10, DirList line command:"!"(start application corresoponding to the file extension)
+       -(Linux) On Ubuntu17.10, DirList line command:"!"(start application corresponding to the file extension)
         failes by "No application defined to the MIME type".
        -(Wxe/gxe) Cut&amp;Paste by mouse may paste trash data with length of CID of source line.
 <SPAN STYLE="color:#000000;font-size:12pt;">     (129G)
@@ -53,9 +54,9 @@ a:hover{font-weight:bold;}
 <font size="3">        -(gxe:GTK3)screen size at termination is not recovered correctly and enlarged.</font></PRE>
 <PRE><font size="3">    (129K)
         -Around processing of UTF8 file.
-         .DisplayCellWidth was reviced.
+         .DisplayCellWidth was revised.
          .Trouble around displaying UCS4,SpacingCombiningMarks adn NonSpacingMark.
-         .Expanded Maxmum combining up to 8 chracters.(case of Tibtan)   
+         .Expanded Maximum combining up to 8 characters.(case of Tibetan)   
           For Linux Console version max is yet 4 characters.
          .When unicode&gt;=U01000(Windows) or unicode&gt;=U020000(Linux)
            -Invalid hexcode display on top-left header line.
@@ -65,26 +66,32 @@ a:hover{font-weight:bold;}
            -"v" line cmd on vertical hex line(cmd to accept 3 consecutive hex code as unicode) failed.
          .On =3.12 panel(Compare Tool) was corrupted when filename encoding is UTF8.
          .(WinConsole)New tool:xcfont can change font of command prompt.
-          It enables to view foreign script suach as Devanagari.
-        -When gb18030, differece of cursor position between charcter and vertical hex line
+          It enables to view foreign script such as Devanagari.
+        -When gb18030, difference of cursor position between character and vertical hex line
          occurs for characters of CelWidth=1.
         -Consecutive Esc key clear line cmd except label,
-         but cmd specified the labe get error of label not found.
+         but cmd specified the label get error of label not found.
         -When screen is split, it may occurs that line cmd on edit panel is ignored.
      (129L)
         -Bug of function Alt+"/" (&lt;tag &gt; pairing search for xml/html text)
      (129M)
         -Function:"Search word on the cursor" (Alt/Ctrl+"["/"]")
-         e.g) Search "ABC+DEFG" if cusror is on the "+" of "ABC+DEFG",
+         e.g.) Search "ABC+DEFG" if cursor is on the "+" of "ABC+DEFG",
          search "ABC" if on the "C".
          Repeating the same key finds next.
          Intermediate PgDn/PgUp/PgLeft(F10)/PgRight(F11) key looses
-         concatinated word search effect at start.
-        -exe cmd (sequencially execute cmds in the specified file) may crush.
-         e.g) xe crush by "exe ! cmdfile" on dir list panel.
+         concatenated word search effect at start.
+        -exe cmd (sequentially execute cmds in the specified file) may crush.
+         e.g.) xe crush by "exe ! cmdfile" on dir list panel.
          "exe ! cmdfile &lt;s *.html" is valid.
         -SORt cmd on dir list panel.
          Descendant option(/Ot-,/Os-) works but ascendant option(/Ot,/Os) did not.
+
+     (129N)
+        -Cursor positioning failure on comman line for 3 bytes(EUC 8fxxyy) and 4 bytes(GB18030) DBCS.
+        -Fails to display combining character(display width=0) on command line.
+        -There was conflict on Flag control by Command "OPT unicomb comb" and "UTF file".
+        -(Linux) "a"(Attrib) line command on directory list panel may cause crash.
 </font>
 </PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
@@ -144,7 +151,7 @@ a:hover{font-weight:bold;}
           "S" means "SAVe" on Browse/Edit panel.
        (Wxe,gxe)
          ."SelectAll" menuitem was added to File submenu and popup menu on edit panel.
-         .Set shotcut key to Ctrl+A and cabnged to Ctrk+Shift+A for SaveAs.</SPAN></PRE>
+         .Set shotcut key to Ctrl+A and changed to Ctrk+Shift+A for SaveAs.</SPAN></PRE>
 <PRE><font size="3">     (</font><SPAN STYLE="color:#000000;font-size:12pt;">129E)
        -XML tag pairing search
         .Default shortcut key is Alt+"/"
@@ -171,12 +178,12 @@ a:hover{font-weight:bold;}
      (129J)
        -CommandHistoryList.
         Mouse operation support.
-         .R-button popups context menu.
+         .R-button pop-ups context menu.
          .Double click works as "x" cmd(execute the command after closed the command history panel).
          .Click on the selected line works as "s" cmd(set to the command input line after closed the command history panel).
      (129K)
        -TC fmt cmd -D"..." and -S"..." option
-        Accept escape secuence such as \x, \t as Delimeter(\t(0x09) is not allowed for -S).
+        Accept escape sequence such as \x, \t as Delimeter(\t(0x09) is not allowed for -S).
         Accept DBCS as -S option.
      (129L)
        -TC fmt cmd on UTF8 file.
@@ -190,7 +197,7 @@ a:hover{font-weight:bold;}
        -(Windows)If LoadLibrary failed for EBCDIC library for ICU(libicuuc.dll),
         search in the directory of ICU_DATA parameter of xeebc.map and also
         ICU_DATA environment variable.
-        (Linex)It is need to set LD_LIBRARY_PATH if the ICU so is not on default path like as /usr/lib etc.
+        (Linux)It is need to set LD_LIBRARY_PATH if the ICU so is not on default path like as /usr/lib etc.
        -When ICU_DLL_SUFFIX and ICU_APP_SUFFIX  are missing,
         set both bt ICU utility  uconv(.exe).
        -Reject /Mr(Recordmode) option for CPU8 file because string length of UTF8 code is indefinite.
@@ -217,11 +224,16 @@ a:hover{font-weight:bold;}
        -Explicit "Force" option is required at save when timestamp was changed from loading time.
         Re-enter of PF3 is not effective from now, use "SAVe -Force" or "END -force" cmd.
      (129L)
-        -(Linux)on debian10, gnome2 is obsoleted.
+        -(Linux)on debian10, gnome2 is obsolete.
         -(Linux)PPD api is deprecated at cups-1.6.
         -(Windows)Last line of panel of console version was for IME on Windows95.
      (129M)
         -Accept Shift+Del on also excluded line(- n line excluded ---).
+
+     (129N)
+        -Fix for Axe(Android version).
+        -(Windows console version) external command (xfg, grep etc.) may freeze xe.
+         Issues warnin when detected.
 
      4.Tool.
      (129C)
@@ -250,9 +262,9 @@ a:hover{font-weight:bold;}
        -(Win)xkp v1.4
          Exe name was not fullpath from Windows7, show fullpath.
        -xfg v1.20
-         grep may hungup when srach string is starting with "-".
+         grep may hung-up when search string is starting with "-".
        -(Win)New tool xcfont v1.01 (available from Windows Vista)
-         It chages font of command prompt.
+         It changes font of command prompt.
          Chcp may required depending on font family.
          For example, to view Devanagari script
          Change font like as "xcfont Mangal" after "chcp 57002".
@@ -302,10 +314,10 @@ xcfont Mangal H=* ; Codepage will be listed by "xcv /list".
 <PRE><font size="3">    </font><SPAN STYLE="color:#000000;font-size:12pt;">(129L)
         -(Windows) xlow 1.6 (covert case of filename) bug corrected.
     (129M)
-        -xfg v1.21 (Serach string in the directory)
+        -xfg v1.21 (Search string in the directory)
          ./cpu8, /cplc option is added to search by translated string.
          .(Win)"-e" option cause crush.(Temporally file was plased on c:\ which is protected on Windows10)
-        -xdig v1.13 (Applay the commands to all files in the directory)
+        -xdig v1.13 (Apply the commands to all files in the directory)
          .Accept parameter sign other than %.
           e.g) By /C$, $fp$ in the cmd string is replaced to fullpath name of the file in the directory.
          .%rp% is added for path name relative to starting directory.

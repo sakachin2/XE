@@ -18,10 +18,10 @@ a:hover{font-weight:bold;}-->
 
              PRO {?|*|path|ext} [save|reset] [all | tab | cols | numfld | syn]&quot;
                 ?     :Help
-                *     :for the profile record of the file currentry opend.
+                *     :for the profile record of the file currently opend.
                 path  :for the profile record of the parent directory of the file currentry opened.
-                ext   :for the profile record of the extension name of currentry opened file.
-                  Display the profile when no othe option is followed.
+                ext   :for the profile record of the extension name of currently opened file.
+                  Display the profile when no other option is followed.
                   Default is &quot;*&quot; when other options are following.
                 save  :Write to the profile record.
                        This is default when other options are following.
@@ -30,7 +30,7 @@ a:hover{font-weight:bold;}-->
                 all   :All profile are written to the profile record.
                 tab   :write tabclear status from current file.
                 cols  :write cols on/off and type of cols from current file.
-                numfld:write folowing SPF related options.
+                numfld:write following SPF related options.
                        NUMSTD(Col.73-80 is line-number field), its protection(P0/P1)
                        COBNUM(col.1-6 is COBOL line number field), its numeric check,
                        Fxx[-yy](Fixed line length and its margin).
@@ -39,7 +39,7 @@ a:hover{font-weight:bold;}-->
            To set <A href="HID00000037.htm">SPF</A>(80 byte fixed length width line number on col 73-80) profile to dir1,
            open a file in the dir by &quot;EN dir1\samp1&quot; then enter &quot;PRO path save&quot;.
            The &quot;E dir1\samp2&quot; is same as &quot;EN dir1\samp2&quot;.
-           This is applyed also to Select line cmd on dir-list panel.
+           This is applied also to Select line cmd on dir-list panel.
            To set <A href="HID00000226.htm">COBOL</A>(80 byte fixed length with COBOL line number on col.1-6) profile to
            all file with extension name &quot;cob&quot;, open a file with extension &quot;cob(&quot;EC samp3.cob&quot;)
            then enter &quot;PRO ext save&quot;.

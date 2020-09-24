@@ -20,10 +20,10 @@ a:hover{font-weight:bold;}-->
        target directory is created. If target exists,
        with /c option, a directory with same name as source directory is created
        in the target directory(required to be existing),
-       without /c, all members of the source directory are copyed into the destination directory.
+       without /c, all members of the source directory are copied into the destination directory.
 
        Copy to file from directory is denied.
-       (It is the diffrence from native COPY cmd, COPY cmd treated like as XCOPY).
+       (It is the difference from native COPY cmd, COPY cmd treated like as XCOPY).
        Override to read-only file is also denied.
        Hidden file,empty sub directory is copied also.
        Copy is denied when target has system and/or hidden
@@ -47,7 +47,7 @@ a:hover{font-weight:bold;}-->
        /c   if copy source is dir or wildcard,create source dir in
             target dir if same name dir is not exist in target dir.
             If source is dir and target is wildcard, renamed target is created if nor exist,
-            and members of source is copyed to renamed target(RenameCopy).
+            and members of source is copied to renamed target(RenameCopy).
        /d   (effective other than OS/2)select only files source is new.
             Note) for <a href="HID00000218.htm">remote</a> upload,file timestamp is not preserved
                   and current time is set.
@@ -85,8 +85,8 @@ a:hover{font-weight:bold;}-->
 #if defined(W32)||defined(UNX)
      /L{-}|[T]M-} : Symbolic Link option, for also Junction point and Mount point on NTFS drive of Windows
             /L-   :bypass copy link entry
-                   From Vista, copy(create new link entry) requirs Administrator privilege for symlink.
-                   Open command prompt with administrator previlege.)
+                   From Vista, copy(create new link entry) requires Administrator privilege for symlink.
+                   Open command prompt with administrator privilege.)
             /LT   :copy target file/directory of the symbolic link.
             /LM-  :no symbolic link err msg is issued.
             /LTM- :/LT and /LM-
@@ -98,7 +98,7 @@ a:hover{font-weight:bold;}-->
                and /s option specified.
                (under DOS and Windows,time-stamp/attribute for directory
                 is not copied)
-            (2)hidden/system files are copied unconditionaly.
+            (2)hidden/system files are copied unconditionally.
            -COPy command on the screen BROWSE/EDIT is <a href="HID00000267.htm">of Edit Command</a>.
 </SPAN></PRE>
 </BODY>

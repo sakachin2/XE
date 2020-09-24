@@ -17,22 +17,22 @@ a:hover{font-weight:bold;}-->
         SUBmit  [* | file-name [*] ] [parms,...]
                         [&lt;input-redirect-file-name] [&gt;output-redirect-file-name]
 
-            -Specify filename to submit file other than currently editting.
+            -Specify filename to submit file other than currently editing.
              If PATH environment variable is not properly setup,it should be
              contain path information. *\ , ^*\ , :: is available in these case.
 
-            -The 1st &quot;*&quot; parameter means the file currently editting is executed,
+            -The 1st &quot;*&quot; parameter means the file currently editing is executed,
              use when parms is also required.
              If no additional parm required enter &quot;SUB&quot; simply.
              For <A href="HID_TSOE_E.htm">TSO file</A>,&quot;SUB&quot; execute the JCL file on the remote system.
 
-            -The 2st &quot;*&quot; parameter means the file currently editting is passed to
+            -The 2nd &quot;*&quot; parameter means the file currently editing is passed to
              the 1st parameter file.(&quot;*&quot; is replaced by the file name).
              To pass the character &quot;*&quot;,enclose it by quotation.
              When the opened file is updated,the contents are saved to a temporary file,
              then the temporary file name is passed to the 1st operand file.
              This is convenient in the case of repeated submit with a little update
-             and finaly cancel update.
+             and finally cancel update.
              ex.) &quot;SUB subtool *&quot;.
              To pass the original filename use &quot;**&quot; as parameter.
              ex.) &quot;SUB subtool * **&quot;

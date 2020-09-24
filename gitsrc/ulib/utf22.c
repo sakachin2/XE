@@ -1,8 +1,14 @@
-//*CID://+v6Y0R~:                             update#=  462;       //~v6Y0R~
+//*CID://+v70mR~:                             update#=  494;       //~v70mR~
 //*********************************************************************//~7712I~
 //utf2.c                                                           //~7716R~
 //* utf8 data manipulation:process using chof                      //~7712I~
 //*********************************************************************//~7712I~
+//v70m:200820 (ARM:BUG)save and load ucsmap missing width0top      //~v70mI~
+//v70i:200716 Ucs.java' wcwidth is proper than adjsbcs             //~v70iI~
+//v70h:200716 (BUG)if width0ctr==0, all non dbcs ucs is determined as width0//~v70hI~
+//vc1c 2020/06/19 ARM;/proc/version access denied, use Build.VERSION.SDK_INT R RELEASE//~vc1cI~
+//v708:200616 ARM:fopen(/proc/version) failed and signal(6) caused //~v708I~
+//v700:200610 Axe:chtype not defined                               //~v700I~
 //v6Y0:180823 additional to v6Xc,accept unicode specification as \uxxxx,add utfcvu2dd()//~v6Y0I~
 //v6X5:180818 (LNX:xe)column shring COMB2SCM(036f+0390) even SPLIT mode,//~v6X5I~
 //v6Wv:180807 (W32:Bug) console version on chcp=50221, utfcvf2l output string is over MACMBCSLEN by esc seq such as "Esc$B!)"//~v6WvI~
@@ -158,7 +164,13 @@
 #include <uedit.h>                                                 //~v640R~
 #include <utf22.h>                                                 //~v640I~
 #include <uvio.h>                                                  //~v640R~
+#ifdef LNX                                                         //~v6V5R~//~v700I~
+    #ifndef XXE                                                    //~v6V5I~//~v700I~
+		#ifndef NOCURSES                                                   //~v6a0I~//~v700I~
 #include <uviom.h>                                                 //~v640I~
+	    #endif                                                     //~v700I~
+    #endif                                                         //~v6V5I~//~v700I~
+#endif                                                              //~v6V5R~//~v700R~
 #ifdef W32                                                         //~v6c7I~
 	#include <udos.h>                                              //~v6c7I~
 #endif                                                             //~v6c7I~
@@ -181,7 +193,9 @@ typedef struct _SAVESBCSTB                                         //~v6c7I~
     int SSTovfucsw0last;                                           //~v6c7I~
 	int SSTlength1;                                                //~v6c7I~
 	int SSTlength2;                                                //~v6c7I~
-    int SSTrsv[8];                                                 //~v6c7I~
+//  int SSTrsv[8];                                                 //~v6c7I~//~v70mR~
+	int SSTwidth0top;                                              //~v70mI~
+    int SSTrsv[4];                                                 //~v70mI~
 } SAVESBCSTB, *PSAVESBCSTB;                                        //~v6c7R~
 static int Stabs[]={                                               //~v6F3M~
 #ifdef LNX                                                         //~v6F3M~
@@ -241,6 +255,12 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag,int *Ppwcwidth)//~v
         *Ppwcwidth=wcw;                                            //~v640M~
     if (wcw>0)                                                     //~v640M~
     {                                                              //~v640M~
+#ifdef ARM	//adjsbcs set Pmkwcwidth to reduce sbcs                //~v70iM~
+		if (wcw==2 || Pmkwidth==2)	//by Ucs.java or adjsbcs       //~v70iI~
+        	width=2;                                               //~v70iR~
+        else                                                       //~v70iI~
+        	width=1;                                               //~v70iI~
+#else  //!ARM                                                      //~v70iI~
         if (flag & UTFWWF_F1C1)      //Narrow DBCS                 //~v640M~
         {                                                          //~v640M~
             if (wcw==1)  //wcwidth=1                               //~v640M~
@@ -277,7 +297,7 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag,int *Ppwcwidth)//~v
               {                                                    //~v6WiI~
                 flag|=UTFWWF_F1C1;      //Narrow DBCS when wcwcidth=2//~v640M~
                 width=2;                //occupy 2 column          //~v640M~
-                UTRACEP("%s:%04x change width 1 to 2 by wcwidth()",UTT);//~v6WiI~
+                UTRACEP("%s:%04x change width 1 to 2 by wcwidth()\n",UTT);//~v6WiI~//~v70hR~
               }                                                    //~v6WiI~
             }                                                      //~v640M~
 //            else                                                 //~v640R~
@@ -291,6 +311,7 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag,int *Ppwcwidth)//~v
             if (wcw==2 && Pmkwidth==2)	//dbcs                     //~v6VaI~
                 flag&=~UTFWWF_F2C1;      //reset WIDE sbcs         //~v6VaR~
         }                                                          //~v6VaI~
+#endif //!ARM                                                      //~v70iI~
     }                                                              //~v640M~
     else                                                           //~v640I~
     if (wcw)                                                       //~v650I~
@@ -304,6 +325,11 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag,int *Ppwcwidth)//~v
 //  	if (Popt & UTFWWO_APIW0)	//ARM4                         //~v6c5R~//~v6V7R~
 //  	if (Popt & (UTFWWO_APIW0|UTFWWO_MK_WCWIDTH))	//ARM4     //~v6V7I~//~v6VpR~
 //    	if (Pmkwidth && (Popt & (UTFWWO_APIW0|UTFWWO_MK_WCWIDTH)))	//ARM4//~v6VpI~//~v6WiR~
+#ifdef ARM                                                         //~v70iI~
+        width=0;                //accept result of wcwidth(),get sbcsid for width0//~v70iI~
+        flag|=UTFWWF_WIDTH0;    //combining char                   //~v70iI~
+        UTRACEP("%s:wcwidth()=%d,mk_wcwidth()=%d,return width=%d,flag=%x\n",UTT,wcw,Pmkwidth,width,flag);//~v70iI~
+#else                                                              //~v70iI~
       if (!(Popt & UTFWWO_FORMAT))                                 //~v6WiR~
       {                                                            //~v6WiI~
        	if (Pmkwidth && (Popt & (UTFWWO_APIW0|UTFWWO_MK_WCWIDTH))==(UTFWWO_APIW0|UTFWWO_MK_WCWIDTH))//ARM4//~v6WiI~
@@ -314,6 +340,7 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag,int *Ppwcwidth)//~v
         }                                                          //~v6V7I~//~v6VpM~
         UTRACEP("%s:%06x unmatch wcwidth()=%d not Format ,mk_wcwidth()=%d,return width=%d,flag=%x\n",UTT,Pucs,wcw,Pmkwidth,width,flag);//~v6WiR~
       }                                                            //~v6WiI~
+#endif                                                             //~v70iI~
     }                                                              //~v6c5I~
 //UTRACEP("apichk sizeof uwchart=%d,ucs=%4x,wcwidth=%d,mkw=%d,ret-width=%d,flag=%x->%x\n",sizeof(UWCHART),Pucs,wcw,Pmkwidth,width,*Ppflag,flag);//~v6a0R~//~v6b9R~//~v6c5R~//~v6p2R~
 #ifdef XXX                                                         //~v6WvI~
@@ -342,6 +369,7 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag,int *Ppwcwidth)//~v
         }                                                          //~v6VbR~
     }                                                              //~v6VbR~
     *Ppflag=flag;                                                  //~v640M~
+	UTRACEP("%s:ucs=x%4x,width=%d,mkwidth=%d,flag=x%x\n",UTT,Pucs,width,Pmkwidth,flag);//~v70iR~
     return width;                                                  //~v640M~
 }//utfwwapichk                                                     //~v640M~
 #else	//WIN                                                      //~v697I~
@@ -626,6 +654,9 @@ int utf22_mapwidth0(WUCS *Plist_width0,int Psbcsw0ctr,int *Ppovfucs,int *Ppovfuc
   		  	seqnow0--;                                             //~v6BYM~
 //      UTRACEP("%s:ii=%d,seqnow0=%04x\n",UTT,ii,seqnow0);         //~v6BYR~
     }                                                              //~v6BYM~
+  if (!seqnow0)                                                    //~v70hR~
+    Gudbcschk_width0top=UCS4_MAX;	//width0 start sbcsid          //~v70hI~
+  else                                                             //~v70hI~
     Gudbcschk_width0top=seqnow0;	//width0 start sbcsid          //~v6BYM~
 //update sbcsid for width0                                         //~v6BYM~
     for (ii=0,plist_width0=Plist_width0;ii<sbcsw0ctr;ii++)         //~v6BYR~
@@ -730,6 +761,7 @@ int utfucsmapinit(int Popt)                                        //~v640I~
     ovfucsw0=savehdr.SSTovfucsw0;                                  //~v6c7I~
     ovfucsw0last=savehdr.SSTovfucsw0last;                          //~v6c7R~
 	Gulibutfmode|=(savehdr.SSTflag & GULIBUTFSBCSIDOVF); //mapinit SBCSid overflow//~v6c7I~
+    Gudbcschk_width0top=savehdr.SSTwidth0top;                      //~v70mR~
     loaded=1;                                                      //~v6c7I~
   }                                                                //~v6c7I~
   else                                                             //~v6c7I~
@@ -755,10 +787,14 @@ int utfucsmapinit(int Popt)                                        //~v640I~
         {                                                          //~v6WiI~
         	UTRACEP("%s:trap\n",UTT);	//@@@@test                 //~v6WiI~
         }                                                          //~v6WiI~
+        if (ii>=0x0300 && ii<=0x030f)     //width0                 //~v70hR~
+        {                                                          //~v70hI~
+        	UTRACEP("%s:trap ucs=x%x\n",UTT,ii);	//TODO test    //~v70hI~
+        }                                                          //~v70hI~
 //#endif                                                           //~v@@@R~
 //  	width=utfwcwidth(opt,ii,&flag);                            //~v640R~//~v6B4R~
     	width=utfwcwidth(opt,(ULONG)ii,&flag);                     //~v6B4I~
-//        UTRACEP("%s:ucs=%04x=width=%2d\n",UTT,ii,width);           //~v6BYR~//~v@@@R~//~v6Y0R~
+//      UTRACEP("%s:ucs=%04x=width=%2d\n",UTT,ii,width);           //~v6BYR~//~v@@@R~//~v6Y0R~//~vc1cR~
         if (width<0)                                               //~v640I~
         {                                                          //~v640I~
 	        sbcsid=UCSDDID_UNP;                                    //~v640R~
@@ -797,7 +833,7 @@ int utfucsmapinit(int Popt)                                        //~v640I~
             *plist_width0++=(WUCS)ii;	                           //~v6BYR~
             sbcsw0ctr++;                                           //~v6BYI~
             sbcsid=0;                                              //~v6BYI~
-			UTRACEP("%s:width0ctr=%04d=%04x\n",UTT,sbcsw0ctr,ii);  //~v6BYR~
+    		UTRACEP("%s:width0ctr=%04d=%04x\n",UTT,sbcsw0ctr,ii);  //~v6BYR~//~v70hR~//~v70iR~
 #endif //!WWW not fixed width0 boundary                            //~v6BYI~
         }                                                          //~v650I~
         else                                                       //~v640I~
@@ -844,7 +880,7 @@ int utfucsmapinit(int Popt)                                        //~v640I~
         	sbcsid=UCSDDID_DBCS;                                   //~v640I~
             dbcsctr++;                                             //~v@@@I~
         }                                                          //~v@@@I~
-//UTRACEP("%s:sbcsid ucs=%04x,sbcsid=%04x,width=%d,flag=x%x\n",UTT,ii,sbcsid,width,flag);//~v@@@R~//+v6Y0R~
+//UTRACEP("%s:sbcsid ucs=%04x,sbcsid=%04x,width=%d,flag=x%x\n",UTT,ii,sbcsid,width,flag);//~v@@@R~//~v6Y0R~
 //      pud->UCS2DDsbcsid=(WUCS)sbcsid;                            //~v640I~//~v6B4R~
         pud->UCS2DDsbcsid=(USHORT)sbcsid;                          //~v6B4I~
     }                                                              //~v640I~
@@ -918,6 +954,7 @@ int utfucsmapinit(int Popt)                                        //~v640I~
         savehdr.SSTovfucsw0=ovfucsw0;                              //~v6c7R~
         savehdr.SSTovfucsw0last=ovfucsw0last;                      //~v6c7R~
         savehdr.SSTflag=Gulibutfmode;                              //~v6c7R~
+        savehdr.SSTwidth0top=Gudbcschk_width0top;                  //+v70mR~
         opt=0;                                                     //~v6c7R~
         utfucssavemap(opt,&savehdr);                               //~v6c7R~
     }                                                              //~v6c7I~
@@ -925,6 +962,7 @@ int utfucsmapinit(int Popt)                                        //~v640I~
 }//utfucsmapinit                                                   //~v640I~
 //*******************************************************          //~v6c7I~
 //*SBCS mapping tbl load                                           //~v6c7I~
+//*for ARM:from xemain                                             //~v70mI~
 //*******************************************************          //~v6c7I~
 int utf22setworkdir(int Popt,char *Pworkdir,char *Psuffix)         //~v6c7R~
 {                                                                  //~v6c7I~
@@ -974,7 +1012,9 @@ int utf22versionchk(int Popt)                                      //~v6c7I~
     FILE *fh1=0,*fh3;                                              //~v6c7I~
 #ifdef LNX                                                         //~v6c7I~
     FILE *fh2;                                                     //~v6c7R~
+  #ifndef ARM                                                      //~vc1cI~
     char *sysver="/proc/version";                                  //~v6c7M~
+  #endif                                                           //~vc1cI~
 #else                                                              //~v6c7I~
     int maj,min,info;                                              //~v6c7I~
 #endif                                                             //~v6c7I~
@@ -988,27 +1028,38 @@ int utf22versionchk(int Popt)                                      //~v6c7I~
 	udos_version(&maj,&min,&info);                                 //~v6c7I~
     sprintf(buff2,"%d-%d-%d",maj,min,info);                        //~v6c7M~
 #else                                                              //~v6c7M~
+  #ifdef ARM                                                       //~vc1cI~
+    sprintf(buff2,"%d-%d",GarmApiLevel,GarmApiRelease);                //~vc1cI~
+    fh2=NULL;                                                      //~vc1cI~
+  #else                                                            //~vc1cI~
 	fh2=fopen(sysver,"r");                                         //~v6c7I~
     if (!fh2)                                                      //~v6c7I~
     {                                                              //~v6c7I~
-    	fclose(fh2);                                               //~v6c7R~
+        UTRACEP("%s:fopen(%s) faled errno=%d\n",UTT,sysver,errno); //~v708R~
+//  	fclose(fh2);                                               //~v6c7R~//~v708R~
     	return 8;                                                  //~v6c7I~
     }                                                              //~v6c7I~
     if (!fgets(buff2,BUFFSZ,fh2))                                  //~v6c7I~
     	rc=16;                                                     //~v6c7I~
     else                                                           //~v6c7I~
+  #endif                                                           //~vc1cI~
 #endif                                                             //~v6c7I~
     {                                                              //~v6c7I~
 		fh1=fopen(vfnm,"r");                                       //~v6c7I~
+        UTRACEP("%s:vfnm=%s open fh=%p\n",UTT,vfnm,fh1);            //~vc1cI~
     	if (!fh1                                                   //~v6c7R~
     	||  !fgets(buff1,BUFFSZ,fh1))                              //~v6c7R~
+        {                                                          //~vc1cI~
+	        UTRACEP("%s:vfnm=%s ,file open/read err\n",UTT,vfnm);   //~vc1cI~
         	rc=4;                                                  //~v6c7I~
+        }                                                          //~vc1cI~
         else                                                       //~v6c7I~
     	if (strcmp(buff1,buff2))                                   //~v6c7R~
         {                                                          //~v6c7I~
             uerrmsgcat("System Version update detected for Sbcsid table.",0);//~v6c7R~
         	rc=24;                                                 //~v6c7R~
         }                                                          //~v6c7I~
+        UTRACEP("%s:rc=%d,vfnm=%s,file saved version=%s,curr version=%s\n",UTT,rc,vfnm,buff1,buff2);//~vc1cI~
         if (rc)                                                    //~v6c7I~
         {                                                          //~v6c7I~
             fh3=fopen(vfnm,"w");                                   //~v6c7R~
@@ -1025,6 +1076,7 @@ int utf22versionchk(int Popt)                                      //~v6c7I~
 	    fclose(fh1);                                               //~v6c7R~
 #ifdef W32                                                         //~v6c7I~
 #else                                                              //~v6c7I~
+  if (fh2)                                                         //~vc1cI~
     fclose(fh2);                                                   //~v6c7I~
 #endif                                                             //~v6c7I~
     return rc;                                                     //~v6c7I~
@@ -1092,8 +1144,11 @@ int utfucsloadmap(int Popt,PSAVESBCSTB Ppsbcstbhdr)                //~v6c7I~
             memset(Gucs2ddmap_i2u,0,(size_t)sz2);                  //~v6B4I~
             rc=4;                                                  //~v6c7R~
         }                                                          //~v6c7R~
+        UTRACED("utfucsloadmap Gucs2ddmap",Gucs2ddmap,sz1);        //~vc1cI~
+        UTRACED("utfucsloadmap Gucs2ddmap_i2u",Gucs2ddmap,sz2);    //~vc1cI~
     }                                                              //~v6c7I~
     fclose(fh);                                                    //~v6c7I~
+    UTRACEP("utfucsloadmap rc=%d\n",rc);                           //~vc1cI~
     return rc;                                                     //~v6c7R~
 }//utfucsloadmap                                                   //~v6c7I~
 //*******************************************************          //~v6c7I~
@@ -5169,7 +5224,7 @@ int utfsetvisiblealtch(int Popt,int Paltch)                        //~v6F3I~
     ||  (utfcvu2dd1(0,(WUCS)Paltch,wkdata,wkdbcs,&len),len!=1))    //~v6F3I~
     {                                                              //~v6F3I~
     	uerrmsg("Err at set Tab altch(U-%04x), it should be UCS2-SBCS(char width==1).",//~v6F3R~
-    	        "エラー(U-%04x), TAB\x95\\示文字は UCS2-SBCS でなければなりません",//~v6F3R~
+    	        "エラー(U-%04x), TAB\x95\\示文字は UCS2-SBCS でなければなりません",//~vc1cI~
         		Paltch);                                           //~v6F3I~
     	return 4;                                                  //~v6F3I~
     }                                                              //~v6F3I~

@@ -180,47 +180,47 @@ a:hover{font-weight:bold;}-->
  +-----------------+--------+---------------------------------------+
 #endif
    - You can customize Function-key assignment by preparing modified
-     <a href="HID00000209.htm">XE.INI file</a>.(You can,using <a href="HID00000287.htm">INI command</a>,re-create that file with
+     <a href="HID00000209.htm">XE.INI file</a>.(You can, using <a href="HID00000287.htm">INI command</a>, re-create that file with
      default value).
    - Char typed in parenthesis of command column is abridgement.
 
 #ifdef UNX
 #else
-   - #1:If you specified /Yr on the <a href="HID00000210.htm">exe parameter</a>,it is assigned <a href="HID00000199.htm">Right-Ctrl</a>
+   - #1:If you specified /Yr on the <a href="HID00000210.htm">exe parameter</a>, it is assigned <a href="HID00000199.htm">Right-Ctrl</a>
         to &quot;Execute+Next Line&quot; and Enter to &quot;Next Line&quot;.
 #endif
 
    - #2:Delete carriage return mark at the end of line to join with nextline.
         And if next line is concatenated line it is cacatinated as whole.
    - #3:About Cut and Paste.  <a href="HID00000545.htm">Refer (0)-(D)</a>.
-   - #4:<a href="HID00000282.htm">Find</a>/<a href="HID00000262.htm">Change</a> parameter is saved at editor termination,so you can
+   - #4:<a href="HID00000282.htm">Find</a>/<a href="HID00000262.htm">Change</a> parameter is saved at editor termination, so you can
         continue re-find/re-change same word of previous run.
-   - #5:To change direction of word search,press reverse Find/Change key
-        only once,then press Re-find/Re-change to continue search to
+   - #5:To change direction of word search, press reverse Find/Change key
+        only once, then press Re-find/Re-change to continue search to
         that direction.
    - #6:Command retrieve. Maximum 20 (it can be change by INI file)
         command string is stacked.(same cmd string as previously entered
         is not duplicately saved but moved to top of stack).
         Retrieve is available over session termination.
    - #7:Use in following case.
-        .cancel responce to confirmation message.
+        .cancel response to confirmation message.
         .stop and reset range specification of Cut &amp; Paste.
-         By pressing reset key twice or <a href="HID00000306.htm">"RESet" command</a>,following occur.
+         By pressing reset key twice or <a href="HID00000306.htm">"RESet" command</a>, following occur.
         .reset reverse character of found word or copied range by Cut &amp;
          Paste
         .clear line command except label which is not yet processed.
-        To clear label cmd,use Esc 3 times or Reset cmd with &quot;L&quot; option.
+        To clear label cmd, use Esc 3 times or Reset cmd with &quot;L&quot; option.
    - #8:&quot;Scroll Up 1 Line&quot;/&quot;Scroll Dn 1 Line&quot; works on Browse/Edit,
         Directory list and Command Result edit screen.
         &quot;Next Value&quot;/&quot;Prev Value&quot; works on the screen other than else,
         and are effective on the limited fields.
-        For example on &quot;<a href="HID00000246.htm">OPTION - 1 COLOR</a>" screen,it increase/decrease
+        For example on &quot;<a href="HID00000246.htm">OPTION - 1 COLOR</a>" screen, it increase/decrease
         RGB level value.
 
    - #9:Dir Linecmd Cut/Paste is used to copy line command input of
         <a href="HID00000361.htm">a(attrib)</a>/<a href="HID00000363.htm">c(copy)</a>/<a href="HID00000372.htm">m(move)</a>/<a href="HID00000376.htm">r(rename)</a>/<a href="HID00000374.htm">o(open)</a>/<a href="HID00000389.htm">%(apply cmd)</a> on <a href="HID00000252.htm">dir list</a>.
         Use F10 at the status of command input or of copy/move target
-        diplayed after Execute,then use F11 on the line you want to
+        displayed after Execute, then use F11 on the line you want to
         duplicate the command.
    - #10:For other than x00,see (6).<a href="HID00000209.htm">INI file</a>,Valid_Ctrl_char.
    - #11:Tab(next) move cursor to next tab position if replace mode.
@@ -230,26 +230,26 @@ a:hover{font-weight:bold;}-->
    - #12:String input Shortcut key.
          See <a href="HID00000242.htm">(E)Terminology</a> (0)Introduction.
    - #13:Direction arrow key.
-        .When scroll lock is on,arrow key scrolls file contents
+        .When scroll lock is on, arrow key scrolls file contents
          screen by one column to the direction.
          For dir-list screen scroll is up and down only.
          This is not work for Linux console version.
         .GUI version(wxe,gxe) supports mouse with horizontal scroll function.
-         If scroll lock is off,horizontal wheel scrolls screen by
+         If scroll lock is off, horizontal wheel scrolls screen by
          the column specified on Setup dialog panel.
    - #14:Toggle to display file description.
         .Display 48 byte file description on rename column up to end of line.
         .&quot;description&quot; is gotten as following.
-         For Windows version,read from top of stream named &quot;xe-desc&quot;.
+         For Windows version, read from top of stream named &quot;xe-desc&quot;.
          This &quot;stream&quot; is one of <a href="HID00000724.htm">ADS</a>(Alternative Data Stream) of NTFS.
          &quot;:&quot;+47 byte stream is displayed.
          When &quot;xe-desc&quot; is not set up or for other than Windows version,
          read top 1024 byte of the file itself.
-         If &quot;:DID&quot; is contained in the range of 1024 byte,display
+         If &quot;:DID&quot; is contained in the range of 1024 byte, display
          from the next of &quot;:DID&quot; string to the EndOfLine.
-         If no &quot;DID:&quot; found,display from top to EndOfLine of 1st not null line
+         If no &quot;DID:&quot; found, display from top to EndOfLine of 1st not null line
          of the file. Control char(&lt;0x20) is replaced by &quot;.&quot;.
-   - #15:PathUp diaplays the parent directory of the file currentry displayed.
+   - #15:PathUp displays the parent directory of the file currently displayed.
          PathDown back to the file before PathUp.
 
 </SPAN></PRE>

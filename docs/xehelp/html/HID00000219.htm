@@ -13,23 +13,23 @@ a:hover{font-weight:bold;}-->
 <BODY bgcolor="#FFFFE2">
 <PRE>
 <SPAN STYLE="color:#000000;font-size:12pt;">    .Binary file.
-      File is treated as bynary file which is opened by <a href="HID00000277.htm">EB</a>/<a href="HID00000260.htm">BB</a>/<a href="HID00000313.htm">SB</a> cmd.
-      When it is opened by normal E/B cmd,first 1024 byte is checked.
+      File is treated as binary file which is opened by <a href="HID00000277.htm">EB</a>/<a href="HID00000260.htm">BB</a>/<a href="HID00000313.htm">SB</a> cmd.
+      When it is opened by normal E/B cmd, first 1024 byte is checked.
       It is binary when number of char less than 0x1f(except 0x0d,0x0a)
       is over 30%.
-      For binary file,line seperator(0x0d0a,0x0a) is one of data,and
-      line is displayed as split by length of width(/Mnn,default is
+      For binary file, line separator(0x0d0a,0x0a) is one of data, and
+      line is displayed as split by length of width(/Mnn, default is
       nn=72).
-      Line number column is displayed by offset value,<a href="HID00000298.htm">NUM cmd</a> may change
+      Line number column is displayed by offset value, <a href="HID00000298.htm">NUM cmd</a> may change
       the line number column type from hex to decimal number.
       A char may be input by 2 HEX digit changing input mode by &quot;<A href="HID00000284.htm">XIN</A>&quot; cmd(Ctrl+F11).
-      Under HEX input mode,No Input-inhibit-char check and DBCS chk is done for binary file.
+      Under HEX input mode, no Input-inhibit-char check and DBCS chk is done for binary file.
       Tab char(0x0d) is also data char and no tab expansion is done.
       2 HEX display mode is available.
       Using<a href="HID00000277.htm">EH/BH/SH cmd</a> file is displayed by dump format,
       Using /Mx optio or <a href="HID00000703.htm">HEX</a>(Ctrl+F10) cmd each file line is displayed as
-      vertical hex display(3 line of char,hex first digit and hex 2nd digit).
-      On <a href="HID00000252.htm">dir-list</a> and <a href="HID00000250.htm">history list</a>,use line cmd <a href="HID00000386.htm">"1"</a>(browse),<a href="HID00000387.htm">"2"</a>(edit)
+      vertical hex display(3 line of char, hex first digit and hex 2nd digit).
+      On <a href="HID00000252.htm">dir-list</a> and <a href="HID00000250.htm">history list</a>, use line cmd <a href="HID00000386.htm">"1"</a>(browse),<a href="HID00000387.htm">"2"</a>(edit)
       and<a href="HID00000367.htm">h/H(Hex mode)</a>. Lowercase-h is for browse or edit that is
       determined by the screen mode. Uppercase-H is opposite of that.
 
