@@ -1,4 +1,4 @@
-V129M 2020/09/23 
+V129P 2020/10/23 
 (A)Automake パッケージ 導入手順。
 
     ディストリビューションによっては導入先フォルダーを変更する必要があるかもしれません。
@@ -445,3 +445,12 @@ V129M 2020/09/23
         select libgnome2 or glib-2.0
         -->#apt-get install glib-2.0
         ==>./configure 成功
+
+(J) Manjaro gnome 20.1.2              2020/10/23 
+         C compile not found          ==> pacman -S gcc
+         ncursesw/ncurses.h not found ==> ./configure --enable-ncursesw=no
+         pkg-config not found         ==> pacman -S pkg-config
+         lingnome-2 required          ==> ./configure --enable-libgnome2=no
+         correct make to qmake        ==> packman -S make
+
+         console version Backspec dose not word ==>  specify --7 option "xe --7B"

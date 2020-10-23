@@ -1,4 +1,4 @@
-V129N 2020/09/23 
+V129P 2020/10/23 
 (A) Automake package installation step
 
     You may update configure before ./configure
@@ -447,3 +447,12 @@ V129N 2020/09/23
         select libgnome2 or glib-2.0
         -->#apt-get install glib-2.0
         ==>./configure completed
+
+(J) Manjaro gnome 20.1.2              2020/10/23 
+         C compile not found          ==> pacman -S gcc
+         ncursesw/ncurses.h not found ==> ./configure --enable-ncursesw=no
+         pkg-config not found         ==> pacman -S pkg-config
+         lingnome-2 required          ==> ./configure --enable-libgnome2=no
+         correct make to qmake        ==> packman -S make
+
+         console version Backspec dose not word ==>  specify --7 option "xe --7B"
