@@ -1,11 +1,12 @@
-//*CID://+v6Z0R~:                             update#=   83;       //+v6Z0R~
+//*CID://+v711R~:                             update#=   85;       //~v711R~
 //*************************************************************
 //*uedit.c                                                         //~v022R~
 //*  unumedit,utimeedit,uitoa10,ucmdparmedit,uwordrep              //~v066R~
 //*  ugethex,ux2l,ux2s,ugetnumrange,ugetxnumrange,unumlen,uatoin   //~v244R~
 //*  ugetnumrange2 ugetnumrange3                                   //~v5fxR~
 //*************************************************************
-//v6Z0:200516 uwordrep option alternative parm sign                //+v6Z0I~
+//v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //~v711I~
+//v6Z0:200516 uwordrep option alternative parm sign                //~v6Z0I~
 //v6T1:180210 add ueditKMG(edit Kiro,mega,Giga value)              //~v6T1I~
 //v6Bx:160212 (LNX)compiler warning at suse64                      //~v6BxI~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
@@ -64,6 +65,7 @@
 #ifdef UNX                                                         //~v321R~
     #include <sys/timeb.h>                                         //~v321R~
 #else                                                              //~v321R~
+    #include <sys/timeb.h>                                         //+v711I~
 #ifdef DOS
     #include <dos.h>
 #else
@@ -85,6 +87,8 @@
 #ifdef UNX                                                         //~v321R~
     #include <ugcclib.h>                                           //~v321I~
 #endif  //!UNX                                                     //~v321R~
+#define UFTIME                                                     //~v711I~
+#include <umiscf.h>                                                //~v711I~
 //*******************************************************
 static char Sgetnumpostfix=0;                                      //~v5a3I~
 static char Sgetnumpostfix2=0;                                     //~v5a3I~
@@ -242,7 +246,8 @@ static UCHAR Swk[32];
     pul=(ULONG*)(PVOID)pc0;
 
 #ifdef UNX                                                         //~v321R~
-    ftime(&tb);                 //time_t and milisec               //~v321R~
+//  ftime(&tb);                 //time_t and milisec               //~v321R~//~v711R~
+    uftime(&tb);                 //time_t and milisec              //~v711I~
     ptm=localtime(&tb.time);    //date and time                    //~v321R~
 //  yy=ptm->tm_year;                                               //~v321R~//~v6BkR~
     yy=(ULONG)ptm->tm_year;                                        //~v6BkI~
@@ -741,29 +746,29 @@ int ueditenv(int Popt,char *Pinp,char *Pout)                       //~v5f4R~
 //*p6:not replaced %data ctr out area(optional)                    //~v066I~
 //*rc:replaced string,free when no more needed,NULL if malloc failed//~v066I~
 //**********************************************************************//~v066I~
-//#define WORDREP_IC              0x01    //ignore case              //~v066I~//+v6Z0R~
-//#define WORDREP_UNMATCHNULL     0x02    //rep by null if unmatch kwd(%...%)//~v066I~//+v6Z0R~
-//#define WORDREP_NODATANULL      0x04    //rep by null if no data ptr//~v066I~//+v6Z0R~
+//#define WORDREP_IC              0x01    //ignore case              //~v066I~//~v6Z0R~
+//#define WORDREP_UNMATCHNULL     0x02    //rep by null if unmatch kwd(%...%)//~v066I~//~v6Z0R~
+//#define WORDREP_NODATANULL      0x04    //rep by null if no data ptr//~v066I~//~v6Z0R~
 char *uwordrep(int Popt,char *Pinp,char **Pkwd,char **Pdata,int *Prepctr,int *Pnorepctr)//~v066I~
 {                                                                  //~v066I~
     int rc,ii,tlen,len,kwdno,kwdlen,datalen;                       //~v066I~
     char *pc,*pcs,*pcso,*pcd,*kwd,*data,*pout;                     //~v066I~
     char ch;                                                       //~v066I~
     int repctr=0,norepctr=0;                                       //~v066I~
-    char parmsign='%';                                             //+v6Z0I~
+    char parmsign='%';                                             //~v6Z0I~
 //************                                                     //~v066I~
     if (Prepctr)                                                   //~v066I~
         *Prepctr=0;                                                //~v066I~
     if (Pnorepctr)                                                 //~v066I~
         *Pnorepctr=0;                                              //~v066I~
 //count kwd                                                        //~v066I~
-                                                                   //+v6Z0I~
+                                                                   //~v6Z0I~
     for (ii=0;kwd=Pkwd[ii],kwd;)                                   //~v066I~
-    {                                                              //+v6Z0I~
-        if (Popt & WORDREP_ALTSIGN)                                //+v6Z0I~
-	    	parmsign=*kwd;       //assume all parm is same sign    //+v6Z0I~
+    {                                                              //~v6Z0I~
+        if (Popt & WORDREP_ALTSIGN)                                //~v6Z0I~
+	    	parmsign=*kwd;       //assume all parm is same sign    //~v6Z0I~
         ii++;                                                      //~v066I~
-    }                                                              //+v6Z0I~
+    }                                                              //~v6Z0I~
     if (kwdno=ii,!kwdno)                                           //~v066I~
         return 0;                                                  //~v066I~
 //count result len                                                 //~v066I~
@@ -771,12 +776,12 @@ char *uwordrep(int Popt,char *Pinp,char **Pkwd,char **Pdata,int *Prepctr,int *Pn
     tlen=0;                                                        //~v066I~
     for (;;)                                                       //~v066I~
     {                                                              //~v066I~
-//      if (!(pc=strchr(pcs,'%')))                                 //~v066I~//+v6Z0R~
-        if (!(pc=strchr(pcs,parmsign)))                            //+v6Z0I~
+//      if (!(pc=strchr(pcs,'%')))                                 //~v066I~//~v6Z0R~
+        if (!(pc=strchr(pcs,parmsign)))                            //~v6Z0I~
             break;                                                 //~v066I~
         ch=*(pc+1);                                                //~v066I~
-//      if (ch=='%')    //ignore %%                                //~v066I~//+v6Z0R~
-        if (ch==parmsign)    //ignore %%                           //+v6Z0I~
+//      if (ch=='%')    //ignore %%                                //~v066I~//~v6Z0R~
+        if (ch==parmsign)    //ignore %%                           //~v6Z0I~
         {                                                          //~v066I~
             pcs=pc+2;                                              //~v066I~
             continue;                                              //~v066I~
@@ -811,8 +816,8 @@ char *uwordrep(int Popt,char *Pinp,char **Pkwd,char **Pdata,int *Prepctr,int *Pn
         else    //unmatch kwd                                      //~v066I~
         {                                                          //~v066I~
             pcs=pc+1;                                              //~v066I~
-//          if (pc=strchr(pcs,'%'),pc)                             //~v066I~//+v6Z0R~
-            if (pc=strchr(pcs,parmsign),pc)                        //+v6Z0I~
+//          if (pc=strchr(pcs,'%'),pc)                             //~v066I~//~v6Z0R~
+            if (pc=strchr(pcs,parmsign),pc)                        //~v6Z0I~
             {                                                      //~v066I~
 //              len=(int)((ULONG)pc-(ULONG)pcs)+1;                 //~v066I~//~v6hhR~
                 len=(int)((ULPTR)pc-(ULPTR)pcs)+1;                 //~v6hhI~
@@ -834,12 +839,12 @@ char *uwordrep(int Popt,char *Pinp,char **Pkwd,char **Pdata,int *Prepctr,int *Pn
     pcd=pout;     //dest                                           //~v066I~
     for (;;)                                                       //~v066I~
     {                                                              //~v066I~
-//      if (pc=strchr(pcs,'%'),pc)                                 //~v066I~//+v6Z0R~
-        if (pc=strchr(pcs,parmsign),pc)                            //+v6Z0I~
+//      if (pc=strchr(pcs,'%'),pc)                                 //~v066I~//~v6Z0R~
+        if (pc=strchr(pcs,parmsign),pc)                            //~v6Z0I~
         {                                                          //~v066I~
             ch=*(pc+1);                                            //~v066I~
-//          if (ch=='%')    //ignore %%                            //~v066I~//+v6Z0R~
-            if (ch==parmsign)    //ignore %%                       //+v6Z0I~
+//          if (ch=='%')    //ignore %%                            //~v066I~//~v6Z0R~
+            if (ch==parmsign)    //ignore %%                       //~v6Z0I~
             {                                                      //~v066I~
                 pcs=pc+2;                                          //~v066I~
                 continue;                                          //~v066I~
@@ -898,8 +903,8 @@ char *uwordrep(int Popt,char *Pinp,char **Pkwd,char **Pdata,int *Prepctr,int *Pn
         else    //unmatch                                          //~v066I~
         {                                                          //~v066I~
             pcs=pc+1;                                              //~v066I~
-//          if (pc=strchr(pcs,'%'),pc)                             //~v066I~//+v6Z0R~
-            if (pc=strchr(pcs,parmsign),pc)                        //+v6Z0I~
+//          if (pc=strchr(pcs,'%'),pc)                             //~v066I~//~v6Z0R~
+            if (pc=strchr(pcs,parmsign),pc)                        //~v6Z0I~
             {                                                      //~v066I~
 //              len=(int)((ULONG)pc-(ULONG)pcs)+1;                 //~v066I~//~v6hhR~
                 len=(int)((ULPTR)pc-(ULPTR)pcs)+1;                 //~v6hhI~

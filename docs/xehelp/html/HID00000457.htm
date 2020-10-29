@@ -30,6 +30,7 @@ a:hover{font-weight:bold;}
   .v129L&lt;--129J:(2019/09/18)
   .v129M&lt;--129L:(2020/05/17)
   .v129N&lt;--129M:(2020/09/23)
+  .v129P&lt;--129N:(2020/10/28)
 
      1.BUGs
        -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする
@@ -93,6 +94,9 @@ a:hover{font-weight:bold;}
        -結合文字（文字幅=0)が表示されないことがある //+@@@1R~
        -"OPT unicomb comb" コマンドと "UTF file" コマンドのフラグ操作がバッティングしていた//+@@@1I~
        -(Linux) directory list の "a"(Attrib) 行コマンド で クラッシュすることがある//+@@@1I~
+
+    (129P)
+       -(Linux) GTK3 バージョンの時 gxe の画面サイズがアプリリスタートで元に戻る
 
      2.機能追加
 
@@ -187,6 +191,21 @@ a:hover{font-weight:bold;}
         ユニコード(\Uxxxx)指定を受け付ける
           例） tc fmt d\u00c1
 
+     (129P)
+       -COL コマンド（タブ停止位置を設定できるカラムゲージを表示）
+        .COL [on|off] [ALL|type|default]
+        .type 指定をディレクトリーにも可能とする
+        .ディレクトリーリストを開いて "COL on type" と入力するとそのディレクトリーのメンバーの省略値となり
+         "COL off" でその省略値をリセット。work ディレクトリーに次のゲージファイルを用意する必要がある
+           (Win) ::xe!col!.type (Linux) ::xe_col_.type
+        .ディレクトリーリストで "COL on" としたとき個別のメンバーにたいしてはそのメンバーを開いて
+         "COL [on|off] [type|default]"
+            default:ファイルに対してはdirの指定にかかわらず省略値のゲージを表示
+                    ディレクトリーに対しては指定できない
+            on     :新たな type の指定がなければディレクトリーの指定に従う
+            off    :ゲージを表示しない。ファイルの設定はリセットされるので次に on すると
+                    ディレクトリーの設定が復活する
+
     3.その他
        -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加
      (129C)
@@ -228,6 +247,13 @@ a:hover{font-weight:bold;}
        -Axe(Android版) 対応 //+@@@1R~
        -Windows console版で grep などの外部コマンド呼び出しが応答なしになることがある。//+@@@1I~
         それを検知したら警告を出す。 //+@@@1I~
+
+     (129P)
+       -Manjaro Linux 対応 //+@@@1R~
+        .linker の仕様が変わって duplicated symbol のエラーがでる
+        .ftime が廃止された
+        .Manjaro のマウスアクション入力形式に対応
+        .ncursesw フォルダーが提供されない(libncurseswは存在する)
 
      4.ツール。
      (129C)

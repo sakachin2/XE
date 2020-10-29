@@ -1,4 +1,4 @@
-//*CID://+vaa0R~:                             update#=  210;       //~vaa0R~
+//*CID://+vaa0R~:                             update#=  211;       //~vaa0R~
 //*************************************************************
 //*xutf8                                                           //~va3eR~
 //*write file utf8 code file of the unicode range specified by parameter
@@ -30,7 +30,7 @@
 static int Srange1[MAXRANGE],Srange2[MAXRANGE];
 //static int  Srangeno=0,Swidth=0,Slfrange,Sheadersw=0;              //~va3eR~//~vaa0R~
 static int  Srangeno=0,Swidth=1,Slfrange,Sheadersw=0;              //~vaa0I~
-static int  Shexutf8sw=0,Sf2usw=0;                                 //+vaa0R~
+static int  Shexutf8sw=0,Sf2usw=0;                                 //~vaa0R~
 static char *Spgm="xutf8";
 static char *Sver=VER;
 //*************************************************************
@@ -42,9 +42,9 @@ int main(int parmc,char * parmp[])
 {
 	char utf8[8];
     int ucs1,ucs2,ucs,ii,cnt,len,lfsw=0;                           //~va3eR~
-    int jj,sw1st,chklen,rc;                                        //+vaa0R~
-    unsigned uch;                                                  //+vaa0I~
-    UWUCS ucs0;                                                    //+vaa0I~
+    int jj,sw1st,chklen,rc;                                        //~vaa0R~
+    unsigned uch;                                                  //~vaa0I~
+    UWUCS ucs0;                                                    //~vaa0I~
 //**********************
 	parmchk(parmc,parmp);
     if (Sheadersw)                                                 //~va3eI~
@@ -53,34 +53,34 @@ int main(int parmc,char * parmp[])
     {
     	ucs1=Srange1[ii];
     	ucs2=Srange2[ii];
-      if (Sf2usw)                                                  //+vaa0I~
-      {                                                            //+vaa0I~
-      	uch=ucs1;                                                  //+vaa0I~
-        sw1st=0;                                                   //+vaa0I~
-        len=0;                                                     //+vaa0I~
-      	for (jj=0;jj<4;jj++)                                       //+vaa0I~
-        {                                                          //+vaa0I~
-        	if (sw1st || uch & 0xff000000)                         //+vaa0I~
-            {                                                      //+vaa0I~
-            	utf8[len++]=uch>>24;                               //+vaa0I~
-                sw1st=1;                                           //+vaa0I~
-            }                                                      //+vaa0I~
-            uch=uch<<8;                                            //+vaa0I~
-        }                                                          //+vaa0I~
-        utf8[len]=0;                                               //+vaa0I~
-        rc=uccvutf2ucs(UCVUCS_UCS4,utf8,len,&ucs0,&chklen);        //+vaa0I~
-        if (rc)                                                    //+vaa0I~
-        {                                                          //+vaa0I~
-            uerrmsg("\n%x is invalid utf8 code",0,                 //+vaa0I~
-						ucs1);                                     //+vaa0I~
-            break;                                                 //+vaa0I~
-        }                                                          //+vaa0I~
-        for (jj=0;jj<len;jj++)                                     //+vaa0I~
-            printf("%02x",utf8[jj]);                               //+vaa0I~
-        printf("=u-%06X\n",ucs0);                                  //+vaa0I~
-      }                                                            //+vaa0I~
-      else                                                         //+vaa0I~
-      {                                                            //+vaa0I~
+      if (Sf2usw)                                                  //~vaa0I~
+      {                                                            //~vaa0I~
+      	uch=(unsigned)ucs1;                                        //+vaa0R~
+        sw1st=0;                                                   //~vaa0I~
+        len=0;                                                     //~vaa0I~
+      	for (jj=0;jj<4;jj++)                                       //~vaa0I~
+        {                                                          //~vaa0I~
+        	if (sw1st || uch & 0xff000000)                         //~vaa0I~
+            {                                                      //~vaa0I~
+            	utf8[len++]=(char)(uch>>24);                       //+vaa0R~
+                sw1st=1;                                           //~vaa0I~
+            }                                                      //~vaa0I~
+            uch=uch<<8;                                            //~vaa0I~
+        }                                                          //~vaa0I~
+        utf8[len]=0;                                               //~vaa0I~
+        rc=uccvutf2ucs(UCVUCS_UCS4,utf8,len,&ucs0,&chklen);        //~vaa0I~
+        if (rc)                                                    //~vaa0I~
+        {                                                          //~vaa0I~
+            uerrmsg("\n%x is invalid utf8 code",0,                 //~vaa0I~
+						ucs1);                                     //~vaa0I~
+            break;                                                 //~vaa0I~
+        }                                                          //~vaa0I~
+        for (jj=0;jj<len;jj++)                                     //~vaa0I~
+            printf("%02x",utf8[jj]);                               //~vaa0I~
+        printf("=u-%06X\n",ucs0);                                  //~vaa0I~
+      }                                                            //~vaa0I~
+      else                                                         //~vaa0I~
+      {                                                            //~vaa0I~
     	for (ucs=ucs1,cnt=0;ucs<=ucs2;ucs++,cnt++)
         {
             len=uccvucs2utf(ucs,utf8);                             //~va3eR~
@@ -114,7 +114,7 @@ int main(int parmc,char * parmp[])
 		    	printf("\n");
                 lfsw=1;                                            //~va3eI~
             }                                                      //~va3eI~
-      }                                                            //+vaa0I~
+      }                                                            //~vaa0I~
     }
 	return 0;
 }//charin
@@ -233,9 +233,9 @@ void parmchk(int parmc,char *parmp[])
             	if (toupper(*pc)=='X')                             //~vaa0I~
             		Shexutf8sw=1;	//linefeed for each range      //~vaa0I~
                 else                                               //~vaa0I~
-            	if (toupper(*pc)=='U')                             //+vaa0I~
-            		Sf2usw=1;	                                   //+vaa0I~
-                else                                               //+vaa0I~
+            	if (toupper(*pc)=='U')                             //~vaa0I~
+            		Sf2usw=1;	                                   //~vaa0I~
+                else                                               //~vaa0I~
                 	break;                                         //~va3eI~
             }                                                      //~va3eI~
             if (len)
@@ -295,10 +295,10 @@ void help(void)
 "  X         :utf8コードのヘキサ\x95\\記を出力。\n");              //~vaa0M~
         HELPMSG                                                    //~vaa0I~
 "  U         :translate hex-utf8 to unicode.\n",                   //~vaa0I~
-"  U         :utf8ヘキサ\x95\\記をユニコードに変換。\n");          //+vaa0R~
+"  U         :utf8ヘキサ\x95\\記をユニコードに変換。\n");          //~vaa0R~
         HELPMSG
-"ex)%s 00-100  ; %s  00-100 2000-2fff 32r ; %s 3000-3800 16H\n",     //~va3eR~//+vaa0R~
-"例)%s 00-100  ; %s  00-100 2000-2fff 32r ; %s 3000-3800 16H\n",     //~va3eR~//+vaa0R~
+"ex)%s 00-100  ; %s  00-100 2000-2fff 32r ; %s 3000-3800 16H\n",     //~va3eR~//~vaa0R~
+"例)%s 00-100  ; %s  00-100 2000-2fff 32r ; %s 3000-3800 16H\n",     //~va3eR~//~vaa0R~
                 Spgm,Spgm,Spgm);                                   //~va3eR~//~vaa0R~
         HELPMSG                                                    //~vaa0I~
 "   %s 3040 X ; %s e38182 U",                                      //~vaa0R~

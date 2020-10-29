@@ -1,8 +1,9 @@
-//*CID://+v6D0R~:                             update#=  379;       //+v6D0R~
+//*CID://+v710R~:                             update#=  380;       //~v6D0R~//+v710R~
 //**************************************************
 //*DBCS sjis/euc translation                                       //~v5n8I~
 //**************************************************
-//v6D0:160408 LNX compiler warning                                 //+v6D0I~
+//v710:201021 (BUG)duplicate declaration Gudbcschk_flag            //+v710I~
+//v6D0:160408 LNX compiler warning                                 //~v6D0I~
 //v6C1:160328 (BUG) 8fxxxx(EUC) was not translated to sjis         //~v6C1I~
 //v6s1:140212 around v6s0;no need to set TTYCONS for xterm. but on xterm,xterm can not display utf8 japanese//~v6s1I~
 //v6k0:130524 mkarmnc is compile err(term.h not found) by v6j0     //~v6k0I~
@@ -65,7 +66,7 @@
 //*************************************************************
 #include <ulib.h>
 #include <uerr.h>
-#define UDBCSCHK_GBLDEF                                            //~v39kI~
+//#define UDBCSCHK_GBLDEF                                            //~v39kI~//+v710R~
 #include <udbcschk.h>
 #include <ustring.h>
 #ifdef DPMI					//DPMI version                         //~v053I~
@@ -426,8 +427,8 @@ unsigned int usjis2jis(unsigned int Psjis)                         //~v198R~
 	c1=((Psjis & 0xff00)>>8);                                      //~v122I~
 	c2=(Psjis & 0xff);                                             //~v122I~
 #ifdef UNX                                                         //~v39HI~
-//	if (!usjischkx208(c1,c2))	//JIS X 208                        //~v39NR~//+v6D0R~
-  	if (!usjischkx208((int)c1,(int)c2))	//JIS X 208                //+v6D0I~
+//	if (!usjischkx208(c1,c2))	//JIS X 208                        //~v39NR~//~v6D0R~
+  	if (!usjischkx208((int)c1,(int)c2))	//JIS X 208                //~v6D0I~
     	return 0;                                                  //~v39HI~
 #else                                                              //~v39HI~
     if (!(Sjistbl[c1] & 0x04))	//dbcs 1st byte                    //~v122I~
@@ -473,16 +474,16 @@ unsigned int ujis2sjis(unsigned int Psjis)                         //~v39xR~
 	c2=(Psjis & 0xff);                                             //~v39xI~
 #ifdef UNX                                                         //~v39HI~
 //  if (!JIS1(c1) || !JIS2(c2))	//JIS X208 chk                     //~v39NR~
-//  if (!ujischkx208(c1,c2))       	//JIS X208 chk                 //~v39NR~//+v6D0R~
-    if (!ujischkx208((int)c1,(int)c2))       	//JIS X208 chk     //+v6D0I~
+//  if (!ujischkx208(c1,c2))       	//JIS X208 chk                 //~v39NR~//~v6D0R~
+    if (!ujischkx208((int)c1,(int)c2))       	//JIS X208 chk     //~v6D0I~
         return 0;                                                  //~v39HI~
 #endif                                                             //~v39HI~
   	rowOffset = c1 < 0x5f ? 0x70 : 0xb0;                           //~v39xI~
   	cellOffset = c1 % 2 ? (c2 > 0x5f ? 0x20 : 0x1f) : 0x7e;        //~v39xI~
-// 	c1 = ((c1 + 1) >> 1) + rowOffset;                              //~v39xI~//+v6D0R~
-   	c1 = ((c1 + 1) >> 1) + (unsigned)rowOffset;                    //+v6D0I~
-//	c2 += cellOffset;                                              //~v39xI~//+v6D0R~
-  	c2 += (unsigned)cellOffset;                                    //+v6D0I~
+// 	c1 = ((c1 + 1) >> 1) + rowOffset;                              //~v39xI~//~v6D0R~
+   	c1 = ((c1 + 1) >> 1) + (unsigned)rowOffset;                    //~v6D0I~
+//	c2 += cellOffset;                                              //~v39xI~//~v6D0R~
+  	c2 += (unsigned)cellOffset;                                    //~v6D0I~
                                                                    //~v39xI~
 #ifdef UNX                                                         //~v39HI~
 #else                                                              //~v39HI~
@@ -1052,8 +1053,8 @@ int usjischk(unsigned char *Psjis,int Plen,                        //~v550R~
       		if (SJIS2(p2))                                         //~v40vI~
 			{                                                      //~v40vI~
 #ifdef UNX                                                         //~v39NI~
-//              if (usjischkx208(p1,p2))//success                  //~v39NR~//+v6D0R~
-                if (usjischkx208((int)p1,(int)p2))//success        //+v6D0I~
+//              if (usjischkx208(p1,p2))//success                  //~v39NR~//~v6D0R~
+                if (usjischkx208((int)p1,(int)p2))//success        //~v6D0I~
 #else                                                              //~v39NI~
         		sjis=(p1<<8)+p2;                                   //~v40vI~
                 if (SJISX208(sjis))//success                       //~v40vR~
@@ -1264,8 +1265,8 @@ int ueuc2shift(unsigned char *Peuc,unsigned char *Pdbcsi,int Plen, //~v550R~
     	else                                                       //~v6C1I~
         if (p1==SS3 && !(Popt & UDBCSCHK_SS3ERR) && (pci+1)<pce) //0x8fxxxx//~v6C1I~
         {                                                          //~v6C1I~
-//      	sjis=ueuc2shift1SS3(0,pci-1); //8fxxxx                 //~v6C1R~//+v6D0R~
-        	sjis=(unsigned)ueuc2shift1SS3(0,pci-1); //8fxxxx       //+v6D0I~
+//      	sjis=ueuc2shift1SS3(0,pci-1); //8fxxxx                 //~v6C1R~//~v6D0R~
+        	sjis=(unsigned)ueuc2shift1SS3(0,pci-1); //8fxxxx       //~v6D0I~
             if (sjis)                                              //~v6C1R~
             {                                                      //~v6C1R~
               	if (hkconlysw)                                     //~v6C1R~
@@ -1752,16 +1753,16 @@ int udbcschk_srchSS2(int Popt,UCHAR *Pdata,UCHAR *Pdbcs,int Plen)  //~v6btI~
 	UTRACED("udbcschk_srchSS2 dbcs=",Pdbcs,Plen);                  //~v6btI~
 	for (pc=Pdata,pcd=Pdbcs,reslen=Plen;reslen>0;pc+=len,pcd+=len,reslen-=len)//~v6btR~
     {                                                              //~v6btI~
-//  	pc2=memchr(pc,SS2,reslen);                                 //~v6btI~//+v6D0R~
-    	pc2=memchr(pc,SS2,(size_t)reslen);                         //+v6D0I~
+//  	pc2=memchr(pc,SS2,reslen);                                 //~v6btI~//~v6D0R~
+    	pc2=memchr(pc,SS2,(size_t)reslen);                         //~v6D0I~
         if (!pc2)                                                  //~v6btI~
         	break;                                                 //~v6btI~
-//      len=(ULONG)pc2-(ULONG)pc;                                  //~v6btI~//+v6D0R~
-        len=(int)((ULONG)pc2-(ULONG)pc);                           //+v6D0I~
+//      len=(ULONG)pc2-(ULONG)pc;                                  //~v6btI~//~v6D0R~
+        len=(int)((ULONG)pc2-(ULONG)pc);                           //~v6D0I~
         if (*(pcd+len)==UDBCSCHK_DBCS1ST)                          //~v6btI~
         {                                                          //~v6btI~
-//      	rc=(ULONG)pc-(ULONG)Pdata;                             //~v6btI~//+v6D0R~
-        	rc=(int)((ULONG)pc-(ULONG)Pdata);                      //+v6D0I~
+//      	rc=(ULONG)pc-(ULONG)Pdata;                             //~v6btI~//~v6D0R~
+        	rc=(int)((ULONG)pc-(ULONG)Pdata);                      //~v6D0I~
         	break;                                                 //~v6btI~
         }                                                          //~v6btI~
         len++;                                                     //~v6btI~

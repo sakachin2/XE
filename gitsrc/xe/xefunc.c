@@ -1,7 +1,9 @@
-//*CID://+vbr5R~:                             update#=  390;       //~vbr5R~
+//*CID://+vbs6R~:                             update#=  395;       //~vbs6R~
 //*************************************************************
 //*xefunc.c
 //************************************************************* //~v020I~
+//vbs6:201026 profile COL cmd for dir, "col on dir" follows dir setting; specify "col on default" for each file.//~vbs6I~
+//vbs1:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //~vbs1I~
 //vbr5:200721 (ARM)logcat hung at utrace output([0x1a..) , it may be Esc[//~vbr5I~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg//~vbdsI~
@@ -144,10 +146,12 @@
 #include <string.h>
 #ifdef W32                                                         //~v560I~
 	#include <sys\timeb.h>                                         //~v560I~
+#else                                                              //~vbs1I~
+    #include <sys/timeb.h>                                         //~vbs1I~
 #endif                                                             //~v560I~
-#ifdef XXE                                                         //~v651I~
-	#include <sys/timeb.h>                                         //~v651I~
-#endif                                                             //~v651I~
+//#ifdef XXE                                                         //~v651I~//~vbs1R~
+//    #include <sys/timeb.h>                                         //~v651I~//~vbs1R~
+//#endif                                                             //~v651I~//~vbs1R~
 //**************************************************************
 #ifdef DOS
 #else
@@ -169,9 +173,11 @@
 #include <uparse.h>                                                //~v0b2R~
 #include <ustring.h>                                               //~v161I~
 #include <uedit.h>                                                 //~v55WI~
-#include <uedit2.h>                                                //+vbr5I~
+#include <uedit2.h>                                                //~vbr5I~
 #include <ucalc2.h>                                                //~v560I~
 #include <utf.h>                                                   //~vawtI~
+#define UFTIME                                                     //~vbs1I~
+#include <umiscf.h>                                                //~vbs1I~
                                                                 //~5318I~
 #include "xe.h"
 #include "xescr.h"
@@ -1102,7 +1108,8 @@ static int Sccfuncmsgctr=0;                                        //~v75zI~
     {                                                              //~v560I~
 //if (pft)                                                         //~v562R~
 //UTRACED("pft",pft,sizeof(FUNCTBL));                              //~v562R~
-    	ftime(&tmb);                                               //~v560I~
+//  	ftime(&tmb);                                               //~v560I~//~vbs1R~
+    	uftime(&tmb);                                              //~vbs1I~
 //UTRACEP("time comp curr:%x-%x,max=%x-%x\n",tmb.time,tmb.millitm,Stmbsleep.time,Stmbsleep.millitm);//~v562R~
         if (DWORD_COMP(tmb.time,tmb.millitm,Stmbsleep.time,Stmbsleep.millitm)<0)//~v560R~
         {                                                          //~v562I~
@@ -1599,7 +1606,14 @@ static UCHAR Sspecialeditcmd[]=PGMID;                              //~v55cR~
             }                                                      //~v0j1I~
 		}                                                       //~5505R~
     }//not special cmd                                             //~v504R~
-	if (!(pfunc=pft->FTfunc[Ppcw->UCWtype]))
+//  if (!(pfunc=pft->FTfunc[Ppcw->UCWtype]))                       //+vbs6R~
+    pfunc=pft->FTfunc[Ppcw->UCWtype];                              //+vbs6I~
+	if (!pfunc)                                                    //+vbs6I~
+    {                                                              //+vbs6I~
+        if (Ppcw->UCWtype==UCWTDIR && (pft->FTflag2 & FTF2DIRCMD)) //+vbs6I~
+            pfunc=pft->FTfunc[UCWTFILE];                           //+vbs6I~
+    }                                                              //+vbs6I~
+    if (!pfunc)                                                    //+vbs6I~
 	{
 //  	scrdisp();			//display pending screen//need?     //~4C30R~
 //  	uerrmsg("\"%s\" is not a valid command for this panel",    //~v50mR~
@@ -2054,7 +2068,8 @@ int funcsetsleepblock(int Pintvl)                                  //~v565I~
 //*********************************                                //~v565I~
     if (Pintvl) //set req                                          //~v565I~
     {                                                              //~v565I~
-		ftime(&Stmbsleep);                                         //~v565R~
+//  	ftime(&Stmbsleep);                                         //~v565R~//~vbs1R~
+    	uftime(&Stmbsleep);                                        //~vbs1I~
     	Stmbsleep.time+=Pintvl;	//sleep time up time               //~v565R~
     }                                                              //~v565I~
     else                                                           //~v565I~
@@ -2074,7 +2089,8 @@ int funcsleepsettimeup(PUCLIENTWE Ppcw,int Pintvl)                 //~v562R~
 //*********************************                                //~v561I~
 	if (Pintvl)                                                    //~v561I~
     {                                                              //~v561I~
-		ftime(&Stmbsleep);                                         //~v561I~
+//  	ftime(&Stmbsleep);                                         //~v561I~//~vbs1R~
+    	uftime(&Stmbsleep);                                        //~vbs1I~
     	Stmbsleep.time+=Pintvl;	//sleep time up time               //~v561I~
 //UTRACEP("sleep set=%d\n",Stmbsleep.time);                        //~v562R~
     	Ssleeptime=Pintvl;                                         //~v561I~
@@ -2176,7 +2192,8 @@ int funcsleepreset(PUCLIENTWE Ppcw)                                //~v562R~
 //*********************************                                //~v560I~
     if (Stmbsleep.time)	//sleep time up time                       //~v560I~
     {                                                              //~v560I~
-    	ftime(&tmb);                                               //~v560R~
+//  	ftime(&tmb);                                               //~v560R~//~vbs1R~
+    	uftime(&tmb);                                              //~vbs1I~
 //  #ifdef WXE                                                     //~v651R~
     #ifdef WXEXXE                                                  //~v651I~
         uerrmsg("Sleep is interrupted remaining %d sec(s)",0,      //~v562R~

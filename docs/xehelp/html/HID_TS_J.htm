@@ -6,10 +6,16 @@
 <TITLE>Trouble-J</TITLE>
 <STYLE TYPE="text/css">
 <!--
-a:hover{font-weight:bold;}-->
+a:hover{font-weight:bold;}
+.auto-style1 {
+	font-family: "ＭＳ ゴシック";
+	font-size: 12pt;
+}
+-->
 </STYLE>
 </HEAD>
 <BODY bgcolor="#FFFFE2">
+<PRE class="auto-style1">V129P 2020/10/23</PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">(A)Automake パッケージ 導入手順。
 
     ディストリビューションによっては導入先フォルダーを変更する必要があるかもしれません。
@@ -443,6 +449,14 @@ a:hover{font-weight:bold;}-->
         select libgnome2 or glib-2.0
         -->#apt-get install glib-2.0
         ==>./configure 成功
+(J) Manjaro gnome 20.1.2 2020/10/23 
+    C compile not found ==&gt; pacman -S gcc
+    ncursesw/ncurses.h not found ==&gt; ./configure --enable-ncursesw=no
+    pkg-config not found ==&gt; pacman -S pkg-config
+    lingnome-2 required ==&gt; ./configure --enable-libgnome2=no
+    correct make to qmake ==&gt; packman -S make
+
+    console version Backspec dose not word ==&gt; specify --7 option "xe --7B"
 
 
 </SPAN></PRE>

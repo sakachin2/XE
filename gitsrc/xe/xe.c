@@ -1,7 +1,8 @@
-//*CID://+vbrcR~:                              update#=  467;      //+vbrcR~
+//*CID://+vbs7R~:                              update#=  470;      //~vbs7R~
 //*************************************************************
 //*XE.c*                                                           //~v641R~
 //*************************************************************
+//vbs7:201028 Debian10 compiler warning -Wformat-overflow          //~vbs7I~
 //vbrc:200801 (ARM)default is CPU8 file and filename               //~vbr1I~
 //vbr1:200615 ARM compiler warning                                 //~vbr1R~
 //vbq7:200516 option to bypass useteh for MS visual studio exception handling(request restart visual studio)//~vbq7I~
@@ -473,8 +474,10 @@ int main(int parmc,char *parmp[])
     char *errmsg;                                                  //~v79zI~
 //  char wkfname[_MAX_PATH];                                       //~v79zR~
 #ifndef WXE                                                        //~v500I~
-    char mapfname[_MAX_PATH];                                   //~5118I~
-    char dumpfname[_MAX_PATH];                                  //~4C24I~
+//  char mapfname[_MAX_PATH];                                      //~vbs7R~
+    char mapfname[_MAX_PATH+256];                                  //~vbs7I~
+//  char dumpfname[_MAX_PATH];                                     //~vbs7R~
+    char dumpfname[_MAX_PATH+256];                                 //~vbs7I~
 #endif                                                             //~v500I~
 //#ifdef UNX                                                       //~v79zR~
 //    char fpathwk[_MAX_PATH];                                     //~v79zR~
@@ -1181,7 +1184,8 @@ int  xegetworkdir(void)                                            //~v79zI~
 	uid_t uid;                                                     //~v79zI~
 	gid_t gid;                                                     //~v79zI~
 #endif                                                             //~v79zI~
-    char wkfname[_MAX_PATH];                                       //~v79zI~
+//  char wkfname[_MAX_PATH];                                       //~vbs7R~
+    char wkfname[_MAX_PATH+256];                                   //~vbs7I~
     size_t   rpos;                                                 //~v79zI~
 #ifdef W32                                                         //~v79HI~
 	int rcw;                                                       //~v79HI~
@@ -1336,9 +1340,11 @@ int xecleartrcfile(int Popt,char *Pfnm)                            //~vb26R~
 int  xetraceinit(void)                                             //~v79zI~
 {                                                                  //~v79zI~
     int rc;                                                        //~v79zI~
-    char wkfname[_MAX_PATH];                                       //~v79zI~
+//  char wkfname[_MAX_PATH];                                       //~v79zI~//~vbs7R~
+    char wkfname[_MAX_PATH+256];                                   //~vbs7I~
 #ifndef ARM                                                        //~vbr1R~
-    char wkfname2[_MAX_PATH];                                      //~vbkmI~
+//  char wkfname2[_MAX_PATH];                                      //~vbkmI~//+vbs7R~
+    char wkfname2[_MAX_PATH+256];                                  //+vbs7I~
     ULONG pid;                                                     //~vb26I~
 #endif  //!ARM                                                     //~vbr1R~
 //********************                                             //~v79zI~
@@ -1665,11 +1671,11 @@ int  parmproc0(int Pparmc,char *Pparmp[])                          //~v501R~
     int posparmno=0,flagsw;                                        //~v19DI~
 //#endif                                                           //~v79MR~
 #ifdef UTF8SUPPH                                                   //~va00I~
-#ifdef ARM                                                         //+vbrcI~
-    int utfopt=XEUTFIO_FILE|XEUTFIO_DIRU8;                         //+vbrcI~
-#else                                                              //+vbrcI~
+#ifdef ARM                                                         //~vbrcI~
+    int utfopt=XEUTFIO_FILE|XEUTFIO_DIRU8;                         //~vbrcI~
+#else                                                              //~vbrcI~
     int utfopt=0;                                                  //~va00I~
-#endif                                                             //+vbrcI~
+#endif                                                             //~vbrcI~
 #endif                                                             //~va00I~
 //********************                                          //~5429I~
     for (parmno=1;parmno<Pparmc;parmno++)                       //~5429I~

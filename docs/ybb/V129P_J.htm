@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>V129P-J</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+
+129P:2020/10/28
+
+     1.BUGs
+       -(Linux) GTK3 バージョンの時 gxe の画面サイズがアプリリスタートで元に戻る
+                                                                   //~@@@1I~
+     2.機能追加                                                    //~@@@1R~
+       -COL コマンド（カラムゲージを表示）
+        .COL [on|off] [ALL|type|default]
+        .type 指定をディレクトリーにも可能とする
+        .ディレクトリーリストを開いて "COL on type" と入力するとそのディレクトリーのメンバーの省略値となり
+         "COL off" でその省略値をリセット。work ディレクトリーに次のゲージファイルを用意する必要がある
+           (Win) ::xe!col!.type   (Linux) ::xe_col_.type
+        .ディレクトリーリストで "COL on" としたとき個別のメンバーにたいしてはそのメンバーを開いて
+         "COL [on|off] [type|default]"
+            default:ファイルに対してはdirの指定にかかわらず省略値のゲージを表示
+                    ディレクトリーに対しては指定できない
+            on     :新たな type の指定がなければディレクトリーの指定に従う
+            off    :ゲージを表示しない。ファイルの設定はリセットされるので次に on すると
+                    ディレクトリーの設定が復活する
+                                                                   //~@@@1I~
+     3.その他                                                      //~@@@1R~
+       -Manjaro Linux 対応                                        //+@@@1R~
+        .linker の仕様が変わって duplicated symbol のエラーがでる
+        .ftime が廃止された
+        .Manjaro のマウスアクション入力形式に対応
+        .ncursesw フォルダーが提供されない(libncurseswは存在する)
+</SPAN></PRE>
+</BODY>
+</HTML>

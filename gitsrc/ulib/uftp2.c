@@ -1,8 +1,9 @@
-//*CID://+v6J0R~:                             update#=  600;       //~v6J0R~
+//*CID://+v711R~:                             update#=  601;       //+v711R~
 //*************************************************************
 //*uftp2.c                                                         //~v5a8R~
 //* get remote file/dir info by ftp                                //~v56nI~
 //*************************************************************
+//v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //+v711I~
 //v6J0:170205 malloc udirlist filename to  allow more large number of fine in the dir//~v6J0I~
 //v6Di:160625 for compiler warning,-Wformat-security(not literal printf format)//~v6DiI~
 //v6D2:160423 LNX compiler warning for bitmask assignment(FDATE,FTIE)//~v6D2I~
@@ -100,6 +101,8 @@
 #include <ufile1f.h>                                               //~v61kI~
 #include <uftp3.h>                                                 //~v61kI~
 #include <uedit2.h>                                                //~v6D2I~
+#define UFTIME                                                     //+v711I~
+#include <umiscf.h>                                                //+v711I~
 //*******************************************************
 #ifdef UNX                                                         //~v59dI~
 //  #define FTPCMD "ftp -nvi < %s"                                 //~v5bdR~
@@ -1014,7 +1017,7 @@ int uftpgetdl1(PUFTPHOST Ppuftph,char *Prec,PUDIRLIST Ppudl)       //~v5afR~
 #endif                                                             //~v5k0I~
 	char wkline[512+MAXSLINKNMSZ*2];                               //~v6qdI~
 //*********************************                                //~v59dM~
-    UTRACEP("%s:rec=%s\n",UTT,Prec);                               //+v6J0I~
+    UTRACEP("%s:rec=%s\n",UTT,Prec);                               //~v6J0I~
   	if (UFTPH_ISSMB(Ppuftph))                                      //~v6d1I~
     	return uftp3smb_getdl1(Ppuftph,Prec,Ppudl);                //~v6d1I~
 //  memset(Ppudl,0,UDIRLISTSZ); //cleared by caller            //~v59dM~//~v6qaR~
@@ -1135,7 +1138,7 @@ int uftpgetdl1(PUFTPHOST Ppuftph,char *Prec,PUDIRLIST Ppudl)       //~v5afR~
         Ppudl->otherflag|=UDLOF_SLINKNAME_NA; //avoid target search//~v6qeR~
       }                                                            //~v61kI~
     }                                                              //~v59dM~
-    UTRACEP("%s:pudl=%p,name=%s,short=%s,pslink=%s\n",UTT,Ppudl,Ppudl->name,Ppudl->nameShortbuff,Ppudl->pslink);//+v6J0R~
+    UTRACEP("%s:pudl=%p,name=%s,short=%s,pslink=%s\n",UTT,Ppudl,Ppudl->name,Ppudl->nameShortbuff,Ppudl->pslink);//~v6J0R~
     return 0;                                                      //~v59dM~
 }//uftpgetdl1                                                      //~v59dM~
 //*******************************************************          //~v59dM~
@@ -1335,7 +1338,8 @@ int uftpajustjst(int Popt,PUFTPHOST Ppuftph,FDATE *Ppfdate,FTIME *Ppftime)//~v5d
 	tz=-Ppuftph->UFTPHtz;                                          //~v5afI~
   else                                                             //~v5afI~
   {                                                                //~v5afI~
-    ftime(&tmb);                                                   //~v59dM~
+//  ftime(&tmb);                                                   //~v59dM~//+v711R~
+    uftime(&tmb);                                                  //+v711I~
 	tz=tmb.timezone; //(time zone is minus value)                  //~v59dM~
   }                                                                //~v5afI~
 	hh=Ppftime->hours-tz/60; //(time zone is minus value)          //~v59dM~

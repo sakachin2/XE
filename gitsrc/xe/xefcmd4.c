@@ -1,9 +1,10 @@
-//*CID://+vba6R~:                             update#=  414;       //~vb30R~//+vba6R~
+//*CID://+vbs6R~:                             update#=  435;       //~vbs6R~
 //*************************************************************
 //*xefcmd4.c*
 //**file cmd:SORT,COL,SPLIT,JOIN                                   //~v47iR~
 //*************************************************************
-//vba6:170716 (Bug)tc calc err when opdtype=x(requires word clear) //+vba6I~
+//vbs6:201026 profile COL cmd for dir
+//vba6:170716 (Bug)tc calc err when opdtype=x(requires word clear) //~vba6I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vafk:120624 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  use ULPTR(unsigned __int64/ULONG)//~vafkI~
 //vafc:120607 C4701 warning(used uninitialized variable) by VC6    //~vafcI~
@@ -970,7 +971,7 @@ int sortlinecomp(const void *ent1,const void *ent2)
       if (opt & SOPT_NUMERIC)                                      //~v62EI~
       {                                                            //~v62EI~
         complen=min(reslen1,keylen);                               //~v62EI~
-        memset(lvt1,0,sizeof(lvt1));                               //+vba6I~
+        memset(lvt1,0,sizeof(lvt1));                               //~vba6I~
 #ifdef UTF8UCS2                                                    //~va20I~
 //*no handle required for numeric data(digit is common for all ebcdic translater)//~va50I~
 //  	getnumrc1=tc_getlinedata(0,&datatype,data1+keypos,dbcs1+keypos,complen,lvt1);//~va20I~//~va79R~
@@ -979,7 +980,7 @@ int sortlinecomp(const void *ent1,const void *ent2)
 		getnumrc1=tc_getlinedata(0,&datatype,data1+keypos,complen,lvt1);//~v62ER~
 #endif                                                             //~va20I~
         complen=min(reslen2,keylen);                               //~v62EI~
-        memset(lvt1,0,sizeof(lvt2));                               //+vba6I~
+        memset(lvt1,0,sizeof(lvt2));                               //~vba6I~
 #ifdef UTF8UCS2                                                    //~va20I~
 //  	getnumrc2=tc_getlinedata(0,&datatype,data2+keypos,data2+keypos,complen,lvt2);//~va20I~//~va79R~
     	getnumrc2=tc_getlinedata(0,0/*handle*/,&datatype,data2+keypos,data2+keypos,complen,lvt2);//~va79I~
@@ -1058,10 +1059,13 @@ int sortlinecomp(const void *ent1,const void *ent2)
 int func_col(PUCLIENTWE Ppcw)                                      //~v11NI~
 {                                                                  //~v11NI~
 #define COLS_SET_DEFAULT   "ALL"                                   //~v74yI~
+//#define COLS_SET_RESET     "RESET"                               //~vbs6R~
+#define COLS_SET_RESET     "DEFAULT"                               //~vbs6I~
     PUFILEC pfc;                                                   //~v11NI~
     PUFILEH pfh;                                                   //~v78rI~
     UCHAR  parmtype[MAXCOLSTYPNM+1],*pfctype,*pnewtype,*pc;        //~v447R~
     int rc,fhlno,fhlnon,opdno,ii;                                  //~v11NI~
+    int swReset=0;	                                               //~vbs6R~
 //*********************************                                //~v11NI~
 	pfc=Ppcw->UCWpfc;                                              //~v11NI~
     pfh=pfc->UFCpfh;                                               //~v78rR~
@@ -1072,7 +1076,8 @@ int func_col(PUCLIENTWE Ppcw)                                      //~v11NI~
     pc=Ppcw->UCWopdpot;                                            //~v11NI~
     if (pc && *pc=='?')                                            //~v74yR~
     {                                                              //~v74yI~
-    	uerrmsg("COL [on|off] [ALL|type]",0);                      //~v74yI~
+//  	uerrmsg("COL [on|off] [ALL|type]",0);                      //+vbs6R~
+    	uerrmsg("COL [on|off] [ALL|type|default]",0);              //+vbs6I~
         return 0;                                                  //~v74yI~
     }                                                              //~v74yI~
     if (opdno>2)                                                   //~v11NI~
@@ -1088,6 +1093,12 @@ int func_col(PUCLIENTWE Ppcw)                                      //~v11NI~
     	if (!stricmp(pc,"OFF"))                                    //~v11NI~
         	fhlnon=FILEHDRLINENO;                                  //~v11NR~
         else                                                       //~v11NI~
+    	if (!stricmp(pc,COLS_SET_RESET))                           //~vbs6R~
+        {                                                          //~vbs6R~
+        	swReset=1;                                             //~vbs6R~
+        	fhlnon=FILEHDRLINENO+1;                                //~vbs6I~
+        }                                                          //~vbs6R~
+        else                                                       //~vbs6R~
         	if (parmtype[0])                                       //~v11NI~
                 return errinvalid(pc);                             //~v11NI~
             else                                                   //~v11NI~
@@ -1137,6 +1148,7 @@ int func_col(PUCLIENTWE Ppcw)                                      //~v11NI~
     {                                                              //~v11NI~
         pnewtype=0;                                                //~v11NR~
         if (parmtype[0])        //type change req                  //~v11NR~
+        {                                                          //~vbs6I~
             if (*pfctype)       //already set                      //~v11NR~
             {                                                      //~v11NR~
 //file may changed if (stricmp(pfctype,parmtype))  //changed       //~v21rR~
@@ -1144,6 +1156,12 @@ int func_col(PUCLIENTWE Ppcw)                                      //~v11NI~
             }                                                      //~v11NR~
             else                                //1st time         //~v11NR~
                 pnewtype=parmtype;                                 //~v11NR~
+        }                                                          //~vbs6I~
+        else                                                       //~vbs6I~
+        if (pfh->UFHcolstype[0] && !swReset)                       //~vbs6R~
+        {                                                          //~vbs6I~
+        	pnewtype=pfh->UFHcolstype;                             //~vbs6I~
+        }                                                          //~vbs6I~
         else                                                       //~v11NR~
         {                                                          //~v75FI~
 //          if (!*pfctype)      //not currently set;               //~v61aR~
@@ -1157,6 +1175,7 @@ int func_col(PUCLIENTWE Ppcw)                                      //~v11NI~
 	                pnewtype=(UCHAR*)(ULPTR)(-1);              //re-set defaul for the case xline option changed//~vafkI~
         }                                                          //~v75FI~
         if (pnewtype)                                              //~v11NR~
+          if (Ppcw->UCWtype!=UCWTDIR)                              //~vbs6I~
             if ((rc=fcmdcolalloc(pfc,pnewtype))!=0)                //~v11NR~
                 return rc;                                         //~v11NR~
     }                                                              //~v11NI~
@@ -1167,11 +1186,64 @@ int func_col(PUCLIENTWE Ppcw)                                      //~v11NI~
                     parmtype);                                     //~v11NI~
             return 4;                                              //~v11NI~
         }                                                          //~v11NI~
+  if (Ppcw->UCWtype==UCWTDIR)    
+  {                                                                //~vbs6R~
+//  if (swReset||fhlnon==FILEHDRLINENO)                            //~vbs6R~
+//  {                                                              //~vbs6R~
+//  	fcmdprofupdaterecord(FPURO_COLS,pfh->UFHfilename,          //~vbs6R~
+//          					0/*parmtype*/,                     //~vbs6R~
+//  							2/*intval1:Reset*/,0/*intval2*/);  //~vbs6R~
+//  	uerrmsg("COL setting of this directory was reset.",        //~vbs6R~
+//  			"ディレクトリのCOLタイプをリセットしました");      //~vbs6R~
+//  }                                                              //~vbs6R~
+//  else                                                           //~vbs6R~
+//  {                                                              //~vbs6R~
+      if (fhlnon>FILEHDRLINENO) //on                               //~vbs6I~
+      {                                                            //~vbs6I~
+  		if (*parmtype)                                             //~vbs6R~
+        {                                                          //~vbs6R~
+			fcmdprofupdaterecord(FPURO_COLS,pfh->UFHfilename,      //~vbs6R~
+            					parmtype,                          //~vbs6R~
+								1/*intval1:On*/,0/*intval2*/);     //~vbs6R~
+		  	uerrmsg("COL type(%s) is set to profile of %s. Prepare %s.%s",//~vbs6R~
+						"COL タイプ:%s が %s のプロファイルにの保存されました。 %s.%s が必要になります",//~vbs6R~
+        		            parmtype,pfh->UFHfilename,COLS_FNAME,parmtype);//~vbs6R~
+        }                                                          //~vbs6R~
+        else                                                       //~vbs6R~
+        {                                                          //~vbs6R~
+		  	uerrmsg("\"type\" is required to set COL profile for directory",//~vbs6R~
+					"ディレクトリの COL プロファイルを設定するときは \"type\" を指定してください");//~vbs6R~
+            return 4;                                              //~vbs6R~
+        }                                                          //~vbs6R~
+      }                                                            //~vbs6I~
+      else //off                                                   //~vbs6I~
+      {                                                            //~vbs6I~
+  		fcmdprofupdaterecord(FPURO_COLS,pfh->UFHfilename,          //~vbs6I~
+          					0/*parmtype*/,                         //~vbs6I~
+  							2/*intval1:Reset*/,0/*intval2*/);      //~vbs6I~
+		uerrmsg("COL profile of this directory was reset.",        //~vbs6R~
+				"このディレクトリの COL プロファイルをリセットしました");//~vbs6R~
+  	  }                                                            //~vbs6R~
+  }
+  else
+  {
+//      if (swReset)                                               //~vbs6R~
+//      {                                                          //~vbs6R~
+//  		fcmdprofupdaterecord(FPURO_COLS,pfh->UFHfilename,      //~vbs6R~
+//          					0/*parmtype*/,                     //~vbs6R~
+//  							2/*intval1:Reset*/,0/*intval2*/);  //~vbs6R~
+//  	  	uerrmsg("From next time, this file\'s COL type follows directory setting.",//~vbs6R~
+//  					"次回からこのファイルのCOL タイプはディレクトリの設定に従います");//~vbs6R~
+//      }                                                          //~vbs6R~
+//      else                                                       //~vbs6R~
+//      {                                                          //~vbs6R~
 	fcmdprofupdaterecord(FPURO_COLS,pfh->UFHfilename,              //~v78rR~
             				(UCBITCHK(pfc->UFCflag2,UFCF2NOTDEFCOLS)?pfc->UFCcolstype:0),//~v78rI~
 							(fhlnon>FILEHDRLINENO),0/*intval2*/);  //~v78rI~
     Ppcw->UCWfilehdrlineno=fhlnon;		//update                   //~v11NI~
     UCBITON(Ppcw->UCWflag,UCWFDRAW);	//after curtop changed chk //~v11NR~
+//  	}                                                          //~vbs6R~
+  }
  }                                                                 //~v74yI~
     return 0;                                                      //~v11NI~
 }//func_col                                                       //~v11NI~//~va50R~

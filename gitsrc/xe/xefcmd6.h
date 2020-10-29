@@ -1,8 +1,8 @@
-//CID://+vaj0R~:   update#=   10;                                  //+vaj0R~
+//CID://+vaj0R~:   update#=   12;                                  //+vaj0R~
 //****************************************************************
 //*xefcmd6.h                                                       //~v8@FR~
 //****************************************************************
-//vaj0:130710 localfile:recfm=V support (E /mV F{MFH|RDW})         //+vaj0I~
+//vaj0:130710 localfile:recfm=V support (E /mV F{MFH|RDW})         //~vaj0I~
 //vagE:120918 apply cmdline option /U{N|F}{8|L} to also edit/browse cmd//~vagEI~
 //va6i:000622 COPY cmd;chk CPxx profile of copy source file        //~va6iI~
 //va51:100415 Record mode file option                              //~va51I~
@@ -43,8 +43,8 @@ int fcmdprofupdaterecord(ULONG Popt,char *Pfnm,char *Pstrvalue,int Pintval1,int 
 #define FPURO_RECORD       0x020000      //record mode             //~va51I~
 #define FPURO_CVNAME       0x040000      //record mode             //~va6iI~
 #define FPURO_FNCP         0x080000      //filename encoding       //~vagEI~
-#define FPURO_RECORDV      0x100000      //record mode variavle    //+vaj0I~
-#define FPURO_PROFILE      0x800000      //profile gotten          //~v8@FI~
+#define FPURO_RECORDV      0x100000      //record mode variavle    //~vaj0I~
+#define FPURO_PROFILE      0x800000      //profile gotten          //~vbs6I~
 #define FPURO_EBCMD      0x80000000      //save profile from eb cmd option//~v78rR~
 #define FPURO_EXT        0x40000000      //write ext record        //~v78rR~
 #define FPURO_PATH       0x20000000      //write path record       //~v78rI~

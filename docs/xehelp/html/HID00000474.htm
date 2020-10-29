@@ -26,6 +26,7 @@ a:hover{font-weight:bold;}
   .v129L&lt;--129K:(2018/09/18)
   .v129M&lt;--129L:(2020/05/17)
   .v129N&lt;--129M:(2020/09/23)
+  .v129N&lt;--129M:(2020/09/23)
 </SPAN></PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
     1.BUGs
@@ -92,6 +93,9 @@ a:hover{font-weight:bold;}
         -Fails to display combining character(display width=0) on command line.
         -There was conflict on Flag control by Command "OPT unicomb comb" and "UTF file".
         -(Linux) "a"(Attrib) line command on directory list panel may cause crash.
+
+     (129P)
+       -(Linux) GTK3 version gxe; Screen size was not kept over App restart.
 </font>
 </PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
@@ -190,6 +194,21 @@ a:hover{font-weight:bold;}
         accept unicode specification for -D:input splitter and -S:output splitter.
         e.g) tc fmt d\u00c1
 
+     (129P)
+       -COL command (Display column gauge to enable setting of tab stop position)
+        .COL [on|off] [ALL|type|default]
+        .It can be used also on directory list panel.
+        .On directory list, "COL on type" sets default gauge type for all member of the directory.
+         "COL off" resets it. You have to prepare following gauge file in work directory.
+           (Win) ::xe!col!.type (Linux) ::xe_col_.type
+        .When Col type is set to a directory, use COL command for each members to set different option.
+           "COL [on|off] [type|default]"
+              default:display default gauge for the member file.
+                      This option is not for directory but file.
+              on     :follows directory setting if new type is not specified.
+              off    :hide gauge and reset type for the file,
+                      and next "COL on" refers directory setting.
+
 
     3.Miscellaneous.
        -(Windows) add "msi" as executable binary extension
@@ -234,6 +253,13 @@ a:hover{font-weight:bold;}
         -Fix for Axe(Android version).
         -(Windows console version) external command (xfg, grep etc.) may freeze xe.
          Issues warnin when detected.
+
+     (129P)
+        -For Manjaro Linux.
+         .Linker's spec was changed and issues error:"duplicated symbol".
+         .Function ftime was deprecated.
+         .Accept another type of ncurses mouse event input.
+         .libncursesw is provided, but /usr/include/ncursesw is not provided.
 
      4.Tool.
      (129C)

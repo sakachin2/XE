@@ -1,8 +1,9 @@
-//*CID://+vb30R~:                             update#=   96;       //~vb30R~
+//*CID://+vbs5R~:                             update#=   97;       //+vbs5R~
 //*************************************************************
 //*xemainl.c                                                       //~0924R~
 //*	linux xe main                                                  //~0924R~
 //*************************************************************
+//vbs5:201023 help more for --7(backspace and del)                 //+vbs5I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vang:131214 NOSCO option(ignore puTTY:SCO Esc string)            //~vangI~
 //va70:000701 LP64 option support                                  //~va70I~
@@ -91,6 +92,7 @@ void helpmsg(void)                                                 //~v19ZI~
 #ifdef UNX                                                         //~v51YI~
 	printf(" --7  : force assign 0x7f to BackSpace,Delete or Char 0x'7f'.\n");//~v51RR~
 #ifdef LNX                                                         //~v51YI~
+	printf("        B:Backspace, D:Delete, C:character input.\n"); //+vbs5I~
 	printf("        default is by terminfo.\n");                   //~v51RI~
 #else                                                              //~v51YI~
 	printf("        default is by BS for AIX.\n");                 //~v51YI~
@@ -327,8 +329,8 @@ int main(int argc,char **argp)
             case 'C':                                              //~v424I~
             case 'c':                                              //~v424I~
             	opt|=UKBDL_CLEAR;    //clear screen before draw    //~v524R~
-//            	opt&=~UKBDL_CLEAR1;    //reset clear when not splitted//~v524R~//+vb30R~
-//            	opt&=~(unsigned)UKBDL_CLEAR1;    //reset clear when not splitted//+vb30I~
+//            	opt&=~UKBDL_CLEAR1;    //reset clear when not splitted//~v524R~//~vb30R~
+//            	opt&=~(unsigned)UKBDL_CLEAR1;    //reset clear when not splitted//~vb30I~
                 break;                                             //~v424I~
 //#endif                                                           //~v45yR~
 //#ifdef AIX                                                       //~v45yR~
@@ -435,8 +437,8 @@ int main(int argc,char **argp)
 //#ifdef AIX                                                       //~v55gR~
     xesettabs(1);                                                  //~v55gI~
 //#endif                                                           //~v55gR~
-//  xesetkbdopt(opt);//tell to xe                                  //~0924I~//+vb30R~
-    xesetkbdopt((int)opt);//tell to xe                             //+vb30I~
+//  xesetkbdopt(opt);//tell to xe                                  //~0924I~//~vb30R~
+    xesetkbdopt((int)opt);//tell to xe                             //~vb30I~
 #ifdef AIX                                                         //~v30eI~
 //    if (xxtermsw)                                                //~v526R~
 //        Gkbdaixt_opt|=GKBAIX_XXTERM;                             //~v526R~

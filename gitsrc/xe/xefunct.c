@@ -1,8 +1,9 @@
-//*CID://+vbraR~:                             update#=  320;       //~vbraR~
+//*CID://+vbs6R~:                             update#=  324;       //~vbs6R~
 //*************************************************************
 //*xefunct.c                                                       //~v663R~
 //* func definition tbl                                         //~5216R~
 //************************************************************* //~v020I~
+//vbs6:201026 profile COL cmd for dir
 //vbra:200730 (ARM)ARM input is always utf8, delete A_u and UTF SWKBD//~vbraI~
 //vbi6:180219 R-Retrieve-OfTheScr was not assigned key, use S+A+F12//~vbi6I~
 //vbi5:180219 correct word of functbl, Regin-->Region,accept both for ini read//~vbi5I~
@@ -1539,12 +1540,13 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
 	{"Column-gauge"      ,"åÖíËãK" ,                               //~v11NI~
         FUNCID_COL,                                                //~v11NI~
         0,0,          //flag,char,                                 //~v11NI~
-		{0	,func_col,0},                                          //~v75SR~
+    	{0	,func_col,0},                                          //~v75SR~
 		"COL","",                                                  //~v11NR~
 //  	KEY_A_F2},                                                 //~v20bR~
 //  	ALT_CTL(F2)},                                              //~v215R~
 //  	KEY_C_F2},                                                 //~v21bR~
-    	{KEY_S_F11,0,0,0},NULL_NOFLAG},                            //~v55nR~
+//  	{KEY_S_F11,0,0,0},NULL_NOFLAG},                            //+vbs6R~
+    	{KEY_S_F11,0,0,0},NULL_NOFLAG2(FTF2DIRCMD)},               //+vbs6I~
 	{"Set-Boundary"            ,"ã´äEê›íË" ,                       //~v74EI~
         FUNCID_BNDS,                                               //~v74EI~
         0,0,          //flag,char,                                 //~v74EI~
@@ -1572,11 +1574,11 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
         0,0,          //flag,char,                                 //~va0xI~
 		{func_mode,func_mode,func_mode},                           //~va0xI~
 		"UTF","",                                                  //~va0xI~
-//#ifdef ARM                                                       //+vbraR~
-//        NULL_CMDONLY},                                           //+vbraR~
-//#else                                                            //+vbraR~
+//#ifdef ARM                                                       //~vbraR~
+//        NULL_CMDONLY},                                           //~vbraR~
+//#else                                                            //~vbraR~
     	{KEY_A_u,0,0,0},NULL_NOFLAG},                              //~va0xI~
-//#endif                                                           //+vbraR~
+//#endif                                                           //~vbraR~
 #endif                                                             //~va0xI~
 #ifdef UTF8UCS2                                                    //~va30I~
 	{"Combine-W0-UniChar"       ,"0ïù-UniChar-åãçá" ,              //~va30I~

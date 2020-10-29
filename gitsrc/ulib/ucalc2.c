@@ -1,8 +1,9 @@
-//CID://+v6xiR~:              update#=    11                       //~v6xiR~//+v6xiR~
+//CID://+v711R~:              update#=    12                       //+v711R~
 //*************************************************************
 //*xecalc2.c                                                       //~v50gR~
 //* basic calc:double word calc                                    //~v50gR~
 //*************************************************************
+//v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //+v711I~
 //v6xi:150115 conversion warning                                   //~v6xiI~
 //v6xh:150115 (BUG)invalid dword calc;on 64bit linux long/ulong is 64bit,so DWADD dose not overflow//~v6xhI~
 //v6hh:120623 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  defines ULPTR(unsigned long long)//~v6hhI~
@@ -46,6 +47,8 @@
 #include <ucalc.h>
 #include <ucalc2.h>
 #include <uedit.h>
+#define UFTIME                                                     //+v711I~
+#include <umiscf.h>                                                //+v711I~
 
 //*******************************************************
 #define WORDSZ   32
@@ -589,8 +592,8 @@ int bc_dweditnum64(int Pfunctype,int Pconvtype,INT64 Pvalue,UCHAR *Pout)//~v5k2I
 int bc_dweditnum(int Pfunctype,int Pconvtype,long *Pvalue,UCHAR *Pout)
 {
 	UCHAR ldwk[32];                                                //~v50gR~
-//  ULONG ulwk[2];                                                 //+v6xiR~
-    LONG  ulwk[2];                                                 //+v6xiI~
+//  ULONG ulwk[2];                                                 //~v6xiR~
+    LONG  ulwk[2];                                                 //~v6xiI~
     int len;                                                       //~v56wI~
 //*****************
     if (*(Pvalue+1)>UCALC_DWORDID)	//dword+underpoint             //~v5djR~
@@ -615,8 +618,8 @@ int bc_dweditnum(int Pfunctype,int Pconvtype,long *Pvalue,UCHAR *Pout)
     		sprintf(Pout,"o%lo..%011lo",Pvalue[0],Pvalue[2]);      //~v56wR~
     	break;                                                     //~v56wI~
     case 'U':     //convert to DEC value                           //~v50gI~
-//      ucalc_dw2ld((ULONG)Pvalue[0],(ULONG)Pvalue[2],Pout);       //+v6xiR~
-        ucalc_dw2ld(Pvalue[0],Pvalue[2],Pout);                     //+v6xiI~
+//      ucalc_dw2ld((ULONG)Pvalue[0],(ULONG)Pvalue[2],Pout);       //~v6xiR~
+        ucalc_dw2ld(Pvalue[0],Pvalue[2],Pout);                     //~v6xiI~
     	break;                                                     //~v50gI~
     case 'D':     //convert to DEC value                           //~v50qI~
 //      if (Pvalue[0] & HIGHBIT)                                   //~v6xhR~
@@ -625,11 +628,11 @@ int bc_dweditnum(int Pfunctype,int Pconvtype,long *Pvalue,UCHAR *Pout)
         	ulwk[0]=0,ulwk[1]=0;                                   //~v50qI~
             DWORD_SUB(ulwk[0],ulwk[1],(ULONG)Pvalue[0],(ULONG)Pvalue[2]);//~v50qR~
         	*Pout='-';                                             //~v50qI~
-          	ucalc_dw2ld(ulwk[0],ulwk[1],Pout+1);                   //+v6xiR~
+          	ucalc_dw2ld(ulwk[0],ulwk[1],Pout+1);                   //~v6xiR~
         }                                                          //~v50qI~
         else                                                       //~v50qI~
-//        	ucalc_dw2ld((ULONG)Pvalue[0],(ULONG)Pvalue[2],Pout);   //+v6xiR~
-          	ucalc_dw2ld(Pvalue[0],Pvalue[2],Pout);                 //+v6xiI~
+//        	ucalc_dw2ld((ULONG)Pvalue[0],(ULONG)Pvalue[2],Pout);   //~v6xiR~
+          	ucalc_dw2ld(Pvalue[0],Pvalue[2],Pout);                 //~v6xiI~
     	break;                                                     //~v50qI~
     case 'Z':     //convert to DEC value                           //~v50gI~
 //      ucalc_dw2ld(Pvalue[0],Pvalue[2],ldwk);                     //~v50rR~
@@ -1123,8 +1126,8 @@ int ucalc_ltime(int Ptmtype,ULONG *Ptime,PUCALC_TIME Ppuct)
 static ULONG Stod0[2]={0xb361183f,0x48000000};		//Host TOD at 2000/01/01//~v50kR~
     struct timeb tmb;
     struct tm   *ptm;
-//  ULONG  todh,todl,todwk[3],inminute,days;                       //+v6xiR~
-    LONG  todh,todl,todwk[3],inminute,days;                        //+v6xiI~
+//  ULONG  todh,todl,todwk[3],inminute,days;                       //~v6xiR~
+    LONG  todh,todl,todwk[3],inminute,days;                        //~v6xiI~
     int ii,date[3],intvlsw;                                        //~v50kR~
 //*****************
 	switch(Ptmtype)
@@ -1139,7 +1142,8 @@ static ULONG Stod0[2]={0xb361183f,0x48000000};		//Host TOD at 2000/01/01//~v50kR
         }
     	else
         {
-        	ftime(&tmb);
+//      	ftime(&tmb);                                           //+v711R~
+        	uftime(&tmb);                                          //+v711I~
         	Ppuct->milsec=(int)tmb.millitm;
         }
 //printf("cur time=%08x milsec=%03d\n",(ULONG)tmb.time,tmb.millitm);//~v50gR~
@@ -1158,10 +1162,10 @@ static ULONG Stod0[2]={0xb361183f,0x48000000};		//Host TOD at 2000/01/01//~v50kR
         Ppuct->sec   =ptm->tm_sec;                                 //~v50kI~
         break;
     case LTIME_HOST:			//PC
-//    	todh=*Ptime;                                               //+v6xiR~
-      	todh=(LONG)*Ptime;                                         //+v6xiI~
-//    	todl=*(Ptime+1);                                           //+v6xiR~
-    	todl=(LONG)*(Ptime+1);                                     //+v6xiI~
+//    	todh=*Ptime;                                               //~v6xiR~
+      	todh=(LONG)*Ptime;                                         //~v6xiI~
+//    	todl=*(Ptime+1);                                           //~v6xiR~
+    	todl=(LONG)*(Ptime+1);                                     //~v6xiI~
         if (DWORD_COMP(todh,todl,Stod0[0],Stod0[1])>=0)            //~v50kI~
         {                                                          //~v50kI~
         	intvlsw=0;                                             //~v50kI~
@@ -1171,8 +1175,8 @@ static ULONG Stod0[2]={0xb361183f,0x48000000};		//Host TOD at 2000/01/01//~v50kR
         	intvlsw=1;                                             //~v50kI~
         for (ii=0;ii<12;ii++)
         	DWORD_RSHIFT(todh,todl);	//micro sec unit
-       todwk[0]=todh;                                              //+v6xiR~
-       todwk[1]=todl;                                              //+v6xiR~
+       todwk[0]=todh;                                              //~v6xiR~
+       todwk[1]=todl;                                              //~v6xiR~
 //  	ucalc_dwdiv(todwk,60000000);     //dword and residual word //~v5dyR~
 //    	ucalc_dwdiv((LONG*)(LONG)todwk,60000000);     //dword and residual word//~v5dyI~//~v6hhR~
      	ucalc_dwdiv((LONG*)(ULPTR)todwk,60000000);     //dword and residual word//~v6hhI~
@@ -1450,8 +1454,8 @@ int ucalc_ld2dw(char *Pdecs,LONG *Pdword)                          //~v5drI~
 //parm2:string                                                     //~v50gI~
 //*rc:0;                                                           //~v50gI~
 //***************************************************************  //~v50gI~
-//int ucalc_dw2ld(ULONG Pdwh,ULONG Pdwl,char *Pnumstr)             //+v6xiR~
-int ucalc_dw2ld(LONG Pdwh,LONG Pdwl,char *Pnumstr)                 //+v6xiI~
+//int ucalc_dw2ld(ULONG Pdwh,ULONG Pdwl,char *Pnumstr)             //~v6xiR~
+int ucalc_dw2ld(LONG Pdwh,LONG Pdwl,char *Pnumstr)                 //~v6xiI~
 {                                                                  //~v50gI~
 	int ii;                                                        //~v50gI~
     UCHAR  wknumstr[32]="";                                        //~v5dyR~

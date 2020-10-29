@@ -1,3 +1,21 @@
+//*********  20201028 v129N release  *******************************
+//vbs7:201028 Debian10 compiler warning -Wformat-overflow
+//            xe.c xedlcmd3.c xefcmd3.c xetso.c xedlcmd6.c xepan23.c xefunc2.c xedcmd3.c xedcmd2.c xe3270s.c/h
+//vbs6:201026 profile COL cmd for dir, "col on dir" follows dir setting; specify "col on default" for each file.
+//            xefunct.c xefcmd4.c xefcmd6.c/h xefunc.c/h
+//vbs5:201023 help more for --7(backspace and del)
+//            xemainl.c
+//vbs4:201023 (Bug) coding scr width/height exchanged
+//            xxemain.c
+//vbs3:201023 GTK3:screenresize lost at app restart(no more //vbi9:180221 (GTK3:bug)window size recovery err)
+//            gxemfrm.c
+//vbs2:201022 ncursesw folder is not provided on arch or manjaro linux.
+//            configure.ac
+//vbs1:201022 ftime deprecated(ftime is obsoleted POSIX2008)
+//            xefunc.c
+//            xxecsub2.c xxekbd.c xxemouse.c xxescr.c
+//vbs0:201021 compile/link err on Manjaro(multiple definition error)
+//            xedcmd2.h xekbchk.c gxe.h interface.c/h gxepage.c/h gxemfrm.h
 //*********  20200923 v129N release  *******************************
 //vbrm:200918 by xuerpchk(uerr fmt chk)
 //            xefcmd22.c

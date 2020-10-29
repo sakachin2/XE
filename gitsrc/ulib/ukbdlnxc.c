@@ -1,8 +1,9 @@
-//*CID://+v6FdR~:                             update#=  484;       //~v6EYR~//~v6FdR~
+//*CID://+v712R~:                             update#=  485;       //~v6EYR~//+v712R~
 //*************************************************************
 //*ukbdlnxc.c                                                      //~v5mvR~
 //*kbd get for linux console screen
 //*************************************************************
+//v712:201023 Manjaro;mouse esc seq 0x1b[<b;x;yM  M:down/m:up      //+v712I~
 //v6Fd:160918 (BUG)curses key tbl overflow                         //~v6FdI~
 //v6Ey:160824 for FindPSx register S+C+F5,S+A+F5                   //~v6EYI~
 //v6D1:160418 LNX64 compiler warning                               //~v6D1I~
@@ -1146,9 +1147,18 @@ UTRACEP("ukbdlnxc_readkbd residual data shortage reslen=%d",Sreslen);//~v62TI~
         {
 //mouse chk                                                        //~v592I~
 #ifndef NOCURSES                                                   //~v6a0I~
-            if (Sreslen>=MOUSE_ESCLEN                              //~v592I~
-        	&&  *(Snextpos+1)=='['                                 //~v592R~
-        	&&  *(Snextpos+2)==MOUSE_ESCID)     //esc[Mbxy fmt     //~v592I~
+//          if (Sreslen>=MOUSE_ESCLEN                              //+v712R~
+//      	&&  *(Snextpos+1)=='['                                 //+v712R~
+//      	&&  *(Snextpos+2)==MOUSE_ESCID)     //esc[Mbxy fmt     //+v712R~
+            if (                                                   //+v712I~
+               (Sreslen>=MOUSE_ESCLEN                              //+v712I~
+        	&&  *(Snextpos+1)=='['                                 //+v712I~
+        	&&  *(Snextpos+2)==MOUSE_ESCID)     //esc[Mbxy fmt     //+v712I~
+            ||                                                     //+v712I~
+               (Sreslen>=MOUSE_ESCLEN2                             //+v712I~
+        	&&  *(Snextpos+1)=='['                                 //+v712I~
+        	&&  *(Snextpos+2)==MOUSE_ESCID2)    //esc[Mbxy fmt     //+v712I~
+            )                                                      //+v712I~
             {                                                      //~v592I~
 		    	if (Seventctr-Smouseeventctr!=1)	//previous is mouse event//~v592R~
                 	ptv=0;  //no double click chk                  //~v592I~
@@ -1648,10 +1658,10 @@ void ukbdlnxc_addstrtbl(int Popt,int Pflag,char *Pstring,FUNCKEYTBL *Ppfkt,int P
 {                                                                  //~v57NI~
     int ii;                                                        //~v57NI~
     char editwk[32];                                               //~v57NI~
-    int swshift;                                                   //+v6FdI~
+    int swshift;                                                   //~v6FdI~
 //*********************************                                //~v57NI~
-	swshift=Pmodx & MODX_SHIFT_REPORT;                             //+v6FdI~
-	Pmodx &= ~MODX_SHIFT_REPORT;                                   //+v6FdI~
+	swshift=Pmodx & MODX_SHIFT_REPORT;                             //~v6FdI~
+	Pmodx &= ~MODX_SHIFT_REPORT;                                   //~v6FdI~
 	if (Pmodx & MODX_SCO)                                          //~v6qhI~
     {                                                              //~v6qhI~
     	Pmodx&=~MODX_SCO;                                          //~v6qhI~
@@ -1693,8 +1703,8 @@ void ukbdlnxc_addstrtbl(int Popt,int Pflag,char *Pstring,FUNCKEYTBL *Ppfkt,int P
   if (!cktovferr(Pstring))                                         //~v6FdI~
   {                                                                //~v6FdI~
     Scurseskeytbl[Scktno].CKTpfkt=Ppfkt;                           //~v57NI~
-//  Scurseskeytbl[Scktno].CKTmodx=Pmodx;                           //+v6FdR~
-    Scurseskeytbl[Scktno].CKTmodx=Pmodx|swshift;                   //+v6FdI~
+//  Scurseskeytbl[Scktno].CKTmodx=Pmodx;                           //~v6FdR~
+    Scurseskeytbl[Scktno].CKTmodx=Pmodx|swshift;                   //~v6FdI~
     Scurseskeytbl[Scktno].CKTstring=Pstring;                       //~v57NI~
     Scurseskeytbl[Scktno].CKTlen=Plen;                             //~v57NR~
 //UTRACEP("addstring mod=%d,name=%s,str=%s\n",Pmodx,Ppfkt->FKTkeyname,Pstring);//~v57NR~

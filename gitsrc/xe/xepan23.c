@@ -1,8 +1,9 @@
-//*CID://+vbkdR~:                             update#= 490;        //~vbkdR~
+//*CID://+vbs7R~:                             update#= 491;        //~vbkdR~//+vbs7R~
 //*************************************************************
 //*xepan23.c                                                       //~7620R~
 //*   utility compare,grep                                         //~v76gR~
 //************************************************************* //~5610I~
+//vbs7:201028 Debian10 compiler warning -Wformat-overflow          //+vbs7I~
 //vbkd:180619 like vbj1 cpu8 option to =3.12                       //~vbkdI~
 //vba0:170624 (BUG:64bit) 3.14 crush by ptrsz                      //~vba0I~
 //vb4B:160819 (BUG) missing clear Gsubgblopt:XESUB_GBLOPT_WILDPATH flag before return//~vb4BI~
@@ -755,7 +756,8 @@ int pancompexec(PUCLIENTWE Ppcw)                                   //~v76gI~
 {                                                                  //~v76gI~
 	char  utilopt[MAXCOLUMN],compfile1[_MAX_PATH],compfile2[_MAX_PATH];//~v76gR~
 	char  compfpath1[_MAX_PATH],compfpath2[_MAX_PATH];             //~v76gI~
-	char  cmdstr[MAXCOLUMN+_MAX_PATH+_MAX_PATH],*pc;               //~v76gR~
+//  char  cmdstr[MAXCOLUMN+_MAX_PATH+_MAX_PATH],*pc;               //~v76gR~//+vbs7R~
+    char  cmdstr[MAXCOLUMN+_MAX_PATH+_MAX_PATH+1],*pc;             //+vbs7I~
     char  redirectfnm[_MAX_PATH],*pcmdnm;                          //~v76gR~
     int leno,lenf1,lenf2,len,rc,redirectctr,helpsw,swnolist=0;     //~v76gR~
     int dirsw1=-1,dirsw2=-1,opt;                                   //~v76pR~
@@ -850,14 +852,14 @@ int pancompexec(PUCLIENTWE Ppcw)                                   //~v76gI~
 //edit/browse redirect file at last                                //~v76gI~
     Ppcw->UCWparm=redirectfnm;                                     //~v76gR~
     if (!swnolist)                                                 //~v76gI~
-#ifdef AAA                                                         //+vbkdM~
+#ifdef AAA                                                         //~vbkdM~
 #ifdef UTF8SUPPH                                                   //~va00I~
     	func_edit_file2(Ppcw,FEBFIO_UTF8IE); //internal edit call;ignor utf8 trans err//~va00M~
 #else                                                              //~va00M~
     	func_edit_file2(Ppcw,0);	//internal edit call           //~va00I~
 #endif                                                             //~va00I~
-#else                                                              //+vbkdI~
-		pan23ShowCmdResult(swcpu8,Ppcw,redirectfnm);               //+vbkdR~
+#else                                                              //~vbkdI~
+		pan23ShowCmdResult(swcpu8,Ppcw,redirectfnm);               //~vbkdR~
 #endif                                                             //~vbkdI~
     return rc;                                                     //~v76gI~
 }//pancompexec                                                     //~v76gR~

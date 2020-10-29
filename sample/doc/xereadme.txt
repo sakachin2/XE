@@ -1,4 +1,4 @@
-||*CID:||+v129R~:  2020/05/17              update#=  589;             ||~v129R~
+||*CID:||+v129R~:  2020/09/23              update#=  592;             ||~v129R~
 ######################################################################
 [English]    v1.29                                                    ||~v128R~||~v129R~
 
@@ -18,7 +18,7 @@
          Access to Linux/390 using fuse(Dokan package on Windows).    ||~v126I~
          Access to Windows from Linux using samba(smbclient).         ||~128DI~
       .64 bit(Linux/Windows version only)                                     ||~v126I~||~126HR~
-      .Linux/390 version is tested on Hecules emulator.               ||~v126I~
+      .Linux/390 version is tested on Hercules emulator.               ||~v126I~||~v129R~
          make on Linux/390 by "./configure && make" from src.tgz.     ||~128DR~
 
     LICENSE: use GNU GPL
@@ -27,7 +27,7 @@
                             http://hp.vector.co.jp/authors/VA010562
                             http://www.geocities.jp/sakachin2/index.htm
 
-  (note). DOS version is limitted by 640kb.
+  (note). DOS version is limited by 640kb.                            ||~v129R~
             Pgm is too fat now,DOS version may not work by 640k memory
             limitation. Please keep old version.                      ||~124FR~
             DOS version withdrawn at v1.13.  Use GCC if available.
@@ -57,7 +57,7 @@
             (*)TeraTerm is freeware by T.Teranishi.                   ||~124FR~
 
      Test is done mainly for Windows version and AIX version.
-     Other version is just cheked to work except the function native to
+     Other version is just checked to work except the function native to||~v129R~
      the version.
 
 ##Following files are archived in to each version.
@@ -69,7 +69,7 @@
         xereadmj.txt README for Japanese.                             ||~124FR~
         xereadme.txt this file.                                       ||~124FR~
         xej.txt      Japanese manual.                                 ||~124FR~
-        xee.txt      english manual.                                  ||~124FR~
+        xee.txt      English manual.                                  ||~124FR~||~v129R~
  v1.29  xe.exe       executable binary file                           ||~127SR~||~v128R~||~v129R~
  v1.29  wxe.exe      Windows GUI version.                             ||~127SR~||~v128R~||~v129R~
  v1.29  gxe.exe      Linux Xwindows version.                          ||~127SR~||~v128R~||~v129R~
@@ -86,7 +86,7 @@
         cobol.lang   (Win/Linux)SyntaxHighlight,cobol language definition.||~124HR~
         gnu-source-highlight-mingw.tgz                                ||~124KI~
                      (Win)GNU source-highlight v2.9 compiled on MinGW.||~124KI~
-                     This allows ssource-highlight execution without cygwin installation.||~124KI~
+                     This allows source-highlight execution without cygwin installation.||~124KI~||~v129R~
         xeshm        (Win/Linux)resident process version from gnu-source-highlight v2.9.||~124RI~
         xe.bat       sample batch file to select DOS,GCC or WIN
                      version xe.exe checking OS version.
@@ -116,13 +116,13 @@
  v1.2   xcvsjisc.exe Convert SJIS in xe's source file to Octal-notation.||~124FR~
  v2.29  xdc.exe      directory compare tool                           ||~127SR~||~v128R~||~v129R~
  v2.1   xdd.exe      directory delete tool                            ||~128FR~||~v128R~
- v1.13  xdig.exe     directory walk utility                           ||~124FR~||~127AR~||~127QR~||+v129R~
+ v1.13  xdig.exe     directory walk utility                           ||~124FR~||~127AR~||~127QR~||~v129R~
                      tool apply command to all sub-directory/files.
         xdig.txt     doc for xdig                                     ||~124FR~
  v1.12  xds.exe      Directory size display tool                      ||~124RR~||~126BR~||~127AR~||~v129R~||~v129R~
  v1.27  xfc.exe      File compare tool                                ||~127SR~||~v128R~||~v129R~
  v1.7   xff.exe      file search by size/timestamp/name.               ||~7B08R~||~127ER~
- v1.21  xfg.exe      Binary file string search & Recursive grep.      ||~127AR~||~128FR~||~v128R~||+v129R~
+ v1.21  xfg.exe      Binary file string search & Recursive grep.      ||~127AR~||~128FR~||~v128R~||~v129R~
  v1.4   xfmt.exe     FileLineFormatter. "TC FMT" for huge file.       ||~124QR~||~v125R~
  v2.8   xfs.exe      Split large file,it enable backup large file to  ||~124RR~||~127QR~||~v128R~
                      diskets.
@@ -2444,6 +2444,7 @@ How to start.
   .v129K<--129J:(2018/08/27)                                          ||~v129R~
   .v129L<--129K:(2019/09/18)                                          ||~v129R~
   .v129M<--129L:(2020/05/17)                                          ||~v129I~
+  .v129N<--129M:(2020/09/23)                                          ||~v129I~
                                                                       ||~v129R~
      1.BUGs                                                           ||~v129R~
        -(Windows:64)"&"(spawn executable file) dir cmd crush.         ||~v129R~
@@ -2451,7 +2452,7 @@ How to start.
        -(Win64) Erroneous calculation when Datatype is X(Hex),O(octal).||~v129I~
        -(Win64) DragDrop between split panels(file copy) crashes.     ||~v129I~
      (129D)                                                           ||~v129R~
-       -(Linux)Under GTK3 environmentt, Accelerator option on Setup dialog was not work.||~v129R~
+       -(Linux)Under GTK3 environment, Accelerator option on Setup dialog was not work.||~v129R~
        -(Wxe)Crash when File->New menuitem was selected.              ||~v129R~
      (129E)                                                           ||~v129I~
        -(Windows Console version) Japanese Error msg on header line may be corrupted.||~v129I~
@@ -2463,7 +2464,7 @@ How to start.
         .CPLC option registered on profile record was ignored when record mode.||~v129I~
          ("CPLC" option was required each time)                       ||~v129I~
      (129G)                                                           ||~v129I~
-       -(Linux) On Ubuntu17.10, DirList line command:"!"(start application corresoponding to the file extension)||~v129I~
+       -(Linux) On Ubuntu17.10, DirList line command:"!"(start application corresponding to the file extension)||~v129R~
         failes by "No application defined to the MIME type".          ||~v129I~
        -(Wxe/gxe) Cut&Paste by mouse may paste trash data with length of CID of source line.||~v129I~
      (129H)                                                           ||~v129I~
@@ -2471,9 +2472,9 @@ How to start.
        -(gxe:GTK3)screen size at termination is not recovered correctly and enlarged.||~v129I~
      (129K)                                                           ||~v129R~
        -Around processing of UTF8 file.                               ||~v129R~
-         .DisplayCellWidth was reviced.                               ||~v129R~
-         .Trouble around displaying UCS4,SpacingCombiningMarks adn NonSpacingMark.||~v129R~
-         .Expanded Maxmum combining up to 8 chracters.(case of Tibtan)||~v129R~
+         .DisplayCellWidth was revised.                               ||~v129R~
+         .Trouble around displaying UCS4, SpacingCombiningMarks adn NonSpacingMark.||~v129R~
+         .Expanded Maximum combining up to 8 characters.(case of Tibetan)||~v129R~
           For Linux Console version max is yet 4 characters.          ||~v129R~
          .When unicode>=U01000(Windows) or unicode>=U020000(Linux)    ||~v129R~
             -Invalid hexcode display on top-left header line.         ||~v129R~
@@ -2483,11 +2484,11 @@ How to start.
             -"v" line cmd on vertical hex line(cmd to accept 3 consecutive hex code as unicode) failed.||~v129R~
          .On =3.12 panel(Compare Tool) was corrupted when filename encoding is UTF8.||~v129R~
          .(WinConsole)New tool:xcfont can change font of command prompt.||~v129R~
-          It enables to view foreign script suach as Devanagari.      ||~v129R~
-       -When gb18030, differece of cursor position between charcter and vertical hex line||~v129R~
+          It enables to view foreign script such as Devanagari.       ||~v129R~
+       -When gb18030, difference of cursor position between character and vertical hex line||~v129R~
         occurs for characters of CelWidth=1.                          ||~v129R~
        -Consecutive Esc key clear line cmd except label,              ||~v129R~
-        but cmd specified the labe get error of label not found.      ||~v129R~
+        but cmd specified the label get error of label not found.     ||~v129R~
        -When screen is split, it may occurs that line cmd on edit panel is ignored.||~v129R~
                                                                       ||~v129I~
      (129L)                                                           ||~v129I~
@@ -2495,16 +2496,25 @@ How to start.
                                                                       ||~v129I~
      (129M)                                                           ||~v129I~
        -Function:"Search word on the cursor" (Alt/Ctrl+"["/"]")       ||~v129I~
-        e.g) Search "ABC+DEFG" if cusror is on the "+" of "ABC+DEFG", ||~v129I~
+        e.g.) Search "ABC+DEFG" if cursor is on the "+" of "ABC+DEFG",||~v129R~
         search "ABC" if on the "C".                                   ||~v129I~
         Repeating the same key finds next.                            ||~v129I~
         Intermediate PgDn/PgUp/PgLeft(F10)/PgRight(F11) key looses    ||~v129I~
-        concatinated word search effect at start.                     ||~v129I~
-       -exe cmd (sequencially execute cmds in the specified file) may crush.||~v129I~
-        e.g) xe crush by "exe ! cmdfile" on dir list panel.           ||~v129I~
+        concatenated word search effect at start.                     ||~v129R~
+       -exe cmd (sequentially execute cmds in the specified file) may crush.||~v129R~
+        e.g.) xe crush by "exe ! cmdfile" on dir list panel.          ||~v129R~
         "exe ! cmdfile <s *.html" is valid.                           ||~v129I~
        -SORt cmd on dir list panel.                                   ||~v129I~
         Descendant option(/Ot-,/Os-) works but ascendant option(/Ot,/Os) did not.||~v129I~
+                                                                      ||~v129I~
+     (129N)                                                           ||~v129I~
+       -Cursor positioning failure on comman line for 3 bytes(EUC 8fxxyy) and 4 bytes(GB18030) DBCS.||~v129I~
+       -Fails to display combining character(display width=0) on command line.||~v129I~
+       -There was conflict on Flag control by Command "OPT unicomb comb" and "UTF file".||~v129I~
+       -(Linux) "a"(Attrib) line command on directory list panel may cause crash.||~v129I~
+                                                                      ||+v129I~
+     (129P)                                                           ||+v129I~
+       -(Linux) GTK3 version gxe; Screen size was not kept over App restart.||+v129I~
                                                                       ||~v129R~
      2.Additional function.                                           ||~v129I~
                                                                       ||~v129I~
@@ -2562,7 +2572,7 @@ How to start.
            "S" means "SAVe" on Browse/Edit panel.                     ||~v129I~
         (Wxe,gxe)                                                     ||~v129I~
           ."SelectAll" menuitem was added to File submenu and popup menu on edit panel.
-          .Set shotcut key to Ctrl+A and cabnged to Ctrk+Shift+A for SaveAs.
+          .Set shotcut key to Ctrl+A and changed to Ctrk+Shift+A for SaveAs.||~v129R~
      (129E)                                                           ||~v129I~
        -XML tag pairing search                                        ||~v129I~
           .Default shortcut key is Alt+"/"                            ||~v129I~
@@ -2580,7 +2590,7 @@ How to start.
           S : set to the command input line of the command history panel.||~v129I~
           t : set on the other panel if screen is split.              ||~v129I~
               same as "S" if not split                                ||~v129I~
-          x : executhe the command after closed the command history panel.||~v129I~
+          x : execute the command after closed the command history panel.||~v129R~
           X : execute on the command history panel.                   ||~v129I~
           y : execute on the other panel if screen is split.          ||~v129I~
               same as "X" if not split.                               ||~v129I~
@@ -2588,17 +2598,33 @@ How to start.
      (129J)                                                           ||~v129I~
        -CommandHistoryList.                                           ||~v129I~
         Mouse operation support.                                      ||~v129I~
-        .R-button popups context menu.                                ||~v129I~
+        .R-button pop-ups context menu.                               ||~v129R~
         .Double click works as "x" cmd(execute the command after closed the command history panel).||~v129I~
         .Click on the selected line works as "s" cmd(set to the command input line after closed the command history panel).||~v129I~
      (129K)                                                           ||~v129R~
        -TC fmt cmd -D"..." and -S"..." option                         ||~v129R~
-        Accept escape secuence such as \x, \t as Delimeter(\t(0x09) is not allowed for -S).||~v129R~
+        Accept escape sequence such as \x, \t as Delimeter(\t(0x09) is not allowed for -S).||~v129R~
         Accept DBCS as  -S option.                                    ||~v129R~
+                                                                      ||+v129I~
      (129L)                                                           ||~v129I~
        -TC fmt cmd on UTF8 file.                                      ||~v129I~
         accept unicode specification for -D:input splitter and -S:output splitter.||~v129I~
         e.g) tc fmt d\u00c1                                           ||~v129I~
+                                                                      ||+v129I~
+     (129P)                                                           ||+v129I~
+       -COL command (Display column gauge to enable setting of tab stop position)||+v129I~
+        .COL [on|off] [ALL|type|default]                              ||+v129I~
+        .It can be used also on directory list panel.                 ||+v129I~
+        .On directory list, "COL on type" sets default gauge type for all member of the directory.||+v129I~
+         "COL off" resets it. You have to prepare following gauge file in work directory.||+v129I~
+           (Win) ::xe!col!.type   (Linux) ::xe_col_.type              ||+v129I~
+        .When Col type is set to a directory, use COL command for each members to set different option.||+v129I~
+         "COL [on|off] [type|default]"                                ||+v129I~
+            default:display default gauge for the member file.        ||+v129I~
+                    This option is not for directory but file.        ||+v129I~
+            on     :follows directory setting if new type is not specified.||+v129I~
+            off    :hide gauge and reset type for the file,           ||+v129I~
+                    and next "COL on" refers directory setting.       ||+v129I~
                                                                       ||~v129I~
      3.Miscellaneous.                                                 ||~v129R~
        -(Windows) add "msi" as executable binary extension            ||~v129R~
@@ -2606,7 +2632,7 @@ How to start.
        -(Windows)If LoadLibrary failed for EBCDIC library for ICU(libicuuc.dll),||~v129R~
         search in the directory of ICU_DATA parameter of xeebc.map and also||~v129I~
         ICU_DATA environment variable.                                ||~v129I~
-        (Linex)It is need to set LD_LIBRARY_PATH if the ICU so is not on default path like as /usr/lib etc.||~v129I~
+        (Linux)It is need to set LD_LIBRARY_PATH if the ICU so is not on default path like as /usr/lib etc.||~v129R~
        -When ICU_DLL_SUFFIX and ICU_APP_SUFFIX  are missing,          ||~v129I~
         set both bt ICU utility  uconv(.exe).                         ||~v129I~
        -Reject /Mr(Recordmode) option for CPU8 file because string length of UTF8 code is indefinite.||~v129I~
@@ -2634,12 +2660,24 @@ How to start.
         Re-enter of PF3 is not effective from now, use "SAVe -Force" or "END -force" cmd.||~v129R~
                                                                       ||~v129I~
      (129L)                                                           ||~v129I~
-       -(Linux)on debian10, gnome2 is obsoleted.                      ||~v129I~
+       -(Linux)on debian10, gnome2 is obsolete.                       ||~v129R~
        -(Linux)PPD api is deprecated at cups-1.6.                     ||~v129I~
        -(Windows)Last line of panel of console version was for IME on Windows95.||~v129I~
                                                                       ||~v129I~
      (129M)                                                           ||~v129I~
        -Accept Shift+Del on also excluded line(- n line excluded ---).||~v129I~
+                                                                      ||~v129I~
+     (129N)                                                           ||~v129I~
+       -Fix for Axe(Android version).                                 ||~v129I~
+       -(Windows console version) external command (xfg, grep etc.) may freeze xe.||~v129I~
+        Issues warnin when detected.                                  ||~v129I~
+                                                                      ||+v129I~
+     (129P)                                                           ||+v129I~
+       -For Manjaro Linux.                                            ||+v129I~
+        .Linker's spec was changed and issues error:"duplicated symbol".||+v129I~
+        .Function ftime was deprecated.                               ||+v129I~
+        .Accept another type of ncurses mouse event input.            ||+v129I~
+        .libncursesw is provided, but /usr/include/ncursesw is not provided.||+v129I~
                                                                       ||~v129I~
      4.Tool.                                                          ||~v129I~
      (129C)                                                           ||~v129I~
@@ -2668,9 +2706,9 @@ How to start.
        -(Win)xkp v1.4                                                 ||~v129R~
         Exe name was not fullpath from Windows7, show fullpath.       ||~v129R~
        -xfg v1.20                                                     ||~v129R~
-        grep may hungup when srach string is starting with "-".       ||~v129R~
+        grep may hung-up when search string is starting with "-".     ||~v129R~
        -(Win)New tool xcfont v1.01 (available from Windows Vista)     ||~v129R~
-        It chages font of command prompt.                             ||~v129R~
+        It changes font of command prompt.                            ||~v129R~
         Chcp may required depending on font family.                   ||~v129R~
         For example, to view Devanagari script                        ||~v129R~
         Change font like as "xcfont Mangal" after "chcp 57002".       ||~v129R~
@@ -2721,10 +2759,10 @@ How to start.
        -(Windows) xlow (covert case of filenamej1.6 (bug corrected)  ||~v129I~
                                                                       ||~v129I~
      (129M)                                                           ||~v129I~
-       -xfg v1.21 (Serach string in the directory)                    ||~v129I~
+       -xfg v1.21 (Search string in the directory)                    ||~v129R~
           ./cpu8, /cplc option is added to search by translated string.||~v129I~
           .(Win)"-e" option cause crush.(Temporally file was plased on c:\ which is protected on Windows10)||~v129I~
-       -xdig v1.13 (Applay the commands to all files in the directory)||~v129I~
+       -xdig v1.13 (Apply the commands to all files in the directory) ||~v129R~
           .Accept parameter sign other than %.                        ||~v129I~
            e.g) By /C$, $fp$ in the cmd string is replaced to fullpath name of the file in the directory.||~v129I~
           .%rp% is added for path name relative to starting directory.||~v129I~

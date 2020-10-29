@@ -1,7 +1,8 @@
-//*CID://+v6G3R~:                              update#=  238;      //~v6G3R~
+//*CID://+v711R~:                              update#=  239;      //+v711R~
 //*************************************************************
 //*uerrexit/uerrmsg/uerrexit_init/uerrmsg_init                     //~v5nnR~
 //*************************************************************
+//v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //+v711I~
 //v6G3:161212 (Win10) missing error.h , use winerror.h             //~v6G3I~
 //v6m2:130725 (BUG)EBC2ASC_IBM(x20) and UCVEXTO_TOUTF8 conflict occured//~v6m2I~
 //            xprint ucvebc3_b2m translate to utf8 when no cfg found(default IBM option)//~v6m2I~
@@ -64,7 +65,7 @@
                                                                    //~v324I~
 //#include <upopup.h>                                              //~v5nxR~
 //#include <uvio.h>                                                //~v5nxR~
-#define GBL_UTRACE  //define global variable                       //+v6G3I~
+#define GBL_UTRACE  //define global variable                       //~v6G3I~
 #include <utrace.h>                                                //~v170I~
 //#include <ualloc.h>                                              //~v5nxR~
 #include <uedit.h>                                                 //~v5nxR~
@@ -93,6 +94,8 @@
 #include <ucvext.h>                                                //~v6j0I~
 #include <ucvebc.h>                                                //~v6m2I~
 #include <utils.h>                                                 //~v5nxI~
+#define UFTIME                                                     //+v711I~
+#include <umiscf.h>                                                //+v711I~
 //*******************************************************
 #define MAXPARM   10
 #define MAXTITLE    64
@@ -1086,7 +1089,8 @@ static UCHAR Swk[32];
     pul=(ULONG*)(PVOID)pc0;
 
 #ifdef UNX                                                         //~v321R~
-    ftime(&tb);                 //time_t and milisec               //~v321R~
+//  ftime(&tb);                 //time_t and milisec               //~v321R~//+v711R~
+    uftime(&tb);                 //time_t and milisec              //+v711I~
     ptm=localtime(&tb.time);    //date and time                    //~v321R~
     yy=ptm->tm_year;                                               //~v321R~
     yy+=1900;                                                      //~v59hR~

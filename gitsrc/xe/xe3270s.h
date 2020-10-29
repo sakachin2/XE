@@ -1,7 +1,8 @@
-//*CID://+v79fR~:                                                  //~v79aR~//~v79fR~
+//*CID://+vbs7R~: update#=     1                                   //+vbs7R~
 //****************************************************************
 //xe3270s.h (common to xe3270s and xe3270s2)                       //~v725R~
 //****************************************************************
+//vbs7:201028 Debian10 compiler warning -Wformat-overflow          //+vbs7I~
 //v7af:081113 (3270) add "Continue" to logon err action to do not abandon logon//~v79fI~
 //v79a:080808 DBCS other than Japanese                             //~v79aI~
 //v9@b:080718 3270:no echo option for rsh cmd                      //~v9@bI~
@@ -125,8 +126,8 @@
 #define TOPLINE_SAVEWIDTH  (24*80)  //write3270readresp output to check topline//~v8@1R~
 #define   LOGONCMD_DEFAULT_RETRYNO      8  //logon response chk retry count default//~v8@bR~
 #define   LOGOFFCMD_DEFAULT_RETRYNO     8  //logoff response chk retry count default//~v8@bR~
-#define   ERRMSG_POSTCHKID   '_'           //chk after validmsg chk//+v79fR~
-#define   OKMSG_OPTIONALID   '|'           //continue if even if not found//+v79fI~
+#define   ERRMSG_POSTCHKID   '_'           //chk after validmsg chk//~v79fR~
+#define   OKMSG_OPTIONALID   '|'           //continue if even if not found//~v79fI~
 //**************************************************************** //~v725I~
 #define CMD_SEND          "Send"                                   //~v8@pI~
 #define CMD_RECEIVE       "Receive"                                //~v8@pI~
@@ -216,7 +217,8 @@ EXT3 int  G3270to_output  INIT3(TIMEOUT_OUTPUT);                   //~v8@bI~
 EXT3 int  G3270to_outputftp  INIT3(TIMEOUT_OUTPUTFTP);             //~v8@bI~
 EXT3 int  G3270cmdrow INIT3(SPF6CMDROW);           //cmdline row of =6 panel//~v8@8I~
                                                                    //~v8@5I~
-EXT3 char G3270ftperrlogfile[_MAX_PATH];                           //~v8@5R~
+//EXT3 char G3270ftperrlogfile[_MAX_PATH];                           //~v8@5R~//+vbs7R~
+EXT3 char G3270ftperrlogfile[_MAX_PATH+256];                       //+vbs7I~
 EXT3 PUCVEXTCFG G3270pmapcfg;                                      //~v79aR~
 //**************************************************************** //~v725I~
 typedef struct _SPFLINEFMT  {   //xe4s001z output member line format//~v727R~

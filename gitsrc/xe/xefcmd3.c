@@ -1,9 +1,10 @@
-//*CID://+vb2DR~:                             update#=  169;       //+vb2DR~
+//*CID://+vbs7R~:                             update#=  174;       //~vbs7R~
 //*************************************************************
 //*xefcmd3.c*
 //**file cmd CID,SCRoll,NUMber,drop                                //~v40KR~
 //*************************************************************
-//vb2D:160221 LNX compiler warning                                 //+vb2DI~
+//vbs7:201028 Debian10 compiler warning -Wformat-overflow          //~vbs7I~
+//vb2D:160221 LNX compiler warning                                 //~vb2DI~
 //vafc:120607 C4701 warning(used uninitialized variable) by VC6    //~vafcI~
 //va8k:101013 SPLit cmd;dbcs consideration for split ALL/OVER without SBCS option.(split to fcmd43)//~va8kI~
 //va79:100809 cpeb converter parm support                          //~va79I~
@@ -690,7 +691,8 @@ static char Stopcidlinesampld[]=                                   //~v75sI~
 int fcmdchkcidtopfile(int Poption,char *Pfiletype,char *Ptopdata)  //~v42jI~
 {                                                                  //~v42jI~
 	FILE          *fh;                                             //~v42jI~
-	UCHAR fpath[_MAX_PATH],fnm[16],*pc;                            //~v53dR~
+//	UCHAR fpath[_MAX_PATH],fnm[16],*pc;                            //~vbs7R~
+  	UCHAR fpath[_MAX_PATH],fnm[_MAX_PATH+256],*pc;                 //+vbs7R~
 //****************************                                     //~v42jI~
 //search file                                                      //~v42jI~
 	strcpy(fpath,Pfiletype+3);                                     //~v53dR~
@@ -821,8 +823,8 @@ int fcmdisrtlinedbcsebcsosi(int Popt,PUCLIENTWE Ppcw,PULINEH Pplh,char *Pdata,ch
 	len=Plen+swso+swsi;                                            //~va8kI~
     if (len>Plen)                                                  //~va8kI~
     {                                                              //~va8kI~
-//      pc=pc2=umalloc(len*2);                                     //~va8kR~//+vb2DR~
-        pc=pc2=umalloc((size_t)len*2);                             //+vb2DI~
+//      pc=pc2=umalloc(len*2);                                     //~va8kR~//~vb2DR~
+        pc=pc2=umalloc((size_t)len*2);                             //~vb2DI~
 		UALLOCCHK(pc,UALLOC_FAILED);   //return 0 if storage shortage//~va8kI~
         pcd=pcd2=pc+len;                                           //~va8kR~
     	if (swso)                                                  //~va8kI~
@@ -830,10 +832,10 @@ int fcmdisrtlinedbcsebcsosi(int Popt,PUCLIENTWE Ppcw,PULINEH Pplh,char *Pdata,ch
     		*pc2++=CHAR_SO;                                        //~va8kI~
             *pcd2++=0;                                             //~va8kI~
         }                                                          //~va8kI~
-//  	memcpy(pc2,Pdata,Plen);                                    //~va8kI~//+vb2DR~
-    	memcpy(pc2,Pdata,(size_t)Plen);                            //+vb2DI~
-//  	memcpy(pcd2,Pdbcs,Plen);                                   //~va8kI~//+vb2DR~
-    	memcpy(pcd2,Pdbcs,(size_t)Plen);                           //+vb2DI~
+//  	memcpy(pc2,Pdata,Plen);                                    //~va8kI~//~vb2DR~
+    	memcpy(pc2,Pdata,(size_t)Plen);                            //~vb2DI~
+//  	memcpy(pcd2,Pdbcs,Plen);                                   //~va8kI~//~vb2DR~
+    	memcpy(pcd2,Pdbcs,(size_t)Plen);                           //~vb2DI~
     	if (swsi)                                                  //~va8kI~
         {                                                          //~va8kI~
     		*(pc2+Plen)=CHAR_SI;                                   //~va8kI~

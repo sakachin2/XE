@@ -1,4 +1,4 @@
-//*CID://+vb33R~:                              update#= 1142;      //~vb33R~
+//*CID://+vb33R~:                              update#= 1145;      //~vb33R~
 //*************************************************************
 //vb33:160424 LNX compiler warning for bitmask assignment(FDATE,FTIE)//~vb33I~
 //vb31:160418 (LNX64)Compiler warning                              //~vb31I~
@@ -514,7 +514,8 @@ UTRACEP("funclistds exit rc=%d,memblist=%p,dsnlist=%p\n",rc,pmemblist,pdsnlist);
 //**************************************************************** //~v727I~
 int funclistdsuser(PTHREADTB Ppthtb,char *Phostfile,char *Pdsn,char *Pmemb,char *Preadbuff)//~v727R~
 {                                                                  //~v727I~
-    char *pbuff,cmd[MAX_CMDSZ];                                    //~v72nR~
+//  char *pbuff,cmd[MAX_CMDSZ];                                    //~v72nR~//~vb33R~
+    char *pbuff,cmd[MAX_CMDSZ+32];                                 //~vb33I~
     int rc,readlen,row;                                            //~v72nR~
     int opt;                                                       //~v8@3I~
     PPDSMEMBLIST pmemblist=0;                                      //~v727I~
@@ -766,7 +767,7 @@ UTRACEP("getspfmemblist entry\n");                                 //~v727R~
 //      Ppspfi->SPFIutime.twosecs=atoi(pfmt->SLFutime+6)/2;//unit is 2 sec//~v8@AI~//~vb2JR~
 //      Ppspfi->SPFIutime.twosecs=(USHORT)atoi(pfmt->SLFutime+6)/2;//unit is 2 sec//~vb2JI~//~vb33R~
         ueditsetftimeUSHORT(0,atoi(pfmt->SLFutime),atoi(pfmt->SLFutime+3),atoi(pfmt->SLFutime+6)/2,&Ppspfi->SPFIutime);//~vb33I~
-        UTRACED("SPFIutime",&Ppspfi->SPFIutime,(int)sizeof(Ppspfi->SPFIutime));//+vb33I~
+        UTRACED("SPFIutime",&Ppspfi->SPFIutime,(int)sizeof(Ppspfi->SPFIutime));//~vb33I~
         Ppspfi->SPFIlinecnt=getenum(pfmt->SLFlinecnt);             //~v72nR~
         Ppspfi->SPFIinitcnt=getenum(pfmt->SLFinitcnt);             //~v72nR~
         pc2=pfmt->SLFuserid;                                       //~v727I~
@@ -1378,7 +1379,8 @@ UTRACEP("getfulldata exit rc=%d,totlen=%d\n",rc,totlen);           //~v719R~
 //**************************************************************** //~v72nI~
 int funcspf(PTHREADTB Ppthtb)                                      //~v72nI~
 {                                                                  //~v72nI~
-    char **popd,cmd[MAX_CMDSZ],*phostfile,*pbuff;                  //~v72nR~
+//  char **popd,cmd[MAX_CMDSZ],*phostfile,*pbuff;                  //~v72nR~//~vb33R~
+    char **popd,cmd[MAX_CMDSZ+256],*phostfile,*pbuff;              //+vb33R~
 	char buff[MAX_SCREENSZ],*spfparm;                              //~v72nR~
     int rc,readlen,row;                                            //~v72uR~
     PDSNLIST pdsnlist=0;                                           //~v72nI~

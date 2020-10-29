@@ -1,7 +1,8 @@
-//*CID://+v70qR~:                              update#=  121;      //~v70qR~
+//*CID://+v711R~:                              update#=  123;      //~v711R~
 //***********************************************************************//~v026I~
 //* utrace.c                                                       //~v022R~
 //***********************************************************************
+//v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //~v711I~
 //v70q:200919 (ARM)add gettraceopt                                 //~v70qI~
 //v709:200616 ARM:threadID of utrace by gettid():Kernel:int not by pthread_self():Posix pthread_t:handle//~v709I~
 //v706:200616 ARM:redirect UTRACE to LOGPD                         //~v706I~
@@ -90,6 +91,7 @@
     #include <sys/types.h>                                         //~v6p1I~
   #endif                                                           //~v5jaI~
 #else                                                              //~v321R~
+    #include <sys/timeb.h>                                         //+v711I~
 #include <time.h>
 #ifdef DPMI                 //DPMI version                         //~v053I~
     #include <errno.h>                                             //~v053I~
@@ -120,6 +122,8 @@
 #include <uproc2.h>                                                //~v5j0R~
 #include <ufile.h>                                                 //~v6B1I~
 #include <ufile2.h>                                                //~v6B1I~
+#define UFTIME                                                     //~v711I~
+#include <umiscf.h>                                                //~v711I~
 
 //****************************************************************
 #ifdef DOS                                                         //~v026I~
@@ -259,7 +263,7 @@ int utrace_getopt()                                                //~v70qR~
 {                                                                  //~v70qR~
     return Sutraceopt;                                             //~v70qR~
 }                                                                  //~v70qR~
-#endif                                                             //+v70qI~
+#endif                                                             //~v70qI~
 //****************************************************************
 //*parm1 :trace file name
 //*parm2 :trace option  0:inactive, 1:active, 2:ignore open err //~5807R~
@@ -722,7 +726,8 @@ struct    tm* ptm;       //date and time                           //~v57bI~
 #endif               //!UNX                                        //~v57bI~
 //*************************                                        //~v57bI~
 #ifdef UNX                                                         //~v57bI~
-    ftime(&tb);                                                    //~v57bI~
+//  ftime(&tb);                                                    //~v57bI~//~v711R~
+    uftime(&tb);                                                   //~v711I~
     ptm=localtime(&tb.time);    //date and time                    //~v57bI~
   #ifdef ARM                                                       //~v6a0I~
 //  #define gettid() syscall(__NR_gettid)                          //~v6a0R~

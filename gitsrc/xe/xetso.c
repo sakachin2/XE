@@ -1,9 +1,10 @@
-//*CID://+vb7eR~:                             update#=  536;       //+vb7eR~
+//*CID://+vbs7R~:                             update#=  538;       //~vbs7R~
 //*************************************************************
 //*xetso.c
 //**interface to xe3270
 //*************************************************************
-//vb7e:170108 FTP crash by longname                                //+vb7eI~
+//vbs7:201028 Debian10 compiler warning -Wformat-overflow          //~vbs7I~
+//vb7e:170108 FTP crash by longname                                //~vb7eI~
 //vb72:161212 (Win10) missing error.h , use winerror.h             //~vb72I~
 //vb31:160418 (LNX64)Compiler warning                              //~vb31I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
@@ -114,7 +115,8 @@ int xetsoinit(int Popt)
 {
 	int opt=0;
     char fpath[_MAX_PATH];
-    char cmdwk[_MAX_PATH+128];                                     //~v715I~
+//  char cmdwk[_MAX_PATH+128];                                     //~v715I~//~vbs7R~
+    char cmdwk[_MAX_PATH*2+128];                                   //+vbs7R~
     void *parg[4];                                                 //~v715R~
 //*****************************::
 	Sftpopt=Popt;
@@ -431,8 +433,8 @@ int xetsosave(int Popt,PUFILEH Ppfh,PUFTPHOST Ppuftpht,
                                                                    //~v72nI~
 	phostfile=Ptarget;
 	appendfile=Ppfh->UFHftpwdfnm;
-//  xeftpgetwdfname(Ppuftpht,phostfile,localfile);                 //+vb7eR~
-    xeftpgetwdfname(Ppuftpht,phostfile,localfile,sizeof(localfile));//+vb7eI~
+//  xeftpgetwdfname(Ppuftpht,phostfile,localfile);                 //~vb7eR~
+    xeftpgetwdfname(Ppuftpht,phostfile,localfile,sizeof(localfile));//~vb7eI~
     strcat(localfile,"_appended");  //avoid timestamp match
 //  rc=xeftpget(Popt,Ppuftpht,phostfile,localfile);	//get target file append to//~v72nR~
 //  rc=xeftpget(opt,Ppuftpht,phostfile,localfile);	//get target file append to//~v8@sR~
@@ -629,8 +631,8 @@ int xetsoupdatechk(PUCLIENTWE Ppcw,PUFILEH Ppfh)
         	rc=8;                                                  //~v8@AI~
         return rc;       //no file compare if spf info exist       //~v8@AI~
     }                                                              //~v8@AI~
-//  xeftpgetwdfname(puftph,phostfilename,templocalfnm);	//get tempname to re-download now//+vb7eR~
-    xeftpgetwdfname(puftph,phostfilename,templocalfnm,sizeof(templocalfnm));	//get tempname to re-download now//+vb7eI~
+//  xeftpgetwdfname(puftph,phostfilename,templocalfnm);	//get tempname to re-download now//~vb7eR~
+    xeftpgetwdfname(puftph,phostfilename,templocalfnm,sizeof(templocalfnm));	//get tempname to re-download now//~vb7eI~
     strcat(templocalfnm,TSO_POSTFIX_UPDATECHK);                    //~v71RI~
     opt=((UCBITCHK(Ppfh->UFHflag4,UFHF4BIN)|UCBITCHK(Ppfh->UFHflag5,UFHF5HEX))!=0)*XEFTPO_BIN;
 //  rc=rc2=xeftpget(opt,puftph,phostfilename,templocalfnm);        //~v8@sR~
@@ -692,8 +694,8 @@ int xetsofilefindcopy(int Pmsgopt,PUFTPHOST Ppuftph,UCHAR *Phostfile,
     	plocalfile=Plocalfile;
     else
     {
-//      xeftpgetwdfname(Ppuftph,Phostfile,localfile);              //+vb7eR~
-        xeftpgetwdfname(Ppuftph,Phostfile,localfile,sizeof(localfile));//+vb7eI~
+//      xeftpgetwdfname(Ppuftph,Phostfile,localfile);              //~vb7eR~
+        xeftpgetwdfname(Ppuftph,Phostfile,localfile,sizeof(localfile));//~vb7eI~
     	plocalfile=localfile;
     }
     if (strpbrk(Phostfile,"*?")) //wild card

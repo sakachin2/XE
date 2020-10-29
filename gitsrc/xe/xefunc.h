@@ -1,7 +1,8 @@
-//*CID://+vbi3R~:                             update#=  152;       //~vbe0R~//~vbi3R~
+//*CID://+vbi3R~:                             update#=  153;       //~vbe0R~//~vbi3R~
 //*********************************************************************
 //* xefunc.h
 //*********************************************************************
+//vbs6:201026 profile COL cmd for dir, "col on dir" follows dir setting; specify "col on default" for each file.//+vbi3I~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vbe0:171231 add function to search xml tag pair by A+/           //~vbe0I~
 //vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg//~vbdsI~
@@ -646,8 +647,8 @@ typedef int (FTFUNC)(FUNCPARMS);
 	FTFUNC func_revfindPSF;                                        //~vb50R~
 	FTFUNC func_displayPS;                                         //~vbCBI~
 	FTFUNC func_shortpath;                                         //~vba2I~
-	FTFUNC func_cmdhistlc;                                         //+vbi3I~
-	FTFUNC func_cmdhistu8;                                         //+vbi3I~
+	FTFUNC func_cmdhistlc;                                         //~vbi3I~
+	FTFUNC func_cmdhistu8;                                         //~vbi3I~
                                                                 //~5224I~
 //************************************                          //~5224M~
 //*function key asignment table                                 //~5224M~
@@ -703,6 +704,7 @@ typedef struct _FUNCTBL                                         //~5224M~
 #define FTF2FINDCMD      0x08		//find cmd                     //~vbCCI~
 #define FTF2CHANGECMD    0x10		//change cmd                   //~vbCCI~
 #define FTF2DUPACMDFUNC  0x20       //alias cmd duplicated allows and process both by a func//~vbdsI~
+#define FTF2DIRCMD       0x40       //accept only cmd for dirlist(funcKey is not accepted)//+vbi3I~
 		UCHAR  FTrsv  [3];			//command word                 //~v71PI~
 } FUNCTBL,*PFUNCTBL;                                               //~v0ioR~
 typedef struct _FUNCTBLC {                                         //~v0ihI~

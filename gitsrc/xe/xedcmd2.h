@@ -1,8 +1,9 @@
-//*CID://+vavMR~:         update#=      4                          //+vavMR~
+//*CID://+vbs0R~:         update#=      6                          //~vbs0R~
 //****************************************************************//~v051I~
 //xedcmd2.h                                                     //~v051I~
 //****************************************************************//~v061I~
-//vavM:140405 (W32UNICODE)xfc/xdc by spawn(because cmd propt translate filename to bestfit)//+vavMI~
+//vbs0:201021 compile/link err on Manjaro(duplicate definition Gdcmd2wxeshellcmd)//~vbs0I~
+//vavM:140405 (W32UNICODE)xfc/xdc by spawn(because cmd propt translate filename to bestfit)//~vavMI~
 //va7T:100909 cpeb converter parm support:for xprint               //~va7TI~
 //va57:100429 dlcmd "p" support utf8 file using profile            //~va57I~
 //va50:100324 Raw EBCDIC file support for NFS mount                //~va50I~
@@ -36,7 +37,8 @@
 //***************************************                          //~v50MI~
 	XEDCMD2_EXT   int Gcmdbuffsz_row,Gcmdbuffsz_col;               //~v50MI~
 #ifndef AAA                                                        //~v76tI~
-	char *Gdcmd2wxeshellcmd;                                       //~v76tI~
+//  char *Gdcmd2wxeshellcmd;                                       //~v76tI~//~vbs0R~
+    XEDCMD2_EXT   char *Gdcmd2wxeshellcmd;                         //+vbs0R~
 #endif                                                             //~v76tI~
 //***************************************                          //~v50MI~
 #ifdef UTF8UCS2                                                    //~va57I~
@@ -83,5 +85,5 @@ int dcmdscrfnmedit(int Popt,PUCLIENTWE Ppcw,UCHAR *Pcmd,char  **Ppout);//~v77yR~
 #define DCSDE_FREEINPUT    0x01    //free old input if newly alloced//~v77yR~
 //**************************************************************** //~va57I~
 int dcmdxpsetebcparm(int Popt,PUFILEH Ppfh,char *Poutstr);         //~va57I~
-//**************************************************************** //+vavMI~
-int dcmdsystemcall_spawn(int Popt,PUCLIENTWE Ppcw,char *Pcmd,int Pflag,char *Pstdofnm,char *Pstdefnm);//+vavMI~
+//**************************************************************** //~vavMI~
+int dcmdsystemcall_spawn(int Popt,PUCLIENTWE Ppcw,char *Pcmd,int Pflag,char *Pstdofnm,char *Pstdefnm);//~vavMI~

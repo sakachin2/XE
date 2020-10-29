@@ -1,4 +1,4 @@
-//*CID://+vb7mR~:                             update#=  866;       //~vb7mR~
+//*CID://+vbs6R~:                             update#=  870;       //~vbs6R~
 //*************************************************************    
 //*xefcmd6.c*                                                      //~v78rR~
 //**file cmd:PROfile                                               //~v78rI~
@@ -6,6 +6,7 @@
 //**file cmd:Rotate  ROT { R | L | X | Y | RX | LX | RJ | LJ } [NX] [TAIL] [n-m] [.lab1 .lab2]//~v511R~
 //** NX: x,y,rj,lj only                                            //~v511R~
 //*************************************************************    
+//vbs6:201026 profile COL cmd for dir, "col on dir" follows dir setting//~vbs6I~
 //vb7m:170116 profile filename is too long over 255(CreateFile failes with GetLastError()=123(name syntax err)//~vb7mI~
 //vb7b:170105 (Bug by vb57)profile record is out of profile dir    //~vb7bI~
 //vb79:170104 _MAX_PATH overflowchk for profile record             //~vb79I~
@@ -1925,13 +1926,14 @@ int fcmdprofgetprofile(int Popt,PUFILEH Ppfh,long *Ppsetflag)      //~v78rR~
         if (prof.PROFcols==PROF_COLSON)                            //~v78rR~
         {                                                          //~v78rI~
         	setflag|=FPURO_COLS;                                   //~v78rI~
-            umemtrim(UMTO_1ST,prof.PROFcolstype,MAXCOLSTYPNM,' ',Ppfh->UFHcolstype,0);//~v78rM~
+//          umemtrim(UMTO_1ST,prof.PROFcolstype,MAXCOLSTYPNM,' ',Ppfh->UFHcolstype,0);//~vbs6R~
         }                                                          //~v78rI~
         else                                                       //~v78rI~
         if (prof.PROFcols==PROF_COLSDEF)                           //~v78rI~
         {                                                          //~v78rI~
         	setflag|=FPURO_COLS|FPURO_COLSDEF;                     //~v78rI~
         }                                                          //~v78rI~
+        umemtrim(UMTO_1ST,prof.PROFcolstype,MAXCOLSTYPNM,' ',Ppfh->UFHcolstype,0);//~vbs6I~
         if (*prof.PROFtabctr!=' ')                                 //~v8@2I~
         {                                                          //~v8@2I~
         	setflag|=FPURO_TABCTR;                                 //~v8@2I~
@@ -2182,6 +2184,7 @@ int fcmdprofmergerecord(PPROFILE Ppprof1,PPROFILE Ppprof2)         //~v78rR~
     if (Ppprof1->PROFcols==' ')                                    //~v78rI~
         Ppprof1->PROFcols=Ppprof2->PROFcols;                       //~v78rI~
     if (Ppprof1->PROFcolstype[0]==' ')                             //~v78rI~
+      if (Ppprof2->PROFcols==PROF_COLSON)	//dir is col on        //+vbs6I~
         memcpy(Ppprof1->PROFcolstype,Ppprof2->PROFcolstype,MAXCOLSTYPNM);//~v78rR~
 #ifdef UTF8SUPPH                                                   //~v78wR~//~va00R~
     if (Ppprof1->PROFcp==' ')                                      //~v78wI~//~va00I~
@@ -2809,7 +2812,7 @@ int fcmdprofgetfnm(int Popt,char *Pinpfnm,char *Poutfnm,char *Poutpdirfnm,char *
 #endif                                                             //~vb7mI~
     return 0;                                                      //~v78rI~
 }//fcmdprofgetfnm                                                  //~v78rI~
-#ifdef W32                                                         //+vb7mI~
+#ifdef W32                                                         //~vb7mI~
 //**************************************************************** //~v78rI~//~vb7mI~
 // fcmdprofgetfnm                                                  //~v78rI~//~vb7mI~
 //*get profile data filename                                       //~v78rR~//~vb7mI~
@@ -2946,7 +2949,7 @@ int fcmdprofgetfnmShort(int Popt,char *Pinpfnm,char *Poutfnm,char *Poutpdirfnm,i
     }                                                              //~v78rI~//~vb7mI~
     return 0;                                                      //~v78rI~//~vb7mI~
 }//fcmdprofgetfnmShort                                                  //~v78rI~//~vb7mR~
-#endif                                                             //+vb7mI~
+#endif                                                             //~vb7mI~
 //**************************************************************** //~v78rI~
 // fcmdprofreadrecord                                              //~v78rR~
 //*read profile data                                               //~v78rI~

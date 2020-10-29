@@ -1,3 +1,8 @@
+//*********  20201028 v129P release   ****************
+//vaq1:201029 Debian10 compiler warning -Wformat-overflow
+//            xdc.c xfs.c
+//vaq0:201022 xts v1.7 ftime deprecated(ftime is obsoleted POSIX2008)
+//            xts.c
 //*********  20200923 v129N release   ****************
 //vap2:200921 xutf8 v1.3:dispaly utf8 by hex notation
 //            xutf8.c

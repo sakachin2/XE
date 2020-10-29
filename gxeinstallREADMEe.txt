@@ -455,4 +455,4 @@ V129P 2020/10/23
          lingnome-2 required          ==> ./configure --enable-libgnome2=no
          correct make to qmake        ==> packman -S make
 
-         console version Backspec dose not word ==>  specify --7 option "xe --7B"
+         console version Backspec dose not work ==>  specify --7 option "xe --7B"

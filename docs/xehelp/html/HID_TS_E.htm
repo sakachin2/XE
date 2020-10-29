@@ -18,10 +18,14 @@ p.MsoPlainText
 	margin-right: 0mm;
 	margin-top: 0mm;
 }
+ .auto-style1 {
+	margin-left: 6px;
+}
  -->
 </STYLE>
 </HEAD>
 <BODY bgcolor="#FFFFE2">
+<PRE>P129P 2020/10/23</PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:font 12pt;">(A) Automake package installation step
 
     You may update configure before ./configure
@@ -945,7 +949,15 @@ configure on Emulator: image:"2020-02-13-raspbian-full" on QEMU3.1.0.<o:p></o:p>
 <span lang="EN-US" style="font-family:&quot;ＭＳ ゴシック&quot;;mso-bidi-font-family:
 &quot;ＭＳ ゴシック&quot;"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span>==&gt;./configure completed<o:p></o:p></span></p>
-<PRE><SPAN STYLE="color:#000000;font-size:font 12pt;">
+<PRE class="auto-style1"><SPAN STYLE="color:#000000;font-size:font 12pt;">(J) Manjaro gnome 20.1.2 2020/10/23 
+      C compile not found ==&gt; pacman -S gcc
+      ncursesw/ncurses.h not found ==&gt; ./configure --enable-ncursesw=no
+      pkg-config not found ==&gt; pacman -S pkg-config
+      lingnome-2 required ==&gt; ./configure --enable-libgnome2=no
+      correct make to qmake ==&gt; packman -S make
+
+      console version Backspec dose not work ==&gt; specify --7 option "xe --7B"
+
 
 
 </SPAN></PRE>

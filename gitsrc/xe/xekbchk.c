@@ -1,9 +1,10 @@
-//*CID://+vbe0R~:                             update#=  520;       //+vbe0R~
+//*CID://+vbs0R~:                             update#=  524;       //~vbs0R~
 //*************************************************************
 //*xekbchk.c                                                       //~0924R~//~van6R~
 //*	kbd scan/char chk                                              //~van6R~
 //*************************************************************
-//vbe0:171231 add function to search xml tag pair by A+/           //+vbe0I~
+//vbs0:201021 compile/link err on Manjaro(duplicate definition Gdcmd2wxeshellcmd)//~vbs0I~
+//vbe0:171231 add function to search xml tag pair by A+/           //~vbe0I~
 //vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I~
 //vb50:160827 accept S+A/C+extended key                            //~vb50I~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
@@ -152,7 +153,10 @@
 #include "xefunc.h"                                                //~1304I~
 #include "xefunc2.h"                                               //~v518I~
                                                                    //~v705I~
-#define GLOBAL_FUNCT                                               //~v705I~
+//#define GLOBAL_FUNCT                                               //~v705I~//~vbs0R~
+#ifdef W32
+	#define GLOBAL_FUNCT
+#endif
 #include "xefunct.h"                                               //~v518I~
                                                                    //~v705I~
 #include "xepan.h"                                                 //~v518I~
@@ -160,7 +164,7 @@
 #include "xefile4.h"                                               //~v518I~
 #include "xefile7.h"                                               //~v518I~
 #ifdef UTF8SUPPH                                                   //~vb4jM~
-	#define  GLOBAL_XEUTF                                          //~vb4jM~
+//    #define  GLOBAL_XEUTF                                          //~vb4jM~//~vbs0R~
 	#include "xeutf.h"                                             //~vb4jM~
 #endif                                                             //~vb4jM~
 #define XEOPT_GLOBAL                                               //~v79zI~
@@ -174,6 +178,9 @@
 #define  LINE_KEY      4                                           //~va1cR~
 #define  LINE_CODE     5                                           //~va1cR~
 #define  MAXESCSEQ    10   //loop stopper                          //~vagiR~
+//******************                                               //~vbs0I~
+//  int Gstrinputlen;	//used in xekbd, defined in xefunct.h which is extern by GLOBAL_FUNCT//+vbs0R~
+//******************                                               //~vbs0I~
 #ifdef UNX                                                         //~v400R~
 static char *Sstrfnm;                                              //~v403M~
 static char *Sckfnm;                                               //~v40aI~
@@ -1894,6 +1901,6 @@ int func_findPSF(PUCLIENTWE Ppcw){return 0;}                       //~vbCBR~
 int func_displayPS(PUCLIENTWE Ppcw){return 0;}                     //~vbCBI~
 int func_revfindPSP(PUCLIENTWE Ppcw){return 0;}                    //~vb50I~
 int func_revfindPSF(PUCLIENTWE Ppcw){return 0;}                    //~vb50I~
-int func_xmlsrch(PUCLIENTWE Ppcw){return 0;}                       //+vbe0I~
+int func_xmlsrch(PUCLIENTWE Ppcw){return 0;}                       //~vbe0I~
 char *funcsp_search(int Popt,char *Ppname){return 0;}              //~vba2I~
 #endif//UTF8SUPPH                                                  //~va50I~

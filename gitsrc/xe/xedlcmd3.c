@@ -1,10 +1,11 @@
-//*CID://+vb7cR~:                             update#=  308;       //+vb7cR~
+//*CID://+vbs7R~:                             update#=  311;       //~vb7cR~//~vbs7R~
 //************************************************************* //~5820I~
 //*xedlcmd3.c                                                   //~5820I~
 //* each dir line cmd process                                   //~5820I~
 //* delete(d)/rename(r)/attrib(a)/print(p)/xcopy(c)/xmove(m)    //~v05jR~
 //* deleteforcereadonly(/) deletenoundel(z) deletenoundelreadonly(0)//~v05YR~
 //************************************************************* //~5820I~
+//vbs7:201028 Debian10 compiler warning -Wformat-overflow          //~vbs7I~
 //vb7g:170114 (Win)longname support(expand buffsz)                 //~vb7gI~
 //vb7e:170108 FTP crash by longname                                //~vb7eI~
 //vb7c:170106 longname support; del on root file(xmove to undeldir fails)//~vb7cI~
@@ -1514,7 +1515,7 @@ int dlcmdappendwildcard(int Popt,PUFILEH Ppfh,PUDIRLH Ppdh,char *Pfullpathname,i
     else                                                           //~vb7cI~
     {                                                              //~vb7cI~
         UstrncpyZ(Pfullpathname,wkfpath,(size_t)Pbuffsz);          //~vb7cR~
-        rc=UMAXPATHCHK_RC(wkfpath,(size_t)Pbuffsz,ENAMETOOLONG,1/*msgsw*/);//+vb7cR~
+        rc=UMAXPATHCHK_RC(wkfpath,(size_t)Pbuffsz,ENAMETOOLONG,1/*msgsw*/);//~vb7cR~
     }                                                              //~vb7cI~
     return rc;                                                     //~vb7cI~
 }//dlcmdappendwildcard                                             //~v71oR~
@@ -1563,7 +1564,8 @@ int dlcxpsetremotefname(PUFILEH Ppfh,PUDIRLH Ppdh,char *Ppremotefname,int Ppathl
     int opt,dirsw,pathlen;                                         //~v57vR~
     int rc;                                                        //~v57BI~
     int rc2;                                                       //~v71jI~
-    UCHAR  wkout[1+_MAX_PATH+1+_MAX_PATH+1],wk[_MAX_PATH]; //<     //~v57vR~
+//  UCHAR  wkout[1+_MAX_PATH+1+_MAX_PATH+1],wk[_MAX_PATH]; //<     //~v57vR~//~vbs7R~
+    UCHAR  wkout[_MAX_PATH*2+DSN_MAXLEN+32],wk[_MAX_PATH]; //<     //+vbs7R~
     UCHAR  wkdsn[DSN_MAXLEN];                                      //~v71jI~
     UCHAR  xptmpdir[_MAX_PATH];                                    //~v57BI~
 //******************                                               //~v57uI~
@@ -1642,7 +1644,8 @@ int dlcxpsetremotefname(PUFILEH Ppfh,PUDIRLH Ppdh,char *Ppremotefname,int Ppathl
 int dlcxpdelremotetemp(void)                                       //~v57uI~
 {                                                                  //~v57uI~
 	int ctr=0;                                                     //~v57uI~
-	char fpath[_MAX_PATH];                                         //~v57uI~
+//	char fpath[_MAX_PATH];                                         //~v57uI~//~vbs7R~
+  	char fpath[_MAX_PATH+32];                                      //~vbs7I~
 //******************                                               //~v57uI~
     if (!*Sxptmpdir)	//not created                              //~v57BR~
         return 4;                                                  //~v57BI~

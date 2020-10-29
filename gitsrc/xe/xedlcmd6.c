@@ -1,4 +1,4 @@
-//*CID://+vbp0R~:                             update#=  401;       //~vbj1R~//~vbp0R~
+//*CID://+vbs7R~:                             update#=  404;       //~vbj1R~//~vbs7R~
 //*************************************************************
 //*xedlcmd6.c                                                      //~v51WR~
 //* %:apply command                                                //~v51WR~
@@ -6,6 +6,7 @@
 //* #:submit/rsh                                                   //~v59eI~
 //* g:grep                                                         //~v76gI~
 //*************************************************************
+//vbs7:201028 Debian10 compiler warning -Wformat-overflow          //~vbs7I~
 //vbp0:180922 &(spawn) to msi get errmsg "not found or not executable",add "try !" to execute default app for the extension//~vbp0I~
 //vbj1:180305 cpu8 option to "=" cmd                               //~vb7eI~
 //vb7e:170108 FTP crash by longname                                //~vb7eI~
@@ -402,7 +403,8 @@ int dlcmdgetcmdstrtso(PUCLIENTWE Ppcw,PUFILEH Ppfh,PUDLCMD Pplc,char *Pcmdstr)//
     PUDIRLH pdh;                                                   //~v71NI~
     UCHAR  parmcmd[MAXCOLUMN];                                     //~v71NI~
     UCHAR  fullpathname[_MAX_PATH];                                //~v71NI~
-    UCHAR  localfnm[_MAX_PATH];                                    //~v71NI~
+//  UCHAR  localfnm[_MAX_PATH];                                    //~vbs7R~
+    UCHAR  localfnm[_MAX_PATH+256];                                //~vbs7I~
     PUFTPHOST puftph;                                              //~v8@BR~
     int rc;                                                        //~v71NI~
 //*******************                                              //~v71NI~
@@ -720,7 +722,8 @@ int dlcmdappasync(PUCLIENTWE Ppcw,PUDLCMD Pplc,PUDLCMD Pplcdummy)  //~vamyI~
 {                                                                  //~vamyI~
     PULINEH plh;                                                   //~vamyI~
     PUFILEH pfh;                                                   //~vamyI~
-    UCHAR  cmdstr[_MAX_PATH+MAXCOLUMN+32];                         //~vamyI~
+//  UCHAR  cmdstr[_MAX_PATH+MAXCOLUMN+32];                         //~vbs7R~
+    UCHAR  cmdstr[_MAX_PATH+_MAX_PATH+32];                         //~vbs7R~
     UCHAR  redirectfile[_MAX_PATH];                                //~vamHI~
     int rc;                                                        //~vamyR~
     UCHAR wkpot[_MAX_PATH+MAXCOLUMN+32+1];                         //~vamyI~
@@ -874,7 +877,7 @@ int dlcmdspawn(PUCLIENTWE Ppcw,PUDLCMD Pplc,PUDLCMD Pplcdummy)     //~v662I~
         Ppcw->UCWparm=cmdstr;                                      //~v662I~
         rc=dcmd_spawn(Ppcw);                                       //~v662I~
         if (rc)                                                    //~vbp0I~
-      		uerrmsgcat(";try \"!\" line cmd if default app is defined to the filename extension.",//+vbp0R~
+      		uerrmsgcat(";try \"!\" line cmd if default app is defined to the filename extension.",//~vbp0R~
       	        "、この拡張子に関連付けされたアプリがある場合は \"!\" 行コマンドを試してください");//~vbp0I~
 #ifdef FTPSUPP                                                     //~v662I~
   	}//local submit                                                //~v662I~
@@ -1169,7 +1172,7 @@ int dlcmdcompare(PUCLIENTWE Ppcw,PUDLCMD Pplc1,PUDLCMD Pplc2)      //~v75MR~
     UCHAR  fnm1[_MAX_PATH],fnm2[_MAX_PATH],fpath[_MAX_PATH],*pfnm1,*pfnm2;//~v75MI~
     UCHAR  pdhfnm1[_MAX_PATH],pdhfnm2[_MAX_PATH],redirectfnm[_MAX_PATH];//~v75MR~
 //  UCHAR  cmdstr[_MAX_PATH+MAXCOLUMN],*pc,*pengmode;              //~v75MR~//~vavHR~
-    UCHAR  cmdstr[_MAX_PATH*2+MAXCOLUMN],*pc,*pengmode;            //~vavHI~
+    UCHAR  cmdstr[_MAX_PATH*2+MAXCOLUMN+256],*pc,*pengmode;            //~vavHI~//+vbs7R~
 	PUDLCMD plc;                                                   //~v75MI~
     PULINEH plh1,plh2=NULL,plh;                                         //~v75MR~//~vafcR~
     PUFILEH pfh,pfh1,pfh2=NULL;                                         //~v75MR~//~vafcR~

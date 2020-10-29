@@ -1,3 +1,10 @@
+//*********  20201028 v129P release     ****************
+//v712:201023 manjaro mouse read format 0x1b[<b;x;yM
+//            ukbdlnxm.c ukbdlnxc.c ukbdlnxm.h
+//v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)
+//            umiscf.c/h ucalc2.c uedit.c uerr.c uftp2.c utrace.c utils.c ulibarm.c
+//v710:201021 (BUG)duplicate declaration Gudbcschk_flag
+//            udbcschk2.c
 //*********  20200923 v129N release     ****************
 //v70q:200919 (ARM)add gettraceopt
 //            utrace.c/h

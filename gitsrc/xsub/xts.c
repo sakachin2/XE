@@ -1,7 +1,8 @@
-//CID://+vaa2R~:           update#= 15                             //~vaa2R~
+//CID://+vaq0R~:           update#= 16                             //+vaq0R~
 //***********************************************************
 //* XTS    : set file/dir timestamp
 //***********************************************************
+//vaq0:201022 xts v1.7 ftime deprecated(ftime is obsoleted POSIX2008)//+vaq0I~
 //vaa2:160424 Lnx64 compiler warning(FDATE/FTIME)                  //~vaa2I~
 //vaa0:160417 Lnx compiler warning                                 //~vaa0I~
 //va6c:120808 xts v1.6 FileTimeToDosDateTime round up odd sec to next even number//~va6cI~
@@ -19,7 +20,7 @@
 //*v1.1 *980921 filename .a or ..a etc under win95                 //~v1.1I~
 //***********************************************************
 
-#define VER "V1.6"   //version                                     //~va3uR~//~vaa0R~
+#define VER "V1.7"   //version                                     //~va3uR~//~vaa0R~//+vaq0R~
 #define PGM "xts"                                                  //~v1.1R~
 
 //**********************************************/
@@ -64,6 +65,8 @@
 #ifdef DPMI                 //DPMI version                         //~v1.0I~
 	#include <ufile4.h>                                            //~v1.0I~
 #endif                                                             //~v1.0I~
+#define UFTIME                                                     //+vaq0I~
+#include <umiscf.h>                                                //+vaq0I~
 //*********************************************************************
 
 //*********************************************************************
@@ -524,7 +527,7 @@ static FTIME Sftm;
 //      Sftm.hours  =(USHORT)ii;                                   //~va68R~//~vaa2R~
 //      Sftm.minutes=(USHORT)jj;                                   //~va68R~//~vaa2R~
 //      Sftm.twosecs=(USHORT)(kk/2);                               //~va68R~//~vaa2R~
-   		ueditsetftimeUSHORT(0,ii,jj,kk/2,&Sftm);                   //+vaa2R~
+   		ueditsetftimeUSHORT(0,ii,jj,kk/2,&Sftm);                   //~vaa2R~
         Spinptime=&Sftm;
         Soddsecinput=kk&1;                                         //~va68I~
     }
@@ -666,12 +669,14 @@ int cmdtime(char *Pcmd,int Ploop)                                  //~va3vI~
     printf("loop=%d,cmd:%s\n",Ploop,Pcmd);                         //~va3vR~
 	do                                                             //~va3vI~
     {                                                              //~va3vI~
-		ftime(&tmb);                                               //~va3vR~
+//  	ftime(&tmb);                                               //~va3vR~//+vaq0R~
+    	uftime(&tmb);                                              //+vaq0I~
         sec1=(long)tmb.time ;                                      //~va3vI~
         mili1=(long)tmb.millitm;                                   //~va3vR~
 //printf("start %d,%d\n",sec1,mili1);                              //~va3vR~
         system(Pcmd);                                              //~va3vI~
-		ftime(&tmb);                                               //~va3vR~
+//  	ftime(&tmb);                                               //~va3vR~//+vaq0R~
+    	uftime(&tmb);                                              //+vaq0I~
         sec2=(long)tmb.time ;                                      //~va3vI~
         mili2=(long)tmb.millitm;                                   //~va3vR~
 //printf("end %d,%d\n",sec2,mili2);                                //~va3vR~

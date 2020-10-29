@@ -1,5 +1,6 @@
-//*CID://+vc1cR~:                             update#=  483;       //~v6K1R~//~vc1cR~
+//*CID://+v711R~:                             update#=  484;       //+v711R~
 //**************************************************               //~v6a0I~
+//v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //+v711I~
 //vc1c 2020/06/19 ARM;/proc/version access denied, use Build.VERSION.SDK_INT R RELEASE//~vc1cI~
 //v6K1:170225 (ARM)ftime obsoleted at POSIX2008; linker fail by undefined reference by this reason?//~v6K1I~
 //v6z0:150529 by xuerpck(uerrmsg parmchk)                          //~v6z0I~
@@ -297,23 +298,24 @@ int uviol_konchk2(void)                                            //~v6a0I~
 //*******************************************************          //~v6K1I~
 int ftime(struct timeb * Ptb)                                      //~v6K1R~
 {                                                                  //~v6K1I~
-	struct timezone tz;                                            //~v6K1I~
-	struct timeval  tv;                                            //~v6K1I~
-//*********************                                            //~v6K1I~
-	if (gettimeofday(&tv,&tz)<0)                                   //~v6K1I~
-    	return -1;                                                 //~v6K1I~
-        Ptb->millitm=tv.tv_usec/1000;                              //~v6K1R~
-        Ptb->time=tv.tv_sec;                                       //~v6K1R~
-        Ptb->timezone=tz.tz_minuteswest;                           //~v6K1R~
-        Ptb->dstflag=tz.tz_dsttime;                                //~v6K1R~
-    return 0;                                                      //~v6K1I~
+//    struct timezone tz;                                            //~v6K1I~//+v711R~
+//    struct timeval  tv;                                            //~v6K1I~//+v711R~
+////*********************                                            //~v6K1I~//+v711R~
+//    if (gettimeofday(&tv,&tz)<0)                                   //~v6K1I~//+v711R~
+//        return -1;                                                 //~v6K1I~//+v711R~
+//        Ptb->millitm=tv.tv_usec/1000;                              //~v6K1R~//+v711R~
+//        Ptb->time=tv.tv_sec;                                       //~v6K1R~//+v711R~
+//        Ptb->timezone=tz.tz_minuteswest;                           //~v6K1R~//+v711R~
+//        Ptb->dstflag=tz.tz_dsttime;                                //~v6K1R~//+v711R~
+//    return 0;                                                      //~v6K1I~//+v711R~
+	return uftime(Ptb);                                            //+v711I~
 }//ftime                                                           //~v6K1I~
 //*******************************************************          //~vc1cI~
-void setArmOSVersion(int Popt,int PapiLevel,int PapiRelease)       //+vc1cR~
+void setArmOSVersion(int Popt,int PapiLevel,int PapiRelease)       //~vc1cR~
 {                                                                  //~vc1cI~
 //*********************                                            //~vc1cI~
-	GarmApiLevel=PapiLevel;                                        //+vc1cR~
+	GarmApiLevel=PapiLevel;                                        //~vc1cR~
 	GarmApiRelease=PapiRelease;                                    //~vc1cI~
-    UTRACEP("%s:api=%d,rel=%d\n",UTT,PapiLevel,PapiRelease);       //+vc1cI~
+    UTRACEP("%s:api=%d,rel=%d\n",UTT,PapiLevel,PapiRelease);       //~vc1cI~
 }                                                                  //~vc1cI~
 #endif //ARM                                                       //~v6K1I~

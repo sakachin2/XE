@@ -1,9 +1,10 @@
-//*CID://+vb7eR~:                             update#=  593;       //+vb7eR~
+//*CID://+vbs7R~:                             update#=  595;       //+vbs7R~
 //************************************************************* //~v051I~
 //*xedcmd3.c                                                       //~v765R~
 //* submit,rsh                                                     //~v59cR~
 //************************************************************* //~v051I~
-//vb7e:170108 FTP crash by longname                                //+vb7eI~
+//vbs7:201028 Debian10 compiler warning -Wformat-overflow          //+vbs7I~
+//vb7e:170108 FTP crash by longname                                //~vb7eI~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vafc:120607 C4701 warning(used uninitialized variable) by VC6    //~vafcI~
 //vaa7:111117 (gcc4.6)Warning:unused-but-set                       //~vaa7I~
@@ -469,8 +470,8 @@ int func_submit(PUCLIENTWE Ppcw)                                   //~v0k4I~
       {                                                            //~v78VI~
        if (!UFTPHISTSOSUBM(puftph)) //not use TSO SUBMIT cmd       //~v78XR~
        {                                                           //~v8@BI~
-//		if (xeftpgetremotecopy(XEFTP_GRC_CHKNORMAL|XEFTP_GRC_FPATH,fnm,puftph,cmd,fnm))//~v78VI~//+vb7eR~
-  		if (xeftpgetremotecopy(XEFTP_GRC_CHKNORMAL|XEFTP_GRC_FPATH,fnm,puftph,cmd,sizeof(cmd),fnm))//+vb7eI~
+//		if (xeftpgetremotecopy(XEFTP_GRC_CHKNORMAL|XEFTP_GRC_FPATH,fnm,puftph,cmd,fnm))//~v78VI~//~vb7eR~
+  		if (xeftpgetremotecopy(XEFTP_GRC_CHKNORMAL|XEFTP_GRC_FPATH,fnm,puftph,cmd,sizeof(cmd),fnm))//~vb7eI~
             return 4;                                              //~v78VI~
        }                                                           //~v8@BI~
         tsofilesw=1;                                               //~v78VI~
@@ -1247,7 +1248,8 @@ int dcmdxenvfile(int Popt,char *Pfnm)                              //~v59CR~
 //**************************************************************** //~v59DI~
 int dcmdenvinit(char *Postype)                                     //~v59DI~
 {                                                                  //~v59DI~
-    char wkfname[_MAX_PATH];                                       //~v59DI~
+//  char wkfname[_MAX_PATH];                                       //+vbs7R~
+    char wkfname[_MAX_PATH+256];                                   //+vbs7R~
     int rc;                                                        //~v59DI~
 //*******************************                                  //~v59DI~
     sprintf(wkfname,"%sxe%s.env",Gworkdir,Postype);                //~v59DI~

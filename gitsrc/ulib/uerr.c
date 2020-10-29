@@ -1,8 +1,9 @@
-//*CID://+v70nR~:                              update#=  321       //~v70nR~
+//*CID://+v711R~:                              update#=  322       //+v711R~
 //*************************************************************
 //*uerrexit/uerrmsg/uerrexit_init/uerrmsg_init/ugeterrmsg**
 //*uerrapi1,uerrapi1x,uerrapi0,uerrapi0x                           //~v040R~
 //*************************************************************
+//v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //+v711I~
 //v70n:200902 (ARM)uerrexit by locale                              //~v70nI~
 //v70k:200802 (ARM:BUG)uerrmsg always english mode                 //~v70kI~
 //v702:200615 ARM compiler warning                                 //~v702I~
@@ -226,6 +227,8 @@
 #include <ufile.h>                                                 //~vaucI~
 #include <ufile2.h>                                                //~v6T7I~
 #include <ufilew.h>                                                //~vaucI~
+#define UFTIME                                                     //+v711I~
+#include <umiscf.h>                                                //+v711I~
 //*******************************************************
 #define MAXPARM   10
 #define MAXTITLE    64
@@ -354,7 +357,8 @@ void ubell(void)
 //      dummyparm=Sbellcaller;                                     //~v530R~
 //      Sbellcaller=(ULONG)*(ULONG*)((ULONG)&dummyparm+RET_ADDR_POS);//~v530R~
         memcpy(&oldtime,&Sbelltime,sizeof(oldtime));               //~v297R~
-        ftime(&Sbelltime);                                         //~v297R~
+//      ftime(&Sbelltime);                                         //~v297R~//+v711R~
+        uftime(&Sbelltime);                                        //+v711I~
 //UTRACEP("ctr=%d,time=%08x.%d\n",Sbellctr,Sbelltime.time,(int)Sbelltime.millitm);//~v5g8R~
     	if (Sbellctr==(oldctr+1)	//cont key down                //~v297R~
 //      &&  Sbellcaller==dummyparm      //same caller              //~v530R~

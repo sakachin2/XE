@@ -14,7 +14,7 @@ a:hover{font-weight:bold;}-->
 <PRE>
 <SPAN STYLE="color:#000000;font-size:12pt;">    = Column gauge.
 
-        COLs [on | off] [type]
+         COLs [on|off] [ALL|type|default]
 
             -Display on/off column gauge. If omitted, toggles on/off.
             -Gauge type is specified by type option.
@@ -36,7 +36,16 @@ a:hover{font-weight:bold;}-->
              ......*..1.........2.........3.........4*........5.....
 
             -Gauge type=ALL means open all file width &quot;COL on&quot;.
-            -Type is registered to profile, to reset it enter simply &quot;COLS ON&quot;.
+            -On directory list, "COL on type" sets default gauge type for all member of the directory.
+             "COL off" resets it. You have to prepare following gauge file in work directory.
+               (Win) ::xe!col!.type (Linux) ::xe_col_.type
+            -When Col type is set to a directory, use COL command for each members to set different option.
+             "COL [on|off] [type|default]"
+                default:display default gauge for the member file.
+                        This option is not for directory but file.
+                on     :follows directory setting if new type is not specified.
+                off    :hide gauge and reset type for the file,
+                        and next "COL on" refers directory setting.
 
 </SPAN>
 </PRE>

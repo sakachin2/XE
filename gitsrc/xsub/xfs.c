@@ -1,10 +1,11 @@
-//*CID://+vaa1R~:                             update#=  241;       //~va9sR~//+vaa1R~
+//*CID://+vaq1R~:                             update#=  243;       //~vaq1R~
 //***********************************************************
 //* XFS : seperate large file into sub files                       //~v142R~
 //***********************************************************
 #define VER "V2.8"   //version                                     //~va95R~//~va9sR~
 //***********************************************************
-//vaa1:160418 Lnx64 compiler warning                               //+vaa1I~
+//vaq1:201029 Debian10 compiler warning -Wformat-overflow          //~vaq1I~
+//vaa1:160418 Lnx64 compiler warning                               //~vaa1I~
 //va9s:150529 xfs v2.8 parm count error(by xuerpck)                //~va9sI~
 //va95:150106 xfs v2.7 C:\ may be protected,change open error msg  //~va95I~
 //va76:130622 compiler warning and err by ndk-r9                   //~va76I~
@@ -307,7 +308,8 @@ int main(int parmc,char *parmp[])
 	char *subfname,*pc;                                            //~6831R~
     FILEFINDBUF3 fstat3;                                           //~6831M~
     FILEFINDBUF3 fstat3_1;                                         //~v10hI~
-    char confmsg[256];                                             //~v10mR~
+//  char confmsg[256];                                             //+vaq1R~
+    char confmsg[_MAX_PATH+256];                                   //+vaq1I~
     char editwk1[12];                                              //~v10hI~
     char editwk2[12];                                              //~v10hI~
 //  char editwkn[16];                                              //~va30R~
@@ -1531,7 +1533,8 @@ continue within the space(Y),another disk setup OK(Enter) or cancel(Esc)?",//~v1
 char indexchk(int Premovablesw)                                    //~v134R~
 {                                                                  //~v10rI~
     FILEFINDBUF3 fstat3;                                           //~v10rI~
-    char confmsg[256],*pc;                                         //~v10rI~
+//  char confmsg[256],*pc;                                         //~vaq1R~
+    char confmsg[_MAX_PATH+256],*pc;                               //~vaq1I~
     char reply;                                                    //~v134I~
     char rc=0;	                                                   //~v134R~
 //******************                                               //~v10rI~
@@ -2184,8 +2187,8 @@ static int S1stread=0;        //fisrt time sw                      //~va22R~
         		pc=memchr(pc,EOLID,(UINT)len);                     //~v142R~
                 if (!pc)                                           //~v141I~
                 {                                                  //~v141I~
-//		            *Poutlen=Sreslen;	//assume all write at first//~v141I~//+vaa1R~
-  		            *Poutlen=(int)Sreslen;	//assume all write at first//+vaa1I~
+//		            *Poutlen=Sreslen;	//assume all write at first//~v141I~//~vaa1R~
+  		            *Poutlen=(int)Sreslen;	//assume all write at first//~vaa1I~
                 	break;                                         //~v141I~
                 }                                                  //~v141I~
                 if (Smultirecid)    //multi line record splitter specified//~va1EI~
@@ -2263,8 +2266,8 @@ static int S1stread=0;        //fisrt time sw                      //~va22R~
                 {                                                  //~v10lI~
                   if (!Smultirecid)                                //~va1CI~
                     uerrmsg("line split occured",0);               //~v123R~
-//              	*Poutlen=Sreslen;                              //~6831R~//+vaa1R~
-                	*Poutlen=(int)Sreslen;                         //+vaa1I~
+//              	*Poutlen=Sreslen;                              //~6831R~//~vaa1R~
+                	*Poutlen=(int)Sreslen;                         //~vaa1I~
                     break;                                         //~va1CR~
                 }                                                  //~v10lI~
                 if (!Smultirecid)                                  //~va1CR~
@@ -2298,8 +2301,8 @@ static int S1stread=0;        //fisrt time sw                      //~va22R~
                     }                                              //~va1CI~
                 }                                                  //~va1DI~
                 if (Smultirecid && !multirecsw)	//string not found //~va22I~
-//                  *Poutlen=len0;                                 //~va22I~//+vaa1R~
-                    *Poutlen=(int)len0;                            //+vaa1I~
+//                  *Poutlen=len0;                                 //~va22I~//~vaa1R~
+                    *Poutlen=(int)len0;                            //~vaa1I~
                 else                                               //~va22I~
                 {                                                  //~va22I~
                 *Pbreaksw=1;    //sw to next output file           //~v10lI~
@@ -2336,8 +2339,8 @@ static int S1stread=0;        //fisrt time sw                      //~va22R~
                         {                                          //~va1CR~
                             multirecsw=chkmultirec(pcprev,pc); //  //~va1CR~
                             if (multirecsw>0)	//start line       //~va1CR~
-//                          	multireclen=len2;                  //~va1CR~//+vaa1R~
-                            	multireclen=(int)len2;             //+vaa1I~
+//                          	multireclen=len2;                  //~va1CR~//~vaa1R~
+                            	multireclen=(int)len2;             //~vaa1I~
                         }                                          //~va1CR~
                         pc++;                                      //~v10aI~
                         pcprev=pc; //line start addr               //~va1CR~
@@ -2347,8 +2350,8 @@ static int S1stread=0;        //fisrt time sw                      //~va22R~
 //                      	len2=len-1;		//next of last crlf    //~v142R~
                         len2=len;		//eol found id             //~v142I~
                         if (multirecsw<0)   //previously endline found//~va1CR~
-//                          multireclen=len2;                      //~va1CR~//+vaa1R~
-                            multireclen=(int)len2;                 //+vaa1I~
+//                          multireclen=len2;                      //~va1CR~//~vaa1R~
+                            multireclen=(int)len2;                 //~vaa1I~
                   	}//search backward                             //~v10aI~
                   if (Smultirecid && !multireclen)    //multiline string not found//~va1CR~
                   {                                                //~va1CR~
@@ -2365,8 +2368,8 @@ static int S1stread=0;        //fisrt time sw                      //~va22R~
 						len2=multireclen;                          //~va1CI~
                   	if (len2)	//found                            //~v10lR~
                   	{                                              //~v10lR~
-//                  	*Poutlen=len00-len2;                       //~v10lR~//+vaa1R~
-                    	*Poutlen=(int)(len00-len2);                //+vaa1I~
+//                  	*Poutlen=len00-len2;                       //~v10lR~//~vaa1R~
+                    	*Poutlen=(int)(len00-len2);                //~vaa1I~
                     	*Pbreaksw=1;	//sw to next output file   //~v10lR~
 				  	}                                              //~v10lR~
 				  	else                                           //~v10lR~

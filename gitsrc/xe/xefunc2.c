@@ -1,9 +1,10 @@
-//*CID://+vbrgR~:                             update#=  548;       //+vbrgR~
+//*CID://+vbs7R~:                             update#=  549;       //+vbs7R~
 //************************************************************* //~5428I~
 //* xefunc2.c
 //*        func_char,quit,term,exit,reset,retrieve,help,key,exe    //~v55nR~
 //*************************************************************
-//vbrg:200824 (AXE)xehelp is now included in assets folder         //+vbrgI~
+//vbs7:201028 Debian10 compiler warning -Wformat-overflow          //+vbs7I~
+//vbrg:200824 (AXE)xehelp is now included in assets folder         //~vbrgI~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vb86:170216 display cmdline ctr excluded(fcmd:x,xx; lcmd x)      //~vb86I~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
@@ -1360,7 +1361,8 @@ int func_help(PUCLIENTWE Ppcw)                                  //~5428I~
 //    #endif                                                       //~v71AR~
 //#endif                                                           //~v71AR~
 #if defined(W32) || defined(LNX)                                   //~v71AM~
-    char fpathwk[_MAX_PATH],fpathwk2[_MAX_PATH];                   //~v71AM~
+//  char fpathwk[_MAX_PATH],fpathwk2[_MAX_PATH];                   //~v71AM~//+vbs7R~
+    char fpathwk[_MAX_PATH],fpathwk2[_MAX_PATH+256];               //+vbs7I~
     char *htmlnm,*pc,*tophtml=0;                                   //~v71AM~
   #ifdef LNX                                                       //~v71CI~
   	int ii;                                                        //~v71CI~
@@ -1429,10 +1431,10 @@ int func_help(PUCLIENTWE Ppcw)                                  //~5428I~
 	        if (ufstat(fpathwk2,0))                                //~v71AM~
             {                                                      //~v71AM~
 #ifdef ARM                                                         //~vaghI~
-//  	    	uerrmsg("%s not found, did you installed AxeAsset(Settings->Download additional Asset)",//~vaghI~//+vbrgR~
-//  	        		"%s が見つかりません、AxeAssetは導入済？(設定-->追加のAssetダウンロード)",//~vaghI~//+vbrgR~
-    	    	uerrmsg("%s not found.",                           //+vbrgI~
-    	        		"%s が見つかりません",                     //+vbrgI~
+//  	    	uerrmsg("%s not found, did you installed AxeAsset(Settings->Download additional Asset)",//~vaghI~//~vbrgR~
+//  	        		"%s が見つかりません、AxeAssetは導入済？(設定-->追加のAssetダウンロード)",//~vaghI~//~vbrgR~
+    	    	uerrmsg("%s not found.",                           //~vbrgI~
+    	        		"%s が見つかりません",                     //~vbrgI~
         	            	fpathwk2);                             //~vaghI~
 #else                                                              //~vaghI~
 		    	uerrmsg("%s not found(\"%cHD\" command line parameter err)",//~v71AM~

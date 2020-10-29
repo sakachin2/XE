@@ -1,5 +1,5 @@
 # XE
-SPF like Editor xe           2020/10/23 V129P (Manjaro installation tested)
+SPF like Editor xe           2020/10/28 V129P
 
     This editor is fit for programmers working on both main-frame and PC.
     Its operation is based on mainframe SPF editor,
@@ -14,10 +14,8 @@ SPF like Editor xe           2020/10/23 V129P (Manjaro installation tested)
         .Supports Remote file access using ftp,samba,rsh,ssh,fuse.
         .Optionally update-tag:CID(ChangeID) is automatically appended to updated lines.
 
-v1.29P : Manjaro 20.1.2 installation tested. See gxeinstallREADMe.txt.
-
 *********************************************************************************************
-(Japanese)                   2020/10/23 V129P 
+(Japanese)                   2020/10/28 V129P
 
     メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。
     ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。
@@ -32,4 +30,3 @@ v1.29P : Manjaro 20.1.2 installation tested. See gxeinstallREADMe.txt.
            ftp,samba,rsh,ssh,fuse
         .オプションで変更行に修正タグを自動付与。
 
-v1.29P : Manjaro 20.1.2 への導入テスト、gxeinstallREADMj.txt を参照

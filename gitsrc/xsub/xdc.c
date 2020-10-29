@@ -1,8 +1,9 @@
-//*CID://+vap0R~:                             update#=  682;       //+vap0R~
+//*CID://+vaq1R~:                             update#=  685;       //+vaq1R~
 //***********************************************************
 //* XDComp : directory status compare                              //~v1.aR~
 //***********************************************************
-//vap0:200616 Axe compiler warning;                                //+vap0I~
+//vaq1:201029 Debian10 compiler warning -Wformat-overflow          //+vaq1I~
+//vap0:200616 Axe compiler warning;                                //~vap0I~
 //vaj1:180305 xdc-2.29: /CPU8 option:output triler by utf8 to show on xe result of "=" cmd with cpu8 option//~vaj1I~
 //vai1:180208 allow K/M postfix for /Wsize parm                    //~vai1I~
 //vai0:180208 (Bug) crash when /Wsize parm is too short<1026) (crash before sizechk)//~vai0I~
@@ -3295,7 +3296,11 @@ void parmchk(int parmc,char *parmp[])
   int notfsw1=0,notfsw2=0;                                         //~v23fI~
   int len;                                                         //~v252I~
 //#ifndef UNX                                                      //~va1dR~
-  char fpath[_MAX_PATH],*fprc;                                     //~va1dR~
+//char fpath[_MAX_PATH],*fprc;                                     //~va1dR~//~vap0R~
+  char fpath[_MAX_PATH];                                           //~vap0I~
+#ifndef UNX                                                        //~vap0I~
+  char *fprc;                                                      //~vap0I~
+#endif                                                             //~vap0I~
 	FILEFINDBUF3 ffb3;                                             //~va4uI~
 //#endif                                                           //~va1dR~
 #ifdef W32UNICODE                                                  //~va91I~
@@ -3668,8 +3673,12 @@ for (parmno=1;parmno<parmc;parmno++)
           else                                                     //~va9eI~
           if (rcen==2)                                             //~va9eI~
           	Dir2=Sfnmpathcopy2;                                    //~va9eI~
+#ifndef UNX                                                        //~vap0I~
           fprc=ufullpath(fpath,Dir1,sizeof(fpath));                //~va1dI~
-//        fprc=fprc;    //for compiler warning                     //~va52I~//+vap0R~
+#else                                                              //~vap0I~
+          ufullpath(fpath,Dir1,sizeof(fpath));                     //~vap0R~
+#endif                                                             //~vap0I~
+//        fprc=fprc;    //for compiler warning                     //~va52I~//~vap0R~
 #ifndef UNX                                                        //~v23cI~
 //        if (ufullpath(fpath,Dir1,sizeof(fpath))                  //~va1dR~
           if (fprc                                                 //~va1dI~
@@ -3694,7 +3703,11 @@ for (parmno=1;parmno<parmc;parmno++)
 				dirsw1=UCBITCHK(fstat3.attrFile,FILE_DIRECTORY);   //~v23fR~
          }                                                         //~v23fI~
             Sfstat31=fstat3;                                       //~v234I~
+#ifndef UNX                                                        //~vap0I~
           fprc=ufullpath(fpath,Dir2,sizeof(fpath));                //~va1dI~
+#else                                                              //~vap0I~
+          ufullpath(fpath,Dir2,sizeof(fpath));                     //~vap0I~
+#endif                                                             //~vap0I~
 #ifndef UNX                                                        //~v23cI~
 //        if (ufullpath(fpath,Dir2,sizeof(fpath))                  //~va1dR~
           if (fprc                                                 //~va1dI~
@@ -3871,7 +3884,8 @@ void interfmsg(int Pdirid)                                         //~v234I~
 {                                                                  //~v234I~
     char *fnm,cdate[12],ctime2[12];                                 //~v234I~
     FILEFINDBUF3 *pfstat3;                                         //~v234I~
-    char mask[_MAX_PATH];                                          //~v259I~
+//  char mask[_MAX_PATH];                                          //+vaq1R~
+    char mask[_MAX_PATH+32];                                       //+vaq1I~
     char interpath[_MAX_PATH+16];                                  //~vazAI~
 //*************************                                        //~v234I~
     if (Pdirid==1)                                                 //~v234I~

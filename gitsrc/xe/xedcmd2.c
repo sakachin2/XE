@@ -1,8 +1,9 @@
-//*CID://+vbrdR~:                             update#=  649;       //~vbrdR~
+//*CID://+vbs7R~:                             update#=  650;       //+vbs7R~
 //************************************************************* //~v051I~
 //*xedcmd2.c                                                       //~v58JR~
 //* xprint,system,submit,spawn                                     //~v51XR~
 //************************************************************* //~v051I~
+//vbs7:201028 Debian10 compiler warning -Wformat-overflow          //+vbs7I~
 //vbrd:200801 (ARM)del wxp cmd because print dialog not supported  //~vbrdI~
 //vba5:170716 (Bug)did not chk spawn rc                            //~vba5I~
 //vb7e:170108 FTP crash by longname                                //~vb7eI~
@@ -381,7 +382,8 @@ static UCHAR Scurfilesave[]=DCMDXPRINTTEMPFNM;                     //~v638I~
 //static char *Sredirectfnm=0;	//parm to dcmdsystemcall from submit//~v58FR~
                                                                    //~v21fI~
 //#ifdef UNX                                                       //~v79PR~
-	static char Slockfnm[_MAX_PATH];                               //~v21fI~
+//  static char Slockfnm[_MAX_PATH];                               //+vbs7R~
+    static char Slockfnm[_MAX_PATH+256];                           //+vbs7I~
 #ifdef UNX                                                         //~v79PI~
 	static char Slockfnm2[_MAX_PATH];                              //~v21fI~
 #endif                                                             //~v21fI~
@@ -440,7 +442,7 @@ int dcmd_fpathredirect(PUCLIENTWE Ppcw,char *Pfnmstdo,char *Pfnmstde);//~v592I~
 int dcmd_wxp(PUCLIENTWE Ppcw)                                      //~v54yI~
 {                                                                  //~v54yI~
 #ifdef ARM                                                         //~vbrdI~
-	return errnotsupported("wxp","Axe");                           //+vbrdR~
+	return errnotsupported("wxp","Axe");                           //~vbrdR~
 #else                                                              //~vbrdI~
 	PUCLIENTWE pcw;                                                //~v54yI~
 	PUFILEH pfh;                                                   //~v54yI~
