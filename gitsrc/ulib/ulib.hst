@@ -1,3 +1,14 @@
+//*********  20201216 v129Q release     ****************
+//v724:201214 (WIN)like as LNX(ukbdl), set F2L err for char12 and CPU8 file(xe accept utf8 on cpu8 file and cmdline)
+//            ukbdw.c
+//v723:201212 (WXE)/C1252 on Japanese env;DE kbd input is ignored by keyevent.wVirtusalKeycode!=0
+//            ukbdw.c
+//v722:201212 (W32)Drop -Nm option. it may be used for wxe+IME
+//            ukbdw.c
+//v721:201212 (LNX)Drop -Nm option. it may be used for wxe+IME
+//            ukbdl.c udbcschk.h
+//v720:201211 (BUG)LNX Console;-Nm option did not work(DBCS chk is done)
+//            ukbdl.c udbcschk.h
 //*********  20201028 v129P release     ****************
 //v712:201023 manjaro mouse read format 0x1b[<b;x;yM
 //            ukbdlnxm.c ukbdlnxc.c ukbdlnxm.h

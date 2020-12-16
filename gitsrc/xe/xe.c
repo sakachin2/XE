@@ -1,7 +1,11 @@
-//*CID://+vbs7R~:                              update#=  470;      //~vbs7R~
+//*CID://+vbtaR~:                              update#=  483;      //~vbt5R~//~vbtaR~
 //*************************************************************
 //*XE.c*                                                           //~v641R~
 //*************************************************************
+//vbta:201214 allow -Nm for linux(abondon vbt3)                    //~vbtaI~
+//vbt5:201212 (WIN)apply utf8 code input(-NM) not also DBCS env    //~vbt5I~
+//vbt3:201212 (LNX)Drop -Nm option                                 //~vbt3I~
+//vbt2:201211 Y/Nw default is /Yw(correct help)                    //~vbt2I~
 //vbs7:201028 Debian10 compiler warning -Wformat-overflow          //~vbs7I~
 //vbrc:200801 (ARM)default is CPU8 file and filename               //~vbr1I~
 //vbr1:200615 ARM compiler warning                                 //~vbr1R~
@@ -557,8 +561,13 @@ UTRACEP("Gunxflag=%x\n",Gunxflag);                                 //~v79HI~
 #ifdef WCSUPP                                                      //~v7acI~
     if (Gudbcschk_flag & UDBCSCHK_FORCEUCJ)                        //~v7acI~
     	Gotherstatus|=GOTHERS_FORCEUCJ;      //EUC-JP by /C parm   //~v7acI~
-	if (Swcinitopt & UDCWCIO_KBDNOUTF8) //-N8                      //~v7a5I~
-    	if (XE_ISDBCS()                                            //~v7a5I~
+	if (Swcinitopt & UDCWCIO_KBDNOUTF8) //-Nm                      //~v7a5I~
+//  	if (XE_ISDBCS()                                            //~v7a5I~//~vbt5R~
+#ifdef LNX                                                         //~vbtaI~
+        if (1                                                      //~vbtaR~
+#else                                                              //~vbtaI~
+    	if (TRUE                                                   //~vbt5I~
+#endif                                                             //~vbtaI~
 //  	&& Gudbcschk_flag & UDBCSCHK_UTF8                          //~v7a5I~//~va0DR~
     	&&                                                         //~va0DI~
           (                                                        //~va0DI~
@@ -1343,8 +1352,8 @@ int  xetraceinit(void)                                             //~v79zI~
 //  char wkfname[_MAX_PATH];                                       //~v79zI~//~vbs7R~
     char wkfname[_MAX_PATH+256];                                   //~vbs7I~
 #ifndef ARM                                                        //~vbr1R~
-//  char wkfname2[_MAX_PATH];                                      //~vbkmI~//+vbs7R~
-    char wkfname2[_MAX_PATH+256];                                  //+vbs7I~
+//  char wkfname2[_MAX_PATH];                                      //~vbkmI~//~vbs7R~
+    char wkfname2[_MAX_PATH+256];                                  //~vbs7I~
     ULONG pid;                                                     //~vb26I~
 #endif  //!ARM                                                     //~vbr1R~
 //********************                                             //~v79zI~
@@ -1600,6 +1609,7 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
                         Swcinitopt|=UDCWCIO_CJK;                   //~vbmkI~
                         break;                                     //~vbmkI~
 #ifdef UTF8SUPPH                                                   //~va0DI~
+//#ifdef W32                                                         //~vbt3I~//~vbtaR~
                     case 'M':  //no utf8 kbd input process         //~v7a7I~
                         Swcinitopt&=~UDCWCIO_KBDNOUTF8;            //~v7a7I~
 //#ifdef UTF8SUPPH                                                   //~va00I~//~va0DR~
@@ -1607,6 +1617,7 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
                         Swcinitopt|=UDCWCIO_KBDFORCEUTF8;          //~va00I~
 #endif                                                             //~va00I~
                         break;                                     //~v7a7I~
+//#endif //W32                                                       //~vbt3I~//~vbtaR~
 #endif                                                             //~v7a7I~
 #ifdef W32                                                         //~v79zI~
                     case 'W':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~v79zI~
@@ -1639,6 +1650,7 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
 #endif                                                             //~vad0I~
 //#ifdef LNX                                                         //~v79zI~//~va0DR~
 #ifdef UTF8SUPPH                                                   //~va0DI~
+//#ifdef W32                                                         //~vbt3I~//~vbtaR~
                     case 'M':  //no utf8 kbd input process         //~v79zI~//~v7a7R~
 //#ifdef UTF8SUPPH                                                   //~va00M~//~va0DR~
 #ifdef LNX                                                         //~va0DI~
@@ -1646,7 +1658,13 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
 #endif                                                             //~va00M~
                         Swcinitopt|=UDCWCIO_KBDNOUTF8;             //~v79zI~
                         break;                                     //~v79zI~
+//#endif //W32                                                       //~vbt3I~//~vbtaR~
 #endif                                                             //~v79zI~
+#ifdef W32                                                         //~vbt2I~
+                    case 'W':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~vbt2I~
+                        Swcinitopt&=~UDCWCIO_FORCEWIDE;            //~vbt2I~
+                        break;                                     //~vbt2I~
+#endif                                                             //~vbt2I~
                     default:                                       //~v79zI~
                         ;                                          //~v79zI~
                     }//switch by /Nx                               //~v79zI~
@@ -2168,8 +2186,10 @@ void parmproc(int Pparmc,char *Pparmp[])
                         break;                                     //~v0flI~
 //#ifdef LNX                                                         //~v7a7I~//~va0DR~
 #ifdef UTF8SUPPH                                                   //~va0DI~
+//#ifdef W32                                                         //~vbt3I~//~vbtaR~
                     case 'M':  //kbd utf8 conv to mb               //~v7a7I~
                         break;                                     //~v7a7I~
+//#endif                                                             //~vbt3I~//~vbtaR~
 #endif                                                             //~v7a7I~
                     case 'N':             //Yn                     //~v0jtI~
 #ifdef W32                                                         //~v0jtI~
@@ -2263,9 +2283,11 @@ void parmproc(int Pparmc,char *Pparmp[])
                         break;                                     //~v0flI~
 //#ifdef LNX                                                         //~v7a7I~//~va0DR~
 #ifdef UTF8SUPPH                                                   //~va0DI~
+//#ifdef W32                                                         //~vbt3I~//~vbtaR~
                     case 'M':  //no utf8 kbd input process         //~v7a7I~
 //                      udbcschk_wcinit(UDCWCIO_KBDNOUTF8,0/*out locale*/); //read utf encoding byte by byte//~v7acI~//~va0DR~
                         break;                                     //~v7a7I~
+//#endif                                                             //~vbt3I~//~vbtaR~
 #endif                                                             //~v7a7I~
                     case 'N':             //Yn                     //~v0jtI~
 #ifdef W32                                                         //~v0jtI~
@@ -2790,8 +2812,10 @@ void help(void)
 #endif                                                             //~v0flI~
 #ifdef LNX                                                         //~v7a7I~
   #ifdef UTF8SUPPH                                                 //~va00I~
+//#ifdef AAA                                                         //~vbt3I~//~vbtaR~
     HELPMSG "      x=m (-Ym):kbd input multibyte char translation option.\n",//~va00I~//~va0DR~
             "      x=m (-Ym):キーボード入力マルチバイト文字変換オプション\n");//~va00I~//~va0DR~
+//#endif                                                             //~vbt3I~//~vbtaR~
 #ifdef AAA                                                         //~va0DI~
     HELPMSG "           %cYm:force translation from UTF8 to locale codepage\n",//~va00I~
             "           %cYm:入力はUTF8とみなしロケールコードページに変換\n",//~va00I~
@@ -2804,8 +2828,10 @@ void help(void)
     HELPMSG "           translate(env:UTF8) or do not translate(env:not UTF8)\n",//~va00I~//~va0DR~//~vafyR~
             "           する(env:UTF8の場合)かしない(env:UTF8でない)か決める。\n");//~va00I~
 #endif                                                             //~va0DI~
-    HELPMSG "               :%cNm:Accept UTF8 code as-is base without trans.\n",//~va0DR~
-            "               :%cNm:UTF8入力を変換せず受け付ける\n", //~va0DR~
+//  HELPMSG "               :%cNm:Accept UTF8 code as-is base without trans.\n",//~va0DR~//+vbtaR~
+//          "               :%cNm:UTF8入力を変換せず受け付ける\n", //~va0DR~//+vbtaR~
+    HELPMSG "               :%cNm:Set UTF8 code to CPLC file when A+u ON.\n",//+vbtaM~
+            "               :%cNm:A+u オンのときUTF8コードを無変換でセット\n",//+vbtaM~
             CMDFLAG_PREFIX);                                       //~va0DI~
   #else //UTF8SUPPH                                                //~va00I~
     HELPMSG "      x=m (%cYm):Translate UTF8 kbd input to multi-byte.\n",//~v7a7R~
@@ -2814,20 +2840,22 @@ void help(void)
   #endif                                                           //~va00I~
 #endif                                                             //~v7a7I~
 #ifdef W32                                                         //~v0jtI~
-  #ifndef WXE                                                      //~v500I~
+//#ifndef WXE                                                      //~v500I~//~vbt5R~
   #ifdef UTF8SUPPH                                                 //~va0DI~
-  if (Sdebughelp)                                                  //~va0DI~
-  {                                                                //~va0DI~
+//if (Sdebughelp)                                                  //~va0DI~//~vbtaR~
+//{                                                                //~va0DI~//~vbtaR~
     HELPMSG "      x=m (/Ym):kbd input multibyte char translation option.\n",//~va0DR~
             "      x=m (/Ym):キーボード入力マルチバイト文字変換オプション\n");//~va0DR~
-    HELPMSG "               :%cNm:Accept UTF8 code by /Yw as-is base without trans.\n",//~va0DR~
-            "               :%cNm:/Yw による UTF8入力を無変換でコードをそのまま受け付ける\n",//~va0DR~
+//  HELPMSG "               :%cNm:Accept UTF8 code by /Yw as-is base without trans.\n",//~va0DR~//~vbt5R~
+//          "               :%cNm:/Yw による UTF8入力を無変換でコードをそのまま受け付ける\n",//~va0DR~//~vbt5R~
+    HELPMSG "               :%cNm:Set UTF8 code to CPLC file when A+u ON.\n",//~vbt5I~
+            "               :%cNm:A+u オンのときUTF8コードを無変換でセット\n",//~vbt5I~
             CMDFLAG_PREFIX);                                       //~va0DI~
-  }                                                                //~va0DI~
+//}                                                                //~va0DI~//~vbtaR~
   #endif                                                           //~va0DI~
     HELPMSG "      x=n (/Nn):(WIN)NT mode kbd process(No DBCS proces under Win95/98)\n",//~v11ER~
             "      x=n (/Nn):(WIN)NTモードキーボード処理(95/98での日本語入力スキップ)\n");//~v11ER~
-  #endif                                                           //~v500I~
+//#endif                                                           //~v500I~//~vbt5R~
 #endif                                                             //~v0jtI~
 //#ifdef UNX                                                       //~v790R~
 #ifdef AIX                                                         //~v790I~
@@ -2873,8 +2901,10 @@ void help(void)
   {                                                                //~v7a3I~
 //  HELPMSG "      x=w (%cNw):For TEST,WidecharAPI for ConsoleOutput under Japanese env.\n",//~v7a3R~//~va0DR~
 //          "      x=w (%cNw):日本語環境でもConsoleOutputでWidecharAPIを使用(テスト用)\n",//~v7a3I~//~va0DR~
-    HELPMSG "      x=w (%cNw):For UTF8 TEST,WidecharAPI for Console I/O under Japanese env.\n",//~va0DI~
-            "      x=w (%cNw):日本語環境でもConsole I/OでWidecharAPIを使用(UTF8 テスト用)\n",//~va0DI~
+//  HELPMSG "      x=w (%cNw):For UTF8 TEST,WidecharAPI for Console I/O under Japanese env.\n",//~va0DI~//~vbt2R~
+//          "      x=w (%cNw):日本語環境でもConsole I/OでWidecharAPIを使用(UTF8 テスト用)\n",//~va0DI~//~vbt2R~
+    HELPMSG "      x=w (%cYw):For UTF8 TEST,WidecharAPI for Console I/O under Japanese env.\n",//~vbt2I~
+            "      x=w (%cYw):日本語環境でもConsole I/OでWidecharAPIを使用(UTF8 テスト用)\n",//~vbt2I~
 			CMDFLAG_PREFIX);                                       //~v7a3I~
   }                                                                //~v7a3I~
 #endif                                                             //~v7a3I~

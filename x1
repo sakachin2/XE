@@ -1,0 +1,134 @@
+
+動詞:
+  -dump             -- 構成情報またはファイルをダンプします
+  -dumpPFX          -- PFX 構造をダンプします
+  -asn              -- ASN.1 ファイルの解析
+
+  -decodehex        -- 16 進エンコード ファイルをデコードします
+  -decode           -- Base 64 エンコード ファイルをデコードします
+  -encode           -- ファイルを Base 64 にエンコードします
+
+  -deny             -- 保留中の要求を拒否します
+  -resubmit         -- 保留中の要求を再送信します
+  -setattributes    -- 保留中の要求の属性を設定します
+  -setextension     -- 保留中の要求の拡張機能を設定します
+  -revoke           -- 証明書を失効します
+  -isvalid          -- 現在の証明書のディスポジションを表示します
+
+  -getconfig        -- 既定の構成の文字列を取得します
+  -ping             -- Active Directory 証明書サービスの要求インターフェイスを PING します
+  -pingadmin        -- Active Directory 証明書サービスの管理者インターフェイスを PING します
+  -CAInfo           -- CA 情報を表示します
+  -ca.cert          -- CA の証明書を取得します
+  -ca.chain         -- CA の証明書チェーンを取得します
+  -GetCRL           -- CRL を取得します
+  -CRL              -- 新しい CRL を公開します [または Delta CRL のみ]
+  -shutdown         -- Active Directory 証明書サービスをシャットダウンします
+
+  -installCert      -- 証明機関の証明書をインストールします
+  -renewCert        -- 証明機関の証明書を更新します
+
+  -schema           -- 証明書スキーマをダンプします
+  -view             -- 証明書の表示をダンプします
+  -db               -- 未処理データベースをダンプします
+  -deleterow        -- サーバー データベースの行を削除します
+
+  -backup           -- Active Directory 証明書サービスのバックアップを作成します
+  -backupDB         -- Active Directory 証明書サービス データベースのバックアップを作成します
+  -backupKey        -- Active Directory 証明書サービスの証明書と秘密キーのバックアップを作成します
+  -restore          -- Active Directory 証明書サービスを復元します
+  -restoreDB        -- Active Directory 証明書サービス データベースを復元します
+  -restoreKey       -- Active Directory 証明書サービスの証明書と秘密キーを復元します
+  -importPFX        -- 証明書および秘密キーをインポートします
+  -dynamicfilelist  -- ダイナミック ファイル リストを表示します
+  -databaselocations -- データベースの場所を表示します
+  -hashfile         -- ファイルに暗号化ハッシュを生成し表示します
+
+  -store            -- 証明書ストアをダンプします
+  -enumstore        -- 証明書ストアを列挙する
+  -addstore         -- 証明書をストアに追加します
+  -delstore         -- 証明書をストアから削除します
+  -verifystore      -- ストアの証明書を確認します
+  -repairstore      -- キーの関連付けの修復、または証明書プロパティやキーのセキュリティ記述子の更新を行います
+  -viewstore        -- 証明書ストアをダンプします
+  -viewdelstore     -- 証明書をストアから削除します
+  -UI               -- CryptUI を呼び出します
+  -attest           -- キーの構成証明要求を確認します
+
+  -dsPublish        -- 証明書または CRL を Active Directory に公開します
+
+  -ADTemplate       -- AD テンプレートの表示
+  -Template         -- 登録ポリシー テンプレートの表示
+  -TemplateCAs      -- テンプレートの CA を表示します
+  -CATemplates      -- CA のテンプレートを表示します
+  -SetCASites       -- CA のサイト名の管理
+  -enrollmentServerURL -- CA に関連付けられた登録サーバーの URL を表示、追加、または削除します
+  -ADCA             -- AD CA の表示
+  -CA               -- 登録ポリシー CA の表示
+  -Policy           -- 登録ポリシーの表示
+  -PolicyCache      -- 登録ポリシー キャッシュ エントリを表示または削除します
+  -CredStore        -- 資格情報ストアのエントリを表示、追加または削除します
+  -InstallDefaultTemplates -- 既定の証明書テンプレートをインストールする
+  -URLCache         -- URL キャッシュ エントリを表示または削除します
+  -pulse            -- パルス自動登録イベントまたは NGC タスク
+  -MachineInfo      -- Active Directory コンピューター オブジェクト情報を表示します
+  -DCInfo           -- ドメイン コントローラー情報を表示します
+  -EntInfo          -- エンタープライズ情報を表示します
+  -TCAInfo          -- CA 情報を表示します
+  -SCInfo           -- スマート カード情報を表示します
+
+  -SCRoots          -- スマート カード ルート証明書の管理
+
+  -DeleteHelloContainer -- Hello ログオン コンテナーを削除します。
+     ** このオプションを使用した後、削除を完了するには、サインアウトする必要があります。**
+  -verifykeys       -- 公開/秘密キー セットを確認します
+  -verify           -- 証明書、CRL、またはチェーンを確認します
+  -verifyCTL        -- AuthRoot または Disallowed Certificates CTL を検証します
+  -syncWithWU       -- Windows Update と同期します
+  -generateSSTFromWU -- Windows Update から SST を生成します
+  -generatePinRulesCTL -- 暗証番号ルールの CTL を生成します
+  -downloadOcsp     -- OCSP 応答をダウンロードし、ディレクトリに書き込みます
+  -generateHpkpHeader -- 指定されたファイルまたはディレクトリの証明書を使用して HPKP ヘッダーを生成します
+  -flushCache       -- lsass.exe などの選択したプロセスで、指定したキャッシュをフラッシュします
+  -addEccCurve      -- ECC 曲線を追加します
+  -deleteEccCurve   -- ECC 曲線を削除します
+  -displayEccCurve  -- ECC 曲線を表示します
+  -sign             -- CRL または証明書に再び署名します
+
+  -vroot            -- Web 仮想ルートとファイルの共有を作成または削除します
+  -vocsproot        -- OCSP Web プロキシの Web 仮想ルートを作成または削除します
+  -addEnrollmentServer -- 登録サーバー アプリケーションを追加します
+  -deleteEnrollmentServer -- 登録サーバー アプリケーションを削除します
+  -addPolicyServer  -- ポリシー サーバー アプリケーションを追加
+  -deletePolicyServer -- ポリシー サーバー アプリケーションを削除
+  -oid              -- ObjectId の表示、または表示名の設定をします
+  -error            -- エラー コード メッセージ テキストを表示します
+  -getreg           -- レジストリ値を表示します
+  -setreg           -- レジストリ値を設定します
+  -delreg           -- レジストリ値を削除します
+
+  -ImportKMS        -- キーのアーカイブのユーザー キーおよび証明書をサーバー データベースにインポートします
+  -ImportCert       -- データベースに証明書ファイルをインポートします
+  -GetKey           -- アーカイブされた秘密キーの回復 BLOB の取得、回復スクリプトの生成、
+      またはアーカイブされたキーの回復を行います
+  -RecoverKey       -- アーカイブされた秘密キーを回復します
+  -MergePFX         -- PFX ファイルの結合
+  -ConvertEPF       -- PFX ファイルを EPF ファイルに変換します
+
+  -add-chain        -- (-AddChain) 証明書チェーンの追加
+  -add-pre-chain    -- (-AddPrechain) 前証明書チェーンの追加
+  -get-sth          -- (-GetSTH) 署名付きツリー ヘッドの取得
+  -get-sth-consistency -- (-GetSTHConsistency) 署名付きツリー ヘッド変更の取得
+  -get-proof-by-hash -- (-GetProofByHash) ハッシュによる照明を取得する
+  -get-entries      -- (-GetEntries) エントリを取得する
+  -get-roots        -- (-GetRoots) ルートを取得する
+  -get-entry-and-proof -- (-GetEntryAndProof) エントリと照明を取得する
+  -VerifyCT         -- 証明書の SCT を検証する
+  -?                -- この使用法のメッセージを表示します
+
+
+CertUtil -?              -- 動詞の一覧 (コマンドの一覧) を表示します
+CertUtil -dump -?        -- "dump" 動詞のヘルプ テキストを表示します
+CertUtil -v -?           -- すべての動詞のヘルプ テキストをすべて表示します
+
+CertUtil: -? コマンドは正常に完了しました。

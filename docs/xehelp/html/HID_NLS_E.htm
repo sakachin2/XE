@@ -197,10 +197,11 @@ a:hover{font-weight:bold;}-->
                      yy(Japanese Hiragana) and xx(Hangul) is not displayed by ASCII screen.
                      xe console version may display space by the reason of terminal emulator font selection)
 
-        -Yw : For WideCharAPI Test. Use WideChar API for also when env is JP like as env is CN or KR
-              (kbd input is UCS2 and accept as UTF8 code translated)
-        -Nm : Accept UTF8 byte sequence with no translation when LANG environment is UTF8.
-              For Windows version, requires -Ym at same time.
+
+        -Nm : Accept UTF8 byte sequence itself.
+              When /Nm is specified, for UTF8 code input to CPLC(non UTF8) file
+              set UTF8 code itself if Alt+u ON(indecated by =u=&gt; on command input line),
+              set translated locale code if Alt+u OFF(===&gt;) or "?" if translation error occured.
 
 #endif // W32 || LNX
 

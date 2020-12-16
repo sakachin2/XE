@@ -78,7 +78,10 @@ a:hover{font-weight:bold;}-->
                     when -ya is specified.
           x=c (-yc):add change-id-tag to modified lines
           x=d (-yd):dump when internal error detected
-          x=m (-nm):Accept UTF8 byte without translate to locale code.
+          x=m (-Ym):Accept UTF8 byte without translate to locale code.
+                    When /Nm is specified, for UTF8 code input to CPLC(non UTF8) file
+                    set UTF8 code itself if Alt+u ON(indecated by =u=&gt; on command input line),
+                    set translated locale code if Alt+u OFF(===&gt;) or "?" if translation error occured.
           x=t (-nt):Tab display or not
       -/           :End of parameter(ignore following)
                     Use to cut re-displayed command by history func.

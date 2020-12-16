@@ -1,7 +1,9 @@
-//*CID://+vbj2R~:                               update#=  538;     //~vbj2R~
+//*CID://+vbt9R~:                               update#=  543;     //+vbt9R~
 //*********************************************************************//~v440I~
 //* wxe interface definition                                       //~v440I~
 //*********************************************************************//~v440I~
+//vbt9:201214 WXE help was double line, exceed screen height when /??//+vbt9I~
+//vbt7:201213 (WXE:bug)WM_CHAR receives UTF16,do not chk DBCS. WizKey input is checked as dbcs 1st byte.//~vbt7I~
 //vbj2:180424 popup menu on cmd history list                       //~vbj2I~
 //vb4t:160812 consider errmsg 2nd line for combine                 //~vb4tI~
 //vb4q:160810 display ligature/combine mode on "TOP OF LINE"       //~vb4qI~
@@ -410,9 +412,12 @@ UTRACEP("wxe_kbdmsg stat=%x,char=%x,repctr=%d,flag=%x\n",Pstat,Pchar,Prepctr,Pfl
     	Sinprec.Event.KeyEvent.wVirtualScanCode=Pflag & 0xff;   //set scancode//~va3DR~
     if (!(Pstat & WXEKBDMSG_SYSKEY))   //I did not see this case   //~va3DR~
     	if (Pstat & WXEKBDMSG_ONCHAR)                              //~2C15I~
+    	  if (!(Spwxei->WXEIimestat & WXEIIMES_WIDEAPI))           //~vbt7R~
+          {                                                        //~vbt7I~
 //      	if (SJIS1(Pchar))                                      //~va3DR~
         	if (UDBCSCHK_ISDBCS1ST(Pchar))                         //~va3DM~
 	    		dbcssw=1;                                          //~2C15R~
+          }                                                        //~vbt7I~
     if ((Pstat & WXEKBDMSG_ONCHAR))                                //~2921I~
     	asciichar=Pchar;                                           //~2921R~
     else                                                           //~2921I~
@@ -897,7 +902,7 @@ char *wxeenqmsg(char *Ppmsg,char *Ppprevmsg)                       //~2A07R~
     }                                                              //~v440I~
     memcpy(newmsg+len2,Ppmsg,len1);                                //~v440I~
     len1=len2+len1;                                                //~v440I~
-    *(newmsg+len1++)='\n';                                         //~v440I~
+//  *(newmsg+len1++)='\n';                                         //~v440I~//+vbt9R~
     *(newmsg+len1++)=0;                                            //~v440I~
 	return newmsg;                                                 //~2A07R~
 }//wxeenqmsg                                                       //~v440I~
@@ -2019,4 +2024,4 @@ int  wxe_CHLcmd(int Popt,int Pcmd)                                 //~vbj2R~
     stat|=WXEKBDMSG_ONCHAR;                                        //~vbj2I~
 	rc=wxe_kbdmsg(stat,(UINT)Pcmd,1/*Prepctr*/,0/*flag*/);         //~vbj2R~
     return rc;                                                     //~vbj2I~
-}//wxe_CHLcmd                                                      //+vbj2R~
+}//wxe_CHLcmd                                                      //~vbj2R~

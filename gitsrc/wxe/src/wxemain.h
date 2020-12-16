@@ -1,6 +1,7 @@
-//*CID://+vbj4R~:                             update#=  255;       //+vbj4R~
+//*CID://+vbt1R~:                             update#=  256;       //+vbt1R~
 //================================================================================//~v510I~
-//vbj4:180425 click on selected line cmd history list-->"s"(set on under)//+vbj4I~
+//vbt1:201210 WXE:when kbd changed to 2nd language DBCS chk should be changed//+vbt1I~
+//vbj4:180425 click on selected line cmd history list-->"s"(set on under)//~vbj4I~
 //vbj3:180425 double click on cmd history list-->"x"(exec on under)//~vbj3I~
 //vbj2:180424 popup menu on cmd history list                       //~vbj2I~
 //vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
@@ -265,8 +266,8 @@ public :                                                           //~2816I~
 	BOOL onfileCHL(int Pcmd);                                      //~vbj2M~//~vbj3R~
 	BOOL onfileCHLdblclick();                                      //~vbj3R~
 	BOOL onfileCHLdblclick(int Pcmd);                              //~vbj3I~
-	BOOL chkCHLselect(CPoint Ppoint);                              //+vbj4I~
-	BOOL selectedCHL(UINT Pflag,CPoint Ppoint);                    //+vbj4I~
+	BOOL chkCHLselect(CPoint Ppoint);                              //~vbj4I~
+	BOOL selectedCHL(UINT Pflag,CPoint Ppoint);                    //~vbj4I~
 	BOOL cpupdatecopy();                                           //~2824R~
 	BOOL cpupdatecut();                                            //~2824R~
 	BOOL cpupdatepaste();                                          //~2824R~
@@ -397,6 +398,7 @@ private :                                                          //~2816I~
 	void scrinit();                                                //~2901R~
 	void scrupdate(CDC *Ppmemdc,int Pprintsw);                     //~2A20I~
 	int  iniget();        //ini file get                           //~2907R~
+	void requestRestart();                                         //+vbt1I~
 	int  createfont();                                             //~2901R~
 	void scronok(int Pcpchngsw);                                   //~2929R~
 	int  xeinitcall();                                             //~2831R~

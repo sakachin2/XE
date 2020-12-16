@@ -1,4 +1,33 @@
-//*********  20201028 v129N release  *******************************
+//*********  20201216 v129Q release  *******************************
+//vbtb:201214 (BUG) TODO TEST was remained(IME conv err for SJIS) From 129N:update=2020/07/31
+//            xxexei.c
+//vbta:201214 allow -Nm for linux(abondon vbt3)
+//            xe.c xxexei.c
+//vbt9:201214 WXE help was double line, exceed screen height when /??
+//            wxexei.c
+//vbt8:201214 (WXE:bug)receive two WM_IME_CHAR for DBCS(by SJIS) on Japanase when used Dyalog IME.
+//            It is OK on notepad etc. For Wxe ok when system locale setting is changed to English.
+//             e.g u00a8 is DBCS 814E on SJIS and receive 81 and 4E. It is valid generating u00a8 only at 81 and ignore 4e.
+//            wxekbd.cpp
+//vbt7:201213 (WXE:bug)WM_CHAR receives UTF16,do not chk DBCS. WizKey input is checked as dbcs 1st byte.
+//            wxexei.c
+//vbt7:201213 (WXE)ignore VK_PACKET,it may generate WM_CHAR
+//            wxekbd.cpp
+//vbt6:201213 (WXE)try check VK_PACKET
+//            wxekbd.cpp
+//vbt5:201212 (WIN)apply utf8 code input(-NM) not also DBCS env
+//            xe.c
+//vbt4:201212 (WIN)apply -Nm on LC file only when utf8 inputmode(A+u)
+//            xekbd.c
+//vbt3:201212 (LNX)Drop -Nm option
+//            xe.c
+//vbt2:201211 Y/Nw default is /Yw(correct help)
+//            xe.c
+//vbt1:201210 WXE:when kbd changed to 2nd language DBCS chk should be changed
+//            wxedlg.cpp wxemain.cpp/h
+//vbt0:201209 (LNX)correct configure msg
+//            configure.ac
+//*********  20201028 v129P release  *******************************
 //vbs7:201028 Debian10 compiler warning -Wformat-overflow
 //            xe.c xedlcmd3.c xefcmd3.c xetso.c xedlcmd6.c xepan23.c xefunc2.c xedcmd3.c xedcmd2.c xe3270s.c/h
 //vbs6:201026 profile COL cmd for dir, "col on dir" follows dir setting; specify "col on default" for each file.

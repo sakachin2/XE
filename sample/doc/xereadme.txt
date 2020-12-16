@@ -1,6 +1,6 @@
-||*CID:||+v129R~:  2020/09/23              update#=  592;             ||~v129R~
+||*CID:||+v@@@R~:  2020/12/16              update#=  595;             ||~v@@@R~
 ######################################################################
-[English]    v1.29                                                    ||~v128R~||~v129R~
+[English]    v1.29Q                                                   ||~v128R~||~v129R~||+v@@@R~
 
 ##This editor is fit for programmers working on both main-frame and PC.
   Its operation is based on mainframe SPF editor,                     ||~v126R~
@@ -2445,6 +2445,8 @@ How to start.
   .v129L<--129K:(2019/09/18)                                          ||~v129R~
   .v129M<--129L:(2020/05/17)                                          ||~v129I~
   .v129N<--129M:(2020/09/23)                                          ||~v129I~
+  .v129P<--129N:(2020/10/28)                                          ||~v129I~
+  .v129Q<--129P:(2020/12/16)                                          ||~v@@@I~
                                                                       ||~v129R~
      1.BUGs                                                           ||~v129R~
        -(Windows:64)"&"(spawn executable file) dir cmd crush.         ||~v129R~
@@ -2512,10 +2514,13 @@ How to start.
        -Fails to display combining character(display width=0) on command line.||~v129I~
        -There was conflict on Flag control by Command "OPT unicomb comb" and "UTF file".||~v129I~
        -(Linux) "a"(Attrib) line command on directory list panel may cause crash.||~v129I~
-                                                                      ||+v129I~
-     (129P)                                                           ||+v129I~
-       -(Linux) GTK3 version gxe; Screen size was not kept over App restart.||+v129I~
+                                                                      ||~v129I~
+     (129P)                                                           ||~v129I~
+       -(Linux) GTK3 version gxe; Screen size was not kept over App restart.||~v129I~
                                                                       ||~v129R~
+     (129Q)                                                           ||~v@@@I~
+       -(gxe) IME's output always same character.                     ||~v@@@I~
+                                                                      ||~v@@@I~
      2.Additional function.                                           ||~v129I~
                                                                       ||~v129I~
        -Shortcut pathname                                             ||~v129I~
@@ -2605,26 +2610,26 @@ How to start.
        -TC fmt cmd -D"..." and -S"..." option                         ||~v129R~
         Accept escape sequence such as \x, \t as Delimeter(\t(0x09) is not allowed for -S).||~v129R~
         Accept DBCS as  -S option.                                    ||~v129R~
-                                                                      ||+v129I~
+                                                                      ||~v129I~
      (129L)                                                           ||~v129I~
        -TC fmt cmd on UTF8 file.                                      ||~v129I~
         accept unicode specification for -D:input splitter and -S:output splitter.||~v129I~
         e.g) tc fmt d\u00c1                                           ||~v129I~
-                                                                      ||+v129I~
-     (129P)                                                           ||+v129I~
-       -COL command (Display column gauge to enable setting of tab stop position)||+v129I~
-        .COL [on|off] [ALL|type|default]                              ||+v129I~
-        .It can be used also on directory list panel.                 ||+v129I~
-        .On directory list, "COL on type" sets default gauge type for all member of the directory.||+v129I~
-         "COL off" resets it. You have to prepare following gauge file in work directory.||+v129I~
-           (Win) ::xe!col!.type   (Linux) ::xe_col_.type              ||+v129I~
-        .When Col type is set to a directory, use COL command for each members to set different option.||+v129I~
-         "COL [on|off] [type|default]"                                ||+v129I~
-            default:display default gauge for the member file.        ||+v129I~
-                    This option is not for directory but file.        ||+v129I~
-            on     :follows directory setting if new type is not specified.||+v129I~
-            off    :hide gauge and reset type for the file,           ||+v129I~
-                    and next "COL on" refers directory setting.       ||+v129I~
+                                                                      ||~v129I~
+     (129P)                                                           ||~v129I~
+       -COL command (Display column gauge to enable setting of tab stop position)||~v129I~
+        .COL [on|off] [ALL|type|default]                              ||~v129I~
+        .It can be used also on directory list panel.                 ||~v129I~
+        .On directory list, "COL on type" sets default gauge type for all member of the directory.||~v129I~
+         "COL off" resets it. You have to prepare following gauge file in work directory.||~v129I~
+           (Win) ::xe!col!.type   (Linux) ::xe_col_.type              ||~v129I~
+        .When Col type is set to a directory, use COL command for each members to set different option.||~v129I~
+         "COL [on|off] [type|default]"                                ||~v129I~
+            default:display default gauge for the member file.        ||~v129I~
+                    This option is not for directory but file.        ||~v129I~
+            on     :follows directory setting if new type is not specified.||~v129I~
+            off    :hide gauge and reset type for the file,           ||~v129I~
+                    and next "COL on" refers directory setting.       ||~v129I~
                                                                       ||~v129I~
      3.Miscellaneous.                                                 ||~v129R~
        -(Windows) add "msi" as executable binary extension            ||~v129R~
@@ -2671,13 +2676,20 @@ How to start.
        -Fix for Axe(Android version).                                 ||~v129I~
        -(Windows console version) external command (xfg, grep etc.) may freeze xe.||~v129I~
         Issues warnin when detected.                                  ||~v129I~
-                                                                      ||+v129I~
-     (129P)                                                           ||+v129I~
-       -For Manjaro Linux.                                            ||+v129I~
-        .Linker's spec was changed and issues error:"duplicated symbol".||+v129I~
-        .Function ftime was deprecated.                               ||+v129I~
-        .Accept another type of ncurses mouse event input.            ||+v129I~
-        .libncursesw is provided, but /usr/include/ncursesw is not provided.||+v129I~
+                                                                      ||~v129I~
+     (129P)                                                           ||~v129I~
+       -For Manjaro Linux.                                            ||~v129I~
+        .Linker's spec was changed and issues error:"duplicated symbol".||~v129I~
+        .Function ftime was deprecated.                               ||~v129I~
+        .Accept another type of ncurses mouse event input.            ||~v129I~
+        .libncursesw is provided, but /usr/include/ncursesw is not provided.||~v129I~
+                                                                      ||~v@@@I~
+     (129Q)                                                           ||~v@@@I~
+       -(wxe) Handle unprintable character input of UTF8 code by 3rd party IME.||~v@@@I~
+       -/Nm command line switch function was changed.                 ||~v@@@I~
+		  When /Nm is specified, for UTF8 code input to CPLC(non UTF8) file||~v@@@I~
+          set UTF8 code itself if Alt+u ON(indecated by =u=> on command input line),||~v@@@I~
+          set translated locale code if Alt+u OFF(===>) or "?" if translation error occured.||~v@@@I~
                                                                       ||~v129I~
      4.Tool.                                                          ||~v129I~
      (129C)                                                           ||~v129I~

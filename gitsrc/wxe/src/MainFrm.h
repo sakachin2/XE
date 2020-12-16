@@ -1,4 +1,4 @@
-//*CID://+vbdnR~:                                   update#=  109; //~vbdnR~
+//*CID://+vbdnR~:                                   update#=  112; //~vbdnR~
 //*****************************************************************************//~vb20I~
 //vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
 //vbd3:171117 (Wxe)MainMenu enable/disable also on Edit submenu    //~vbd3I~
@@ -15,6 +15,7 @@
 #include <wxedef.h>                                                //~@@@@R~
 #include <wxeview.h>                                               //~@@@@I~
 #include <AboutDlg.h>                                              //~@@@@I~
+#include <utrace.h>                                                //~vbdnI~
 class CMainFrame :                                                 //~@@@@R~
 //  public CRibbonFrameWindowImpl<CMainFrame>,                     //~@@@@R~
 	public CUpdateUI<CMainFrame>,                                  //~@@@@I~
@@ -61,6 +62,7 @@ public:
 		if (Museact && Mpact)                                      //~@@@@R~
         	if (Mcacc.TranslateAccelerator(m_hWnd,pMsg))           //~@@@@R~
             	return true;                                       //~@@@@I~
+        UTRACEP("MainFrm.h PreTranslateMsg msg=%08x,wp=%08x,lp=%08x\n",pMsg->message,pMsg->wParam,pMsg->lParam);//+vbdnR~
 		if(CFrameWindowImpl<CMainFrame>::PreTranslateMessage(pMsg))//~@@@@I~
 			return TRUE;
 
@@ -245,7 +247,7 @@ public:                                                            //~@@@@I~
 	WXEINIDATA Mwxeinidata;                                        //~@@@@I~
 	int  CMainFrame::updatemenu(int Pfloatsw,CMenu *Ppmenu);       //~@@@@I~
 	int  CMainFrame::updateFileMenu(int Popt);                     //~vbdnI~
-	int  CMainFrame::updateMenuIcon(int Popt,int Pchkidx,int Piconidx);//+vbdnI~
+	int  CMainFrame::updateMenuIcon(int Popt,int Pchkidx,int Piconidx);//~vbdnI~
 public:                                                            //~@@@@I~
                                                                    //~@@@@I~
 	//{{AFX_VIRTUAL(CMainFrame)                                    //~@@@@I~

@@ -1,5 +1,6 @@
-//*CID://+vb4qR~:                             update#=  203;       //~vb4qR~
+//*CID://+vbt1R~:                             update#=  206;       //~vbt1R~
 //******************************************************************************//~v003I~
+//vbt1:201210 WXE:when kbd changed to 2nd language DBCS chk should be changed//~vbt1I~
 //vb4q:160810 display ligature/combine mode on "TOP OF LINE"       //~vb4qI~
 //vb20:160108 (Wxe:BUG)setup/preview dialog change waas not written to wxeini(put init even when cancel exit)//~vb20I~
 //vak7:130906 redirect memcpy to memmove when overlaped            //~vak7I~
@@ -197,7 +198,7 @@ void CWxemain::optligatureinit(int Popt)                           //~vb4qR~
 	if (Mligature)                                                 //~vb4qM~
 		Mwxeintf.WXEIstatus|=WXEIS_LIGATURE;                       //~vb4qM~
     else                                                           //~vb4qM~
-	    Mwxeintf.WXEIstatus&=~WXEIS_LIGATURE;                      //+vb4qR~
+	    Mwxeintf.WXEIstatus&=~WXEIS_LIGATURE;                      //~vb4qR~
 }//optligatureinit                                                 //~vb4qI~
 //===============================================================================//~v003M~
 //ret:rc                                                           //~v003R~
@@ -259,8 +260,16 @@ int  CWxemain::OnOk()                                              //~v003M~
     wxe_setbeep(Mbeep);                                            //~V55GI~
 	wxe_optligature(WXEIOLO_CHNGDIALOGOPT,Mligature);              //~Va3gR~
 	scronok(cpchngsw);                                             //~v003R~
+    if (cpchngsw)                                                  //~vbt1I~
+    	requestRestart();                                          //~vbt1I~
     return 1;                                                      //~v003I~
 }//OnOk                                                            //~v003M~
+//===============================================================================//~vbt1I~
+void CWxemain::requestRestart()                                    //~vbt1R~
+{                                                                  //~vbt1I~
+//    uerrmsgboxokcan("Restrat required when FontCharSet changed !\nRestart wxe after update saved.",//+vbt1R~
+//                    "FontCharSet を変更したら wxe の再起動が必要です !\n必要な保存を行った後、再起動してください");//+vbt1R~
+}                                                                  //~vbt1I~
 //===============================================================================//~v003I~
 //get ini file on work dir                                         //~v003I~
 //===============================================================================//~v003I~

@@ -1,7 +1,8 @@
-//*CID://+vbi3R~:                            update#=  484;        //~vbi3R~
+//*CID://+vbt4R~:                            update#=  496;        //~vbt4R~
 //*************************************************************
 //*xechar.c                                                     //~v04dR~
 //*************************************************************
+//vbt4:201212 (WIN)apply -Nm on LC file only when utf8 inputmode(A+u)//~vbt4I~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vb97:170311 Trap lcmd ineffective bug(Windows dump is taken by ueh,so change uerrmsg to uerrexit)//~vb97I~
 //vb81:170206 trap for edit panel lcmd input ignored case if !NOTRACE//~vb81I~
@@ -271,6 +272,7 @@
 #include "xedlcmd.h"                                               //~v63hI~
 #include "xeopt.h"                                                 //~v72NI~
 #include "xegbl.h"                                                 //~v72NI~//~v777I
+#include "xeutf.h"                                             //~5701I~//~va00I//+vbt4I~
 #ifdef UTF8UCS2                                                    //~va20I~
 	#include "xeutf2.h"                                             //~5701I~//~va00I//~va20R~
 #endif                                                             //~va00I//~va20I~
@@ -288,6 +290,7 @@ int charcaps(PUCLIENTWE Ppcw,PUFILEH Ppfh);                        //~v72MI~
 //#define INMARGINJOIN  0x1000                                       //~v42gI~//~v74iR
 int charjoinsetdbcstbl(int Popt,PULINEH Pplh,int *Pppos,int *Pplenc);//~v77gI
 int charfldeditchl(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh);         //~vbi3R~
+int charfldedit_noutf8(int *Prc,int Popt,int Precoff,PUCLIENTWE Ppcw,PULINEH Pplh);//~vbt4I~
 //**************************************************
 //* menu field char input **************************
 //**************************************************
@@ -786,6 +789,7 @@ static UCHAR Sdummydbcs[ULHLINENOSZ];
     }                                                              //~v69JI~
 //  rc=charfldedit(Popt,							//mode         //~v60vR~
     opt=Popt|(int)((UINT)vhexmode<<8); //notify vhexmode           //~v618R~
+  if (!charfldedit_noutf8(&rc,opt,recoff,Ppcw,plh))                //~vbt4I~
     rc=charfldedit(opt,							//mode             //~v60vI~
 				   plh->ULHdata,					//buffer
 				   plh->ULHdbcs,					//buffer
@@ -812,7 +816,50 @@ static UCHAR Sdummydbcs[ULHLINENOSZ];
 //*set right step count for func_right                          //~5423I~
 	return 0;
 }//charfile
-                                                                //~5124I~
+//**************************************************               //~vbt4I~
+int charfldedit_noutf8(int *Prc,int Popt,int Precoff,PUCLIENTWE Ppcw,PULINEH Pplh)//~vbt4I~
+{                                                                  //~vbt4I~
+	int done=0,rc=0,u8len,recoff,ii;                               //~vbt4R~
+    char *pu8;                                                     //~vbt4I~
+//****************                                                 //~vbt4I~
+    UTRACEP("%s:charfldedit_noutf8 Gotherstatus=x%x,utf8str=%s\n",UTT,Gotherstatus,Ppcw->UCWkeydata_utf8str);//~vbt4I~
+	if (Gotherstatus & GOTHERS_NOUTF8     //-Nm                    //~vbt4I~
+	&&  Gutfmode2 & GUM2_KBDUTF8     //A+u                         //~vbt4I~
+    &&  UCBITCHK(Ppcw->UCWflag2,UCWF2UTF8STR)                      //~vbt4I~
+    &&  *(Ppcw->UCWkeydata_utf8str+1)    //u8len>1                 //~vbt4R~
+    &&  !FILEUTF8MODE(UGETPFH(Pplh))                               //~vbt4I~
+    )                                                              //~vbt4I~
+    {                                                              //~vbt4I~
+        done=1;                                                    //~vbt4I~
+    	pu8=Ppcw->UCWkeydata_utf8str;                              //~vbt4I~
+    	u8len=(int)strlen(pu8);                                    //~vbt4I~
+        recoff=Precoff;                                            //~vbt4I~
+        Ppcw->UCWkeytype=UCWKTSBCS;                                //~vbt4I~
+	    Ppcw->UCWkeydata[1]=0;                                     //~vbt4I~
+        for (ii=0;ii<u8len;ii++)                                   //~vbt4I~
+        {                                                          //~vbt4I~
+	        Ppcw->UCWkeydata[0]=*pu8;                              //~vbt4R~
+    		rc=charfldedit(Popt,							//mode //~vbt4I~
+				   Pplh->ULHdata,					//buffer       //~vbt4I~
+				   Pplh->ULHdbcs,					//buffer       //~vbt4I~
+				   recoff,							//current col  //~vbt4I~
+				   0,                          		//start col    //~vbt4I~
+				   Pplh->ULHlen,						//end col  //~vbt4I~
+				   Pplh->ULHbufflen,					//buff len last//~vbt4I~
+				   Ppcw,							//pcw          //~vbt4I~
+				   Pplh);							//update ctr etc//~vbt4I~
+            if (rc)                                                //~vbt4I~
+            	break;                                             //~vbt4I~
+            recoff++;                                              //~vbt4I~
+            pu8++;                                                 //~vbt4I~
+        }                                                          //~vbt4I~
+        if (recoff>Precoff)                                        //~vbt4I~
+	        csronthefld(Ppcw,Ppcw->UCWrcsry,0,Ppcw->UCWrcsrx+recoff-Precoff-1);     //-1 by csrcharright by filecharcsr//~vbt4R~
+    }                                                              //~vbt4I~
+    UTRACEP("%s:charfldedit_noutf8 done=%d,rc=%d\n",UTT,done,rc);  //~vbt4I~
+    *Prc=rc;                                                       //~vbt4I~
+    return done;                                                   //~vbt4I~
+}                                                                //~5124I~//~vbt4R~
 //**************************************************               //~v72MI~
 //*caps on process                                                 //~v72MI~
 //*if linux console version:reverse lower<-->upper                 //~v72MI~
@@ -1082,6 +1129,7 @@ static UCHAR Sdbcsidgb4[]=UDBCSCHK_DBCSIDSTRGB4;                   //~va1cR~
 #endif                                                             //~va3xI~
     int optorg;                                                    //~va3SI~
 //****************************
+    UTRACEP("%s:mode=x%x,curCol=%d\n",UTT,Pmode,Pcurcol);          //~vbt4R~
 //#ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~//~vaf9R~
 	if (Pplh)                                                      //~va50R~
     {                                                              //~va50I~
@@ -2712,7 +2760,7 @@ int charfldeditchl(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh)          //~vbi3R~
     if (!rc)                                                       //~vbi3R~
     {                                                              //~vbi3I~
     	if (swpopup)                                               //~vbi3R~
-			Gotherstatus|=GOTHERS_CHLPOPUP;//CommandHistoryList popup at return from funccall,UCWreason is not avail becaquse Ppcw may be freeed//+vbi3R~
+			Gotherstatus|=GOTHERS_CHLPOPUP;//CommandHistoryList popup at return from funccall,UCWreason is not avail becaquse Ppcw may be freeed//~vbi3R~
     	if (swsplit)                                               //~vbi3I~
 			Ppcw->UCWreason=UCWREASON_CHLSPLIT;                    //~vbi3I~
         else                                                       //~vbi3I~

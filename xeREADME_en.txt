@@ -1,6 +1,6 @@
-||*CID:||+129PR~:  2020/10/28                update#=  813;           ||+129PR~
+||*CID:||+v@@@R~:  2020/12/16                update#=  815;           ||+v@@@R~
 ######################################################################
-[English]    v1.29P                                                   ||+129PR~
+[English]    v1.29Q                                                   ||~129PR~||+v@@@R~
 
 This editor is fit for programmers working on both main-frame and PC.
 Its operation is based on mainframe SPF editor,
@@ -441,48 +441,60 @@ How to execute.
           .Accept parameter sign other than %.                        ||~129MI~
            e.g) By /C$, $fp$ in the cmd string is replaced to fullpath name of the file in the directory.||~129MI~
           .%rp% is added for path name relative to starting directory.||~129MI~
-                                                                      ||+129PI~
-  .v129N<--129M:(2020/09/23)                                          ||+129PI~
-                                                                      ||+129PI~
-     1.BUGs                                                           ||+129PI~
-       -Cursor positioning failure on comman line for 3 bytes(EUC 8fxxyy) and 4 bytes(GB18030) DBCS.||+129PI~
-       -Fails to display combining character(display width=0) on command line.||+129PI~
-       -There was conflict on Flag control by Command "OPT unicomb comb" and "UTF file".||+129PI~
-       -(Linux) "a"(Attrib) line command on directory list panel may cause crash.||+129PI~
-                                                                      ||+129PI~
-     2.Additional function.                                           ||+129PI~
-                                                                      ||+129PI~
-     3.Miscellaneous.                                                 ||+129PI~
-       -Fix for Axe(Android version).                                 ||+129PI~
-       -(Windows console version) external command (xfg, grep etc.) may freeze xe.||+129PI~
-        Issues warnin when detected.                                  ||+129PI~
-                                                                      ||+129PI~
-     4.Tool.                                                          ||+129PI~
-                                                                      ||+129PI~
-  .v129P<--129N:(2020/10/28)                                          ||+129PI~
-                                                                      ||+129PI~
-     1.BUGs                                                           ||+129PI~
-       -(Linux) GTK3 version gxe; Screen size was not kept over App restart.||+129PI~
-                                                                   //~@@@1I~||+129PI~
-     2.Additional function.                                           ||+129PI~
-       -COL command (Display column gauge to enable setting of tab stop position)||+129PI~
-        .COL [on|off] [ALL|type|default]                              ||+129PI~
-        .It can be used also on directory list panel.                 ||+129PI~
-        .On directory list, "COL on type" sets default gauge type for all member of the directory.||+129PI~
-         "COL off" resets it. You have to prepare following gauge file in work directory.||+129PI~
-           (Win) ::xe!col!.type   (Linux) ::xe_col_.type              ||+129PI~
-        .When Col type is set to a directory, use COL command for each members to set different option.||+129PI~
-         "COL [on|off] [type|default]"                                ||+129PI~
-            default:display default gauge for the member file.        ||+129PI~
-                    This option is not for directory but file.        ||+129PI~
-            on     :follows directory setting if new type is not specified.||+129PI~
-            off    :hide gauge and reset type for the file,           ||+129PI~
-                    and next "COL on" refers directory setting.       ||+129PI~
-                                                                   //~@@@1I~||+129PI~
-     3.Miscellaneous.                                                 ||+129PI~
-       -For Manjaro Linux.                                            ||+129PI~
-        .Linker's spec was changed and issues error:"duplicated symbol".||+129PI~
-        .Function ftime was deprecated.                               ||+129PI~
-        .Accept another type of ncurses mouse event input.            ||+129PI~
-        .libncursesw is provided, but /usr/include/ncursesw is not provided.||+129PI~
-                                                                   //~@@@1I~||+129PI~
+                                                                      ||~129PI~
+  .v129N<--129M:(2020/09/23)                                          ||~129PI~
+                                                                      ||~129PI~
+     1.BUGs                                                           ||~129PI~
+       -Cursor positioning failure on comman line for 3 bytes(EUC 8fxxyy) and 4 bytes(GB18030) DBCS.||~129PI~
+       -Fails to display combining character(display width=0) on command line.||~129PI~
+       -There was conflict on Flag control by Command "OPT unicomb comb" and "UTF file".||~129PI~
+       -(Linux) "a"(Attrib) line command on directory list panel may cause crash.||~129PI~
+                                                                      ||~129PI~
+     2.Additional function.                                           ||~129PI~
+                                                                      ||~129PI~
+     3.Miscellaneous.                                                 ||~129PI~
+       -Fix for Axe(Android version).                                 ||~129PI~
+       -(Windows console version) external command (xfg, grep etc.) may freeze xe.||~129PI~
+        Issues warnin when detected.                                  ||~129PI~
+                                                                      ||~129PI~
+     4.Tool.                                                          ||~129PI~
+                                                                      ||~129PI~
+  .v129P<--129N:(2020/10/28)                                          ||~129PI~
+                                                                      ||~129PI~
+     1.BUGs                                                           ||~129PI~
+       -(Linux) GTK3 version gxe; Screen size was not kept over App restart.||~129PI~
+                                                                      ||~129PR~
+     2.Additional function.                                           ||~129PI~
+       -COL command (Display column gauge to enable setting of tab stop position)||~129PI~
+        .COL [on|off] [ALL|type|default]                              ||~129PI~
+        .It can be used also on directory list panel.                 ||~129PI~
+        .On directory list, "COL on type" sets default gauge type for all member of the directory.||~129PI~
+         "COL off" resets it. You have to prepare following gauge file in work directory.||~129PI~
+           (Win) ::xe!col!.type   (Linux) ::xe_col_.type              ||~129PI~
+        .When Col type is set to a directory, use COL command for each members to set different option.||~129PI~
+         "COL [on|off] [type|default]"                                ||~129PI~
+            default:display default gauge for the member file.        ||~129PI~
+                    This option is not for directory but file.        ||~129PI~
+            on     :follows directory setting if new type is not specified.||~129PI~
+            off    :hide gauge and reset type for the file,           ||~129PI~
+                    and next "COL on" refers directory setting.       ||~129PI~
+                                                                      ||~129PR~
+     3.Miscellaneous.                                                 ||~129PI~
+       -For Manjaro Linux.                                            ||~129PI~
+        .Linker's spec was changed and issues error:"duplicated symbol".||~129PI~
+        .Function ftime was deprecated.                               ||~129PI~
+        .Accept another type of ncurses mouse event input.            ||~129PI~
+        .libncursesw is provided, but /usr/include/ncursesw is not provided.||~129PI~
+                                                                      ||~129PR~
+  .v129Q<--129P:(2020/12/16)                                          ||+v@@@I~
+                                                                      ||+v@@@I~
+     1.BUGs                                                           ||+v@@@I~
+       -(gxe) IME's output always same character.                     ||+v@@@I~
+                                                                   //~@@@1I~||+v@@@I~
+     3.Miscellaneous.                                                 ||+v@@@I~
+       -(wxe) Handle unprintable character input of UTF8 code by 3rd party IME.||+v@@@I~
+       -/Nm command line switch function was changed.                 ||+v@@@I~
+		  When /Nm is specified, for UTF8 code input to CPLC(non UTF8) file||+v@@@I~
+          set UTF8 code itself if Alt+u ON(indecated by =u=> on command input line),||+v@@@I~
+          set translated locale code if Alt+u OFF(===>) or "?" if translation error occured.||+v@@@I~
+                                                                      ||+v@@@I~

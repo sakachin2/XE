@@ -1,5 +1,6 @@
-//*CID://+vb2JR~:                             update#=  250;       //+vb2JR~
+//*CID://+vbt1R~:                             update#=  251;       //+vbt1R~
 //***********************************************************************//~3102I~
+//vbt1:201210 WXE:when kbd changed to 2nd language DBCS chk should be changed//+vbt1I~
 //vb2J:160313 (W32) compier warning                                //~vb2JI~
 //va75:100806 (BUG:WXE)force eng to errmsg when charset changed on setupdialog//~va75I~
 //va74:100806 (BUG:WXE)reset va6v; write by locale code to use font codepage on setupdialog//~va74I~
@@ -305,7 +306,7 @@ void CWxedlg::OnOK()
     Mscrolltimer=atoi(txt);                                        //~v510R~
 	Mpwxemain->Mscrolltimer=Mscrolltimer*100;	//by ms            //~v510R~
                                                                    //~2915I~
-	wxe_setcharset(0/*initsw*/,Mcharset);                          //~va75R~
+//  wxe_setcharset(0/*initsw*/,Mcharset); wxxemain:onOK will be called                     //~va75R~//+vbt1R~
                                                                    //~2915I~
     Mpparentwnd->SendMessage(WM_COMMAND,IDOK);                     //~2817R~
     wxe_setqexit(Mqexit);                                          //~v73yI~

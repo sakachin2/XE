@@ -1,6 +1,8 @@
-//*CID://+v6WvR~:                             update#=  440;       //~v6WvR~
+//*CID://+v721R~:                             update#=  443;       //+v721R~
 //**************************************************
-//vbmk:180813 (XE)for test,try mk_wcwidth_cjk(ambiguous:Wide DBCS) for visibility chk. use /YJ option//+v6WvI~
+//v721:201212 Drop -Nm option                                      //+v721I~
+//v720:201211 (BUG)LNX Console;-Nm option did not work(DBCS chk is done)//~v720I~
+//vbmk:180813 (XE)for test,try mk_wcwidth_cjk(ambiguous:Wide DBCS) for visibility chk. use /YJ option//~v6WvI~
 //v6Wv:180807 (W32:Bug) console version on chcp=50221, utfcvf2l output string is over MACMBCSLEN by esc seq such as "Esc$B!)"//~v6WvI~
 //v6Hk:170120 (BUG by 6G0) u-c1 is displayed as "A"(best fit) when noligatutre mode;apply 6G0 for only dbcs//~v6HkI~
 //v6Da:160611 (LNX)on dirlist Non printable ucs was dispalyed as sbcs ucs//~v6DaI~
@@ -190,6 +192,7 @@
 #endif                                                             //~v5ntI~
 	#define  UDBCSCHK_LOCALICU   0x02000000  //use ICU for LOCAL converter//~v6f3R~
 	#define  UDBCSCHK_IS_LOCALICU() (Gudbcschk_flag & UDBCSCHK_LOCALICU)//~v6f3R~
+//  #define  UDBCSCHK_KBDNOUTF8  0x04000000  //-Nm option on UTF8 env//~v720R~//+v721R~
                                                                    //~v6f3R~
 #ifdef WCSUPP                                                      //~v5n8I~
                                                                    //~v5n8I~
@@ -691,7 +694,7 @@ int udbcschk_localeisdbcs(void);                                   //~v61bI~
     #define UDCWCIO_INTERNAL          0x8000     //internal call   //~v638I~
     #define UDCWCIO_XEACB           0x010000     //for xeacb,write unprintable ucs as is//~v640I~
     #define UDCWCIO_LOCALICU        0x020000     //use ICU as local converter//~v6f3R~
-    #define UDCWCIO_CJK             0x040000     //force mk_wcwidth_cjk//+v6WvI~
+    #define UDCWCIO_CJK             0x040000     //force mk_wcwidth_cjk//~v6WvI~
                                                                    //~v5mQI~
 	int udbcschk_ismbdbcs1st(int Popt,UCHAR Pch);                  //~v5mQI~
 	int udbcschk_getdbcs1st(int Popt,char *Ppflags);               //~v5mQI~

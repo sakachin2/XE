@@ -1,4 +1,4 @@
-//*CID://+vbj2R~:                             update#=   91;       //~vbj2R~
+//*CID://+vbj2R~:                             update#=   99;       //~vbj2R~
 //***************************************************************************//~v51VI~
 //vbj2:180424 popup menu on cmd history list                       //~vbj2I~
 //vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
@@ -25,6 +25,7 @@
 #include <MainFrm.h>                                               //~@@@@R~
 #include <wxemain.h>                                               //~@@@@R~
 #include <resource.h>                                              //~@@@@I~
+#include <utrace.h>                                                //~vbj2I~
 
 //class CWxeView : public CView                                    //~@@@@R~
 class CWxeView : public CWindowImpl<CWxeView>                      //~@@@@I~
@@ -116,17 +117,24 @@ BEGIN_MESSAGE_MAP(CWxeView, CView)                                 //~@@@@I~
 //    ON_MESSAGE(ID_FILE_DNDCOPY,CWxeView::OnFileDNDCopy)          //~@@@@R~
 	MESSAGE_HANDLER_EX(ID_FILE_DNDCOPY, CWxeView::OnFileDNDCopyW)  //~@@@@R~
 	MESSAGE_RANGE_HANDLER_EX(0,0xffff,CWxeView::DefWindowProcW)    //~@@@@R~
-	ON_COMMAND(ID_CHL_SET_CLOSED, OnFileCHLSetClosedW)             //+vbj2R~
-	ON_COMMAND(ID_CHL_SET_CURRENT, OnFileCHLSetCurrentW)           //+vbj2R~
-	ON_COMMAND(ID_CHL_SET_SPLIT, OnFileCHLSetSplitW)               //+vbj2R~
-	ON_COMMAND(ID_CHL_EXE_CLOSED, OnFileCHLExeClosedW)             //+vbj2R~
-	ON_COMMAND(ID_CHL_EXE_CURRENT, OnFileCHLExeCurrentW)           //+vbj2R~
-	ON_COMMAND(ID_CHL_EXE_SPLIT, OnFileCHLExeSplitW)               //+vbj2R~
+	ON_COMMAND(ID_CHL_SET_CLOSED, OnFileCHLSetClosedW)             //~vbj2R~
+	ON_COMMAND(ID_CHL_SET_CURRENT, OnFileCHLSetCurrentW)           //~vbj2R~
+	ON_COMMAND(ID_CHL_SET_SPLIT, OnFileCHLSetSplitW)               //~vbj2R~
+	ON_COMMAND(ID_CHL_EXE_CLOSED, OnFileCHLExeClosedW)             //~vbj2R~
+	ON_COMMAND(ID_CHL_EXE_CURRENT, OnFileCHLExeCurrentW)           //~vbj2R~
+	ON_COMMAND(ID_CHL_EXE_SPLIT, OnFileCHLExeSplitW)               //~vbj2R~
 END_MESSAGE_MAP()                                                  //~@@@@I~
 
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg)                    //~@@@@I~
 	{                                                              //~@@@@I~
+        UTRACEP("wxeView.h PreTranslateMsg msg=%08x,wp=%08x,lp=%08x\n",pMsg->message,pMsg->wParam,pMsg->lParam);//~vbj2R~
+        if (pMsg->message==WM_KEYDOWN && pMsg->wParam==VK_PACKET)  //~vbj2I~
+        {                                                          //~vbj2I~
+        	UTRACEP("wxeView.h PreTranslateMsg VK_PACKET issue translateMessage and RETURN FALSE\n");//~vbj2R~
+//          TranslateMessage(pMsg);     //TODO Test                //+vbj2R~
+//          return FALSE;               //TODO test                //+vbj2R~
+        }                                                          //~vbj2I~
 		return FALSE;                                              //~@@@@I~
 	}                                                              //~@@@@I~
 	virtual BOOL OnIdle()                                          //~@@@@I~
@@ -302,35 +310,35 @@ public:                                                            //~@@@@I~
 				OnVScroll(nSBCode,nPos,(CScrollBar *)(new CWindow(Phwnd)));//~@@@@I~
 			}                                                      //~@@@@I~
     afx_msg void OnFileCHLSetClosed();                             //~vbj2I~
-            void OnFileCHLSetClosedW(UINT unotifyCode,int nID,HWND wndCtl)//+vbj2I~
-			{                                                      //+vbj2I~
-				OnFileCHLSetClosed();                              //+vbj2I~
-			}                                                      //+vbj2I~
+            void OnFileCHLSetClosedW(UINT unotifyCode,int nID,HWND wndCtl)//~vbj2I~
+			{                                                      //~vbj2I~
+				OnFileCHLSetClosed();                              //~vbj2I~
+			}                                                      //~vbj2I~
     afx_msg void OnFileCHLSetCurrent();                            //~vbj2I~
-            void OnFileCHLSetCurrentW(UINT unotifyCode,int nID,HWND wndCtl)//+vbj2I~
-			{                                                      //+vbj2I~
-				OnFileCHLSetCurrent();                             //+vbj2I~
-			}                                                      //+vbj2I~
+            void OnFileCHLSetCurrentW(UINT unotifyCode,int nID,HWND wndCtl)//~vbj2I~
+			{                                                      //~vbj2I~
+				OnFileCHLSetCurrent();                             //~vbj2I~
+			}                                                      //~vbj2I~
     afx_msg void OnFileCHLSetSplit();                              //~vbj2I~
-            void OnFileCHLSetSplitW(UINT unotifyCode,int nID,HWND wndCtl)//+vbj2I~
-			{                                                      //+vbj2I~
-				OnFileCHLSetSplit();                               //+vbj2I~
-			}                                                      //+vbj2I~
+            void OnFileCHLSetSplitW(UINT unotifyCode,int nID,HWND wndCtl)//~vbj2I~
+			{                                                      //~vbj2I~
+				OnFileCHLSetSplit();                               //~vbj2I~
+			}                                                      //~vbj2I~
     afx_msg void OnFileCHLExeClosed();                             //~vbj2I~
-            void OnFileCHLExeClosedW(UINT unotifyCode,int nID,HWND wndCtl)//+vbj2I~
-			{                                                      //+vbj2I~
-				OnFileCHLExeClosed();                              //+vbj2I~
-			}                                                      //+vbj2I~
+            void OnFileCHLExeClosedW(UINT unotifyCode,int nID,HWND wndCtl)//~vbj2I~
+			{                                                      //~vbj2I~
+				OnFileCHLExeClosed();                              //~vbj2I~
+			}                                                      //~vbj2I~
     afx_msg void OnFileCHLExeCurrent();                            //~vbj2I~
-            void OnFileCHLExeCurrentW(UINT unotifyCode,int nID,HWND wndCtl)//+vbj2I~
-			{                                                      //+vbj2I~
-				OnFileCHLExeCurrent();                             //+vbj2I~
-			}                                                      //+vbj2I~
+            void OnFileCHLExeCurrentW(UINT unotifyCode,int nID,HWND wndCtl)//~vbj2I~
+			{                                                      //~vbj2I~
+				OnFileCHLExeCurrent();                             //~vbj2I~
+			}                                                      //~vbj2I~
     afx_msg void OnFileCHLExeSplit();                              //~vbj2I~
-            void OnFileCHLExeSplitW(UINT unotifyCode,int nID,HWND wndCtl)//+vbj2I~
-			{                                                      //+vbj2I~
-				OnFileCHLExeSplit();                               //+vbj2I~
-			}                                                      //+vbj2I~
+            void OnFileCHLExeSplitW(UINT unotifyCode,int nID,HWND wndCtl)//~vbj2I~
+			{                                                      //~vbj2I~
+				OnFileCHLExeSplit();                               //~vbj2I~
+			}                                                      //~vbj2I~
 	//}}AFX_MSG
       DECLARE_MESSAGE_MAP()                                        //~@@@@R~
 private:

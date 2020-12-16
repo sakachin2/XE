@@ -1,8 +1,9 @@
-//*CID://+vbrkR~:                             update#=  291;       //+vbrkR~
+//*CID://+vbt4R~:                             update#=  293;       //+vbt4R~
 //************************************************************
 //* xekbd.c                                                     //~5501R~
 //************************************************************  //~5423I~
-//vbrk:200918 (AXE)first time scrgetcw fails, allow it             //+vbrkI~
+//vbt4:201212 (WIN)apply -Nm on LC file only                       //+vbt4I~
+//vbrk:200918 (AXE)first time scrgetcw fails, allow it             //~vbrkI~
 //vbrf:200821 A+a/A+q(shortcut/query) repeat err(not alpnumeric stop repeat)//~vbrfI~
 //vbr5:200721 (ARM)logcat hung at utrace output([0x1a..) , it may be Esc[//~vbr5I~
 //vbr1:200615 ARM compiler warning                                 //~vbr1I~
@@ -635,7 +636,7 @@ int kbdterm(void)                                               //~v01aI~
 //**************************************************
 //scancode/charcode 
 //      xx/yy:scan code/char code
-//      00/yy:¶À¶Å,‘SŠp•¶Žš
+//      00/yy:katakana,zenkaku                                     //~vbrkR~
 //      xx/00:psude scancode
 //      xx/e0:psude scancode
 int kbdproc(void)
@@ -677,9 +678,9 @@ int kbdproc(void)
     pcw=scrgetcw(0);        //get current client                   //~v0ijI~
     if (!pcw)                                                      //~v0ijI~
     {                                                              //~vaxaI~
-#ifndef ARM                                                        //+vbrkI~
+#ifndef ARM                                                        //~vbrkI~
         uerrexit("kbdproc:internal logic err,No work exits",0);    //~v0ijI~
-#endif                                                             //+vbrkI~
+#endif                                                             //~vbrkI~
 #ifdef ARM                                                         //~vaxaI~
         return -1;                                                 //~vaxaI~
 #endif                                                             //~vaxaI~
@@ -876,10 +877,12 @@ int kbdproc(void)
                 if (!keyinf.chScan) //katakana,zenkaku             //~V768R~
                 {                                               //~5423R~
 #ifdef WCSUPP                                                      //~v8@ZI~
+#ifdef AAA                                                         //+vbt4I~
 				  if (Gotherstatus & GOTHERS_NOUTF8     //no utf8 option under utf env//~v7a5I~
                   &&  keyinf.chChar>=0x80)	//not ascii            //~v7a5I~
 					UCBITON(pcw->UCWflag3,UCWF3HEXKBDGC); 	//grapth char input by HEX notation//~v7a5I~
                   else                                             //~v7a5I~
+#endif //AAA                                                       //+vbt4I~
 #ifdef UTF8SUPPH                                                   //~vva1cI~//~va1cR~
 		          if (keyinf.bNlsShift & (KBDNLS_DBCS|KBDNLS_F2L_DBCS1ST))//dbcs or f2l dbcsno need to chk lead byte//~vva1cR~//~va1cR~
 #else                                                              //~vva1cI~//~va1cR~

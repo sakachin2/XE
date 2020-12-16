@@ -1,6 +1,11 @@
-//CID://+vba3R~:        update#=    5                              //+vba3R~
+//CID://+vbt8R~:        update#=   15                              //~vbt8R~
 //******************************************************************************//~v003I~
-//vba3:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//+vba3I~
+//vbt8:201214 (WXE:bug)receive two WM_IME_CHAR for DBCS(by SJIS) on Japanase when used Dyalog IME.//~vbt8I~
+//            It is OK on notepad etc. For Wxe ok when system locale setting is changed to English.//~vbt8I~
+//             e.g u00a8 is DBCS 814E on SJIS and receive 81 and 4E. It is valid generating u00a8 only at 81 and ignore 4e.//~vbt8I~
+//vbt7:201213 (WXE)ignore VK_PACKET,it may generate WM_CHAR        //~vbt7I~
+//vbt6:201213 (WXE)try check VK_PACKET                             //~vbt6R~
+//vba3:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~vba3I~
 //vb3w:160621 w64 compiler warning                                 //~vb3wI~
 //vak7:130906 redirect memcpy to memmove when overlaped            //~vak7I~
 //vafh:120616 for VC10:/W4 warning except C4115,C4214,C4100,C4706,C4244,C4210,C4127,C4245//~vafhI~
@@ -111,6 +116,11 @@ UTRACEP("onkeyup ch=%x,rep=%x,flag=%x\n",nChar,nRepCnt,nFlags);    //~v79zI~
 		Mscrolllockmsec=ctm.millitm;	//chk later lbdown         //~v69bI~
         Mscrolllocksw=1;	//start of scroll lock                 //~v69iR~
     }                                                              //~v69bI~
+    else                                                           //~vbt6I~
+    if (nChar==VK_PACKET)                                          //~vbt6I~
+    {                                                              //~vbt6I~
+        UTRACEP("onkeyup.VK_PACKET ch=%x,rep=%x,flag=%x\n",nChar,nRepCnt,nFlags);//~vbt6I~
+    }                                                              //~vbt6I~
 	return FALSE;                                                  //~v003I~
 }//wxescr_keyup                                                    //~v003I~
 //===============================================================================//~v003I~
@@ -248,6 +258,12 @@ UTRACEP("onkeydown ch=%x,rep=%x,flag=%x\n",nChar,nRepCnt,nFlags);  //~v79zI~
             rc=TRUE;                    //wait onchar when without ctl key//~v55cI~
         	break;                                                 //~v55cI~
         }                                                          //~v55cI~
+//      if (nChar==VK_PACKET)                                      //~vbt6I~//~vbt7R~
+//      {                                                          //~vbt6I~//~vbt7R~
+//  		UTRACEP("onkeydown.VK_PACKET ch=%x,rep=%x,flag=%x\n",nChar,nRepCnt,nFlags);//~vbt6I~//~vbt7R~
+//          rc=TRUE;                    //wait onchar when without ctl key//~vbt6I~//~vbt7R~
+//      	break;                                                 //~vbt6I~//~vbt7R~
+//      }                                                          //~vbt6I~//~vbt7R~
     	if (nFlags & ENHANCED_KEY)	//ins,up etc                   //~v003M~
         {                                                          //~v003I~
         	rc=TRUE;		//process key down                     //~v003M~
@@ -455,6 +471,7 @@ int CWxemain::kbdimectl(HWND Phwnd,UINT Pmsgid,WPARAM wParam,LPARAM lParam)//~v7
     int nodefprocsw=0;                                             //~v79zI~
     int ucs;                                                       //~v79zM~
 //************************************                             //~v003I~
+UTRACEP("kbdimectl msgid=%08x,wp=%08x,lp=%08x\n",Pmsgid,wParam,lParam);//~vbt7I~
     hIMC=ImmGetContext(Phwnd);                                     //~v68qI~
 	switch(Pmsgid)                                                 //~v003I~
     {                                                              //~v003I~
@@ -476,12 +493,20 @@ int CWxemain::kbdimectl(HWND Phwnd,UINT Pmsgid,WPARAM wParam,LPARAM lParam)//~v7
     	Mnewimephrase=1;		//required at next COMOSITION msg  //~v003I~
         swset=0;                                                   //~v003I~
   		if (WXEI_ISWIDEAPI()                                       //~v79zI~
-  		&&  Mwxeintf.WXEIimeucsctr)                                //~v79zI~
+//		&&  Mwxeintf.WXEIimeucsctr)                                //~v79zI~//~vbt8R~
+        )                                                          //+vbt8I~
+  		if (Mwxeintf.WXEIimeucsctr)                                //~vbt8I~
   		{                                                          //~v79zI~
+			UTRACEP("kbdimectl.WM_IME_CHAR\n");                    //~vbt7I~
 			ucs=kbdime_getchar(0,0/*himc*/,Pmsgid,0/*wparam*/,0/*lparam*/);//~v79zR~
     		kbdkeyin(WXEKBDMSG_ONCHARUCS,(UINT)ucs,1/*rep*/,0/*flag*/);//xe called by this key//~v79zR~
 		    nodefprocsw=1;     //kill following WM_CHAR msg        //~v79zI~
   		}                                                          //~v79zI~
+        else                                                       //~vbt8I~
+        {                                                          //~vbt8I~
+			UTRACEP("kbdimectl.WM_IME_CHAR ignore redundant rc=TRUE\n");//~vbt8I~
+		    nodefprocsw=1;     //kill following WM_CHAR msg        //~vbt8I~
+        }                                                          //~vbt8I~
         break;                                                     //~v003I~
     default:					//WM_IME_STARTCOMPOSITION //open   //~v003I~
         	swset=1;                                               //~v003I~
@@ -498,6 +523,7 @@ UTRACEP("kbdimectl set logfont rc=%d\n",rc);                       //~v68qI~
     }                                                              //~v003I~
     rc=ImmGetCompositionFont(hIMC,&logfont);                       //~v68pI~
 UTRACEP("kbdimectl logfont rc=%d,face=%s,h=%ld,w=%ld\n",rc,logfont.lfFaceName,logfont.lfHeight,logfont.lfWidth);//~v68pI~
+UTRACEP("kbdimectl Mnewimephrase=%d,ucsctr=%d,isWideapi=%d\n",Mnewimephrase,Mwxeintf.WXEIimeucsctr,WXEI_ISWIDEAPI());//~vbt7R~
     if (swset)                                                     //~v003I~
     {                                                              //~v003I~
     	Mnewimephrase=0;		//position set                     //~v003I~
@@ -510,7 +536,7 @@ UTRACEP("kbdimectl logfont rc=%d,face=%s,h=%ld,w=%ld\n",rc,logfont.lfFaceName,lo
 //      ImmReleaseContext(Phwnd,hIMC);                             //~v79zR~
     }                                                              //~v003I~
     ImmReleaseContext(Phwnd,hIMC);                                 //~v79zI~
-//UTRACEP("kbdimectl nodefproc=%d,row=%d,col=%d,swset=%d,new=%d,msg=%08x\n",nodefprocsw,row,col,swset,Mnewimephrase,Pmsgid);//~vafaR~
+  UTRACEP("kbdimectl nodefproc=%d,Mimeonsw=%d,swset=%d,new=%d,msg=%08x\n",nodefprocsw,Mimeonsw,swset,Mnewimephrase,Pmsgid);//~vafaR~//~vbt7R~
 //  return 0;                                                      //~v79zR~
     return nodefprocsw;                                            //~v79zI~
 }//kbdimectl                                                       //~v003R~
@@ -529,8 +555,8 @@ int CWxemain::kbdime_getchar(int Popt,HIMC Phimc,UINT Pmsgid,WPARAM wParam,LPARA
     {                                                              //~v79zI~
 	case WM_IME_COMPOSITION:      //conversion start               //~v79zI~
     	himc=(HIMC)Phimc;                                          //~v79zI~
-//      pdata=(UCHAR*)(ULONG)Mwxeintf.WXEIimeucs;                  //~v79zI~//+vba3R~
-        pdata=(UCHAR*)(ULPTR)Mwxeintf.WXEIimeucs;                  //+vba3I~
+//      pdata=(UCHAR*)(ULONG)Mwxeintf.WXEIimeucs;                  //~v79zI~//~vba3R~
+        pdata=(UCHAR*)(ULPTR)Mwxeintf.WXEIimeucs;                  //~vba3I~
         readlen=ImmGetCompositionStringW(himc,GCS_RESULTSTR,NULL,0);  //get requred len//~v79zR~
         ImmGetCompositionStringW(himc,GCS_RESULTSTR,pdata,readlen);//~v79zR~
     	Mwxeintf.WXEIimeucsctr=readlen/sizeof(USHORT);             //~v79zR~

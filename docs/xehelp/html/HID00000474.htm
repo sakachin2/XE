@@ -27,6 +27,8 @@ a:hover{font-weight:bold;}
   .v129M&lt;--129L:(2020/05/17)
   .v129N&lt;--129M:(2020/09/23)
   .v129N&lt;--129M:(2020/09/23)
+  .v129P&lt;--129N:(2020/10/28)
+  .v129Q&lt;--129P:(2020/12/16)
 </SPAN></PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
     1.BUGs
@@ -96,6 +98,9 @@ a:hover{font-weight:bold;}
 
      (129P)
        -(Linux) GTK3 version gxe; Screen size was not kept over App restart.
+</font></PRE>
+<PRE><font size="3">     (129Q)
+       -(gxe) IME's output always same character.
 </font>
 </PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
@@ -260,6 +265,12 @@ a:hover{font-weight:bold;}
          .Function ftime was deprecated.
          .Accept another type of ncurses mouse event input.
          .libncursesw is provided, but /usr/include/ncursesw is not provided.
+     (129Q)
+        -(wxe) Handle unprintable character input of UTF8 code by 3rd party IME.
+        -/Nm command line switch function was changed.
+          When /Nm is specified, for UTF8 code input to CPLC(non UTF8) file
+          set UTF8 code itself if Alt+u ON(indecated by =u=&gt; on command input line),
+          set translated locale code if Alt+u OFF(===&gt;) or "?" if translation error occured.
 
      4.Tool.
      (129C)

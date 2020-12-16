@@ -1,7 +1,10 @@
-//CID://+v701R~:             update#=  175                         //~v701R~
+//CID://+v724R~:             update#=  193                         //+v724R~
 //*************************************************************
 //*ukbdpeek/ukbdcharin/ukbdsetrate/ukbdsetstate                 //~5104R~
 //*************************************************************
+//v724:201214 (WIN)like as LNX(ukbdl), set F2L err for char12 and CPU8 file//+v724I~
+//v723:201212 (WXE)/C1252 on Japanese env;DE kbd input is ignored by keyevent.wVirtusalKeycode!=0//~v723I~
+//v722:201212 (W32)Drop -Nm option. it may be used for wxe+IME     //~v722I~
 //v701:200611 usystem hung warning                                 //~v701I~
 //v6Vu:180622 UTRACE;support force option off                      //~v6VuI~
 //v6U1:180317 ReadConsoleInputW loop by continued eventrecord eventType=x10(FOCUS_EVENT),try flush//~v6U1I~
@@ -933,7 +936,7 @@ int ukbd_wntkeyinfo(PINPUT_RECORD Ppinprec,PKBDKEYINFO Ppkinfo,int Pshift)//~v13
 	scan=                                                          //~v139M~
     Ppkinfo->chScan=(UCHAR)Ppinprec->Event.KeyEvent.wVirtualScanCode,//~v139M~
     Ppkinfo->chChar=(UCHAR)Ppinprec->Event.KeyEvent.uChar.AsciiChar;//~v139M~
-UTRACEP("%s:event scan=x%x,char=x%x\n",UTT,Ppkinfo->chScan,Ppkinfo->chChar);//+v701I~
+UTRACEP("%s:event scan=x%x,char=x%x\n",UTT,Ppkinfo->chScan,Ppkinfo->chChar);//~v701I~
                                                                    //~v139R~
     if (shift & (KBDSTF_RIGHTSHIFT|KBDSTF_LEFTSHIFT))              //~v139I~
     {                                                              //~v6EzI~
@@ -1036,6 +1039,7 @@ static KBDKEYINFO Simekeyinfo;                                     //~v5n8I~
 #ifdef UTF8SUPPH                                                   //~v5n8I~
 	int utf8len;                                                   //~v5n8I~
 #endif                                                             //~v5n8I~
+    int rc2;                                                       //+v724I~
 //**********************                                           //~v5n8I~
 	if (Smbsoffs<Smbslen)	//remaining previous mbs input         //~v5n8I~
     {                                                              //~v5n8I~
@@ -1060,7 +1064,14 @@ UTRACED("inprec",Ppinprec,sizeof(INPUT_RECORD));                   //~v5n8M~
     &&  !(Ppinprec->Event.KeyEvent.wVirtualKeyCode))       //from wxe_funccall//~v62CR~
     	return -1;                                                 //~v62CI~
     if (Ppinprec->Event.KeyEvent.wVirtualKeyCode)       //not WXEKBDMSG_ONCHARUCS case//~v65dR~
+    {                                                              //~v723I~
+		UTRACEP("%s:VirtualKeyCode!=0:Vkeycode=x%x,VScan=x%x,unichar=x%x\n",UTT,Ppinprec->Event.KeyEvent.wVirtualKeyCode,Ppinprec->Event.KeyEvent.wVirtualScanCode,Ppinprec->Event.KeyEvent.uChar.UnicodeChar);	//no unicode input//~v723R~
+  	  if (!Ppinprec->Event.KeyEvent.uChar.UnicodeChar)	//no unicode input//+v723R~  //TODO test//~v723R~
+      {                                                            //~v723I~
+		UTRACEP("%s:return VirtualKeyCode!=0 and unichar=0\n",UTT);//~v723R~
     	return -1;                                                 //~v65dR~
+      }                                                            //~v723I~
+    }                                                              //~v723I~
 	#endif                                                         //~v62CI~
 #endif                                                             //~v62CI~
     if (Ppinprec->Event.KeyEvent.wVirtualKeyCode || Ppinprec->Event.KeyEvent.wVirtualScanCode) //not IME output//~v5n8I~
@@ -1081,6 +1092,7 @@ UTRACED("inprec",Ppinprec,sizeof(INPUT_RECORD));                   //~v5n8M~
     else                                                           //~v5n8I~
     {                                                              //~v5n8I~
 #ifdef UTF8SUPPH                                                   //~v62rI~
+#ifdef AAA                                                         //~v722I~
       if (Swcstat & UDCWCIO_KBDNOUTF8)    // -Nm option            //~v62rR~
       {                                                            //~v62rI~
 		Smbslen=uccvucs2utf((ULONG)ucs,Smbs);                      //~v62rI~
@@ -1088,8 +1100,10 @@ UTRACED("inprec",Ppinprec,sizeof(INPUT_RECORD));                   //~v5n8M~
         Smbsoffs=1;                                                //~v62rI~
       }                                                            //~v62rI~
       else                                                         //~v62rI~
+#endif //AAA                                                       //~v722I~
 #endif                                                             //~v62rI~
       {                                                            //~v62rI~
+       rc2=                                                        //+v724I~
 		ukbd_u2m(0,ucs,Smbs,&mbslen);                              //~v5n8I~
         ch=Smbs[0];                                                //~v5n8I~
         if (mbslen>1)                                              //~v5n8I~
@@ -1101,6 +1115,8 @@ UTRACED("inprec",Ppinprec,sizeof(INPUT_RECORD));                   //~v5n8M~
         }                                                          //~v5n8I~
         else                                                       //~v5n8I~
 		    Ppkinfo->bNlsShift=KBDNLS_F2L_SBCS;                    //~v5n8I~
+        if (rc2>1)                                                 //+v724I~
+		    Ppkinfo->bNlsShift|=KBDNLS_F2L_ERR;                    //+v724I~
 #ifdef UTF8SUPPH                                                   //~v5n8I~
 		utf8len=uccvucs2utf((ULONG)ucs,Ppkinfo->u8str);            //~v5n8R~
 		*(Ppkinfo->u8str+utf8len)=0;                               //~v5n8R~

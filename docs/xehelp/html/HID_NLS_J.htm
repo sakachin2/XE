@@ -204,12 +204,10 @@ a:hover{font-weight:bold;}-->
                    &quot;xx&quot;はハングル文字(SJISでは表示できません),発音は &quot;?k&quot;らしい。
                    (xeコンソール版では空白で表示されることもあります。)
 
-        -Yw  : Windows版Test用。コンソール版ではCN/KRではWideChar用APIを使用するが
-               (Kbd入力がUCS(cv to UTF8)コードになる)
-               JP でもWideCharAPIを使用してキーボード/画面描写をする。
-        -Nm  : LinuxでキーボードエンコーディングがUTF8のとき
-               あるいはWindows版で /Ym を指定した時、
-               UTF8入力をロケールコードマルチバイトに変換せずにUTF8コードのまま受け取る。
+        -Nm  : A+u でUTF8入力モード(コマンド行が =u=&gt; を表示)のとき
+               (UTF8エンコーディングでない) ロケールコードファイルに
+               UTF8入力をロケールコードマルチバイトに変換せずにUTF8コードをセットする
+
 
 #endif // W32 || LNX
 

@@ -1,9 +1,11 @@
-//*CID://+v702R~:                             update#=  222;       //+v702R~
+//*CID://+v721R~:                             update#=  232;       //~v720R~//+v721R~
 //*************************************************************
 //ukbdl.c    (intf between ukbd and ukbdlnxc)                      //~v57BR~
 //*kbd get for linux console screen
 //*************************************************************
-//v702:200615 ARM compiler warning                                 //+v702I~
+//v721:201212 (LNX)Drop -Nm option. it may be used for wxe+IME          //~v720I~//+v721R~
+//v720:201211 (BUG)LNX Console;-Nm option did not work(DBCS chk is done)//~v720I~
+//v702:200615 ARM compiler warning                                 //~v702I~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
 //v6Be:160207 utf8 char input emulation                            //~v6B2I~
 //v6s2:140213 add xfce4-terminal as terminal emulator              //~v6s2I~
@@ -104,11 +106,11 @@
 #endif                                                             //~v5n8I~
                                                                    //~v384I~
 //*********************************************************************
-#ifndef ARMXXE                                                     //+v702I~
+#ifndef ARMXXE                                                     //~v702I~
 static int Sfd;		//fd returned by init                          //~v39bR~
 static int Sgetchinit=0,Sgetcheinit=0;                             //~v555R~
 static struct termios Soldgetch,Soldgetche;                        //~v39bI~
-#endif                                                             //+v702I~
+#endif                                                             //~v702I~
 	iconv_t *Sphiconv;                                             //~v5n8R~
 //* udbcschk:Sconverters; if LOCALICU mode Ptr to list of UConverters and Subchars*//~v6f7I~
 	int   Swcstat=0;                                               //~v5n8R~
@@ -175,6 +177,9 @@ static int Sutf8pendctr=0;	                                       //~v5n8I~
     }                                                              //~v5n8I~
 #ifdef UTF8SUPPH                                                   //~v62UR~
     else                                                           //~v62UR~
+//	if (Gudbcschk_flag  & UDBCSCHK_KBDNOUTF8) //     0x04000000  //-Nm option on UTF8 env//~v720R~
+//      ;                                                          //~v720R~
+//  else                                                           //~v720R~
     if (Swcstat & UDCWCIO_DBCSREAD	//dbcs read at once in dbcs env//~v62UR~
     &&  UDBCSCHK_ISDBCS1ST(inp[0]))//it may be DBCS                //~v62UR~
     	ukbdl_readdbcs(0,Pkeyinfo);   //read whole dbcs char       //~v62UR~
@@ -735,9 +740,9 @@ int ukbdl_wcinit(int Popt,ULONG Pcodepage,UCHAR *Pcharset)         //~v5n8R~
     if (Pcodepage)                                                 //~v5n8I~
 		Sphiconv=(iconv_t *)Pcodepage;                             //~v5n8R~
     Swcstat|=Popt;                                                 //~v5n8R~
-    if (Swcstat & UDCWCIO_KBDNOUTF8)                               //~v5n8R~
-	    Swcstat&=~UDCWCIO_KBDUTF8;   //return mbstring             //~v5n8R~
-    else                                                           //~v5n8I~
+//  if (Swcstat & UDCWCIO_KBDNOUTF8)                               //~v5n8R~//~v720R~
+//      Swcstat&=~UDCWCIO_KBDUTF8;   //return mbstring             //~v5n8R~//~v720R~
+//  else                                                           //~v5n8I~//~v720R~
     {                                                              //~v620R~
 #ifdef UTF8SUPPH                                                   //~v62iI~
       if (Swcstat & UDCWCIO_KBDFORCEUTF8)                          //~v620R~
@@ -751,6 +756,22 @@ int ukbdl_wcinit(int Popt,ULONG Pcodepage,UCHAR *Pcharset)         //~v5n8R~
 		    Swcstat&=~UDCWCIO_KBDUTF8;   //return mbstring         //~v5n8I~
       }                                                            //~v620R~
     }                                                              //~v620R~
+#ifdef AAA                                                         //+v721R~
+#ifndef XXE                                                        //~v720I~
+    if (Swcstat & UDCWCIO_KBDNOUTF8)                               //~v720I~
+    {                                                              //~v720I~
+		if (Swcstat & UDCWCIO_KBDUTF8)   //utf8 env                //~v720I~
+        {                                                          //~v720I~
+//  		Swcstat&=~UDCWCIO_KBDUTF8;   //return mbstring         //~v720R~
+			Gudbcschk_flag|=UDBCSCHK_KBDNOUTF8; //     0x04000000  //-Nm option on UTF8 env//~v720R~
+        }                                                          //~v720I~
+        else                                                       //~v720I~
+        {                                                          //~v720I~
+	    	uerrexit("-Nm option s invalid for NOT UTF8 environment",0);//~v720R~
+        }                                                          //~v720I~
+    }                                                              //~v720I~
+#endif  //!XXE                                                     //~v720I~
+#endif  //AAA                                                      //+v721R~
     UTRACEP("kbdl wcinit stat=%x\n",Swcstat);                      //~v5n8R~
 #ifdef XXE                                                         //~v5n8I~
 	xxe_kbdwcinit(0,Swcstat,(ULONG)Sphiconv,Pcharset);		//notify to xxe//~v5n8R~

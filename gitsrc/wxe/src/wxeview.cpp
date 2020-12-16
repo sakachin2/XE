@@ -1,4 +1,4 @@
-//*CID://+vbj2R~:                             update#=  250;       //~vbj2R~
+//*CID://+vbj2R~:                             update#=  255;       //~vbj2R~
 //***************************************************************************//~v516I~
 //vbj2:180424 popup menu on cmd history list                       //~vbj2I~
 //vbd2:171114 (Wxe)Add SelectAll menuitem                          //~vbd2I~
@@ -262,13 +262,14 @@ LRESULT CWxeView::DefWindowProcW(UINT message, WPARAM wParam, LPARAM lParam)//~@
     rc=(BOOL)CWxeView::DefWindowProc(message,wParam,lParam);       //~vb3wI~
     SetMsgHandled(rc);	//reset action by MESSAGE_RANGE_HANDLER_EX //~@@@@R~
 //  return rc;                                                     //~@@@@I~//~vb3wR~
+    UTRACEP("wxeview.defWindowProcW return rc=%d,message=%08x,wParam=%08x,lParam=%08x\n",rc,message,wParam,lParam);//~vbj2I~
     return (LRESULT)rc;                                            //~vb3wI~
 }                                                                  //~@@@@I~
 LRESULT CWxeView::DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
 {
 	int appcmdid;                                                  //~v69fI~
 //**************************                                       //~2914I~
-    UTRACEP("DefWinPro msg=%08x,parm=%08x,lparm=%08x\n",message,wParam,lParam);//~2909R~
+    UTRACEP("wxeview.DefWinPro msg=%08x,parm=%08x,lparm=%08x\n",message,wParam,lParam);//~2909R~//~vbj2R~
 //  CFrameWnd *pwnd=GetParentFrame();                              //~@@@@R~
     CFrameWnd *pwnd=Mpmainframewnd;                                //~@@@@I~
     UTRACEP("Parent=%08x hwnd=%08x\n",pwnd,pwnd->m_hWnd);          //~2A13R~
@@ -288,6 +289,7 @@ LRESULT CWxeView::DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam)
      	if (wParam!=(ULPTR)(Mpmainframewnd->m_hWnd))               //~vba3I~
 //      	return MA_NOACTIVATE;                                  //~2A13R~
         	return MA_NOACTIVATEANDEAT;                            //~2A13R~
+//#ifdef AAA //TODO test                                           //~vbj2R~
 	if  (message==WM_IME_STARTCOMPOSITION //open                   //~3104R~
 	||   message==WM_IME_ENDCOMPOSITION   //close                  //~3208I~
 	||   message==WM_IME_COMPOSITION      //conversion start       //~3104R~
@@ -295,8 +297,9 @@ LRESULT CWxeView::DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam)
     {                                                              //~v79zI~
 //  	Mwxemain.kbdimectl(Mpmainframewnd->m_hWnd,message);        //~v79zR~
     	if (Mwxemain.kbdimectl(Mpmainframewnd->m_hWnd,message,wParam,lParam))	//processed,skip defwinproc//~v79zR~
-        	return TRUE;                                           //~v79zI~
+        	return TRUE;                                           //~v79zI~//+vbj2R~
     }                                                              //~v79zI~
+//#endif //AAA                                                     //~vbj2R~
     if  (message==WM_ERASEBKGND)                                   //~v68pR~
     {                                                              //~v68pR~
     	return TRUE;  //APP will erase,cause of screen flicker     //~v68pR~
@@ -312,6 +315,7 @@ LRESULT CWxeView::DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 //        return Mwxemain.mousescrollbar(message,scrollcode);      //~v69gR~
 //    }                                                            //~v69gR~
 //  return CView::DefWindowProc(message, wParam, lParam);          //~@@@@R~
+    UTRACEP("wxeview.defWindowProc return FALSE,message=%08x,wParam=%08x,lParam=%08x\n",message,wParam,lParam);//~vbj2I~
     return FALSE;                                                  //~@@@@I~
 }
 
@@ -651,25 +655,25 @@ void CWxeView::OnFileSave(UINT unotifyCode,int nID,HWND wndCtl)    //~@@@@R~
 }                                                                  //~@@@@I~
 void CWxeView::OnFileCHLSetClosed()                                //~vbj2I~
 {                                                                  //~vbj2I~
-    Mwxemain.onfileCHL('s');                                       //+vbj2R~
+    Mwxemain.onfileCHL('s');                                       //~vbj2R~
 }                                                                  //~vbj2I~
 void CWxeView::OnFileCHLSetCurrent()                               //~vbj2I~
 {                                                                  //~vbj2I~
-    Mwxemain.onfileCHL('S');                                       //+vbj2R~
+    Mwxemain.onfileCHL('S');                                       //~vbj2R~
 }                                                                  //~vbj2I~
 void CWxeView::OnFileCHLSetSplit()                                 //~vbj2I~
 {                                                                  //~vbj2I~
-    Mwxemain.onfileCHL('t');                                       //+vbj2R~
+    Mwxemain.onfileCHL('t');                                       //~vbj2R~
 }                                                                  //~vbj2I~
 void CWxeView::OnFileCHLExeClosed()                                //~vbj2I~
 {                                                                  //~vbj2I~
-    Mwxemain.onfileCHL('x');                                       //+vbj2R~
+    Mwxemain.onfileCHL('x');                                       //~vbj2R~
 }                                                                  //~vbj2I~
 void CWxeView::OnFileCHLExeCurrent()                               //~vbj2I~
 {                                                                  //~vbj2I~
-    Mwxemain.onfileCHL('X');                                       //+vbj2R~
+    Mwxemain.onfileCHL('X');                                       //~vbj2R~
 }                                                                  //~vbj2I~
 void CWxeView::OnFileCHLExeSplit()                                 //~vbj2I~
 {                                                                  //~vbj2I~
-    Mwxemain.onfileCHL('y');                                       //+vbj2R~
+    Mwxemain.onfileCHL('y');                                       //~vbj2R~
 }                                                                  //~vbj2I~

@@ -1,4 +1,4 @@
-V129P 2020/10/23 
+V129P 2020/12/09 
 (A) Automake package installation step
 
     You may update configure before ./configure
@@ -456,3 +456,12 @@ V129P 2020/10/23
          correct make to qmake        ==> packman -S make
 
          console version Backspec dose not work ==>  specify --7 option "xe --7B"
+
+(K) Fedora33                          2020/12/09 
+		missing term.h ==>yum install ncurses-devel
+		missing cups/cups.h ==> yum install cups-devel
+		install GTK2 or GTK3 ==>yum install gtk3-devel
+		install libgnome2 OR --enable-libgnome2=no with glib2.0 installed
+				==>./configure --enable-libgnome2=no ==>completed succssfully.
+				(glib2.0(including gio.h) is installed by dependency of gtk3-devel)
+		Check it that gio.h is refered by "pkg-config --cflags glib-2.0"
