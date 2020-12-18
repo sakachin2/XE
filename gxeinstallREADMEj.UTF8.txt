@@ -1,48 +1,48 @@
 V129R 2020/12/18 
-(A)Automake ƒpƒbƒP[ƒW “±“üè‡B
+(A)Automake ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ å°å…¥æ‰‹é †ã€‚
 
-    ƒfƒBƒXƒgƒŠƒrƒ…[ƒVƒ‡ƒ“‚É‚æ‚Á‚Ä‚Í“±“üæƒtƒHƒ‹ƒ_[‚ğ•ÏX‚·‚é•K—v‚ª‚ ‚é‚©‚à‚µ‚ê‚Ü‚¹‚ñB
-    ./configure ‚ğÀs‚·‚é‘O‚Éconfigure‚ğC³‚µ‚Ä‚­‚¾‚³‚¢B
-        html ƒwƒ‹ƒv‚Í  "packagehelpdir",                Œ»İ’l‚Í /usr/local/share/gnome/help/gxe
-        icon ‚Í        "packagepixmapsdir",             Œ»İ’l‚Í /usr/local/share/pixmaps/gxe
-        bins ‚Í        ./configure --bindir=PATH‚Åw’èBŒ»İ’l‚Í /usr/local/bin
+    ãƒ‡ã‚£ã‚¹ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³ã«ã‚ˆã£ã¦ã¯å°å…¥å…ˆãƒ•ã‚©ãƒ«ãƒ€ãƒ¼ã‚’å¤‰æ›´ã™ã‚‹å¿…è¦ãŒã‚ã‚‹ã‹ã‚‚ã—ã‚Œã¾ã›ã‚“ã€‚
+    ./configure ã‚’å®Ÿè¡Œã™ã‚‹å‰ã«configureã‚’ä¿®æ­£ã—ã¦ãã ã•ã„ã€‚
+        html ãƒ˜ãƒ«ãƒ—ã¯  "packagehelpdir",                ç¾åœ¨å€¤ã¯ /usr/local/share/gnome/help/gxe
+        icon ã¯        "packagepixmapsdir",             ç¾åœ¨å€¤ã¯ /usr/local/share/pixmaps/gxe
+        bins ã¯        ./configure --bindir=PATHã§æŒ‡å®šã€‚ç¾åœ¨å€¤ã¯ /usr/local/bin
 
     (1)tar -zxvf gxe-v.rr.tar.gz    (v.rr : version)
     (2)cd gxe-v.rr
     (3)./configure
     (4)make
-    (5)make install (root‚ÅÀsAubuntu‚Å‚Í "sudo make install")
+    (5)make install (rootã§å®Ÿè¡Œã€ubuntuã§ã¯ "sudo make install")
 
-       –¼‘O‚Ì‹£‡‚ğ”ğ‚¯‚é‚½‚ßŸ‚Ìbin‚¾‚¯‚ª“±“ü‚³‚ê‚Ü‚·B‚±‚êˆÈŠO‚Ìƒc[ƒ‹‚Í©•ª‚ÅƒRƒs[‚µ‚Ä‚­‚¾‚³‚¢B
+       åå‰ã®ç«¶åˆã‚’é¿ã‘ã‚‹ãŸã‚æ¬¡ã®binã ã‘ãŒå°å…¥ã•ã‚Œã¾ã™ã€‚ã“ã‚Œä»¥å¤–ã®ãƒ„ãƒ¼ãƒ«ã¯è‡ªåˆ†ã§ã‚³ãƒ”ãƒ¼ã—ã¦ãã ã•ã„ã€‚
          gxe, xe, xprint, gxp, xfc, xdc
-    (6)gnome-terminal ‚È‚¢‚µ konsole ‚ğŠJ‚¢‚Ä gxe ‚È‚¢‚µ xe ‚Æ“ü—Í‚·‚éB
-       ƒwƒ‹ƒvhtml‚Í—§‚¿ã‚°Œã ‘æ2s‚É "help" ‚È‚¢‚µ "?" ‚ğ“ü—Í‚·‚é‚Æƒuƒ‰ƒEƒU[‚©‚çŠÏ‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B
+    (6)gnome-terminal ãªã„ã— konsole ã‚’é–‹ã„ã¦ gxe ãªã„ã— xe ã¨å…¥åŠ›ã™ã‚‹ã€‚
+       ãƒ˜ãƒ«ãƒ—htmlã¯ç«‹ã¡ä¸Šã’å¾Œ ç¬¬2è¡Œã« "help" ãªã„ã— "?" ã‚’å…¥åŠ›ã™ã‚‹ã¨ãƒ–ãƒ©ã‚¦ã‚¶ãƒ¼ã‹ã‚‰è¦³ã‚‹ã“ã¨ãŒå‡ºæ¥ã¾ã™ã€‚
     (7)ssh
-       ƒŠƒ‚[ƒg‚Åxe‹N“®‚·‚éê‡Assh(d)‚Ìİ’è‚ğƒ`ƒFƒbƒNB
+       ãƒªãƒ¢ãƒ¼ãƒˆã§xeèµ·å‹•ã™ã‚‹å ´åˆã€ssh(d)ã®è¨­å®šã‚’ãƒã‚§ãƒƒã‚¯ã€‚
            local :/etc/ssh/ssh_config
                       set "SendEnv LANG LC_*"
            remote:/etc/ssh/sshd_config
                       set "AcceptEnv LANG LC_*"
                       set "X11Forwarding yes"
                       xhost +local:username    local=local ip addr, username=your user id
-                  xauth ‚Í“±“üÏ‚İ‚© ?
+                  xauth ã¯å°å…¥æ¸ˆã¿ã‹ ?
 
-       ƒŠƒ‚[ƒg‚Ågxe‹N“®‚·‚éê‡ -X ƒIƒvƒVƒ‡ƒ“‚ğw’è‚·‚éB
+       ãƒªãƒ¢ãƒ¼ãƒˆã§gxeèµ·å‹•ã™ã‚‹å ´åˆ -X ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’æŒ‡å®šã™ã‚‹ã€‚
            ssh -X uid@remotehost
 
-(B)ƒgƒ‰ƒuƒ‹ƒVƒ…[ƒeƒBƒ“ƒO
-    Ÿ‚ÌƒfƒXƒgƒŠƒrƒ…[ƒVƒ‡ƒ“‚ÅƒeƒXƒg‚µ‚Ü‚µ‚½B
+(B)ãƒˆãƒ©ãƒ–ãƒ«ã‚·ãƒ¥ãƒ¼ãƒ†ã‚£ãƒ³ã‚°
+    æ¬¡ã®ãƒ‡ã‚¹ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³ã§ãƒ†ã‚¹ãƒˆã—ã¾ã—ãŸã€‚
         RH9, FC5, Kubuntu6, Ubuntu7, openSUSE10, Vine4, TurbolinuxFUJItrial
         Debian4.0r2(2008/01/25)
         ubuntu8, FC12
 
-  (B1) ./configure ƒGƒ‰[
+  (B1) ./configure ã‚¨ãƒ©ãƒ¼
 
     (1) no acceptable C compiler found in $PATH
         ===> install gcc
              on debian8.10: apt-get install build-essential
     (2) crt1.o no such file   (Debian 4.0)
-        (development ƒpƒbƒP[ƒW‚ÌƒTƒtƒBƒbƒNƒX‚ÍƒfƒXƒgƒŠƒrƒ…[ƒVƒ‡ƒ“‚²‚Æ‚ÉˆÙ‚È‚è‚Ü‚·)
+        (development ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ã®ã‚µãƒ•ã‚£ãƒƒã‚¯ã‚¹ã¯ãƒ‡ã‚¹ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³ã”ã¨ã«ç•°ãªã‚Šã¾ã™)
         ===> install libglib2.0-dev
         ===> install libc6-dev (ubuntu8)
     (3) "term.h" not found
@@ -80,7 +80,7 @@ V129R 2020/12/18
     (9) can not find -lncursesw
         ===> apt-get install libncursesw5-dev
 
-  (B2) make‚ÌƒGƒ‰[B
+  (B2) makeã®ã‚¨ãƒ©ãƒ¼ã€‚
 
     (1) "term.h" not found
         ===> install ncurses-develop. 
@@ -137,43 +137,43 @@ V129R 2020/12/18
   (B3) execution
 
     (1)  WARNING **:Could'nt find pixmap file gxe/wxe.png
-        ===> "make install" ‚ğ root ‚ÅÀs. (A)‚Ì“±“üæƒtƒHƒ‹ƒ_[‚ğƒ`ƒFƒbƒNB
+        ===> "make install" ã‚’ root ã§å®Ÿè¡Œ. (A)ã®å°å…¥å…ˆãƒ•ã‚©ãƒ«ãƒ€ãƒ¼ã‚’ãƒã‚§ãƒƒã‚¯ã€‚
 
     (2) WARNING **: IPP request failed with status 1030
-        ===> CUPS ƒvƒŠƒ“ƒ^[‚ğƒZƒbƒgƒAƒbƒv‚·‚éBƒvƒŠƒ“ƒ^[‚ª‚Â‚È‚ª‚Á‚Ä‚È‚¢ê‡‚Å‚à‰½‚©İ’è‚·‚éB
+        ===> CUPS ãƒ—ãƒªãƒ³ã‚¿ãƒ¼ã‚’ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—ã™ã‚‹ã€‚ãƒ—ãƒªãƒ³ã‚¿ãƒ¼ãŒã¤ãªãŒã£ã¦ãªã„å ´åˆã§ã‚‚ä½•ã‹è¨­å®šã™ã‚‹ã€‚
 
     (3) WARNING **: IPP request failed with status 1280
-        ===> CUPS ƒT[ƒrƒXƒf[ƒ‚ƒ“‚ğŠJn.
+        ===> CUPS ã‚µãƒ¼ãƒ“ã‚¹ãƒ‡ãƒ¼ãƒ¢ãƒ³ã‚’é–‹å§‹.
 
     (4) ??? xe:serach for gnome-terminal by "which" cmd failed ???
-        ===> "xe: use konsole for shell terminal" ‚ª‘±‚¢‚Ä‚¢‚ê‚Î–â‘è‚È‚¢B
-             ‚»‚¤‚Å‚È‚¯‚ê‚Î gnome-terminal ‚© konsole ‚ğ“±“ü‚·‚éB
+        ===> "xe: use konsole for shell terminal" ãŒç¶šã„ã¦ã„ã‚Œã°å•é¡Œãªã„ã€‚
+             ãã†ã§ãªã‘ã‚Œã° gnome-terminal ã‹ konsole ã‚’å°å…¥ã™ã‚‹ã€‚
 
     (5) Gdk-WARNING **: gdk_property_get(): length value has wrapped in calculation (did you pass G_MAXLONG)
-        ===> –³‹.
+        ===> ç„¡è¦–.
              (imlib call gdk_property_get with length=MAX_INT,callee issue warning length+3>G_MAXLONG,then use G_MAXLONG as length.)
 
     (6) WARNING **: failed request with status 200
-        ===> –³‹.
-             ——R‚Í•ª‚©‚ç‚È‚¢‚ª–³ŠQ‚Ì‚æ‚¤‚¾B
+        ===> ç„¡è¦–.
+             ç†ç”±ã¯åˆ†ã‹ã‚‰ãªã„ãŒç„¡å®³ã®ã‚ˆã†ã ã€‚
 
     (7) GnomePrintCupsPlugin-WARNING **: failed iconv dose not support ppd character encoding: ISOLatin1, trying CSISOLatin1
-        ===> –³‹.
-             ——R‚Í•ª‚©‚ç‚È‚¢‚ª–³ŠQ‚Ì‚æ‚¤‚¾B
+        ===> ç„¡è¦–.
+             ç†ç”±ã¯åˆ†ã‹ã‚‰ãªã„ãŒç„¡å®³ã®ã‚ˆã†ã ã€‚
 
     (8) WARNING ***: Owner of /tmp/xx-username is not the current user
                      Failed to initialize Panel Agent!
-        ===> UserID ”Ô† ‚ğ•ÏX‚µ‚½B •\¦‚³‚ê‚½ƒtƒHƒ‹ƒ_[‚ğíœB
-             ‹Œ UserID‚Ì /tmp/scim-panel-socket-username... ‚àíœB
+        ===> UserID ç•ªå· ã‚’å¤‰æ›´ã—ãŸã€‚ è¡¨ç¤ºã•ã‚ŒãŸãƒ•ã‚©ãƒ«ãƒ€ãƒ¼ã‚’å‰Šé™¤ã€‚
+             æ—§ UserIDã® /tmp/scim-panel-socket-username... ã‚‚å‰Šé™¤ã€‚
 
     (9) GnomePrint-CRITICAL ... assertion face != NULL failed
-        ===> ˆóüƒtƒHƒ“ƒg–¼‚ÉƒtƒFƒCƒX–¼(Regular,Bold,Italic ‚È‚Ç) ‚ª‚©‚¯‚Ä‚¢‚éB
-             xe‚ÍÅ‰‰æ–ÊƒtƒHƒ“ƒg–¼‚©‚çˆóüƒtƒHƒ“ƒg–¼‚ğİ’è‚·‚é‚ªxe‚Í‚±‚ÌƒP[ƒX‚ÌRegular‚ğ•âŠ®‚·‚é‚Ì‚Å
-             ˆÈ~‚Ío‚È‚¢‚Í‚¸B
+        ===> å°åˆ·ãƒ•ã‚©ãƒ³ãƒˆåã«ãƒ•ã‚§ã‚¤ã‚¹å(Regular,Bold,Italic ãªã©) ãŒã‹ã‘ã¦ã„ã‚‹ã€‚
+             xeã¯æœ€åˆç”»é¢ãƒ•ã‚©ãƒ³ãƒˆåã‹ã‚‰å°åˆ·ãƒ•ã‚©ãƒ³ãƒˆåã‚’è¨­å®šã™ã‚‹ãŒxeã¯ã“ã®ã‚±ãƒ¼ã‚¹ã®æ™‚Regularã‚’è£œå®Œã™ã‚‹ã®ã§
+             ä»¥é™ã¯å‡ºãªã„ã¯ãšã€‚
 
-    (10) xe help command ¸”s
-         (MIME ƒ^ƒCƒv text/html‚ÉÈ—ªƒAƒNƒVƒ‡ƒ“(ƒuƒ‰ƒEƒU[‚Ì‹N“®)‚ª’è‹`‚³‚ê‚Ä‚¢‚È‚¢B
-          Gnome ƒfƒXƒNƒgƒbƒv‚Ìê‡‚»‚ê‚Í /usr/share/mime-info/gnome-vfs-keys ‚É‚ ‚é)
+    (10) xe help command å¤±æ•—
+         (MIME ã‚¿ã‚¤ãƒ— text/htmlã«çœç•¥æ™‚ã‚¢ã‚¯ã‚·ãƒ§ãƒ³(ãƒ–ãƒ©ã‚¦ã‚¶ãƒ¼ã®èµ·å‹•)ãŒå®šç¾©ã•ã‚Œã¦ã„ãªã„ã€‚
+          Gnome ãƒ‡ã‚¹ã‚¯ãƒˆãƒƒãƒ—ã®å ´åˆãã‚Œã¯ /usr/share/mime-info/gnome-vfs-keys ã«ã‚ã‚‹)
         ===> install desktop-file-utils
              /usr/share/applications/defaults.list-->/etc/gnome/defaults.list is installed.
 
@@ -184,59 +184,59 @@ V129R 2020/12/18
         X11Forwarding=yes on ssh.config(local)/sshd.config(remote)
 
     (12) Gtk WARNING : Locale not supported by C library at debian/390
-        ===>"setlocale" ‚ª¸”s‚·‚éê‡ locale ‚ğ’Ç‰Á‚·‚éB
-                 "locale -a" ‚Åg—p‰Â”\‚Èlocale ‚ğƒ`ƒFƒbƒNAƒŠƒXƒg‚É‚È‚¯‚ê‚Î
+        ===>"setlocale" ãŒå¤±æ•—ã™ã‚‹å ´åˆ locale ã‚’è¿½åŠ ã™ã‚‹ã€‚
+                 "locale -a" ã§ä½¿ç”¨å¯èƒ½ãªlocale ã‚’ãƒã‚§ãƒƒã‚¯ã€ãƒªã‚¹ãƒˆã«ãªã‘ã‚Œã°
                  "dpkg-reconfigure locales"
 
-    (13)•¶š‰»‚¯(debian/390)
-        ===>unifont ‚ğ“±“ü
+    (13)æ–‡å­—åŒ–ã‘(debian/390)
+        ===>unifont ã‚’å°å…¥
                 "aptitude install unifont"
 
     (14)Gconf err, scim failed to load frontend module
-        ===>rootƒ†[ƒU[‚Å gxe ‚ğ‹N“®‚µ‚Ä‚¢‚éB‚»‚µ‚Ä /root/gconf(d) ‚ª‚È‚¢B
-            "su" ‚Å‚Í‚È‚­ "su -"  ‚Åroot‚É‚È‚éBsudo ‚È‚ç "sudo -i"
+        ===>rootãƒ¦ãƒ¼ã‚¶ãƒ¼ã§ gxe ã‚’èµ·å‹•ã—ã¦ã„ã‚‹ã€‚ãã—ã¦ /root/gconf(d) ãŒãªã„ã€‚
+            "su" ã§ã¯ãªã "su -"  ã§rootã«ãªã‚‹ã€‚sudo ãªã‚‰ "sudo -i"
 
-    (15)"(ƒX[ƒp[ƒ†[ƒU‚Å)" ‚ªƒ^ƒCƒgƒ‹‚Éo‚éB
-        s390x‚É "ssh -X" ‚µ‚Ä X-appl‚ğ‹N“®‚µ‚½B
-        ===>–³‹BŒ ŒÀ‚Íroot‚É‚È‚Á‚Ä‚¢‚È‚¢B
-            metacity ‚Æ‚¢‚¤ƒpƒbƒP[ƒW‚ªo‚µ‚Ä‚¢‚é‚ç‚µ‚¢‚ªAX-ƒT[ƒo[(local‘¤‚Ìdaemonj‚ª
-            root ‚¾‚©‚ç‚Å‚Í‚È‚¢‚©‚Æv‚¤B
+    (15)"(ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒ¦ãƒ¼ã‚¶ã§)" ãŒã‚¿ã‚¤ãƒˆãƒ«ã«å‡ºã‚‹ã€‚
+        s390xã« "ssh -X" ã—ã¦ X-applã‚’èµ·å‹•ã—ãŸæ™‚ã€‚
+        ===>ç„¡è¦–ã€‚æ¨©é™ã¯rootã«ãªã£ã¦ã„ãªã„ã€‚
+            metacity ã¨ã„ã†ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ãŒå‡ºã—ã¦ã„ã‚‹ã‚‰ã—ã„ãŒã€X-ã‚µãƒ¼ãƒãƒ¼(localå´ã®daemonï¼‰ãŒ
+            root ã ã‹ã‚‰ã§ã¯ãªã„ã‹ã¨æ€ã†ã€‚
 
-    (16)ssh ‚Ì X-APPL ‚Å•¶š‰»‚¯B(s390x)
-        ssh‚ÌƒƒP[ƒ‹‚Í /etc/ssh/ssh(d).conf ‚Ì AcceptEnv/SendEnv‚Å local ‚ÌƒƒP[ƒ‹‚ğ 
-        Œp‘±‚·‚é‚±‚Æ‚ªo—ˆAsshã‚Í“ú–{Œê•\¦‚³‚ê‚é‚ªA
-        Xappl—p‚É‚Í“±“ü‚ª•K—v‚ç‚µ‚¢
-        ===> yum install "@Japanese Support" ‚ ‚é‚¢‚Í yum groupinstall "Japanese Support"
+    (16)ssh ã® X-APPL ã§æ–‡å­—åŒ–ã‘ã€‚(s390x)
+        sshã®ãƒ­ã‚±ãƒ¼ãƒ«ã¯ /etc/ssh/ssh(d).conf ã® AcceptEnv/SendEnvã§ local ã®ãƒ­ã‚±ãƒ¼ãƒ«ã‚’ 
+        ç¶™ç¶šã™ã‚‹ã“ã¨ãŒå‡ºæ¥ã€sshä¸Šã¯æ—¥æœ¬èªè¡¨ç¤ºã•ã‚Œã‚‹ãŒã€
+        Xapplç”¨ã«ã¯å°å…¥ãŒå¿…è¦ã‚‰ã—ã„
+        ===> yum install "@Japanese Support" ã‚ã‚‹ã„ã¯ yum groupinstall "Japanese Support"
 
     (17)"Gtk WARNING ** cannnot open display"
-        ==> "export DISPLAY=localhost:10.0"   (10 may be 11, 12..., ƒŠƒ‚[ƒg‚Ìsshd_config:X11DisplayOffset(È—ª’l:10)‚ğŠm”F)
-        "su" ‚·‚é‚Æ‚Å‚éB’Êí‚Í DISPLAY ‚Í ssh ‚ª©“®‚ÅŠ„‚è“–‚Ä‚éB
-        ’ÊíDISPLAY‚Íssh‚ª§Œä‚·‚é‚Ì‚Å•K—v‚È‚¢‚Í‚¸‚¾‚ª
-        ƒŠƒ‚[ƒg‚Éxauth ‚Í“±“üÏ‚İ‚©?
+        ==> "export DISPLAY=localhost:10.0"   (10 may be 11, 12..., ãƒªãƒ¢ãƒ¼ãƒˆã®sshd_config:X11DisplayOffset(çœç•¥å€¤:10)ã‚’ç¢ºèª)
+        "su" ã™ã‚‹ã¨ã§ã‚‹ã€‚é€šå¸¸ã¯ DISPLAY ã¯ ssh ãŒè‡ªå‹•ã§å‰²ã‚Šå½“ã¦ã‚‹ã€‚
+        é€šå¸¸DISPLAYã¯sshãŒåˆ¶å¾¡ã™ã‚‹ã®ã§å¿…è¦ãªã„ã¯ãšã ãŒ
+        ãƒªãƒ¢ãƒ¼ãƒˆã«xauth ã¯å°å…¥æ¸ˆã¿ã‹?
 
-(C) FC11.s390x ƒAƒbƒvƒOƒŒ[ƒhƒgƒ‰ƒuƒ‹ƒVƒ…[ƒeƒBƒ“ƒO
+(C) FC11.s390x ã‚¢ãƒƒãƒ—ã‚°ãƒ¬ãƒ¼ãƒ‰ãƒˆãƒ©ãƒ–ãƒ«ã‚·ãƒ¥ãƒ¼ãƒ†ã‚£ãƒ³ã‚°
 
- !!! (E)-FC14 ‚Ì•û‚ªV‚µ‚¢‚Ì‚Å‚»‚¿‚ç‚ğŒ©‚Ä‰º‚³‚¢ !!!
+ !!! (E)-FC14 ã®æ–¹ãŒæ–°ã—ã„ã®ã§ãã¡ã‚‰ã‚’è¦‹ã¦ä¸‹ã•ã„ !!!
 
-    FC11“±“üÏ‚İ‚ÌDASDƒCƒ[ƒW(http://secondary.fedoraproject.org/pub/alt/spins/S390/)
-    ‚ğg—p‚µ•K—v‚ÈƒpƒbƒP[ƒW‚ğ“±“ü‚·‚éB
-            QÆurl       http://katzkichi-katzkichi.blogspot.com/2010/01/linux.html   (“ú–{Œêƒy[ƒW)
+    FC11å°å…¥æ¸ˆã¿ã®DASDã‚¤ãƒ¡ãƒ¼ã‚¸(http://secondary.fedoraproject.org/pub/alt/spins/S390/)
+    ã‚’ä½¿ç”¨ã—å¿…è¦ãªãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ã‚’å°å…¥ã™ã‚‹ã€‚
+            å‚ç…§url       http://katzkichi-katzkichi.blogspot.com/2010/01/linux.html   (æ—¥æœ¬èªãƒšãƒ¼ã‚¸)
             pkg-download  //s390.koji.fedoraproject.org/koji
 
-    (1) yum -y install libgnomeprint22-devel.s390x ("yum upgrade" ‚ÌƒvƒŒƒeƒXƒg)
+    (1) yum -y install libgnomeprint22-devel.s390x ("yum upgrade" ã®ãƒ—ãƒ¬ãƒ†ã‚¹ãƒˆ)
           --> UnicodeDecodeError: 'ascii' codec can't decode byte 0xe5 in position 154: ordinal not in range(128)
-              ==> V‹Kƒtƒ@ƒCƒ‹ì¬
+              ==> æ–°è¦ãƒ•ã‚¡ã‚¤ãƒ«ä½œæˆ
                       /usr/lib/python2.6/site-packages/sitecustomize.py
                          import sys
                          sys.setdefaultencoding("utf-8")
           (yum install)
           --> Destination Host Prohibit
-              ==> firewall ‰ğœ
+              ==> firewall è§£é™¤
                       "iptables -F"
           (yum install)
           --> ERROR with rpm_check_debug vs depsolve
-              //..koji..‚©‚ç xz 4.999.8-0.7.beta ‚Æ rpm 4.7.1-2 ‚ğ’T‚µdebuginfoˆÈŠO‚Í“¯‚¶ƒy[ƒW‚Ì‚½‚Ìrpm‚àƒ_ƒEƒ“ƒ[ƒh‚µ
-              “±“ü‚·‚éB(scp ‚Å FC11‚ÉUp‚µ‚Ä,ssh‚Å“ü‚èrpm‚·‚é)
+              //..koji..ã‹ã‚‰ xz 4.999.8-0.7.beta ã¨ rpm 4.7.1-2 ã‚’æ¢ã—debuginfoä»¥å¤–ã¯åŒã˜ãƒšãƒ¼ã‚¸ã®ãŸã®rpmã‚‚ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã—
+              å°å…¥ã™ã‚‹ã€‚(scp ã§ FC11ã«Upã—ã¦,sshã§å…¥ã‚Šrpmã™ã‚‹)
                 scp fnm root@192.168.200.3:/root
                 xz-libs:  rpm  -ivh   rpm*.rpm
                 rpm    :  rpm  -Uvh   xz*.rpm
@@ -254,18 +254,18 @@ V129R 2020/12/18
                                      rpm -Va --nofiles --nodigest
 
         ===>yum install deltarpm
-        ===>iwlib “±“üB //..koji.. ‚©‚ç rpm install
+        ===>iwlib å°å…¥ã€‚ //..koji.. ã‹ã‚‰ rpm install
         ---> libiw, wireless-tools required.
         ===>yum install wiress-tools
-        (yum upgrade‚Í”ŠÔ‚©‚©‚Á‚½(core4))
+        (yum upgradeã¯æ•°æ™‚é–“ã‹ã‹ã£ãŸ(core4))
 
-    (3) ƒŠƒXƒ^[ƒg
+    (3) ãƒªã‚¹ã‚¿ãƒ¼ãƒˆ
 
-        Hercules ƒRƒ“ƒ\[ƒ‹‚Å‚Ì kernel ‘I‘ğ ‚Å new(FC12) ‚ğ‘I‘ğ
-        --->"No root device" ‚Åbooto—ˆ‚¸B===>give-up
-        old(FC11)‚ğ‘I‘ğ
-        --->CTC ƒGƒ‰[
-        ===>/etc/rc.sysinit ‚É 3s(@@@‚Ìs)’Ç‰Á (upgrade‘O‚É‚Í‚ ‚Á‚½‚ªupgrade‚Å¸‚í‚ê‚½) 
+        Hercules ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã§ã® kernel é¸æŠ ã§ new(FC12) ã‚’é¸æŠ
+        --->"No root device" ã§bootå‡ºæ¥ãšã€‚===>give-up
+        old(FC11)ã‚’é¸æŠ
+        --->CTC ã‚¨ãƒ©ãƒ¼
+        ===>/etc/rc.sysinit ã« 3è¡Œ(@@@ã®è¡Œ)è¿½åŠ  (upgradeå‰ã«ã¯ã‚ã£ãŸãŒupgradeã§å¤±ã‚ã‚ŒãŸ) 
                 # /bin/bash
                 #
                 # /etc/rc.d/rc.sysinit - run once at boot time
@@ -289,106 +289,106 @@ V129R 2020/12/18
             @@@ echo 1 > /sys/bus/ccwgroup/drivers/ctcm/0.0.0600/online
         (restart)
         --->"udevd error geting buffer for inotify"
-        ===>yum -Uvh *udev*145-14* (release-7‚©‚çXV)
+        ===>yum -Uvh *udev*145-14* (release-7ã‹ã‚‰æ›´æ–°)
         --->Completed!   
 
-(D) sshfs ‚Ì“±“ü
+(D) sshfs ã®å°å…¥
 
-   .sshfs ‚ğƒpƒbƒP[ƒWƒ}ƒl[ƒWƒƒ‚ğg‚Á‚Ä“±“ü‚·‚éB
-   .fusermount‚ÉÀsŒ ŒÀ‚ª‚ ‚é‚©Šm”F‚·‚éA‚È‚¯‚ê‚Î chmod +x /usr/bin/fusermount. 
-   .ƒ}ƒEƒ“ƒgƒ|ƒCƒ“ƒg‚ğ 777 ‚Å ì‚é  (mkdir /mountpoint; chmod 777 /mountpoint)
-   .g—p‚·‚éƒ†[ƒU[‚h‚c‚ğ ƒOƒ‹[ƒv fuse ‚Ìƒƒ“ƒo[‚É‚·‚éBreboot ‚ª•K—v.
-   ./dev/fuse‚ÌƒI[ƒi[ƒOƒ‹[ƒv‚ªfuse‚É‚È‚Á‚Ä‚¢‚é‚©Šm”FA‚»‚¤‚Å‚È‚¯‚ê‚Î chgrp fuse /dev/fuseB 
+   .sshfs ã‚’ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ãƒãƒãƒ¼ã‚¸ãƒ£ã‚’ä½¿ã£ã¦å°å…¥ã™ã‚‹ã€‚
+   .fusermountã«å®Ÿè¡Œæ¨©é™ãŒã‚ã‚‹ã‹ç¢ºèªã™ã‚‹ã€ãªã‘ã‚Œã° chmod +x /usr/bin/fusermount. 
+   .ãƒã‚¦ãƒ³ãƒˆãƒã‚¤ãƒ³ãƒˆã‚’ 777 ã§ ä½œã‚‹  (mkdir /mountpoint; chmod 777 /mountpoint)
+   .ä½¿ç”¨ã™ã‚‹ãƒ¦ãƒ¼ã‚¶ãƒ¼ï¼©ï¼¤ã‚’ ã‚°ãƒ«ãƒ¼ãƒ— fuse ã®ãƒ¡ãƒ³ãƒãƒ¼ã«ã™ã‚‹ã€‚reboot ãŒå¿…è¦.
+   ./dev/fuseã®ã‚ªãƒ¼ãƒŠãƒ¼ã‚°ãƒ«ãƒ¼ãƒ—ãŒfuseã«ãªã£ã¦ã„ã‚‹ã‹ç¢ºèªã€ãã†ã§ãªã‘ã‚Œã° chgrp fuse /dev/fuseã€‚ 
 
-   g—p–@:
+   ä½¿ç”¨æ³•:
      sshfs [-o uid=nnn] [-o gid=nnn] user@remotehost:/remotedir /mountpoint
    
-     Windows”Å‚ÌDokan sshfs ‚Í GUI‚Åƒhƒ‰ƒCƒu‚h‚c‚ğŠ„‚è“–‚Ä‚é‚æ‚¤‚É‚È‚Á‚Ä‚¢‚é‚Ì‚ÅB
-     "e N:\"‚Ì‚æ‚¤‚ÉƒAƒNƒZƒX‚·‚éB
+     Windowsç‰ˆã®Dokan sshfs ã¯ GUIã§ãƒ‰ãƒ©ã‚¤ãƒ–ï¼©ï¼¤ã‚’å‰²ã‚Šå½“ã¦ã‚‹ã‚ˆã†ã«ãªã£ã¦ã„ã‚‹ã®ã§ã€‚
+     "e N:\"ã®ã‚ˆã†ã«ã‚¢ã‚¯ã‚»ã‚¹ã™ã‚‹ã€‚
 
-(E) ƒCƒ“ƒXƒg[ƒ‹ƒƒOFfc14.s390x           2011/11/10
+(E) ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ãƒ­ã‚°ï¼šfc14.s390x           2011/11/10
    00). (Linux)
-        -IPLƒCƒ[ƒW‚Í "fedora-14-s390x-20100925"
-         (fedora-14-s390x.img ‚ÍƒTƒCƒY‚ª¬‚³‚­‚·‚®DiskFull‚É‚È‚é) 
-        -Herclese ‚Í "hercules-3.07-1.i686.rpm"
-        -"hercles.cnf" ‚ÌC³
+        -IPLã‚¤ãƒ¡ãƒ¼ã‚¸ã¯ "fedora-14-s390x-20100925"
+         (fedora-14-s390x.img ã¯ã‚µã‚¤ã‚ºãŒå°ã•ãã™ãDiskFullã«ãªã‚‹) 
+        -Herclese ã¯ "hercules-3.07-1.i686.rpm"
+        -"hercles.cnf" ã®ä¿®æ­£
           0120 3390 image-file-name
-          (000C 3505 files(generic.prm,kernel..) ‚Í IPL 120 ‚Å‚Íg—p‚µ‚È‚¢)
-        -hosts“o˜^("/etc/hosts")
+          (000C 3505 files(generic.prm,kernel..) ã¯ IPL 120 ã§ã¯ä½¿ç”¨ã—ãªã„)
+        -hostsç™»éŒ²("/etc/hosts")
            192.168.200.3 s390x
         	
    01). (s390x)
         #adduser useruser
         #asswd  useruser
    02). (s390x)
-        -DNS ƒT[ƒo[C³("/etc/resolv.conf")
+        -DNS ã‚µãƒ¼ãƒãƒ¼ä¿®æ­£("/etc/resolv.conf")
           search example.com
           nameserver xxx.xxx.xxx.xxx 
           nameserver yyy.yyy.yyy.yyy    <--if secondary exists
-            (/etc/resolv.conf ‚Í IPL ‚ÅŒ³‚É–ß‚é
-             ŒÅ’è‚·‚éê‡ /etc/sysconfig/network-scripts/ifcfg-ctc0 ‚ğC³
+            (/etc/resolv.conf ã¯ IPL ã§å…ƒã«æˆ»ã‚‹
+             å›ºå®šã™ã‚‹å ´åˆ /etc/sysconfig/network-scripts/ifcfg-ctc0 ã‚’ä¿®æ­£
                DNS1=xxx.xxx.xxx.xxx
                DNS2=yyy.yyy.yyy.yyy
             )
-        -ssh‚ÌXƒT[ƒo[İ’è("/etc/ssh/sshd_config")
+        -sshã®Xã‚µãƒ¼ãƒãƒ¼è¨­å®š("/etc/ssh/sshd_config")
           X11Forwarding yes
    03). (s390x)
-        -yum ƒŠƒ|ƒWƒgƒŠ[C³(http://fedoraproject.org/wiki/Architectures/s390x‚Ì‹Lq‚É]‚¤)
+        -yum ãƒªãƒã‚¸ãƒˆãƒªãƒ¼ä¿®æ­£(http://fedoraproject.org/wiki/Architectures/s390xã®è¨˜è¿°ã«å¾“ã†)
           [fedora]
           name=Fedora $releasever - $basearch
           baseurl=http://s390.koji.fedoraproject.org/mash/rawhide/s390x/os/
           enabled=1
           gpgcheck=0
-   ==> yum ¸”s,ping ‚ª "host prohibit"
+   ==> yum å¤±æ•—,ping ãŒ "host prohibit"
    04). (Linux)
-        -iptable‚Ì REJECT w’è‚ğœ‚­
-          #iptables -S         ->ƒGƒ“ƒgƒŠ[”Ô†‚ÌŠm”F
-          #iptables -D INPUT n1  (n1 ‚Í INPUT ƒ`ƒFƒCƒ“‚ÌƒGƒ“ƒgƒŠ[”Ô†(1‚©‚çn‚Ü‚é))
-          #iptables -D FORWARD n2  (n2 ‚Í FORWARDƒ`ƒFƒCƒ“‚ÌƒGƒ“ƒgƒŠ[”Ô†)
-          #iptables -S         ->íœ‚ÌŠm”F
+        -iptableã® REJECT æŒ‡å®šã‚’é™¤ã
+          #iptables -S         ->ã‚¨ãƒ³ãƒˆãƒªãƒ¼ç•ªå·ã®ç¢ºèª
+          #iptables -D INPUT n1  (n1 ã¯ INPUT ãƒã‚§ã‚¤ãƒ³ã®ã‚¨ãƒ³ãƒˆãƒªãƒ¼ç•ªå·(1ã‹ã‚‰å§‹ã¾ã‚‹))
+          #iptables -D FORWARD n2  (n2 ã¯ FORWARDãƒã‚§ã‚¤ãƒ³ã®ã‚¨ãƒ³ãƒˆãƒªãƒ¼ç•ªå·)
+          #iptables -S         ->å‰Šé™¤ã®ç¢ºèª
    05). (Linux)
-        -gxe-vvv-tar.gz ‚ğ s390 ‚É‘—‚é
+        -gxe-vvv-tar.gz ã‚’ s390 ã«é€ã‚‹
 		  scp $SRCPATH/gxe-vvv.tar.gz useruser@s390x:gxe-vvv.tar.gz
    06). (s390x)
-        -tgz‚ğ“WŠJ‚µconfigure
-          $tar -zxvf gxe-vvv.tar.gz        i/home/useruser‚Å ‚Æ‰¼’èj
+        -tgzã‚’å±•é–‹ã—configure
+          $tar -zxvf gxe-vvv.tar.gz        ï¼ˆ/home/useruserã§ ã¨ä»®å®šï¼‰
           $cd  gxe-vvv
           $./configure
    ==> no acceptable C compiler
-        -C ‚Ì“±“ü
+        -C ã®å°å…¥
           #yum install gcc.s390x
    ==> term.h not found
-        -ncurses‚Ì“±“ü
+        -ncursesã®å°å…¥
           #yum install ncurses-devel.s390x
    ==> yum WARNING: refresh-packagekit" inport failed
           #yum install PackageKit-yum-plugin.s390x
    ==> cups/cups.h not found
-        -cups‚Ì“±“ü
+        -cupsã®å°å…¥
           #yum install cups-devel.s390x
    ==> no package libgnomeui,gnome-vfs-module,libgnomeprint,libgnomeprintui
-        -‚»‚ê‚¼‚êlib‚ğ“±“ü
+        -ãã‚Œãã‚Œlibã‚’å°å…¥
           #yum install libgnomeui-devel.s390x
           #yum install libgnomeprintui22-devel.s390x
-          (ˆ—‚ª’x‚­ yum ‚ªƒnƒ“ƒO‚µ‚½‚ç, #yum-complete-transaction)
+          (å‡¦ç†ãŒé…ã yum ãŒãƒãƒ³ã‚°ã—ãŸã‚‰, #yum-complete-transaction)
    06). (s390x)
         -make
    ==> unknown type name ppd_file_t
-        -cups/cups.h ‚ª ppd.h‚ğ #include ‚µ‚Ä‚È‚¢iBug‚©)
-        -gxe's xxecsub2 F–¾¦“I‚É ppd.h ‚ğ#include ‚·‚é
+        -cups/cups.h ãŒ ppd.hã‚’ #include ã—ã¦ãªã„ï¼ˆBugã‹)
+        -gxe's xxecsub2 ï¼šæ˜ç¤ºçš„ã« ppd.h ã‚’#include ã™ã‚‹
    ==> ld fails dlsym@@GLIBC_2.2...
-        -ld ‚Ìg—p‚ª fc13 ‚©‚ç•ÏX‚É‚È‚Á‚½
-         2.so of "o.o"-->"1.so"-->"2.so" ‚ÌƒP[ƒX‚Å "2.so" ‚ğ–¾¦“I‚Élink‚µ‚È‚¯‚ê‚Î‚È‚ç‚È‚¢
-        -gxe‚Ì Makefile C³ (-ldl, -lX11)
+        -ld ã®ä½¿ç”¨ãŒ fc13 ã‹ã‚‰å¤‰æ›´ã«ãªã£ãŸ
+         2.so of "o.o"-->"1.so"-->"2.so" ã®ã‚±ãƒ¼ã‚¹ã§ "2.so" ã‚’æ˜ç¤ºçš„ã«linkã—ãªã‘ã‚Œã°ãªã‚‰ãªã„
+        -gxeã® Makefile ä¿®æ­£ (-ldl, -lX11)
    ==> WARNING:unused but set
-        -gcc4.6 ‚©‚ç‚ÌƒIƒvƒVƒ‡ƒ“(-Wunused-but-set-variable:È—ª’l)
-        -configure.inC³Ï(gcc ‚Ìƒo[ƒWƒ‡ƒ“>=4.6‚Ì‚Æ‚«-Wno-unused-but-set ‚ğw’è
-         •K—v‚È‚ç "./configure --enable-unused-but-set=yes" ‚Åconfigure ‚µ‚Ä‚­‚¾‚³‚¢
+        -gcc4.6 ã‹ã‚‰ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³(-Wunused-but-set-variable:çœç•¥å€¤)
+        -configure.inä¿®æ­£æ¸ˆ(gcc ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³>=4.6ã®ã¨ã-Wno-unused-but-set ã‚’æŒ‡å®š
+         å¿…è¦ãªã‚‰ "./configure --enable-unused-but-set=yes" ã§configure ã—ã¦ãã ã•ã„
    07). (Linux)
-        -gxe‚ÌƒeƒXƒg
+        -gxeã®ãƒ†ã‚¹ãƒˆ
    ==> cannot open display:
         #yum install xorg-x11-xauth.s390x
-        (linux‚Å‚ÌxhostƒRƒ}ƒ“ƒh s390x ‚Å‚Ì DISPLAY=İ’è‚Í ssh ‚Ìê‡•s—v)
-   ==> “ú–{Œê‚ª•\¦‚³‚ê‚È‚¢
+        (linuxã§ã®xhostã‚³ãƒãƒ³ãƒ‰ s390x ã§ã® DISPLAY=è¨­å®šã¯ ssh ã®å ´åˆä¸è¦)
+   ==> æ—¥æœ¬èªãŒè¡¨ç¤ºã•ã‚Œãªã„
         #yum groupinstall "Japanese Support"
    ==> GConf WARNING client failed to connect to the D-BUS deaemon
         #yum install dbus-x11.s390x
@@ -397,48 +397,48 @@ V129R 2020/12/18
    ==> xe: search for gnome-terminal failed
         #yum install gnome-terminal.s390x
    ==> IPP request failed with status 1280
-        -libgnomeprint ‚Ì CUPSƒ|[ƒŠƒ“ƒO‚ª—˜—p‰Â”\‚ÈƒvƒŠƒ“ƒ^[‚È‚µ‚Å¸”s
-        -‚±‚ê‚Í–³‹‚·‚é
-   ==> ƒ|ƒbƒvƒAƒbƒvƒ_ƒCƒAƒƒO:An error occurred while loading or saving configuration information.
-        -ƒ‹[ƒgƒ†[ƒU[‚Ì‚Æ‚«‚Éo‚éA"su" o‚Í‚È‚­ "su -"‚ğg‚¤
+        -libgnomeprint ã® CUPSãƒãƒ¼ãƒªãƒ³ã‚°ãŒåˆ©ç”¨å¯èƒ½ãªãƒ—ãƒªãƒ³ã‚¿ãƒ¼ãªã—ã§å¤±æ•—
+        -ã“ã‚Œã¯ç„¡è¦–ã™ã‚‹
+   ==> ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ãƒ€ã‚¤ã‚¢ãƒ­ã‚°:An error occurred while loading or saving configuration information.
+        -ãƒ«ãƒ¼ãƒˆãƒ¦ãƒ¼ã‚¶ãƒ¼ã®ã¨ãã«å‡ºã‚‹ã€"su" å‡ºã¯ãªã "su -"ã‚’ä½¿ã†
    ==> GnomeUI-Warning:While connecting to session manager:None of authentication protocols specified are supported.
-        -ƒ‹[ƒgƒ†[ƒU[‚Ì‚Æ‚«‚Éo‚éA"su" o‚Í‚È‚­ "su -"‚ğg‚¤
+        -ãƒ«ãƒ¼ãƒˆãƒ¦ãƒ¼ã‚¶ãƒ¼ã®ã¨ãã«å‡ºã‚‹ã€"su" å‡ºã¯ãªã "su -"ã‚’ä½¿ã†
    ==> Gtk-Message: Failed to load module "gnomebreakpad"
         -yum install bug-buddy (/usr/lib64/gtk-2.0/libgnomebreakpad)
-        ‚à‚µ bug-buddy ‚ª‚È‚¯‚ê‚Î–³‹B(ƒoƒOƒŒƒ|[ƒg—p)
+        ã‚‚ã— bug-buddy ãŒãªã‘ã‚Œã°ç„¡è¦–ã€‚(ãƒã‚°ãƒ¬ãƒãƒ¼ãƒˆç”¨)
 
-(F) Ubunto11.10_x64 ƒCƒ“ƒXƒg[ƒ‹ƒeƒXƒg      2011/11/21
+(F) Ubunto11.10_x64 ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ãƒ†ã‚¹ãƒˆ      2011/11/21
    make
    ==> undefined symbol gnome_vfs_mime_get_default...
-        libgnomevfs2-extra ‚ğƒCƒ“ƒXƒg[ƒ‹
+        libgnomevfs2-extra ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«
    ==> dlopen@@GLIBC_2.1 undefined 
-        ‚à‚µ”­¶‚µ‚½‚ç MAkefile ‚Ì LDFLAG ‚ğ’²®‚µ‚Ä‚­‚¾‚³‚¢("-ldl" ‚È‚Ç)
-   gxe Às
+        ã‚‚ã—ç™ºç”Ÿã—ãŸã‚‰ MAkefile ã® LDFLAG ã‚’èª¿æ•´ã—ã¦ãã ã•ã„("-ldl" ãªã©)
+   gxe å®Ÿè¡Œ
    ==> Gtk-WARNING: Funable to locate theme engine in gtk-modules "pixbuf"
         "aptitude install gtk-engine-pixbuf"
 
-(G) OpenSuse12.1_x64 ƒCƒ“ƒXƒg[ƒ‹ƒeƒXƒg 2011/11/22
-	cups-devel, libgnomeui-devel, libgnomeprintui-devel ‚ğ“±“ü
-    (DVD ‚©‚ç os ‚ğ“±“üŒã ƒŠƒ|ƒWƒgƒŠ[‚ğXV:"download.opensuse.org/distribution/12.1/repo/oss/suse")
+(G) OpenSuse12.1_x64 ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ãƒ†ã‚¹ãƒˆ 2011/11/22
+	cups-devel, libgnomeui-devel, libgnomeprintui-devel ã‚’å°å…¥
+    (DVD ã‹ã‚‰ os ã‚’å°å…¥å¾Œ ãƒªãƒã‚¸ãƒˆãƒªãƒ¼ã‚’æ›´æ–°:"download.opensuse.org/distribution/12.1/repo/oss/suse")
 
-(H) Deb Debian jessie 3.10 xfce ƒCƒ“ƒXƒg[ƒ‹ƒeƒXƒg 2014/02/14
+(H) Deb Debian jessie 3.10 xfce ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ãƒ†ã‚¹ãƒˆ 2014/02/14
     xfce4-terminal
-    	ƒVƒ‡[ƒgƒJƒbƒgƒL[•ÏX F1=ƒwƒ‹ƒv, F11=‘S‰æ–Ê, F10=ƒƒjƒ…[
-        	xfce4-appearance-settings‚ğÀsA İ’è, "ƒƒjƒ…[‚ÌƒVƒ‡[ƒgƒJƒbƒgƒL[‚ğ•ÏX‰Â”\‚É‚·‚é" ‚ğƒ`ƒFƒbƒN
-        	xfce4-appearance-settings‚ğÀsA İ’è, "ƒƒjƒ…[‚ÌƒVƒ‡[ƒgƒJƒbƒgƒL[‚ğ•ÏX‰Â”\‚É‚·‚é" ‚ğƒ`ƒFƒbƒN
-        	xfce4-terminal ‚Ìƒƒjƒ…[‚Å
-            	ƒwƒ‹ƒv-->–ÚŸ("F1" ‚ª•\¦‚³‚ê‚Ä‚¢‚é)ƒƒjƒ…[€–Ú‚Ìã‚Å"Del"ƒL[‚ğ‰Ÿ‚·
-            	•\¦-->‘S‰æ–Ê•\¦("F11"‚ª•\¦‚³‚ê‚Ä‚¢‚é)ƒƒjƒ…[€–Úã‚Å"Del"‚ğ‰Ÿ‚·
-                (‚±‚Ì‘€ì‚Å ~/.config/xfce4/terminal/accels.scm ‚ªì¬s‚ê‚é)
-                •ÒW-->İ’è(E)-->ã‹‰Ò(V), "ƒƒjƒ…[ƒVƒ‡[ƒgƒJƒbƒgƒL[‚ğ–³Œø‚É‚·‚é"‚ğƒIƒ“‚É‚·‚é
+    	ã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆã‚­ãƒ¼å¤‰æ›´ F1=ãƒ˜ãƒ«ãƒ—, F11=å…¨ç”»é¢, F10=ãƒ¡ãƒ‹ãƒ¥ãƒ¼
+        	xfce4-appearance-settingsã‚’å®Ÿè¡Œã€ è¨­å®š, "ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®ã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆã‚­ãƒ¼ã‚’å¤‰æ›´å¯èƒ½ã«ã™ã‚‹" ã‚’ãƒã‚§ãƒƒã‚¯
+        	xfce4-appearance-settingsã‚’å®Ÿè¡Œã€ è¨­å®š, "ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®ã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆã‚­ãƒ¼ã‚’å¤‰æ›´å¯èƒ½ã«ã™ã‚‹" ã‚’ãƒã‚§ãƒƒã‚¯
+        	xfce4-terminal ã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã§
+            	ãƒ˜ãƒ«ãƒ—-->ç›®æ¬¡("F1" ãŒè¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹)ãƒ¡ãƒ‹ãƒ¥ãƒ¼é …ç›®ã®ä¸Šã§"Del"ã‚­ãƒ¼ã‚’æŠ¼ã™
+            	è¡¨ç¤º-->å…¨ç”»é¢è¡¨ç¤º("F11"ãŒè¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹)ãƒ¡ãƒ‹ãƒ¥ãƒ¼é …ç›®ä¸Šã§"Del"ã‚’æŠ¼ã™
+                (ã“ã®æ“ä½œã§ ~/.config/xfce4/terminal/accels.scm ãŒä½œæˆsã‚Œã‚‹)
+                ç·¨é›†-->è¨­å®š(E)-->ä¸Šç´šè€…(V), "ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆã‚­ãƒ¼ã‚’ç„¡åŠ¹ã«ã™ã‚‹"ã‚’ã‚ªãƒ³ã«ã™ã‚‹
 	WARNING **: Couldn't register with accessibility bus: Did not receive a reply. Possible causes include: the remote application did not send a reply, the message bus security policy blocked the reply, the reply timeout expired, or the network connection was broken.
-            -->‚Ç‚±‚©‚Å export NO_AT_BRIDGE=1 ‚ÅŠÂ‹«•Ï”‚ğİ’è‚·‚é
+            -->ã©ã“ã‹ã§ export NO_AT_BRIDGE=1 ã§ç’°å¢ƒå¤‰æ•°ã‚’è¨­å®šã™ã‚‹
 
     Gtk-WARNING **: Calling IsInhibited failed: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.gnome.SessionManager was not provided by any .service files
-            -->–³ŠQ‚È‚Ì‚Å–³‹‚·‚é
+            -->ç„¡å®³ãªã®ã§ç„¡è¦–ã™ã‚‹
 (I) Rspberry PI  2020/05/16
-   configure ƒGƒ~ƒ…ƒŒ[ƒ^[‚ÅƒeƒXƒg‚µ‚Ü‚µ‚½iimage:"2020-02-13-raspbian-full" on QEMU3.1.0j
-     ./configure ‚ÅˆÈ‰º‚ÌƒGƒ‰[‚ª‚ ‚è‚Ü‚µ‚½
+   configure ã‚¨ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚¿ãƒ¼ã§ãƒ†ã‚¹ãƒˆã—ã¾ã—ãŸï¼ˆimage:"2020-02-13-raspbian-full" on QEMU3.1.0ï¼‰
+     ./configure ã§ä»¥ä¸‹ã®ã‚¨ãƒ©ãƒ¼ãŒã‚ã‚Šã¾ã—ãŸ
         term.h not found
         -->#apt-get install libncurses-dev
         cups/cups.h not found
@@ -447,7 +447,7 @@ V129R 2020/12/18
         -->#apt-get install libgtk-3-dev
         select libgnome2 or glib-2.0
         -->#apt-get install glib-2.0
-        ==>./configure ¬Œ÷
+        ==>./configure æˆåŠŸ
 
 (J) Manjaro gnome 20.1.2              2020/10/23 
          C compile not found          ==> pacman -S gcc
