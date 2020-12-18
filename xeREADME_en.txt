@@ -1,6 +1,6 @@
-||*CID:||+v@@@R~:  2020/12/16                update#=  815;           ||+v@@@R~
+||*CID:||+v129R~:  2020/12/18                update#=  818;           ||+v129R~
 ######################################################################
-[English]    v1.29Q                                                   ||~129PR~||+v@@@R~
+[English]    v1.29R                                                   ||~v129R~
 
 This editor is fit for programmers working on both main-frame and PC.
 Its operation is based on mainframe SPF editor,
@@ -486,15 +486,20 @@ How to execute.
         .Accept another type of ncurses mouse event input.            ||~129PI~
         .libncursesw is provided, but /usr/include/ncursesw is not provided.||~129PI~
                                                                       ||~129PR~
-  .v129Q<--129P:(2020/12/16)                                          ||+v@@@I~
-                                                                      ||+v@@@I~
-     1.BUGs                                                           ||+v@@@I~
-       -(gxe) IME's output always same character.                     ||+v@@@I~
-                                                                   //~@@@1I~||+v@@@I~
-     3.Miscellaneous.                                                 ||+v@@@I~
-       -(wxe) Handle unprintable character input of UTF8 code by 3rd party IME.||+v@@@I~
-       -/Nm command line switch function was changed.                 ||+v@@@I~
-		  When /Nm is specified, for UTF8 code input to CPLC(non UTF8) file||+v@@@I~
-          set UTF8 code itself if Alt+u ON(indecated by =u=> on command input line),||+v@@@I~
-          set translated locale code if Alt+u OFF(===>) or "?" if translation error occured.||+v@@@I~
-                                                                      ||+v@@@I~
+  .v129Q<--129P:(2020/12/16)                                          ||~v129R~
+                                                                      ||~v129R~
+     1.BUGs                                                           ||~v129R~
+       -(gxe) IME's output always same character.                     ||~v129R~
+                                                                   //~1291I~||~v129R~
+     3.Miscellaneous.                                                 ||~v129R~
+       -(wxe) Handle unprintable character input of UTF8 code by 3rd party IME.||~v129R~
+       -/Nm command line switch function was changed.                 ||~v129R~
+		  When /Nm is specified, for UTF8 code input to CPLC(non UTF8) file||~v129R~
+          set UTF8 code itself if Alt+u ON(indecated by =u=> on command input line),||~v129R~
+          set translated locale code if Alt+u OFF(===>) or "?" if translation error occured.||~v129R~
+                                                                      ||~v129R~
+  .v129R<--129Q:(2020/12/18)                                          ||~v129I~
+                                                                      ||~v129I~
+     1.BUGs                                                           ||~v129I~
+       -(Linux console version) Crashes by mouse drag.                ||~v129I~
+                                                                      ||~v129I~

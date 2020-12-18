@@ -1,4 +1,4 @@
-V129P 2020/12/09 
+V129R 2020/12/18 
 (A) Automake package installation step
 
     You may update configure before ./configure
