@@ -1,4 +1,4 @@
-V129R 2020/12/18 
+V129S 2020/12/24 
 (A)Automake パッケージ 導入手順。
 
     ディストリビューションによっては導入先フォルダーを変更する必要があるかもしれません。
@@ -457,6 +457,8 @@ V129R 2020/12/18
          correct make to qmake        ==> packman -S make
 
          console version Backspec dose not word ==>  specify --7 option "xe --7B"
+                  OR on Preference dialog, assign Ctrl-H to backspace, ASCII DEL to Delete key.
+
 (K) Fedora33                          2020/12/09 
 		missing term.h ==>yum install ncurses-devel
 		missing cups/cups.h ==> yum install cups-devel

@@ -1,3 +1,15 @@
+//*********  20201224 v129S release     ****************
+//v743:201222 gnome-terminal --disable-factory is not supported
+//            uproc3.c
+//v742:201221 if one is found, no errmsg for other terminal prog
+//            uproc3.c
+//v741:201221 chk terminal prog specified on ini file
+//            uproc3.c
+//v740:201221 modify "mapping tbl overflow" msg 
+//            utf22.c utf2
+//*********  20201218 v129R release     ****************
+//v730:201218 (BUG:LNX console)crash by mouse drag; at V712(V129P) coding miss; deleted length clear statemaent
+//            ukbdw.c
 //*********  20201216 v129Q release     ****************
 //v724:201214 (WIN)like as LNX(ukbdl), set F2L err for char12 and CPU8 file(xe accept utf8 on cpu8 file and cmdline)
 //            ukbdw.c

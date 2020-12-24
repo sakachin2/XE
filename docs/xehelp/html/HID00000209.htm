@@ -354,14 +354,20 @@ a:hover{font-weight:bold;}-->
          (check also to which /bin/sh is slinked.
           to bash under RH9,FC%. to dash under Kubuntu6,ubuntu7.)
        .LNX_ShellTerm_gxe =&quot;&quot;
-         gxe(gtk) sub terminal start cmd used by &quot;&gt;&quot; cmd or menu item &quot;terminal&quot; is selected.
-         default is &quot;gnome-terminal --disable-factory&quot; if gnome-terminal is found,
-         else &quot;konsole -ls&quot;.
+          terminal program for sub shell opened by DOS (abbreviation is "&gt;") cmd or Menu:File-&gt;Term.
+          Default depends terminal emulator installed(check it in the following sequence),
+          Specify if option required. e.g. "gnome-terminal --maximize".
+              "gnome-terminal",
+              "konsole -ls",
+              "xfce4-terminal",
+              finally use "xterm".
+
        .LNX_CmdTerm_gxe   =&quot;&quot;
-         gxe(gtk) string to process shell cmd used by &quot;&gt;cmd&quot; pattern.
-         default is &quot;gnome-terminal --disable-factory -x&quot; if gnome-terminal is found,
-         else &quot;konsole -e&quot;,else &quot;xterm -e&quot;.
-         This is used to start <A href="HID_TSOE_E.htm">xe3270</A>.
+          terminal program used by DOS cmd with cmd-string(e.g. "&gt;ls") except on =6 panel.
+          Default is
+          "gnome-terminal -e",
+          "konsole -e",
+          "xfce4-terminal e"
 #endif
 
        .Utility command name.

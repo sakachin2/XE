@@ -1,8 +1,9 @@
-//*CID://+v70mR~:                             update#=  494;       //~v70mR~
+//*CID://+v740R~:                             update#=  505;       //~v70mR~//~v740R~
 //*********************************************************************//~7712I~
 //utf2.c                                                           //~7716R~
 //* utf8 data manipulation:process using chof                      //~7712I~
 //*********************************************************************//~7712I~
+//v740:201221 modify "mapping tbl overflow" msg                    //~v70mI~
 //v70m:200820 (ARM:BUG)save and load ucsmap missing width0top      //~v70mI~
 //v70i:200716 Ucs.java' wcwidth is proper than adjsbcs             //~v70iI~
 //v70h:200716 (BUG)if width0ctr==0, all non dbcs ucs is determined as width0//~v70hI~
@@ -222,7 +223,8 @@ static int Stabs[]={                                               //~v6F3M~
   static int Sinitsw;                                              //~v6F3I~
 //#define OVFMSG   	"UCS map tbl overflow"                         //~v67ZR~//~v697R~
 //#define OVFMSG   	"Warning:UCS map tbl overflow. Treate this range as DBCS(adjustable by ini file)."//~v697R~//~v6BYR~
-#define OVFMSG   	"Warning:UCS map tbl overflow. Treated this range as DBCS(adjustable by ini file)."//~v6BYI~
+//#define OVFMSG      "Warning:UCS map tbl overflow. Treated this range as DBCS(adjustable by ini file)."//~v6BYI~//~v70mR~
+#define OVFMSG      "Info:UCS map tbl overflow. This range is treated as DBCS."//~v70mR~
 static int Sasciilen;                                              //~v640I~
 static char *Ssbcstbfnm;                                           //~v6c7I~
 //static int Slastsbcsid;                                          //~v67ZR~
@@ -914,9 +916,14 @@ int utfucsmapinit(int Popt)                                        //~v640I~
 	      	uerrmsgcat(";try to clear ::%s.xxx",0,                 //~v6c7R~
             			SBCSTBFNM);                                //~v6c7I~
 #else                                                              //~v6T7I~
-          	printf("%s",uerrsprintf("%s. u-%06x-->u-%06x(0x%04x SBCSs of total 0x%04x,unprintable=%d/%d).",0,//~v6T7R~//~v@@@R~
+//         	printf("%s",uerrsprintf("%s. u-%06x-->u-%06x(0x%04x SBCSs of total 0x%04x,unprintable=%d/%d).\n",0,//~v6T7R~//~v740R~
+           	printf("%s",uerrsprintf("%s. u-%06x-->u-%06x(%d SBCSs of total %d,unprintable=%d/%d).\n",0,//~v740I~
                     OVFMSG,                                        //~v6T7I~
           			ovfucs,ovfucslast,ovfctr,sbcsctr,unpctr,UCS2DDMAP_ENTNO));            //~v6T7I~//~v@@@R~
+         if (ovfucs<UCS2DDMAP_ENTNO)	//mapmodify reject if over //~v740I~
+          	printf("%s",uerrsprintf("Note:Unicode u-%06x-->u-%06x occupies 2 columns.(Adjustable by UnicodeTbl option of ini file if you want)\n",//~v740R~
+          							"注意:u-%06x-->u-%06xのユニコードは２桁\x95\\示になります.(不都合ならiniファイルのUnicodeTblパラメータで調整できます)",//~v740R~
+          			ovfucs,ovfucslast));                           //~v70mI~
     	if (ovfctrw0)                                              //~v6T7I~
 	      	printf("%s",uerrsprintf(";%s. u-%06x-->u-%06x(x%04x ucs) for width=0.",0,//~v6T7I~
                     OVFMSG,                                        //~v6T7I~
@@ -954,7 +961,7 @@ int utfucsmapinit(int Popt)                                        //~v640I~
         savehdr.SSTovfucsw0=ovfucsw0;                              //~v6c7R~
         savehdr.SSTovfucsw0last=ovfucsw0last;                      //~v6c7R~
         savehdr.SSTflag=Gulibutfmode;                              //~v6c7R~
-        savehdr.SSTwidth0top=Gudbcschk_width0top;                  //+v70mR~
+        savehdr.SSTwidth0top=Gudbcschk_width0top;                  //~v70mR~
         opt=0;                                                     //~v6c7R~
         utfucssavemap(opt,&savehdr);                               //~v6c7R~
     }                                                              //~v6c7I~
@@ -1079,6 +1086,7 @@ int utf22versionchk(int Popt)                                      //~v6c7I~
   if (fh2)                                                         //~vc1cI~
     fclose(fh2);                                                   //~v6c7I~
 #endif                                                             //~v6c7I~
+    UTRACEP("%s:rc=%d\n",UTT,rc);                                  //~v70mI~
     return rc;                                                     //~v6c7I~
 }                                                                  //~v6c7I~
 //*******************************************************          //~v6c7I~
@@ -1091,9 +1099,12 @@ int utfucsloadmap(int Popt,PSAVESBCSTB Ppsbcstbhdr)                //~v6c7I~
     char *locale;                                                  //~v6c7R~
     int rc;                                                        //~v6c7R~
 //*********************                                            //~v6c7I~
-    UTRACEP("utfucsloadmap entry\n");                              //~v6k1I~
+    UTRACEP("%s:entry Ssbcstbfnm=%s\n",UTT,Ssbcstbfnm);                              //~v6k1I~//~v70mR~
     if (!Ssbcstbfnm)                                               //~v6c7R~
+    {                                                              //~v70mI~
+	    UTRACEP("%s:skip load\n",UTT);                             //~v70mI~
     	return 4;                                                  //~v6c7R~
+    }                                                              //~v70mI~
     locale=udbcschk_setlocale(0,LC_ALL,0);                         //~v6c7R~
     UTRACEP("utfucsloadmap locale=%s\n",locale);                   //~v6k1I~
     rc=utf22versionchk(0);    //version changed,version file is without no locale suffix//~v6c7I~
@@ -1430,7 +1441,8 @@ UTRACEP("REmapinit sbcsid ucs=%04x,sbcsid=%04x\n",ii,sbcsid);      //~v6BYM~
     if (ovfctr||ovfctrw0)                                          //~v67ZI~
     {                                                              //~v67ZI~
     	if (ovfctr)                                                //~v67ZI~
-	      	uerrmsg("%s even after REMAP. u-%06x-->u-%06x(x%04x of x%04x ucs).",0,//~v67ZR~
+//	      	uerrmsg("%s even after REMAP. u-%06x-->u-%06x(x%04x of x%04x ucs).",0,//+v740R~
+  	      	uerrmsg("%s even after REMAP. u-%06x-->u-%06x(%d of %d ucs).",0,//+v740I~
                     OVFMSG,                                        //~v67ZI~
           			ovfucs,ovfucslast,ovfctr,sbcsctr);             //~v67ZI~
     	if (ovfctrw0)                                              //~v67ZI~

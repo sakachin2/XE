@@ -1,6 +1,6 @@
-||*CID:||+v129R~:  2020/12/18                update#=  818;           ||+v129R~
+||*CID:||+v129R~:  2020/12/24                update#=  819;           ||+v129R~
 ######################################################################
-[English]    v1.29R                                                   ||~v129R~
+[English]    v1.29S                                                   ||+v129R~
 
 This editor is fit for programmers working on both main-frame and PC.
 Its operation is based on mainframe SPF editor,
@@ -503,3 +503,10 @@ How to execute.
      1.BUGs                                                           ||~v129I~
        -(Linux console version) Crashes by mouse drag.                ||~v129I~
                                                                       ||~v129I~
+  .v129S<--129R:(2020/12/24)                                          ||+v129I~
+                                                                      ||+v129I~
+     1.BUGs                                                           ||+v129I~
+       -(Linux:gxe) On Gnome desktop, ">"(open console window) command did not work.(gnome-terminal option parameter was deprecated)||+v129I~
+       -(Linux:gxe) On Xfce desktop, following Warning may issued.    ||+v129I~
+                    Gtk-Warning Calling org.xfce.Session.Manager IsInhibited failed...||+v129I~
+                                                                      ||+v129I~

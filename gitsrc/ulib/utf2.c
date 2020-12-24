@@ -1,8 +1,9 @@
-//*CID://+v70gR~:                              update#= 1111;      //~v70gR~
+//*CID://+v740R~:                              update#= 1112;      //+v740R~
 //*********************************************************************//~7712I~
 //utf2.c                                                           //~7716R~
 //* utf8 data manipulation:process using chof                      //~7712I~
 //*********************************************************************//~7712I~
+//v740:201221 modify "mapping tbl overflow" msg                    //+v740I~
 //v70g:200715 (BUG)utfcvl2f retrns err when wcwidth=0 and output char same as input. it should set utf8 even width=0//~v70gI~
 //v70f:200715 (BUG)utcctr2offs have to consider 3/4 byte dbcs      //~v70fI~
 //v70e:200715 (LNX,Axe)Axe use icu as local converter and icu can translate u-00a4 to 8fa2f0(3 byte locale code)//~v70eI~
@@ -1472,8 +1473,8 @@ UTRACED("utfl2f inp",Pinp,Pinplen);                                //~v60dI~//~v
         {                                                          //~v61bI~
             if (dbcschksw)	//requested                            //~v61bI~
             {                                                      //~v61bI~
-//          	if (utfwcwidth(ucs)<=0)                            //~v61bR~//+v70gR~
-            	if (utfwcwidth(ucs)<0)                             //+v70gI~
+//          	if (utfwcwidth(ucs)<=0)                            //~v61bR~//~v70gR~
+            	if (utfwcwidth(ucs)<0)                             //~v70gI~
             		chklen=-1;	//err                              //~v61bI~
             }                                                      //~v61bI~
         }                                                          //~v61bI~
@@ -3948,7 +3949,8 @@ int utfgetcharset(char *Pplocale,char *Ppcodeset)                  //~v61mI~
 //  uerrmsg("\"locale -a\" has only UTF8 entry for %s, assumed %s as base encoding",0,//~v62WR~//~v68qR~
 //  printf("Warning:\"locale -a\" shows UTF8 entry only for %s, assumed %s as base encoding",//~v6a0R~
 //  printf("Warning:\"locale -a\" shows UTF8 entry only for %s, assumed %s as base encoding\n",//~v6a0R~
-    printf("Warning:Langinfo shows UTF8(locale:%s), assumed %s as base encoding\n",//~v6a0I~
+//  printf("Warning:Langinfo shows UTF8(locale:%s), assumed %s as base encoding\n",//+v740R~
+    printf("Note:Langinfo shows UTF8(locale:%s), assumed %s as base encoding\n",//+v740I~
             Pplocale,ISO88591);                                    //~v62WR~
     strcpy(Ppcodeset,ISO88591);                                    //~v62WI~
   }                                                                //~v62WI~

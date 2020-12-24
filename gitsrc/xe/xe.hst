@@ -1,3 +1,9 @@
+//*********  20201224 v129S release  *******************************
+//vbu1:201222 (LNX)On Manjaro/XFCE;following warning by gtk_application_is_inhibited()
+//             Gtk-Warning Calling org.xfce.Session.Manager IsInhibited failed: GDBus.Error.UnknownMethod:No such Method "IsInhibited"
+//            gxe.c gxe.h gxeview.c xxescr.c
+//vbu0:201217 Debian10 compiler warning
+//            xxexei.c xxefile.c xxecsub.c xxekbd.c xxecsub2.c
 //*********  20201216 v129Q release  *******************************
 //vbtb:201214 (BUG) TODO TEST was remained(IME conv err for SJIS) From 129N:update=2020/07/31
 //            xxexei.c

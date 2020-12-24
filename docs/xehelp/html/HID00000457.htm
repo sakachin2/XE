@@ -32,6 +32,7 @@ a:hover{font-weight:bold;}
   .v129N&lt;--129M:(2020/09/23)
   .v129P&lt;--129N:(2020/10/28)
   .v129Q&lt;--12PN:(2020/12/16)
+  .v129S&lt;--12PQ:(2020/12/24)
 
      1.BUGs
        -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする
@@ -101,6 +102,11 @@ a:hover{font-weight:bold;}
 
     (129Q)
        -(gxe) IME入力処理が常に同じ文字を出力していた
+    (129S)
+       -(Linux:gxe) Gnome デスクトップのとき "&gt;"(コンソール窓を開く)コマンドが働かない(gnome-terminal のパラメータが廃止されていた)
+       -(Linux:gxe) Xfce デスクトップのとき以下のWarningがでることがある
+                    Gtk-Warning Calling org.xfce.Session.Manager IsInhibited failed...
+        -(Linux:xe) マウスドラッグでクラッシュする。
 
      2.機能追加
 

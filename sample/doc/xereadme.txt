@@ -1,6 +1,6 @@
-||*CID:||+v@@@R~:  2020/12/16              update#=  595;             ||~v@@@R~
+||*CID:||+v@@@R~:  2020/12/24              update#=  598;             ||+v@@@R~
 ######################################################################
-[English]    v1.29Q                                                   ||~v128R~||~v129R~||+v@@@R~
+[English]    v1.29S                                                   ||+v@@@R~
 
 ##This editor is fit for programmers working on both main-frame and PC.
   Its operation is based on mainframe SPF editor,                     ||~v126R~
@@ -2446,7 +2446,8 @@ How to start.
   .v129M<--129L:(2020/05/17)                                          ||~v129I~
   .v129N<--129M:(2020/09/23)                                          ||~v129I~
   .v129P<--129N:(2020/10/28)                                          ||~v129I~
-  .v129Q<--129P:(2020/12/16)                                          ||~v@@@I~
+  .v129Q<--129P:(2020/12/16)                                          ||~v129R~
+  .v129S<--129Q:(2020/12/24)                                          ||+v@@@I~
                                                                       ||~v129R~
      1.BUGs                                                           ||~v129R~
        -(Windows:64)"&"(spawn executable file) dir cmd crush.         ||~v129R~
@@ -2518,9 +2519,15 @@ How to start.
      (129P)                                                           ||~v129I~
        -(Linux) GTK3 version gxe; Screen size was not kept over App restart.||~v129I~
                                                                       ||~v129R~
-     (129Q)                                                           ||~v@@@I~
-       -(gxe) IME's output always same character.                     ||~v@@@I~
-                                                                      ||~v@@@I~
+     (129Q)                                                           ||~v129R~
+       -(gxe) IME's output always same character.                     ||~v129R~
+                                                                      ||~v129R~
+     (129S)                                                           ||+v@@@I~
+       -(Linux:gxe) On Gnome desktop, ">"(open console window) command did not work.(gnome-terminal option parameter was deprecated)||+v@@@I~
+       -(Linux:gxe) On Xfce desktop, following Warning may issued.    ||+v@@@I~
+                    Gtk-Warning Calling org.xfce.Session.Manager IsInhibited failed...||+v@@@I~
+       -(Linux:xe)  Crashes by mouse dragging.                        ||+v@@@I~
+                                                                      ||+v@@@I~
      2.Additional function.                                           ||~v129I~
                                                                       ||~v129I~
        -Shortcut pathname                                             ||~v129I~
@@ -2683,13 +2690,13 @@ How to start.
         .Function ftime was deprecated.                               ||~v129I~
         .Accept another type of ncurses mouse event input.            ||~v129I~
         .libncursesw is provided, but /usr/include/ncursesw is not provided.||~v129I~
-                                                                      ||~v@@@I~
-     (129Q)                                                           ||~v@@@I~
-       -(wxe) Handle unprintable character input of UTF8 code by 3rd party IME.||~v@@@I~
-       -/Nm command line switch function was changed.                 ||~v@@@I~
-		  When /Nm is specified, for UTF8 code input to CPLC(non UTF8) file||~v@@@I~
-          set UTF8 code itself if Alt+u ON(indecated by =u=> on command input line),||~v@@@I~
-          set translated locale code if Alt+u OFF(===>) or "?" if translation error occured.||~v@@@I~
+                                                                      ||~v129R~
+     (129Q)                                                           ||~v129R~
+       -(wxe) Handle unprintable character input of UTF8 code by 3rd party IME.||~v129R~
+       -/Nm command line switch function was changed.                 ||~v129R~
+		  When /Nm is specified, for UTF8 code input to CPLC(non UTF8) file||~v129R~
+          set UTF8 code itself if Alt+u ON(indecated by =u=> on command input line),||~v129R~
+          set translated locale code if Alt+u OFF(===>) or "?" if translation error occured.||~v129R~
                                                                       ||~v129I~
      4.Tool.                                                          ||~v129I~
      (129C)                                                           ||~v129I~

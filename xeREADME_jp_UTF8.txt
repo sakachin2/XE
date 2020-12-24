@@ -1,6 +1,6 @@
-||*CID:||+v129R~:  2020/12/18                update#=  818;           ||~v129R~
+||*CID:||+v129R~:  2020/12/24                update#=  819;           ||+v129R~
 ######################################################################
-[Japanese]    v1.29R                                                  ||+v129R~
+[Japanese]    v1.29S                                                  ||+v129R~
 
 メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。||~129GR~
 ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。||~129GR~
@@ -500,3 +500,10 @@ Linux版はGUI版:gxe とTerminalEmulator版:xe があります。    ||~129GR~
      1.BUGs                                                           ||~v129I~
        -(Linux console版)マウスをドラッグしたときクラッシュする       ||~v129I~
                                                                    //~1291I~||~v129I~
+  .v129S<--129R:(2020/12/24)                                          ||+v129I~
+                                                                      ||+v129I~
+     1.BUGs                                                           ||+v129I~
+       -(Linux:gxe) Gnome デスクトップのとき ">"(コンソール窓を開く)コマンドが働かない(gnome-terminal のパラメータが廃止されていた)||+v129I~
+       -(Linux:gxe) Xfce デスクトップのとき以下のWarningがでることがある||+v129I~
+                    Gtk-Warning Calling org.xfce.Session.Manager IsInhibited failed...||+v129I~
+                                                                   //~1291I~||+v129I~

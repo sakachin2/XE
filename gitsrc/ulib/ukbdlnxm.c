@@ -1,8 +1,9 @@
-//*CID://+v712R~:                             update#=  424;       //~v712R~
+//*CID://+v730R~:                             update#=  432;       //+v730R~
 //*************************************************************    //~v592I~
 //*ukbdlnxm.c                                                      //~v592R~
 //*mouse get for linux xterm/kterm/gterm                           //~v592I~
 //*************************************************************    //~v592I~
+//v730:201218 (BUG:LNX console)crash by mouse drag; at V712(V129P) coding miss; deleted length clear statemaent//~v730I~
 //v712:201023 Manjaro;mouse esc seq 0x1b[<b;x;yM  M:down/m:up      //~v6D5I~
 //v6D5:160430 LNX compiler warning for FD_SET/FD_ISSET             //~v6D5I~
 //v6Bx:160212 (LNX)compiler warning at suse64                      //~v6BxI~
@@ -140,20 +141,20 @@ int ukbdlnxm_getmouse2(char *Pnextpos,int *Ppbutton,int *Ppweelsw,int *Ppshiftst
 	char *pc;                                                      //~v712I~
     int btnID,button,wheelsw,shiftstat,posx,posy,len;              //~v712I~
 //*****************                                                //~v712I~
-//  UTRACED("buff",Pnextpos,(int)strlen(Pnextpos));                //+v712R~
+//  UTRACED("buff",Pnextpos,(int)strlen(Pnextpos));                //~v712R~
     pc=Pnextpos+3;              //esc[Mbxy fmt                     //~v712I~
     btnID=atoi(pc);             //0-2:btnid, modifier              //~v712I~
     button=btnID & 0x03;        //0-2:Pressed button-no,3:button released//~v712I~
     wheelsw=btnID & BTN_WHEEL;                                     //~v712I~
     shiftstat=btnID & 0x1c;                                        //~v712I~
     pc+=unumlen(pc,UNUMLEN_DEC,16/*maxlen*/)+1;     //0x1b[<btn;   //~v712R~
-//  UTRACED("pc",pc,(int)strlen(pc));                              //+v712R~
+//  UTRACED("pc",pc,(int)strlen(pc));                              //~v712R~
     posx=atoi(pc);                                                 //~v712I~
     pc+=unumlen(pc,UNUMLEN_DEC,16)+1;           //0x1b[<btn;x;     //~v712R~
-//  UTRACED("pc",pc,(int)strlen(pc));                              //+v712R~
+//  UTRACED("pc",pc,(int)strlen(pc));                              //~v712R~
     posy=atoi(pc);                                                 //~v712I~
     pc+=unumlen(pc,UNUMLEN_DEC,16);           //0x1b[<btn;x;yM  M or m//~v712R~
-//  UTRACED("pc",pc,(int)strlen(pc));                              //+v712R~
+//  UTRACED("pc",pc,(int)strlen(pc));                              //~v712R~
     if (*pc==BTN_UP)              //'M':down, 'm':up               //~v712R~
         button=BTN_RELEASE;                                        //~v712I~
     pc++;                                                          //~v712I~
@@ -244,7 +245,7 @@ UTRACED("mouse event",*Ppnextpos,(int)strlen(*Ppnextpos));         //~v712R~
         click=clickchk(Pfd,buffnext,&len,*Ppnextpos+lenMouse2,*Ppreslen-lenMouse2);//~v712I~
       else                                                         //~v712I~
         click=clickchk(Pfd,buffnext,&len,*Ppnextpos+MOUSE_ESCLEN,*Ppreslen-MOUSE_ESCLEN);//~v62LI~
-UTRACEP("clickchk click=%d,len=%d\n",click,len);                   //~v5g4R~
+UTRACEP("%s:clickchk rc=click=%d,len=%d\n",UTT,click,len);                   //~v5g4R~//~v730R~
         if (click)                                                 //~v592R~
         {                                                          //~v592I~
             if (dblchksw)	//in the click interval                //~v592R~
@@ -262,7 +263,7 @@ UTRACEP("clickchk click=%d,len=%d\n",click,len);                   //~v5g4R~
             else                                                   //~v592I~
 	            charcode=UKLM_CLICK;                               //~v592I~
     	    rc=UKLM_RC_CLICK;                                      //~v592I~
-//UTRACEP("mouse click=%d clickctr=%d,charcode=%x\n",click,Sclickctr,charcode);//~v5g4R~
+UTRACEP("%s UKLM_RC_CLICK click=%d clickctr=%d,charcode=%x\n",UTT,click,Sclickctr,charcode);//~v5g4R~//~v730R~
         }//click:release gotten in time                            //~v592M~
         else    //release timeout                                  //~v592I~
         {                                                          //~v592I~
@@ -276,6 +277,7 @@ UTRACEP("clickchk click=%d,len=%d\n",click,len);                   //~v5g4R~
 //UTRACEP("rel timeout len=%d,reslen=%d,nextpos=%x\n",len,*Ppreslen,*Ppnextpos);//~v5g4R~
             }                                                      //~v592R~
     	    rc=UKLM_RC_DOWN;                                       //~v592I~
+UTRACEP("%s UKLM_RC_DOWN\n",UTT);                                  //~v730I~
         }//timeout                                                 //~v592I~
     }//btn down                                                    //~v592R~
   }//wheel                                                         //~v5g4I~
@@ -322,7 +324,7 @@ UTRACEP("clickchk click=%d,len=%d\n",click,len);                   //~v5g4R~
     *Ppnextpos=*Ppnextpos+MOUSE_ESCLEN;                            //~v592I~
     *Ppreslen=*Ppreslen-MOUSE_ESCLEN;                              //~v592I~
   }                                                                //~v62LI~
-UTRACEP("return rc=%d,reslen=%d,nextpos=%x\n",rc,*Ppreslen,*Ppnextpos);//~v5g4R~
+UTRACEP("%s:return rc=%d,reslen=%d,nextpos=%x\n",UTT,rc,*Ppreslen,*Ppnextpos);//~v5g4R~//~v730R~
     return rc;    //mouse input                                    //~v592R~
 }//ukbdlnxm_getmouse                                               //~v592I~
 //*********************************************************************//~v592I~
@@ -338,6 +340,7 @@ int clickchk(int Pfd,char *Pbuff,int *Plen,char *Ppnext,int Pnextreslen)//~v62LI
     int alreadyread=0;                                             //~v62LI~
 //********************************                                 //~v592I~
 UTRACED("clickchk",Ppnext,Pnextreslen);                            //~v712R~
+    *Plen=0;	                                                   //+v730R~
     tv=Stvclick;             //wait total time                     //~v592R~
 //  for (;;)                                                       //~v592R~
 //  {                                                              //~v592R~
@@ -346,19 +349,27 @@ UTRACED("clickchk",Ppnext,Pnextreslen);                            //~v712R~
        if (swMouse2)                                               //~v712I~
        {                                                           //~v712I~
 		if (Pnextreslen<MOUSE_ESCLEN2)                             //~v712I~
+        {                                                          //~v730I~
+UTRACEP("clickchk swMouse2 return 0 nextreslen=%d\n",Pnextreslen); //~v730I~
+//printf("clickchk swMouse2 return 0 nextreslen=%d\n",Pnextreslen);//~v730R~
         	return 0;	//not mouse event                          //~v712I~
+        }                                                          //~v730I~
         memcpy(Pbuff,Ppnext,(size_t)Pnextreslen);                  //~v712R~
         len=Pnextreslen;                                           //~v712R~
        }                                                           //~v712I~
        else                                                        //~v712I~
        {                                                           //~v712I~
 		if (Pnextreslen<MOUSE_ESCLEN)                              //~v62LR~
+        {                                                          //~v730I~
+UTRACEP("clickchk NOT swMouse2 return 0 nextreslen=%d\n",Pnextreslen);//~v730I~
+//printf("clickchk NOT swMouse2 return 0 nextreslen=%d\n",Pnextreslen);//~v730R~
         	return 0;	//not mouse event                          //~v62LI~
+        }                                                          //~v730I~
         memcpy(Pbuff,Ppnext,MOUSE_ESCLEN);                         //~v62LI~
         len=MOUSE_ESCLEN;                                          //~v62LI~
        }                                                           //~v712I~
 	    alreadyread=1;                                             //~v62LI~
-UTRACEP("clickchk select read next mouse event at once nextlen=%d\n",Pnextreslen);//~v62LI~
+UTRACEP("clickchk set rc=1 nextreslen=%d\n",Pnextreslen);//~v62LI~ //~v730R~
 		rc=1;                                                      //~v62LI~
       }                                                            //~v62LI~
       else                                                         //~v62LI~
@@ -374,8 +385,12 @@ UTRACEP("clickchk select rc=%d\n",rc);                             //~v5g4I~
         {                                                          //~v592I~
         case 0:     //timeout                                      //~v592I~
 //      	return click;                                          //~v592R~
+UTRACEP("clickchk select rc=0 timeout return 0\n");                //~v730I~
+//printf("clickchk select rc=0 timeout return 0\n");               //~v730R~
         	return 0;                                              //~v592I~
         case -1:    //err                                          //~v592I~
+UTRACEP("clickchk select rc=-1 error return 0\n");                 //~v730I~
+//printf("clickchk select rc=-1 error return 0\n");                //~v730R~
             return 0;                                              //~v592I~
         default:                                                   //~v592I~
           if (!alreadyread)                                        //~v62LI~
@@ -388,7 +403,11 @@ UTRACED("read",Pbuff,len);                                         //~v5g4R~
             &&  *(Pbuff+2)==MOUSE_ESCID)                           //~v592R~
             {                                                      //~v592I~
             	if (*(Pbuff+3) & BTN_WHEEL)	//wheel roll up/down   //~v5g4I~
+                {                                                  //~v730I~
+UTRACEP("clickchk mouse1 BTN_WHEEL return 0 len=%d\n",len);        //~v730R~
+//printf("clickchk mouse1 BTN_WHEEL return 0 len=%d\n",len);       //~v730R~
                     return 0;   //ignore read data                 //~v5g4R~
+                }                                                  //~v730I~
                 button=*(Pbuff+3) & 0x03;                          //~v592I~
                 if (button==BTN_RELEASE)                           //~v592I~
                 {                                                  //~v592I~
@@ -397,7 +416,11 @@ UTRACED("read",Pbuff,len);                                         //~v5g4R~
 //                  if (click==3)    //                            //~v592R~
 //                      return click;                              //~v592R~
           			if (alreadyread)                               //~v62LI~
+                    {                                              //~v730I~
+UTRACEP("clickchk mouse BTN_RELEASE already read return 2\n");     //~v730I~
                     	return 2;	//id of no read issued         //~v62LI~
+                    }                                              //~v730I~
+UTRACEP("clickchk mouse BTN_RELEASE not already read return 1\n"); //~v730I~
                     return 1;   //click                            //~v592I~
                 }                                                  //~v592I~
 //              else                                               //~v592R~
@@ -412,11 +435,19 @@ UTRACED("read",Pbuff,len);                                         //~v5g4R~
             	int wheelsw=0,posx=0,posy=0,shiftstat=0;           //~v712I~
 				lenMouse2_2=ukbdlnxm_getmouse2(Pbuff,&button,&wheelsw,&shiftstat,&posx,&posy);//~v712R~
             	if (wheelsw)	//wheel roll up/down               //~v712I~
+                {                                                  //~v730I~
+UTRACEP("clickchk mouse2 wheelsw return 0\n");                     //~v730R~
+//printf("clickchk mouse2 wheelsw return 0\n");                    //~v730R~
                     return 0;   //ignore read data                 //~v712I~
+                }                                                  //~v730I~
                 if (button==BTN_RELEASE)                           //~v712I~
                 {                                                  //~v712I~
           			if (alreadyread)                               //~v712I~
+                    {                                              //~v730I~
+UTRACEP("clickchk mouse2 BTN_RELEASE alreadyread return 2\n");     //~v730I~
                     	return 2;	//id of no read issued         //~v712I~
+                    }                                              //~v730I~
+UTRACEP("clickchk mouse2 BTN_RELEASE NOT alreadyread return 1\n"); //~v730I~
                     return 1;   //click                            //~v712I~
                 }                                                  //~v712I~
   			}                                                      //~v712I~
@@ -430,5 +461,7 @@ UTRACED("read",Pbuff,len);                                         //~v5g4R~
         }//sw                                                      //~v592I~
 //  }//for                                                         //~v592R~
     *Plen=len;  //next data                                        //~v592I~
+UTRACEP("clickchk exit return 0 len=%d\n",len);                    //~v730I~
+//printf("clickchk exit return 0 len=%d\n",len);                   //~v730R~
     return 0;                                                      //~v592I~
 }//clickchk                                                        //~v592I~

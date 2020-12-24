@@ -1,4 +1,4 @@
-V129R 2020/12/18 
+V129S 2020/12/24 
 (A) Automake package installation step
 
     You may update configure before ./configure
@@ -456,6 +456,7 @@ V129R 2020/12/18
          correct make to qmake        ==> packman -S make
 
          console version Backspec dose not work ==>  specify --7 option "xe --7B"
+                  OR on Preference dialog, assign Ctrl-H to backspace, ASCII DEL to Delete key.
 
 (K) Fedora33                          2020/12/09 
 		missing term.h ==>yum install ncurses-devel

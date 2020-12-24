@@ -1,8 +1,11 @@
-//*CID://+v6Y1R~:                              update#=  478;      //~v6Y1R~
+//*CID://+v742R~:                              update#=  493;      //~v743R~//~v742R~
 //************************************************************* //~5825I~
 //*uproc3.c                                                        //~v5kkR~
 //* ushellexec,uprocconnect                                        //~v5jaR~
 //*************************************************************    //~v022I~
+//v743:201222 gnome-terminal --disable-factory is not supported    //~v743I~
+//v742:201221 if one is found, no errmsg for other terminal prog   //~v742I~
+//v741:201221 chk terminal prog specified on ini file              //~v741I~
 //v6Y1:190809 gnome2 obsoleted use gio                             //~v6Y1I~
 //v6G2:161211 (UB16.04)mim_get_default_application_type is deprecated and link faile by undefined symbol//~v6G2I~
 //v6xi:150115 conversion warning                                   //~v6xiI~
@@ -119,6 +122,7 @@
 #include <uftp.h>                                                  //~v5jmI~
 #include <utrace.h>                                                //~v5j5I~
 #include <u3270.h>                                                 //~v5jpI~
+#include <ustring.h>                                               //~v741I~
 //*********************************************                    //~v064R~
 #ifdef LNX                                                         //~v5gcI~
 	int ulnxlgettermpgmopt(int Ptermsimid,char *Ptermsimname,char *Poptprefix);//~v5gcI~
@@ -134,6 +138,7 @@ int uprocpiperecevmsg(ULPTR Phpipe,char *Precvmsg,int Precvbuffsz,int *Ppreadlen
 int uprocpiperead(ULPTR Phpipe,char *Pbuff,int Preqlen,int *Ppreadlen);//~v6hhI~
 //int uprocpipeiodata(ULONG Phpipe,char *Pbuff,int Pbufflen,int Preqlen,int *Ppreadlen);//~v5jaI~//~v6hhR~
 int uprocpipeiodata(ULPTR Phpipe,char *Pbuff,int Pbufflen,int Preqlen,int *Ppreadlen);//~v6hhI~
+int uproc3pgmchkInifile(int Popt,char *Pbinname);                  //~v741I~
 //*********************************************                    //~v064R~
 #ifdef W32                                                         //~v5byI~
 //**************************************************************** //~v5byI~
@@ -387,7 +392,7 @@ int ushellexecsub(char *Pfpath,char *Pcmd,int Ptermuse);           //~v5g9I~
 		gnome_vfs_mime_application_free(papp);                     //~v5gbR~
 //printf("use term");                                              //~v5g9R~
     return rc;
-//  return 0;//TODO                                                //+v6Y1R~
+//  return 0;//TODO                                                //~v6Y1R~
 }//ushellexec                                                      //~v5g9I~
 //**************************************************************** //~v5g9M~
 //* ulnxlaunchapp                                                  //~v5g9M~
@@ -787,13 +792,15 @@ static char *Spgmtb[]={                                            //~v5kkR~
                      0};                                           //~v5kkM~
 static char *Sopttb[]={ //option always when no user cmd           //~v5kkR~
                      "",                                           //~v5kkI~
-	                 "--disable-factory", //fork syncronouse       //~v5kkR~
+//	                 "--disable-factory", //fork syncronouse       //~v743R~
+  	                 "", //fork syncronouse                        //~v743I~
                      "-ls",               //konsole login session  //~v5kkR~
                      "",                                           //~v6s2I~
                      0};                                           //~v5kkI~
 static char *Sopttbe[]={      //option when user cmd specified     //~v5kkR~
 	                 "-e",                                         //~v5kkR~
-	                 "--disable-factory -x", //gnome-terminal fork syncronouse//~v5kkI~
+//                   "--disable-factory -x", //gnome-terminal fork syncronouse//~v743R~
+                     "-e", //gnome-terminal fork syncronouse       //~v743R~
 	                 "-e",                                         //~v5kkR~
 	                 "-e",                                         //~v6s2I~
                      0};                  //konsole                //~v5kkR~
@@ -807,9 +814,13 @@ static int Stermtbidx=-1;	//test only once                       //~v5kkR~
 static char *Sforcedefaults=0,*Sforcedefaultc=0;                   //~v5kkI~
     char *pc,*pc2;                                                 //~v5kkR~
     int ii,len;                                                    //~v5kkR~
+#ifdef XXE                                                         //~v742I~
+    int jj;                                                        //~v742I~
+#endif                                                             //~v742I~
 //*************************************                            //~v5kkM~
     if (Popt & XGTP_SETDEFAULT) //set default shell                //~v5kkR~
     {                                                              //~v5kkI~
+	    uproc3pgmchkInifile(0,Pout);                               //~v741R~
         if (Pcmd)                                                  //~v5kkI~
     		Sforcedefaultc=Pout;                                   //~v5kkI~
         else                                                       //~v5kkI~
@@ -832,10 +843,30 @@ static char *Sforcedefaults=0,*Sforcedefaultc=0;                   //~v5kkI~
                 ii=0;  //default xterm                             //~v5kkM~
                 break;                                             //~v5kkM~
             }                                                      //~v5kkM~
-	        if (!uproc3pgmchk(0,pc))                               //~v5kkR~
+//          if (!uproc3pgmchk(0,pc))                               //~v5kkR~//~v742R~
+            if (!uproc3pgmchk(UP3PC_NOMSG,pc))	//if bash installed//~v742I~
             	break;                                             //~v5kkI~
         }                                                          //~v5kkM~
         Stermtbidx=ii;                                             //~v5kkM~
+        if (ii==0)                                                 //~v742I~
+        {                                                          //~v742I~
+#ifdef XXE                                                         //~v742I~
+            for (jj=1;;jj++)                                       //~v742I~
+            {                                                      //~v742I~
+                pc=Spgmtb[jj];                                     //~v742I~
+                if (!pc)                                           //~v742I~
+                    break;                                         //~v742I~
+                uproc3pgmchk(0,pc); //issue errmsg                 //~v742I~
+            }                                                      //~v742I~
+#else                                                              //~v742I~
+			;                                                      //~v742I~
+#endif                                                             //~v742I~
+    	}                                                          //~v742I~
+        else                                                       //~v742I~
+        {                                                          //~v742I~
+                pc=Spgmtb[ii];                                     //~v742I~
+                uproc3pgmchk(0,pc); //issue found msg              //~v742I~
+        }                                                          //~v742I~
       }                                                            //~v5kkI~
       else                                                         //~v5kkI~
       	ii=0;	//no meaning                                       //~v5kkI~
@@ -898,10 +929,36 @@ int uproc3pgmchk(int Popt,char *Pbinname)                          //~v5kkR~
             printf("??? xe: search for %s by \"which\" cmd failed,rc=%d(errno=%d). ???\n",Pbinname,rc,rc2);//~v6s2I~
         }                                                          //~v5kkR~
         else                                                       //~v5kkR~
-            printf("    xe: use %s for shell terminal\n",Pbinname);//~v5kkR~
+//          printf("    xe: use %s for shell terminal\n",Pbinname);//~v5kkR~//~v742R~
+            printf("Info:use \"%s\" as terminal program\n",Pbinname);//~v742R~
     }                                                              //~v5kkI~
     return rc;                                                     //~v5kkI~
 }//uproc3pgmchk                                                    //~v5kkI~
+//*********************************************************************//~v741I~
+//* executable access chk by which cmd                             //~v741I~
+//* rc=0 ok                                                        //~v741I~
+//*********************************************************************//~v741I~
+int uproc3pgmchkInifile(int Popt,char *Pbinname)                   //~v741I~
+{                                                                  //~v741I~
+    char binname[200],*pc;                                         //~v741I~
+    char whichcmd[256];                                            //~v741I~
+    int rc,rc2;                                                    //~v741I~
+//*************************************                            //~v741I~
+	pc=strspn(Pbinname," ")+Pbinname;                              //~v741R~
+	UstrncpyZ(binname,pc,sizeof(binname));                         //~v741I~
+	pc=strchr(binname,' ');                                        //~v741I~
+    if (pc)                                                        //~v741I~
+    	*pc=0;                                                     //~v741I~
+    sprintf(whichcmd,"which %s >/dev/null 2>&1",binname);          //~v741I~
+    rc=system(whichcmd);                                           //~v741I~
+    if (rc)                                                        //~v741I~
+    {                                                              //~v741I~
+        rc2=errno;                                                 //~v741I~
+        uerrexit("Inifile parm(\"%s\") err(errno=%d), which cmd failed for %s.",0,//~v741R~
+					Pbinname,rc2,binname);                         //~v741I~
+    }                                                              //~v741I~
+    return 0;                                                      //~v741I~
+}//uproc3pgmchkInifile                                             //~v741I~
 //**************************************************************** //~v5gcI~
 //* ulnxlaunchapp                                                  //~v5gcI~
 //* apwan assciated appl                                           //~v5gcI~

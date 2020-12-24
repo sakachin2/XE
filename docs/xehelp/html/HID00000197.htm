@@ -349,16 +349,21 @@ a:hover{font-weight:bold;}-->
          (/bin/shが何にslinkしているかCHKして見て下さい。
           RH9,FC5ではbash,Kubuntu6,Ubuntu7ではdashでした)
        .LNX_ShellTerm_gxe =&quot;&quot;
-         gxe(gtk)が &quot;&gt;&quot;コマンドや&quot;terminal&quot;メニューアイコン選択で起動する、
-         子窓のTerminalプログラム起動コマンドを指定する。
-         省略値はgnome-terminalが見つかれば&quot;gnome-terminal --disable-factory&quot;
-         そうでなければ&quot;konsole -ls&quot;.
+          DOS（省略形："&gt;"）コマンドあるいはメニューの File-&gt;Term で開く子窓のTerminalプログラムを指定する。
+          省略値は次の順にインストール状況を調べ、なければ xterm とする。
+          オプションを指定したい場合もここで設定する。例えば "gnome-terminal --maximize".
+              "gnome-terminal",
+              "konsole -ls",
+              "xfce4-terminal",
+
        .LNX_CmdTerm_gxe   =&quot;&quot;
-         gxe(gtk)が &quot;&gt;cmd&quot;コマンドで選択で起動する子窓のTerminalプログラム起動
-         コマンドを指定する。
-         省略値はgnome-terminalが見つかれば&quot;gnome-terminal --disable-factory -x&quot;
-         そうでなければ&quot;konsole -e&quot;.これもなければ &quot;xterm -e&quot;.
-         <A href="HID_TSOE_J.htm">xe3270</A>の起動はこの設定が使用されます。
+          =6 画面以外で コマンド文字列指定のDOSコマンド(e.g. "&gt;ps-ef")で開くコマンド毎の
+          子窓のTerminalプログラムを指定する。
+          省略値は
+              "gnome-terminal -e",
+              "konsole -e",
+              "xfce4-terminal -e"
+
 #endif
 
        .ユーティリティーツール名
