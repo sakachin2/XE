@@ -481,7 +481,6 @@ Following commandline tools are also packed in archivefile</B>.<BR>
 	<FONT size="-1" color="#000000">see github:sakachin2/Anp  2020/05/29</FONT>.<BR>
 	</H2>
   	<BR>
-<!--
 	<LI><B><FONT size="6">Ajagoc</FONT></B>(<FONT size="5">J<B>agoclient</B></FONT><B> Android porting</B>)<BR>
 	<DL>
 		<DD><FONT color="#ff9900"><B>(Note) Password is sent without encrypted like as jagoclient, it is easily peeped.</B></FONT>
@@ -537,7 +536,6 @@ Following commandline tools are also packed in archivefile</B>.<BR>
 		<DT><FONT color="#ffff00"><B>2014/09/08</B></FONT>
 		<A href="Ajagoc/Afuego.up.tgz">Afuego.up.tgz</A>====<A href="Ajagoc/Afuego_E.htm">About Afuego</A>
 	</DL>
-Ajagoc and related --> 
 <!--BTMJ5 start -->
 	<LI><B><FONT size="6">ｅ雀(Mahjong:e-Jong)</FONT></B>(<B><FONT size="5">Japanese Style Mahjong</FONT></B>)<BR>
 	<DL>
@@ -1010,7 +1008,6 @@ Android 版 <BR>
   <H2 align="left"><FONT color="#003333">.apk と ソース</FONT> <FONT size="-1" color="#000000">github:sakachin2/Anp 2020/05/29</FONT>.<BR>
   </H2>
   <BR>
-<!--
   <LI><B><FONT size="6">Ajagoc</FONT></B>　(<B><FONT size="5">jagoclien</FONT>t Android 移植版</B>)<BR>
   <DL>
     <DD><FONT color="#ff9900"><B>(Note) オリジナルと同様パスワードは暗号化されずに通信されます、簡単に盗み見ることが出来ます.</B></FONT>
@@ -1049,7 +1046,6 @@ Android 版 <BR>
     <DD><FONT size="5"><B>ダウンロード</B></FONT>
     <DT><B><FONT color="#ffff00">2014/09/08</FONT></B> <A href="Ajagoc/Afuego.up.tgz">Afuego.up.tgz</A>====<A href="Ajagoc/Afuego_J.htm">About Afuego</A> 
   </DL>
-Ajagoc and related -->
 <!--BTMJ5 start -->
 	<LI><B><FONT size="6">ｅ雀</FONT></B>(<B><FONT size="5">麻雀 対局</FONT></B>)<BR>
 	<DL>
