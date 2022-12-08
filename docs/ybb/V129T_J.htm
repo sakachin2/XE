@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
 <HEAD>
-<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
 <META http-equiv="Content-Style-Type" content="text/css">
 <TITLE>V129T-J</TITLE>
 <STYLE TYPE="text/css">
@@ -10,40 +10,40 @@ a:hover{font-weight:bold;}-->
 </STYLE>
 </HEAD>
 <BODY bgcolor="#FFFFE2">
-<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:�l�r �S�V�b�N">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
 
 129T:2022/12/04
 
      1.BUGs
-       -=0.1 ��ʂ� sc �s�̕ύX���ł��Ȃ�
-        �܂� S+C/S+A ��ݒ肵�Ă��ł��Ȃ� S+ �Ȃ��Ɠ��ꎋ�����
-        ���̂��Ƃ� wxe �Ń}�E�X�ɂ��J�b�g&�y�[�X�g�������Ȃ��Ȃ�
-       -=0.2 ��ʂ� �s���폜����ƃL�[���蓖�Ă��ł��Ȃ��Ȃ�
+       -=0.1 画面で sc 行の変更ができない
+        また S+C/S+A を設定してもできない S+ なしと同一視される
+        そのことで wxe でマウスによるカット&ペーストが効かなくなる
+       -=0.2 画面で 行を削除するとキー割り当てができなくなる
 
-     2.�@�\�ǉ�
-       -�V���^�b�N�X�n�C���C�g
-		Andre Simon �� Highlight�AGNU �� source-highlight��ANSI:���]�������T�|�[�g�B
-		�܂� xesynl.cfg/::xesynl.cfg �� C_UNDERLINE=R/G_UNDERLINE=R �w���
-		�A���_�[���C�������𔽓]�Ƃ��邱�Ƃ��\
-       -CID�v���t�B�b�N�X�Ń��j�R�[�h���T�|�[�g
-		APL ����ł� u-235d(�H) ���R�����g�v���t�B�b�N�X�Ȃ̂ł���ɑΉ��B
-		::xe.ini �t�@�C���Ŏ��̂悤�Ȏw������ēK�p����g���q��ݒ肷�邱�Ƃ��\
+     2.機能追加
+       -シンタックスハイライト
+		Andre Simon の Highlight、GNU の source-highlightのANSI:反転属性をサポート。
+		また xesynl.cfg/::xesynl.cfg の C_UNDERLINE=R/G_UNDERLINE=R 指定で
+		アンダーライン属性を反転とすることも可能
+       -CIDプレフィックスでユニコードをサポート
+		APL 言語では u-235d(？) がコメントプレフィックスなのでこれに対応。
+		::xe.ini ファイルで次のような指定をして適用する拡張子を設定することも可能
           Change_ID_Type_4  = 60 = u-235d= APL
-        ���̐ݒ������� "CID on APL" �̂悤�� CID�^�C�v��APL���w��ł���
-        ���j�R�[�h�g�p�̏ꍇ�A������ɂ���Ă͕\�������قȂ�̂ŃV�F�A�[���Ă���ꍇ�͒��ӂ��K�v
-        �Ⴆ��Windows��2���\���ALinux��1���\���̏ꍇWindows�ōX�V�s�ɕt�^���ꂽCID��
-        Linux�ł�CID�ƔF������܂���B�]����Linux�ł�"cid clear"�R�}���h��0�s��Ԃ����ƂɂȂ�܂�
+        この設定をすると "CID on APL" のように CIDタイプでAPLが指定できる
+        ユニコード使用の場合、言語環境によっては表示幅が異なるのでシェアーしている場合は注意が必要
+        例えばWindowsで2桁表示、Linuxで1桁表示の場合Windowsで更新行に付与されたCIDは
+        LinuxではCIDと認識されません。従ってLinuxでの"cid clear"コマンドは0行を返すことになります
 
-     3.���̑�
-       -Windows Terminal �� Windows11 �� �ȗ��l�̃R�}���h�v�����v�g PGM �ƂȂ����l�ł���
-        �s�R�}���h�ŕs��������邱�Ƃ�����܂��B
-		���R�}���h�v�����v�g�� c:\Windows\System32\conhost.exe ���g�p���Ă�������
-       -CID �R�}���h�� APPEND �̃��Z�b�g���ȒP�ɂ��邽�� NOAPPEND �I�v�V������ǉ�
-       -=0.1 ��ʂ� "#" �Ŏn�܂�R�����g�L�q���T�|�[�g�B
-       -=0.2�A=0.3 ��ʂ̌������B
-        �r���������������A���j�R�[�h�̏ȗ��l��ǉ�
-       -(Win)���[�N�f�B���N�g���[�̏ȗ��l�̏ꏊ�� C:\ ���� C:\users\[username]\�ɕύX
-        ���� C:\xe_wd ������ꍇ�͌p�����Ă�����g�p���邪�V�K��������K�p
+     3.その他
+       -Windows Terminal が Windows11 で 省略値のコマンドプロンプト PGM となった様ですが
+        行コマンドで不具合が生じることがあります。
+		旧コマンドプロンプトの c:\Windows\System32\conhost.exe を使用してください
+       -CID コマンドで APPEND のリセットを簡単にするため NOAPPEND オプションを追加
+       -=0.1 画面で "#" で始まるコメント記述をサポート。
+       -=0.2、=0.3 画面の見直し。
+        罫線文字も見直し、ユニコードの省略値を追加
+       -(Win)ワークディレクトリーの省略値の場所を C:\ から C:\users\[username]\に変更
+        既に C:\xe_wd がある場合は継続してこれを使用するが新規導入から適用
                                                                    //~@@@1I~
 </SPAN></PRE>
 </BODY>
