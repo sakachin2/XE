@@ -1,5 +1,6 @@
-//*CID://+va3gR~:                             update#=   69;
+//*CID://+vav2R~:                             update#=   70;       //+vav2R~
 //*************************************************                //~2831I~
+//vbv2:221119 SyntaxHighlight;add option trate underline as reverse by C_UNDERLINE=R and G_UNDERLINE=R//+vav2I~
 //va3g:100207 try ligature for also wxe(write ucs string at once) for arabic etc//~va3gI~
 //va20:091125 (UTF8)UTF8 full support(display utf8 also unprintable as locale code)//~va20I~
 //v78B:080426*(wxe,gxe)vertical ruler draw performance             //~v78bI~
@@ -48,7 +49,9 @@
 #define WXEFONTSTYLE_BOLD         1                                //~v780R~
 #define WXEFONTSTYLE_UNDERLINE    2                                //~v780R~
 #define WXEFONTSTYLE_ITALIC       3                                //~v780R~
-#define WXEFONTSTYLE_MAX          4                                //~v780R~
+#define WXEFONTSTYLE_REVERSE      7                                //+vav2I~
+//#define WXEFONTSTYLE_MAX          4                                //~v780R~//+vav2R~
+#define WXEFONTSTYLE_MAX          8                                //+vav2I~
 #define WXEFONTSTYLE_NOSYNTAX     WXEFONTSTYLE_MAX	//normal style and no sytax RGB//~v780R~
 #define WXE_SYNTAXRGB             0x01000000        //RGBn specified on xesyn.cfg//~v780I~
                                                                    //~va20I~

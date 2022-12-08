@@ -1,3 +1,5 @@
+//var1:220614 xdc crash by long path name 4096+6(4096 is linux max)
+//            xdc.c
 //*********  20201028 v129P release   ****************
 //vaq1:201029 Debian10 compiler warning -Wformat-overflow
 //            xdc.c xfs.c

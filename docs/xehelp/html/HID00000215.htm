@@ -23,8 +23,7 @@ a:hover{font-weight:bold;}-->
       IBM Japanese DOS assigned 0x01 etc. to line drawing character.
       MS-Windows selected CP1252(WinLAtin1) which is superset of ISO-8859-1,
       and line drawing characters are shifted out by European language character.
-      But as OEM codepage, you may be able to see line drawing character.
-      xe use IBM Japanese DOS under Japanese environment or else use CP437.
+      xe use Japanese Shift-JIS under Japanese environment or else use CP437.
 #if defined(LNX) &amp;&amp; !defined(XXE)   //Linux Console version
       Linux Console version use ncurses ACS to draw lines.
       You have to select to draw line or display European complex character.
@@ -52,15 +51,48 @@ a:hover{font-weight:bold;}-->
              xxxx,yyyy:Specify string to be written by the key combination.
                        Start by 0x if use hex notation.
                        Enclose by quotation if the string contains delimiter like as space.
-                       If both xxxx and yyyy is specified, xxxx is written
-                       without Shift key, yyyy with Shift key combination.
-                       ex). xxxx by Alt+1, yyyy by Alt+Shift+1.
-                       For unicode, use u-xxx1[,xxxx2,...]  format.
+                       If both xxxx and yyyy is specified,xxxx is put
+                       without Shift key, yyyy with Shift+ key combination.
+                       e.g) xxxx by Alt+1, yyyy by Alt+Shift+1.
+                       For unicode, use u-xxx1[,xxxx2,...] format.
+                       If it is a string, specify it with the locale code (lch file is CPLC)
 #if defined(LNX)|| !defined(XXE))
                        Linux Console version can not detect shift key,
                        xxxx is used when OPT LINECH on, yyyy is used when OPT LINECH off.
 #endif
-                       UTF-8 string is supported by another modules(xeu,wxeu,gxeu).
+            Following are default settings to output UTF8 code with Alt + Shift + n for input to UTF8 files.
+               &#9562; &#9577; &#9565; &#9568; &#9580; &#9571; &#9556; &#9574; &#9559; &#9552; &#9553;
+            255a, 2569, 255d, 2560, 256c, 2563, 2554, 2566, 2557, 2550, 2551 respectively in Unicode.
+            In the Japanese environment, the following are set by default for CPLC file input.
+                By EUCJP for Linux version.
+                   0xa8b1 „¯ //1 :LLC low,left ,corner
+                   0xa8b5 „³ //2 :LHS low,horz ,stopper
+                   0xa8b0 „® //3 :LRC low,right,corner
+                   0xa8b2 „° //4 :LVS low,vert ,stopper
+                   0xa8b6 „´ //5 :CX center
+                   0xa8b4 „² //6 :RVS rig,vert ,stopper
+                   0xa8ae „¬ //7 :ULC up ,left ,corner
+                   0xa8b3 „± //8 :UHS up ,horz ,stopper
+                   0xa8af „­ //9 :URC up ,right,corner
+                   0xa8ac „ª //10:HL horz ,line
+                   0xa8ad „« //11:VL vert ,line
+                By ShiftJis for Windows version.
+                   0x84af „¯ //1 :LLC low,left ,corner
+                   0x84b3 „³ //2 :LHS low,horz ,stopper
+                   0x84ae „® //3 :LRC low,right,corner
+                   0x84b0 „° //4 :LVS low,vert ,stopper
+                   0x84b4 „´ //5 :CX center
+                   0x84b2 „² //6 :RVS rig,vert ,stopper
+                   0x84ac „¬ //7 :ULC up ,left ,corner
+                   0x84b1 „± //8 :UHS up ,horz ,stopper
+                   0x84ad „­ //9 :URC up ,right,corner
+                   0x84aa „ª //10:HL horz ,line
+                   0x84ab „« //11:VL vert ,line
+           For wxe, it seems to look different depending on Ligature mode ON/OFF.
+           For xe on Windows, line drawing characters seem to be different between Conhost (old command prompt) and Terminal (new command prompt).
+           On Windows 11, Ctrl+Shift+Pad-n seems to be unable to detect Shift+ unless Numlock is turned off
+
+
 
           Ini file example.
 
@@ -80,9 +112,15 @@ a:hover{font-weight:bold;}-->
              1=&quot;This is my cliches.&quot;,&quot;Best Regards.&quot;
              1=84af 2=84b3 3=84ae 4=84b0 5=84b4 6=84b2 7=84ac 8=84b1 9=84ad h=84aa v=84ab  (jpn sjis dbcs)
              1=c0 2=c1 3=d9 4=c3 5=c5 6=b4 7=da 8=c2 9=bf h=c4 v=b3  (cp437)
-             1=03 2=15 3=04 4=19 5=10 6=17 7=01 8=16 9=02 h=06 v=05  (jpn DOS)
+             1=03 2=15 3=04 4=19 5=10 6=17 7=01 8=16 9=02 h=06 v=05  (JP DOS)
              1=e29494 2=e294b4 3=e29498 4=e2949c 5=e294bc 6=e294a4 7=e2948c 8=e294ac 9=e29490 h=e29480 v=e29482 (utf)
 
+             1=u-2514 h=u-2500 v=u-2502
+             1=u-2514 h=u-2500 v=u-2502
+             1=0x8b618b62,0x8b638b64
+             1=u-87fb,8abc,u-3041,3042,3043 //
+
+*** 2022/12/04
 
 </SPAN></PRE>
 </BODY>

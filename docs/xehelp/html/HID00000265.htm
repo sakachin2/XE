@@ -27,7 +27,8 @@ a:hover{font-weight:bold;}-->
                      For <a href="HID00000238.htm">margined</a> file,CID is searched in the range
                      specified on CID header line. If CID position is
                      Left margin,it is searched in Left margin only.
-            shift   :re-arrange column of CID.
+                     If you specify a prefix, only the CIDs of the prefix will be cleared.
+             shift   :re-arrange column of CID.
                      column position is specified on <a href="HID00000209.htm">INI file</a>
                      Change_ID_Type_xx parameter.
                      Change is effective for only updated line after
@@ -64,7 +65,8 @@ a:hover{font-weight:bold;}-->
             cid-type:type of CID tag.(first extension name on Change_ID_
                      Type of listed on .ini file)
                      available for on/clear/shift.
-                      It can not be changed by &quot;on&quot; if file has CID
+                       e.g) &quot;cid clear c&quot;
+                     It can not be changed by &quot;on&quot; if file has CID
                       HEADER specification on the first line.
                       With clear/shift,specified type of CID is cleared/
                       shifted. The CID type of the file is not replaced.
@@ -76,6 +78,7 @@ a:hover{font-weight:bold;}-->
                        CID type of the file is remain unchanged)
             prefix  :alternative of EXT name. You can use 2 byte prefix
                      itself like as  //,&quot;;;&quot;,||.
+                     For example, &quot;cid clear //&quot; is the same as &quot;cid clear c&quot;.
             postfix :0 to 2 byte any postfix string
                      with on,set CID with the postfix.
                      with clear,clear CID with the postfix.

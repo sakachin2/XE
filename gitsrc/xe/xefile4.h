@@ -1,7 +1,10 @@
-//**Fixed-CID://+va7JR~:** update#=     2                          //~va7JR~
+//**Fixed-CID://+vaw3R~:** update#=     9                          //~vaw3R~
 //****************************************************************//~4C23I~
 //xefile4.h                                                     //~4C23I~
 //****************************************************************//~4C23I~
+//vbw3:221205 accept cidtype by unicode fo cid on/clear cmd        //~vaw3I~
+//vbv9:221124 add cid type apl for extension=.apl                  //~vav9I~
+//vbv6:221121 support unicode cid (length>2)                       //~vav6I~
 //va7J:100904 avoid topline cid option err("CID" was found on topline at tail of the line")//~va7JI~
 //va20:091125 (UTF8)UTF8 full support(display utf8 also unprintable as locale code)//~va20I~
 //v10z:990411 (BUG)pos of cid for split last line is too far.      //~v10zI~
@@ -35,7 +38,7 @@
 //*v012:950611:fixed CID                                        //~5611I~
 //****************************************************************//~5611I~
 #define  	MAX_CIDPOS 	   20   //"CID" must appear in the col.1-20 of top line//~va7JI~
-#define  	MAX_CIDOPTPOS  80   //OPTIONS=   appear in the col.1-80 of top line//+va7JI~
+#define  	MAX_CIDOPTPOS  80   //OPTIONS=   appear in the col.1-80 of top line//~va7JI~
 #define  	LINECIDLEN 		9   //                              //~4C23I~
 #define  	LINECIDLENMAX  11   //                                 //~v09FI~
 #define  	LINEPOSTFIXLEN  (LINECIDLENMAX-LINECIDLEN)             //~v09FI~
@@ -48,6 +51,8 @@ typedef struct _CIDTBL {                                        //~5308I~
                         UCHAR  *CIDTexttbl;	//extention tbl     //~5308I~
 //                      UCHAR  *CIDTcidfmt;	//cid edit format by printf//~v09FR~
                         UCHAR  *CIDTmalloc;	//malloc addr       //~5528I~
+                        int    CIDTucs;                            //~vav9M~
+                        UCHAR  CIDTddfmt[4];                       //~vav9M~
 					  	} CIDTBL;                               //~5308I~
                                                                 //~5528I~
 //****************************************************************//~5528I~
@@ -89,9 +94,12 @@ CIDTBL *filecidtypechk(UCHAR *Ptype,int Palias);                   //~v09rI~
 //************************************************************
 UCHAR *filegetcidtype(PUFILEH Ppfh);
                                                                    //~v0avI~
+//************************************************************     //~vaw3I~
+CIDTBL *filecidtypechkUTF8(PUFILEH Ppfh,UCHAR *Pprefix);           //+vaw3R~
 //************************************************************     //~v0ciI~
 #ifdef UTF8UCS2                                                    //~va20I~
-int fileiscid(char *Pcidfmt,char *Pcid,char *Pdbcs,int Pcidlen);   //~va20I~
+//int fileiscid(char *Pcidfmt,char *Pcid,char *Pdbcs,int Pcidlen);   //~va20I~//~vav6R~
+int fileiscid(PUFILEH Ppfh,char *Pcidfmt,char *Pcid,char *Pdbcs,int Pcidlen);//~vav6I~
 #else                                                              //~va20I~
 int fileiscid(char *Pcidfmt,char *Pcid,int Pcidlen);               //~v0ciI~
 #endif                                                             //~va20I~

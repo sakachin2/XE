@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html;>
+<META http-equiv=" Content-Style-Type">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>V129T-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:font 12pt;">
+
+129T:2022/12/04
+
+     1.BUGs
+	   -It can't change sc line on =0.1 screen.
+		Setting for S+C and S+A do no work, and same effect as setting of without S+.
+        Accodingly, Cut & Paste by mouse dose not work.
+	   -=Deleting a line on the =0.2 screen causes corrupted key binding.
+
+     2.Additional function.
+       -Syntax Highlight.
+		Supports ANSI:reverse attributes of Andre Simon's Highlight and GNU source-highlight.
+		Also, by specifying C_UNDERLINE=R/G_UNDERLINE=R in xesynl.cfg/::xesynl.cfg,
+        you can get reverse effect for underline attribute.
+	   -Unicode support for CID prefix.
+	    U-235d(ÅH) is a comment prefix in APL language, CID supports it.
+		You can also set the extensions to apply by specifying the following in the ::xe.ini file:
+          Change_ID_Type_4  = 60 = u-235d= APL
+		With this setting, you can specify APL by CID type like as "CID on APL"
+        When using Unicode, the display width varies depending on the language environment,
+        so be careful when sharing the file.
+        For example, if Windows displays by 2 columns and Linux displays 1 column,
+        the CID tagged to the update line on Windows is not recognized as CID on Linux.
+        So the "cid clear" command on Linux may return 0 rows.
+
+     3.Miscellaneous.
+	   -Windows Terminal seems to have become the default command prompt PGM in Windows 11.
+        Line commands may cause problems.
+        Use old command prompt PGM c:\Windows\System32\conhost.exe.
+	   -Added NOAPPEND option for easier resetting of APPEND in -CID command.
+	   -Support comment description starting with "#" on =0.1 screen.
+	   -Review =0.2 and =0.3 screen.
+		Box-line character default is changed and added character by unicode.
+	   -(Win) Changed default location of work directory from C:\ to C:\users\[username]\.
+        If you already have C:\xe_wd, it continue to be used, it is applied from new installation.
+
+</SPAN></PRE>
+</BODY>
+</HTML>

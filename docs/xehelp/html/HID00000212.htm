@@ -41,13 +41,15 @@ a:hover{font-weight:bold;}-->
 #else
    .Enter command on command prompt screen.
    .Make directory for XE work usage. e.g. md c:\xe.
-    (Default is c:\xe_wd which is created internally at first start time.)
+    The default is %USERPROFILE%\xe_wd (c:\Users\%USERNAME%\xe_wd) which is created automatically when first launched.
+    The default folder for older versions is c:\xe_wd, so continue to use it if it exists.
    .Melt .ZIP file in the <a href="HID00000236.htm">work directory</a>.  e.g. unzip xewin
     <a href="HID00000209.htm">Parameter file(.ini)</a> should be in this directory.
    .If use other than default, set environment variable of the directory.
     e.g. set xe=c:\xe
-    It is better to use that is set in autoexec.bat(config.sys for OS/2),
+    It is better to use that is set in autoexec.bat on DOS(config.sys for OS/2),
     or .bat(.cmd for OS/2) file to startup xe.
+    On Windows you can set environment variables from the Control Panel.
    .set into PATH the name of the work directory, or move xe.exe to the
     directory PATH is already set.
 #ifdef WXE
@@ -85,5 +87,7 @@ a:hover{font-weight:bold;}-->
 
 (Note)Each package contains command line tool.See <a href="HID00000473.htm">xereade.me</a>.
 </SPAN></PRE>
+<PRE>
+<font size="3">*** 2022/12/04</font></PRE>
 </BODY>
 </HTML>

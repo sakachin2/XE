@@ -1,4 +1,4 @@
-//CID://+v6L6R~: update#=     67                                   //~v6L6R~
+//CID://+v6L6R~: update#=     68                                   //~v6L6R~
 //*************************************************************
 //*ualloc/ucalloc/ufree/umalloc16/ucalloc16/ufree16/uallocsz
 //************************************************************* //~5A01R~
@@ -466,7 +466,7 @@ void *umalloc(size_t Psize)
      #if defined(ULIB64)||defined(ULIB64X)                         //~v6hiI~
      {                                                             //~v6hiI~
         Ssizewk=Psize;      //put request size on mtrace           //~v6hiR~
-	    UTRACEP("malloc addr=%p,size=%d\n",pvoid,Psize);           //~v6hiI~
+//      UTRACEP("malloc addr=%p,size=%d\n",pvoid,Psize);           //+v6L6R~
      }                                                             //~v6hiI~
      #else                                                         //~v6hiI~
       #ifdef _DEBUG   //vcc6(wxe) DEBUG version                    //~v5jpI~

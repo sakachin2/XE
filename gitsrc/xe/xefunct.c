@@ -1,8 +1,10 @@
-//*CID://+vbs6R~:                             update#=  324;       //~vbs6R~
+//*CID://+vbvtR~:                             update#=  333;       //~vbvtR~
 //*************************************************************
 //*xefunct.c                                                       //~v663R~
 //* func definition tbl                                         //~5216R~
 //************************************************************* //~v020I~
+//vbvt:221202 =0.2/=0.3 display code itself for default box char for japanese//~vbvtI~
+//vbvc:221125 functbl search miss to search english linechar because same funcid//~vbvcI~
 //vbs6:201026 profile COL cmd for dir
 //vbra:200730 (ARM)ARM input is always utf8, delete A_u and UTF SWKBD//~vbraI~
 //vbi6:180219 R-Retrieve-OfTheScr was not assigned key, use S+A+F12//~vbi6I~
@@ -237,6 +239,7 @@
 #include <udbcschk.h>                                              //~v44uI~
 #include <ustring.h>                                               //~v61tI~
 #include <uftp.h>                                                  //~vac2I~
+#include <utrace.h>                                                //~vbvcI~
                                                                 //~v05pI~
 #include "xe.h"                                                 //~5216R~
 #include "xescr.h"                                              //~5216I~
@@ -261,12 +264,16 @@
 #define NULL_FTKFLAG  		{0,0,0,0}                              //~v55nI~
 //#define NULL_LAST           0,0                                  //~v71PR~
 //#define NULL_LAST           0,0,0,{0}      //dupnext,dupprev,flag2,rsv//~v76gR~
-#define NULL_LAST               0,{0}      //dupnext,dupprev,flag2,rsv//~v76iI~
+//#define NULL_LAST               0,{0}      //dupnext,dupprev,flag2,rsv//~v76iI~//~vbvtR~
+#define NULL_LAST               0,0,{0}      //flag2,flag3,rsv     //~vbvtI~
 #define NULL_CMDONLY        NULL_FTKEY,NULL_FTKFLAG,NULL_LAST      //~v55nI~
 //#define NULL_CMDONLY2(flag) NULL_FTKEY,NULL_FTKFLAG,0,0,(flag),{0}//~v76gR~
-#define NULL_CMDONLY2(flag) NULL_FTKEY,NULL_FTKFLAG,    (flag),{0} //~v76iI~
+//#define NULL_CMDONLY2(flag) NULL_FTKEY,NULL_FTKFLAG,    (flag),{0} //~v76iI~//~vbvtR~
+#define NULL_CMDONLY2(flag) NULL_FTKEY,NULL_FTKFLAG,    (flag),0,{0} //flag2,glag3,rsv[2]//~vbvtI~
 #define NULL_NOFLAG                    NULL_FTKFLAG,NULL_LAST      //~v55nI~
-#define NULL_NOFLAG2(flag)            NULL_FTKFLAG,     (flag),{0} //FTkflag[],FTflag2,FTrsv[3]//~vbCBI~
+//#define NULL_NOFLAG2(flag)            NULL_FTKFLAG,     (flag),{0} //FTkflag[],FTflag2,FTrsv[3]//~vbCBI~//~vbvtR~
+#define NULL_NOFLAG2(flag)            NULL_FTKFLAG,     (flag),0,{0} //FTkflag[],FTflag2,flag3,FTrsv[2]//~vbvtI~
+#define NULL_FLAG2(flag2)             (flag2),0,{0} //FTflag2,flag3,FTrsv[2]//+vbvtI~
 #define CAPRGN_OLD "Regin-Start/End"                               //~vbi5I~
 #define CAPRGN_NEW "Region-Start/End"                              //~vbi5I~
 //*********************************************************        //~v679I~
@@ -292,7 +299,8 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
     	{FTFIX,FTFIX,0,0},                                         //~v71PI~
 //         0,0,                                                    //~v76gR~
          FTF2FIXEDVERB,                                            //~v71PI~
-         {0}},                                                     //~v71PR~
+//       {0}},                                                     //~v71PR~//~vbvtR~
+         0,{0}},                                                   //~vbvtI~
 	{"Next-Line"    ,"次行"          ,                          //~5429R~
         FUNCID_NEXTLINE,                                        //~5205M~
         0,0,          //flag,char,                              //~v06eR~
@@ -1244,7 +1252,8 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
     	{0	,func_revfindPSP,0},                                   //~vb51M~
 		"","",                                                     //~vb51M~
     	{KEY_C_F5,0,0,0},                                          //~vb51M~
-    	/*FTkflag*/{FTSHIFT,0,0,0},/*FTflag2*/FTF2FIND_PSSUPP,{0}},//~vb51M~
+//     	/*FTkflag*/{FTSHIFT,0,0,0},/*FTflag2*/FTF2FIND_PSSUPP,{0}},//~vb51M~//~vbvtR~
+       	/*FTkflag*/{FTSHIFT,0,0,0},NULL_FLAG2(FTF2FIND_PSSUPP)},   //+vbvtR~
 	{"FindPSF"      ,"探索(このファイル)"     ,                    //~vbCBM~
         FUNCID_FINDPSF,                                            //~vbCBM~
         0,0,          //flag,char,                                 //~vbCBM~
@@ -1258,7 +1267,8 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
     	{0	,func_revfindPSF,0},                                   //~vb51M~
 		"","",                                                     //~vb51M~
     	{KEY_A_F5,0,0,0},                                          //~vb51M~
-    	/*FTkflag*/{FTSHIFT,0,0,0},/*FTflag2*/FTF2FIND_PSSUPP,{0}},//~vb51M~
+//  	/*FTkflag*/{FTSHIFT,0,0,0},/*FTflag2*/FTF2FIND_PSSUPP,{0}},//~vb51M~//~vbvtR~
+    	/*FTkflag*/{FTSHIFT,0,0,0},NULL_FLAG2(FTF2FIND_PSSUPP)},   //+vbvtR~
 	{"Display-PSx-Find"      ,"PSxコマンド\x95\\示"     ,          //~vb51R~
         FUNCID_DISPLAYPS,                                          //~vbCBI~
 #ifdef KKK                                                         //~vb51I~
@@ -1433,14 +1443,16 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
 		"","",                                                     //~v670I~
 //  	{0        ,0,0,0},NULL_NOFLAG},                            //~v670I~//~vbi6R~
     	{KEY_A_F12,0,0,0},                                         //~vbi6I~
-    	/*FTkflag*/{FTSHIFT,0,0,0},/*FTflag2*/0,{0}},              //~vbi6I~
+//  	/*FTkflag*/{FTSHIFT,0,0,0},/*FTflag2*/0,{0}},              //~vbi6I~//~vbvtR~
+    	/*FTkflag*/{FTSHIFT,0,0,0},NULL_LAST},                     //~vbvtI~
 	{"CmdHistoryList"        ,"コマンド履歴"    ,                  //~vbi3R~//~vbi6R~
         FUNCID_CMDHISTU8,                                          //~vbi3R~
         0,0,          //flag,char,                                 //~vbi3I~
 		{func_cmdhistu8,func_cmdhistu8,func_cmdhistu8},            //~vbi3R~
 		"CHL","",                                                  //~vbi3R~//~vbi6R~
 		{KEY_C_F12,0,0,0},                                         //~vbi3I~
-    	/*FTkflag*/{FTSHIFT,0,0,0},/*FTflag2*/0,{0}},              //~vbi3I~
+//    	/*FTkflag*/{FTSHIFT,0,0,0},/*FTflag2*/0,{0}},              //~vbi3I~//~vbvtR~
+      	/*FTkflag*/{FTSHIFT,0,0,0},NULL_LAST},                     //~vbvtI~
 	{"Short-Cut-Input"    ,"短縮キー入力"    ,                     //~v48fI~
         FUNCID_SHORTCUT,                                           //~v48fI~
         0,0,          //flag,char,                                 //~v48fI~
@@ -1545,8 +1557,8 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
 //  	KEY_A_F2},                                                 //~v20bR~
 //  	ALT_CTL(F2)},                                              //~v215R~
 //  	KEY_C_F2},                                                 //~v21bR~
-//  	{KEY_S_F11,0,0,0},NULL_NOFLAG},                            //+vbs6R~
-    	{KEY_S_F11,0,0,0},NULL_NOFLAG2(FTF2DIRCMD)},               //+vbs6I~
+//  	{KEY_S_F11,0,0,0},NULL_NOFLAG},                            //~vbs6R~
+    	{KEY_S_F11,0,0,0},NULL_NOFLAG2(FTF2DIRCMD)},               //~vbs6I~
 	{"Set-Boundary"            ,"境界設定" ,                       //~v74EI~
         FUNCID_BNDS,                                               //~v74EI~
         0,0,          //flag,char,                                 //~v74EI~
@@ -2283,6 +2295,25 @@ FUNCTBL *functblsrch(int Pfuncid)                               //~5424M~
 	}                                                           //~5424M~
 	return 0;                                                   //~5424M~
 }//functblsrch                                                  //~5424M~
+//**************************************************               //~vbvcI~
+//*functbl 2nd entry search by funcid                              //~vbvcI~
+//*parm1: funcid                                                   //~vbvcI~
+//*rc   : FUNCTBL ptr or null if not found                         //~vbvcI~
+//**************************************************               //~vbvcI~
+FUNCTBL *functblsrch2nd(int Pfuncid,FUNCTBL *Ppft1st)              //~vbvcR~
+{                                                                  //~vbvcI~
+	FUNCTBL *pft=0;                                                //~vbvcI~
+//************************************                             //~vbvcI~
+	for (pft=Sfunctbl;*(pft->FTnamee);pft++)	//all ft entry     //~vbvcI~
+	{                                                              //~vbvcI~
+    	if (pft==Ppft1st)                                          //~vbvcI~
+        	continue;                                              //~vbvcI~
+		if (pft->FTfuncid==Pfuncid)                                //~vbvcI~
+			break;                                                 //~vbvcI~
+	}                                                              //~vbvcI~
+    UTRACEP("%s:exit pft=%p\n",UTT,pft);                           //~vbvcR~
+	return pft;                                                    //~vbvcI~
+}//functblsrch2nd                                                  //~vbvcI~
                                                                 //~5429I~
 //**************************************************            //~5429I~
 //*functbl search by funcname                                   //~5429I~

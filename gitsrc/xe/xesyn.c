@@ -1,9 +1,9 @@
-//*CID://+vb31R~:                             update#=  327;       //+vb31R~
+//*CID://+vb31R~:                             update#=  331;       //~vb31R~
 //*************************************************************
 //*xesyn.c
 //*syntax highlight
 //*************************************************************
-//vb31:160418 (LNX64)Compiler warning                              //+vb31I~
+//vb31:160418 (LNX64)Compiler warning                              //~vb31I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vb2J:160313 (W32) compier warning                                //~vabJI~
 //vazz:150118 no uerrmsg when SyntacH cfg err                      //~vazzI~
@@ -740,7 +740,7 @@ int synupdateplh(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh,PULINEH Pplh1,PULINEH Ppl
 //*******************
 	if (rc=synopencf(Popt,Ppcw,Ppfh,&cfhandle),rc)
     	return rc;
-UTRACEP("updateplh\n");                                            //~v780I~
+UTRACEP("xesyn.synupdateplh\n");                                            //~v780I~//~vb31R~
     for (plh=Pplh1;plh;plh=UGETQNEXT(plh))
     {
         if (plh->ULHtype!=ULHTDATA)
@@ -812,6 +812,7 @@ int syngetplhcolordata(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh,PULINEH Pplh,int Ph
     PUFILEC pfc;
 //*****************************
 UTRACEP("before draw synlineno=%d,draw=%x,valid=%x\n",Pplh->ULHsynlineno,UCBITCHK(Pplh->ULHflag,ULHFDRAW),UCBITCHK(Pplh->ULHsynflag,ULHSF_VALID));        //valid changed to invalid//~v780R~
+UTRACED("xesyn.syngetplhcolordata ULHdata",Pplh->ULHdata,Pplh->ULHlen);//~vb31I~
     ulhlen=Pplh->ULHlen;
 //  lineno=Pplh->ULHlinenow;                                       //~v780R~
     lineno=Pplh->ULHsynlineno;                                     //~v780R~
@@ -843,8 +844,8 @@ UTRACED("old sc",psc,oldlen*2);                                    //~v780I~
             }
         }
     }
-//  rc=syngetcfdata(opt,Phandle,lineno,&Pplh->ULHci,ulhlen);       //+vb31R~
-    rc=syngetcfdata(opt,Phandle,(int)lineno,&Pplh->ULHci,ulhlen);  //+vb31I~
+//  rc=syngetcfdata(opt,Phandle,lineno,&Pplh->ULHci,ulhlen);       //~vb31R~
+    rc=syngetcfdata(opt,Phandle,(int)lineno,&Pplh->ULHci,ulhlen);  //~vb31I~
     if (!rc)
     {
     	UCBITON(Pplh->ULHsynflag,ULHSF_VALID);
@@ -906,7 +907,7 @@ int xesynsetlineattr(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh,PULINEH Pplh,
     UCHAR  *pstyle;
 #endif
 //*****************************
-UTRACED("synsetlineattr ULHdata",Pplh->ULHdata,Pplh->ULHlen);      //~v780R~
+UTRACED("xesynsetlineattr ULHdata",Pplh->ULHdata,Pplh->ULHlen);      //~v780R~//~vb31R~
 	pfc=Ppcw->UCWpfc;
     if (UCBITCHK(pfc->UFCflag,UFCFBROWSE))                         //~v78oI~
         opt|=SYNCPO_BROWSE;                                        //~v78oR~
@@ -915,6 +916,7 @@ UTRACED("synsetlineattr ULHdata",Pplh->ULHdata,Pplh->ULHlen);      //~v780R~
     sclen=max(plhlen-left,0);
     sclen=min(sclen,Pscrwidth);
 	plhsc0=Pplh->ULHci->ULHcidata+left+left;    //style and color
+UTRACED("xesynsetlineattr plhsc0",plhsc0,sclen);                   //+vb31R~
 #ifdef WXEXXE
 //style
     plhsc=plhsc0;
@@ -984,6 +986,7 @@ UTRACED("synsetlineattr ULHdata",Pplh->ULHdata,Pplh->ULHlen);      //~v780R~
             *pattr++=(USHORT)bgeol;
         }
     }
+UTRACED("synsetlineattr Ppsdcell",Ppsdcell,Pscrwidth);             //~vb31I~
 #else     //LNX                                                    //~v780R~
 	pattr=Ppsdcell+1;
     if (Popt & SSLAO_VHEX||!(Pplh->ULHsynflag & ULHSF_VALID))	//vhex line or updated line
@@ -1034,7 +1037,7 @@ UTRACED("synsetlineattr ULHdata",Pplh->ULHdata,Pplh->ULHlen);      //~v780R~
 	        pattr++;	//skip data position of data+attr
         }
     }
-UTRACED("synsetlineattr ULHdata",Ppsdcell,Pscrwidth);              //~v780I~
+UTRACED("synsetlineattr Ppsdcell",Ppsdcell,Pscrwidth);              //~v780I~//~vb31R~
 #endif //LNX                                                       //~v780R~
     return 0;
 }//xesynsetlineattr

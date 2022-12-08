@@ -1,8 +1,9 @@
-//*CID://+vaq1R~:                             update#=  685;       //+vaq1R~
+//*CID://+var1R~:                             update#=  687;       //~vaq1R~//+var1R~
 //***********************************************************
 //* XDComp : directory status compare                              //~v1.aR~
 //***********************************************************
-//vaq1:201029 Debian10 compiler warning -Wformat-overflow          //+vaq1I~
+//var1:220614 xdc crash by long path name 4096+6(4096 is linux max)//+var1I~
+//vaq1:201029 Debian10 compiler warning -Wformat-overflow          //~vaq1I~
 //vap0:200616 Axe compiler warning;                                //~vap0I~
 //vaj1:180305 xdc-2.29: /CPU8 option:output triler by utf8 to show on xe result of "=" cmd with cpu8 option//~vaj1I~
 //vai1:180208 allow K/M postfix for /Wsize parm                    //~vai1I~
@@ -207,6 +208,7 @@
 #include <utf.h>                                                   //~va91I~
 //*********************************************************************
 
+#define MAXPATH_ALLOWANCE 32                                       //+var1I~
 #ifdef DOS                                                         //~v1.7R~
 //  #define MAXFNSZ 12                                             //~v1.lR~
     #define MAXFNSZ MAXFILENAMEZ                                   //~v1.lI~
@@ -216,7 +218,8 @@
 	#define TBLSZ   65502                                          //~v1.7R~
     #endif                                                         //~v1.lI~
 #else                                                              //~v1.7R~
-	#define MAXFNSZ _MAX_PATH                                      //~v1.7R~
+//  #define MAXFNSZ _MAX_PATH                                      //~v1.7R~//+var1R~
+    #define MAXFNSZ (_MAX_PATH+MAXPATH_ALLOWANCE)                  //+var1I~
  #ifdef UNX                                                        //~v255I~
 	#define TBLSZ   (sizeof(FNTBL)*10000)                          //~v255I~
  #else                                                             //~v255I~
@@ -224,7 +227,8 @@
     #define TBLSZ   1024*1024                                      //~vai1I~
  #endif                                                            //~v255I~
 #endif                                                             //~v1.7R~
-#define MAXPATH _MAX_PATH                                          //~v1.7R~
+//#define MAXPATH _MAX_PATH                                          //~v1.7R~//+var1R~
+#define MAXPATH (_MAX_PATH+MAXPATH_ALLOWANCE)                      //+var1I~
 #define MAXLEVEL 32                                                //~v1.cI~
 #define FILENAMEFLDSZ 20                                           //~v1.6I~
 #define MAX_FILENAMEFLDSZ 128                                      //~v252I~
@@ -1470,7 +1474,7 @@ void stackfile(int Pdirid,char *Pdir,char *Pmask,FNTBL *Pfnt,int *Pentno,int *Pe
 //********************
 //printf("stackfile dirid=%d,dir=%s\n",Pdirid,Pdir);               //~v254R~
 	strcpy(path,Pdir);
-    UTRACEP("level=%d,dir=%s\n",Slevel,path);                      //~va71I~
+    UTRACEP("stackfile MAXPATH=%d,level=%d,dir=%s\n",MAXPATH,Slevel,path);                      //~va71I~//~vaq1R~
 	if (Slevel==1)                                                 //~va71I~
     	Sstartdir=path;	//for slink loopchk                        //~va71I~
 	*Pentno=0;
@@ -3884,8 +3888,8 @@ void interfmsg(int Pdirid)                                         //~v234I~
 {                                                                  //~v234I~
     char *fnm,cdate[12],ctime2[12];                                 //~v234I~
     FILEFINDBUF3 *pfstat3;                                         //~v234I~
-//  char mask[_MAX_PATH];                                          //+vaq1R~
-    char mask[_MAX_PATH+32];                                       //+vaq1I~
+//  char mask[_MAX_PATH];                                          //~vaq1R~
+    char mask[_MAX_PATH+32];                                       //~vaq1I~
     char interpath[_MAX_PATH+16];                                  //~vazAI~
 //*************************                                        //~v234I~
     if (Pdirid==1)                                                 //~v234I~

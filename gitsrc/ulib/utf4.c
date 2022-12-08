@@ -1,4 +1,4 @@
-//*CID://+v70iR~:                             update#=  237;       //~v6X5R~//~v70iR~
+//*CID://+v70iR~:                             update#=  239;       //~v6X5R~//~v70iR~
 //*********************************************************************//~v62XI~
 //v70i:200716 Ucs.java' wcwidth is proper than adjsbcs             //~v70iI~
 //v6X5:180818 (LNX:xe)column shring COMB2SCM(036f+0390) even SPLIT mode,//~v6X5I~
@@ -2077,7 +2077,7 @@ int mk_wcwidth_cjk(UWUCS ucs)                                      //~v6VbI~
   {                                                                //~v6WnI~
 //  return 2+UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v6V8I~//~v6W9R~
     rc=2;                                                          //~v6W9I~
-    UTRACEP("%s:%06x ambiguous non lang\n",UTT,ucs);               //~v6WnI~
+//  UTRACEP("%s:%06x ambiguous non lang\n",UTT,ucs);               //+v70iR~
   }                                                                //~v6WnI~
   else                                                             //~v6WkI~
   if (bisearch(ucs, Sambiguous_langs,                              //~v6V2I~
@@ -2086,7 +2086,7 @@ int mk_wcwidth_cjk(UWUCS ucs)                                      //~v6VbI~
 //  return 2;                                                      //~v6V2I~//~v6V8R~
 //  return 2+UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v6V8I~//~v6W9R~
     rc=2;                                                          //~v6W9I~
-    UTRACEP("%s:%06x ambiguous lang\n",UTT,ucs);                   //~v6WnI~
+//  UTRACEP("%s:%06x ambiguous lang\n",UTT,ucs);                   //+v70iR~
   }                                                                //~v6WnI~
   else                                                             //~v6WkI~
   if (bisearch(ucs, Sambiguous_langs_ucs4,                         //~v6V2I~
@@ -2106,7 +2106,7 @@ int mk_wcwidth_cjk(UWUCS ucs)                                      //~v6VbI~
 //  return 2;                                                      //~7719I~//~v6V8R~
 //  return 2+UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v6V8I~//~v6W9R~
     rc=2;                                                          //~v6W9I~
-    UTRACEP("%s:%06x ambiguous\n",UTT,ucs);                        //~v6WnI~
+//  UTRACEP("%s:%06x ambiguous\n",UTT,ucs);                        //~v70iR~
   }                                                                //~v6WnI~
     break;                                                         //~v6W9I~
  }	   //for                                                       //~v6W9I~
@@ -2198,11 +2198,11 @@ int mk_wcwidth_adjsbcs(UWUCS ucs)                                  //~v6BjI~
 //  	int ww=wcwidth(ucs);                    //TODO test        //~v6X5R~
 //      UTRACEP("%s:ucs=x%4x,ww=%d\n",UTT,ucs,ww);	//TODO test    //~v6X5R~
     	if (bisearch(ucs,Sdbcstb,sizeof(Sdbcstb) / sizeof(struct interval) - 1))//~v6c5R~
-        {                                                          //+v70iI~
-			UTRACEP("%s:dbcs ucs=x%4x\n",UTT,ucs);	//TODO test    //+v70iI~
+        {                                                          //~v70iI~
+			UTRACEP("%s:dbcs ucs=x%4x\n",UTT,ucs);	//TODO test    //~v70iI~
         	return 2;                                              //~v6c5R~
-        }                                                          //+v70iI~
-		UTRACEP("%s:sbcs ucs=x%4x\n",UTT,ucs);	//TODO test        //+v70iI~
+        }                                                          //~v70iI~
+		UTRACEP("%s:sbcs ucs=x%4x\n",UTT,ucs);	//TODO test        //~v70iI~
     	return 1;                                                  //~v6c5I~
     }                                                              //~v6c5I~
 //*copy from mk_wcwidth, compining and unprintable will be chked after by Java wcwidth()//~v6c5I~

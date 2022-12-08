@@ -1,9 +1,9 @@
-//*CID://+vbr1R~:                             update#=  847;       //~vbc1R~//+vbr1R~
+//*CID://+vbr1R~:                             update#=  848;       //~vbc1R~//~vbr1R~
 //*************************************************************
 //*xefcmd2.c                                                       //~v53FR~
 //*  find/change/exclude                                           //~v11kR~
 //****************************************************************////~v438R~
-//vbr1:200615 ARM compiler warning                                 //+vbr1I~
+//vbr1:200615 ARM compiler warning                                 //~vbr1I~
 //vbc2:170821 add TS   option for find cmd on dirlist              //~vbc2I~
 //vbc1:170820 add ATTR option for find cmd on dirlist              //~vbc1I~
 //vb5c:160917 (Bug)"find all" loop when not lomg name mode and match with overriden part by attr fld.//~vb5cI~
@@ -1008,8 +1008,8 @@ int linesrchstringsub(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw
 //*******************                                              //~v13oI~
               if (binfsw                                           //~v13pR~
               &&  ((int)Srangeid2==RANGENOPARM))                   //~v437R~
-//              offset=offset;                                     //~v13pI~//+vbr1R~
-                ;                                                  //+vbr1I~
+//              offset=offset;                                     //~v13pI~//~vbr1R~
+                ;                                                  //~vbr1I~
               else                                                 //~v13pI~
 				if (offset>plh->ULHlen)                             //~5107I~
 					offset=plh->ULHlen;                             //~5107I~
@@ -1731,7 +1731,7 @@ int linesrchstringsub(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw
                   	&&  !plh->ULHdbcs)	//if space contained       //~v78dI~
                       	if (filechktabdbcs(plh)==UALLOC_FAILED)//expand before compare//~v41rI~
                           	return UALLOC_FAILED;                  //~v41rI~
-UTRACEP("Sddstrlen=%d,Ssrchlen=%d,Sescsrchlen=%d,Sutf8echrchsw=%d\n",Sddstrlen,Ssrchlen,Sescsrchlen,Sutf8echsrchsw);//~va3ER~
+UTRACEP("%s:Sddstrlen=%d,Ssrchlen=%d,Sescsrchlen=%d,Sutf8echrchsw=%d\n",UTT,Sddstrlen,Ssrchlen,Sescsrchlen,Sutf8echsrchsw);//+vbr1R~
     				if (plh->ULHlen-offset<Ssrchlen)	//may not match //~5107I~
                     {                                              //~v54aI~
                      if (!grepsw)                                  //~v78dI~

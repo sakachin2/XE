@@ -1,7 +1,9 @@
-//CID://+vb55R~:     updatectr=       1                            //~vb55R~
+//CID://+vbvqR~:     update#=  35                                  //~vbvqR~
 //*************************************************************
 //* xeini.c                                                     //~5528R~
 //************************************************************* //~v018I~
+//vbvq:221201 (BUG)key ctr of the functbl is errornous when line of xe.ini was deleted. keep key with deleted sign.//~vbvqI~
+//vbvh:221130 =0.2; clear key did not update xe.ini                //~vbvhI~
 //vb55:160904 old func-key def on ::xe.in reset new added default key of xefunct//~vb55I~
 //vb50:160827 accept S+A/C+extended key                            //~vb50I~
 //vb3A:160625 for compiler warning,-Wformat-security(not literal printf format)//~vb3AI~
@@ -82,6 +84,7 @@
 #include <uparse.h>                                                //~v0b2R~
 #include <ualloc.h>
 #include <uedit.h>                                              //~v018I~
+#include <utrace.h>                                                //~vb55I~
 
 #include "xe.h"
 #include "xescr.h"
@@ -109,6 +112,8 @@ static UCHAR *Scommline2="\n#################\n";
 static UCHAR *Ssectionid[]=
 //			{"[FUNCTION]","[PALLETTE]","[COLOR]","[OTHER]",0};     //~v075R~
   			{"[FUNCTION]","[OTHER]",0};                            //~v075I~
+//static char *SdeletedKey="***Deleted***";                        //~vbvqR~
+static char *SdeletedKey="(x)";                                    //~vbvqI~
 static PUPODELMTBL Spodelmtb;                                      //~v138I~
 static int Sfirstfuncsw;
 static int Ssection;
@@ -156,6 +161,7 @@ int func_ini(PUCLIENTWE Ppcw)
     				"%s はオープン中,クローズした後再試行して下さい",fpath);//~v55jR~
     		return 8;                                           //~5507I~
     	}                                                       //~5507I~
+    UTRACEP("%s:fileopen fpath=%s\n",UTT,fpath);                   //~vb55I~
     if (!(fh=fileopen(fpath,"w")))                                 //~v55jR~
         return 12;
     if (!Ppcw)          //write at term                            //~v0itR~
@@ -234,7 +240,8 @@ int iniwfunctbl(UCHAR *Pfilename,FILE *Pfh)
     int ii,shiftid;
     UCHAR shiftch[3];                                              //~v0jeI~
 	USHORT kid;
-    UCHAR keyedit[20];                                          //~5501I~
+//  UCHAR keyedit[20];                                          //~5501I~//~vbvhR~
+    UCHAR keyedit[32];                                             //~vbvhI~
     UCHAR *fixid,fixid2,*cmd,*cmda,cmdid;                          //~v0itR~
     int englishmode;                                               //~v694I~
 #ifndef KKK                                                        //~vb50I~
@@ -247,7 +254,8 @@ int iniwfunctbl(UCHAR *Pfilename,FILE *Pfh)
 	iniwkeytbl(Pfilename,Pfh);                                  //~5502I~
                                                                 //~5502I~
 	fprintf(Pfh,"%s\n",Ssectionid[SECT_FUNC]);                     //~v075R~
-	fprintf(Pfh,"#################                   (*):Fixed,it can not re-assign.");//~5508R~
+//	fprintf(Pfh,"#################                   (*):Fixed,it can not re-assign.");//~vbvqR~
+  	fprintf(Pfh,"################# (*):Fixed,it can not re-assign. (x):Deleted.  #######");//~vbvqR~
 //  fprintf(Pfh,"\n#%-20s=   %-20s # %s",                          //~v0itR~
 //  			"(function-name)","(KeyID)","(Japanese comment)\n");//~v0itR~
   if (!englishmode)                                                //~v694I~
@@ -263,10 +271,15 @@ int iniwfunctbl(UCHAR *Pfilename,FILE *Pfh)
 //          continue;                                              //~vag2R~
 //      if (pft->FTfuncid==FUNCID_NULLCHAR)     //not supported yet//~vagbR~
 //          continue;                                              //~vagbR~
+        UTRACEP("%s:FTnamee=%s\n",UTT,pft->FTnamee);               //~vb55I~
+        UTRACED("FTkey",pft->FTkey,sizeof(pft->FTkey));            //~vb55I~
+        UTRACED("FTkflag",pft->FTkflag,sizeof(pft->FTkflag));      //~vbvhI~
         for (ii=0;ii<FTMAXKEY;ii++)
         {
+		  	UTRACEP("%s:ii=%d\n",UTT,ii);                          //~vb55I~
         	if (!(kid=pft->FTkey[ii]))
             {                                                   //~5502I~
+		        UTRACEP("%s:ii=%d,kid=x%x\n",UTT,ii,kid);          //~vb55I~//~vbvhR~
                 if (!ii)                                        //~5502I~
                 {                                                  //~v694I~
 //  				fprintf(Pfh,"\n %-20s= %-20s   # %s",          //~v0itR~
@@ -280,7 +293,16 @@ int iniwfunctbl(UCHAR *Pfilename,FILE *Pfh)
                 }                                                  //~v694I~
 				break;
             }                                                   //~5502I~
+//         if (UCBITCHK(pft->FTkflag[ii],FTDELETED))               //~vbvqR~
+//         {                                                       //~vbvqR~
+//            sprintf(keyedit,"%s(%d)",SdeletedKey,ii);            //~vbvqR~
+//            pkt2=0;                                              //~vbvqR~
+//            UTRACEP("%s:Deleted");                               //~vbvqR~
+//         }                                                       //~vbvqR~
+//         else                                                    //~vbvqR~
+//         {                                                       //~vbvqR~
             shiftid=kbdsrchkt(kid,&pkt);
+            UTRACED("keytbl",pkt,sizeof(KEYTBL));                  //~vb55I~
             if (!pkt)
             {
 //          	if (UCBITCHK(Gscrstatus,GSCRSDBCS))                //~v79zR~
@@ -334,6 +356,7 @@ int iniwfunctbl(UCHAR *Pfilename,FILE *Pfh)
             	shiftch[1]='+';                                    //~v0jeI~
             sprintf(keyedit,"%s%s",shiftch,pkt->KTnamee);          //~v0jeR~
           }                                                        //~vb50I~
+//         }//!deleted                                             //~vbvqR~
             if (UCBITCHK(pft->FTkflag[ii],FTFIX))
             {                                                      //~v0itI~
 //  			fprintf(Pfh,"\n#%-20s=(*)%-20s # %s",              //~v0itR~
@@ -342,6 +365,13 @@ int iniwfunctbl(UCHAR *Pfilename,FILE *Pfh)
                 fixid2='#';                                        //~v0itI~
             }                                                      //~v0itI~
             else
+            if (UCBITCHK(pft->FTkflag[ii],FTDELETED))              //~vbvqI~
+            {                                                      //~vbvqI~
+                fixid=SdeletedKey;		//"(x)"                    //~vbvqI~
+                fixid2=' ';                                        //~vbvqI~
+              	UTRACEP("%s:Deleted");                             //~vbvqI~
+           }                                                       //~vbvqI~
+           else                                                    //~vbvqI~
             {                                                      //~v0itI~
 //  			fprintf(Pfh,"\n %-20s=   %-20s # %s",              //~v0itR~
 //  					pft->FTnamee,keyedit,pft->FTnamej);        //~v0itR~
@@ -360,6 +390,7 @@ int iniwfunctbl(UCHAR *Pfilename,FILE *Pfh)
             	cmd=pft->FTcmd;                                    //~v0itI~
             	cmda=pft->FTcmda;                                  //~v0itI~
             }                                                      //~v0itI~
+		  UTRACEP("%s:englishmode=%d,FTnamee=%s,fixid=%c,keyedit=%s,FTKflag=x%x\n",UTT,englishmode,pft->FTnamee,fixid,keyedit,pft->FTkflag[ii]);//~vb55R~//~vbvhR~
           if (!englishmode)                                        //~v694I~
             fprintf(Pfh,"\n%c%-20s=%s%-18s %c %-3s %c %-3s # %s",  //~v0itR~
                     fixid2,pft->FTnamee,fixid,keyedit,cmdid,cmd,cmdid,cmda,pft->FTnamej);//~v0itR~
@@ -622,6 +653,50 @@ void inilineproc(UCHAR *Pfilename,int Plineno,int Plinelen)
     return;
 }//inilineproc
 
+//**************************************************               //~vbvhI~
+//*idxkey or -1;                                                   //~vbvhI~
+//**************************************************               //~vbvhI~
+//int chkDeleted(PFUNCTBL Ppft,UCHAR *Ppc,KEYTBL **Ppkt,int *Ppshiftid)//~vbvqR~
+//{                                                                //~vbvqR~
+//    int len,idxKey=-1,shiftid=-1;                                //~vbvqR~
+//    USHORT key;                                                  //~vbvqR~
+//    KEYTBL *pkt=0;                                               //~vbvqR~
+//    //*******************************                            //~vbvqR~
+//    UTRACEP("%s:pc=%s\n",UTT,Ppc);                               //~vbvqR~
+//    len=(int)strlen(SdeletedKey);                                //~vbvqR~
+//    if (!memcmp(Ppc,SdeletedKey,(UINT)len))                      //~vbvqR~
+//    {                                                            //~vbvqR~
+//        idxKey=atoi(Ppc+len+1);                                  //~vbvqR~
+//        if (idxKey>=0 && idxKey<FTMAXKEY)                        //~vbvqR~
+//        {                                                        //~vbvqR~
+//            key=Ppft->FTkey[idxKey];                             //~vbvqR~
+//            shiftid=kbdsrchkt(key,&pkt);                         //~vbvqR~
+//        }                                                        //~vbvqR~
+//        else                                                     //~vbvqR~
+//            idxKey=-1;                                           //~vbvqR~
+//    }                                                            //~vbvqR~
+//    *Ppkt=pkt;                                                   //~vbvqR~
+//    *Ppshiftid=shiftid;                                          //~vbvqR~
+//    UTRACEP("%s:FTnamee=%s,idxKey=%d,shiftid=%d,pkt=%p\n",UTT,Ppft->FTnamee,idxKey,shiftid,pkt);//~vbvqR~
+//    return idxKey;                                               //~vbvqR~
+//}                                                                //~vbvqR~
+//**************************************************               //~vbvqI~
+//*return 1 if deleted                                             //~vbvqI~
+//**************************************************               //~vbvqI~
+int chkDeleted(PFUNCTBL Ppft,UCHAR **Ppc)                          //~vbvqI~
+{                                                                  //~vbvqI~
+	int rc,len;                                                    //~vbvqR~
+    char *pc;                                                      //~vbvqI~
+    //*******************************                              //~vbvqI~
+    pc=*Ppc;                                                       //~vbvqI~
+    UTRACEP("%s:pc=%s\n",UTT,pc);                                  //~vbvqI~
+    len=(int)strlen(SdeletedKey);                                  //~vbvqI~
+    rc=memcmp(pc,SdeletedKey,(UINT)len)==0;                        //~vbvqI~
+    if (rc)                                                        //~vbvqI~
+    	*Ppc=pc+len;	//skip Sdeleted key                        //~vbvqI~
+    UTRACEP("%s:FTnamee=%s,rc=%d\n",UTT,Ppft->FTnamee,rc);         //~vbvqI~
+    return rc;                                                     //~vbvqI~
+}                                                                  //~vbvqI~
 //**************************************************
 //*inirfunc
 //* function section line process
@@ -639,6 +714,7 @@ int inirfunc(int Pwordno)                                       //~5501R~
 #ifndef KKK                                                        //~vb50I~
     int swshiftAC=0;                                               //~vb50R~
 #endif                                                             //~vb50I~
+	int swDeleted;                                                 //~vbvhR~
 //*********************************
     if (!Sfirstfuncsw)
     {
@@ -648,6 +724,7 @@ int inirfunc(int Pwordno)                                       //~5501R~
 //funcid chk                                                    //~5501I~
 	if (!(pft=functblsrchbyname(Sgetsbuff)))
     	return 4;
+    UTRACEP("%s:Pwordno=%d,FTnamee=%s\n",UTT,Pwordno,pft->FTnamee);//~vbvhI~
     if (!UCBITCHK(pft->FTflag,FTFUPINI))	//first time
     {
         firstsw=1;                                                 //~v0itI~
@@ -673,19 +750,23 @@ int inirfunc(int Pwordno)                                       //~5501R~
     	if (ii==FTMAXKEY)	//no free entry
         {                                                          //~vb55I~
     		uerrmsg("Too many(Max:%d) key definition for a function",//~vb55I~
-    				"１機\x94\\のキー定義は最大 %d",               //+vb55R~
+    				"１機\x94\\のキー定義は最大 %d",               //~vb55R~
                     FTMAXKEY);                                     //~vb55I~
         	return 4;
         }                                                          //~vb55I~
         jj=ii;
     }
+    UTRACED("FTkey",pft->FTkey,sizeof(pft->FTkey));                //+vbvqI~
+    UTRACED("FTkflag",pft->FTkflag,sizeof(pft->FTkflag));          //+vbvqI~
 //*key process                                                  //~5501I~
     if (Pwordno==1)	//clear req                                 //~5501R~
     {                                                           //~5501I~
+//    	UTRACEP("%s:pkt clear by Pwordno=1 func=%s\n",UTT,pft->FTnamee);//~vb55R~
 		pft->FTkey[jj]=0;                                       //~5501I~
 		return 0;                                               //~5501I~
     }                                                           //~5501I~
     pc=Sgetsbuff+strlen(Sgetsbuff)+1;	//second word,key fld   //~5501M~
+   	UTRACEP("%s:pc=%s\n",UTT,pc);                                  //~vbvhR~
 //*chk cmd verb                                                    //~v0itM~
     if (Pwordno<=2)	//no cmd                                       //~v0itI~
     	pccmd=0;                                                   //~v0itR~
@@ -704,10 +785,22 @@ int inirfunc(int Pwordno)                                       //~5501R~
     	        return 4;                                          //~v0itR~
     }                                                              //~v0itI~
 //*chk cmd verb end                                                //~v0itI~
+    swDeleted=0;                                                   //~vbvhI~
+    UTRACEP("%s:cmd=%s,cmda=%s,FTflag=x%x,FTnamee=%s\n",UTT,pccmd,pccmda,pft->FTflag,pft->FTnamee);//~vbvqI~
   if (*pc)                                                         //~v0itI~
   {                                                                //~v0itI~
     if (UCBITCHK(pft->FTflag,FTFCMDONLY))                          //~v0itI~
+    {                                                              //~vbvqI~
+	    UTRACEP("%s:FTCMDONLY\n",UTT);                             //~vbvqI~
         return 4;                                                  //~v0itI~
+    }                                                              //~vbvqI~
+//  if (chkDeleted(pft,pc,&pkt,&shiftid)>=0)                       //~vbvqR~
+//  {                                                              //~vbvqR~
+//  	swDeleted=1;                                               //~vbvqR~
+//  }                                                              //~vbvqR~
+//  else                                                           //~vbvqR~
+//  {                                                              //~vbvqR~
+	swDeleted=chkDeleted(pft,&pc);                                 //~vbvqI~
 #ifndef KKK                                                        //~vb50I~
 	xekbdchkSAC(0,pc,&pkt,&shiftid);                               //~vb50R~
   if (shiftid)	//2 or 3                                           //~vb50R~
@@ -723,6 +816,7 @@ int inirfunc(int Pwordno)                                       //~5501R~
     &&  UCBITCHK(pkt->KTflag[2],KTCHARKEY))                        //~v0jhI~
       if (!(shiftid==3 && (pkt->KTkey[3] & 255)<' ')) //allow ctl+char//~v55jR~
     	return 4;	//invalid key                                  //~v0jhI~
+ // }//!deleted                                                    //~vbvqI~
   }	                                                               //~v0itI~
     if (pccmd)                                                     //~v0itI~
     {                                                              //~v0itI~
@@ -736,9 +830,11 @@ int inirfunc(int Pwordno)                                       //~5501R~
         	strcpy(pft->FTcmda,pccmda);                            //~v0itR~
     	}                                                          //~v0itR~
     }                                                              //~v0itI~
+    UTRACEP("%s:after set cmd FTcmd=%s,FTcmda=%s\n",UTT,pft->FTcmd,pft->FTcmda);//~vbvqR~
 	if (!*pc)                                                      //~v0itI~
     {                                                              //~v0itI~
 		pft->FTkey[jj]=0;                                          //~v0itI~
+      	UTRACEP("%s:pkt clear by pc=null func=%s\n",UTT,pft->FTnamee);//~vbvqR~
   		return 0;                                                  //~v0itI~
 	}                                                              //~v0itI~
 //duplicate chk for fixed                                       //~5506I~
@@ -746,7 +842,11 @@ int inirfunc(int Pwordno)                                       //~5501R~
 		if (pft->FTkey[ii]==pkt->KTkey[shiftid]                 //~5506I~
     	&&  UCBITCHK(pft->FTkflag[ii],FTFIX))	//fixed         //~5506I~
 			return 0;                                           //~5506I~
+  if (swDeleted)                                                   //~vbvhI~
+	pft->FTkey[jj]=FTDELETEDKEY;                                   //~vbvhI~
+  else                                                             //~vbvhI~
 	pft->FTkey[jj]=pkt->KTkey[shiftid];                         //~5501R~
+  UTRACEP("%s:pkt set jj=%d,key=x%x,func=%s\n",UTT,jj,pft->FTkey[jj],pft->FTnamee);//~vbvqR~
     pft->FTkflag[jj]=0;	//updated,not candidate of next entry      //~vb55R~
     if (shiftid==1)     //Shift+
 		if (pkt->KTkey[1]==pkt->KTkey[0])	//no diference
@@ -757,6 +857,8 @@ int inirfunc(int Pwordno)                                       //~5501R~
     if (swshiftAC)                                                 //~vb50I~
 		UCBITON(pft->FTkflag[jj],FTSHIFT);	//S+Alt or S+CTL       //~vb50R~
 #endif                                                             //~vb50I~
+	UTRACED("inirdunc exit FTkey",pft->FTkey,sizeof(pft->FTkey));  //+vbvqR~
+    UTRACED("inirfunc exit FTkflag",pft->FTkflag,sizeof(pft->FTkflag));//+vbvqI~
 	return 0;
 }//inirfunc
 

@@ -1,8 +1,12 @@
-//*CID://+vbi3R~:                             update#=  153;       //~vbe0R~//~vbi3R~
+//*CID://+vbvtR~:                             update#=  160;       //+vbvtR~
 //*********************************************************************
 //* xefunc.h
 //*********************************************************************
-//vbs6:201026 profile COL cmd for dir, "col on dir" follows dir setting; specify "col on default" for each file.//+vbi3I~
+//vbvt:221202 =0.2/=0.3 display code itself for default box char for japanese//+vbvtI~
+//vbvk:221130 0.1 alias cmd; allow line comment starting by #      //~vbvkI~
+//vbvi:221130 (BUG)FTFLINECHSET:x20 is duplicated with DTUDUPACMD  //~vbviI~
+//vbvh:221130 =0.2; clear key did not update xe.ini                //~vbvhI~
+//vbs6:201026 profile COL cmd for dir, "col on dir" follows dir setting; specify "col on default" for each file.//~vbi3I~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vbe0:171231 add function to search xml tag pair by A+/           //~vbe0I~
 //vbds:171203 (BUG)FTFDUPACMDFUNC=FTFCMDONLY=0x40-->ini file error msg//~vbdsI~
@@ -655,7 +659,8 @@ typedef int (FTFUNC)(FUNCPARMS);
 //************************************                          //~5224M~
 //*function asignment table entry                               //~5224M~
 //#define FTMAXKEY  	8				//max asign key count      //~v0isR~
-#define FTMAXKEY  	4				//max asign key count          //~v0isI~
+#define FTDELETEDKEY  0xffff		//put as deleted(!=0)          //~v0isI~//~vbvhR~
+#define FTMAXKEY  	4				//max asign key count          //~vbvhI~
 #define CFTMAXSCAN 4                                               //~v0ihI~
                                                                    //~v51yI~
 #define RC2CONSEQERR    2  	//conseqtive err to set csr next line  //~v51yR~
@@ -676,7 +681,7 @@ typedef struct _FUNCTBL                                         //~5224M~
 #define FTFDUPACMD     	0x20		//alias cmd duplicated         //~v09wI~
 //#define FTFDUPACMDFUNC  0x40        //alias cmd duplicated allows and process both by a func//~vbd7I~//~vbdsR~
                                                                    //~v705I~
-#define FTFLINECHSET   	0x20		//string input setupped for GRAPHIC func only//~v705I~
+//#define FTFLINECHSET   	0x20		//string input setupped for GRAPHIC func only//~v705I~//~vbviR~
                                                                    //~v705I~
 #define FTFCMDONLY   	0x40		//no key assignment allowed    //~v0ioI~
 #define FTFEUC       	0x80		//euc conv done                //~v61tI~
@@ -693,6 +698,7 @@ typedef struct _FUNCTBL                                         //~5224M~
 #define FTDUPER			0x80		//duplicated asign err      //~5224M~
 #define FTKEYER			0x40		//invalid key used          //~5224M~
 #define FTUPDATEINI		0x20		//control update by xe.ini file//~vb55I~
+#define FTDELETED  		0x10		//deleted on 0.2               //~vbvhI~
 //  	char   FTcmdlen;			//command compair string len   //~v0iuR~
 //  	char   FTcmdalen;			//command compair string len   //~v0iuR~
 //      struct _FUNCTBL* FTdupnext;	//one of key duplicated assigned//~v76iR~
@@ -704,8 +710,12 @@ typedef struct _FUNCTBL                                         //~5224M~
 #define FTF2FINDCMD      0x08		//find cmd                     //~vbCCI~
 #define FTF2CHANGECMD    0x10		//change cmd                   //~vbCCI~
 #define FTF2DUPACMDFUNC  0x20       //alias cmd duplicated allows and process both by a func//~vbdsI~
-#define FTF2DIRCMD       0x40       //accept only cmd for dirlist(funcKey is not accepted)//+vbi3I~
-		UCHAR  FTrsv  [3];			//command word                 //~v71PI~
+#define FTF2DIRCMD       0x40       //accept only cmd for dirlist(funcKey is not accepted)//~vbi3I~
+#define FTF2LINECHSET    0x80		//string input setupped for GRAPHIC func only//~vbviI~
+//  	UCHAR  FTrsv  [3];			//command word                 //~v71PI~//+vbvtR~
+		UCHAR  FTflag3; 			//func flag2                   //+vbvtI~
+#define FTF3LINECHSETJP  0x01		//default locale code was set for JP env//+vbvtI~
+    	UCHAR  FTrsv  [2];			//command word                 //+vbvtI~
 } FUNCTBL,*PFUNCTBL;                                               //~v0ioR~
 typedef struct _FUNCTBLC {                                         //~v0ihI~
 				FUNCTBL *ckpft [CFTMAXSCAN];	//function table entry ptr//~v0ihI~
@@ -778,3 +788,4 @@ int funcsetsleepblock(int Pintvl);                                 //~v55WI~
 int funcdupktsrch(int Popt,/*KEYTBL*/void *Ppkt,int Pmodidx,FUNCTBL **Pppft);//~v76iR~
 #define FDKSO_FTSHIFT   0x01      //S+A,S+C                        //~vb50I~
 int funcgetOpdLCCT(int Popt,PUCLIENTWE Ppcw,int Popdno,char **Pplc,char **Ppct,int *Pplen);//~vavQI~
+int funcAliasDropComment(char *Pcmd);                              //~vbvkI~

@@ -1,4 +1,4 @@
-//*CID://+v740R~:                             update#=  505;       //~v70mR~//~v740R~
+//*CID://+v740R~:                             update#=  509;       //~v70mR~//~v740R~
 //*********************************************************************//~7712I~
 //utf2.c                                                           //~7716R~
 //* utf8 data manipulation:process using chof                      //~7712I~
@@ -453,7 +453,7 @@ int utfddflag2sbcsid(int Popt,int Pflag,int Pwidth,int *Ppsbcsid)  //~v640I~
     else                                                           //~v65cI~
 #endif                                                             //~v65cI~
         return 0;               //nothing to do                    //~v640I~
-UTRACEP("%s:flag=%x,width=%d,sbcsid=%d\n",UTT,Pflag,Pwidth,sbcsid);//~v640I~//~v@@@R~
+//UTRACEP("%s:flag=%x,width=%d,sbcsid=%d\n",UTT,Pflag,Pwidth,sbcsid);//~v640I~//+v740R~
     *Ppsbcsid=sbcsid;                                              //~v640I~
     return 1;                                                      //~v640I~
 }//utfddflag2sbcsid                                                //~v640I~
@@ -515,7 +515,7 @@ int utfddgetlenflag(int Popt,ULONG Pucs,int *Pplen,int *Ppflag)    //~v640I~
   else                                                             //~v650I~
   {                                                                //~v650I~
 	sbcsid=Gucs2ddmap[(int)Pucs].UCS2DDsbcsid;                     //~v640I~
-    UTRACEP("%s: from map ucs=%04x,sbcsid=%x\n",UTT,Pucs,sbcsid);                 //~v640I~//~v6VsR~
+//  UTRACEP("%s: from map ucs=%04x,sbcsid=%x\n",UTT,Pucs,sbcsid);                 //~v640I~//~v740R~
     switch(sbcsid)                                                 //~v640I~
     {                                                              //~v640I~
     case UCSDDID_UNP:                                              //~v640I~
@@ -596,7 +596,7 @@ int utfddgetlenflag(int Popt,ULONG Pucs,int *Pplen,int *Ppflag)    //~v640I~
     if (Ppflag)                                                    //~v640I~
 	    *Ppflag=flag;                                              //~v640I~
     *Pplen=len;                                                    //~v640I~
-    UTRACEP("utfddgetlenflag flag=%x,len=%d\n",flag,len);          //~v650I~
+//  UTRACEP("utfddgetlenflag flag=%x,len=%d\n",flag,len);          //~v740R~
     return 0;                                                      //~v640I~
 }//utfddgetlenflag                                                 //~v640I~
 #ifdef WWW                                                         //~v6BYI~
@@ -1441,8 +1441,8 @@ UTRACEP("REmapinit sbcsid ucs=%04x,sbcsid=%04x\n",ii,sbcsid);      //~v6BYM~
     if (ovfctr||ovfctrw0)                                          //~v67ZI~
     {                                                              //~v67ZI~
     	if (ovfctr)                                                //~v67ZI~
-//	      	uerrmsg("%s even after REMAP. u-%06x-->u-%06x(x%04x of x%04x ucs).",0,//+v740R~
-  	      	uerrmsg("%s even after REMAP. u-%06x-->u-%06x(%d of %d ucs).",0,//+v740I~
+//	      	uerrmsg("%s even after REMAP. u-%06x-->u-%06x(x%04x of x%04x ucs).",0,//~v740R~
+  	      	uerrmsg("%s even after REMAP. u-%06x-->u-%06x(%d of %d ucs).",0,//~v740I~
                     OVFMSG,                                        //~v67ZI~
           			ovfucs,ovfucslast,ovfctr,sbcsctr);             //~v67ZI~
     	if (ovfctrw0)                                              //~v67ZI~
@@ -1681,11 +1681,11 @@ int utfgetwcw(int Popt,UCHAR *Pdata,int Plen,ULONG *Ppucs,int *Ppchklen,int *Ppw
     *Ppucs=wc;                                                     //~v640I~
     if (Ppchklen)                                                  //~v640I~
         *Ppchklen=chklen;                                          //~v640I~
-    UTRACEDIFNZ("utfgetwc2 inpdata",Pdata,chklen);                 //~v640R~
+//  UTRACEDIFNZ("utfgetwc2 inpdata",Pdata,chklen);                 //~v740R~
 #ifdef LNX                                                         //~v640M~
-    UTRACEP("%s: rc=%d,inplen=%d,chklen=%d,width=%d,apiwidth=%d,ucs=%x\n",UTT,rc,Plen,chklen,width,wcwidth((wchar_t)wc),wc);//~v640R~//~v6ueR~//~v6B4R~
+//  UTRACEP("%s: rc=%d,inplen=%d,chklen=%d,width=%d,apiwidth=%d,ucs=%x\n",UTT,rc,Plen,chklen,width,wcwidth((wchar_t)wc),wc);//~v640R~//~v6ueR~//~v740R~
 #else                                                              //~v640M~
-    UTRACEP("%s: inpucs=%x,rc=%d,inplen=%d,chklen=%d,width=%d,ucs=%x\n",UTT,*Ppucs,rc,Plen,chklen,width,wc);//~v640R~//~v6ueR~//~4424R~
+//  UTRACEP("%s: inpucs=%x,rc=%d,inplen=%d,chklen=%d,width=%d,ucs=%x\n",UTT,*Ppucs,rc,Plen,chklen,width,wc);//~v640R~//~v6ueR~//~v740R~
 #endif                                                             //~v640M~
 	return rc;                                                     //~v640M~
 }//utfgetwcw                                                       //~v640I~
@@ -2006,8 +2006,8 @@ UTRACED("utfcvf2dd input   ",Ppdata,Plen);                         //~v640I~
       else                                                         //~v6btR~
 	    *Ppoutlen=outlen;                                          //~v640R~
     }                                                              //~v6b9I~
-UTRACED("utfcvf2dd out data",Ppoutdata,outlen);                    //~v640I~
-UTRACED("utfcvf2dd out dbcs",Ppoutdbcs,outlen);                    //~v640I~
+//UTRACED("utfcvf2dd out data",Ppoutdata,outlen);                  //~v740R~
+//UTRACED("utfcvf2dd out dbcs",Ppoutdbcs,outlen);                  //~v740R~
     return rc;                                                     //~v640I~
 }//utfcvf2dd                                                       //~v640I~
 //*******************************************************          //~v6Y0I~

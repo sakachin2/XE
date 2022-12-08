@@ -1,7 +1,8 @@
-//**Fixed-CID://+vb50R~:*      update#=9                           //+vb50R~
+//**Fixed-CID://+vbvnR~:*      update#=     11 9                   //~vbvnR~
 //**************************************************************** //~v0fqI~
 //xefile7.h                                                        //~v0fqI~
 //**************************************************************** //~v0fqI~
+//vbvn:221201 (BUG)=0.1 shortcutkey cause err "not alphnum"        //~vbvnI~
 //vb50:160827 accept S+A/C+extended key                            //~vb50I~
 //v71P:061107 enable cmd verb change on =0.2 panel                 //~v71PI~
 //v67C:051228 support alias cmd(save in ini file using shortcut key table position ":")//~v67CI~
@@ -20,6 +21,7 @@
 #else                                                              //~vb50I~
 #define FKF_PROTLEN1   6     //prot area len for cmd key file      //~v0imR~
 #endif                                                             //~vb50I~
+#define FKF_POS_SHORTCUTKEY    3                                   //+vbvnR~
 #define FKF_LRECL1     (FKF_PROTLEN1+FKF_MAXCMDLEN)    //cmd key list//~v0ioI~
 #define FKF_MAXCMDLEN  MAXCOLUMN   //max cmd len                   //~v0ioM~
 #ifndef KKK                                                        //~vb50I~

@@ -7,7 +7,12 @@
 <TITLE>SyntaxHighlight-J</TITLE>
 <STYLE TYPE="text/css">
 <!--
-a:hover{font-weight:bold;}-->
+a:hover{font-weight:bold;}
+.auto-style1 {
+	font-family: "ＭＳ ゴシック";
+	font-size: 12pt;
+}
+-->
 </STYLE>
 </HEAD>
 <BODY bgcolor="#FFFFE2">
@@ -26,12 +31,6 @@ a:hover{font-weight:bold;}-->
          Win版用にcygwinでコンパイルしたものは遅いのでMinGWでコンパイルしたものをHPにアップしています。
          これを使用すればcygwinの導入も不要です。(2008/03/21)
 
-         応答をよくするため GNU source-highlight 常駐するオプションも追加。
-         xeshmはsource-highlight 2.9のStartAppクラスを利用。Windows版はMingWでコンパイル。(LinuxはFC12)
-         現在のsource-highlightはv2.10ですが、data-directoryの仕様が変わる可能性があるので
-         xeshmを使用する場合はv2.9のdata-directoryを使用してください。
-         configでは SHCMDでなくSHCMDR パラメータで指定します。
-         xeshmのmakeはmkxeshm.mingw(ulibはmkmingw)を参照してください。
 
        andre-simon さんの Highlightの場合(configファイルでSHCMDA=で指定)
          こちらのほうが使いやすいようです。
@@ -112,15 +111,10 @@ a:hover{font-weight:bold;}-->
                         Windowsでバッチファイルを使用するときはコマンドの前に
                         &quot;@&quot;を付けてコマンドのエコーが標準出力に出ないようにしてください。
                         そうしないと&quot;Invalid Index file&quot;等のエラーメッセジが出ます。 
-          SHCMDR=      :source-highlight ではなくxeshm を実行します。
-                        xeshm は source-highlight v2.9 のObjectをLinkして
-                        毎回プロセス初期化の負荷を避けるため常駐プロセス化したものです。
-
           SHCMDA=      :andre-simonのHighlightを実行します。
                        パスがスペースを含む場合は次のように指定してください
                          SHCMDA= '&quot;&quot;c:\Program Files\WinHighlight\highlight.exe&quot;&quot; -q --out-format=ansi'
 
-          ACBCMD=      :xeacb(.exe)がPATH上にない時フルパスを指定します。廃止(使用しなくなりました。)
           ENTER =      :Enterキー入力をシンタックスの再評価のトリガーに閾値をファイルの行数で指定。
                         ファイルを開く時行数がここでの指定以内の場合Enterキー入力が再評価(更新行のみ)のトリガーになります。
                         ファイルを開いた後ではSYNコマンドで変更できます。
@@ -178,21 +172,21 @@ a:hover{font-weight:bold;}-->
                         例) rgb2=20e030    # パレット番号２(緑)のRGB値を R:0x20, G:0xe0, B:0x30 に設定。
 
           ITALIC_ESC = :source-highlightのesc.outlangで italics に 与えたANSI ESC シーケンスコードをxeに知らせます。
-                        &quot;1&quot;:bold, &quot;4&quot;:underline 以外を指定してください。
+                        "0", "1":bold, "4":underline 以外を指定してください。
                         省略値は&quot;5&quot;:blinkです。省略値をイタリックとするにはesc.outlangを変更してください。
                         andre-simon's Highlightはフォントスタイル指定できません。
           C_BOLD     = :コンソール版でのフォントスタイル=1(Bold)の扱い。 Windows 版のみ。
-                         &quot;H&quot;:高輝度(省略値), &quot;N&quot;:無視。
-          C_UNDERLINE= :コンソール版でのフォントスタイル=4(Underline)の扱い。
-                         &quot;H&quot;:高輝度, &quot;N&quot;:無視(省略値)。
+                         "H":高輝度(省略値), "N":無視、"R":反転。
+         C_UNDERLINE= :コンソール版でのフォントスタイル=4(Underline)の扱い。
+                         &quot;H&quot;:高輝度, &quot;N&quot;:無視(省略値)<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">、"R":反転</SPAN>。
           C_ITALIC   = :コンソール版でのフォントスタイル=5(但し、ITALIC_ESCを指定していればその値)の扱い。
-                         &quot;H&quot;:高輝度, &quot;N&quot;:無視(省略値)。
+                         &quot;H&quot;:高輝度, &quot;N&quot;:無視(省略値)。<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">、"R":反転</SPAN>
           G_BOLD     = :GUI版(wxe,gxe)でのフォントスタイル=1(Bold)の扱い。
-                         &quot;H&quot;:高輝度, &quot;Y&quot;:Bold,  &quot;N&quot;:無視。省略値は&quot;YH&quot;。
+                         &quot;H&quot;:高輝度, &quot;Y&quot;:Bold,  &quot;N&quot;:無視<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">、"R":反転</SPAN>。省略値は&quot;YH&quot;。
           G_UNDERLINE= :GUI版(wxe)でのフォントスタイル=4(Underline)の扱い。gxeではサポートされません。
-                         &quot;H&quot;:高輝度, &quot;Y&quot;:Undrerline,  &quot;N&quot;:無視。省略値は&quot;Y&quot;。
+                         &quot;H&quot;:高輝度, &quot;Y&quot;:Undrerline,  &quot;N&quot;:無視<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">、"R":反転</SPAN>。省略値は&quot;Y&quot;。
           G_ITALIC   = :GUI版(wxe,gxe)でのフォントスタイル=5(但し、ITALIC_ESCを指定していればその値)の扱い。
-                         &quot;H&quot;:高輝度, &quot;Y&quot;:Italic,  &quot;N&quot;:無視。省略値は&quot;Y&quot;。
+                         &quot;H&quot;:高輝度, &quot;Y&quot;:Italic,  &quot;N&quot;:無視<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">、"R":反転</SPAN>。省略値は&quot;Y&quot;。
 
     (c)サンプルファイル。
 
@@ -210,13 +204,9 @@ a:hover{font-weight:bold;}-->
     #     SHCMD=       :Specify source-highlight command
     #                   default &quot;source-highlight -f esc&quot;. &quot;-f esc&quot; (outlang:esc) is always appended.
     #                   If use .bat file on Windows, use &quot;@&quot; to avoid that cmd echo is written to stdout.
-    #     SHCMDR=      :Specify xeshm command
-    #                   xeshm is my derivative from source-highlight v2.9.
-    #                   To avoid process initialization load, xeshm is resident process.
     #     SHCMDA=      :Specify andre-simon's Highlight command
     #                    Specify as following if space is embedded in the path.
     #                    SHCMDA= '&quot;&quot;c:\Program Files\WinHighlight\highlight.exe&quot;&quot; -q --out-format=ansi'
-    ##    ACBCMD=      :Specify path of xeacb(.exe).--&gt;Discarded.
     #     ENTER =      :Specify file line count threshold to use Enter key as trigger of SyntaxHighlight re-evaluation.
     #                   If the file line count is under this value at open,
     #                   Enter key is treated as trigger of re-evaluation of updated lines..
@@ -276,17 +266,17 @@ a:hover{font-weight:bold;}-->
     #                   Valid value is one digit except reserved &quot;1&quot;:bold, &quot;4&quot;:underline.
     #                   Default is &quot;5&quot;:blink. (If you use this default,specify it on esc.outlang).
     #     C_BOLD     = :treatment of font style:1(BOLD) for console version xe
-    #                   &quot;H&quot;:HighIntensity, &quot;N&quot;:Ignore.  Default is &quot;H&quot;.
+    #                   "H":HighIntensity, "N":Ignore, "R":Reverse. Default is "H".
     #     C_UNDERLINE= :treatment of font style:4(UNDERLINE) for console version xe. Not supported for Linux version.
-    #                   &quot;H&quot;:HighIntensity, &quot;N&quot;:Ignore.  Default is &quot;N&quot;.
+    #                   &quot;H&quot;:HighIntensity, &quot;N&quot;:Ignore<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">, "R":Reverse</SPAN>.  Default is &quot;N&quot;.
     #     C_ITALIC   = :treatment of font style:5(or value of ITALIC_ESC parameter if used) for console version xe
-    #                   &quot;H&quot;:HighIntensity, &quot;N&quot;:Ignore.  Default is &quot;N&quot;.
+    #                   &quot;H&quot;:HighIntensity, &quot;N&quot;:Ignore<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">, "R":Reverse</SPAN>.  Default is &quot;N&quot;.
     #     G_BOLD     = :treatment of font style:1(BOLD) for GUI version xe(wxe,gxe)
-    #                   &quot;H&quot;:HighIntensity, &quot;Y&quot;:Bold, &quot;N&quot;:Ignore. Default is &quot;YH&quot;.
+    #                   &quot;H&quot;:HighIntensity, &quot;Y&quot;:Bold, &quot;N&quot;:Ignore<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">, "R":Reverse</SPAN>. Default is &quot;YH&quot;.
     #     G_UNDERLINE= :treatment of font style:4(UNDERLINE) for GUI version xe(wxe). Not supported for gxe.
-    #                   &quot;H&quot;:HighIntensity, &quot;Y&quot;:Underline, &quot;N&quot;:Ignore. Default is &quot;Y&quot;.
+    #                   &quot;H&quot;:HighIntensity, &quot;Y&quot;:Underline, &quot;N&quot;:Ignore<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">, "R":Reverse</SPAN>. Default is &quot;Y&quot;.
     #     G_ITALIC   = :treatment of font style:5(or value of ITALIC_ESC parameter if used) for GUI version xe(wxe,gxe)
-    #                   &quot;H&quot;:HighIntensity, &quot;Y&quot;:Italic, &quot;N&quot;. Default is &quot;Y&quot;.
+    #                   &quot;H&quot;:HighIntensity, &quot;Y&quot;:Italic, &quot;N&quot;:Ignore<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">, "R":Reverse</SPAN>. Default is &quot;Y&quot;.
     ### sample ###########################
     #
     #     SHCMD = &quot;g:\src\syntaxh\GnuWin32\bin\source-highlight --data-dir=g:\src\syntaxh\GnuWin32\share\source-highlight&quot;
@@ -300,7 +290,6 @@ a:hover{font-weight:bold;}-->
     #
     #####################################################################
     #SHCMD = &quot;g:\src\syntaxh\GnuWin32\bin\source-highlight --data-dir=g:\src\syntaxh\GnuWin32\share\source-highlight --style-file=esc.style&quot;   #see source highlight document
-    #SHCMDR= &quot;m:\vcobjmingw\xeshm.exe  --data-dir=g:\src\syntaxh\GnuWin32\share\source-highlight --style-file=esc.style&quot;
     #SHCMDA= &quot;d:\gnuwin32\WinHighlight\highlight.exe -q&quot;
      SHCMDA= '&quot;&quot;c:\Program Files\WinHighlight\highlight.exe&quot;&quot; -q --out-format=ansi'
     #SHCMDA= '/h/objlinux/up/sample/highlight-3.7/highlight -q --out-format=ansi -D /h/objlinux/up/sample/highlight-3.7 --add-config=/h/objlinux/up/sample/highlight-3.7'
@@ -642,7 +631,7 @@ a:hover{font-weight:bold;}-->
              47 white
 
 #endif  //W32 || LNX
-
 </SPAN></PRE>
+<PRE class="auto-style1">*** 2022/12/04</PRE>
 </BODY>
 </HTML>

@@ -1,8 +1,9 @@
-//*CID://+vbi3R~:                             update#=  138;       //+vbi3R~
+//*CID://+vbvfR~:                             update#=  141;       //~vbvfR~
 //*********************************************************************
 //* common routine hdr                                             //~v07uR~
 //*********************************************************************
-//vbi3:180211 supprt command history list                          //+vbi3I~
+//vbvf:221129 drop japanese comment for =0.2/0.3 when english mode //~vbvfI~
+//vbi3:180211 supprt command history list                          //~vbi3I~
 //vbf0:180109 WriteConsoleOutputW(used for cpu8 ligaturemode) shrinks line on Windows10(OK on XP),prohibit ligature on for Windows10//~vbf0I~
 //vb5b:160913 additional to vb54, DBCS space altch is changable by TAB cmd//~vb5bI~
 //vb54:160903 TAB cmd new option to set altch; TAB {on|off} [altch1 [altch2]]//~vb54I~
@@ -296,7 +297,7 @@ EXT UINT    Gotherstatus;                                          //~v79zI~
 #define     GOTHERS_NOUTF8       0x08        //no utf8 under utf env//~v7a5R~
 #define     GOTHERS_FORCEUCJ     0x10        //force EUC-JP  by /C parm//~v7acI~
 #define     GOTHERS_N9PARM       0x20        //n9 parm to force english//~va73I~
-#define     GOTHERS_CHLPOPUP     0x40        //CommandHistoryList popup at return from funccall,UCWreason is not avail becaquse Ppcw may be freeed//+vbi3I~
+#define     GOTHERS_CHLPOPUP     0x40        //CommandHistoryList popup at return from funccall,UCWreason is not avail becaquse Ppcw may be freeed//~vbi3I~
                                                                    //~v79zI~
 #define  XE_ISDBCS()            (Gotherstatus & GOTHERS_DBCS)  //all CJK dbcs including +UTF8//~v79zI~
 #define  XE_ISDBCSJ()           (Gotherstatus & GOTHERS_DBCSJ) //SJIS/EUC/+UTF8//~v79zR~
@@ -312,9 +313,11 @@ EXT UINT    Gotherstatus;                                          //~v79zI~
 	#define XE_ISDBCSKONJ()  ((Gotherstatus & GOTHERS_DBCSJ)&&(Gunxflag & GUNX_KON))//~v79zR~
 	#define XE_ISKONEUCJ()   (XE_ISEUCJ() && (Gunxflag & GUNX_KON))//~v7acR~
    #endif                                                          //~v79zI~
+	#define XE_NOT_ISDBCSJ_OR_N9()  (!XE_ISKONEUCJ() || (Gotherstatus & GOTHERS_N9PARM))//+vbvfR~
   #else                                                            //~v79zR~
 	#define XE_ISDBCSKON()   (Gotherstatus & GOTHERS_DBCS)         //~v79zR~
 	#define XE_ISDBCSKONJ()  XE_ISDBCSJ()                          //~v79zR~
+	#define XE_NOT_ISDBCSJ_OR_N9()  (!XE_ISDBCSKONJ() || (Gotherstatus & GOTHERS_N9PARM))//+vbvfR~
   #endif                                                           //~v79zR~
 #else  //!WCSUPP                                                   //~v79zI~
 	#define XE_ISDBCSKON()   (UCBITCHK(Gscrstatus,GSCRSDBCS))	//dbcs//~v79zR~

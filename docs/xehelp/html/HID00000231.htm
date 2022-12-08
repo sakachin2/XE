@@ -7,11 +7,15 @@
 <TITLE>User command</TITLE>
 <STYLE TYPE="text/css">
 <!--
-a:hover{font-weight:bold;}-->
+a:hover{font-weight:bold;}
+.auto-style1 {
+	margin-left: 4px;
+}
+-->
 </STYLE>
 </HEAD>
 <BODY bgcolor="#FFFFE2">
-<PRE><SPAN STYLE="color:#000000;font-size:12pt;">   .User command.
+<PRE class="auto-style1"><SPAN STYLE="color:#000000;font-size:12pt;">   .User command.
 
       Select option 0.1 on <a href="HID00000245.htm">MENU screen</a>, then set Command-Key.
                                                           <a href="HID00000247.htm">Chapter-(2)-(A3)</a>
@@ -30,21 +34,25 @@ a:hover{font-weight:bold;}-->
       User-Command-Key:
         last &quot;;&quot; means executes all command immediately.
         If not, string is put on command input line.
-#ifdef LNX
-        Do not assign from Alt+F1 to Alt+F6 which is used as Console
-        switching key.
-#endif
+        End-of-line comments follow &quot;#&quot;.
+        Both Windows and Linux have shortcut keys assigned for the system use,
+        xe cannot receive them
+        For wxe/gxe there are assignments for ruler (display thin line at cursor position),
+        default values are S+C+F1/F2/F3
 
       Shortcut-Key:
         &quot;Alt+q&quot; shows assigned string on header line for confirmation.
-        And next hit the same key(ex. &quot;A+q&quot;,&quot;0&quot;,&quot;0&quot;) will put string.
+        And next hit the same key(e.g. &quot;A+q&quot;,&quot;0&quot;,&quot;0&quot;) will put string at the cursor position.
         &quot;Alt+a&quot; on command input line, put string on command input line
         for execution by next Enter-key.
-
+        It is also possible to receive parameters from the command input line using %1 %2 ....
+        End-of-line comments follow &quot;#&quot;.
       Alias-cmd:
         3byte command verb and command string defines user command.
-        ex) ac1 e %1;c word1 word2 all;end
+        e.g) ac1 e %1;c word1 word2 all;end
             &quot;ac1 fnm1&quot; will execute 3 commands.
+        It can be commented out by setting the column to &quot;*&quot;.
+        End-of-line comments follow &quot;#&quot;.
 
       Parameter replacement using %n,%*,%^,%@ is supported.
         %1-%9:It is replaced by pre-entered words on command input line.
@@ -53,14 +61,10 @@ a:hover{font-weight:bold;}-->
         %^   :fullpath name currently opened on the other split screen.
         %@   :all remaining parameters not used by %n up to the position.
         %* and %^ is replaced to space if the screen is not file/dir panel.
-        ex) grep %1 %^&gt;::tmp; e ::tmp;
-</SPAN></PRE>
-<PRE><font size="3">          </font><SPAN STYLE="color:#000000;font-size:12pt;">Find.exe cmd is available on Windows 10 as alternative of grep.
-          Register cmd like as following.
-              gre c:\Windows\System32\find.exe %1 %2 %3 %4
-          Use it on =6 panel like s following. (Quotation is required for search word)
-              gre /N /I "search-word" c:\user\srctext
-
+        e.g) grep %1 %^&gt;::tmp; e ::tmp;
+ </SPAN></PRE>
+<PRE><font size="3"> </font><SPAN STYLE="color:#000000;font-size:12pt;"><SPAN STYLE="color:#000000;font-size:12pt;">       You will find the grep command for Windows in some Web-Site.
+</SPAN>
       <A href="HID00000300.htm">POS</A>/<A href="HID00000546.htm">HOM</A> command is for cursor movement.
       Starting cursor position is top of command input column.
       <A href="HID00000292.htm">KEY</A> command is for char input. Input on command input field is not effective.
@@ -79,6 +83,6 @@ a:hover{font-weight:bold;}-->
       (for OS/2 or GCC, once close by &quot;OPT CMDLOG OFF&quot;, then open ::cl)
       Edit line cmd <a href="HID00000706.htm">&quot;#/##&quot;</a>  is for executing commands on the lines of currently opened file.
 
-</SPAN></PRE>
+***2022/12/04</SPAN></PRE>
 </BODY>
 </HTML>

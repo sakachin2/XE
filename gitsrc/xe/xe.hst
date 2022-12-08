@@ -1,3 +1,88 @@
+//vbw4:221206 space was allowd for cid prefix from old version
+//           xefile4.c
+//vbw3:221205 accept cidtype by unicode fo cid on/clear cmd
+//           xefile4.c/h xefcmd3.c
+//vbw2:221205 (Bug of vbv6)cid on cmd for ext:unicode file,could not set non unicode cid  
+//           xefile4
+//vbw1:221205 (Bug of vbv6)cid chk match by data only. have to chk dbcs for DD fmt
+//           xefile4
+//vbw0:221203 (Bug)Shift+ was ignored with Ctrl+/Alt
+//           xekbd.c
+//vbvz:221203 (Bug)=0.1;missing set string terminater null
+//           xefile7.c
+//vbvy:221203 =0.1;do not show S+C+Pfn assigned.(It cause failure of cut and paste by mouse)
+//           xefile7.c
+//vbvx:221203 =0.2;not err but "No file" when xelinechxx is not found
+//           xefunct2.c
+//vbvw:221203 =0.1 comment by Japanese
+//           xefile7.c
+//vbvv:221203 =0.1 comment for user command, and comment support
+//           xefile7.c xekbd.c
+//vbvu:221202 win link err for xekbchk
+//           xekbchkl.h xekbchk.c
+//vbvt:221202 =0.2/=0.3 display code itself for default box char for japanese
+//           xefunc.h xefunct2.c xefunct.c xefile7.c
+//vbvs:221202 (BUG of vbvd)find cmd fail for =0.2(ULHdbcs setup required)
+//           xefile7.c
+//vbvr:221201 (BUG)whe deleted line of =0.2, it key is cleared and changed to cmd mode
+//           xefile7.c
+//vbvq:221201 (BUG)key ctr of the functbl is errornous when line of xe.ini was deleted. keep key with deleted sign.
+//           xeini.c
+//vbvp:221201 (BUG)FTkey index is not valid by Protected line(Fixed key assign)
+//           xefile7.c
+//vbvo:221201 show sample for sc cmd of =0.1
+//           xefile7.c xekbchk.c
+//vbvn:221201 (BUG)=0.1 shortcutkey cause err "not alphnum"
+//           xefile7.c/h
+//vbvm:221130 show alias sample line to 0.1 panel
+//           xefile7.c
+//vbvk:221130 0.1 alias cmd; allow line comment starting by #
+//           xefunc.c/h
+//vbvj:221130 change workdir to %USERPROFILE% (C:\Users\username) fo protection
+//           xe.c
+//vbvi:221130 (BUG)FTFLINECHSET:x20 is duplicated with DTUDUPACMD
+//           xefunc.c/h xefunct2.c file7.c xeini
+//vbvh:221130 =0.2; clear key did not update xe.ini 
+//           xefile7.c xe.ini
+//vbvg:221130 LNX compiler warning
+//           xe.c xe3270.c
+//vbvf:221129 drop japanese comment for =0.2/0.3 when english mode
+//           xefile7.c xe.c/h xefunc.c xekbchk.c
+//vbve:221126 change Default SJIS linechar from old(<0x20) to DBCS
+//           xefuct2.c xefunct.h
+//vbvd:221125 on 0.2/0.3 display hex/sjis string by utf8 avoiding line err(lineno green)
+//           xefuct2.c
+//vbvc:221125 functbl search miss to search english linechar because same funcid
+//           xefuct2.c xefunct.c/h
+//vbvb:221125 opt 0.2/0.3 as utf8 file for utf8 graphic char display
+//           xefile7.c xefunct2.c
+//vbva:221125 (Bug)cid on //,cid clear apl,sav-->update line cid remains apl; it should be //
+//           xefile4.c
+//vbv9:221124 add cid type apl for extension=.apl
+//           xefile4.c/h xefile.h xeini2.c
+//vbv8:221123 (Bug)output same graphic char by Ctl+Pad1(locale assigned but utf8 not assigned) after Alt+Shift+1(UTF8 assigned by xelchwxe.ini).
+//            A+S+1 output UTF8 string and next C+Pad1 also output same utf8 string.
+//            Caused by missing clear UCWF2UTF7STR.
+//           xekebd.c
+//vbv7:221123 set default line char by utf8 when Shift+
+//           xefunct2.c
+//vbv6:221121 add NOAPPEND to CID cmd
+//           xefcmd3.c
+//vbv6:221121 support unicode cid (length>2)
+//            APL cid prefix;APL comment is u-235d. CID top -->cid on 1st line frmat error(it should be ascii for UTF8 file).
+//            AND cid on prefix --> xx is not valid CID type
+//            suport utf8 3 byte
+//           xefile4.c/h xefile.h
+//vbv5:221120 warning /g/src/xe/xedir2.c:1812:49: warning: "%12s" directive writing between 12 and 15 bytes into a region of size 8 [-Wformat-overflow=]
+//           xedir2.c 
+//vbv4:221120 UTSSTART/UTSEND was made NOP by ftime deprecation; so timeb is became unused
+//           gxeview.c xxescr.c
+//vbv2:221119 SyntaxHighlight;add option trate underline as reverse by C_UNDERLINE=R and G_UNDERLINE=R
+//           xesyn2.c/h wxedef.h
+//vbv1:221118 SyntaxHighlight;support reverse attr
+//           xesyn2.c/h
+//vbv0:221118 (Bug)SyntaxHighlight;when default BG is specified, it override source-hightlight bg color
+//           xesyn2.c
 //*********  20201224 v129S release  *******************************
 //vbu1:201222 (LNX)On Manjaro/XFCE;following warning by gtk_application_is_inhibited()
 //             Gtk-Warning Calling org.xfce.Session.Manager IsInhibited failed: GDBus.Error.UnknownMethod:No such Method "IsInhibited"

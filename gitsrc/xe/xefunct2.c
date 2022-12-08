@@ -1,8 +1,16 @@
-//*CID://+vb7rR~:                             update#=  433;       //~vb7rR~
+//*CID://+vbvxR~:                             update#=  516;       //+vbvxR~
 //*************************************************************
 //*xefunct2.c
 //* graphic char setup
 //*************************************************************
+//vbvx:221203 =0.2;not err but "No file" when xelinechxx is not found//+vbvxI~
+//vbvt:221202 =0.2/=0.3 display code itself for default box char for japanese//~vbvtI~
+//vbvi:221130 (BUG)FTFLINECHSET:x20 is duplicated with DTUDUPACMD  //~vbviI~
+//vbve:221126 change Default SJIS linechar from old(<0x20) to DBCS //~vbveI~
+//vbvd:221125 on 0.2/0.3 display hex/sjis string by utf8 avoiding line err(lineno green)//~vbvdI~
+//vbvc:221125 functbl search miss to search english linechar because same funcid//~vbvcI~
+//vbvb:221125 opt 0.2/0.3 as utf8 file for utf8 graphic char display//~vbvbI~
+//vbv7:221123 set default line char by utf8 when Shift+            //~vbv7I~
 //vb7r:170127 (Bug)crush by bug of ulib:v6Hv(Slocale was corrupted)//~vb7rI~
 //vb47:160722 treate col1="#" as comment line of linech.ini        //~vb47I~
 //vb46:160722 issue warning linech.ini was used                    //~vb46I~
@@ -65,6 +73,7 @@
 #include "xeutf2.h"                                                //~vb2uI~
 //**************************************************
 #define LINECHFILE   "xelch"
+//#define GRAPH_ENGLISH "(E)"                                      //~vbveR~
 
 //**************************************************
 //**************************************************
@@ -78,6 +87,7 @@ int funct2fmterr(char *Ppc);
 int funct2getnextinputgcUTF8(PUCLIENTWE Ppcw,char *Pinput,void *Ppkeyinf);//~vb2uI~
 int funct2kbdsimutf8(int Popt,char *Putf8,int Plen,PKBDKEYINFO Ppkinfo);//~vb2uI~
 int funct2saveforerrmsg(int Popt,PUCLIENTWE Ppcw,char *Ppu8,int Pu8len);//~vb2uI~
+int funct2utf8init_DefaultShift(void);                             //~vbv7I~
 //static	char Sdefaultfnm[32]=WORKDIRPATHID LINECHFILE;         //~vb7rR~
 static	char Sdefaultfnm[64]=WORKDIRPATHID LINECHFILE;             //~vb7rI~
 static	char Slinechfnm[_MAX_PATH];
@@ -135,7 +145,7 @@ int funct2init(int Popt,char *Pinifnm)
 #endif
 //      strcpy(Sdefaultfnm,fnm);                                   //~vb7rR~
 //  	strcpy(Slinechfnm,fnm);	//selected file                    //~vb7rR~
-        UstrncpyZ(Sdefaultfnm,fnm,sizeof(Sdefaultfnm));            //+vb7rR~
+        UstrncpyZ(Sdefaultfnm,fnm,sizeof(Sdefaultfnm));            //~vb7rR~
     	UstrncpyZ(Slinechfnm,fnm,sizeof(Slinechfnm));	           //~vb7rI~
     }
 	if (!Popt)	//initial start
@@ -146,6 +156,7 @@ int funct2init(int Popt,char *Pinifnm)
 #endif
 #endif
         ;                                                          //~v70mI~
+    	funct2utf8init_DefaultShift();                             //~vbv7I~
 	}
 //*open parm file
     filefullpath(fpath,fnm,sizeof(fpath));
@@ -154,6 +165,7 @@ int funct2init(int Popt,char *Pinifnm)
         if (Popt)	//not init
     		uerrmsg("LINECH file(%s) not found",0,
     					fnm);
+		Slinechferr=2;                                             //+vbvxI~
         return 0;
     }
 	strcpy(Slinechfnm,fnm);	//selected file
@@ -188,6 +200,7 @@ int funct2init(int Popt,char *Pinifnm)
                     	fnm);
     }
 	Slinechferr=0;
+    UTRACED("funct2init Slchtb",Slchtb,sizeof(Slchtb));            //~vbv7I~
     return 1;
 }//funct2init
 //**************************************************
@@ -212,6 +225,9 @@ int funct2getfnm(char *Pout,int Plen)
     {
     	memcpy(pout,pc,(UINT)len);
 	    pout+=len; rlen-=len;
+        if (Slinechferr==2)	//err                                  //+vbvxI~
+        	pc=" * NoFile ";                                       //+vbvxI~
+        else                                                       //+vbvxI~
         if (Slinechferr)	//err
         	pc=" * ERR ";
         else
@@ -229,7 +245,7 @@ int funct2getfnm(char *Pout,int Plen)
 #ifdef XXEACS
 #ifdef XXE
 //**************************************************
-//*setup defauklt utf8 display code                *
+//*setup default utf8 display code for GXE               *         //~vbv7R~
 //**************************************************
 int funct2utf8init(void)
 {
@@ -255,32 +271,156 @@ int funct2utf8init(void)
   		pft=functblsrch(funcid);
     	if (!pft)
 			continue;
-        if (UCBITCHK(pft->FTflag,FTFLINECHSET))
+//      if (UCBITCHK(pft->FTflag,FTFLINECHSET))                    //~vbviR~
+        if (UCBITCHK(pft->FTflag2,FTF2LINECHSET))                  //~vbviR~
             continue;
-        UCBITON(pft->FTflag,FTFLINECHSET);
+//      UCBITON(pft->FTflag,FTFLINECHSET);                         //~vbviR~
+        UCBITON(pft->FTflag2,FTF2LINECHSET);                       //~vbviR~
+        UTRACEP("%s:set FTF2LINECHSET namee=%s\n",UTT,pft->FTnamee);//~vbvcR~//~vbviR~
         len=strlen(graphchutfcode[ii]);
 	    plcht->LCTonoff[0].LCSflag|=LCSFHEXDATA;
         plcht->LCTonoff[0].LCSlen=len;
         memcpy(plcht->LCTonoff[0].LCSdata,graphchutfcode[ii],(UINT)len);
+                                                                   //~vbvcI~
+  		pft=functblsrch2nd(funcid,pft);                            //~vbvcI~
+    	if (!pft)                                                  //~vbvcI~
+			continue;                                              //~vbvcI~
+//      if (UCBITCHK(pft->FTflag,FTFLINECHSET))                    //~vbvcI~//~vbviR~
+        if (UCBITCHK(pft->FTflag2,FTF2LINECHSET))                  //~vbviI~
+            continue;                                              //~vbvcI~
+//      UCBITON(pft->FTflag,FTFLINECHSET);                         //~vbvcI~//~vbviR~
+        UCBITON(pft->FTflag2,FTF2LINECHSET);                       //~vbviI~
+        UTRACEP("%s:set FTF2LINECHSET namee=%s\n",UTT,pft->FTnamee);//~vbvcR~//~vbviR~
     }
     return 0;
 }//funct2utf8init
 #endif
-//**************************************************
-//*get utf display string by ll+strz fmt tbl
-//**************************************************
-int funct2getdisplaystrtb(int *Pplentb,char **Ppaddrtb)
-{
-    int ii;
-//****************
-	for (ii=0;ii<GRAPHKEYENTNO;ii++)
-    {
-        *Ppaddrtb++=Slchtb[ii].LCTonoff[0].LCSdata;
-        *Pplentb++=Slchtb[ii].LCTonoff[0].LCSlen;
-    }
-    return 0;
-}//funct2getdisplaystrtb
 #endif
+//**************************************************               //~vbveI~
+//*setup default utf8 display code   //doble line char             *//~vbveI~
+//**************************************************               //~vbveI~
+int funct2utf8init_DefaultShiftDBCS(void)                          //~vbveI~
+{                                                                  //~vbveI~
+	UCHAR *graphchutfcodeDBCS[GRAPHKEYENTNO]={                     //~vbveR~
+#ifdef LNX               //by EUCJP                                //~vbveI~
+    			"\xa8\xb1", 	//1 :LLC low,left ,corner          //~vbveR~
+    			"\xa8\xb5", 	//2 :LHS low,horz ,stopper         //~vbveI~
+    			"\xa8\xb0", 	//3 :LRC low,right,corner          //~vbveI~
+    			"\xa8\xb2", 	//4 :LVS low,vert ,stopper         //~vbveI~
+    			"\xa8\xb6", 	//5 :CX  center                    //~vbveI~
+    			"\xa8\xb4", 	//6 :RVS rig,vert ,stopper         //~vbveI~
+    			"\xa8\xae", 	//7 :ULC up ,left ,corner          //~vbveI~
+    			"\xa8\xb3", 	//8 :UHS up ,horz ,stopper         //~vbveI~
+    			"\xa8\xaf", 	//9 :URC up ,right,corner          //~vbveI~
+    			"\xa8\xac", 	//10:HL      horz ,line            //~vbveI~
+    			"\xa8\xad"}; 	//11:VL      vert ,line            //~vbveI~
+#else                                                              //~vbveI~
+    			"\x84\xaf", 	//1 :LLC low,left ,corner          //~vbveI~
+    			"\x84\xb3", 	//2 :LHS low,horz ,stopper         //~vbveI~
+    			"\x84\xae", 	//3 :LRC low,right,corner          //~vbveI~
+    			"\x84\xb0", 	//4 :LVS low,vert ,stopper         //~vbveI~
+    			"\x84\xb4", 	//5 :CX  center                    //~vbveI~
+    			"\x84\xb2", 	//6 :RVS rig,vert ,stopper         //~vbveI~
+    			"\x84\xac", 	//7 :ULC up ,left ,corner          //~vbveI~
+    			"\x84\xb1", 	//8 :UHS up ,horz ,stopper         //~vbveI~
+    			"\x84\xad", 	//9 :URC up ,right,corner          //~vbveI~
+    			"\x84\xaa", 	//10:HL      horz ,line            //~vbveI~
+    			"\x84\xab"}; 	//11:VL      vert ,line            //~vbveI~
+#endif                                                             //~vbveI~
+	int funcid,ii,len;                                             //~vbveI~
+    PLINECHTB plcht;                                               //~vbveI~
+    FUNCTBL *pft;                                                  //~vbveI~
+//****************                                                 //~vbveI~
+	plcht=Slchtb;                                                  //~vbveI~
+	for (ii=0,funcid=FUNCID_GRAPHCHAR+1;funcid<=FUNCID_GRAPHCHAR_VL;funcid++,ii++,plcht++)//~vbveI~
+    {                                                              //~vbveI~
+  		pft=functblsrch(funcid);                                   //~vbveI~
+    	if (!pft)                                                  //~vbveI~
+			continue;                                              //~vbveI~
+//      if (UCBITCHK(pft->FTflag2,FTF2LINECHSET))                    //~vbveR~//~vbviR~
+//          continue;                                              //~vbveR~
+//      UCBITON(pft->FTflag,FTFLINECHSET);                         //~vbveI~//~vbviR~
+        UCBITON(pft->FTflag2,FTF2LINECHSET);                       //~vbviI~
+        UCBITON(pft->FTflag3,FTF3LINECHSETJP);                     //~vbvtI~
+        UTRACEP("%s:set FTF2LINECHSET namee=%s\n",UTT,pft->FTnamee);//~vbveI~//~vbviR~
+        len=2;                                                     //~vbveR~
+	    plcht->LCTonoff[0].LCSflag|=LCSFHEXDATA|LCSFSJIS;          //~vbveR~
+        plcht->LCTonoff[0].LCSlen=len;                             //~vbveI~
+        memcpy(plcht->LCTonoff[0].LCSdata,graphchutfcodeDBCS[ii],(size_t)len);//~vbveR~
+		setdbcstbl(plcht->LCTonoff[0].LCSdata,plcht->LCTonoff[0].LCSdbcs,len);//~vbveR~
+    }                                                              //~vbveI~
+    UTRACED("fuct2utf8init_DefaultShiftDBCS Slchtb",Slchtb,sizeof(Slchtb));//~vbveI~
+    return 0;                                                      //~vbveI~
+}//funct2utf8init                                                  //~vbveI~
+//**************************************************               //~vbv7M~
+//*setup default utf8 display code   //doble line char             *//~vbv7M~
+//**************************************************               //~vbv7M~
+int funct2utf8init_DefaultShift(void)                              //~vbv7M~
+{                                                                  //~vbv7M~
+	UCHAR *graphchutfcodeU8[GRAPHKEYENTNO]={                       //~vbv7M~
+    			"\xe2\x95\x9a", 	//1 :LLC low,left ,corner   u255a//~vbv7M~
+    			"\xe2\x95\xa9", 	//2 :LHS low,horz ,stopper  u2569//~vbv7M~
+    			"\xe2\x95\x9d", 	//3 :LRC low,right,corner   u255d//~vbv7M~
+    			"\xe2\x95\xa0", 	//4 :LVS low,vert ,stopper  u2560//~vbv7M~
+    			"\xe2\x95\xac", 	//5 :CX  center             u256c//~vbv7M~
+    			"\xe2\x95\xa3", 	//6 :RVS rig,vert ,stopper  u2563//~vbv7M~
+    			"\xe2\x95\x94", 	//7 :ULC up ,left ,corner   u2554//~vbv7M~
+    			"\xe2\x95\xa6", 	//8 :UHS up ,horz ,stopper  u2566//~vbv7M~
+    			"\xe2\x95\x97", 	//9 :URC up ,right,corner   u2557//~vbv7M~
+    			"\xe2\x95\x90", 	//10:HL      horz ,line     u2550//~vbv7M~
+    			"\xe2\x95\x91"}; 	//11:VL      vert ,line     u2551//~vbv7M~
+	int funcid,ii,len;                                             //~vbv7M~
+    PLINECHTB plcht;                                               //~vbv7M~
+    FUNCTBL *pft;                                                  //~vbv7M~
+//****************                                                 //~vbv7M~
+	plcht=Slchtb;                                                  //~vbv7M~
+	for (ii=0,funcid=FUNCID_GRAPHCHAR+1;funcid<=FUNCID_GRAPHCHAR_VL;funcid++,ii++,plcht++)//~vbv7M~
+    {                                                              //~vbv7M~
+  		pft=functblsrch(funcid);                                   //~vbv7M~
+    	if (!pft)                                                  //~vbv7M~
+			continue;                                              //~vbv7M~
+//      if (UCBITCHK(pft->FTflag,FTFLINECHSET))                    //~vbv7M~//~vbviR~
+        if (UCBITCHK(pft->FTflag2,FTF2LINECHSET))                  //~vbviI~
+            continue;                                              //~vbv7M~
+//      UCBITON(pft->FTflag,FTFLINECHSET);                         //~vbv7M~//~vbviR~
+        UCBITON(pft->FTflag2,FTF2LINECHSET);                       //~vbviI~
+        UTRACEP("%s:set FTF2LINECHSET namee=%s\n",UTT,pft->FTnamee);//~vbvcR~//~vbviR~
+        len=(int)strlen(graphchutfcodeU8[ii]);                     //~vbv7R~
+	    plcht->LCTonoff[1].LCSflag|=LCSFU8DATA;  //1:with +Shift   //~vbv7R~
+        len=(int)strlen(graphchutfcodeU8[ii]);                     //~vbv7R~
+        plcht->LCTonoff[1].LCSlen=len;                             //~vbv7I~
+        memcpy(plcht->LCTonoff[1].LCSdata,graphchutfcodeU8[ii],(size_t)len);//~vbv7R~
+		setdbcstbl(plcht->LCTonoff[1].LCSdata,plcht->LCTonoff[1].LCSdbcs,len);//~vbv7R~
+        UTRACEP("%s:set FTF2LINECHSET 1st  namee=%s\n",UTT,pft->FTnamee);//~vbveI~//~vbviR~
+                                                                   //~vbvcI~
+  		pft=functblsrch2nd(funcid,pft);                            //~vbvcI~
+    	if (!pft)                                                  //~vbvcI~
+			continue;                                              //~vbvcI~
+//      if (UCBITCHK(pft->FTflag,FTFLINECHSET))                    //~vbvcI~//~vbviR~
+        if (UCBITCHK(pft->FTflag2,FTF2LINECHSET))                  //~vbviI~
+            continue;                                              //~vbvcI~
+//      UCBITON(pft->FTflag,FTFLINECHSET);                         //~vbvcI~//~vbviR~
+        UCBITON(pft->FTflag2,FTF2LINECHSET);                       //~vbviI~
+        UTRACEP("%s:set FTF2LINECHSET 2nd namee=%s\n",UTT,pft->FTnamee);//~vbvcR~//~vbveR~//~vbviR~
+    }                                                              //~vbv7M~
+    funct2utf8init_DefaultShiftDBCS();                             //~vbveR~
+    UTRACED("fuct2utf8init_DefaultShift Slchtb",Slchtb,sizeof(Slchtb));//~vbv7I~
+    return 0;                                                      //~vbv7M~
+}//funct2utf8init                                                  //~vbv7M~
+//**************************************************               //~vbv7M~
+//*get utf display string by ll+strz fmt tbl                       //~vbv7M~
+//**************************************************               //~vbv7M~
+int funct2getdisplaystrtb(int *Pplentb,char **Ppaddrtb)            //~vbv7M~
+{                                                                  //~vbv7M~
+    int ii;                                                        //~vbv7M~
+//****************                                                 //~vbv7M~
+	for (ii=0;ii<GRAPHKEYENTNO;ii++)                               //~vbv7M~
+    {                                                              //~vbv7M~
+        *Ppaddrtb++=Slchtb[ii].LCTonoff[0].LCSdata;                //~vbv7M~
+        *Pplentb++=Slchtb[ii].LCTonoff[0].LCSlen;                  //~vbv7M~
+    }                                                              //~vbv7M~
+    return 0;                                                      //~vbv7M~
+}//funct2getdisplaystrtb                                           //~vbv7M~
 #ifdef LNX
 //**************************************************
 //*get utf display string by ll+strz fmt tbl
@@ -508,15 +648,41 @@ int funct2setuplinechsub(int Popdno,char **Ppargc)
 		setdbcstbl(lcht.LCTonoff[0].LCSdata,lcht.LCTonoff[0].LCSdbcs,len1);
     if (len2)
 		setdbcstbl(lcht.LCTonoff[1].LCSdata,lcht.LCTonoff[1].LCSdbcs,len2);
+    UTRACED("lcht",&lcht,sizeof(lcht));
 	memcpy(Slchtb+idx,&lcht,sizeof(lcht));
     pft=functblsrch(idx+FUNCID_GRAPHCHAR+1);
     if (pft)
     {
         if (len1||len2)
-        	UCBITON(pft->FTflag,FTFLINECHSET);
+        {                                                          //~vbvcI~
+//      	UCBITON(pft->FTflag,FTFLINECHSET);                     //~vbviR~
+        	UCBITON(pft->FTflag2,FTF2LINECHSET);                   //~vbviI~
+	        UTRACEP("%s:set FTF2LINECHSET namee=%s\n",UTT,pft->FTnamee);//~vbvcR~//~vbviR~
+        }                                                          //~vbvcI~
         else
-        	UCBITOFF(pft->FTflag,FTFLINECHSET);
+        {                                                          //~vbvcI~
+//      	UCBITOFF(pft->FTflag,FTFLINECHSET);                    //~vbviR~
+        	UCBITOFF(pft->FTflag2,FTF2LINECHSET);                  //~vbviI~
+	        UTRACEP("%s:reset FTF2LINECHSET namee%s=\n",UTT,pft->FTnamee);//~vbvcR~//~vbviR~
+        }                                                          //~vbvcI~
+        pft=functblsrch2nd(idx+FUNCID_GRAPHCHAR+1,pft);            //~vbvcI~
+        if (pft)                                                   //~vbvcI~
+        {                                                          //~vbvcI~
+            if (len1||len2)                                        //~vbvcI~
+            {                                                      //~vbvcI~
+//              UCBITON(pft->FTflag,FTFLINECHSET);                 //~vbvcI~//~vbviR~
+                UCBITON(pft->FTflag2,FTF2LINECHSET);               //~vbviI~
+	        	UTRACEP("%s:set FTF2LINECHSET namee=%s\n",UTT,pft->FTnamee);//~vbvcR~//~vbviR~
+            }                                                      //~vbvcI~
+            else                                                   //~vbvcI~
+            {                                                      //~vbvcI~
+//              UCBITOFF(pft->FTflag,FTFLINECHSET);                //~vbvcI~//~vbviR~
+                UCBITOFF(pft->FTflag2,FTF2LINECHSET);              //~vbviI~
+	        	UTRACEP("%s:reset FTF2LINECHSET namee=%s\n",UTT,pft->FTnamee);//~vbvcR~//~vbviR~
+            }                                                      //~vbvcI~
+        }                                                          //~vbvcI~
     }
+    UTRACED("Slchtb",Slchtb,sizeof(Slchtb));
 	return 0;
 }//funct2setuplinech
 //***********************************************************************//~vb2uI~
@@ -550,15 +716,43 @@ int funct2printu8data(int Popt,char *Pu8,int Pu8len,char *Pout)    //~vb2uI~
         ii-=u8chlen;                                               //~vb2uI~
     }                                                              //~vb2uI~
     *pco++='(';                                                    //~vb2uI~
+  if (Popt)	//utf8 file mode                                       //~vbvbI~
+  {                                                                //~vbvbI~
+    memcpy(pco,Pu8,(size_t)Pu8len);                                //~vbvbI~
+    pco+=Pu8len;                                                   //~vbvbI~
+  }                                                                //~vbvbI~
+  else                                                             //~vbvbI~
+  {                                                                //~vbvbI~
     opt=UTFCVO_ERRREP|(XEUTF_ERRREPCH<<8);                         //~vb2uR~
     utfcvf2l(opt,pco,Pu8,Pu8len,0/*chklen*/,&outlen,0/*Ppcharwidth*/);//~vb2uR~
     pco+=outlen;                                                   //~vb2uI~
+  }                                                                //~vbvbI~
     *pco++=')';                                                    //~vb2uI~
     outlen=(int)PTRDIFF(pco,Pout);                                 //~vb2uR~
     return outlen;                                                 //~vb2uI~
 }//funct2printu8data                                               //~vb2uI~
+//***********************************************************************//~vbvdI~
+//*print hex or local data for file7:fkt                           //~vbvdI~
+//*opt:0 hex, 1:lc string                                          //~vbvdI~
+//************************************************************************//~vbvdI~
+int funct2printlcdata(int Popt,char *Pout,char *Pinp,int Plen)     //~vbvdI~
+{                                                                  //~vbvdI~
+    UCHAR *poutwk;                                                 //~vbvdI~
+    int outlen,opt,len;                                            //~vbvdR~
+//  char *pco;                                                     //~vbvdI~//~vbveR~
+//**********************                                           //~vbvdI~
+//  pco=Pout;                                                      //~vbvdI~//~vbveR~
+	len=Plen;                                                      //~vbvdI~
+    opt=0;                                                         //~vbvdR~
+	xeutf_cvdata(opt,Pinp,len,&poutwk,&outlen);//locale-->utf8    //~vbvdI~//~vbveR~
+    memcpy(Pout,poutwk,(UINT)outlen);                              //~vbvdI~
+    UTRACED("Pout",Pout,outlen);                                   //~vbvdI~
+    return outlen;                                                 //~vbvdI~
+}//funct2printlcdata                                               //~vbvdI~
 //***********************************************************************
 //*setup fkct line data
+//*opt:0x02 fk file UTF8                                           //~vbvdI~
+//*opt:0x01 on:Eng, on Jpn comment                                 //~vbvdI~
 //************************************************************************
 //int funct2getlinechstr(int Popt,FUNCTBL *Ppft,char *Pout)        //~vb2AR~
 int funct2getlinechstr(int Popt,FUNCTBL *Ppft,char *Pout,int Pbuffsz)//~vb2AI~
@@ -568,12 +762,23 @@ int funct2getlinechstr(int Popt,FUNCTBL *Ppft,char *Pout,int Pbuffsz)//~vb2AI~
     int ii,jj,ch,len;
     char wkbuff[MAXSTRINPUT*6]; //0x____(cc) or u-xxxx,uyyyy(uuvv) //~vb2AI~
     int outlen;                                                    //~vb2AR~
+    int charwidth;                                                 //~vbvtI~
 //*************************
+	UTRACEP("%s:opt=%d,FTnamee=%s\n",UTT,Popt,Ppft->FTnamee);      //~vbvdR~
     pco=Pout;
     plcht=Slchtb+(Ppft->FTfuncid-(FUNCID_GRAPHCHAR+1));
-    if (!Popt)	//FTnamee print(max 3 byte area by hex)
+//  if (!Popt)	//FTnamee print(max 3 byte area by hex)            //~vbvdR~
+    if (!(Popt&0x01))	//FTnamee print(max 3 byte area by hex)    //~vbvdI~
     {
         len=plcht->LCTonoff[0].LCSlen;
+		UTRACEP("%s:len=%d,LCSdata=x%x,LCSflag=x%x\n",UTT,len,*plcht->LCTonoff[0].LCSdata,plcht->LCTonoff[0].LCSflag);//~vbvtR~
+        if (UCBITCHK(plcht->LCTonoff[0].LCSflag,LCSFSJIS))	//japanese only//~vbveI~
+//      	if (!memcmp(Ppft->FTnamee,GRAPH_ENGLISH,3))            //~vbveR~
+        	if (Ppft->FTflag & FTFEONLY)                           //~vbveI~
+            {                                                      //~vbveI~
+		  		len=0;	//call fuct2printlcdata                    //~vbveI~
+            }                                                      //~vbveI~
+		UTRACEP("%s:len=%d\n",UTT,len);                            //~vbvtI~
         if (len==1)
         {
         	pc=plcht->LCTonoff[0].LCSdata;
@@ -581,20 +786,63 @@ int funct2getlinechstr(int Popt,FUNCTBL *Ppft,char *Pout,int Pbuffsz)//~vb2AI~
         	pco++;
         	CH2HEXU(ch,pco);
         	pco+=3;
+          if (Popt & 0x02)                                         //~vbvdI~
+          {                                                        //~vbvtI~
+//			funct2printlcdata(0/*Hex*/,pco,pc,1);                  //~vbvtR~
+  			outlen=funct2printlcdata(0/*Hex*/,pco,pc,1);           //~vbvtR~
+			UTRACEP("%s:after funct2printlcdata outlen=%d\n",UTT,outlen);//~vbvtI~
+            *(pco+1)=' ';                                          //~vbvtR~
+            outlen+=5;                                             //~vbvtI~
+          }                                                        //~vbvtI~
+          else                                                     //~vbvdI~
+          {                                                        //~vbvtI~
         	*pco=(char)ch;                                         //~v70mR~
+            outlen=5;                                              //~vbvtR~
+          }                                                        //~vbvtI~
+//        outlen=5;                                                //~vbvtR~
+			UTRACEP("%s:outlen=%d\n",UTT,outlen);                  //~vbvtI~
         }
         else
         {
         	if (len)	//both specified
-	        	memcpy(pco,"StrKey",6);
+            {                                                      //~vbvdI~
+              if (UCBITCHK(Ppft->FTflag3,FTF3LINECHSETJP))	       //~vbvtI~
+              {                                                    //~vbvtI~
+        		len=plcht->LCTonoff[0].LCSlen;                     //~vbvtR~
+    			utfcvl2f(0,pco,plcht->LCTonoff[0].LCSdata,0/*init offs*/,len,0/*out choftbl*/,0/*out dbcstbl*/,0/*chklen*/,&outlen/*outlen*/,0/*pcharcnt*/,&charwidth);//~vbvtR~
+         		memset(pco+outlen,' ',(UINT)(6-charwidth));        //~vbvtR~
+                outlen+=6-charwidth;                               //~vbvtR~
+	    		UTRACEP("%s:outlen=%d,charwidth=%d\n",UTT,outlen,charwidth);//~vbvtR~
+              }                                                    //~vbvtI~
+              else                                                 //~vbvtI~
+              {                                                    //~vbvtI~
+//          	memcpy(pco,"StrKey",6);                            //~vbveR~
+            	memcpy(pco,"StrKy ",6);                            //~vbveI~
+//              len=6;                                             //~vbvdR~
+                outlen=6;                                          //~vbvdI~
+              }                                                    //~vbvtI~
+            }                                                      //~vbvdI~
+            else                                                   //~vbvdI~
+            {                                                      //~vbvtI~
+				outlen=4+funct2printlcdata(0/*Hex*/,pco+4,&(Ppft->FTchar),1);//~vbvdR~
+                *(pco+4+outlen)=' ';                               //~vbvtI~
+                outlen++;                                          //~vbvtI~
+            }                                                      //~vbvtI~
         }
-        return 0;
+	    UTRACED("Pout",Pout,outlen);                               //~vbvdR~
+        return outlen;                                             //~vbvdR~
     }
 //fill FTnamej print area
     pco=wkbuff;                                                    //~vb2AI~
     for (jj=0;jj<2;jj++)
     {
         len=plcht->LCTonoff[jj].LCSlen;
+        if (UCBITCHK(plcht->LCTonoff[jj].LCSflag,LCSFSJIS))	//japanese only//~vbveR~
+//      	if (!memcmp(Ppft->FTnamee,GRAPH_ENGLISH,3))            //~vbveR~
+        	if (Ppft->FTflag & FTFEONLY)                           //~vbveI~
+            {                                                      //~vbveI~
+		  		len=0;	//call fuct2printlcdata                    //~vbveI~
+            }                                                      //~vbveI~
         if (len)
         {
             pc0=plcht->LCTonoff[jj].LCSdata;
@@ -609,18 +857,21 @@ int funct2getlinechstr(int Popt,FUNCTBL *Ppft,char *Pout,int Pbuffsz)//~vb2AI~
                     pco+=2;
                 }
                 *pco++='(';
-                memcpy(pco,pc0,(UINT)len);
+//              memcpy(pco,pc0,(UINT)len);                         //~vbvdR~
+				len=funct2printlcdata(0/*Hex*/,pco,pc0,len);       //~vbvdR~
                 pco+=len;
                 *pco++=')';
             }
             else
             if (plcht->LCTonoff[jj].LCSflag & LCSFU8DATA)          //~vb2uI~
             {                                                      //~vb2uI~
-                pco+=funct2printu8data(0,pc0,len,pco);             //~vb2uI~
+//              pco+=funct2printu8data(0,pc0,len,pco);             //~vb2uI~//~vbvbR~
+                pco+=funct2printu8data((Popt & 0x02),pc0,len,pco); //0x02 utf8file mode//~vbvbI~
             }                                                      //~vb2uI~
             else                                                   //~vb2uI~
             {
-                memcpy(pco,pc0,(UINT)len);
+//              memcpy(pco,pc0,(UINT)len);                         //~vbvdR~
+				len=funct2printlcdata(1/*localeString*/,pco,pc0,len);//~vbvdI~
                 pco+=len;
             }
         }
@@ -638,6 +889,7 @@ int funct2getlinechstr(int Popt,FUNCTBL *Ppft,char *Pout,int Pbuffsz)//~vb2AI~
     outlen=PTRDIFF(pco,wkbuff);                                    //~vb2AR~
     outlen=min(Pbuffsz,outlen);                                    //~vb2AI~
     memcpy(Pout,wkbuff,(size_t)outlen);                            //~vb2AI~
+    UTRACED("Pout",Pout,outlen);                                   //~vbvdI~
     return outlen;                                                 //~vb2AI~
 }//funct2getlinechstr
 //***********************************************************************
@@ -671,6 +923,7 @@ static int Swarningsw[2];
 #endif
     acsoff1=acsoff;     //save for the case 1st is err by DBCS 1st byte//~v79SI~
     len=plcht->LCTonoff[acsoff].LCSlen;
+    UTRACEP("%s:UCWkeyshift=x%x,scsoff=%d,len=%d\n",UTT,Ppcw->UCWkeyshift,acsoff,len);
     if (!len)
     {
     	if (plcht->LCTonoff[!acsoff].LCSlen)
@@ -708,6 +961,7 @@ static int Swarningsw[2];
     }                                                              //~v79RI~
     pc=plcht->LCTonoff[acsoff].LCSdata;
     pcd=plcht->LCTonoff[acsoff].LCSdbcs;
+    UTRACEP("%s:pc=%s,pcd=%p=x%x,acsoff=%d,len=%d\n",UTT,pc,pcd,*pcd,acsoff,len);
     if (len==1)
     {
     	Ppcw->UCWkeydata[0]=*pc;
@@ -741,6 +995,7 @@ static int Swarningsw[2];
     }                                                              //~vb2yR~
     memcpy(Gstrinput,pc,(UINT)len);                                //~v70mR~
     memcpy(Gstrinputdbcs,pcd,(UINT)len);                           //~v70mR~
+    UTRACEP("%s:Gstrinput=%s,Gstrinputdbcs=%p=x%x,acsoff=%d,len=%d\n",UTT,pc,pcd,*pcd,acsoff,len);
     return -1;
 }//funct2getinputgc
 //***********************************************************************
@@ -857,7 +1112,7 @@ UTRACED("Gstrinput",Gstrinput,(int)strlen(Gstrinput));             //~vb2uR~
 	Gstrinputlen-=len;                                             //~vb2uI~
     if (Gstrinputlen>0)                                            //~vb2uI~
 		memcpy(Gstrinput,Gstrinput+len,(UINT)Gstrinputlen);        //~vb2uI~
-UTRACEP("%s: input=%s",UTT,inputc);                                //~vb2uR~
+UTRACEP("%s: input=%s\n",UTT,inputc);                                //~vb2uR~
 UTRACED("KBDKEYINFO input",pki,(int)sizeof(pki));                  //~vb2uI~
     return keytype;                                                //~vb2uR~
 }//funct2getnextinputgc                                            //~vb2uI~

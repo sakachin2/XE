@@ -1,6 +1,7 @@
-//*CID://+vb3AR~:                              update#= 1502;      //+vb3AR~
+//*CID://+vbvgR~:                              update#= 1504;      //~vbvgR~
 //*************************************************************
-//vb3A:160625 for compiler warning,-Wformat-security(not literal printf format)//+vb3AI~
+//vbvg:221130 LNX compiler arning                                  //~vbvgI~
+//vb3A:160625 for compiler warning,-Wformat-security(not literal printf format)//~vb3AI~
 //vb34:160430 LNX compiler warning for bitmask assignment(FD_SET)  //~vb34I~
 //vazy:150117 LNX conversion warning                               //~vazxI~
 //vazx:150116 (BUG:LNX)kill parm is not thread_t but pid_t         //~vazxI~
@@ -742,45 +743,45 @@ void mainhelp(void)
 {
 	uerrmsg("v%s:xe's 3270 interface",0,
     			VER);
-//	printf(uerrsprintf("Usage: %s flag [-options] \n",0,           //+vb3AR~
-  	printf("%s",uerrsprintf("Usage: %s flag [-options] \n",0,      //+vb3AI~
+//	printf(uerrsprintf("Usage: %s flag [-options] \n",0,           //~vb3AR~
+  	printf("%s",uerrsprintf("Usage: %s flag [-options] \n",0,      //~vb3AI~
 					PGM));
-//  printf(uerrsprintf("     flags  : flags by decimal number. mix of below\n",0));//+vb3AR~
-    printf("%s",uerrsprintf("     flags  : flags by decimal number. mix of below\n",0));//+vb3AI~
-//  printf(uerrsprintf("             0x01: write logfile.\n",0));  //+vb3AR~
-    printf("%s",uerrsprintf("             0x01: write logfile.\n",0));//+vb3AI~
-//  printf(uerrsprintf("             0x02: write logfile by append mode.\n",0));//+vb3AR~
-    printf("%s",uerrsprintf("             0x02: write logfile by append mode.\n",0));//+vb3AI~
+//  printf(uerrsprintf("     flags  : flags by decimal number. mix of below\n",0));//~vb3AR~
+    printf("%s",uerrsprintf("     flags  : flags by decimal number. mix of below\n",0));//~vb3AI~
+//  printf(uerrsprintf("             0x01: write logfile.\n",0));  //~vb3AR~
+    printf("%s",uerrsprintf("             0x01: write logfile.\n",0));//~vb3AI~
+//  printf(uerrsprintf("             0x02: write logfile by append mode.\n",0));//~vb3AR~
+    printf("%s",uerrsprintf("             0x02: write logfile by append mode.\n",0));//~vb3AI~
 #ifdef LNX                                                         //~v715I~
-//  printf(uerrsprintf("             0x04: force delete if pipe exist at start.\n",0));//+vb3AR~
-    printf("%s",uerrsprintf("             0x04: force delete if pipe exist at start.\n",0));//+vb3AI~
+//  printf(uerrsprintf("             0x04: force delete if pipe exist at start.\n",0));//~vb3AR~
+    printf("%s",uerrsprintf("             0x04: force delete if pipe exist at start.\n",0));//~vb3AI~
 #endif                                                             //~v715I~
-//  printf(uerrsprintf("             \"0\" required even if no options.\n",0));//+vb3AR~
-    printf("%s",uerrsprintf("             \"0\" required even if no options.\n",0));//+vb3AI~
-//  printf(uerrsprintf("     options: flags by decimal number. mix of below\n",0));//+vb3AR~
-    printf("%s",uerrsprintf("     options: flags by decimal number. mix of below\n",0));//+vb3AI~
-//  printf(uerrsprintf("         -C : Connect timeout(default:%d seconds)\n",0,//+vb3AR~
-    printf("%s",uerrsprintf("         -C : Connect timeout(default:%d seconds)\n",0,//+vb3AI~
+//  printf(uerrsprintf("             \"0\" required even if no options.\n",0));//~vb3AR~
+    printf("%s",uerrsprintf("             \"0\" required even if no options.\n",0));//~vb3AI~
+//  printf(uerrsprintf("     options: flags by decimal number. mix of below\n",0));//~vb3AR~
+    printf("%s",uerrsprintf("     options: flags by decimal number. mix of below\n",0));//~vb3AI~
+//  printf(uerrsprintf("         -C : Connect timeout(default:%d seconds)\n",0,//~vb3AR~
+    printf("%s",uerrsprintf("         -C : Connect timeout(default:%d seconds)\n",0,//~vb3AI~
 							TIMEOUT_CONNECT));
-//  printf(uerrsprintf("         -F : use 3270 -trace option\n",0));//+vb3AR~
-    printf("%s",uerrsprintf("         -F : use 3270 -trace option\n",0));//+vb3AI~
+//  printf(uerrsprintf("         -F : use 3270 -trace option\n",0));//~vb3AR~
+    printf("%s",uerrsprintf("         -F : use 3270 -trace option\n",0));//~vb3AI~
 #ifdef LNX                                                         //~v71SI~
-//  printf(uerrsprintf("              tracefile is written to /tmp/x3trc.nnnn\n",0));//+vb3AR~
-    printf("%s",uerrsprintf("              tracefile is written to /tmp/x3trc.nnnn\n",0));//+vb3AI~
+//  printf(uerrsprintf("              tracefile is written to /tmp/x3trc.nnnn\n",0));//~vb3AR~
+    printf("%s",uerrsprintf("              tracefile is written to /tmp/x3trc.nnnn\n",0));//~vb3AI~
 #else                                                              //~v71SI~
 	printf(uerrsprintf("              tracefile is written to %%%%CYGWIN%%%%\\tmp\\x3trc.nnnn\n",0));//~v71SR~
 #endif                                                             //~v71SI~
-//  printf(uerrsprintf("         -L : logfile name.(default:%s)\n",0,//+vb3AR~
-    printf("%s",uerrsprintf("         -L : logfile name.(default:%s)\n",0,//+vb3AI~
+//  printf(uerrsprintf("         -L : logfile name.(default:%s)\n",0,//~vb3AR~
+    printf("%s",uerrsprintf("         -L : logfile name.(default:%s)\n",0,//~vb3AI~
 							XE3270_DEFAULT_LOGFILE));
-//  printf(uerrsprintf("         -T : Send/Receive timeout(default:%d seconds)\n",0,//+vb3AR~
-    printf("%s",uerrsprintf("         -T : Send/Receive timeout(default:%d seconds)\n",0,//+vb3AI~
+//  printf(uerrsprintf("         -T : Send/Receive timeout(default:%d seconds)\n",0,//~vb3AR~
+    printf("%s",uerrsprintf("         -T : Send/Receive timeout(default:%d seconds)\n",0,//~vb3AI~
 							TIMEOUT_TRANSFER));
-//  printf(uerrsprintf("         -W : Work dir. %s is searched in this dir.\n",0,//+vb3AR~
-    printf("%s",uerrsprintf("         -W : Work dir. %s is searched in this dir.\n",0,//+vb3AI~
+//  printf(uerrsprintf("         -W : Work dir. %s is searched in this dir.\n",0,//~vb3AR~
+    printf("%s",uerrsprintf("         -W : Work dir. %s is searched in this dir.\n",0,//~vb3AI~
 							CONFXE3270));                          //~v725I~
-//  printf(uerrsprintf("              You can specify cfg file itself by this option.\n",0));//+vb3AR~
-    printf("%s",uerrsprintf("              You can specify cfg file itself by this option.\n",0));//+vb3AI~
+//  printf(uerrsprintf("              You can specify cfg file itself by this option.\n",0));//~vb3AR~
+    printf("%s",uerrsprintf("              You can specify cfg file itself by this option.\n",0));//~vb3AI~
     titlemsg();                                                    //~vafvI~
     return;
 }//mainhelp
@@ -2991,7 +2992,8 @@ UTRACEP("uerrmsgmt:stat=%s\n",ugeterrmsg2());                      //~v8@3I~
 //**************************************************************** //~v715I~
 int sigblockchild(void)                                            //~v715I~
 {                                                                  //~v715I~
-    sigset_t new;                                                  //~v715R~
+//  sigset_t new;                                                //~v715R~//~vbvgR~
+    sigset_t new={0};                                              //+vbvgR~
 //***************************************                          //~v715I~
     if (pthread_sigmask(SIG_BLOCK,&new,NULL))                      //~v715I~
     	return apierr("pthread_sigmask",0,0);                      //~v715R~

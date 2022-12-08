@@ -406,6 +406,9 @@ $(EXE5):  \
      $(OBJDIR)xeutf.OBJ $(CONCAT)
      $(OBJDIR)xeutf2.OBJ $(CONCAT)
      $(OBJDIR)xeebc.OBJ $(CONCAT)
+     $(OBJDIR)xefunc.OBJ $(CONCAT)
+     $(OBJDIR)xefunct.OBJ $(CONCAT)
+     $(OBJDIR)xefunct2.OBJ $(CONCAT)
      $(OBJDIR)xesub.OBJ
    $(OS2EXE5)
    $(OS2MAP5)

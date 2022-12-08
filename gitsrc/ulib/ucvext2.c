@@ -1,4 +1,4 @@
-//*CID://+v6WdR~:                                   update#=  706; //~v6WdR~
+//*CID://+v6WdR~:                                   update#=  708; //~v6WdR~
 //***********************************************************************
 //v6Wd:180713 (Lnx:BUG)cv -m2m -f:utf8 -t:gb18030 fail for u-00de-->81308937(len=4)//~v6WdI~
 //v6Vm:180620 (W32)when surrogate pair err,use utfcvucs2u8(WideCharToMultibyte dose not notify err,but set utf8 of u-fffd)//~v6VmI~
@@ -698,7 +698,7 @@ int ucvext_wincp2ucss(int Popt,ULONG Pconverter,UCHAR *Ppmbs,UCHAR *Ppdbcs,int P
     int lasterr;                                                   //~v6BHI~
 //*********************                                            //~v5n8I~
     UTRACEP("win 2ucss cv=%d,opt=%x\n",Pconverter,Popt);           //~v5n8I~
-    UTRACED("win 2ucss mb",Ppmbs,Pinplen);                         //~v5n8I~
+//  UTRACED("win 2ucss mb",Ppmbs,Pinplen);                         //~v6WdR~
     repch=Popt & UCVUCS_ERRCH;                                     //~v5n8I~
 //*MultiByteToWideChar dose not support UTF8 and UTF7              //~v6r2I~
   	if (Pconverter==CP_UTF8)                                       //~v5n8R~
@@ -1479,7 +1479,7 @@ int ucvext_iconvucs2local1(int Popt,ULPTR Pconverter,UWUCS Pucs,UCHAR *Ppmbs,int
     pci=(char*)(ULONG)wkucs;                                       //~v5mTR~
     pco=pco0=wkmbs;                                                //~v5mTI~
     UTRACEP("ucvext_iconvucs2local hiconv=%p,ucs=%04x\n",hiconv,Pucs);//~v5mTI~//~v6m2R~//~v6WdR~
-    UTRACED("ucvext_iconvucs2local pci",pci,(int)ilen);            //+v6WdR~
+    UTRACED("ucvext_iconvucs2local pci",pci,(int)ilen);            //~v6WdR~
 //  rciconv=iconv(hiconv,ICONV_PCTYPE(&pci),&ilen,&pco,&olen);     //~v5n8R~//~v5ntR~
     rciconv=iconv(hiconv,ICONV_PCTYPE(&pci),ICONV_SZTYPE(&ilen),&pco,ICONV_SZTYPE(&olen));//~v5ntI~
 //    UTRACEP("ucvext_iconvucs2local hiconv=%x,iconv rc=%d ilen=%d,olen=%d\n",hiconv,rciconv,ilen,olen);//~v62NR~//~v6m2R~
@@ -2158,7 +2158,7 @@ int uMultiByteToWideChar(int Popt,ULONG Pconverter,int Papiopt,char *Ppebc,int P
 	int lasterr=0,ctr,opt;                                         //~v6BHR~
 static int Scodepage_invalidflags;                                 //~v6BHI~
 //*****************                                                //~v6BHI~
-    UTRACEP("%s:Popt=%x,apiopt=%x inplen=%d,cp=%d,Scodepage_invalidflags=%d\n",UTT,Popt,Papiopt,Pinplen,Pconverter,Scodepage_invalidflags);//~v6BHR~
+//  UTRACEP("%s:Popt=%x,apiopt=%x inplen=%d,cp=%d,Scodepage_invalidflags=%d\n",UTT,Popt,Papiopt,Pinplen,Pconverter,Scodepage_invalidflags);//+v6WdR~
 	opt=Papiopt;                                                   //~v6BHI~
 // 	if (Pconverter==CP_GB18030                                     //~v6BHR~
 // 	||  !(Gudbcschk_flag & UDBCSCHK_DBCSLANG)                      //~v6BHR~
@@ -2168,8 +2168,8 @@ static int Scodepage_invalidflags;                                 //~v6BHI~
     ctr=MultiByteToWideChar(Pconverter,opt,Ppebc,Pinplen,Ppucs,Pbuffsz/WUCSSZ);//~v6BHR~
     if (!ctr)                                                      //~v6BHI~
 	    lasterr=GetLastError();                                    //~v6BHR~
-    UTRACEP("%s:MultibyteToWideChar opt=%x,cp=%d,mb=%02x,len=%d,ctr=%d,ucs=%x,lasterr=%d\n",UTT,opt,Pconverter,*Ppebc,Pinplen,ctr,Ppucs?*Ppucs:0,lasterr);//~v6BHR~//~v6E1R~
-    UTRACED("out Ppucs",Ppucs,ctr*(int)sizeof(WUCS));              //~v6WdI~
+//  UTRACEP("%s:MultibyteToWideChar opt=%x,cp=%d,mb=%02x,len=%d,ctr=%d,ucs=%x,lasterr=%d\n",UTT,opt,Pconverter,*Ppebc,Pinplen,ctr,Ppucs?*Ppucs:0,lasterr);//~v6BHR~//+v6WdR~
+//  UTRACED("out Ppucs",Ppucs,ctr*(int)sizeof(WUCS));              //+v6WdR~
     if (lasterr==ERROR_INVALID_FLAGS)                              //~v6BHR~
     {                                                              //~v6BHI~
     	if ((int)Pconverter!=Scodepage_invalidflags)               //~v6BHI~
@@ -2199,7 +2199,7 @@ static int Scodepage_invalidflags;                                 //~v6BII~
 static int Scodepage_invalidparameter;                             //~v6BII~
 	BOOL defused=0;                                                //~v6E1I~
 //*****************                                                //~v6BII~
-	UTRACEP("%s:converter=%d,apiopt=%x,psubchar=%p,perrflag=%p\n",UTT,Pconverter,Papiopt,Pdefaultchars,Ppdefaultused);//~v6BIR~
+//  UTRACEP("%s:converter=%d,apiopt=%x,psubchar=%p,perrflag=%p\n",UTT,Pconverter,Papiopt,Pdefaultchars,Ppdefaultused);//+v6WdR~
 	opt=Papiopt;                                                   //~v6BII~
     if ((int)Pconverter==Scodepage_invalidflags)                   //~v6BII~
 		opt=0;                      //err INVALID flag(1004) if PRECOMOSIT(default) or INVALID_CHAR flag for GB18030//~v6BII~
@@ -2215,8 +2215,8 @@ static int Scodepage_invalidparameter;                             //~v6BII~
     ctr=WideCharToMultiByte(Pconverter,opt,Ppucs,Pucsctr,Ppmbs,Pbuffsz,pdefaultchars,pdefaultused);//~v6BII~
     if (!ctr)                                                      //~v6BII~
 	    lasterr=GetLastError();                                    //~v6BII~
-	UTRACEP("%s:WideCharToMultibyte converter=%d,ucs=%04x-%04x,opt=%x,out mb ctr=%d,pdefaultchars=%p,pdefaultused=%p,defaultused=%x,Lasterr=%d\n",UTT,Pconverter,Ppucs[0],Pucsctr>1?Ppucs[1]:0,opt,ctr,pdefaultchars,pdefaultused,pdefaultused?*pdefaultused:0,GetLastError());//~v6BIR~//~v6E1R~
-    UTRACED("out wkmbs",Ppmbs,ctr);                                //~v6BII~
+//  UTRACEP("%s:WideCharToMultibyte converter=%d,ucs=%04x-%04x,opt=%x,out mb ctr=%d,pdefaultchars=%p,pdefaultused=%p,defaultused=%x,Lasterr=%d\n",UTT,Pconverter,Ppucs[0],Pucsctr>1?Ppucs[1]:0,opt,ctr,pdefaultchars,pdefaultused,pdefaultused?*pdefaultused:0,GetLastError());//~v6BIR~//+v6WdR~
+//  UTRACED("out wkmbs",Ppmbs,ctr);                                //+v6WdR~
     if (lasterr==ERROR_INVALID_PARAMETER)                          //~v6BIM~
     {                                                              //~v6BIM~
     	if ((int)Pconverter!=Scodepage_invalidflags)               //~v6BIM~

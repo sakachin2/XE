@@ -1,9 +1,16 @@
-//*CID://+vb30R~:                             update#=  120;       //+vb30R~
+//*CID://+vbw4R~:                             update#=  212;       //+vbw4R~
 //*************************************************************
 //*xefile4.c*                                                      //~v0enR~
 //**changeid,cid clear/shift                                       //~v0drR~
 //*************************************************************
-//vb30:160411 (LNX)Compiler warning                                //+vb30I~
+//vbw4:221206 space was allowd for cid prefix from old version     //+vbw4I~
+//vbw3:221205 accept cidtype by unicode fo cid on/clear cmd        //~vbw3I~
+//vbw2:221205 (Bug of vbv6)cid on cmd for ext:unicode file,could not set non unicode cid//~vbw2I~
+//vbw1:221205 (Bug of vbv6)cid chk match by data only. have to chk dbcs for DD fmt//~vbw1I~
+//vbva:221125 (Bug)cid on //,cid clear apl,sav-->update line cid remains apl; it should be ////~vbvaI~
+//vbv9:221124 add cid type apl for extension=.apl                  //~vbv9I~
+//vbv6:221121 support unicode cid (length>2)                       //~vbv6I~
+//vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vazm:150113 set file margin=4095 for recfm=v,MF maxlrecl=4095    //~vazmI~
 //vafk:120624 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  use ULPTR(unsigned __int64/ULONG)//~vafkI~
 //vaf9:120607 (WTL)Bug found by vs2010exp(used uninitialized variable),avoid warning C4701//~vaf9I~
@@ -150,6 +157,7 @@
 #include <ucvebc.h>                                                //~va50I~
 #include <ucvebc4.h>                                               //~va79I~
 #include <utrace.h>                                                //~va50I~
+#include <ucvucs.h>                                                //~vbw3I~
                                                                 //~4C19I~
 #include "xe.h"
 #include "xescr.h"
@@ -194,6 +202,7 @@ static 	UCHAR Supdateid[]="RIM";	//repl/insert/move          //~5131I~
 //						'%','0','2','d','R',CIDENCLOSER,0,0,0};//others//~v09FR~
 static 	UCHAR Sciddatefmt[]={CIDCURUPDATE,'%','d','%','1','X',     //~v09FI~
 						'%','0','2','d','R',CIDENCLOSER,0};        //~v09FI~
+#define LINECIDLEN2 (LINECIDLEN+1)                                 //~vbv6R~
 //static 	UCHAR Sdatecid[LINECIDLEN];                                //~v79UI~//~va50R~
 static 	UCHAR Sdatecid[LINECIDLEN+1];                              //~va50I~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
@@ -203,6 +212,7 @@ static 	UCHAR Sdatecid_ebc[LINECIDLEN+1];                          //~va50I~
 static UCHAR Sexttbl_c[]="C\0H\0CPP\0HPP\0JAVA\0";                 //~v42mI~
 static UCHAR Sexttbl_a[]="ASM\0";                               //~5310R~
 static UCHAR Sexttbl_d[]="DOC\0ME\0";              
+//static UCHAR Sexttbl_apl[]="APL\0";                                //~vbv9I~//~vbvaR~
 static UCHAR Sexttbl_o[]="OTHER THAN ELSE\0";                      //~v09rI~
 static CIDTBL Scidtbl[MAXCIDTBL+1]=                                //~v09rR~
 //  	{{UFHCIDTYPEC	,80-ULHLINENOSZ-LINECIDLEN+1,Sexttbl_c,Scid_c},//~v06rR~
@@ -213,6 +223,8 @@ static CIDTBL Scidtbl[MAXCIDTBL+1]=                                //~v09rR~
          {UFHCIDTYPEASM	,80-ULHLINENOSZ5-LINECIDLEN+1,";;",Sexttbl_a},//~v09FI~
 //       {UFHCIDTYPEDOC	,80-ULHLINENOSZ-2           ,Sexttbl_d,Scid_d},//~v09FR~
          {UFHCIDTYPEDOC	,80-ULHLINENOSZ-2           ,"||",Sexttbl_d},//~v09FI~
+//       {UFHCIDTYPEAPL	,80-ULHLINENOSZ-LINECIDLEN+1,0xe2\x8d\x9d,Sexttbl_apl},//~vbv9R~
+//       {UFHCIDTYPEAPL	,80-ULHLINENOSZ-LINECIDLEN+1,"u-235d",Sexttbl_apl},//~vbv9I~
 //  	0};                                                        //~v095R~
 //  	{0,0,0,0}};                                                //~v0ifR~
     	{0,0,"",0}};                                               //~v0ifI~
@@ -274,14 +286,16 @@ void filecidterm(void)                                          //~5528I~
 int filegetcid_ebcsub(int Popt,int Phandle,UCHAR *Pcid,UCHAR *Pcidebc,int Plen)//~va79I~
 {                                                                  //~va50I~
 //************                                                     //~va50I~
-//  memcpy(Pcidebc,Pcid,Plen);                                     //~va50R~//+vb30R~
-    memcpy(Pcidebc,Pcid,(size_t)Plen);                             //+vb30I~
+	UTRACED("filegetcid_ebcsub entry Pcid",Pcid,(size_t)Plen);     //~vbv6I~
+//  memcpy(Pcidebc,Pcid,Plen);                                     //~va50R~//~vb30R~
+    memcpy(Pcidebc,Pcid,(size_t)Plen);                             //~vb30I~
 //  ucvebc_a2bfld(0,Pcidebc,0/*inplace*/,Plen);                    //~va50R~//~va79R~
     ucvebc_a2bfld(0,Phandle,Pcidebc,0/*inplace*/,Plen);            //~va79I~
 #ifdef AAA                                                         //~va50I~
     if (Plen>=LINECIDLEN)	//contains last encloser               //~va50R~
     	*(Pcidebc+LINECIDLEN-1)=CIDENCLOSER_EBC;	//"~" codepoint is not fixed on EBC//~va50R~
 #endif                                                             //~va50I~
+	UTRACED("filegetcid_ebcsub exit Pcidebc",Pcidebc,(size_t)Plen);//~vbv6I~
     return 0;                                                      //~va50R~
 }//filegetcid_ebc                                                  //~va50I~
 //**************************************************************** //~va50I~
@@ -327,6 +341,7 @@ int filegetcid(PUFILEH Ppfh,int Popt,UCHAR *Ppostfix,UCHAR **Ppcid)//~v0avR~
     int cidlen8;                                                   //~v0cjI~
     int handle;                                                    //~va79I~
 //*****************************
+	UTRACED("filegetcid entry UFHcid",Ppfh->UFHcid,sizeof(Ppfh->UFHcid));//~vbv6I~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
 	handle=Ppfh->UFHhandle;                                        //~va79I~
 //  if (!Scidencloser_ebc)       //char differ by handle           //~va50I~//~va79R~
@@ -384,8 +399,10 @@ int filegetcid(PUFILEH Ppfh,int Popt,UCHAR *Ppostfix,UCHAR **Ppcid)//~v0avR~
 		strcpy(Sdatecid,cidwk);	//to compare lastcid is current    //~v79UI~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
 //  	filegetcid_ebcsub(0,Sdatecid,Sdatecid_ebc,strlen(Sdatecid));//~va50I~//~va79R~
-//  	filegetcid_ebcsub(0,handle,Sdatecid,Sdatecid_ebc,strlen(Sdatecid));//~va79I~//+vb30R~
-    	filegetcid_ebcsub(0,handle,Sdatecid,Sdatecid_ebc,(int)strlen(Sdatecid));//+vb30I~
+//  	filegetcid_ebcsub(0,handle,Sdatecid,Sdatecid_ebc,strlen(Sdatecid));//~va79I~//~vb30R~
+	  if (PFH_ISEBC(Ppfh))                                         //~vbv6I~
+    	filegetcid_ebcsub(0,handle,Sdatecid,Sdatecid_ebc,(int)strlen(Sdatecid));//~vb30I~
+		UTRACED("filegetcid after ebc UFHcid",Ppfh->UFHcid,sizeof(Ppfh->UFHcid));//~vbv6I~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50I~
 //v012	if (Popt)                                               //~5611R~
 //v012  {                                                       //~5611R~
@@ -394,12 +411,18 @@ int filegetcid(PUFILEH Ppfh,int Popt,UCHAR *Ppostfix,UCHAR **Ppcid)//~v0avR~
             cidlen8=LINECIDLEN-LINEPREFIXLEN;//postfix may continue//~v0cjI~
 			if (Ppfh->UFHcidlen<LINECIDLEN)//8 byte cid            //~v0cjI~
 	            cidlen8--;                                         //~v0cjI~
+//        if (UCBITCHK(Ppfh->UFHflag14,UFHF14CIDU8)       //utf8 code//~vbv6R~
+//        &&  !UCBITCHK(Ppfh->UFHflag14,UFHF14CID2BYTE)	//3 byte   //~vbv6R~
+//        )                                                        //~vbv6R~
+//  	    memcpy(Ppfh->UFHcid+LINEPREFIXLEN+1,cidwk,(UINT)cidlen8);//postfix may continue//~vbv6R~
+//        else                                                     //~vbv6R~
     	    memcpy(Ppfh->UFHcid+LINEPREFIXLEN,cidwk,(UINT)cidlen8);//postfix may continue//~v0cjR~
             pc=Ppfh->UFHcid;                                    //~5308R~
 //v012	}                                                       //~5611R~
 //v012  else                                                    //~5611R~
 //v012		pc=Scid;                                            //~5611R~
         }//v012                                                 //~5611I~
+		UTRACED("filegetcid UFHcid",Ppfh->UFHcid,sizeof(Ppfh->UFHcid));//~vbv6I~
 	}//not err                                                  //~5310I~
     if (UCBITCHK(Ppfh->UFHflag,UFHFCIDOFF)	//cid off cmd       //~5308M~
     || 	(!UCBITCHK(Ppfh->UFHflag,UFHFCIDON)	//no on cmd            //~v414R~
@@ -412,6 +435,8 @@ int filegetcid(PUFILEH Ppfh,int Popt,UCHAR *Ppostfix,UCHAR **Ppcid)//~v0avR~
 	if (PFH_ISEBC(Ppfh))                                           //~va50I~
     	filegetcid_ebc(0,Ppfh);	//set by ebc to search cid on plh  //~va50R~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50I~
+	UTRACED("filegetcid exit UFHcid",Ppfh->UFHcid,sizeof(Ppfh->UFHcid));//~vbv6R~
+	UTRACEP("%s: exit flag14=0x%x\n",UTT,Ppfh->UFHflag14);         //~vbv6I~
     return 0;                                                      //~v0avI~
 }//filegetcid
 
@@ -429,7 +454,10 @@ void filecidbyext(PUFILEH Ppfh,int Popt,UCHAR *Ppostfix)           //~v09FR~
 	CIDTBL *pcidtbl=NULL;                                               //~v09FI~//~vaf9R~
 static  char Scidtypesv,Scidpossv,Sfixidsv,Scidlen;                //~v09FR~
 static  char Scidsv[sizeof(Ppfh->UFHcid)];                         //~v09FR~
+static  char ScidDDfmtsv[sizeof(Ppfh->UFHcidDDfmt)];               //~vbvaI~
+static  UCHAR Sflag14sv;                                           //~vbvaI~
 //*************************                                        //~v09FI~
+    UTRACEP("%s:opt=%d,postfix=%s\n",UTT,Popt,Ppostfix);           //~vbv9I~
     if (UCBITCHK(Ppfh->UFHflag4,UFHF4BIN))  //bin file             //~v10dI~
     {                                                              //~v10dI~
     	Ppfh->UFHcidtype=UFHCIDTYPEERR;                            //~v10dI~
@@ -441,6 +469,8 @@ static  char Scidsv[sizeof(Ppfh->UFHcid)];                         //~v09FR~
         Ppfh->UFHcidpos=Scidpossv;                                 //~v09FI~
         Ppfh->UFHcidlen=Scidlen;                                   //~v09FI~
         memcpy(Ppfh->UFHcid,Scidsv,sizeof(Ppfh->UFHcid));          //~v09FI~
+        memcpy(Ppfh->UFHcidDDfmt,ScidDDfmtsv,sizeof(Ppfh->UFHcidDDfmt));//~vbvaI~
+        Ppfh->UFHflag14=Sflag14sv;                                 //~vbvaI~
 		UCBITON(Ppfh->UFHflag2,Sfixidsv);                          //~v09FR~
         return;                                                    //~v09FI~
 	}                                                              //~v09FI~
@@ -450,6 +480,8 @@ static  char Scidsv[sizeof(Ppfh->UFHcid)];                         //~v09FR~
         Scidpossv=Ppfh->UFHcidpos;                                 //~v09FI~
         Scidlen=Ppfh->UFHcidlen;                                   //~v09FI~
         memcpy(Scidsv,Ppfh->UFHcid,sizeof(Ppfh->UFHcid));          //~v09FI~
+        memcpy(ScidDDfmtsv,Ppfh->UFHcidDDfmt,sizeof(Ppfh->UFHcidDDfmt));//~vbvaI~
+        Sflag14sv=Ppfh->UFHflag14;                                 //~vbvaI~
         Sfixidsv=(char)UCBITCHK(Ppfh->UFHflag2,UFHF2FIXEDCID|UFHF2HDRLINECID);//~v09FI~
 		UCBITOFF(Ppfh->UFHflag2,UFHF2FIXEDCID|UFHF2HDRLINECID);    //~v09FR~
     	pcidtbl=Scidtbl+(int)Ppfh->UFHcidtype-1;                   //~v09FI~
@@ -462,8 +494,21 @@ static  char Scidsv[sizeof(Ppfh->UFHcid)];                         //~v09FR~
     	Ppfh->UFHcidtype=UFHCIDTYPEERR;                            //~v09FI~
     else                                                           //~v09FI~
     {                                                              //~v09FI~
+    	UTRACED("pcidtbl",pcidtbl,sizeof(CIDTBL));                 //~vbv9I~
     	Ppfh->UFHcidtype=pcidtbl->CIDTid;   //cid                  //~v09FI~
     	Ppfh->UFHcidpos=pcidtbl->CIDTpos;   //cid position         //~v09FI~
+      if (pcidtbl->CIDTucs!=0)                                     //~vbv9I~
+      {                                                            //~vbv9I~
+    	Ppfh->UFHcidlen=(UCHAR)LINECIDLEN;                         //~vbv9I~
+    	strcpy(Ppfh->UFHcid,pcidtbl->CIDTcidfmt);	//defualt      //~vbv9I~
+    	memcpy(Ppfh->UFHcidDDfmt,pcidtbl->CIDTddfmt,sizeof(Ppfh->UFHcidDDfmt));//~vbv9R~
+    	UCBITON(Ppfh->UFHflag14,UFHF14CIDU8);                      //~vbv9I~
+        if (*(Ppfh->UFHcidDDfmt+3)==0)	//2nd char is not of DDfmt //~vbv9I~
+	    	UCBITON(Ppfh->UFHflag14,UFHF14CIDU8SBCS);              //~vbv9I~
+      }                                                            //~vbv9I~
+      else                                                         //~vbv9I~
+      {                                                            //~vbv9I~
+    	UCBITOFF(Ppfh->UFHflag14,UFHF14CIDU8);                     //~vbw2I~
     	Ppfh->UFHcidlen=(UCHAR)(LINECIDLEN                         //~v09FR~
                        +strlen(pcidtbl->CIDTcidfmt+LINEPREFIXLEN));			//default cidlen//~v09FR~
     	strcpy(Ppfh->UFHcid,pcidtbl->CIDTcidfmt);	//defualt      //~v09FI~
@@ -473,7 +518,9 @@ static  char Scidsv[sizeof(Ppfh->UFHcid)];                         //~v09FR~
 	    	Ppfh->UFHcidlen=(UCHAR)(LINECIDLEN+strlen(Ppostfix));  //~v09FR~
     		strcpy(Ppfh->UFHcid+LINECIDLEN,Ppostfix);	//defualt  //~v09FI~
         }                                                          //~v09FI~
+      }                                                            //~vbv9I~
     }                                                              //~v09FI~
+    UTRACEP("%s:UFHcid=%s\n",UTT,Ppfh->UFHcid);                    //~vbv9I~
     return;                                                        //~v09FI~
 }//filecidbyext                                                    //~v09FI~
 //****************************************************************//~5611I~
@@ -501,7 +548,10 @@ int filetoplinecid(PUFILEH Ppfh)                                   //~v0avI~
     int swebcfile,rc2,upctrpos,upctrlen;                           //~va50R~
     int handle;                                                    //~va79I~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50I~
+    int swValid=0;                                                 //~vbv6I~
+    int fixCIDpos;	//-1 if utf8 cidprefix is sbcs,1:before dbcs set//~vbv6R~
 //*****************************                                 //~5611I~
+	UTRACED("filetoplinecid entry UFHcid",Ppfh->UFHcid,sizeof(Ppfh->UFHcid));//~vbv6I~
 #ifdef UTF8UCS2                                                    //~va20I~
 	swutf8file=FILEUTF8MODE(Ppfh);                                 //~va20I~
 #endif                                                             //~va20I~
@@ -590,16 +640,18 @@ int filetoplinecid(PUFILEH Ppfh)                                   //~v0avI~
     if (((ULPTR)pc-(ULPTR)pc0)>=MAX_CIDPOS)                        //~vafkI~
 		return 4;                                                  //~va7JI~
     pc+=strlen(Gfixcidid);                                      //~v031R~
+	UTRACED("after Gfixcidid search pc",pc,LINECIDLEN);            //~vbv6I~
 //  pos=(int)strlen(pc);                                           //~v0axR~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
 //  pos=(int)(plh->ULHlen-((ULONG)pc-(ULONG)pc0));	//residual len //~va50I~//~vafkR~
-//  pos=(int)(plh->ULHlen-((ULPTR)pc-(ULPTR)pc0));	//residual len //~vafkI~//+vb30R~
-    pos=plh->ULHlen-PTRDIFF(pc,pc0);	//residual len             //+vb30I~
+//  pos=(int)(plh->ULHlen-((ULPTR)pc-(ULPTR)pc0));	//residual len //~vafkI~//~vb30R~
+    pos=plh->ULHlen-PTRDIFF(pc,pc0);	//residual len             //~vb30I~
 #else                                                              //~va50I~
     pos=(int)(plh->ULHlen-((ULONG)pc-(ULONG)plh->ULHdata));	//residual len//~v0axR~
 #endif                                                             //~va50I~
     postfixlen=-1;			//for 8 byte cid                       //~v0cjI~
 //*ascii chk of cid will be done later                             //~va20I~
+                                                                   //~vbv6I~
     if ((pos>LINECIDLEN              //enough len                  //~v0cjR~
 	&&  *(pc+2)==CIDCURUPDATE                                      //~v09rR~
 	&&  memchr(Supdateid,*(pc+LINECIDLEN-2),3)	//update id RIM    //~v0cjI~
@@ -615,6 +667,86 @@ int filetoplinecid(PUFILEH Ppfh)                                   //~v0avI~
 	&&  *(pc+2)==CIDCURUPDATE                                      //~v0cjI~
 	&&  memchr(Supdateid,*(pc+LINECIDLEN-2),3)	//update id RIM    //~v0cjI~
 	&&  *(pc+LINECIDLEN-1)==':'))                                  //~v0cjI~
+    {                                                              //~vbv6I~
+    	if (swutf8file)                                            //~vbv6I~
+        {                                                          //~vbv6I~
+        	if (!pcd0)	//before DDfmt, if after , continue to next chk//~vbv6I~
+//      		if (*pc>0x20 && *pc<0x7f) //ascii                  //~vbv6I~//+vbw4R~
+        		if (*pc>=0x20 && *pc<0x7f) //ascii                 //+vbw4I~
+		    	    swValid=1;                                     //~vbv6I~
+        }                                                          //~vbv6I~
+        else                                                       //~vbv6I~
+//  	if (*pc>0x20 && *pc<0x7f) //ascii                      //~vbv6R~//+vbw4R~
+    	if (*pc>=0x20 && *pc<0x7f) //ascii                         //+vbw4I~
+	        swValid=1;                                         //~vbv6R~
+    }                                                              //~vbv6I~
+    fixCIDpos=0;                                                   //~vbv6I~
+	UTRACEP("%s: chk std cid swValid=%d,pcd0=%p\n",UTT,swValid,pcd0);//~vbv6I~
+    if (!swValid && swutf8file) //chk 3 byte utf8 code before evaluate ddfmt  "xxx+dateR~//~vbv6R~
+    {                                                              //~vbv6I~
+        if (!pcd0)   //before DDfmt                                //~vbv6I~
+        {                                                          //~vbv6I~
+          if (UTF8CHARLEN(*pc)==2)                                 //~vbv6R~
+          {                                                        //~vbv6I~
+            if (pos>=LINECIDLEN              //enough len          //~vbv6I~
+            &&  *(pc+2)==CIDCURUPDATE                              //~vbv6I~
+            &&  memchr(Supdateid,*(pc+LINECIDLEN-2),3)  //update id RIM//~vbv6I~
+            &&  *(pc+LINECIDLEN-1)==CIDENCLOSER                    //~vbv6I~
+            &&  *(pc+LINECIDLEN)==':')                             //~vbv6I~
+            {                                                      //~vbv6I~
+                UCBITON(Ppfh->UFHflag14,UFHF14CIDU8);              //~vbv6I~
+	          	UCBITON(Ppfh->UFHflag14,UFHF14CID2BYTE);           //~vbv6R~
+                swValid=6;         //3byte utf8 cid without no postfix//~vbv6R~
+                postfixlen=0;                                      //~vbv6I~
+				UTRACEP("%s: 2byte by UTF8 swValid=%d,fixCIDpos=%d\n",UTT,swValid,fixCIDpos);//~vbv6I~
+            }                                                      //~vbv6I~
+          }                                                        //~vbv6I~
+          else //not ascii and not 2byte utf8                      //~vbv6R~
+          {                                                        //~vbv6I~
+            if (pos>=LINECIDLEN2              //enough len         //~vbv6R~
+            &&  *(pc+2+1)==CIDCURUPDATE                            //~vbv6R~
+            &&  memchr(Supdateid,*(pc+LINECIDLEN2-2),3)  //update id RIM//~vbv6R~
+            &&  *(pc+LINECIDLEN2-1)==CIDENCLOSER                   //~vbv6R~
+            &&  *(pc+LINECIDLEN2)==':')                            //~vbv6R~
+            {                                                      //~vbv6I~
+                UCBITON(Ppfh->UFHflag14,UFHF14CIDU8);              //~vbv6I~
+                swValid=2;         //3byte utf8 cid without no postfix//~vbv6R~
+                fixCIDpos=1;       //DATE/NONE pos is 2+1          //~vbv6I~
+                postfixlen=0;                                      //~vbv6I~
+				UTRACEP("%s: 3byte by UTF8 swValid=%d,fixCIDpos=%d\n",UTT,swValid,fixCIDpos);//~vbv6R~
+            }                                                      //~vbv6I~
+          }                                                        //~vbv6I~
+        }                                                          //~vbv6I~
+        else    //pcd!=null                                        //~vbv6R~
+        {                                                          //~vbv6I~
+//          if (UCBITCHK(Ppfh->UFHflag14,UFHF14CIDU8))             //~vbv6R~
+//          {                                                      //~vbv6R~
+	    		pcd=XEUTF_PC2PCD(pcd0,pc,pc0);                     //~vbv6I~
+              	if (UDBCSCHK_ISUCSSBCS(*pcd))	//sbcs             //~vbv6I~
+                {                                                  //~vbv6I~
+					if (UCBITCHK(Ppfh->UFHflag14,UFHF14CID2BYTE))  //~vbv6I~
+                    {                                              //~vbv6I~
+		                fixCIDpos=-1;      //DATE/NONE pos is 2-1  //~vbv6I~
+                		swValid=5;         //3byte utf8 cid without no postfix//~vbv6I~
+                    }                                              //~vbv6I~
+                    else                                           //~vbv6I~
+                    {                                              //~vbv6I~
+		                fixCIDpos=-1;      //DATE/NONE pos is 2-1  //~vbv6R~
+                		swValid=3;         //3byte utf8 cid without no postfix//~vbv6R~
+                    }                                              //~vbv6I~
+                	UCBITON(Ppfh->UFHflag14,UFHF14CIDU8SBCS);      //~vbv6I~
+                }                                                  //~vbv6I~
+                else                                               //~vbv6I~
+                {                                                  //~vbv6I~
+				    fixCIDpos=0;       //DATE/NONE pos is 2+0      //~vbv6I~
+                	swValid=4;         //3byte utf8 cid without no postfix//~vbv6I~
+                }                                                  //~vbv6I~
+                postfixlen=0;                                      //~vbv6I~
+				UTRACEP("%s: cid by ucs4 ,swValid=%d,fixCIDpos=%d\n",UTT,swValid,fixCIDpos);//~vbv6R~
+            }                                                      //~vbv6I~
+//      }                                                          //~vbv6R~
+    }                                                              //~vbv6I~
+    if (swValid)                                                   //~vbv6I~
     {                                                           //~5611I~
     	UCBITON(Ppfh->UFHflag2,UFHF2HDRLINECID);	//no cid on hdr line//~v0czM~
 #ifdef UTF8UCS2                                                    //~va20I~
@@ -624,7 +756,10 @@ int filetoplinecid(PUFILEH Ppfh)                                   //~v0avI~
     #else                                                          //~va50I~
     		pcd=XEUTF_PC2PCD(pcd0,pc+3,plh->ULHdata);              //~va20I~
     #endif                                                         //~va50I~
-      if (!XESUB_memicmp(swutf8file && pcd0,pc+3,pcd,"NONE",0,4))  //~va20R~
+		UTRACED("swValid>0 pc",pc,LINECIDLEN);                     //~vbv6I~
+		UTRACED("swValid>0 pcd",pcd,LINECIDLEN);                   //~vbv6I~
+//    if (!XESUB_memicmp(swutf8file && pcd0,pc+3,pcd,"NONE",0,4))  //~va20R~//~vbv6R~
+      if (!XESUB_memicmp(swutf8file && pcd0,pc+3+fixCIDpos,pcd,"NONE",0,4))//~vbv6I~
 #else                                                              //~va20I~
       if (!memicmp(pc+3,"NONE",4))                                  //~v0czI~
 #endif                                                             //~va20I~
@@ -639,8 +774,10 @@ int filetoplinecid(PUFILEH Ppfh)                                   //~v0avI~
     	linecidlen=LINECIDLEN+postfixlen;                          //~v09FR~
     	Ppfh->UFHcidlen=(UCHAR)linecidlen;                         //~v09FI~
 //      if (*(pc+linecidlen+1)==CIDPOSPREFIX)                      //~v0axR~
-        if (pos>linecidlen+1                                       //~v0axI~
-        &&  *(pc+linecidlen+1)==CIDPOSPREFIX)                      //~v0axI~
+//      if (pos>linecidlen+1                                       //~v0axI~//~vbv6R~
+//      &&  *(pc+linecidlen+1)==CIDPOSPREFIX)                      //~v0axI~//~vbv6R~
+        if (pos>linecidlen+1+fixCIDpos                             //~vbv6I~
+        &&  *(pc+linecidlen+1+fixCIDpos)==CIDPOSPREFIX)            //~vbv6I~
         {                                                          //~v09rI~
 //          pos=atoi(pc+linecidlen+2);                             //~v0axR~
 #ifdef UTF8UCS2                                                    //~va20I~
@@ -650,7 +787,8 @@ int filetoplinecid(PUFILEH Ppfh)                                   //~v0avI~
     #else                                                          //~va50I~
 				pcd=XEUTF_PC2PCD(pcd0,pc+linecidlen+2,plh->ULHdata);//~va20R~
     #endif                                                         //~va50I~
-            pos=UTF_uatoin(swutf8file && pcd0,pc+linecidlen+2,pcd,pos-linecidlen-2);//~va20R~
+//          pos=UTF_uatoin(swutf8file && pcd0,pc+linecidlen+2,pcd,pos-linecidlen-2);//~va20R~//~vbv6R~
+            pos=UTF_uatoin(swutf8file && pcd0,pc+linecidlen+2+fixCIDpos,pcd+fixCIDpos,pos-linecidlen-2-fixCIDpos);//~vbv6I~
 #else                                                              //~va20I~
             pos=uatoin(pc+linecidlen+2,pos-linecidlen-2);          //~v0axI~
 #endif                                                             //~va20I~
@@ -696,11 +834,16 @@ int filetoplinecid(PUFILEH Ppfh)                                   //~v0avI~
             }                                                      //~v421I~
         }                                                          //~v09rI~
 //*later ascii chk will be done                                    //~va20I~
-      if (memicmp(pc+3,"DATE",4))                                  //~v09qM~
+//    if (memicmp(pc+3,"DATE",4))                                  //~v09qM~//~vbv6R~
+      if (memicmp(pc+3+fixCIDpos,"DATE",4))                        //~vbv6I~
 //    {                                                            //~v09FR~
     	UCBITON(Ppfh->UFHflag2,UFHF2FIXEDCID);                  //~5611I~
-        memcpy(Ppfh->UFHcid,pc,LINECIDLEN);                     //~5611I~
-        *(Ppfh->UFHcid+LINECIDLEN-2)='R';                       //~5611I~
+//      memcpy(Ppfh->UFHcid,pc,LINECIDLEN);                        //~vbv6R~
+        memset(Ppfh->UFHcid,0,sizeof(Ppfh->UFHcid));               //~vbv6R~
+        memcpy(Ppfh->UFHcid,pc,(size_t)(LINECIDLEN+fixCIDpos));    //~vbv6R~
+//      *(Ppfh->UFHcid+LINECIDLEN-2)='R';                       //~5611I~//~vbv6R~
+        *(Ppfh->UFHcid+LINECIDLEN-2+fixCIDpos)='R';                //~vbv6I~
+		UTRACED("after chk DATE UFHcid",Ppfh->UFHcid,sizeof(Ppfh->UFHcid));//~vbv6I~
 //    }                                                            //~v09FR~
 //    else          //Fixed-CID:xx+DATEr~                          //~v09FR~
 //    {                                                            //~v09FR~
@@ -718,6 +861,7 @@ int filetoplinecid(PUFILEH Ppfh)                                   //~v0avI~
 		if (swutf8file)                                            //~va20R~
         {                                                          //~va20I~
         	pcd=plh->ULHdbcs;                                      //~va20I~
+			UTRACEP("%s:utf8 file fiCidPos=%d,swValid=%d,pcd=%p\n",UTT,fixCIDpos,swValid,pcd);//~vbv6I~
             if (pcd)    //not yet setup at fileload,chked at save  //~va20I~
             {                                                      //~va20I~
 	#ifdef UTF8EBCD	  //raw ebcdic file support                    //~va50I~
@@ -726,6 +870,52 @@ int filetoplinecid(PUFILEH Ppfh)                                   //~v0avI~
     #else                                                          //~va50I~
                 pcd+=(ULONG)pc-(ULONG)(plh->ULHdata);              //~va20R~
     #endif                                                         //~va50I~
+              	if (swValid>=3 && (UDBCSCHK_ISUCSSBCS(*pcd) || UDBCSCHK_DBCS1STU(*pcd)))//~vbv6R~
+              	{                                                  //~vbv6I~
+                	UCBITON(Ppfh->UFHflag14,UFHF14CIDU8);          //~vbv6M~
+					UTRACEP("%s:flag14=0x%x,swValid=%d,*pcd=0x%x\n",UTT,Ppfh->UFHflag14,swValid,*pcd);//~vbv6R~
+					UTRACED("filetoplinecid UFHcid",Ppfh->UFHcid,sizeof(Ppfh->UFHcid));//~vbv6I~
+              		if (UDBCSCHK_ISUCSSBCS(*pcd))                  //~vbv6I~
+                    {                                              //~vbv6I~
+                        memcpy(Ppfh->UFHcidDDfmt,pc,1);            //~vbv6I~
+                        *(Ppfh->UFHcidDDfmt+1)=' ';                //~vbv6I~
+                        memcpy(Ppfh->UFHcidDDfmt+2,pcd,1);         //~vbv6I~
+                        *(Ppfh->UFHcidDDfmt+3)=0;                  //~vbv6I~
+//        				if (!UCBITCHK(Ppfh->UFHflag14,UFHF14CID2BYTE))//~vbv6R~
+//                      {                                          //~vbv6R~
+                            memmove(Ppfh->UFHcid+1,Ppfh->UFHcid,sizeof(Ppfh->UFHcid)-1);//~vbv6R~
+                            *(Ppfh->UFHcid)=*(Ppfh->UFHcid+1);     //~vbv6R~
+                            *(Ppfh->UFHcid+1)=' ';                 //~vbv6R~
+//                      }                                          //~vbv6R~
+                    }                                              //~vbv6I~
+                    else                                           //~vbv6I~
+                    {                                              //~vbv6I~
+                		memcpy(Ppfh->UFHcidDDfmt,pc,2);            //~vbv6R~
+                		memcpy(Ppfh->UFHcidDDfmt+2,pcd,2);         //~vbv6R~
+                    }                                              //~vbv6I~
+					UTRACED("filetoplinecid UFHcid",Ppfh->UFHcid,sizeof(Ppfh->UFHcid));//~vbv6R~
+					UTRACED("filetoplinecid UFHcidDDfmt",Ppfh->UFHcidDDfmt,sizeof(Ppfh->UFHcidDDfmt));//~vbv6R~
+                    if (!utfddisasciistr(0,pc+2+fixCIDpos,pcd+2+fixCIDpos,LINECIDLEN+postfixlen-fixCIDpos)) //compare ascii//~vbv6I~
+                    {                                              //~vbv6I~
+                        uerrmsg("CID on 1st line format error(except prefix should be ascii for UTF8 file)",//~vbv6R~
+                                "1行目のCID指定形式の誤り(UTF8ファイルの場合プレフィックス以外はasciiのみOK)");//~vbv6R~
+                                return 8;                          //~vbv6I~
+                    }                                              //~vbv6I~
+              	}                                                  //~vbv6I~
+              	else                                               //~vbv6I~
+                if (swValid)	//uitf8 prefix                     //~vbv6I~
+                {                                                  //~vbv6I~
+					UTRACEP("%s:utf8 prefix asciichk fixCIDpos=%d,postfixlen=%d,pcd=%p\n",UTT,fixCIDpos,postfixlen,pcd);//~vbv6R~
+					UTRACED("pc",pc,(size_t)(LINECIDLEN+postfixlen+fixCIDpos));//~vbv6R~
+					UTRACED("pcd",pcd,(size_t)(LINECIDLEN+postfixlen+fixCIDpos));//~vbv6R~
+                    if (!utfddisasciistr(0,pc+2+fixCIDpos,pcd+2+fixCIDpos,LINECIDLEN+postfixlen-2-fixCIDpos)) //compare ascii//~vbv6R~
+                    {                                              //~vbv6I~
+                        uerrmsg("CID on 1st line format error(except prefix should be ascii for UTF8 file)",//~vbv6I~
+                                "1行目のCID指定形式の誤り(UTF8ファイルの場合プレフィックス以外はasciiのみOK)");//~vbv6I~
+                                return 8;                          //~vbv6I~
+                    }                                              //~vbv6I~
+            	}                                                  //~vbv6I~
+                else                                               //~vbv6I~
                 if (!utfddisasciistr(0,pc,pcd,LINECIDLEN+postfixlen)) //compare ascii//~va20R~
                 {                                                  //~va20R~
                     uerrmsg("CID on 1st line format error(it should be ascii for UTF8 file)",//~va20R~
@@ -774,6 +964,9 @@ int filetoplinecid(PUFILEH Ppfh)                                   //~v0avI~
 			"1行目のCID指定形式の誤り。");                           //~v09rI~//~va20R~
         return 8;                                                  //~v0avI~
     }                                                              //~v0avI~
+	UTRACED("filetoplinecid exit UFHcid",Ppfh->UFHcid,sizeof(Ppfh->UFHcid));//~vbv6I~
+	UTRACED("filetoplinecid exit UFHcidDDfmt",Ppfh->UFHcidDDfmt,sizeof(Ppfh->UFHcidDDfmt));//~vbv6I~
+	UTRACEP("%s:etoplinecid exit flag14=0x%x\n",UTT,Ppfh->UFHflag14);//~vbv6R~
 	return 0;                                                      //~v0avR~
 }//filetoplinecid                                               //~5611I~
                                                                 //~5611I~
@@ -837,6 +1030,8 @@ static UCHAR  Stabspace[2]={" "};                               //~5102I~
                   && (Ppfh->UFHcidpos<Ppfh->UFHmergin));           //~v0e5R~
     onnumcidsw=(UCBITCHK(Ppfh->UFHflag2,UFHF2MERGINCID)            //~v423R~
                   && Ppfh->UFHspfpos); //cid on numfld             //~v423R~
+//  if (UCBITCHK(Ppfh->UFHflag14,UFHF14CIDU8SBCS))                 //~vbv6R~
+//  	fixCIDpos=-1;                                              //~vbv6I~
  if (onnumcidsw)	//not cid on numfld                            //~v423R~
  	lastcidpos=Ppfh->UFHmergin;                                    //~v423I~
  else                                                              //~v423I~
@@ -879,8 +1074,8 @@ static UCHAR  Stabspace[2]={" "};                               //~5102I~
 #endif                                                             //~va20I~
    	 	{                                                       //~5310R~
 // 		 	len=(int)(reclen-((ULONG)pc-(ULONG)pdata)-1);//no char after//~v014R~//~vafkR~
-//  	 	len=(int)(reclen-((ULPTR)pc-(ULPTR)pdata)-1);//no char after//~vafkI~//+vb30R~
-    	 	len=reclen-PTRDIFF(pc,pdata)-1;//no char after         //+vb30I~
+//  	 	len=(int)(reclen-((ULPTR)pc-(ULPTR)pdata)-1);//no char after//~vafkI~//~vb30R~
+    	 	len=reclen-PTRDIFF(pc,pdata)-1;//no char after         //~vb30I~
 #ifdef UTF8UCS2                                                    //~va20I~
 	#ifdef UTF8EBCD	  //raw ebcdic file support                    //~va50I~
     		if (UWHICH(swebcfile,                                  //~va50I~
@@ -923,8 +1118,8 @@ static UCHAR  Stabspace[2]={" "};                               //~5102I~
 //  		*(Pdata+reclen-linecidlen+2)=CIDENCLOSER;//reset latest update cid//~v0cjR~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
 //  		*(Pdata+lastcidpos+2)=UCVEBC_CONST(swebcfile,CIDENCLOSER);//reset latest update cid//~va50I~//~va79R~
-//  		*(Pdata+lastcidpos+2)=UWHICH(swebcfile,CIDENCLOSER_EBC(handle),CIDENCLOSER);//reset latest update cid//~va79R~//+vb30R~
-    		*(Pdata+lastcidpos+2)=(UCHAR)UWHICH(swebcfile,CIDENCLOSER_EBC(handle),CIDENCLOSER);//reset latest update cid//+vb30I~
+//  		*(Pdata+lastcidpos+2)=UWHICH(swebcfile,CIDENCLOSER_EBC(handle),CIDENCLOSER);//reset latest update cid//~va79R~//~vb30R~
+    		*(Pdata+lastcidpos+2)=(UCHAR)UWHICH(swebcfile,CIDENCLOSER_EBC(handle),CIDENCLOSER);//reset latest update cid//~vb30I~
 #else                                                              //~va50I~
 			*(Pdata+lastcidpos+2)=CIDENCLOSER;//reset latest update cid//~v0cjI~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50I~
@@ -971,8 +1166,8 @@ static UCHAR  Stabspace[2]={" "};                               //~5102I~
             {                                                      //~v79UI~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
 //              *(Pplh->ULHdata+lastcidpos+2)=UCVEBC_CONST(swebcfile,CIDENCLOSER);//reset latest update cid//~va50I~//~va79R~
-//              *(Pplh->ULHdata+lastcidpos+2)=UWHICH(swebcfile,CIDENCLOSER_EBC(handle),CIDENCLOSER);//reset latest update cid//~va79I~//+vb30R~
-                *(Pplh->ULHdata+lastcidpos+2)=(UCHAR)UWHICH(swebcfile,CIDENCLOSER_EBC(handle),CIDENCLOSER);//reset latest update cid//+vb30I~
+//              *(Pplh->ULHdata+lastcidpos+2)=UWHICH(swebcfile,CIDENCLOSER_EBC(handle),CIDENCLOSER);//reset latest update cid//~va79I~//~vb30R~
+                *(Pplh->ULHdata+lastcidpos+2)=(UCHAR)UWHICH(swebcfile,CIDENCLOSER_EBC(handle),CIDENCLOSER);//reset latest update cid//~vb30I~
 #else                                                              //~va50I~
                 *(Pplh->ULHdata+lastcidpos+2)=CIDENCLOSER;//reset latest update cid//~v79UR~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50I~
@@ -1077,6 +1272,7 @@ static UCHAR  Stabspace[2]={" "};                               //~5102I~
 	{                                                           //~5107I~
 //  	strcpy(pc=Pdata+gpos,Pcid);                                //~v0clR~
     	memcpy(pc=Pdata+gpos,Pcid,(UINT)linecidlen);               //~v0clI~
+		UTRACED("file4.filesetcid Pcid",Pcid,linecidlen);          //~vbv6I~
 		if (UCBITCHK(Pplh->ULHflag2,ULHF2INSERT))               //~5131I~
         {                                                          //~v71ZI~
 			if (UCBITCHK(Pplh->ULHflag,ULHFMOVE))               //~5131I~
@@ -1095,6 +1291,12 @@ static UCHAR  Stabspace[2]={" "};                               //~5102I~
 #endif                                                             //~va50I~
         }                                                          //~va50I~
 #endif                                                             //~va50I~
+        if (UCBITCHK(Ppfh->UFHflag14,UFHF14CIDU8))  //utf8 prefix  //~vbv6M~
+        {                                                          //~vbv6M~
+            memcpy(Pdata+gpos,Ppfh->UFHcidDDfmt,2);     //dd fmt   //~vbv6R~
+            memcpy(Pdbcs+gpos,Ppfh->UFHcidDDfmt+2,2);   //         //~vbv6R~
+			UTRACED("file4.filesetcid CIDU8",Ppfh->UFHcidDDfmt,sizeof(Ppfh->UFHcidDDfmt));//~vbv6I~
+        }                                                          //~vbv6M~
                                                                    //~va50I~
 	}                                                           //~5107I~
   }//!skipsw                                                       //~v0clI~
@@ -1198,7 +1400,8 @@ UTRACEDIFNZ("cidlrecl inp dbcs",pcd0,len0);                        //~va50R~
 	    && UWHICH(swebcfile,                                       //~va50I~
 //  				fileiscid_ebc(Ppfh->UFHcidebc,pc0+mergin,linecidlen),//~va50I~//~va79R~
     				fileiscid_ebc(handle,Ppfh->UFHcidebc,pc0+mergin,linecidlen),//~va79I~
-					fileiscid(Ppfh->UFHcid,pc0+mergin,pcd,linecidlen)//~va50I~
+//  				fileiscid(Ppfh->UFHcid,pc0+mergin,pcd,linecidlen)//~va50I~//~vbv6R~
+    				fileiscid(Ppfh,Ppfh->UFHcid,pc0+mergin,pcd,linecidlen)//~vbv6I~
                  )                                                 //~va50I~
         )                                                          //~va50I~
 #else                                                              //~va50I~
@@ -1269,7 +1472,8 @@ UTRACEDIFNZ("cidlrecl inp dbcs",pcd0,len0);                        //~va50R~
 	        if (UWHICH(swebcfile,                                  //~va50I~
 //      	    		fileiscid_ebc(Ppfh->UFHcidebc,pc,linecidlen),//~va50R~//~va79R~
         	    		fileiscid_ebc(handle,Ppfh->UFHcidebc,pc,linecidlen),//~va79I~
-	    	    		fileiscid(Ppfh->UFHcid,pc,pcd,linecidlen)  //~va50R~
+//      	    		fileiscid(Ppfh->UFHcid,pc,pcd,linecidlen)  //~va50R~//~vbv6R~
+        	    		fileiscid(Ppfh,Ppfh->UFHcid,pc,pcd,linecidlen)//~vbv6I~
                       )                                            //~va50I~
 			)                                                      //~va50R~
 	#else                                                          //~va50R~
@@ -1354,7 +1558,8 @@ UTRACEDIFNZ("cidlrecl inp dbcs",pcd0,len0);                        //~va50R~
 //  	fileiscid_ebc(Ppfh->UFHcidebc,pc-linecidlen+1,linecidlen),//postfix match//~va50I~//~va79R~
     	fileiscid_ebc(handle,Ppfh->UFHcidebc,pc-linecidlen+1,linecidlen),//postfix match//~va79I~
         (pcd=(pcd0 ? XEUTF_PC2PCD(pcd0,pc-linecidlen+1,pc0) : 0),  //~va50I~
-			fileiscid(Ppfh->UFHcid,pc-linecidlen+1,pcd,linecidlen))//postfix match//~va50I~
+//  		fileiscid(Ppfh->UFHcid,pc-linecidlen+1,pcd,linecidlen))//postfix match//~va50I~//~vbv6R~
+    		fileiscid(Ppfh,Ppfh->UFHcid,pc-linecidlen+1,pcd,linecidlen))//postfix match//~vbv6I~
              )                                                     //~va50I~
         )                                                          //~va50I~
   #else                                                            //~va50I~
@@ -1534,6 +1739,28 @@ CIDTBL *filecidtypechk(UCHAR *Ptype,int Palias)                    //~v09rI~
 //  return pcidtbl->CIDTid;                                        //~v09rR~
     return pcidtbl;                                                //~v09rI~
 }//filecidtypechk
+//************************************************************     //~vbw3I~
+CIDTBL *filecidtypechkUTF8(PUFILEH Ppfh,UCHAR *Pprefix)            //~vbw3R~
+{                                                                  //~vbw3I~
+	int ii,utf8len,chklen;                                         //~vbw3R~
+    UWUCS ulucs;                                                   //~vbw3I~
+	CIDTBL *pcidtbl,*rc=0;                                         //~vbw3R~
+//*****************************                                    //~vbw3I~
+	utf8len=(int)strlen(Pprefix);                                  //~vbw3I~
+    if (utf8len<LINEPREFIXLEN)		//utf8 code len>=2             //~vbw3R~
+    	return 0;                                                  //~vbw3I~
+	if (uccvutf2ucs(UCVUCS_UCS4,Pprefix,utf8len,&ulucs,&chklen))//~va3xI~//~vbw3R~
+    	return 0;                                                  //~vbw3I~
+	for (pcidtbl=Scidtbl,ii=0;ii<MAXCIDTBL;pcidtbl++,ii++)         //~vbw3I~
+    	if (pcidtbl->CIDTid)	//defined                          //~vbw3I~
+	 		if (pcidtbl->CIDTucs==(int)ulucs)                      //~vbw3I~
+            {                                                      //~vbw3I~
+            	rc=pcidtbl;                                        //~vbw3I~
+    	    	break;                                             //~vbw3I~
+            }                                                      //~vbw3I~
+    UTRACEP("%s:ucs=%d,rc=pcidtbl=%p\n",UTT,(int)ulucs,rc);        //~vbw3I~
+    return rc;                                                     //~vbw3I~
+}//filecidtypechkUTF8                                              //~vbw3I~
 
 //************************************************************     //~v09FI~
 // filecidprefixchk                                                //~v09FI~
@@ -1582,7 +1809,8 @@ static UCHAR Scidtyp[3+1+2+1];    //ext,postfix                    //~v09FI~
 //*return:3rd byte of cid('+'/'-') or 0 if not cid                 //~v0clM~
 //************************************************************     //~v0clM~
 #ifdef UTF8UCS2                                                    //~va20I~
-int fileiscid(char *Pcidfmt,char *Pcid,char *Pdbcs,int Pcidlen)    //~va20I~
+//int fileiscid(char *Pcidfmt,char *Pcid,char *Pdbcs,int Pcidlen)    //~va20I~//~vbv6R~
+int fileiscid(PUFILEH Ppfh,char *Pcidfmt,char *Pcid,char *Pdbcs,int Pcidlen)//~vbv6I~
 #else                                                              //~va20I~
 int fileiscid(char *Pcidfmt,char *Pcid,int Pcidlen)                //~v0clM~
 #endif                                                             //~va20I~
@@ -1590,9 +1818,33 @@ int fileiscid(char *Pcidfmt,char *Pcid,int Pcidlen)                //~v0clM~
 	int postfixlen;                                                //~v0clM~
 //*****************************                                    //~v0clM~
 #ifdef UTF8UCS2                                                    //~va20I~
+  if (UCBITCHK(Ppfh->UFHflag14,UFHF14CIDU8))                       //~vbv6I~
+  {                                                                //~vbv6I~
+	if (Pdbcs && utfchkdd(0,Pdbcs+2,Pcidlen-2))	//utf8 encoded cid is not allowed//~vbv6I~
+    {                                                              //~vbv6I~
+		UTRACEP("%s:@@@@ FHF14CIDU8 cid is utf8\n",UTT);           //~vbv6I~
+    	return 0;                                                  //~vbv6I~
+    }                                                              //~vbv6I~
+  }                                                                //~vbv6I~
+  else                                                             //~vbv6I~
 	if (Pdbcs && utfchkdd(0,Pdbcs,Pcidlen))	//utf8 encoded cid is not allowed//~va20R~
+    {                                                              //~vbv6I~
+		UTRACEP("%s:@@@@ not CID prefix is utf8 cid is utf8\n",UTT);//~vbv6I~
     	return 0;                                                  //~va20I~
+    }                                                              //~vbv6I~
 #endif                                                             //~va20M~
+	UTRACED("Pcid",Pcid,2);                                        //~vbw1I~
+	UTRACED("Pdbcs",Pdbcs,2);                                      //~vbw1I~
+	UTRACED("Pcidfmt",Pcidfmt,2);                                  //~vbw1I~
+	UTRACED("UFHcidDDfmt",Ppfh->UFHcidDDfmt,4);                    //~vbw1R~
+	UTRACEP("%s:FHflag14=x%x\n",UTT,Ppfh->UFHflag14);              //~vbw1I~
+    if (UCBITCHK(Ppfh->UFHflag14,UFHF14CIDU8))  //     0x08      //cid is by utf8 code for utf8 file,it is set on UFHcidDDfmt[4]//~vbw1M~
+    {                                                              //~vbw1M~
+		if (memcmp(Ppfh->UFHcidDDfmt,Pcid,2) 	//utf8 prefix, unmatch data//~vbw1I~
+		||  memcmp(Ppfh->UFHcidDDfmt+2,Pdbcs,2))	//utf8 prefix, unmatch dbcs//~vbw1I~
+	    	return 0;                                              //~vbw1M~
+    }                                                              //~vbw1M~
+    else                                                           //~vbw1I~
 	if (memcmp(Pcid,Pcidfmt,2))	//top 2 byte                       //~v0clM~
     	return 0;                                                  //~v0clM~
     if (*(Pcid+2)!=CIDENCLOSER                                     //~v0clM~
@@ -1608,6 +1860,7 @@ int fileiscid(char *Pcidfmt,char *Pcid,int Pcidlen)                //~v0clM~
     if ((postfixlen=Pcidlen-LINECIDLEN)>0)                         //~v0clM~
         if (memcmp(Pcid+LINECIDLEN,Pcidfmt+LINECIDLEN,(UINT)postfixlen))//postfix unmatch//~v0clM~
             return 0;                                              //~v0clM~
+	UTRACEP("%s:return 1",UTT);                                    //~vbw1I~
 	return 1;                                                      //~v0clM~
 }//fileiscid                                                       //~v0clM~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~

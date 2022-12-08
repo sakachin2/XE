@@ -1,7 +1,9 @@
-//CID://+vbr3R~:                                      Update#=  332//~vbr3R~
+//CID://+vbv9R~:                                      Update#=  338//~vbv9R~
 //****************************************************************
 //xefile.h                                                         //~v10LR~
 //****************************************************************
+//vbv9:221124 add cid type apl for extension=.apl                  //~vbv9I~
+//vbv6:221121 support unicode cid (length>2)                       //~vbv6I~
 //vbr3:200620 ARM:sdcard permission chk                            //~vbr3I~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vb88:170216 stop lcmd "i" continue mode by cut&paste             //~vb7kI~
@@ -400,6 +402,7 @@ typedef struct _UFILEH {                        //file hdr
 #endif                                                             //~v542I~
                         UCHAR   UFHalias[UFHALIASSZ];   //alias in work dir//~v48cI~
                         UCHAR   UFHcid[12];     //cid for chk line copy//~v020R~
+                        UCHAR   UFHcidDDfmt[4];     //for utf8 file utf8 cid by dd fmt, UFHcid is utf8 string//~vbv6R~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
                         UCHAR   UFHcidebc[12];  //cid by ebcdic    //~va50I~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50I~
@@ -445,6 +448,7 @@ typedef struct _UFILEH {                        //file hdr
 #define UFHCIDTYPEC     1       //for c,cpp,h,hpp etc           //~5310R~
 #define UFHCIDTYPEASM   2       //for asm                       //~5310R~
 #define UFHCIDTYPEDOC   3       //for .doc,read.me              //~5528I~
+//#define UFHCIDTYPEAPL 4       //for .apl                         //+vbv9R~
 #define UFHCIDTYPEOTHER (MAXCIDTBL+1) //by header line(not predefined)//~v09rR~
 #define UFHCIDTYPEERR   0xff    //not defined ext type          //~5310R~
                         int     UFHpathlen;     //path name length //~vaztI~
@@ -558,7 +562,7 @@ typedef struct _UFILEH {                        //file hdr
 #define UFHF9CIDAPPENDN 0x20    //no cid append mode               //~v79UI~
 #ifdef ARM                                                         //~vag1I~
 #define UFHF9SDCARD     0x10    //file is on sdcard path           //~vag1I~
-#define UFHF9SDNOTGRANT 0x08    //write permission not granted     //+vbr3R~
+#define UFHF9SDNOTGRANT 0x08    //write permission not granted     //~vbr3R~
 #endif                                                             //~vag1I~
 #ifdef FTPSUPP                                                     //~v54pI~
                         UCHAR   UFHrsv11[2];    //boundary align   //~vag2I~
@@ -663,6 +667,9 @@ typedef struct _UFILEH {                        //file hdr
 #define UFHF14MOUNTU8CV       0x02	    //l2f translation done     //~vb2eI~
 #endif                                                             //~vb2nI~
 #define UFHF14FN_ENCODED_UTF8 0x04	    //filename(not path) encoding is aftually utf8//~vb2hR~
+#define UFHF14CIDU8           0x08      //cid is by utf8 code for utf8 file,it is set on UFHcidDDfmt[4]//~vbv6R~
+#define UFHF14CIDU8SBCS       0x10      //cid utf8 sbcs(1 column)  //~vbv6I~
+#define UFHF14CID2BYTE        0x20      //2byte cid prefix(utf8 locale)//~vbv6I~
                         UCHAR   UFHrsv14[3];                       //~vb2eI~
                         PULINEH UFHplhlcmdi;       //plh isrted by lcmd i//~v78SR~
                         int     UFHplhlcmdi_upundoctr; //if changed set UFHplhlcmdi=0//~vb7kI~

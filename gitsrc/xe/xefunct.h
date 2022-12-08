@@ -1,8 +1,11 @@
-//*CID://+vb2AR~:                             update#=   32;       //+vb2AR~
+//*CID://+vbveR~:                             update#=   36;       //+vbveR~
 //*********************************************************************//~5216I~
 //* xefunct.h                                                   //~5216I~
 //*********************************************************************//~5216I~
-//vb2A:160212 fkt;protect buff overflow                            //+vb2AI~
+//vbve:221126 change Default SJIS linechar from old(<0x20) to DBCS //+vbveI~
+//vbvd:221125 on 0.2/0.3 display hex/sjis string by utf8 avoiding line err(lineno green)//~vbvdI~
+//vbvc:221125 functbl search miss to search english linechar because same funcid//~vbvcI~
+//vb2A:160212 fkt;protect buff overflow                            //~vb2AI~
 //vb2u:160207 support utf8 input by xelchxxx(LineDrawChar file) by prefix uxxyy//~vb2uI~
 //va1c:091030_merge GB18030 support                                //~va1cI~
 //v79R:081027 (BUG)dbcs evaluation required when graphic char input specification is by hex notation//~v79RI~
@@ -26,6 +29,7 @@ typedef struct _LINECHSTR                                          //~v705I~
  		int    LCSflag;                 //string length            //~v705R~
 #define LCSFHEXDATA 0x01                                           //~v705I~
 #define LCSFU8DATA  0x02               //utf8 data by uxxxx format input//~vb2uR~
+#define LCSFSJIS    0x04               //apply only for SJIS       //+vbveI~
  		int    LCSlen;                 //string length             //~v705I~
         char   LCSdata[MAXSTRINPUT+1]; //data                      //~v705R~
         char   LCSdbcs[MAXSTRINPUT+1]; //dbcs                      //~v705R~
@@ -54,6 +58,7 @@ void functreset(void);                                          //~5501I~
                                                                 //~5501I~
 //**************************************************            //~5424M~
 FUNCTBL *functblsrch(int Pfuncid);                              //~5424M~
+FUNCTBL *functblsrch2nd(int Pfuncid,FUNCTBL *Ppft1st);             //~vbvcR~
                                                                 //~5429I~
 //**************************************************            //~5429I~
 FUNCTBL *functblsrchbyname(UCHAR *Pfuncname);                   //~5429I~
@@ -63,8 +68,8 @@ FUNCTBL *functblsrchbycmd(UCHAR *Pcmd);                            //~v67CI~
 //**************************************************               //~v705I~
 int funct2init(int Popt,char *Plinechfile);                        //~v705R~
 //**************************************************               //~v705I~
-//int funct2getlinechstr(int Popt,FUNCTBL *Ppft,char *Pout);         //~v705R~//+vb2AR~
-int funct2getlinechstr(int Popt,FUNCTBL *Ppft,char *Pout,int Pbuffsz);//+vb2AI~
+//int funct2getlinechstr(int Popt,FUNCTBL *Ppft,char *Pout);         //~v705R~//~vb2AR~
+int funct2getlinechstr(int Popt,FUNCTBL *Ppft,char *Pout,int Pbuffsz);//~vb2AI~
 //**************************************************               //~v705I~
 int funct2getinputgc(PUCLIENTWE Ppcw,FUNCTBL *Ppft);               //~v705R~
 //**************************************************               //~v705I~
@@ -82,3 +87,4 @@ int funct2getnextinputgc(PUCLIENTWE Ppcw,char *Pinput);            //~v79RI~
 //**************************************************               //~v705I~
 int funct2getacsch(int Pfuncid);                                   //~v705I~
 #endif                                                             //~v705I~
+int funct2printlcdata(int Popt,char *Pout,char *Pinp,int Plen);    //~vbvdI~

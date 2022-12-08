@@ -27,26 +27,50 @@ a:hover{font-weight:bold;}-->
        (warning) Compile option is required for some c compiler to treat
                 &quot;//&quot; as line comment.
 
-    You must explicitly specify type for the file with other extension
-    to set CID of the type by <a href="HID00000265.htm">CID command</a> (It is effective only in
-    the edit screen).
+    You must explicitly specify type by  <a href="HID00000265.htm">CID command</a>  for the file which extension is out of list.
     Or, specify pair of 2 byte tag sign and extension list on <a href="HID00000209.htm">INI file</a>
-    for permanent new tag format assignment.
+    It is also possible to use a single Unicode character as the CID prefix.
+    (Open files with that extension as UTF8 files.)
+    If you want to set something other than the date, use the following CID Header
+      e.g) (ini file specification)
+        Change_ID_Type_C = 68 = &quot;//&quot; = C,H,CPP,HPP,JAVA
+        Change_ID_Type_ASM= 68 = &quot;;;&quot; = ASM
+        Change_ID_Type_DOC= 71 = &quot;||&quot; = DOC,ME
+        Change_ID_Type_4 = 60 = u-235d= APL
+    The CID-type option of the CID command can be also specify the first of extension list.
+    Either &quot;cid on //&quot; or &quot;cid on C&quot; is OK.
 
+    You can also set a CID which is effective only to that file by coding
+    called CID Header.
     Sample CID Header line is inserted by "CID TOP" or "CID TOPA" cmd
-    on the top line of each file like as following.(see this file top line)
+    on the top line of each file like as following.
+
     "CID:xx+XXXXR~yy:#nnn option=(option1,option2,...) update#=nnnnn;"
-    Or modify the sample line inserted using "CID top" or "CID topa" cmd.
+
+      e.g) //CID://+vbi3R~:#71 update#= 356;
+
+
         CID: is specification id of any 4 char CID.
              (It can be changed by INI file option.
               Fixed_CID_prefix value,max 15 byte)
         xx   is same top 2 byte as one of predefined on INI file.
              or any 2 byte SBCS char as CID type.
-        XXXX is any 4 byte SBCS CID like as v094.
+             Single Unicode character can be specified in UTF8 file.
+             For example, APL language comment prefix are u-235d(UTF8:e28d9d), so the Header line looks like following.
+               &quot;&#9053; CID:&#9053;+DATER~: update#= 1&quot;
+             You may see spaces after prefix by char width on the display, but there should be no spaces between them on the record.
+             For single column width unicode
+               &quot;//*CID:&Agrave;+v001R~:#71 update#= 29;&quot;
+             When using Unicode, the display width varies depending on the language environment,
+             so be careful when sharing the file.
+             For example, if Windows displays by 2 columns and Linux displays 1 column,
+             the CID tagged to the update line on Windows is not recognized as CID on Linux.
+             So the &quot;cid clear&quot; command on Linux may return 0 rows.      
+        XXXX is any 4 byte ASCII CID like as v094.
              time stamp type CID ymdd is set if "DATE" is coded.
-             No CID is set if specified "NONE", use this format when
+             No CID is set if specified &quot;NONE&quot;, use this pattern when
              you need to use option= parm only.
-        yy   0 to max 2 byte any optional postfix string.
+        yy 0 to max 2 byte any optional postfix string. ASCII only.
         nnn  is CID set column of 1 to 256.
              this parameter is optional.
              If omitted, column is of INI file when CID type is
@@ -70,6 +94,6 @@ a:hover{font-weight:bold;}-->
         update#= is optional parameter. Update counter is automaticaly
         maintained and set after this word for each save time.
 
-</SPAN></PRE>
+*** 2022/12/04</SPAN></PRE>
 </BODY>
 </HTML>

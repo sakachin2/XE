@@ -1,5 +1,6 @@
-//*CID://+v70qR~:                             update#=   65;       //~v70qR~
+//*CID://+v750R~:                             update#=   67;       //~v70qR~//~v750R~
 //**********************************************************************
+//v750:221120 warning ftime deprecated for UTSSTART/UTSEND when TRACE=YES//~v750I~
 //v70q:200919 (ARM)add gettraceopt                                 //~v70qI~
 //v706:200616 ARM:redirect UTRACE to LOGPD                         //~v706I~
 //v6X9:180821 snprintf is from msvs2015(err at xp:2010)            //~v6V9I~
@@ -146,14 +147,16 @@ extern  "C"                                                        //~v6ViR~
 	#define UTRACE_TIME_SUB(high1,low1,high2,low2)         \
         (low1<low2 ? (high1-=high2+1,low1+=1000-low2) :    \
 		             (high1-=high2,low1-=low2))                    //~v5ikI~
-    #define UTSSTART(starttime) ftime(&starttime)	/*struct timeb*///~v5ikI~
-    #define UTSEND(starttime,accum)    \
-    	{                              \
-			struct    timeb ct;        \
-            ftime(&ct);	/*current*/		\
-            UTRACE_TIME_SUB(ct.time,ct.millitm,starttime.time,starttime.millitm);\
-            accum+=ct.time*1000+ct.millitm;                                 \
-        }                                                          //~v5ikI~
+//  #define UTSSTART(starttime) ftime(&starttime)	/*struct timeb*///~v5ikI~//~v750R~
+//  #define UTSEND(starttime,accum)                                //+v750R~
+//    	{                                                          //+v750R~
+//			struct    timeb ct;                                    //+v750R~
+//          ftime(&ct);	/*current*/		                           //+v750R~
+//          UTRACE_TIME_SUB(ct.time,ct.millitm,starttime.time,starttime.millitm);//+v750R~
+//          accum+=ct.time*1000+ct.millitm;                        //+v750R~
+//      }                                                          //~v5ikI~//+v750R~
+    #define UTSSTART(currtime)                                     //~v750I~
+    #define UTSEND(starttime,accum)                                //~v750I~
   #endif //NOTSTRACE                                               //~v6wqI~
 #else                                                              //~v5ikI~
 #ifdef DOS                                                         //~v5ikI~

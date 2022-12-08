@@ -1,8 +1,23 @@
-//*CID://+vb82R~:                             update#=  184;       //+vb82R~
+//*CID://+vbvwR~:                             update#=  396;       //~vbvwR~
 //*************************************************************    //~v0hqI~
 //*xefile7.c                                                       //~v0hqI~
 //**drop,tab clear,func key file edit                              //~v0ifR~
 //*************************************************************    //~v0hqI~
+//vbvz:221203 (Bug)=0.1;missing set string terminater null         //~vbvzI~
+//vbvw:221203 =0.1 comment by Japanese                             //~vbvwI~
+//vbvv:221203 =0.1 comment for user command                        //~vbvvI~
+//vbvt:221202 =0.2/=0.3 display code itself for default box char for japanese//~vbvtI~
+//vbvs:221202 (BUG)find cmd fai for =0.2(ULHdbcs setup required)   //~vbvsI~
+//vbvr:221201 (BUG)whe deleted line of =0.2, it key is cleared and changed to cmd mode//~vbvrI~
+//vbvp:221201 (BUG)FTkey index is not valid by Protected line(Fixed key assign)//~vbvpI~
+//vbvo:221201 show sample for sc cmd of =0.1                       //~vbvoI~
+//vbvn:221201 (BUG)=0.1 shortcutkey cause err "not alphnum"        //~vbvnI~
+//vbvm:221130 show alias sample line to 0.1 panel                  //~vbvmI~
+//vbvi:221130 (BUG)FTFLINECHSET:x20 is duplicated with DTUDUPACMD  //~vbviI~
+//vbvh:221130 =0.2; clear key did not update xe.ini                //~vbvhI~
+//vbvf:221129 drop japanese comment for =0.2/0.3 when english mode //~vbvfI~
+//vbvd:221125 on 0.2/0.3 display hex/sjis string by utf8 avoiding line err(lineno green)//~vbvdI~
+//vbvb:221125 opt 0.2/0.3 as utf8 file for utf8 graphic char display//~vbvbI~
 //vb82:170206 (BUG)64bit ptr size(filefk)                          //~vb82I~
 //vb50:160827 accept S+A/C+extended key                            //~vb50I~
 //vb2E:160229 LNX64 compiler warning                               //~vb2EI~
@@ -77,6 +92,8 @@
 #include <ucvebc.h>                                                //~va50I~
 #include <ucvebc4.h>                                               //~va79I~
 #include <utrace.h>                                                //~vb50I~
+#include <utf.h>                                                   //~vbvbI~
+#include <udbcschk.h>                                              //~vbvwR~
                                                                    //~v0hqI~
 #include "xe.h"                                                    //~v0hqI~
 #include "xescr.h"                                                 //~v0hqI~
@@ -94,6 +111,9 @@
 #include "xeundo.h"                                                //~v0hqI~
 #include "xepan.h"                                                 //~v0ixI~
 #include "xegbl.h"                                                 //~v44uI~
+#include "xefile6.h"                                               //~vbvsI~
+#include "xeutf.h"                                                 //~vbvwI~
+#include "xeopt.h"                                                 //~vbvsR~
 //*******************************************************          //~v0hqI~
 #define NOCMDID '_'                                                //~v0imR~
 #define CMDDELM '/'                                                //~v0imI~
@@ -108,6 +128,7 @@
 #endif                                                             //~vb50I~
 #define ALIASCMT    '*'   //comment id                             //~v67CI~
 #define NOTFIXCMDID '+'   //commandverb changable                  //~v71PI~
+//#define GRAPH_ENGLISH "(E)"                                      //~vbvfR~
 //*******************************************************          //~v0imI~
 	static UQUEH Sqhalct;                                          //~v67CR~
 //*******************************************************          //~v67CI~
@@ -139,6 +160,64 @@ int filefksaveshortcut(PULINEH Pplh,UCHAR *Pdata);                 //~v48fI~
 int filefkctlinealias(PUFILEH Ppfh);                               //~v67CR~
 int filefksavealias(PULINEH Pplh,UQUEH *Ppqhalct);                 //~v67CR~
 int filesetupscktalias(UQUEH *Ppqhalct);                           //~v67CR~
+int filekeyclear(PWORKFT Ppwft0,int Pentno,PWORKFT Ppwft,PFUNCTBL Ppft,int PidxKey);//~vbvhI~
+static int SswByUTF8=0x02;                                         //~vbvbR~
+static char *ScommentGC[]={"***** LineChr : output hex code itself or UTF8 string for u-xxxx.",//~vbvwR~
+#ifdef LNX                                                         //~vbvfI~
+						   "*****         : hex code is for CP437, 2\'nd code of after // is by +Shift key combination.",//~vbvwR~
+						   "*****         : You can change it by ::xelchlnx.ini.xxx, xxx is langID such as ja_JP. Check it by locale cmd.",//~vbvtR~
+#else                                                              //~vbvfI~
+						   "*****         : hex code is for Shift-JIS, 2\'nd code of after // is by +Shift key combination.",//~vbvwR~
+						   "*****         : You can change it by ::xelchwin.ini.",//~vbvtI~
+#endif                                                             //~vbvfI~
+                            0                                      //~vbvbI~
+};                                                                 //~vbvbI~
+static char *ScommentGC_JP[]={"***** 罫線文字: ヘキサコードをそのままか、u-xxxx はUTF8コードに変えて出力",//~vbvwR~
+#ifdef LNX                                                         //~vbvwI~
+						      "*****         : ヘキサコードは 日本語環境では EUC-JP。//の後の2番目のコードは +Shift(シフトキー) で出力",//~vbvwR~
+						      "*****         : 設定変更は ::xelchlnx.ini.xxx, xxx は ja_JPなどの言語環境で locale コマンドで調べられます",//~vbvwI~
+#else                                                              //~vbvwI~
+						      "*****         : ヘキサコードは 日本語環境では Shift-JIS。//の後の2番目のコードは +Shift(シフトキー) で出力",//~vbvwR~
+                              "*****         : 設定変更は ::xelchwin.iniを作成してください",//~vbvwR~
+#endif                                                             //~vbvwI~
+                            0};                                    //~vbvwI~
+static char *ScommentAlias[]={"********** Alias command sample **********",//~vbvmI~
+                              "********   Alias  :sl1 e %1 ;x all; f \"#error\"; del x all # select lines including #error; use like as \"sl1 file1\".",//~vbvmR~
+                              "********       Use it like as \"sl1 file1\" on command input line.",//~vbvvI~
+                              "********   Alias  :*sl1 e %1 ;x all; i error; del x all #this is comment line",//~vbvmR~
+                              0};                                  //~vbvmI~
+static char *ScommentAlias_JP[]={"********** Alias コマンドの例 **********",//~vbvwI~
+                              "********   Alias  :sl1 e %1 ;x all; f \"#error\"; del x all # select lines including #error; use like as \"sl1 file1\".",//~vbvwI~
+                              "********       コマンド入力行 \"sl1 file1\" の様に入力して使用します",//~vbvwI~
+                              "********   Alias  :*sl1 e %1 ;x all; i error; del x all #this is comment line",//~vbvwI~
+                              0};                                  //~vbvwI~
+static char *ScommentSC[]={"********** shortcut command sample **********",//~vbvoI~
+                              "********   sc,0   :cd w:\\AndroidStudioProjects\\BluetoothChat18\\app\\src\\main; e . # comment",//~vbvoR~
+                              "********       Press Alt+a then 0, text string is put at the cursor position.",//~vbvoR~
+                              "********       Pressing Alt+q then key 0 will show the text string. Next key 0 puts it at the cursor position.",//~vbvvR~
+                              "********   sc,1   :e %1; f %2    # open and find word",//~vbvoR~
+                              "********       Input \"file1 \'Key Word\'\" on command input line, Press Al+q then 1, \"e file1; f \'Key Word\'\" is put.",//~vbvoR~
+                              0};                                  //~vbvoI~
+static char *ScommentSC_JP[]={"********** ショートカット コマンドの例 **********",//~vbvwI~
+                              "********   sc,0   :cd w:\\AndroidStudioProjects\\BluetoothChat18\\app\\src\\main; e . # comment",//~vbvwI~
+                                "********       Alt+a の後 0 を押すと、設定の文字列がカー\x83\\ル位置に出力されます",//~vbvwR~
+                                "********       Alt+q の後では文字列が\x95\\示されます、続けて 0 を押すとカー\x83\\ル位置に文字列が出力されます",//~vbvwR~
+                              "********   sc,1   :e %1; f %2    # open and find word",//~vbvwI~
+                              "********       コマンド入力行に \"file1 \'Key Word\'\" を入力した状態で操作すると \"e file1; f \'Key Word\'\" となります",//~vbvwI~
+                              0};                                  //~vbvwI~
+static char *ScommentUC[]={"********** user command. You can assign command sequence to key combinations. *********",//~vbvvR~
+                              "********       If string end with \";\", it is executed else put on command input line.",//~vbvvI~
+                              "********       %n (n:1-->9), %@ (remaining %n), %* (current file), %^ (opened other side of split screen).",//~vbvwR~
+                              "********   e.g) S+A+F9 :=6; grep  -in %1 *.c;    # search word in current directory.",//~vbvvR~
+                              "********          Input \"KeyWord\" on command input line, then press S+A+F9. to execute the grep command.",//~vbvwR~
+                              0};                                  //~vbvvI~
+static char *ScommentUC_JP[]={"********** ユーザーコマンド。 既定で空いているキーにコマンドを定義できます *********",//~vbvwR~
+                              "********       文字列の最後が \";\" なら直ぐに実行し、そうでなければコマンド入力行に出力されます",//~vbvwR~
+                              "********       %n (n:1-->9), %@ (残りの %n), %* (現在開いているファイル), %^ (分割画面の他方で開いているファイル)が使えます",//~vbvwR~
+                              "********   例) S+A+F9 :=6; grep  -in %1 *.c;    # search word in current directory.",//~vbvwR~
+                              "********          コマンド入力行に \"KeyWord\" と入力し、S+A+F9 を押すと grep を実行します",//~vbvwR~
+                              0};                                  //~vbvwI~
+//static int SswByUTF8=0;	//TODO test                            //~vbvbR~
 //**************************************************************** //~v67CI~
 //* free alct(<--kbdterm)                                          //~v67CI~
 //**************************************************************** //~v67CI~
@@ -147,6 +226,72 @@ void file7term(void)                                               //~v67CR~
 	uqufree(&Sqhalct);	//free old                                 //~v67CI~
     return;                                                        //~v67CI~
 }//file7term                                                       //~v67CI~
+//**************************************************************** //~vbvbI~
+int cvFuncNameS2F(char *Pputf8,char *Ppsjis,int Plen)              //~vbvbR~
+{                                                                  //~vbvbI~
+	int opt=0,outlen;                                              //~vbvbR~
+    utfcvl2f(opt,Pputf8,Ppsjis,0/*init offs*/,Plen,0/*out choftbl*/,0/*out dbcstbl*/,0/*chklen*/,&outlen/*outlen*/,0/*pcharcnt*/,0/*char width*/);//~vbvbR~
+    UTRACED("sjis",Ppsjis,Plen);                                   //~vbvwI~
+    UTRACED("utf8",Pputf8,outlen);                                 //~vbvwI~
+    return outlen;                                                 //~vbvbR~
+}                                                                  //~vbvbI~
+//**************************************************************** //~vbvoI~
+//int putComment(char **Pcmts,PULINEH *PpplhPrev)                    //~vbvoI~//~vbvwR~
+int putComment(int Popt,char **Pcmts,PULINEH *PpplhPrev)           //~vbvwI~
+{                                                                  //~vbvoI~
+	int ii,lrecl;                                                  //~vbvoR~
+    int u8len;                                                     //~vbvwR~
+    PULINEH plhprev=*PpplhPrev,plh;                                //~vbvoI~
+    char *pcmt;                                                    //~vbvwR~
+    UCHAR *pco;                                                    //~vbvwI~
+#ifdef LNX     //local is EUC                                      //~vbvwI~
+    char wks2e[MAXCOLUMN+1];                                       //~vbvwI~
+    int euclen;                                                    //~vbvwI~
+#endif                                                             //~vbvwI~
+    //*********************                                        //~vbvwI~
+    for (ii=0;;ii++)                                               //~vbvoI~
+    {                                                              //~vbvoI~
+        if (!Pcmts[ii])                                            //~vbvoI~
+            break;                                                 //~vbvoI~
+        lrecl=(int)strlen(Pcmts[ii]);                              //~vbvoI~
+        pcmt=Pcmts[ii];                                            //~vbvwI~
+      	if (Popt & 0x01)	//cv S2F required                      //~vbvwI~
+      	{                                                          //~vbvwI~
+#ifdef LNX     //local is EUC                                      //~vbvwI~
+      		ushift2euc(pcmt,0/*dbcsi*/,lrecl,wks2e/*out*/,0/*outdbcst*/,&euclen/*poutlen*/,0/*Popt*/);	//sjis-->euc//~vbvwI~
+            lrecl=euclen;                                          //~vbvwI~
+            pcmt=wks2e;                                            //~vbvwI~
+#endif                                                             //~vbvwI~
+    		xeutf_cvdata(0,pcmt,lrecl,&pco,&u8len); //local is SJIS//~vbvwR~
+            pcmt=(char*)pco;                                       //~vbvwR~
+            lrecl=u8len;                                           //~vbvwI~
+      	}                                                          //~vbvwI~
+        else                                                       //~vbvwR~
+        {                                                          //~vbvwR~
+#ifdef LNX     //local is EUC, required to s2e                     //~vbvwR~
+			if (!XE_NOT_ISDBCSJ_OR_N9())                           //~vbvwR~
+            {                                                      //~vbvwI~
+      			ushift2euc(pcmt,0/*dbcsi*/,lrecl,wks2e/*out*/,0/*outdbcst*/,&euclen/*poutlen*/,0/*Popt*/);	//sjis-->euc//~vbvwR~
+            	lrecl=euclen;                                      //~vbvwR~
+            	pcmt=wks2e;                                        //~vbvwR~
+            }                                                      //~vbvwI~
+#else                                                              //~vbvwR~
+            ;                                                      //~vbvwR~
+#endif                                                             //~vbvwR~
+        }                                                          //~vbvwR~
+        plh=filealloclh(ULHTDATA,lrecl);                           //~vbvoI~
+        UALLOCCHK(plh,UALLOC_FAILED);//return when storage shortage//~vbvoI~
+        UENQENT(UQUE_AFT,plhprev,plh);                             //~vbvoI~
+        plh->ULHlinenor=plhprev->ULHlinenor+1;                     //~vbvoI~
+//      memcpy(plh->ULHdata,Pcmts[ii],(UINT)lrecl);                //~vbvoI~//~vbvwR~
+        memcpy(plh->ULHdata,pcmt,(UINT)lrecl);                     //~vbvwI~
+        UTRACED("ULHdata",plh->ULHdata,lrecl);                     //~vbvoI~
+        UCBITON(plh->ULHflag4,ULHF4PROTLINE);   //protected(change line attr)//~vbvoI~
+        plhprev=plh;                                               //~vbvoI~
+    }                                                              //~vbvoI~
+    *PpplhPrev=plhprev;                                            //~vbvoR~
+    return 0;                                                      //~vbvoI~
+}                                                                  //~vbvoI~
 //**************************************************************** //~v40KR~
 // filedropinsertcmt                                               //~v40KR~
 //*insert comment line for dropped lines                           //~v40KR~
@@ -318,17 +463,23 @@ int filefk(PUCLIENTWE Ppcw,int Popt)                               //~v0imR~
 static UCHAR *Sfkhdr[4]={                                          //~v0imR~
 //  			"*** Top of Fn-cmd List ",                         //~v48fR~
 //  			"*** Top of Short-Cut Key List ; sc(enter)= ",     //~v67CR~
-    			"*** Top of Short-Cut-Key/Alias-Cmd List ; sc(enter)= ",//~v67CR~
-                "*** Top of Key Assignment List ",                 //~v0jaI~
-                "*** Top of Key and Function List"                 //~v0jaR~
+//  			"*** Top of Short-Cut-Key/Alias-Cmd List ; sc(enter)= ",//~vbvsR~
+//              "*** Top of Key Assignment List ",                 //~vbvsR~
+//              "*** Top of Key and Function List"                 //~vbvsR~
+    			"********** Top of Short-Cut-Key/Alias-Cmd List ; sc(enter)= ",//~vbvsI~
+                "********** Top of Key Assignment List ",          //~vbvsI~
+                "********** Top of Key and Function List"          //~vbvsI~
                 ,0                                                 //~v54XI~
                        };                                          //~v0imI~
 static UCHAR *Sfktrailer[4]={                                      //~v0imR~
 //  			"*** End of Fn-cmd List",                          //~v48fR~
 //    			"*** End of Short-Cut Key List ; sc(query)= ",     //~v67CR~
-      			"*** End of Short-Cut-Key/Alias-Cmd List ; sc(query)= ",//~v67CR~
-				"*** End of Key Assignment List ",                 //~v0jaI~
-				"*** End of Key and Function List "                //~v0jaR~
+//    			"*** End of Short-Cut-Key/Alias-Cmd List ; sc(query)= ",//~vbvsR~
+//  			"*** End of Key Assignment List ",                 //~vbvsR~
+//  			"*** End of Key and Function List "                //~vbvsR~
+      			"********** End of Short-Cut-Key/Alias-Cmd List ; sc(query)= ",//~vbvsI~
+    			"********** End of Key Assignment List ",          //~vbvsI~
+    			"********** End of Key and Function List "         //~vbvsI~
                 ,0                                                 //~v54XI~
                        };                                          //~v0imI~
 	PUCLIENTWE 	pcw;                                               //~v0ifI~
@@ -345,6 +496,7 @@ static UCHAR *Sfktrailer[4]={                                      //~v0imR~
     char *pc;                                                      //~v505I~
     USHORT keycode;                                                //~v505R~
     int len;                                                       //~v505I~
+    int binopt;                                                    //~vbvsI~
 //*****************                                                //~v0ifI~
 	pft1=functblsrch(FUNCID_SHORTCUT);                             //~v505I~
 	pft2=functblsrch(FUNCID_SHORTCUTQUERY);                        //~v505I~
@@ -379,6 +531,7 @@ static UCHAR *Sfktrailer[4]={                                      //~v0imR~
     pfh=((PUFILEC)(pcw->UCWpfc))->UFCpfh;                          //~v0ifI~
     if (UGETQCTR(&pfh->UFHlineque)>2)	//re-display               //~v0j9I~
     	return 0;                                                  //~v0j9I~
+    UTRACEP("%s:FHtype=%d\n",UTT,pfh->UFHtype);                    //~vbvsR~
     ph=Sfkhdr[Popt-FILEFK_OPTKCMD];                                //~v0jaR~
     pt=Sfktrailer[Popt-FILEFK_OPTKCMD];                            //~v0jaR~
     switch (Popt)                                                  //~v0imI~
@@ -393,11 +546,15 @@ static UCHAR *Sfktrailer[4]={                                      //~v0imR~
 		pfh->UFHlrecl =FKF_LRECL2;                                 //~v0imR~
         pfh->UFHmergin=FKF_MARGIN2;                                //~v0imR~
     	protlen=FKF_PROTLEN2;                                      //~v0imI~
+        if (SswByUTF8)                                             //~vbvbI~
+    		UCBITON(pfh->UFHflag8,UFHF8UTF8); //0.3                //~vbvbR~
     	break;                                                     //~v0imI~
     case FILEFK_OPTFKEY:                                           //~v0jaR~
 		pfh->UFHlrecl =FKF_LRECL3;                                 //~v0imR~
         pfh->UFHmergin=FKF_MARGIN3;                                //~v0imR~
 	    UCBITON(pfh->UFHflag2,UFHF2MERGIN); 	//protect mergin   //~v0imI~
+        if (SswByUTF8)                                             //~vbvbI~
+	    	UCBITON(pfh->UFHflag8,UFHF8UTF8); //0.3                //~vbvbR~
     	protlen=FKF_PROTLEN3;                                      //~v0imR~
         pcw->UCWmenuopt=PANMOPARMFK_FKEY;                          //~v0jaR~
     	break;                                                     //~v0imI~
@@ -434,11 +591,14 @@ static UCHAR *Sfktrailer[4]={                                      //~v0imR~
 				rc=filefkctlineshortcut(pfh);                      //~v48fI~
     }                                                              //~v48fI~
 	plh->ULHlinenor=((PULINEH)UGETQPREV(plh))->ULHlinenor+1;       //~v0ihI~
+    binopt=FCU8EO_IE;                                              //~vbvsI~
+    filechkutf8encoding(0,Ppcw,binopt,pfh);	//chk each line utf8 code(IE mode)//~vbvsI~
+    filesetlocaleid(pfh);    //set locale id on hdr line           //~vbvsI~
     return rc;                                                     //~v0imR~
 }//filefk                                                          //~v0ifI~
                                                                    //~v0ifI~
 //**************************************************************** //~v0ihI~
-//* function key line data setup                                   //~v0ihI~
+//* function key line data setup     0.1 & 0.3                     //~v0ihI~//~vbvbR~
 //* parm1 :pfh                                                     //~v0imR~
 //* parm2 :plh to enq after                                        //~v0imR~
 //* parm3 :option type '1'(Fn-cmd)/'3'(Key and Func)               //~v48fR~
@@ -457,7 +617,10 @@ int filefkctline(PUFILEH Ppfh,PULINEH Pplh,int Popt)               //~v0imR~
     int   mergin;                                                  //~v0imI~
     int ii;                                                        //~v0j8R~
     int lchlen;                                                    //~v705I~
+    int u8len;                                                     //~vbvbI~
+    int swNotJP;                                                   //~vbvfI~
 //*****************                                                //~v0ihI~
+    swNotJP=XE_NOT_ISDBCSJ_OR_N9();                                //~vbvfI~
     protlen=Ppfh->UFHprotlen;                                      //~v0imR~
     lreclmax=Ppfh->UFHlrecl;                                       //~v0imI~
     mergin=Ppfh->UFHmergin;                                        //~v0imI~
@@ -465,6 +628,13 @@ int filefkctline(PUFILEH Ppfh,PULINEH Pplh,int Popt)               //~v0imR~
     	return rc;                                                 //~v0ihI~
 	pfkct=pfkctt->FKCTTpfkct;                                      //~v0ihR~
 	plhprev=Pplh;                                                  //~v0ihR~
+ if (Popt==FILEFK_OPTKCMD)                                         //+vbvwI~
+ {                                                                 //+vbvwI~
+  if (swNotJP)                                                     //~vbvwI~
+	putComment(0,ScommentUC,&plhprev);                               //~vbvvI~//~vbvwR~
+  else                                                             //~vbvwI~
+  	putComment(0,ScommentUC_JP,&plhprev);                          //~vbvwR~
+ }                                                                 //+vbvwI~
 //  for (;;pfkct++)                                                //~v0j8R~
     for (ii=(int)pfkctt->FKCTTentno;ii;pfkct++,ii--)               //~v0j8I~
     {                                                              //~v0ihI~
@@ -472,6 +642,7 @@ int filefkctline(PUFILEH Ppfh,PULINEH Pplh,int Popt)               //~v0imR~
         	break;                                                 //~v0j8R~
     	pft=pfkct->FKCTpft_pcmd;                                   //~v0ihR~
         shiftid=pfkct->FKCTshift;                                  //~v0ihI~
+        UTRACEP("%s:FTnamee=%s,FKCTkey=x%x,FKCTshift=%d,FTnamee=%s\n",UTT,pft->FTnamee,pfkct->FKCTkey,shiftid,pkt->KTnamee);//~vbvwR~
        	memset(keyline,' ',(UINT)lreclmax);                        //~v0imR~
 #ifndef KKK                                                        //~vb50I~
   	  	if (UCBITCHK(pfkct->FKCTflag,FKCTFSHIFTAC))	//S+A,S+C      //~vb50R~
@@ -509,11 +680,15 @@ int filefkctline(PUFILEH Ppfh,PULINEH Pplh,int Popt)               //~v0imR~
     	    	delm=';';                                          //~v0imR~
     	keyline[protlen-1]=delm;                                   //~v0imR~
         lrecl=protlen;                                             //~v0imR~
+        UTRACEP("%s:FKCTflag=0x%x,Popt=%c,pft=%p\n",UTT,pfkct->FKCTflag,Popt,pft);//~vbvbR~//~vbvwR~
 //****                                                             //~v0ihI~
         if (UCBITCHK(pfkct->FKCTflag,FKCTFPFT|FKCTFNONPFK))	//func not ass to pfk//~v0imI~
         {                                                          //~v0ihR~
             if (Popt==FILEFK_OPTKCMD)                              //~v0jaR~
+            {                                                      //~vbvwI~
+		        UTRACEP("%s:continue by Popt=1\n",UTT);            //~vbvwI~
                 continue;   //cmd line only when opt=0.2           //~v0imI~
+            }                                                      //~vbvwI~
             if (pft)	//assigned                                 //~v0ihI~
             {                                                      //~v0ihI~
                 pc=pft->FTcmd;                                     //~v0ihR~
@@ -530,38 +705,59 @@ int filefkctline(PUFILEH Ppfh,PULINEH Pplh,int Popt)               //~v0imR~
                 lrecl+=(int)sizeof(pft->FTcmda)+3;                 //~vb2DI~
                 pc=pft->FTnamee;                                   //~v0ihR~
                 len=(int)strlen(pc);                               //~v0ihR~
+//            if (SswByUTF8 && pft->FTfuncid>FUNCID_GRAPHCHAR)     //~vbvdR~
+//  			u8len=funct2printlcdata(0,keyline+lrecl,pc,len);   //~vbvdR~
+//            else                                                 //~vbvdR~
                 memcpy(keyline+lrecl,pc,(UINT)len);                //~v0ihR~
+//      		UTRACED("keyline",keyline,sizeof(keyline));        //~vbvoR~
                 if (pft->FTfuncid>FUNCID_GRAPHCHAR                 //~v705R~
-                &&  UCBITCHK(pft->FTflag,FTFLINECHSET))	//linech file setup//~v705R~
+//              &&  UCBITCHK(pft->FTflag,FTFLINECHSET))	//linech file setup//~v705R~//~vbviR~
+                &&  UCBITCHK(pft->FTflag2,FTF2LINECHSET))	//linech file setup//~vbviI~
                 {                                                  //~v705R~
 //            	    funct2getlinechstr(0,pft,keyline+lrecl+FTNAMEGRAPHHEXPOS);//~v705R~//~vb2AR~
-              	    funct2getlinechstr(0,pft,keyline+lrecl+FTNAMEGRAPHHEXPOS,(int)sizeof(keyline)-(lrecl+FTNAMEGRAPHHEXPOS));//~vb2AI~
+//            	    funct2getlinechstr(0,pft,keyline+lrecl+FTNAMEGRAPHHEXPOS,(int)sizeof(keyline)-(lrecl+FTNAMEGRAPHHEXPOS));//~vb2AI~//~vbvdR~
+              	    funct2getlinechstr(0|SswByUTF8,pft,keyline+lrecl+FTNAMEGRAPHHEXPOS,(int)sizeof(keyline)-(lrecl+FTNAMEGRAPHHEXPOS));//~vbvdR~
                 }                                                  //~v705R~
 //              lrecl+=2+sizeof(pft->FTnamee);                     //~v0imR~//~vb2DR~
                 lrecl+=2+(int)sizeof(pft->FTnamee);                //~vb2DI~
+        		UTRACEP("%s:FTnamee=%s\n",UTT,pft->FTnamee);      //~vbvbR~//~vbvdR~
+//      		UTRACED("keyline",keyline,sizeof(keyline));        //~vbvoR~
               if (pft->FTfuncid>FUNCID_GRAPHCHAR                   //~v705I~
-              &&  UCBITCHK(pft->FTflag,FTFLINECHSET))	//linech file setup//~v705R~
+//            &&  UCBITCHK(pft->FTflag,FTFLINECHSET))	//linech file setup//~v705R~//~vbviR~
+              &&  UCBITCHK(pft->FTflag2,FTF2LINECHSET))	//linech file setup//~vbviI~
               {                                                    //~v705I~
 //            	lchlen=funct2getlinechstr(1,pft,keyline+lrecl+2);  //~v705R~//~vb2AR~
-              	lchlen=funct2getlinechstr(1,pft,keyline+lrecl+2,(int)sizeof(keyline)-(lrecl+2));//~vb2AI~
+//            	lchlen=funct2getlinechstr(1,pft,keyline+lrecl+2,(int)sizeof(keyline)-(lrecl+2));//~vb2AI~//~vbvbR~
+              	lchlen=funct2getlinechstr(1|SswByUTF8,pft,keyline+lrecl+2,(int)sizeof(keyline)-(lrecl+2));//~vbvbI~
 //            	lrecl+=2+max(lchlen,sizeof(pft->FTnamej));         //~v705I~//~vb2DR~
               	lrecl+=2+max(lchlen,(int)sizeof(pft->FTnamej));    //~vb2DI~
+//      		UTRACED("GRAPHCHAR & FTF2LINECHSET keyline",keyline,sizeof(keyline));//~vbvbR~//~vbvoR~
               }                                                    //~v705I~
               else                                                 //~v705I~
               {                                                    //~v705I~
-#ifdef LNX                                                         //~v44uR~
-//  		    if ((Gunxflag & (GUNX_EUC|GUNX_KON))==(GUNX_EUC|GUNX_KON)) //under kon//~v79zR~
-                if (XE_ISDBCSKONJ())	//Japanese                 //~v79zR~
-#else                                                              //~v44uR~
-                if (UCBITCHK(Gscrstatus,GSCRSDBCS))                //~v0ihR~
-#endif                                                             //~v44uR~
+//#ifdef LNX                                                         //~v44uR~//~vbvfR~
+////              if ((Gunxflag & (GUNX_EUC|GUNX_KON))==(GUNX_EUC|GUNX_KON)) //under kon//~v79zR~//~vbvfR~
+//                if (XE_ISDBCSKONJ())    //Japanese                 //~v79zR~//~vbvfR~
+//#else                                                              //~v44uR~//~vbvfR~
+//                if (UCBITCHK(Gscrstatus,GSCRSDBCS))                //~v0ihR~//~vbvfR~
+//#endif                                                             //~v44uR~//~vbvfR~
+                if (!swNotJP)                                      //~vbvfI~
                 {                                                  //~v0ihR~
                     pc=pft->FTnamej;                               //~v0ihR~
                     len=(int)strlen(pc);                           //~v0ihR~
+                  if (SswByUTF8)                                   //~vbvbI~
+                  {                                                //~vbvbI~
+                    u8len=cvFuncNameS2F(keyline+lrecl+2,pc,len);   //~vbvbM~
+                    lrecl+=2+u8len;                                //~vbvbM~
+                  }                                                //~vbvbI~
+                  else                                             //~vbvbI~
+                  {                                                //~vbvbI~
                     memcpy(keyline+lrecl+2,pc,(UINT)len);          //~v0ihR~
 //                  lrecl+=2+sizeof(pft->FTnamej);                 //~v0ihR~//~vb2DR~
                     lrecl+=2+(int)sizeof(pft->FTnamej);            //~vb2DI~
+                  }                                                //~vbvbI~
                 }                                                  //~v0ihR~
+//      		UTRACED("!(GRAPHCHAR & FTF2LINECHSET) keyline",keyline,sizeof(keyline));//~vbvbR~//~vbvoR~
               }//no linech file                                    //~v705I~
             }                                                      //~v0ihI~
         }                                                          //~v0ihR~
@@ -586,6 +782,7 @@ int filefkctline(PUFILEH Ppfh,PULINEH Pplh,int Popt)               //~v0imR~
                     lrecl=mergin+4+len;                            //~v0iwR~
                 }                                                  //~v0imI~
             }                                                      //~v0ihI~
+//      	UTRACED("FKCTFOFT and FKCTFNOPFK off keyline",keyline,sizeof(keyline));//~vbvoR~
 		}                                                          //~v0ihI~
         if (Popt==FILEFK_OPTKLIST)                                 //~v0jaR~
         {                                                          //~v0iwI~
@@ -608,10 +805,11 @@ int filefkctline(PUFILEH Ppfh,PULINEH Pplh,int Popt)               //~v0imR~
         UENQENT(UQUE_AFT,plhprev,plh);                             //~v0ihI~
         plh->ULHlinenor=plhprev->ULHlinenor+1;                     //~v0ihM~
         memcpy(plh->ULHdata,keyline,(UINT)lrecl);                  //~v0ihR~
+//      UTRACED("ULHdata",plh->ULHdata,lrecl);               //~vbvbI~//~vbvoR~
         plhprev=plh;                                               //~v0ihM~
     }                                                              //~v0ihR~
     return 0;                                                      //~v0ihR~
-}//kbdfkctline                                                     //~v0ihR~
+}//filefkctline                                                     //~v0ihR~//~vbvwR~
 //**************************************************************** //~v48fI~
 //* function key line data setup for sgortcut key                  //~v48fI~
 //* parm1 :pfh                                                     //~v48fI~
@@ -626,12 +824,20 @@ int filefkctlineshortcut(PUFILEH Ppfh)                             //~v48fI~
     UCHAR keyline[FKF_LRECL1];                                     //~v48fI~
     int   ii,len,lrecl,protlen,lreclmax;                           //~v48fR~
     int rc;                                                        //~v67CI~
+    int swNotJP;                                                   //~vbvwI~
 //*****************                                                //~v48fI~
     protlen=Ppfh->UFHprotlen;                                      //~v48fI~
     lreclmax=Ppfh->UFHlrecl;                                       //~v48fI~
 	pqh=&(Ppfh->UFHlineque);                                       //~v48fR~
 	plh=(PULINEH)UGETQEND(pqh);                                    //~v48fR~
 	plhprev=UGETQPREV(plh);     //add after this                   //~v48fI~
+    swNotJP=XE_NOT_ISDBCSJ_OR_N9();                                //~vbvwI~
+  if (swNotJP)                                                     //~vbvwI~
+	rc=putComment(0,ScommentSC,&plhprev);                            //~vbvoR~//~vbvwR~
+  else                                                             //~vbvwI~
+	rc=putComment(0,ScommentSC_JP,&plhprev);                       //~vbvwR~
+    if (rc)	//UALLOC_FAILED                                        //~vbvoI~
+    	return rc;                                                 //~vbvoI~
     for (ii=0,psckt=Gkbdsckt;ii<SCKTMAXNO;ii++,psckt++)            //~v48fI~
     {                                                              //~v48fI~
         if (!isalnum(SCKTTOP+ii))                                  //~v48fR~
@@ -664,7 +870,7 @@ int filefkctlineshortcut(PUFILEH Ppfh)                             //~v48fI~
     return 0;                                                      //~v48fI~
 }//kbdfkctlineshortcut                                             //~v48fR~
 //**************************************************************** //~v0ihI~
-//* function key change by edit cmd for Fn-cmd/KeyList             //~v0jdR~
+//* function key change by edit cmd for Fn-cmd/KeyList  0.1        //~v0jdR~//~vbvwR~
 //* parm1 :pfh                                                     //~v0imR~
 //* retrn:rc UALLOC_FAILED or errline exist                        //~v0ihR~
 //**************************************************************** //~v0ihI~
@@ -709,7 +915,10 @@ int filefksave(PUFILEH Ppfh)                                       //~v0ihI~
     	if (plh->ULHtype!=ULHTDATA)                                //~v0ihI~
         	continue;                                              //~v0ihI~
 		if (UCBITCHK(plh->ULHflag4,ULHF4PROTLINE))	//protected(change line attr)//~v0ihI~
+        {                                                          //~vbvmI~
+//          UTRACED("protoline ULHdata=",plh->ULHdata,plh->ULHlen);//~vbvoR~
         	continue;                                              //~v0ihI~
+        }                                                          //~vbvmI~
 		lrecl=plh->ULHlen;                                         //~v0ihI~
         pc=plh->ULHdata;                                           //~v0imI~
 		if (lrecl<protlen || lrecl>maxlrecl)                       //~v0imR~
@@ -747,7 +956,8 @@ int filefksave(PUFILEH Ppfh)                                       //~v0ihI~
 	                if (pc=strpbrk(keyname," :"),pc)               //~v0imR~
     	                *pc=0;                                     //~v0imR~
                 if (!memcmp(keyname,SHORTCUTID,SHORTCUTIDSZ))      //~v48fI~
-                    errsw=filefksaveshortcut(plh,plh->ULHdata+protlen-3);//~v67CI~
+//                  errsw=filefksaveshortcut(plh,plh->ULHdata+protlen-3);//~vbvnR~
+                    errsw=filefksaveshortcut(plh,plh->ULHdata); //sc,_//~vbvnR~
                 else                                               //~v48fI~
 //              if (kbdsrchktbyname(keyname,&pkt),!pkt) //not found//~v0jeR~
 #ifndef KKK                                                        //~vb50I~
@@ -823,10 +1033,15 @@ int filefksave(PUFILEH Ppfh)                                       //~v0ihI~
         for (ii=0,pfkct=pfkct0;ii<entno;ii++,pfkct++)              //~v0ihR~
         {                                                          //~v0ihR~
             plh=plhtbl[ii];                                        //~v0ihR~
+    	    UTRACEP("%s:ii=%d,plh=%p\n",UTT,ii,plh);               //~vbvwR~
             if (UCBITCHK(pfkct->FKCTflag,FKCTFPFT|FKCTFNONPFK)) //func not ass to pfk//~v0imI~
+            {                                                      //~vbvwI~
+                UTRACEP("%s:continue by FKCTFPFT or FKCTFNOPFK\n",UTT);//~vbvwI~
                 continue;                                          //~v0imI~
+            }                                                      //~vbvwI~
             if (plh)        //not deleted                          //~v0ihR~
             {                                                      //~v0imI~
+    	        UTRACED("ULHdata",plh->ULHdata,plh->ULHlen);       //~vbvwI~
         		pc=plh->ULHdata;                                   //~v0imI~
                 cmdlen=plh->ULHlen;                                //~v0imI~
         		cmdlen-=(int)umemrspnc(pc,' ',(UINT)cmdlen);       //~v0imR~
@@ -867,6 +1082,8 @@ int filefksave(PUFILEH Ppfh)                                       //~v0ihI~
                 pfkct->FKCTpft_pcmd=pc;                            //~v0ihR~
                 pfkct->FKCTcmdlen=(USHORT)cmdlen;                  //~v0ihR~
                 memcpy(pc,plh->ULHdata+protlen,(UINT)cmdlen);      //~v0imR~
+                *(pc+cmdlen)=0;                                    //~vbvzI~
+                UTRACEP("%s:pfkct=%p,FKCTpft_pcmd=%s,FKCTkey=x%x,FKCTshift=%d,FKCTflag=x%x,KTnamee=%s,FKCTfuncid=%d\n",UTT,pfkct,pc,pfkct->FKCTkey,pfkct->FKCTshift,pfkct->FKCTflag,pfkct->FKCTpkt->KTnamee,pfkct->FKCTfuncid);//~vbvwR~
             }//updated                                             //~v0ihR~
         }//loop                                                    //~v0ihR~
 //update alias cmd                                                 //~v67CI~
@@ -900,16 +1117,19 @@ int filefksaveshortcut(PULINEH Pplh,UCHAR *Pdata)                  //~v48fI~
 //*****************                                                //~v48fI~
     if (!Pplh->ULHupctr)          //updated                        //~v48fI~
     	return 0;                                                  //~v48fI~
-    sckey=*Pdata;                                                  //~v48fI~
+//  sckey=*Pdata;                                                  //~vbvnR~
+    sckey=*(Pdata+FKF_POS_SHORTCUTKEY);                            //~vbvnI~
     if (!isalnum(sckey))                                           //~v48fI~
     {                                                              //~v48fI~
     	uerrmsg("ShortCut Key is to be alnum",0);                  //~v48fR~
         return 4;                                                  //~v48fI~
     }                                                              //~v48fI~
     psckt=Gkbdsckt+(sckey-SCKTTOP);                                //~v48fI~
-    pc=Pdata+3;                                                    //~v48fI~
+//  pc=Pdata+3;                                                    //~vbvnR~
+    pc=Pdata+FKF_PROTLEN1;                                         //~vbvnI~
 //  cmdlen=Pplh->ULHlen-(int)((ULONG)Pdata-(ULONG)Pplh->ULHdata)-3;//~v48fR~//~vafkR~
-    cmdlen=Pplh->ULHlen-(int)((ULPTR)Pdata-(ULPTR)Pplh->ULHdata)-3;//~vafkI~
+//  cmdlen=Pplh->ULHlen-(int)((ULPTR)Pdata-(ULPTR)Pplh->ULHdata)-3;//~vbvnR~
+    cmdlen=Pplh->ULHlen-FKF_PROTLEN1;                              //~vbvnI~
     if (cmdlen>0)                                                  //~v48fI~
     {                                                              //~v48fI~
 //  	len=(int)umemrspnc(pc,' ',(UINT)cmdlen);                   //~v48fI~//~va0aR~
@@ -959,9 +1179,15 @@ int filefkctlineft(PUFILEH Ppfh,PULINEH Pplh,int Popt)             //~v0imR~
 #ifndef KKK                                                        //~vb50I~
     int swshiftAC;                                                 //~vb50I~
 #endif                                                             //~vb50I~
+	int u8len;                                                     //~vbvbI~
+    int sw1stGC=0;                                                 //~vbvbI~
+    int expandedByUtf8=0;                                          //~vbvdI~
+    int swNotJP;                                                   //~vbvfR~
+    int swDeleted;                                                 //~vbvhI~
 //*****************                                                //~v0imM~
 	if (rc=funcgetwfth(1,&wfth),rc)	//get full copy of work funct  //~v0imR~
     	return rc;                                                 //~v0imM~
+    swNotJP=XE_NOT_ISDBCSJ_OR_N9();                                //~vbvfR~
     pwft=wfth.WFTHpwft;                                            //~v0imI~
     entno=wfth.WFTHentno;                                          //~v0imR~
 	plhprev=Pplh;                                                  //~v0imM~
@@ -976,23 +1202,79 @@ int filefkctlineft(PUFILEH Ppfh,PULINEH Pplh,int Popt)             //~v0imR~
 //      if (pft->FTfuncid>=FUNCID_GRAPHCHAR)                       //~v0iwR~
 //          if (Popt==FILEFK_OPT05)                                //~v0iwR~
 //              continue;                                          //~v0iwR~
+        if (pft->FTfuncid>FUNCID_GRAPHCHAR && !sw1stGC)   //output comment line//~vbvbI~
+        {                                                          //~vbvbI~
+            sw1stGC=1;                                             //~vbvbI~
+//            for (ii=0;;ii++)                                     //~vbvoR~
+//            {                                                    //~vbvoR~
+//                if (!ScommentGC[ii])                             //~vbvoR~
+//                    break;                                       //~vbvoR~
+//                lrecl=(int)strlen(ScommentGC[ii]);               //~vbvoR~
+//                memcpy(keyline,ScommentGC[ii],(UINT)lrecl);      //~vbvoR~
+//                plh=filealloclh(ULHTDATA,lrecl);                 //~vbvoR~
+//                UALLOCCHK(plh,UALLOC_FAILED);//return when storage shortage//~vbvoR~
+//                UENQENT(UQUE_AFT,plhprev,plh);                   //~vbvoR~
+//                plh->ULHlinenor=plhprev->ULHlinenor+1;           //~vbvoR~
+//                memcpy(plh->ULHdata,keyline,(UINT)lrecl);        //~vbvoR~
+//                UTRACED("ULHdata",plh->ULHdata,lrecl);       //~vbvbR~//~vbvoR~
+//                UCBITON(plh->ULHflag4,ULHF4PROTLINE);   //protected(change line attr)//~vbvoR~
+//                plhprev=plh;                                     //~vbvoR~
+//            }                                                    //~vbvoR~
+          if (swNotJP)                                             //~vbvwI~
+			rc=putComment(0,ScommentGC,&plhprev);                    //~vbvoI~//~vbvwR~
+          else                                                     //~vbvwI~
+			rc=putComment(1,ScommentGC_JP,&plhprev);               //~vbvwR~
+    		if (rc)	//UALLOC_FAILED                                //~vbvoI~
+    			return rc;                                         //~vbvoI~
+//          continue;                                              //~vbvbI~//~vbvfR~
+        }                                                          //~vbvbI~
+        if (pft->FTfuncid>FUNCID_GRAPHCHAR)                        //~vbvfR~
+        {                                                          //~vbvfR~
+//          UTRACEP("%s,Gotherstatus=0x%x, NOT_ISDBCS_OR_Np=%d\n",UTT,Gotherstatus,XE_NOT_ISDBCSJ_OR_N9());//~vbvfR~
+            if (!swNotJP && (pft->FTflag & FTFEONLY))              //~vbvfR~
+            {                                                      //~vbvfR~
+                continue;                                          //~vbvfR~
+            }                                                      //~vbvfR~
+            if (swNotJP && (pft->FTflag & FTFJONLY))               //~vbvfR~
+            {                                                      //~vbvfR~
+                continue;                                          //~vbvfR~
+            }                                                      //~vbvfR~
+        }                                                          //~vbvfR~
 		for (ii=0;ii<FTMAXKEY;ii++)	//all asigned key              //~v0imR~
 		{                                                          //~v0imI~
         	pkt2=0;                                                //~v0imI~
         	for (;;) 		//until pkt2=0                         //~v0imI~
             {                                                      //~v0imI~
+                swDeleted=0;                                       //~vbvhI~
                 pcl=keyline;                                       //~v0imR~
                 memset(keyline,' ',(UINT)(sizeof(keyline)-1));     //~v0imR~
 //func name                                                        //~v0imM~
                 pc=pft->FTnamee;                                   //~v0imR~
                 len=(int)strlen(pc);                               //~v0imR~
+//            if (SswByUTF8 && pft->FTfuncid>FUNCID_GRAPHCHAR)     //~vbvdR~
+//  			funct2printlcdata(0,pcl,pc,len);                   //~vbvdR~
+//            else                                                 //~vbvdR~
                 memcpy(pcl,pc,(UINT)len);                          //~v0imR~
+    			expandedByUtf8=0;                                  //~vbvdI~
                 if (pft->FTfuncid>FUNCID_GRAPHCHAR                 //~v705I~
-                &&  UCBITCHK(pft->FTflag,FTFLINECHSET))	//linech file setup//~v705R~
+//              &&  UCBITCHK(pft->FTflag,FTFLINECHSET))	//linech file setup//~v705R~//~vbviR~
+                &&  UCBITCHK(pft->FTflag2,FTF2LINECHSET))	//linech file setup//~vbviI~
                 {                                                  //~v705I~
 //            		funct2getlinechstr(0,pft,pcl+FTNAMEGRAPHHEXPOS);//~v705R~//~vb2AR~
-              		funct2getlinechstr(0,pft,pcl+FTNAMEGRAPHHEXPOS,(int)sizeof(keyline)-(int)PTRDIFF(pcl+FTNAMEGRAPHHEXPOS,keyline));//~vb2AI~
+//            		funct2getlinechstr(0,pft,pcl+FTNAMEGRAPHHEXPOS,(int)sizeof(keyline)-(int)PTRDIFF(pcl+FTNAMEGRAPHHEXPOS,keyline));//~vb2AI~//~vbvdR~
+              		u8len=funct2getlinechstr(0|SswByUTF8,pft,pcl+FTNAMEGRAPHHEXPOS,(int)sizeof(keyline)-(int)PTRDIFF(pcl+FTNAMEGRAPHHEXPOS,keyline));//~vbvdR~
+    	            UTRACEP("%s:keyline after FTnamee u8len=%d,pcl=%p\n",UTT,u8len,pcl);//~vbvdI~
+                    if (u8len>6)                                   //~vbvdR~
+                    {                                              //~vbvdI~
+//                  	pcl+=u8len-6+1;	//1 space                  //~vbvdR~//~vbvtR~
+//  					expandedByUtf8=u8len-6+1;                  //~vbvdI~//~vbvtR~
+    					expandedByUtf8=u8len-6;                    //~vbvtI~
+                    	pcl+=expandedByUtf8;                       //~vbvtR~
+                    }                                              //~vbvdI~
+    	            UTRACEP("%s:=0.2 keyline after FTnamee u8len=%d,pcl=%p\n",UTT,u8len,pcl);//~vbvdR~
                 }                                                  //~v705I~
+                UTRACED("keyline after FTnamee",keyline,sizeof(keyline));//~vbvpR~
+                UTRACEP("%s:keyline after pkt2=%p,FTcmd=%s,FTcmda=%s\n",UTT,pkt2,pft->FTcmd,pft->FTcmda);//~vbvpR~
                 pcl+=sizeof(pft->FTnamee);                         //~v0imR~
 //              if (Popt==FILEFK_OPT04)                            //~v0iwR~
 //              {                                                  //~v0iwR~
@@ -1001,6 +1283,8 @@ int filefkctlineft(PUFILEH Ppfh,PULINEH Pplh,int Popt)             //~v0imR~
                     	pkt=pkt2;                                  //~v0imI~
                     else                                           //~v0imI~
                     {                                              //~v0imI~
+                		UTRACEP("%s:ii=%d,WFTkey[ii]=0x%x\n",UTT,ii,pwft->WFTkey[ii]);//~vbvfR~
+//              		UTRACED("workft",pwft,sizeof(WORKFT));     //~vbvoR~
                         if (!(key=pwft->WFTkey[ii]))               //~v0imR~
                         {                                          //~v0imI~
                             if (ii)                                //~v0imI~
@@ -1008,13 +1292,25 @@ int filefkctlineft(PUFILEH Ppfh,PULINEH Pplh,int Popt)             //~v0imR~
                             pkt=0;                                 //~v0imI~
 						}                                          //~v0imI~
                         else                                       //~v0imI~
+                        {                                          //~vbvhI~
+                            if (key==FTDELETEDKEY)                 //~vbvhI~
+                            {                                      //~vbvhI~
+                                swDeleted=1;                       //~vbvhI~
+                                pkt=0;	                           //~vbvhI~
+        		        		UTRACEP("%s:deletedKey\n",UTT);    //~vbvhI~
+                            }                                      //~vbvhI~
+                            else                                   //~vbvhI~
 	                        if ((shiftid=kbdsrchkt(key,&pkt))==4)  //~v0imR~
-    	                        continue;                          //~v0imR~
+//  	                        continue;    cause loop            //~v0imR~//~vbvhR~
+    	                        break;                             //~vbvhI~
+                        }                                          //~vbvhI~
                     }                                              //~v0imI~
+    	            UTRACEP("%s:=0.2 shiftid=%d,ii=%d,pkt=%p\n",UTT,shiftid,ii,pkt);//~vbvfR~
                     delm=':';                                      //~v0imI~
                     if (pkt)                                       //~v0imI~
                     {                                              //~v0imI~
                         flag=pwft->WFTkflag[ii];                   //~v0imR~
+	    	            UTRACEP("%s:=0.2 pkt!=0 WFTflag=0x%x\n",UTT,flag);//~vbvfI~
                         if (shiftid==3                             //~v0imR~
 //                      &&  UCBITCHK(flag,KTCTLDUP1))   //duplicated key//~v45KR~
                         &&  UCBITCHK(pkt->KTflag[3],KTCTLDUP1))   //duplicated key//~v45KI~
@@ -1064,13 +1360,24 @@ int filefkctlineft(PUFILEH Ppfh,PULINEH Pplh,int Popt)             //~v0imR~
                       }                                            //~vb50I~
                     }                                              //~v0imI~
                     else                                           //~v0imI~
+                    if (swDeleted)                                 //~vbvhI~
+                    {                                              //~vbvhI~
+    	                *pcl++=delm;                               //~vbvhI~
+                    }                                              //~vbvhI~
+                    else                                           //~vbvhI~
+                    if (!*pft->FTcmd)                              //~vbvrR~
+                    {                                              //~vbvrI~
+    	                *pcl++=delm;                               //~vbvrI~
+                		UTRACEP("%s:No key and no cmd\n",UTT);     //~vbvrI~
+                    }                                              //~vbvrI~
+                    else                                           //~vbvrI~
                     {                                              //~v0imI~
 //                      if (cmdonlysw=UCBITCHK(pft->FTflag,FTFCMDONLY),cmdonlysw)//~v756R~
 //                      {                                          //~v756R~
                           if (UCBITCHK(pft->FTflag2,FTF2FIXEDVERB))//~v71PR~
                         	delm='*';	//line prot                //~v0imI~
                           else                                     //~v71PM~
-							delm=NOTFIXCMDID;  //command verb changable//~v71PM~
+							delm=NOTFIXCMDID;  //"+";command verb changable//~v71PM~
 //                      }                                          //~v756R~
     	                *pcl++=delm;                               //~v0imI~
 //                      if (cmdonlysw)                             //~v756R~
@@ -1091,6 +1398,7 @@ int filefkctlineft(PUFILEH Ppfh,PULINEH Pplh,int Popt)             //~v0imR~
                           else                                     //~v71PI~
                         	*(pcl+7)=')';                          //~v44vI~
                             pcl++;                                 //~v47VI~
+                			UTRACED("keyline after cmd set",keyline,sizeof(keyline));//~vbvpI~
 //                      }                                          //~v756R~
 //                      else                                       //~v756R~
 //                      {                                          //~v756R~
@@ -1100,6 +1408,7 @@ int filefkctlineft(PUFILEH Ppfh,PULINEH Pplh,int Popt)             //~v0imR~
 					}                                              //~v0imI~
 #ifndef KKK                                                        //~vb50M~
                     pcl=keyline+Ppfh->UFHmergin; //=FKF_MARGIN3    //~vb50R~
+    				pcl+=expandedByUtf8;                           //~vbvdI~
 #else                                                              //~vb50I~
                     pcl+=sizeof(pkt->KTnamee)-1;                   //~v0ixR~
 #endif                                                             //~vb50M~
@@ -1128,33 +1437,46 @@ int filefkctlineft(PUFILEH Ppfh,PULINEH Pplh,int Popt)             //~v0imR~
 //                  pcl+=sizeof(pwft->WFTcmda)-1;                  //~v0iwR~
 //              }                                                  //~v0iwR~
 //func desc(J)                                                     //~v0imM~
+//              UTRACED("before //",keyline,sizeof(keyline));      //~vbvoR~
+                UTRACEP("%s:pcl=%p\n",UTT,pcl);                    //~vbvdR~
               if (pft->FTfuncid>FUNCID_GRAPHCHAR                   //~v705R~
-              &&  UCBITCHK(pft->FTflag,FTFLINECHSET))	//linech file setup//~v705R~
+//            &&  UCBITCHK(pft->FTflag,FTFLINECHSET))	//linech file setup//~v705R~//~vbviR~
+              &&  UCBITCHK(pft->FTflag2,FTF2LINECHSET))	//linech file setup//~vbviI~
               {                                                    //~v705I~
                 memset(pcl,'/',2);                                 //~v705I~
                 pcl+=2;                                            //~v705I~
 //            	lchlen=funct2getlinechstr(1,pft,pcl);              //~v705R~//~vb2AR~
 //            	lchlen=funct2getlinechstr(1,pft,pcl,sizeof(keyline)-(int)PTRDIFF(pcl,keyline));//~vb2AI~//~vb2DR~
-              	lchlen=funct2getlinechstr(1,pft,pcl,(int)sizeof(keyline)-(int)PTRDIFF(pcl,keyline));//~vb2DI~
+//            	lchlen=funct2getlinechstr(1,pft,pcl,(int)sizeof(keyline)-(int)PTRDIFF(pcl,keyline));//~vb2DI~//~vbvbR~
+              	lchlen=funct2getlinechstr(1|SswByUTF8,pft,pcl,(int)sizeof(keyline)-(int)PTRDIFF(pcl,keyline));//~vbvbI~
 //            	pcl+=max(lchlen,sizeof(pft->FTnamej));             //~v705R~//~vb2DR~
               	pcl+=max(lchlen,(int)sizeof(pft->FTnamej));        //~vb2DI~
               }                                                    //~v705I~
               else                                                 //~v705I~
               {                                                    //~v705I~
-#ifdef LNX                                                         //~v44uR~
-//  		    if ((Gunxflag & (GUNX_EUC|GUNX_KON))==(GUNX_EUC|GUNX_KON)) //under kon//~v79zR~
-                if (XE_ISDBCSKONJ())	//Japanese                 //~v79zR~
-#else                                                              //~v44uR~
-                if (UCBITCHK(Gscrstatus,GSCRSDBCS))                //~v0imR~
-#endif                                                             //~v44uR~
+//#ifdef LNX                                                         //~v44uR~//~vbvfR~
+////              if ((Gunxflag & (GUNX_EUC|GUNX_KON))==(GUNX_EUC|GUNX_KON)) //under kon//~v79zR~//~vbvfR~
+//                if (XE_ISDBCSKONJ())    //Japanese                 //~v79zR~//~vbvfR~
+//#else                                                              //~v44uR~//~vbvfR~
+//                if (UCBITCHK(Gscrstatus,GSCRSDBCS))                //~v0imR~//~vbvfR~
+//#endif                                                             //~v44uR~//~vbvfR~
+               if (!swNotJP && !(pft->FTflag & FTFEONLY))          //~vbvfR~
                 {                                                  //~v0imR~
                     memset(pcl,'/',2);                             //~v0imR~
                     pcl+=2;                                        //~v0imR~
                     pc=pft->FTnamej;                               //~v0imR~
                     len=(int)strlen(pc);                           //~v0imR~
+                  if (SswByUTF8)                                   //~vbvbI~
+                  {                                                //~vbvbI~
+                    u8len=cvFuncNameS2F(pcl,pc,len);               //~vbvbM~
+                    pcl+=u8len;                                    //~vbvbM~
+                  }                                                //~vbvbI~
+                  else                                             //~vbvbI~
+                  {                                                //~vbvbI~
                     memcpy(pcl,pc,(UINT)len);                      //~v0imR~
                     pcl+=sizeof(pft->FTnamej);                     //~v0imR~
-                }                                                  //~v0imR~
+                  }                                                //~vbvbI~
+                 }//swNotJP                                        //~vbvfI~
               }                                                    //~v705I~
 //              lrecl=(int)((ULONG)pcl-(ULONG)keyline);            //~v0imR~//~vafkR~
                 lrecl=(int)((ULPTR)pcl-(ULPTR)keyline);            //~vafkI~
@@ -1163,6 +1485,7 @@ int filefkctlineft(PUFILEH Ppfh,PULINEH Pplh,int Popt)             //~v0imR~
                 UENQENT(UQUE_AFT,plhprev,plh);                     //~v0imR~
                 plh->ULHlinenor=plhprev->ULHlinenor+1;             //~v0imR~
                 memcpy(plh->ULHdata,keyline,(UINT)lrecl);          //~v0imR~
+//              UTRACED("ULHdata",plh->ULHdata,lrecl);       //~vbvbI~//~vbvoR~
                 if (delm=='*')                                     //~v0imR~
                     UCBITON(plh->ULHflag4,ULHF4PROTLINE);   //protected(change line attr)//~v0imR~
                 plhprev=plh;                                       //~v0imR~
@@ -1260,14 +1583,19 @@ int filefksaveft(PUCLIENTWE Ppcw,PUFILEH Ppfh,int Popt)            //~v0imR~
     UCHAR linedata[MAXCOLUMN+1];                                   //~v0imR~
     UCHAR cmdv[2][4];                                              //~v0iwR~,//~v71PR~
     UCHAR *pc,*pc2;                                                //~v0jeR~
+    UCHAR *pc3;                                                    //~vbvfI~
     int errsw,rc,mergin,protlen,jj;                                //~v0iwR~
     int lrecl,shift,index;                                         //~v0iwR~
     int cmdlen,cmdfmterr,ii;                                       //~v0iwI~,//~v71PR~
     PFUNCTBL    pft;                                               //~v0imR~
+    PFUNCTBL    pfto=0;                                            //~vbvhI~
     PWORKFT    pwft,pwft0;                                         //~v0imR~
 #ifndef KKK                                                        //~vb50I~
     int swshiftAC;                                                 //~vb50R~
 #endif                                                             //~vb50I~
+	int pftKeyCtr=0;                                               //~vbvhI~
+    int lenByUTF8;                                                 //~vbvdI~
+    int swProtLine;                                                //~vbvpI~
 //*****************                                                //~v0imI~
     UPCTRREQ(Ppfh);         //reset ULHF3ERRLINE at next update lien//~v0ixI~
 	if (rc=funcgetwfth(2,&wfth),rc)	//copy of fixed key            //~v0imR~
@@ -1277,14 +1605,24 @@ int filefksaveft(PUCLIENTWE Ppcw,PUFILEH Ppfh,int Popt)            //~v0imR~
     protlen=Ppfh->UFHprotlen;                                      //~v0imI~
 	plh=UGETQTOP(&Ppfh->UFHlineque);                               //~v0imM~
     *(linedata+mergin)=0;                                          //~v0imI~
+    UTRACEP("%s:mergin=%d,protlen=%d\n",UTT,mergin,protlen);       //~vbvfI~
     for (;plh;plh=UGETQNEXT(plh))                                  //~v0imR~
     {                                                              //~v0imR~
         errsw=0;                                                   //~v0imR~
+        if (*plh->ULHdata=='(')                                    //~vbvfR~
+        {                                                          //~vbvfR~
+        	UTRACEP("%s:GraphChar\n",UTT);                         //~vbvfR~
+        }                                                          //~vbvfR~
         if (plh->ULHtype!=ULHTDATA)                                //~v0imR~
             continue;                                              //~v0imR~
-        if (UCBITCHK(plh->ULHflag4,ULHF4PROTLINE))  //protected(change line attr)//~v0imR~
-            continue;                                              //~v0imR~
+//      if (UCBITCHK(plh->ULHflag4,ULHF4PROTLINE))  //protected(change line attr)//~vbvpR~
+//          continue;                                              //~vbvpR~
+        if (*plh->ULHdata==ALIASCMT)                               //~vbvpI~
+            continue;                                              //~vbvpI~
+        swProtLine=UCBITCHK(plh->ULHflag4,ULHF4PROTLINE);          //~vbvpI~
         lrecl=plh->ULHlen;                                         //~v0imR~
+        UTRACED("ULHdata",plh->ULHdata,lrecl);                     //~vbvdR~
+        UTRACED("ULHdbcs",plh->ULHdbcs,lrecl);                     //~vbvdR~
         for (errsw=1;errsw;)                                       //~v0imR~
         {                                                          //~v0imR~
             if (lrecl<mergin)                                      //~v0imR~
@@ -1292,16 +1630,35 @@ int filefksaveft(PUCLIENTWE Ppcw,PUFILEH Ppfh,int Popt)            //~v0imR~
                 fileoptlreclerr();                                 //~v0imR~
                 break;                                             //~v0imR~
             }                                                      //~v0imR~
-            memcpy(linedata,plh->ULHdata,(UINT)mergin);            //~v0imR~
+//          memcpy(linedata,plh->ULHdata,(UINT)mergin);            //~vbvdR~
+            pc2=memchr(plh->ULHdata+mergin,'/',(UINT)(lrecl-mergin));//~vbvdI~
+            if (pc2)                                               //~vbvdI~
+            	lenByUTF8=PTRDIFF(pc2,plh->ULHdata)-mergin;        //~vbvdI~
+            else                                                   //~vbvdI~
+            	lenByUTF8=lrecl-mergin;                            //~vbvdR~
+            UmemcpyZ(linedata,plh->ULHdata,(UINT)(mergin+lenByUTF8));//~vbvdR~
             if (pc=strchr(linedata,' '),pc)                        //~v0imR~
                 *pc=0;                                             //~v0imR~
 			else                                                   //~v0imI~
             	*(linedata+protlen-1)=0;                           //~v0imI~
+    		UTRACED("linedata",linedata,sizeof(linedata));         //~vbvdR~
+    		UTRACEP("%s:pc=%p,lenByUTF8=%d,protlen=%d,linedata=%s\n",UTT,pc,lenByUTF8,protlen,linedata);//~vbvdR~
             if (!(pft=functblsrchbyname(linedata)))                //~v0imR~
             {                                                      //~v0imR~
                 fileoptfuncnmerr();                                //~v0imR~
                 break;                                             //~v0imR~
             }                                                      //~v0imR~
+            if (pft!=pfto)                                         //~vbvhI~
+            {                                                      //~vbvhI~
+            	pftKeyCtr=0;	                                   //~vbvhI~
+                pfto=pft;                                          //~vbvhI~
+            }                                                      //~vbvhI~
+            else                                                   //~vbvhI~
+            	pftKeyCtr++;                                       //~vbvhR~
+    		UTRACEP("%s:pftKeyCtr=%d,pft=%p,pfto=%p,swProtline=x%x\n",UTT,pftKeyCtr,pft,pfto,swProtLine);//~vbvpR~
+//  		UTRACED("FTkey",pft->FTkey,sizeof(pft->FTkey));        //~vbvoR~
+			if (swProtLine)                                        //~vbvpI~
+            	break;                                             //~vbvpI~
 //          index=(int)(((ULONG)pft-(ULONG)Gfunctbl)/sizeof(FUNCTBL));//~v0imI~//~vafkR~
             index=(int)(((ULPTR)pft-(ULPTR)Gfunctbl)/sizeof(FUNCTBL));//~vafkI~
             pwft=pwft0+index;                                      //~v0imI~
@@ -1309,13 +1666,32 @@ int filefksaveft(PUCLIENTWE Ppcw,PUFILEH Ppfh,int Popt)            //~v0imR~
 //          {                                                      //~v0iwR~
 //key chk                                                          //~v0imI~
                 pc=linedata+protlen;                               //~v0imR~
+    		UTRACEP("%s:pc=%s\n",UTT,pc);                          //~vbvfI~
+            for (pc3=pc-1;pc3<linedata+mergin;pc3++)               //~vbvfI~
+            {                                                      //~vbvfI~
+                if (*pc3==NOTFIXCMDID     //'+' cmd                //~vbvfI~
+                ||  *pc3==':'             // key                   //~vbvfI~
+                ||  *pc3==';'             // shift                 //~vbvfI~
+                ||  *pc3=='*'             // fixed                 //~vbvfI~
+                )                                                  //~vbvfI~
+                {                                                  //~vbvfI~
+    				UTRACEP("%s:protlen separator pc3=%s\n",UTT,pc3);//~vbvfI~
+                    pc=pc3+1;                                      //~vbvfI~
+                    break;                                         //~vbvfI~
+                }                                                  //~vbvfI~
+            }                                                      //~vbvfI~
             if (*(pc-1)!=NOTFIXCMDID)  //command verb changable    //~v71PI~
             {                                                      //~v71PI~
-                for (jj=FKF_MARGIN3-FKF_PROTLEN3;jj;jj--,pc++)     //~v0imR~
-                    if (*pc==NOCMDID)                              //~v0imI~
-                    	*pc=' ';                                   //~v0imI~
-                pc=linedata+protlen;                               //~v0imI~
+            //* not '+'                                            //~vbvfI~
+//              for (jj=FKF_MARGIN3-FKF_PROTLEN3;jj;jj--,pc++)     //~v0imR~//~vbvfR~
+//              {                                                  //~vbvfR~
+//                  if (*pc==NOCMDID)                              //~v0imI~//~vbvfR~
+//                  	*pc=' ';                                   //~v0imI~//~vbvfR~
+//              }                                                  //~vbvfR~
+//              pc=linedata+protlen;                               //~v0imI~//~vbvfR~
+	    		UTRACEP("%s:pc=%s\n",UTT,pc);                      //~vbvfI~
                 pc+=strspn(pc," ");                                //~v0imR~
+	    		UTRACEP("%s: after strsppn pc=%s\n",UTT,pc);       //~vbvfI~
 //                if (*(pc+1)!='+')                                //~v0jeR~
 //                    shift=0;                                     //~v0jeR~
 //                else                                             //~v0jeR~
@@ -1335,6 +1711,7 @@ int filefksaveft(PUCLIENTWE Ppcw,PUFILEH Ppfh,int Popt)            //~v0imR~
 //              	pc2=pc+sizeof(pkt->KTnamee)-1;                 //~v0jeR~
               if (pc2=strchr(pc,' '),pc2)                          //~v0jeR~
                 *pc2=0;                                            //~v0imR~
+	    		UTRACEP("%s: after pc2 liedata=%s,pc=%s\n",UTT,linedata,pc);//~vbvdR~
                 if (strlen(pc))		//key not deleted              //~v0imI~
                 {                                                  //~v0imI~
 //                  if (kbdsrchktbyname(pc,&pkt),!pkt) //not found //~v0jeR~
@@ -1369,6 +1746,11 @@ int filefksaveft(PUCLIENTWE Ppcw,PUFILEH Ppfh,int Popt)            //~v0imR~
 #endif                                                             //~vb50I~
                         break;                                     //~v0imR~
                 }//not erased                                      //~v0imI~
+                else                                               //~vbvhI~
+                {                                                  //~vbvhI~
+                    if (filekeyclear(pwft0,wfth.WFTHentno,pwft,pft,pftKeyCtr))//~vbvhI~
+                    	break;                                     //~vbvhI~
+                }                                                  //~vbvhI~
             }//key assign                                          //~v0iwR~,//~v71PR~
             else        //cmd assign                               //~v0iwR~,//~v71PR~
             {                                                      //~v0iwR~,//~v71PR~
@@ -1418,6 +1800,8 @@ int filefksaveft(PUCLIENTWE Ppcw,PUFILEH Ppfh,int Popt)            //~v0imR~
             }//cmd assign                                          //~v0iwR~,//~v71PR~
             errsw=0;    //break with normal                        //~v0imR~
         }//err chk                                                 //~v0imR~
+		if (swProtLine)                                            //~vbvpI~
+        	continue;                                              //~vbvpI~
         if (errsw)                                                 //~v0imR~
         {                                                          //~v0imR~
             filesetlineerr(plh);    //lineno fld reverse hilight   //~v0imR~
@@ -1470,6 +1854,8 @@ int filekeyassign(PWORKFT Ppwft0,int Pentno,PWORKFT Ppwft,KEYTBL *Ppkt,int Pshif
 //duplicate chk in keytbl                                          //~v0imR~
     shiftdup0=UCBITCHK(Ppkt->KTflag[Pshift],KTSHIFTDUP);           //~v0imR~
 	key=Ppkt->KTkey[Pshift];                                       //~v0imI~
+    UTRACEP("%s:key=x%x,Pshift=%d\n",UTT,key,Pshift);              //~vbvhI~
+//  UTRACED("%pkt",Ppkt,sizeof(KEYTBL));                           //~vbvoR~
     for (ii=0;ii<jj;ii++)                                          //~v0imI~
     {                                                              //~v0imI~
 		if (key==Ppwft->WFTkey[ii])                                //~v0imR~
@@ -1518,12 +1904,27 @@ int filekeyassign(PWORKFT Ppwft0,int Pentno,PWORKFT Ppwft,KEYTBL *Ppkt,int Pshif
         }                                                          //~v0imR~
     }//all wft                                                     //~v0imR~
 	Ppwft->WFTkey[jj]=key;                                         //~v0imR~
+//  UTRACED("Ppwft",Ppwft,sizeof(WORKFT));                         //~vbvoR~
     if (shiftdup0)                                                 //~v0imR~
 		UCBITON(Ppwft->WFTkflag[jj],FTSHIFT);                      //~v0imR~
 	else                                                           //~v0imI~
 		UCBITOFF(Ppwft->WFTkflag[jj],FTSHIFT);                     //~v0imI~
 	return 0;                                                      //~v0imI~
 }//filekeyassign                                                   //~v0imR~
+//**************************************************               //~vbvhI~
+//*key erased                                                      //~vbvhI~
+//*ret :rc                                                         //~vbvhI~
+//**************************************************               //~vbvhI~
+int filekeyclear(PWORKFT Ppwft0,int Pentno,PWORKFT Ppwft,PFUNCTBL Ppft,int PidxKey)//~vbvhI~
+{                                                                  //~vbvhI~
+    UTRACEP("%s:before FTnamee=%s,idxKey=%d,WFTkey=x%x\n",UTT,Ppft->FTnamee,PidxKey,Ppwft->WFTkey[PidxKey]);//~vbvhR~
+//  UTRACED("Ppwft",Ppwft,sizeof(WORKFT));                         //~vbvoR~
+	Ppwft->WFTkey[PidxKey]=Ppft->FTkey[PidxKey];                   //~vbvhR~
+    UCBITON(Ppwft->WFTkflag[PidxKey],FTDELETED);                   //~vbvhM~
+    UTRACEP("%s:after FTnamee=%s,idxKey=%d,WFTkey=x%x,pfwt=%p\n",UTT,Ppft->FTnamee,PidxKey,Ppwft->WFTkey[PidxKey],Ppwft);//~vbvhR~
+//  UTRACED("Ppwft",Ppwft,sizeof(WORKFT));                         //~vbvoR~
+	return 0;                                                      //~vbvhI~
+}//filekeyassign                                                   //~vbvhI~
 //**************************************************               //~v0imI~
 //*cmd verb assign                                                 //~v0imI~
 //*parm1:top WFT                                                   //~v0imI~
@@ -1562,6 +1963,7 @@ int filecmdvassign(PWORKFT Ppwft0,PWORKFT Ppwft,UCHAR Pcmdv[2][4])//~v0iwR~,//~v
     }                                                            //~v0iwR~,//~v71PR~
     memcpy(Ppwft->WFTcmd,Pcmdv[0],4);                            //~v0iwR~,//~v71PR~
     memcpy(Ppwft->WFTcmda,Pcmdv[1],4);                           //~v0iwR~,//~v71PR~
+    UTRACEP("%s:WFTcmd=%s,WFTkey[0]=x%x,[1]=x%x,[2]=x%x,[3]=x%x\n",UTT,Ppwft->WFTcmd,Ppwft->WFTkey[0],Ppwft->WFTkey[1],Ppwft->WFTkey[2],Ppwft->WFTkey[3]);//~vbvwR~
     return 0;                                                    //~v0iwR~,//~v71PR~
 }//filecmdvassign                                                //~v0iwR~,//~v71PR~
 //**************************************************************** //~v67CM~
@@ -1576,13 +1978,38 @@ int filefkctlinealias(PUFILEH Ppfh)                                //~v67CM~
     PULINEH plh,plhprev;                                           //~v67CM~
     UCHAR keyline[FKF_LRECL1];                                     //~v67CM~
     int   len,cmdlen,lrecl,protlen,lreclmax;                       //~v67CM~
+//  int ii;                                                        //~vbvoR~
+    int rc;                                                        //~vbvoI~
+    int swNotJP;                                                   //~vbvwI~
 //*****************                                                //~v67CM~
+    swNotJP=XE_NOT_ISDBCSJ_OR_N9();                                //~vbvwI~
 	pqhalct=&Sqhalct;                                              //~v67CM~
     protlen=Ppfh->UFHprotlen;                                      //~v67CM~
     lreclmax=Ppfh->UFHlrecl;                                       //~v67CM~
 	pqh=&(Ppfh->UFHlineque);                                       //~v67CM~
 	plh=(PULINEH)UGETQEND(pqh);                                    //~v67CM~
 	plhprev=UGETQPREV(plh);     //add after this                   //~v67CM~
+//    for (ii=0;;ii++)                                             //~vbvoR~
+//    {                                                            //~vbvoR~
+//        if (!ScommentAlias[ii])                                  //~vbvoR~
+//            break;                                               //~vbvoR~
+//        lrecl=(int)strlen(ScommentAlias[ii]);                    //~vbvoR~
+//        memcpy(keyline,ScommentAlias[ii],(UINT)lrecl);           //~vbvoR~
+//        plh=filealloclh(ULHTDATA,lrecl);                         //~vbvoR~
+//        UALLOCCHK(plh,UALLOC_FAILED);//return when storage shortage//~vbvoR~
+//        UENQENT(UQUE_AFT,plhprev,plh);                           //~vbvoR~
+//        plh->ULHlinenor=plhprev->ULHlinenor+1;                   //~vbvoR~
+//        memcpy(plh->ULHdata,keyline,(UINT)lrecl);                //~vbvoR~
+//        UTRACED("ULHdata",plh->ULHdata,lrecl);                   //~vbvoR~
+//        UCBITON(plh->ULHflag4,ULHF4PROTLINE);   //protected(change line attr)//~vbvoR~
+//        plhprev=plh;                                             //~vbvoR~
+//    }                                                            //~vbvoR~
+  if (swNotJP)                                                     //~vbvwI~
+	rc=putComment(0,ScommentAlias,&plhprev);                         //~vbvoI~//~vbvwR~
+  else                                                             //~vbvwI~
+	rc=putComment(0,ScommentAlias_JP,&plhprev);                    //~vbvwR~
+    if (rc)	//UALLOC_FAILED                                        //~vbvoI~
+    	return rc;                                                 //~vbvoI~
     memset(keyline,' ',(UINT)lreclmax);                            //~v67CM~
     memcpy(keyline,ALIASID,ALIASIDSZ);                             //~v67CM~
     keyline[protlen]=' ';                                          //~v67CM~
@@ -1685,6 +2112,7 @@ int filesetupscktalias(UQUEH *Ppqhalct)                            //~v67CR~
         pc+=len;                                                   //~v67CI~
         *pc++=0;                                                   //~v67CI~
     }                                                              //~v67CI~
+    UTRACED("pcmd",pcmd,len);                                      //~vbvwI~
     return 0;                                                      //~v67CI~
 }//filesetupscktalias                                              //~v67CI~
 //**************************************************************** //~v67CM~

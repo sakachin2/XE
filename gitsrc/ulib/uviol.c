@@ -1,6 +1,6 @@
-//*CID://+v6EqR~:                             update#=  405;       //+v6EqR~
+//*CID://+v6EqR~:                             update#=  411;       //~v6EqR~
 //*************************************************************
-//v6Eq:160812 lineopt should be cleared by USDFNCELL               //+v6EqI~
+//v6Eq:160812 lineopt should be cleared by USDFNCELL               //~v6EqI~
 //v6Em:160807 (LNX) v6Ei for LNX(specify ligature on/off,combine on/of line by line(used for edit/filename  panel))//~v6EmI~
 //v6D9:160610 (LNX)when combining char exists under combineing mode,//~v6D9I~
 //  		  hdr line filename contains black space after each combining char if ligature off,after string if ligature on.//~v6D9I~
@@ -298,7 +298,7 @@ chtype uviol_cell2attr(USHORT Pcell)                               //~v324I~
 #endif                                                             //~v55xI~
 //		cht=COLOR_PAIR((bg>>4)*Smaxcolor+fg);                      //~v40pR~//~v6BhR~
   		cht=(chtype)COLOR_PAIR(((int)bg>>4)*Smaxcolor+(int)fg);    //~v6BhR~
-//UTRACEP("colorpair bg=%02x,fg=%02x chr=%04x\n",bg,fg,cht);         //~v62UR~//~v6j0R~
+//UTRACEP("uviol_cell2attr.colorpair bg=%02x,fg=%02x chr=%04x\n",bg,fg,cht);         //~v62UR~//~v6j0R~//~v6EqR~
     }                                                              //~v55xI~
 #ifdef LNX                                                         //~v40rI~
 //  if (Pcell & FG_HILIGHT)                                        //~v40pR~
@@ -316,6 +316,7 @@ chtype uviol_cell2attr(USHORT Pcell)                               //~v324I~
       }                                                            //~v5n8I~
     }                                                              //~v5n8I~
 #endif		//LNX                                                  //~v40rI~
+//  UTRACEP("uviol_cell2attr.colorpair cht=%04x,Pcell==%04x\n",cht,Pcell);//~v6EqR~
     return cht;                                                    //~v324I~
 }//uviol_cell2att                                                  //~v324I~
 //#define PAIR2ATTR(cht)                                           //~v324R~
@@ -1036,7 +1037,7 @@ UINT uviowrtcellstr(int Popt,PCH pchCellStr,int Plen,int Prow,int Pcol)//~v6EmI~
     len=Plen/(Sattrcount+1);
     if (RANGE_CHKERR(Prow,Pcol,len))
         return 4;
-//UTRACED("cell",pchCellStr,len*2);                                  //~v5n8M~//~v6j0R~
+//UTRACED("uviowrtcellstr.pchCellStr",pchCellStr,len*2);                                  //~v5n8M~//~v6j0R~//+v6EqR~
     if (Sdbcstbl)                                                  //~v5inI~
     	pdbcs=Sdbcstbl+Prow*Sscrwidth+Pcol;                        //~v5inR~
     for (ii=0,pcell=(USHORT*)(void*)pchCellStr,pcht=Spwkchtype;ii<len;ii++)//~v324R~
@@ -1060,7 +1061,7 @@ UINT uviowrtcellstr(int Popt,PCH pchCellStr,int Plen,int Prow,int Pcol)//~v6EmI~
         pcht++;                                                    //~v324R~
 //printw("cell=%0x,pair=%x,cht=%x\n",cell,ATTR2PAIR(cell),*(pcht-1));   
     }                                                              //~v324I~
-//UTRACED("cell",Spwkchtype,len*4);                                  //~v5n8M~//~v6j0R~
+//UTRACED("uviowrtcellstr Spwkchtype",Spwkchtype,len*4);                                  //~v5n8M~//~v6j0R~//+v6EqR~
 //  uviol_mvaddchnstr(Prow,Pcol,Spwkchtype,len);                   //~v324R~//~v6EmR~
     uviol_mvaddchnstr(Popt,Prow,Pcol,Spwkchtype,len);              //~v6EmI~
     return 0;                                                      //~v324R~
@@ -1182,8 +1183,8 @@ UINT uviowrtnattr (PBYTE pAttr,int Plen,int Prow,int Pcol)
 //*******************************************************
 //*VioWrtNCell(setup buff and write cell(char+attr))
 //*******************************************************
-//UINT uviowrtncell(PBYTE pCell,int Plen,int Prow,int Pcol)        //+v6EqR~
-UINT uviowrtncell(int Popt,PBYTE pCell,int Plen,int Prow,int Pcol) //+v6EqI~
+//UINT uviowrtncell(PBYTE pCell,int Plen,int Prow,int Pcol)        //~v6EqR~
+UINT uviowrtncell(int Popt,PBYTE pCell,int Plen,int Prow,int Pcol) //~v6EqI~
 {
     int ii;
     USHORT cell;
@@ -1201,8 +1202,8 @@ UINT uviowrtncell(int Popt,PBYTE pCell,int Plen,int Prow,int Pcol) //+v6EqI~
     for (ii=0,pcht=Spwkchtype;ii<Plen;ii++)             //set NAttr
         *pcht++=cht;
 //  uviol_mvaddchnstr(Prow,Pcol,Spwkchtype,Plen);                  //~v324R~//~v6EmR~
-//  uviol_mvaddchnstr(0/*lineopt*/,Prow,Pcol,Spwkchtype,Plen);     //+v6EqR~
-    uviol_mvaddchnstr(Popt/*lineopt*/,Prow,Pcol,Spwkchtype,Plen);  //+v6EqI~
+//  uviol_mvaddchnstr(0/*lineopt*/,Prow,Pcol,Spwkchtype,Plen);     //~v6EqR~
+    uviol_mvaddchnstr(Popt/*lineopt*/,Prow,Pcol,Spwkchtype,Plen);  //~v6EqI~
     return 0;
 }//uviowrtncell
 //*******************************************************

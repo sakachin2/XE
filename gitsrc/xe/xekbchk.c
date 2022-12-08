@@ -1,8 +1,11 @@
-//*CID://+vbs0R~:                             update#=  524;       //~vbs0R~
+//*CID://+vbvuR~:                             update#=  533;       //+vbvuR~
 //*************************************************************
 //*xekbchk.c                                                       //~0924R~//~van6R~
 //*	kbd scan/char chk                                              //~van6R~
 //*************************************************************
+//vbvu:221202 win link err for xekbchk                             //+vbvuI~
+//vbvo:221201 show sample for sc cmd of =0.1                       //~vbvoI~
+//vbvf:221129 drop japanese comment for =0.2/0.3 when english mode //~vbvfI~
 //vbs0:201021 compile/link err on Manjaro(duplicate definition Gdcmd2wxeshellcmd)//~vbs0I~
 //vbe0:171231 add function to search xml tag pair by A+/           //~vbe0I~
 //vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I~
@@ -179,7 +182,7 @@
 #define  LINE_CODE     5                                           //~va1cR~
 #define  MAXESCSEQ    10   //loop stopper                          //~vagiR~
 //******************                                               //~vbs0I~
-//  int Gstrinputlen;	//used in xekbd, defined in xefunct.h which is extern by GLOBAL_FUNCT//+vbs0R~
+//  int Gstrinputlen;	//used in xekbd, defined in xefunct.h which is extern by GLOBAL_FUNCT//~vbs0R~
 //******************                                               //~vbs0I~
 #ifdef UNX                                                         //~v400R~
 static char *Sstrfnm;                                              //~v403M~
@@ -1802,21 +1805,22 @@ void ckprintsub(FILE *Pfh,char *Pkeyname,char *Pstring)            //~v40aR~
 #ifdef UNX                                                         //~v51CR~
     #include "xekbchkl.h"                                          //~v51CR~
 #else                                                              //~v51CI~
-int funccall(int Pkeytype,UCHAR *Pkey,PUCLIENTWE Ppcw){return 0;}  //~v518I~
-FUNCTBL *funcftsrch(int Pkeytype,USHORT Pkey,int Pshift){return 0;}//~v518I~
-FUNCTBL *functblsrch(int Pfuncid)                                  //~v518R~
-{                                                                  //~v518I~
-	static FUNCTBL Sdummyft={"","",0};                             //~v518R~
-//*****************************                                    //~v518I~
-	return &Sdummyft;                                              //~v518R~
-}                                                                  //~v518I~
+    #include "xekbchkl.h"                                          //+vbvuR~
+//int funccall(int Pkeytype,UCHAR *Pkey,PUCLIENTWE Ppcw){return 0;}//~vbvoR~
+//FUNCTBL *funcftsrch(int Pkeytype,USHORT Pkey,int Pshift){return 0;}//~vbvoR~
+//FUNCTBL *functblsrch(int Pfuncid)                                //~vbvoR~
+//{                                                                //~vbvoR~
+//    static FUNCTBL Sdummyft={"","",0};                           //~vbvoR~
+////*****************************                                  //~vbvoR~
+//    return &Sdummyft;                                            //~vbvoR~
+//}                                                                //~vbvoR~
 #endif                                                             //~v51CI~
 int funcsetlongcmd(PUCLIENTWE Ppcw,int Popt,UCHAR *Pcmd,int Plen,int *Psetlen){return 0;}//~v518I~
 int funcgetlongcmd(PUCLIENTWE Ppcw,UCHAR *Pcmd){return 0;}         //~v518I~
 //void funccmdstack(UCHAR *Pcmd,int Pcmdlen){return;}              //~v670R~
 PUSCMD funccmdstack(UCHAR *Pcmd,int Pcmdlen,int Pseqno){return 0;} //~vbCBR~
 #ifndef UNX                                                        //~v51CI~
-int func_prevtab_file(PUCLIENTWE Ppcw){return 0;}                  //~v518I~
+//int func_prevtab_file(PUCLIENTWE Ppcw){return 0;}                //+vbvuR~
 #endif                                                             //~v51CI~
 int panwakeup(PUCLIENTWE Ppcw){return 0;}                          //~v518I~
 PUCLIENTWE panregist(int Pmenuid){return 0;}                       //~v518I~
@@ -1837,14 +1841,14 @@ void file7term(void){return;}                                      //~v67CI~
 int dirwakeup(PUCLIENTWE Ppcw){return 0;}                          //~v56pI~
 PULINEH getdisplayline(PULINEH Pplh,int Pstep,int *Ppstep){return 0;}//~v69eR~
 #ifndef LNX                                                        //~v705I~
-	int funcchngeenter(int Popt){return 0;}                        //~v78NI~
+//    int funcchngeenter(int Popt){return 0;}                      //~vbvoR~
 //  int funct2getnextinputgc(char *Pinput){return 0;}              //~v705R~//~v79RR~
-#ifdef UTF8SUPPH                                                   //~va1cI~
-	int funct2getnextinputgc(PUCLIENTWE Ppcw,char *Pinput,void *Ppkeyinf){return 0;}//~va1cR~
-#else                                                              //~va1cI~
-    int funct2getnextinputgc(PUCLIENTWE Ppcw,char *Pinput){return 0;}//~v79RI~
-#endif                                                             //~va1cI~
-	int funcdupktsrch(int Popt,/*KEYTBL*/void *Ppkt,int Pmodidx,FUNCTBL **Pppft){return 0;}//~v76gI~
+//#ifdef UTF8SUPPH                                                 //~vbvoR~
+//    int funct2getnextinputgc(PUCLIENTWE Ppcw,char *Pinput,void *Ppkeyinf){return 0;}//~vbvoR~
+//#else                                                            //~vbvoR~
+//    int funct2getnextinputgc(PUCLIENTWE Ppcw,char *Pinput){return 0;}//~vbvoR~
+//#endif                                                           //~vbvoR~
+//    int funcdupktsrch(int Popt,/*KEYTBL*/void *Ppkt,int Pmodidx,FUNCTBL **Pppft){return 0;}//~vbvoR~
 #endif                                                             //~v705I~
 #ifdef FTPSUPP                                                     //~v70zI~
 	char *xetsofilefullpath2ndedit(char *Pfullpath,PUFILEH Ppfh,char *Pmodifier){return 0;}//~v70zR~
@@ -1903,4 +1907,6 @@ int func_revfindPSP(PUCLIENTWE Ppcw){return 0;}                    //~vb50I~
 int func_revfindPSF(PUCLIENTWE Ppcw){return 0;}                    //~vb50I~
 int func_xmlsrch(PUCLIENTWE Ppcw){return 0;}                       //~vbe0I~
 char *funcsp_search(int Popt,char *Ppname){return 0;}              //~vba2I~
+UCHAR *inigetfname(UCHAR *Pfname){return " ";}                     //~vbvfI~
+//int funcAliasDropComment(char *Pcmd){ return 0;}                 //~vbvoR~
 #endif//UTF8SUPPH                                                  //~va50I~

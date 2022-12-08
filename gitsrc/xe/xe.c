@@ -1,7 +1,10 @@
-//*CID://+vbtaR~:                              update#=  483;      //~vbt5R~//~vbtaR~
+//*CID://+vbvjR~:                              update#=  497;      //~vbvjR~
 //*************************************************************
 //*XE.c*                                                           //~v641R~
 //*************************************************************
+//vbvj:221130 change workdir to %USERPROFILE% (C:\Users\username) fo protection//~vbvjI~
+//vbvg:221130 LNX compiler arning                                  //~vbvgI~
+//vbvf:221129 drop japanese comment for =0.2/0.3 when english mode //~vbvfI~
 //vbta:201214 allow -Nm for linux(abondon vbt3)                    //~vbtaI~
 //vbt5:201212 (WIN)apply utf8 code input(-NM) not also DBCS env    //~vbt5I~
 //vbt3:201212 (LNX)Drop -Nm option                                 //~vbt3I~
@@ -329,6 +332,7 @@ void uehexit(int,PUEXREGREC);//exit func
 int xecleartrcfile(int Popt,char *Pfnm);                           //~vbkmI~
 #define XCTFO_COUNT_MASK           0xff                            //~vbkmR~
 #define XCTFO_KBD_KEEP_COUNT       5          //keep max 5 file if not clear specified//~vbkmR~
+#define HOMEDIR "USERPROFILE"                                      //~vbvjI~
 //*******************************************************
 #ifndef UNX                                                        //~v195I~
   #ifndef WXE                                                      //~v500I~
@@ -1180,6 +1184,33 @@ int xecreateworkdir(char *Pfpath,char *Pwkdir)                     //~v79HI~
     	strcpy(Pfpath,fpath);                                      //~v79HM~
     return rc;                                                     //~v79HM~
 }//createnonprotworkdir                                            //~v79HM~
+#ifdef W32                                                         //+vbvjI~
+//************************************************                 //~vbvjI~
+//* get work dir name                                              //~vbvjI~
+//************************************************                 //~vbvjI~
+int getHomeDir(char *PfpathOut)                                    //~vbvjI~
+{                                                                  //~vbvjI~
+	char *pc;	                                                   //~vbvjI~
+    int rc;                                                        //~vbvjI~
+    *PfpathOut=0;                                                  //~vbvjI~
+    pc=getenv(HOMEDIR);                                            //~vbvjI~
+    if (pc && *pc)                                                 //~vbvjR~
+    {                                                              //+vbvjI~
+    	if (*(pc+1)==':')                                          //~vbvjI~
+        	strcpy(PfpathOut,pc);                                  //~vbvjI~
+        else                                                       //~vbvjI~
+	    	if (*(pc)=='\\')                                       //~vbvjI~
+	        	sprintf(PfpathOut,"c:%s",pc);                      //~vbvjI~
+            else                                                   //~vbvjI~
+	        	sprintf(PfpathOut,"c:\\%s",pc);                    //~vbvjI~
+    }                                                              //+vbvjI~
+    rc=*PfpathOut!=0;                                              //~vbvjI~
+    if (rc)                                                        //~vbvjI~
+        strcat(Gworkdir,XE_WKDIR+2);                               //~vbvjR~
+    UTRACEP("%s:rc=%d,getenv=%s,env=%s,fpath=\n",UTT,rc,pc,HOMEDIR,PfpathOut);//~vbvjR~
+    return rc;                                                     //~vbvjI~
+}                                                                  //~vbvjI~
+#endif                                                             //+vbvjI~
 //************************************************                 //~v79zI~
 //* get work dir name                                              //~v79zM~
 //************************************************                 //~v79zI~
@@ -1252,9 +1283,14 @@ int  xegetworkdir(void)                                            //~v79zI~
     }                                                              //~v19SI~
 #else //!UNX                                                       //~v19SI~
     strcpy(Gworkdir,wkfname);                                   //~5118I~
+    UTRACEP("%s:wkfname=%s,fstat=%d\n",wkfname,ufstat(Gworkdir,0));//~vbvjI~
     if (ufstat(Gworkdir,0))	//not found                            //~v500I~
     {                                                              //~v79HI~
 #ifdef W32                                                         //~v79HM~
+        if (getHomeDir(wkfname))	//getenv succeeded             //~vbvjR~
+        	sprintf(Gworkdir,"%s%s",wkfname,XE_WKDIR+2);           //~vbvjR~
+      if (ufstat(Gworkdir,0))	//not found                        //~vbvjI~
+      {                                                            //~vbvjI~
         if (umkdir(Gworkdir))   //create failed                    //~v79HI~
         {                                                          //~v79HI~
             if (!strcmp(Gworkdir,XE_WKDIR)) //default              //~v79HR~
@@ -1276,6 +1312,7 @@ int  xegetworkdir(void)                                            //~v79zI~
 					Gworkdir);                                     //~v500I~
         else                                                       //~v500I~
             exit(8);                                               //~v500I~
+      }//fstat fail                                                //~vbvjI~
     }                                                              //~v79HI~
 #endif //!UNX                                                      //~v19SI~
     if (PATHLEN(Gworkdir)!=(int)strlen(Gworkdir))//last is not '\\'(SBCS)//~v085R~
@@ -1935,9 +1972,10 @@ int  parmproc0(int Pparmc,char *Pparmp[])                          //~v501R~
                     {                                              //~v08tI~
                     case '9':   //japanese errmsg if avail         //~v08tI~
                         Suerrmsgopt=(Suerrmsgopt & ~UERR_FORCE_ENGLISH);//~v08tI~
-#ifdef WXE                                                         //~va73I~
-                        UCBITOFF(Gotherstatus,GOTHERS_N9PARM);     //~va73R~
-#endif                                                             //~va73I~
+//#ifdef WXE                                                         //~va73I~//~vbvfR~
+//                      UCBITOFF(Gotherstatus,GOTHERS_N9PARM);     //~va73R~//~vbvgR~
+                        UIBITOFF(Gotherstatus,((UINT)(GOTHERS_N9PARM)));//~vbvgR~
+//#endif                                                             //~va73I~//~vbvfR~
                         break;                                     //~v08tI~
                     }//switch by /Yx                               //~v08tI~
                     cptr++;                                        //~v08tI~
@@ -1953,9 +1991,10 @@ int  parmproc0(int Pparmc,char *Pparmp[])                          //~v501R~
                     {                                              //~v08tI~
                     case '9':   //no japanese errmsg(force english)//~v08tI~
                         Suerrmsgopt=(Suerrmsgopt|UERR_FORCE_ENGLISH);//~v08tI~
-#ifdef WXE                                                         //~va73I~
-                        UCBITON(Gotherstatus,GOTHERS_N9PARM);      //~va73I~
-#endif                                                             //~va73I~
+//#ifdef WXE                                                         //~va73I~//~vbvfR~
+//                      UCBITON(Gotherstatus,GOTHERS_N9PARM);      //~va73I~//~vbvgR~
+                        UIBITON(Gotherstatus,GOTHERS_N9PARM);      //~vbvgI~
+//#endif                                                             //~va73I~//~vbvfR~
                         break;                                     //~v08tI~
                     }//switch by /Nx                               //~v08tI~
                     cptr++;                                        //~v08tI~
@@ -2828,10 +2867,10 @@ void help(void)
     HELPMSG "           translate(env:UTF8) or do not translate(env:not UTF8)\n",//~va00I~//~va0DR~//~vafyR~
             "           する(env:UTF8の場合)かしない(env:UTF8でない)か決める。\n");//~va00I~
 #endif                                                             //~va0DI~
-//  HELPMSG "               :%cNm:Accept UTF8 code as-is base without trans.\n",//~va0DR~//+vbtaR~
-//          "               :%cNm:UTF8入力を変換せず受け付ける\n", //~va0DR~//+vbtaR~
-    HELPMSG "               :%cNm:Set UTF8 code to CPLC file when A+u ON.\n",//+vbtaM~
-            "               :%cNm:A+u オンのときUTF8コードを無変換でセット\n",//+vbtaM~
+//  HELPMSG "               :%cNm:Accept UTF8 code as-is base without trans.\n",//~va0DR~//~vbtaR~
+//          "               :%cNm:UTF8入力を変換せず受け付ける\n", //~va0DR~//~vbtaR~
+    HELPMSG "               :%cNm:Set UTF8 code to CPLC file when A+u ON.\n",//~vbtaM~
+            "               :%cNm:A+u オンのときUTF8コードを無変換でセット\n",//~vbtaM~
             CMDFLAG_PREFIX);                                       //~va0DI~
   #else //UTF8SUPPH                                                //~va00I~
     HELPMSG "      x=m (%cYm):Translate UTF8 kbd input to multi-byte.\n",//~v7a7R~

@@ -1,8 +1,8 @@
-//*CID://+vbr4R~:                               update#= 1414;     //+vbr4R~
+//*CID://+vbr4R~:                               update#= 1416;     //~vbr4R~
 //*************************************************************    //~v904I~
 //* xeutf.c                                                        //~v904I~
 //*************************************************************    //~v904I~
-//vbr4:200716 rc=1 when utfwcwidth=0(currentry no user chekking rc)//+vbr4I~
+//vbr4:200716 rc=1 when utfwcwidth=0(currentry no user chekking rc)//~vbr4I~
 //vbk9:180614 (BUG)vhex line update use UTF_GETDDUCS1,it replace when unprintable//~vbk9I~
 //vbk8:180613 show ucs value for errmsg "invalid UCS4 value"(vhex line update,makeucs)//~vbk8I~
 //vbk5:180611 u/v key on vhex line;correct err msg                 //~vbk5I~
@@ -110,7 +110,7 @@ int xeutf_cvf2dd(int Popt,char *Pinp,int Pinplen,UCHAR **Ppout,UCHAR **Ppdbcs,in
 	int opt,lenucs,buffsz,rc2,rc=0;                                //~va20R~
     char *pdbcs,*pucs;                                             //~va20R~
 //****************************                                     //~va00I~
-	UTRACED("xeutf_cvf2dd",Pinp,Pinplen);                          //~va20R~
+    UTRACED("Pinp",Pinp,Pinplen);                                  //+vbr4R~
 #ifdef UTF8UTF16                                                   //~vaw1I~
     lenucs=(Pinplen+1/*avoid len=0*/)*UWUCSSZ;                     //~vaw1I~
 #else                                                              //~vaw1I~
@@ -147,6 +147,8 @@ int xeutf_cvf2dd(int Popt,char *Pinp,int Pinplen,UCHAR **Ppout,UCHAR **Ppdbcs,in
 		UTRACEP("xeutf_cvf2dd ovf by chklen=%d\n",*Ppoutlen);      //~vaaqI~
     }                                                              //~vaaqI~
 	UTRACEP("xeutf_cvf2dd rc2=%d,rc=%d\n",rc2,rc);                 //~va20I~
+	UTRACED("data",*Ppout,*Ppoutlen);                              //+vbr4I~
+	UTRACED("dbcs",*Ppdbcs,*Ppoutlen);                             //+vbr4I~
     return rc;                                                     //~va00I~
 }//xeutf_cvf2dd                                                    //~va20R~
 //**************************************************************** //~vb2yI~
@@ -1855,7 +1857,7 @@ UTRACED("out dbcs",pdbcs,outlen);                                  //~vaw1I~
 #ifdef UTF8UCS416  //FIXME test surrogate:FIXED                    //~vaw1R~
 //**************************************************               //~va3xI~
 //chk ddfmt ucs4 is printable                                      //~va3xI~
-//rc=1:utfwcwidth=0                                                //+vbr4I~
+//rc=1:utfwcwidth=0                                                //~vbr4I~
 //**************************************************               //~va3xI~
 #ifdef UTF8UTF16                                                   //~vaw1I~
 int xeutfddwidth4(int Popt,UCHAR *Pdata,UCHAR *Pdbcs,UWUCS *Ppucs,int *Ppwidth)//~vaw1I~
@@ -1878,12 +1880,12 @@ int xeutfddwidth4(int Popt,UCHAR *Pdata,UCHAR *Pdbcs,PWUCS Ppucs,int *Ppwidth)//
     	*Ppwidth=len;                                              //~va3xI~
     if (Ppucs)                                                     //~va3xI~
         *Ppucs=ucs;                                                //~va3xI~
-//  if (len<=0)                                                    //~va3xI~//+vbr4R~
-    if (len<0)                                                     //+vbr4I~
+//  if (len<=0)                                                    //~va3xI~//~vbr4R~
+    if (len<0)                                                     //~vbr4I~
     	rc=4;                                                      //~va3xI~
-    else                                                           //+vbr4I~
-    if (len==0)                                                    //+vbr4I~
-        rc=1;                                                      //+vbr4I~
+    else                                                           //~vbr4I~
+    if (len==0)                                                    //~vbr4I~
+        rc=1;                                                      //~vbr4I~
     else                                                           //~va3xI~
     	rc=0;                                                      //~va3xI~
 UTRACEP("xeutfddwidth4 width=%d,ucs=%x\n",len,ucs);                //~va3xI~

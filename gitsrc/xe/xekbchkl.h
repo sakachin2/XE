@@ -1,9 +1,10 @@
-//*CID://+vbi3R~:                             update#=   78;       //+vbi3R~
+//*CID://+vbvuR~:                             update#=   79;       //+vbvuR~
 //*********************************************************************//~v51CI~
 //* xekbchkl.h                                                     //~v51CR~
 //* dummy func for xekbchk LKED under UNX only                     //~v51CR~
 //*********************************************************************//~v51CI~
-//vbi3:180211 supprt command history list                          //+vbi3I~
+//vbvu:221202 win link err for xekbchk                             //+vbvuI~
+//vbi3:180211 supprt command history list                          //~vbi3I~
 //vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I~
 //vac0:120131 (SMB)node cmd to set volatile password to UFTPHOST   //~vac0I~
 //va7K:100904 add SETCP option to cv cmd B2B(change UFHhandle) and SETCP option to EBC cmd.//~va7KI~
@@ -87,9 +88,9 @@
     FTFUNC(func_dlcmdcut_dir)                                      //~v51CI~
     FTFUNC(func_dlcmdpaste_dir)                                    //~v51CI~
     FTFUNC(func_dlcmdchngsz_dir)                                   //~v51CI~
-#ifdef UNX                                                         //~v51CI~
+//#ifdef UNX                                                       //+vbvuR~
     FTFUNC(func_dlcmduidorsz_dir)                                  //~v51CI~
-#endif                                                             //~v51CI~
+//#endif                                                           //+vbvuR~
     FTFUNC(func_dlcmdlfn_dir)   //long filename dispaly mode change//~v51CI~
 //  FTFUNC(func_home)          //csr                               //~v51CR~
     FTFUNC(func_splitline_file)                                    //~v51CI~
@@ -281,7 +282,7 @@
 #endif                                                             //~va30I~
 	FTFUNC(func_ebc);                                              //~va7KI~
 	FTFUNC(func_node);                                             //~vac0I~
-	FTFUNC(func_cmdhistu8);                                        //+vbi3I~
+	FTFUNC(func_cmdhistu8);                                        //~vbi3I~
 //*****************************************                        //~v51CI~
 void funcfreecmdstack(void){return;}                               //~v51CI~
 int panfunc000optchk(PUCLIENTWE Ppcw,UCHAR *Pcmd,int *Prc){return 0;}//~v51CI~

@@ -1,8 +1,10 @@
-//*CID://+vbs7R~:                             update#=  174;       //~vbs7R~
+//*CID://+vbw3R~:                             update#=  195;       //~vbw3R~
 //*************************************************************
 //*xefcmd3.c*
 //**file cmd CID,SCRoll,NUMber,drop                                //~v40KR~
 //*************************************************************
+//vbw3:221205 accept cidtype by unicode fo cid on/clear cmd        //~vbw3I~
+//vbv6:221121 add NOAPPEND to CID cmd                              //~vbv6I~
 //vbs7:201028 Debian10 compiler warning -Wformat-overflow          //~vbs7I~
 //vb2D:160221 LNX compiler warning                                 //~vb2DI~
 //vafc:120607 C4701 warning(used uninitialized variable) by VC6    //~vafcI~
@@ -132,6 +134,7 @@
 #include <ualloc.h>                                             //~v04dI~
 #include <uedit.h>                                                 //~v62pI~
 #include <ucvebc.h>                                                //~va50I~
+#include <utrace.h>                                                //~vbv6I~
                                                                 //~5318I~
 #include "xe.h"
 #include "xescr.h"
@@ -187,6 +190,7 @@ int func_cid(PUCLIENTWE Ppcw)
     int rc;                                                        //~v09rI~
     int len;                                                       //~v09FI~
     int appendopt=0;                                               //~v79UI~
+    int appendoptNo=0;                                             //~vbv6I~
     long lineno;
 	UCHAR *pc,cidtypec[4];                                         //~v09FR~
 	UCHAR *pc2;                                                    //~v79UI~
@@ -203,6 +207,7 @@ static UCHAR *Swordtbl="ON\0OFF\0CLEAR\0DEFON\0DEFOFF\0?\0SHIFT\0TOP\0TOPA\0"//~
                        "COPYOFF\0"  //19                           //~va02I~
                        ;                                           //~v75sI~
 #define  CID_APPEND    "APPEND"                                    //~v79UI~
+#define  CID_NOAPPEND  "NOAPPEND"                                  //~vbv6I~
 //*********************************
     *postfixw=0;	//clear                                        //~v09FI~
     *(postfixw+1)=0;	//clear                                    //~v09FI~
@@ -215,7 +220,8 @@ static UCHAR *Swordtbl="ON\0OFF\0CLEAR\0DEFON\0DEFOFF\0?\0SHIFT\0TOP\0TOPA\0"//~
 //      uerrmsg("CID [on|off|clear|shift|defon|defoff|top|topa|?] [cid-type|prefix[,postfix]]",0);//~v75sR~
 //      uerrmsg("CID [on|off|clear|shift|defon|defoff|top|topa|topc|topcn|topk|topkn|topd|?] [cid-type|prefix[,postfix]]",0);//~v79UR~
 //      uerrmsg("CID [on|off|clear|shift|defon|defoff|top|topa|topc|topcn|topk|topkn|topd|?] [ [cid-type|prefix[,postfix]] | APPEND ]",0);//~v79UI~//~va02R~
-        uerrmsg("CID [on|off|clear|shift|defon|defoff|top|topa|topc|topcn|topk|topkn|topd|copyon|copyoff|?] [ [cid-type|prefix[,postfix]] | APPEND ]",0);//~va02I~
+//      uerrmsg("CID [on|off|clear|shift|defon|defoff|top|topa|topc|topcn|topk|topkn|topd|copyon|copyoff|?] [ [cid-type|prefix[,postfix]] | APPEND ]",0);//~vbv6R~
+        uerrmsg("CID [on|off|clear|shift|defon|defoff|top|topa|topc|topcn|topk|topkn|topd|copyon|copyoff|?] [ [cid-type|prefix[,postfix]] | [APPEND|NOAPPEND] ]",0);//~vbv6I~
         return 0;                                                  //~v20wI~
     }                                                              //~v0eAI~
 //*operand chk
@@ -224,6 +230,7 @@ static UCHAR *Swordtbl="ON\0OFF\0CLEAR\0DEFON\0DEFOFF\0?\0SHIFT\0TOP\0TOPA\0"//~
     {                                                              //~v79UI~
     	pc2=pc+strlen(pc)+1;                                       //~v79UI~
         appendopt=!stricmp(pc2,CID_APPEND);                        //~v79UR~
+        appendoptNo=!stricmp(pc2,CID_NOAPPEND);                    //~vbv6I~
     }                                                              //~v79UR~
 	for (ii=0;ii<opdno;ii++,pc+=strlen(pc)+1)	//next operand addr
 	{
@@ -237,19 +244,27 @@ static UCHAR *Swordtbl="ON\0OFF\0CLEAR\0DEFON\0DEFOFF\0?\0SHIFT\0TOP\0TOPA\0"//~
             	switch(opid)                                       //~v79UI~
                 {                                                  //~v79UI~
                 case 1:         //on                               //~v79UI~
-	  				if (UCBITCHK(pfh->UFHflag9,UFHF9CIDAPPEND))    //~v79UI~
+//    				if (UCBITCHK(pfh->UFHflag9,UFHF9CIDAPPEND))    //~vbv6R~
+      				if (UCBITCHK(pfh->UFHflag9,UFHF9CIDAPPEND)     //~vbv6I~
+            	    &&  UCBITCHK(pfh->UFHflag,UFHFCIDON))          //~vbv6I~
                     	return erralready();                       //~v79UI~
                     break;                                         //~v79UI~
                 case 2:         //off                              //~v79UI~
-	  				if (UCBITCHK(pfh->UFHflag9,UFHF9CIDAPPENDN))   //~v79UR~
+//    				if (UCBITCHK(pfh->UFHflag9,UFHF9CIDAPPENDN))   //~vbv6R~
+      				if (UCBITCHK(pfh->UFHflag9,UFHF9CIDAPPEND)     //~vbv6I~
+                	&&  UCBITCHK(pfh->UFHflag,UFHFCIDOFF))         //~vbv6I~
                     	return erralready();                       //~v79UI~
                     break;                                         //~v79UI~
                 case 4:         //defon                            //~v79UI~
-            		if (UCBITCHK(Gopt5,GOPT5CIDAPPEND))            //~v79UI~
+//          		if (UCBITCHK(Gopt5,GOPT5CIDAPPEND))            //~vbv6R~
+            		if (UCBITCHK(Gopt5,GOPT5CIDAPPEND)             //~vbv6I~
+            	    &&  !UCBITCHK(Gopt2,GOPT2NOCID))               //~vbv6I~
                     	return erralready();                       //~v79UI~
                     break;                                         //~v79UI~
                 case 5:         //defoff                           //~v79UI~
-            		if (!UCBITCHK(Gopt5,GOPT5CIDAPPEND))           //~v79UI~
+//          		if (!UCBITCHK(Gopt5,GOPT5CIDAPPEND))           //~vbv6R~
+            		if (UCBITCHK(Gopt5,GOPT5CIDAPPEND)             //~vbv6R~
+            	    &&  UCBITCHK(Gopt2,GOPT2NOCID))                //~vbv6I~
                     	return erralready();                       //~v79UI~
                 	break;                                         //~v79UI~
                 default:                                           //~v79UI~
@@ -258,6 +273,36 @@ static UCHAR *Swordtbl="ON\0OFF\0CLEAR\0DEFON\0DEFOFF\0?\0SHIFT\0TOP\0TOPA\0"//~
         			return 4;                                      //~v79UI~
                 }                                                  //~v79UI~
             }                                                      //~v79UI~
+            if (appendoptNo)                                       //~vbv6I~
+            {                                                      //~vbv6I~
+            	switch(opid)                                       //~vbv6I~
+                {                                                  //~vbv6I~
+                case 1:         //on NOAPPEND                      //~vbv6R~
+	  				if (UCBITCHK(pfh->UFHflag9,UFHF9CIDAPPENDN)    //~vbv6R~
+                	&&  UCBITCHK(pfh->UFHflag,UFHFCIDON))          //~vbv6I~
+                    	return erralready();                       //~vbv6R~
+                    break;                                         //~vbv6I~
+                case 2:         //off NOAPPEND                     //~vbv6R~
+	  				if (UCBITCHK(pfh->UFHflag9,UFHF9CIDAPPENDN)    //~vbv6R~
+            	    &&  UCBITCHK(pfh->UFHflag,UFHFCIDOFF))         //~vbv6I~
+    	            	return erralready();                       //~vbv6R~
+                    break;                                         //~vbv6I~
+                case 4:         //defon NOAPPEND                   //~vbv6R~
+            		if (!UCBITCHK(Gopt5,GOPT5CIDAPPEND)            //~vbv6R~
+            	    &&  !UCBITCHK(Gopt2,GOPT2NOCID))               //~vbv6I~
+                    	return erralready();                       //~vbv6I~
+                    break;                                         //~vbv6I~
+                case 5:         //defoff NOAPPEND                  //~vbv6R~
+            		if (!UCBITCHK(Gopt5,GOPT5CIDAPPEND)            //~vbv6R~
+            	    &&  UCBITCHK(Gopt2,GOPT2NOCID))                //~vbv6I~
+                    	return erralready();                       //~vbv6I~
+                	break;                                         //~vbv6I~
+                default:                                           //~vbv6I~
+        			uerrmsg("NOAPPEND option is valid with ON/OFF/DEFON/DEFOFF",//~vbv6I~
+        					"NOAPPEND 指定は ON/OFF/DEFON/DEFOFF で指定する");//~vbv6I~
+        			return 4;                                      //~vbv6I~
+                }                                                  //~vbv6I~
+            }                                                      //~vbv6I~
     		switch(opid)                                           //~v79UI~
             {
         	case 0:	//err
@@ -295,10 +340,13 @@ static UCHAR *Swordtbl="ON\0OFF\0CLEAR\0DEFON\0DEFOFF\0?\0SHIFT\0TOP\0TOPA\0"//~
 			    	return fcmdinvalidbinfile();                   //~v10dI~
             	if (UCBITCHK(pfh->UFHflag,UFHFCIDOFF))
         		{
+				  if (opdno==1)		//no type operand              //~vbv6I~
+                  {                                                //~vbv6I~
         			uerrmsg("CID-add function is already Off for this file",
 //      					"CID セット機能はこのファイルですでにオフです");//~v095R~
         					"CID セット機\x94\\はこのファイルですでにオフです");//~v095I~
         			return 4;
+                  }                                                //~vbv6I~
         		}
                 break;
         	case 3:	//clear
@@ -324,7 +372,8 @@ static UCHAR *Swordtbl="ON\0OFF\0CLEAR\0DEFON\0DEFOFF\0?\0SHIFT\0TOP\0TOPA\0"//~
 				}                                               //~5311I~
                 break;
         	case 4:	//defon
-              if (!appendopt)                                      //~v79UI~
+//            if (!appendopt)                                      //~vbv6R~
+              if (!appendopt && !appendoptNo)                      //~vbv6I~
             	if (!UCBITCHK(Gopt2,GOPT2NOCID))
         		{
         			uerrmsg("Default CID-add function is already On",
@@ -334,7 +383,8 @@ static UCHAR *Swordtbl="ON\0OFF\0CLEAR\0DEFON\0DEFOFF\0?\0SHIFT\0TOP\0TOPA\0"//~
         		}
                 break;
         	case 5:	//defoff
-              if (!appendopt)                                      //~v79UI~
+//            if (!appendopt)                                      //~vbv6R~
+              if (!appendopt && !appendoptNo)                      //~vbv6I~
             	if (UCBITCHK(Gopt2,GOPT2NOCID))
         		{
         			uerrmsg("Default CID-add function is already Off",
@@ -384,7 +434,8 @@ static UCHAR *Swordtbl="ON\0OFF\0CLEAR\0DEFON\0DEFOFF\0?\0SHIFT\0TOP\0TOPA\0"//~
         	}
             break;
         case 1:		//second opd
-            if (appendopt)                                         //~v79UR~
+//          if (appendopt)                                         //~vbv6R~
+            if (appendopt||appendoptNo)                            //~vbv6R~
                 break;                                             //~v79UM~
  			switch(opid)
             {
@@ -410,10 +461,25 @@ static UCHAR *Swordtbl="ON\0OFF\0CLEAR\0DEFON\0DEFOFF\0?\0SHIFT\0TOP\0TOPA\0"//~
 				}                                                  //~v09FI~
             	if(!(pcidtbl=filecidtypechk(pc,0)))//no alias      //~v09FR~
                 {
-        			uerrmsg("%s is not valid CID type",
-        					"%s は 無効な CID タイプです",
+            	  if(!(pcidtbl=filecidtypechkUTF8(pfh,pc)))//no alias//~vbw3R~
+                  {                                                //~vbw3I~
+//      			uerrmsg("%s is not valid CID type",            //~vbw3R~
+//      					"%s は 無効な CID タイプです",         //~vbw3R~
+        			uerrmsg("%s is not valid CID type, check Change_ID_Type_ of ::xe.ini.",//~vbw3I~
+        					"%s は 無効な CID タイプです、::xe.ini の Change_ID_Type_ を確認してください。",//~vbw3I~
 							pc);
         			return 4;
+                  }                                                //~vbw3I~
+                  else                                             //~vbw3I~
+                  {                                                //~vbw3I~
+					if (!FILEUTF8MODE(pfh))                        //~vbw3R~
+                    {                                              //~vbw3I~
+        				uerrmsg("%s is not valid CID type for not CPU8 file",//~vbw3I~
+        						"%s は CPLC ファイルには無効な CID タイプです",//~vbw3I~
+								pc);                               //~vbw3I~
+        				return 4;                                  //~vbw3I~
+                    }                                              //~vbw3I~
+                  }                                                //~vbw3I~
         		}
             	cidtype=(int)pcidtbl->CIDTid;//cid type;           //~v09rI~
                 strcpy(cidtypec,pcidtbl->CIDTexttbl);              //~v09FR~
@@ -437,6 +503,7 @@ static UCHAR *Swordtbl="ON\0OFF\0CLEAR\0DEFON\0DEFOFF\0?\0SHIFT\0TOP\0TOPA\0"//~
 	}//loop by operand no
 
 //*process
+    UTRACEP("%s:cidtype=%d\n",UTT,cidtype);                        //~vbv6R~
 	if (cidtype)
     {
     	switch(opid)                                               //~v09rI~
@@ -510,28 +577,50 @@ static UCHAR *Swordtbl="ON\0OFF\0CLEAR\0DEFON\0DEFOFF\0?\0SHIFT\0TOP\0TOPA\0"//~
             UCBITOFF(pfh->UFHflag9,UFHF9CIDAPPENDN); //reset no append//~v79UI~
 			uerrmsgcat("(APPEND mode)",0);                         //~v79UI~
         }                                                          //~v79UI~
+        if (appendoptNo)                                           //~vbv6I~
+        {                                                          //~vbv6I~
+            UCBITOFF(pfh->UFHflag9,UFHF9CIDAPPEND);                //~vbv6I~
+            UCBITON(pfh->UFHflag9,UFHF9CIDAPPENDN); //reset no append//~vbv6I~
+			uerrmsgcat("(NOAPPEND mode)",0);                       //~vbv6I~
+        }                                                          //~vbv6I~
         break;
 	case 2:	//off
-      if (appendopt)	//reset append mode only                   //~v79UI~
-      {                                                            //~v79UI~
-		uerrmsg("CID append mode is reset",                        //~v79UI~
-				"このファイルのCID APPEND モードをリセット");      //~v79UI~
-      }                                                            //~v79UI~
-      else                                                         //~v79UI~
-      {                                                            //~v79UI~
+//    if (appendopt)	//reset append mode only                   //~vbv6R~
+//    {                                                            //~vbv6R~
+//  	uerrmsg("CID append mode is reset",                        //~vbv6R~
+//  			"このファイルのCID APPEND モードをリセット");      //~vbv6R~
+//    }                                                            //~vbv6R~
+//    else                                                         //~vbv6R~
+//    {                                                            //~vbv6R~
     	UCBITON(pfh->UFHflag,UFHFCIDOFF);
     	UCBITOFF(pfh->UFHflag,UFHFCIDON);
 		uerrmsg("CID is not set on the modified line of this file when Save",
 				"このファイルの保存時,変更行に CID はセットされません");
-      }                                                            //~v79UI~
+//    }                                                            //~vbv6R~
+      if (appendoptNo)	//reset append mode only                   //~vbv6I~
+      {                                                            //~vbv6I~
 	  	UCBITOFF(pfh->UFHflag9,UFHF9CIDAPPEND);
 	  	UCBITON(pfh->UFHflag9,UFHF9CIDAPPENDN);                    //~v79UI~
+		uerrmsgcat("(NOAPPEND mode)",0);                           //~vbv6I~
+      }                                                            //~vbv6I~
+      if (appendopt)	//reset append mode only                   //~vbv6I~
+      {                                                            //~vbv6I~
+	  	UCBITON(pfh->UFHflag9,UFHF9CIDAPPEND);                     //~vbv6I~
+	  	UCBITOFF(pfh->UFHflag9,UFHF9CIDAPPENDN);                   //~vbv6I~
+		uerrmsgcat("(APPEND mode)",0);                             //~vbv6I~
+      }                                                            //~vbv6I~
+                                                                   //~vbv6I~
         break;
 	case 3:	//clear
 		lineno=filecidclear(Ppcw,pfh,CIDOPTCLEAR);                    //~v06rR~
         if (lineno<0)	//storage shortage                      //~v04dI~
         	rc=UALLOC_FAILED;                                      //~v09rR~
         else                                                       //~v73fI~
+        if (lineno==0 && FILEUTF8MODE(pfh) && UCBITCHK(pfh->UFHflag14,UFHF14CIDU8))//+vbw3I~
+			uerrmsg("No CID found. Unicode CID prefix may be missed for file shared between different language environment",//+vbw3I~
+					"CID が見つかりません。ユニコードCIDプレフィックスは異なる言語環境では相互認識出来ないことがあります",//+vbw3I~
+						lineno);                                   //+vbw3I~
+        else                                                       //+vbw3I~
 		uerrmsg("Cleared CID of %ld line",
 				"%ld 行 の CID をクリアー",
 				lineno);
@@ -546,25 +635,39 @@ static UCHAR *Swordtbl="ON\0OFF\0CLEAR\0DEFON\0DEFOFF\0?\0SHIFT\0TOP\0TOPA\0"//~
         if (appendopt)                                             //~v79UI~
         {                                                          //~v79UI~
             UCBITON(Gopt5,GOPT5CIDAPPEND);                         //~v79UI~
-			uerrmsgcat("(APPEND mode)",0);                         //~v79UI~
+			uerrmsgcat("(Default-APPEND mode)",0);                         //~v79UI~//~vbv6R~
         }                                                          //~v79UI~
+        if (appendoptNo)                                           //~vbv6I~
+        {                                                          //~vbv6I~
+            UCBITOFF(Gopt5,GOPT5CIDAPPEND);                        //~vbv6I~
+			uerrmsgcat("(default-NOAPPEND mode)",0);               //~vbv6R~
+        }                                                          //~vbv6I~
         break;
 	case 5:	//defoff
-      if (appendopt)	//reset append mode only                   //~v79UI~
-      {                                                            //~v79UI~
-		uerrmsg("default CID append mode is reset",                //~v79UI~
-				"省略値CID APPEND モードをリセット");              //~v79UI~
-      }                                                            //~v79UI~
-      else                                                         //~v79UI~
-      {                                                            //~v79UI~
+//    if (appendopt)	//reset append mode only                   //~vbv6R~
+//    {                                                            //~vbv6R~
+//  	uerrmsg("default CID append mode is reset",                //~vbv6R~
+//  			"省略値CID APPEND モードをリセット");              //~vbv6R~
+//    }                                                            //~vbv6R~
+//    else                                                         //~vbv6R~
+//    {                                                            //~vbv6R~
     	UCBITON(Gopt2,GOPT2NOCID);
       	UCBITON(Giniopt2,GOPT2NOCID);                
 //  	UCBITON(Gprocstatus,GPROCSINIUPDATE);   //need write ini at term//~v065R~
 		uerrmsg("CID-add function is set Off as default",
 //  			"CID 機能を省略時オフに設定");                     //~v095R~
     			"CID 機\x94\\を省略時オフに設定");                 //~v095R~
-      }                                                            //~v79UI~
+//    }                                                            //~vbv6R~
+      if (appendopt)	//reset append mode only                   //~vbv6I~
+      {                                                            //~vbv6I~
+        UCBITON(Gopt5,GOPT5CIDAPPEND);                             //~vbv6I~
+		uerrmsgcat("(Default-APPEND mode)",0);                     //~vbv6R~
+      }                                                            //~vbv6I~
+      if (appendoptNo)	//reset append mode only                   //~vbv6I~
+      {                                                            //~vbv6I~
         UCBITOFF(Gopt5,GOPT5CIDAPPEND);                            //~v79UM~
+		uerrmsgcat("(Default-NOAPPEND mode)",0);                   //~vbv6R~
+      }                                                            //~vbv6I~
         break;
 	case 7:	//shift                                                   //~v06rI~
 		lineno=filecidclear(Ppcw,pfh,CIDOPTSHIFT);                    //~v06rR~
@@ -692,7 +795,7 @@ int fcmdchkcidtopfile(int Poption,char *Pfiletype,char *Ptopdata)  //~v42jI~
 {                                                                  //~v42jI~
 	FILE          *fh;                                             //~v42jI~
 //	UCHAR fpath[_MAX_PATH],fnm[16],*pc;                            //~vbs7R~
-  	UCHAR fpath[_MAX_PATH],fnm[_MAX_PATH+256],*pc;                 //+vbs7R~
+  	UCHAR fpath[_MAX_PATH],fnm[_MAX_PATH+256],*pc;                 //~vbs7R~
 //****************************                                     //~v42jI~
 //search file                                                      //~v42jI~
 	strcpy(fpath,Pfiletype+3);                                     //~v53dR~

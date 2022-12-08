@@ -28,16 +28,6 @@ a:hover{font-weight:bold;}-->
          Binary compiled on MinGW was uploaded to my HP at 2008/03/21.
          There is no need to install cygwin if you use it.
 
-         My derived version &quot;xeshm&quot; is also offered for performance gain.
-         This version is resident sub-process to avoid process initialization load.
-         xeshm uses StartApp class of source-highlight version2.9.
-         Windows version is compiled on MingW, Linux version is compiled on FC12.
-         Latest version of source-highlight is v2.10.
-         Original source-highlight can be called from xe as one time process.
-         If you use xeshm data-directory hove to be of v2.9.
-         In config file, specify not SHCMD option but SHCMDR.
-         See mkxeshm.mingw to make xeshm.
-
       Mr.andre-simon's Highlight (specified by SHCMDA= in the cfg file)
          This one is easy to use.
          Install from Mr.andre-simon's homepage.(commandline &quot;highlight&quot; is included in sample directory of xe package)
@@ -129,13 +119,9 @@ a:hover{font-weight:bold;}-->
     #     SHCMD=       :Specify source-highlight command
     #                   default &quot;source-highlight -f esc&quot;. &quot;-f esc&quot; (outlang:esc) is always appended.
     #                   If use .bat file on Windows, use &quot;@&quot; to avoid that cmd echo is written to stdout.
-    #     SHCMDR=      :Specify xeshm command
-    #                   xeshm is my derivative from source-highlight v2.9.
-    #                   To avoid process initialization load, xeshm is resident process.
     #     SHCMDA=      :Specify andre-simon's Highlight command
     #                    Specify as following if space is embedded in the path.
     #                    SHCMDA= '&quot;&quot;c:\Program Files\WinHighlight\highlight.exe&quot;&quot; -q --out-format=ansi'
-    ##    ACBCMD=      :Specify path of xeacb(.exe).--&gt;Discarded.
     #     ENTER =      :Specify file line count threshold to use Enter key as trigger of SyntaxHighlight re-evaluation.
     #                   If the file line count is under this value at open,
     #                   Enter key is treated as trigger of re-evaluation of updated lines..
@@ -191,20 +177,20 @@ a:hover{font-weight:bold;}-->
     ### font style
     #     ITALIC_ESC = :ANSI esc code for italic.
     #                   Notify value specified on esc.lang file of source-highlight as ANSI font style code:italic. 
-    #                   Valid value is one digit except reserved &quot;1&quot;:bold, &quot;4&quot;:underline.
+    #                   Valid value is one digit except &quot;0&quot;, &quot;1&quot;:bold, &quot;4&quot;:underline.
     #                   Default is &quot;5&quot;:blink. (If you use this default, specify it on esc.outlang).
     #     C_BOLD     = :treatment of font style:1(BOLD) for console version xe
-    #                   &quot;H&quot;:HighIntensity, &quot;N&quot;:Ignore.  Default is &quot;H&quot;.
+    #                   &quot;H&quot;:HighIntensity, &quot;N&quot;:Ignore, &quot;R&quot;:Reverse.  Default is &quot;H&quot;.
     #     C_UNDERLINE= :treatment of font style:4(UNDERLINE) for console version xe. Not supported for Linux version.
-    #                   &quot;H&quot;:HighIntensity, &quot;N&quot;:Ignore.  Default is &quot;N&quot;.
+    #                   &quot;H&quot;:HighIntensity, &quot;N&quot;:Ignore, &quot;R&quot;:Reverse.  Default is &quot;N&quot;.
     #     C_ITALIC   = :treatment of font style:5(or value of ITALIC_ESC parameter if used) for console version xe
-    #                   &quot;H&quot;:HighIntensity, &quot;N&quot;:Ignore.  Default is &quot;N&quot;.
+    #                   &quot;H&quot;:HighIntensity, &quot;N&quot;:Ignore, &quot;R&quot;:Reverse.  Default is &quot;N&quot;.
     #     G_BOLD     = :treatment of font style:1(BOLD) for GUI version xe(wxe,gxe)
-    #                   &quot;H&quot;:HighIntensity, &quot;Y&quot;:Bold, &quot;N&quot;:Ignore. Default is &quot;YH&quot;.
+    #                   &quot;H&quot;:HighIntensity, &quot;Y&quot;:Bold, &quot;N&quot;:Ignore, &quot;R&quot;:Reverse. Default is &quot;YH&quot;.
     #     G_UNDERLINE= :treatment of font style:4(UNDERLINE) for GUI version xe(wxe). Not supported for gxe.
-    #                   &quot;H&quot;:HighIntensity, &quot;Y&quot;:Underline, &quot;N&quot;:Ignore. Default is &quot;Y&quot;.
+    #                   &quot;H&quot;:HighIntensity, &quot;Y&quot;:Underline, &quot;N&quot;:Ignore, &quot;R&quot;:Reverse. Default is &quot;Y&quot;.
     #     G_ITALIC   = :treatment of font style:5(or value of ITALIC_ESC parameter if used) for GUI version xe(wxe,gxe)
-    #                   &quot;H&quot;:HighIntensity, &quot;Y&quot;:Italic, &quot;N&quot;. Default is &quot;Y&quot;.
+    #                   &quot;H&quot;:HighIntensity, &quot;Y&quot;:Italic, &quot;N&quot;:Ignore, &quot;R&quot;:Reverse. Default is &quot;Y&quot;.
     ### sample ###########################
     #
     #     SHCMD = &quot;g:\src\syntaxh\GnuWin32\bin\source-highlight --data-dir=g:\src\syntaxh\GnuWin32\share\source-highlight&quot;
@@ -218,7 +204,6 @@ a:hover{font-weight:bold;}-->
     #
     #####################################################################
     #SHCMD = &quot;g:\src\syntaxh\GnuWin32\bin\source-highlight --data-dir=g:\src\syntaxh\GnuWin32\share\source-highlight --style-file=esc.style&quot;   #see source highlight document
-    #SHCMDR= &quot;m:\vcobjmingw\xeshm.exe  --data-dir=g:\src\syntaxh\GnuWin32\share\source-highlight --style-file=esc.style&quot;
     #SHCMDA= &quot;d:\gnuwin32\WinHighlight\highlight.exe -q&quot;
      SHCMDA= '&quot;&quot;c:\Program Files\WinHighlight\highlight.exe&quot;&quot; -q --out-format=ansi'
     #SHCMDA= '/h/objlinux/up/sample/highlight-3.7/highlight -q --out-format=ansi -D /h/objlinux/up/sample/highlight-3.7 --add-config=/h/objlinux/up/sample/highlight-3.7'
@@ -563,7 +548,7 @@ a:hover{font-weight:bold;}-->
 #endif   //W32 || LNX
 
 
-
+*** 2022/12/04
 </SPAN></PRE>
 </BODY>
 </HTML>

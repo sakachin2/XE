@@ -1,4 +1,4 @@
-//CID://+vbdnR~:       update#=   121                              //~vbdnR~
+//CID://+vbdnR~:       update#=   123                              //~vbdnR~
 //******************************************************************************//~v003I~
 //vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
 //vb4i:160805 vb4f for wxe(specify ligature on/off,combine on/of line by line)//~vb4iI~
@@ -226,7 +226,7 @@ UTRACEP("CREATEFONT draw select obj font=%p\n",Mpfont);            //~va74I~
 //  Pdc->BitBlt(0,0,Mscrwidth,Mscrheight,Mpmemdc,0,0,SRCCOPY);     //~@@@@R~
     Pdc->BitBlt(0,0,Mscrwidth,Mscrheight,HDC(*Mpmemdc),0,0,SRCCOPY);//~@@@@R~
     scrruler(Pdc,Mwxeintf.WXEIcsrposy,Mwxeintf.WXEIcsrposx);//direct write not required erase old ruler//~v78BR~
-	updateFileMenu(0);                                             //+vbdnR~
+	updateFileMenu(0);                                             //~vbdnR~
 	return 0;                                                      //~v003M~
 }//draw                                                            //~v003M~
 //===============================================================================//~v003I~
@@ -684,15 +684,19 @@ UTRACEP("CREATEFONT strput syntax=%d font=%p\n",Pstyle,Mpfonts[Pstyle]);//~va74I
       else                                                         //~v780M~
       {                                                            //~v780M~
         fgcolor=Mwxeintf.WXEIsynrgb[fgpal];                        //~v780M~
+		UTRACEP("strput fgcolor=x%x,fgpal=%d\n",fgcolor,fgpal);    //+vbdnR~
         if ((fgcolor & WXE_SYNTAXRGB))                             //~v780R~
 	        fgcolor&=~WXE_SYNTAXRGB;                               //~v780I~
         else                                                       //~v780I~
 	        fgcolor=Mwxeintf.WXEIpalrgb[fgpal];                    //~v780I~
+		UTRACEP("strput fgcolor=x%x\n",fgcolor);                   //+vbdnR~
         bgcolor=Mwxeintf.WXEIsynrgb[bgpal];                        //~v780M~
+		UTRACEP("strput bgcolor=x%x,bgpal=%d\n",bgcolor,bgpal);    //+vbdnR~
         if ((bgcolor & WXE_SYNTAXRGB))                             //~v780R~
 	        bgcolor&=~WXE_SYNTAXRGB;                               //~v780I~
         else                                                       //~v780I~
 	        bgcolor=Mwxeintf.WXEIpalrgb[bgpal];                    //~v780I~
+		UTRACEP("strput bgcolor=x%x\n",bgcolor);                   //+vbdnR~
       }                                                            //~v780M~
                                                                    //~2A05I~
         if (Pcapsw==1)                                             //~2A27R~

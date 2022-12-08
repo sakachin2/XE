@@ -1,7 +1,8 @@
-//*CID://+vb5bR~:                             update#=  136;       //~vb5bR~
+//*CID://+vbv9R~:                             update#=  153;       //~vbv9R~
 //*************************************************************
 //* xeini2.c                                                    //~v04dR~
 //************************************************************* //~v018I~
+//vbv9:221124 add cid type apl for extension=.apl                  //~vbv9I~
 //vb5b:160913 additional to vb54/vb56, DBCS space altch is changable by TAB cmd//~vb5bI~
 //vb56:160904 write default ucs to xe.ini as comment of (E)/(J)Tab_disp_char//~vb56I~
 //vb3q:160617 (BUG)dbcsspace dispchar should be fix to ffff(apply assign by ini file to LC file only)//~vb3qI~
@@ -500,8 +501,8 @@ static UCHAR Shexedit2[]="\n %-18s=%04X #(%04X)#%s";               //~v09UI~
 	fprintf(Pfh,"\n");                                             //~v09UI~
 	fprintf(Pfh,Shexedit,Soptionid[10],Gunpdispchar[3],DBCSSPACEDISP,//~v09UI~
 //          " DBCS space display char(Japanese mode only)");       //~v09UM~//~vb3qR~
-//          " DBCS space display char(only for Codepoint:Japanese file)");//+vb5bR~
-            " DBCS space display char");                           //+vb5bI~
+//          " DBCS space display char(only for Codepoint:Japanese file)");//~vb5bR~
+            " DBCS space display char");                           //~vb5bI~
 	fprintf(Pfh,". (FF means U-%04x)",UTF22_DBCSSPACEALT);         //~vb5bI~
 	fprintf(Pfh,"\n");                                             //~v09UI~
 //kbd rate                                                      //~v01aI~
@@ -674,6 +675,7 @@ void iniwcid(FILE *Pfh)                                         //~5528R~
     UCHAR exttbl[CIDEXTTBLSZ],*pc;                                 //~v09FR~
     UCHAR postfixw[1+LINEPOSTFIXLEN+1];                            //~v09FR~
 static UCHAR *Swcidfmt=" %-18s=%3d = \"%c%c%s\" = %s\n";           //~v09FR~
+static UCHAR *SwcidfmtUnicode=" %-18s=%3d = u-%04x = %s\n";        //~vbv9I~
 static UCHAR *Swfixcidfmt="\n %-18s= \"%s\"     # prefix ID of fixed CID(max 15byte)||v015\n";//~v031R~
 //*********************************                             //~5528I~
 	fprintf(Pfh,"\n#Change ID format specification table\n");   //~5528R~
@@ -702,12 +704,19 @@ static UCHAR *Swfixcidfmt="\n %-18s= \"%s\"     # prefix ID of fixed CID(max 15b
 			}                                                      //~v09FI~
             else                                                   //~v09FI~
 	            *postfixw=0;                                       //~v09FI~
-			fprintf(Pfh,Swcidfmt,                               //~5528R~
+         if (pcidtbl->CIDTucs==0)                                  //~vbv9R~
+			fprintf(Pfh,Swcidfmt,                                  //~vbv9I~
+					Soptionid[ii+17],                              //~vbv9I~
+					(int)pcidtbl->CIDTpos+1,                       //~vbv9I~
+					*pcidtbl->CIDTcidfmt,                          //~vbv9I~
+					*(pcidtbl->CIDTcidfmt+1),                      //~vbv9I~
+                    postfixw,                                      //~vbv9I~
+					exttbl);                                       //~vbv9I~
+         else                                                      //~vbv9I~
+			fprintf(Pfh,SwcidfmtUnicode,                               //~5528R~//~vbv9R~
 					Soptionid[ii+17],                           //~5528R~
 					(int)pcidtbl->CIDTpos+1,                    //~5528M~
-					*pcidtbl->CIDTcidfmt,                       //~5528R~
-					*(pcidtbl->CIDTcidfmt+1),                   //~5528R~
-                    postfixw,                                      //~v09FR~
+					pcidtbl->CIDTucs,                              //~vbv9R~
 					exttbl);                                    //~5528R~
 		}	//used entry                                        //~5528I~
 		else 	//free entry                                    //~5528I~
@@ -1226,6 +1235,33 @@ static UCHAR Stranssw[4];   //trans table first time sw            //~v500I~
     return rc;                                                  //~5528R~
 }//inirother
 
+//**************************************************               //~vbv9I~
+//*set unicode prefix by ddfmt                                     //~vbv9I~
+//**************************************************               //~vbv9I~
+int getUnicodePrefix(char *Popd,int Plen,CIDTBL *Ppcidtbl)         //~vbv9R~
+{                                                                  //~vbv9I~
+    ULONG ulucs;                                                   //~vbv9I~
+    int len;                                                       //~vbv9I~
+    UCHAR wkdata[8],wkdbcs[8];                                     //~vbv9I~
+//*********************************                                //~vbv9I~
+    UTRACEP("%s:Popd=%s,len=%d\n",UTT,Popd,Plen);                  //~vbv9R~
+	if (ux2l(Popd+2,&ulucs))                                       //~vbv9I~
+		return 4;                                                  //~vbv9I~
+    Ppcidtbl->CIDTucs=(int)ulucs;                                  //~vbv9I~
+    utfcvu2dd1(0,(WUCS)ulucs,wkdata,wkdbcs,&len);                  //~vbv9R~
+    memcpy(Ppcidtbl->CIDTddfmt,wkdata,2);                          //~vbv9I~
+    memcpy(Ppcidtbl->CIDTddfmt+2,wkdbcs,2);                        //~vbv9I~
+    if (len==1)                                                    //~vbv9R~
+    {	                                                           //~vbv9I~
+    	*(Ppcidtbl->CIDTddfmt+1)=' ';                              //~vbv9R~
+    	*(Ppcidtbl->CIDTddfmt+3)=0;                                //~vbv9R~
+    }                                                              //~vbv9I~
+//  UmemcpyZ(Ppcidtbl->CIDTcidfmt,Popd,(size_t)min(len,sizeof(Ppcidtbl->CIDTcidfmt)-1));	//CID//~vbv9R~
+    len=min(len,(int)(sizeof(Ppcidtbl->CIDTcidfmt)-1));	//CID      //+vbv9R~
+    UmemcpyZ(Ppcidtbl->CIDTcidfmt,Popd,(size_t)len);	//CID      //~vbv9I~
+    UTRACED("cidtbl unicode from ini file",Ppcidtbl,sizeof(CIDTBL));//~vbv9R~
+    return 0;                                                      //~vbv9I~
+}                                                                  //~vbv9I~
 //**************************************************            //~5528I~
 //*inircid                                                      //~5528I~
 //* cid table read                                              //~5528I~
@@ -1251,12 +1287,20 @@ int inircid(int Pindex,int Pcolumn,int Popdno,UCHAR *Ppopd)     //~5528I~
 	pcidtbl=pcidtbl0+Pindex;                                    //~5528I~
 	opd=Ppopd+strlen(Ppopd)+1;	//CID char addr                 //~5528M~
     len=(int)strlen(opd);		//CID                           //~5528M~
+    UTRACEP("%s:Pidx=%d,len=%d,opd=%s\n",UTT,Pindex,len,opd);      //~vbv9R~
+  if (toupper(*opd)=='U' && *(opd+1)=='-')                         //~vbv9I~
+  {                                                                //~vbv9I~
+    ;                                                              //~vbv9I~
+  }                                                                //~vbv9I~
+  else                                                             //~vbv9I~
+  {                                                                //~vbv9I~
 //  if (len<1 || len>2)                                            //~v09FR~
     if (len<1 || len>(LINEPREFIXLEN+1+LINEPOSTFIXLEN))             //~v09FR~
     	return 4;                                               //~5528M~
     if (len>LINEPREFIXLEN)              //postfix specified        //~v09FI~
     	if (*(opd+LINEPREFIXLEN)!=',')	//delimiter chk            //~v09FI~
 	    	return 4;                                              //~v09FI~
+  }                                                                //~vbv9I~
     if (!memcmp(opd,"  ",LINEPREFIXLEN))                           //~v09FR~
     	return 4;                                               //~5528M~
     if (!pcidtbl->CIDTmalloc)	//duplicated                    //~5528I~
@@ -1272,10 +1316,18 @@ int inircid(int Pindex,int Pcolumn,int Popdno,UCHAR *Ppopd)     //~5528I~
 	}                                                           //~5528I~
     pcidtbl->CIDTid=(UCHAR)(Pindex+1);                          //~5528R~
     pcidtbl->CIDTpos=(UCHAR)(Pcolumn-1);                        //~5528R~
+  if (toupper(*opd)=='U' && *(opd+1)=='-')                         //~vbv9R~
+  {                                                                //~vbv9I~
+  	if (getUnicodePrefix(opd,len,pcidtbl))                         //~vbv9I~
+    	return 4;                                                  //~vbv9I~
+  }                                                                //~vbv9I~
+  else                                                             //~vbv9I~
+  {                                                                //~vbv9I~
     memset(pcidtbl->CIDTcidfmt,' ',2);//clear for 1 byte(ex. "! "),parse drop space//~v09FI~
     memcpy(pcidtbl->CIDTcidfmt,opd,(UINT)len);	//CID           //~5528R~
     if (len>LINEPREFIXLEN)              //postfix specified        //~v09FI~
 	    strcpy(pcidtbl->CIDTcidfmt+LINEPREFIXLEN,opd+LINEPREFIXLEN+1);//~v09FR~
+  }                                                                //~vbv9I~
     pc=pcidtbl->CIDTexttbl;                                     //~5528I~
     opd+=len+1;     //extention start                           //~5528R~
 	uparse(opd,opd,&wordno,0,",");	//parse out string(accept cr/lf)//~5528R~
@@ -1293,6 +1345,8 @@ int inircid(int Pindex,int Pcolumn,int Popdno,UCHAR *Ppopd)     //~5528I~
         opd+=len;                                               //~5528R~
         tlen+=len;                                              //~5528I~
     }                                                           //~5528I~
+    UTRACED("inircd exit cidtbl",pcidtbl,sizeof(CIDTBL));          //~vbv9I~
+    UTRACEP("%s:inircd exit exttbl=%s\n",UTT,pcidtbl->CIDTexttbl); //~vbv9R~
     return 0;                                                   //~5528I~
 }//inircid                                                      //~5528I~
                                                                 //~5528I~

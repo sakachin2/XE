@@ -1,4 +1,4 @@
-//*CID://+v6X3R~:                             update#=  685;       //~v6X3R~
+//*CID://+v6X3R~:                             update#=  688;       //~v6X3R~
 //*********************************************************************//~7712I~
 //utf3.c                                                           //~7817R~
 //* utf8 data manipulation:os library                              //~7712R~
@@ -304,7 +304,7 @@ int utfwcwidth(int Popt,ULONG Pucs,int *Ppflag)                    //~v62UR~
 //****************                                                 //~v62UR~
 //#ifdef UTF8UCS4                                                    //~v65cR~//~v6uBR~
 //#ifdef TEST    //@@@@test                                                    //~v6C3I~//~v6V1R~//~v6VbR~//~v6VoR~
-if (Pucs==0x2f00||Pucs==0x0300||Pucs==0x23ce||Pucs==0x093f||Pucs==0xe000||Pucs==0x1161||Pucs==0x01d16d||Pucs==0x20001||Pucs==0xe0001)//@@@@test//~v6V2R~//~v6VbR~//~v6VoR~//~v6VtR~//+v6X3R~
+if (Pucs==0x2f00||Pucs==0x0300||Pucs==0x23ce||Pucs==0x093f||Pucs==0xe000||Pucs==0x1161||Pucs==0x01d16d||Pucs==0x20001||Pucs==0xe0001)//@@@@test//~v6V2R~//~v6VbR~//~v6VoR~//~v6VtR~//~v6X3R~
 {                                                                  //~v6VoI~
       UTRACEP("ucs=%04x\n",Pucs);                                  //~v6BCR~//~v6C3R~
 }                                                                  //~v6VoI~
@@ -343,7 +343,7 @@ if (Pucs==0x01f880)                                                //~v6WkI~
 #else                                                              //~v65cI~
 		utfddgetlenflag(0,Pucs,&len,Ppflag);                       //~v640I~
 #endif                                                             //~v65cI~
-UTRACEP("utfwcwidth from map ucs=%04x,width=%d,flag=%x\n",Pucs,len,(Ppflag?*Ppflag:-1));   //better to return large value even displayed 1 cell on english terminal//~v640R~//~v6VnR~
+//UTRACEP("utfwcwidth from map ucs=%04x,width=%d,flag=%x\n",Pucs,len,(Ppflag?*Ppflag:-1));   //better to return large value even displayed 1 cell on english terminal//~v640R~//~v6X3R~
         return len;                                                //~v640I~
     }                                                              //~v640I~
 	opt=Popt;                                                      //~v640I~
@@ -692,7 +692,7 @@ int utfwcwidthsub(ULONG Pucs)                                      //~v62UR~
 #else                                                              //~v647I~
 	    	datatype=mk_wcwidth_cjk((wchar_t)Pucs);   //traditional terminal char spacing//~v62UR~
 #endif                                                             //~v647I~
-			UTRACEP("%s:mk_wcwidth_cjk rc=%x,ucs=%06x\n",UTT,datatype,Pucs);//~v6WpR~
+//  		UTRACEP("%s:mk_wcwidth_cjk rc=%x,ucs=%06x\n",UTT,datatype,Pucs);//~v6X3R~
 		}                                                          //~v6WpI~
         else                                                       //~v62UR~
         {                                                          //~v6WpI~
@@ -1853,7 +1853,7 @@ int utftbsrch_j(ULONG Pucs)                                        //~7925I~
         datatype=(UTFWWF_F2C1|2);  //wide font                     //~v6VoI~
   if (datatype)                                                    //~v6X3I~
   {                                                                //~v6X3I~
-    UTRACEP("%s:ucs=%06x,datatype=%x\n",UTT,Pucs,datatype);        //~v6WpR~
+    ;//UTRACEP("%s:ucs=%06x,datatype=%x\n",UTT,Pucs,datatype);     //+v6X3R~
   }                                                                //~v6X3I~
     return datatype;                                               //~7925I~
 }//utftbsrch_j                                                     //~7925I~

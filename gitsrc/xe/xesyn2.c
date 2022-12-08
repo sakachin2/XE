@@ -1,8 +1,11 @@
-//*CID://+vbrjR~:                             update#=  304;       //~vbrjR~
+//*CID://+vbv2R~:                             update#=  322;       //~vbv2R~
 //*************************************************************
 //*xesyn2.c                                                        //~v780R~
 //*syntax highlight                                                //~v780I~
 //*************************************************************
+//vbv2:221119 SyntaxHighlight;add option trate underline as reverse by C_UNDERLINE=R and G_UNDERLINE=R//~vbv2I~
+//vbv1:221118 SyntaxHighlight;support reverse attr                 //~vbv1I~
+//vbv0:221118 (Bug)SyntaxHighlight;when default BG is specified, it override source-hightlight bg color//~vbv0I~
 //vbrj:200903 (AXE)highlight cmd;dir parm using $HOME              //~vbrjI~
 //vba1:170625 (BUG) syntaxh,podelmtbl overflow crash for long record of xesynl.cfg//~vba1I~
 //vb89:170217 create if not found. ::xehosts ::xesync_.cfg         //~vb89I~
@@ -341,6 +344,7 @@ int syngetcfg(int Popt)                                            //~v780I~
     Gsyncfg.SYNCsmap[SHSTYLE_BOLD      & 0x0f]=SYNC_STYLE_BOLD;    //~v780R~
     Gsyncfg.SYNCsmap[SHSTYLE_UNDERLINE & 0x0f]=SYNC_STYLE_UNDERLINE;//~v780R~
     Gsyncfg.SYNCsmap[SHSTYLE_BLINK     & 0x0f]=SYNC_STYLE_ITALIC;  //~v780R~
+    Gsyncfg.SYNCsmap[SHSTYLE_REVERSE   & 0x0f]=SYNC_STYLE_REVERSE; //~vbv1I~
 //read config file                                                 //~v780I~
 	if (!filefullpath(fpath,SHFNM_CONFIG,_MAX_PATH))               //~v780M~
     	return 4;                                                  //~v780M~
@@ -558,9 +562,13 @@ static UCHAR *Swordtbl="SHCMD\0" "BG\0" "FG\0"                     //~v780I~
 //      Gsyncfg.SYNCstyleopt[ii]=0;                                //~v78bR~
 //      Gsyncfg.SYNCstyleopt[ii]&=~SYNC_STYLE_CUI_HIGH;            //~v78bI~//~vaz8R~
         Gsyncfg.SYNCstyleopt[ii]&=(UCHAR)(~SYNC_STYLE_CUI_HIGH);   //~vaz8I~
+        Gsyncfg.SYNCstyleopt[ii]&=(UCHAR)(~SYNC_STYLE_CUI_REVERSE);//~vbv2I~
         if (chv=='H')                                              //~v780I~
             Gsyncfg.SYNCstyleopt[ii]|=SYNC_STYLE_CUI_HIGH;         //~v78bR~
         else                                                       //~v780I~
+        if (chv=='R')                                              //~vbv2I~
+            Gsyncfg.SYNCstyleopt[ii]|=SYNC_STYLE_CUI_REVERSE;      //~vbv2I~
+        else                                                       //~vbv2I~
         if (chv!='N')                                              //~v780R~
         	return 4;                                              //~v780I~
         break;                                                     //~v780I~
@@ -571,6 +579,7 @@ static UCHAR *Swordtbl="SHCMD\0" "BG\0" "FG\0"                     //~v780I~
 //      Gsyncfg.SYNCstyleopt[ii]=0;                                //~v78bR~
 //      Gsyncfg.SYNCstyleopt[ii]&=~(SYNC_STYLE_GUI_HIGH|SYNC_STYLE_GUI_EACH);//~v78bI~//~vaz8R~
         Gsyncfg.SYNCstyleopt[ii]&=(UCHAR)(~(SYNC_STYLE_GUI_HIGH|SYNC_STYLE_GUI_EACH));//~vaz8I~
+        Gsyncfg.SYNCstyleopt[ii]&=(UCHAR)(~(SYNC_STYLE_GUI_REVERSE));//~vbv2I~
         for (pc=pcv;*pc;pc++)                                      //~v780I~
         {                                                          //~v780I~
         	switch(toupper(*pc))                                   //~v780I~
@@ -581,6 +590,9 @@ static UCHAR *Swordtbl="SHCMD\0" "BG\0" "FG\0"                     //~v780I~
         	case 'Y':                                              //~v780I~
     	        Gsyncfg.SYNCstyleopt[ii]|=SYNC_STYLE_GUI_EACH;     //~v780I~
             	break;                                             //~v780I~
+        	case 'R':                                              //~vbv2I~
+    	        Gsyncfg.SYNCstyleopt[ii]|=SYNC_STYLE_GUI_REVERSE;  //~vbv2I~
+            	break;                                             //~vbv2I~
         	case 'N':                                              //~v780I~
             	break;                                             //~v780I~
             default:                                               //~v780I~
@@ -616,6 +628,8 @@ static UCHAR *Swordtbl="SHCMD\0" "BG\0" "FG\0"                     //~v780I~
         Gsyncfg.SYNCflag|=SYNCF_BG_BROWSE;                         //~v78oR~
         break;                                                     //~v78oR~
     }                                                              //~v780I~
+    UTRACEP("xesyn2.synchkcfgrec opid=%d\n",opid);                 //+vbv2I~
+    UTRACED("xesyn2.synchkcfgrec",Gsyncfg.SYNCsmap,SHSTYLE_MAXNO); //+vbv2I~
     return 0;                                                      //~v780R~
 }//synchkcfgrec                                                    //~v780R~
 //**************************************************************** //~v780I~
@@ -1055,6 +1069,7 @@ int syngetcfdata(int Popt,int Phandle,int Pindex,PULHCI *Ppplhci,int Pctr)//~v78
     PULHCI plhci;                                                  //~v780R~
     char *readinto;                                                //~v780I~
 //*****************************                                    //~v780I~
+	UTRACEP("xesyn2.syngetcfdata getinput");                       //~vbrjI~
     if (!(Ssynstat2 & SYNS2OPEN))                                  //~v780I~
     	return 8;	//stop next req                                //~v780R~
     if (Phandle!=Sopenctr)                                         //~v780I~
@@ -1229,6 +1244,7 @@ int syngetcfdata2(int Popt,int Phandle,int Pindex,PULHCI Pplhci,int Pctr)//~v78m
 static int Sreadlen,Sreadoffs;                                     //~v78mI~
 //*****************************                                    //~v78mI~
     readreqlen=Pctr+Pctr;                                          //~v78mI~
+	UTRACEP("xesyn2.syngetcfdata2 readreqlen=%d\n",readreqlen);    //~vbrjI~
     if (!(Popt & (SGCDO_SPLIT2)))	//not split or top of split    //~v78mI~
     {                                                              //~v78mI~
         rc=syngetcfdata3(Popt,Pindex,&reclen);                     //~v78mI~
@@ -1277,6 +1293,7 @@ static int Sreadlen,Sreadoffs;                                     //~v78mI~
     }                                                              //~v7atI~
   }                                                                //~v7atI~
     Pplhci->ULHcidatalen=readreqlen;                               //~v78mR~
+    UTRACED("xesyn2.syngetcfdata2",Pplhci->ULHcidata,readreqlen);  //~vbrjI~
     return 0;                                                      //~v78mI~
 }//syngetcfdata2                                                   //~v78mI~
 //**********************************************************************//~v78mI~
@@ -1305,6 +1322,7 @@ int syngetcfdata3(int Popt,int Plineno,int *Pplen)                 //~v78mR~
                     *pcsc++=*pcc++;                                //~v78mI~
                 }                                                  //~v78mI~
                 outlen+=outlen;                                    //~v78mI~
+			    UTRACED("xesyn2.syngetcfdata3 Spbuffstlecolor",Spbuffstylecolor,outlen);//~vbrjI~
             }                                                      //~v78mI~
         }                                                          //~v78mI~
         else                                                       //~v78mI~
@@ -1434,6 +1452,7 @@ int lineproc(char *Pbuffinp,int Pleninp,char *Pbuffoutc,char *Pbuffouts,int *Ppo
             pcn++;         //esc is not for color                  //~v78mI~
                                                                    //~v78mI~
         }                                                          //~v78mI~
+		UTRACEP("xesyn2.lineproc bg=%d,fg=%d,style=x%x, nextbg=%d,nextfg=%d,nextstyle=x%x\n",bg,fg,Sstyle,nextbg,nextfg,nextstyle);//~vbrjR~
 	    color=(bg <<4) | (fg);                                     //~v78mI~
         if (eolsw)                                                 //~v78mI~
         	break;                                                 //~v78mI~
@@ -1527,6 +1546,8 @@ int escchk(char *Pinp,char *Peol,char **Pinpnext,int *Ppfg,int *Ppbg,int *Ppstyl
     *Ppbg=bg;                                                      //~v78mI~
     style|='0';	//"0":normal                                       //~v78mI~
     *Ppstyle=style;                                                //~v78mI~
+    UTRACEP("xesyn2.escchk fg=%d,bg=%d,style=x%x\n",fg,bg,style);  //~vbrjI~
+    UTRACED("xesyn2.escchk Pinp",Pinp,PTRDIFF(*Pinpnext,Pinp));    //~vbrjI~
     return 1;   //valid color esc                                  //~v78mI~
 }//escchk                                                          //~v78mI~
 //**************************************************************** //~v780M~
@@ -1596,14 +1617,36 @@ int syngetstylecolor(int Popt,char *Pstylecolor,int *Ppstyle)      //~v780R~
     &&  (Gsyncfg.SYNCflag & SYNCF_BG_BROWSE))                      //~v78oI~
 		bg=SYN_PAL_BGCOLOR(Gsyncfg.SYNCbgbrowse);                  //~v78oI~
     else                                                           //~v78oI~
+    {                                                              //~vbrjI~
 		bg=SYN_PAL_BGCOLOR(Gsyncfg.SYNCbg);                        //~v78oI~
-    color|=bg;                                                     //~v78oI~
+	    UTRACEP("%s: bg=x%x,Syncbg=x%x\n",UTT,bg,Gsyncfg.SYNCbg);  //~vbrjR~
+    }                                                              //~vbrjI~
+//  color|=bg;                                                     //~v78oI~//~vbv0R~
+    if ((color & 0xf0)==0)                                         //~vbv0R~
+      color|=bg;                                                   //~vbv0I~
     styleopt=Gsyncfg.SYNCstyleopt[style];                          //~v780I~
+  if (style==SYNC_STYLE_REVERSE && styleopt==0)                    //~vbv1I~
+  {                                                                //~vbv1I~
+    UTRACEP("%s: revese color by Esc:Reverse before=x%x\n",UTT,color);            //~vbv1R~//~vbv2R~
+	style=SYNC_STYLE_NORMAL;                                       //~vbv1I~
+    color=((color & 0x0f)<<4) | ((color & 0xf0)>>4);               //~vbv1I~
+  }                                                                //~vbv1I~
+  else                                                             //~vbv1I~
+  if (styleopt & SYNC_STYLE_ALTREV)                                //~vbv2R~
+  {                                                                //~vbv2I~
+    UTRACEP("%s: revese by option=\'R\' color before=x%x\n",UTT,color);//~vbv2I~
+	style=SYNC_STYLE_NORMAL;                                       //~vbv2I~
+    color=((color & 0x0f)<<4) | ((color & 0xf0)>>4);               //~vbv2I~
+  }                                                                //~vbv2I~
+  else                                                             //~vbv2I~
+  {                                                                //~vbv1I~
     if (styleopt & SYNC_STYLE_HIGH)                                //~v780I~
 		color|=SYN_HIGHLIGHT_FG;		//uvio.h                   //~v780R~
     if (!(styleopt & SYNC_STYLE_GUI_EACH))                         //~v780I~
 		style=SYNC_STYLE_NORMAL;                                   //~v780R~
+  }                                                                //~vbv1I~
     *Ppstyle=style;                                                //~v780I~
+    UTRACEP("%s: styleopt=%d,color=x%x,style=x%x,Pstylecolor=x%x,Ppstyle=x%x\n",UTT,styleopt,color,style,*Pstylecolor,*Ppstyle);//~vbrjR~//~vbv1R~
     return color;                                                  //~v780R~
 }//syngetstylecolor                                                //~v780I~
 //***********************************************************************//~v78GR~
@@ -1683,7 +1726,7 @@ int xesyn_serverterm(int Popt)                                     //~v78GR~
 //***********************************************************************//~vbrjI~
 char *repHomeDir(char *Pcmd)                                       //~vbrjI~
 {                                                                  //~vbrjI~
-	char *pc,*pc2,*phome,*pcmd,*pcmd0;                             //+vbrjR~
+	char *pc,*pc2,*phome,*pcmd,*pcmd0;                             //~vbrjR~
     int len,lenhome,ctr=0;                                         //~vbrjI~
 //****************************                                     //~vbrjI~
 	phome=getenv("HOME");                                          //~vbrjI~
@@ -1705,7 +1748,7 @@ char *repHomeDir(char *Pcmd)                                       //~vbrjI~
     if (!ctr)                                                      //~vbrjI~
     	return Pcmd;                                               //~vbrjI~
     pcmd=umalloc(len);                                             //~vbrjI~
-    pcmd0=pcmd;                                                    //+vbrjI~
+    pcmd0=pcmd;                                                    //~vbrjI~
 	for (pc=Pcmd;pc;pc=pc2)                                        //~vbrjI~
     {                                                              //~vbrjI~
     	pc2=strstr(pc,"$HOME");                                    //~vbrjR~
@@ -1724,8 +1767,8 @@ char *repHomeDir(char *Pcmd)                                       //~vbrjI~
             break;                                                 //~vbrjI~
         }                                                          //~vbrjI~
     }                                                              //~vbrjI~
-    UTRACEP("%s: rc=%s\n",UTT,pcmd0);                              //+vbrjR~
-    return pcmd0;                                                  //+vbrjR~
+    UTRACEP("%s: rc=%s\n",UTT,pcmd0);                              //~vbrjR~
+    return pcmd0;                                                  //~vbrjR~
 }                                                                  //~vbrjI~
 #endif                                                             //~vbrjI~
 #endif //SYNSUPP                                                   //~v780I~

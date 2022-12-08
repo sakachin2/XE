@@ -1,4 +1,4 @@
-//*CID://+vbs7R~:                             update#=  549;       //+vbs7R~
+//*CID://+vbs7R~:                             update#=  551;       //+vbs7R~
 //************************************************************* //~5428I~
 //* xefunc2.c
 //*        func_char,quit,term,exit,reset,retrieve,help,key,exe    //~v55nR~
@@ -656,7 +656,7 @@ static 	FTFUNC *Sfunc_char[UCWMAXTYPE]={func_char_pan,func_char_file,//~v020R~
 //                    Swarningsw++;                                //~v705R~
 //                }                                                //~v705R~
                 rc=funct2getinputgc(Ppcw,pft);	//UCWkeydata setup //~v705R~
-UTRACEP("funct2getinputgc rc=%d,type=%d,data=%x%x\n",rc,Ppcw->UCWkeytype,*Ppcw->UCWkeydata,*(Ppcw->UCWkeydata+1));//~v79RI~//~v79zR~
+UTRACEP("%s:rc=%d,UCWkeytype=%d,data=%x%x\n",UTT,rc,Ppcw->UCWkeytype,*Ppcw->UCWkeydata,*(Ppcw->UCWkeydata+1));//~v79RI~//~v79zR~
                 if (rc<0)                                          //~v705I~
                 	return 0;	//retry from kbdinp for string input//~v705I~
                 if (rc)	//err                                      //~v705I~

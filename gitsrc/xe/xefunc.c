@@ -1,7 +1,10 @@
-//*CID://+vbs6R~:                             update#=  395;       //~vbs6R~
+//*CID://+vbvkR~:                             update#=  436;       //~vbvkR~
 //*************************************************************
 //*xefunc.c
 //************************************************************* //~v020I~
+//vbvk:221130 0.1 alias cmd; allow line comment starting by #      //~vbvkI~
+//vbvi:221130 (BUG)FTFLINECHSET:x20 is duplicated with DTUDUPACMD  //~vbviI~
+//vbvf:221129 drop japanese comment for =0.2/0.3 when english mode //~vbvfI~
 //vbs6:201026 profile COL cmd for dir, "col on dir" follows dir setting; specify "col on default" for each file.//~vbs6I~
 //vbs1:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //~vbs1I~
 //vbr5:200721 (ARM)logcat hung at utrace output([0x1a..) , it may be Esc[//~vbr5I~
@@ -194,6 +197,7 @@
 #include "xeerr.h"                                                 //~v50mI~
 #include "xemousel.h"                                              //~v53mR~
 #include "xegbl.h"                                                 //~v79zI~
+#include "xeini.h"                                                 //~vbvfI~
 #ifdef WXE                                                         //~v55WI~
 	#include "wxexei.h"                                            //~v55WI~
 	#include "wxexei3.h"                                           //~v67CI~
@@ -210,6 +214,7 @@
 #define SLEEPPEEKINTVL  100  //peek console each 100ms when sleeping//~v561I~
 #define SLEEPMSGINTVL   1000 //sleep end/reset msg display interval//~v562R~
 #define FUNC_COMMENTID  '#'  //comment prefix for comment in exe cmd file//~v59pI~
+#define FUNC_COMMENTID_ALIAS  '#'  //comment prefix for =0.1 alias cmd//~vbvfI~
 //*********************************************************        //~v76iI~
 //*********************************************************
 int funcduperr(USHORT Pkey,FUNCTBL *Pft1,FUNCTBL *Pft2,int Pindex,int Pshift);
@@ -363,6 +368,8 @@ int funcinit(char *Postype)                                        //~v705I~
 			key=pft->FTkey[i];
 			if (!key)
 				break;
+            if (key==FTDELETEDKEY)                                 //~vbvfI~
+            	continue;                                          //~vbvfI~
 //  		if (kbdsrchkt(key,&pkt),!pkt)	//not found            //~v0ixR~
     		if (shiftid=kbdsrchkt(key,&pkt),!pkt)	//not found    //~v0ixI~
 			{
@@ -571,19 +578,23 @@ int funcgetwfth(int Popt,PWORKFTHDR Ppwfth)                        //~v0ioR~
 //                                                                 //~v0ioI~
 	for (pft=Gfunctbl,ii=Sworkfthdr.WFTHentno;ii;pft++,pwft++,ii--)	//all ft entry//~v0ioR~
 	{                                                              //~v0ioI~
+//  	UTRACEP("%s:pft->FTnamee=%s\n",UTT,pft->FTnamee);          //~vbs6R~
         memcpy(pwft->WFTcmd,pft->FTcmd,sizeof(pwft->WFTcmd));      //~v0iwR~,//~v71PR~
         memcpy(pwft->WFTcmda,pft->FTcmda,sizeof(pwft->WFTcmda));   //~v0iwR~,//~v71PR~
 		for (jj=0;jj<FTMAXKEY;jj++)	//all asigned key              //~v0ioI~
 		{                                                          //~v0ioI~
+//	    	UTRACEP("%s:FTey=x%x\n",UTT,pft->FTkey[jj]);           //~vbs6R~
 			if (!(key=pft->FTkey[jj]))                             //~v0ioI~
             	break;                                             //~v0ioI~
           	if(Popt!=2 || UCBITCHK(pft->FTkflag[jj],FTFIX))        //~v0ioR~
             {                                                      //~v0ioI~
 				pwft->WFTkey[jj] =key;                             //~v0ioR~
 				pwft->WFTkflag[jj]=pft->FTkflag[jj];               //~v0ioR~
+	    		UTRACEP("%s:FTnamee=%s,jj=%d,WFTkey=x%x,pwft=%p\n",UTT,pft->FTnamee,jj,pwft->WFTkey[jj],pwft);//~vbvfI~
             }                                                      //~v0ioI~
 		}//jj:all key                                              //~v0ioI~
 	}//all ft entry                                                //~v0ioI~
+//  UTRACED("pfwt",pwfth->WFTHpwft,Sworkfthdr.WFTHentno*sizeof(WORKFT));//~vbs6R~
     return 0;                                                      //~v0ioI~
 }//funcgetwfth                                                     //~v0ioI~
                                                                    //~v0ioI~
@@ -596,11 +607,24 @@ int funcputwfth(PWORKFTHDR Ppwfth,int Popt)                        //~v0ioR~
 {                                                                  //~v0ioI~
     PWORKFT pwft1,pwft2;                                           //~v0ioI~
     int ii;                                                        //~v0ioI~
+    int swNotJP;                                                   //~vbvfI~
+    PFUNCTBL pft;                                                  //~vbvfI~
 //*************                                                    //~v0ioI~
+    swNotJP=XE_NOT_ISDBCSJ_OR_N9();                                //~vbvfI~
     pwft1=Sworkfthdr.WFTHpwft;                                     //~v0ioR~
     pwft2=Ppwfth->WFTHpwft;                                        //~v0ioR~
+	pft=Gfunctbl;                                                  //~vbvfI~
+    pft--;                                                         //~vbvfI~
     for (ii=Sworkfthdr.WFTHentno;ii;ii--,pwft1++,pwft2++)          //~v0ioR~
     {                                                              //~v0ioR~
+		pft++;                                                     //~vbvfI~
+        UTRACEP("%s:FTnamee=%s.swNotJP=%d,FTflag=x%x,FTflag2=x%x\n",UTT,pft->FTnamee,swNotJP,pft->FTflag,pft->FTflag2);//~vbvfR~//~vbviR~
+        if ((!swNotJP && (pft->FTflag & FTFEONLY))                 //~vbvfI~
+        ||  (swNotJP && (pft->FTflag & FTFJONLY)))                 //~vbvfI~
+        	continue;                                              //~vbvfI~
+//      if (UCBITCHK(pft->FTflag,FTFLINECHSET))                    //~vbvfR~//~vbviR~
+//      if (UCBITCHK(pft->FTflag2,FTF2LINECHSET))                  //~vbviR~//~vbvfR~
+//      	continue;                                              //~vbvfR~
 //      if (Popt==FILEFK_OPT05)                                    //~v0iwR~
 //  	{                                                          //~v0iwR~
         	memcpy(pwft1->WFTcmd,pwft2->WFTcmd,sizeof(pwft1->WFTcmd));//~v0iwR~,//~v71PR~
@@ -613,10 +637,17 @@ int funcputwfth(PWORKFTHDR Ppwfth,int Popt)                        //~v0ioR~
         	memcpy(pwft1->WFTkey,pwft2->WFTkey,sizeof(pwft1->WFTkey));//~v0ioI~
         	memcpy(pwft1->WFTkflag,pwft2->WFTkflag,sizeof(pwft1->WFTkflag));//~v0ioI~
 //      }                                                          //~v0iwR~
+        UTRACEP("%s:FTnamee=%s,WFTkey[0]=x%x,pwft1=%p,pwft2=%p\n",UTT,pft->FTnamee,pwft1->WFTkey[0],pwft1,pwft2);//~vbvfR~
+        UTRACED("pwft1->WFTkey",pwft1->WFTkey,sizeof(pwft1->WFTkey));//~vbvfI~
+        UTRACED("pwft2->WFTkey",pwft2->WFTkey,sizeof(pwft2->WFTkey));//~vbvfI~
+        UTRACED("pwft1->WFTkflag",pwft1->WFTkflag,sizeof(pwft1->WFTkflag));//~vbvfR~
+        UTRACED("pwft2->WFTkflag",pwft2->WFTkflag,sizeof(pwft2->WFTkflag));//~vbvfR~
     }                                                              //~v0ioI~
   	UCBITON(Gprocstatus,GPROCSINIUPDATE); //ini write by option change//~v0itI~
-	uerrmsg2("Update is effective on next session",                //~v0ioI~
-			 "ŽŸ‰ñ‚©‚ç—LŒø");                                      //~v0ioI~
+//  uerrmsg2("Update is effective on next session",                //~v0ioI~//~vbvfR~
+//  		 "ŽŸ‰ñ‚©‚ç—LŒø");                                      //~v0ioI~//~vbvfR~
+    uerrmsg2("Update is effective on next session(saved on %s)",   //~vbvfI~
+    		 "ŽŸ‰ñ‚©‚ç—LŒø(%s‚É•Û‘¶)",inigetfname(0));             //~vbvfI~
     return 0;                                                      //~v0ioI~
 }//funcputwfth                                                     //~v0ioI~
                                                                    //~v0itI~
@@ -638,6 +669,8 @@ void funcsetft(void)                                               //~v0itI~
         memcpy(pft->FTcmda,pwft->WFTcmda,sizeof(pft->FTcmda));     //~v0iwR~,//~v71PR~
         memcpy(pft->FTkey,pwft->WFTkey,sizeof(pft->FTkey));        //~v0itI~
         memcpy(pft->FTkflag,pwft->WFTkflag,sizeof(pft->FTkflag));  //~v0itR~
+        UTRACEP("%s:FTnamee=%s,FTkey[0]=x%x,pfwt=%p,WFTkey[0]=x%x\n",UTT,pft->FTnamee,pft->FTkey[0],pwft,pwft->WFTkey[0]);//~vbvfR~
+        UTRACED("pwft",pwft,sizeof(WORKFT));                       //~vbvfI~
     }                                                              //~v0itI~
     return;                                                        //~v0itR~
 }//funcsetft                                                       //~v0itI~
@@ -907,7 +940,7 @@ static int Sccfuncmsgctr=0;                                        //~v75zI~
 #endif                                                             //~va1rI~
 //*********************
 //  UTRACEP("xefunc.funccall keytype=%d,key=%s,UCWflg2=0x%x,keydata=%s,ut8=%s\n",Pkeytype,Pkey,Ppcw->UCWflag2,Ppcw->UCWkeydata,Ppcw->UCWkeydata_utf8str);//~vbi3R~//~vbr5R~
-    UTRACEP("xefunc.funccall keytype=%d,key=%s,UCWflg2=0x%x,keydata=%s,utf8=%s\n",Pkeytype,ucode2str(0,Pkey,0),Ppcw->UCWflag2,ucode2str(1,Ppcw->UCWkeydata,0),ucode2str(2,Ppcw->UCWkeydata_utf8str,0));//~vbr5R~
+    UTRACEP("xefunc.funccall Pkeytype=%d,key=%s,UCWflg2=0x%x,keydata=%s,utf8=%s\n",Pkeytype,ucode2str(0,Pkey,0),Ppcw->UCWflag2,ucode2str(1,Ppcw->UCWkeydata,0),ucode2str(2,Ppcw->UCWkeydata_utf8str,0));//~vbr5R~
     if (Ppcw->UCWsplitid==Gscrcurclient)//not draw other client case//~v012R~
     {			//protect other client rcsr destroy             //~v012R~
 	Ppcw->UCWrcsrx	=Gcsrposx-Ppcw->UCWorgx;	//relative pos-x//~5128R~
@@ -1570,6 +1603,7 @@ static UCHAR Sspecialeditcmd[]=PGMID;                              //~v55cR~
                 palct=filesrchalct(cmdverb,0);  //search alias definition//~v67CI~
                 if (palct)                                         //~v67CI~
                 {                                                  //~v67CI~
+                	UTRACEP("%s:ALCTcmdversv=%s,ALCTcmd=%s,pcop=%s\n",UTT,palct->ALCTcmdverb,palct->ALCTcmd,pcop);//~vbvfR~
                     Ppcw->UCWparm=pcop; //operand string           //~v67CI~
                     return funcaliasset(Ppcw,pcend,palct);//save muticmd and setup Gcmdbuff//~v67CI~
                 }                                                  //~v67CI~
@@ -1606,14 +1640,14 @@ static UCHAR Sspecialeditcmd[]=PGMID;                              //~v55cR~
             }                                                      //~v0j1I~
 		}                                                       //~5505R~
     }//not special cmd                                             //~v504R~
-//  if (!(pfunc=pft->FTfunc[Ppcw->UCWtype]))                       //+vbs6R~
-    pfunc=pft->FTfunc[Ppcw->UCWtype];                              //+vbs6I~
-	if (!pfunc)                                                    //+vbs6I~
-    {                                                              //+vbs6I~
-        if (Ppcw->UCWtype==UCWTDIR && (pft->FTflag2 & FTF2DIRCMD)) //+vbs6I~
-            pfunc=pft->FTfunc[UCWTFILE];                           //+vbs6I~
-    }                                                              //+vbs6I~
-    if (!pfunc)                                                    //+vbs6I~
+//  if (!(pfunc=pft->FTfunc[Ppcw->UCWtype]))                       //~vbs6R~
+    pfunc=pft->FTfunc[Ppcw->UCWtype];                              //~vbs6I~
+	if (!pfunc)                                                    //~vbs6I~
+    {                                                              //~vbs6I~
+        if (Ppcw->UCWtype==UCWTDIR && (pft->FTflag2 & FTF2DIRCMD)) //~vbs6I~
+            pfunc=pft->FTfunc[UCWTFILE];                           //~vbs6I~
+    }                                                              //~vbs6I~
+    if (!pfunc)                                                    //~vbs6I~
 	{
 //  	scrdisp();			//display pending screen//need?     //~4C30R~
 //  	uerrmsg("\"%s\" is not a valid command for this panel",    //~v50mR~
@@ -2268,6 +2302,49 @@ void funcopdpostp(PUCLIENTWE Ppcw,int Prc)                      //~5504I~
     return;                                                     //~5504I~
 }//funcopdpostp                                                 //~5504I~
                                                                 //~5504I~
+//**************************************************               //~vbvkR~
+//*rc=1:dropped comment                                            //+vbvkI~
+//**************************************************               //+vbvkI~
+int funcAliasDropComment(char *Pcmd)                               //+vbvkR~
+{                                                                  //~vbvkR~
+	char *pc,*pc2;                                                 //~vbvkR~
+    int  nestSQ,nestDQ,rc=0;                                       //+vbvkR~
+	pc=strchr(Pcmd,FUNC_COMMENTID_ALIAS);  //'#'  //comment prefix for =0.1 alias cmd//~vbvkR~
+    if (pc)                                                        //~vbvkR~
+    {                                                              //~vbvkR~
+    	nestDQ=0; nestSQ=0;                                        //~vbvkR~
+    	for (pc2=Pcmd;*pc2;pc2++)                                  //~vbvkR~
+        {                                                          //~vbvkR~
+        	if (*pc2=='\'')                                        //~vbvkR~
+            {                                                      //~vbvkR~
+            	if (nestSQ)                                        //~vbvkR~
+                	nestSQ=0;                                      //~vbvkR~
+                else                                               //~vbvkR~
+                	nestSQ=1;                                      //~vbvkR~
+            }                                                      //~vbvkR~
+            else                                                   //~vbvkR~
+        	if (*pc2=='\"')                                        //~vbvkR~
+            {                                                      //~vbvkR~
+            	if (nestDQ)                                        //~vbvkR~
+                	nestDQ=0;                                      //~vbvkR~
+                else                                               //~vbvkR~
+                	nestDQ=1;                                      //~vbvkR~
+            }                                                      //~vbvkR~
+            else                                                   //~vbvkR~
+        	if (*pc2==FUNC_COMMENTID_ALIAS)  //'#'                 //~vbvkR~
+            {                                                      //~vbvkR~
+            	if (!nestDQ && !nestSQ)                            //~vbvkR~
+                {                                                  //~vbvkR~
+                	*pc2=0;                                        //~vbvkR~
+                    rc=1;                                          //+vbvkI~
+                    break;                                         //~vbvkR~
+                }                                                  //~vbvkR~
+            }                                                      //~vbvkR~
+        }                                                          //~vbvkR~
+    }	                                                           //~vbvkR~
+    UTRACEP("%s:rc=%d,pc=%s,out=%s\n",UTT,rc,pc,Pcmd);             //+vbvkR~
+    return rc;                                                     //+vbvkI~
+}                                                                  //~vbvkR~
 //**************************************************               //~v67CI~
 //*edit alias cmd and set to Gcmdbuff,if part of multicmd save followed cmd//~v67CI~
 //*parm2: addr of ";" of folllowed cmd of multicmd                 //~v67CI~
@@ -2292,10 +2369,12 @@ int  funcaliasset(PUCLIENTWE Ppcw,char *Ppcend,PALCT Ppalct)       //~v67CI~
         return 4;                                                  //~v67CI~
     }                                                              //~v67CI~
     Ppalct->ALCTkbdctr=Gkbdinpctr;                                 //~v67CI~
+    UTRACEP("%s:ALCTcmd=%s,Ppcend=%s\n",UTT,Ppalct->ALCTcmd,Ppcend);//~vbvfR~
     pc=strchr(Ppalct->ALCTcmd,' ');                                //~v67CI~
     if (!pc)                                                       //~v67CI~
         return 4;                                                  //~v67CI~
     pc+=strspn(pc," ");                                            //~v67CI~
+    UTRACEP("%s:pc=%s\n",UTT,pc);                                  //~vbvfR~
 //  if (Ppcw->UCWparm)  //edit required                            //~v70yR~
 //  {                                                              //~v70yR~
         opt=CPEO_APPEND|CPEO_FNMPARM;                              //~vanfI~
@@ -2304,6 +2383,8 @@ int  funcaliasset(PUCLIENTWE Ppcw,char *Ppcend,PALCT Ppalct)       //~v67CI~
 //      ucmdparmedit(1,pc,Ppcw->UCWparm,0,&pcmd);//0 no padding unused parm//~v67CR~//~vanfR~
         ucmdparmedit(opt,pc,Ppcw->UCWparm,0,&pcmd);//0 no padding unused parm//~vanfI~
         strcpy(Gcmdbuff,pcmd);                                     //~v67CR~
+        funcAliasDropComment(Gcmdbuff);                            //~vbvkR~
+    	UTRACEP("%s:Gcmdbuff=%s,parmfnm=%s\n",UTT,Gcmdbuff,parmfnm);//~vbvfR~
         ufree(pcmd);                                               //~v67CR~
 //  }                                                              //~v70yR~
 //  else                                                           //~v70yR~

@@ -1,4 +1,38 @@
-V129S 2020/12/24 
+V129T 2022/12/04 
+(L) Latest install trouble shooting.    Reffer following (A) if not fixed.
+	= open by "tar -zxvf gxe-xxx.tar.gz", then run "./configure && make".
+      After successfull compilation, run "sudo make install" to copy bin to‚Å /usr/local/bin.
+    = TroubleShooting for ./configure (case of debian11. 2022/12/04).
+
+        configure: error: in `/home2/Projects/gxeinsttestdebian/gxe-1.29':
+        configure: error: no acceptable C compiler found in $PATH
+
+            ===>apt-get install gcc
+
+        configure: error: "FATAL:term.h not found. Install ncurses-devel."
+
+            ===>apt-file search tearm.h | grep curses
+            ===>apt-get install libncurses-dev
+
+        configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
+
+            ===>apt-file search cups/cups.h
+            ===>apt-get install libcups2-dev
+
+        configure: error: install GTK2(>=2.10.0) or GTK3(>=3.4.0) if NOT enable-gxe=no.
+
+        	===>apt-file search /gtk.h
+        	===>apt-get install libgtk-3-dev
+
+        configure: error: !!! libgnome-2.0 installation required, OR specify --enable-libgnome2=no with glib-2.0 gio-2.0 installed.
+
+			===>./configure enable-libgnome2=no
+
+        make: command not found
+
+        	===>apt-get install make
+
+//**********************************************************************
 (A) Automake package installation step
 
     You may update configure before ./configure

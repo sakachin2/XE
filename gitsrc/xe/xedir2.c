@@ -1,8 +1,9 @@
-//*CID://+vbr2R~:                             update#=  846;       //~vbr2R~
+//*CID://+vbv5R~:                             update#=  853;       //~vbv5R~
 //*************************************************************
 //*xedir.c                                                         //~v09bR~
 //* draw
 //*************************************************************
+//vbv5:221120 warning /g/src/xe/xedir2.c:1812:49: warning: ¡Æ%12s¡Ç directive writing between 12 and 15 bytes into a region of size 8 [-Wformat-overflow=]//~vbv5I~
 //vbr2:200620 ARM:abort at sprintf(__builtin___vsprintf_chk)       //~vbr2I~
 //vbkf:180619 display hex notation for also dirlist panel          //~vbkfI~
 //vb7k:170115 dir list;gree attr overflow to "=Rep" when dirname is too long//~vb7jI~
@@ -188,7 +189,7 @@
 //v07s:960825:new ulib.h/ulibdef.h(no need base def by os2.h)      //~v07sI~
 //            to speed up compile,drop include(caused by WIN95 modify)//~v07sI~
 //v07l:960713:(BUG)also for other than PATHLEN(strpbrk,strchr etc) //~v07lI~
-//            bug when "‰\a.*" cause mask display only "a.*"       //+vbr2I~
+//            bug when "‰\a.*" cause mask display only "a.*"       //~vbr2I~
 //v07g:960707:printed msg on dir list                              //~v07gI~
 //v07e:960629:dir lcmd copy(PF10 and PF11)                         //~v07eI~
 //            rensmasv for also copy                               //~v07eI~
@@ -922,6 +923,7 @@ void dirddsetup(PUCLIENTWE Ppcw,PULINEH Pplh,PUPANELL Pppl)        //~v07eR~
     long  clustersz,diskfreesz[3],disktotsz[3];                    //~v56rI~
 #endif                                                             //~v50HI~
     UCHAR dweditnumwk[16];                                         //~v49hI~
+    UCHAR dweditnumwk2[20];                                        //~vbv5R~
     UCHAR edittime[8];                                             //~v53PI~
     int  efaopt;                                                   //~v40AI~
 //  UCHAR   wc;                                                 //~v05IR~
@@ -1711,7 +1713,9 @@ void dirddsetup(PUCLIENTWE Ppcw,PULINEH Pplh,PUPANELL Pppl)        //~v07eR~
            {                                                       //~v717I~
             if (!(pdh->UDHattr & (FILE_PDSMEMB|FILE_DSNPATH)))	//not MEBMER nor DSN APTH//~v719M~
             {                                                      //~v719M~
-        		sprintf(pddexpand->UDDdate,"% 7d/",(int)(pdh->UDHslinkattr>>16));//~v719R~
+//        		sprintf(pddexpand->UDDdate,"% 7d/",(int)(pdh->UDHslinkattr>>16));//~v719R~//~vbv5R~
+          		sprintf(dweditnumwk2,"% 7d/",(int)(pdh->UDHslinkattr>>16));//~vbv5I~
+          		strcpy(pddexpand->UDDdate,dweditnumwk2);           //+vbv5R~
         		sprintf(edittime,"% 6d",(int)(pdh->UDHslinkattr &0xffff));//~v719R~
         		memcpy(edittime,edittime+1,sizeof(edittime)-1);    //~v719R~
             }                                                      //~v719M~
@@ -1809,14 +1813,22 @@ void dirddsetup(PUCLIENTWE Ppcw,PULINEH Pplh,PUPANELL Pppl)        //~v07eR~
                     diskfreesz[1]=0;        //3 word data for bc_dweditnum//~v49hI~
     				bc_dweditnum(0/*functype*/,'Z'/*Pconvtype*/,(long*)(void*)diskfreesz,dweditnumwk);//~v50HR~
 //                  sprintf(pdd->UDDdate,"%12sK/",dweditnumwk);    //~v59TR~
-                    sprintf(pddexpand->UDDdate,"%12sK/",dweditnumwk);//~v59TI~
+//TRACED("xedir2 UDDdate dweditnumwk",dweditnumwk,sizeof(dweditnumwk));//~vbv5R~
+//                  sprintf(pddexpand->UDDdate,"%12sK/",dweditnumwk);//~vbv5I~
+                    sprintf(dweditnumwk2,"%12sK/",dweditnumwk);//~v59TI~//~vbv5I~
+                    memcpy(pddexpand->UDDdate,dweditnumwk2,14);    //~vbv5I~
+                    *(pddexpand->UDDdate+14)=0;                    //~vbv5I~
 	                ucalc_dwdiv(disktotsz,1024);                   //~v49hI~
                     disktotsz[2]=disktotsz[1];                     //~v49hI~
                     disktotsz[1]=0;        //3 word data for bc_dweditnum//~v49hI~
     				bc_dweditnum(0/*functype*/,'Z'/*Pconvtype*/,(long*)(void*)disktotsz,dweditnumwk);//~v50HR~
 //                  sprintf(pdd->UDDsize,"%12sK",dweditnumwk);     //~v50bR~
 //                  sprintf(pdd->UDDsize,"%12s",dweditnumwk);      //~v59TR~
-                    sprintf(pddexpand->UDDsize,"%12s",dweditnumwk);//~v59TI~
+//UTRACED("xedir2 UDDsize dweditnumwk",dweditnumwk,sizeof(dweditnumwk));//~vbv5R~
+//                  sprintf(pddexpand->UDDsize,"%12s",dweditnumwk);//~v59TI~//~vbv5R~
+                    sprintf(dweditnumwk2,"%12s",dweditnumwk);      //~vbv5I~
+                    memcpy(pddexpand->UDDsize,dweditnumwk2,12);    //~vbv5I~
+                    *(pddexpand->UDDsize+12)=0;                    //~vbv5R~
 //                  *(pdd->UDDsize+12)='K';                        //~v59TR~
                     *(pddexpand->UDDsize+12)='K';                  //~v59TI~
                     *(pddexpand->UDDsize+13)=0;		//cear rightmost screen pos//~v693I~

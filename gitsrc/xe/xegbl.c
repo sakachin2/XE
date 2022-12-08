@@ -1,4 +1,4 @@
-//*CID://+vbCBR~:                             update#=   82;       //~vbCBR~
+//*CID://+vbCBR~:                             update#=   83;       //~vbCBR~
 //*************************************************************
 //*xegbl.c*                                                        //~v09hR~
 //*************************************************************
@@ -105,7 +105,7 @@
 #include <uerr.h>                                                  //~v500I~
 #include <ucvucs.h>                                                //~v50kI~
 #include <ufile.h>                                              //~v069I~
-#include <uparse.h>                                                //+vbCBI~
+#include <uparse.h>                                                //~vbCBI~
                                                                    //~v19TI~
 #include <uvio.h>                                                  //~v19TR~
 
@@ -500,7 +500,7 @@ void gblkon(int Popt)                                              //~v305I~
 #endif                                                             //~v19xI~
 #ifdef WXE                                                         //~v500I~
 //*******************************************************          //~v500I~
-//*global term                                                     //~v500I~
+//*global term from wxexei                                         //~v500I~//+vbCBR~
 //   called from xe.c malloc chk                                   //~v500I~
 //*parm:none                                                       //~v500I~
 //*ret :none                                                       //~v500I~

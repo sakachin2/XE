@@ -28,8 +28,9 @@ a:hover{font-weight:bold;}-->
                      更新せずに CID clear を入力し直ぐ保存をすればよい
                      <a href="HID00000040.htm">マージン</a>指定のファイルではCID ヘッダー行で指定した
                      CID桁位置が左右のどちらのマージンかによって
-                     対象となるCIDの探索範囲が限定されます.
-            shift   :現ファイルの全行の変更タグの位置を整列します
+                     対象となるCIDの探索範囲が限定されます. 
+                     prefix を指定するとそのprefixのCIDのみクリアーされます
+          shift   :現ファイルの全行の変更タグの位置を整列します
                      位置は <a href="HID00000197.htm">INI ファイル</a>の Change_ID_Type_xx パラメータ
                      で指定しますが,このパラメータを変更してもそれ以降に
                      修正された行のみ新しい位置に変更タグがつけられます.
@@ -67,6 +68,7 @@ a:hover{font-weight:bold;}-->
                      (c,asm,doc等の.ini ファイルの Change_ID_Type
                       パラメータの各行の拡張子リストの最初の拡張子を指定)
                       on/clear/shift のときに指定可能
+                      例えば "cid clear c"
                       CID HEADERがあるばあいはonで変更は出来ません
                       clear/shiftではそのタイプのCIDのみをクリアー/シフト
                       します.ファイルのCIDタイプは変更されません.
@@ -76,9 +78,10 @@ a:hover{font-weight:bold;}-->
                        そのタイプのCIDがclear/shiftされます.
                        1行目にCIDが無いあるいは削除した場合ファイルの
                        CIDは変更されません)
-            prefix  :拡張子の代わりに対応する(.iniで指定された)
+           prefix  :拡張子の代わりに対応する(.iniで指定された)
                      //,&quot;;;&quot;,|| などの 2 文字の前置文字を指定できます
-            postfix :0 から 2 バイトまでの後置文字を指定する
+                     例えば　"cid clear //" は "cid clear c" と同じです
+           postfix :0 から 2 バイトまでの後置文字を指定する
                      on のとき後置文字つきのCIDを設定する
                      clear のとき後置文字つきのCIDをクリアーする
                      shift のとき後置文字つきのCIDを整列する
@@ -92,7 +95,7 @@ a:hover{font-weight:bold;}-->
                      (def)off でAPPENDを指定するとAPPENDオプションのみが
                      リセットされ、APPENDを指定しないと(def)onと
                      APPENDの両方をリセットします。
-
+***2022/12/04
 </SPAN></PRE>
 </BODY>
 </HTML>

@@ -1,4 +1,4 @@
-//*CID://+vak7R~:                             update#=   19;       //~vak7R~
+//*CID://+vak7R~:                             update#=   21;       //~vak7R~
 //vak7:130906 redirect memcpy to memmove when overlaped            //~vak7I~
 //            wxe2010\stdafx.h(warning C2732:diffrent linkage option for ustring_memcpy)//~vak7I~
 //@@64 120623 64bit                                                //~@@64I~
@@ -13,7 +13,8 @@
 #define WINVER		0x0601
 #define _WIN32_WINNT	0x0601
 #define _WIN32_IE	0x0700
-#define _RICHEDIT_VER	0x0200
+//#define _RICHEDIT_VER	0x0200  //@@@@2022/11/19                   //~vak7R~
+#define _RICHEDIT_VER	0x0500  //@@@@2022/11/19                   //+vak7I~
 
 // This project was generated for VC++ 2005 Express and ATL 3.0 from Platform SDK.
 // Comment out this line to build the project with different versions of VC++ and ATL.

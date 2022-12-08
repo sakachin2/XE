@@ -1,8 +1,15 @@
-//*CID://+vbt4R~:                             update#=  293;       //+vbt4R~
+//*CID://+vbw0R~:                             update#=  335;       //~vbw0R~
 //************************************************************
 //* xekbd.c                                                     //~5501R~
 //************************************************************  //~5423I~
-//vbt4:201212 (WIN)apply -Nm on LC file only                       //+vbt4I~
+//vbw0:221203 (Bug)Shift+ was ignored with Ctrl+/Alt               //~vbw0I~
+//vbvz:221203 (Bug)=0.1;missing set string terminater null         //~vbvzI~
+//vbvv:221203 =0.1 comment for user command, and comment support   //~vbvvI~
+//vbvo:221201 show sample for sc cmd of =0.1                       //~vbvoI~
+//vbv8:221123 (Bug)output same graphic char by Ctl+Pad1(locale assigned but utf8 not assigned) after Alt+Shift+1(UTF8 assigned by xelchwxe.ini).//~vbv8I~
+//            A+S+1 output UTF8 string and next C+Pad1 also output same utf8 string.//~vbv8I~
+//            Caused by missing clear UCWF2UTF7STR.                //~vbv8I~
+//vbt4:201212 (WIN)apply -Nm on LC file only                       //~vbt4I~
 //vbrk:200918 (AXE)first time scrgetcw fails, allow it             //~vbrkI~
 //vbrf:200821 A+a/A+q(shortcut/query) repeat err(not alpnumeric stop repeat)//~vbrfI~
 //vbr5:200721 (ARM)logcat hung at utrace output([0x1a..) , it may be Esc[//~vbr5I~
@@ -362,6 +369,7 @@ static  KBDINFO Skbdinfo={10,                   //cb:length        //~v09tM~
 #endif                                                             //~vbr1I~
 static FKCTT Sfkctt;                                               //~v0ijR~
 static UCHAR Sfkctindex[256];                                      //~v0ijI~
+static UCHAR SfkctindexShift[256];                                 //~vbw0I~
 static int   Sshortcutstatus=0;                                    //~V48fR~
 #define      KBD_SC_PEND    0x0100                                 //~V48fR~
 #define      KBD_SC_QUERY   0x0200  //query pending                //~V48fI~
@@ -495,7 +503,7 @@ void kbdinit101(void)                                              //~V70mI~
     return;                                                        //~V70mI~
 }//kbdinit101                                                      //~V70mI~
 //**************************************************               //~v0ijI~
-//*mearge fkct savewd on ini file and from functbl                 //~v0ijI~
+//*mearge fkct saved on ini file and from functbl                 //~v0ijI~//~vbvvR~
 //*parm :none                                                      //~v0ijI~
 //*rc   :none                                                      //~v0ijI~
 //**************************************************               //~v0ijI~
@@ -557,11 +565,37 @@ void kbdsetfkcmd(void)                                             //~v0ijI~
     int ii;                                                        //~v0ijI~
 //*******************                                              //~v0ijI~
     memset(Sfkctindex,0,sizeof(Sfkctindex));                       //~v0ijI~
+    memset(SfkctindexShift,0,sizeof(SfkctindexShift));             //~vbw0I~
     for (ii=0,pfkct=Sfkctt.FKCTTpfkct;ii<Sfkctt.FKCTTentno;ii++,pfkct++)//~v0ijR~
+    {                                                              //~vbw0I~
+        UTRACEP("%s:FKCTkey=x%x,FKCTflag=x%x\n",UTT,pfkct->FKCTkey,pfkct->FKCTflag);//~vbw0R~
         if (!UCBITCHK(pfkct->FKCTflag,FKCTFPFT|FKCTFNONPFK) //func not ass to pfk//~v0ijI~
         &&  pfkct->FKCTpft_pcmd)                                   //~v0ijI~
+        {                                                          //~vbw0I~
+          if (UCBITCHK(pfkct->FKCTflag,FKCTFSHIFTAC))             //S+A or S+C//~vbw0I~
+          {                                                        //~vbw0I~
+            SfkctindexShift[(int)(pfkct->FKCTkey>>8)]=(UCHAR)(ii+1); //PFn+//~vbw0I~
+            UTRACEP("%s:shift ii=%d,FKCTkey=x%x,FKCTpft_pcmd=%s\n",UTT,ii,pfkct->FKCTkey,pfkct->FKCTpft_pcmd);//~vbw0I~
+          }                                                        //~vbw0I~
+          else                                                     //~vbw0I~
+          {                                                        //~vbw0I~
             Sfkctindex[(int)(pfkct->FKCTkey>>8)]=(UCHAR)(ii+1); //avoid 0//~v0ijR~
+            UTRACEP("%s:Not shift ii=%d,FKCTkey=x%x,FKCTpft_pcmd=%s\n",UTT,ii,pfkct->FKCTkey,pfkct->FKCTpft_pcmd);//~vbw0I~
+          }                                                        //~vbw0I~
+        }                                                          //~vbw0I~
+    }                                                              //~vbw0I~
 }//kbdsetfkcmd                                                     //~v0ijI~
+//**************************************************               //~vbw0I~
+int getIndexPFkeyCmd(PKBDKEYINFO Pkeyinf)                          //~vbw0R~
+{                                                                  //~vbw0I~
+	int idx;                                                       //~vbw0I~
+	if (Pkeyinf->fsState & (KBDSTF_RIGHTSHIFT | KBDSTF_LEFTSHIFT))//  0x0003//~vbw0R~
+		idx=(int)SfkctindexShift[Pkeyinf->chScan];                 //+vbw0R~
+    else                                                           //~vbw0I~
+		idx=(int)Sfkctindex[Pkeyinf->chScan];                      //~vbw0R~
+    UTRACEP("%s:rc=%d,scan=x%x,fsState=x%x\n",UTT,idx,Pkeyinf->chScan,Pkeyinf->fsState);//~vbw0R~
+    return idx;                                                    //~vbw0I~
+}                                                                  //~vbw0I~
 //**************************************************               //~v09tI~
 //*keyboard re-init after child shell                              //~v09tI~
 //*re-init kbd mode                                                //~v09tI~
@@ -711,6 +745,8 @@ int kbdproc(void)
         }                                                       //~5423I~
         else                                                    //~5423I~
         {                                                       //~5423I~
+            UTRACEP("%s:before clear UCWF2UTF8STR Gstrinputlen=%d,UCWflag2=x%x\n",UTT,Gstrinputlen,pcw->UCWflag2);//~vbt4R~//~vbv8R~
+            UCBITOFF(pcw->UCWflag2,UCWF2UTF8STR);                  //~vbv8I~
          if (Gstrinputlen)                                         //~V705I~
          {                                                         //~V705I~
 //         	keytype=funct2getnextinputgc(inputc);                  //~V705R~//~v79RR~
@@ -719,6 +755,7 @@ int kbdproc(void)
 #else                                                              //~va1cR~
            	keytype=funct2getnextinputgc(pcw,inputc);              //~v79RI~
 #endif                                                             //~va1cR~
+            UTRACEP("%s:after funct2getnextinputgc UCWflag2=x%x,UCWkeydata_utf8str=%s\n",UTT,pcw->UCWflag2,pcw->UCWkeydata_utf8str);//~vbt4R~
          }//not string input                                       //~V705I~
          else                                                      //~V705I~
          {                                                         //~V705I~
@@ -838,7 +875,8 @@ int kbdproc(void)
                 if (keyasssw)                                      //~v0ixI~
                     if ((rc=kbdassignchng(pcw,1,&keyinf))>=0)   //updated line//~v0ixR~
                         return rc;                      //re call kbdproc from xe.c after draw//~v0ixI~
-                if (index=(int)Sfkctindex[keyinf.chScan],index)    //~v0ijR~
+//              if (index=(int)Sfkctindex[keyinf.chScan],index)    //~v0ijR~//~vbw0R~
+                if (index=getIndexPFkeyCmd(&keyinf),index)         //~vbw0R~
                 {                                                  //~v0ijI~
                     rc=kbdfkcedit(pcw,index-1);                    //~v0ijR~
                     if (rc==UALLOC_FAILED)                         //~v0ijI~
@@ -872,17 +910,18 @@ int kbdproc(void)
                 }                                                  //~va00I~
                 else                                               //~va00I~
                     UCBITOFF(pcw->UCWflag2,UCWF2UTF8STR);          //~va00I~
+                UTRACEP("%s:UCWflag2=x%x,UCWkeydata_utf8str=%s\n",UTT,pcw->UCWflag2,pcw->UCWkeydata_utf8str);
 #endif                                                             //~va00I~
 #endif                                                             //~va00I~
                 if (!keyinf.chScan) //katakana,zenkaku             //~V768R~
                 {                                               //~5423R~
 #ifdef WCSUPP                                                      //~v8@ZI~
-#ifdef AAA                                                         //+vbt4I~
+#ifdef AAA                                                         //~vbt4I~
 				  if (Gotherstatus & GOTHERS_NOUTF8     //no utf8 option under utf env//~v7a5I~
                   &&  keyinf.chChar>=0x80)	//not ascii            //~v7a5I~
 					UCBITON(pcw->UCWflag3,UCWF3HEXKBDGC); 	//grapth char input by HEX notation//~v7a5I~
                   else                                             //~v7a5I~
-#endif //AAA                                                       //+vbt4I~
+#endif //AAA                                                       //~vbt4I~
 #ifdef UTF8SUPPH                                                   //~vva1cI~//~va1cR~
 		          if (keyinf.bNlsShift & (KBDNLS_DBCS|KBDNLS_F2L_DBCS1ST))//dbcs or f2l dbcsno need to chk lead byte//~vva1cR~//~va1cR~
 #else                                                              //~vva1cI~//~va1cR~
@@ -1128,6 +1167,7 @@ int kbdfkcedit(PUCLIENTWE Ppcw,int Pindex)                         //~v0ijR~
     char  *pcmd,*pcmd2;                                            //~v0j5R~
     UCHAR wkbuff[MAXCOLUMN+1];                                     //~v0ijI~
     UCHAR wkbuff2[MAXCOLUMN+1];                                    //~v0ijI~
+    UCHAR wkedit3[MAXCOLUMN+1];                                    //~vbvvI~
     int opt;                                                       //~vanfI~
     char parmfnm[_MAX_PATH*2+2];                                   //~vanfR~
 //********************                                             //~v0ijI~
@@ -1137,6 +1177,17 @@ int kbdfkcedit(PUCLIENTWE Ppcw,int Pindex)                         //~v0ijR~
     if (!(cmdlen=pfkct->FKCTcmdlen))                               //~v0ijR~
         return -1;      //ignore                                   //~v0ijI~
     pcmd=pfkct->FKCTpft_pcmd;                                      //~v0ijR~
+    UTRACEP("%s:original pcmd=%s\n",UTT,pcmd);                     //~vbvvR~
+//  strcpy(wkedit3,pcmd);                                          //~vbvvI~//~vbvzR~
+    UmemcpyZ(wkedit3,pcmd,(UINT)pfkct->FKCTcmdlen);                //~vbvzI~
+	if (funcAliasDropComment(wkedit3))	//cmd dropped              //~vbvvI~
+    {                                                              //~vbvvI~
+    	pcmd=wkedit3;                                              //~vbvvI~
+        cmdlen=(int)strlen(pcmd);                                  //~vbvvI~
+		cmdlen-=(int)umemrspnc(pcmd,' ',(UINT)cmdlen);             //~vbvvI~
+        *(pcmd+cmdlen)=0;                                          //~vbvvI~
+	    UTRACEP("%s:drop cmt pcmd=%s\n",UTT,pcmd);                 //~vbvvR~
+    }                                                              //~vbvvI~
     execopt=(*(pcmd+cmdlen-1)==';');    //execute last is ;        //~v0ijR~
     pcmd2=0;                            //edit malloced            //~v0ijI~
     if (memchr(pcmd,'%',(UINT)cmdlen))  //contain replacing char   //~v0ijI~
@@ -1187,6 +1238,7 @@ int kbdscedit(PUCLIENTWE Ppcw,char Psckey)                         //~V48fI~
     UCHAR wkbuff[MAXCOLUMN*2],*pcmd;                               //~V48iR~
 //  UCHAR wkparm[MAXCOLUMN+1],wkpedit[MAXCOLUMN+1],*peditcmd=0;    //~V53GR~
     UCHAR wkparm[MAXCOLUMN+1],wkpedit[MAXCOLUMN+1];                //~V53GI~
+    UCHAR wkedit2[MAXCOLUMN+1];                                    //~vbvoR~
     char *peditcmd=0;                                              //~V53GI~
     char parmfnm[_MAX_PATH*2+2];                                   //~vanfI~
     int opt;                                                       //~vanfI~
@@ -1209,6 +1261,10 @@ int kbdscedit(PUCLIENTWE Ppcw,char Psckey)                         //~V48fI~
 					Psckey);                                       //~V48fI~
         return -1;                                                 //~V48fR~
     }                                                              //~V48fI~
+//  strcpy(wkedit2,pcmd);                                          //~vbvoI~//~vbvzR~
+    UmemcpyZ(wkedit2,pcmd,(UINT)cmdlen);                           //~vbvzI~
+	if (funcAliasDropComment(wkedit2))	//cmd dropped              //~vbvoI~
+    	pcmd=wkedit2;                                              //~vbvoI~
     if (memchr(pcmd,'%',(UINT)cmdlen))  //contain replacing char   //~V53GI~
     {                                                              //~V53GI~
         *wkparm=0;                      //for no data              //~V53GI~
@@ -1306,8 +1362,12 @@ FUNCTBL *kbdftsrch(KEYTBL *Ppkt,int Pshiftid,int *Pkeytype)        //~v0ijR~
     int   shiftissamevalue=0;                                      //~v0ihI~
 //*****************                                                //~v0ihI~
     key=(int)Ppkt->KTkey[Pshiftid];                                //~v0ihR~
+//UTRACEP("%s: entry Pshiftid=%d,key=0x%x,name=%s\n",UTT,Pshiftid,key,Ppkt->KTnamee);//~vbvoR~
     if (key==KEY_NOTUSE)                                           //~v0ihI~
+    {                                                              //~vbv8I~
+		UTRACEP("%s: KEY_NOTUSE(0)\n",UTT);                        //~vbv8I~
         return (FUNCTBL*)(ULPTR)-1;                                       //~v0ihI~//~vafkR~
+    }                                                              //~vbv8I~
     scan=(int)((UINT)key>>8);        //scan code                   //~V48iR~
     ch  =key&255;       //char code                                //~v0ihI~
 //*determin key type like as kbdproc                               //~v0ihI~
@@ -1333,7 +1393,7 @@ FUNCTBL *kbdftsrch(KEYTBL *Ppkt,int Pshiftid,int *Pkeytype)        //~v0ijR~
   else                                                             //~vb50I~
 #endif                                                             //~vb50I~
     shiftissamevalue=UCBITCHK(Ppkt->KTflag[Pshiftid],KTSHIFTDUP);  //~v0ioI~
-UTRACEP("%s: keytype=%d,key=%04x,shiftsame=%d\n",UTT,keytype,key,shiftissamevalue);//~vb50R~
+//UTRACEP("%s: keytype=%d,key=%04x,shiftsame=%d\n",UTT,keytype,key,shiftissamevalue);//~vbvoR~
     return funcftsrch(keytype,(USHORT)key,shiftissamevalue);       //~v0ihI~
 }//kbdftsrch                                                       //~v0ijR~
 #ifndef ARMXXE	//funcsleepsettimeup                               //~va90I~
@@ -1373,6 +1433,7 @@ int kbdsrchkt(USHORT Pkey,KEYTBL **Ppkt)
         *Ppkt=0;
     else
         *Ppkt=pkt;
+    UTRACEP("%s:rc=%d,Pkey=0x%x\n",UTT,i,Pkey);                    //~vbv8R~
     return i;
 }//kbdsrchkt
 
@@ -1451,6 +1512,7 @@ int kbdsrchktbyname(UCHAR *Pkeyname,KEYTBL **Ppkt)              //~5429I~
       else                                                         //~V70mI~
         *Ppkt=0;                                                //~5429I~
     }                                                              //~V70mI~
+    UTRACEP("%s:Pkeyname=%s,rc=%d,pkt=%p\n",UTT,Pkeyname,rc,*Ppkt);//~vbv8R~
     return rc;                                                  //~5429I~
 }//kbdsrchktbyname                                              //~5429I~
                                                                 //~5429I~
@@ -1614,7 +1676,7 @@ int kbdgetfkct(PFKCTT *Ppfkctt)                                    //~v0ijR~
             charsw=UCBITCHK(pkt->KTflag[2],KTCHARKEY);             //~v0ijR~
             for (jj=0;jj<4;jj++)                                   //~v0ijR~
             {                                                      //~v0ijR~
-            	UTRACEP("%s:jj=%d,KTname=%s,KTkey=%04x,KTflag=%02x\n",UTT,jj,pkt->KTnamee,pkt->KTkey[jj],pkt->KTflag[jj]);//~vb50R~
+//          	UTRACEP("%s:jj=%d,KTname=%s,KTkey=%04x,KTflag=%02x\n",UTT,jj,pkt->KTnamee,pkt->KTkey[jj],pkt->KTflag[jj]);//~vbvoR~
 //              if (charsw && jj!=2)    //char key or not alt+     //~V55jR~
                 if (charsw && jj<2)    //char key and not ctrl/alt //~V55jI~
                     continue;                                      //~v0ijI~
@@ -1623,7 +1685,7 @@ int kbdgetfkct(PFKCTT *Ppfkctt)                                    //~v0ijR~
 #else                                                              //~vb50I~
                 pft=kbdftsrch(pkt,jj,&keytype);                    //~v0ijR~
 #endif                                                             //~vb50I~
-            	UTRACEP("%s:kbdftsrch pft=%p\n",UTT,pft);          //~vb50I~
+//          	UTRACEP("%s:kbdftsrch pft=%p\n",UTT,pft);          //~vbvoR~
                 if (pft==(FUNCTBL*)(ULPTR)-1)  //NOT_USED key             //~v0ijR~//~vafkR~
                     continue;                                      //~v0ijR~
 //print for dup key,edit then dirlist screen                       //~v20iI~
@@ -1682,8 +1744,10 @@ int kbdgetfkct(PFKCTT *Ppfkctt)                                    //~v0ijR~
                         pfkct->FKCTshift=(UCHAR)jj;                //~v0ijR~
                         if (pft)                                   //~v0ijR~
                         {                                          //~v0ijI~
-UTRACEP("pftnamej=%s\n",pft->FTnamej);                             //~V76iI~
                             UCBITON(pfkct->FKCTflag,FKCTFPFT);     //~v0ijI~
+UTRACEP("%s:FKCTFPFT on1  ii=%d,jj=%d,kk=%d,FKCTflag=0x%x,id=%d,pftnamej=%s,namee=%s\n",UTT,ii,jj,kk,pfkct->FKCTflag,pft->FTfuncid,pft->FTnamej,pft->FTnamee);                             //~V76iI~//~vbv8R~
+                			if (pft->FTfuncid>FUNCID_GRAPHCHAR)    //~vbv8I~
+								UTRACEP("%s:FKCTFPFT on  GRAPHCHAR\n",UTT);//~vbv8I~
                             pfkct->FKCTfuncid=pft->FTfuncid;       //~v0ijI~
                             for (ll=0;ll<FTMAXKEY;ll++)            //~v0ijI~
                                 if (key==pft->FTkey[ll])           //~v0ijI~
@@ -1772,8 +1836,11 @@ UTRACEP("%s:jj=%d,ii=%d,keyname=%s,pft=%p,FTname=%s,cnt=%d,pfkct=%p\n",UTT,jj,ii
                         pfkct->FKCTshift=(UCHAR)jj;                //~vb50I~
                         if (pft)                                   //~vb50I~
                         {                                          //~vb50I~
-UTRACEP("pftnamej=%s\n",pft->FTnamej);                             //~vb50I~
                             UCBITON(pfkct->FKCTflag,FKCTFPFT);     //~vb50I~
+UTRACEP("%s:FKCTFPFT  on2  ii=%d,jj=%d,kk=%d,FKCTflag=0x%x,id=%d,pftnamej=%s,namee=%s\n",UTT,ii,jj,kk,pfkct->FKCTflag,pft->FTfuncid,pft->FTnamej,pft->FTnamee);//~vbv8R~
+                			if (pft->FTfuncid>FUNCID_GRAPHCHAR)    //~vbv8I~
+								UTRACEP("%s:FKCTFPFT on  GRAPHCHAR\n",UTT);//~vbv8I~
+							                                       //~vbv8I~
                             pfkct->FKCTfuncid=pft->FTfuncid;       //~vb50I~
 //                            for (ll=0;ll<FTMAXKEY;ll++)          //~vb50I~
 //                                if (key==pft->FTkey[ll])         //~vb50I~
@@ -1852,8 +1919,9 @@ int kbdfkctsrch(KEYTBL *Ppkt,int Pshift)                           //~v0ijR~
     }                                                              //~v0ijI~
     if (ii>=Sfkctt.FKCTTentno)                                     //~v0ijI~
         ii=-1;                                                     //~v0ijI~
+    UTRACEP("%s:rc=%d,Pshift=%d,KTnamee=%s,FKCTkey=x%x,FKCTshift=%d,FKCTflag=x%x\n",UTT,ii,Pshift,Ppkt->KTnamee,pfkct->FKCTkey,pfkct->FKCTshift,pfkct->FKCTflag);//~vbvvR~
     return ii;                                                     //~v0ijI~
-}//kbdgetfkct                                                      //~v0ijI~
+}//kbdfkctsrch                                                    //~v0ijI~//~vbvvR~
 //**************************************************************** //~v0ijI~
 //* write fkct to ini                                              //~v0ijI~
 //* parm1 :FILE*                                                   //~v0ijI~
@@ -1966,6 +2034,7 @@ int kbdrfkct(FILE *Pfh)                                            //~v0ijR~
 #if defined(ULIB64)||defined(ULIB64X)                              //~vafmI~
         pfkct->FKCTpkt=0;                                          //~va70I~
 		memcpy(&(pfkct->FKCTfuncid),&(pfkct32->FKCT32funcid),FKCT32FIDOFFSZ);//~va70I~
+        UTRACEP("%s:FKCTkey=x%x,FKCTflag=x%x,FKCTshift=%d\n",UTT,pfkct->FKCTkey,pfkct->FKCTflag,pfkct->FKCTshift);//~vbvzR~
         pfkct32++;                                                 //~va70I~
 #endif                                                             //~va70I~
     }                                                              //~va70I~
@@ -1984,13 +2053,18 @@ int kbdrfkct(FILE *Pfh)                                            //~v0ijR~
             {                                                      //~v0ijI~
                 if (!fread(wkbuff,sizeof(wkbuff),1,Pfh))           //~v0ijI~
                     return 16;                                     //~v0ijI~
+                UTRACED("wkbuff",wkbuff,sizeof(wkbuff));           //~vbvzI~
                 if (cmdlen>sizeof(wkbuff))                         //~v0ijR~
                     cmdlen=sizeof(wkbuff);                         //~v0ijI~
-                pc=UALLOCM((UINT)cmdlen);   //last is stopper      //~v0ijR~
+//              pc=UALLOCM((UINT)cmdlen);   //last is stopper      //~v0ijR~//~vbvzR~
+                pc=UALLOCM((UINT)(cmdlen+1));   //last is stopper  //~vbvzI~
                 UALLOCCHK(pc,UALLOC_FAILED);                       //~v0ijR~
                 pfkct->FKCTpft_pcmd=pc;                            //~v0ijR~
                 pfkct->FKCTcmdlen=(USHORT)cmdlen;                  //~v0ijR~
                 memcpy(pc,wkbuff,(UINT)cmdlen);                    //~v0ijR~
+                *(pc+cmdlen)=0;                                    //~vbvzI~
+                UTRACEP("%s:FKCTcmdlen=%d,FKCTpft_pcmd=%s\n",UTT,cmdlen,pc);//~vbvvR~
+       			UTRACEP("%s:FKCTkey=x%x,FKCTflag=x%x,FKCTshift=%d\n",UTT,pfkct->FKCTkey,pfkct->FKCTflag,pfkct->FKCTshift);//~vbvzI~
             }                                                      //~v0ijI~
         }                                                          //~v0ijI~
     }                                                              //~v0ijI~
@@ -2229,7 +2303,7 @@ int xekbdchkSAC(int Popt,char *Pstr,KEYTBL **Pppkt,int *Ppshiftid) //~vb50R~
     }                                                              //~vb50I~
     *Pppkt=pkt;                                                    //~vb50M~
     *Ppshiftid=shiftid;                                            //~vb50I~
-    UTRACEP("%s:rc=%d,shiftid=%d,pkt=%p\n",UTT,rc,shiftid,pkt);    //~vb50R~
+    UTRACEP("%s:rc=%d,Pstr=%s,shiftid=%d,pkt=%p\n",UTT,rc,Pstr,shiftid,pkt);    //~vb50R~//~vbv8R~
     return rc;                                                     //~vb50R~
 }//xekbdchkSAC                                                     //~vb50I~
 //**************************************************************** //~vb50M~

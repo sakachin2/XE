@@ -1,8 +1,10 @@
-//*CID://+vba1R~:                                                  //~v7aDR~//+vba1R~
+//*CID://+vbv2R~:                  update#=  122221;               //~vbv2R~
 //**************************************************************** //~v780I~
 //xesyn2.h                                                         //~v780I~
 //**************************************************************** //~v780I~
-//vba1:170625 (BUG) syntaxh,podelmtbl overflow crash for long record of xesynl.cfg; expand max cmdlen 256-->512//+vba1I~
+//vbv2:221119 SyntaxHighlight;add option trate underline as reverse by C_UNDERLINE=R and G_UNDERLINE=R//~vbv2I~
+//vbv1:221118 SyntaxHighlight;support reverse attr                 //~vbv1I~
+//vba1:170625 (BUG) syntaxh,podelmtbl overflow crash for long record of xesynl.cfg; expand max cmdlen 256-->512//~vba1I~
 //vaaD:120114 install highlight-2.16                               //~v7aDI~
 //va7N:100905 simon's highlight parameter was changed at v3.1 ( -A is invalid for ansi, valid option is --//~v7aNI~
 //            "-A" is invalid for ansi, valid option is --out-format=ansi//~v7aNI~
@@ -40,8 +42,8 @@
 #define SHFNM_ERRORF   ".err"		//source-highlight stderr      //~v780R~
 #define SHFNM_ERRORF2  ".errexit"    //xeacb uerrexitmsg file      //~v780I~
                                                                    //~v780I~
-//#define SHMAX_CMDLEN   256                                         //~v780I~//+vba1R~
-#define SHMAX_CMDLEN   512                                         //+vba1I~
+//#define SHMAX_CMDLEN   256                                         //~v780I~//~vba1R~
+#define SHMAX_CMDLEN   512                                         //~vba1I~
 #define SH_DEFAULT_CMDNAME     "source-highlight"                  //~v780I~
 #define SH_DEFAULT_CMDOPT      "-f esc"                            //~v780I~
 //#define SH_DEFAULT_CMDOPT2     "-A"  //ansi option for andre-simon's Highlight-->invalid at v3.1//~v7atI~//~v7aNR~
@@ -92,15 +94,22 @@ typedef struct _SYNCFG {                                           //~v780I~
 #define SYNC_STYLE_BOLD      1                                     //~v780M~
 #define SYNC_STYLE_UNDERLINE 2                                     //~v780M~
 #define SYNC_STYLE_ITALIC    3                                     //~v780M~
-#define SYNC_STYLE_NOSYNTAX  4  //header line,pan etc              //~v780M~
-#define SYNC_MAXSTYLE   4                                          //~v780I~
+#define SYNC_STYLE_REVERSE   7                                     //~vbv1R~
+//#define SYNC_STYLE_NOSYNTAX  4  //header line,pan etc              //~v780M~//~vbv1R~
+//#define SYNC_MAXSTYLE   4                                          //~v780I~//~vbv1R~
+#define SYNC_MAXSTYLE   8                                          //~vbv1I~
+#define SYNC_STYLE_NOSYNTAX  SYNC_MAXSTYLE  //header line,pan etc  //~vbv1I~
 						UCHAR  SYNCstyleopt[SYNC_MAXSTYLE];        //~v780R~
 #define SYNC_STYLE_CUI_HIGH   0x01     //high intensity for CUI version//~v780R~
 #define SYNC_STYLE_GUI_HIGH   0x02     //high intensity for GUI version//~v780R~
+#define SYNC_STYLE_CUI_REVERSE 0x08    //treate underline/bold/itaric to reverse cmdline//~vbv2I~
+#define SYNC_STYLE_GUI_REVERSE 0x10    //treate underline/bold/itaric to reverse gui//~vbv2I~
 #ifdef WXEXXE                                                      //~v780I~
 	#define SYNC_STYLE_HIGH   SYNC_STYLE_GUI_HIGH                  //~v780R~
+	#define SYNC_STYLE_ALTREV SYNC_STYLE_GUI_REVERSE               //+vbv2R~
 #else                                                              //~v780I~
 	#define SYNC_STYLE_HIGH   SYNC_STYLE_CUI_HIGH                  //~v780R~
+	#define SYNC_STYLE_ALTREV SYNC_STYLE_CUI_REVERSE               //+vbv2R~
 #endif                                                             //~v780I~
 #define SYNC_STYLE_GUI_EACH   0x04     //apply each style          //~v780R~
                         char *SYNCshcmd;                           //~v780I~

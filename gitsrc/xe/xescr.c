@@ -1,8 +1,8 @@
-//*CID://+vbp3R~:                             update#=  439;       //+vbp3R~
+//*CID://+vbp3R~:                             update#=  441;       //~vbp3R~
 //***********************************************************
 //* xescr.c                                                     //~5513I~
 //***********************************************************   //~v016I~
-//vbp3:190709 (WinCons)no ime line needed anymore for screen height//+vbp3I~
+//vbp3:190709 (WinCons)no ime line needed anymore for screen height//~vbp3I~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
 //vb7o:170119 (Bug)Errmsg top 2 byte corrupted when msg is over 2line(MAXCOL*2)//~vb7oI~
@@ -529,10 +529,10 @@ static	VIOINTENSITY intensbgh={6,2,1};	//backbround highlight
                                                                    //~v0hgI~
 #else                                                              //~v085I~
 #ifdef W32                                                         //~v085I~
-//#ifndef WXE                                                      //~v500R~//+vbp3R~
-//	if (UCBITCHK(Gscrstatus,GSCRSDBCS))	//not englist mode         //~v0hgI~//+vbp3R~
-//  Gscrheight--;						//imm line                 //~v085I~//+vbp3R~
-//#endif //!WXE                                                    //~v500R~//+vbp3R~
+//#ifndef WXE                                                      //~v500R~//~vbp3R~
+//	if (UCBITCHK(Gscrstatus,GSCRSDBCS))	//not englist mode         //~v0hgI~//~vbp3R~
+//  Gscrheight--;						//imm line                 //~v085I~//~vbp3R~
+//#endif //!WXE                                                    //~v500R~//~vbp3R~
 #endif                                                             //~v085I~
 #endif                                                             //~v085I~
 //  psd=Spuscrd=UALLOCM((UINT)(USCRDSZ*Gscrheight*2));//data control tbl//~v04dR~//~vb2zR~
@@ -1532,6 +1532,7 @@ static int S1stclear=1;                                            //~v45BR~
             	if (insmodesw)                                     //~v51TI~
                 	insmodesw=2;		//hdr of "INS" is written  //~v51TI~
 //partial attr write with NCHAR/CHARSTR
+            UTRACEP("%s:i=%d,y=%d,USDflag=%d\n",UTT,i,y,psd->USDflag);//+vbp3R~
 			switch(psd->USDflag)
 			{
 #ifdef UTF8SUPPH                                                   //~va00R~

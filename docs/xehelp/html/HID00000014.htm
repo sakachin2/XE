@@ -12,7 +12,7 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> ********************
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">********************
   (B) セットアップ *
 ********************
 #ifdef UNX
@@ -42,15 +42,17 @@ a:hover{font-weight:bold;}-->
     S390側に unifont の導入が必要かもしれません (&quot;aptitude install unifont&quot;)。
 #else
    .コマンドプロンプト画面で操作します.
-   .<a href="HID00000038.htm">ワークのディレクトリー</a>を作って下さい,例えば md c:\xe.
-   （省略値は c:\xe_wd です。最初に立ち上げたときに自動的に作成します。）
+   .<a href="HID00000038.htm">ワークのディレクトリー</a>を作って下さい,例えば md <a href="file:///c:/xe">c:\xe</a>.
+    省略値は %USERPROFILE%\xe_wd (c:\Users\%USERNAME%\xe_wd) です。最初に立ち上げたときに自動的に作成します。
+    旧版の省略値は c:\xe_wd なのでこれがあれば継続使用します。
    .ワークデレクトリーで .LZH ファイルを解凍する,例えば unzip xewin.
     <a href="HID00000197.htm">INIファイル</a>はワークディレクトリーになければなりません
    .省略値以外を使用のときはワークディレクトリーを環境変数にセット,例えば set xe=c:\xe.
-    毎回では面倒なのでこれをautoexe.bat(OS/2ではconfig.sys)にいれます.
+    毎回では面倒なのでこれをDOSではautoexe.bat、OS/2ではconfig.sys にいれます.
     あるいは起動用のコマンドファイル .bat (OS/2では .cmd)を作成して
     そこに入れてもよい
-   .ワークディレクトリーに PATH を通す.あるいは xe.exe を PATH の通った
+    Windowsではコントロールパネルから環境変数を設定できます。
+  .ワークディレクトリーに PATH を通す.あるいは xe.exe を PATH の通った
     ディレクトリーに移動する
   #ifdef WXE
    .オンラインヘルプファイルwxe.hlpもwxe.exeと同じところにおいてください。
@@ -93,7 +95,7 @@ a:hover{font-weight:bold;}-->
 各版には各種コマンドラインツールも含まれています。
 パッケージ内容、変更履歴は<a href="HID00000456.htm">ReadMe</a>を参照してください。
 
-
+2022/12/04
 
 
 </SPAN></PRE>

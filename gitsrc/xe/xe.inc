@@ -755,6 +755,7 @@ $(EXE5):  \
      $(OBJDIR)xeutf2.OBJ $(CONCAT)
      $(OBJDIR)xeebc.OBJ $(CONCAT)
 !ENDIF                  #win
+     $(OBJDIR)xefunc.OBJ $(CONCAT)
      $(OBJDIR)xesub.OBJ
    $(OS2EXE5)
    $(OS2MAP5)

@@ -32,7 +32,8 @@ a:hover{font-weight:bold;}
   .v129N&lt;--129M:(2020/09/23)
   .v129P&lt;--129N:(2020/10/28)
   .v129Q&lt;--12PN:(2020/12/16)
-  .v129S&lt;--12PQ:(2020/12/24)
+  .v129S&lt;--12PQ:(2020/12/24)</SPAN><span class="auto-style1"> </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+  .v129T&lt;--129S:(2022/12/04)
 
      1.BUGs
        -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする
@@ -106,7 +107,13 @@ a:hover{font-weight:bold;}
        -(Linux:gxe) Gnome デスクトップのとき "&gt;"(コンソール窓を開く)コマンドが働かない(gnome-terminal のパラメータが廃止されていた)
        -(Linux:gxe) Xfce デスクトップのとき以下のWarningがでることがある
                     Gtk-Warning Calling org.xfce.Session.Manager IsInhibited failed...
-        -(Linux:xe) マウスドラッグでクラッシュする。
+       -(Linux:xe) マウスドラッグでクラッシュする。
+
+   (129T)
+       -=0.1 画面で sc 行の変更ができない
+         また S+C/S+A を設定してもできない S+ なしと同一視される
+         そのことで wxe でマウスによるカット&amp;ペーストが効かなくなる
+       -=0.2 画面で 行を削除するとキー割り当てができなくなる
 
      2.機能追加
 
@@ -215,6 +222,19 @@ a:hover{font-weight:bold;}
             on     :新たな type の指定がなければディレクトリーの指定に従う
             off    :ゲージを表示しない。ファイルの設定はリセットされるので次に on すると
                     ディレクトリーの設定が復活する
+     (129T)
+       -シンタックスハイライト
+        Andre Simon氏 の Highlight、GNU の source-highlightのANSI:反転属性をサポート。
+        また xesynl.cfg/::xesynl.cfg の C_UNDERLINE=R/G_UNDERLINE=R 指定で
+        アンダーライン属性を反転とすることも可能
+　     -CIDプレフィックスでユニコードをサポート
+        APL 言語では u-235d(⍝) がコメントプレフィックスなのでこれに対応。
+        ::xe.ini ファイルで次のような指定をして適用する拡張子を設定することも可能
+           Change_ID_Type_4 = 60 = u-235d= APL
+        この設定をすると "CID on APL" のように CIDタイプでAPLが指定できる
+        ユニコード使用の場合、言語環境によっては表示幅が異なるのでシェアーしている場合は注意が必要
+        例えばWindowsで2桁表示、Linuxで1桁表示の場合Windowsで更新行に付与されたCIDは        
+        LinuxではCIDと認識されません。従ってLinuxでの"cid clear"コマンドは0行を返すことになります
 
     3.その他
        -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加
@@ -272,7 +292,19 @@ a:hover{font-weight:bold;}
           Alt+u ON(コマンド入力行に =u=&gt; を表示)のときはUTF8コードをセット、
           Alt+u OFF(===&gt;)のとき変換エラー文字は時は"?"を
           変換できた時はローケールコードをセットする。
-     4.ツール。
+
+    (129T)
+      -Windows Terminal が Windows11 で 省略値のコマンドプロンプト PGM となった様ですが
+       行コマンドで不具合が生じることがあります。
+       旧コマンドプロンプトの c:\Windows\System32\conhost.exe を使用してください
+      -CID コマンドで APPEND のリセットを簡単にするため NOAPPEND オプションを追加
+      -=0.1 画面で "#" で始まるコメント記述をサポート。
+      -=0.2、=0.3 画面の見直し。
+       罫線文字も見直し、ユニコードの省略値を追加
+      -(Win)ワークディレクトリーの省略値の場所を C:\ から C:\users\[username]\に変更
+       既に C:\xe_wd がある場合は継続してこれを使用するが新規導入から適用
+
+    4.ツール。
      (129C)
        -xprint v9.38
         ./Tabon: パラメータサポート追加
@@ -360,7 +392,7 @@ xcfont Mangal H=* ; Codepage will be listed by &quot;xcv /list&quot;.
          例えば、/C$ 指定すると コマンド文字列内の $fp$ が フルパス名に置換される
         .相対パス指定の追加。%rp% が 開始ディレクトリからの相対パスに置換される
 
-
+*** 2022/12/04
 </SPAN></PRE>
 </BODY>
 </HTML>

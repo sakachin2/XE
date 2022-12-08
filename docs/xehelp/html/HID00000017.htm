@@ -7,7 +7,12 @@
 <TITLE>罫線入力</TITLE>
 <STYLE TYPE="text/css">
 <!--
-a:hover{font-weight:bold;}-->
+a:hover{font-weight:bold;}
+.auto-style1 {
+	font-family: "ＭＳ ゴシック";
+	font-size: 12pt;
+}
+-->
 </STYLE>
 </HEAD>
 <BODY bgcolor="#FFFFE2">
@@ -25,7 +30,8 @@ a:hover{font-weight:bold;}-->
       MS-WindowsからIOS-8859-1のsupersetのCP1252(WinLatin1)となり欧州言語に
       追い出され罫線文字はなくなりました。
       但しOEMコードページとして罫線表示が可能なようです。
-      xeでは日本語環境では日本語DOS,それ以外ではCP437によっています。
+      xeでは日本語環境ではShif-JIS, それ以外ではCP437によっています。
+
 #if defined(LNX) &amp;&amp; !defined(XXE)   //Linux Console version
       Linux コンソール版ではコードポイントをそのまま送っても罫線は描画されません。
       ACS呼び出しが必要なので罫線表示か欧州言語文字を表示するかは選択が必要です。
@@ -57,12 +63,44 @@ a:hover{font-weight:bold;}-->
                          xxxxとyyyyと両方指定するとShiftキーなしのとき
                          xxxxが、ShiftキーONときyyyyが書き出される。
                          例えば Alt+1でxxxx,Alt+Shft+1でyyyy。
+                         Hex指定は 0xxx1[xxx2... ]の形式
                          ユニコードの指定は u-xxx1[,xxxx2,...] の形式
+                         文字列の場合はロケールコードで指定してください(lchファイルはCPLC)
 #if defined(LNX)|| !defined(XXE))
                          但しLinux コンソール版ではシフトキーではなく
                          OPT LINECH が onのとき xxxx, off のとき yyyyが使用されます。
 #endif
-                         尚、UTF8文字は別モジュール(xeu,wxeu,gxeu)でサポートしています。
+               UTF8ファイルへの入力用に省略値としてAlt+Shift+nでUTF8コードを出力するように以下の設定をしてあります
+                   ╚ ╩ ╝ ╠ ╬ ╣ ╔ ╦ ╗ ═ ║
+               ユニコードではそれぞれ　255a,2569,255d,2560,256c,2563,2554,2566,2557,2550,2551
+               日本語環境ではCPLCファイル入力用に以下を省略値で設定しています
+                 Linux 版はEUCJPで
+                     0xa8b1 ┗ //1 :LLC low,left ,corner
+                     0xa8b5 ┻ //2 :LHS low,horz ,stopper
+                     0xa8b0 ┛ //3 :LRC low,right,corner
+                     0xa8b2 ┣ //4 :LVS low,vert ,stopper
+                     0xa8b6 ╋ //5 :CX center
+                     0xa8b4 ┫ //6 :RVS rig,vert ,stopper
+                     0xa8ae ┏ //7 :ULC up ,left ,corner
+                     0xa8b3 ┳ //8 :UHS up ,horz ,stopper
+                     0xa8af ┓ //9 :URC up ,right,corner
+                     0xa8ac ━ //10:HL horz ,line
+                     0xa8ad ┃ //11:VL vert ,line
+                 Windows 版はSJISで
+                     0x84af ┗ //1 :LLC low,left ,corner
+                     0x84b3 ┻ //2 :LHS low,horz ,stopper
+                     0x84ae ┛ //3 :LRC low,right,corner
+                     0x84b0 ┣ //4 :LVS low,vert ,stopper
+                     0x84b4 ╋ //5 :CX center
+                     0x84b2 ┫ //6 :RVS rig,vert ,stopper
+                     0x84ac ┏ //7 :ULC up ,left ,corner
+                     0x84b1 ┳ //8 :UHS up ,horz ,stopper
+                     0x84ad ┓ //9 :URC up ,right,corner
+                     0x84aa ━ //10:HL horz ,line
+                     0x84ab ┃ //11:VL vert ,line
+               wxeではLigatureモードON/OFFで見え方が異なるようです
+               xeではConhost(旧コマンドプロンプト)とTerminal(新コマンドプロンプト)でSJIS罫線の表示が異なるようです
+               Windows11ではCtrl+Shift+Pad-n は Numlockをオフにしないと Shift+ が検知できないようです
 
           ファイルの設定例。
               1=0xa8b1
@@ -84,6 +122,20 @@ a:hover{font-weight:bold;}-->
              1=03 2=15 3=04 4=19 5=10 6=17 7=01 8=16 9=02 h=06 v=05  (jpn DOS)
              1=e29494 2=e294b4 3=e29498 4=e2949c 5=e294bc 6=e294a4 7=e2948c 8=e294ac 9=e29490 h=e29480 v=e29482 (utf)
 
+             1=u-2514 h=u-2500 v=u-2502
+             1=u-2514 h=u-2500 v=u-2502
+             1=0x8b618b62,0x8b638b64
+             1=u-87fb,8abc,u-3041,3042,3043 //</SPAN></PRE>
+<PRE>
+&nbsp;</PRE>
+<PRE class="auto-style1">
+*** 2022/12/04</PRE>
+<PRE>
+&nbsp;</PRE>
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
 </SPAN></PRE>
+<PRE>
+&nbsp;</PRE>
 </BODY>
 </HTML>

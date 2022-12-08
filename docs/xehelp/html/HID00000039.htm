@@ -25,25 +25,46 @@ a:hover{font-weight:bold;}-->
              (注) c タイプの場合 // をコメントとみなすためにコンパイル
                   オプションが必要な場合があります
      このタイプ以外のファイルは <a href="HID00000065.htm">CID</a> コマンドで上のいずれかのタイプを
-     指定する(その編集画面でのみ有効)か <a href="HID00000197.htm">INI ファイル</a>で 変更タグIDと
-     拡張子の組み合わせのリストを追加指定する.
+     指定するか <a href="HID00000197.htm">INI ファイル</a>で 変更タグIDと
+     拡張子の組み合わせのリストを追加指定する.</SPAN></PRE>
+<PRE>
+      <SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">CIDプレフィックスとしてユニコード1文字をしてすることも可能。
+    ただしその拡張子のファイルはUTF8ファイルとして開いてください。
+    日付以外を設定する場合は次の CID Header を使用してください
+    例) (ini ファイルの指定 )
+       Change_ID_Type_C = 68 = "//" = C,H,CPP,HPP,JAVA
+       Change_ID_Type_ASM= 68 = ";;" = ASM
+       Change_ID_Type_DOC= 71 = "||" = DOC,ME
+       Change_ID_Type_4 = 60 = u-235d= APL
+    CID コマンドの CID-type オプションは最初の拡張子も指定できます
+    "cid on //" でも "cid on C" でもOK。
+
+
      あるいは,ファイルの 1 行目に特殊な行(CID Header)を書き込むことにより
      そのファイルだけに適用される任意のCID形式を設定できます.
      CID Header 行は "<a href="HID00000065.htm">CID</a> TOP","CID TOPA" コマンドでサンプル行を挿入
      することもできます。その形式は
      "CID:xx+XXXXR~yy:#nnn option=(option1,option2,...) update#=nnnnn;"
-     します。
-
-         CID: は CID 設定要求 ID の省略値,
+      例) //CID://+vbi3R~:#71 update#= 356;
+        CID: は CID 設定要求 ID の省略値,
               INI ファイルで指定変更できます.
               (Fixed_CID_prefix 指定,最大 15 バイト)
          xx   は //,;;,|| などファイル拡張子により決まる CID の最初の
               2 文字と同じものか 或は任意の2文字を指定する.DBCSは不可.
+              UTF8 ファイルではユニコード1文字指定も可能
+              例えば APL 言語のコメントは u-235d(UTF8:e28d9d)なのでHeader行は次のようになる
+                "⍝ CID:⍝+DATER~: update#=    1" 
+              表示上はスペースが挟まれていることがあるがレコード上はスーペースは挟まないこと。
+             １カラム表示のユニコードの場合は
+              "//*CID:À+v001R~:#71 update#= 29;"
+              ユニコード使用の場合、言語環境によっては表示幅が異なるのでシェアーしている場合は注意が必要
+              例えばWindowsで2桁表示、Linuxで1桁表示の場合Windowsで更新行に付与されたCIDは 
+              LinuxではCIDと認識されません。従ってLinuxでの"cid clear"コマンドは0行を返すことになります
          XXXX は任意の 4 文字の CID. 例えば V1.5 などと指定する.
-              DBCSは不可. DATE と指定すると ymdd(年月日)を設定します.
+              ASCII文字のみ可. DATE と指定すると ymdd(年月日)を設定します.
               NONE と指定するとCIDは設定されません,CIDは設定しないが
               option=を設定したい時に使用します.
-         yy   は 0 から 2 バイトまでの任意の後置文字.DBCSは不可。
+         yy は 0 から 2 バイトまでの任意の後置文字. ASCII文字のみ可。
               省略可能です。
          nnn  は 1 から 256 までのCID設定桁位置を指定する
               このオプションを指定しない時は事前定義のCIDタイプでは
@@ -64,7 +85,11 @@ a:hover{font-weight:bold;}-->
                     x : 0:非保護,1:保護, 省略値は P1.
            tabclear:保存時にタブをスペースに置換する。
          update#=の指定は任意です.指定があるとこのワードの後に
-         保存の度に１アップするファイルの更新回数を自動設定します。
+         保存の度に１アップするファイルの更新回数を自動設定します。</SPAN></PRE>
+<PRE>
+&nbsp;</PRE>
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">*** 2022/12/04
 </SPAN></PRE>
 </BODY>
 </HTML>
