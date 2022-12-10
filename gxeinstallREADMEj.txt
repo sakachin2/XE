@@ -2,7 +2,33 @@ UTF8 encoding         V129T 2022/12/04
 (L) 直近のinstall トラブル対応。    解決しない場合は(A)以降を参照
 	・gxe-xxx.tar.gz を "tar -zxvf" で解凍し、"./configure && make" する。
       コンパイルが成功したら、sudo make install で /usr/local/binに copy。
-    ・./configure でのトラブル。debian11 の場合(2022/12/04)
+
+(L2)./configure でのトラブル。CentOS Stream 9 の場合(2022/12/10)
+
+    configure: error: no acceptable C compiler found in $PATH
+    ==>yum install gcc
+
+    configure: error: "FATAL:term.h not found. Install ncurses-devel."
+    ==>yum provides */term.h|grep curses
+       yum search ncurses-devel
+       yum install ncurses-devel.x86_64
+
+    configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
+    ===yum provides */cups/cups.h|grep devel
+       yum search cups-devel
+       yum install cups-devel.x86_64
+
+    error: install GTK2(>=2.10.0) or GTK3(>=3.4.0) if NOT enable-gxe=no.
+    ==>yum provides  gtk3
+       yum search    gtk3-devel
+       yum install   gtk3-devel.x86_64
+
+    configure: error: !!! libgnome-2.0 installation required, OR specify --enable-libgnome2=no with glib-2.0 gio-2.0 installed.configure: error: !!! libgnome-2.0 installation required, OR specify --enable-libgnome2=no with glib-2.0 gio-2.0 installed.
+    ==>./configure --enable-libgnome2=no
+
+	Now, you can do make.
+
+(L1)./configure でのトラブル。debian11 の場合(2022/12/04)
 
         configure: error: in `/home2/Projects/gxeinsttestdebian/gxe-1.29':
         configure: error: no acceptable C compiler found in $PATH

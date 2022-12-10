@@ -2,7 +2,32 @@ V129T 2022/12/04
 (L) Latest install trouble shooting.    Reffer following (A) if not fixed.
 	= open by "tar -zxvf gxe-xxx.tar.gz", then run "./configure && make".
       After successfull compilation, run "sudo make install" to copy bin to‚Å /usr/local/bin.
-    = TroubleShooting for ./configure (case of debian11. 2022/12/04).
+(L2)= TroubleShooting for ./configure (case of CentOS stream 9. 2022/12/10).
+
+    configure: error: no acceptable C compiler found in $PATH
+    ==>yum install gcc
+
+    configure: error: "FATAL:term.h not found. Install ncurses-devel."
+    ==>yum provides */term.h|grep curses
+       yum search ncurses-devel
+       yum install ncurses-devel.x86_64
+
+    configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
+    ===yum provides */cups/cups.h|grep devel
+       yum search cups-devel
+       yum install cups-devel.x86_64
+
+    error: install GTK2(>=2.10.0) or GTK3(>=3.4.0) if NOT enable-gxe=no.
+    ==>yum provides  gtk3
+       yum search    gtk3-devel
+       yum install   gtk3-devel.x86_64
+
+    configure: error: !!! libgnome-2.0 installation required, OR specify --enable-libgnome2=no with glib-2.0 gio-2.0 installed.configure: error: !!! libgnome-2.0 installation required, OR specify --enable-libgnome2=no with glib-2.0 gio-2.0 installed.
+    ==>./configure --enable-libgnome2=no
+
+	Now, you can do make.
+
+(L1)= TroubleShooting for ./configure (case of debian11. 2022/12/04).
 
         configure: error: in `/home2/Projects/gxeinsttestdebian/gxe-1.29':
         configure: error: no acceptable C compiler found in $PATH
