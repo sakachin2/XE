@@ -1,7 +1,60 @@
-UTF8 encoding         V129T 2022/12/04 
-(L) 直近のinstall トラブル対応。    解決しない場合は(A)以降を参照
-	・gxe-xxx.tar.gz を "tar -zxvf" で解凍し、"./configure && make" する。
-      コンパイルが成功したら、sudo make install で /usr/local/binに copy。
+UTF8 encoding         V129T 2022/12/12
+V129U 2022/12/11 
+
+古い Linux バージョンについては(A)以降を参照
+gxe-xxx.tar.gz を "tar -zxvf" で解凍し、"./configure && make" する。
+コンパイルが成功したら、make install で /usr/local/binに 導入。
+
+--------------------------------------------------------------------
+
+(M) V129U (--enable-libgnome2=no is now not required)
+
+(M1) on Debian11
+
+configure: error: no acceptable C compiler found in $PATH
+
+==>	apt-get install gcc
+
+configure: error: "FATAL:term.h not found. Install ncurses-devel."
+==>	apt-file search /term.h
+   	if apt-file not found
+		apt-get install apt-file
+		apt-file update
+   	fi
+	apt-get install libncurses-dev
+
+configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
+==>	apt-file search cups/cups.h
+	apt-get install libcups2-dev
+
+configure: error: "FATAL:libglib2 is required if libgnome2 is not installed"
+==>	apt-file search libglib2
+	apt-get install libglib2.0-dev
+
+configure: error: install GTK2(>=2.10.0) or GTK3(>=3.4.0) if NOT enable-gxe=no.
+==>	apt-file search /gtk/gtk.h
+	apt-get install libgtk-3-dev
+
+(M2) on CentOS Stream 9
+
+configure: error: no acceptable C compiler found in $PATH
+==>	yum install gcc
+
+configure: error: "FATAL:term.h not found. Install ncurses-devel."
+==>	yum provides */term.h|grep ncurses
+	yum install ncurses-devel
+
+configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
+==>	yum provides */cups/cups.h
+	yum install cups-devel
+
+checking for glib-2.0... no
+configure: error: "FATAL:libglib2 is required if libgnome2 is not installed"
+==>	yum provides */gtk.h
+	yum install gtk3-devel
+
+
+(L) v129T
 
 (L2)./configure でのトラブル。CentOS Stream 9 の場合(2022/12/10)
 

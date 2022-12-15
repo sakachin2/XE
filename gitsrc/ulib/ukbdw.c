@@ -1,8 +1,8 @@
-//CID://+v724R~:             update#=  193                         //+v724R~
+//CID://+v724R~:             update#=  198                         //~v724R~
 //*************************************************************
 //*ukbdpeek/ukbdcharin/ukbdsetrate/ukbdsetstate                 //~5104R~
 //*************************************************************
-//v724:201214 (WIN)like as LNX(ukbdl), set F2L err for char12 and CPU8 file//+v724I~
+//v724:201214 (WIN)like as LNX(ukbdl), set F2L err for char12 and CPU8 file//~v724I~
 //v723:201212 (WXE)/C1252 on Japanese env;DE kbd input is ignored by keyevent.wVirtusalKeycode!=0//~v723I~
 //v722:201212 (W32)Drop -Nm option. it may be used for wxe+IME     //~v722I~
 //v701:200611 usystem hung warning                                 //~v701I~
@@ -1039,7 +1039,7 @@ static KBDKEYINFO Simekeyinfo;                                     //~v5n8I~
 #ifdef UTF8SUPPH                                                   //~v5n8I~
 	int utf8len;                                                   //~v5n8I~
 #endif                                                             //~v5n8I~
-    int rc2;                                                       //+v724I~
+    int rc2;                                                       //~v724I~
 //**********************                                           //~v5n8I~
 	if (Smbsoffs<Smbslen)	//remaining previous mbs input         //~v5n8I~
     {                                                              //~v5n8I~
@@ -1103,7 +1103,7 @@ UTRACED("inprec",Ppinprec,sizeof(INPUT_RECORD));                   //~v5n8M~
 #endif //AAA                                                       //~v722I~
 #endif                                                             //~v62rI~
       {                                                            //~v62rI~
-       rc2=                                                        //+v724I~
+       rc2=                                                        //~v724I~
 		ukbd_u2m(0,ucs,Smbs,&mbslen);                              //~v5n8I~
         ch=Smbs[0];                                                //~v5n8I~
         if (mbslen>1)                                              //~v5n8I~
@@ -1115,8 +1115,8 @@ UTRACED("inprec",Ppinprec,sizeof(INPUT_RECORD));                   //~v5n8M~
         }                                                          //~v5n8I~
         else                                                       //~v5n8I~
 		    Ppkinfo->bNlsShift=KBDNLS_F2L_SBCS;                    //~v5n8I~
-        if (rc2>1)                                                 //+v724I~
-		    Ppkinfo->bNlsShift|=KBDNLS_F2L_ERR;                    //+v724I~
+        if (rc2>1)                                                 //~v724I~
+		    Ppkinfo->bNlsShift|=KBDNLS_F2L_ERR;                    //~v724I~
 #ifdef UTF8SUPPH                                                   //~v5n8I~
 		utf8len=uccvucs2utf((ULONG)ucs,Ppkinfo->u8str);            //~v5n8R~
 		*(Ppkinfo->u8str+utf8len)=0;                               //~v5n8R~
@@ -1282,6 +1282,7 @@ DWORD ugetconsolemode(int Pid)                                     //~v6hdI~
 	  else                                                         //~v141I~
 		uerrapi1x("GetConsoleMode","STD_INPUT",GetLastError());    //~v034M~
     }                                                              //~v204I~
+    UTRACEP("%s:mode=0x%x,Pid=%d\n",UTT,oldmode,Pid);              //~v724I~
 	return oldmode;                                                //~v034M~
 }//ugetconsolemode                                                 //~v034M~
 //*******************************************************          //~v034M~
@@ -1305,7 +1306,7 @@ DWORD usetconsolemode(int Pid,UINT Pmode)                          //~v6hdI~
 //  if (!GetConsoleMode(hstdin,&oldmode))                          //~v141R~
 //  	uerrapi1x("GetConsoleMode","STD_INPUT",GetLastError());    //~v141R~
     oldmode=ugetconsolemode(Pid);                                  //~v141I~
-//UTRACEP("GetConsoleMode %08x\n",oldmode);                        //~v139R~
+UTRACEP("%s:before set GetConsoleMode=%08x,handle=%p\n",UTT,oldmode,hstdin);                        //~v139R~//+v724R~
 	if (!SetConsoleMode(hstdin,Pmode))                             //~v034M~
     {                                                              //~v5ncI~
 	  if (Pid)                                                     //~v141I~
@@ -1313,7 +1314,7 @@ DWORD usetconsolemode(int Pid,UINT Pmode)                          //~v6hdI~
 	  else                                                         //~v141I~
 		uerrapi1x("SetConsoleMode","STD_INPUT",GetLastError());    //~v034M~
     }                                                              //~v5ncI~
-//UTRACEP("SetConsoleMode %08x\n",Pmode);                          //~v139R~
+	UTRACEP("%s:after SetConsoleMode set=x%08x,getConsolemode() after set=x%x\n",UTT,Pmode,ugetconsolemode(Pid));                          //~v139R~//~v724R~
 	return oldmode;                                                //~v034M~
 }//usetconsolemode                                                 //~v034M~
 //*******************************************************          //~v5maI~
@@ -1578,6 +1579,7 @@ int ukbd_w95setstatus(PKBDINFO Ppkbdinfo)                          //~v137R~
         if (mask & KEYBOARD_ASCII_MODE)                            //~v034I~
         	mode|= ENABLE_PROCESSED_INPUT;                         //~v034I~
 		usetconsolemode(0,mode);	//std input                    //~v141R~
+    	UTRACEP("%s:kbd wcinit stat=0x%x,mask=0x%x,mode=0x%x\n",UTT,Swcstat,mask,mode);//~v724R~
 #endif //!WXE                                                      //~v5biI~
 		Skbdinfo=*Ppkbdinfo;                                    //~5104I~
 //#endif //!WXE                                                    //~v5biR~

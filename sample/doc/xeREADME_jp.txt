@@ -1,6 +1,6 @@
-UTF8 encodinng ||*CID:||+v29TR~:  2022/12/04                update#=  823;||~v29TR~
+UTF8 encodinng ||*CID:||+v29UR~:  2022/12/15                update#=  824;||+v29UR~
 ######################################################################
-[Japanese]    v1.29T  (Refer xeREADME_en.txt for English)             ||~v29TI~
+[Japanese]    v1.29U  (Refer xeREADME_en.txt for English)             ||~v29TI~||+v29UR~
 
 メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。||~129GR~
 ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。||~129GR~
@@ -525,9 +525,9 @@ Linux版はGUI版:gxe とTerminalEmulator版:xe があります。    ||~129GR~
 		::xe.ini ファイルで次のような指定をして適用する拡張子を設定することも可能||~v29TI~
           Change_ID_Type_4  = 60 = u-235d= APL                        ||~v29TI~
         この設定をすると "CID on APL" のように CIDタイプでAPLが指定できる||~v29TI~
-        ユニコード使用の場合、言語環境によっては表示幅が異なるのでシェアーしている場合は注意が必要||+v29TI~
-        例えばWindowsで2桁表示、Linuxで1桁表示の場合Windowsで更新行に付与されたCIDは||+v29TI~
-        LinuxではCIDと認識されません。従ってLinuxでの"cid clear"コマンドは0行を返すことになります||+v29TI~
+        ユニコード使用の場合、言語環境によっては表示幅が異なるのでシェアーしている場合は注意が必要||~v29TI~
+        例えばWindowsで2桁表示、Linuxで1桁表示の場合Windowsで更新行に付与されたCIDは||~v29TI~
+        LinuxではCIDと認識されません。従ってLinuxでの"cid clear"コマンドは0行を返すことになります||~v29TI~
                                                                       ||~v29TI~
      3.その他                                                         ||~v29TI~
        -Windows Terminal が Windows11 で 省略値のコマンドプロンプト PGM となった様ですが||~v29TI~
@@ -540,3 +540,13 @@ Linux版はGUI版:gxe とTerminalEmulator版:xe があります。    ||~129GR~
        -(Win)ワークディレクトリーの省略値の場所を C:\ から C:\users\[username]\に変更||~v29TI~
         既に C:\xe_wd がある場合は継続してこれを使用するが新規導入から適用||~v29TI~
                                                                       ||~v29TI~
+  .129U<--129T:(2022/12/15)                                           ||+v29UI~
+                                                                      ||+v29UI~
+     1.BUGs                                                           ||+v29UI~
+                                                                      ||+v29UI~
+     2.機能追加                                                       ||+v29UI~
+                                                                      ||+v29UI~
+     3.その他                                                         ||+v29UI~
+       -(LNX) ./configure で --enable-libgnome2=yes | no を自動で判断する様にした||+v29UI~
+       -(WIN:Console) WindowsTerminal 対応。conhost上動きとの違いに対応。||+v29UI~
+        行コマンド入力時の表示の乱れ、バイナリーファイルの表示の乱れなど||+v29UI~

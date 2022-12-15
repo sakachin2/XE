@@ -1,3 +1,11 @@
+//*********  20221215 v129U release  *******************************
+//v761:221214 for v760,chk parent to find WindowTerminal
+//           uproc2.c/h uvio.c
+//v760:221213 On Windows Terminal; qurious action; try panel width decrease one without checking parent process is Terminal(old conhost is no problem)
+//            On English Env(by control panel locale setting) no problem about <20 char display, but at right edge should also reduced)
+//            WindowsTerminal is not on parent path of xe.
+//           uvio.c uviom.h
+//*********  20221207 v129T released *******************************
 //v750:221120 warning ftime deprecated for UTSSTART/UTSEND when TRACE=YES
 //           utrace.h
 //*********  20201224 v129S release     ****************

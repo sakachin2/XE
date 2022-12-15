@@ -1,6 +1,6 @@
-UTF8 encoding ||*CID:||+v29TR~:  2022/12/04                update#=  825;||~v29TR~
+UTF8 encoding ||*CID:||+v29UR~:  2022/12/15                update#=  826;||~v29TR~||+v29UR~
 ######################################################################
-[English]    v1.29T                                                   ||~v129R~||~v29TR~
+[English]    v1.29U                                                   ||~v129R~||~v29TR~||+v29UR~
 
 This editor is fit for programmers working on both main-frame and PC.
 Its operation is based on mainframe SPF editor,
@@ -545,3 +545,14 @@ How to execute.
 	   -(Win) Changed default location of work directory from C:\ to C:\users\[username]\.||~v29TI~
         If you already have C:\xe_wd, it continue to be used, it is applied from new installation.||~v29TI~
                                                                       ||~v29TI~
+  .v129U<--129T:(2022/12/15)                                          ||+v29UI~
+                                                                      ||+v29UI~
+     1.BUGs                                                           ||+v29UI~
+                                                                      ||+v29UI~
+     2.Additional function.                                           ||+v29UI~
+                                                                      ||+v29UI~
+     3.Miscellaneous.                                                 ||+v29UI~
+	   -(LNX) In ./configure Automatically detect --enable-libgnome2=yes | no.||+v29UI~
+       -(WIN:Console) Supports WindowsTerminal.                       ||+v29UI~
+        Corresponds to the difference between WindosTerminal and Conhost.||+v29UI~
+        Distortion of the display when entering a line command, display of a binary file, etc.||+v29UI~

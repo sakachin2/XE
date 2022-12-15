@@ -1,9 +1,10 @@
-//*CID://+v6T7R~:                             update#=  422;       //+v6T7R~
+//*CID://+v761R~:                             update#=  436;       //~v761R~
 //************************************************************* //~5825I~
 //*uproc2.c                                                        //~v5euR~
 //* parse-redirect,rsh                                             //~v5euR~
 //*************************************************************    //~v022I~
-//v6T7:180220 stack errmsg to errmsg.<pid> and issue notification at initcomp//+v6T7I~
+//v761:221214 for v760,chk parent to find WindowTerminal           //~v761I~
+//v6T7:180220 stack errmsg to errmsg.<pid> and issue notification at initcomp//~v6T7I~
 //v6T6:180219 icu loaderr clear errmsg from ini file,stdout from loaderr//~v6T6I~
 //v6M3:170824 (Lnx) putenv to LD_LIRARY_PATH is not effective(loader chk it at pgm startup and ignore putenv after startup)//~v6M3I~
 //v6M2:170824 (Bug)v6M0 faile if path is multiple devided by ";"/":"//~v6M2I~
@@ -52,6 +53,8 @@
 	#include <process.h>                                           //~v5g1I~
     #ifdef W32                                                     //~v5kuI~
 		#include <windows.h>	         //v1.3 add                //~v5kuI~
+		#include <tlhelp32.h>                                      //~v6T7I~
+		#include <Psapi.h>                                         //~v6T7I~
     #endif                                                         //~v5kuI~
 #endif                                                             //~v5ewR~
                                                                    //~v022I~
@@ -69,6 +72,7 @@
 #include <ufemsg.h>                                                //~v5euI~
 #include <utrace.h>                                                //~v5mPI~
 #include <udos2.h>                                                 //~v6M0I~
+#include <ustring.h>                                               //~v761I~
 //*********************************************                    //~v064R~
 //*********************************************                    //~v064R~
 //**************************************************************** //~v50HI~
@@ -546,8 +550,8 @@ int uproc_loaddllpath(int Popt,char *Ppath,char *Pdllname,char *Pversion,ULPTR *
         ||  (Popt & UPLD_DELEMSG))        //ugeterrmsg to delete previous uerrmsg//~v6M2I~
         {                                                          //~v6M0I~
 //      	uerrmsg(" retry by %s was scceeded",0,                 //~v6M0I~//~v6T6R~
-//      	uerrmsgcat(" retry by %s was scceeded",0,              //~v6T6I~//+v6T7R~
-        	uerrmsg(" retry by %s was scceeded",0,   //written to error.pid//+v6T7I~
+//      	uerrmsgcat(" retry by %s was scceeded",0,              //~v6T6I~//~v6T7R~
+        	uerrmsg(" retry by %s was scceeded",0,   //written to error.pid//~v6T7I~
             		dllname);	//to stdout                        //~v6M0I~
 //          ugeterrmsg();	//clear errmsg on hdr line of xe       //~v6M0I~//~v6T6R~
         }                                                          //~v6M0I~
@@ -627,8 +631,8 @@ int uproc_loaddll(int Popt,char *Pdllname,char *Pversion,ULPTR *Pphandle)//~v6hh
 #ifdef W32                                                         //~v5mPI~
     	rc=GetLastError();                                         //~v5mPM~
 //  	uerrmsg("LoadLibrary failed for %s,lasterr=%d",0,          //~v5mPM~//~v6T6R~
-//  	uerrmsgcat("LoadLibrary(%s) failed,lasterr=%d, adjust ::xeebc.map if not use ICU.",0,//~v6T6R~//+v6T7R~
-    	uerrmsg("LoadLibrary(%s) failed,lasterr=%d, adjust ::xeebc.map if not use ICU.",0,//+v6T7I~
+//  	uerrmsgcat("LoadLibrary(%s) failed,lasterr=%d, adjust ::xeebc.map if not use ICU.",0,//~v6T6R~//~v6T7R~
+    	uerrmsg("LoadLibrary(%s) failed,lasterr=%d, adjust ::xeebc.map if not use ICU.",0,//~v6T7I~
         		pdllname,rc);                                      //~v5mPM~
 #else       //LNX                                                  //~v5mPI~
 		rc=errno;                                                  //~v5mPI~
@@ -637,8 +641,8 @@ int uproc_loaddll(int Popt,char *Pdllname,char *Pversion,ULPTR *Pphandle)//~v6hh
 //        uerrmsg("LoadLibrary(dlopen) failed for %s by errno=%d",0,//~v6fiR~
 //                pdllname,rc);                                    //~v6fiR~
 //      uerrmsg("LoadLibrary(dlopen) failed for %s(check LD_LIBRARY_PATH). ",0,//~v6fiR~//~v6T6R~
-//      uerrmsgcat("dlopen(%s) failed(chk LD_LIBRARY_PATH), or adjust xeebc.map if no use ICU.",0,//~v6T6R~//+v6T7R~
-        uerrmsg("dlopen(%s) failed(chk LD_LIBRARY_PATH), or adjust xeebc.map if no use ICU.",0,//+v6T7I~
+//      uerrmsgcat("dlopen(%s) failed(chk LD_LIBRARY_PATH), or adjust xeebc.map if no use ICU.",0,//~v6T6R~//~v6T7R~
+        uerrmsg("dlopen(%s) failed(chk LD_LIBRARY_PATH), or adjust xeebc.map if no use ICU.",0,//~v6T7I~
                 pdllname);                                         //~v6fiI~
         if (!rc)                                                   //~v6fhI~
         	rc=ENOENT;                                             //~v6fhI~
@@ -772,3 +776,103 @@ int uproc_getprocaddr(int Popt,char *Pdllname,char *Pdllversion,char *Pprocname,
     return rc;                                                     //~v5mPM~
 }//uproc_getprocaddr                                               //~v5mPM~
 #endif                                                             //~v5mPI~
+#ifdef W32                                                         //~v761R~
+//*****************************************************************//~v761R~
+int getProcessName(int Ppid,char *Pfname,int Psz)                  //~v761R~
+{                                                                  //~v761R~
+    UTRACEP("%s:Ppid=%d\n",UTT,Ppid);                              //~v761I~
+    *Pfname=0;                                                     //~v761I~
+    HANDLE h = NULL;                                               //~v761R~
+    *Pfname=0;                                                     //~v761R~
+    int e = 0;                                                     //~v761R~
+    h = OpenProcess                                                //~v761R~
+    (                                                              //~v761R~
+        PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,               //~v761R~
+        FALSE,                                                     //~v761R~
+        Ppid                                                       //~v761R~
+    );                                                             //~v761R~
+    if (h)                                                         //~v761R~
+    {                                                              //~v761R~
+//      if (GetModuleFileNameEx(h, NULL, fname, sz) == 0)          //~v761R~
+		if (GetProcessImageFileName(h,Pfname,Psz)==0)              //~v761R~
+            e = GetLastError();                                    //~v761R~
+        CloseHandle(h);                                            //~v761R~
+    }                                                              //~v761R~
+    else                                                           //~v761R~
+    {                                                              //~v761R~
+        e = GetLastError();                                        //~v761R~
+    }                                                              //~v761R~
+    UTRACEP("%s:Ppid=%d,error=%d,name=%s\n",UTT,Ppid,e,Pfname);    //~v761I~
+    return (e);                                                    //~v761R~
+}                                                                  //~v761R~
+//*****************************************************************//~v761R~
+int getParentPID(int Ppid)                                         //~v761R~
+{                                                                  //~v761R~
+    HANDLE h = NULL;                                               //~v761R~
+    PROCESSENTRY32 pe = { 0 };                                     //~v761R~
+    DWORD ppid = 0;                                                //~v761R~
+    UTRACEP("%s:Ppid=%d\n",UTT,Ppid);                              //~v761R~
+    pe.dwSize = sizeof(PROCESSENTRY32);                            //~v761R~
+    h = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);           //~v761R~
+    char fnm[MAX_PATH];                                            //~v761R~
+    if( Process32First(h, &pe))                                    //~v761R~
+    {                                                              //~v761R~
+        do                                                         //~v761R~
+        {                                                          //~v761R~
+        	UTRACEP("%s:Ppid=%d,t32ProcessID=%d,parentPID=%d,name=%s\n",UTT,Ppid,pe.th32ProcessID,pe.th32ParentProcessID,(getProcessName(pe.th32ProcessID,fnm,(int)sizeof(fnm)),fnm));//~v761R~
+            if (pe.th32ProcessID == (DWORD)Ppid)                   //~v761R~
+            {                                                      //~v761R~
+                ppid = pe.th32ParentProcessID;                     //~v761R~
+                break;                                             //~v761R~
+            }                                                      //~v761R~
+        } while( Process32Next(h, &pe));                           //~v761R~
+    }                                                              //~v761R~
+    CloseHandle(h);                                                //~v761R~
+    UTRACEP("%s:return=%d,name=%s\n",UTT,ppid,fnm);                //~v761R~
+    return (ppid);                                                 //~v761R~
+}                                                                  //~v761R~
+//*****************************************************************//~v761I~
+//*chk console is conhost or windowsTermminal                      //~v761I~
+//*0:unknown,1:conhost,2:Terminal                                  //~v761I~
+//*****************************************************************//~v761I~
+int chkTerminal()                                                  //~v761I~
+{                                                                  //~v761I~
+	int pid,ppid,rc=0,rc2;                                         //~v761I~
+    char fnm[MAX_PATH];                                            //~v761I~
+	static char *Sterminal="\\WindowsTerminal.exe";                //~v761R~
+	static char *Sconhost="\\conhost.exe";                         //~v761R~
+//************************                                         //~v761I~
+	pid=ugetpid();	//current pid                                  //~v761I~
+    UTRACEP("%s,currpid=%d\n",UTT,pid);                            //+v761I~
+	ppid=getParentPID(pid);                                        //~v761I~
+    if (ppid!=0)                                                   //~v761I~
+    {                                                              //~v761I~
+		rc2=getProcessName(ppid,fnm,(int)sizeof(fnm));             //~v761I~
+    	UTRACEP("%s,parent=%d=%s\n",UTT,ppid,fnm);                 //+v761I~
+        if (rc2==0)                                                //~v761I~
+        {                                                          //~v761I~
+        	if (ustrstri(fnm,Sterminal))                           //~v761I~
+            	rc=2;	                                           //~v761I~
+            else                                                   //~v761I~
+        	if (ustrstri(fnm,Sconhost))                            //~v761I~
+            	rc=1;                                              //~v761I~
+        }                                                          //~v761I~
+        if (!rc)                                                   //~v761I~
+        {                                                          //~v761I~
+			ppid=getParentPID(ppid);                               //~v761I~
+            rc2=getProcessName(ppid,fnm,(int)sizeof(fnm));         //~v761I~
+	    	UTRACEP("%s,parent of parent=%d=%s\n",UTT,ppid,fnm);   //+v761I~
+            if (rc2==0)                                            //~v761I~
+            {                                                      //~v761I~
+                if (ustrstri(fnm,Sterminal))                       //~v761I~
+                    rc=2;                                          //~v761I~
+                else                                               //~v761I~
+                if (ustrstri(fnm,Sconhost))                        //~v761I~
+                    rc=1;                                          //~v761I~
+            }                                                      //~v761I~
+        }	                                                       //~v761I~
+    }                                                              //~v761I~
+    UTRACEP("%s:rc=%d,currpid=%d\n",UTT,rc,pid);                   //~v761I~
+    return rc;                                                     //~v761I~
+}                                                                  //~v761I~
+#endif                                                             //~v761R~

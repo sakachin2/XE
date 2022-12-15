@@ -1,8 +1,9 @@
-//*CID://+vbk0R~:                             update#=  453;       //~vbk0R~
+//*CID://+vbx4R~:                             update#=  465;       //~vbx4R~
 //*************************************************************
 //*xefile6.c  *                                                    //~va00R~
 //* tab                                                            //~v0bzR~
 //*************************************************************
+//vbx4:221214 qurious on WinddowsTerminal                          //~vbx4I~
 //vbk0:180531 width0 over(map_entry) is shown as unprintable       //~vbk0I~
 //vb4y:160814 set same attr to UNICOMB UNPR altch for edit panel as dirlist//~vb4yI~
 //vb3x:160621 ffff is treated as dbcsspace on dirlist. tabdisplay set dbcs space to ffff/()//~vb3xI~
@@ -114,6 +115,9 @@
 //  #include <os2.h>                                               //~v07sR~
 #endif
 //*******************************************************
+#ifdef WINCON                                                      //~vbx4I~
+	#include <windows.h>	                                       //~vbx4I~
+#endif                                                             //~vbx4I~
 #include <ulib.h>
 #include <uerr.h>
 #include <uque.h>
@@ -128,6 +132,10 @@
 #include <utf22.h>                                                 //~va20I~
 #endif                                                             //~va20I~
 #include <ucvebc.h>                                                //~va50I~
+#ifdef WINCON                                                      //~vbx4I~
+#define UVIOMDEFONLY	//for uviom.h                              //~vbx4I~
+#include <uviom.h>                                                 //~vbx4I~
+#endif                                                             //~vbx4I~
                                                                 //~5318I~
 #include "xe.h"
 #include "xescr.h"
@@ -521,7 +529,7 @@ int filecvf2lsetdbcs(int Popt,PUFILEH Ppfh,PULINEH Pplh,int *Ppnewlen)//~va1cR~
             memset(pdbcs,0,(size_t)len);	//cvf2lsetdbcs set it  //~vb28I~
     	Pplh->ULHlen=lenlc;                                        //~va00R~
     }                                                              //~va00I~
-//  UTRACED("filecvf2lsetdbcs",Pplh->ULHdata,Pplh->ULHlen);        //+vbk0R~
+//  UTRACED("filecvf2lsetdbcs",Pplh->ULHdata,Pplh->ULHlen);        //~vbk0R~
     if (Ppnewlen)                                                  //~va1cR~
     	*Ppnewlen=Pplh->ULHlen;                                    //~va1cR~
     return rc;                                                     //~va00R~
@@ -1427,6 +1435,22 @@ UTRACEP("getdbcsspace %02x%02x\n",dbcsspace[0],dbcsspace[1]);      //~va15I~
     return 0;                                                      //~va15I~
 }//getdbcsspace                                                    //~va15I~
 #endif                                                             //~va15I~
+#ifdef WINCON                                                      //~vbx4I~
+//**************************************************************** //~vbx4I~
+//* chk not defined on Gunpdispchartbl but invalid on Windows Terminal//~vbx4I~
+//* rc=1:unprintable                                               //~vbx4I~
+//**************************************************************** //~vbx4I~
+int isPrintOnWindows(UCHAR Pch)                                    //~vbx4I~
+{                                                                  //~vbx4I~
+	int rc;                                                        //+vbx4R~
+	if (GunprintableOnTerminal)	//default unprintable by console cp//~vbx4R~
+		rc=Pch<0x20 && GunprintableOnTerminal[Pch]=='0';           //~vbx4R~
+    else                                                           //+vbx4I~
+        rc=1;   //on conhost                                       //+vbx4I~
+	UTRACEP("%s:ch=0x%x,rc=%d\n",UTT,Pch,rc);                      //~vbx4I~
+    return rc;                                                     //~vbx4R~
+}                                                                  //~vbx4I~
+#endif //WINCON                                                    //~vbx4I~
 //****************************************************************
 // tabdisplay
 //*display tab char,dbcs space if japanese mode                 //~5502R~
@@ -1650,7 +1674,13 @@ UTRACED("tabdisplay dbcs in",Pdbcs,Plen);                          //~va46I~
 //                }                                                //~va20R~
 //#endif                                                           //~va20R~
                 else                                               //~va20R~
-        		if(Gunpdispchartbl[*pc]   	//unprintable          //~va20R~
+//      		if(Gunpdispchartbl[*pc]   	//unprintable          //~va20R~//~vbx4R~
+        		if( (                                              //~vbx4I~
+        		    	Gunpdispchartbl[*pc]   	//unprintable      //~vbx4I~
+        #ifdef WINCON                                              //~vbx4I~
+              		|| (*pc<0x20 && !isPrintOnWindows(*pc))  //not defined on Gunpdispchartbl but invalid on Windows Terminal//~vbx4I~
+        #endif                                                     //~vbx4I~
+                    )                                              //~vbx4I~
 //#ifdef UTF8UCS4                                                    //~va3xR~//~vaw1R~
 #ifdef UTF8UCS416                                                  //~vaw1I~
                 && !UDBCSCHK_DBCS2NDUCS2NWO(dbcsid)  //set "." by setdbcssplit2,=func_draw//~va3xI~
@@ -1764,6 +1794,9 @@ UTRACED("tabdisplay dbcs in",Pdbcs,Plen);                          //~va46I~
 #else                                                              //~va6CI~
     #ifndef WXE //wxe adjust by setup dialog codepage              //~va74I~
               || (*pc>0x20 && !UDBCSCHK_ISPRINT(*pc)) //unprintable by converter//~va6CI~
+        #ifdef WINCON                                              //~vbx4I~
+              || (*pc<0x20 && !isPrintOnWindows(*pc))  //not defined on Gunpdispchartbl but invalid on Windows Terminal//~vbx4I~
+        #endif                                                     //~vbx4I~
     #endif                                                         //~va74I~
 #endif                                                             //~va6CI~
               )                                                    //~va6vI~

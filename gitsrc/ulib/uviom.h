@@ -1,6 +1,7 @@
-//*CID://+v6X7R~:                             update#=  182;       //+v6X7R~
+//*CID://+v760R~:                             update#=  192;       //~v760R~
 //******************************************************           //~v5n8I~
-//v6X7:180820 MXCOMBINE=8 for tibetan who says. but 4 for LNX Console by curses limitation//+v6X7I~
+//v760:221213 On Windows Terminal; qurious action; try panel width decrease one without checking parent process is Terminal(old conhost is no problem)//~v760I~
+//v6X7:180820 MXCOMBINE=8 for tibetan who says. but 4 for LNX Console by curses limitation//~v6X7I~
 //v6Ww:180807 (W32:Bug)top panel LC line is corrupted,use not OutputW but OutputCharacterW.(See v6C8)//~v6WuI~
 //v6Wu:180806 for also console version:set altch for SCM when COMBINE_NP,green if not adter combinable.//~v6WuI~
 //v6Wr:180804 process SCM same as NSM(NonSpacing Mark)             //~v6WrI~
@@ -40,15 +41,15 @@
 #ifndef UVIOMDEFONLY                                               //~v6EmI~
 #ifndef __cplusplus                                                //~v6EjI~
 #ifdef WCSUPP                                                      //~v5n8I~
-#ifdef W32                                                         //+v6X7I~
-		#define UVIOM_MAXCOMBINE  8                                //+v6X7I~
-#else                                                              //+v6X7I~
-    #ifdef XXX                                                     //+v6X7I~
-		#define UVIOM_MAXCOMBINE  8                                //+v6X7I~
-    #else                                                          //+v6X7I~
+#ifdef W32                                                         //~v6X7I~
+		#define UVIOM_MAXCOMBINE  8                                //~v6X7I~
+#else                                                              //~v6X7I~
+    #ifdef XXX                                                     //~v6X7I~
+		#define UVIOM_MAXCOMBINE  8                                //~v6X7I~
+    #else                                                          //~v6X7I~
 #define UVIOM_MAXCOMBINE  4                                        //~v653R~
-    #endif                                                         //+v6X7I~
-#endif                                                             //+v6X7I~
+    #endif                                                         //~v6X7I~
+#endif                                                             //~v6X7I~
 #define UVIOM_MAXCOL      240 //sync with xe.h                     //~v652I~
 #define UVIOM_BUFFSZ      2                                        //~v5n8R~
 #ifdef UVIOW_GBLDEF                                                //~v5n8I~
@@ -175,6 +176,20 @@ int uvio_getcombinectr(int Popt,WUCS Pucs,int Pchwidth,chtype *Ppcht,UCHAR *Ppdb
 #endif                                                             //~v650I~
 #endif	//__cplusplus                                              //~v6EjI~
 #endif //UVIOMDEFONLY                                              //~v6EmI~
+#ifdef WINCON                                                      //+v760I~
+    #define GOPT_WT_CONHOST          0x01       //not windows terminal(New command prompt)//+v760M~
+    #define GOPT_WT_RCOLS            0x02   //Right edge column keep empty//+v760M~
+    #define GOPT_WT_CP437            0x10   //display control charcter by alt char over xe.ini definition//+v760M~
+    #define GOPT_WT_CP932            0x20   //display control charcter by alt char over xe.ini definition//+v760M~
+    #define IS_ON_TERMINAL()  (!(GoptWindowsTerminal & GOPT_WT_CONHOST))//+v760M~
+	#ifdef UVIOW_GBLDEF                                            //+v760I~
+	    int GoptWindowsTerminal;                                   //+v760I~
+    	char *GunprintableOnTerminal;                              //+v760I~
+    #else                                                          //+v760I~
+    	extern int GoptWindowsTerminal;                            //+v760I~
+        extern char *GunprintableOnTerminal;                       //+v760I~
+    #endif                                                         //+v760I~
+#endif                                                             //+v760I~
 //*uvio_xxx common option parameter                                //~v6EiI~
 #define UVIOO_LIGATURE1          0x01       //line accept ligature:on option//~v6EiR~
 #define UVIOO_FORCELIGATURE      0x02       //line force ligature mode//~v6EiI~

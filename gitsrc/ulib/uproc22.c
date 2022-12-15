@@ -1,9 +1,9 @@
-//*CID://+v6XaR~:                             update#=  424;       //+v6XaR~
+//*CID://+v6XaR~:                             update#=  425;       //+v6XaR~
 //************************************************************* //~5825I~
 //*uproc2.c                                                        //~v5euR~
 //* parse-redirect,rsh                                             //~v5euR~
 //*************************************************************    //~v022I~
-//v6Xa:180821 enumproc show fullpath(xp was shoing)                //+v6XaI~
+//v6Xa:180821 enumproc show fullpath(xp was shoing)                //~v6XaI~
 //v6X6:180819 (W32)enumproc optionally output fullpath exe name    //~v6X6I~
 //v6N0:171114 (Bug)ugetprocessuid have to chk handle=-1 to avoid read wait if xesyscmd was spawned//~v6N0I~
 //v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~v6L5I~
@@ -627,8 +627,8 @@ BOOL uenumpid(int Popt,CB_ENUMPID Pcbfunc,void *Pparm)             //~v5kvI~
          {                                                         //~v5ivI~
             if (pparentpid)                                        //~v5kvI~
             	*pparentpid=procentry.th32ParentProcessID;         //~v5kvI~
-//          if (Popt & UEPI_VERBOSE && swokPSAPI)	//  0x02	//output fullpath exe name//~v6X6I~//+v6XaR~
-            if (swokPSAPI)	//  0x02	//output fullpath exe name //+v6XaI~
+//          if (Popt & UEPI_VERBOSE && swokPSAPI)	//  0x02	//output fullpath exe name//~v6X6I~//~v6XaR~
+            if (swokPSAPI)	//  0x02	//output fullpath exe name //~v6XaI~
             {                                                      //~v6X6I~
                 cpid=procentry.th32ProcessID;                      //~v6X6I~
                 hProcess = OpenProcess(                            //~v6X6I~

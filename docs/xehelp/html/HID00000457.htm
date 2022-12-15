@@ -34,7 +34,7 @@ a:hover{font-weight:bold;}
   .v129Q&lt;--12PN:(2020/12/16)
   .v129S&lt;--12PQ:(2020/12/24)</SPAN><span class="auto-style1"> </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
   .v129T&lt;--129S:(2022/12/04)
-
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">  .v129U&lt;--129T:(2022/12/15)</SPAN>
      1.BUGs
        -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする
        -(64Bit) =3.14 がクラッシュする
@@ -303,6 +303,11 @@ a:hover{font-weight:bold;}
        罫線文字も見直し、ユニコードの省略値を追加
       -(Win)ワークディレクトリーの省略値の場所を C:\ から C:\users\[username]\に変更
        既に C:\xe_wd がある場合は継続してこれを使用するが新規導入から適用
+
+    (129U)
+      -(LNX) ./configure で --enable-libgnome2=yes | no を自動で判断する様にした
+      -(WIN:Console) WindowsTerminal 対応。conhost上動きとの違いに対応。
+       行コマンド入力時の表示の乱れ、バイナリーファイルの表示の乱れなど
 
     4.ツール。
      (129C)

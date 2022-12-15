@@ -1,7 +1,59 @@
-V129T 2022/12/04 
-(L) Latest install trouble shooting.    Reffer following (A) if not fixed.
-	= open by "tar -zxvf gxe-xxx.tar.gz", then run "./configure && make".
-      After successfull compilation, run "sudo make install" to copy bin to‚Å /usr/local/bin.
+V129U 2022/12/11 
+
+Reffer following (A) for old linux version.
+open by "tar -zxvf gxe-xxx.tar.gz", then run "./configure && make".
+After successfull compilation, run "make install" to copy bin to‚Å /usr/local/bin.
+
+--------------------------------------------------------------------
+
+(M) V129U (--enable-libgnome2=no is now not required)
+
+(M1) on Debian11
+
+configure: error: no acceptable C compiler found in $PATH
+
+==>	apt-get install gcc
+
+configure: error: "FATAL:term.h not found. Install ncurses-devel."
+==>	apt-file search /term.h
+   	if apt-file not found
+		apt-get install apt-file
+		apt-file update
+   	fi
+	apt-get install libncurses-dev
+
+configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
+==>	apt-file search cups/cups.h
+	apt-get install libcups2-dev
+
+configure: error: "FATAL:libglib2 is required if libgnome2 is not installed"
+==>	apt-file search libglib2
+	apt-get install libglib2.0-dev
+
+configure: error: install GTK2(>=2.10.0) or GTK3(>=3.4.0) if NOT enable-gxe=no.
+==>	apt-file search /gtk/gtk.h
+	apt-get install libgtk-3-dev
+
+(M2) on CentOS Stream 9
+
+configure: error: no acceptable C compiler found in $PATH
+==>	yum install gcc
+
+configure: error: "FATAL:term.h not found. Install ncurses-devel."
+==>	yum provides */term.h|grep ncurses
+	yum install ncurses-devel
+
+configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
+==>	yum provides */cups/cups.h
+	yum install cups-devel
+
+checking for glib-2.0... no
+configure: error: "FATAL:libglib2 is required if libgnome2 is not installed"
+==>	yum provides */gtk.h
+	yum install gtk3-devel
+
+(L) V129T
+
 (L2)= TroubleShooting for ./configure (case of CentOS stream 9. 2022/12/10).
 
     configure: error: no acceptable C compiler found in $PATH

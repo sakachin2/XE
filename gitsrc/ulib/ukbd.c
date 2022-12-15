@@ -185,17 +185,17 @@ static int Srepeatsw=0;                                            //~v5kpI~
 //*********************
 #ifdef DOS
 	memset(Pkeyinfo,0,sizeof(KBDKEYINFO));
-//UTRACEP("charin wait=%d\n",Pwait);                               //+v5kpR~
+//UTRACEP("charin wait=%d\n",Pwait);                               //~v5kpR~
 	if (Pwait==IO_NOWAIT)
 		if (!ukbdpeek(Pkeyinfo))                                   //~v022R~
         	return 0;                                              //~v022I~
     if (USBITCHK(Skbdinfo.fsMask,KEYBOARD_SHIFT_REPORT))        //~5110R~
     {                                                           //~5110I~
     	reportsw=0;                                                //~v5kpR~
-//UTRACEP("SHIFT REPORT\n");                                       //+v5kpR~
+//UTRACEP("SHIFT REPORT\n");                                       //~v5kpR~
 		for (;;)                                                //~5110I~
 		{                                                       //~5110I~
-//UTRACEP("loop repeatsw=%d\n",Srepeatsw);                         //+v5kpR~
+//UTRACEP("loop repeatsw=%d\n",Srepeatsw);                         //~v5kpR~
 //*get ext shift status	                                        //~5110I~
 			reg.h.ah=0x12;							//read char //~5110I~
 			int86(0x16,&reg,&reg);					//          //~5110I~
@@ -203,7 +203,7 @@ static int Srepeatsw=0;                                            //~v5kpI~
        		if (oldfsState!=(Pkeyinfo->fsState=reg.x.ax)           //~v5kpI~
             ||  reportsw==2)//timeout                              //~v5kpR~
 			{                                                   //~5110I~
-//UTRACEP("exit shift report sw=%d\n",reportsw);                   //+v5kpR~
+//UTRACEP("exit shift report sw=%d\n",reportsw);                   //~v5kpR~
 				oldfsState=Pkeyinfo->fsState;                   //~5110I~
 				Pkeyinfo->fbStatus=KBDTRF_SHIFT_KEY_IN;//shift report//~5110R~
 				Pkeyinfo->chChar=0;                             //~5110I~
@@ -220,7 +220,7 @@ static int Srepeatsw=0;                                            //~v5kpI~
 			if (ukbdpeek(Pkeyinfo))                             //~5110I~
             {                                                   //~5110I~
                 getsw=1;    //issue ah=10(char read)            //~5110I~
-//UTRACEP("PEEK getsw=%d\n",getsw);                                //+v5kpR~
+//UTRACEP("PEEK getsw=%d\n",getsw);                                //~v5kpR~
 				break;                                          //~5110I~
             }                                                   //~5110I~
     		sstat=reg.x.ax & (KBDSTF_RIGHTSHIFT                    //~v5kpM~
@@ -236,16 +236,16 @@ static int Srepeatsw=0;                                            //~v5kpI~
             	{                                                  //~v5kpR~
             		reportsw=1;                                    //~v5kpR~
                 	_dos_gettime(&dost0);                          //~v5kpR~
-//UTRACEP("same shift time=%d:%d:%d.%d\n",dost0.hour,dost0.minute,dost0.second,dost0.hsecond);//+v5kpR~
+//UTRACEP("same shift time=%d:%d:%d.%d\n",dost0.hour,dost0.minute,dost0.second,dost0.hsecond);//~v5kpR~
             	}                                                  //~v5kpR~
             	else                                               //~v5kpR~
             	{                                                  //~v5kpR~
                 	_dos_gettime(&dost);                           //~v5kpR~
-//UTRACEP("same shift next time=%d:%d:%d.%d\n",dost.hour,dost.minute,dost.second,dost.hsecond);//+v5kpR~
+//UTRACEP("same shift next time=%d:%d:%d.%d\n",dost.hour,dost.minute,dost.second,dost.hsecond);//~v5kpR~
                 	diff=(dost.minute!=dost0.minute)*60            //~v5kpR~
                      	+dost.second-dost0.second;                 //~v5kpR~
                 	diff=diff*100+dost.hsecond-dost0.hsecond;      //~v5kpR~
-//UTRACEP("diff=%d\n",diff);                                       //+v5kpR~
+//UTRACEP("diff=%d\n",diff);                                       //~v5kpR~
 					if (!Srepeatsw)                                //~v5kpI~
                     {                                              //~v5kpI~
 	                	if (diff>Stypematicdelay)	//elapsed 0.20 sec//~v5kpI~
@@ -267,7 +267,7 @@ static int Srepeatsw=0;                                            //~v5kpI~
     }                                                           //~5110I~
     else	//not req shift report                              //~5110I~
         getsw=1;                                                //~5110I~
-//UTRACEP("getsw=%d    \n",getsw);                                 //+v5kpR~
+//UTRACEP("getsw=%d    \n",getsw);                                 //~v5kpR~
 	if (getsw)                                                  //~5110I~
     {                                                           //~5110I~
         Srepeatsw=0;                                               //~v5kpI~
@@ -380,7 +380,7 @@ static	char *device="KBD$";
 	reg.h.bh=(unsigned char)delayclass;
 	int86(0x16,&reg,&reg);
     Stypematicdelay=100/(4-delayclass);  //by 1/100 sec            //~v5kpI~
-//UTRACEP("parm=%d,%d, delay=%d,repeat=%d\n",Pdelay,Pspeed,Stypematicdelay,Stypematicinterval);//+v5kpR~
+//UTRACEP("parm=%d,%d, delay=%d,repeat=%d\n",Pdelay,Pspeed,Stypematicdelay,Stypematicinterval);//~v5kpR~
 #else
 	#ifdef W32                                                     //~v022I~
         if (Pspeed>31)                                             //~v147I~
@@ -498,6 +498,6 @@ int ukbdsetstatus(PKBDINFO Ppkbdinfo)                           //~5104R~
 #endif                                                          //~5104I~
 	if (!rc)                                                    //~5104I~
 		Skbdinfo=*Ppkbdinfo;                                    //~5104I~
-//UTRACEP("setstate skbdinf.fsmask=%x\n",Skbdinfo.fsMask);         //+v5kpR~
+UTRACEP("%s:skbdinf.fsmask=%x\n",UTT,Skbdinfo.fsMask);             //+v5kpR~
 	return rc;                                                  //~5104R~
 }//ukbdsetstatus                                                //~5104R~

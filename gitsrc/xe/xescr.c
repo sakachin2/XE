@@ -1,4 +1,4 @@
-//*CID://+vbp3R~:                             update#=  441;       //~vbp3R~
+//*CID://+vbp3R~:                             update#=  446;       //~vbp3R~
 //***********************************************************
 //* xescr.c                                                     //~5513I~
 //***********************************************************   //~v016I~
@@ -549,7 +549,11 @@ static	VIOINTENSITY intensbgh={6,2,1};	//backbround highlight
     Sw95consolemode_chng=0;     //need not restore at reset/term   //~v11cI~
   else                                                             //~v11cI~
   {                                                                //~v11cI~
+//#ifdef TEST                                                      //+vbp3R~
     usetconsolemode(1,0);	//stdout;no processed_input/eol wrap   //~v0i4R~
+//#else                                                            //+vbp3R~
+//    usetconsolemode(1,1);	//stdout;process output                //+vbp3R~
+//#endif                                                           //+vbp3R~
     Sw95consolemode_chng=1;     //should be restore at reset/term  //~v0i3I~
   }                                                                //~v11cI~
   #endif //!WXE                                                    //~v500R~
@@ -1003,7 +1007,11 @@ static	VIOINTENSITY intensbrink={6,2,0};	//brink             //~4C23I~
 #ifdef W32                                                         //~v0i3I~
   #ifndef WXE                                                      //~v500R~
     if (Sw95consolemode_chng)     //should be restore at reset/term//~v0i3I~
+//  #ifdef TEST    //TODO test                                     //~vbp3R~
 	    usetconsolemode(1,Sw95consolemode_stdo);//recover consolemode at entry//~v0i3I~
+//  #else                                                          //~vbp3R~
+//      UTRACEP("%s:test skip reset console\n",UTT);               //~vbp3R~
+//  #endif                                                         //~vbp3R~
   #endif //!WXE                                                    //~v500R~
 #endif                                                             //~v0i3I~
 	uviosetmode(0);	//0 mean ufree vio work                     //~v04eI~
@@ -1532,7 +1540,7 @@ static int S1stclear=1;                                            //~v45BR~
             	if (insmodesw)                                     //~v51TI~
                 	insmodesw=2;		//hdr of "INS" is written  //~v51TI~
 //partial attr write with NCHAR/CHARSTR
-            UTRACEP("%s:i=%d,y=%d,USDflag=%d\n",UTT,i,y,psd->USDflag);//+vbp3R~
+            UTRACEP("%s:i=%d,y=%d,USDflag=%d\n",UTT,i,y,psd->USDflag);//~vbp3R~
 			switch(psd->USDflag)
 			{
 #ifdef UTF8SUPPH                                                   //~va00R~

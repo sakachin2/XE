@@ -1,6 +1,8 @@
-//*CID://+v6L5R~:                             update#=  210;       //+v6L5R~
+//*CID://+v761R~:                             update#=  231;       //~v761R~
 //*************************************************************
-//v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//+v6L5I~
+//v761:221214 for v760,chk parent to find WindowTerminal           //~v761I~
+//v760:221213 On Windows Terminal; qurious action; try panel width decrease one without checking parent process is Terminal(old conhost is no problem)//~v760I~
+//v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~v6L5I~
 //v6Eq:160812 lineopt should be cleared by USDFNCELL               //~v6EqI~
 //v6Ep:160812 (WXE)errmsg lineopt;strput called intermediate of errmsg string by attr change,it should not Col but msg len//~v6EpI~
 //v6Eo:160811 (XXE)v6ei for XXE(specify ligature on/off,combine on/of line by line(used for edit/filename  panel)//~v6EoI~
@@ -124,6 +126,7 @@
 #include <utrace.h>                                                //~v034I~
 #include <udos.h>                                                  //~v159I~
 #include <ustring.h>                                               //~v6EkI~
+#include <uproc2.h>                                                //+v761I~
 #ifdef DPMI                 //gcc                                  //~v053R~
 	#include <udpmivio.h>                                          //~v053I~
 	#include <udpmisub.h>                                          //~v053I~
@@ -231,6 +234,11 @@ static int Sheightparm=0,Swidthparm=0;	//user specification       //~v531I~
 
 static VIOMODEINFO SvioModeInfo;	//save current mode
                                                                 //~5A01I~
+#ifdef W32                           //v3.6a                       //~v760I~
+#ifndef WXE                                                        //~v760I~
+UINT uviowrtncellRightEdge(int Popt,PBYTE pCell,int Pcol,int Prow);//~v760R~
+#endif                                                             //~v760I~
+#endif                                                             //~v760I~
 //*******************************************************
 //*dummy for lib(same name as file)						*
 //*******************************************************
@@ -460,6 +468,49 @@ void uvio_initparm(int *Pscrparm)                                  //~v534I~
 #endif
     return;                                                        //~v531I~
 }//uvio_initparm                                                   //~v534R~
+//*******************************************************          //~v760I~
+#ifdef WINCON                                                      //~v760R~
+//*******************************************************          //~v760I~
+int chkWindowsTerminal()                                           //~v760I~
+{                                                                  //~v760I~
+	int cpcon=0;                                                   //~v760R~
+//                                00000000000000001111111111111111    //~vbx4I~//~v760R~
+//                                0123456789abcdef0123456789abcdef    //~vbx4I~//~v760R~
+	static char* SunpTerminal932="10000001101111110000000000000000";  //~vbx4R~//~v760R~
+	static char* SunpTerminal437="10000000000000000000000000000000";//~v760I~
+//***************                                                  //~v760I~
+    if (chkTerminal()==1)   //conhost                              //~v761I~
+		GoptWindowsTerminal|=GOPT_WT_CONHOST;                      //~v761I~
+	if (IS_ON_TERMINAL())                                          //~v760I~
+    {                                                              //~v760I~
+		GoptWindowsTerminal|=GOPT_WT_RCOLS; //free right edge 1 column//~v760R~
+		cpcon=(int)GetConsoleCP();                                 //~v5n8I~//~v760I~
+        if (cpcon==437)                                            //~v760I~
+        {                                                          //~v760I~
+			GoptWindowsTerminal|=GOPT_WT_CP437;                    //~v760I~
+			GunprintableOnTerminal=SunpTerminal437;                //~v760I~
+			UTRACED("unpTable 437",GunprintableOnTerminal,32);     //~v760I~
+        }                                                          //~v760I~
+        else                                                       //~v760I~
+        if (cpcon==932)                                            //~v760I~
+        {                                                          //~v760I~
+			GoptWindowsTerminal|=GOPT_WT_CP932;                    //~v760I~
+			GunprintableOnTerminal=SunpTerminal932;                //~v760R~
+			UTRACED("unpTable 932",GunprintableOnTerminal,32);     //~v760I~
+        }                                                          //~v760I~
+    }                                                              //~v760I~
+	UTRACEP("%s:cpcon=%d,GoptWindowsTerminal=0x%x\n",UTT,cpcon,GoptWindowsTerminal);//~v760I~
+    return 0;                                                      //~v760I~
+}                                                                  //~v760I~
+//*******************************************************          //~v760I~
+int clearRightEdge(int Pcol,int Prow)                              //~v760I~
+{                                                                  //~v760I~
+	UTRACEP("%s:col=%d,row=%d\n",UTT,Pcol,Prow);                   //~v760I~
+    char *cellSpace=" \x07";    //space white on black             //~v760I~
+    uviowrtncellRightEdge(0,cellSpace,Pcol-1,Prow);                //~v760I~
+    return 0;                                                      //~v760I~
+}                                                                  //~v760I~
+#endif  //WINCON                                                   //~v760R~
 //*******************************************************          //~v531I~
 //*VioGetMode                                                      //~v531I~
 //*rc=1:mean redirected(Win)                                       //~v531I~
@@ -622,6 +673,7 @@ UTRACEP("Guviomopt=%x,Snullnasw=%d,Scellnasw=%d,Senglishsw=%d,Sforcentsw=%d,Snts
         temph=0;                                                   //~v252I~
     #ifdef WXE                                                     //~v570I~
     #else //!WXE                                                   //~v570I~
+        chkWindowsTerminal();                                      //~v760I~
     	if (!GetConsoleScreenBufferInfo(Shconout,&csbi))	//fail //~v022I~
         {                                                          //~v252I~
         	laster=GetLastError();                                 //~v252R~
@@ -638,8 +690,8 @@ UTRACEP("Guviomopt=%x,Snullnasw=%d,Scellnasw=%d,Senglishsw=%d,Sforcentsw=%d,Snts
 	        	return rc16=4;                                     //~v252I~
             }                                                      //~v252I~
             if (!CloseHandle(temph))                               //~v252I~
-//              printf("uviogetmode:CloseHandle(%08x) failed LastError=%d\n",//~v252I~//+v6L5R~
-                printf("uviogetmode:CloseHandle(%p) failed LastError=%d\n",//+v6L5I~
+//              printf("uviogetmode:CloseHandle(%08x) failed LastError=%d\n",//~v252I~//~v6L5R~
+                printf("uviogetmode:CloseHandle(%p) failed LastError=%d\n",//~v6L5I~
 						temph,GetLastError());                     //~v252R~
         }                                                          //~v252I~
 //      else                                                       //~v252R~
@@ -665,6 +717,11 @@ UTRACEP("Guviomopt=%x,Snullnasw=%d,Scellnasw=%d,Senglishsw=%d,Sforcentsw=%d,Snts
 //                csbi.dwSize.Y=25;                                //~v157R~
 //          PvioModeInfo->row=csbi.dwSize.Y;                       //~v5bjR~
             PvioModeInfo->row=csbi.srWindow.Bottom-csbi.srWindow.Top+1;//~v5bjR~
+		  if (GoptWindowsTerminal & GOPT_WT_RCOLS)                 //~v760M~
+          {                                                        //~v760I~
+            clearRightEdge(PvioModeInfo->col,PvioModeInfo->row);   //~v760I~
+            PvioModeInfo->col--;                                   //~v760M~
+          }                                                        //~v760I~
     		buffh=csbi.dwSize.Y;	//buffer height                //~v5fhR~
 //UTRACED("csbi",&csbi,sizeof(csbi));                              //~v5fyR~
         #endif                                                     //~v570M~
@@ -1734,6 +1791,43 @@ UTRACED("uviowrtncell FillConsoleOutputAttribute",pCell,2);        //~v@@@I~
 #endif                                                             //~v022I~
 }//uviowrtncell
 
+//*******************************************************          //~v760I~
+//*write spec on the right edge                                    //~v760I~
+//*******************************************************          //~v760I~
+UINT uviowrtncellRightEdge(int Popt,PBYTE pCell,int Pcol,int Prow) //~v760I~
+{                                                                  //~v760I~
+    DWORD         len;                                             //~v760I~
+    COORD       coordpos;                                          //~v760I~
+    int ii;                                                        //~v760R~
+    UINT rc=0;                                                     //~v760I~
+//*********************************                                //~v760I~
+UTRACEP("%s:col=%d,row=%d\n",UTT,Pcol,Prow);                       //~v760I~
+    coordpos.X  =(SHORT)Pcol;					//write width      //~v760I~
+    coordpos.Y  =(SHORT)Stoplineoffs;						//box height//~v760I~
+    for (ii=0;ii<Prow;ii++)                                        //~v760R~
+    {                                                              //~v760I~
+UTRACEP("%s:ii=%d,row=%d\n",UTT,ii,coordpos.Y);                    //~v760I~
+		rc=!FillConsoleOutputCharacter(Shconout,//fill by char     //~v760I~
+								*pCell,    	//output character     //~v760I~
+                                1,			//output len           //~v760I~
+                                coordpos,		//upper left pos in source buff//~v760I~
+                                &len);		//source rectangle     //~v760I~
+		if (rc)                                                    //~v760I~
+        	break;                                                 //~v760I~
+        rc=!FillConsoleOutputAttribute(Shconout,//fill by attr     //~v760I~
+                            (WORD)*(pCell+1),       //output character//~v760I~
+                            1,          //output len               //~v760I~
+                            coordpos,       //upper left pos in source buff//~v760I~
+                            &len);      //source rectangle         //~v760I~
+                                                                   //~v760I~
+		if (rc)                                                    //~v760I~
+        	break;                                                 //~v760I~
+    	coordpos.Y++;                                              //~v760I~
+    }                                                              //~v760I~
+UTRACEP("%s:exit\n",UTT);                                          //~v760R~
+	return rc;                                                     //~v760I~
+}//uviowrtncell                                                    //~v760I~
+                                                                   //~v760I~
 //*******************************************************
 //*VioWrtNChar(read char+attr and merge same char then write)
 //*******************************************************

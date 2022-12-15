@@ -1,3 +1,15 @@
+//*********  20221215 v129U release  *******************************
+//vbx4:221214 qurious on WinddowsTerminal
+//           xefile6.c
+##vbx3:221212 (BUG) gnome2 not found err msg when --enable-libgnome2=no
+//           configure.ac
+##vbx2:221211 (BUG) ac_cv_cache_glib2 <-- ac_cv_chache_glib2
+//           configure.ac
+##vbx1:221211 chk gtk.h even lib is installed for development
+//           configure.ac
+##vbx0:221211 change defaut nognome2
+//           configure.ac
+//*********  20221207 v129T released *******************************
 //vbw4:221206 space was allowd for cid prefix from old version
 //           xefile4.c
 //vbw3:221205 accept cidtype by unicode fo cid on/clear cmd
