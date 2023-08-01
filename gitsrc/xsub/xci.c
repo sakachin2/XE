@@ -1,9 +1,11 @@
-//*CID://+vap0R~:                            update#=  999;        //+vap0R~
+//*CID://+vas3R~:                            update#= 1003;        //~vas1R~//~vas3R~
 //*************************************************************
 //*xci
 //* C source text indentation shift
 //*************************************************************
-//vap0:200616 Axe compiler warning;                                //+vap0I~
+//vas3:230630 ARM;closeall for arm subthread execution             //~vas3I~
+//vas1:230612 ARM;warning by audroidstudio compiler                //~vas1I~
+//vap0:200616 Axe compiler warning;                                //~vap0I~
 //vaa1:160418 Lnx64 compiler warning                               //~vaa1I~
 //vaa0:160417 Lnx compiler warning                                 //~vaa0I~
 //va76:130622 compiler warning and err by ndk-r9                   //~va76I~
@@ -387,7 +389,9 @@ int main(int parmc,char * parmp[])
 	if (rc)
 		ubell();
     fclose(Sfh);                                                   //~@@@5I~
+  if (Sfho!=stdout)                                                //+vas3I~
     fclose(Sfho);                                                  //~@@@5I~
+	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//~vas3I~
     return rc;
 }//main
 //****************************************************************
@@ -975,8 +979,9 @@ UTRACEP("scanData MLC swMlcStart=%d,swMlcEnd=%d\n",swMlcStart,swMlcEnd);
 			rc|=xci_errmsg(EMO_DQCLOSE,Pindwk,8);
     }
 	UTRACED("scandata out",pco0,Pindwk->IDWdatalen);
-	UTRACEP("scandata lineno=%d,stat=%x,slcoffs=%d\n",Pindwk->IDWlineno,Pindwk->IDWstat,Pindwk->IDWslcoffs);
-    return 0;
+	UTRACEP("scandata lineno=%d,stat=%x,slcoffs=%d,rc=%d\n",Pindwk->IDWlineno,Pindwk->IDWstat,Pindwk->IDWslcoffs,rc);//~vas1R~
+//  return 0;                                                      //~vas1R~
+    return rc;                                                     //~vas1I~
 }//scanData
 //*****************************************************************
 //*stack INDWORK by #if and unstack by #else
@@ -1683,8 +1688,8 @@ UTRACEP("updateStmtNest DOWHILE\n");
 	case UCSNO_CATCH:
 UTRACEP("updateStmtNest UCSNO_CATCH nest=%d,stmttype=%d\n",nest,Pindwk->IDWstmttype[nest]);
         stmttype=Pindwk->IDWstmttype[nest];
-//      if (stmttype==CST_TRY||CST_CATCH)                          //+vap0R~
-        if (stmttype==CST_TRY||stmttype==CST_CATCH)                //+vap0I~
+//      if (stmttype==CST_TRY||CST_CATCH)                          //~vap0R~
+        if (stmttype==CST_TRY||stmttype==CST_CATCH)                //~vap0I~
         {
 			newind=resetEntry(0/*keep status*/,Pindwk,nest,CST_CATCH);
 			INDLEVEL_UP(nest);

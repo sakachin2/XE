@@ -1,8 +1,9 @@
-//*CID://+vb31R~:                                    update#=  112;//~vb31R~
+//*CID://+vbymR~:                                    update#=  113;//+vbymR~
 //*************************************************************
 //*xefcmd23.c
 //*  find sub                                                      //~v635R~
 //****************************************************************
+//vbym:230612 ARM;warning by audroidstudio compiler                //+vbymI~
 //vb31:160418 (LNX64)Compiler warning                              //~vb31I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vb2I:160308 (BUG)xeutfcvdd2lc parm err at fcmdsetupddsrch        //~vb2fI~
@@ -616,7 +617,7 @@ int fcmdsplitrep(PUCLIENTWE Ppcw,PULINEH Pplh,int Pspanlen)
 //* parm3 :output record pos search strat                       //~4C30I~
 //* parm4 :0:line search sw                                        //~v47iR~
 //* rc    :0:csr is  on client area, 4:csr is out of client area   //~v47iI~
-//         1:out of client area but line is on client area        //~v09eI~//+vb31R~
+//         1:out of client area but line is on client area        //~v09eI~//~vb31R~
 //****************************************************************//~4C30I~
 int fcmdgetstartplhoffs(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Popt)//~v47iR~
 {                                                               //~4C30I~
@@ -1631,8 +1632,9 @@ int fcmdddstrcmp(int Popt,PULINEH Pplh1,int Ppos1,PULINEH Pplh2,int Ppos2,int Pl
 int fcmdsearchoncmdbuff(int Popt,UCHAR *Psrch,int Psrchlen,UCHAR **Pplc,UCHAR **Ppct,UCHAR **Ppdbcs)//~va20R~//~va5xR~
 {                                                                  //~va20I~
     char *pc,*pct,*pct0,*pce;                                      //~va20R~
-    char *pcd;                                                     //~va5kI~
-    int offs,lclen,utf8chsz,lcchsz,ch,pos=0;                       //~va20R~
+//  char *pcd;                                                     //~va5kI~//+vbymR~
+//  int offs,lclen,utf8chsz,lcchsz,ch,pos=0;                       //~va20R~//+vbymR~
+    int offs,lclen,utf8chsz,lcchsz,ch;                             //+vbymI~
     ULONG ucs;                                                     //~va5xI~
 //**************************************************               //~va20I~
 //*search on Gcmdbuff                                              //~va20I~
@@ -1647,7 +1649,7 @@ UTRACED("fcmdsearchcmdbuff searchstr",Psrch,Psrchlen);             //~va20R~
     pce=umemmem(Gcmdbuffu8,Psrch,(unsigned)lclen,(unsigned)Psrchlen);//~vb31I~
     if (!pce)                                                      //~va20I~
     	return 0; //not found                                      //~va20I~
-    pcd=Gcmdbuffdbcs;                                              //~va5kI~
+//  pcd=Gcmdbuffdbcs;                                              //~va5kI~//+vbymR~
 //step on codetbl for srch string top                              //~va5xI~
     for (pc=Gcmdbuffu8,pct=Gcmdbuffct;pc<pce;pc+=utf8chsz,pct+=lcchsz)//~va20R~
     {                                                              //~va20I~
@@ -1668,8 +1670,8 @@ UTRACED("fcmdsearchcmdbuff searchstr",Psrch,Psrchlen);             //~va20R~
         	utf8chsz=1;                                            //~va20I~
         	lcchsz=1;                                              //~va20I~
         }                                                          //~va20I~
-        pos+=lcchsz;                                               //~va20I~
-        pcd+=lcchsz;                                               //~va5kI~
+//      pos+=lcchsz;                                               //~va20I~//+vbymR~
+//      pcd+=lcchsz;                                               //~va5kI~//+vbymR~
     }                                                              //~va20I~
 //step on codetbl for srch string end                              //~va5xI~
 //  offs=(int)((ULONG)pct-(ULONG)Gcmdbuffct);                      //~va20R~//~vafkR~
@@ -1694,8 +1696,8 @@ UTRACED("fcmdsearchcmdbuff searchstr",Psrch,Psrchlen);             //~va20R~
         	utf8chsz=1;                                            //~va20I~
         	lcchsz=1;                                              //~va20I~
         }                                                          //~va20I~
-        pos+=lcchsz;                                               //~va20I~
-        pcd+=lcchsz;                                               //~va5kI~
+//      pos+=lcchsz;                                               //~va20I~//+vbymR~
+//      pcd+=lcchsz;                                               //~va5kI~//+vbymR~
     }                                                              //~va20I~
 //  lclen=(int)((ULONG)pct-(ULONG)pct0);                           //~va20I~//~vafkR~
     lclen=(int)((ULPTR)pct-(ULPTR)pct0);                           //~vafkI~

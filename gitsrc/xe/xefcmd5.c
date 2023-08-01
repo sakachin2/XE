@@ -1,8 +1,9 @@
-//*CID://+vbkzR~:                             update#=  674;       //~vbkzR~
+//*CID://+vby3R~:                             update#=  676;       //~vby3R~
 //*************************************************************
 //*xefcmd5.c*                                                      //~v47AR~
 //**file cmd CV                                                    //~v47AR~
 //*************************************************************
+//vby3:230331 (Bug)ARM UTF8 localeid for iconv is UTF-8            //~vby3I~
 //vbkz:180714 (Bug)CV cmd;LNX should treate M(of such as F2M) as default locale such as eucjp,GB18030//~vbkzI~
 //vb2E:160229 LNX64 compiler warning                               //~vb2EI~
 //vb2D:160221 LNX compiler warning                                 //~vb2DI~
@@ -836,8 +837,12 @@ static UCHAR *Swordtbl="E2S\0S2E\0Z\0E2E\0S2S\0J2S\0J2E\0S2J\0E2J\0" \
 #ifdef LNX                                                         //~vbkzI~
             convtype=UCSCONV_A2A;  //any to any                    //~vbkzI~
             icuok=1;                                               //~vbkzI~
+        #ifdef ARM                                                 //~vby3I~
+            strcpy(Scpto,LOCALEID_UTF_8);                          //~vby3I~
+        #else                                                      //~vby3I~
             strcpy(Scpto,LOCALEID_UTF8);                           //~vbkzI~
-            strcpy(Scpfrom,"eucjp");  //dropped .utf8 from setlocale()//+vbkzR~
+        #endif                                                     //+vby3R~
+            strcpy(Scpfrom,"eucjp");  //dropped .utf8 from setlocale()//~vbkzR~
 #else                                                              //~vbkzI~
             ucsopt|=UCVUCS_EUC;                                    //~v90vI~//~va05I~
             convtype=UCSCONV_S2F;                                  //~v90vI~//~va05I~
@@ -845,15 +850,19 @@ static UCHAR *Swordtbl="E2S\0S2E\0Z\0E2E\0S2S\0J2S\0J2E\0S2J\0E2J\0" \
             break;                                                 //~v90vI~//~va05I~
         case 38: //F2E                                             //~v90vI~//~va05I~
 			ucsconvsw=1;                                           //~v90vI~//~va05I~
-#ifdef LNX                                                         //+vbkzI~
-            convtype=UCSCONV_A2A;  //any to any                    //+vbkzI~
-			icuok=1;                                               //+vbkzI~
-            strcpy(Scpfrom,LOCALEID_UTF8);                         //+vbkzI~
-            strcpy(Scpto,"eucjp");  //dropped .utf8 from setlocale()//+vbkzI~
-#else                                                              //+vbkzI~
+#ifdef LNX                                                         //~vbkzI~
+            convtype=UCSCONV_A2A;  //any to any                    //~vbkzI~
+			icuok=1;                                               //~vbkzI~
+        #ifdef ARM                                                 //~vby3I~
+            strcpy(Scpfrom,LOCALEID_UTF_8);                        //~vby3I~
+        #else                                                      //~vby3I~
+            strcpy(Scpfrom,LOCALEID_UTF8);                         //~vbkzI~
+        #endif                                                     //~vby3I~
+            strcpy(Scpto,"eucjp");  //dropped .utf8 from setlocale()//~vbkzI~
+#else                                                              //~vbkzI~
             ucsopt|=UCVUCS_EUC;                                    //~v90vI~//~va05I~
             convtype=UCSCONV_F2S;                                  //~v90vI~//~va05I~
-#endif                                                             //+vbkzI~
+#endif                                                             //~vbkzI~
             break;                                                 //~v90vI~//~va05I~
         case 39: //M2F                                             //~v91NI~//~va05I~
 			ucsconvsw=1;                                           //~v91NI~//~va05I~
@@ -861,7 +870,11 @@ static UCHAR *Swordtbl="E2S\0S2E\0Z\0E2E\0S2S\0J2S\0J2E\0S2J\0E2J\0" \
 #ifdef LNX                                                         //~vbkzR~
             convtype=UCSCONV_A2A;  //any to any                    //~vbkzR~
             icuok=1;                                               //~vbkzR~
+        #ifdef ARM                                                 //~vby3I~
+            strcpy(Scpto,LOCALEID_UTF_8);                          //~vby3I~
+        #else                                                      //~vby3I~
             strcpy(Scpto,LOCALEID_UTF8);                           //~vbkzR~
+        #endif                                                     //~vby3I~
             strcpy(Scpfrom,Gdefaultlocalecode);  //dropped .utf8 from setlocale()//~vbkzR~
 #else                                                              //~vbkzR~
             convtype=UCSCONV_S2F;                                  //~v91NI~//~va05I~
@@ -873,7 +886,11 @@ static UCHAR *Swordtbl="E2S\0S2E\0Z\0E2E\0S2S\0J2S\0J2E\0S2J\0E2J\0" \
 #ifdef LNX                                                         //~vbkzI~
             convtype=UCSCONV_A2A;  //any to any                    //~vbkzI~
 			icuok=1;                                               //~vbkzI~
+        #ifdef ARM                                                 //~vby3I~
+            strcpy(Scpfrom,LOCALEID_UTF_8);                        //~vby3I~
+        #else                                                      //~vby3I~
             strcpy(Scpfrom,LOCALEID_UTF8);                         //~vbkzR~
+        #endif                                                     //~vby3I~
             strcpy(Scpto,Gdefaultlocalecode);  //dropped .utf8 from setlocale()//~vbkzR~
 #else                                                              //~vbkzI~
             convtype=UCSCONV_F2S;                                  //~v91NI~//~va05I~

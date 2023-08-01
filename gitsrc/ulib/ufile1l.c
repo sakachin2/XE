@@ -1,7 +1,24 @@
-//*CID://+v70bR~:                             update#=  410;       //~v70bR~
+//*CID://+v786R~:                             update#=  605;       //~v786R~
 //*************************************************************
 //*ufile1l.c                                                       //~v59nR~
 //*************************************************************
+//v786:230724 ARM:try to set env:PWD by cd for file parameter of tools//~v786I~
+//v785:230722 ARM:xopy loop when src is wildcard                   //~v785I~
+//v784:230721 ARM:xdelete; no entry msg and successefull when 0 member//~v784I~
+//v783:230721 (Bug) v781 not fix it. ignore "." entry              //~v783I~
+//v782:230720 ARM;delete dir return no entry for also fileAll except //SP dir( internal folder such as myhome returns '.' for readdir)//~v782I~
+//v780:230719 ARM;delete dir return no entry(findnext from findfirst returns no entry)//~v780I~
+//v77Z:230718 ARM;support CD to shared storage                     //~v7ZAI~
+//v77A:230602 ARM;share storage readdir returns no entry of "." or ".." and issue "no entry", the dirlist was not show. set rc=0 to show list by xedir:loaddir//~v77AI~
+//v77w:230519 uri-->path is avalable from api30(android11:R) and readdir using fd gotten by openDescriptor returns null//~v77wI~
+//v77u:230513 ARM:reject CD cmd with errmsg                        //~v77uI~
+//v77r:230507 ARM:issue invalid shortpath name msg                 //~v77rI~
+//v77q:230503 ARM:assume device charset as utf8                    //~v77qI~
+//v77m:230429 ARM:try stat(fpath) by fstat(fd) for ufstat          //~v77mI~
+//v77k:230428 Lnx:wildname warning issued even if not selected by wildcard selection.//~v77kI~
+//v77d:230423 ARM;delete                                           //~v77dI~
+//v779:230414 update v777,set uri at ulib fro shortpath            //~v779I~
+//v777:230403 ARM;udirlistFD                                       //~v777I~
 //v70n:200902 (ARM)$tmp as shortcut to /data/local/tmp             //~v70bI~
 //v70b:200616 ARM:use /sdcard for /emultate/legacy/..              //~v70bI~
 //v703:200615 ARM coding bug                                       //~v703R~
@@ -129,6 +146,9 @@
 	#include <uftp.h>                                              //~v59nR~
 	#include <ufile1f.h>                                           //~v59nR~
 #endif                                                             //~v59nI~
+#ifdef ARMXXE                                                      //~v779I~
+	#include <ufiledoc.h>                                          //~v779I~
+#endif                                                             //~v779I~
 #include <utf.h>                                                   //~v6B9I~
 #include <uedit2.h>                                                //~v6D2I~
 #include <ulibarm.h>                                               //~v70bI~
@@ -136,7 +156,7 @@
 #define SPECIAL_DIRID    '.'                                       //~v341I~
 #define MAXHDIR 100
                                                                    //~v50GI~
-typedef struct dirent DIRENT,*PDIRENT;                             //~v6b1R~
+//typedef struct dirent DIRENT,*PDIRENT;                             //~v6b1R~//~v77dR~
 
 static int  Shdirindex=0;	//Shdir searced index                  //~v529R~
                                                                    //~v50GI~
@@ -152,14 +172,16 @@ static char Snomsgffnext;//no err msg version                      //~v6k7I~
 static int  Swildnamechk;  //filename may contain wildcard char    //~v6b1R~
 static int  Swildnamemembfstat;  //wildname chk for dirent member  //~v6b1I~
 static int SdirlistOtherAttrCtr;                                   //~v6kmI~
+static int SswFFopt=0;                                             //~v784I~
 //*******************************************************
 //void ufilegetftime(FTIME* Pft,FDATE *Pfd,time_t Ptime_t);        //~v5fuR~
 int ufilelnxgetmembfstat(FILEFINDBUF3 *Ppffb3,PDIRENT Ppde,UCHAR *Ppath,int Ppathlen);//~v371R~
-int  ufilelnxwildselect(UCHAR *Pfname,UCHAR *Pwildcard,int Pcasesw);//~v55nR~
+//int  ufilelnxwildselect(UCHAR *Pfname,UCHAR *Pwildcard,int Pcasesw);//~v55nR~//~v779R~
 int ufilelnxsavehdir(HDIR Phdir,ULONG Pattr,UCHAR *Ppath,int Ppathlen);
 #define UFLSH_WILDNAME 0x01                                        //~v6b1I~
 int ufilelnxsrchhdir(HDIR Phdir,ULONG *Ppattr,UCHAR **Pppath,int *Pppathlen);//~0901R~
 int ufilelnxclosehdir(HDIR Phdir);
+//*******************************************************          //~v777I~
 //*******************************************************
 //*get file status(size,time stmp)
 //*parm 1:file name
@@ -194,6 +216,15 @@ unsigned int ufstat(char *Ppfile,FILEFINDBUF3 *Ppffb3)
     int swwildname;                                                //~v6b1I~
     int swslinkerr=0;                                              //~v6kaR~
 //*********************************
+	UTRACEP("%s:Ppfile=%s\n",UTT,Ppfile);                          //~v777I~
+#ifdef ARMXXE                                                      //~v777I~
+  if (0)                                                           //~v77mI~
+	if (IS_DOCPATH(Ppfile))                                         //~v777I~
+    {                                                              //~v777I~
+//  	return ufstatDoc(Ppfile,Ppffb3);                           //~v777I~//~v77dR~
+    	return ufstatDoc(Ppfile,Ppffb3,(!Swildnamechk && !Swildnamemembfstat)/*findfirst if wildcard*/);  //called from not (ufstat_wild or membfstat)//~v77dI~
+    }                                                              //~v777I~
+#endif                                                             //~v777I~
 #ifdef FTPSUPP                                                     //~v59nM~
   	if (uftpisremote(Ppfile,&puftph))	//ftp filename             //~v5afR~
 		return uftpfstat(puftph,Ppfile,Ppffb3);                    //~v5afR~
@@ -241,6 +272,14 @@ unsigned int ufstat(char *Ppfile,FILEFINDBUF3 *Ppffb3)
 		statfnm=Ppfile+pathlen;                                    //~v578I~
     else                                                           //~v578I~
 		statfnm=Ppfile;                                            //~v578I~
+#ifdef ARMXXE                                                      //~v77mI~
+  if (1                                                            //~v77mI~
+  &&  IS_DOCPATH(Ppfile))                                          //~v77mR~
+	rc2=ufile_statDoc(Ppfile,&statbuff);                           //~v77mR~
+  else                                                             //~v77mI~
+    rc2=lstat(statfnm,&statbuff);                                  //~v77mR~
+  if (rc2)                                                         //~v77mR~
+#else                                                              //~v77mI~
 #ifdef LFSSUPP                                                     //~v5fuI~
   #if LFSSUPP == 1                                                 //~v5fuI~
     if (lstat64(statfnm,&statbuff))                                //~v5fuM~
@@ -250,6 +289,7 @@ unsigned int ufstat(char *Ppfile,FILEFINDBUF3 *Ppffb3)
 #else                                                              //~v5fuI~
     if (lstat(statfnm,&statbuff))                                  //~v578I~
 #endif                                                             //~v5fuI~
+#endif	//ARMXXE                                                   //~v77mM~
     {                                                              //~v390R~
         rc=errno;                                                  //~v390R~
         UTRACEP("ufstat errno=%d fnm=%s\n",rc,statfnm);            //~v6hLI~
@@ -260,14 +300,31 @@ unsigned int ufstat(char *Ppfile,FILEFINDBUF3 *Ppffb3)
         if (rc==ENAMETOOLONG)                                      //~v6H1I~
     		return (unsigned)ufileTooLongFullpathName2(rc,Ppfile,"");//~v6H2R~
         if(rc!=ENOENT && rc!=ENOTDIR) //not found or no more file  //~v390R~
+        {                                                          //~v77rR~
+#ifdef ARMXXE                                                      //~v77rR~
+  			if (rc==EINVAL && IS_DOCPATH(Ppfile))                  //~v77rR~
+            	return rc;                                         //~v77rR~
+#endif                                                             //~v77rR~
 //          return ufileapierr("stat",Ppfile,rc);                  //~v50ER~
 //          return ufileapierr("lstat",Ppfile,rc);                 //~v50EI~//~v6B6R~
             return (unsigned)ufileapierr("lstat",Ppfile,rc);       //~v6B6I~
+        }                                                          //~v77rR~
         if(rc==ENOENT)                                             //~v529I~
             if (pathlen)                                           //~v529I~
 	        {                                                      //~v529I~
         	    memcpy(pathname,Ppfile,(UINT)pathlen);             //~v529R~
      	       	*(pathname+pathlen)=0;                             //~v529R~
+#ifdef ARMXXE                                                      //~v77mI~
+  			  if (1                                                //~v77mI~
+  				  &&  IS_DOCPATH(pathname))                        //~v77mI~
+              {                                                    //~v77mI~
+				if (ufile_statDoc(pathname,&statbuff2))            //~v77mR~
+	            	if (errno==ENOENT)                             //~v77mI~
+     			    	rc=ENOTDIR;                                //~v77mI~
+              }                                                    //~v77mI~
+              else                                                 //~v77mI~
+#endif	//ARMXXE                                                   //~v77mM~
+              {                                                    //~v77mI~
 #ifdef LFSSUPP                                                     //~v5fuI~
   #if LFSSUPP == 1                                                 //~v5fuI~
     			if (lstat64(pathname,&statbuff2))                  //~v5fuI~
@@ -279,11 +336,12 @@ unsigned int ufstat(char *Ppfile,FILEFINDBUF3 *Ppffb3)
 #endif                                                             //~v5fuI~
             		if (errno==ENOENT)                             //~v529R~
                 		rc=ENOTDIR;                                //~v529R~
+              }                                                    //~v77mI~
 	        }                                                      //~v529R~
 //      return rc;                                                 //~v390R~//~v6B6R~
         return (unsigned)rc;                                       //~v6B6I~
     }                                                              //~v390R~
-//    UTRACED("ufstat statbuff",&statbuff,sizeof(statbuff));         //~v6hLR~//~v6q2R~
+    UTRACED("ufstat statbuff",&statbuff,sizeof(statbuff));         //~v6hLR~//~v6q2R~//~v77mR~
     *(pft->slink)=0;                                               //~v50ER~
     pft->srcattr=0;   	//slink source file attr                   //~v56nI~
     pft->uid=statbuff.st_uid;                                      //~v59yI~
@@ -407,9 +465,22 @@ int ufilechkwildmultiple(int Popt,char *Pfnm,PDIRENT Ppde,FILEFINDBUF3 *Ppffb3)/
     }                                                              //~v6b1I~
     else                                                           //~v6b1I~
     	UmemcpyZ(dirnm,Pfnm,(UINT)pathlen);                        //~v6b1I~
+#ifdef ARMXXE                                                      //~v77mI~
+  if (IS_DOCPATH(dirnm))                                         //~v77mI~
+  {                                                                //~v77mI~
+  	void *pvoid;                                                   //~v77mI~
+    errno=ufile_opendirDoc(dirnm,&pvoid);                          //~v77mI~
+    hdir=(DIR *)pvoid; //existing wildname file                    //~v77mR~
+    UTRACEP("%s:fnm=%s,errno=%d\n",UTT,Pfnm,errno);                //~v77mI~
+  }                                                                //~v77mI~
+  else                                                             //~v77mI~
+#endif                                                             //~v77mI~
     hdir=opendir(dirnm);                                           //~v6b1R~
+    UTRACEP("%s:opendir dirnm=%s,hdir=%p\n",UTT,dirnm,hdir);                    //~v77dI~//~v77mR~
     if (!hdir)                                                     //~v6b1I~
+    {                                                              //~v77mI~
         return -1;                                                 //~v6b1I~
+    }                                                              //~v77mI~
     pc=Pfnm+pathlen;                                               //~v6b1M~
     swfound=!Ppde;	//if no ino reset request,break if multiple entry found//~v6b1I~
     for (;;)                                                       //~v6b1I~
@@ -417,6 +488,7 @@ int ufilechkwildmultiple(int Popt,char *Pfnm,PDIRENT Ppde,FILEFINDBUF3 *Ppffb3)/
         pde=readdir(hdir);                                         //~v6b1I~
         if (!pde)                                                  //~v6b1I~
             break;                                                 //~v6b1I~
+	    UTRACEP("%s:readdir d_name=%s\n",UTT,pde->d_name);         //~v77dI~
         UTRACED("chkwildmultiple",pde,pde->d_reclen);              //~v6b1I~
         filectr++;                                                 //~v6b1I~
         if (!strcmp(pc,pde->d_name))                               //~v6b1I~
@@ -460,7 +532,7 @@ unsigned int ufstat_wild(char *Ppfile,FILEFINDBUF3 *Ppffb3)        //~v6b1I~
     Swildnamechk=0;    //test existing                             //~v6b1R~
     if (!rc && Ppffb3 && Ppffb3->attrFile & FILE_WILDNAME)         //~v6b1R~
     	ufilechkwildmultiple(0,Ppfile,NULL/*Ppde*/,Ppffb3);        //~v6b1R~
-    UTRACEP("%s:rc=%d\n",UTT,rc);                                  //~v6D2I~
+    UTRACEP("%s:rc=%d,fnm=%s,Ppffb3=%p,attr=0x%x\n",UTT,rc,Ppfile,Ppffb3,(Ppffb3 ? Ppffb3->attrFile:0));                                  //~v6D2I~//~v783R~//~v785R~
     return rc;                                                     //~v6b1I~
 }//ufstat2                                                         //~v6b1I~
 //*******************************************************
@@ -477,6 +549,7 @@ int ufilefscomp(char *Pfile1,char *Pfile2)                         //~v364R~
     	return 4;                                                  //~v364I~
     if ((fsid2=ufilegetfsid(Pfile2))==-1)                          //~v364I~
     	return 4;                                                  //~v364I~
+    UTRACEP("%s:rc=%d,f1=%s,f2=%s\n",UTT,(fsid1!=fsid2),Pfile1,Pfile2);//~v77dI~
     return (fsid1!=fsid2);	//1 when unmatch                       //~v364R~
 }//ufilefscomp                                                     //~v364I~
 //*******************************************************          //~v364I~
@@ -513,6 +586,7 @@ int ufilegetfsid(char *Pfile)                                      //~v364I~
             return -1;       //no upper path                       //~v364I~
         *(fnm+pathlen-1)=0;     //up dir level                     //~v364I~
     }                                                              //~v364I~
+    UTRACEP("%s:rc=%d,file=%s\n",UTT,statbuff.st_dev,Pfile);       //~v77dI~
     return (int)statbuff.st_dev;	//file system id               //~v364I~
 }//ufilegetfsid                                                    //~v364I~
 //*******************************************************          //~v364I~
@@ -651,7 +725,7 @@ char *ufullpathARMsub(char *Pfullpath,char *Pfilename,size_t Plen) //~v70bI~
         	if (ugetcwd_mdos(wk)>1)                                //~v50GI~
             {                                                      //~v50GI~
    	        	uerrmsg("ufullpath:get current dir failed for MDOS",//~v50GI~
-                	    "ufullpath:MDOS 現行ディレクトリー取得の失敗,");//~v50GI~
+                	    "ufullpath:MDOS 現行ディレクトリー取得の失敗,");//~v50GI~//~v777I~
 	            return 0;                                          //~v50GI~
             }                                                      //~v50GI~
 //process "../"                                                    //~v50GI~
@@ -726,7 +800,7 @@ char *ufullpathARMsub(char *Pfullpath,char *Pfilename,size_t Plen) //~v70bI~
         if (!ugetcwd(wk))                                          //~v50GI~
         {                                                          //~0827R~
             uerrmsg("ufullpath:get current dir for %s failed,rc=%d",//~v50GR~
-                    "ufullpath:%s の現行ディレクトリー取得の失敗,rc=%d",//~v50GR~
+                    "ufullpath:%s の現行ディレクトリー取得の失敗,rc=%d",//~v50GR~//~v777I~
                     Pfilename,errno);                              //~0827R~
             return 0;
         }                                                          //~0827R~
@@ -831,8 +905,16 @@ int upathlen(char *Pfilename)
 //*******************************************************
 char *ugetcwd(unsigned char *Pbuff)
 {
+	char *pcwd;                                                    //+v786I~
 //*********************************
-    return getcwd(Pbuff,_MAX_PATH);
+#ifdef ARMXXE                                                      //~v77ZR~
+	if (ufiledoc_cwd(Pbuff))                                       //~v77ZI~
+    	return Pbuff;                                              //~v77ZI~
+#endif                                                             //~v77ZR~
+//  return getcwd(Pbuff,_MAX_PATH);                                //+v786R~
+    pcwd=getcwd(Pbuff,_MAX_PATH);                                  //+v786I~
+    UTRACEP("%s:rc=%s\n",UTT,pcwd);                                //+v786I~
+    return pcwd;                                                   //+v786I~
 }//ugetcwd
 //*******************************************************
 //*change current directory
@@ -847,6 +929,11 @@ int uchdir(int Popt,unsigned char *Ppath)                          //~v578I~
     PUFTPHOST puftph;                                              //~v5afI~
 #endif                                                             //~v5afI~
 //*********************************
+	UTRACEP("%s:Ppath=%s,opt=0x%x\n",UTT,Ppath,Popt);              //~v7ZAI~
+#ifdef ARMXXE                                                      //~v77ZR~
+	if (ufiledoc_chdir(Popt,Ppath,&rc))                            //~v77ZI~
+		return rc;                                                 //~v77ZR~
+#endif                                                             //~v77ZR~
 #ifdef FTPSUPP                                                     //~v59nI~
   	if (uftpisremote(Ppath,&puftph))	//ftp filename             //~v5afR~
  		return uftpchdir(puftph,Popt,Ppath);                       //~v5afR~
@@ -865,10 +952,24 @@ int uchdir(int Popt,unsigned char *Ppath)                          //~v578I~
     {
         rc=errno;                                                  //~0827R~
       if (!(Popt & UCHD_NOMSG))		//not no errmsg option         //~v578I~
+      {                                                            //~v77uI~
+//#ifdef ARMXXE                                                      //~v77uI~//~v7ZAR~
+//       if (IS_DOCPATH(Ppath))                                       //~v77uI~//~v7ZAR~
+//        uerrmsg("\"cd\" is not supported for shared storage(%s)",  //~v77uI~//~v7ZAR~
+//                "\"cd\" コマンドは共有ストレージでは無効です(%s)", //~v77uI~//~v7ZAR~
+//                Ppath);                                            //~v77uI~//~v7ZAR~
+//       else                                                        //~v77uI~//~v7ZAR~
+//#endif                                                             //~v77uI~//~v7ZAR~
         uerrmsg("Set current directory failed for %s(rc=%d)",      //~0827R~
-                "現行ディレクトリー設定の失敗(%s,rc=%d)",
+                "現行ディレクトリー設定の失敗(%s,rc=%d)",          //~v777I~
                 Ppath,rc);
+      }                                                            //~v77uI~
     }                                                              //~0827R~
+#ifdef ARMXXE                                                      //~v786I~
+    else                                                           //~v786I~
+		ufiledoc_setArmPWD(Popt,Ppath);                            //~v786I~
+#endif                                                             //~v786I~
+	UTRACEP("%s:rc=%d,path=%s\n",UTT,rc,Ppath);                    //~v7ZAI~
     return rc;                                                     //~0827R~
 }//uchdir
 //**********************************************************************
@@ -890,6 +991,31 @@ unsigned udosfindfirstnomsg(char *Ppfname,HDIR *Pphdir,unsigned int Pattr,
     Snomsgffnext=1;                                                //~v6k7I~
     return rc;
 }//udosfindfirstnomsg
+#ifdef ARMXXE                                                      //~v782I~
+//**********************************************************************//~v782I~
+//*under !(Pphdir || wildsw)                                       //~v782I~
+//*for the case findnext doose not returns "."                     //~v782I~
+//**********************************************************************//~v782I~
+int isSharedDocMemberFF(char *Ppfname,FILEFINDBUF3 *Ppfstat3)      //~v782R~
+{                                                                  //~v782I~
+	FILEFINDBUF3 fstat3;                                           //~v782I~
+	int rc=0;                                                      //~v782I~
+    if (IS_DOCPATH(Ppfname))                                       //~v782I~
+    	rc=1;                                                      //~v782I~
+    else                                                           //~v782I~
+	if (ufile_isGrantedAllFiles())                                      //~v77zI~//~v782I~
+    	rc=1;                                                      //~v782I~
+    if (rc)                                                        //~v782I~
+    {                                                              //~v782I~
+	    if (ufstat(Ppfname,&fstat3))  //exist as file              //~v782I~
+    		rc=0;                                                  //~v782I~
+        else                                                       //~v782I~
+			memcpy(Ppfstat3,&fstat3,sizeof(FILEFINDBUF3));  //parent stat when Phdir=0//~v782I~
+    }                                                              //~v782I~
+	UTRACEP("%s:rc=%d,fnm=%s,member=%s\n",UTT,rc,Ppfname,Ppfstat3->achName);//~v782R~
+    return rc;                                                     //~v782I~
+}                                                                  //~v782I~
+#endif //ARMXXE                                                    //~v782I~
 //**********************************************************************
 // find first
 // parm1  :file name
@@ -912,7 +1038,11 @@ unsigned udosfindfirst(char *Ppfname,HDIR *Pphdir,unsigned int Pattr,
     PUFTPHOST puftph;                                              //~v5afI~
 #endif                                                             //~v59nI~
     HDIR   hdir_wild=0;                                            //~v6b1R~
+//#ifdef ARMXXE                                                      //~v780I~//~v782R~
+//    int swDirDocNotWild=0;                                         //~v780I~//~v782R~
+//#endif                                                             //~v780I~//~v782R~
 //*********************************
+	UTRACEP("%s:fnm=%s,attr=0x%x,Pphdir=%p\n",UTT,Ppfname,Pattr,Pphdir);             //~v77dI~//~v782R~
     Snomsgffnext=0;                                                //~v6k7I~
     SdirlistOtherAttrCtr=0;                                        //~v6kmI~
 #ifdef FTPSUPP                                                     //~v59nI~
@@ -940,13 +1070,28 @@ unsigned udosfindfirst(char *Ppfname,HDIR *Pphdir,unsigned int Pattr,
 //{                                                                //~v55nR~
     if (WILDCARD(Ppfname+pathlen))  //opendir fail if wild card    //~0901R~
     {                                                              //~0901I~
+    	UTRACEP("%s:opendir wildcard Ppfname=%s\n",UTT,Ppfname);   //~v77dI~
+#ifdef ARMXXE                                                      //~v77dM~
+        if (IS_DOCPATH(Ppfname))                                   //~v77dR~
+        {                                                          //~v77dR~
+            void *pvoid;                                           //~v77dR~
+            errno=ufile_opendirDoc(Ppfname,&pvoid);                //~v77dR~
+            hdir_wild=(ULONG)pvoid; //existing wildname file       //~v77dR~
+        }                                                          //~v77dR~
+        else                                                       //~v77dR~
+            hdir_wild=(ULONG)opendir(Ppfname);  //existing wildname file//~v77dR~
+    	UTRACEP("%s:opendir hdir_wild=%p,wildcard Ppfname=%s\n",UTT,hdir_wild,Ppfname);//~v77wI~
+      if (hdir_wild)	//existing wildname file                   //~v77dR~
+#else                                                              //~v77dI~
   	  if (!mdossw                                                  //~v6b1I~
       && (hdir_wild=(ULONG)opendir(Ppfname)))	//existing wildname file//~v6b1R~
+#endif                                                             //~v77dI~
       {                                                            //~v6b1I~
       	wildsw=0;	//real name                                    //~v6b1I~
 //      pathlen=strlen(Ppfname);                                   //~v6b1I~//~v6B6R~
         pathlen=(int)strlen(Ppfname);                              //~v6B6I~
         pdirnm=Ppfname;                                            //~v6b1I~
+      	UTRACEP("%s:hdir_wild=%p set wildsw=0,pathlen=%d,pdirnm=%s\n",UTT,hdir_wild,pathlen,pdirnm);//~v77dI~
       }                                                            //~v6b1I~
       else                                                         //~v6b1I~
       {                                                            //~v6b1I~
@@ -961,6 +1106,7 @@ unsigned udosfindfirst(char *Ppfname,HDIR *Pphdir,unsigned int Pattr,
         	*(dirnm+pathlen)=0;                                    //~v371I~
         }                                                          //~0901I~
         pdirnm=dirnm;                                              //~0901I~
+      	UTRACEP("%s:hdir_wild=%p,set wildsw=1,pathlen=%d,pdirnm=%s\n",UTT,hdir_wild,pathlen,pdirnm);//~v77dI~
       }                                                            //~v6b1I~
     }                                                              //~0901I~
     else                                                           //~0901I~
@@ -981,8 +1127,28 @@ unsigned udosfindfirst(char *Ppfname,HDIR *Pphdir,unsigned int Pattr,
    if (hdir_wild)                                                  //~v6b1R~
     *phdir=hdir_wild;                                              //~v6b1R~
    else                                                            //~v6b1I~
+   {                                                               //~v777I~
+//#ifdef ARM                                                         //~v777I~//~v779R~
+//    if (SdirFD!=-1)                                                //~v777I~//~v779R~
+//    *phdir=(ULONG)fdopendir(SdirFD);                               //~v777I~//~v779R~
+//    else                                                           //~v777I~//~v779R~
+//#endif                                                             //~v777I~//~v779R~
+    UTRACEP("%s:opendir pdirnm=%s\n",UTT,pdirnm);                  //~v77dI~
+#ifdef ARMXXE                                                     //~v77dI~
+    if (IS_DOCPATH(pdirnm))                                       //~v77dI~
+    {                                                              //~v77dI~
+    void *pvoid;                                                   //~v77dR~
+    errno=ufile_opendirDoc(pdirnm,&pvoid);                         //~v77dI~
+    *phdir=(HDIR)pvoid;                                            //~v77dI~
+//    if (pvoid)                                                     //~v780I~//~v782R~
+//        swDirDocNotWild=1;                                         //~v780I~//~v782R~
+    }                                                              //~v77dI~
+    else                                                           //~v77dI~
+#endif                                                             //~v77dI~
     *phdir=(ULONG)opendir(pdirnm);                                 //~0901R~
+   }                                                               //~v777I~
   }//mdos or not                                                   //~v50GI~
+    UTRACEP("%s:opendir phdir=%p,pdirnm=%s,errno=%d\n",UTT,*phdir,pdirnm,errno);   //~v77wI~//~v780R~//~v782R~//~v785R~
     if (!*phdir)
     {                                                              //~0901I~
 	  if (!(Pattr & FILE_MDOSDISK))                                //~v50GI~
@@ -990,10 +1156,18 @@ unsigned udosfindfirst(char *Ppfname,HDIR *Pphdir,unsigned int Pattr,
 //      rc=errno;                                                  //~v6B6R~
         rc=(unsigned)errno;                                        //~v6B6I~
         if (rc==ENOTDIR && !wildsw)    //may be file(not wildcard case)//~0901R~
+        {                                                          //~v777I~
+//#ifdef ARM                                                         //~v777I~//~v779R~
+//            if (SdirFD!=-1)                                        //~v777I~//~v779R~
+//            {                                                      //~v777I~//~v779R~
+//                return ufilenotdir(Ppfname,ENOTDIR);               //~v777I~//~v779R~
+//            }                                                      //~v777I~//~v779R~
+//#endif                                                             //~v777I~//~v779R~
             if (!ufstat(Ppfname,Ppfstat3))  //exist as file        //~0901R~
 //              if (ufilelnxattrselect(Ppfstat3->attrFile,Pattr))   //attr match//~v56nR~
                 if (ufilelnxattrselect(Ppfstat3->attrFile,Ppfstat3->srcattr,Pattr))   //attr match//~v56nR~
                     return 0;                                      //~0901R~
+        }                                                          //~v777I~
         if (rc==EACCES)                                            //~v371M~
 //        	return ufilenopermission("opendir",pdirnm,rc);         //~v371I~//~v6B6R~
           	return (unsigned)ufilenopermission("opendir",pdirnm,(int)rc);//~v6B6I~
@@ -1001,6 +1175,19 @@ unsigned udosfindfirst(char *Ppfname,HDIR *Pphdir,unsigned int Pattr,
     }                                                              //~0901I~
     else
     {
+#ifdef ARMXXE                                                      //~v782I~
+//   if (!Pphdir && isSharedDocMemberFF(Ppfname,Ppfstat3)) //under !(Pphdir || wildsw)//~v782I~//~v785R~
+     if (!Pphdir && isSharedDocMemberFF(pdirnm,Ppfstat3)) //under !(Pphdir || wildsw), parent if wildcard//~v785I~
+     {                                                             //~v782I~
+    	UTRACED("Phdir=null return parent stat",Ppfstat3,sizeof(FILEFINDBUF3));//~v782I~
+        if (*phdir)                                                //~v782I~
+//          if (rc=(unsigned)ufilelnxclosehdir(*phdir),rc)//free handle//~v782R~
+			if (rc=(unsigned)closedir((DIR *)(*phdir)),rc)        //relese  handle//~v782I~
+    	    	return rc;                                         //~v782I~
+     }                                                             //~v782I~
+     else                                                          //~v782I~
+#endif                                                             //~v782I~
+     {                                                             //~v782M~
 //      if (rc=ufilelnxsavehdir(*phdir,Pattr,Ppfname,pathlen),rc)  //~v6B6R~
         if (rc=(unsigned)ufilelnxsavehdir(*phdir,Pattr,Ppfname,pathlen),rc)//~v6B6I~
             return rc;
@@ -1012,12 +1199,26 @@ unsigned udosfindfirst(char *Ppfname,HDIR *Pphdir,unsigned int Pattr,
             break;                                                 //~v5kaI~
         if (Pphdir || wildsw)  //request for findnext or wildcard  //~v5kaI~
             break;                                                 //~v5kaI~
+//#ifdef ARMXXE                                                      //~v780I~//~v782R~
+//        if (swDirDocNotWild)                                       //~v780I~//~v782R~
+//        {                                                          //~v780I~//~v782R~
+//            if (!*(Ppfname+pathlen))                               //~v780I~//~v782R~
+//            {                                                      //~v780I~//~v782R~
+//                UTRACEP("%s:notWild opendirDoc,findnext returns %s for %s(pathlen=%d)\n",UTT,Ppfstat3->achName,Ppfname,pathlen);//~v780R~//~v782R~
+//                break;                                             //~v780I~//~v782R~
+//            }                                                      //~v780I~//~v782R~
+//        }                                                          //~v780I~//~v782R~
+//#endif                                                             //~v780I~//~v782R~
     	if (!strcmp(Ppfstat3->achName,Ppfname+pathlen))	//from xcopy/xmove;Pphdir=null and readnext returns "."/".." when path is wildname dir//~v6b1I~
 	    	break;	//when return at "." fstat indicate dir attribute//~v6b1I~
 	  	if (Pattr & FILE_MDOSDISK)                                 //~v5kxR~
             break;                                                 //~v5kxR~
     	if (!strcmp(Ppfstat3->achName,"."))	//search current dir entry to get attr//~v5kaI~
 	    	break;                                                 //~v5kaI~
+//#ifdef ARMXXE                                                    //~v782R~
+//        if (isSharedDocMemberFF(Ppfname,Pphdir,Ppfstat3)) //under !(Pphdir || wildsw)//~v782R~
+//            break;                                               //~v782R~
+//#endif                                                           //~v782R~
       }                                                            //~v5kaI~
         if (rc==4)                                                 //~v387R~
 //          rc=ERROR_FILE_NOT_FOUND;                               //~v5d9R~
@@ -1027,6 +1228,7 @@ unsigned udosfindfirst(char *Ppfname,HDIR *Pphdir,unsigned int Pattr,
 //              if (rc=ufilelnxclosehdir(*phdir),rc)//free handle  //~v6B6R~
                 if (rc=(unsigned)ufilelnxclosehdir(*phdir),rc)//free handle//~v6B6I~
                     return rc;
+     }//isShared                                                   //~v782M~
     }
     if(rc)                                                         //~0827R~
     {                                                              //~0827R~
@@ -1038,6 +1240,7 @@ unsigned udosfindfirst(char *Ppfname,HDIR *Pphdir,unsigned int Pattr,
           {                                                        //~v5d9I~
 //          ufilenotfound(pdirnm,(int)rc);                         //~v397R~
            if(rc==ERROR_NO_MORE_FILES)                             //~v5d9R~
+           {                                                       //~v77AI~
 //#ifdef UTF8SUPP                                                    //~v62bI~//~v62jR~
 #ifdef UTF8SUPPH                                                   //~v62jI~
 //          if (!(Pattr & FILE_DIRECTORY))                         //~v6kmR~
@@ -1048,7 +1251,15 @@ unsigned udosfindfirst(char *Ppfname,HDIR *Pphdir,unsigned int Pattr,
             else                                                   //~v62bI~
 #endif                                                             //~v62bI~
 //          rc=ufileerrnoentry(Ppfname,ERROR_FILE_NOT_FOUND);      //~v5d9I~//~v6B6R~
+#ifdef ARMXXE                                                      //~v77AI~//~v784R~
+	      if (SswFFopt & UDFFOO_ERRNOENTRY)                        //~v784I~
+            rc=(unsigned)ufileerrnoentry(Ppfname,ERROR_FILE_NOT_FOUND);//~v784I~
+          else                                                     //~v784I~
+            rc=(unsigned)ufileerrnoentry(Ppfname,ERROR_NO_MORE_FILES);    //return 0 to process filectr=0 by xedir//~v77AR~//~v784R~
+#else                                                              //~v77AI~//~v784R~
             rc=(unsigned)ufileerrnoentry(Ppfname,ERROR_FILE_NOT_FOUND);//~v6B6I~
+#endif                                                             //~v77AI~//~v784R~
+           }                                                       //~v77AI~
            else                                                    //~v5d9I~
             ufilenotfound(Ppfname,(int)rc);                        //~v397I~
           }//msgsw                                                 //~v5d9I~
@@ -1091,6 +1302,7 @@ unsigned udosfindnextmsg(char *Ppfname,HDIR Phdir,FILEFINDBUF3 *Ppfstat3)//~v6k7
     int mdossw;                                                    //~v55nR~
     int swlongname=0;                                              //~v6H1I~
 //*********************************
+    UTRACEP("%s:fnm=%s\n",UTT,Ppfname);                            //~v77dI~
 #ifdef FTPSUPP                                                     //~v59nI~
     if (((ULONG)Phdir & FTP_HDIRMASK)==FTP_HDIRID)	//special hdir for FTP//~v59nI~
 //  	return uftpfindnext(Phdir,Ppfstat3);                       //~v59nR~//~v6B6R~
@@ -1098,6 +1310,7 @@ unsigned udosfindnextmsg(char *Ppfname,HDIR Phdir,FILEFINDBUF3 *Ppfstat3)//~v6k7
 #endif                                                             //~v59nI~
     if (!(hdir=Phdir))
         hdir=Shdirfirst;
+//  UTRACEP("%s:ufilelnxsrchhdir call\n",UTT);                     //~v70bR~
     if (rc=ufilelnxsrchhdir(hdir,&attr,&path,&pathlen),rc)         //~0901R~
 //      return rc;                                                 //~v6B6R~
         return (unsigned)rc;                                       //~v6B6I~
@@ -1106,6 +1319,7 @@ unsigned udosfindnextmsg(char *Ppfname,HDIR Phdir,FILEFINDBUF3 *Ppfstat3)//~v6k7
     mdossw=(attr & FILE_MDOSDISK);                                 //~v55nI~
 //else                                                             //~v55nR~
 //{                                                                //~v55nR~
+//      UTRACEP("%s:path=%s\n",UTT,path);                          //~v70bR~
     for (;;)
     {
         errno=0;
@@ -1121,35 +1335,52 @@ unsigned udosfindnextmsg(char *Ppfname,HDIR Phdir,FILEFINDBUF3 *Ppfstat3)//~v6k7
       }                                                            //~v55nI~
       else                                                         //~v55nI~
       {                                                            //~v55nI~
+//#ifdef ARMXXE              //ulibarm.h redirect to ufile_readdirDoc thru ufiledoc_readdir//~v77dI~//~v77wR~
+//        if (IS_DOCDIRH(hdir))                                      //~v77dI~//~v77wR~
+//            pde=ufile_readdirDoc((DIR*)hdir);                      //~v77dR~//~v77wR~
+//        else                                                       //~v77dI~//~v77wR~
+//#endif                                                             //~v77dI~//~v77wR~
         pde=readdir((DIR*)hdir);
         if (!pde)
         {
             rc=errno;                                              //~0827R~
+	    	UTRACEP("%s:readdir return null errno=%d\n",UTT,rc);   //~v77wI~
             if (!rc)    //no err                                   //~0827R~
                 rc=ERROR_NO_MORE_FILES;                            //~0827R~
             break;
         }
-//      UTRACED("udosfindnext pde",pde,pde->d_reclen);             //~v6b1I~//~v6q2R~
-//printf("read dir name=%s\n",pde->d_name);                        //~0901R~
-        if (WILDCARD(pde->d_name))	//wildcard file/dirname        //~v39YI~
-        {                                                          //~v6b0I~
-			errwildname(0,pde->d_name,path);                       //~v6b1R~
-          if (!(Gufile_opt & GFILEOPT_WILDCARDNAMEOK))             //~v6b1R~
-            continue;               //ignore it,it cause segfault by double closedir
-        }                                                          //~v6b0I~
+	    UTRACEP("%s:readdir d_name=%s\n",UTT,pde->d_name);         //~v77dI~
+//      UTRACED("udosfindnext pde",pde,pde->d_reclen);             //~v6b1I~//~v6q2R~//~v70bR~
+//      UTRACEP("%s:udosfindnext pde->d_name=%s\n",UTT,pde->d_name);//~v70bR~
+//      if (WILDCARD(pde->d_name))	//wildcard file/dirname        //~v39YI~//~v77kR~
+//      {                                                          //~v6b0I~//~v77kR~
+//  		errwildname(0,pde->d_name,path);                       //~v6b1R~//~v77kR~
+//        if (!(Gufile_opt & GFILEOPT_WILDCARDNAMEOK))             //~v6b1R~//~v77kR~
+//          continue;               //ignore it,it cause segfault by double closedir//~v77kR~
+//      }                                                          //~v6b0I~//~v77kR~
         rc=0;
         if (WILDCARD(path+pathlen))	//wildcard                     //~0901R~
         {                                                          //~v6kaI~
 //          UTRACEP("findnext wildselect d_name=%s,wild=%s\n",pde->d_name,path+pathlen);//~v6kaI~//~v6q2R~
 	        if (!ufilelnxwildselect(pde->d_name,path+pathlen,mdossw))//~v55nR~
+            {                                                      //~v70bI~
+//            	UTRACEP("%s:ufilelnxwildselect rc=0,unmatch\n",UTT);//~v70bR~
             	continue;		//wildcard unmatch                 //~0901I~
-//            UTRACEP("findnext wildselect selected\n");               //~v6kaI~//~v6q2R~
+            }                                                      //~v70bI~
+//          UTRACEP("findnext wildselect selected\n");               //~v6kaI~//~v6q2R~//~v70bR~
         }                                                          //~v6kaI~
+        if (WILDCARD(pde->d_name))	//wildcard file/dirname        //~v77kI~
+        {                                                          //~v77kI~
+    		errwildname(0,pde->d_name,path);                       //~v77kI~
+          if (!(Gufile_opt & GFILEOPT_WILDCARDNAMEOK))             //~v77kI~
+            continue;               //ignore it,it cause segfault by double closedir//~v77kI~
+        }                                                          //~v77kI~
 //      if (rc=ufilelnxgetmembfstat(Ppfstat3,pde,path,pathlen),rc) //~v3a2R~
 //      	break;                                                 //~v3a2R~
 //      if (ufilelnxgetmembfstat(Ppfstat3,pde,path,pathlen))       //~v56aR~
 //          continue;                                              //~v56aR~
         rc2=ufilelnxgetmembfstat(Ppfstat3,pde,path,pathlen);       //~v56aI~
+//      UTRACEP("%s:rc2=%d\n",UTT,rc2);                            //~v70bR~
         if (rc2)                                                   //~v56aI~
         {                                                          //~v56aI~
         	if (rc2==EACCES)                                       //~v56rR~
@@ -1179,7 +1410,14 @@ unsigned udosfindnextmsg(char *Ppfname,HDIR Phdir,FILEFINDBUF3 *Ppfstat3)//~v6k7
             break;
         if (swlongname)                                            //~v6H1I~
         	break;                                                 //~v6H1I~
+      if ((!strcmp(Ppfstat3->achName,".") || !strcmp(Ppfstat3->achName,".."))//~v783I~
+	  &&  !(attr & FILE_DIRECTORY))                                //~v783I~
+      {                                                            //~v783I~
+    	UTRACEP("%s:skip otherctrUp by . or ..\n",UTT);            //~v783I~
+      }                                                            //~v783I~
+      else                                                         //~v783I~
         SdirlistOtherAttrCtr++;                                    //~v6kmI~
+    	UTRACEP("%s:otherattrctr=%d,member=%s\n",UTT,SdirlistOtherAttrCtr,Ppfstat3->achName);//~v782I~
     }
 //}//msdos or else                                                 //~v55nR~
 
@@ -1195,11 +1433,12 @@ unsigned udosfindnextmsg(char *Ppfname,HDIR Phdir,FILEFINDBUF3 *Ppfstat3)//~v6k7
 //          uerrexit("udosfindnext failed,rc=%d",                  //~v371R~
             if (rc!=EACCES) //not yet msg                          //~v371I~
             	uerrmsg("udosfindnext failed,rc=%d",               //~v371I~
-                        "udosfindnext の失敗,リターンコード=%d",   //~0827R~
+                        "udosfindnext の失敗,リターンコード=%d",   //~0827R~//~v777I~
                         rc);                                       //~0827R~
 //          return rc;                                             //~v371I~//~v6B6R~
             return (unsigned)rc;                                   //~v6B6I~
         }                                                          //~v371I~
+    UTRACEP("%s:return 0 otherattrctr=%d,member=%s\n",UTT,SdirlistOtherAttrCtr,Ppfstat3->achName);//~v782I~
     return 0;                                                      //~0827R~
 }//udosfindnext
 //*******************************************************          //~0901I~
@@ -1235,12 +1474,14 @@ int ufilelnxattrselect(ULONG Pfattr,ULONG Pfattrsrc,ULONG Ppattr)  //~v56nI~
 //  unsigned int wattrf,wattrp,modef,modep;                        //~v56cR~
     unsigned int modef,modep;                                      //~v56cI~
 //*********************************                                //~0901I~
+	UTRACEP("%s:file attr=0x%x,slink attr=0x%x,select attr=0x%x\n",UTT,Pfattr,Pfattrsrc,Ppattr);//~v780I~
   if (!(Pfattr & FILE_MDOSDISK))                                   //~v56nR~
   {                                                                //~v56nI~
 //  modef=FILE_GETMODE(Pfattr);                                    //~v50JI~//~v6BxR~
     modef=(UINT)FILE_GETMODE(Pfattr);                              //~v6BxI~
 //  modep=FILE_GETMODE(Ppattr);                                    //~v50JI~//~v6BxR~
     modep=(UINT)FILE_GETMODE(Ppattr);                              //~v6BxI~
+	UTRACEP("%s:mode file=0x%x,mode select=0x%x\n",UTT,modef,modep);//~v780I~
    if (!(Ppattr & FILE_SPECIAL))  //select reguler file only       //~v56sR~
    {                                                               //~v56sI~
     if (Pfattr & FILE_SPECIAL)  //select reguler file only         //~v56sR~
@@ -1290,6 +1531,7 @@ int ufilelnxattrselect(ULONG Pfattr,ULONG Pfattrsrc,ULONG Ppattr)  //~v56nI~
     if (Pfattr & FILE_SYSTEM)	//file is dir                      //~v56cI~
     	if (!(Ppattr & FILE_SYSTEM))		//dir not specified    //~v56cI~
        		return 0;					//no select                //~v56cI~
+	UTRACEP("%s:file exit rc=1 attr=0x%x,slink attr=0x%x,select attr=0x%x\n",UTT,Pfattr,Pfattrsrc,Ppattr);//~v780I~
     return 1;                                                      //~v56cI~
 }//ufilelnxattrselect                                              //~0901I~
 //*******************************************************
@@ -1305,6 +1547,7 @@ int ufilelnxgetmembfstat(FILEFINDBUF3 *Ppffb3,PDIRENT Ppde,UCHAR *Ppath,int Ppat
     UCHAR pathfnm[_MAX_PATH*2];                                    //~0827R~
     int rc;                                                        //~v39TI~
 //*************
+    UTRACEP("%s:path=%s,Pathlen=%d,d_name=%s\n",UTT,Ppath,Ppathlen,Ppde->d_name);//~v77dR~
 //  memcpy(pathfnm,Ppath,Ppathlen);                                //~0901R~//~v6B6R~
     memcpy(pathfnm,Ppath,(size_t)Ppathlen);                        //~v6B6I~
     if (Ppathlen >0 && *(pathfnm+Ppathlen-1)!='/')                 //~0901R~
@@ -1350,6 +1593,7 @@ int ufilelnxsavehdir(HDIR Phdir,ULONG Pattr,UCHAR *Ppath,int Ppathlen)
 {
     int ii;
 //*************
+	UTRACEP("%s:path=%s,attr=0x%lx,hdir=%p\n",UTT,Ppath,Pattr,Phdir);//~v780I~
     for (ii=0;ii<MAXHDIR;ii++)                                     //~0827R~
         if (Phdir==Shdirtbl[ii] || !Shdirtbl[ii])                  //~0827R~
         {
@@ -1360,12 +1604,13 @@ int ufilelnxsavehdir(HDIR Phdir,ULONG Pattr,UCHAR *Ppath,int Ppathlen)
             strncpy(Shdirpath[ii],Ppath,_MAX_PATH);                //~0827I~
 	        Shdirpudl[ii]=(PUDIRLIST)Phdir;	//top addr for mdir    //~v50GI~
 			Shdirindex=ii;	//search index                         //~v50GI~
+//  		UTRACEP("%s:Shdirindex=%d,Phdir=%p,path=\n",UTT,ii,Phdir,Ppath);//~v70bR~
             break;
         }                                                          //~0827R~
     if (ii==MAXHDIR)                                               //~0827R~
     {
         uerrmsg("Pending FindFirst HANDLE overflow(max %d)",       //~0827R~
-                "仕掛かり中の FindFirst の制限超(最大 %d)",        //~0827R~
+                "仕掛かり中の FindFirst の制限超(最大 %d)",        //~0827R~//~v777I~
                     MAXHDIR);                                      //~0827R~
         return ERROR_TOO_MANY_OPEN_FILES;                          //~0827R~
     }                                                              //~0827R~
@@ -1381,18 +1626,23 @@ int ufilelnxsrchhdir(HDIR Phdir,ULONG *Ppattr,UCHAR **Pppath,int *Pppathlen)//~0
 {
     int ii;
 //*************
+//  UTRACEP("%s:Phdir=%p\n",UTT,Phdir);                            //~v70bR~
 	Shdirindex=0;	//mdos current pos                             //~v50GI~
     if (!Phdir)                                                    //~0827R~
         return ERROR_INVALID_HANDLE;                               //~0827R~
     for (ii=0;ii<MAXHDIR;ii++)                                     //~0827R~
+    {                                                              //~v70bI~
+//      UTRACEP("%s:ii=%d,Shdirtbl=%p,path=%s\n",UTT,ii,Shdirtbl[ii],Shdirpath[ii]);//~v70bR~
         if (Phdir==Shdirtbl[ii])                                   //~0827R~
             break;
+    }                                                              //~v70bI~
     if (ii==MAXHDIR)                                               //~0827R~
         return ERROR_INVALID_HANDLE;                               //~0827R~
     *Ppattr=Shdirtattr[ii];                                        //~0827R~
     *Pppath=Shdirpath[ii];                                         //~0827I~
     *Pppathlen=Shdirpathlen[ii];                                   //~0901R~
 	Shdirindex=ii;	//mdos current pos                             //~v50GI~
+    UTRACEP("%s:Shdrindex=%d,path=%s,attr=0x%lx\n",UTT,ii,*Pppath,*Ppattr);           //~v70bR~//~v780R~
     return 0;                                                      //~0827R~
 }//ufilelnxsrchhdir
 //*******************************************************
@@ -1419,13 +1669,16 @@ int ufilelnxclosehdir(HDIR Phdir)
     if (rc)                                                        //~0827R~
     {                                                              //~0827R~
         rc=errno;                                                  //~0827R~
-        uerrexit("FindClose failed,rc=%d",                         //~0827R~
-                    "FindClose の失敗,リターンコード=%d",          //~0827R~
+//      uerrexit("FindClose failed,rc=%d",                         //~0827R~//~v782R~
+        uerrmsg("FindClose failed,rc=%d",                          //~v782I~
+                    "FindClose の失敗,リターンコード=%d",          //~v77dI~
                     rc);                                           //~0827R~
+        return rc;                                                 //~v782I~
     }                                                              //~0827R~
   }                                                                //~v50GI~
     if (ii==MAXHDIR)                                               //~0827R~
         return ERROR_INVALID_HANDLE;                               //~0827R~
+//  UTRACEP("%s:Shdrindex=%d,path=%s\n",UTT,ii,Shdirpath);         //~v70bR~
     Shdirtattr[ii]=0;                                              //~0827R~
     Shdirtbl[ii]=0;
     Shdirpath[ii][0]=0;                                            //~0827R~
@@ -1492,6 +1745,7 @@ ULONG ufilemode2attr(FILEFINDBUF3 *Ppft)                           //~0827R~
 //        if (*pc!=0 && *pc!='.') //not cur dir or parent dir      //~v575R~
 //            attr|=FILE_HIDDEN;                                   //~v575R~
     Ppft->attrFile=FILE_SETMODEATTR(mode,attr);                    //~0901R~
+    UTRACEP("%s:return attr=0x%lx,mode=0x%x\n",UTT,attr,(int)mode);//~v780I~
     return attr;                                                   //~0827R~
 }//ufilemode2attr                                                  //~0827I~
 //*******************************************************          //~0827I~
@@ -1552,11 +1806,11 @@ int errwildname(int Popt,char *Pmember,char *Ppath)                //~v6b1R~
     {                                                              //~v6b1I~
 		if (Popt & EWN_RENAME)                                     //~v6b1I~
     		uerrmsg("Wildname renamed copy (%s).",                 //~v6b1I~
-       				"無効なファイル名を改名複写(%s).",             //~v6b1R~
+       				"無効なファイル名を改名複写(%s).",             //~v6b1R~//~v777I~
        				Ppath);                                        //~v6b1I~
         else                                                       //~v6b1I~
     		uerrmsg("Invalid copy target name(%s). Use \"/w\" option to rename copy.",//~v6b1R~
-       				"複写先ファイル名エラー(%s). \"/w\" オプション指定で改名複写",//~v6b1R~
+       				"複写先ファイル名エラー(%s). \"/w\" オプション指定で改名複写",//~v6b1R~//~v777I~
        				Ppath);                                        //~v6b1I~
     }                                                              //~v6b1I~
     else                                                           //~v6b1I~
@@ -1564,7 +1818,7 @@ int errwildname(int Popt,char *Pmember,char *Ppath)                //~v6b1R~
     {                                                              //~v6b1I~
     	if (Gufile_opt & GFILEOPT_WILDCARDNAMEOK)                  //~v6b1I~
     		uerrmsg("Invalid filename(%s of %s).",                 //~v6b1I~
-       				"無効なファイル名(%s of %s).",                 //~v6b1I~
+       				"無効なファイル名(%s of %s).",                 //~v6b1I~//~v777I~
        				Pmember,Ppath);                                //~v6b1I~
         else                                                       //~v6b1I~
         {                                                          //~v6uVI~
@@ -1572,17 +1826,17 @@ int errwildname(int Popt,char *Pmember,char *Ppath)                //~v6b1R~
     		swmdos=ufileisMSMounted(0,Ppath);	//vfat or nyfs     //~v6uVI~
           if (swmdos==1)                                           //~v6uVI~
     		uerrmsg("Invalid filename(%s of %s). (VFAT Mounted). Use -w option to force delete.",//~v6uVI~
-       				"無効なファイル名(%s of %s).(VFAT マウント). 強制削除は -w オプション使用",//~v6uVI~
+       				"無効なファイル名(%s of %s).(VFAT マウント). 強制削除は -w オプション使用",//~v6uVI~//~v777I~
        				Pmember,Ppath);                                //~v6uVI~
           else                                                     //~v6uVI~
           if (swmdos==2)    //NTFS driver support utf16(not cv to "?")v6uVI~//~v6uVR~
     		uerrmsg("Invalid filename(%s of %s). (maybe NTFS mounted). Use -w option to force delete.",//~v6uVI~
-       				"無効なファイル名(%s of %s).(NTFS上か？). 強制削除は -w オプション使用",//~v6uVI~
+       				"無効なファイル名(%s of %s).(NTFS上か？). 強制削除は -w オプション使用",//~v6uVI~//~v777I~
        				Pmember,Ppath);                                //~v6uVI~
           else                                                     //~v6uVI~
 #endif                                                             //~v6uVI~
     		uerrmsg("Invalid filename(%s of %s). (maybe valid on the system created it). Use -w option to force delete.",//~v6b1R~
-       				"無効なファイル名(%s of %s).(作成したシステムでは尚、有効かも). 強制削除は -w オプション使用",//~v6b1R~
+       				"無効なファイル名(%s of %s).(作成したシステムでは尚、有効かも). 強制削除は -w オプション使用",//~v6b1R~//~v777I~
        				Pmember,Ppath);                                //~v6b1R~
         }                                                          //~v6uVI~
     }                                                              //~v6b1I~
@@ -1597,26 +1851,26 @@ int errwildname(int Popt,char *Pmember,char *Ppath)                //~v6b1R~
             swmdos=ufileisMSMounted(0,Ppath);   //vfat or nyfs     //~v6uVI~
           if (swmdos==1)                                           //~v6uVI~
             uerrmsg("Invalid filename(%s of %s). (VFAT mounted)",  //~v6uVI~
-                    "無効なファイル名(%s of %s).(VFAT マウント). ",//~v6uVI~
+                    "無効なファイル名(%s of %s).(VFAT マウント). ",//~v6uVI~//~v777I~
                     Pmember,Ppath);                                //~v6uVI~
           else                                                     //~v6uVI~
           if (swmdos==2)    //NTFS driver support utf16(not cv to "?")v6uVI~//~v6uVI~
             uerrmsg("Invalid filename(%s of %s). (maybe NTFS mounted)",//~v6uVI~
-                    "無効なファイル名(%s of %s).(NTFS上か？)",     //~v6uVI~
+                    "無効なファイル名(%s of %s).(NTFS上か？)",     //~v6uVI~//~v777I~
                     Pmember,Ppath);                                //~v6uVI~
           else                                                     //~v6uVI~
 //        iocu8=ufilegetiocharset(0,Ppath,0/*unknown dev_t*/,wkcharset,(int)sizeof(wkcharset));//~v6B9I~
 //        if (iocu8==2)   //utf8 by default                          //~v6B9I~
 //            uerrmsg("Invalid filename(%s of %s). (unknown mount option:iocharset,utf8 will be assumed.)",//~v6B9I~
-//                      "無効なファイル名(%s of %s).(マウントオプション:iocharset が不明,utf8を想定)",//~v6B9I~
+//                      "無効なファイル名(%s of %s).(マウントオプション:iocharset が不明,utf8を想定)",//~v6B9I~//~v777I~
 //                    Pmember,Ppath,wkcharset);                      //~v6B9I~
 //        else                                                       //~v6B9I~
 //            uerrmsg("Invalid filename(%s of %s). (mount option iocharset=%s)",//~v6B9I~
-//                      "無効なファイル名(%s of %s).(マウントオプション iocharset=%s)",//~v6B9I~
+//                      "無効なファイル名(%s of %s).(マウントオプション iocharset=%s)",//~v6B9I~//~v777I~
 //                    Pmember,Ppath,wkcharset);                      //~v6B9I~
 #endif                                                             //~v6uVI~
     	uerrmsg("Invalid filename(%s of %s). (maybe valid on the system created it)",//~v6b1R~
-       			"無効なファイル名(%s of %s).(作成したシステムでは尚、有効かも)",//~v6b1R~
+       			"無効なファイル名(%s of %s).(作成したシステムでは尚、有効かも)",//~v6b1R~//~v777I~
        			Pmember,Ppath);                                    //~v6b1R~
        }                                                           //~v6uVI~
     }                                                              //~v6q2I~
@@ -2033,6 +2287,13 @@ int filegetmntent(int Popt,char *Pfpath,dev_t Pdevt,struct mntent **Ppmntent)//~
 //************************                                         //~v6B8I~
 	UTRACEP("%s:opt=%x,path=%s,devt=%x\n",UTT,Popt,Pfpath,Pdevt);  //~v6B8R~
     *Ppmntent=NULL;                                                //~v6B8R~
+#ifdef ARMXXE                                                      //~v77qI~
+    if (IS_DOCPATH(Pfpath))                                        //~v77qI~
+    {                                                              //~v77qI~
+		UTRACEP("%s:return 1 by DOC path,path=%s\n",UTT,Pfpath);   //~v77qI~
+        return 1;   //utf8 as default                              //~v77qI~
+    }                                                              //~v77qI~
+#endif                                                             //~v77qI~
     if (!(devt=Pdevt))                                             //~v6B8I~
     {                                                              //~v6B8I~
     	rc2=filegetdevt(Popt,Pfpath,&devt);                        //~v6B8I~
@@ -2228,3 +2489,18 @@ char *ufullpathCP(int Popt,char *Pfullpath,char *Pfilename,size_t Plen,int *Pprc
 	UTRACEP("%s:return fpath=%s,rc=%d\n",UTT,pfpath,rc);           //~v6B9R~
     return pfpath;                                                 //~v6B9I~
 }//ufullpathCP                                                     //~v6B9I~
+//**********************************************************************//~v784I~
+unsigned udosfindfirstOpt(int Popt,char *Ppfname,HDIR *Pphdir,unsigned int Pattr,FILEFINDBUF3 *Ppfstat3)//~v784I~
+{                                                                  //~v784I~
+	unsigned int rc;                                               //~v784I~
+//************************                                         //~v784I~
+	UTRACEP("%s:opt=0x%x,attr=0x%x,fnm=%s\n",UTT,Popt,Pattr,Ppfname);//~v784I~
+	SswFFopt=Popt & ~UDFFOO_NOMSG;                                 //~v784I~
+	if (Popt & UDFFOO_NOMSG)		//no errmsg option             //~v784I~
+		rc=udosfindfirstnomsg(Ppfname,Pphdir,Pattr,Ppfstat3);      //~v784I~
+    else                                                           //~v784I~
+		rc=udosfindfirst(Ppfname,Pphdir,Pattr,Ppfstat3);           //~v784I~
+	SswFFopt=0;                                                    //~v784I~
+	UTRACEP("%s:rc=%d,hdir=%p,fnm=%s\n",UTT,rc,*Pphdir,Ppfname);   //~v784I~
+    return rc;                                                     //~v784I~
+}                                                                  //~v784I~

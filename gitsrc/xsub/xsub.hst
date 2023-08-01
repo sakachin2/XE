@@ -1,3 +1,23 @@
+//vas7:230728 xdc;option to ignore timestamp of dir; /uf(xcopy dir timestamp maybe  updated by member copy,xe's xcopy set dir timestamp after member copy)
+//            xdc.c
+//vas6:230709 sjis on help is not printable when /n9
+//            xfg.c
+//vas5:230709 do not beep for help
+//            xfg.c xcv
+//vas4:230701 (Bug) xfmt on UNX, issue specify input for /xxx
+//            xfmt.c
+//vas3:230630 ARM;closeall for arm subthread execution
+//            highlight is cpp and ifstream is closed when it is destructed.
+//            iconv closed all
+//            *highlight *iconv **xbc ***xci **xcv *xdc **xdd *xdig **xds *xfc **xff *xfg ***xfmt **xfs **xlow *xmj **xpe **xts
+//            ulibarm.h uprocExit.c
+//vas2:230630 errmag issued if /ICU is after /[cvType]or /list option
+//            xcv.c
+//vas1:230612 ARM;warning by audroidstudio compiler
+//            xci.c
+//vas0:230323 sys/timeb.h is not found on ARM
+//            xts.c v1.8
+//*********  20221215 v129U release  *******************************
 //var1:220614 xdc crash by long path name 4096+6(4096 is linux max)
 //            xdc.c
 //*********  20201028 v129P release   ****************

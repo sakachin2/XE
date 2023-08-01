@@ -1,7 +1,10 @@
-//*CID://+van0R~:                             update#=  625;       //~van5R~//~van0R~
+//*CID://+vas6R~:                             update#=  639;       //~vas6R~
 //***********************************************************
 //* xfg     : grep for binary file                                 //~v118R~
 //***********************************************************
+//vas6:230709 sjis on help is not printable when /n9               //~vas6I~
+//vas5:230709 do not beep for help                                 //~vas5I~
+//vas3:230630 ARM;closeall for arm subthread execution             //~vas3I~
 //van5:200518 xfg 1.21:(Bug) xfg -exxx "" dir -->search current dir by fullpath of "".//~van5I~
 //van2:200420 xfg 1.21:(Win:Bug)redirect filename(c:\xfg2) is protected now//~van2I~
 //van1:200420 xfg 1.21:(Bug)err msg:specify word and file when -e parm.//~van1I~
@@ -78,7 +81,7 @@
 //*        else error                          */
 //**********************************************/
 //***********************************************************
-#define VER "V1.20"  //version                                     //~vad2R~//~vak3R~
+#define VER "V1.21"  //version                                     //~vad2R~//~vak3R~//+vas6R~
 #define PGMID   "xfg"                                              //~v1.1R~
 #ifdef DOS                                                         //~v11fI~
 	#define RBUFFSZ 16384                                          //~v11fI~
@@ -253,7 +256,11 @@ int main(int parmc,char *parmp[])
     int opt;                                                       //~van0I~
 //*************************
 	sprintf(Spgmver,"%s:%s:",PGMID,VER);                           //~v1.1R~
+	UTRACE_INIT("utrace.xfg",1);        //TODO test                //~van0I~
 	opt=UDCWCIO_INTERNAL;	//bypass UDBCSCHK_EXPLICIT and utfucsmapinit(0);//~van0I~
+//#ifdef LNX                                                       //~vas3R~
+//    opt|=UDCWCIO_LOCALICU;  //TODO test to select Pjmsg of uerrmsg//~vas3R~
+//#endif                                                           //~vas3R~
     udbcschk_wcinit(opt,0);                                        //~va6//~van0I~
   	uerrmsg_init(Spgmver,stdout,0);//default color                 //~v1.1R~
 	uerrexit_init(Spgmver,stdout,0,0,0);//no mapfile,no exit,no exit parm//~v1.1R~
@@ -261,7 +268,8 @@ int main(int parmc,char *parmp[])
   	if (parmc<2) //no parm
   	{
     	help();
-    	exit(4);
+//  	exit(4);                                                   //~vas5R~
+    	return 0;                                                  //~vas5I~
   	}
 //*******************************
 //* parm process                *
@@ -337,7 +345,8 @@ int main(int parmc,char *parmp[])
     		case '?':
     		case 'H':
 	  			help();
-      			exit(4);
+//    			exit(4);                                           //~vas5R~
+      			exit(0);                                           //~vas5I~
       			break;
 //**************************                                       //~v114I~
 //* not found msg /M                                               //~v114I~
@@ -863,8 +872,10 @@ int main(int parmc,char *parmp[])
     printxmask();                                                  //~va9xI~
   	if (Stestsw)                                                   //~v122I~
 	    ualloc_chk(UAC_MSG);                                       //~v122R~
+    UTRACEP("%s:return\n",UTT);                                    //~vas3I~
 //return matchcnt;                                                 //~v124R~
 //return Smatchcnt;                                                //~va2bR~
+	ARMXSUB_CLOSE(PGMID);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//~vas3I~
   return 0;                                                        //~va2bI~
 }//end main
 //**********************************************************************//~v118I~
@@ -1057,6 +1068,7 @@ int xsssub(char *Pfnm)                                             //~v124I~
 //  char wildspec[_MAX_PATH];                                      //~v11fR~
     char wildspec[_MAX_PATH]="";                                   //~v11gR~
 //**********************                                           //~v1.1I~
+    UTRACEP("%s:Pfnm=%s\n",UTT,Pfnm);                              //~vas3I~
 //  *Pfilectr=0;                                                   //~v124R~
 //  *Pmatchctr=0;                                                  //~v124R~
 //printf("sssub pfnm=%s\n",Pfnm);                                  //~v124R~
@@ -1937,7 +1949,12 @@ void help(void)
 	        "         %s -c  _MAX_PATH \"%%INCLUDE%%\"\n",         //~va39R~
 							PGMID);                                //~va39I~
 #endif                                                             //~va39I~
-	HELPMSG "         %s -cpu8  ¡¢£¤   dir1\n",                    //~van2R~
+//  HELPMSG "         %s -cpu8  ¡¢£¤   dir1\n",                    //~van2R~//~vas3R~
+#ifdef LNX                                                         //~vas6I~
+    HELPMSG "         %s -cpu8  \xe3\x81\x82\xe3\x81\x84\xe3\x81\x86 dir1\n",//~vas6R~
+#else                                                              //~vas6I~
+    HELPMSG "         %s -cpu8  ‚ ‚¢‚¤ dir1\n",                    //~vas6I~
+#endif                                                             //~vas6I~
 	        "         %s -cpu8  ‚ ‚¢‚¤ dir1\n",                    //~van2R~
 							PGMID);                                //~van2I~
 	return;
@@ -2035,7 +2052,7 @@ int chkLang(void)                                                  //~van0R~
                 if (len)                                           //~van0I~
                 {                                                  //~van0I~
                     lenu8=len*UTF8_MAXCHARSZ+3;                    //~van0I~
-                    utf8wk=umalloc((size_t)lenu8);                 //+van0R~
+                    utf8wk=umalloc((size_t)lenu8);                 //~van0R~
             		opt=UTFCVO_ERRRET; //outbuff size parm specified//~van0I~
 					rc2=utfcvf2l(opt,utf8wk+2,pc+2,len,&chklen,&lenlc,NULL/*Ppcharwidth*/);//~van0I~
                     if (rc2>=UTFCVRC_ERR)                          //~van0I~

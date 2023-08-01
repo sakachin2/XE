@@ -1,4 +1,4 @@
-//*CID://+v6BxR~:                             update#=   29;       //~v6BxR~
+//*CID://+v6BxR~:                             update#=   31;       //~v6BxR~
 //*************************************************************
 //*ugcclib.c support function which is not on libc                 //~v134R~
 //*  stricmp,memicmp,strupr,strlwr,itoa,spawnv,spawnvp,getche,getch//~v50zR~
@@ -69,7 +69,7 @@ char *strlwr(char *Pstr)                                           //~v134I~
 //*ret  :result  0:match,<0,or >0-                                 //~v053R~
 //*******************************************************          //~v053I~
 //int memicmp(void *Psrc1,void *Psrc2,unsigned int Plen)             //~v053R~//~v6BxR~
-int memicmp(void *Psrc1,void *Psrc2,size_t Plen)                   //+v6BxR~
+int memicmp(void *Psrc1,void *Psrc2,size_t Plen)                   //~v6BxR~
 {                                                                  //~v053I~
     char *pc1,*pc2;                                                //~v053I~
 //*******************                                              //~v053I~
@@ -228,5 +228,8 @@ int spawnv(int Pmodeflag,char *Ppathname,char *Pargv[])            //~v134I~
 		execv(Ppathname,Pargv);                                    //~v134I~
 //execv failed                                                     //~v134I~
     exit(0x80+errno);                                              //~v134R~
+#ifdef ARM                                                         //+v6BxR~
+    return -1;	//for compiler warning                             //~v6BxI~
+#endif                                                             //~v6BxI~
 }//spawnv                                                          //~v134I~
 #endif //MGW32                                                     //~v5ncI~

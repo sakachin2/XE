@@ -1,9 +1,10 @@
-//CID://+v711R~:              update#=    12                       //+v711R~
+//CID://+v771R~:              update#=    13                       //+v771R~
 //*************************************************************
 //*xecalc2.c                                                       //~v50gR~
 //* basic calc:double word calc                                    //~v50gR~
 //*************************************************************
-//v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //+v711I~
+//v771:230323 sys/timeb.h is not found on ARM                      //+v771I~
+//v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //~v711I~
 //v6xi:150115 conversion warning                                   //~v6xiI~
 //v6xh:150115 (BUG)invalid dword calc;on 64bit linux long/ulong is 64bit,so DWADD dose not overflow//~v6xhI~
 //v6hh:120623 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  defines ULPTR(unsigned long long)//~v6hhI~
@@ -40,15 +41,17 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#ifndef ARM                                                        //+v771I~
 #include <sys/timeb.h>
+#endif                                                             //+v771I~
 //*******************************************************
 #include <ulib.h>
 #include <uerr.h>
 #include <ucalc.h>
 #include <ucalc2.h>
 #include <uedit.h>
-#define UFTIME                                                     //+v711I~
-#include <umiscf.h>                                                //+v711I~
+#define UFTIME                                                     //~v711I~
+#include <umiscf.h>                                                //~v711I~
 
 //*******************************************************
 #define WORDSZ   32
@@ -1142,8 +1145,8 @@ static ULONG Stod0[2]={0xb361183f,0x48000000};		//Host TOD at 2000/01/01//~v50kR
         }
     	else
         {
-//      	ftime(&tmb);                                           //+v711R~
-        	uftime(&tmb);                                          //+v711I~
+//      	ftime(&tmb);                                           //~v711R~
+        	uftime(&tmb);                                          //~v711I~
         	Ppuct->milsec=(int)tmb.millitm;
         }
 //printf("cur time=%08x milsec=%03d\n",(ULONG)tmb.time,tmb.millitm);//~v50gR~

@@ -1,8 +1,10 @@
-//**Fixed-CID://+v9@8R~:**                                         //+v9@8R~
+//**Fixed-CID://+vby6R~:   update#=    1221                        //+vby6R~
 //**************************************************************** //~v0d5I~
 //xefile13.h                                                       //~v0d5I~
 //**************************************************************** //~v0d5I~
-//v9@8:080717 3270:fs mode del excluded line                       //+v9@8I~
+//vby6:230402 (ARM)adjust by4; go around by shortname and change to uri at ulib(ufile1l)//+vby6I~
+//vby4:230402 (ARM)shared resource support by //shareName defined by SP(ShortPath) cmd.//~vby4I~
+//v9@8:080717 3270:fs mode del excluded line                       //~v9@8I~
 //v9@5:080717 3270:TSO FS mode;draw update line only for performance//~v9@5I~
 //v585:040823 cap performance up;skip undo data save when clipboard repl//~v585I~
 //v41o:010820 cobol UFCleft=6                                      //~v41oI~
@@ -33,4 +35,8 @@ int fileinitialleft(PUFILEC Ppfc,PUFILEH Ppfh);                    //~v41oI~
 void filefreealldataplh(PUFILEH Ppfh);                             //~v585R~
 //**************************************************************** //~v9@5I~
 void fileresetundoable(int Popt,PUFILEH Ppfh);                     //~v9@5R~
-#define FSUO_CLEARLCMD 0x01         //clear lcmd                   //+v9@8I~
+#define FSUO_CLEARLCMD 0x01         //clear lcmd                   //~v9@8I~
+////**************************************************************** //~vby4I~//+vby6R~
+//#ifdef ARMXXE                                                      //~vby4I~//+vby6R~
+//int fncompDoc(PUQUEE Ppfnqe,PVOID Ppfname);                        //~vby4R~//+vby6R~
+//#endif                                                             //~vby4I~//+vby6R~

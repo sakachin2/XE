@@ -1,8 +1,10 @@
-//*CID://+vbv5R~:                             update#=  853;       //~vbv5R~
+//*CID://+vby4R~:                             update#=  868;       //~vby4R~
 //*************************************************************
-//*xedir.c                                                         //~v09bR~
+//*xedir.c                                                         //~vbv5R~
 //* draw
 //*************************************************************
+//vby4:230402 (ARM)shared resource support by //shareName defined by SP(ShortPath) cmd.//~vby4I~
+//vby2:230327 (Bug)ARM(maybe also Linux) shows DHname for top entry. it may be by no "."/".." entry on dirlist by permission//~vby2I~
 //vbv5:221120 warning /g/src/xe/xedir2.c:1812:49: warning: ¡Æ%12s¡Ç directive writing between 12 and 15 bytes into a region of size 8 [-Wformat-overflow=]//~vbv5I~
 //vbr2:200620 ARM:abort at sprintf(__builtin___vsprintf_chk)       //~vbr2I~
 //vbkf:180619 display hex notation for also dirlist panel          //~vbkfI~
@@ -681,6 +683,7 @@ int func_draw_dir(PUCLIENTWE Ppcw)
 		if (plh->ULHtype==ULHTDATA)	//file data
 		{
 //          pdh=UGETPDH(plh);                                      //~v183R~
+            UTRACEP("%s:func_draw_dir UDHtype=0x%x,DFHname=%s\n",UTT,pdh->UDHtype,pdh->UDHname);//~vbv5R~//~vby4R~
     		if (pdh->UDHtype==UDHTDIREXPMASK)	//initialy mask specified//~5812R~
     		{                                                   //~5812R~
 //       		pc=strrchr(pfh->UFHfilename,'\\');	//search last  //~v07lR~
@@ -697,20 +700,31 @@ int func_draw_dir(PUCLIENTWE Ppcw)
               else                                                 //~v717I~
 #endif                                                             //~v717I~
          		pc=ustrrchr2(pfh->UFHfilename,pfh->UFHdirsepc);	//search last//~v540I~
+                UTRACEP("func_draw_dir dirsepc=%c,pc=%s,UFHfilename=%s\n",pfh->UFHdirsepc,pc,pfh->UFHfilename);//~vbv5I~
 #ifdef FTPSUPP                                                     //~v774I~
+    #ifdef LNX                                                     //~vby2I~
+	        	if (                                               //~vby2I~
+                    !FILEISTSO(pfh)                                //~vby2I~
+    #else                                                          //~vby2I~
 	        	if (FILEISREMOTE(pfh)                              //~v774I~
                 &&  !FILEISTSO(pfh)                                //~v774I~
+    #endif                                                         //~vby2M~
         	    &&  pc                                             //~v774I~
-                &&  !WILDCARD(pc)                                  //~v774I~
+//              &&  !WILDCARD(pc)                                  //~v774I~//~vby2R~
+                && (!WILDCARD(pc) || strcmp(pc+1,DIR_ALLMEMB)==0)  //~vby2R~
                    )                                               //~v774I~
                 	pc=0;	//avoid rename save(not wild but no "." for "/"(root=home such as /P:/ for tiny FTP daemon)//~v774I~
 #endif                                                             //~v774I~
         		if (pc)                                         //~5812M~
                 {                                               //~5903I~
+                	UTRACEP("func_draw_dir CMDIN2 UDHflag4=%x,pc=%s,UFHfilename=%s\n",(int)pdh->UDHflag4,pc,pfh->UFHfilename);//~vbv5I~
+                	UTRACEP("func_draw_dir FILEISREMOTE=%d,FHflag6=%x\n",FILEISREMOTE(pfh),pfh->UFHflag6);//~vbv5I~
+                	UTRACEP("func_draw_dir DIR_ALLMEMB=%s,strcmp=%d\n",DIR_ALLMEMB,strcmp(pc+1,DIR_ALLMEMB));//~vby2I~
     				dirsetflddata(Ppcw,plh,PANL310RENAME,pc+1); //~5812M~
     				dirsavename(plh,pc+1);                      //~5903I~
 				}                                               //~5903I~
 //    			pdh->UDHtype=UDHTDIREXP;	//initialy mask specified//~v05KR~
+        		UTRACEP("%s:set UDHTPARENT dhname=%s\n",UTT,pdh->UDHname);//+vby4R~
      			pdh->UDHtype=UDHTPARENT;	//change to path dir//~v05KI~
         	  if (pc)                                              //~v774I~
               {                                                    //~v774I~
@@ -964,7 +978,7 @@ void dirddsetup(PUCLIENTWE Ppcw,PULINEH Pplh,PUPANELL Pppl)        //~v07eR~
     pddexpand=(PUDIRLD)((ULPTR)pdd+(ULPTR)expandlen);//for pont fld after UDDname//~vb2pI~
 //#ifdef LNX                                                         //~vau0I~//~vauER~
     UCBITOFF(pdh->UDHflag4,UDHF4NOTSETDD);	//return flag          //~vau0I~
-	UTRACEP("dirddsetup UDHF4NOTSETDD off,lineno=%s\n",Pplh->ULHlineno);//~vb14R~
+	UTRACEP("dirddsetup UDHF4NOTSETDD off,lineno=%d\n",Pplh->ULHlineno);//~vb14R~//~vbv5R~
 //#endif                                                             //~vau0I~//~vauER~
 //#ifdef WXE                                                       //~v621R~
 ////  if (Sresizesw)   //if resized setup all                      //~v621R~
@@ -1715,7 +1729,7 @@ void dirddsetup(PUCLIENTWE Ppcw,PULINEH Pplh,PUPANELL Pppl)        //~v07eR~
             {                                                      //~v719M~
 //        		sprintf(pddexpand->UDDdate,"% 7d/",(int)(pdh->UDHslinkattr>>16));//~v719R~//~vbv5R~
           		sprintf(dweditnumwk2,"% 7d/",(int)(pdh->UDHslinkattr>>16));//~vbv5I~
-          		strcpy(pddexpand->UDDdate,dweditnumwk2);           //+vbv5R~
+          		strcpy(pddexpand->UDDdate,dweditnumwk2);           //~vbv5R~
         		sprintf(edittime,"% 6d",(int)(pdh->UDHslinkattr &0xffff));//~v719R~
         		memcpy(edittime,edittime+1,sizeof(edittime)-1);    //~v719R~
             }                                                      //~v719M~
@@ -1735,6 +1749,13 @@ void dirddsetup(PUCLIENTWE Ppcw,PULINEH Pplh,PUPANELL Pppl)        //~v07eR~
         }                                                       //~5903I~
         else                    //root dir                         //~v09bI~
         {                                                          //~v7abI~
+#ifdef ARMXXE                                                      //~vby4I~
+          if (PFH_ISDOCUMENT(pfh))                                 //~vby4I~
+          {                                                        //~vby4I~
+    		UTRACEP("%s:skip ugetdiskfree fnm=%s\n",UTT,pfh->UFHfilename);//~vby4I~
+          }                                                        //~vby4I~
+          else                                                     //~vby4I~
+#endif                                                             //~vby4I~
 #ifdef FTPSUPP                                                     //~v541I~
           if (UCBITCHK(pfh->UFHflag6,UFHF6REMOTE))//remote file    //~v53WI~
           {                                                        //~v53WI~
@@ -2755,7 +2776,7 @@ int  dirsavename(PULINEH Pplh,UCHAR *Pname)                     //~v05FR~
     if (!(pdh->UDHrenamesv=UALLOCM((UINT)len)))                 //~v05FR~
         return UALLOC_FAILED;                                   //~v05FR~
 	memcpy(pdh->UDHrenamesv,Pname,(UINT)len);                   //~v05FR~
-    UTRACED("UDHrenamesv",Pname,len);                              //~vawaI~
+    UTRACED("xedir2.dirsavename UDHrenamesv",Pname,len);                              //~vawaI~//~vbv5R~
 	return 0;                                                   //~v05FR~
 }//dirsavename                                                  //~5903R~
 #ifdef UTF8SUPPH                                                   //~va00I~
@@ -2848,6 +2869,7 @@ int dirsetflddata_f2l(int Popt,PUCLIENTWE Ppcw,PULINEH Pplh,int Pfldno,UCHAR *Pd
 //************************                                         //~va00I~
     if (!Pdata)                                                    //~vawnI~
         return -1;                                                 //~vawnI~
+    UTRACEP("dirsetflddata_f2l fldno=%d,Pdata=%s\n",Pfldno,Pdata); //~vbv5I~
 //  plc=wklc;                                                      //~va00I~//~va0GR~
 //if (Pfldno==PANL310RENAME)                                       //~va0GR~
 //{                                                                //~va0GR~
@@ -3010,7 +3032,7 @@ int dirsavename_byutf8(int Popt,PULINEH Pplh,UCHAR *Pputf8,UCHAR *Pplc,int Pplcb
         if (!(pdh->UDHrenamesvbyutf8=UALLOCM((UINT)(utf8len+1))))  //~va00R~
             return UALLOC_FAILED;                                  //~va00R~
         UmemcpyZ(pdh->UDHrenamesvbyutf8,putf8,(UINT)utf8len);      //~va00R~
-    	UTRACED("UDHrenamesvbyutf8",putf8,utf8len);                //~vawaI~
+    	UTRACED("xedir2.dirsavename_byutf8 UDHrenamesvbyutf8",putf8,utf8len);                //~vawaI~//~vbv5R~
 //      UCBITON(pdh->UDHflag4,(UDHF4RENAMEU8));                    //~va00R~//~va0GR~
 //  }                                                              //~va00I~//~va0GR~
     *Ppplclen=lclen;                                               //~va0GI~
@@ -3027,11 +3049,12 @@ int dirsavename_byu8lc(int Popt,PULINEH Pplh,UCHAR *Putf8,int Pu8len,UCHAR *Pplc
     char *pu8,*pu82,*pct;                                          //~vawnI~
 	int u8len,lclen,offs,rc2,opt,rc=4;                             //~vawnR~
 //************************                                         //~vawnI~
-	UTRACED("inp",Putf8,Pu8len);                                   //~vawnI~
+	UTRACED("xedir2.dirsavename_byu8lc Putf8",Putf8,Pu8len);                                   //~vawnI~//~vbv5I~
     pdh=UGETPDH(Pplh);                                             //~vawnI~
 	pu8=pdh->UDHrename_utf8;                                       //~vawnR~
     if (!pu8||!*pu8)                                               //~vawnR~
     	return rc;                                                 //~vawnI~
+	UTRACEP("xedir2.dirsavename_byu8lc UDHrename_utf8=%s\n",pu8);  //~vbv5I~
 //  u8len=strlen(pu8);                                             //~vawnR~//~vb2pR~
     u8len=(int)strlen(pu8);                                        //~vb2pI~
 //  if (!(pu82=umemmem(pu8,Putf8,u8len,Pu8len)))	//not remained //~vawnI~//~vb2pR~

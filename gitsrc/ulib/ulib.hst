@@ -1,3 +1,141 @@
+//v786:230724 ARM:try to set env:PWD by cd for file parameter of tools
+//           ufiledoc.c ufile1l.c
+//v785:230722 ARM:xopy loop when src is wildcard
+//           ufile1l.c
+//v784:230721 ARM:xdelete; no entry msg and successefull when 0 member
+//           ufile1l.c ufile.h ufile2.c
+//v783:230721 (Bug) v781 not fix it. ignore "." entry
+//           ufile.c ufile1l.c
+//v782:230720 ARM;delete dir return no entry for also fileAll except //SP dir( internal folder such as myhome returns '.' for readdir)
+//           ufile1l.c 
+//v781:230720 (Bug)del dir fail by errmsg of "no entry but other attr exist" when dir contains only one dir
+//            ==>del is not to delete dir, xdd do it. so this is not used
+//           ufile.c/h ufile1l.c 
+//v780:230719 ARM;delete dir return no entry(findnext from findfirst returns no entry)
+//           ufile1l.c 
+//v77Z:230718 ARM;support CD to shared storage
+//           ufile1l.c xedcmd2.c ufiledoc.c/h xe.c
+//v77Y:230711 ARM;rename could not move to other folder.(ignore ufilefscomp and do copy + delete if not in same folder) 
+//           ufile3.c
+//v77X:230709 ARM;Android9(api28);xcv fails ctr cvname return 0,set env ICU_DATA
+//           ucvext.c
+//v77W:230709 ARM;Android9(api28);xcv fails to dlopen libicuuc by 
+//				dlopen opt=0x4,libicuuc.so handle=0x0,err=dlopen failed: library "libicuuc.so" wasn't loaded and RTLD_NOLOAD prevented it
+//				try RTLD_NOW
+//           ucvext.c
+//v77V:230708 ARM;for xsub select Pjmsg even when wcinit is not called for subthread mode
+//           uerr.c
+//v77U:230708 ARM;uerrmsg before wcinit set GBL_UERR_DBCSSET and miss to set GBL_ERR_DBCSMODE
+//           uerr.c
+//v77T:230708 ARM;locale was not set for xsub tool(pass Gjnilocale by putenv)
+//           jnij2c ucvext.c ulibarm.h/c udos2.c/h
+//v77S:230705 chk exist for copytemp to avoid invalidargumentexception
+//           ufiledoc.c
+//v77R:230630 (BUG)tmp path separater is not ";" but ":" for UNX
+//           udos2.c
+//v77Q:230630 (BUG)utempnam returns /sdcard, it cause permission err. use private for also XSUB; /data/local/tmp is also permission err
+//           ulibarm.c jnij2c.c
+//v77P:230630 (BUG)icudata search, default is not searched.
+//           ucvext.c
+//v77N:230630 icu lib search for also xcv
+//           ucvext.c
+//v77M:230627 (Bug)native opendir is available by addtitional condition of permission over API30
+//            And if not all files on api30, dirlist by fd misses file entry and show dir entry only
+//           ufilepdoc.c
+//v77L:230626 ARM;dlclose required each time to clear static valiable
+//           uproc.c
+//v77K:230622 ARM;use iconv_so(/system/bin/iconv installed as part of toybox. toybox is alternative of busybox and installed to >=android-6) 
+//           uproc.c
+//v77J:230622 (Bug)ARM;dlopen for libhighlight_so.so returns -1, it cause quit xe.
+//           uproc.c xesyn.c
+//v77H:230622 ARM;execulte so for also highlight
+//           uproc.c
+//v77G:230622 ARM;split armXsubExit to reduce xsub size
+//           uproc.c uprocExit.c
+//v77F:230617 ARM;execv also fail for >=Android10:api29
+//           uproc.c
+//v77E:230621 ARM;uconv --version failes by "uconv not found". It is not required by chking dllname
+//           ucvext.c
+//v77D:230618 ARM;v77c on subthread to avoid exit() kill whole process
+//           uproc.c ulibarm.h
+//v77C:230617 ARM;try dlopen to execute xe tool for >=Android10:api29
+//           uproc.c ulibarm.h jnij2c.c
+//v77B:230612 ARM;warning by audroidstudio compiler
+//           ucvext2.c ufiledoc.c utf2.c ucvebc3.c ufile2.c ukbdlnxc.c
+//v77A:230602 ARM;share storage readdir returns no entry of "." or ".." and issue "no entry", the dirlist was not show. set rc=0 to show list by xedir:loaddir
+//           ufile1l.c ufile.c
+//v77z:230530 >=API30, support shared storage for cmd parameter. by v77W, replace sortpath by real path name on cmd parm.
+//           ufiledoc.c/h
+//v77y:230519 v77w but readdir returns null(permission required?),try ACTION_MANAGE_ALL_FILE_ACCESS_PERMISSION
+//           USAF.java Manifest(MANAGE_EXTERNAL_STORAGE)
+//v77x 230520 return null for wildcard opendir using path like as linux(opendirFD return null by exception as following
+//            java.lang.IllegalArgumentException: Failed to determine if primary:Axe/* is child of primary:Axe: java.io.FileNotFoundException: Missing file for primary:Axe/* at /storage/emulated/0/Axe/*
+//           ufiledoc.c
+//v77w:230519 uri-->path is avalable from api30(android11:R) and readdir using fd gotten by openDescriptor returns null
+//           ufiledoc.c ufile1l.c jnic2ju.h jnic2j.c jnij2c.c USAF.java AxeJNI.java
+//v77v:230515 ARM;utrace(utrace.xfc) open failed
+//           utrace.c
+//v77u:230513 ARM:reject CD cmd with errmsg
+//           ufile1l.c
+//v77t:230508 (Bug)current path chk correspond to also wildcard path
+//           ufile2.c
+//v77s:230507 (Bug)current path chk for urename/uxdelete/uxmove;  issue cpath err for ..\@s* when cpath is ../xx
+//           ufile2.c
+//v77r:230507 ARM:issue invalid shortpath name msg
+//           ufiledoc.c ufile1l.c
+//v77q:230503 ARM:assume device charset as utf8
+//           ufile1l.c
+//v77p:230502 ARM:request "//" option to delete shortpath root(//Axe etc)
+//           ufile2.c/h ufile.h
+//v77n:230430 ARM:ICU library is loaded by dlopen without specific dir
+//           ucvext.c
+//v77n:230430 ARM:SecurityExceptin for statDoc for //Axe/.. by "e //Axe". skip stat for //root/..
+//           ufiledoc.c
+//v77m:230429 ARM:try stat(fpath) by fstat(fd) for ufstat
+//           ufile1l.c ufiledoc.c/h jnic2ju.h jnic2j.c junij2c.c AxeJNI USAF2 
+//v77k:230428 Lnx:wildname warning issued even if not selected by wildcard selection.
+//           ufile1l.c
+//v77j:230428 ARM;udirlist by opendir optionally
+//           ufile.c/h 
+//v77i:230427 ARM;opendir/readdir by fd(parcelFileDescriptor.detachFd)
+//           ufiledoc.c ulibarm.h
+//v77h:230424 ARM;copy
+//           ufile3.c ufiledoc.c/h jnic2ju.h jnic2j.c junij2c.c AxeJNI USAF2 
+//v77g:230424 ARM;rename
+//           ufile2.c ufiledoc.c/h jnic2ju.h jnic2j.c AxeJNI USAF2 
+//v77f:230424 ARM;rmdir
+//           ufile2l.c ufiledoc.c/h jnic2ju.h jnic2j.c AxeJni USAF2 
+//v77e:230424 ARM;try fd for opendir/readdir  ->not succeeded
+//            ParcelFileDescriptor.AutoCloseInputStream will not be finalized? try it ?
+//           ufiledoc.c jnic2ju.h jnic2j.c jnij2c.c USAF2 
+//v77d:230423 ARM;delete
+//           ufile2.c ufiledoc.c/h jnic2ju.h jnic2j.c USAF2 ufile1l.c/h ufile.h ulibarm.h
+//v77c:230422 ARM;mkdir
+//           ufile2l.c ufiledoc.c/h jnic2ju.h jnic2j.c USAF2
+//v77b:230415 ARM;edit file
+//           ufiledoc.c ufile5.c/h ulibarm.h
+//v77a:230415 split ufile1l to ufiledoc
+//           ufile1l.c/h ufiledoc.c/h ufile.h
+//v779:230414 update v777,set uri at ulib fro shortpath
+//           ufile1l.c/h ufile.c ufile4.c ufile1l2.c
+//v778:230405 add flush function to utrace for arm
+//           utrace.h/c
+//v777:230403 ARM;udirlistFD
+//           ufile1l.c/h ufile.h ufile.c
+//v776:230331 ARM;utrace(utrace.out) open failed
+//           utrace.c
+//v775:230328 try /system/apex/com.android.i18n 
+//           ucvext
+//v774:230328 try for libicu if libicuuc is not fond(libicu is available from Android12:Api31 foi icu4c)
+//           ucvext
+//v773:230328 try for libicuuc lib64 then lib
+//           ucvext
+//v772:230328 GetProcAddress(dlsym) failed for u_errName by errno=10( It is by icuuc not found). from Android7(Api24) library changed from com.ibm.icu to android.icu)
+//           ucvext
+//v771:230323 sys/timeb.h is not found on ARM
+//           uftp2.c uftp3.c umiscf.c uedit.c ulibarm.h uerr.c ulibarm.c utrace.c ucalc2.c 
+//v770:230322 for Axe Api33
+//           ulibarm.c
 //*********  20221215 v129U release  *******************************
 //v761:221214 for v760,chk parent to find WindowTerminal
 //           uproc2.c/h uvio.c

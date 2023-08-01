@@ -1,9 +1,10 @@
-//*CID://+vaj0R~:                             update#=  356;       //+vaj0R~
+//*CID://+vas3R~:                             update#=  358;       //~vas3R~
 //***********************************************************
 //* XFC : compare file(win95 missing comp cmd)
 //***********************************************************
 #define VER "V1.27"   //version                                    //~vaa0R~//~vaj0R~
 //***********************************************************
+//vas3:230630 ARM;closeall for arm subthread execution             //~vas3I~
 //vaj0:180304 /CPU8 option:output triler by utf8 to show on xe result of "=" cmd with cpu8 option//~vaj0I~
 //vaa1:160418 Lnx64 compiler warning                               //~vaa1I~
 //vaa0:160417 Lnx compiler warning                                 //~vaa0I~
@@ -283,6 +284,7 @@ int main(int parmc,char *parmp[])
   if (!Snookmsg || rc)                                             //~v152I~
 	uerrmsg("===Process completed===",
 			"===èàóùäÆóπ===");
+	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//+vas3I~
 	return rc;
 }//main
 

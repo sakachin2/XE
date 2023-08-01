@@ -1,4 +1,4 @@
-//*CID://+vb2sR~:                             update#=   92;       //~vb2sR~
+//*CID://+vb2sR~:                             update#=   93;       //~vb2sR~
 //*************************************************************
 //*xedlcmd5.c                                                      //~v0fpR~
 //* sub of dlcmd2                                                  //~v0fqR~
@@ -582,8 +582,8 @@ int dlcpdhsrchts(PULINEH Pplh,PUDIRLH Ppdhkey,PUDIRLH *Pppdhout)   //~v57gI~
 int dlcisrtpdh(PUDIRLH Ppdhp,PUFILEH Ppfh,PUDIRLH *Pppdh)          //~v09wR~
 {                                                                  //~v09wI~
 //  UDIRLIST dirlist;                                              //~v09wI~//~vandR~
-//  UDIRLIST_WK(dirlist,wkslinkname);                              //~vandI~//+vb2sR~
-    UDIRLIST_WK(dirlist,wkname,wknamew,wkslinkname);               //+vb2sI~
+//  UDIRLIST_WK(dirlist,wkslinkname);                              //~vandI~//~vb2sR~
+    UDIRLIST_WK(dirlist,wkname,wknamew,wkslinkname);               //~vb2sI~
     int len,rc;                                                    //~v09wR~
     char pfname[_MAX_PATH];                                        //~v09wM~
     ULONG attr;                                                    //~v71aI~
@@ -598,8 +598,8 @@ int dlcisrtpdh(PUDIRLH Ppdhp,PUFILEH Ppfh,PUDIRLH *Pppdh)          //~v09wR~
 	if (len!=u3270pathlen(2,Ppfh->UFHfilename))	//new filename pathlen(last is "." or "(")//~v71aI~
     	return 4;                                                  //~v71aI~
 //  memset(&dirlist,0,sizeof(dirlist));                            //~v71aI~//~vandR~
-//  UDIRLIST_WK_INIT(dirlist,wkslinkname);                         //~vandI~//+vb2sR~
-    UDIRLIST_WK_INIT(dirlist,wkname,wknamew,wkslinkname);   //before call u3270getlastname()//+vb2sI~
+//  UDIRLIST_WK_INIT(dirlist,wkslinkname);                         //~vandI~//~vb2sR~
+    UDIRLIST_WK_INIT(dirlist,wkname,wknamew,wkslinkname);   //before call u3270getlastname()//~vb2sI~
     u3270getlastname(0,Ppfh->UFHfilename,dirlist.name);            //~v71aR~
     attr=Ppdhp->UDHattr;                                           //~v71aI~
     if (UCBITCHK(Ppfh->UFHflag7,UFHF7PDSMEMBER))                   //~v71aR~
@@ -628,10 +628,10 @@ int dlcisrtpdh(PUDIRLH Ppdhp,PUFILEH Ppfh,PUDIRLH *Pppdh)          //~v09wR~
     	return 4;                                                  //~v09wI~
     }                                                              //~vb03I~
 //  memset(&dirlist,0,sizeof(dirlist));                            //~v09wI~//~vandR~
-//  UDIRLIST_WK_INIT(dirlist,wkslinkname);                         //~vandI~//+vb2sR~
-    UDIRLIST_WK_INIT(dirlist,wkname,wknamew,wkslinkname);          //+vb2sI~
-//  strcpy(dirlist.name,Ppfh->UFHfilename+len);                    //~v09wR~//+vb2sR~
-    udirlist_setname(0,&dirlist,Ppfh->UFHfilename+len,0);          //+vb2sI~
+//  UDIRLIST_WK_INIT(dirlist,wkslinkname);                         //~vandI~//~vb2sR~
+    UDIRLIST_WK_INIT(dirlist,wkname,wknamew,wkslinkname);          //~vb2sI~
+//  strcpy(dirlist.name,Ppfh->UFHfilename+len);                    //~v09wR~//~vb2sR~
+    udirlist_setname(0,&dirlist,Ppfh->UFHfilename+len,0);          //~vb2sI~
 #ifdef W32UNICODE                                                  //~vb02I~
     dlcsetnameW(0,&dirlist,Ppfh);	//set nameWctr and nameW       //~vb02I~
 #endif                                                             //~vb02I~
@@ -765,6 +765,7 @@ void dlcchngfh(PUCLIENTWE Ppcw,PUFILEH Ppfh,PUDIRLH Ppdh,UCHAR *Pfilename)//~581
 	PUFILEH pfhp;                                               //~5819R~
 	PUCLIENTWE pcw;                                             //~5819I~
 //****************************                                  //~5819I~
+	UTRACEP("%s:Pfilename=%s\n",UTT,Pfilename);                    //+vb2sI~
 	if (filesrchpfh(Pfilename,0,&pfhp))	//same dir not found    //~5819R~
     	pfhp=0;                                                 //~5819I~
 //	strncpy(Ppfh->UFHfilename,Pfilename,sizeof(Ppfh->UFHfilename));//~v0fmR~
@@ -937,11 +938,11 @@ int  dlclvlmerge2(PUDIRLH Ppdh,PUDIRLIST Ppudirlist,PUDIRLH *Pppdh)//~v09wR~
     int level,dirlevel,compsw;                                     //~v09wI~
     int sorttype;                                                  //~v57hI~
 //  UDIRLIST udl;                                                  //~v57hI~//~vandR~
-//  UDIRLIST_WK(udl,wkslinkname);                                  //~vandI~//+vb2sR~
-    UDIRLIST_WK(udl,wkname,wknamew,wkslinkname);                   //+vb2sI~
+//  UDIRLIST_WK(udl,wkslinkname);                                  //~vandI~//~vb2sR~
+    UDIRLIST_WK(udl,wkname,wknamew,wkslinkname);                   //~vb2sI~
 //****************************                                     //~v09wI~
-//  UDIRLIST_WK_INIT(udl,wkslinkname);                             //~vandI~//+vb2sR~
-    UDIRLIST_WK_INIT(udl,wkname,wknamew,wkslinkname);              //+vb2sI~
+//  UDIRLIST_WK_INIT(udl,wkslinkname);                             //~vandI~//~vb2sR~
+    UDIRLIST_WK_INIT(udl,wkname,wknamew,wkslinkname);              //~vb2sI~
     *Pppdh=0;                                                      //~v09wR~
     if (Ppdh->UDHtype==UDHTDIR)  //not expanded                    //~v09wI~
     	return 8;                                                  //~v09wI~
@@ -973,14 +974,14 @@ int  dlclvlmerge2(PUDIRLH Ppdh,PUDIRLIST Ppudirlist,PUDIRLH *Pppdh)//~v09wR~
         udl.date=pdh->UDHdate;        //dirlist scr line data      //~v57hI~
         udl.time=pdh->UDHtime;                                     //~v57hI~
         udl.size=pdh->UDHsize;                                     //~v57hI~
-//      strcpy(udl.name,pdh->UDHname);                             //~v57hI~//+vb2sR~
-        udirlist_setname(0,&udl,pdh->UDHname,0);                   //+vb2sI~
+//      strcpy(udl.name,pdh->UDHname);                             //~v57hI~//~vb2sR~
+        udirlist_setname(0,&udl,pdh->UDHname,0);                   //~vb2sI~
 #ifdef W32UNICODE                                                  //~vavaI~
 //  	memcpy(udl.nameW,pdh->UDHnameW,sizeof(udl.nameW));  //compare by UWCH name//~vavaI~//~vaveR~
         if (pdh->UDHnameWctr)  //compare by UWCH name              //~vaveI~
         {                                                          //~vb02I~
-//      	UmemcpyZWszctr(udl.nameW,pdh->UDHnameW,sizeof(udl.nameW),pdh->UDHnameWctr);  //compare by UWCH name//~vaveI~//+vb2sR~
-        	udirlist_setnameW(0,&udl,pdh->UDHnameW,pdh->UDHnameWctr);  //compare by UWCH name//+vb2sI~
+//      	UmemcpyZWszctr(udl.nameW,pdh->UDHnameW,sizeof(udl.nameW),pdh->UDHnameWctr);  //compare by UWCH name//~vaveI~//~vb2sR~
+        	udirlist_setnameW(0,&udl,pdh->UDHnameW,pdh->UDHnameWctr);  //compare by UWCH name//~vb2sI~
 	    	udl.nameWctr=pdh->UDHnameWctr; //not used now, but pair of nameW//~vb02I~
         }                                                          //~vb02I~
 #endif                                                             //~vavaI~
@@ -1069,17 +1070,17 @@ PULINEH dlcdelentry(PULINEH Pplh,PULINEH Pplhtop)                  //~v09AR~
 int dlcfncomp(PUFILEH Ppfh,PUDIRLH Ppdh,PUDIRLIST Ppudirlist)      //~v0frR~
 {                                                                  //~v0fnI~
 //  UDIRLIST udirlist0;                                             //~v0fnI~//~vandR~
-//  UDIRLIST_WK(udirlist0,wkslinkname);                            //~vandI~//+vb2sR~
-    UDIRLIST_WK(udirlist0,wkname,wknamew,wkslinkname);             //+vb2sI~
+//  UDIRLIST_WK(udirlist0,wkslinkname);                            //~vandI~//~vb2sR~
+    UDIRLIST_WK(udirlist0,wkname,wknamew,wkslinkname);             //~vb2sI~
     int sortorder;                                                 //~v0frI~
 //****************************                                     //~v0fnI~
-//  UDIRLIST_WK_INIT(udirlist0,wkslinkname);                       //~vandR~//+vb2sR~
-    UDIRLIST_WK_INIT(udirlist0,wkname,wknamew,wkslinkname);        //+vb2sI~
+//  UDIRLIST_WK_INIT(udirlist0,wkslinkname);                       //~vandR~//~vb2sR~
+    UDIRLIST_WK_INIT(udirlist0,wkname,wknamew,wkslinkname);        //~vb2sI~
 #ifdef MMM                                                         //~vb2oI~
 	memcpy(udirlist0.name,Ppdh->UDHname,sizeof(udirlist0.name));     //~v0fnI~
 #else                                                              //~vb2oI~
-//  UstrncpyZ(udirlist0.name,Ppdh->UDHname,sizeof(udirlist0.name));//~vb2oI~//+vb2sR~
-    udirlist_setname(0,&udirlist0,Ppdh->UDHname,0);                //+vb2sI~
+//  UstrncpyZ(udirlist0.name,Ppdh->UDHname,sizeof(udirlist0.name));//~vb2oI~//~vb2sR~
+    udirlist_setname(0,&udirlist0,Ppdh->UDHname,0);                //~vb2sI~
 #endif                                                             //~vb2oI~
 #if defined(DPMI) || defined(W32)                                  //~v0fnI~
 	memcpy(udirlist0.alias,Ppdh->UDHalias,sizeof(udirlist0.alias));  //~v0fnR~
@@ -1088,8 +1089,8 @@ int dlcfncomp(PUFILEH Ppfh,PUDIRLH Ppdh,PUDIRLIST Ppudirlist)      //~v0frR~
 	udirlist0.nameWctr=Ppdh->UDHnameWctr;                          //~vavaR~
     if (Ppdh->UDHnameWctr)                                         //~vavaI~
 //  	memcpy(udirlist0.nameW,Ppdh->UDHnameW,sizeof(udirlist0.nameW));  //compare by UWCH name//~vavaR~//~vaveR~
-//  	UmemcpyZWszctr(udirlist0.nameW,Ppdh->UDHnameW,sizeof(udirlist0.nameW),Ppdh->UDHnameWctr);  //compare by UWCH name//~vaveI~//+vb2sR~
-    	udirlist_setnameW(0,&udirlist0,Ppdh->UDHnameW,Ppdh->UDHnameWctr);  //compare by UWCH name//+vb2sI~
+//  	UmemcpyZWszctr(udirlist0.nameW,Ppdh->UDHnameW,sizeof(udirlist0.nameW),Ppdh->UDHnameWctr);  //compare by UWCH name//~vaveI~//~vb2sR~
+    	udirlist_setnameW(0,&udirlist0,Ppdh->UDHnameW,Ppdh->UDHnameWctr);  //compare by UWCH name//~vb2sI~
 #endif                                                             //~vavaI~
     if (UCBITCHK(Ppfh->UFHflag4,UFHF4LFN))  //lfn                  //~v0frI~
     	sortorder='L';                                             //~v0frI~
@@ -1136,8 +1137,8 @@ void dlcsetnameW(int Popt,PUDIRLIST Ppudl,PUFILEH Ppfh)            //~vb02R~
             if (ucsctr>0)                                          //~vb02I~
             {                                                      //~vb02I~
         		Ppudl->nameWctr=ucsctr;                            //~vb02R~
-//          	UmemcpyZWszctr(Ppudl->nameW,pfnmw+pathctr,sizeof(Ppudl->nameW),ucsctr);//~vb02R~//+vb2sR~
-            	udirlist_setnameW(0,Ppudl,pfnmw+pathctr,ucsctr);   //+vb2sI~
+//          	UmemcpyZWszctr(Ppudl->nameW,pfnmw+pathctr,sizeof(Ppudl->nameW),ucsctr);//~vb02R~//~vb2sR~
+            	udirlist_setnameW(0,Ppudl,pfnmw+pathctr,ucsctr);   //~vb2sI~
             	UTRACED("nameW",Ppudl->nameW,ucssz);               //~vb02R~
             }                                                      //~vb02I~
         }                                                          //~vb02I~

@@ -1,8 +1,9 @@
-//*CID://+v6R1R~:                             update#=  251;       //~v6R1R~
+//*CID://+v77bR~:                             update#=  265;       //~v77bR~
 //*************************************************************
 //*ufile5.c                                                        //~v205R~
 //*  ufgets,ufgetsinit udoseditname ufileeditname                  //~v340R~
 //*************************************************************
+//v77b:230415 ARM;edit file                                        //~v77bI~
 //v6R1:180123 set Buffsz=recordsize if recordmode for performance  //~v6R1I~
 //v6R0:180123 (BUG)Sbinsw=2(optionally bin mode by 1st 4096 byte) should be cleared;read until eof and crash if oveflow Gfilebuff(32760*4)//~v6R0I~
 //v6J7:170217 add filetouch for dummy record write for ::xehosts etc if not found//~v6J7I~
@@ -106,6 +107,9 @@
 #include <ufile.h>
 #include <ufile4.h>       //ufileisvfat                            //~v105I~
 #include <ufile5.h>
+#ifdef ARMXXE                                                      //~v77bI~
+	#include <ufiledoc.h>                                          //~v77bI~
+#endif                                                             //~v77bI~
 #include <ufemsg.h>                                                //~v103I~
 #include <ualloc.h>
 #include <uerr.h>
@@ -471,11 +475,15 @@ static UCHAR Slastbyte=0;                                          //~v56yR~
         {
 //          readlen=fread(Siob+Slastbytesw,1,(UINT)(Siobsz-Slastbytesw),Pfh);//~v6A0R~
 //          readlen=fread(Siob+Slastbytesw,1,(UINT)(Siobsz-(UINT)Slastbytesw),Pfh);//~v6A0I~//~v6BxR~
-            readlen=(UINT)fread(Siob+Slastbytesw,1,(UINT)(Siobsz-(UINT)Slastbytesw),Pfh);//~v6BxI~
+//          readlen=(UINT)fread(Siob+Slastbytesw,1,(UINT)(Siobsz-(UINT)Slastbytesw),Pfh);//~v6BxI~//~v77bR~
+//          readlen=(UINT)ufread(Siob+Slastbytesw,1,(UINT)(Siobsz-(UINT)Slastbytesw),Pfh);//~v77bR~
+            readlen=(UINT)fread(Siob+Slastbytesw,1,(UINT)(Siobsz-(UINT)Slastbytesw),Pfh);//~v77bI~
 //          if (readlen!=Siobsz-Slastbytesw)    //err or eof       //~v6A0R~
             if (readlen!=Siobsz-(UINT)Slastbytesw)    //err or eof //~v6A0I~
             {
-                if (ferror(Pfh))
+//              if (ferror(Pfh))                                   //~v77bR~
+//              if (uferror(Pfh))                                  //~v77bR~
+                if (ferror(Pfh))                                   //~v77bI~
                         return UFGETS_ERR;
                 Ssubeofsw=1;
             }
@@ -1567,7 +1575,7 @@ int ufilewildcomp(int Popt,UCHAR *Pin,UCHAR *Ppat,UCHAR *Pdbcsp)   //~v56yI~
     UCHAR  dbcsp[_MAX_PATH],dbcsi[_MAX_PATH],*pdbcsp;              //~v56yI~
     int ii,leni,lenp,complen,topsw;                                //~v56yI~
 //*****************                                                //~v56yI~
-//printf("entry opt=%x,in=%s,pat=%s\n",Popt,Pin,Ppat);             //~v56yR~
+//  UTRACEP("%s:entry opt=%x,in=%s,pat=%s\n",UTT,Popt,Pin,Ppat);             //~v56yR~//~v6R1R~
     leni=(int)strlen(Pin);                                         //~v56yI~
     lenp=(int)strlen(Ppat);                                        //~v56yI~
     if (pdbcsp=Pdbcsp,!pdbcsp)                                     //~v56yI~
@@ -1585,6 +1593,7 @@ int ufilewildcomp(int Popt,UCHAR *Pin,UCHAR *Ppat,UCHAR *Pdbcsp)   //~v56yI~
     	for (pcp0=pcp;*pcp=='*';pcp++)                             //~v56yI~
         	if (!(Popt & UFWC_0BYTE))                              //~v56yI~
             	pci++;                                             //~v56yI~
+//UTRACEP("%s: pci=%p,pcp=%p,pcie=%p,pcp0=%p\n",UTT,pci,pcp,pcie,pcp0);//~v6R1R~
         if (pci>pcie)                                              //~v56yI~
             return UNMATCH;                                        //~v56yI~
         if (pcp>=pcpe)                                             //~v56yI~
@@ -1611,7 +1620,7 @@ int ufilewildcomp(int Popt,UCHAR *Pin,UCHAR *Ppat,UCHAR *Pdbcsp)   //~v56yI~
 							dbcsi+((ULPTR)pci-(ULPTR)Pin),         //~v6hhI~
 //							pdbcsp+((ULONG)pcp-(ULONG)Ppat));//match//~v56yI~//~v6hhR~
 							pdbcsp+((ULPTR)pcp-(ULPTR)Ppat));//match//~v6hhI~
-UTRACEP("ufilewildcompsub ret %p=%s,complen=%d,topsw=%d,in=%s,pat=%s\n",pc,pc,complen,topsw,pci,pcp);//~v6hFR~
+UTRACEP("%s: compsub ret pc=%p=%s,complen=%d,topsw=%d,in=%s,pat=%s\n",UTT,pc,pc,complen,topsw,pci,pcp);//~v6hFR~//+v77bR~
         	if (pc)	//matched,next chk source string               //~v56yI~
             	break;                                             //~v56yI~
             if (topsw)       //match should be head                //~v56yI~
@@ -1623,7 +1632,11 @@ UTRACEP("ufilewildcompsub ret %p=%s,complen=%d,topsw=%d,in=%s,pat=%s\n",pc,pc,co
         pcp+=complen;                                              //~v56yI~
     }                                                              //~v56yI~
     if (pci<pcie)   //remain input                                 //~v56yI~
+    {                                                              //~v6R1I~
+		UTRACEP("%s:ret UNMATCH\n",UTT);                           //~v6R1I~
         return UNMATCH;                                            //~v56yI~
+    }                                                              //~v6R1I~
+	UTRACEP("%s:ret 0=MATCH\n",UTT);                               //~v6R1I~
     return 0;                                                      //~v56yI~
 }//ufilewildcomp                                                   //~v56yI~
 //*******************************************************          //~v56yI~
@@ -2389,7 +2402,7 @@ int ufseek(FILE *Pfh,FILESZT Ppos,int Pbase)                       //~v6xeI~
   #endif                                                           //~v6xeI~
 #endif                                                             //~v6xeI~
 	return rc;                                                     //~v6xeI~
-}//ufseek                                                          //~v6xeI~//+v6R1R~
+}//ufseek                                                          //~v6xeI~//~v6R1R~
 //*********************************************************        //~v6xeI~
 FILESZT uftell(FILE *Pfh)                                          //~v6xeI~
 {                                                                  //~v6xeI~
@@ -2604,3 +2617,13 @@ int filetouch(int Popt,char *Pfnm,char *Precord)                   //~v6J7I~
     }                                                              //~v6J7I~
     return rc;                                                     //~v6J7I~
 }//filetouch                                                       //~v6J7I~
+////**************************************************************************//~v77bR~
+//UINT ufread(void *Pbuff,UINT Psize,UINT Pctr,FILE *Pfh)          //~v77bR~
+//{                                                                //~v77bR~
+//#ifdef ARMXXE                                                    //~v77bR~
+//    UTRACEP("%s:pfh=%p\n",UTT,Pfh);                              //~v77bR~
+//    if (IS_DOCFH(Pfh))                                           //~v77bR~
+//        return  ufile_freadDoc(Pbuff,Psize,Pctr,Pfh);            //~v77bR~
+//#endif                                                           //~v77bR~
+//    return  fread(Pbuff,Psize,Pctr,Pfh);                         //~v77bR~
+//}                                                                //~v77bR~

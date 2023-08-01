@@ -1,8 +1,10 @@
-//*CID://+vbi3R~:                             update#=  356;       //~vbi3R~
+//*CID://+vby6R~:                             update#=  363;       //+vby6R~
 //*************************************************************
 //*xefile.c*                                                       //~v06zR~
 //**load/save/edit/browse/end/cancel                            //~v020R~
 //*************************************************************
+//vby6:230402 (ARM)adjust by4; go around by shortname and change to uri at ulib(ufile1l)//+vby6I~
+//vby4:230402 (ARM)shared resource support by //shareName defined by SP(ShortPath) cmd.//~vby4I~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vb5b:160913 additional to vb54, DBCS space altch is changable by TAB cmd//~vb5bI~
 //vb54:160903 TAB cmd new option to set altch; TAB {on|off} [altch1 [altch2]]//~vb4BI~
@@ -1294,6 +1296,27 @@ int filesrchpfh(UCHAR *Ppfile,UCHAR *Pfullpath,PUFILEH *Pppfh)  //~5125I~
 		*Pppfh=pfh;                                             //~5128I~
 	return 0;                                                   //~5125I~
 }//filesrchpfh                                                  //~5125I~
+////********************************************************************************//~vby4R~//+vby6R~
+//#ifdef ARMXXE                                                    //~vby4R~//+vby6R~
+//int filesrchpfhDoc(UCHAR *Ppfile,UCHAR *Pfullpath,PUFILEH *Pppfh)//~vby4R~//+vby6R~
+//{                                                                //~vby4R~//+vby6R~
+//    UCHAR *pfpath;                                               //~vby4R~//+vby6R~
+//    PUFILEH pfh;                                                 //~vby4R~//+vby6R~
+////*****************                                              //~vby4R~//+vby6R~
+//    pfpath=filefullpath(Pfullpath,Ppfile,_MAX_PATH);    //sortpath to uri//~vby4R~//+vby6R~
+//    if (!pfpath)                                                 //~vby4R~//+vby6R~
+//        pfpath=Ppfile;                                           //~vby4R~//+vby6R~
+//    if (!(pfh=uqscan(UQUE_TOP,&Sfileq,fncompDoc,pfpath)))//not found//~vby4R~//+vby6R~
+//    {                                                            //~vby4R~//+vby6R~
+//        UTRACEP("%s:%s for %s not found\n",UTT,pfpath,Ppfile);   //~vby4R~//+vby6R~
+//        return 4;                                                //~vby4R~//+vby6R~
+//    }                                                            //~vby4R~//+vby6R~
+//    if (Pppfh)  //pfh requested                                  //~vby4R~//+vby6R~
+//        *Pppfh=pfh;                                              //~vby4R~//+vby6R~
+//    UTRACEP("%s:%s-%s found pfh=%p\n",UTT,Ppfile,pfpath,pfh);    //~vby4R~//+vby6R~
+//    return 0;                                                    //~vby4R~//+vby6R~
+//}//filesrchpfh                                                   //~vby4R~//+vby6R~
+//#endif //ARMXXE                                                  //~vby4R~//+vby6R~
 //#ifdef LNX                                                         //~vb2jI~//~vb2nR~
 //********************************************************************************//~vb2jR~
 //*filename translation by FN{LC|U8} option                        //~vb2jI~
@@ -1508,6 +1531,19 @@ int filesrchpfh2(PUCLIENTWE Ppcw,UCHAR *Ppfile,UCHAR *Pfullpath,PUFILEH *Pppfh,U
 		strcpy(Pfullpath,fpath);                                   //~v60sR~
     return filesrchpfh(fpath,0,Pppfh);                             //~v60sR~
 }//filesrchpfh2                                                    //~v13dI~
+//#ifdef ARMXXE                                                      //~vby4I~//+vby6R~
+////**************************************************************** //~vby4I~//+vby6R~
+//int filesrchpfhCPDoc(int Poptopt,PUCLIENTWE Ppcw,UCHAR *Ppfile,UCHAR *Pfullpath,PUFILEH *Pppfh,UCHAR Popt,int *Ppcprc)//~vby4I~//+vby6R~
+//{                                                                  //~vby4I~//+vby6R~
+//    int rc;                                                        //~vby4I~//+vby6R~
+////*****************                                                //~vby4I~//+vby6R~
+//    UTRACEP("%s:opt=%x,fnm=%s\n",UTT,Poptopt,Ppfile);              //~vby4I~//+vby6R~
+//    rc=filesrchpfhDoc(Ppfile,Pfullpath,Pppfh);                     //~vby4R~//+vby6R~
+//    *Ppcprc=0;                                                     //~vby4I~//+vby6R~
+//    UTRACEP("%s:rc=%d,fnm=%s,fpath=%s,pfh=%p\n",UTT,rc,Ppfile,Pfullpath,*Pppfh);//~vby4R~//+vby6R~
+//    return rc;                                                     //~vby4I~//+vby6R~
+//}//filesrchpfhCPDoc                                                //~vby4I~//+vby6R~
+//#endif                                                             //~vby4I~//+vby6R~
 //#ifdef LNX                                                         //~vb2eI~//~vb2nR~
 //**************************************************************** //~vb2eI~
 // filesrchpfhCP                                                   //~vb2eI~
@@ -1523,6 +1559,10 @@ int filesrchpfhCP(int Poptopt,PUCLIENTWE Ppcw,UCHAR *Ppfile,UCHAR *Pfullpath,PUF
 #endif                                                             //~vb2nI~
 //*****************                                                //~vb2eI~
     UTRACEP("%s:opt=%x,fnm=%s\n",UTT,Poptopt,Ppfile);              //~vb2eR~
+//#ifdef ARMXXE                                                      //~vby4I~//+vby6R~
+//    if (IS_DOCPATH(Ppfile))                                        //~vby4I~//+vby6R~
+//        return filesrchpfhCPDoc(Poptopt,Ppcw,Ppfile,Pfullpath,Pppfh,Popt,Ppcprc);//~vby4I~//+vby6R~
+//#endif                                                             //~vby4I~//+vby6R~
 	SchkmountCP=1;	//parm to filesrchpfh(2)                       //~vb2eI~
 #ifdef LNX                                                         //~vb2nI~
 	SmountCPU8=-1;	//parm to filesrchpfh(2)                       //~vb2eI~
@@ -1923,7 +1963,7 @@ int fileerrmixmode(char *Pfnm)                                     //~v440R~
 int filebrowsechl(int Popt,PUCLIENTWE Ppcw)                        //~vbi3R~
 {                                                                  //~vbi3I~
 	int rc;                                                        //~vbi3I~
-	UFILEH *pfh;                                                   //+vbi3R~
+	UFILEH *pfh;                                                   //~vbi3R~
     PUCLIENTWE pcw,pcwold=0;                                       //~vbi3R~
 	UCHAR  fpath[_MAX_PATH];                                       //~vbi3I~
 	UCHAR  *pfname=CHL_FNM;                                        //~vbi3R~

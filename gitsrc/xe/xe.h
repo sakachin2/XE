@@ -1,7 +1,8 @@
-//*CID://+vbvfR~:                             update#=  141;       //~vbvfR~
+//*CID://+vby5R~:                             update#=  143;       //~vby5R~
 //*********************************************************************
 //* common routine hdr                                             //~v07uR~
 //*********************************************************************
+//vby5:230411 opt DELZ; change default to off                      //~vby5I~
 //vbvf:221129 drop japanese comment for =0.2/0.3 when english mode //~vbvfI~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vbf0:180109 WriteConsoleOutputW(used for cpu8 ligaturemode) shrinks line on Windows10(OK on XP),prohibit ligature on for Windows10//~vbf0I~
@@ -243,7 +244,7 @@ EXT UCHAR   Gopt4;              //option4 not save to save file    //~v0f9I~
 #define     GOPT47BITCMD        0x04    //opt ascii cmd entered    //~v43zI~
 #define     GOPT4NOBEEPCMD      0x02    //no beep option by opt cmd//~v54SI~
 #define GOPT4RCTLCMD        0x01    //opt rctl cmd entered         //~v55cR~
-EXT UCHAR   Gopt5;              //option5                          //~v55jI~
+//EXT UCHAR   Gopt5;              //option5                          //~v55jI~//~vby5R~
 #define     GOPT5NOCTLCHARFUNC  0x80    //not use Ctl+char key for func key//~v55jR~
 #define     GOPT5CSRSCROLL      0x40    //scroll by csr move on file scr//~v55qI~
 #define     GOPT5CBNOCOPY       0x20    //no implicit copy to clipboad//~v584I~
@@ -252,6 +253,7 @@ EXT UCHAR   Gopt5;              //option5                          //~v55jI~
 #define     GOPT5ACS            0x04    //LNX:use acs for drawing line//~v69MR~
 #define     GOPT5COLSON         0x02    //COLS ON as default       //~v74yI~
 #define     GOPT5CIDAPPEND      0x01    //CID APPEND MODE          //~v79UI~
+EXT UCHAR   Gopt5 INIT(GOPT5DLCZOFF);	//        0x08    //reject dlcmd z/0//+vby5M~
                                                                 //~5507I~
 EXT UCHAR   Gscrstatus;         //srcreen status
 #define     GSCRSINS            0x01        //insert mode
@@ -313,11 +315,11 @@ EXT UINT    Gotherstatus;                                          //~v79zI~
 	#define XE_ISDBCSKONJ()  ((Gotherstatus & GOTHERS_DBCSJ)&&(Gunxflag & GUNX_KON))//~v79zR~
 	#define XE_ISKONEUCJ()   (XE_ISEUCJ() && (Gunxflag & GUNX_KON))//~v7acR~
    #endif                                                          //~v79zI~
-	#define XE_NOT_ISDBCSJ_OR_N9()  (!XE_ISKONEUCJ() || (Gotherstatus & GOTHERS_N9PARM))//+vbvfR~
+	#define XE_NOT_ISDBCSJ_OR_N9()  (!XE_ISKONEUCJ() || (Gotherstatus & GOTHERS_N9PARM))//~vbvfR~
   #else                                                            //~v79zR~
 	#define XE_ISDBCSKON()   (Gotherstatus & GOTHERS_DBCS)         //~v79zR~
 	#define XE_ISDBCSKONJ()  XE_ISDBCSJ()                          //~v79zR~
-	#define XE_NOT_ISDBCSJ_OR_N9()  (!XE_ISDBCSKONJ() || (Gotherstatus & GOTHERS_N9PARM))//+vbvfR~
+	#define XE_NOT_ISDBCSJ_OR_N9()  (!XE_ISDBCSKONJ() || (Gotherstatus & GOTHERS_N9PARM))//~vbvfR~
   #endif                                                           //~v79zR~
 #else  //!WCSUPP                                                   //~v79zI~
 	#define XE_ISDBCSKON()   (UCBITCHK(Gscrstatus,GSCRSDBCS))	//dbcs//~v79zR~

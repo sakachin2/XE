@@ -1,4 +1,4 @@
-//*CID://+vbx4R~:                             update#=  465;       //~vbx4R~
+//*CID://+vbx4R~:                             update#=  471;       //~vbx4R~
 //*************************************************************
 //*xefile6.c  *                                                    //~va00R~
 //* tab                                                            //~v0bzR~
@@ -209,6 +209,7 @@ int filechktabdbcs(PULINEH Pplh)                                //~5102R~
     PUFILEH pfh;                                                   //~v106I~
     int optebcplh;                                                 //~va6cI~
 //************************
+    UTRACEP("%s:Scopycmdopt=0x%x\n",UTT,Scopycmdopt);              //~vbx4I~
     pfh=UGETPFH(Pplh);                                             //~v106I~
     if (!(tabskip=pfh->UFHtabskip))                                //~v8@2R~
     {                                                              //~v8@2I~
@@ -330,6 +331,7 @@ int filechktabdbcs2(int Popt,int Pcopyopt,PULINEH Pplh)            //~va6cI~
 {                                                                  //~va6cI~
 	int rc;                                                        //~va6cI~
 //****************                                                 //~va6cI~
+    UTRACEP("%s:opt=0x%x,copyopt=0x%x\n",UTT,Popt,Pcopyopt);       //~vbx4R~
     Scopycmdopt=Pcopyopt;	//parm to filecvebcplh                 //~va6cR~
     if (Pcopyopt & FSOC_EBCHANDLEP)                                 //~va7tI~//~va7uI~
     	Shandle=FSOC_GETHANDLE(Pcopyopt);                            //~va7tI~//~va7uI~
@@ -355,6 +357,7 @@ int filechkutf8encoding(int Popt,PUCLIENTWE Ppcw,int Pbinopt,PUFILEH Ppfh)//~va0
 #endif                                                             //~va00I~
 	PFUNCTBL pft;                                                  //~va00R~
 //****************************                                     //~va00I~
+	UTRACEP("%s:FHfilename=%s,FILEUTF8MODE=0x%x\n",UTT,Ppfh->UFHfilename,FILEUTF8MODE(Ppfh));//~vbx4I~
 	if (!FILEUTF8MODE(Ppfh))                                       //~va00R~
     	return 0;                                                  //~va00I~
 	if (UCBITCHK(Ppfh->UFHflag4,UFHF4BIN))	//bin mode             //~va00I~
@@ -407,13 +410,13 @@ int filechkutf8encoding(int Popt,PUCLIENTWE Ppcw,int Pbinopt,PUFILEH Ppfh)//~va0
             {                                                      //~va00I~
 //              if (UCBITCHK(Ppfh->UFHflag8,UFHF8UTF8P))    //CPU8 parm//~va00R~
     	            uerrmsgcat("UTF8 trans err(%d/%d lines). Search by \"F *e\".",//~va00R~
-    	                       "UTF8変換エラー(%d/%d行)。\"F *e\"で探せます。",//~va00R~
+    	                       "UTF8変換エラー(%d/%d行)。\"F *e\"で探せます。",//+vbx4I~
                                 errlineno,lineno);                 //~va00R~
 //              else                                               //~va00R~
 //              {                                                  //~va00R~
 //                  rc=8;                                          //~va00R~
 //                  uerrmsgcat("UTF8 trans err(%d/%d lines). Use %s/%s option to open.",//~va00R~
-//                             "UTF8変換エラー(%d/%d行)。開くには %s か %s オプションを指定する。",//~va00R~
+//                             "UTF8変換エラー(%d/%d行)。開くには %s か %s オプションを指定する。",//+vbx4I~
 //                              errlineno,lineno,MODE_UTF8,MODE_LOCALE);//~va00R~
 //              }                                                  //~va00R~
             }                                                      //~va00I~
@@ -424,13 +427,13 @@ int filechkutf8encoding(int Popt,PUCLIENTWE Ppcw,int Pbinopt,PUFILEH Ppfh)//~va0
 	              if (Gutfmode2 & GUM2_KEEPIFCVERR)   //cv err byte is kept untranslated//~va1EI~
                   {                                                //~va1EI~
                     uerrmsgcat("UTF8 trans err(%d/%d lines). Error chars are shown by '%c' (byte code is kept). Search the error by \"F *e\" or \"F %s\".",//~va1ER~//~va1GR~
-                               "UTF8変換エラー(%d/%d行)。エラーはバイトコードはそのまま、'%c' で\x95\\示。エラーは\"F *e\" か \"F %s\" で探せます",//~va1ER~//~va1GR~
+                               "UTF8変換エラー(%d/%d行)。エラーはバイトコードはそのまま、'%c' で\x95\\示。エラーは\"F *e\" か \"F %s\" で探せます",//+vbx4I~
                                 errlineno,lineno,XEUTF_ERRREPCH_F2LFILE,SRCHIDS_UTF8ECH);//~va1EI~//~va1GR~
                   }                                                //~va1EI~
                   else                                             //~va1EI~
                   {                                                //~va1EI~
                     uerrmsgcat("UTF8 trans err(%d/%d lines). It will be replaced to '%c' if saved after modified. Search the error lines by \"F *e\".",//~va00R~//~va1qR~
-                               "UTF8変換エラー(%d/%d行)。更新して保存すると '%c' に置換されます。エラー行は\"F *e\"で探せます",//~va00R~//~va1qR~
+                               "UTF8変換エラー(%d/%d行)。更新して保存すると '%c' に置換されます。エラー行は\"F *e\"で探せます",//+vbx4I~
                                 errlineno,lineno,XEUTF_ERRREPCH_F2LFILE);//~va00R~
                   }//cv to "?" if err                              //~va1EI~
                 else              //by env                         //~va00R~
@@ -441,11 +444,11 @@ int filechkutf8encoding(int Popt,PUCLIENTWE Ppcw,int Pbinopt,PUFILEH Ppfh)//~va0
 					&&  (pft->FTfuncid!=FUNCID_SELECT)             //~va00I~
                 	)                                              //~va00I~
                     	uerrmsgcat("UTF8 trans err(%d/%d lines). Use Open line cmd with \"%s\" option.",//~va00I~
-                        	       "UTF8変換エラー(%d/%d行)。開くには \"%s\" オプションつき Open 行コマンド使用。",//~va00I~
+                        	       "UTF8変換エラー(%d/%d行)。開くには \"%s\" オプションつき Open 行コマンド使用。",//+vbx4I~
                             	    errlineno,lineno,MODE_IE);     //~va00I~
                 	else                                           //~va00I~
                     	uerrmsgcat("UTF8 trans err(%d/%d lines). Use \"%s %s\" or \"%s\" option to open.",//~va00R~
-                        	       "UTF8変換エラー(%d/%d行)。開くには \"%s %s\" か \"%s\" オプションを指定する。",//~va00R~
+                        	       "UTF8変換エラー(%d/%d行)。開くには \"%s %s\" か \"%s\" オプションを指定する。",//+vbx4I~
                             	    errlineno,lineno,MODE_UTF8,MODE_IE,MODE_LOCALE);//~va00R~
                 }                                                  //~va00R~
 //          }                                                      //~va00I~//~va1eR~
@@ -468,6 +471,7 @@ int filecvf2lsetdbcs(int Popt,PUFILEH Ppfh,PULINEH Pplh,int *Ppnewlen)//~va1cR~
     UCHAR *plc,*pdbcs,*pdata;                                       //~va00R~//~va50R~
     UCHAR *pcd;                                                     //~va1cR~//~va50R~
 //************************                                         //~va00I~
+    UTRACEP("%s:entry,Popt=0x%x\n",UTT,Popt);                      //+vbx4R~
 	len=Pplh->ULHlen;                                              //~va00I~
     pdata=Pplh->ULHdata;                                           //~va00I~
     pdbcs=Pplh->ULHdbcs;                                           //~va00M~
@@ -546,6 +550,7 @@ int filecvl2dd(int Popt,PUFILEH Ppfh,PULINEH Pplh)                 //~va20I~
 	int rc,ulhlen,ddlen;                                           //~va20I~
     UCHAR *pdata,*pdbcs,*pdd,*pcd;                                 //~va20I~
 //************************                                         //~va20I~
+    UTRACEP("%s:entry",UTT);                                       //~vbx4I~
 	pdata=Pplh->ULHdata;                                           //~va20I~
 	pdbcs=Pplh->ULHdbcs;                                           //~va20I~
     ulhlen=Pplh->ULHlen;                                           //~va20I~
@@ -1442,11 +1447,11 @@ UTRACEP("getdbcsspace %02x%02x\n",dbcsspace[0],dbcsspace[1]);      //~va15I~
 //**************************************************************** //~vbx4I~
 int isPrintOnWindows(UCHAR Pch)                                    //~vbx4I~
 {                                                                  //~vbx4I~
-	int rc;                                                        //+vbx4R~
+	int rc;                                                        //~vbx4R~
 	if (GunprintableOnTerminal)	//default unprintable by console cp//~vbx4R~
 		rc=Pch<0x20 && GunprintableOnTerminal[Pch]=='0';           //~vbx4R~
-    else                                                           //+vbx4I~
-        rc=1;   //on conhost                                       //+vbx4I~
+    else                                                           //~vbx4I~
+        rc=1;   //on conhost                                       //~vbx4I~
 	UTRACEP("%s:ch=0x%x,rc=%d\n",UTT,Pch,rc);                      //~vbx4I~
     return rc;                                                     //~vbx4R~
 }                                                                  //~vbx4I~
@@ -2315,14 +2320,14 @@ int filetabclearall(PUCLIENTWE Ppcw)                               //~v0hJM~
     if (UCBITCHK(pfh->UFHflag4,UFHF4BIN))                          //~v0hJM~
     {                                                              //~v0hJM~
     	uerrmsg("Cannot clear TAB for binary file",                //~v0hJM~
-    			"バイナリーファイルはタブクリアー出来ません");     //~va00I~
+    			"バイナリーファイルはタブクリアー出来ません");     //+vbx4I~
 		return 4;                                                  //~v0hJM~
     }                                                              //~v0hJM~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
     if (PFH_ISEBC(pfh))                                            //~va50I~
     {                                                              //~va50I~
     	uerrmsg("Cannot clear TAB for EBCDIC file",                //~va50I~
-    			"EBCDICファイルはタブクリアー出来ません");         //~va50I~
+    			"EBCDICファイルはタブクリアー出来ません");         //+vbx4I~
 		return 4;                                                  //~va50I~
     }                                                              //~va50I~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50I~
@@ -2347,7 +2352,7 @@ int filetabclearall(PUCLIENTWE Ppcw)                               //~v0hJM~
     UPCTRREQ(pfh);         //write at save                         //~v0hJM~
     if (!rc)                                                       //~v0hJM~
     	uerrmsg("All tab is replaced by space(tab skip=%d)",       //~v0hJM~
-    			"タブをクリアー(tab skip=%d)",                     //~va00I~
+    			"タブをクリアー(tab skip=%d)",                     //+vbx4I~
 //         		Gfiletabskip);                                     //~v8@2R~
            		pfh->UFHtabskip);                                  //~v8@2I~
     return rc;                                                     //~v0hJM~
@@ -2482,6 +2487,6 @@ int filetabexpanderr(void)                                         //~v0bbI~
 {                                                                  //~v0bbI~
 //*******************                                              //~v0bbI~
 	uerrmsg("Cannot expand tab,Change tab ctr",                    //~v0bbI~
-			"タブ拡張出来ません,タブ桁数を小さくして下さい");      //~va00I~
+			"タブ拡張出来ません,タブ桁数を小さくして下さい");      //+vbx4I~
 	return UALLOC_FAILED;                                          //~v0bbI~
 }//filetabexpanderr                                                //~v0bbI~

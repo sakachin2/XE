@@ -1,4 +1,4 @@
-//*CID://+vbd0R~:                             update#=  115;       //~vbd0R~
+//*CID://+vbd0R~:                             update#=  117;       //~vbd0R~
 //*************************************************************
 //vbd0:171114 (Wxe:BUG)print cmd hung(spawn xesyscmd send no response):utrace.out ACCESS DENIED//~vbd0I~
 //vb07:150314 add Ctrl+C handley to xesyscmd to break cmd wait     //~vb07I~
@@ -77,7 +77,7 @@ int main(int parmc,char * parmp[])
     if (!pwd)                                                      //~vbd0I~
     	pwd=".";                                                   //~vbd0I~
     Spid=_getpid();     //parm to callback func                    //~v56xM~
-    sprintf(fnm,"%s\\xesyscmd.trc",pwd);                           //+vbd0R~
+    sprintf(fnm,"%s\\xesyscmd.trc",pwd);                           //~vbd0R~
 UTRACE_INIT(fnm,2);          //2:ignore openerr                    //~vbd0R~
     uerrmsg("%s:started pid=%d(x%08x)",0,                          //~v579R~
 				PGM,Spid,Spid);                                    //~v579R~
@@ -214,8 +214,9 @@ UTRACEP("! NT cmd=%s,stdo=%s,stde=%s\n",Pcmd,stdofnm,stdefnm);     //~v70rI~
         *(Pcmd+cmdlen)=0;                                          //~v58EI~
     }//win95,win98                                                 //~v58EI~
 //  fprintf(stdout,"==%s\n",Pcmd);                                 //~v58ER~
+UTRACEP("%s:usystem2 Pcmd=%s\n",UTT,Pcmd);                         //~vbd0I~
 	rc=usystem2(UPROC_NOOKMSG,Pcmd);                               //~v58EI~
-UTRACEP("usystem2 rc=%d\n",rc);                                    //~v70rI~
+UTRACEP("%s:usystem2 returned rc=%d\n",UTT,rc);                                    //~v70rI~//+vbd0R~
     if (fh12)                                                      //~v58ER~
     {                                                              //~v59nR~
         uredirectrestore(3);                                       //~v58ER~

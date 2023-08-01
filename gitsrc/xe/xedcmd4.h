@@ -1,6 +1,8 @@
-//*CID://+v77zR~:                                                  //+v77zR~
+//*CID://+vbyiR~:             update#=      2                      //+vbyiR~
 //**************************************************************** //~v636I~
-//v77z:080125 (BUG)submit faile by v76q(::#bat missing bat extention)//+v77zI~
+//vbyi:230515 (ARM)for also xfc dcmd, support for external storage(no more need of vbyh)//+vbyiI~
+//vbyh:230514 (ARM)dlcmd "=" support for external storage          //~vbyhI~
+//v77z:080125 (BUG)submit faile by v76q(::#bat missing bat extention)//~v77zI~
 //v75M:070509 "="(compare) lcmd support. 1st file is line with cmd option on Enter'ed screen.//~v75MI~
 //v75J:070509 "g"(grep) dlcmd support                              //~v75JI~
 //v64r:050630 (XXE)xxe support;child shell                         //~v64rI~
@@ -28,14 +30,18 @@
 #define GDCMDTEMPF_SYSCMDF 0x80                                    //~v64rI~
 #define GDCMDTEMPF_GREPODLC 0x1000                                 //~v75JI~
 #define GDCMDTEMPF_COMPODLC 0x2000                                 //~v75MI~
+                                                                   //~vbyhI~
+//#ifdef ARMXXE                                                      //~vbyhI~//+vbyiR~
+//#define GDCMDTEMPF_COPY2TEMP 0x4000        //process on temp file copyed from arm shared storage file//~vbyhI~//+vbyiR~
+//#endif                                                             //~vbyhI~//+vbyiR~
 //**************************************************************** //~v636I~
 #ifndef UNX                                                        //~v637I~
 #ifdef OS2                                                         //~v637I~
-//  #define DCMDSUBMITCMDFNM  "::#cmd"                             //+v77zR~
-    #define DCMDSUBMITCMDFNM  "::#.cmd"                            //+v77zI~
+//  #define DCMDSUBMITCMDFNM  "::#cmd"                             //~v77zR~
+    #define DCMDSUBMITCMDFNM  "::#.cmd"                            //~v77zI~
 #else                                                              //~v637I~
-//  #define DCMDSUBMITCMDFNM  "::#bat"                             //+v77zR~
-    #define DCMDSUBMITCMDFNM  "::#.bat"                            //+v77zI~
+//  #define DCMDSUBMITCMDFNM  "::#bat"                             //~v77zR~
+    #define DCMDSUBMITCMDFNM  "::#.bat"                            //~v77zI~
 #endif                                                             //~v637I~
 #else                                                              //~v637I~
 	#define DCMDSUBMITCMDFNM  "::#submit"                          //~v637I~

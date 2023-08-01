@@ -1,9 +1,10 @@
-//*CID://+vaq1R~:                             update#=  243;       //~vaq1R~
+//*CID://+vas3R~:                             update#=  244;       //+vas3R~
 //***********************************************************
 //* XFS : seperate large file into sub files                       //~v142R~
 //***********************************************************
 #define VER "V2.8"   //version                                     //~va95R~//~va9sR~
 //***********************************************************
+//vas3:230630 ARM;closeall for arm subthread execution             //+vas3I~
 //vaq1:201029 Debian10 compiler warning -Wformat-overflow          //~vaq1I~
 //vaa1:160418 Lnx64 compiler warning                               //~vaa1I~
 //va9s:150529 xfs v2.8 parm count error(by xuerpck)                //~va9sI~
@@ -308,8 +309,8 @@ int main(int parmc,char *parmp[])
 	char *subfname,*pc;                                            //~6831R~
     FILEFINDBUF3 fstat3;                                           //~6831M~
     FILEFINDBUF3 fstat3_1;                                         //~v10hI~
-//  char confmsg[256];                                             //+vaq1R~
-    char confmsg[_MAX_PATH+256];                                   //+vaq1I~
+//  char confmsg[256];                                             //~vaq1R~
+    char confmsg[_MAX_PATH+256];                                   //~vaq1I~
     char editwk1[12];                                              //~v10hI~
     char editwk2[12];                                              //~v10hI~
 //  char editwkn[16];                                              //~va30R~
@@ -803,6 +804,7 @@ execution continue(Y) or cancel(Esc)?",fno+1);                     //~v131R~
 	ubell();                                                       //~v126I~
 	uerrmsg("Process completed",                                   //~v126I~
 			"èàóùäÆóπ");                                           //~v126I~
+	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//+vas3I~
 	return 0;                                                      //~6831I~
 }   //end maine
 //**********************************************************************//~va49I~

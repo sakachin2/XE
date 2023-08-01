@@ -1,9 +1,11 @@
-//*CID://+va67R~:                            update#=  286;        //+va67R~
+//*CID://+vas4R~:                            update#=  298;        //~vas4R~
 //*************************************************************
 //*xfmt.c
 //* extract data from input by column or fieldno specification
 //*************************************************************
-//va67:120628 VC10-32 compile(va66 for also 32bit)                 //+va67I~
+//vas4:230701 (Bug) xfmt on UNX, issue specify input for /xxx      //~vas4I~
+//vas3:230630 ARM;closeall for arm subthread execution             //~vas3I~
+//va67:120628 VC10-32 compile(va66 for also 32bit)                 //~va67I~
 //va66:120628 (AMD64) VC10(VS2010) LP64 support                    //~va66I~
 //va64:120611 avoid C4701 warning(variable may not be uninitialized)//~va64I~
 //va58:111217 compiler warning,uninitialized                       //~va58I~
@@ -85,7 +87,7 @@
 #include <ufile5.h>                                                //~0009I~
 
 //*******************************************************
-#define VER "V1.4"   //version                                     //~va4fR~
+#define VER "V1.5"   //version                                     //~va4fR~//~vas4R~
 #define PGM "xfmt"
 
 #define HELPMSG         uerrhelpmsg(stdout,stderr,
@@ -240,6 +242,30 @@ int main(int parmc,char * parmp[])
     	uerrmsg("*** Done *** %s --> %s , %s  *** \n    read:%d, write:%d, excluded:%d, short-line:%d",0,//~0026R~
         		Spfnm,Spfnmo,Spfnmo2,Sreadline,Swriteline,Sskipctr,Sshortlinectr);//~0026R~
     }                                                              //~0004I~
+//    IF_ARMXSUB_CLOSE(PGM,                                          //~vas3I~//~vas4R~
+//    {                                                              //~vas3I~//~vas4R~
+//        fclose(Sfh);                                               //~vas3I~//~vas4R~
+//        if (Sfho!=stdout)                                          //~vas3I~//~vas4R~
+//             fclose(Sfho);                                         //~vas3I~//~vas4R~
+//        if (Sfho2)                                                 //~vas3I~//~vas4R~
+//            fclose(Sfho2);                                              //~vas3I~//~vas4R~
+//    },                                                           //~vas4R~
+//                     {fclose(Sfh);});                                                            //~vas3I~//~vas4R~
+//    IF_ARMXSUB_CLOSE(                                            //~vas4I~
+//        fclose(Sfh);                                             //~vas4I~
+//        if (Sfho!=stdout)                                        //~vas4I~
+//             fclose(Sfho);                                       //~vas4I~
+//        if (Sfho2)                                               //~vas4I~
+//            fclose(Sfho2);                                       //~vas4I~
+//    );                                                           //~vas4I~
+    IF_ARMXSUB_CLOSE(PGM,                                          //~vas4R~
+    {                                                              //~vas4I~
+        fclose(Sfh);                                               //~vas4I~
+        if (Sfho!=stdout)                                          //~vas4I~
+             fclose(Sfho);                                         //~vas4I~
+        if (Sfho2)                                                 //~vas4I~
+            fclose(Sfho2);                                         //~vas4I~
+    });                                                            //~vas4R~
     return rc;
 }//main
 //**********************************************************************//~0026I~
@@ -351,7 +377,8 @@ int opdchk(int Popdno,char **Ppopd,int *Pparm,char *Pfmtfldtbl)
     for (ii=1;ii<Popdno;ii++)                                      //~0021R~
     {
     	pc=Ppopd[ii];                                              //~0021I~
-    	if (*pc==CMDFLAG_PREFIX || *pc==CMDFLAG_PREFIX2)	//flag parm               //~v19DI~
+//  	if (*pc==CMDFLAG_PREFIX || *pc==CMDFLAG_PREFIX2)	//flag parm//~vas4I~
+    	if (*pc==CMDFLAG_PREFIX)    // unix:"-", else "/"          //~vas4R~
         {
 			if (fmtopdchk3(pc+1,Pparm))
                 return opderr(pc);
@@ -2363,7 +2390,7 @@ char confirm(char *Pmsg,char *Preply)                              //~0004I~
         if (pc)                                                    //~0004I~
         	break;                                                 //~0004I~
     	uerrmsg("Invalid reply.",                                  //~0004I~
-    	    	"無効な入力.");                                    //~0004R~
+    	    	"無効な入力.");                                    //+vas4I~
 	}                                                              //~0004I~
     return reply;                                                  //~0004I~
 }//confirm                                                         //~0004I~
@@ -2375,118 +2402,118 @@ int help(void)
 {
         HELPMSG
 "%s : %s=(%c)= file record formatting.\n",
-"%s : %s=(%c)= ファイル行フォーマッティング。\n",
+"%s : %s=(%c)= ファイル行フォーマッティング。\n",                  //~vas4I~
                 Spgm,Sver,OSTYPE);
         HELPMSG
 "format:%s [%coptions] filename [fieldspec ...]\n",
-"形式  :%s [%coptions] filename [fieldspec ...]\n",
+"形式  :%s [%coptions] filename [fieldspec ...]\n",                //~vas4I~
                 Spgm,CMDFLAG_PREFIX);
         HELPMSG
 "  options    :\n",
 "  options    :\n");
         HELPMSG
 "    %cD\"delms\"  :additional input field delimiter. \n",
-"    %cD\"delms\"  :追加の入力ファイルフィールド分離文字。\n",
+"    %cD\"delms\"  :追加の入力ファイルフィールド分離文字。\n",     //~vas4I~
 				CMDFLAG_PREFIX);
         HELPMSG
 "                  default is \" \\t\"(space and tab).\n",
-"                  省略値は\" \\t\"(スペースとタブ)。\n");
+"                  省略値は\" \\t\"(スペースとタブ)。\n");         //~vas4I~
         HELPMSG
 "    %cL[n]x[str]:line selection string specification. n:column, x:S/E/I/X.\n",
-"    %cL[n]x[str]:行選択文字列指定。n:カラム(行頭が 1)。x:S/E/I/X。\n",
+"    %cL[n]x[str]:行選択文字列指定。n:カラム(行頭が 1)。x:S/E/I/X。\n",//~vas4I~
 				CMDFLAG_PREFIX);
         HELPMSG
 "                 S: line selection Start from the line containing this string.\n",//~0032R~
-"                 S:この文字列を含む行から抽出開始。\n");
+"                 S:この文字列を含む行から抽出開始。\n");          //~vas4I~
         HELPMSG
 "                 E: line selection End with the line containing this string.\n",//~0032R~
-"                 E:この文字列を含む行で抽出終了。\n");
+"                 E:この文字列を含む行で抽出終了。\n");            //+vas4I~
         HELPMSG
 "                 I: select the line Including this string.\n",    //~0032R~
-"                 I:(Include)この文字列を含む行は抽出。\n");       //~0032R~
+"                 I:(Include)この文字列を含む行は抽出。\n");       //~vas4I~
         HELPMSG
 "                 X: eXclude the line containing this string.\n",  //~0032R~
-"                 X:(eXclude)この文字列を含む行は抽出しない。\n"); //~0032R~
+"                 X:(eXclude)この文字列を含む行は抽出しない。\n"); //~vas4I~
         HELPMSG                                                    //~0025I~
 "                 +: AND condition of previous condition.\n",      //~0032R~
-"                 +:前の 条件の AND 連結条件。\n");                //~0032R~
+"                 +:前の 条件の AND 連結条件。\n");                //~vas4I~
         HELPMSG
 "                I and X is checked sequencialy as specified. \n",
-"                I と X は指定された順にチェックされる。\n");
+"                I と X は指定された順にチェックされる。\n");      //~vas4I~
         HELPMSG
 "                assume full select if first is X. exclude all if start by I.\n",
-"                最初が X なら全行抽出、最初が I なら全行非選択が仮定される。\n");
+"                最初が X なら全行抽出、最初が I なら全行非選択が仮定される。\n");//~vas4I~
         HELPMSG                                                    //~va45R~
 "                ex) %cL8S\"12:00:00\" %cL8E\"13:00:00\"\n",       //~va45R~
-"                例) %cL8S\"12:00:00\" %cL8E\"13:00:00\"\n",       //~va45R~
+"                例) %cL8S\"12:00:00\" %cL8E\"13:00:00\"\n",       //~vas4I~
 				CMDFLAG_PREFIX,CMDFLAG_PREFIX);                    //~va45R~
         HELPMSG                                                    //~va45R~
 "                    (line select start from the lines with \"12:00:00\"\n" ,//~va45R~
-"                    (８桁目が\"12:00:00\"の行から\n");            //~va45R~
+"                    (８桁目が\"12:00:00\"の行から\n");            //~vas4I~
         HELPMSG                                                    //~va45R~
 "                     at column 8 to the line with \"13:00:00\" at column 8)\n",//~va45R~
-"                     ８桁目が\"13:00:00\"までを抽出する)\n");     //~va45R~
+"                     ８桁目が\"13:00:00\"までを抽出する)\n");     //~vas4I~
         HELPMSG                                                    //~va45R~
 "                    %cLX\"Normal\" %cL20I\"Overridden\"\n",       //~va45R~
 "                    %cLX\"Normal\" %cL20I\"Overridden\"\n",       //~va45R~
 				CMDFLAG_PREFIX,CMDFLAG_PREFIX);                    //~va45R~
         HELPMSG                                                    //~va45R~
 "                    (exclude the line with \"Normal\" at col.1\n",//~va45R~
-"                    (1桁目が\"Normal\"で20桁目が\"Overridden\"でない行は\n");//~va45R~
+"                    (1桁目が\"Normal\"で20桁目が\"Overridden\"でない行は\n");//~vas4I~
         HELPMSG                                                    //~va45R~
 "                     except col.20 is \"Overridden\")\n",         //~va45R~
-"                     選択しない)\n");                             //~va45R~
+"                     選択しない)\n");                             //~vas4I~
         HELPMSG                                                    //~va45R~
 "                    %cL5I\"RC\" %cL9+\"Ok\"\n",                   //~va45R~
 "                    %cL5I\"RC\" %cL9+\"Ok\"\n",                   //~va45R~
 				CMDFLAG_PREFIX,CMDFLAG_PREFIX);                    //~va45R~
         HELPMSG                                                    //~va45R~
 "                    (select the lines with \"RC\" at col.5 and \"Ok\" at col.9)\n",//~va45R~
-"                    (5桁目が\"RC\"で9桁目が\"Ok\"のを抽出)\n");   //~va45R~
+"                    (5桁目が\"RC\"で9桁目が\"Ok\"のを抽出)\n");   //~vas4I~
         HELPMSG                                                    //~0004I~
 "    %cOoutfile  :output filename. default is stdout.\n",          //~0026R~
-"    %cOoutfile  :出力ファイル名。省略値は標準出力。\n",           //~0026R~
+"    %cOoutfile  :出力ファイル名。省略値は標準出力。\n",           //~vas4I~
 				CMDFLAG_PREFIX);                                   //~0004I~
         HELPMSG
 "    %cQ[s][d]   :quotation consideration. ignore delmiter in quotationn.\n",
-"    %cQ[s][d]   :引用符の考慮。引用符内の分離文字は無視。\n",
+"    %cQ[s][d]   :引用符の考慮。引用符内の分離文字は無視。\n",     //~vas4I~
 				CMDFLAG_PREFIX);
         HELPMSG
 "                 s:single quotation, d:double quotation. %cQ means both.\n",
-"                 s:一重引用符、d:二重引用符。%cQ のみは両方考慮。\n",
+"                 s:一重引用符、d:二重引用符。%cQ のみは両方考慮。\n",//~vas4I~
 				CMDFLAG_PREFIX);
         HELPMSG                                                    //~0023I~
 "    %cRnn       :insert (CR)LF for each nn byte(for file with no EOL id).\n",//~0023I~
-"    %cRnn       :改行文字を持たないファイルにnnバイトごとに改行文字を挿入。\n",//~0023I~
+"    %cRnn       :改行文字を持たないファイルにnnバイトごとに改行文字を挿入。\n",//~vas4I~
 				CMDFLAG_PREFIX);                                   //~0023I~
         HELPMSG
 "    %cS[R]\"seps\":output field seperator. default is \" \"(1 space).\n",//~0022R~
-"    %cS[R]\"seps\":出力用フィールド分離挿入文字列。省略値は\" \"(1桁スペース)。\n",//~0022R~
+"    %cS[R]\"seps\":出力用フィールド分離挿入文字列。省略値は\" \"(1桁スペース)。\n",//~vas4I~
 				CMDFLAG_PREFIX);                                   //~0004M~
         HELPMSG                                                    //~0022I~
 "                R:replace all delimiter of input file by this parameter.\n",//~0022I~
-"                R:入力ファイルの分離文字は残さずにこの指定文字列で置換する。\n",//~0022R~
+"                R:入力ファイルの分離文字は残さずにこの指定文字列で置換する。\n",//~vas4I~
 				CMDFLAG_PREFIX);                                   //~0022I~
         HELPMSG                                                    //~0026I~
 "    %cXoutfile2 :excluded line output filename. default is no output.\n",//~0026I~
-"    %cXoutfile2 :選択されなかった行の出力先ファイル名。省略値は出力なし。\n",//~0026R~
+"    %cXoutfile2 :選択されなかった行の出力先ファイル名。省略値は出力なし。\n",//~vas4I~
 				CMDFLAG_PREFIX);                                   //~0026I~
         HELPMSG                                                    //~0004M~
 "    %cYx,%cNx    :other flag option.\n",
-"    %cYx,%cNx    :その他のフラグオプション。\n",
+"    %cYx,%cNx    :その他のフラグオプション。\n",                  //~vas4I~
 				CMDFLAG_PREFIX,CMDFLAG_PREFIX);
         HELPMSG
 "                Na:no field alignment as default. Without Ys,copy write.\n",//~0030R~
-"                Na:フィールド整列をしない。Ys 指定がなければコピー出力。\n");//~0030R~
+"                Na:フィールド整列をしない。Ys 指定がなければコピー出力。\n");//+vas4I~
         HELPMSG                                                    //~0030I~
 "                   With Ys,output space compressed.\n",           //~0030I~
-"                   Ys 指定があればスペース圧縮出力。\n");         //~0030I~
+"                   Ys 指定があればスペース圧縮出力。\n");         //~vas4I~
         HELPMSG                                                    //~0027I~
 "                Nc:no confirmation msg when output file override.\n",//~0027I~
-"                Nc:出力ファイル上書きのとき確認Msgを出さない。\n");//~0027I~
+"                Nc:出力ファイル上書きのとき確認Msgを出さない。\n");//~vas4I~
         HELPMSG
 "                Ys:select only the fields of fieldspec.\n",       //~0003R~
-"                Ys:fieldspec指定のフィールドだけを出力する。\n"); //~0003R~
+"                Ys:fieldspec指定のフィールドだけを出力する。\n"); //~vas4I~
         HELPMSG
 "  fieldspec: fieldno[-fieldno]][O][R|L|P][N|A][C][:col-spec]\n",  //~0034R~
 "  fieldspec: fieldno[-fieldno]][O][R|L|P][N|A][C][:col-spec]\n"); //~0034R~
@@ -2498,109 +2525,109 @@ int help(void)
 "            start/end-substr: [T|E][-]{A|B}fldstr\n");            //~0034R~
         HELPMSG
 "        fieldno:field-No separated by delimiter(default:space and tab). max=%d.\n",
-"        filedno:分離文字(省略値はスペースとタブ)によるフィールド番号。max=%d。\n",
+"        filedno:分離文字(省略値はスペースとタブ)によるフィールド番号。max=%d。\n",//~vas4I~
 					MAXFIELD);
         HELPMSG
 "        O      :OutOfRange,followings are one field as whole.\n", //~0034R~
-"        O      :このフィールド番号以降は１フィールドとみなす。\n");//~0034R~
+"        O      :このフィールド番号以降は１フィールドとみなす。\n");//~vas4I~
         HELPMSG
 "        R      :Right justify the field. Default unless %cNa is specified.\n",
-"        R      :右詰整列。%cNa指定がないときの省略値\n",
+"        R      :右詰整列。%cNa指定がないときの省略値\n",          //~vas4I~
 				CMDFLAG_PREFIX);
         HELPMSG
 "        L      :Left justify the field.\n",
-"        L      :左詰整列。\n");
+"        L      :左詰整列。\n");                                   //~vas4I~
         HELPMSG
 "        P      :align by decimal point.\n",
-"        P      :小数点をあわせて右詰整列。\n");
+"        P      :小数点をあわせて右詰整列。\n");                   //~vas4I~
         HELPMSG
 "        N      :search numeric field and right hsutify at the point.\n",//~0034R~
-"        N      :数値フィールドを探してそこで右詰整列。\n");       //~0034R~
+"        N      :数値フィールドを探してそこで右詰整列。\n");       //~vas4I~
         HELPMSG                                                    //~0034I~
 "        A      :reset once effect of N & C for following fields.\n",//~0034R~
-"        A      :N と C の効果を後続フィールドに対し一旦リセットする。\n");//~0034R~
+"        A      :N と C の効果を後続フィールドに対し一旦リセットする。\n");//~vas4I~
         HELPMSG
 "        C      :compress interfield spaces of all following to a space.\n",//~0029R~
-"        C      :以降の全フィールドのその間のスペースを１スペースに圧縮。\n");//~0029R~
+"        C      :以降の全フィールドのその間のスペースを１スペースに圧縮。\n");//~vas4I~
         HELPMSG                                                    //~0034I~
 "                with N,compress until numeric field found.\n",    //~0034I~
-"                Nと一緒に指定すると数値フィールドが見つかるまでを圧縮。\n");//~0034I~
+"                Nと一緒に指定すると数値フィールドが見つかるまでを圧縮。\n");//~vas4I~
         HELPMSG                                                    //~va45R~
 "                ex) l 5r  (Left justify except fieldNo 5)\n",     //~va45R~
-"                例) l 5r  (第５項以外は左寄せ)\n");               //~va45R~
+"                例) l 5r  (第５項以外は左寄せ)\n");               //~vas4I~
         HELPMSG                                                    //~va45R~
 "                    1-5p (apply \"P\" for field 1 to 5 if decimal point numeric)\n",//~va45R~
-"                    1-5p (第1項から第５項まで小数点数値には\"P\"を適用)\n");//~va45R~
+"                    1-5p (第1項から第５項まで小数点数値には\"P\"を適用)\n");//~vas4I~
         HELPMSG                                                    //~va45R~
 "                    r l 4c (Right,Left,Left then compress all after fieldNo 4)\n",//~va45R~
-"                    r l 4c (右,左,左 第4項以降はすべて圧縮して左詰)\n");//~va45R~
+"                    r l 4c (右,左,左 第4項以降はすべて圧縮して左詰)\n");//~vas4I~
         HELPMSG                                                    //~0017M~
 "        X      :option to exclude sustring.\n",                   //~0017M~
-"        X      :部分文字列を削除の意味。\n");                     //~0017M~
+"        X      :部分文字列を削除の意味。\n");                     //~vas4I~
         HELPMSG                                                    //~0014I~
 "        T|E    :start/end position for the line with no fldstr. Top or End ?\n",//~0034R~
-"        T|E    :fldstrを含まない行の部分文字列開始/終了位置、T:行頭,E:行末。\n");//~0034R~
+"        T|E    :fldstrを含まない行の部分文字列開始/終了位置、T:行頭,E:行末。\n");//~vas4I~
         HELPMSG                                                    //~0014I~
 "                For start-str,defaut is \"e\" with X(exclude substr) option,\n",//~0017R~
-"                開始文字列指定では省略値は X指定(文字列削除)の場合 \"e\"、\n");//~0017R~
+"                開始文字列指定では省略値は X指定(文字列削除)の場合 \"e\"、\n");//~vas4I~
         HELPMSG                                                    //~0017I~
 "                else \"t\". For end-str,defaut is \"e\" for both with and w/o X.\n",//~0017R~
-"                以外は \"t\"。終了文字列指定では Xに関係なく\"e\"。\n");//~0017R~
+"                以外は \"t\"。終了文字列指定では Xに関係なく\"e\"。\n");//~vas4I~
         HELPMSG                                                    //~0014I~
 "        [-]A|B :substring start/end at A(After) or B(Before) the fldstr.\n",//~0034R~
-"        [-]A|B :開始/終了位置はfldstr指定の文字列の後(A)か前(B)かを指定。\n");//~0034R~
+"        [-]A|B :開始/終了位置はfldstr指定の文字列の後(A)か前(B)かを指定。\n");//~vas4I~
         HELPMSG                                                    //~0016I~
 "                \"-\" means backword string search.\n",           //~0016I~
-"                \"-\" はfldstr文字列を後ろから探す。\n");         //~0016R~
+"                \"-\" はfldstr文字列を後ろから探す。\n");         //~vas4I~
         HELPMSG                                                    //~0014I~
 "        fldstr :string to determin substring position.\n",        //~0014I~
-"        fldstr :部分文字列取出し開始/終了位置を決めるための文字列。\n");//~0017R~
+"        fldstr :部分文字列取出し開始/終了位置を決めるための文字列。\n");//~vas4I~
         HELPMSG                                                    //~va45R~
 "                Enclose by single quotation(') if it contains \":\".\n",//~va45R~
-"                \":\"を含む時は１重引用符(')で囲む。\n");         //~va45R~
+"                \":\"を含む時は１重引用符(')で囲む。\n");         //~vas4I~
         HELPMSG                                                    //~va45R~
 "                ex) 3:xb\"time out\"\n",                          //~va45R~
-"                例) 3:xb\"time out\"\n");                         //~va45R~
+"                例) 3:xb\"time out\"\n");                         //~vas4I~
         HELPMSG                                                    //~va45R~
 "                    (drop substring before \"time out\" if fieldNo 3 has it)\n",//~va45R~
-"                    (第3項が\"time out\"を含むならその前を削除)\n");//~va45R~
+"                    (第3項が\"time out\"を含むならその前を削除)\n");//~vas4I~
         HELPMSG                                                    //~va45R~
 "                    4:a'Time:':bElapsed\n",                       //~va45R~
 "                    4:a'Time:':bElapsed\n");                      //~va45R~
         HELPMSG                                                    //~va45R~
 "                    (pickup substring after \"Time:\" to before \"Elapsed\")\n",//~va45R~
-"                    (\"Time\"の後から\"Elapsed\"の前まで取り出す)\n");//~va45R~
+"                    (\"Time\"の後から\"Elapsed\"の前まで取り出す)\n");//~vas4I~
         HELPMSG
 "        [-]cols:substring start/end column. \"-\" means cols from end.\n",//~0017R~
-"        [-]cols:入力フィールド部分文字列開始/終了位置.\"-\"は後からの位置。\n");//~0017R~
+"        [-]cols:入力フィールド部分文字列開始/終了位置.\"-\"は後からの位置。\n");//~vas4I~
         HELPMSG                                                    //~va45R~
 "                ex) 3:3:5    (pickup col3-5 of field-No 3)\n",    //~va45R~
-"                例) 3:3:5    (第3項からは 3-5 桁を取り出す)\n");  //~va45R~
+"                例) 3:3:5    (第3項からは 3-5 桁を取り出す)\n");  //~vas4I~
         HELPMSG                                                    //~va45R~
 "                    6:x-5:-2 (cut first 4 byte and last 1 byte of field-No6)\n",//~va45R~
-"                    6:x-5:-2 (第6項からは 後ろから 5桁目から2桁目を取り除く)\n");//~va45R~
+"                    6:x-5:-2 (第6項からは 後ろから 5桁目から2桁目を取り除く)\n");//~vas4I~
         HELPMSG                                                    //~0010I~
 "        Llength:substring len. means up to end-of-field if missing.\n",//~va45R~
-"        Llength:部分文字列の長さ。指定なしは項末まで。\n");       //~va45R~
+"        Llength:部分文字列の長さ。指定なしは項末まで。\n");       //~vas4I~
         HELPMSG                                                    //~va45R~
 "                ex) 3:3:L5   (pickup 5 byte from col3 of field-No 3)\n",//~va45R~
-"                例) 3:3:L5   (第3項からは 3桁目から5 桁を取り出す)\n");//~va45R~
+"                例) 3:3:L5   (第3項からは 3桁目から5 桁を取り出す)\n");//~vas4I~
         HELPMSG                                                    //~0017I~
 "        (Note)  substring position is for the string after aligned for P type.\n",//~va45R~
-"        (注)    Pタイプの場合の桁位置は整列後のイメージを想定すること。\n");//~va45R~
+"        (注)    Pタイプの場合の桁位置は整列後のイメージを想定すること。\n");//~vas4I~
         HELPMSG
 "      w/o fieldspec param,all fields are put right aligned if no %cYs,%cNa parm.\n",//~0003R~
-"      fieldspec指定がないと%cYs,%cNa指定がなければ全フィールドを右詰で出力。\n",//~0003R~
+"      fieldspec指定がないと%cYs,%cNa指定がなければ全フィールドを右詰で出力。\n",//~vas4I~
 				CMDFLAG_PREFIX,CMDFLAG_PREFIX);
         HELPMSG
 "      alignment specification only(without field-no) is effective on the field\n",
-"      フィールド番号なしの整列指定オプションはその指定位置に対応する\n");
+"      フィールド番号なしの整列指定オプションはその指定位置に対応する\n");//~vas4I~
         HELPMSG
 "      correspond to the specification and followings upto end of line.\n",
-"      フィールド以降の全フィールドに適用される。\n");
+"      フィールド以降の全フィールドに適用される。\n");             //~vas4I~
         HELPMSG
 "sample) %s %cL5S\"10:00:00\" %cL5E\"11:59:59\" %cLIexcept %cLXNullPo file1 r 5l\n",
-"    例) %s %cL5S\"10:00:00\" %cL5E\"11:59:59\" %cLIexcept %cLXNullPo file1 r 5l\n",//~0017R~
+"    例) %s %cL5S\"10:00:00\" %cL5E\"11:59:59\" %cLIexcept %cLXNullPo file1 r 5l\n",//~vas4I~
                 Spgm,CMDFLAG_PREFIX,CMDFLAG_PREFIX,CMDFLAG_PREFIX,CMDFLAG_PREFIX);
         HELPMSG
 "        %s %cQ %cS\",\" %cNa %cYs file2 5:x4 6:-3:L2 1 3:t-a?:4 7:b\"x y\":a\"x z\"\n",//~0017R~
@@ -2611,8 +2638,8 @@ int help(void)
 "        %s file3 nc:999:l1\n",                                    //~0035R~
                 Spgm);                                             //~0035I~
     exit(1);
-//#ifndef ULIB64X	//C4702 unreachable warning                        //~va66I~//+va67R~
-#ifndef VC10EXP	//C4702 unreachable warning                        //+va67I~
+//#ifndef ULIB64X	//C4702 unreachable warning                        //~va66I~//~va67R~
+#ifndef VC10EXP	//C4702 unreachable warning                        //~va67I~
     return 0;
 #endif                                                             //~va66I~
 }//help

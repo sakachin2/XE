@@ -1,4 +1,4 @@
-//*CID://+vb7fR~:                             update#=  224;       //~vb7fR~
+//*CID://+vb7fR~:                             update#=  227;       //~vb7fR~
 //*************************************************************
 //*xedlcmd4.c
 //* each dir line cmd process
@@ -476,6 +476,7 @@ int dlcmdundelete(PUCLIENTWE Ppcw,PUDLCMD Pplc,PUDLCMD Pplcdummy)
 	int swwildname=0;                                              //~vaa0I~
 #endif                                                             //~vaa0I~
 //*******************
+    UTRACEP("%s:entry\n",UTT);                                     //~vb7fI~
     plh=Pplc->UDLCplh;
     pdh=UGETPDH(plh);
 #ifdef FTPSUPP                                                     //~v62hI~
@@ -613,7 +614,10 @@ int dlcmdundelete(PUCLIENTWE Ppcw,PUDLCMD Pplc,PUDLCMD Pplcdummy)
     dlcmdresetdata(pdh);
 	dlcmdlvlclear(Ppcw,pdh,1,0);//clear child,del entry         //~v05VI~
     if (pdh->UDHtype==UDHTDIREXP)                               //~v05VI~
+    {                                                              //~vb7fI~
+        UTRACEP("%s:set UDHTDIR dhname=%s\n",UTT,pdh->UDHname);    //~vb7fI~
 		pdh->UDHtype=UDHTDIR;                                   //~v05VI~
+    }                                                              //~vb7fI~
 	UCBITOFF(pdh->UDHupdatetype,UDHUTDELETED);
     dlcmdresetparentsz(pdh,DLCPSZ_LC,0,plh->ULHlinenow);//size is by resetdata//~v10rR~
 //  UCBITOFF(pdh->UDHflag,UDHFDDSETUP); //redraw savename,rest at resetdata//~v10rR~
@@ -1146,6 +1150,7 @@ int dlcmdundelprep(PUCLIENTWE Ppcw,UCHAR *Pfullpath,PUDIRLH Ppdh)
 #endif                                                             //~v62hI~
     char *pfpath;                                                  //~van2R~
 //*******************
+	UTRACEP("%s:fpath=%s\n",UTT,Pfullpath);                        //+vb7fI~
     plh=UGETDIRPLH(Ppdh);                                          //~v62hI~
 #ifdef FTPSUPP                                                     //~v62hI~
     pfh=UGETPFH(plh);                                              //~v62hI~
@@ -1880,7 +1885,7 @@ int dlcmdftpclearundelsaveDeleted(char *Pfpathrenamesave)          //~vb7fR~
 	pathlen=FTP_PATHLEN(Pfpathrenamesave);                         //~vb7fR~
     if (pathlen<0)                                                 //~vb7fI~
     	return 4;                                                  //~vb7fI~
-    UmemcpyZ(path,Pfpathrenamesave,(size_t)pathlen);               //+vb7fR~
+    UmemcpyZ(path,Pfpathrenamesave,(size_t)pathlen);               //~vb7fR~
     pmemb=Pfpathrenamesave+pathlen;                                //~vb7fR~
     pqh=&Sdrivelist[LASTDRIVE].UDDqueh;                            //~vb7fI~
     for (pue=UGETQTOP(pqh);pue;pue=UGETQNEXT(pue))                 //~vb7fR~

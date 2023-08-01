@@ -32,7 +32,9 @@ a:hover{font-weight:bold;}
   .v129R&lt;--129Q:(2020/12/18)
 <SPAN STYLE="color:#000000;font-size:12pt;">  .v129S&lt;--129R:(2020/12/24)
  <SPAN STYLE="color:#000000;font-size:12pt;"> .v129T&lt;--129S:(2022/12/04)</SPAN>
-<SPAN STYLE="color:#000000;font-size:12pt;">  .v129U&lt;--129T:(2022/12/15)</SPAN></SPAN></SPAN></PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">  <SPAN STYLE="color:#000000;font-size:12pt;">.v129U&lt;--129T:(2022/12/15)<font size="3">.</font></SPAN></SPAN></SPAN></SPAN></PRE>
+<PRE><font size="3">&nbsp;<SPAN STYLE="color:#000000;font-size:12pt;"><SPAN STYLE="color:#000000;font-size:12pt;"> <SPAN STYLE="color:#000000;font-size:12pt;">.v129V&lt;--129U:(2023/06/10)
+  </SPAN>.v129W&lt;--129V:(2023/07/31)</SPAN></SPAN></font></PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
     1.BUGs
        -(Windows:64)"&"(spawn executable file) dir cmd crush.
@@ -243,7 +245,23 @@ a:hover{font-weight:bold;}
         For example, if Windows displays by 2 columns and Linux displays 1 column,
         the CID tagged to the update line on Windows is not recognized as CID on Linux.
         So the &quot;cid clear&quot; command on Linux may return 0 rows.
+<SPAN STYLE="color:#000000;font-size:12pt;">
+     (129V)
+       -(Axe)
+         .And.Android 13 (Api-33) compatible.
+         .Shared storage support.
+            You can set a dedicated folder in the shared storage by &quot;sp add //&quot; command,
+            and access the folder like as &quot;e //Axe&quot;.
+            Also, since Android 11 (Api-30), access permission:&quot;All files&quot; can be set.
+            If permission is set, command line tools such as grep and xfg can also access Shared storage.
+         .Correspond to changes in usage environment of .icu library.
+ <SPAN STYLE="color:#000000;font-size:12pt;">    (129W)
+       -(Axe)
+          .Utilize Android-11(R):Api30 permission options : All Files.
+          .CD command support
 
+</SPAN>   
+ </SPAN>
     3.Miscellaneous.
        -(Windows) add "msi" as executable binary extension
      (129C)
@@ -317,6 +335,11 @@ a:hover{font-weight:bold;}
        -(WIN:Console) Supports WindowsTerminal.
         Corresponds to the difference between WindosTerminal and Conhost.
         Distortion of the display when entering a line command, display of a binary file, etc.
+<SPAN STYLE="color:#000000;font-size:12pt;">     (129W)</SPAN>
+       -If Shortpath is added by &quot;sp add&quot; command, refresh it and make it effective immediately.
+       -Axe
+          .DOS commands (full screen shell) are now not supported.
+          .&quot;!&quot; line commands are now not supported.
 
      4.Tool.
      (129C)
@@ -404,8 +427,14 @@ xcfont Mangal H=* ; Codepage will be listed by "xcv /list".
          .Accept parameter sign other than %.
           e.g) By /C$, $fp$ in the cmd string is replaced to fullpath name of the file in the directory.
          .%rp% is added for path name relative to starting directory.
+<SPAN STYLE="color:#000000;font-size:12pt;">    (129V)
+        -Changed default value of &quot;opt DELZ&quot;(Allow Del line command with no backup) to Off, it is safer side.</SPAN>
+<SPAN STYLE="color:#000000;font-size:12pt;">    (129W)
+        -xcv v1.21
+        -xfmt v1.5
+        -xfg v1.21
+        -xdc v2.29 -Added UF option (skip print directory timestamp unmatch to unmatch list).
 
-*** 2022/12/04
-</SPAN></PRE>
+</SPAN></SPAN></PRE>
 </BODY>
 </HTML>

@@ -1,8 +1,10 @@
-//*CID://+vb31R~:                             update#=  331;       //~vb31R~
+//*CID://+vbyqR~:                             update#=  334;       //+vbyqR~
 //*************************************************************
 //*xesyn.c
 //*syntax highlight
 //*************************************************************
+//vbyq:230623 (Bug)syn; crash by UTRACE for updateline after syn executed//+vbyqI~
+//v77J:230622 (Bug)ARM;dlopen for libhighlight_so.so returns -1, it cause quit xe.//~v77JI~
 //vb31:160418 (LNX64)Compiler warning                              //~vb31I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vb2J:160313 (W32) compier warning                                //~vabJI~
@@ -262,6 +264,8 @@ static UCHAR *Swordtbl="?\0"
             if (!ugeterrmsg2())                                    //~vazzI~
         		uerrmsg("SyntaxHighligt cfg file(%s) may have error",0,//~vazzR~
             		SHFNM_CONFIG);                                 //~vazzR~
+    if (rc==-1)                                                    //~v77JI~
+    	rc=256;	//avoid xe Quit                                    //~v77JI~
     return rc;
 #endif //SYNSUPP
 }//func_syntax
@@ -916,7 +920,7 @@ UTRACED("xesynsetlineattr ULHdata",Pplh->ULHdata,Pplh->ULHlen);      //~v780R~//
     sclen=max(plhlen-left,0);
     sclen=min(sclen,Pscrwidth);
 	plhsc0=Pplh->ULHci->ULHcidata+left+left;    //style and color
-UTRACED("xesynsetlineattr plhsc0",plhsc0,sclen);                   //+vb31R~
+//UTRACED("xesynsetlineattr plhsc0",plhsc0,sclen);                    //~vb31R~//+vbyqR~
 #ifdef WXEXXE
 //style
     plhsc=plhsc0;
@@ -966,6 +970,7 @@ UTRACED("xesynsetlineattr plhsc0",plhsc0,sclen);                   //+vb31R~
     }
     else
     {
+		UTRACED("xesynsetlineattr plhsc0",plhsc0,sclen);           //+vbyqI~
         for (ii=0;ii<sclen;ii++,plhsc+=2)
         {
 //          *pattr++=(USHORT)syngetstylecolor(0,plhsc,&style);     //~v78oR~
@@ -1014,6 +1019,7 @@ UTRACED("synsetlineattr Ppsdcell",Ppsdcell,Pscrwidth);             //~vb31I~
     }
     else
     {
+		UTRACED("xesynsetlineattr plhsc0",plhsc0,sclen);           //+vbyqI~
         for (ii=0;ii<sclen;ii++,plhsc+=2)
         {
 //          *pattr++=(UCHAR)syngetstylecolor(0,plhsc,&style);      //~v78oR~

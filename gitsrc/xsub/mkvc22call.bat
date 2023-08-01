@@ -12,5 +12,7 @@ for %%a in (%PGMS%) do (
  @if     exist err0  del  err0
     )
 :ext
-type err>>errall
-type errall
+@rem type err>>errall
+@rem type errall
+ @if     exist err    type err >>errall
+ @if     exist errall type errall

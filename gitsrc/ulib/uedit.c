@@ -1,10 +1,11 @@
-//*CID://+v711R~:                             update#=   85;       //~v711R~
+//*CID://+v771R~:                             update#=   86;       //+v771R~
 //*************************************************************
 //*uedit.c                                                         //~v022R~
 //*  unumedit,utimeedit,uitoa10,ucmdparmedit,uwordrep              //~v066R~
 //*  ugethex,ux2l,ux2s,ugetnumrange,ugetxnumrange,unumlen,uatoin   //~v244R~
 //*  ugetnumrange2 ugetnumrange3                                   //~v5fxR~
 //*************************************************************
+//v771:230323 sys/timeb.h is not found on ARM                      //+v771I~
 //v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //~v711I~
 //v6Z0:200516 uwordrep option alternative parm sign                //~v6Z0I~
 //v6T1:180210 add ueditKMG(edit Kiro,mega,Giga value)              //~v6T1I~
@@ -63,9 +64,11 @@
 #include <string.h>
 //*******************************************************
 #ifdef UNX                                                         //~v321R~
+  #ifndef ARM                                                      //+v771I~
     #include <sys/timeb.h>                                         //~v321R~
+  #endif                                                           //+v771I~
 #else                                                              //~v321R~
-    #include <sys/timeb.h>                                         //+v711I~
+    #include <sys/timeb.h>                                         //~v711I~
 #ifdef DOS
     #include <dos.h>
 #else
@@ -87,6 +90,7 @@
 #ifdef UNX                                                         //~v321R~
     #include <ugcclib.h>                                           //~v321I~
 #endif  //!UNX                                                     //~v321R~
+#include <ulibarm.h>      //timeb.h                                //+v771I~
 #define UFTIME                                                     //~v711I~
 #include <umiscf.h>                                                //~v711I~
 //*******************************************************

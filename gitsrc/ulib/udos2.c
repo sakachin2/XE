@@ -1,9 +1,11 @@
-//*CID://+v70dR~:                             update#=   44;       //~v70dR~
+//*CID://+v77TR~:                             update#=   49;       //+v77TR~
 //*************************************************************
 //*udos2.c
 //*************************************************************
 //*ugetdrivetype
 //*************************************************************
+//v77T:230708 ARM;locale was not set for xsub tool(pass Gjnilocale by putenv)//+v77TI~
+//v77R:230630 (BUG)tmp path separater is not ";" but ":" for UNX   //~v77RI~
 //v70d:200625 (LNX)setenv may destroy env,use putenv               //~v70dI~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
 //v6n0:130816 compiler warning;set but not used                    //~v6n0I~
@@ -286,7 +288,7 @@ int ugetdrivetype(char Pdriveid,int Pmsgopt)
     if (rc<0)
 	    if (Pmsgopt & UDDC_ERRMSG)
     	    uerrmsg("Invalid drive id - %c(rc=%d)",
-        	        "無効なドライブです - %c(rc=%d)",              //+v70dI~
+        	        "無効なドライブです - %c(rc=%d)",              //~v70dI~
             	    Pdriveid,msgrc);
 	return rc;
 }//ugetdrivetype
@@ -361,32 +363,40 @@ int udos_setenv(int Popt,char *Pkey,char *Pvalue)                  //~v6boI~
       else                                                         //~v6c1I~
     	sprintf(new,"%s=%s",Pkey,Pvalue);                          //~v6c1I~
 #else                                                              //~v6boI~
+    new=malloc((size_t)(oldlen+addlen+keylen+4));    //dont free for pputenv until exit//~v77RR~
     if (!old)                                                      //~v6boI~
-    	new=Pvalue;                                                //~v6boI~
+//  	new=Pvalue;                                                //~v6boI~//~v77RR~
+    	strcpy(new,Pvalue);                                        //~v77RI~
     else                                                           //~v6boI~
     {                                                              //~v6boI~
 //  	new=umalloc(oldlen+addlen+4);    //dont free for pputenv until exit//~v6boI~//~v6BkR~
-#ifdef AAA                                                         //~v70dI~
-    	new=umalloc((size_t)(oldlen+addlen+4));    //dont free for pputenv until exit//~v6BkI~
-#else                                                              //~v70dI~
-    	new=umalloc((size_t)(keylen+oldlen+addlen+4));    //dont free for pputenv until exit//~v70dI~
-#endif                                                             //~v70dI~
+//#ifdef AAA                                                         //~v70dI~//~v77RR~
+//        new=umalloc((size_t)(oldlen+addlen+4));    //dont free for pputenv until exit//~v6BkI~//~v77RR~
+//#else                                                              //~v70dI~//~v77RR~
+//        new=umalloc((size_t)(keylen+oldlen+addlen+4));    //dont free for pputenv until exit//~v70dI~//~v77RR~
+//#endif                                                             //~v70dI~//~v77RR~
 #ifdef AAA                                                         //~v70dM~
-      if (Popt & UDSE_PREPEND)                                     //~v6c1I~
-      {                                                            //~v6c1I~
-#ifdef UNX                                                         //~v6boI~
-    	sprintf(new,"%s%c%s",Pvalue,':',old);                      //~v6boR~
-#else                                                              //~v6boI~
-    	sprintf(new,"%s%c%s",Pvalue,';',old);                      //~v6boR~
-#endif                                                             //~v6boI~
-      }                                                            //~v6c1I~
-      else                                                         //~v6c1I~
-    	new=Pvalue;                                                //~v6c1I~
+//      if (Popt & UDSE_PREPEND)                                     //~v6c1I~//~v77RR~
+//      {                                                            //~v6c1I~//~v77RR~
+//#ifdef UNX                                                         //~v6boI~//~v77RR~
+//        sprintf(new,"%s%c%s",Pvalue,':',old);                      //~v6boR~//~v77RR~
+//#else                                                              //~v6boI~//~v77RR~
+//        sprintf(new,"%s%c%s",Pvalue,';',old);                      //~v6boR~//~v77RR~
+//#endif                                                             //~v6boI~//~v77RR~
+//      }                                                            //~v6c1I~//~v77RR~
+//      else                                                         //~v6c1I~//~v77RR~
+//        new=Pvalue;                                                //~v6c1I~//~v77RR~
 #else                                                              //~v70dI~
+      if (Popt & UDSE_IGNOREDUP                                   //+v77TI~
+      &&  Pvalue && strstr(Pvalue,old))  //new value contains old  //+v77TI~
+      	strcpy(new,Pvalue);                                        //+v77TI~
+      else                                                         //+v77TI~
       if (Popt & UDSE_PREPEND)                                     //~v70dI~
-    	sprintf(new,"%s=%s%c%s",Pkey,Pvalue,';',old);              //~v70dI~
+//    	sprintf(new,"%s=%s%c%s",Pkey,Pvalue,';',old);              //~v70dI~//~v77RR~
+      	sprintf(new,"%s%c%s",Pvalue,':',old);                      //~v77RR~
       else                                                         //~v70dI~
-    	sprintf(new,"%s=%s",Pkey,Pvalue);                          //~v70dI~
+//  	sprintf(new,"%s=%s",Pkey,Pvalue);                          //~v70dI~//~v77RR~
+      	sprintf(new,"%s%c%s",old,':',Pvalue);                      //~v77RI~
 #endif                                                             //~v70dI~
     }                                                              //~v6boI~
 #endif                                                             //~v6boI~
@@ -404,8 +414,8 @@ int udos_setenv(int Popt,char *Pkey,char *Pvalue)                  //~v6boI~
 	rc=putenv(new);                                                //~v70dI~
 #else                                                              //~v70dI~
 	rc=setenv(Pkey,new,1/*override*/);                             //~v6boR~
-    if (new!=Pvalue)                                               //~v6boI~
-    	ufree(new);	//copyed to env                                //~v6boI~
+//  if (new!=Pvalue)                                               //~v6boI~//~v77RR~
+//  	ufree(new);	//copyed to env                                //~v6boI~//~v77RR~
 #endif                                                             //~v70dI~
     UTRACEP("after setenv rc=%d,errno=%d,new=%p,Pvalue=%p,key=%s,getenv=%p=%s\n",rc,errno,new,Pvalue,Pkey,getenv(Pkey),getenv(Pkey));//~v6boI~//~v6BkR~
 //  listenv();	//TODO test                                        //~v6BkI~//~v70dR~

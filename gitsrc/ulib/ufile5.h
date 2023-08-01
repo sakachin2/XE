@@ -1,8 +1,9 @@
-//*CID://+v6y1R~:                             update#=   67;       //~v6y1R~
+//*CID://+v77bR~:                             update#=   69;       //~v77bR~
 //******************************************************        //~5B11I~
 //*ufile5.h                                                        //~v090R~
 //******************************************************        //~5B11I~
-//v6J7:170217 add filetouch for dummy record write for ::xehosts etc if not found//+v6y1I~
+//v77b:230415 ARM;edit file                                        //~v77bI~
+//v6J7:170217 add filetouch for dummy record write for ::xehosts etc if not found//~v6y1I~
 //v6y1:150303 add fullpath option to fileeditname_copypath         //~v6y1I~
 //v6y0:150227 add fileeditname_copypath                            //~v6y1I~
 //v6xe:150113 add ufseek and uftell for common to 32 and 64 bit    //~v6xeI~
@@ -197,5 +198,8 @@ int fileeditname_copypath(int Popt,char *Pfnm1,char *Pfnm2,char *Pout1,char *Pou
 //*********************************************************        //~v6y0I~
 void fileeditname_copypath_err(int Popt,char *Pfnm1,char *Pfnm2);  //~v6y0R~
 #define FCEO_UERREXIT 0x01                                         //~v6y0I~
-//*********************************************************        //+v6y1I~
-int filetouch(int Popt,char *Pfnm,char *Precord);                  //+v6y1I~
+//*********************************************************        //~v6y1I~
+int filetouch(int Popt,char *Pfnm,char *Precord);                  //~v6y1I~
+//*********************************************************        //~v77bI~
+UINT ufread(void *Pbuff,UINT Psize,UINT Pctr,FILE *Pfh);           //~v77bI~
+int uferror(FILE *Pfh);                                            //+v77bI~

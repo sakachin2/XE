@@ -1,7 +1,8 @@
-//*CID://+vbvjR~:                              update#=  497;      //~vbvjR~
+//*CID://+v77ZR~:                              update#=  499;      //+v77ZR~
 //*************************************************************
 //*XE.c*                                                           //~v641R~
 //*************************************************************
+//v77Z:230718 ARM;support CD to shared storage                     //+v77ZI~
 //vbvj:221130 change workdir to %USERPROFILE% (C:\Users\username) fo protection//~vbvjI~
 //vbvg:221130 LNX compiler arning                                  //~vbvgI~
 //vbvf:221129 drop japanese comment for =0.2/0.3 when english mode //~vbvfI~
@@ -814,7 +815,7 @@ if (Preqtype==WXE_REQ_INIT)                                        //~v501I~
     uharderr(0);    //fail if drive notready                       //~v099I~
 #else                                                              //~v099I~
 #endif                                                             //~v099I~
-                                                                   //~v099I~
+    funcsp_init(0);          //before ini recovery of cwd by Scurdir//+v77ZR~
     if (Srestorecdsw)        //restore required                    //~v11yI~
         inirestcd();         //restore saved CD                    //~v11yI~
 //  funcinit();                                                    //~v705R~
@@ -825,7 +826,7 @@ if (Preqtype==WXE_REQ_INIT)                                        //~v501I~
     scrinit(Sscrparm);                                             //~v47rI~
     paninit();                                                  //~v032I~
     kbdinit();
-    funcsp_init(0);                                                //~vba2R~
+//  funcsp_init(0);                                                //~vba2R~//+v77ZR~
     dcmdinit(0);                                                   //~v781R~
 #ifdef UNX                                                         //~v19FI~
     dlcmdundelinit();   //undel top dirname edit by userid         //~v19FI~
@@ -1184,7 +1185,7 @@ int xecreateworkdir(char *Pfpath,char *Pwkdir)                     //~v79HI~
     	strcpy(Pfpath,fpath);                                      //~v79HM~
     return rc;                                                     //~v79HM~
 }//createnonprotworkdir                                            //~v79HM~
-#ifdef W32                                                         //+vbvjI~
+#ifdef W32                                                         //~vbvjI~
 //************************************************                 //~vbvjI~
 //* get work dir name                                              //~vbvjI~
 //************************************************                 //~vbvjI~
@@ -1195,7 +1196,7 @@ int getHomeDir(char *PfpathOut)                                    //~vbvjI~
     *PfpathOut=0;                                                  //~vbvjI~
     pc=getenv(HOMEDIR);                                            //~vbvjI~
     if (pc && *pc)                                                 //~vbvjR~
-    {                                                              //+vbvjI~
+    {                                                              //~vbvjI~
     	if (*(pc+1)==':')                                          //~vbvjI~
         	strcpy(PfpathOut,pc);                                  //~vbvjI~
         else                                                       //~vbvjI~
@@ -1203,14 +1204,14 @@ int getHomeDir(char *PfpathOut)                                    //~vbvjI~
 	        	sprintf(PfpathOut,"c:%s",pc);                      //~vbvjI~
             else                                                   //~vbvjI~
 	        	sprintf(PfpathOut,"c:\\%s",pc);                    //~vbvjI~
-    }                                                              //+vbvjI~
+    }                                                              //~vbvjI~
     rc=*PfpathOut!=0;                                              //~vbvjI~
     if (rc)                                                        //~vbvjI~
         strcat(Gworkdir,XE_WKDIR+2);                               //~vbvjR~
     UTRACEP("%s:rc=%d,getenv=%s,env=%s,fpath=\n",UTT,rc,pc,HOMEDIR,PfpathOut);//~vbvjR~
     return rc;                                                     //~vbvjI~
 }                                                                  //~vbvjI~
-#endif                                                             //+vbvjI~
+#endif                                                             //~vbvjI~
 //************************************************                 //~v79zI~
 //* get work dir name                                              //~v79zM~
 //************************************************                 //~v79zI~

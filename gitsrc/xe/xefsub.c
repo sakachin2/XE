@@ -1,7 +1,12 @@
-//*CID://+vbr3R~:                             update#=  313;       //~vbr3R~
+//*CID://+vbybR~:                             update#=  343;       //~vbybR~
 //*************************************************************
 //* xefsub.c
 //*************************************************************
+//vbyb:230421 (ARM)del bya9 because mkstemp failed and no bkup written//~vbybR~
+//vbya:230420 (ARM)open doc optionally. limit to load/save now (not copy file).//~vbyaI~
+//vby9:230419 (ARM)temporarlly save by no bkupmode for DOC file TO test//~vby9I~
+//vby6:230402 (ARM)adjust by4; go around by shortname and change to uri at ulib(ufile1l)//~vby6I~
+//vby4:230402 (ARM)shared resource support by //shareName defined by SP(ShortPath) cmd.//~vby4I~
 //vbr3:200620 ARM:sdcard permission chk                            //~vbr3I~
 //vb7e:170108 FTP crash by longname                                //~vb7eI~
 //vb70:161211 (Bug) dirlist crash when filename is locale and having slink is utf8//~vb70I~
@@ -130,6 +135,7 @@
 #endif
 #ifdef UNX                                                         //~v55PI~
     #include <sys/stat.h>                                          //~v55PI~
+//    #include <dirent.h>                                            //~vby4M~//~vby6R~
 #endif                                                             //~v55PI~
 //*******************************************************
 #include <ulib.h>
@@ -157,6 +163,12 @@
 #include <ucvext.h>                                                //~va7LI~
 #include <ucvebc4.h>                                               //~va7LI~
 #include <ufilew.h>                                                //~vb06I~
+//#ifdef ARMXXE                                                      //~vby4I~//~vby6R~
+//    #include <ufile1l.h>                                           //~vby4I~//~vby6R~
+//#endif                                                             //~vby4I~//~vby6R~
+#ifdef ARMXXE                                                      //~vbyaR~
+	#include <ufiledoc.h>                                          //~vbyaR~
+#endif                                                             //~vbyaR~
                                                                 //~5318I~
 #include "xe.h"
 #include "xescr.h"                                              //~5318R~
@@ -196,6 +208,7 @@ FILE *filebkupreopen(int Popt,PUFILEH Ppfh,UCHAR *Ppopt,UCHAR *Pbkupfnm)//~v76xI
     UCHAR *pc;                                                     //~v76xI~
 #endif                                                             //~v76xI~
 //****************************                                     //~v76xI~
+	UTRACEP("%s:UFHfilename=%s,bkupfnm=%s\n",UTT,Ppfh->UFHfilename,Pbkupfnm);//~vbyaI~
 	if (Popt & FBRO_DELETE)                                        //~v76xR~
     {                                                              //~v76xI~
     	if (*Pbkupfnm)                                             //~v76yR~
@@ -221,6 +234,11 @@ FILE *filebkupreopen(int Popt,PUFILEH Ppfh,UCHAR *Ppopt,UCHAR *Pbkupfnm)//~v76xI
     *Pbkupfnm=0;                                                   //~v76xI~
     pfnm=Ppfh->UFHfilename;                                        //~v76xI~
     Sbkupfnm=Pbkupfnm;                                             //~v76xI~
+//#ifdef ARMXXE                                                      //~vby9I~//~vbybR~
+//    if (PFH_ISDOCUMENT(Ppfh)) //TODO test                          //~vby9I~//~vbybR~
+//        Sbkupfnm=0;     //no bkup                                  //~vby9I~//~vbybR~
+//    else                                                           //~vby9I~//~vbybR~
+//#endif                                                             //~vby9I~//~vbybR~
     if (Popt & FBRO_NB)                                            //~v76XI~
     	Sbkupfnm=0;		//no bkup                                  //~v76XI~
     else                                                           //~v76XI~
@@ -281,6 +299,7 @@ FILE *filereopen(PUFILEH Ppfh,UCHAR *Ppopt)
     char *fnm;                                                     //~v48cI~
 //****************************
     fnm=FILELOCALCOPYNAME(Ppfh);                                   //~v542I~
+    UTRACEP("%s:fnm=%s,FHfilename=%s\n",UTT,fnm,Ppfh->UFHfilename);//+vbybI~
 #ifdef UNX                                                         //~v48cI~
 	if (UCBITCHK(Ppfh->UFHflag5,UFHF5MDOS))//original is mdos disk //~v48cI~
     {                                                              //~v48oI~
@@ -288,7 +307,7 @@ FILE *filereopen(PUFILEH Ppfh,UCHAR *Ppopt)
         	if (fstat3.attrFile & FILE_READONLY)                   //~v48oI~
             {                                                      //~v48oI~
 				uerrmsg("%s(\"%s\") ReOpen failed(ReadOnly)",      //~v48oI~
-			    		"%s(\"%s\") 再オープンエラー(ReadOnly)",   //+vbr3I~
+			    		"%s(\"%s\") 再オープンエラー(ReadOnly)",   //~vbr3I~
 							Ppfh->UFHfilename,Ppopt);              //~v48oR~
                 return 0;                                          //~v48oI~
             }                                                      //~v48oI~
@@ -321,7 +340,11 @@ FILE *filereopen(PUFILEH Ppfh,UCHAR *Ppopt)
             *Sbkupfnm=0;    //avoid delete                         //~vawhI~
     }                                                              //~vawhI~
 //  if (!(fh=fopen(Ppfh->UFHfilename,Ppopt)))                      //~v48cI~
+#ifdef ARMXXE                                                      //~vby6I~
+	if (!(fh=xesub_openDoc(0,Ppfh,Ppfh->UFHfilename,Ppopt)))// reopen Documeny for PFH_ISDOCUMENT(pfh) only//~vby6R~
+#else                                                              //~vby6I~
     if (!(fh=fopen(fnm,Ppopt)))                                    //~v48cR~
+#endif                                                             //~vby6I~
     {                                                              //~v08rI~
     	rc=errno;                                                  //~v08rI~
     	pc="";                                                     //~v09xI~
@@ -351,7 +374,7 @@ FILE *filereopen(PUFILEH Ppfh,UCHAR *Ppopt)
         if (rc==EACCES)                                            //~vawdR~
         {                                                          //~vawdI~
 			uerrmsg("%s(\"%s\") ReOpen failed(errno=%d)%s. Save to other folder if you want.",//~vawdI~
-			    	"%s(\"%s\") 再オープンエラー(errno=%d)%s. 必要なら他のフォルダーに保存してください",//+vbr3I~
+			    	"%s(\"%s\") 再オープンエラー(errno=%d)%s. 必要なら他のフォルダーに保存してください",//~vbr3I~
 			    		Ppfh->UFHfilename,Ppopt,rc,pc);            //~vawdI~
             if (Sbkupfnm)                                          //~vawhI~
             {                                                      //~vawhI~
@@ -363,7 +386,7 @@ FILE *filereopen(PUFILEH Ppfh,UCHAR *Ppopt)
         }                                                          //~vawdI~
         else                                                       //~vawdI~
 		uerrmsg("%s(\"%s\") ReOpen failed(errno=%d)%s",            //~v08qR~
-			    "%s(\"%s\") 再オープンエラー(errno=%d)%s",Ppfh->UFHfilename,Ppopt,rc,pc);//+vbr3I~
+			    "%s(\"%s\") 再オープンエラー(errno=%d)%s",Ppfh->UFHfilename,Ppopt,rc,pc);//~vbr3I~
 //      Sbkupfnm=0;                                                //~vawdI~//~vawhR~
 	}                                                              //~v08rI~
     else                                                        //~v047I~
@@ -395,10 +418,10 @@ int fileseek(PUFILEH Ppfh,FPOST Ppos,int Popt)
 //#endif                                                           //~vazqR~
     if ((rc=ufseek(Ppfh->UFHhfile,Ppos,Popt),rc))    //position    //~vazqI~
 //  	uerrmsg("%s fseek(opt=%d,pos=%d) failed,rc=%d,errno=%d",   //~vaz0R~
-//				"%s fseek (%d から %d の位置) の失敗,rc=%d,errno=%d",//+vbr3I~
+//				"%s fseek (%d から %d の位置) の失敗,rc=%d,errno=%d",//~vbr3I~
 //  			Ppfh->UFHfilename,Popt,Ppos,rc,errno);             //~vaz0I~
     	uerrmsg("%s fseek(opt=%d,pos=%" FILESZ_EDIT "d=0x%" FILESZ_EDIT "x) failed,rc=%d,errno=%d",//~vaz0R~
-  				"%s fseek (%d から %" FILESZ_EDIT "d=0x%" FILESZ_EDIT "x の位置) の失敗,rc=%d,errno=%d",//+vbr3I~
+  				"%s fseek (%d から %" FILESZ_EDIT "d=0x%" FILESZ_EDIT "x の位置) の失敗,rc=%d,errno=%d",//~vbr3I~
     			Ppfh->UFHfilename,Popt,Ppos,Ppos,rc,errno);        //~vaz0I~
 	return rc;
 }//fileseek
@@ -435,12 +458,21 @@ int fileread(PUFILEH Ppfh,void *Pbuff,size_t Preqlen,size_t *Ppreadlen)//~v08qR~
 //*******************************************************
 int filewrite(PUFILEH Ppfh,void *Pbuff,size_t Plen)                //~v08qR~
 {
+	int writelen;                                                  //~vbyaR~
 //****************************
-    UTRACED("filewrite",Pbuff,(int)Plen);                          //~vb06R~
-  	if (Plen!=(int)fwrite(Pbuff,1,(unsigned int)Plen,Ppfh->UFHhfile))//~v085R~
+    UTRACEP("%s:FHfilename=%s,pfh=%p,FHflag14=0x%x\n",UTT,Ppfh->UFHfilename,Ppfh,Ppfh->UFHflag14);                          //~vb06R~//~vbybR~
+    UTRACED("filewrite",Pbuff,(int)Plen);                          //~vbybI~
+#ifdef ARMXXE                                                      //~vbyaR~
+  if (PFH_ISDOCUMENT(Ppfh) && IS_DOCFH(Ppfh->UFHhfile))            //~vbyaR~
+    writelen=(int)	ufile_fwriteDoc(Pbuff,1,(unsigned int)Plen,Ppfh->UFHhfile);//~vbyaR~
+  else                                                             //~vbyaR~
+#endif                                                             //~vbyaM~
+//	if (Plen!=(int)fwrite(Pbuff,1,(unsigned int)Plen,Ppfh->UFHhfile))//~v085R~//~vbyaR~
+  	writelen=(int)fwrite(Pbuff,1,(unsigned int)Plen,Ppfh->UFHhfile);//~vbyaR~
+  	if (Plen!=writelen)                                            //~vbyaR~
 	{
 //  	uerrmsg("%s write failed",                                 //~v08qR~
-//				"%s 出力エラ－",                                   //+vbr3I~
+//				"%s 出力エラ－",                                   //~vbr3I~
 //  			Ppfh->UFHfilename);                                //~v08qR~
 //      ufileapierr("write by fwrite",Ppfh->UFHfilename,errno);    //~vazbR~
         ufileapierr_str("write by fwrite",Ppfh->UFHfilename,errno);//~vazbI~
@@ -641,7 +673,7 @@ int  filewriteVRH(PUFILEH Ppfh,PULINEH Pplh)                       //~vaj0I~
     if (maxlen && chklen>maxlen)                                   //~vazgI~
     {                                                              //~vazgI~
     	uerrmsg("RECFM=V %d'th record, length(%d) overflow(>%d)",  //~vazgI~
-    	        "RECFM=V の 第 %d レコードの レコード長(%d) が制限(>%d)を超えています",//+vbr3I~
+    	        "RECFM=V の 第 %d レコードの レコード長(%d) が制限(>%d)を超えています",//~vbr3I~
                 Pplh->ULHlinenor,chklen,maxlen);                   //~vazgR~
         Svbuffsz=0;                                                //~vazgI~
         return FCWRC_VOVF;  //overflow                             //~vazgI~
@@ -1000,7 +1032,7 @@ int fileeofchk(PUFILEH Ppfh)                                    //~5503I~
 //    if (errno!=EPASTEOF)                                         //~v08sR~
 //	{                                                              //~v08sR~
 //		uerrmsg("%s read test for eof failed(rc=%d)",              //~v08sR~
-//				"%s のI/Oエラー(EOFチェック),rc=%d",               //+vbr3I~
+//				"%s のI/Oエラー(EOFチェック),rc=%d",               //~vbr3I~
 //				Ppfh->UFHfilename,errno);                          //~v08sR~
 //    	return 4;                                                  //~v08sR~
 //	}                                                              //~v08sR~
@@ -1164,6 +1196,16 @@ int ufilesetfhfilename(PUFILEH Ppfh,char *Plongname)               //~v542I~
 		if (WIN_ISREMOTEPATH(Plongname))                           //~vav2I~
     		UCBITON(Ppfh->UFHflag13,UFHF13REMOTEUNC);              //~vav2R~
 #endif                                                             //~vav2I~
+#ifdef ARMXXE                                                      //~vby4I~
+    	if (IS_DOCPATH(Plongname)) //remote hostname prefix exist  //~vby4I~
+    	{                                                          //~vby4I~
+//  		int rootPathlen,prefixlen;                             //~vby4R~//~vby6R~
+//  		upathlenDoc(0,Plongname,&rootPathlen,0/*swRoot*/,&prefixlen,Ppfh->UFHshortpath);//~vby4R~//~vby6R~
+//      	Ppfh->UFHdocumentPrefixLen=prefixlen;                  //~vby4I~//~vby6R~
+    		UCBITON(Ppfh->UFHflag14,UFHF14DOCUMENT);               //~vby4I~
+			UTRACEP("%s:set F14DOCUMENT fnm=%s,pfh=%p\n",UTT,Ppfh->UFHfilename,Ppfh);//~vbybR~
+    	}                                                          //~vby4I~
+#endif                                                             //~vby4I~
 #ifdef FTPSUPP                                                     //~v542I~
     }                                                              //~v542I~
 #endif                                                             //~v542I~
@@ -1192,7 +1234,7 @@ int ufilesetfhfilename(PUFILEH Ppfh,char *Plongname)               //~v542I~
         }                                                              //~vbr3I~
     }                                                                //~vbr3I~
 #endif                                                             //~vag1I~
-	UTRACEP("%s:UFHfilename=%s\n",UTT,Ppfh->UFHfilename);          //~vb06I~
+	UTRACEP("%s:exit UFHfilename=%s\n",UTT,Ppfh->UFHfilename);          //~vb06I~//~vby4R~
 	return 0;                                                      //~v542R~
 }//ufilesetfhfilename                                              //~v0fmI~
 #ifdef UTF8SUPPH                                                   //~va00I~
@@ -1496,6 +1538,14 @@ int xefsubwritepermissionchk(PUFILEH Ppfh)                         //~v55PI~
 	FILEFINDBUF3 ffb3;                                             //~v57mI~
     int newsw;                                                     //~v57mI~
 //*****************                                                //~v55PI~
+    UTRACEP("%s:xefsubwritepermissionchk fnm=%s,FHflag=0x%x,FHflag9=0x%x\n",UTT,Ppfh->UFHfilename,Ppfh->UFHflag,Ppfh->UFHflag9);//~vbybR~
+#ifdef ARMXXE                                                      //~vbybI~
+	if (PFH_ISDOCUMENT(Ppfh))                                      //~vbybI~
+    {                                                              //~vbybI~
+	    UTRACEP("%s:return 0 for document file\n",UTT);            //~vbybI~
+    	return 0;                                                  //~vbybI~
+    }                                                              //~vbybI~
+#endif                                                             //~vbybI~
     if (FILEISREMOTE(Ppfh))                                        //~v55PI~
         return 1;                                                  //~v55PI~
 	if (UCBITCHK(Ppfh->UFHflag5,UFHF5MDOS))//original is mdos disk //~v76yI~
@@ -1541,6 +1591,7 @@ int xefsubwritepermissionchk(PUFILEH Ppfh)                         //~v55PI~
     fuid=Ppfh->UFHuid;                                             //~v57mI~
     fgid=Ppfh->UFHgid;                                             //~v57mI~
   }                                                                //~v57mR~
+    UTRACEP("%s:fuid=%d,fgid=%d\n",UTT,fuid,fgid);                 //~vbybI~
     if (!uid)	//root user                                        //~v55PI~
     	return 0;                                                  //~v55PI~
   if (newsw)                                                       //~v57mI~
@@ -1549,7 +1600,7 @@ int xefsubwritepermissionchk(PUFILEH Ppfh)                         //~v55PI~
     rc=4;	//no permission                                        //~v55PI~
 //  if (uid==Ppfh->UFHuid)	//owner                                //~v57mR~
 #ifdef ARM                                                         //~vag1I~
-    UTRACEP("ARM mode=0x%x FHflag9=0x%x\n",mode,Ppfh->UFHflag9,UFHF9SDCARD);//~vbr3I~
+    UTRACEP("%s:ARM mode=0x%x newsw=%d,FHflag9=0x%x,UFHF9DISCARD=0x%x\n",UTT,mode,newsw,Ppfh->UFHflag9,UFHF9SDCARD);//~vbr3I~//~vbybR~
     if (mode & S_IWGRP                                             //~vag1I~
 //  &   UCBITCHK(Ppfh->UFHflag9,UFHF9SDCARD))                      //~vag1R~//~vbr3R~
     &&  UCBITCHK(Ppfh->UFHflag9,UFHF9SDCARD)                       //~vbr3I~

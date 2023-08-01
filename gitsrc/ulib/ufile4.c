@@ -1,8 +1,9 @@
-//*CID://+v6W4R~:                             update#=  288;       //~v6W4R~
+//*CID://+v779R~:                             update#=  290;       //~v779R~
 //*************************************************************
 //*ufile4.c                                                        //~v083R~
 //*  utempnam udirwalk ugetdiskfree ufileishpfs ufileisvfat ufileisntfs//~v5i0R~
 //*************************************************************
+//v779:230414 update v777,set uri at ulib fro shortpath            //~v779I~
 //v6W4:180702 protect utrace file when opened by xe for browse     //~v6W4I~
 //v6Vx:180626 (LNX:BUG)trace file is not protected at xe initial clear//~v6VxI~
 //v6J0:170205 malloc udirlist filename to  allow more large number of fine in the dir//~v6J0I~
@@ -132,6 +133,7 @@
 //*******************************************************
 #include <ulib.h>
 #include <ufile.h>
+#include <uque.h>                                                  //~v779I~
 #ifdef LNX                                                         //~v6uVI~
 #include <ufile1l.h>                                               //~v6uVI~
 #endif                                                             //~v6uVI~
@@ -308,6 +310,7 @@ char *utempnam(char *Pdir,char *Pprefix,char *Ptempfile)           //~v050R~
             temp=Ptempfile;                                        //~v050I~
         }                                                          //~v050I~
     }                                                              //~v050I~
+    UTRACEP("%s:temp=%s\n",UTT,temp);                              //+v779I~
     return temp;                                                   //~v050I~
 }//utempnam                                                        //~v050R~
 #ifdef LNX                                                         //~v5b0I~
@@ -1229,14 +1232,14 @@ int ufileslinkloopchk(int Popt,char *Pdir,char *Pmember,char *Pslink)//~v6k4I~
         	if (rc==4)                                             //~v6k4I~
 //  			uerrmsg("Symbolic Link loop;(%s%c%s --> %s%s%s)",  //~v6k4R~//~v6r5R~
     			uerrmsg("Symbolic Link loop;(%s%s%s --> %s%s%s)",  //~v6r5I~
-                        "リンクループ(%s%s%s --> %s%s%s)",         //+v6W4I~
+                        "リンクループ(%s%s%s --> %s%s%s)",         //~v6W4I~
                 	      Pdir,(*Pmember?DIR_SEPS:""),Pmember,Pslink,psep,pfpathslink);//~v6k4R~
             else                                                   //~v6k4I~
             {                                                      //~v6k4I~
 			  if (!(Popt & UFSLCO_NODUPMSG)) //bypass to issue duplicated err msg//~v6k4I~
 //  			uerrmsg("Symbolic Link duplicated(%s%c%s --> %s%s%s)",//~v6k4R~//~v6r5R~
     			uerrmsg("Symbolic Link duplicated(%s%s%s --> %s%s%s)",//~v6r5I~
-                        "リンク重複(%s%s%s --> %s%s%s)",           //+v6W4I~
+                        "リンク重複(%s%s%s --> %s%s%s)",           //~v6W4I~
                 	      Pdir,(*Pmember?DIR_SEPS:""),Pmember,Pslink,psep,pfpathslink);//~v6k4R~
             }                                                      //~v6k4I~
     	}                                                          //~v6k4I~

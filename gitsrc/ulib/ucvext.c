@@ -1,5 +1,17 @@
-//*CID://+v702R~:                                   update#= 1007; //~v702R~
+//*CID://+v77XR~:                                   update#= 1060; //~v77XR~
 //***********************************************************************
+//v77X:230709 ARM;Android9(api28);xcv fails ctr cvname return 0,set env ICU_DATA//~v77XI~
+//v77W:230709 ARM;Android9(api28);xcv fails to dlopen libicuuc by  //~v77WI~
+//				dlopen opt=0x4,libicuuc.so handle=0x0,err=dlopen failed: library "libicuuc.so" wasn't loaded and RTLD_NOLOAD prevented it//~v77WI~
+//				try RTLD_NOW                                       //~v77WI~
+//v77P:230630 (BUG)icudata search, default is not searched.        //~v77PI~
+//v77N:230630 icu lib search for also xcv                          //~v77NI~
+//v77E:230621 ARM;uconv --version failes by "uconv not found". It is not required by chking dllname//~v77EI~
+//v77n:230430 ARM:ICU library is loaded by dlopen without specific dir//~v77nI~
+//v775:230328 try /system/apex/com.android.i18n                    //~v774I~
+//v774:230328 try for libicu if libicuuc is not fond(libicu is available from Android12:Api31 foi icu4c)//~v774I~
+//v773:230328 try for libicu lib64 then lib                        //~v773I~
+//v772:230328 GetProcAddress(dlsym) failed for u_errName by errno=10( It is by icuuc not found). from Android7(Api24) library changed from com.ibm.icu to android.icu)//~v772I~
 //v70d:200625 setenv for icu should be append mode                 //~v70dI~
 //v702:200615 ARM compiler warning                                 //~v702I~
 //v6S1:180129 (Ubuntu 17.10:gcc7.2)Lnx warning iswprint is not defined(wctype.h required)//~v6S1I~
@@ -132,6 +144,10 @@
 #if defined(W32)||defined(LNX)                                     //~v6f3I~
 	#include <locale.h>                                            //~v6f3I~
 #endif                                                             //~v6f3I~
+//#ifdef ARMXXE                                                      //~v775I~//~v77NR~
+#ifdef ARM                                                         //~v77NI~
+	#include <dlfcn.h>                                             //~v775I~
+#endif                                                             //~v775I~
 
 #include <ulib.h>
 #include <ualloc.h>
@@ -161,12 +177,23 @@
 #include <utf2.h>                                                  //~v6f3I~
 #include <utf22.h>                                                 //~v66VI~
 #include <udos2.h>                                                 //~v6bnI~
+//#ifdef ARMXXE                                                      //~v77nI~//~v77NR~
+//#include <dlfcn.h>                                               //~v77NR~
+//#endif                                                             //~v77nI~//~v77NR~
 //*******************************************************
 #ifdef LNX                                                         //~v6baI~
     #define ENV_SEPC  ':'                                          //~v6bnI~
     #define ENV_SEPS  ":"                                          //~v6bnI~
   	#ifdef ARM                                                     //~v6baR~
-		#define ICULIBDIR   "/system/lib"                          //~v6baR~
+//		#define ICULIBDIR   "/system/lib"                          //~v6baR~//~v773R~
+//  	#define ICULIBDIR   "/system/lib64:/system/lib"            //~v773I~//~v774R~
+    	#define ICULIBDIR    \
+"/system/lib64"\
+":/system/lib64/arm64"\
+":/apex/com.android.runtime/lib64" /*dragon touch android10:api29*/\
+":/system/apex/com.android.i18n/lib64" /*teclast Android12:api31*/\
+":/system/lib"\
+":/system/apex/com.android.i18n/lib"                               //~v774I~
 		#define ICUDATADIR  "/system/usr/icu"                      //~v6baR~
   	#else                                                          //~v6baI~
 // 		#ifdef ULIB64                                              //~v6baI~//~v6fbR~
@@ -208,7 +235,11 @@
 
 //#ifdef W32                                                       //~v5n2R~
 #define ICU_DATAENVNAME        "ICU_DATA"                          //~v6bnI~
+#ifdef ARM                                                         //~v772R~
+	#define ICU_DLLNAME2       "icu"     //libicu by android.icu from android7(API24)//~v772R~
+#endif                                                             //~v772I~
 #define ICU_DLLNAME            "icuuc"
+#define ICU_DLLNAME2           "icu"                               //~v774I~
 #define ICU_DATANAME           "icudt"                             //~v6baI~
 #define ICUAPINAME_SETDATADIR  "u_setDataDirectory"                //~v6bpI~
 #ifdef TEST_GETDIR                                                 //~v6c3I~
@@ -235,6 +266,7 @@
 #define ICUAPINAME_GETSTARTER  "ucnv_getStarters"
 #define ICUAPINAME_SETFALLBACK "ucnv_setFallback"                  //~v66rR~
 #define ICUAPINAME_USESFALLBACK "ucnv_usesFallback"                //~v66rI~
+#define ICUAPINAME_VERSION      "ucnv_version"                     //~v77EI~
 
 #define ICUAPINAME_ENUMNEXT    "uenum_next"
 #define ICUAPINAME_ENUMCLOSE   "uenum_close"
@@ -269,6 +301,7 @@ typedef void  (*ICUFUNC_FILEACCESS)(UDataFileAccess access,UErrorCode *status);/
 #endif                                                             //~v6c3I~
 typedef void (*ICUFUNC_SETFALLBACK)(UConverter *Pcnv,UBool Pfbon); //~v66rR~
 typedef UBool(*ICUFUNC_USESFALLBACK)(UConverter *Pcnv);            //~v66rI~
+typedef int (*ICUFUNC_VERSION)(void);                              //~v77EI~
 //static ULONG            Shiculib=0;                              //~v6baR~
 static DLHANDLE           Shiculib=0;                              //~v6baI~
 //#define ICU_INITCHK(rc)  if (!Shiculib) 	return rc              //~v5n1R~
@@ -295,6 +328,7 @@ static ICUFUNC_SETSUBCHARS Spfuncsetsubchars=0;                    //~v6f3I~
 static ICUFUNC_GETNAME  Spfuncgetname=0;                           //~v6f3I~
 static ICUFUNC_GETSTARTER Spfuncgetstarter=0;                      //~v6f3I~
 static ICUFUNC_GETDEFNAME Spfuncgetdefname=0;                      //~v6f7I~
+//static ICUFUNC_VERSION    Spfuncversion=0;                       //~v77ER~
 //#else   //LNX                                                    //~v5n2R~
 //	#define ICU_INITCHK(rc)  //nop                                 //~v5n2R~
 //#endif //W32                                                     //~v5n2R~
@@ -466,6 +500,13 @@ static int SsubcharICUlocalDbcslen,SsubcharICUebcDbcslen;          //~v66DR~
 static PUCVEXTCFG Spcfg;	//for enumconverter                    //~v6baI~
 static char Sdllfpath[_MAX_PATH];                                  //~v6g2I~
 static char *Sicudataparm=0;                                       //~v6M0I~
+#ifdef ARM                                                         //~v774I~
+	static int swNewICU4C;                                         //~v774I~
+#endif                                                             //~v774I~
+//#ifdef ARMXXE                                                      //~v77nI~//~v77NR~
+#ifdef ARM                                                         //~v77NI~
+	static char Sicusoname[32];                                    //~v77nI~
+#endif                                                             //~v77nI~
 //*************************************************************************
 #ifdef UTF8EBCD                                                    //~v660I~
 int ucvext_mapinitsetdefault(int Popt,PUCVEXTCFG Ppcfg);           //~v660I~
@@ -582,7 +623,7 @@ int ucvext_getcfg(int Popt,char *Pcfgfnm,PUCVEXTCFG Ppcfg)
 //*file1
     memset(Ppcfg,0,UCVEXTCFGSZ);
 	fh=fopen(Pcfgfnm,"r");	//exit when open faile
-UTRACEP("OPEN inp=%s,fh=%p\n",Pcfgfnm,fh);                         //~v6baR~
+UTRACEP("%s:OPEN inp=%s,fh=%p,Ppcfg=%p\n",UTT,Pcfgfnm,fh,Ppcfg);                         //~v6baR~//~v77ER~
     if (!fh)
     {
 #ifdef UTF8EBCD                                                    //~v660I~
@@ -842,6 +883,10 @@ UTRACEP("OPEN inp=%s,fh=%p\n",Pcfgfnm,fh);                         //~v6baR~
 	ucvext_setdefaultlocalcv(0,Ppcfg);                             //~v66wI~
 	fclose(fh);                                                    //~v5n1I~
     Ppcfg->UCECflag2|=UCECF2_CFGOK;                                //~v68cI~
+#ifdef ARM                                                         //~v77EI~
+    UTRACEP("%s:UCECapisuffix=%s\n",UTT,Ppcfg->UCECapisuffix);     //~v77EI~
+  if (!*Ppcfg->UCECapisuffix)                                      //~v77EI~
+#endif                                                             //~v77EI~
 	chkicuversion(Ppcfg->UCECdllsuffix,sizeof(Ppcfg->UCECdllsuffix),Ppcfg->UCECapisuffix,sizeof(Ppcfg->UCECapisuffix));//~v6M4I~
     return 0;
 }//ucvext_getcfg
@@ -922,12 +967,22 @@ int ucvext_getarmso1(int Popt,char *Ppath,char *Psoname,char *Psuffix)//~v6baI~
 #ifdef W32                                                         //~v6bmI~
 		sprintf(fpath,"%s\\*%s*.dll",Ppath,ICU_DLLNAME);   //cgicuucxx for cygwin//~v6bmR~
 #else                                                              //~v6bmI~
+    #ifdef ARM                                                     //~v774I~
+	  if (swNewICU4C)                                              //~v774I~
+		sprintf(fpath,"%s/lib%s.so*",Ppath,ICU_DLLNAME2);          //~v774I~
+      else                                                         //~v774I~
+    #endif                                                         //~v774I~
 		sprintf(fpath,"%s/lib%s.so*",Ppath,ICU_DLLNAME);          //~v6baR~//~v6bmR~
 #endif                                                             //~v6bmI~
     else                                                           //~v6baI~
 #ifdef W32                                                         //~v6bmI~
 		sprintf(fpath,"%s\\*%s*%s.dll",Ppath,ICU_DLLNAME,Psuffix); //~v6bmR~
 #else                                                              //~v6bmI~
+    #ifdef ARM                                                     //~v774I~
+	  if (swNewICU4C)                                              //~v774I~
+		sprintf(fpath,"%s/lib%s.so.%s",Ppath,ICU_DLLNAME2,Psuffix);//~v774I~
+      else                                                         //~v774I~
+    #endif                                                         //~v774I~
 		sprintf(fpath,"%s/lib%s.so.%s",Ppath,ICU_DLLNAME,Psuffix);//~v6baI~//~v6bmR~
 #endif                                                             //~v6bmI~
     ctr=udirlistnomsg(fpath,FILE_ALL-FILE_DIRECTORY,&pudl0,'L'/*longname sort*/);//~v6baR~
@@ -964,6 +1019,58 @@ int ucvext_getarmso1(int Popt,char *Ppath,char *Psoname,char *Psuffix)//~v6baI~
     UTRACEP("getarmso1 ver=%d,so=%s\n",intver,Psoname);            //~v6baI~
     return intver;                                                 //~v6baI~
 }//ucvext_getarmso1                                                //~v6baI~
+//#ifdef ARMXXE                                                      //~v77nI~//~v77NR~
+#ifdef ARM                                                         //~v77NI~
+//*************************************************************************//~v775I~//~v77nM~
+int ucvext_chkiculibARM(char *Ppsoname)                            //~v77nI~
+{                                                                  //~v775I~//~v77nM~
+	int rc=-1;                                                     //~v775I~//~v77nI~
+    char *pso;                                                     //~v77nI~
+//****************************                                     //~v77nI~
+	*Ppsoname=0;                                                   //~v77nI~
+	Sicusoname[0]=0;                                               //~v77nI~
+//  int opt=RTLD_NOLOAD;                                           //~v77nI~//~v77WR~
+    int opt=RTLD_NOW;                                              //~v77WI~
+//  opt|=RTLD_GLOBAL;      //try for android9 xcv process TODO TEST//~v77WI~//~v77XR~
+    void *handle;                                                  //~v77nI~
+    UTRACEP("%s:entry,LD_LIBRARY_PATH=%s\n",UTT,getenv("LD_LIBRARY_PATH"));                                     //~v77nI~//~v77PR~
+    for (;;)                                                       //~v77nI~
+    {                                                              //~v77nI~
+    	pso="libicu.so";                                           //~v77nI~
+    	handle=dlopen(pso,opt);                                    //~v77nI~
+    	UTRACEP("%s:dlopen opt=0x%x,%s handle=%p,err=%s\n",UTT,opt,pso,handle,dlerror());                //~v775R~//~v77nI~//~v77PR~
+    	if (handle)                                                //~v77nI~
+        {                                                          //~v77nI~
+    		strcpy(Ppsoname,pso);                                  //~v77nI~
+            break;                                                 //~v77nI~
+        }                                                          //~v77nI~
+    	pso="libicuuc.so";                                         //~v77nI~
+    	handle=dlopen(pso,opt);                                    //~v77nI~
+    	UTRACEP("%s:dlopen opt=0x%x,%s handle=%p,err=%s\n",UTT,opt,pso,handle,dlerror());//~v77PI~
+    	if (handle)                                                //~v77nI~
+        {                                                          //~v77nI~
+    		strcpy(Ppsoname,pso);                                  //~v77nI~
+            break;                                                 //~v77nI~
+        }                                                          //~v77nI~
+    	pso="libi18n.so";                                          //~v77nI~
+    	handle=dlopen(pso,opt);                                    //~v77nI~
+    	UTRACEP("%s:dlopen opt=0x%x,%s handle=%p,err=%s\n",UTT,opt,pso,handle,dlerror());//~v77PI~
+    	if (handle)                                                //~v77nI~
+        {                                                          //~v77nI~
+    		strcpy(Ppsoname,pso);                                  //~v77nI~
+            break;                                                 //~v77nI~
+        }                                                          //~v77nI~
+        break;                                                     //~v77nI~
+    }                                                              //~v77nI~
+	if (*Ppsoname)                                                 //~v77nI~
+    {                                                              //~v77nI~
+    	rc=0;                                                      //~v77nI~
+		strcpy(Sicusoname,Ppsoname);                               //~v77nR~
+    }                                                              //~v77nI~
+    UTRACEP("%s:rc=%d,out soname=%s\n",UTT,rc,Ppsoname);           //~v77nI~
+    return rc;                                                     //~v77nI~
+}                                                                  //~v775I~//~v77nM~
+#endif	//ARM                                                      //~v77NR~
 //*************************************************************************//~v6baI~
 //*get arm so name                                                 //~v6baI~
 //*ret version if exist or -1 if so not found                      //~v6baI~
@@ -978,6 +1085,12 @@ int ucvext_getarmso(int Popt,char *Psoname,char *Psuffix)          //~v6baI~
 #endif                                                             //~v6g3I~
 //**********************************                               //~v6baI~
 	UTRACEP("%s:Psoname=%s\n",UTT,Psoname);                        //~v6M1I~
+//#ifdef ARMXXE                                                      //~v77nI~//~v77NR~
+#ifdef ARM                                                         //~v77NI~
+	intver=ucvext_chkiculibARM(Psoname);	//set SiculibnameARM   //~v77nI~
+    if (intver>=0)                                                  //~v77nI~
+    	return intver;                                             //~v77nI~
+#endif                                                             //~v77nI~
 #ifdef W32                                                         //~v6bmI~
 	plibpath=getenv("PATH");                                       //~v6bmI~
 #else                                                              //~v6bmI~
@@ -1031,6 +1144,13 @@ int ucvext_getarmso(int Popt,char *Psoname,char *Psuffix)          //~v6baI~
         intver=ucvext_getarmso1(Popt,fpath,Psoname,Psuffix);       //~v6baI~
         if (intver>=0)                                             //~v6baI~
         	break;                                                 //~v6baI~
+#ifdef ARM                                                         //~v774I~
+	  	swNewICU4C=1;                                              //~v774I~
+        intver=ucvext_getarmso1(Popt,fpath,Psoname,Psuffix);       //~v774I~
+	  	swNewICU4C=0;                                              //~v774I~
+        if (intver>=0)                                             //~v774I~
+        	break;                                                 //~v774I~
+#endif                                                             //~v774I~
         if (!pc2) //end of list                                    //~v6baI~
             break;                                                 //~v6baI~
     }                                                              //~v6baI~
@@ -1094,16 +1214,25 @@ int ucvext_getarmdata(int Popt,int Pversion)                       //~v6baI~
 	char *pdatapath,*pc,*pc2;                                      //~v6baR~
     int len,intver=-1;                                             //~v6baI~
     char fpath[_MAX_PATH];                                         //~v6baI~
+#ifdef W32                                                         //~v77PI~
+#else                                                              //~v77PI~
+    int swDefault=0;                                               //~v77PI~
+#endif                                                             //~v77PI~
+	char *penv;                                                    //~v77XI~
 //**********************************                               //~v6baI~
 	pdatapath=getenv(ICU_DATAENVNAME);                                  //~v6baI~//~v6bnR~
+    penv=pdatapath;                                                //~v77XI~
 	UTRACEP("%s:env icu_data=%s\n",UTT,pdatapath);      //~v6baR~  //~v6M1R~
     *fpath=0;                                                      //~v6M1I~
     if (!pdatapath)                                                //~v6baI~
+    {                                                              //~v77PI~
 #ifdef W32                                                         //~v6bmI~
     	pdatapath="";                                              //~v6bmI~
 #else                                                              //~v6bmI~
     	pdatapath=Sicudatadir;                                     //~v6baR~
+        swDefault=1;                                               //~v77PI~
 #endif                                                             //~v6bmI~
+	}                                                              //~v77PI~
     for (pc=pdatapath;;pc+=len+1)                                  //~v6baI~
     {                                                              //~v6baI~
     	pc2=strchr(pc,ENV_SEPC);                                   //~v6bmI~//~v6bnR~
@@ -1121,10 +1250,26 @@ int ucvext_getarmdata(int Popt,int Pversion)                       //~v6baI~
     	UTRACEP("getarmdata path=%s\n",fpath);                     //~v6baI~
         intver=ucvext_getarmdata1(Popt,fpath,Pversion);            //~v6baR~
         if (intver>=0)                                             //~v6baI~
+        {                                                          //~v77WI~
+    		UTRACEP("%s setenv ver=%d,fpath=%s,penv=%s\n",UTT,intver,fpath,penv);//~v77WI~//~v77XR~
+            if (!penv || !strstr(penv,fpath))                      //~v77XR~
+				udos_setenv(0,ICU_DATAENVNAME,fpath);    //for android9//~v77WI~//~v77XR~
         	break;                                                 //~v6baI~
+        }                                                          //~v77WI~
       }                                                            //~v6bmI~
         if (!pc2) //end of list                                    //~v6baI~
+        {                                                          //~v77PI~
+#ifdef W32                                                         //~v77PI~
+#else                                                              //~v77PI~
+		    if (!swDefault)	//searched env                         //~v77PI~
+            {                                                      //~v77PI~
+            	pc=Sicudatadir;                                    //~v77PI~
+                len=-1;                                            //~v77PI~
+                continue;                                          //~v77PI~
+            }                                                      //~v77PI~
+#endif                                                             //~v77PI~
             break;                                                 //~v6baI~
+        }                                                          //~v77PI~
     }                                                              //~v6baI~
     if (intver<0)                                                  //~v6baI~
 	    uerrmsg("Warning:ICU Data(icudtXXl.dat version=%d) not found. chk env-var:ICU_DATA(=\"%s\") of cfg file setting.",//~v6M1R~
@@ -1154,6 +1299,11 @@ int chkapiver(int Popt,int Papiver,PUCVEXTCFG Ppcfg)               //~v6g4I~
   	else                                                           //~v6g4I~
 		sprintf(dllname,"lib%s.so",ICU_DLLNAME);                   //~v6g4I~
 #endif  //W32                                                      //~v6g4I~
+//#ifdef ARMXXE                                                      //~v77nI~//~v77NR~
+#ifdef ARM                                                         //~v77NI~
+	if (*Sicusoname)  //soname defined without fpath               //~v77nI~
+		strcpy(dllname,Sicusoname);                                //~v77nI~
+#endif                                                             //~v77nI~
 	sprintf(apiver,"_%d",Papiver);                                 //~v6g4I~
 	strcpy(Ppcfg->UCECapisuffix,apiver);	//default              //~v6g4I~
 	opt|=UPGPAO_NOW|UPGPAO_NOMSG;        //RTLD_NOW                //~v6g4R~
@@ -1166,7 +1316,7 @@ int chkapiver(int Popt,int Papiver,PUCVEXTCFG Ppcfg)               //~v6g4I~
 	    if (!rc)                                                   //~v6g4I~
 			strcpy(Ppcfg->UCECapisuffix,apiver);                   //~v6g4I~
     }                                                              //~v6g4I~
-    UTRACEP("chkapiver rc=%d apiver=%d,suffix=%s\n",rc,Papiver,Ppcfg->UCECapisuffix);//~v6g4I~
+    UTRACEP("chkapiver rc=%d apiver=%d,suffix=%s,dllname=%s\n",rc,Papiver,Ppcfg->UCECapisuffix,dllname);//~v6g4I~//~v775R~
     return rc;                                                     //~v6g4I~
 }//chkapiver                                                       //~v6g4I~
 //*************************************************************************//~v6baI~
@@ -1178,7 +1328,7 @@ int ucvext_icuinit_env(int Popt,PUCVEXTCFG Ppcfg)                  //~v6baR~
     int rc,sover=-1,apiver=-1;                                     //~v6baI~//~v6bmR~
     char *pc;                                                      //~v6g2I~
 //**********************************                               //~v6baI~
-    UTRACEP("icuinit_arm entry dllsufix=%s,apisuffix=%s\n",Ppcfg->UCECdllsuffix,Ppcfg->UCECapisuffix);//~v6baR~
+    UTRACEP("%s:entry dllsuffix=%s,apisuffix=%s\n",UTT,Ppcfg->UCECdllsuffix,Ppcfg->UCECapisuffix);//~v6baR~//~v77ER~
   	if (!(Popt & UCEIO_USEICU))	//explicit request                 //~v6baI~
   		if (!IS_ICUMODE())                                         //~v6baI~
   			return 0;                                              //~v6baI~
@@ -1233,7 +1383,7 @@ int ucvext_icuinit_env(int Popt,PUCVEXTCFG Ppcfg)                  //~v6baR~
 //  			ICU_DATAENVNAME,getenv(ICU_DATAENVNAME));          //~v6bqI~//~v6g2R~
     			ICU_DATAENVNAME,pc);                               //~v6g2I~
     }                                                              //~v6bqI~
-    UTRACEP("icuinit_arm ret dllsufix=%s,apisuffix=%s\n",Ppcfg->UCECdllsuffix,Ppcfg->UCECapisuffix);//~v6baR~
+    UTRACEP("icuinit_arm ret dllsufix=%s,apisuffix=%s,Ppcfg=%p\n",Ppcfg->UCECdllsuffix,Ppcfg->UCECapisuffix,Ppcfg);//~v6baR~//~v77ER~
     return rc;                                                     //~v6baI~
 }//ucvext_icuinit_env                                              //~v6baR~
 //#endif                                                             //~v6baI~//~v6bmR~
@@ -1241,6 +1391,7 @@ int ucvext_icuinit_env(int Popt,PUCVEXTCFG Ppcfg)                  //~v6baR~
 #ifdef XXE                                                         //~v6buR~
 //*************************************************************************//~v6bqI~
 //*set datadir by icu api                                          //~v6bqI~
+//*!!! never called                                                //+v77XI~
 //*************************************************************************//~v6bqI~
 char *addarmdatadir(PUCVEXTCFG Ppcfg,char *Ppenvicudata)           //~v6bqI~
 {                                                                  //~v6bqI~
@@ -1329,15 +1480,16 @@ int setdatadir(PUCVEXTCFG Ppcfg)                                   //~v6bpI~
 #ifdef TEST_GETDIR                                                 //~v6c3I~
 //  char *getdir=0;                                                //~v6c3I~//~v702R~
 #ifdef ARM                                                         //~v6c3I~
-#ifdef XXE                                                         //+v702I~
-    char *getdir;                                                  //+v702M~
-#endif                                                             //+v702I~
+#ifdef XXE                                                         //~v702I~
+    char *getdir;                                                  //~v702M~
+#endif                                                             //~v702I~
     UErrorCode uerrc=U_ZERO_ERROR;                                 //~v6c3I~
     UDataFileAccess access=UDATA_FILES_FIRST;	//0:efault,android may changed it to UDATA_ONLY_PACKAGES(1)//~v6c3R~
 #endif                                                             //~v6c3I~
 #endif                                                             //~v6c3I~
 //******************                                               //~v6bpI~
-#ifdef TEST_GETDIR                                                 //~v6c3I~
+UTRACEP("%s env %s=%s\n",UTT,ICU_DATAENVNAME,getenv(ICU_DATAENVNAME));//~v77WR~
+//#ifdef TEST_GETDIR   //TODO test                                   //~v6c3I~//~v77WR~
 #ifdef ARM                                                         //~v702I~
 #ifdef XXE                                                         //~v702I~
     getdir=0;                                                      //~v702I~
@@ -1345,6 +1497,7 @@ int setdatadir(PUCVEXTCFG Ppcfg)                                   //~v6bpI~
     {                                                              //~v6c3I~
 //      getdir=getdir;                                             //~v6n0I~//~v702R~
 	    getdir=(*Spfuncgetdatadir)();                              //~v6c3I~
+		UTRACEP("%s:getdir=%s\n",UTT,getdir);                      //~v77WI~
     }                                                              //~v6c3I~
 #endif                                                             //~v702I~
 #endif                                                             //~v702I~
@@ -1359,8 +1512,15 @@ int setdatadir(PUCVEXTCFG Ppcfg)                                   //~v6bpI~
         }                                                          //~v6c3I~
     }                                                              //~v6c3I~
 #endif	//ARM                                                      //~v6c3I~
-#endif                                                             //~v6c3I~
+//#endif                                                             //~v6c3I~//~v77WR~
 	dir=getenv(ICU_DATAENVNAME);                                   //~v6bpI~
+#ifdef ARM                                                         //~v77WI~
+	if (1)    //ICU_DATA env is required ? NO-->skip addarmadatadir//+v77XR~
+    {                                                              //~v77WI~
+		UTRACEP("%s:ARM returns 0 without addarmdatadir\n",UTT);   //~v77WI~
+    	return 0;                                                  //~v77WI~
+    }                                                              //~v77WI~
+#endif                                                             //~v77WI~
 #ifdef ARM                                                         //~v6bqI~
 #ifdef XXE                                                         //~v6buI~
     if (!dir)                                                      //~v6c0I~
@@ -1408,7 +1568,7 @@ int ucvext_mapinit(int Popt,char *Pcfgfnm,PUCVEXTCFG *Ppcfg)
     void *pfuncs[2];                                               //~v69dR~
     int swforcedefault=0;                                          //~v6ffR~
 //***********************
-    UTRACEP("ucvext_mapinit opt=%x\n",Popt);                       //~v6beI~
+    UTRACEP("%s:entry opt=%x\n",UTT,Popt);                       //~v6beI~//~v77ER~
 //  Sextflag=0;                                                    //~v5mYI~//~v6f3R~
     Sextflag&=SEXTF_LIBOPENED;	//dont clear for LOCALICU initialized//~v6f3I~
   if (!UDBCSCHK_IS_LOCALICU())		//not local icu option specified(-Yi)//~v6f5I~
@@ -1978,6 +2138,7 @@ int ucvext_loaddll(int Popt,char *Pdllname,char *Pdllfpath,ULPTR *Pphandle)//~v6
     int rc=0;                                                      //~v6g2I~
     int opt=0;                                                     //~v6g2I~
 //********************                                             //~v6g2I~
+    UTRACEP("%s:opt=0x%x,dllname=%s,dllfpath=%s\n",UTT,Popt,Pdllname,Pdllfpath);//~v77PI~
 	if (Popt & UPGPAO_NOW)       //RTLD_NOW                        //~v6g2I~
 		opt|=UPLD_NOW;			//         //RTLD_NOW              //~v6g2I~
 //  rc=uproc_loaddll(opt,Pdllname,0,Pphandle);                     //~v6g2I~//~v6M0R~
@@ -2012,6 +2173,7 @@ int ucvext_icuinit(int Popt,char *Pdllversion,char *Pprocversion,ULPTR *Papis)//
     int rc=0;
     int opt=0;                                                     //~v6f7I~
 //***********************
+    UTRACEP("%s:opt=0x%x,dllversion=%s,procversion=%s\n",UTT,Popt,Pdllversion,Pprocversion);//~v77PI~
 #ifdef UTF8EBCD                                                    //~v660I~
   if (!(Popt & UCEIO_USEICU))	//explicit request                 //~v660I~
 #endif                                                             //~v660I~
@@ -2027,6 +2189,11 @@ int ucvext_icuinit(int Popt,char *Pdllversion,char *Pprocversion,ULPTR *Papis)//
   else                                                             //~v6baI~
 	sprintf(dllname,"lib%s.so",ICU_DLLNAME);                       //~v6baI~
 #endif  //W32                                                      //~v5n2I~
+//#ifdef ARMXXE                                                      //~v77nR~//~v77NR~
+#ifdef ARM                                                         //~v77NI~
+	if (*Sicusoname)  //soname defined without fpath               //~v77nI~
+		strcpy(dllname,Sicusoname);                                 //~v77nI~
+#endif                                                             //~v77nI~
     strncpy(Sicuapisuffix,Pprocversion,sizeof(Sicuapisuffix)-1);
     handle=0;
     for (;;)
@@ -2108,6 +2275,15 @@ int ucvext_icuinit(int Popt,char *Pdllversion,char *Pprocversion,ULPTR *Papis)//
         if (rc)                                                    //~v6f7I~
             break;                                                 //~v6f7I~
         Spfuncgetdefname=(ICUFUNC_GETDEFNAME)paddr;                //~v6f7I~
+                                                                   //~v77EI~
+//!ucnv_versio is not define                                       //~v77EI~
+//        rc=uproc_getprocaddr(0,dllname,0,ICUAPINAME_VERSION,Pprocversion,&handle,&paddr);//~v77ER~
+//        if (!rc)                                                 //~v77ER~
+//        {                                                        //~v77ER~
+//            Spfuncversion=(ICUFUNC_VERSION)paddr;                //~v77ER~
+//            int version=(*Spfuncversion)();                      //~v77ER~
+//            UTRACEP("%s:version=%d\n",version);                  //~v77ER~
+//        }                                                        //~v77ER~
         break;
     }
 //#endif  //W32                                                    //~v5n2R~
@@ -2147,6 +2323,7 @@ int ucvext_icuenumcvname(int Popt,char *Pdllversion,char* Pprocversion)
 #endif                                                             //~v6baI~
 	char dllname[32];                                              //~v6baI~
 //********************
+    UTRACEP("%s:opt=0x%x,dllversion=%s,procversiob=%s,Spcfg=%p\n",Popt,Pdllversion,Pprocversion,Spcfg);//~v77WI~
 	if (!Pdllversion)                                              //~v6baI~
     {                                                              //~v6baI~
     	if (!Spcfg)                                                //~v6baI~
@@ -2201,13 +2378,14 @@ int ucvext_icuenumcvname(int Popt,char *Pdllversion,char* Pprocversion)
 
 //      cvctr=(*apienumctr)();                                     //~v6BkR~
         cvctr=(int)(*apienumctr)();                                //~v6BkI~
-        UTRACEP("enumctr=%d\n",cvctr);
+        UTRACEP("%s:enumctr=%d\n",UTT,cvctr);                      //~v77WR~
         for (ii=0;ii<cvctr;ii++)
         {
         	cvname=(*apienumname)((UINT)ii);
 //          uerrmsg("Available convertername:%03d:%s",0,           //~v6baR~
             printf("%03d-Converter:%s\n",                          //~v6baR~
             		ii,cvname);
+            UTRACEP("%s:ii=%d,name=%s\n",UTT,ii,cvname);           //~v77WI~
 	        aliasctr=(*apienumctralias)(cvname,&err);
 			if (err!=U_ZERO_ERROR)
             {
@@ -2295,6 +2473,7 @@ int ucvext_icugetdefaultconvertername2(int Popt,char *Pcharset,ULPTR *Ppconverte
     int rc=0;                                                      //~v6f3I~
     UConverter *pconverter;                                        //~v6f3I~
 //***********************                                          //~v6f3I~
+	UTRACEP("%s:entry charset=%s\n",UTT,Pcharset);                 //~v77ER~
 	if (ucvext_icumbinit(UCEIMIO_ENVINIT,0/*Pcharset*/,0/*ppconverter*/))//init dll env//~v6f3R~
     	return 8;                                                  //~v6f3I~
     api=Spfuncopen;                                                //~v6f3I~
@@ -2426,6 +2605,7 @@ int ucvext_icugetdefaultconvertername(int Popt,char *Pcharset,ULPTR *Ppconverter
     int rc2;                                                       //~v6f9I~
 //#endif                                                             //~v6f9I~//~v6fbR~
 //***********************                                          //~v6f7M~
+	UTRACEP("%s:entry charset=%s\n",UTT,Pcharset);                 //~v77ER~
 	if (ucvext_icumbinit(UCEIMIO_ENVINIT,0/*Pcharset*/,0/*ppconverter*/))//init dll env//~v6f7I~
     	return 8;                                                  //~v6f7I~
     apigetdefname=Spfuncgetdefname;                                //~v6f7R~
@@ -3618,6 +3798,7 @@ static	UCVEXTCFG Scfg;                                            //~v6f3R~
     ULPTR converter=0;                                             //~v6hhI~
     int rc=0,subchlen;                                             //~v6f3R~
 //******************                                               //~v6f3I~
+    UTRACEP("%s:charset=%s\n",UTT,Pcharset);                       //~v77EI~
 	pcfg=&Scfg;                                                    //~v6f3R~
     if (!(pcfg->UCECflag2 & UCECF2_ICUINITEND))	//dup chk          //~v6f3I~
     {                                                              //~v6f3I~
@@ -3721,6 +3902,7 @@ int chkicuversion(char *Ppdllsuffix,size_t Pdllsuffixsz,char *Ppapisuffix,size_t
     int rc,stdoctr,stdectr,opt,len=0;                              //~v6M4R~
     char **pstde,*pc,*pc2,**pstdo,*pcmd;                                    //~v558R~//~v6M4I~
 //********************************                                 //~v6M4I~
+    UTRACEP("%s:entry\n",UTT);                                     //~v77EI~
     if (*Ppdllsuffix || *Ppapisuffix)                              //~v6M4I~
     	return 0;                                                  //~v6M4I~
     opt=UPROC_LANGC|UPROC_NOMSG;                                 //~v6M4I~//~v6M5R~
@@ -3764,6 +3946,7 @@ int chkicuversion(char *Ppdllsuffix,size_t Pdllsuffixsz,char *Ppapisuffix,size_t
 	    ufree(pstdo);                                              //~v6M4R~
     if (pstde)                                                     //~v6M4I~
 	    ufree(pstde);                                              //~v6M4R~
+    UTRACEP("%s:rc=%d\n",UTT,rc);                                  //~v774I~
     if (rc)                                                        //~v6M4I~
         return 4;                                                  //~v6M4I~
     *Ppapisuffix='_';                                              //~v6M4I~
@@ -3779,6 +3962,7 @@ int ucvext_getConverterCfg(int Popt,PUCVEXTCFG Ppcfg)//~v6M5R~     //~v6M4R~
 {                                                                  //~v6M5I~
     int rc;                                                        //~v6M5R~
 //********************************                                 //~v6M5I~
+    UTRACEP("%s,Pcfg=%p\n",UTT,Ppcfg);                             //~v77EI~
     memset(Ppcfg,0,UCVEXTCFGSZ);                                   //~v6M5I~
 	rc=chkicuversion(Ppcfg->UCECdllsuffix,sizeof(Ppcfg->UCECdllsuffix),Ppcfg->UCECapisuffix,sizeof(Ppcfg->UCECapisuffix));//~v6M5R~
     if (rc!=1)                                                     //~v6M5I~

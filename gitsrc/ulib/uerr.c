@@ -1,8 +1,11 @@
-//*CID://+v711R~:                              update#=  324       //~v711R~
+//*CID://+v77UR~:                              update#=  337       //~v77UR~
 //*************************************************************
 //*uerrexit/uerrmsg/uerrexit_init/uerrmsg_init/ugeterrmsg**
 //*uerrapi1,uerrapi1x,uerrapi0,uerrapi0x                           //~v040R~
 //*************************************************************
+//v77V:230708 ARM;for xsub select Pjmsg even when wcinit is not called for subthread mode//~v77UI~
+//v77U:230708 ARM;uerrmsg before wcinit set GBL_UERR_DBCSSET and miss to set GBL_ERR_DBCSMODE//~v77UI~
+//v771:230323 sys/timeb.h is not found on ARM                      //~v771I~
 //v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //~v711I~
 //v70n:200902 (ARM)uerrexit by locale                              //~v70nI~
 //v70k:200802 (ARM:BUG)uerrmsg always english mode                 //~v70kI~
@@ -127,7 +130,9 @@
 //*************************************************************
 #include <time.h>
 //#include <sys\timeb.h>                                           //~v324R~
+#ifndef ARM                                                        //~v771I~
 #include <sys/timeb.h>                                             //~v324I~
+#endif                                                             //~v771I~
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -227,8 +232,10 @@
 #include <ufile.h>                                                 //~vaucI~
 #include <ufile2.h>                                                //~v6T7I~
 #include <ufilew.h>                                                //~vaucI~
+#include <ulibarm.h>     //timeb.h                                 //~v771I~
 #define UFTIME                                                     //~v711I~
 #include <umiscf.h>                                                //~v711I~
+#include <utf2.h>                                                  //~v77UI~
 //*******************************************************
 #define MAXPARM   10
 #define MAXTITLE    64
@@ -393,7 +400,7 @@ void ubell(void)
   else                                                             //~v177I~
   {                                                                //~v177I~
     mode=ugetconsolemode(1);     //stdout console mode             //~v177I~
-//  UTRACEP("%s:mode=%s\n",UTT,mode);                              //+v711R~
+//  UTRACEP("%s:mode=%s\n",UTT,mode);                              //~v711R~
     if (mode & ENABLE_PROCESSED_OUTPUT)//avail bell,cr,lf,bs       //~v177I~
       putch(7);                                                    //~v177I~
     else                                                           //~v177I~
@@ -687,6 +694,7 @@ void uerrmsg_init(char *Ptitle,FILE *Poutput,int Popt)          //~5B11R~
             Smaxmsgll=sz;                                          //~v5mKR~
         }                                                          //~v5mKR~
     }                                                              //~v5mKR~
+    UTRACEP("%s:Popt=0x%x,Guerropt=0x%x,Suerropt=0x%x\n",UTT,Popt,Guerropt,Suerropt);//~v771I~
 	return;
 }//errmsg_init                                                     //~v61jR~
 
@@ -974,6 +982,7 @@ static int Slastcrlfsw=0;                 //last written crlf      //~v50VR~
 #endif                                                             //~v5i8I~
 #endif                                                             //~v50wR~
 //****************************                                     //~v060I~
+	UTRACEP("%s:Guerropt=0x%x,Guerropt2=0x%x\n",UTT,Guerropt,Guerropt2);//~v771I~
 //get parm addr                                                    //~v060I~
   if (Pemsg)                                                       //~v335I~
   {                                                                //~v335I~
@@ -1186,7 +1195,28 @@ char *ugeterrmsg2(void)                                            //~v182I~
 		return 0;                                                  //~v182I~
 	return Smsgsave;                                               //~v182I~
 }//ugeterrmsg2                                                     //~v182I~
-                                                                   //~v182I~
+//******************************************************           //~v77UI~
+#if defined(ARM) && defined(XSUB)                                  //~v77UI~
+void setXsubOptARM(void)                                           //~v77UI~
+{                                                                  //~v77UI~
+	char *plocale;                                                 //~v77UI~
+//**********************                                           //~v77UI~
+	UTRACEP("%s:entry Guerropt=0x%x,Gudbcschk_flag=0x%x\n",UTT,Guerropt,Gudbcschk_flag);//~v77UR~
+	UTRACEP("%s:nl_langinfo=%s\n",UTT,nl_langinfo(CODESET));       //~v77UI~
+    if (Gudbcschk_flag & UDBCSCHK_UTF8                             //~v77UI~
+    &&  Gudbcschk_flag & UDBCSCHK_UTF8E)                           //~v77UI~
+    {                                                              //~v77UI~
+        plocale=ulibarm_getJniLocale();                            //+v77UR~
+        if (!strcmp(plocale,LANG_JAJP))                            //~v77UR~
+        {                                                          //~v77UR~
+            UCBITON(Guerropt,GBL_UERR_DBCSMODE);    //not yet chked//~v77UR~
+            Gudbcschk_flag|=UDBCSCHK_UTF8J;    //euc-utf8           //~v77UR~
+            Gudbcschk_flag&=~UDBCSCHK_UTF8E;    //euc-utf8          //~v77UI~
+        }                                                          //~v77UR~
+    }                                                              //~v77UI~
+	UTRACEP("%s:exit Guerropt=0x%x,Gudbcschk_flag=0x%x\n",UTT,Guerropt,Gudbcschk_flag);//~v77UI~
+}//setXsubOptARM                                                   //~v77UI~
+#endif                                                             //~v77UI~
 //******************************************************
 //* msg edit
 //* parm1 :title(PGM,VER etc)                                      //~v060I~
@@ -1203,7 +1233,9 @@ char *uerrmsgedit(char *Ptitle,char *Pemsg ,char *Pjmsg,ULPTR *Pparg)//~v6hhI~
     char *pc;                                                      //~v170I~
 static int Sdoubleentry=0;
 #ifdef UNX                                                         //~v50uI~
-  #ifndef XXE                                                      //~v5g8I~
+//#ifndef XXE                                                      //~v5g8I~//~v77UR~
+  #if defined(XXE) || (defined(ARM) && defined(XSUB))              //~v77UI~
+  #else                                                            //~v77UI~
 	static int Skonsw=0;                                           //~v50uI~
   #endif                                                           //~v5g8I~
 //  static int euclen;                                             //~v5f8R~
@@ -1230,6 +1262,7 @@ static int Sdoubleentry=0;
   #endif                                                           //~v6b9I~
 #endif                                                             //~v5nnI~
 //****************************
+    UTRACEP("%s:entry Suerropt=0x%x,Guerropt=0x%x\n",UTT,Suerropt,Guerropt);//~v771I~
     UCBITOFF(Guerropt,GBL_UERR_SJIS2UTF8|GBL_UERR_SJIS2EUC);    //required to clear each time//~v6v0R~
 //  Guerropt2&=~GBL_UERR2_S2UJMSG;    //clear each time            //~v6v0R~//~v6BkR~
     Guerropt2&=~(UINT)GBL_UERR2_S2UJMSG;    //clear each time      //~v6BkI~
@@ -1257,8 +1290,14 @@ static int Sdoubleentry=0;
 	prevdbcssetsw=UCBITCHK(Guerropt,GBL_UERR_DBCSSET);             //~v5nnI~
   #endif                                                           //~v6b9I~
 #endif                                                             //~v5nnI~
+	UTRACEP("%s:Guerropt=0x%x,Gudbcschk_flag=0x%x,emsg=%s\n",UTT,Guerropt,Gudbcschk_flag,Pemsg);//~v771R~
+#if defined(ARM) && defined(XSUB)                                  //~v77vI~//~v77UI~
+	setXsubOptARM();                                               //~v77UI~
+#else                                                              //~v77UI~
 	if (!UCBITCHK(Guerropt,GBL_UERR_DBCSSET))	//not yet chked    //~v060I~
     {                                                              //~v060I~
+      if (Gudbcschk_flag)	//after acinit                         //~v77UI~
+      {                                                            //~v77UI~
 //  	if (udbcschk(0x81))		//0x8140 is dbcs space,if rc==0 then no dbcs e//~v150R~
     	if (udbcschkcp())		//dbcstbl or cp!=932               //~v150I~
 //#ifdef LNX                                                       //~v591R~
@@ -1275,7 +1314,10 @@ static int Sdoubleentry=0;
 			UCBITOFF(Guerropt,GBL_UERR_DBCSMODE);	//not yet chked//~v060I~
         }                                                          //~v70kI~
 		UCBITON(Guerropt,GBL_UERR_DBCSSET);	//not yet chked        //~v060I~
+      }                                                            //~v77UI~
 	}                                                              //~v060I~
+#endif                                                             //~v77UI~
+	UTRACEP("%s:Guerropt=0x%x,Gudbcschk_flag=0x%x,emsg=%s\n",UTT,Guerropt,Gudbcschk_flag,Pemsg);//~v771R~
 #ifdef UNX                                                         //~v50uI~
 //  if (Gudbcschk_flag & UDBCSCHK_EUC)    //euc                    //~v5i8R~
 //  if (Gudbcschk_flag & (UDBCSCHK_EUC|UDBCSCHK_UTF8))    //euc or utf8//~v5i8I~,//~v5i9R~
@@ -1285,7 +1327,8 @@ static int Sdoubleentry=0;
 //    if (Gudbcschk_flag & (UDBCSCHK_EUC|UDBCSCHK_UTF8))    //euc or utf8//~v5i8I~,//~v5n8R~
 //#endif                                                           //~v5n8R~
     {                                                              //~v591I~
-#ifdef XXE                                                         //~v5g8I~
+//#ifdef XXE                                                         //~v5g8I~//~v77UR~
+#if defined(XXE) || (defined(ARM) && defined(XSUB))                //~v77UI~
       if (Gudbcschk_flag & (UDBCSCHK_UTF8J))    //euc-utf8         //~v5n8I~
       {                                                            //~v6v0I~
 //      UCBITON(Guerropt,GBL_UERR_SJIS2EUC|GBL_UERR_DBCSMODE); //conv sjis to euc//~v6v0R~
@@ -1522,6 +1565,7 @@ static int Sdoubleentry=0;
     Guerropt2&=~(UINT)GBL_UERR2_UTF8STDO;   //clear each time      //~v6BkI~
     Smsgsetflag=1;	//can get by ugeterrmsg
 	Sdoubleentry=0;		//exitsw
+    UTRACEP("%s:exit Suerropt=0x%x,Guerropt=0x%x\n",UTT,Suerropt,Guerropt);//~v771I~
 	return Smsgsave;
 }//uerrmsgedit                                                     //~v50uR~
                                                                 //~5A10I~

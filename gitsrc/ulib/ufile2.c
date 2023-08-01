@@ -1,8 +1,15 @@
-//*CID://+v705R~:                             update#=  455;       //~v705R~
+//*CID://+v784R~:                             update#=  481;       //~v784R~
 //************************************************************* //~5903R~
 //*ufile2.c                                                        //~v5d7R~
 //*  uxdelete,uremove,urename,urename2,uattrib,umkdir,urmdir       //~v520R~
 //************************************************************* //~5617I~
+//v784:230721 ARM:xdelete; no entry msg and successefull when 0 member//~v784I~
+//v77B:230612 ARM;warning by audroidstudio compiler                //~v77BI~
+//v77t:230508 (Bug)current path chk correspond to also wildcard path//~v77tI~
+//v77s:230507 (Bug)current path chk for urename/uxdelete/uxmove;  issue cpath err for ..\@s* when cpath is ../xx//~v77sI~
+//v77p:230502 ARM:request "//" option to delete shortpath root(//Axe etc)//~v77pI~
+//v77g:230424 ARM;rename                                           //~v77fI~//~v77gR~
+//v77d:230423 ARM;delete                                           //~v77dI~
 //v705:200616 ARM compiler warning;conditionally not initialized   //~v705I~
 //v702:200615 ARM compiler warning                                 //~v702I~
 //v6W4:180702 protect utrace file when opened by xe for browse     //~v6W4I~
@@ -204,6 +211,7 @@
 #endif                                                             //~v6b1I~
 #define REDIRECT_FINDFILE                                          //~v6uaI~
 #include <ufilew.h>                                                //~v6uaI~
+#include <ufiledoc.h>                                              //~v77dI~
 //*******************************************************
 #define EADATAID   "EA DATA. SF"                                //~5911I~
 #define WINSYSVOLI "System Volume Information"                     //~v5msI~
@@ -506,6 +514,13 @@ char *uxddpchk(char *Ppgmver,int Pparmc,char *Pparm,            //~v011R~
     for (parmp=Pparm,ii=0;ii<Pparmc;ii++,parmp+=(strlen(parmp)+1))//~v011M~
     {                                                           //~v011M~
         cptr=parmp;                                             //~v011M~
+#ifdef ARMXXE                                                      //~v77pI~
+		if (!strcmp(cptr,PREFIX_ARM_SHARE))                         //~v77pI~
+        {                                                          //~v77pI~
+        	xdelopt=UXDELSPROOT;                                   //~v77pI~
+            continue;                                              //~v77pI~
+        }                                                          //~v77pI~
+#endif                                                             //~v77pI~
 #ifdef UNX                                                         //~v346I~
 //    	if (!CMDFLAGCHK(*cptr,*Pposparmno))                        //~v5knR~
       	if (!CMDFLAGCHK(*cptr,0))                                  //~v5knI~
@@ -643,6 +658,7 @@ int uxddsub(char *Pname,int Pxdelopt,int Pxddopt,char *Pfullpath)//~v011R~
 #endif                                                             //~v5jdI~
 	int rc2;                                                       //~v6H8I~
 //***********************                                       //~v011M~
+	UTRACEP("%s:name=%s\n",UTT,Pname);                             //~v77BI~
     if (!ufullpath(Pfullpath,Pname,_MAX_PATH))                  //~v011M~
         return 8;                                               //~v011M~
 #ifdef FTPSUPP                                                     //~v5jdI~
@@ -868,6 +884,7 @@ int uxdelete(UCHAR *Pfile,unsigned Pattrmask,int Popt,          //~v010R~
     UCHAR fpathrename[_MAX_PATH];                                  //~v6H1I~
     int optlongname=0;                                             //~v6H1I~
 //********************                                          //~5B12M~
+	UTRACEP("%s:fnm=%s,attrmask=0x%x,opt=0x%x\n",UTT,Pfile,Pattrmask,Popt);//~v77dR~
     Sxdelsize=0;                                                   //~v195I~
     Sxdelopt=Popt;                                              //~5B14I~
   	if (Ppprocctr)                                                 //~v5apI~
@@ -1070,6 +1087,12 @@ int uxdelete(UCHAR *Pfile,unsigned Pattrmask,int Popt,          //~v010R~
     *Ppdelctr=Sxdeldctr;        //deleted ctr                   //~v010R~
   if (Ppronlyctr)                                                  //~v5apI~
     *Ppronlyctr=Sxdelrctr;  //read only err ctr                 //~v010R~
+#ifdef ARMXXE                                                      //~v784I~
+    if (!Sxdeldctr)                                                //~v784I~
+	    if (!(Popt & UXDELRONLYCHK))                               //+v784I~
+	    	rc=ERROR_FILE_NOT_FOUND;                               //+v784R~
+#endif                                                             //~v784I~
+	UTRACEP("%s:rc=%d,fnm=%s,ctrDeleted=%d,ctrReadOnly=%d\n",UTT,rc,Pfile,Sxdeldctr,Sxdelrctr);                     //~v77BI~//~v784R~
     return rc;                                                  //~5B19I~
 }//uxdelete                                                     //~5B12M~
                                                                 //~5B12M~
@@ -1084,7 +1107,9 @@ int uxdelete(UCHAR *Pfile,unsigned Pattrmask,int Popt,          //~v010R~
 int ufilewildxdel(UCHAR *Pfullpath,PUDIRLIST Ppudirlist,PVOID Pparm)//~5B12M~
 {                                                               //~5B12M~
     unsigned attrmask;                                          //~5B12M~
+#ifndef ARMXXE                                                     //~v77BI~
     int      eachconfsw;                                           //~v281I~
+#endif                                                             //~v77BI~
 #ifndef ARMXXE                                                     //~v702I~
     int      reply;                                                //~v281I~
     char datewk[12];                                               //~v294I~
@@ -1097,7 +1122,9 @@ int ufilewildxdel(UCHAR *Pfullpath,PUDIRLIST Ppudirlist,PVOID Pparm)//~5B12M~
     char *pfpath;                                                  //~v6q0I~
 //********************                                          //~5B12M~
     UTRACEP("ufilewildxdel fpath=%s,dirlist=%s\n",Pfullpath,Ppudirlist->name);//~v6q0I~
+#ifndef ARMXXE                                                     //~v77BI~
     eachconfsw=*((int*)Pparm+1);    //2nd word=each conf           //~v281I~
+#endif                                                             //~v77BI~
 #ifndef ARMXXE                                                     //~v62aI~
     if (eachconfsw)                                                //~v281I~
         for (;;)                                                   //~v281I~
@@ -1221,7 +1248,7 @@ int uxdelsub(UCHAR *Pfile,ULONG Pattr,unsigned Pattrmask,int Pdeldirsw,FILESZT P
     svdelfctr=Sxdelfctr; svdeldctr=Sxdeldctr;                      //~v6H9I~
     Sxdelfctr++;        //processed ctr(contain skip ctr)       //~v010M~
 //  printf("uxdelsub delfctr=%d %s\n",Sxdelfctr,Pfile); //@@@@test //~v6H9R~
-	UTRACEP("%s delfctr=%d,attr=%x,fnm=%s\n",UTT,Sxdelfctr,Pattr,Pfile);//~v6H1R~
+	UTRACEP("%s delfctr=%d,attr=0x%x,Sxdelopt=0x%x,Pdeldirsw=%d,fnm=%s\n",UTT,Sxdelfctr,Pattr,Sxdelopt,Pdeldirsw,Pfile);//~v6H1R~//~v77dR~//~v77BR~
 #ifdef UTF8SUPPH                                                   //~v62aI~
     slinksw=FILE_ISSLINK(Pattr);                                   //~v62aR~
 #endif                                                             //~v62aI~
@@ -1529,6 +1556,7 @@ int uremove(UCHAR *Pfilename)                                   //~5825R~
     FILEFINDBUF3 fstat3;                                        //~5825I~
 #endif //!UNX//!!!!!!!!!!!                                         //~v327I~
 //********************                                          //~5825I~
+    UTRACEP("%s:fnm=%s\n",UTT,Pfilename);                          //~v77BI~
 #ifdef FTPSUPP                                                     //~v59pI~
   	if (uftpisremote(Pfilename,&puftph))	//ftp filename         //~v5afR~
     {                                                              //~v59pI~
@@ -1542,7 +1570,14 @@ int uremove(UCHAR *Pfilename)                                   //~5825R~
     if (mdossw)                                                    //~v556I~
         rc=uremove_mdos(Pfilename);                                //~v556R~
     else                                                           //~v556I~
+    {                                                              //~v77dI~
+#ifdef ARMXXE                                                      //~v77dI~
+      if (IS_DOCPATH(Pfilename))                                   //~v77dI~
+        rc=ufile_unlinkDoc(Pfilename);                             //~v77dI~
+      else                                                         //~v77dI~
+#endif                                                             //~v77dI~
 		rc=unlink(Pfilename);   //-1 if err                        //~v556R~
+    }                                                              //~v77dI~
 //  if (!rc)                //no err                               //~v59pR~
 #else //!UNX//!!!!!!!!!!!                                          //~v327I~
 //  if (!remove(Pfilename))                                        //~v59pR~
@@ -1704,6 +1739,7 @@ int urename(UCHAR *Poldname,UCHAR *Pnewname,UCHAR *Pnewspec)       //~v276R~
     PUFTPHOST puftph;                                              //~v5afI~
 #endif                                                             //~v59pI~
 //********************                                          //~5825I~
+	UTRACEP("%s:old=%s,new=%s,newspec=%s\n",UTT,Poldname,Pnewname,Pnewspec);//~v77BI~
 #ifdef FTPSUPP                                                     //~v59pI~
 	ftpopt=Srenameexisting;                                        //~v59pM~
   	if (uftpisremote(Poldname,&puftph))	//ftp filename             //~v5afR~
@@ -1822,6 +1858,15 @@ int urename(UCHAR *Poldname,UCHAR *Pnewname,UCHAR *Pnewspec)       //~v276R~
     }                                                              //~v557I~
     else                                                           //~v557I~
   #endif                                                           //~v557I~
+#ifdef ARMXXE                                                       //~v77gR~
+	if (IS_DOCPATH(Poldname) )                                     //~v77gI~
+    {                                                              //~v77gI~
+    	errno=ufile_renameDoc(Poldname,Pnewname);                  //~v77gR~
+        if (!errno)                                                //~v77gI~
+	        return 0;                                              //~v77gI~
+    }                                                              //~v77gI~
+    else                                                           //~v77gI~
+#endif                                                             //~v77gM~
     if (!rename(Poldname,Pnewname))                             //~5825R~
         return 0;                                               //~5825I~
     rc=errno;                                                   //~5826M~
@@ -2596,6 +2641,7 @@ int uwildfunc(int Popt,UCHAR *Psource,unsigned Pattrmask,       //~5916I~
     UCHAR fpath[_MAX_PATH2_LONG];                                  //~v6H9I~
     int swtoolong=0;                                              //~v6H1I~
 //********************                                          //~5916I~
+    UTRACEP("%s:source=%s\n",UTT,Psource);                         //~v77dI~
 //#ifdef W32                                                       //~v6H9R~
 //    filectr=udirlistWLong(0,Psource,fpath,sizeof(fpath),Pattrmask,&pudirlist0,'N');//no sort//~v6H9R~
 //#else                                                            //~v6H9R~
@@ -2680,6 +2726,121 @@ int uwildfunc(int Popt,UCHAR *Psource,unsigned Pattrmask,       //~5916I~
     	rc|=UWFRC_LONGNAME;                                        //~v6H1I~
     return rc;                                                  //~5916I~
 }//uwildfunc                                                    //~5916R~
+//**************************************************************** //~v77sI~
+int isWildUnMatch(char *PcpathMember,char *PfpathMember)           //~v77sI~
+{                                                                  //~v77sI~
+	int rc,opt;                                                    //~v77sI~
+    opt=UFWC_DOS_DEFAULT | UFWC_CASE_DEFAULT | UFWC_0BYTE;         //~v77sI~
+    rc=ufilewildcomp(opt,PcpathMember,PfpathMember,0/*pdbcs*/)!=0; //~v77sI~
+	UTRACEP("%s:iswildUnMatch rc=%d,cpathemmb=%s,fpathMemb=%s\n",UTT,rc,PcpathMember,PfpathMember);//~v77sI~
+    return rc;                                                     //~v77sI~
+}                                                                  //~v77sI~
+//**************************************************************** //~v77tI~
+int ufilecdirchkSub(int Premotesw,UCHAR *Pfpath,UCHAR *Pcpath)     //~v77tI~
+{                                                                  //~v77tI~
+    int lenc,lenf,rc=0,rc2,wildsw,swUnix;                          //~v77tI~
+    UCHAR *pcc,*pcc2,*pcc3,*pcf,*pcf2,*pcf3;                       //~v77tI~
+    UCHAR pathc[_MAX_PATH];                                        //~v77tI~
+    UCHAR pathf[_MAX_PATH];                                        //~v77tI~
+//********************                                             //~v77tI~
+    UTRACEP("%s:remotesw=%d,fpath=%s,cpath=%s\n",UTT,Premotesw,Pfpath,Pcpath);//~v77tI~
+#ifdef UNX                                                         //~v77tI~
+	swUnix=1;                                                      //~v77tR~
+#else                                                              //~v77tI~
+	swUnix=Premotesw;                                              //~v77tI~
+#endif                                                             //~v77tI~
+	pcc=Pcpath; pcf=Pfpath;                                        //~v77tI~
+    if (*pcc=='/')                                                 //~v77tI~
+    	pcc++;                                                     //~v77tI~
+    if (*pcf=='/')                                                 //~v77tI~
+    	pcf++;                                                     //~v77tI~
+	for (;;)                                                       //~v77tI~
+    {                                                              //~v77tI~
+//      UTRACEP("%s:pcf=%s,pcc=%s\n",UTT,pcf,pcc);                 //~v77tI~
+    	pcf2=strchr(pcf,'/');                                      //~v77tI~
+        if (swUnix)                                                //~v77tI~
+        	pcf3=0;                                                //~v77tI~
+        else                                                       //~v77tI~
+	    	pcf3=strchr(pcf,'\\');                                 //~v77tI~
+        if (pcf2)                                                  //~v77tI~
+        {                                                          //~v77tI~
+        	if (pcf3 && pcf3<pcf2)                                 //~v77tI~
+            	pcf2=pcf3;                                         //~v77tI~
+        }                                                          //~v77tI~
+        else                                                       //~v77tI~
+        	pcf2=pcf3;                                             //~v77tI~
+        if (pcf2)                                                  //~v77tI~
+            lenf=PTRDIFF(pcf2,pcf);                                //~v77tI~
+        else                                                       //~v77tI~
+            lenf=(int)strlen(pcf);                                 //~v77tR~
+        UmemcpyZ(pathf,pcf,(UINT)lenf);                            //~v77tR~
+                                                                   //~v77tI~
+    	pcc2=strchr(pcc,'/');                                      //~v77tI~
+        if (swUnix)                                                //~v77tI~
+	        pcc3=0;                                                //~v77tI~
+        else                                                       //~v77tI~
+	        pcc3=strchr(pcc,'\\');                                 //~v77tI~
+        if (pcc2)                                                  //~v77tI~
+        {                                                          //~v77tI~
+            if (pcc3 && pcc3<pcc2)                                 //~v77tI~
+            	pcc2=pcc3;                                         //~v77tI~
+        }                                                          //~v77tI~
+        else                                                       //~v77tI~
+        	pcc2=pcc3;                                             //~v77tI~
+        if (pcc2)                                                  //~v77tI~
+            lenc=PTRDIFF(pcc2,pcc);                                //~v77tI~
+        else                                                       //~v77tI~
+            lenc=(int)strlen(pcc);                                 //~v77tR~
+        UmemcpyZ(pathc,pcc,(UINT)lenc);                            //~v77tR~
+        UTRACEP("%s:lenf=%d,pathf=%s,lenc=%d,pathc=%s\n",UTT,lenf,pathf,lenc,pathc);//~v77tI~
+ 		wildsw=WILDCARD(pathf)!=0;                                 //~v77tI~
+        if (!wildsw)                                               //~v77tI~
+        {                                                          //~v77tI~
+        	if (lenc!=lenf)                                        //~v77tI~
+            {                                                      //~v77tI~
+        		UTRACEP("%s:rc=0 by lenf!=lenc lenc=%d,lenf=%d\n",UTT,lenf,lenc);//~v77tI~
+            	break;                                             //~v77tI~
+            }                                                      //~v77tI~
+			if (swUnix)                                            //~v77tI~
+	    		rc2=strcmp(pathc,pathf);                           //~v77tI~
+            else                                                   //~v77tI~
+    			rc2=stricmp(pathc,pathf);                          //~v77tI~
+			if (rc2)                                               //~v77tI~
+            {                                                      //~v77tI~
+                                                                   //~v77tI~
+        		UTRACEP("%s:swUnix=%d,rc=0 not Wild and unmatch pathf=%s,pathc=%s\n",UTT,swUnix,pathf,pathc);//~v77tI~
+            	break;                                             //~v77tI~
+            }                                                      //~v77tI~
+        }                                                          //~v77tI~
+        else                                                       //~v77tI~
+        {                                                          //~v77tI~
+        	rc2=isWildUnMatch(pathc,pathf);                        //~v77tR~
+        	if (rc2)                                               //~v77tI~
+            {                                                      //~v77tI~
+        		UTRACEP("%s:rc=0 by wild unmatch\n",UTT);          //~v77tI~
+            	break;                                             //~v77tI~
+            }                                                      //~v77tI~
+        }                                                          //~v77tI~
+        UTRACEP("%s:pcc2=%s,pcf2=%s\n",UTT,pcc2,pcf2);             //~v77tI~
+        if (pcf2)	//more fpath level                             //~v77tI~
+        {                                                          //~v77tI~
+        	if (!pcc2)	//cpath is higher level                    //~v77tI~
+            {                                                      //~v77tI~
+        		UTRACEP("%s:rc=0 by cpath is higher\n",UTT);       //~v77tI~
+            	break;                                             //~v77tI~
+            }                                                      //~v77tI~
+        }                                                          //~v77tI~
+        else   //fpath level is higher or equal as cpath           //~v77tI~
+        {                                                          //~v77tI~
+        	UTRACEP("%s:rc=1 by cpath is bellow or equal fpath\n",UTT);//~v77tI~
+        	rc=1;                                                  //~v77tI~
+            break;                                                 //~v77tI~
+        }                                                          //~v77tI~
+        pcf=pcf2+1;                                                //~v77tI~
+        pcc=pcc2+1;                                                //~v77tI~
+    }                                                              //~v77tI~
+    return rc;                                                     //~v77tI~
+}//ufilecdirchk                                                    //~v77tI~
 //****************************************************************//~5B12I~
 //ufilecdirchk                                                  //~5B12I~
 //* chk cur dir is on delete path                               //~5B12I~
@@ -2696,9 +2857,9 @@ int ufilecdirchk(UCHAR *Pfullpath)                              //~5B12I~
     int rc;                                                        //~v017R~
     char *wildsw;                                                  //~v017I~
 #ifdef FTPSUPP                                                     //~v5akI~
-  #ifdef W32                                                       //~v5apI~
-	int remotesw;                                                  //~v5akI~
-  #endif                                                           //~v5apI~
+//#ifdef W32                                                       //~v5apI~//~v77tR~
+	int remotesw=0;                                                //~v5akI~//~v77tR~
+//#endif                                                           //~v5apI~//~v77tR~
     PUFTPHOST puftph;                                              //~v5apI~
     int len;                                                       //~v5apI~
 #endif                                                             //~v5akI~
@@ -2727,6 +2888,10 @@ int ufilecdirchk(UCHAR *Pfullpath)                              //~5B12I~
 #ifdef FTPSUPP                                                     //~v5akI~
   }                                                                //~v5akI~
 #endif                                                             //~v5akI~
+    if (1)                                                         //~v77tI~
+    {                                                              //~v77tI~
+    	return ufilecdirchkSub(remotesw,Pfullpath,cpath);          //~v77tI~
+    }                                                              //~v77tI~
     len1=(int)strlen(cpath);                                    //~5B12I~
     if (wildsw=WILDCARD(Pfullpath),wildsw)         //source wild card//~v017R~
     {                                                           //~5B12I~
@@ -2762,9 +2927,19 @@ int ufilecdirchk(UCHAR *Pfullpath)                              //~5B12I~
 #endif                                                             //~v5akI~
         &&  *(cpath+len2)!=DIR_SEPC)    //not same path name       //~v327R~
             rc=0;                                               //~5B12I~
+        else                                                       //~v77sI~
+        if (len1>len2 && wildsw)                                   //~v77sI~
+        {                                                          //~v77sI~
+        	if (isWildUnMatch(cpath+PATHLEN(cpath),Pfullpath+len2+1))//~v77sI~
+            {                                                      //~v77sI~
+	    		UTRACEP("%s:memcmp match len1(%d)>len2(%d) and wildsw=%d wildMatch=No\n",UTT,len1,len2,wildsw!=0);//~v77sI~
+            	rc=0;                                              //~v77sI~
+            }                                                      //~v77sI~
+        }                                                          //~v77sI~
         if (len1==len2      //same dir                             //~v017I~
         &&  wildsw)         //but in the cur dir                   //~v017I~
             rc=0;                                                  //~v017I~
+//!!! it should be wildcard matching , but leave it because much safety !!!//~v77gI~
     }                                                              //~v017I~
     return rc;                                                  //~5B12I~
 }//ufilecdirchk                                                 //~5B12I~
@@ -3067,13 +3242,13 @@ int ufiledelifnotopened(int Popt,char *Pfnm,int Ppid)              //~v6B1R~
     if (rc==ENOENT)  //not fount                                   //~v6B1I~
 #else                                                              //~v6W4I~
 	swlocked=uflock(0,Pfnm,&fd)==0;	                               //~v6W4R~
-    rc=swlocked ? 0 : ENOENT;                                      //+v705I~
-    UTRACEP("%s:swlocked=%d,fd=%d\n",UTT,swlocked,fd);                      //~v6W4R~//+v705R~
+    rc=swlocked ? 0 : ENOENT;                                      //~v705I~
+    UTRACEP("%s:swlocked=%d,fd=%d\n",UTT,swlocked,fd);                      //~v6W4R~//~v705R~
     if (fd>0)                                                      //~v6W4I~
-      rc=                                                          //+v705I~
+      rc=                                                          //~v705I~
 		uflock(UFLO_CLOSE,Pfnm,&fd);                               //~v6W4R~
-//  if (swlocked)                                                  //~v6W4R~//+v705R~
-    if (!rc)                                                       //+v705I~
+//  if (swlocked)                                                  //~v6W4R~//~v705R~
+    if (!rc)                                                       //~v705I~
 #endif                                                             //~v6W4I~
     {                                                              //~v6B1I~
         rc=unlink(Pfnm);   //-1 if err,0:ok                        //~v6B1R~

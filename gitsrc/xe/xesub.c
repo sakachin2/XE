@@ -1,7 +1,11 @@
-//*CID://+vba2R:                              update#=  624;       //~vba4R//+vba2R
+//*CID://+vbyaR:                              update#=  678;       //~vbyaR
 //************************************************************* //~5102I~
 //* xesub.c                                                      //~5102R~
 //************************************************************* //~5102I~
+//vbya:230420 (ARM)open doc optionally. limit to load/save now.    //~vbyaI
+//vby8:230415 (ARM)open document file                              //~vby8I
+//vby6:230402 (ARM)adjust by4; go around by shortname and change to uri at ulib(ufile1l)//~vby6I
+//vby4:230402 (ARM)shared resource support by //shareName defined by SP(ShortPath) cmd.//~vby4I
 //vba4:170715 msvs2017 warning;                                    //~vba4I
 //vba2:170710 add SP cmd to register shortcut path name and use by  sp:xxx//~vba2I
 //vb89:170217 create if not found. ::xehosts ::xesync_.cfg         //~vb89I
@@ -203,6 +207,9 @@
 #ifdef UNX                                                         //~vaa0I~
 	#include <ufile1l.h>                                           //~vaa0I~
 #endif                                                             //~vaa0I~
+#ifdef ARMXXE                                                      //~vby8I
+	#include <ufiledoc.h>                                           //~vaa0I~//~vby8I
+#endif                                                             //~vby8I
 #include <ufile2.h>                                                //~v48cI~
 #include <ufile3.h>                                                //~v48cI~
 #include <ufile4.h>                                                //~v48cI~
@@ -249,6 +256,9 @@
 static UCHAR Sdbcsid[2]={DBCS1STCHAR,DBCS2NDCHAR};                 //~v09YI~
 #endif                                                             //~v456I~
 static UQUEH Ssubtempfnq;           //temp filename que to be deleted at end of session//~v76pR~
+#ifdef ARMXXE                                                      //~vbyaI
+    int SopenOption=0;                                             //~vbyaR
+#endif                                                             //~vbyaI
 //*******************************************************          //~v60yI~
 //*******************************************************          //~va1cR~
 int filefullpath2ndedit(char *Pfullpath,PUFILEH Ppfh,char *Pmodifier);//~v60yI~
@@ -278,6 +288,7 @@ int filefind(UCHAR *Ppfile,UCHAR *Pfullpath,FILEFINDBUF3 *Ppfstat3,//~5513R~
 	int swwildname;                                                //~vaa0I~
 #endif                                                             //~vaa0I~
 //****************************                                  //~5318M~
+	UTRACEP("%s:filefind:%s\n",UTT,Ppfile);                                   //~v711I~//~vba2I
     if (Pfullpath)      //fullpath required                     //~5318M~
     {                                                           //~5318M~
         if (!filefullpath(Pfullpath,Ppfile,_MAX_PATH))//fullpath name//~5318M~
@@ -425,6 +436,7 @@ int filedirchk(UCHAR *Pfilename)                                //~5625I~
 //  UCHAR  fullpath[_MAX_PATH];                                    //~v13dR~
     int rc;                                                     //~v036I~
 //****************************                                  //~5625I~
+	UTRACEP("%s:filedirchk:%s\n",UTT,Pfilename);                                   //~v711I~//~vba2I
 //  rc=filefind(Pfilename,fullpath,0,FFNONFMSG|FFNODIRMSG);//no fstat//~v13dR~
     rc=filefind(Pfilename,0,0,FFNONFMSG|FFNODIRMSG);//no fullpath,no fstat//~v13dR~
     switch(rc)                                                  //~v036I~
@@ -446,9 +458,93 @@ int filedirchk(UCHAR *Pfilename)                                //~5625I~
     default:                                                    //~v036I~
         rc=-1;                                                  //~v036I~
     }                                                           //~v036I~
+	UTRACEP("%s:filedirchk:%s rc=%d\n",UTT,Pfilename,rc);                                   //~v711I~//~vba2I
     return rc;                                                  //~v036R~
 }//filedirchk                                                   //~5625I~
                                                                 //~5625I~
+//#ifdef ARMXXE                                                    //~vby8R
+//FILE *fileopenDoc(UCHAR *Ppfile,UCHAR *Ppopt)                    //~vby8R
+//{                                                                //~vby8R
+//    FILEFINDBUF3 fstat3;                                           //~v08qI~//~vby8R
+//    char *pc;                                                      //~v08qI~//~vby8R
+//    int rc;                                                      //~vby8R
+//    FILE *fh;                                                    //~vby8R
+////****************************                                   //~vby8R
+//UTRACEP("fileopenDoc:%s\n",Ppfile);                                   //~v711I~//~vby8R
+//    if (rc=ufile_openDoc(0,Ppfile,Ppopt,&fh),rc)    //ufiledoc   //~vby8R
+//    {                                                              //~v08qI~//~vby8R
+//        if (rc==EINVAL) //invalid argumen                        //~vby8R
+//        {                                                        //~vby8R
+//            ufileopenerrInvalidargument(0,rc/*return code*/,Ppfile);//~vby8R
+//        }                                                        //~vby8R
+//        else                                                     //~vby8R
+//        {                                                        //~vby8R
+//            if (rc==EACCES)                                           //~v19LI~//~vby8R
+//                ufilenopermission("fopen",Ppfile,errno);                   //~v19RR~//~vby8R
+//            else                                                         //~v731I~//~vby8R
+//            if (errno==EFBIG)                                            //~v731I~//~vby8R
+//                uerrmsg("%s Open fail(errno=%d:too big)",                  //~v731R~//~vby8R
+//                        "%s Open fail(errno=%d:ファイルが大きすぎます)",   //~v731R~//~vby8R
+//                        Ppfile,errno);                                     //~v731I~//~vby8R
+//            else                                                         //~v19LI~//~vby8R
+//            {                                                            //~v19LI~//~vby8R
+//                if (!ufstat(Ppfile,&fstat3)                                //~v08qI~//~vby8R
+//                    && fstat3.attrFile & FILE_READONLY)                        //~v08qI~//~vby8R
+//                    pc=",ReadOnly";                                        //~v08qI~//~vby8R
+//                else                                                       //~v08qI~//~vby8R
+//                    pc="";                                                 //~v08qI~//~vby8R
+//                uerrmsg("%s(\"%s\") Open failed(errno=%d:%s)%s",           //~v08qR~//~vby8R
+//                        "%s(\"%s\") オープンエラー(errno=%d:%s)%s",Ppfile,Ppopt,rc,strerror(rc),pc);//~v08qR~//~vby8R
+//            }//EACCES                                                    //~v19LI~//~vby8R
+//      }//!EINVAL                                                 //~vby8R
+//    }                                                              //~v08qI~//~vby8R
+//    UTRACEP("%s:exit fh=%p,fnm=%s\n",UTT,fh,Ppfile);                                   //~v711I~//~vby8R
+//    return fh;                                                   //~vby8R
+//}//fileopen                                                      //~vby8R
+//#endif                                                           //~vby8R
+#ifdef ARMXXE                                                      //~vby8I
+//*******************************************************          //~vby8I
+FILE *xesub_openDoc(int Popt,PUFILEH Ppfh,UCHAR *Ppfile,UCHAR *Ppopt)//~vby8R
+{
+    FILE *fh;//~vby8I
+    int ern;                                                       //~vbyaI
+	UTRACEP("%s:opt=0x%x,pfh=%p,Ppfile=%s,opt=%s,swAllowDoc=%d\n",UTT,Popt,Ppfh,Ppfile,Ppopt,SopenOption);                                   //~v711I~//~vby8R//~vbyaR
+//  if ((!Ppfh || PFH_ISDOCUMENT(Ppfh))                            //~vby8I//~vbyaR
+    if (((SopenOption & FOWOO_ALLOWDOC) || (Ppfh && PFH_ISDOCUMENT(Ppfh)))//~vbyaR
+    &&  IS_DOCPATH(Ppfile))                                        //~vby8R
+    {                                                              //~vby8I
+    	int openDocOption=0;                                       //~vbyaI
+	    int rc=ufile_openDoc(openDocOption,Ppfile,Ppopt,&fh);                  //~vby8I//~vbyaR
+        errno=rc;                                                  //~vby8I
+    }                                                              //~vby8I
+    else                                                           //~vby8I
+    {                                                              //~vbyaI
+    	errno=0;                                                   //~vbyaI
+    	fh=fopen(Ppfile,Ppopt);                                    //~vby8I
+        ern=errno;                                                 //~vbyaI
+		UTRACEP("%s:os fopen fh=%p,errno=%d,fn=%s\n",UTT,fh,errno,Ppfile);//~vbyaR
+        errno=ern;                                                 //~vbyaI
+    }                                                              //~vbyaI
+    return fh;                                                     //~vby8I
+}                                                                  //~vby8I
+#endif                                                             //~vby8I
+//*******************************************************          //~vbyaI
+//*file open, allow document optionally                            //~vbyaI
+//*******************************************************          //~vbyaI
+FILE *fileopenWithOption(int Popt,UCHAR *Ppfile,UCHAR *Ppopt)      //~vbyaR
+{                                                                  //~vbyaI
+	FILE *fh;                                                      //~vbyaI
+//****************************                                     //~vbyaI
+	UTRACEP("%s:opt=0x%x,fnm=%s\n",UTT,Popt,Ppfile);                                   //~v711I~//~vbyaR
+#ifdef ARMXXE                                                      //~vbyaI
+    SopenOption=Popt;                                              //~vbyaR
+#endif                                                             //~vbyaI
+	fh=fileopen(Ppfile,Ppopt);                                     //~vbyaI
+#ifdef ARMXXE                                                      //~vbyaI
+    SopenOption=0;                                                 //~vbyaR
+#endif                                                             //~vbyaI
+    return fh;                                                     //~vbyaI
+}                                                                  //~vbyaI
 //*******************************************************
 //*file open
 //*******************************************************
@@ -459,8 +555,12 @@ FILE *fileopen(UCHAR *Ppfile,UCHAR *Ppopt)
     char *pc;                                                      //~v08qI~
     int rc;                                                        //~vawdI
 //****************************
-UTRACEP("fileopen:%s\n",Ppfile);                                   //~v711I~
+UTRACEP("%s:fileopen:%s\n",UTT,Ppfile);                                   //~v711I~//~vbyaR
+#ifdef ARMXXE                                                      //~vby8I
+	if (!(fh=xesub_openDoc(0/*opt*/,0/*pfh*/,Ppfile,Ppopt)))                              //~vby8I//~vbyaR
+#else                                                              //~vby8I
     if (!(fh=fopen(Ppfile,Ppopt)))
+#endif                                                             //~vby8M
     {                                                              //~v08qI~
         rc=errno;                                                  //~vawdI
       if (rc==EINVAL) //invalid argumen                            //~vb2dR
@@ -516,6 +616,7 @@ UTRACEP("fileopen:%s\n",Ppfile);                                   //~v711I~
 #endif //!UNX                                                      //~v19LI~
       }//!EINVAL                                                   //~vb2dR
     }                                                              //~v08qI~
+	UTRACEP("%s:fopen fh=%p,errno=%d,fn=%s\n",UTT,fh,errno,Ppfile);//~vbyaR
     return fh;
 }//fileopen
 //*******************************************************          //~vb89I
@@ -526,9 +627,10 @@ FILE *fileopencreate(int Popt,UCHAR *Ppfile,UCHAR *Ppopt,UCHAR *Pdummyrecord)//~
     FILE *fh;                                                      //~vb89I
     int rc;                                                        //~vb89I
 //****************************                                     //~vb89I
+    errno=0;                                                       //+vbyaI
     fh=fopen(Ppfile,Ppopt);                                        //~vb89I
     rc=errno;                                                      //~vb89I
-	UTRACEP("%s:fh=%p,errno=%d,%s\n",UTT,fh,rc,Ppfile);                                   //~v711I~//~vb89I
+	UTRACEP("%s:fopen fh=%p,errno=%d,fn=%s\n",UTT,fh,rc,Ppfile);                                   //~v711I~//~vb89I//~vbyaR
     if (!fh)                                                       //~vb89R
     {                                                              //~v08qI~//~vb89I
       	if (rc==ENOENT)                                            //~vb89I
@@ -538,6 +640,7 @@ FILE *fileopencreate(int Popt,UCHAR *Ppfile,UCHAR *Ppopt,UCHAR *Pdummyrecord)//~
             {                                                      //~vb89I
 		    	fh=fopen(Ppfile,Ppopt);                            //~vb89I
 			    rc=errno;                                          //~vb89I
+                UTRACEP("%s:fopen fh=%p,errno=rc,fn=%s\n",UTT,fh,rc,Ppfile);//~vbyaR
                 if (fh)                                            //~vb89I
 		        	uerrmsgcat(";%s:Dummy file was created",           //~v08qR~//~vb89R
         		    	    ";%s:ダミーファイルを作成しました",    //~vb89R
@@ -770,14 +873,15 @@ int isShortpath(int Popt,char *Ppfnm,char *Ppfpath,size_t Pbuffsz) //~vba2I
 	char *ppath,*pc;                                               //~vba2R
 	int namelen,pathlen;                                           //~vba2R
 	int namelen2;                                                  //~vba2I
-    char fpath[_MAX_PATH];                                         //+vba2R
-    char name[_MAX_PATH];                                          //+vba2R
+    char fpath[_MAX_PATH];                                         //~vba2R
+    char name[_MAX_PATH];                                          //~vba2R
 //**********************                                           //~vba2I
+    UTRACEP("%s:fnm=%s\n",UTT,Ppfnm);                              //~vba2I
     pc=strchr(Ppfnm,DIR_SEPC);                                     //~vba2R
     if (pc)                                                        //~vba2I
     	namelen=PTRDIFF(pc,Ppfnm);                                 //~vba2I
     else                                                           //~vba2I
-    	namelen=(int)strlen(Ppfnm);                                //+vba2R
+    	namelen=(int)strlen(Ppfnm);                                //~vba2R
 #ifdef W32                                                         //~vba2I
     pc=strchr(Ppfnm,FTP_DIR_SEPC);                                 //~vba2R
     if (pc)                                                        //~vba2I
@@ -800,6 +904,7 @@ int isShortpath(int Popt,char *Ppfnm,char *Ppfpath,size_t Pbuffsz) //~vba2I
     	return 8;                                                  //~vba2I
     strcpy(Ppfpath,ppath);                                         //~vba2R
     strcat(Ppfpath,Ppfnm+namelen);                                 //~vba2I
+    UTRACEP("%s:fnm=%s,fpath=%s\n",UTT,Ppfnm,Ppfpath);             //~vba2I
     return 0;                                                      //~vba2I
 }//isShortpath                                                     //~vba2I
 ////*******************************************************       //~5318M~//~vba2R
@@ -853,6 +958,24 @@ char *filefullpath(char *Pfullpath,char *Pfilename,size_t Plen) //~5318M~
     char sepc,*modifier;                                           //~v60yI~
     int optcp=0,cprc=0;                                            //~vb2eR
 //***************************                                   //~5318M~
+    UTRACEP("%s:fnm=%s\n",UTT,Pfilename);                          //~vba2I
+#ifdef ARMXXE                                                      //~vba2I
+	if (IS_DOCPATH(Pfilename))                                     //~vba2R
+    {                                                              //~vba2I
+//        char *ppath=funcsp_search(0,Pfilename);                    //~vba2I//~vby6R
+//        if (ppath)                                                 //~vba2I//~vby6R
+//        {                                                          //~vba2I//~vby6R
+//            if (Pfullpath)                                         //~vba2I//~vby6R
+//            {                                                      //~vby4I//~vby6R
+//                funcsp_filefullpathDoc(Pfilename,ppath,Pfullpath); //~vby4R//~vby6R
+//                UTRACEP("%s:exit for Document rc=%s\n",UTT,Pfullpath);//~vby4I//~vby6R
+//                return Pfullpath;                                  //~vby4I//~vby6R
+//            }                                                      //~vby4I//~vby6R
+//        }                                                          //~vba2I//~vby6R
+    	UTRACEP("%s:Document shortpath,skip rep by fullpath fnm=%s\n",UTT,Pfilename);//~vby6I
+    }                                                              //~vba2I
+    else                                                           //~vby6I
+#endif                                                             //~vba2I
 	if (USTRHEADIS_IC(Pfilename,FTP_SHORTPATH_PREFIX))             //~vba2R
     {                                                              //~vba2I
     	if (!isShortpath(0,Pfilename+sizeof(FTP_SHORTPATH_PREFIX)-1,fpathsp,sizeof(fpathsp)))//~vba2R
@@ -897,6 +1020,7 @@ char *filefullpath(char *Pfullpath,char *Pfilename,size_t Plen) //~5318M~
                 if (!rc)                                           //~v60yI~
                 {                                                  //~v60yI~
                 	strcpy(Pfullpath,fpathwk);                     //~v60yI~
+    				UTRACEP("%s:exit for 2ndedit rc=%s\n",UTT,Pfullpath);//~vby4I
                 	return Pfullpath;                              //~v60yI~
                 }                                                  //~v60yI~
                 if (rc==1)	//*2\... fmt (may contain wildcard)    //~v60yI~
@@ -989,6 +1113,7 @@ char *filefullpath(char *Pfullpath,char *Pfilename,size_t Plen) //~5318M~
                 pc=0;                                              //~v47HI~//~vb75I
             }                                                      //~v47HI~//~vb75I
         }                                                          //~v47HI~
+    UTRACEP("%s:exit rc=%s\n",UTT,pc);                             //~vby4I
     return pc;                                                  //~5318M~
 }//filefullpath                                                 //~5318M~
 //*******************************************************          //~v60yI~
@@ -1106,6 +1231,7 @@ char *filefullpath2(char *Pfullpath,char *Ptarget,size_t Plen,char *Psource)//~v
     PUFTPHOST puftph;                                              //~v70zI~
 #endif                                                             //~v70zI~
 //***************************                                   //~v05OI~
+	UTRACEP("%s:Ptarget=%s,Psource=%s\n",UTT,Ptarget,Psource);           //~va50I~//~vby4I
     if (*Ptarget!=SAMEDIR)                                      //~v05OR~
         return filefullpath(Pfullpath,Ptarget,Plen);            //~v05OM~
 #ifdef FTPSUPP                                                     //~v70zI~
@@ -2930,7 +3056,82 @@ int wordtblisrch(UCHAR *Pword,UCHAR *Pwordtbl)                  //~5225I~
             return ii+1;                                        //~5225I~
     return 0;                                                   //~5225I~
 }//wordtblisrch                                                 //~5225I~
-                                                                //~v03iI~
+#ifdef ARMXXE                                                   //~v03iI~//~vby4R
+//**************************************************            //~v03iI~//~vby4I
+//*getpathlen                                                   //~v03iI~//~vby4I
+//* path length and dir level output from filename              //~v03iI~//~vby4I
+//*parm 1:filename                                              //~v03iI~//~vby4I
+//*parm 2:output dir level(option)                              //~v03iI~//~vby4I
+//*parm 3:dir sw (1:dir or wild card, 0:normal file)            //~v03iI~//~vby4I
+//*return:path name length(len to before last "/" of fullpath name)//~v03iI~//~vby4R
+//**************************************************            //~v03iI~//~vby4I
+int getpathlenDoc(UCHAR *Pfilename/* //sp/sub fmt */,UCHAR *Plevel,int Pdirsw)       //~v03iI~//~vby4I//~vby6R
+{                                                               //~v03iI~//~vby4I
+    int ii,len,len0;                                            //~v03iI~//~vby4I
+    int rootsw;                                                    //~v57DI~//~vby4I
+    UCHAR *pc,*pc2;                                                //~va00I~//~vby4I
+    char dirsepc;                                                  //~v540I~//~vby4I
+	int dirsw;                                                     //~vaa0I~//~vby4I
+    int rootPathlen;                                       //~vby4I//~vby6I
+//********************                                          //~v03iI~//~vby4I
+    UTRACEP("%s:entry Pdirsw=0x%x,Pfilename=%s\n",UTT,Pdirsw,Pfilename);//~vby4I
+	dirsw=Pdirsw;                                                  //~vaa0I~//~vby4I
+	Pdirsw &= ~GPL_WILDNAME;                                       //~vaa0I~//~vby4I
+//  pathlen=upathlenDoc(0,Pfilename,&rootPathlen,&rootsw,0/*out:lenPrefix*/,0/*shortpath*/);//~vby4I//~vby6R
+    dirsepc=DIR_SEPC;                                          //~v540I~//~vby4I
+    pc2=strchr(Pfilename+PREFIX_ARM_SHARE_LEN,dirsepc);            //~vby6M
+    if (pc2)                                                       //~vby6M
+    {                                                              //~vby6M
+        rootPathlen=PTRDIFF(pc2,Pfilename);                        //~vby6M
+        rootsw=0;                                                  //~vby6M
+    }                                                              //~vby6M
+    else                                                           //~vby6M
+    {                                                              //~vby6M
+        rootPathlen=(int)strlen(Pfilename);                        //~vby6M
+        rootsw=1;                                                  //~vby6M
+    }                                                              //~vby6M
+    pc=Pfilename+rootPathlen;   //top subdirname                   //~vby4I
+    dirsepc=DIR_SEPC;                                          //~v540I~//~vby4I
+    len0=strlen(Pfilename);                                        //~vby4I
+    UTRACEP("%s:doc path rootsw=%d,len0=%d,rootPathlen=%d,pc=%s,filename=%s\n",UTT,rootsw,len0,rootPathlen,pc,Pfilename);//~vby4I//~vby6R
+    if (rootsw)                                                    //~v57DI~//~vby4I
+    {                                                           //~v03iI~//~vby4I
+        ii=0;                       //level                     //~v03iI~//~vby4I
+	    len=len0;                                               //~v03iI~//~vby4I
+    }                                                           //~v03iI~//~vby4I
+    else                                                        //~v03iI~//~vby4I
+    {                                                           //~v03iI~//~vby4I
+//    	pc2=pc;  //ch after "/"(+rootPathlen)                      //~vby4R//~vby6R
+//     	pc2=pc+1;//ch after "/"(+rootPathlen)                      //~vby6R
+       	pc++;	//ch after "/"(+rootPathlen)                       //~vby6I
+        for (ii=1;;ii++)                                        //~v03iI~//~vby4R
+        {                                                       //~v03iI~//~vby4I
+            pc2=pc;                                                //~v07kR~//~vby4I
+            pc=strchr(pc,dirsepc);                                 //~vby4I
+            if (!pc)                                               //~v07kI~//~vby4I
+                break;                                             //~v07kI~//~vby4I
+            ++pc;       //next of delm                             //~v07kI~//~vby4I
+        }                                                       //~v03iI~//~vby4I
+        len=PTRDIFF(pc2,Pfilename)-1;  //up to before "/"                //~vafkI~//~vby4I
+        if (Pdirsw)                                             //~v03iI~//~vby4I
+        {                                                          //~vaa0I~//~vby4I
+            if (strpbrk(pc2,"*?"))  //wild card                 //~v03iI~//~vby4I
+            {                                                      //~vby4I
+			  	if (dirsw & GPL_WILDNAME)                            //~vaa0I~//~vby4I
+                	len=len0;   //dir                                  //~vaa0I~//~vby4I
+                else                                               //~vby4I
+                    ii--;                                          //~vby4I
+            }                                                      //~vby4I
+            else                                                //~v03iI~//~vby4I
+                len=len0;   //dir                               //~v03iI~//~vby4I
+        }                                                          //~vaa0I~//~vby4I
+    }//not root                                                 //~v03iI~//~vby4I
+    if (Plevel)                                                 //~v03iI~//~vby4I
+        *Plevel=(UCHAR)ii;  //file/dir hierarchical level       //~v03iI~//~vby4I
+    UTRACEP("%s:exit rc=pathlen=%d,level=%d,Pdirsw=%d\n",UTT,len,ii,Pdirsw);        //~vby4I//~vby6R
+    return len;                                                 //~v03iI~//~vby4I
+}//getpathlenDoc                                                   //~v03iI~//~vby4I
+#endif  //ARMXXE                                                   //~vby4I
 //**************************************************            //~v03iI~
 //*getpathlen                                                   //~v03iI~
 //* path length and dir level output from filename              //~v03iI~
@@ -2956,6 +3157,13 @@ int getpathlen(UCHAR *Pfilename,UCHAR *Plevel,int Pdirsw)       //~v03iI~
 	int dirsw;                                                     //~vaa0I~
 #endif                                                             //~vaa0I~
 //********************                                          //~v03iI~
+    UTRACEP("%s:entry Pfilename=%s\n",UTT,Pfilename);              //~vby4I
+#ifdef ARMXXE                                                      //~vby4I
+	if (IS_DOCPATH(Pfilename))                                     //~vby4I
+    {                                                              //~vby4I
+		return getpathlenDoc(Pfilename,Plevel,Pdirsw);             //~vby4I
+    }                                                              //~vby4I
+#endif                                                             //~vby4I
 #ifdef UNX                                                         //~vaa0I~
 	dirsw=Pdirsw;                                                  //~vaa0I~
 	Pdirsw &= ~GPL_WILDNAME;                                       //~vaa0I~
@@ -3050,6 +3258,7 @@ int getpathlen(UCHAR *Pfilename,UCHAR *Plevel,int Pdirsw)       //~v03iI~
     }//not root                                                 //~v03iI~
     if (Plevel)                                                 //~v03iI~
         *Plevel=(UCHAR)ii;  //file/dir hierarchical level       //~v03iI~
+    UTRACEP("%s:exit level=%d,pathlen=%d\n",UTT,ii,len);           //~vby4R
     return len;                                                 //~v03iI~
 }//getpathlen                                                   //~v03iI~
 //*******************************************************          //~v730I~

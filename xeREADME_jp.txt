@@ -1,6 +1,6 @@
-UTF8 encodinng ||*CID:||+v29UR~:  2022/12/15                update#=  824;||+v29UR~
+UTF8 encodinng ||*CID:||+v29WR~:  2023/07/31                update#=  830;||~v29VR~||+v29WR~
 ######################################################################
-[Japanese]    v1.29U  (Refer xeREADME_en.txt for English)             ||~v29TI~||+v29UR~
+[Japanese]    v1.29W  (Refer xeREADME_en.txt for English)             ||~v29VR~||+v29WR~
 
 メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。||~129GR~
 ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。||~129GR~
@@ -19,15 +19,16 @@ UTF8 encodinng ||*CID:||+v29UR~:  2022/12/15                update#=  824;||+v29
                                    By 水巻マチ (sakachin2@yahoo.co.jp)||~129GR~
 
                                    http://hp.vector.co.jp/authors/VA010562
-                                   http://www.geocities.jp/sakachin2/index.htm
                                    GitHub: sakachin2/XE
 
 WIN版はGUI版とWIN32コンソールアプリケーション版があります。||~129GR~
    Console版:xe.exe はコマンドプロンプトで動きマウスはサポートしていません。||~129GR~
-   GUI版:wxe.exe はWTL/ATL版(MFC不使用)でvs2010Expressでコンパイルしたものです||~129GR~
+   GUI版:wxe.exe はWTL/ATL版(MFC不使用)でvs2017Comunityでコンパイルしたものです||~129GR~||+v29WR~
    w64binGit.zipを解凍                                             ||~129GR~
 Linux版はGUI版:gxe とTerminalEmulator版:xe があります。    ||~129GR~
    gxe-x.xx.tar.gz を 解凍し ./configure && make でインストール||~129GR~
+Android版:Axe は PlayStoreにあります                                  ||+v29WR~
+                                                                      ||+v29WR~
 以下のコンソール版ツールも含まれています          ||~129GR~
    xads         (Win版のみ)NTFSファイルシステムのADS(Alternative Data Stream)アクセス。||~129GR~
    xbc          簡易計算ツール。                              ||~129GR~
@@ -67,7 +68,7 @@ Linux版はGUI版:gxe とTerminalEmulator版:xe があります。    ||~129GR~
   sample\doc:
     テキストファイル形式のマニュアル                  ||~129GR~
       xej.txt/xee.txt
-      xereadmj.txt/xereadme.txt
+      xeREADME_jp.txt/xeREADME_en.txt                                 ||+v29WR~
       xelnxj.txt/xelnxe.txt(Linux版用)                              ||~129GR~
       xewxej.txt/xewxee.txt(GUI版:wxe/gxe用)                        ||~129GR~
   sample\data:
@@ -79,7 +80,7 @@ Linux版はGUI版:gxe とTerminalEmulator版:xe があります。    ||~129GR~
 
       grep.exe     コマンド行の GREp コマンド、=3.14 画面で使用します||~129GR~
 
-      シンタックスハイライトで使用します、次のどちらかを選んで xesynw.cfg で指定します||~129GR~
+      次の２つはシンタックスハイライトで使用します、次のどちらかを選んで xesynw.cfg で指定します||~129GR~||+v29WR~
         使い方は xej.txt や xesynw.cfg を見てください     ||~129GR~
         gnu-source-highlight.zip
                      (Win)GNU source-highlight v2.9 を MinGW上でコンパイルしました。||~129GR~
@@ -507,7 +508,7 @@ Linux版はGUI版:gxe とTerminalEmulator版:xe があります。    ||~129GR~
        -(Linux:gxe) Xfce デスクトップのとき以下のWarningがでることがある||~v129I~
                     Gtk-Warning Calling org.xfce.Session.Manager IsInhibited failed...||~v129I~
                                                                    //~1291I~||~v129I~
-  .129T<--129S:(2022/12/04)                                           ||~v29TI~
+  .v129T<--129S:(2022/12/04)                                           ||~v29TI~||~v29VR~
                                                                       ||~v29TI~
      1.BUGs                                                           ||~v29TI~
        -=0.1 画面で sc 行の変更ができない                             ||~v29TI~
@@ -540,13 +541,51 @@ Linux版はGUI版:gxe とTerminalEmulator版:xe があります。    ||~129GR~
        -(Win)ワークディレクトリーの省略値の場所を C:\ から C:\users\[username]\に変更||~v29TI~
         既に C:\xe_wd がある場合は継続してこれを使用するが新規導入から適用||~v29TI~
                                                                       ||~v29TI~
-  .129U<--129T:(2022/12/15)                                           ||+v29UI~
-                                                                      ||+v29UI~
-     1.BUGs                                                           ||+v29UI~
-                                                                      ||+v29UI~
-     2.機能追加                                                       ||+v29UI~
-                                                                      ||+v29UI~
-     3.その他                                                         ||+v29UI~
-       -(LNX) ./configure で --enable-libgnome2=yes | no を自動で判断する様にした||+v29UI~
-       -(WIN:Console) WindowsTerminal 対応。conhost上動きとの違いに対応。||+v29UI~
-        行コマンド入力時の表示の乱れ、バイナリーファイルの表示の乱れなど||+v29UI~
+  .v129U<--129T:(2022/12/15)                                           ||~v29UI~||~v29VR~
+                                                                      ||~v29UI~
+     1.BUGs                                                           ||~v29UI~
+                                                                      ||~v29UI~
+     2.機能追加                                                       ||~v29UI~
+                                                                      ||~v29UI~
+     3.その他                                                         ||~v29UI~
+       -(LNX) ./configure で --enable-libgnome2=yes | no を自動で判断する様にした||~v29UI~
+       -(WIN:Console) WindowsTerminal 対応。conhost上動きとの違いに対応。||~v29UI~
+        行コマンド入力時の表示の乱れ、バイナリーファイルの表示の乱れなど||~v29UI~
+                                                                      ||~v29VI~
+  .v129V<--129U:(2023/06/10)                                          ||~v29VR~
+                                                                      ||~v29VI~
+     1.BUGs                                                           ||~v29VI~
+                                                                      ||~v29VI~
+     2.機能追加                                                       ||~v29VI~
+       -(Axe)                                                         ||~v29VI~
+        .Android13(Api-33)対応                                        ||~v29VI~
+        .共有ストレージサポート                                       ||~v29VI~
+           "sp add //"コマンドで共有ストレージ内に専用フォルダーを設定可能で、||~v29VI~
+           "e //Axe"のように専用フォルダー内をアクセスする。          ||~v29VI~
+           また、Android11(Api-30)以降はアクセス権限："すべてのファイル"を設定可能で||~v29VI~
+           許可設定するとgrep, xfg などのコマンドラインツールでも共有ストレージを利用可能||~v29VI~
+        .icu ライブラリの利用環境の変更に対応                         ||~v29VI~
+                                                                      ||~v29VI~
+     3.その他                                                         ||~v29VI~
+       -opt DELZ(バックアップを取らないDel行コマンドの許可)の省略値を安全側のオフに変更した||~v29VI~
+                                                                      ||+v29WR~
+  .v129W<--129V:(2023/07/31)                                          ||+v29WR~
+                                                                      ||+v29WR~
+     1.BUGs                                                           ||+v29WR~
+                                                                      ||+v29WR~
+     2.機能追加                                                       ||+v29WR~
+       -(Axe)                                                         ||+v29WR~
+         .Android-11(R):api30 許可オプション:全てのファイル を利用可能とする||+v29WR~
+         .CD コマンドサポート                                         ||+v29WR~
+                                                                      ||+v29WR~
+     3.その他                                                         ||+v29WR~
+       -短縮名がsp add コマンドで追加されたらrefreshしてすぐ有効にする||+v29WR~
+       -Axe                                                           ||+v29WR~
+         .DOSコマンド(全画面シェル)はサポートされない                 ||+v29WR~
+         ."!"行コマンドは受け付けない                                 ||+v29WR~
+                                                                      ||+v29WR~
+     4.ツール。                                                       ||~v129R~||+v29WR~
+       -xcv  v1.21                                                    ||+v29WR~
+       -xfmt v1.5                                                     ||+v29WR~
+       -xfg  v1.21                                                    ||+v29WR~
+       -xdc  v2.29 -UF オプション（ディレクトリーのタイムスタンプ不一致は不一致リストに出力しない）追加||+v29WR~

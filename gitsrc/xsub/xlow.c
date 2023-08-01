@@ -1,9 +1,10 @@
-//*CID://+vam2R~:                             update#=   74;       //+vam2R~
+//*CID://+vas3R~:                             update#=   75;       //+vas3R~
 //*************************************************************
 //*xlower
 //* rename filename to lower
 //*************************************************************
-//vam2:190914 xlow 1.6: (Lnx:compile err) by vam1                  //+vam2I~
+//vas3:230630 ARM;closeall for arm subthread execution             //+vas3I~
+//vam2:190914 xlow 1.6: (Lnx:compile err) by vam1                  //~vam2I~
 //vam1:181105 xlow 1.6: (Windows:Bug) checking shortname(valid for DOS version only)//~vam1I~
 //vam0:181105 xlow 1.6: (Windows) failes on FAT                    //~vam0I~
 //va70:121022 udosfindnext was changed by symlink support          //~va70I~
@@ -86,6 +87,7 @@ int main(int parmc,char *parmp[])
     uerrmsg("Renamed   %d file(s), %d dir(s).",
             "%d ファイル,  %d ディレクトリー を改名。",
 			Srenamefilectr,Srenamedirctr);
+	ARMXSUB_CLOSE(PGMID);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//+vas3I~
     return rc;
 }//main
 //**********************************************************************
@@ -216,10 +218,10 @@ int renlower(char *Pfnm)
      {                                                             //~v1.3I~
         while (!rc)
         {
-#ifdef UNX                                                         //+vam2I~
-		    if (strcmp(fstat3.achName,".")                         //+vam2I~
-    		&&  strcmp(fstat3.achName,".."))                       //+vam2I~
-#else                                                              //+vam2I~
+#ifdef UNX                                                         //~vam2I~
+		    if (strcmp(fstat3.achName,".")                         //~vam2I~
+    		&&  strcmp(fstat3.achName,".."))                       //~vam2I~
+#else                                                              //~vam2I~
 #ifdef DOS                                                         //~vam1I~
 		    if (strcmp(fstat3.achName,".")                         //~1603R~
     		&&  strcmp(fstat3.achName,".."))                       //~1603R~
@@ -228,7 +230,7 @@ int renlower(char *Pfnm)
 		    if (strcmp(fstat3.cFileName,".")                       //~vam1I~
     		&&  strcmp(fstat3.cFileName,".."))                     //~vam1I~
 #endif                                                             //~vam1I~
-#endif                                                             //+vam2I~
+#endif                                                             //~vam2I~
  		       	renwc(Pfnm,pathlen,&fstat3);                       //~1603R~
 //    		rc=(int)udosfindnext(hdir,&fstat3);                    //~va70R~
       		rc=(int)udosfindnext(Pfnm,hdir,&fstat3);               //~va70I~

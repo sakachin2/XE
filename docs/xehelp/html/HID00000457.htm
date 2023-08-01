@@ -35,7 +35,9 @@ a:hover{font-weight:bold;}
   .v129S&lt;--12PQ:(2020/12/24)</SPAN><span class="auto-style1"> </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
   .v129T&lt;--129S:(2022/12/04)
 <SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">  .v129U&lt;--129T:(2022/12/15)</SPAN>
-     1.BUGs
+  .v129V&lt;--129U:(2023/06/10)
+  <SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">.v129W&lt;--129V:(2023/07/31)
+</SPAN>   1.BUGs
        -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする
        -(64Bit) =3.14 がクラッシュする
        -(Win64) データタイプ X(Hex),O(octal) の計算結果の誤り
@@ -235,6 +237,20 @@ a:hover{font-weight:bold;}
         ユニコード使用の場合、言語環境によっては表示幅が異なるのでシェアーしている場合は注意が必要
         例えばWindowsで2桁表示、Linuxで1桁表示の場合Windowsで更新行に付与されたCIDは        
         LinuxではCIDと認識されません。従ってLinuxでの"cid clear"コマンドは0行を返すことになります
+</SPAN></PRE>
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">     (129V)</SPAN>
+       -(Axe)
+         .Android13(Api-33)対応
+         .共有ストレージサポート
+            "sp add //"コマンドで共有ストレージ内に専用フォルダーを設定可能で、
+            "e //Axe"のように専用フォルダー内をアクセスする。
+            また、Android11(Api-30)以降はアクセス権限："すべてのファイル"を設定可能で
+            許可設定するとgrep, xfg などのコマンドラインツールでも共有ストレージを利用可能
+         .icu ライブラリの利用環境の変更に対応
+     (129W)
+       -(Axe)
+         .Android-11(R):api30 許可オプション:全てのファイル を利用可能とする
+         .CD コマンドサポート
 
     3.その他
        -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加
@@ -293,7 +309,7 @@ a:hover{font-weight:bold;}
           Alt+u OFF(===&gt;)のとき変換エラー文字は時は"?"を
           変換できた時はローケールコードをセットする。
 
-    (129T)
+     (129T)
       -Windows Terminal が Windows11 で 省略値のコマンドプロンプト PGM となった様ですが
        行コマンドで不具合が生じることがあります。
        旧コマンドプロンプトの c:\Windows\System32\conhost.exe を使用してください
@@ -304,11 +320,22 @@ a:hover{font-weight:bold;}
       -(Win)ワークディレクトリーの省略値の場所を C:\ から C:\users\[username]\に変更
        既に C:\xe_wd がある場合は継続してこれを使用するが新規導入から適用
 
-    (129U)
+     (129U)
       -(LNX) ./configure で --enable-libgnome2=yes | no を自動で判断する様にした
       -(WIN:Console) WindowsTerminal 対応。conhost上動きとの違いに対応。
        行コマンド入力時の表示の乱れ、バイナリーファイルの表示の乱れなど
+ </SPAN></PRE>
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">     (129V) </SPAN></PRE>
+<PRE><span class="auto-style1">    </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">  -opt DELZ(バックアップを取らないDel行コマンドの許可)の省略値を安全側のオフに変更した
+</SPAN></PRE>
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">     (129W) </SPAN></PRE>
+<PRE><span class="auto-style1">    </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">   -短縮名がsp add コマンドで追加されたらrefreshしてすぐ有効にする
+       -Axe
+         .DOSコマンド(全画面シェル)はサポートされない
+         ."!"行コマンドは受け付けない
 
+</SPAN></PRE>
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
     4.ツール。
      (129C)
        -xprint v9.38
@@ -396,8 +423,14 @@ xcfont Mangal H=* ; Codepage will be listed by &quot;xcv /list&quot;.
         .% 以外にも置換対象ワード指定文字を指定可能
          例えば、/C$ 指定すると コマンド文字列内の $fp$ が フルパス名に置換される
         .相対パス指定の追加。%rp% が 開始ディレクトリからの相対パスに置換される
+<span class="auto-style1">    </span>(129W)
+       -(Windows) xlow 1.6 (ファイル名を大文字/小文字に変更）のバグ
+       -xcv v1.21
+       -xfmt v1.5
+       -xfg v1.21
+       -xdc v2.29 -UF オプション（ディレクトリーのタイムスタンプ不一致は不一致リストに出力しない）追加
 
-*** 2022/12/04
+
 </SPAN></PRE>
 </BODY>
 </HTML>

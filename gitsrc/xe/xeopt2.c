@@ -1,4 +1,4 @@
-//*CID://+vbraR~:                             update#=  466;       //~vbraR~
+//*CID://+vbraR~:                             update#=  467;       //~vbraR~
 //*************************************************************
 //*xeopt2.c                                                        //~7B24R~
 //* Mode                                                           //~v90wR~
@@ -223,7 +223,7 @@ void xeopt2init(void)                                              //~v91sI~
 //#endif                                                           //~va3jR~
 #endif                                                             //~va30I~
 #endif                                                             //~va10I~
-    UTRACEP("%s:new Goptopt2=%0x,Goptopt3=%0x,Gulibutfmode=%0x\n",UTT,Goptopt2,Goptopt3,Gulibutfmode);//~vb4jI~//+vbraR~
+    UTRACEP("%s:new Goptopt2=%0x,Goptopt3=%0x,Gulibutfmode=%0x\n",UTT,Goptopt2,Goptopt3,Gulibutfmode);//~vb4jI~//~vbraR~
     return;                                                        //~v91sI~
 }//xeopt2init                                                      //~v91sI~
 #ifdef UTF8UCS2                                                    //~va30I~
@@ -1392,6 +1392,7 @@ void filesetlocaleid(PUFILEH Ppfh)                                 //~v915M~
     else                                                           //~vbCDR~
 		opt2sethdrligcomb(O2SHLCO_LIGATUREONLY,Ppfh);              //~vbCDR~
   }                                                                //~vbi3I~
+    UTRACEP("%s:encodeid=%c,rmode=%c,wmode=%c,FHflag8=0x%x,fnm=%s",UTT,encodeid,rmode,wmode,Ppfh->UFHflag8,Ppfh->UFHfilename);//+vbraI~
     return;                                                        //~v915I~
 }//filesetlocaleid                                                 //~v915M~
 //*******************************************************          //~va7KI~

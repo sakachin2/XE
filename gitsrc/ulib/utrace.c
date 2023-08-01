@@ -1,7 +1,11 @@
-//*CID://+v711R~:                              update#=  123;      //~v711R~
+//*CID://+v77vR~:                              update#=  137;      //~v77vR~
 //***********************************************************************//~v026I~
 //* utrace.c                                                       //~v022R~
 //***********************************************************************
+//v77v:230515 ARM;utrace(utrace.xfc) open failed                   //~v77vI~
+//v778:230405 add flush function to utrace for arm                 //~v778I~
+//v776:230331 ARM;utrace(utrace.out) open failed                   //~v776I~
+//v771:230323 sys/timeb.h is not found on ARM                      //~v771I~
 //v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //~v711I~
 //v70q:200919 (ARM)add gettraceopt                                 //~v70qI~
 //v709:200616 ARM:threadID of utrace by gettid():Kernel:int not by pthread_self():Posix pthread_t:handle//~v709I~
@@ -76,7 +80,9 @@
 #ifdef UNX                                                         //~v321R~
     #include <errno.h>                                             //~v321R~
     #include <time.h>                                              //~v321R~
+#ifndef ARM                                                        //~v771I~
     #include <sys/timeb.h>                                         //~v321R~
+#endif                                                             //~v771I~
   #ifdef ARM                                                       //~v6a0I~
 //  #include <sys/syscall.h>                                       //~v6a0R~
     #include <pthread.h>                                           //~v6a0I~
@@ -91,7 +97,7 @@
     #include <sys/types.h>                                         //~v6p1I~
   #endif                                                           //~v5jaI~
 #else                                                              //~v321R~
-    #include <sys/timeb.h>                                         //+v711I~
+    #include <sys/timeb.h>                                         //~v711I~
 #include <time.h>
 #ifdef DPMI                 //DPMI version                         //~v053I~
     #include <errno.h>                                             //~v053I~
@@ -122,6 +128,7 @@
 #include <uproc2.h>                                                //~v5j0R~
 #include <ufile.h>                                                 //~v6B1I~
 #include <ufile2.h>                                                //~v6B1I~
+#include <ulibarm.h>	//timeb.h                                  //~v771I~
 #define UFTIME                                                     //~v711I~
 #include <umiscf.h>                                                //~v711I~
 
@@ -218,6 +225,7 @@
  #endif //!NOMT                                                    //~v5ncM~
     static int Slockgotten=0;	//protect deadlock                 //~v5j0I~
 #endif                                                             //~v5j0I~
+    static int SswParmFile=0;                                      //~v776I~
 
 static int utraceopen(void);                                    //~5829I~
 static void utraceocmsg(char *Pmsg);                               //~v022R~
@@ -304,8 +312,11 @@ int utrace_init(char *Putracefile,int Popt)                     //~5829R~
 #endif                                                             //~v5j0I~
     if (Putracefile
     &&  *Putracefile)
+    {                                                              //~v776I~
 //      strcpy(Sutracefilename,Putracefile);                       //~v101R~
         strncpy(Sutracefilename,Putracefile,_MAX_PATH-1);          //~v101R~
+	    SswParmFile=1;                                             //~v776I~
+    }                                                              //~v776I~
 #ifdef ARM                                                         //~v6a0I~
     if (Popt & UTRACEO_TEMPCLOSE)                                  //~v6a0R~
     {                                                              //~v6a0I~
@@ -359,6 +370,18 @@ int utrace_init(char *Putracefile,int Popt)                     //~5829R~
     return rc;                                                  //~5829R~
 }//utrace_init                                                   //~5829R~//~v6a0R~
                                                                 //~6203I~
+//**************************************************************** //~v778I~
+void utrace_flush(char *Pcmt)                                      //~v778R~
+{                                                                  //~v778I~
+//***********************************                              //~v778I~
+    if (!Sutraceopt)                                               //~v778I~
+         return;                                                   //~v778I~
+    if (Sfile)                                                     //~v778I~
+    {                                                              //~v778I~
+        UTRACEP("utrace.flush:%s\n",Pcmt);                         //~v778R~
+ 		fflush(Sfile);                                             //~v778I~
+    }                                                              //~v778I~
+}                                                                  //~v778I~
 //****************************************************************//~6203I~
 //* printf format trace                                         //~6203I~
 //*parm1 :printf format                                         //~6203I~
@@ -805,7 +828,22 @@ int utraceopen(void)                                            //~5829I~
    if (Sswnoshare)                                                 //~v6B1I~
     Sfile=ufileopenexclusivewrite(0,Sutracefilename,&Slockhandle);             //open output//~v6B1M~
    else                                                            //~v6B1I~
+   {                                                               //~v776I~
+#ifdef ARM                                                         //~v776M~
+  #ifdef XSUB	                                                   //~v776I~
+//  if (SswParmFile==0                                             //~v776I~//~v77vR~
+    if (SswParmFile==0                                             //~v77vI~
+    ||  !strchr(Sutracefilename,'/'))                              //~v77vI~
+    {                                                              //~v776M~
+    	char *privateDir=getenv("HOME");                           //~v776M~
+	    char editwk[_MAX_PATH*2];                                  //~v776M~
+        sprintf(editwk,"%s/%s",privateDir,Sutracefilename);        //~v776M~
+        strncpy(Sutracefilename,editwk,_MAX_PATH-1);               //~v776M~
+    }                                                              //~v776M~
+  #endif                                                           //~v776I~
+#endif                                                             //~v776M~
     Sfile=fopen(Sutracefilename,"w");             //open output //~6203R~
+   }                                                               //~v776I~
   }                                                                //~v6B1I~
 #ifdef ARM                                                         //~v6a0I~
     LOGPD("utraceopen Sfile=%p,file=%s",Sfile,Sutracefilename);    //~v6a0R~
@@ -823,12 +861,24 @@ int utraceopen(void)                                            //~5829I~
 #endif                                                             //~v6a0I~
 #ifdef UNX                                                         //~v352I~
     if (rc==EACCES)                                                //~v352I~
-    	printf("%s(%s) Open failed(permission denied)\n",          //~v352R~
+    	printf("%s(%s) Open failed(13:permission denied)\n",          //~v352R~//+v77vR~
             	Sutracefilename,"w");                              //~v352I~
     else                                                           //~v352I~
+    if (rc==EPERM)                                                 //+v77vI~
+    	printf("%s(%s) Open failed(1:Operation not permitted)\n",  //+v77vI~
+            	Sutracefilename,"w");                              //+v77vI~
+    else                                                           //+v77vI~
 #endif //UNX                                                       //~v352I~
+    {                                                              //~v77vI~
+#if defined(ARM) && defined(XSUB)                                  //~v77vI~
+    	char *hm=getenv("HOME");                                   //~v77vI~
+    	printf("%s(mode=\"%s\") Open failed(errno=%d) HOME=%s\n",  //~v778R~
+            Sutracefilename,"w",rc,hm);                            //~v778R~
+#else                                                              //~v77vR~
     	printf("%s(%s) Open failed(errno=%d)\n",                   //~v352R~
             Sutracefilename,"w",rc);                            //~5829I~
+#endif                                                             //~v77vI~
+    }                                                              //~v77vI~
 //  if (Sutraceopt==1)  //not ignore trace opt                     //~v5j0R~
     if (!(Sutraceopt & UTRACEO_IGNOREOPENERR))  //not ignore trace opt//~v5j0I~
         exit(19);                                               //~5829I~

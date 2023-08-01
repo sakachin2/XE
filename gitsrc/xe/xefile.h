@@ -1,7 +1,9 @@
-//CID://+vbv9R~:                                      Update#=  338//~vbv9R~
+//CID://+vby6R~:                                      Update#=  349//+vby6R~
 //****************************************************************
 //xefile.h                                                         //~v10LR~
 //****************************************************************
+//vby6:230402 (ARM)adjust by4; go around by shortname and change to uri at ulib(ufile1l)//+vby6I~
+//vby4:230402 (ARM)shared resource support by //shareName defined by SP(ShortPath) cmd.//~vby4I~
 //vbv9:221124 add cid type apl for extension=.apl                  //~vbv9I~
 //vbv6:221121 support unicode cid (length>2)                       //~vbv6I~
 //vbr3:200620 ARM:sdcard permission chk                            //~vbr3I~
@@ -400,6 +402,9 @@ typedef struct _UFILEH {                        //file hdr
 #ifdef FTPSUPP                                                     //~v542I~
                         UCHAR   UFHftpwdfnm[_MAX_PATH];	//ftp local work file name//~v542R~
 #endif                                                             //~v542I~
+//#ifdef ARMXXE                                                      //~vby4R~//+vby6R~
+//                        UCHAR   UFHfpathDoc[_MAX_PATH];            //~vby4R~//+vby6R~
+//#endif                                                             //~vby4R~//+vby6R~
                         UCHAR   UFHalias[UFHALIASSZ];   //alias in work dir//~v48cI~
                         UCHAR   UFHcid[12];     //cid for chk line copy//~v020R~
                         UCHAR   UFHcidDDfmt[4];     //for utf8 file utf8 cid by dd fmt, UFHcid is utf8 string//~vbv6R~
@@ -448,7 +453,7 @@ typedef struct _UFILEH {                        //file hdr
 #define UFHCIDTYPEC     1       //for c,cpp,h,hpp etc           //~5310R~
 #define UFHCIDTYPEASM   2       //for asm                       //~5310R~
 #define UFHCIDTYPEDOC   3       //for .doc,read.me              //~5528I~
-//#define UFHCIDTYPEAPL 4       //for .apl                         //+vbv9R~
+//#define UFHCIDTYPEAPL 4       //for .apl                         //~vbv9R~
 #define UFHCIDTYPEOTHER (MAXCIDTBL+1) //by header line(not predefined)//~v09rR~
 #define UFHCIDTYPEERR   0xff    //not defined ext type          //~5310R~
                         int     UFHpathlen;     //path name length //~vaztI~
@@ -670,6 +675,10 @@ typedef struct _UFILEH {                        //file hdr
 #define UFHF14CIDU8           0x08      //cid is by utf8 code for utf8 file,it is set on UFHcidDDfmt[4]//~vbv6R~
 #define UFHF14CIDU8SBCS       0x10      //cid utf8 sbcs(1 column)  //~vbv6I~
 #define UFHF14CID2BYTE        0x20      //2byte cid prefix(utf8 locale)//~vbv6I~
+#ifdef ARMXXE                                                      //~vby4I~
+	#define UFHF14DOCUMENT    0x40                                 //~vby4I~
+	#define PFH_ISDOCUMENT(pfh)   (UCBITCHK((pfh)->UFHflag14,UFHF14DOCUMENT)!=0)//~vby4I~
+#endif                                                             //~vby4I~
                         UCHAR   UFHrsv14[3];                       //~vb2eI~
                         PULINEH UFHplhlcmdi;       //plh isrted by lcmd i//~v78SR~
                         int     UFHplhlcmdi_upundoctr; //if changed set UFHplhlcmdi=0//~vb7kI~
@@ -705,6 +714,10 @@ typedef struct _UFILEH {                        //file hdr
                         UCHAR  *UFHfilenamedddbcs;     //ddfmt dbcs//~vavaI~
                         UCHAR  *UFHfilenameddct;       //ddfmt ct  //~vavaI~
 #endif                                                             //~vavaI~
+//#ifdef ARMXXE                                                      //~vby4I~//+vby6R~
+//                        int     UFHdocumentPrefixLen; //up to next of %3A or ":"//~vby4R~//+vby6R~
+//                        char    UFHshortpath[_MAX_PATH];           //~vby4R~//+vby6R~
+//#endif                                                             //~vby4I~//+vby6R~
                         } UFILEH;
 typedef UFILEH *PUFILEH;
 #define UFILEHSZ (sizeof(UFILEH))

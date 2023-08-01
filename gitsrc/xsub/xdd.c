@@ -1,8 +1,9 @@
-//CID://+vad0R~:        update#=   13                              //~vad0R~
+//CID://+vas3R~:        update#=   15                              //~vas3R~
 //*************************************************************
 //*XDD.C  delete file/dir
 //*format
 //*************************************************************
+//vas3:230630 ARM;closeall for arm subthread execution             //~vas3I~
 //vad0:170101 xdd v2.1 del longname file                           //~vad0I~
 //vac0:161219 xdd v2.0 quit option(-q[n], one msg for each n deletion)//~vac0I~
 //va90:140503 xdd v1.9:UNICODE version                             //~va90I~
@@ -191,6 +192,7 @@ int main(int parmc,char * parmp[])
 	}//for all parm
     printf("%s:%s:=(%c)=== Directory/File Delete (%s) =========================\n",//~v101R~
             PGMID,VERSION,OSTYPE,__DATE__);                        //~v101I~
+	ARMXSUB_CLOSE(PGMID);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//+vas3I~
     return 0;
 }//main
 //*********************                                            //~v103I~
@@ -364,8 +366,8 @@ void help(void)
     		"            r : Read only(読取専用をも強制削除)");
 	uerrmsg("                Use also to delete too long file path name.",//~vad0I~
     		"                長すぎるファイル名を削除する時も指定する");//~vad0I~
-	uerrmsg("                (Long name is deleted after renamed.)",//+vad0R~
-    		"                (長すぎるファイル名は改名後に削除される)");//+vad0R~
+	uerrmsg("                (Long name is deleted after renamed.)",//~vad0R~
+    		"                (長すぎるファイル名は改名後に削除される)");//~vad0R~
 	uerrmsg("            r-: Delete except Read-Only file/directory",
     		"            r-: 読取専用以外を削除");
 	uerrmsg("           (bypass readonly-check phase when r/r- is specified.)",//~vac0R~

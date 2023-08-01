@@ -1,8 +1,9 @@
-//*CID://+vaf0R~:                             update#=    4;       //~vaf0I~
+//*CID://+vas3R~:                             update#=    8;       //~vas3R~
 //*************************************************************    //~0513I~
 //*xbc.c                                                           //~0513I~
 //* basic calc batch                                               //~0513I~
 //*************************************************************    //~v101I~
+//vas3:230630 ARM;closeall for arm subthread execution             //~vas3I~
 //vaf0:170316 xbc v1.6:support 3 operand by "reverse polish notation"//~vaf0I~
 //va1J 041228 xbc:v1.5 file input support(-fname,stdin if no filename specification)//~va1JI~
 //va1k:040927 xbc:v1.4:help msg update for VnnR option(precision,round)//~va1kI~
@@ -135,6 +136,7 @@ int main(int parmc,char *parmp[])                                  //~0513I~
     rc=ucalc_bcmain(cmdstr,0);                                     //~v105I~
     if (rc)                                                        //~0513I~
         ubell();                                                   //~0513I~
+	ARMXSUB_CLOSE(PGMID);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//~vas3R~
     return rc;                                                     //~0513I~
 }//main                                                            //~va1JR~
 //**************************************************************** //~va1JI~
@@ -260,6 +262,8 @@ int xbcfile(UCHAR *Pfnm)                                           //~va1JI~
             }                                                      //~va1JI~
         }                                                          //~va1JI~
     }                                                              //~va1JI~
+	if (*Pfnm)                                                     //+vas3I~
+	    fclose(fh);                                                //+vas3I~
     return rct;                                                    //~va1JR~
 }//xbcfile                                                         //~va1JI~
 //**************************************************************** //~0513I~
@@ -291,7 +295,7 @@ HELPMSG                                                            //~v102I~
 //"Œ`Ž®: %s value1 [ operation value2 ] [/output-type] [V[n][R]]\n",Spgmid);//~va1JR~
 //"Format2: %s [$n=]value1 [ operation value2 ] [/output-type] [V[n][R]]\n",//~va1JR~//~vaf0R~
 //"Œ`Ž®2: %s [$n=] value1 [ operation value2 ] [/output-type] [V[n][R]]\n",Spgmid);//~va1JR~//~vaf0R~
-  "Format2: %s [$n=]value1 [ op value2] [ op value3 ...] [/output-type] [V[n][R]]\n",//+vaf0R~
+  "Format2: %s [$n=]value1 [ op value2] [ op value3 ...] [/output-type] [V[n][R]]\n",//~vaf0R~
   "Œ`Ž®2: %s [$n=] value1 [ op value2 ] [ op value3 ...] [/output-type] [V[n][R]]\n",Spgmid);//~vaf0I~
 HELPMSG                                                            //~v102I~
 //"    -value1/2:  [type]digit[.decimal]\n",                       //~va1hR~

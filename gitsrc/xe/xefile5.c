@@ -1,8 +1,9 @@
-//*CID://+vbp1R~:                             update#=  716;       //~vbp1R~
+//*CID://+vbycR~:                             update#=  720;       //~vbycR~
 //*************************************************************    //~v08qI~
 //*xefile5.c*                                                      //~v08qI~
 //* miscellenious function                                         //~v08qI~
 //*************************************************************    //~v08qI~
+//vbyc:230421 (ARM)reject open range parameter([O]n[t]-m[t]) for Document file. because fseek is not yet supported//~vbycI~
 //vbp1:181028 new lineno specification:Select --[n];  select member from last//~vbp1I~
 //vbmj:180812 request "Force" option to save updated at other session.
 //vbg0:180123 (BUG)errmsg "conflict recordmode and CPU8" evenif profile record has cplc option,rejected at optopn prechk//~vbg0I~
@@ -2459,6 +2460,23 @@ int fileoptionchk(PUCLIENTWE Ppcw,PUFILEH Ppfh,UCHAR Popt,int Pbinsw)//~v75HI~
     	Ppfh->UFHeline=end;                                        //~v08lI~
 //  }                                                              //~v09YR~
   }//opdno>1                                                       //~va51I~
+#ifdef ARMXXE                                                      //+vbycM~
+	if (UCBITCHK(Ppfh->UFHflag4,UFHF4XRANGE)||Ppfh->UFHsline||Ppfh->UFHeline)//+vbycM~
+    {                                                              //+vbycM~
+		if (!UCBITCHK(Popt,UFCFBROWSE))                            //+vbycM~
+        {                                                          //+vbycM~
+        	char* fhfnm=Ppfh->UFHfilename;                         //+vbycM~
+			UTRACEP("%s:edit range parm exist UFHfilename=%s\n",UTT,fhfnm);//+vbycM~
+			if (fhfnm && IS_DOCPATH(fhfnm))                        //+vbycM~
+    		{                                                      //+vbycM~
+	            uerrmsg("Range parameter(lineNo/Offset) is not supported for ExternalStorageFile Edit(%s)",//+vbycM~
+						"外部ファイルに対する編集は行数、オフセット値などの範囲指定はできません(%s)",//+vbycM~
+    	                fhfnm);                                    //+vbycM~
+            	return 4;                                          //+vbycM~
+    		}                                                      //+vbycM~
+        }                                                          //+vbycM~
+    }                                                              //+vbycM~
+#endif                                                             //+vbycM~
   if (UCBITCHK(Ppfh->UFHflag5,UFHF5HEX)) //hhex                    //~va58I~
   {                                                                //~va58I~
 	if (!UCBITCHK(Ppfh->UFHflag4,UFHF4WIDTH) //no explicit width   //~va58R~
@@ -3172,8 +3190,8 @@ int fileedithelp(int Pcmdid)                                       //~v11iR~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
 //  strcat(opts," [" LANGOPT_UTF8 "|" LANGOPT_LOCALE "|" LANGOPT_ASIS "|" MODE_EBC "] ...Hit Esc-key\n");//~va50I~//~va79R~
 //  strcat(opts," [" LANGOPT_UTF8 "|" LANGOPT_LOCALE "|" LANGOPT_ASIS "|" MODE_EBC "[:converter]] ...Hit Esc-key\n");//~va79R~//~vagER~
-//  strcat(opts," [" LANGOPT_UTF8 "|" LANGOPT_LOCALE "|" LANGOPT_ASIS "|" MODE_EBC "[:converter] [" MODE_IE "] [" MODE_FNU8 "|" MODE_FNLC "|" MODE_FNAS "]...Hit Esc-key\n");//~vagER~//+vbp1R~
-    strcat(opts," [" LANGOPT_UTF8 "|" LANGOPT_LOCALE "|" LANGOPT_ASIS "|" MODE_EBC "[:converter] [" MODE_IE "] [" MODE_FNU8 "|" MODE_FNLC "|" MODE_FNAS "]...Hit Esc\n");//+vbp1I~
+//  strcat(opts," [" LANGOPT_UTF8 "|" LANGOPT_LOCALE "|" LANGOPT_ASIS "|" MODE_EBC "[:converter] [" MODE_IE "] [" MODE_FNU8 "|" MODE_FNLC "|" MODE_FNAS "]...Hit Esc-key\n");//~vagER~//~vbp1R~
+    strcat(opts," [" LANGOPT_UTF8 "|" LANGOPT_LOCALE "|" LANGOPT_ASIS "|" MODE_EBC "[:converter] [" MODE_IE "] [" MODE_FNU8 "|" MODE_FNLC "|" MODE_FNAS "]...Hit Esc\n");//~vbp1I~
 #else                                                              //~va50I~
     strcat(opts," [" LANGOPT_UTF8 "|" LANGOPT_LOCALE "|" LANGOPT_ASIS "] ...Hit Esc-key\n");//~v78wR~//~va00I~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50I~

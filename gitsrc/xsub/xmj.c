@@ -1,9 +1,10 @@
-//CID://+vaa0R~:     update#=     7                                //+vaa0R~
+//CID://+vas3R~:     update#=     8                                //+vas3R~
 //*************************************************************
 //*xmj.c
 //* merge join 2 file
 //*************************************************************
-//vaa0:160417 Lnx compiler warning                                 //+vaa0I~
+//vas3:230630 ARM;closeall for arm subthread execution             //+vas3I~
+//vaa0:160417 Lnx compiler warning                                 //~vaa0I~
 //va67:120628 VC10-32 compile(va66 for also 32bit)                 //~va67I~
 //va66:120628 (AMD64) VC10(VS2010) LP64 support                    //~va66I~
 //va64:120611 avoid C4701 warning(variable may not be uninitialized)//~va64I~
@@ -51,7 +52,7 @@
 #include <ucalc2.h>
 
 //*******************************************************
-#define VER "V1.3"   //version                                     //~va4gR~//+vaa0R~
+#define VER "V1.3"   //version                                     //~va4gR~//~vaa0R~
 #define PGM "xmj"
 
 #define HELPMSG         uerrhelpmsg(stdout,stderr,
@@ -118,6 +119,7 @@ int main(int parmc,char * parmp[])
     				Sfnm[1],Sreadctr[1],Sdupkeyctr[1],Sshortkeyctr[1]);
     fprintf(stderr,"%d joind,%d file1 only,%d file2 only, total %d written\n",
     				Sjoinctr,Sf1onlyctr,Sf2onlyctr,Swritectr);
+	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//+vas3I~
     return rc;
 }//main
 //**********************************************************************
@@ -486,8 +488,8 @@ int mjmain(void)
   		  	if (!Sswfixlen) //expand file1 record size to max file //~0002R~
 	          	maxlrecl1=len1;                                    //~0002I~
             if (maxlrecl1>len1)
-//          	memset(pc,' ',(UINT)maxlrecl1-len1);               //~5327R~//+vaa0R~
-            	memset(pc,' ',(size_t)(maxlrecl1-len1));           //+vaa0I~
+//          	memset(pc,' ',(UINT)maxlrecl1-len1);               //~5327R~//~vaa0R~
+            	memset(pc,' ',(size_t)(maxlrecl1-len1));           //~vaa0I~
             pc=buff3+maxlrecl1;
             memcpy(pc,Sseps,(UINT)Sseplen);                        //~0002R~
             pc+=Sseplen;                                           //~5328R~
@@ -558,8 +560,8 @@ int mjmain(void)
   		  	if (!Sswfixlen) //expand file1 record size to max file //~0002R~
 	          	maxlrecl1=len1;                                    //~0002I~
             if (maxlrecl1>len1)                                    //~5327R~
-//          	memset(pc,' ',(UINT)maxlrecl1-len1);               //~5327R~//+vaa0R~
-            	memset(pc,' ',(size_t)(maxlrecl1-len1));           //+vaa0I~
+//          	memset(pc,' ',(UINT)maxlrecl1-len1);               //~5327R~//~vaa0R~
+            	memset(pc,' ',(size_t)(maxlrecl1-len1));           //~vaa0I~
             pc=buff1+maxlrecl1;
             memcpy(pc,Sseps,(UINT)Sseplen);                        //~0002R~
             pc+=Sseplen;                                           //~5328R~

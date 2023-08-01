@@ -1,4 +1,4 @@
-//*CID://+vbmoR~:                             update#=  505;       //~vbmoR~
+//*CID://+vbmoR~:                             update#=  506;       //~vbmoR~
 //***************************************************************************//~2818I~
 //* c subrtn for wxe                                               //~2818I~
 //***************************************************************************//~2818I~
@@ -1634,7 +1634,7 @@ int csubtextoutw1_locale(int Popt,HDC Phdc,int Pxx,int Pyy,char *Pdata,int Plen)
   )                                                                //~vb2TI~
   {                                                                //~vb2QI~
 	TextOut(Phdc,Pxx,Pyy,Pdata,Plen);                              //~va74I~
-    UTRACED("NOTRANS TextOut",Pdata,Plen);                         //~vb2QI~
+//  UTRACED("NOTRANS TextOut",Pdata,Plen);                         //~vb2QI~//+vbmoR~
   }                                                                //~vb2QI~
   else                                                             //~va74I~
   {                                                                //~va74I~
@@ -1830,7 +1830,7 @@ int csubtextoutw_ligature_SCMidx(int Popt,WUCS *Ppucs,int Pucsctr,char *Pscmidx)
         else                                                       //~vbmdI~
         	utf16ctr=1;                                            //~vbmdI~
         swscm=csub_isSpacingCombiningMark(0,ucs4);                 //~vbmdI~
-        pidx[ii]=(char)swscm;                                            //~vbmdR~//+vbmoR~
+        pidx[ii]=(char)swscm;                                            //~vbmdR~//~vbmoR~
         if (swscm)                                                 //~vbmdI~
             scmctr++;                                              //~vbmdI~
     }                                                              //~vbmdI~

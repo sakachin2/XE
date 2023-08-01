@@ -1,7 +1,8 @@
-//*CID://+v6H7R~:                             update#=   60;       //~v6H7R~
+//*CID://+v77pR~:                             update#=   61;       //+v77pR~
 //******************************************************        //~5826I~
 //*ufile2.h                                                     //~5826I~
 //******************************************************        //~5826I~
+//v77p:230502 ARM:request "//" option to delete shortpath root(//Axe etc)//+v77pI~
 //v6H7:170108 FTP crush by long name                               //~v6H7I~
 //v6H1:161231 filename >_MAX_PATH occurse when moved directory on xe(native cmd issue error fo5r xcopy /move)//~v6H1I~
 //            and it cause fpath area overflow then 0c4            //~v6H1I~
@@ -95,6 +96,9 @@ int uxdelete(UCHAR *Pfile,unsigned Pattrmask,int Popt,          //~v010I~
 #endif                                                             //~v6b1R~
                                                                    //~v6G7I~
 #define UXDELQUIET        0x1000      //quiet(no deleted msg)      //~v6G7R~
+#ifdef ARMXXE                                                      //+v77pI~
+#define UXDELSPROOT       0x2000      // option to delet shared storage root//+v77pI~
+#endif                                                             //+v77pI~
                                                                    //~v6H7I~
 #define UXDELRC_FTP_RMDIR_FAILED  4097   //FTP rmdir Failed        //~v6H7I~
                                                                 //~5B12I~
@@ -102,11 +106,11 @@ int uxdelete(UCHAR *Pfile,unsigned Pattrmask,int Popt,          //~v010I~
 int uremovenomsg(UCHAR *Pfilename);                                //~v5amI~
 //**************************************************************** //~v5amI~
 int uremove(UCHAR *Pfilename);                                  //~5826I~
-//**************************************************************** //+v6H7I~
-#ifdef W32                                                         //+v6H7I~
-int uremoveWLong(int Popt,UCHAR *Pfilename);                       //~v6H9I~//+v6H7M~
-#define       URWLO_NOMSG        0x01                              //~v6H9I~//+v6H7M~
-#endif                                                             //+v6H7I~
+//**************************************************************** //~v6H7I~
+#ifdef W32                                                         //~v6H7I~
+int uremoveWLong(int Popt,UCHAR *Pfilename);                       //~v6H9I~//~v6H7M~
+#define       URWLO_NOMSG        0x01                              //~v6H9I~//~v6H7M~
+#endif                                                             //~v6H7I~
 //****************************************************************//~5826I~
 int urename(UCHAR *Poldname,UCHAR *Pnewname,UCHAR *Pnewspec);      //~v277I~
 //**************************************************************** //~v520I~

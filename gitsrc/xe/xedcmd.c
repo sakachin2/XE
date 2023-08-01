@@ -1,9 +1,13 @@
-//*CID://+vbriR~:                             update#=  372;       //+vbriR~
+//*CID://+vbygR~:                             update#=  387;       //~vbygR~
 //*************************************************************
 //*xedcmd.c                                                     //~v041R~
 //* drive,cd,xdelete,rmdir,mkdir,rename,attrib,xcopy,xmove      //~v05oR~
 //*************************************************************
-//vbri:200831 (Bug)editfattr overflow work when UFEA_DIR option from dcmdattrchange//+vbriI~
+//vbyg:230508 correct errmsg;distinguish for dlcmd and dcmd        //~vbygI~
+//vbyf:230502 (ARM) "//" option required to delete sortpath root(such as //Axe)//~vbyfI~
+//vby6:230402 (ARM)adjust by4; go around by shortname and change to uri at ulib(ufile1l)//~vby6I~
+//vby4:230402 (ARM)shared resource support by //shareName defined by SP(ShortPath) cmd.//~vby4I~
+//vbri:200831 (Bug)editfattr overflow work when UFEA_DIR option from dcmdattrchange//~vbriI~
 //vb7n:170117 move filename position to last on errmsg for longname//~vb7nI~
 //vb7g:170114 (Win)longname support(expand buffsz)                 //~vb7gI~
 //vb76:170103 add "use force option" to readonly/toolongname err msg//~vb76I~
@@ -927,7 +931,8 @@ int dcmd_xdd(PUCLIENTWE Ppcw)                                   //~v05lI~
     if (pc)                     //err operand ptr               //~v05QI~
         return errinvalid(pc);                                  //~v05QI~
     xdelopt &=~UXDELCONFEACH;   //avoud fonfirmation               //~v134I~
-    return dcmddelxdd(Ppcw,opdno,UXDELDIR,xdelopt,xddopt,1,0);  //~v05RR~
+//  return dcmddelxdd(Ppcw,opdno,UXDELDIR,xdelopt,xddopt,1,0);  //~v05RR~//~vbygR~
+    return dcmddelxdd(Ppcw,opdno,UXDELDIR,xdelopt,xddopt,DCMDXDDIDXDD|DCMDXDDID_DCMD,0);//~vbygR~
 }//dcmd_xdd                                                     //~v05RR~
                                                                 //~v05QI~
 //****************************************************************//~v03pI~
@@ -944,6 +949,7 @@ int dcmd_xdelete(PUCLIENTWE Ppcw)                               //~v05iR~
 #ifdef UNX                                                         //~v54yR~
     int firstparmsw=0;                                             //~v19DI~
 #endif //!UNX                                                      //~v54yR~
+	int xdelOpt=0;                                                 //~vbyfI~
 //********************                                          //~v03pI~
     if (!(pc=Ppcw->UCWparm))                                    //~v03pI~
     {                                                              //~v54tR~
@@ -959,6 +965,13 @@ int dcmd_xdelete(PUCLIENTWE Ppcw)                               //~v05iR~
 //mask get                                                      //~v05iI~
     for (ii=0;ii<opdno;ii++,pc+=strlen(pc)+1)                   //~v05iR~
     {                                                           //~v05iI~
+#ifdef ARMXXE                                                      //~vbyfI~
+		if (!strcmp(pc,PREFIX_ARM_SHARE))                           //~vbyfI~
+        {                                                          //~vbyfI~
+        	xdelOpt=UXDELSPROOT;                                   //~vbyfI~
+            continue;                                              //~vbyfI~
+        }                                                          //~vbyfI~
+#endif                                                             //~vbyfI~
 //      if (*pc!='/')                                              //~v19DR~
         if (!CMDFLAGCHK(*pc,firstparmsw)) // '-' or 2nd '/'        //~v19DI~
         {                                                          //~v19DI~
@@ -988,10 +1001,21 @@ int dcmd_xdelete(PUCLIENTWE Ppcw)                               //~v05iR~
             }                                                   //~v05iI~
         }//all char                                             //~v05iI~
     }                                                           //~v05iI~
-    return dcmddelxdd(Ppcw,opdno,attrmask,UXDELNOMSG,0,0,0);    //~v05RR~
+//  return dcmddelxdd(Ppcw,opdno,attrmask,UXDELNOMSG,0,0,0);    //~v05RR~//~vbyfR~
+    return dcmddelxdd(Ppcw,opdno,attrmask,UXDELNOMSG|xdelOpt,0,0,0);//~vbyfI~
                 //xddopt=xddid=pdh=0                            //~v05RI~
 }//dcmd_xdelete                                                 //~v05QI~
-                                                                //~v05QI~
+#ifdef ARMXXE                                                   //~v05QI~//~vbyfR~
+//**************************************************************** //~vbyfI~
+int delsproot(char *Pfpath,int Prc)                               //~vbyfI~
+{                                                                  //~vbyfI~
+	UTRACEP("%s:no option to delete shared storage root,fnm=%s\n",UTT,Pfpath);//~vbyfI~
+    uerrmsg("specify %s option to delete shared-storage top(\"%s %s\")",//~vbyfR~
+    		"共有ストレージのトップフォルダーの削除には%sオプションを指定してください(\"%s %s\")",//~vbyfR~
+            PREFIX_ARM_SHARE,Pfpath,PREFIX_ARM_SHARE);             //~vbyfR~
+	return Prc;                                                    //~vbyfI~
+}                                                                  //~vbyfI~
+#endif                                                             //~vbyfI~
 //****************************************************************//~v05QI~
 //!dcmddelxdd                                                   //~v05QI~
 //*common for delete and xdd cmd                                //~v05QI~
@@ -1025,6 +1049,7 @@ int dcmddelxdd(PUCLIENTWE Ppcw,int Popdno,UINT Pmask,int Pxdelopt,//~v05RR~
     PFUNCTBL pft;                                                  //~vaw6I~
 #endif                                                             //~vaw6I~
 //********************                                          //~v05QI~
+	UTRACEP("%s:delopt=0x%x,xddopt=0x%x\n",UTT,Pxdelopt,Pxddopt); //+vbygI~
 #ifdef W32UNICODE                                                  //~vaw6I~
 	pft=(PFUNCTBL)Ppcw->UCWpfunct;                                 //~vaw6I~
   	swdcmd=pft && (pft->FTfuncid==FUNCID_DELX||pft->FTfuncid==FUNCID_DOS);	//not dlcmd//~vaw6R~
@@ -1068,6 +1093,12 @@ int dcmddelxdd(PUCLIENTWE Ppcw,int Popdno,UINT Pmask,int Pxdelopt,//~v05RR~
 					return ufileroot(fpath,4);                     //~v58gR~
                 abrootsw=1;                                        //~v487I~
             }                                                      //~v487I~
+#ifdef ARMXXE                                                      //~vbyfI~
+            if (Pmask==UXDELDIR)    //xdd or del /a                //~vbyfI~
+    	        if (IS_DOCROOT(fpath))                             //~vbyfR~
+        	    	if (!(Pxdelopt & UXDELSPROOT))                 //~vbyfR~
+            	    	return delsproot(fpath,4);                 //~vbyfR~
+#endif                                                             //~vbyfI~
 #else  //!UNX                                                      //~v21pI~
     #ifdef FTPSUPP                                                 //~v54iI~
     	  if (uftpisrootdir(fpath))//remote root	               //~v58gR~
@@ -1223,6 +1254,7 @@ int dcmdxdelete(PUCLIENTWE Ppcw,UCHAR *Pfullpath,UINT Pattrmask,//~v05RR~
     int total,ronly;                                            //~v05QR~
     int deleted;                                                //~v05QI~
 //********************                                          //~v03pI~
+	UTRACEP("%s:fpath=%s,xdelOpt=0x%x,xddidopt=0x%x\n",UTT,Pfullpath,Pxdelopt,Pxddid);//+vbygI~
     if ((Pxdelopt & UXDELRONLYCHK)  //read only chk             //~v05QR~
     ||  !(Pxdelopt & (UXDELFORCE|UXDELSKIPRONLY)))  //err when ronly//~v05QR~
     {                                                              //~vaa0R~
@@ -1269,8 +1301,19 @@ int dcmdxdelete(PUCLIENTWE Ppcw,UCHAR *Pfullpath,UINT Pattrmask,//~v05RR~
             if (rc==2)  //ronly or longname                        //~vb76I~
             {                                                      //~vb76I~
                 if (Pxddid & DCMDXDDIDXDD)  //form dlcmd           //~vb76I~
-                    uerrmsgcat("; Uuse \"/\" line cmd to force delete",//~vb76R~
+                {                                                  //~vbygR~
+                  if (Pxddid & DCMDXDDID_DCMD)  //form dlcmd       //~vbygR~
+                    uerrmsgcat("; Use \"/r\" option to force delete",//~vbygR~
+                    			"; 強制削除するには\"/r\" オプションを使用してください");//~vbygR~
+                  else                                             //~vbyfI~
+                    uerrmsgcat("; Use \"/\" line cmd to force delete",//~vb76R~//~vbyfR~
                     			"; 強制削除するには\"/\" 行コマンドを使用してください");//~vb76R~
+                }                                                  //~vbyfI~
+                else                                               //~vbygI~
+                {                                                  //~vbygI~
+                    uerrmsgcat("; Use xdd command with \"/r\" option to force delete",//~vbygI~
+                    			"; 強制削除するには \"/r\" オプション指定のxddコマンドを使用してください");//~vbygI~
+                }                                                  //~vbygI~
             }                                                      //~vb76I~
             return rc;                                          //~v05QI~
         }                                                          //~vb76I~
@@ -2755,8 +2798,8 @@ int dcmdattrchng(UCHAR *Pfullpath,ULONG Pattron,ULONG Pattroff,ULONG *Pattrout)/
 //#endif                                                           //~v53QR~
 {                                                               //~v03zI~
 //  UCHAR attrstring[UDDATTRSZ+1],attrstring2[UDDATTRSZ+1];        //~v53QR~
-//  UCHAR attrstring[UDDATTRSZMAX+1],attrstring2[UDDATTRSZMAX+1];     //unix:5,else 4://~v53QR~//+vbriR~
-    UCHAR attrstring[UDDATTRSZMAX+4],attrstring2[UDDATTRSZMAX+4];     //unix:5,else 4://+vbriI~
+//  UCHAR attrstring[UDDATTRSZMAX+1],attrstring2[UDDATTRSZMAX+1];     //unix:5,else 4://~v53QR~//~vbriR~
+    UCHAR attrstring[UDDATTRSZMAX+4],attrstring2[UDDATTRSZMAX+4];     //unix:5,else 4://~vbriI~
     int efaopt=0;                                                  //~v47CR~
 #ifdef LNX                                                         //~v47DI~
     ULONG oldattr,newattr,reqattr;                                 //~v47DI~
@@ -2864,8 +2907,8 @@ int dcmdattrchng_ftp(int Popt,PUFTPHOST Ppuftph,UCHAR *Pfullpath,ULONG Pattron,U
 //**************************************************************** //~v59fI~
 int dcmdattrchngunix(UCHAR *Pfullpath,ULONG Pattron,ULONG Pattroff,ULONG *Pattrout)//~v59fR~
 {                                                                  //~v59fI~
-//  UCHAR attrstring[UDDATTRSZMAX+1],attrstring2[UDDATTRSZMAX+1];     //unix:5,else 4://~v59fI~//+vbriR~
-    UCHAR attrstring[UDDATTRSZMAX+4],attrstring2[UDDATTRSZMAX+4];     //unix:5,else 4://+vbriI~
+//  UCHAR attrstring[UDDATTRSZMAX+1],attrstring2[UDDATTRSZMAX+1];     //unix:5,else 4://~v59fI~//~vbriR~
+    UCHAR attrstring[UDDATTRSZMAX+4],attrstring2[UDDATTRSZMAX+4];     //unix:5,else 4://~vbriI~
     int efaopt=0;                                                  //~v59fI~
     ULONG oldattr,newattr,reqattr;                                 //~v59fI~
 //********************                                             //~v59fI~
@@ -2938,12 +2981,18 @@ UCHAR *dcmdfullpath(PUCLIENTWE Ppcw,UCHAR *Pfullpath,UCHAR *Pfnm)  //~v11HR~
     PUFILEH pfh;                                                   //~v540I~
     int pos;                                                       //~v540I~
 //********************                                             //~v11HI~
+	UTRACEP("%s:Pfnm=%s\n",UTT,Pfnm);                              //~vbriI~
     if (Ppcw->UCWtype!=UCWTDIR                                     //~v11JR~
     &&  Ppcw->UCWtype!=UCWTFILE)                                   //~v11JR~
         return filefullpath(Pfullpath,Pfnm,_MAX_PATH);             //~v11HR~
                                                                    //~v11HI~
 //  fnm=UGETPFHFROMPCW(Ppcw)->UFHfilename;                         //~v540R~
     pfh=UGETPFHFROMPCW(Ppcw);                                      //~v540I~
+//#ifdef ARMXXE                                                      //~vby4I~//~vby6R~
+//  if (PFH_ISDOCUMENT(pfh))                                          //~vby4I~//~vby6R~
+//    fnm=pfh->UFHshortpath;                                         //~vby4I~//~vby6R~
+//  else                                                             //~vby4I~//~vby6R~
+//#endif                                                             //~vby4I~//~vby6R~
     fnm=pfh->UFHfilename;                                          //~v540I~
     if (!strcmp(Pfnm,"*"))                                         //~v11PI~
     {                                                              //~v11PI~

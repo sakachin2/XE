@@ -1,8 +1,9 @@
-//*CID://+vaa7R~:                            update#=  536;        //+vaa7R~
+//*CID://+vbymR~:                            update#=  538;        //~vbymR~
 //*************************************************************
 //*xechar13.c                                                     //~v04dR~//~va50R~
 //* edcdic file line edit                                          //~va50I~
 //*************************************************************
+//vbym:230612 ARM;warning by audroidstudio compiler                //~vbymI~
 //vaa7:111117 (gcc4.6)Warning:unused-but-set                       //~vaa3I~
 //va79:100809 cpeb converter parm support                          //~va79I~
 //va50:100324 Raw EBCDIC file support for NFS mount                //~va50I~
@@ -180,10 +181,10 @@ int charfldeditebc(int Pmode,UCHAR *Pbuff,UCHAR *Pdbcs,            //~va50R~
     UCHAR vhexnewchar;                                             //~v60vR~
     int rcmc=0;   //marginchk rc(==1:overflow but space only)      //~v71UR~
     int opt;                                                       //~v73gI//~va50R~
-    int hexkbdsw;                                                  //~v778I
-    int hexkbdgcsw; //hex notation graph char input                //~v79RI
+//  int hexkbdsw;                                                  //~v778I//~vbymR~
+//  int hexkbdgcsw; //hex notation graph char input                //~v79RI//+vbymR~
     int newlen2,addlen2;                                           //~v7a0R
-//  int optorg;                                                    //~va3SI~//+vaa7R~
+//  int optorg;                                                    //~va3SI~//~vaa7R~
     int hpos,hpose,swcv2ebc;                                       //~va50R~
     int rc3;                                                       //~va50R~
 	int keyindatalen_ebc,sosiopt=0,backctr,optsbcs;                //~va50R~
@@ -192,14 +193,14 @@ int charfldeditebc(int Pmode,UCHAR *Pbuff,UCHAR *Pdbcs,            //~va50R~
 	UCHAR *pc2,*pcd2;                                              //~va50I~
     int handle;                                                    //~va79R~
 //****************************
-//  optorg=Pmode;                                                  //~va3SI~//+vaa7R~
+//  optorg=Pmode;                                                  //~va3SI~//~vaa7R~
     Pmode &=0xffff; //vhexmode and ope code                        //~va3SI~
     vhexmode=(int)((UINT)Pmode>>8);                                //~v60vR~
     Pmode&=0xff;	//clear vhexmode parm;mode byte                //~v60vR~
 	hexinpsw=0;				//next hex csr position                //~v441R~
-    hexkbdsw=UCBITCHK(Ppcw->UCWflag3,UCWF3HEXKBD);                 //~v79RR
-	hexkbdgcsw=UCBITCHK(Ppcw->UCWflag3,UCWF3HEXKBDGC); //graph char input//~v79RR
-	    hexkbdsw|=hexkbdgcsw;	//do filesetdbcstbl                //~v79RI
+//  hexkbdsw=UCBITCHK(Ppcw->UCWflag3,UCWF3HEXKBD);                 //~v79RR//~vbymR~
+//  hexkbdgcsw=UCBITCHK(Ppcw->UCWflag3,UCWF3HEXKBDGC); //graph char input//~v79RR//+vbymR~
+//      hexkbdsw|=hexkbdgcsw;	//do filesetdbcstbl                //~v79RI//~vbymR~
 		pfh=UGETPFH(Pplh);                                         //~v0byR~
         handle=pfh->UFHhandle;                                     //~va79I~
 		if (UCBITCHK(pfh->UFHflag4,UFHF4BIN))                      //~v106I~

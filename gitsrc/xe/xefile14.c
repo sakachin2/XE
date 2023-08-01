@@ -1,8 +1,10 @@
-//*CID://+vbi3R~:                             update#=  427;       //~vbi3R~
+//*CID://+vby8R~:                             update#=  442;       //~vby8R~
 //*************************************************************
 //*xefile14.c*                                                     //~v54dR~
 //* fileload ,filefindopen/filegetline                             //~v54dR~
 //*************************************************************
+//vbya:230420 (ARM)open doc optionally. limit to load/save now.    //~vbyaI~
+//vby8:230415 (ARM)open document file                              //~vby8I~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vb7e:170108 FTP crash by longname                                //~vb7eI~
 //vb2e:160122 (LNX)convert filename according IOCHARSET mount option//~vb2eI~
@@ -281,6 +283,9 @@
 #endif                                                             //~va00I~
 #include <utrace.h>                                                //~va51I~
 #include <ufemsg.h>                                                //~vazdI~
+#ifdef ARMXXE                                                      //~vby8I~
+	#include <ufiledoc.h>                                          //~vby8I~
+#endif                                                             //~vby8I~
                                                                 //~5318I~
 #include "xe.h"
 #include "xescr.h"
@@ -450,6 +455,7 @@ static char Stlineno []="*******|";
     int rc_seek=0;                                                 //~vaz1I~
     int rc2;                                                       //~vb7eI~
 //****************************
+    UTRACEP("%s:entry Ppfile=%s\n",UTT,Ppfile);                    //~vbi3I~
     opt2=Pfkinisw & FLO2_OPT2;                                     //~v76mI~
     Pfkinisw &= FLO2_FKINI;                                        //~v76mI~
 	*Pppfh=pfh=UALLOCC(1,UFILEHSZ);                             //~v04dR~
@@ -665,7 +671,7 @@ static char Stlineno []="*******|";
         }                                                          //~v53UI~
         else                                                       //~vaneI~
         {                                                          //~vaneI~
-        	UTRACEP("fileload fullpath=%s,Gxehostsfnm=%s\n",Pfullpath,Gxehostsfnm);//~vaneI~
+        	UTRACEP("%s:fullpath=%s,Gxehostsfnm=%s\n",UTT,Pfullpath,Gxehostsfnm);//~vaneI~//~vbi3R~
 #ifdef UNX                                                         //~vaneM~
  			if (!strcmp(Pfullpath,Gxehostsfnm))                    //~vaneI~
 #else  //!UNX                                                      //~vaneM~
@@ -731,6 +737,7 @@ static char Stlineno []="*******|";
         return rc;                                              //~v030I~
     }                                                           //~v030I~
 	pfh->UFHhfile=hfile;
+	UTRACEP("%s:fileload UFHhfile=%p\n",UTT,hfile);                //~vby8I~
                                                                    //~v08lI~
 //  if (rc=fileoptionchk(Ppcw,pfh),rc) //lineno opd etc            //~v09YR~
 //  {                                                              //~v09YR~
@@ -1586,7 +1593,9 @@ int filefindopen(UCHAR *Ppfile,FILEFINDBUF3 *Ppfstat3,int Popt, //~v020R~
     UTSOFTPPARM tsop;                                              //~v8@sR~
 //    int tsosw;                                                     //~v70zI~
 #endif                                                             //~v48cI~
+	int optFileOpen=0;                                             //~vbyaI~
 //****************
+	UTRACEP("%s:fnm=%s,opt=0x%x\n",UTT,Ppfile,Popt);               //~vbyaI~
 #ifdef UNX                                                         //~v48cI~
 	*Ptempalias=0;	//init output                                  //~v48cI~
 #endif                                                             //~v48cI~
@@ -1599,6 +1608,9 @@ int filefindopen(UCHAR *Ppfile,FILEFINDBUF3 *Ppfstat3,int Popt, //~v020R~
 	fileopeninit();                                                //~v54cI~
 	*Pphfile=0;			//clear for intermediate return
     rbsw=0;                                                        //~v09YI~
+#ifdef ARMXXE                                                      //~vbyaI~
+    optFileOpen=FOWOO_ALLOWDOC;	//option to fileopenAllowDoc   //~vbyaI~
+#endif                                                             //~vbyaI~
 //  if (Popt!=-1)                                                  //~v0abR~
     	if (Popt & FILE_OPEN_BIN)                                  //~v0abR~
         {                                                          //~v09YI~
@@ -1620,7 +1632,7 @@ int filefindopen(UCHAR *Ppfile,FILEFINDBUF3 *Ppfstat3,int Popt, //~v020R~
         Popt=(Popt & ~FILE_BINHEXFILE);                            //~v70zM~
     }                                                              //~v70zM~
     else                                                           //~v70zM~
-        binsw=0;                                                   //~v70zM~
+         binsw=0;                                                   //~v70zM~
       uftpisremote(Ppfile,&puftph); //remote hostname prefix exist //~v70zR~
 //    tsosw=UFTPHISTSO(puftph);                                    //~v716R~
 //    if (tsosw)                                                   //~v716R~
@@ -1733,7 +1745,9 @@ int filefindopen(UCHAR *Ppfile,FILEFINDBUF3 *Ppfstat3,int Popt, //~v020R~
     }                                                              //~v542I~
     else                                                           //~v542I~
 #endif                                                             //~v542I~
-	if (!(*Pphfile=fileopen(Ppfile,openopt)))      	//open
+//*!remote                                                         //~vbyaI~
+//	if (!(*Pphfile=fileopen(Ppfile,openopt)))      	//open         //~vbyaR~
+  	if (!(*Pphfile=fileopenWithOption(optFileOpen,Ppfile,openopt)))      	//open//~vbyaI~
 		return 16;
 	return 0;
 }//filefindopen
@@ -1827,6 +1841,7 @@ static UCHAR Slasteol=0;         //latest line eol                 //~v42yR~
 #endif                                                             //~va00I~
     int mflinetype=0;                                              //~vaj0I~
 //****************************
+	UTRACEP("%s:entry rbmode=0x%x,FHfilename=%s\n",UTT,Prbmode,Ppfh->UFHfilename);//~vbyaI~
 	nosplitmsgsw=Prbmode & FILE_NOSPLITMSG;                        //~v41qR~
     Prbmode &=~FILE_NOSPLITMSG;                                    //~v41qR~
 #ifdef UTF8SUPPH                                                   //~va00I~
@@ -1984,6 +1999,17 @@ static UCHAR Slasteol=0;         //latest line eol                 //~v42yR~
   {                                                                //~v09YI~
 //  if (!fgets(Gfilebuff+Ssplitsw,MAXLINEDATA+2,Phfile))//null if error/ eof//~v09ZR~
 //  if (!fgets(Gfilebuff+Ssplitsw,MAXLINEDATA2+2-Ssplitsw,Phfile))//null if error/ eof//~v10eR~
+//#ifdef ARMXXE                                                    //~vby8R~
+//    if (PFH_ISDOCUMENT(Ppfh))                                    //~vby8R~
+//    {                                                            //~vby8R~
+//        if (!ufile_fgetsDoc(Gfilebuff+Ssplitsw,(int)(Slinewidth+2-Ssplitsw),Phfile))//~vby8R~
+//        {                                                        //~vby8R~
+//            UTRACEP("%s:after ufile_fgetsDoc rc=%d\n",UTT,rc);   //~vby8R~
+//            return -1;      //eof                                //~vby8R~
+//        }                                                        //~vby8R~
+//        return 0;                                                //~vby8R~
+//    }//                                                          //~vby8R~
+//#endif                                                           //~vby8R~
     if (!fgets(Gfilebuff+Ssplitsw,(int)(Slinewidth+2-Ssplitsw),Phfile))//null if error/ eof//~v10eR~
     {                                                              //~v50QI~
     	if (ferror(Phfile))                                        //~v09YI~
@@ -2246,13 +2272,13 @@ int fileloadchl(int Popt,PUCLIENTWE Ppcw,char *Ppfile,char *Pfullpath,PUFILEH *P
 #define CHL_HDR	    "********** Top of Cmd History "               //~vbi3R~
 #define CHL_TRAILER "********** End of Cmd History "               //~vbi3R~
 #define CHL_LINENO "*******|"                                      //~vbi3R~
-#define CHL_CMDPREFIX " cmdKey:"                                   //+vbi3I~
+#define CHL_CMDPREFIX " cmdKey:"                                   //~vbi3I~
 	int 	lineno;                                                //~vbi3R~
 	PUFILEH pfh;                                                   //~vbi3I~
 	ULINEH 	*plh;                                                  //~vbi3I~
 	PULINEH *pplh,plhprev;                                         //~vbi3R~
 	PUSCMD psc;			//stack cmd                                //~vbi3I~
-	UCHAR 	*pc,*pc2;                                              //+vbi3R~
+	UCHAR 	*pc,*pc2;                                              //~vbi3R~
     int lnosuffix;                                                 //~vbi3I~
     int binopt=UFCFBROWSE;                                         //~vbi3I~
     int rc2;                                                       //~vbi3I~
@@ -2292,8 +2318,8 @@ int fileloadchl(int Popt,PUCLIENTWE Ppcw,char *Ppfile,char *Pfullpath,PUFILEH *P
     pc=plh->ULHdata;                                               //~vbi3R~
     memset(pc,'*',MAXCOLUMN);       //clear by '*'                 //~vbi3R~
     memcpy(pc,CHL_HDR,sizeof(CHL_HDR)-1);   //except last null     //~vbi3R~
-    pc2=CHL_CMDPREFIX CHL_CMDLIST " ";                             //+vbi3I~
-    memcpy(pc+CHL_CMDLIST_POS,pc2,strlen(pc2));                    //+vbi3I~
+    pc2=CHL_CMDPREFIX CHL_CMDLIST " ";                             //~vbi3I~
+    memcpy(pc+CHL_CMDLIST_POS,pc2,strlen(pc2));                    //~vbi3I~
     memcpy(plh->ULHlineno,CHL_LINENO,ULHLINENOSZ);                 //~vbi3R~
     UENQ(UQUE_END,&pfh->UFHlineque,plh);                           //~vbi3R~
 //enq file data                                                    //~vbi3I~

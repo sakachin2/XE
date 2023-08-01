@@ -1,4 +1,4 @@
-//*CID://+vbs7R~:                             update#=  311;       //~vb7cR~//~vbs7R~
+//*CID://+vbs7R~:                             update#=  313;       //~vb7cR~//~vbs7R~
 //************************************************************* //~5820I~
 //*xedlcmd3.c                                                   //~5820I~
 //* each dir line cmd process                                   //~5820I~
@@ -273,6 +273,7 @@ int dlcmddelete(PUCLIENTWE Ppcw,PUDLCMD Pplc,PUDLCMD Pplcdummy) //~5820I~
 //    int swwildmultiple=0;                                        //~vaa0R~
 //#endif                                                           //~vaa0R~
 //*******************                                           //~5820I~
+    UTRACEP("%s:reason=%d\n",UTT,Ppcw->UCWreason);                 //+vbs7I~
 #ifdef FTPSUPP                                                     //~v609I~
     ftpfiledelsw=UCBITCHK(Pplc->UDLCflag,UDLCFFTPDEL);             //~v609I~
 #endif                                                             //~v609I~
@@ -865,7 +866,10 @@ int dlcmdcopymove(PUCLIENTWE Ppcw,PUDLCMD Pplc,PUDLCMD Pplcdummy)//~v05jR~
 			    dlcmdmoveflag(Ppcw,plh,pdh,0);	//upctr etc     //~v05NR~
 				UCBITOFF(pdh->UDHupdatetype,UDHUTMOVEO);        //~v05NR~
                 if (pdh->UDHtype==UDHTDIREXP)                   //~v05VR~
+                {                                                  //~vbs7I~
+			        UTRACEP("%s:set UDHTDIR dhname=%s\n",UTT,pdh->UDHname);//~vbs7I~
 					pdh->UDHtype=UDHTDIR;                       //~v05VI~
+                }                                                  //~vbs7I~
                 *opname=0;	//clear rename fld by dirsavename   //~v05OR~
 			    dlcmdresetparentsz(pdh,DLCPSZ_SZ|DLCPSZ_LC,        //~v10rI~
 						pdh->UDHsize,plh->ULHlinenow);//update parent sz//~v10rI~
@@ -1565,7 +1569,7 @@ int dlcxpsetremotefname(PUFILEH Ppfh,PUDIRLH Ppdh,char *Ppremotefname,int Ppathl
     int rc;                                                        //~v57BI~
     int rc2;                                                       //~v71jI~
 //  UCHAR  wkout[1+_MAX_PATH+1+_MAX_PATH+1],wk[_MAX_PATH]; //<     //~v57vR~//~vbs7R~
-    UCHAR  wkout[_MAX_PATH*2+DSN_MAXLEN+32],wk[_MAX_PATH]; //<     //+vbs7R~
+    UCHAR  wkout[_MAX_PATH*2+DSN_MAXLEN+32],wk[_MAX_PATH]; //<     //~vbs7R~
     UCHAR  wkdsn[DSN_MAXLEN];                                      //~v71jI~
     UCHAR  xptmpdir[_MAX_PATH];                                    //~v57BI~
 //******************                                               //~v57uI~

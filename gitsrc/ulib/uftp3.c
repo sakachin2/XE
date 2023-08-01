@@ -1,9 +1,10 @@
-//*CID://+v6T0R~:                             update#= 1003;       //+v6T0R~
+//*CID://+v771R~:                             update#= 1004;       //+v771R~
 //*************************************************************
 //*uftp3.c                                                         //~v61pR~
 //* psftp support                                                  //~v61pR~
 //*************************************************************
-//v6T0:180129 xehosts;Port option support                          //+v6T0I~
+//v771:230323 sys/timeb.h is not found on ARM                      //+v771I~
+//v6T0:180129 xehosts;Port option support                          //~v6T0I~
 //v6J4:170207 (Bug:Lnx)smb err was not checked, edit cmd opens file as new file//~v6J4I~
 //v6J0:170205 malloc udirlist filename to  allow more large number of fine in the dir//~v6J0I~
 //v6H7:170108 FTP crush by long name                               //~v6H3I~
@@ -36,8 +37,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <errno.h>                                                 //~v59dI~
+#ifndef ARM                                                        //+v771I~
 #include <sys/timeb.h>                                             //~v59dI~
-                                                                   //~v59dI~
+#endif                                                             //~v59dI~//+v771R~
 //*******************************************************          //~v59dI~
 #ifdef W32                                                         //~v59dI~
 	#include <dos.h>                                               //~v59dI~
@@ -181,15 +183,15 @@ static int Ssw1st=1;                                               //~v61pI~
 //        bora="binary";                                           //~v61pR~
 //    else                                                         //~v61pR~
 //        bora="ascii";                                            //~v61pR~
-  if (Ppuftph->UFTPHport)                                          //+v6T0I~
-    sprintf(Psubcmdhdr,                                            //+v6T0I~
+  if (Ppuftph->UFTPHport)                                          //~v6T0I~
+    sprintf(Psubcmdhdr,                                            //~v6T0I~
     		"open %s %d\n"                    \
-	    	"%s\n"        /*binary|ascii*;@@@ required for 530 diff LNX and AIX*///+v6T0I~
-    		"pwd\n", 	//last of  hdr cmd                         //+v6T0I~
-			Ppuftph->UFTPHipad,                                    //+v6T0I~
-			Ppuftph->UFTPHport,                                    //+v6T0I~
-			Ppuftph->UFTPHicmd);                                   //+v6T0I~
-  else                                                             //+v6T0I~
+	    	"%s\n"        /*binary|ascii*;@@@ required for 530 diff LNX and AIX*///~v6T0I~
+    		"pwd\n", 	//last of  hdr cmd                         //~v6T0I~
+			Ppuftph->UFTPHipad,                                    //~v6T0I~
+			Ppuftph->UFTPHport,                                    //~v6T0I~
+			Ppuftph->UFTPHicmd);                                   //~v6T0I~
+  else                                                             //~v6T0I~
     sprintf(Psubcmdhdr,                                            //~v61pI~
     		"open %s\n"                    \
 	    	"%s\n"        /*binary|ascii*;@@@ required for 530 diff LNX and AIX*///~v61pI~

@@ -1,9 +1,17 @@
-//*CID://+v70cR~:                             update#=  350;       //~v70cR~
+//*CID://+v77LR~:                             update#=  459;       //~v77LR~
 //************************************************************* //~5825I~
 //*uproc.c                                                         //~v5anR~
 //* usystem,uspawnl,uspawnlp,uspawnvp,uexecchk                     //~v065R~
 //*************************************************************    //~v022I~
-//v70c:200625 =6 cmd;cmd not found, setenv in not work             //~v70cI~
+//v77L:230626 ARM;dlclose required each time to clear static valiable//~v77LI~
+//v77K:230622 ARM;use iconv_so(/system/bin/iconv installed as part of toybox. toybox is alternative of busybox and installed to >=android-6)//~v77KI~
+//v77J:230622 (Bug)ARM;dlopen for libhighlight_so.so returns -1, it cause quit xe.//~v77JI~
+//v77H:230622 ARM;execulte so for also highlight                   //~v77HI~
+//v77G:230622 ARM;split armXsubExit to reduce xsub size            //~v77GI~
+//v77F:230617 ARM;execv also faile for >=Android10:api29           //~v77FI~
+//v77D:230618 ARM;v77c on subthread to avoid exit() kill whole process//~v77DI~
+//v77C:230617 ARM;try dlopen to execute xe tool for >=Android10:api29//~v77CI~
+//v70c:200625 =6 cmd;cmd not found, setenv is not work             //~v70cI~//~v77DR~
 //v701:200611 usystem hung warning                                 //~v6L2I~
 //v6L2:170624 (Win) add msi as executable                          //~v6L2I~
 //v6L1:170624 (BUG:64bit) "&" dirlist cmd 0c4(ptr size4 and 8)     //~v6L1I~
@@ -129,6 +137,11 @@
     #endif                                                         //~v022I~
 #endif                                                          //~5825I~
 #endif   //!UNX                                                    //~v327I~
+#ifdef ARM                                                         //~v77CR~
+	#include <dlfcn.h>                                             //~v77CR~
+	#include <pthread.h>                                           //~v77DI~
+	#include <setjmp.h>                                            //~v77DI~
+#endif                                                             //~v77CI~
                                                                    //~v022I~
 #include <ulib.h>                                               //~5825I~
 #include <uerr.h>                                               //~5A10I~
@@ -160,6 +173,8 @@
     #endif                                                         //~v61pI~
 #endif                                                             //~v327I~
 #include <ufilew.h>                                                //~v6upI~
+#include <ustring.h>                                               //~v77DR~
+#include <udos2.h>                                                 //~v77DI~
 //*********************************************                    //~v064R~
 #ifdef W32                                                         //~v5j2I~
 	#define SHELLPGM "cmd.exe"                                     //~v5j2I~
@@ -192,6 +207,9 @@ static int Suprocopt=0;                                            //~v5bxM~
 	static int Soutbuffsz=0;                                       //~v5ivI~
 	static char *Soutbuff=0;                                       //~v5ivI~
 #endif                                                             //~v5ccI~
+#ifdef ARM                                                         //~v77LI~
+	static int dlopenErr;                                          //~v77JI~
+#endif                                                             //~v77LI~
 //*********************************************                    //~v064R~
 //int uspawnrc(int Pmodeflag,char *Ppathname,int Prc);             //~v6xkR~
 LONGHANDLE uspawnrc(int Pmodeflag,char *Ppathname,LONGHANDLE Prc); //~v6xkI~
@@ -213,6 +231,26 @@ int uspawnvp_pipeclose(int *Ppipe_p2c,int *Ppipe_c2p);             //~v59jI~
 //#ifdef W32                                                       //~v5gbR~
 //    char *ushellexecerrmsg(ULONG Perrid);                        //~v5gbR~
 //#endif                                                           //~v5gbR~
+#ifdef ARMXXE                                                      //~v77DI~
+	int systemArm(char *Pcmd,int *Prc);                            //~v77DI~
+#endif                                                             //~v77DI~
+#define ERR_ONTHREAD 32767 	//to avoid rc=-1	                   //~v77JR~
+//**************************************************************** //~v77FI~
+#ifdef ARMXXE                                                      //~v77FI~
+int unsupportedFuncArm(char *Pfunc,char *Pcmd)                     //~v77FR~
+{                                                                  //~v77FI~
+    int apilevel=GarmApiLevel;                                     //~v77FR~
+	UTRACEP("%s:device_api_level=%d\n",UTT,apilevel);              //~v77FI~
+    if (apilevel>=__ANDROID_API_Q__)	//android10(Q)=29          //~v77FI~
+    {                                                              //~v77FI~
+    	uerrmsg("unsupported function(%s) fot >=android-Q.(cmd=%s)",//~v77FR~
+    			"android-10(Q) ˆÈ~‚Å‚Í %s ‚Í‹@\x94\\‚µ‚Ü‚¹‚ñ(cmd=%s)",//~v77FR~
+				Pfunc,Pcmd);                                       //~v77FR~
+        return 1;                                                  //~v77FI~
+	}                                                              //~v77FI~
+    return 0;                                                      //~v77FI~
+}                                                                  //~v77FI~
+#endif                                                             //~v77FI~
 //**************************************************************** //~v50HI~
 #ifdef W32                                                         //~v57qR~
 //**************************************************************** //~v57qR~
@@ -308,6 +346,7 @@ int usystem2(int Popt,char *Pcmd)                                  //~v50HI~
 	UINT modestdi=0;                                                 //~v5maR~//~v6h7R~
 #endif                                                             //~v61pI~
 //********************                                             //~v50HI~
+    UTRACEP("%s:Suprocopt=x%x,cmd=%s\n",UTT,Suprocopt,Pcmd);       //~v70cR~
 #if defined(UNX) || defined(W32)                                   //~v5bxI~
   	if (!(Suprocopt & UPROC_NOSVRUSE))	//!(explicit not use server)//~v5bxI~
     {                                                              //~v5bxI~
@@ -344,6 +383,10 @@ int usystem2(int Popt,char *Pcmd)                                  //~v50HI~
 //* issue command syncronous                                    //~5A10I~
 //*parm1:command string                                         //~5A10I~
 //*retrn:rc(=errno)                                             //~5A10I~
+//*ifdef ARMXXE                                                    //~v77LI~
+//*  if !systemArm() : if >=API29(A10:Q) && isSupportedSO() (:highlight,iconv,xfg,...)//~v77LI~
+//*                       callXeToolSO(): dlopen .so && func_mainOnThread(func_main)//~v77LI~
+//   else system(Pcmd)                                             //~v77LI~
 //****************************************************************//~5A10I~
 int usystem(char *Pcmd)                                         //~5A10I~
 {                                                               //~5A10I~
@@ -351,23 +394,33 @@ int usystem(char *Pcmd)                                         //~5A10I~
     char *pc;                                                   //~5A15I~
 //*********************                                         //~5A10I~
     UTRACED("Pcmd",Pcmd,(int)strlen(Pcmd));                        //~v6xiR~
-    UTRACEP("%s:Pcmd=%s,envPATH=%s\n",UTT,Pcmd,getenv("PATH"));      //~v701I~//~v70cR~
-//#ifdef ARM                                                       //+v70cR~
-//    #ifdef XXE                                                   //+v70cR~
-//        setArmEnvPATH();    //TODO test                          //+v70cR~
-//    #endif                                                       //+v70cR~
-//#endif                                                           //+v70cR~
+    UTRACEP("%s:Pcmd=%s,envPATH=%s,PWD=%s\n",UTT,Pcmd,getenv("PATH"),getenv("PWD"));      //~v701I~//~v70cR~//+v77LR~
+//#ifdef ARM                                                       //~v70cR~
+//    #ifdef XXE                                                   //~v70cR~
+//        setArmEnvPATH();    //TODO test                          //~v70cR~
+//    #endif                                                       //~v70cR~
+//#endif                                                           //~v70cR~
+#ifdef ARM                                                         //~v77CR~
+//  void uproc_callxetoolTest();                                   //~v77CI~//~v77DR~
+//  uproc_callxetoolTest(Pcmd);                                    //~v77CR~//~v77DR~
+#endif                                                             //~v77CI~
     GuprocStat|=GUPS_SYSTEMCALL;                                   //~v701R~
 #ifdef W32UNICODE                                                  //~v6upI~
 //    if (strchr(Pcmd,UD_NOTLC))                                   //~v6upR~
 //        rc=usystemW(0,Pcmd);                                     //~v6upR~
 //    else                                                         //~v6upR~
+//  UTRACEP("%s:call system() Pcmd=%s,envPATH=%s\n",UTT,Pcmd,getenv("PATH"));//~v70cR~
     	rc=system(Pcmd);                                           //~v6upI~
+    UTRACEP("%s:call system() returned rc=%d\n",UTT,rc);           //~v70cI~
     GuprocStat&=~GUPS_SYSTEMCALL;                                  //~v701R~
     if (rc)                                                        //~v6upI~
 #else                                                              //~v6upI~
 //  if (rc=system(Pcmd),rc)                                        //~v701R~
+  #ifdef ARMXXE	//no support for system call from xsub tool        //~v77DI~
+   if (!systemArm(Pcmd,&rc))  //not executed alternative of system() api//~v77DI~
+  #endif                                                           //~v77DI~
     rc=system(Pcmd);                                               //~v701R~
+    UTRACEP("%s:after system() rc=%d,cmd=%s\n",UTT,rc,Pcmd);       //~v77DI~
     GuprocStat&=~GUPS_SYSTEMCALL;                                  //~v701R~
     if (rc)                                                        //~v701R~
 #endif                                                             //~v6upI~
@@ -465,6 +518,7 @@ LONGHANDLE uspawnl(int Pmodeflag,char *Ppathname,char *Parg0,...)  //~v6xkI~
     int ii;                                                        //~v6xkI~
     LONGHANDLE rc;                                                 //~v6xkI~
 //*********************                                         //~5A10I~
+	UTRACEP("%s:pathname=%s\n",Ppathname);                         //~v77DI~
     uprocopt(&Pmodeflag);                                          //~v50HI~
                                                                    //~v50HI~
     va_start(pargn,Parg0);   //argn point Parg1                 //~5A10I~
@@ -517,6 +571,11 @@ LONGHANDLE uspawnlp(int Pmodeflag,char *Ppathname,char *Parg0,...) //~v6xkI~
     int ii;                                                        //~v6xkI~
     LONGHANDLE rc;                                                 //~v6xkI~
 //*********************                                         //~5A10I~
+	UTRACEP("%s:pathname=%s\n",Ppathname);                         //~v77DI~
+#ifdef ARMXXE                                                      //~v77FI~
+	if (unsupportedFuncArm("spawnlp",Ppathname))                   //~v77FI~
+        return -1;                                                 //~v77FI~
+#endif                                                             //~v77FI~
     uprocopt(&Pmodeflag);                                          //~v50HI~
                                                                    //~v50HI~
     va_start(pargn,Parg0);   //argn point Parg1                 //~5A10I~
@@ -571,6 +630,11 @@ LONGHANDLE uspawnvp(int Pmodeflag,char *Ppathname,char **Pargv)    //~v6xkI~
 #endif     //!UNX                                                  //~v5g9R~
     FILE *fh0=NULL;                                                     //~v5maI~//~v6h6R~
 //*********************                                            //~v065I~
+	UTRACEP("%s:pathname=%s\n",UTT,Ppathname);                     //~v77DI~
+#ifdef ARMXXE                                                      //~v77FI~
+	if (unsupportedFuncArm("spawnvp",Ppathname))                   //~v77FR~
+        return -1;                                                 //~v77FR~
+#endif                                                             //~v77FI~
     if (Pmodeflag & UPROC_NULLSI)   //nul stdin                    //~v5maI~
       if (!(Pmodeflag & P_NOWAIT))                                 //~v5mtI~
 		if (!(fh0=uredirect(0,NULLDEVICE,0))) //append stdin/stderr to so file//~v5maI~
@@ -629,6 +693,7 @@ LONGHANDLE uspawnvp(int Pmodeflag,char *Ppathname,char **Pargv)    //~v6xkI~
 #else                                                              //~v6xkI~
 	rc=spawnvp(Pmodeflag & 0xff,Ppathname,Pargv);                  //~v6xkI~
 #endif                                                             //~v6xkI~
+	UTRACEP("%s:spawnvp rc=%d\n",UTT,rc);                          //~v77DI~
 #ifndef UNX                                                        //~v5g9R~
 #ifdef DPMI                                                        //~v082R~
 #else                                                              //~v082R~
@@ -682,6 +747,7 @@ LONGHANDLE uspawnrc(int Pmodeflag,char *Ppathname,LONGHANDLE Prc)  //~v6xkI~
     LONGHANDLE rc;                                                 //~v6xkI~
     UCHAR wkpid1[32],wkpid2[32];                                   //~v6xkI~
 //*********************                                         //~5A10I~
+	UTRACEP("%s:spawnrc pathname=%s,rc=%p\n",UTT,Ppathname,Prc);   //~v77DI~
     if ((rc=Prc)==-1)                                              //~v5bwR~
     {                                                           //~5A10I~
         switch (rc=errno,rc)                                    //~5A10R~
@@ -1541,7 +1607,9 @@ int uproc_redirectoutchk(int Popt,char *Pcmd,char ***Pstdo,char ***Pstde,int *Ps
         	rctr[ii]++;                                            //~v50HR~
 //          rsz[ii]+=strlen(rec)+1;		//with last null           //~v5adR~
             len=(int)strlen(rec);		//with last null               //~v5adI~
-            UTRACED("stdo/stde rec",rec,(int)sizeof(rec));         //~v6ycI~
+            UTRACEP("%s:stdo/stde reclen=%d\n",UTT,len);           //~v77DR~
+//          UTRACED("stdo/stde rec",rec,(int)sizeof(rec));         //~v77DR~
+            UTRACED("stdo/stde rec",rec,len);                      //~v77DI~
           	if (Popt & UPROC_CVS2E)   //len may inclease by hankaku katakana//~v5adI~
 		    	ushift2euccount(rec,len,&len,0); 	//get euc length//~v5adR~
             rsz[ii]+=len+1;        		//with last null           //~v5adI~
@@ -1839,6 +1907,7 @@ int usystem_cmdserverinit(int Popt,CMDSVRCALLBACK *Pcmdsvrcallback,char *Pserver
 {                                                                  //~v5bxI~
 //**************                                                   //~v5bxI~
     Sserverstat=0;                                                 //~v5bxI~
+    UTRACEP("%s:opt=x%x,serverPgm=%s\n",UTT,Popt,Pserverpgm);      //~v70cR~
 	if (Popt & UPROC_LAZY) //start cmd server st cmd req           //~v5bxI~
     {	                                                           //~v5bxI~
 	    Sserverstat|=SVRS_LAZY;                                    //~v5bxI~
@@ -1913,6 +1982,7 @@ int usystem_cmdserversetup(int Popt,char *Pserverpgm,int *Pppid,int *Ppfdpipew,i
 #endif                                                             //~v5j2I~
     LONGHANDLE ph;                                                 //~v6xkI~
 //***********************                                          //~v5bxI~
+UTRACEP("%s:opt=x%x,serverpgm=%s\n",UTT,Popt,Pserverpgm);          //~v70cI~
     syscmd=!(Popt & UPROC_SERVER2); //xesyscmd                     //~v5ivI~
     Popt &=~UPROC_SERVER2; //Popt used as parm to uspawn           //~v5ivR~
     opt=Popt & UPROC_SYSCMD_MIN;                                   //~v5j2I~
@@ -1966,6 +2036,7 @@ UTRACEP("child spawn\n");                                          //~v5bxI~
   {                                                                //~v5j2M~
   	sprintf(editcmd,Pserverpgm,sfdr,sfdw); //edit in pipe fd       //~v5j2M~
 //  pid=uspawnlp(P_NOWAIT|Popt,SHELLPGM,SHELLPGM,"/C",editcmd,0);  //~v5j2I~//~v6xkR~
+	UTRACEP("%s:spawnlp editcmd=%s\n",UTT,editcmd);                //~v70cI~
     ph=uspawnlp(P_NOWAIT|Popt,SHELLPGM,SHELLPGM,"/C",editcmd,0);   //~v6xkI~
     pid=(int)UGETPROCESSID(UGPIO_ERRMSG,ph);                       //~v6xkI~
   }                                                                //~v5j2M~
@@ -2023,7 +2094,8 @@ UTRACEP("child spawned\n");                                        //~v5bxI~
   {                                                                //~v5j2I~
 //	len=read(fdpiper,respbuff,sizeof(respbuff)-1); 	//wait reply   //~v5ccI~//~v6xiR~
 	len=(int)read(fdpiper,respbuff,sizeof(respbuff)-1); 	//wait reply//~v6xiI~
-UTRACEP("resad resp\n");                                           //~v5ccI~
+UTRACEP("%s:read resp\n",UTT);                                           //~v5ccI~//~v70cR~
+UTRACED("read resp",respbuff,len);                                 //~v70cI~
 	if (len>=0)                                                    //~v5ccI~
 		*(respbuff+len)=0; 	//wait reply                           //~v5ccI~
     ux2l(respbuff,&cmdsvrpid); //cmdserver pid                     //~v5ccR~
@@ -2196,4 +2268,351 @@ int usystem_pidalivechk(int Ppid)                                  //~v5ccR~
 #endif                                                             //~v5ccI~
     return rc;                                                     //~v5ccR~
 }//usystem_pidalivechk                                             //~v5ccI~
-#endif //defined(UNX) || defined(W32)                              //~v59jI~
+#endif  //if defined(UNX) || defined(W32)                          //~v77CI~
+#ifdef ARM                                                         //~v77CR~
+//*****************************************                        //~v77CI~
+//* process alive chk                                              //~v77CI~
+//*****************************************                        //~v77CI~
+void *uproc_dlopen(char *Pfnm)                                       //~v77CI~
+{                                                                  //~v77CI~
+	void *handle;                                                  //~v77CI~
+	char *perr;                                                    //~v77CI~
+//*************************                                        //~v77CI~
+	perr=dlerror();	//clear prev err                               //~v77CI~
+    UTRACEP("%s:fnm=%s,prev dlerror=%s\n",UTT,Pfnm,perr);          //~v77CI~
+    UTRACEP("%s:LD_LIBRARY_PATH=%s\n",UTT,getenv("LD_LIBRARY_PATH"));//~v77CI~
+	handle=dlopen(Pfnm,RTLD_NOW);                                  //~v77CI~
+    dlopenErr=errno;                                               //~v77JI~
+	perr=dlerror();	//clear prev err                               //~v77CI~
+    UTRACEP("%s:dlopen handle=%p,dlerror=%s\n",UTT,handle,perr);   //~v77CI~
+    return handle;                                                 //~v77CR~
+}                                                                 //~v77CI~
+    typedef int (*FUNC_MAIN)(int argc,char *argp[],char *envp[]);  //~v77DR~
+    typedef void *(*FUNC_THREAD)(void*);                           //~v77DR~
+	static FUNC_MAIN func_main;                                    //~v77DR~
+//*****************************************                        //~v77DI~
+static sigjmp_buf Senv;                                          //~v77DI~
+void sigHandler(int Psigno)                                        //~v77DI~
+{                                                                  //~v77DI~
+	UTRACEP("%s:sigHandler signal=%d\n",UTT,Psigno);               //~v77DI~
+    printf("!!! signal=%d detected.\n",Psigno);                    //~v77DI~
+	siglongjmp(Senv,Psigno);	//jump to after sigsetjmp          //~v77DI~
+}                                                                  //~v77DI~
+//*****************************************                        //~v77DI~
+#define MAX_SIGNAL 5                                                //~v77DI~
+static int Ssignals[MAX_SIGNAL]={SIGINT/*2:Ctrl+c*/,SIGABRT/*6*/,SIGSEGV/*11*/,SIGTERM/*15*/,SIGQUIT/*3*/};//~v77DI~
+static struct sigaction SoldAction[MAX_SIGNAL];//~v77DI~
+static int Sretval;                                                //~v77DI~
+//*****************************************                        //~v77DI~
+void setSigAction(struct sigaction *Ppaction)                      //~v77DR~
+{                                                                  //~v77DR~
+//********************                                             //~v77DI~
+	UTRACEP("%s:entry handler=%p\n",UTT,sigHandler);               //~v77DR~
+    memset (Ppaction,0,sizeof(struct sigaction));                  //~v77DI~
+    Ppaction->sa_handler=sigHandler;                                //~v77DI~
+    Ppaction->sa_flags=0;                                          //~v77DI~
+    for (int ii=0;ii<MAX_SIGNAL;ii++)                              //~v77DI~
+    {                                                              //~v77DI~
+	    memset (&SoldAction[ii],0,sizeof(struct sigaction));      //~v77DI~
+    	sigaction(Ssignals[ii],Ppaction,&SoldAction[ii]);         //~v77DI~
+		UTRACEP("%s:SoldAction ii=%d,signal=%d,handler=%p\n",UTT,ii,Ssignals[ii],SoldAction[ii].sa_handler);//~v77DI~
+    }                                                              //~v77DI~
+}                                                                  //~v77DR~
+//*****************************************                        //~v77DI~
+void restoreSigAction()                                            //~v77DI~
+{                                                                  //~v77DI~
+	struct sigaction old_action;                                   //~v77DI~
+//********************                                             //~v77DI~
+	UTRACEP("%s:entry\n",UTT);                                     //~v77DI~
+    for (int ii=0;ii<MAX_SIGNAL;ii++)                              //~v77DI~
+    {                                                              //~v77DI~
+    	sigaction(Ssignals[ii],&SoldAction[ii],&old_action);       //~v77DR~
+		UTRACEP("%s:oldAction ii=%d,signal=%d,Sold_handle=%p,old_handle=%p\n",UTT,ii,Ssignals[ii],SoldAction[ii].sa_handler,old_action.sa_handler);//~v77DR~
+    }                                                              //~v77DI~
+}                                                                  //~v77DI~
+//*****************************************                        //~v77DI~
+char **parseParm(char *Pcmd,int *Ppopdno)                          //~v77DI~
+{                                                                  //~v77DI~
+	UCHAR **pargv;                                                 //~v77DR~
+    int opdno;                                                     //~v77DI~
+                                                                   //~v77DI~
+//**********************	                                       //~v77DI~
+	uparsev(Pcmd,&pargv,&opdno,0," ,");                            //~v77DR~
+    *Ppopdno=opdno;                                                //~v77DI~
+	UTRACEP("%s:opdno=%d,cmd=%s\n",UTT,opdno,Pcmd);                //~v77DI~
+    return (char**)pargv;                                          //~v77DR~
+}                                                                  //~v77DI~
+//*****************************************                        //~v77DI~
+void *func_thread(void* Pcmd)                                      //~v77DR~
+{                                                                  //~v77DI~
+	struct sigaction action;                                       //~v77DR~
+    int rc,opdno;                                                  //~v77DR~
+    extern char **environ;                                             //~v77DI~
+//  char *pc;                                                      //~v77DR~
+//********************                                             //~v77DI~
+	UTRACEP("%s:entry,cmd=%s\n",UTT,Pcmd);                         //~v77DR~
+    Sretval=0;                                                     //~v77DI~
+    setSigAction(&action);                                         //~v77DI~
+    rc=sigsetjmp(Senv,1/*!=0:request to save signal mask*/);  //rc!=0 returned by siglongjmp//~v77DI~
+    if (rc!=0)                                                     //~v77DI~
+    {                                                              //~v77DI~
+		UTRACEP_FLUSH("%s:siglongjmp called\n",UTT);                     //~v77DI~//~v77LR~
+        Sretval=0x80+rc;	//siglongjump set signal number        //~v77DI~
+        return &Sretval;                                           //~v77DI~
+    }                                                              //~v77DI~
+//  char *arg[4];                                                  //~v77DR~
+//  arg[0]=(char*)Pvoidparm;                                       //~v77DR~
+//  pc=strchr(Pvoidparm,' ');                                      //~v77DR~
+//  if (pc)                                                        //~v77DR~
+//      arg[1]=pc+1;                                               //~v77DR~
+//  else                                                           //~v77DR~
+//      arg[1]="";                                                 //~v77DR~
+//  arg[2]=0;                                                      //~v77DR~
+    char **parg=parseParm(Pcmd,&opdno);                            //~v77DI~
+	UTRACEP("%s:parseparm opdno=%d,[0]=%s,[1]=%s\n",UTT,opdno,parg[0],parg[1]);//~v77DR~
+    listenv();                                                     //~v77DI~
+	rc=func_main(opdno,parg,environ);                                  //~v77DR~
+	UTRACEP("%s:return rc=%d\n",UTT,rc);                           //~v77DI~
+    Sretval=rc;                                                    //~v77DI~
+    restoreSigAction();                                            //~v77DR~
+	UTRACEP("%s:exit &Sretval=%p\n",UTT,&Sretval);                 //~v77DI~
+    return &Sretval;                                               //~v77DI~
+}                                                                  //~v77DI~
+//*****************************************                        //~v77DR~
+int func_mainOnThread(FUNC_MAIN Pfunc,char *Ppgm,char *Pcmd)       //~v77DR~
+{                                                                  //~v77DR~
+    int rc,retval;                                                 //~v77DR~
+    pthread_t pt;                                                  //~v77DR~
+    int *ptrrc=0;                                                  //~v77DR~
+    void *pvoidrc=0;                                               //~v77DI~
+//  char pathparm[_MAX_PATH];                                      //~v77DR~
+//*************************                                        //~v77DR~
+	UTRACEP("%s:entry pgm=%s,cmd=%s\n",UTT,Ppgm,Pcmd);             //~v77DR~
+//  sprintf(pathparm,"%s %s",Ppath,Pparm);                         //~v77DR~
+    rc/*0:success*/=pthread_create(&pt,NULL,&func_thread,Pcmd);    //~v77DR~
+	UTRACEP("%s:after pthread_create rc=%d\n",UTT,rc);             //~v77DR~
+    rc/*0:success*/=pthread_join(pt,&pvoidrc/*ptr to pthread_exit(retval)*/);//~v77DR~
+	UTRACEP("%s:after pthread_join rc=%d\n",UTT,rc);               //~v77DR~
+    ptrrc=(int*)pvoidrc;                                           //~v77DI~
+	UTRACEP("%s:after pthread_join retval(pthread_exit() argument)=%p,&Sretval=%p,ptrrc=%p\n",UTT,pvoidrc,&Sretval,ptrrc);//~v77DI~
+//  if (ptrrc==&Sretval)  //set by siglongjmp or normal return code//~v77DR~
+//  {                                                              //~v77DR~
+    	retval=*ptrrc;                                             //~v77DR~
+	    printf("pgm end with rc=%d=0x%x.(%s) \n",retval,retval,Ppgm);//~v77DR~
+//  }                                                              //~v77DR~
+//  else                                                           //~v77DR~
+//  {                                                              //~v77DR~
+//  	retval=(int)(unsigned long)ptrrc;  //pthread_exit(retval)  //~v77DR~
+//      printf("pgm end with exit_code=%d=0x%x.(%s)\n",retval,retval,Ppgm);//~v77DR~
+//  }                                                              //~v77DR~
+	UTRACEP("%s:rc=%d\n",UTT,retval);                              //~v77JI~
+	if (retval==-1)                                                //~v77JI~
+    	retval=ERR_ONTHREAD;                                       //~v77JI~
+	UTRACEP("%s:exit rc=%d\n",UTT,retval);                         //~v77DI~
+    return retval;                                                 //~v77DR~
+}                                                                  //~v77DR~
+//*****************************************                        //~v77DR~
+int uproc_callxetool(char *Pfnm,char *Ppgm,char *Pcmd)                                  //~v77CR~//~v77DR~
+{                                                                  //~v77CI~
+	void *handle,*procaddr;                                        //~v77CI~
+	char *perr;                                                    //~v77CI~
+    int rc=-1;                                                     //~v77CI~//~v77DR~
+//*************************                                        //~v77CI~
+	UTRACEP("%s:entry fnm=%s,pgm=%s,cmd=%s\n",UTT,Pfnm,Ppgm,Pcmd); //~v77DR~
+	handle=uproc_dlopen(Pfnm);                                     //~v77CI~//~v77DR~
+    if (handle)                                                    //~v77CI~
+    {                                                              //~v77CI~
+    	procaddr=dlsym(handle,"main");                              //~v77CI~
+		perr=dlerror();	//clear prev err                           //~v77CI~
+	    UTRACEP("%s:dlsym procaddr=%p,dlerror=%s\n",UTT,procaddr,perr,perr);//~v77CI~
+        if (procaddr)                                              //~v77CI~
+        {                                                          //~v77CI~
+            func_main=(FUNC_MAIN)procaddr;                         //~v77CI~
+//          arg[0]=path;                                           //~v77CI~//~v77DR~
+//          arg[1]=Pparm;                                         //~v77CR~//~v77DR~
+//          arg[2]=0;                                              //~v77CI~//~v77DR~
+//        if (1)                                                   //~v77DR~
+            rc=func_mainOnThread(func_main,Ppgm,Pcmd);             //~v77DR~
+//        else                                                     //~v77DR~
+//          rc=func_main(1,arg);                                   //~v77CR~//~v77DR~
+	    	UTRACEP("%s:after call main rc=%d\n",UTT,rc);          //~v77CR~//~v77DR~
+        }                                                          //~v77CI~
+        dlclose(handle);                                           //~v77LI~
+        UTRACEP("%s:after dlclose\n",UTT);                         //~v77LI~
+    }                                                              //~v77CI~
+    else                                                           //~v77JI~
+    	rc=dlopenErr;                                              //~v77JI~
+	UTRACEP("%s:exit rc=%d\n",UTT,rc);                             //~v77DI~
+    return rc;                                                     //~v77DI~
+}                                                                  //~v77CI~
+//*****************************************                        //~v77CI~
+void uproc_callxetoolSystem(char *Pcmd)                            //~v77CI~
+{                                                                  //~v77CI~
+    char cmd[_MAX_PATH];                                           //~v77CI~
+    int rc;                                                        //~v77CI~
+//*************************                                        //~v77CI~
+	UTRACEP("%s:cmd=%s\n",UTT,Pcmd);                               //~v77CI~
+  if (1)                                                           //~v77CI~
+  {                                                                //~v77CI~
+    sprintf(cmd,"%s/lib%s.so",GjniNativeLibraryPath,Pcmd);         //~v77CR~
+	UTRACEP("%s:call sysem() fstat=%d,cmd=%sn",UTT,ufstat(cmd,0),cmd);//~v77CI~
+    strcat(cmd," parm1 parm2");                                    //~v77CI~
+  }	                                                               //~v77CI~
+  else                                                             //~v77CI~
+    sprintf(cmd,"export LD_LIBRARY_PATH=%s;%s %s %s",GjniNativeLibraryPath,Pcmd,"parm1","parm2");//~v77CI~
+	UTRACEP("%s:call sysem() cmd=%s\n",UTT,cmd);                   //~v77CI~
+    rc=system(cmd);    //bin/sh(actually bash) -c                  //~v77CI~
+	UTRACEP("%s:call sysem() rc=%d\n",UTT,rc);                     //~v77CR~
+}                                                                  //~v77CI~
+//*****************************************                        //~v77LI~
+int uproc_callxetoolExec(char *Pfnm,char *Ppgm,char *Pcmd)         //~v77LI~
+{                                                                  //~v77LI~
+    char cmd[_MAX_PATH];                                           //~v77LI~
+    int rc;                                                        //~v77LI~
+//*************************                                        //~v77LI~
+	UTRACEP("%s:entry fnm=%s,pgm=%s,cmd=%s\n",UTT,Pfnm,Ppgm,Pcmd); //~v77LI~
+    sprintf(cmd,"%s/%s %s",GjniNativeLibraryPath,Pfnm,Pcmd+strlen(Ppgm));//~v77LI~
+	UTRACEP("%s:call sysem() cmd=%s\n",UTT,cmd);                   //~v77LI~
+  if (1)                                                           //~v77LR~
+  {                                                                //~v77LI~
+    rc=system(cmd);    //bin/sh(actually bash) -c  ==> rc=8b(sigsegv), on logcat: avc denied "diskstat" dev "proc"//~v77LR~
+	UTRACEP("%s:after call system() rc=%d=0x%x\n",UTT,rc,rc);      //~v77LI~
+  }                                                                //~v77LI~
+  else                                                             //~v77LI~
+  {                                                                //~v77LI~
+    sprintf(cmd,"%s/%s",GjniNativeLibraryPath,Pfnm);               //~v77LI~
+    char *argv[3]={cmd,"0",0};                               //~v77LI~
+    rc=spawnv(0,cmd,argv);    //do by ugcclib      //--> rc=11(sigsegv),on logcat: avc denied "diskstat" dev "proc"//~v77LR~
+	UTRACEP("%s:after call spawnv() rc=%d=0x%x\n",UTT,rc,rc);  //  //~v77LI~
+  }                                                                //~v77LI~
+    return rc;                                                     //~v77LI~
+}                                                                  //~v77LI~
+//*****************************************                        //~v77CI~
+void uproc_callxetoolTest(char *Pcmd)                              //~v77CR~
+{                                                                  //~v77CI~
+    char fnm[_MAX_PATH];                                           //~v77CI~
+    char exe[_MAX_PATH];                                           //~v77DI~
+    char *pc,*pparm;                                               //~v77DI~
+    int len;                                                       //~v77DI~
+//*************************                                        //~v77CI~
+	UTRACEP("%s:cmd=%s\n",UTT,Pcmd);                               //~v77CI~
+	if (!memcmp(Pcmd,"xtestenv_so",11))                            //~v77CR~
+    {                                                              //~v77CI~
+        pc=strchr(Pcmd,' ');                                       //~v77DI~
+        if (pc)                                                    //~v77DI~
+        {                                                          //~v77DI~
+        	len=pc-Pcmd;                                           //~v77DI~
+	        pparm=Pcmd+len+1;                                      //~v77DI~
+        }                                                          //~v77DI~
+        else                                                       //~v77DI~
+        {                                                          //~v77DI~
+        	len=(int)strlen(Pcmd);                                 //~v77DI~
+	        pparm="";                                              //~v77DI~
+        }                                                          //~v77DI~
+        memcpy(exe,Pcmd,len);                                      //~v77DI~
+        *(exe+len)=0;                                              //~v77DI~
+   	if (1)                                                         //~v77DI~
+    	sprintf(fnm,"lib%s.so",exe);                               //~v77DR~
+   	else                                                           //~v77DI~
+        sprintf(fnm,"%s/lib%s.so",GjniNativeLibraryPath,exe);      //~v77CI~//~v77DR~
+	  if (!memcmp(Pcmd,"xtestenv_socmd",14))   //TODO test         //~v77CI~//~v77LR~
+		uproc_callxetoolSystem(Pcmd);                              //~v77CI~
+      else                                                         //~v77CI~
+		uproc_callxetool(fnm,exe,pparm);                                     //~v77CR~//~v77DR~
+    }                                                              //~v77CI~
+}                                                                  //~v77CI~
+//*****************************************                        //~v77DI~
+int callXeToolSO(char *Ppgm,char *Pcmd)                           //~v77DI~
+{                                                                  //~v77DI~
+    char sonm[32];                                                 //~v77DI~
+	int rc;                                                        //~v77LI~
+//*************************                                        //~v77DI~
+	UTRACEP("%s:pgm=%s,cmd=%s\n",UTT,Ppgm,Pcmd);                   //~v77DI~
+    sprintf(sonm,"lib%s_so.so",Ppgm);                              //~v77DR~
+//if (0)       //TODO test                                         //~v77LR~
+//  rc=uproc_callxetoolExec(sonm,Ppgm,Pcmd);                       //~v77LR~
+//else                                                             //~v77LR~
+//	int rc=uproc_callxetool(sonm,Ppgm,Pcmd);                       //~v77LR~
+    rc=uproc_callxetool(sonm,Ppgm,Pcmd);                           //~v77LI~
+    return rc;//~v77DI~
+}                                                                  //~v77DI~
+////*********************************************************************//~v77DI~//~v77GR~
+////*for exit() of xsub tool executed for >Android10(dlopen,dlsym,call)//~v77DI~//~v77GR~
+////*redirect by #define on ulibarm.h                                //~v77DI~//~v77GR~
+////*********************************************************************//~v77DI~//~v77GR~
+//#ifdef XSUB                                                        //~v77DI~//~v77GR~
+//#include <android/api-level.h>                                     //~v77DI~//~v77GR~
+//void armXsubExit(int PexitCode)                                    //~v77DR~//~v77GR~
+//{                                                                  //~v77DI~//~v77GR~
+//    static int SexitCode;                                              //~v77DI~//~v77GR~
+////**************                                                   //~v77DI~//~v77GR~
+//#undef exit                                                        //~v77DI~//~v77GR~
+//    int apilevel=android_get_device_api_level();                   //~v77DI~//~v77GR~
+//    UTRACEP("%s:exitcode=%d,device_api_level=%d,&SexitCode=%p\n",UTT,PexitCode,apilevel,&SexitCode);//~v77DR~//~v77GR~
+//    if (apilevel>=__ANDROID_API_Q__)    //android10(Q)=29          //~v77DI~//~v77GR~
+//    {                                                              //~v77DI~//~v77GR~
+//        UTRACEP("%s:pthread_exit\n",UTT);                          //~v77DI~//~v77GR~
+//        SexitCode=PexitCode;                                       //~v77DR~//~v77GR~
+//        pthread_exit(&SexitCode);                                  //~v77DR~//~v77GR~
+//    }                                                              //~v77DI~//~v77GR~
+//    else                                                           //~v77DI~//~v77GR~
+//    {                                                              //~v77DI~//~v77GR~
+//        UTRACEP("%s:exit\n",UTT);                                  //~v77DI~//~v77GR~
+//        exit(PexitCode);                                           //~v77DI~//~v77GR~
+//    }                                                              //~v77DI~//~v77GR~
+//}                                                                  //~v77DI~//~v77GR~
+//#endif //XSUB                                                      //~v77DI~//~v77GR~
+//*********************************************************************//~v77DI~
+//*rc=1:executed by dlopen for android10(Q)                        //~v77DI~
+//*********************************************************************//~v77DI~
+#ifdef ARMXXE                                                      //~v77DI~
+//static char* SxeTools[]={"xbc","xci","xcv","xdc","xdd","xdig","xds","xfc","xff","xfg","xfmt","xfs","xlow","xmj","xpe","xts","xtestenv",0};//~v77DR~//~v77HR~
+//static char* SxeTools[]={"highlight","xbc","xci","xcv","xdc","xdd","xdig","xds","xfc","xff","xfg","xfmt","xfs","xlow","xmj","xpe","xts","xtestenv",0};//~v77HI~//~v77KR~
+static char* SxeTools[]={"highlight","xbc","xci","xcv","xdc","xdd","xdig","xds","xfc","xff","xfg","xfmt","xfs","xlow","xmj","xpe","xts","iconv","xtestenv",0};//~v77KR~
+int isSupportedSO(char *Ppgm)                                      //~v77DI~
+{                                                                  //~v77DI~
+	int ii,rc=0;                                                   //~v77DI~
+    char *tool;                                                    //~v77DI~
+    for (ii=0;;ii++)                                               //~v77DI~
+    {                                                              //~v77DI~
+    	tool=SxeTools[ii];                                         //~v77DR~
+        if (!tool)                                                 //~v77DI~
+        	break;                                                 //~v77DI~
+    	if (!strcmp(tool,Ppgm))                                    //~v77DI~
+        {                                                          //~v77DI~
+        	rc=1;                                                  //~v77DI~
+        	break;                                                 //~v77DI~
+        }                                                          //~v77DI~
+    }                                                              //~v77DI~
+	UTRACEP("%s:rc=%d,pgm=%s\n",UTT,rc,Ppgm);                      //~v77DI~
+    return rc;                                                     //~v77DI~
+}                                                                  //~v77DI~
+//**********                                                       //~v77DI~
+int systemArm(char *Pcmd,int *Pretval)                             //~v77DI~
+{                                                                  //~v77DI~
+	int len,rc;                                                    //~v77DI~
+    char pgm[16],*pc;                                                  //~v77DI~
+//**********                                                       //~v77DI~
+	UTRACEP("%s:entry apilevel=%d,cmd=%s\n",UTT,GarmApiLevel,Pcmd);//~v77DI~
+	if (GarmApiLevel<__ANDROID_API_Q__)	      //Q:10:api29         //~v77DI~
+    {                                                              //~v77LI~
+		UTRACEP("%s:return by low apilevel\n",UTT);                //~v77LI~
+    	return 0;                                                  //~v77DI~
+    }                                                              //~v77LI~
+    pc=strchr(Pcmd,' ');                                           //~v77DI~
+    if (pc)                                                        //~v77DI~
+    	len=PTRDIFF(pc,Pcmd);                                      //~v77DI~
+    else                                                           //~v77DI~
+    	len=(int)strlen(Pcmd);                                     //~v77DI~
+    if (len>(int)sizeof(pgm))                                      //~v77DI~
+    	return 0;                                                  //~v77DI~
+    UmemcpyZ(pgm,Pcmd,len);                                        //~v77DI~
+    if (!isSupportedSO(pgm))                                       //~v77DI~
+    	return 0;                                                  //~v77DI~
+	rc=callXeToolSO(pgm,Pcmd);                                     //~v77DI~
+	UTRACEP("%s:exit callXeToolSo rc=%d\n",UTT,rc);               //~v77DI~//~v77LR~
+    *Pretval=rc;                                                   //~v77DR~
+    return 1;                                                      //~v77DI~
+}                                                                  //~v77DI~
+#endif	//ARMXXE                                                   //~v77DI~
+#endif //ARM                                                            //~v77CR~//~v77DR~

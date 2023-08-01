@@ -1,4 +1,4 @@
-//*CID://+vak0R~:                             update#=   58;       //~vak0R~
+//*CID://+vak0R~:                             update#=   59;       //~vak0R~
 //***********************************************************
 //* xpe    : print numonic errno
 //***********************************************************
@@ -63,7 +63,7 @@ int main(int parmc,char *parmp[])
 #endif                                                             //~va37I~
 //**********************
 #ifdef W32                                                         //~vak0I~
-  if (!udbcschkcp())		//dbcstbl or cp!=932               //~v150I~//+vak0R~
+  if (!udbcschkcp())		//dbcstbl or cp!=932               //~v150I~//~vak0R~
     uerrmsg_init("",stdout,UERR_FORCE_ENGLISH);//msg to stdout     //~vak0I~
   else                                                             //~vak0I~
 #endif                                                             //~vak0I~
@@ -126,6 +126,7 @@ int main(int parmc,char *parmp[])
             }
   		}//option or posparm
 	}//for all parm
+	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//~vas3R~//+vak0I~
 	return 0;
 }//main
 //**********************************************************************

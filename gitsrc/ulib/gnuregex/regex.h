@@ -1,3 +1,7 @@
+//*CID://+vby0R~:                             update#=    1;       //+vby0I~
+//*************************************************************    //+vby0I~
+//vby0:230322 for Axe Api33; ld duplicate symbole                  //+vby0I~
+//*************************************************************    //+vby0I~
 /* Definitions for data structures and routines for the regular
    expression library.
    Copyright (C) 1985,1989-93,1995-98,2000,2001,2002,2003,2005,2006
@@ -202,7 +206,11 @@ typedef unsigned long int reg_syntax_t;
    some interfaces).  When a regexp is compiled, the syntax used is
    stored in the pattern buffer, so changing this does not affect
    already-compiled regexps.  */
+#ifdef ARM                                                         //+vby0I~
+extern reg_syntax_t re_syntax_options;                             //+vby0I~
+#else                                                              //+vby0I~
 REGEX_DLL_IMPEXP reg_syntax_t re_syntax_options;
+#endif                                                             //+vby0I~
 
 /* Define combinations of the above bits for the standard possibilities.
    (The [[[ comments delimit what gets put into the Texinfo file, so

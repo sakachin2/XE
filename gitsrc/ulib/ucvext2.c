@@ -1,5 +1,6 @@
-//*CID://+v6WdR~:                                   update#=  708; //~v6WdR~
+//*CID://+v77BR~:                                   update#=  710; //+v77BR~
 //***********************************************************************
+//v77B:230612 ARM;warning by audroidstudio compiler                //+v77BI~
 //v6Wd:180713 (Lnx:BUG)cv -m2m -f:utf8 -t:gb18030 fail for u-00de-->81308937(len=4)//~v6WdI~
 //v6Vm:180620 (W32)when surrogate pair err,use utfcvucs2u8(WideCharToMultibyte dose not notify err,but set utf8 of u-fffd)//~v6VmI~
 //v6Hi:170118 (Win:BUG)buff overflow was not checked               //~v6HiI~
@@ -326,11 +327,11 @@ UTRACEP("iconvopen charset=%s\n",Pcharset);                        //~v5mTI~
 #ifdef LNX                                                         //~v5n1I~
 	phiconv=(iconv_t*)(ULONG)*Ppconverter;	//2 iconv_t output area//~v5mTI~
 	hiconv=iconv_open(ENCODING_UCS2/*to*/,Pcharset/*from*/);       //~v5mTR~
-UTRACEP("ucvext_iconvgetconverster iconvopen to %s from %s ,rc=%x\n",ENCODING_UCS2,Pcharset,hiconv);//~v65cR~
+UTRACEP("ucvext_iconvgetconverter iconvopen to %s from %s ,rc=%x\n",ENCODING_UCS2,Pcharset,hiconv);//~v65cR~//~v6WdR~
     if (hiconv==(iconv_t)(-1))                                     //~v6a0I~
     {                                                              //~v6a0I~
 		hiconv=iconv_open(ENCODING_UCS2_2/*to*/,Pcharset/*from*/); //~v6a0I~
-UTRACEP("ucvext_iconvgetconverster iconvopen to %s from %s ,rc=%x\n",ENCODING_UCS2_2,Pcharset,hiconv);//~v6a0I~
+UTRACEP("ucvext_iconvgetconverter iconvopen to %s from %s ,rc=%x\n",ENCODING_UCS2_2,Pcharset,hiconv);//~v6a0I~//~v6WdR~
 	}                                                              //~v6a0I~
     if (hiconv==(iconv_t)(-1))                                     //~v5mTI~
     {                                                              //~v5mTI~
@@ -343,11 +344,11 @@ UTRACEP("ucvext_iconvgetconverster iconvopen to %s from %s ,rc=%x\n",ENCODING_UC
     {                                                              //~v5mTI~
     	phiconv[HICONV_TOUCS]=hiconv;                              //~v5mTR~
 		hiconv=iconv_open(Pcharset,ENCODING_UCS2);                 //~v5mTI~
-UTRACEP("ucvext_iconvgetconverster iconvopen from %s to %s ,rc=%x\n",ENCODING_UCS2,Pcharset,hiconv);//~v624R~//~v65cR~
+UTRACEP("ucvext_iconvgetconverter iconvopen from %s to %s ,rc=%x\n",ENCODING_UCS2,Pcharset,hiconv);//~v624R~//~v65cR~//~v6WdR~
     	if (hiconv==(iconv_t)(-1))                                 //~v6a0I~
     	{                                                          //~v6a0I~
 			hiconv=iconv_open(Pcharset,ENCODING_UCS2_2);           //~v6a0I~
-UTRACEP("ucvext_iconvgetconverster iconvopen from %s to %s ,rc=%x\n",ENCODING_UCS2_2,Pcharset,hiconv);//~v6a0I~
+UTRACEP("ucvext_iconvgetconverter iconvopen from %s to %s ,rc=%x\n",ENCODING_UCS2_2,Pcharset,hiconv);//~v6a0I~//~v6WdR~
 		}                                                          //~v6a0I~
         if (hiconv==(iconv_t)(-1))                                 //~v5mTI~
         {                                                          //~v5mTI~
@@ -2065,7 +2066,8 @@ int ucvext_iconva2acont(ULPTR *Pconverters,UCVUCS_FREAD *Pfread,UCVUCS_FWRITE *P
 {                                                                  //~v5n3I~
 	int len,rc,rcs=0,rct=0,readlen,reslen=0,outlen,chklen;         //~v5n3I~
     int lineendid;                                                 //~v5n3I~
-    int totrep=0,repctr;                                           //~v5n3I~
+//  int totrep=0,repctr;                                           //~v5n3I~//+v77BR~
+    int          repctr;                                           //+v77BI~
     char *pinp,*pout;                                              //~v5n3I~
 //*******************************                                  //~v5n3I~
 	Serrcbfunc=Pferr;	//parm to ucvext_iconva2as                 //~v5n3I~
@@ -2090,7 +2092,7 @@ int ucvext_iconva2acont(ULPTR *Pconverters,UCVUCS_FREAD *Pfread,UCVUCS_FWRITE *P
       else                                                         //~v6f4I~
 //      rcs=ucvext_iconva2as(Popt|lineendid,Pconverters,pinp,0,len,pout,Pobuffsz,&chklen,&outlen,Perrrep,&repctr);//~v5n3R~//~v6BkR~
         rcs=ucvext_iconva2as((int)Popt|lineendid,Pconverters,pinp,0,len,pout,Pobuffsz,&chklen,&outlen,Perrrep,&repctr);//~v6BkI~
-        totrep+=repctr;                                            //~v5n3I~
+//      totrep+=repctr;                                            //~v5n3I~//+v77BR~
         rct|=rcs;                                                  //~v5n3I~
 		Pfwrite(Pobuff,outlen);                                    //~v5n3I~
         reslen=len-chklen;                                         //~v5n3I~
@@ -2158,7 +2160,7 @@ int uMultiByteToWideChar(int Popt,ULONG Pconverter,int Papiopt,char *Ppebc,int P
 	int lasterr=0,ctr,opt;                                         //~v6BHR~
 static int Scodepage_invalidflags;                                 //~v6BHI~
 //*****************                                                //~v6BHI~
-//  UTRACEP("%s:Popt=%x,apiopt=%x inplen=%d,cp=%d,Scodepage_invalidflags=%d\n",UTT,Popt,Papiopt,Pinplen,Pconverter,Scodepage_invalidflags);//+v6WdR~
+//  UTRACEP("%s:Popt=%x,apiopt=%x inplen=%d,cp=%d,Scodepage_invalidflags=%d\n",UTT,Popt,Papiopt,Pinplen,Pconverter,Scodepage_invalidflags);//~v6WdR~
 	opt=Papiopt;                                                   //~v6BHI~
 // 	if (Pconverter==CP_GB18030                                     //~v6BHR~
 // 	||  !(Gudbcschk_flag & UDBCSCHK_DBCSLANG)                      //~v6BHR~
@@ -2168,8 +2170,8 @@ static int Scodepage_invalidflags;                                 //~v6BHI~
     ctr=MultiByteToWideChar(Pconverter,opt,Ppebc,Pinplen,Ppucs,Pbuffsz/WUCSSZ);//~v6BHR~
     if (!ctr)                                                      //~v6BHI~
 	    lasterr=GetLastError();                                    //~v6BHR~
-//  UTRACEP("%s:MultibyteToWideChar opt=%x,cp=%d,mb=%02x,len=%d,ctr=%d,ucs=%x,lasterr=%d\n",UTT,opt,Pconverter,*Ppebc,Pinplen,ctr,Ppucs?*Ppucs:0,lasterr);//~v6BHR~//+v6WdR~
-//  UTRACED("out Ppucs",Ppucs,ctr*(int)sizeof(WUCS));              //+v6WdR~
+//  UTRACEP("%s:MultibyteToWideChar opt=%x,cp=%d,mb=%02x,len=%d,ctr=%d,ucs=%x,lasterr=%d\n",UTT,opt,Pconverter,*Ppebc,Pinplen,ctr,Ppucs?*Ppucs:0,lasterr);//~v6BHR~//~v6WdR~
+//  UTRACED("out Ppucs",Ppucs,ctr*(int)sizeof(WUCS));              //~v6WdR~
     if (lasterr==ERROR_INVALID_FLAGS)                              //~v6BHR~
     {                                                              //~v6BHI~
     	if ((int)Pconverter!=Scodepage_invalidflags)               //~v6BHI~
@@ -2199,7 +2201,7 @@ static int Scodepage_invalidflags;                                 //~v6BII~
 static int Scodepage_invalidparameter;                             //~v6BII~
 	BOOL defused=0;                                                //~v6E1I~
 //*****************                                                //~v6BII~
-//  UTRACEP("%s:converter=%d,apiopt=%x,psubchar=%p,perrflag=%p\n",UTT,Pconverter,Papiopt,Pdefaultchars,Ppdefaultused);//+v6WdR~
+//  UTRACEP("%s:converter=%d,apiopt=%x,psubchar=%p,perrflag=%p\n",UTT,Pconverter,Papiopt,Pdefaultchars,Ppdefaultused);//~v6WdR~
 	opt=Papiopt;                                                   //~v6BII~
     if ((int)Pconverter==Scodepage_invalidflags)                   //~v6BII~
 		opt=0;                      //err INVALID flag(1004) if PRECOMOSIT(default) or INVALID_CHAR flag for GB18030//~v6BII~
@@ -2215,8 +2217,8 @@ static int Scodepage_invalidparameter;                             //~v6BII~
     ctr=WideCharToMultiByte(Pconverter,opt,Ppucs,Pucsctr,Ppmbs,Pbuffsz,pdefaultchars,pdefaultused);//~v6BII~
     if (!ctr)                                                      //~v6BII~
 	    lasterr=GetLastError();                                    //~v6BII~
-//  UTRACEP("%s:WideCharToMultibyte converter=%d,ucs=%04x-%04x,opt=%x,out mb ctr=%d,pdefaultchars=%p,pdefaultused=%p,defaultused=%x,Lasterr=%d\n",UTT,Pconverter,Ppucs[0],Pucsctr>1?Ppucs[1]:0,opt,ctr,pdefaultchars,pdefaultused,pdefaultused?*pdefaultused:0,GetLastError());//~v6BIR~//+v6WdR~
-//  UTRACED("out wkmbs",Ppmbs,ctr);                                //+v6WdR~
+//  UTRACEP("%s:WideCharToMultibyte converter=%d,ucs=%04x-%04x,opt=%x,out mb ctr=%d,pdefaultchars=%p,pdefaultused=%p,defaultused=%x,Lasterr=%d\n",UTT,Pconverter,Ppucs[0],Pucsctr>1?Ppucs[1]:0,opt,ctr,pdefaultchars,pdefaultused,pdefaultused?*pdefaultused:0,GetLastError());//~v6BIR~//~v6WdR~
+//  UTRACED("out wkmbs",Ppmbs,ctr);                                //~v6WdR~
     if (lasterr==ERROR_INVALID_PARAMETER)                          //~v6BIM~
     {                                                              //~v6BIM~
     	if ((int)Pconverter!=Scodepage_invalidflags)               //~v6BIM~

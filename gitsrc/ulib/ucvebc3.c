@@ -1,5 +1,6 @@
-//*CID://+v6M5R~:                                   update#=  366; //~v6M5R~
+//*CID://+v77BR~:                                   update#=  368; //~v77BR~
 //***********************************************************************
+//v77B:230612 ARM;warning by audroidstudio compiler                //~v77BI~
 //v6M5:170825 for xcv,xprint;create EBC cfg by uconv output        //~v6M5I~
 //v6Bu:160226 support ebc(0x00->oxff)->ucs4  mapping               //~v6BuI~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
@@ -526,6 +527,7 @@ int ucvebc3_init(int Popt,ULPTR *Pcfg)                             //~v6hhI~
     int rc=0,opt;
 	UCVEXTCFG  convertercfg;                                       //~v6M5R~
 //*****************
+    UTRACEP("%s:entry\n",UTT);                                     //+v77BI~
     if (Gucvebc_stat & UCVEBCS_xcv)          //on xcv    process  to ucvext_mapinit//~va54I~//~v6bjI~
     {                                                              //~v6bjI~
         Spcfg=(PUCVEXTCFG)(*Pcfg);                                 //~v6bjR~
@@ -2724,7 +2726,8 @@ UTRACED("ucvebc3_setdbcstbl inp data",Pdata,Plen);                 //~v69cI~
 #endif
     }
 UTRACED("ucvebc3_setdbcstbl out dbcs",Pdbcs,Plen);
-	return 1;
+//	return 1;                                                      //~v77BR~
+  	return rc;                                                     //~v77BI~
 }//ucvebc3_setdbcstbl
 #ifdef AAA                                                         //~v66CI~
 //**************************************************************** //~v66cI~

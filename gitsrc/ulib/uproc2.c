@@ -1,4 +1,4 @@
-//*CID://+v761R~:                             update#=  436;       //~v761R~
+//*CID://+v761R~:                             update#=  440;       //~v761R~
 //************************************************************* //~5825I~
 //*uproc2.c                                                        //~v5euR~
 //* parse-redirect,rsh                                             //~v5euR~
@@ -579,6 +579,7 @@ int uproc_loaddll(int Popt,char *Pdllname,char *Pversion,ULPTR *Pphandle)//~v6hh
     int pos;                                                       //~v6M0I~
 #endif                                                             //~v6M0I~
 //********************                                             //~v5mPM~
+	UTRACEP("%s:opt=0x%x,dllname=%s,version=%s\n",UTT,Popt,Pdllname,Pversion);//~v761I~
 	if (Pversion)                                                  //~v5mPM~
     {                                                              //~v5mPM~
     	pc=strchr(Pdllname,'.');                                   //~v6M0I~
@@ -620,7 +621,7 @@ int uproc_loaddll(int Popt,char *Pdllname,char *Pversion,ULPTR *Pphandle)//~v6hh
   else                                                             //~v5mPI~
 	mode=RTLD_LAZY;                                                //~v5mPI~
     hInstLib=dlopen(pdllname,mode) ;                               //~v5mPI~
-    UTRACEP("%s:dlopen hInstLib=%p,mode=%x,dllname=%s\n",UTT,hInstLib,mode,pdllname);//~v6M2I~
+    UTRACEP("%s:dlopen hInstLib=%p,mode=%x,dllname=%s,LD_LIBRARY_PATH=%s\n",UTT,hInstLib,mode,pdllname,getenv("LD_LIBRARY_PATH"));//~v6M2I~//~v761R~
 #endif                                                             //~v5mPI~
 //  *Pphandle=(ULONG)hInstLib;                                     //~v5mPM~//~v6hhR~
     *Pphandle=(ULPTR)hInstLib;                                     //~v6hhI~
@@ -754,6 +755,7 @@ int uproc_getprocaddr(int Popt,char *Pdllname,char *Pdllversion,char *Pprocname,
     int rc=0;                                                      //~v5mPM~
     int opt=0;                                                     //~v5mPI~
 //********************                                             //~v5mPM~
+    UTRACEP("%s:dllname=%s,dllversion=%s,procversion=%s,handle=%p\n",UTT,Pdllname,Pdllversion,Pprocversion,Pphandle);//+v761I~
 	if (!Pphandle || !(handle=*Pphandle))	//1st time             //~v5mPM~
     {                                                              //~v5mPI~
 //  	rc=uproc_loaddll(0,Pdllname,Pdllversion,&handle);          //~v5mPR~
@@ -773,6 +775,7 @@ int uproc_getprocaddr(int Popt,char *Pdllname,char *Pdllversion,char *Pprocname,
     }                                                              //~v5mPM~
     if (Pphandle)                                                  //~v5mPM~
     	*Pphandle=handle;                                          //~v5mPM~
+    UTRACEP("%s:rc=%d,handle=%p\n",UTT,rc,handle);                 //+v761I~
     return rc;                                                     //~v5mPM~
 }//uproc_getprocaddr                                               //~v5mPM~
 #endif                                                             //~v5mPI~
@@ -843,12 +846,12 @@ int chkTerminal()                                                  //~v761I~
 	static char *Sconhost="\\conhost.exe";                         //~v761R~
 //************************                                         //~v761I~
 	pid=ugetpid();	//current pid                                  //~v761I~
-    UTRACEP("%s,currpid=%d\n",UTT,pid);                            //+v761I~
+    UTRACEP("%s,currpid=%d\n",UTT,pid);                            //~v761I~
 	ppid=getParentPID(pid);                                        //~v761I~
     if (ppid!=0)                                                   //~v761I~
     {                                                              //~v761I~
 		rc2=getProcessName(ppid,fnm,(int)sizeof(fnm));             //~v761I~
-    	UTRACEP("%s,parent=%d=%s\n",UTT,ppid,fnm);                 //+v761I~
+    	UTRACEP("%s,parent=%d=%s\n",UTT,ppid,fnm);                 //~v761I~
         if (rc2==0)                                                //~v761I~
         {                                                          //~v761I~
         	if (ustrstri(fnm,Sterminal))                           //~v761I~
@@ -861,7 +864,7 @@ int chkTerminal()                                                  //~v761I~
         {                                                          //~v761I~
 			ppid=getParentPID(ppid);                               //~v761I~
             rc2=getProcessName(ppid,fnm,(int)sizeof(fnm));         //~v761I~
-	    	UTRACEP("%s,parent of parent=%d=%s\n",UTT,ppid,fnm);   //+v761I~
+	    	UTRACEP("%s,parent of parent=%d=%s\n",UTT,ppid,fnm);   //~v761I~
             if (rc2==0)                                            //~v761I~
             {                                                      //~v761I~
                 if (ustrstri(fnm,Sterminal))                       //~v761I~

@@ -1,4 +1,4 @@
-//*CID://+vbs7R~:                             update#=  404;       //~vbj1R~//~vbs7R~
+//*CID://+vbs7R~:                             update#=  406;       //~vbj1R~//~vbs7R~
 //*************************************************************
 //*xedlcmd6.c                                                      //~v51WR~
 //* %:apply command                                                //~v51WR~
@@ -92,6 +92,7 @@
 	#include <uwinsub.h>                                           //~v56eI~
 #endif                                                             //~v55vI~
 #include <ufilew.h>                                                //~vavNI~
+#include <utrace.h>                                                //+vbs7I~
 
 #include "xe.h"
 #include "xescr.h"                                                 //~v51WI~
@@ -918,6 +919,7 @@ int dlcmdopenwithsub(PUCLIENTWE Ppcw,char *Pfnm)                   //~v55VI~
 {                                                                  //~v55VI~
     int rc;                                                        //~v55VI~
 //***********************                                          //~v55VI~
+    UTRACEP("%s:pfnm=%s\n",UTT,Pfnm);                              //~vbs7I~
 #ifdef FTPSUPP                                                     //~v64vI~
     if (uftpisremote(Pfnm,0))                                      //~v64vI~
     {                                                              //~v64vI~
@@ -953,6 +955,7 @@ int dlcmdassocchk_fnamelist(PUCLIENTWE Ppcw)                       //~v56eM~
 	int assocsw=0;                                                 //~v56eM~
     UCHAR fpath[_MAX_PATH];                                        //~v64vR~
 //**************************************                           //~v56eM~
+    UTRACEP("%s\n",UTT);                                           //~vbs7I~
     if (pan300getfnm(Ppcw->UCWrcsry+Ppcw->UCWtopfnlist,fpath))	//get stacked name over scr width//~v56eM~
     {                                                              //~v56eM~
 	  if (!uftpisremote(fpath,0))                                  //~v71rI~
@@ -1172,7 +1175,7 @@ int dlcmdcompare(PUCLIENTWE Ppcw,PUDLCMD Pplc1,PUDLCMD Pplc2)      //~v75MR~
     UCHAR  fnm1[_MAX_PATH],fnm2[_MAX_PATH],fpath[_MAX_PATH],*pfnm1,*pfnm2;//~v75MI~
     UCHAR  pdhfnm1[_MAX_PATH],pdhfnm2[_MAX_PATH],redirectfnm[_MAX_PATH];//~v75MR~
 //  UCHAR  cmdstr[_MAX_PATH+MAXCOLUMN],*pc,*pengmode;              //~v75MR~//~vavHR~
-    UCHAR  cmdstr[_MAX_PATH*2+MAXCOLUMN+256],*pc,*pengmode;            //~vavHI~//+vbs7R~
+    UCHAR  cmdstr[_MAX_PATH*2+MAXCOLUMN+256],*pc,*pengmode;            //~vavHI~//~vbs7R~
 	PUDLCMD plc;                                                   //~v75MI~
     PULINEH plh1,plh2=NULL,plh;                                         //~v75MR~//~vafcR~
     PUFILEH pfh,pfh1,pfh2=NULL;                                         //~v75MR~//~vafcR~

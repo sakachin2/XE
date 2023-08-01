@@ -1,7 +1,8 @@
-//*CID://+vaa2R~:                             update#=  501;       //~vaa2R~
+//*CID://+vas3R~:                             update#=  502;       //+vas3R~
 //***********************************************************
 //* xff  : find file by timestamp/size top nn entry
 //***********************************************************
+//vas3:230630 ARM;closeall for arm subthread execution             //+vas3I~
 //vaa2:160424 Lnx64 compiler warning(FDATE/FTIME)                  //~vaa2I~
 //vaa1:160418 Lnx64 compiler warning                               //~vaa1I~
 //vaa0:160417 Lnx compiler warning                                 //~vaa0I~
@@ -358,6 +359,7 @@ int main(int parmc,char *parmp[])
 				Spgm,Sver,OSTYPE,CMDFLAG_PREFIX,Sselparm,Sprintctr,Schkctr);//~v118R~
 	if (Stestsw)                                                   //~v116R~
 	    ualloc_chk(UAC_MSG);                                       //~v116R~
+	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//+vas3I~
     return max(applrc,totrc);
 }//end main
 //**********************************************************************//~va77I~
@@ -1100,16 +1102,16 @@ int xfftime2dosfiletime(ULONG Ptime,ULONG *Ppdosdatetime)          //~v100R~
 //  ptime=Ptime;                                                   //~v100R~//~vaa0R~
     ptime=(long)Ptime;                                             //~vaa0I~
     ptm=localtime(&ptime);                                         //~v100I~
-//#ifdef AIX                                                         //~v100I~//+vaa2R~
-//    fdt.dummy=0;                                                   //~v100R~//+vaa2R~
-//#endif                                                             //~v100I~//+vaa2R~
+//#ifdef AIX                                                         //~v100I~//~vaa2R~
+//    fdt.dummy=0;                                                   //~v100R~//~vaa2R~
+//#endif                                                             //~v100I~//~vaa2R~
 //  fdt.year =ptm->tm_year-80;  	//unix:~1900,dos:~1980         //~v100I~//~vaa2R~
 //  fdt.month=ptm->tm_mon+1;                                       //~vaa2R~
 //  fdt.day  =ptm->tm_mday;                                        //~vaa2R~
     ueditsetfdateUSHORT(0,ptm->tm_year-80,ptm->tm_mon+1,ptm->tm_mday,&fdt);//~vaa2I~
-//#ifdef AIX                                                         //~v100I~//+vaa2R~
-//    ftm.dummy=0;                                                   //~v100I~//+vaa2R~
-//#endif                                                             //~v100I~//+vaa2R~
+//#ifdef AIX                                                         //~v100I~//~vaa2R~
+//    ftm.dummy=0;                                                   //~v100I~//~vaa2R~
+//#endif                                                             //~v100I~//~vaa2R~
 //  ftm.hours  =ptm->tm_hour;                                      //~vaa2R~
 //  ftm.minutes=ptm->tm_min;                                       //~vaa2R~
 //  ftm.twosecs=ptm->tm_sec/2;                                     //~vaa2R~

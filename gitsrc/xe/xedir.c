@@ -1,8 +1,11 @@
-//*CID://+vbq4R~:                             update#=  195;       //~vbq4R~
+//*CID://+vby7R~:                             update#=  248;       //+vby7R~
 //*************************************************************
 //*xedir.c                                                      //~5821R~
 //* exec fname panel,end,cancel                                 //~v020R~
 //*************************************************************
+//vby7:230415 (ARM)split ufile1l.c to ufiledoc.c                   //~vby7I~
+//vby6:230402 (ARM)adjust by4; go around by shortname and change to uri at ulib(ufile1l)//~vby6I~
+//vby4:230402 (ARM)shared resource support by //shareName defined by SP(ShortPath) cmd.//~vby4I~
 //vbq4:200515 (Bug)exe cmd abend at cmderr() when last is end cmd because it free Ppcw. have to chk UCWF3EXECMD on dir also//~vbq4I~
 //vb80:170205 reduce dirlist sz                                    //~vb7hI~
 //vb7h:170114 (BUG)0c4 when shortname is too long(UDHalias overflow)//~vb7hI~
@@ -126,6 +129,9 @@
 #ifdef LNX                                                         //~v54mI~
     #include <sys/stat.h>                                          //~v54mI~
 #endif                                                             //~v54mI~
+//#ifdef ARMXXE                                                      //~vby4R~//~vby7R~
+//    #include <dirent.h> //for ufile1l.h                            //~vby4R~//~vby7R~
+//#endif                                                             //~vby4R~//~vby7R~
 //*******************************************************
 #include <ulib.h>
 #include <uerr.h>
@@ -138,6 +144,9 @@
 #include <uftp.h>                                                  //~v54mI~
 #include <utrace.h>                                                //~vb2oI~
 //#include <ufilew.h>                                                //~vb04I~//~vb06R~
+//#ifdef ARMXXE                                                      //~vby4R~//~vby7R~
+//  #include <ufile1l.h>                                           //~vby4R~//~vby7R~
+//#endif                                                             //~vby4R~//~vby7R~
 
 #include "xe.h"
 #include "xescr.h"
@@ -158,7 +167,7 @@
 #include "xecap.h"                                                 //~v08cI~
 #include "xeini3.h"                                                //~v11zI~
 #include "xefunc.h"                                                //~v137I~
-#include "xefunc2.h"                                               //+vbq4I~
+#include "xefunc2.h"                                               //~vbq4I~
 #include "xetso.h"                                                 //~v716I~
 //****************************************************************
 int dirclosefree(PUFILEC Ppfc);
@@ -252,6 +261,7 @@ static char Sfhdrline[]="********** TOP OF LIST *";             //~v030I~
 static char Sftrlline[]="********** END OF LIST *";             //~v020R~
 static char Stlineno []="*****|";                               //~v048R~
 //****************************
+    UTRACEP("%s:entry fhname=\n",UTT,Ppfh->UFHfilename);           //~vbq4I~
 //    if (UCBITCHK(Ppfh->UFHflag7,UFHF7TSO))                       //~v716R~
 //    {                                                            //~v716R~
 //        uerrmsg("Dirlist for TSO PDS is not supported yet",0);   //~v716R~
@@ -325,11 +335,18 @@ static char Stlineno []="*****|";                               //~v048R~
 	strcpy(plh->ULHlineno,Stlineno);                            //~v030R~
 	UENQ(UQUE_END,&Ppfh->UFHlineque,plh);                       //~v020R~
 
+    UTRACEP("%s:dirlevel=%d,name=%s\n",UTT,dirlevel,pudirlist0->name);//~vbq4R~
 //enq parent entry for root/wild card case                      //~5812I~
 //  if (*pudirlist0->name!='.'  	//no cd/parent entry           //~v0k1I~
+#ifdef ARMXXE   //for the case empty dir of Document               //~vby4R~
+    if (!filectr || ((   strcmp(pudirlist0->name,".")      //not current//~vby4R~
+         && strcmp(pudirlist0->name,"..")  ))  //and not parent    //~vby4R~
+    ||  !dirlevel)                  //root dir                     //~vby4R~
+#else                                                              //~vby4R~
 	if ((   strcmp(pudirlist0->name,".")      //not current        //~v0k1I~
 	     && strcmp(pudirlist0->name,"..")  )  //and not parent     //~v0k1I~
     ||  !dirlevel)                  //root dir                     //~v07qI~
+#endif                                                             //~vby4R~
     {                                                           //~5812I~
 //  	memset(&udirlwk,0,UDIRLISTSZ);                          //~5812R~//~vandR~
 //  	UDIRLIST_WK_INIT(udirlwk,wkslinkname);                     //~vandI~//~vb80R~
@@ -370,6 +387,7 @@ static char Stlineno []="*****|";                               //~v048R~
 //      if (!WIN_ISREMOTEPATH(Ppfh->UFHfilename)) //avoid set rename field with widlcard name//~v7abR~//~v7amR~
 //#endif                                                             //~v7abI~//~v7amR~
         pdh->UDHtype=UDHTDIREXPMASK;//set to DIREXP at draw     //~5812I~
+        UTRACEP("%s:set UDHTDIREXPMASK dirname=%s\n",UTT,dirname);//~vbq4R~//~vby4R~//+vby7R~
 //   	dirlvlfname(dirname,dirlevel,pdh->UDHname,0);              //~v0feR~
      	dirlvlfname0(Ppfh,dirlevel,pdh,0);                         //~v0feI~
 		UENQ(UQUE_END,&Ppfh->UFHlineque,plh);                   //~5812I~
@@ -602,6 +620,7 @@ int dirgetfstat(int Popt,PUFILEH Ppfh,UCHAR *Ppathname,int Plevel,PUDIRLIST Ppud
     UWCH wkwch[8];                                                 //~vb7hI~
 #endif                                                             //~vb11I~
 //****************************                                  //~5812I~
+    UTRACEP("%s:level=%d,Ppathname=%s\n",UTT,Plevel,Ppathname);    //~vbq4R~
 //  dirlvlfname(Ppathname,Plevel,0,&len);//get path len            //~v540R~
 //  dirlvlfname(Ppfh,Ppathname,Plevel,0,&len);//get path len       //~v540I~//~vb7hR~
     dirlvlfname(Ppfh,Ppathname,Plevel,0/*no output*/,0/*buffsz*/,&len);//get path len//~vb7hI~
@@ -748,6 +767,7 @@ PULINEH dirsetdata(int Plevel,PUDIRLIST Ppudirlist,PUFILEH Ppfh)   //~v0fdR~
 			pdh->UDHlevel=(UCHAR)Plevel;	//cur dir           //~5813R~
 //  		pdh->UDHtype=UDHTDIREXP;//expanded                  //~v05KR~
 			pdh->UDHtype=UDHTPARENT;//path                      //~v05KI~
+        	UTRACEP("%s:set UDHTPARENT dhname=%s,level=%d,FHfilename=%s\n",UTT,pdh->UDHname,Plevel,Ppfh->UFHfilename);//~vby4R~
 		}                                                       //~v030I~
 		else                                                    //~v030I~
         {                                                       //~v030I~
@@ -758,8 +778,9 @@ PULINEH dirsetdata(int Plevel,PUDIRLIST Ppudirlist,PUFILEH Ppfh)   //~v0fdR~
     {                                                           //~v030I~
 		pdh->UDHlevel=(UCHAR)(Plevel-1);	//parent level      //~5813R~
 		pdh->UDHtype=UDHTPARENT;                                //~v030I~
+        UTRACEP("%s:set UDHTPARENT dhname=%s,level=%d,FHfilename=%s\n",UTT,pdh->UDHname,Plevel-1,Ppfh->UFHfilename);//~vby4R~
     }                                                           //~v030I~
-
+    UTRACEP("%s:UDHlevel=%d,UDHtype=%c,fname=%s\n",UTT,pdh->UDHlevel,pdh->UDHtype,Ppudirlist->name);//~vbq4R~
 	return plh;
 }//dirsetdata
 
@@ -874,9 +895,13 @@ void dirsetdatasub(PUDIRLH Ppdh,PUDIRLIST Ppudirlist)           //~5819I~
 	UCBITOFF(Ppdh->UDHflag,UDHFDDSETUP);	//request line make //~5906I~
 //  if (UCBITCHK(Ppdh->UDHattr,FILE_DIRECTORY))                    //~v53QR~
     if (Ppdh->UDHattr & FILE_DIRECTORY)                            //~v53QI~
+    {                                                              //~vby4I~
+        UTRACEP("%s:set UDHTDIR dhname=%s\n",UTT,Ppdh->UDHname);   //~vby4I~
 		Ppdh->UDHtype=UDHTDIR;                                  //~v05PR~
+    }                                                              //~vby4I~
 	else                                                        //~v05PI~
 		Ppdh->UDHtype=UDHTFILE;                                 //~v05PR~
+    UTRACEP("%s:UDHtype=%c,fname=%s\n",UTT,Ppdh->UDHtype,Ppudirlist->name);//~vbq4I~
     return;                                                     //~5819I~
 }//dirsetdatasub                                                //~v05GR~
                                                                 //~5819I~
@@ -1131,6 +1156,7 @@ int dirlvlfname0(PUFILEH Ppfh,int Plevel,PUDIRLH Ppdh,int *Plen)   //~v0feI~
     UCHAR UDHname[UDHNAME_MAXSZ];                                  //~vb2oR~
 #endif                                                             //~vb2oI~
 //*******************                                              //~v0feI~
+    UTRACEP("%s:level=%d UFHfilename=%s\n",UTT,Plevel,Ppfh->UFHfilename);//~vby6I~
 	pc=0;                                                          //~v0feI~
 	if (Ppdh)                                                      //~v0feR~
     {                                                              //~v7abI~
@@ -1172,6 +1198,110 @@ int dirlvlfname0(PUFILEH Ppfh,int Plevel,PUDIRLH Ppdh,int *Plen)   //~v0feI~
 #endif                                                             //~v0feI~
 	return rc;                                                     //~v0feI~
 }//dirlvlfname0                                                    //~v0feI~
+//**************************************************************** //~vbq4I~
+//*Pfname:UHDHname, Plen:output pathlen to the level(excluding last "/")//~vby6I~
+//**************************************************************** //~vby6I~
+#ifdef ARMXXE                                                      //~vby4R~
+int dirlvlfnameDoc(PUFILEH Ppfh,UCHAR *Pfullpath,int Plevel,UCHAR *Pfname,size_t Pbuffsz,int *Plen)//~vby4R~
+{                                                                  //~vby4R~
+    UCHAR *pc,*pc2;                                                //~vby4R~
+    int   ii;                                                      //~vby4R~
+    int  len;                                                      //~vby4R~
+//  char  dirsepc,*shortPath/*[_MAX_PATH]*/;                       //~vby4R~//~vby6R~
+    char  dirsepc,*plevelName;                                     //~vby6I~
+	int pathlenPrefix,rootpathlen;                                 //~vby4R~
+    int swRoot=0;                                                  //~vby6I~//~vby4R~
+//*******************                                              //~vby4R~
+    UTRACEP("%s:level=%d Pfullpath=%s,UFHfilename=%s\n",UTT,Plevel,Pfullpath,Ppfh->UFHfilename);//~vby4R~
+	dirsepc=Ppfh->UFHdirsepc;                                      //~vby4R~
+//  pathlenPrefix=Ppfh->UFHdocumentPrefixLen;                      //~vby4R~
+// 	upathlenDoc(0,Pfullpath,&rootpathlen,0/*PpswRoot*/,&pathlenPrefix,0/*shortPath*/);//~v777R~//~vby4R~//~vby6R~
+//  shortPath=Ppfh->UFHshortpath;                                  //~vby4R~//~vby6R~
+	pathlenPrefix=PREFIX_ARM_SHARE_LEN;                            //~vby6R~
+    pc2=strchr(Pfullpath+pathlenPrefix,dirsepc);                   //~vby6I~
+    if (pc2)                                                       //~vby6I~
+        rootpathlen=PTRDIFF(pc2,Pfullpath);                        //~vby6I~
+    else                                                           //~vby6I~
+        rootpathlen=(int)strlen(Pfullpath);                        //~vby6R~
+    UTRACEP("%s:pathlenPrefix=%d,rootpathlen=%d\n",UTT,pathlenPrefix,rootpathlen);//~vby4R~//~vby6R~
+//  if (pathlenPrefix<=0)                                          //~vby4R~//~vby6R~
+//  	return 4;                                                  //~vby4R~//~vby6R~
+	if (!Plevel)	//req root;                                    //~vby4R~
+    {                                                              //~vby4R~
+//  	pc=shortPath;                                              //~vby4R~//~vby6R~
+    	pc=Pfullpath;                                              //~vby6I~
+//  	len=(int)strlen(pc); //output len of Pfname                //~vby4R~//~vby6R~
+    	len=rootpathlen; //output len of Pfname                    //~vby6I~
+        if (Plen)                                                  //~vby4R~
+        {                                                          //~vby4R~
+            *Plen=rootpathlen;	//next level offset                //~vby4R~//~vby6R~
+        }                                                          //~vby4R~
+//      len++;	//append "/" to root DHname for select dlcmd making fpath//~vby7I~//~vby4R~
+        swRoot=1;//append "/" to root DHname for select dlcmd making fpath//~vby4I~
+        plevelName=Pfullpath;                                      //~vby6I~
+	}                                                              //~vby4R~
+    else                                                           //~vby4R~
+    {                                                              //~vby4R~
+//  	pc=Pfullpath+pathlenPrefix;                                //~vby4R~//~vby6R~
+    	pc=Pfullpath+rootpathlen+1;                                //~vby6R~
+        pc2=0;                                                     //~vby6I~
+        len=0;                                                     //~vby6I~
+    	for (ii=0;ii<Plevel;ii++,pc++)    //skip 1 for level 1     //~vby4R~
+        {                                                          //~vby6I~
+//    		if (!(pc=strchr(pc,dirsepc)))                          //~vby4R~//~vby6R~
+//      		return 4;                                          //~vby4R~//~vby6R~
+      		pc2=strchr(pc,dirsepc);                                //~vby6I~
+            if (pc2)                                               //~vby6I~
+            {                                                      //~vby6I~
+	            len=PTRDIFF(pc2,pc);    //level name               //~vby6R~
+	            plevelName=pc;                                     //~vby6I~
+            }                                                      //~vby6I~
+            else                                                   //~vby6I~
+            {                                                      //~vby6I~
+            	len=strlen(pc);                                    //~vby6I~
+	            plevelName=pc;                                     //~vby6I~
+                break;                                             //~vby6M~
+            }                                                      //~vby6I~
+            pc=pc2;                                                //~vby6I~
+        }                                                          //~vby6I~
+	    UTRACEP("%s:len=%d,pc2=%s\n",UTT,len,pc2);                 //~vby6I~
+//    	if (!(pc2=strchr(pc,dirsepc)))                             //~vby4R~//~vby6R~
+//      {                                                          //~vby4R~//~vby6R~
+//        	len=(int)strlen(pc);                                   //~vby4R~//~vby6R~
+//  	    if (Plen)                                              //~vby4R~//~vby6R~
+//      	    *Plen=(int)strlen(Pfullpath);                      //~vby4R~//~vby6R~
+//      }                                                          //~vby4R~//~vby6R~
+//  	else                                                       //~vby4R~//~vby6R~
+//      {                                                          //~vby4R~//~vby6R~
+//    		len=PTRDIFF(pc2,pc);                                   //~vby4R~//~vby6R~
+//  	    if (Plen)                                              //~vby4R~//~vby6R~
+//      	    *Plen=PTRDIFF(pc2,Pfullpath);                      //~vby4R~//~vby6R~
+//      }                                                          //~vby4R~//~vby6R~
+        if (Plen)                                                  //~vby6I~
+        {                                                          //~vby6I~
+      		if (!pc2)                                              //~vby6R~
+        	    *Plen=(int)strlen(Pfullpath);                      //~vby6I~
+	    	else                                                   //~vby6R~
+        	    *Plen=PTRDIFF(pc2,Pfullpath);  //pathlen           //~vby6R~
+        }                                                          //~vby6I~
+		if (len>MAXFILENAME)                                       //~vby4R~
+        	return 4;                                              //~vby4R~
+	}                                                              //~vby4R~
+    if (Pfname)                                                    //~vby4R~
+    {                                                              //~vby4R~
+		len=min((UINT)Pbuffsz-1,len);                              //~vby4R~
+//  	UmemcpyZ(Pfname,pc,len);                                   //~vby4R~//~vby6R~
+    	UmemcpyZ(Pfname,plevelName,len);                           //~vby6I~
+        if (swRoot)                                                //~vby4I~
+        {                                                          //~vby4I~
+        	*(Pfname+len++)=dirsepc;                               //~vby4I~
+        	*(Pfname+len)=0;                                       //~vby4I~
+        }                                                          //~vby4I~
+	}                                                              //~vby4R~
+    UTRACEP("%s:exit *Plen=%d,fpath=%s,level=%d,lvlname=%s\n",UTT,(Plen?*Plen:-1),Pfullpath,Plevel,Pfname);//~vby4R~//~vby6R~
+    return 0;                                                      //~vby4R~
+}//dirlvlfnameDoc                                                  //~vby4R~
+#endif                                                             //~vby4R~
 //****************************************************************//~5812I~
 // dirlvlfname                                                  //~5812I~
 // get filename of the level from full path name                //~5812I~
@@ -1195,6 +1325,10 @@ int dirlvlfname(PUFILEH Ppfh,UCHAR *Pfullpath,int Plevel,UCHAR *Pfname,size_t Pb
     if (FILEISTSO(Ppfh))                                           //~v716I~
     	return xetsolvlfname(Ppfh,Pfullpath,Plevel,Pfname,Plen);   //~v716I~
 #endif                                                             //~v717I~
+#ifdef ARMXXE                                                      //~vby4R~
+    if (IS_DOCPATH(Pfullpath))                                     //~vby4R~
+    	return dirlvlfnameDoc(Ppfh,Pfullpath,Plevel,Pfname,Pbuffsz,Plen);//~vby4R~
+#endif                                                             //~vby4R~
 	dirsepc=Ppfh->UFHdirsepc;                                      //~v540I~
 	if (!Plevel)	//req root;                                 //~5812I~
     {                                                           //~5812I~
@@ -1285,7 +1419,7 @@ int dirlvlfname(PUFILEH Ppfh,UCHAR *Pfullpath,int Plevel,UCHAR *Pfname,size_t Pb
     	memcpy(Pfname,pc,len);                                  //~5812M~
     	*(Pfname+len)=0;                                        //~5812R~
 	}                                                           //~5812I~
-    UTRACEP("%s:fpath=%s,level=%d,lvlname=%s\n",UTT,Pfullpath,Plevel,Pfname);//~vb7hI~
+    UTRACEP("%s:*Pplen=%d,fpath=%s,level=%d,lvlname=%s\n",UTT,(Plen?*Plen:-1),Pfullpath,Plevel,Pfname);//~vb7hI~//~vbq4R~
     return 0;                                                   //~5812I~
 }//dirlvlfname                                                  //~5812I~
                                                                 //~5820I~

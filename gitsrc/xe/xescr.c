@@ -1,7 +1,8 @@
-//*CID://+vbp3R~:                             update#=  446;       //~vbp3R~
+//*CID://+vby4R~:                             update#=  447;       //+vby4R~
 //***********************************************************
 //* xescr.c                                                     //~5513I~
 //***********************************************************   //~v016I~
+//vby4:230402 (ARM)shared resource support by //shareName defined by SP(ShortPath) cmd.//+vby4I~
 //vbp3:190709 (WinCons)no ime line needed anymore for screen height//~vbp3I~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
@@ -549,11 +550,11 @@ static	VIOINTENSITY intensbgh={6,2,1};	//backbround highlight
     Sw95consolemode_chng=0;     //need not restore at reset/term   //~v11cI~
   else                                                             //~v11cI~
   {                                                                //~v11cI~
-//#ifdef TEST                                                      //+vbp3R~
+//#ifdef TEST                                                      //~vbp3R~
     usetconsolemode(1,0);	//stdout;no processed_input/eol wrap   //~v0i4R~
-//#else                                                            //+vbp3R~
-//    usetconsolemode(1,1);	//stdout;process output                //+vbp3R~
-//#endif                                                           //+vbp3R~
+//#else                                                            //~vbp3R~
+//    usetconsolemode(1,1);	//stdout;process output                //~vbp3R~
+//#endif                                                           //~vbp3R~
     Sw95consolemode_chng=1;     //should be restore at reset/term  //~v0i3I~
   }                                                                //~v11cI~
   #endif //!WXE                                                    //~v500R~
@@ -2845,3 +2846,15 @@ int scrSetUpdateFileMenu(int Popt,PUCLIENTWE Ppcw)                 //~vbdnI~
     return 0;                                                      //~vbdnI~
 }//scrSetUpdateFileMenu                                            //~vbdnR~
 #endif                                                             //~vbdnI~
+#ifdef ARMXXE                                                      //+vby4I~
+//*********************************************************************//+vby4I~
+//*invalidate on java                                              //+vby4I~
+//*********************************************************************//+vby4I~
+void uinvalidateARM()                                              //+vby4I~
+{                                                                  //+vby4I~
+    UTRACEP("xescr.uinvalidateARM");                               //+vby4I~
+    scrdisp();                                                     //+vby4I~
+    wxe_scrdraw();                                                 //+vby4I~
+    UTRACEP("xescr.uinvalidateARM exit");                          //+vby4I~
+}//scrSetUpdateFileMenu                                            //+vby4I~
+#endif                                                             //+vby4I~

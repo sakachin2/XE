@@ -1,8 +1,10 @@
-//CID://+vaq0R~:           update#= 16                             //+vaq0R~
+//CID://+vas3R~:           update#= 19                             //+vas3R~
 //***********************************************************
 //* XTS    : set file/dir timestamp
 //***********************************************************
-//vaq0:201022 xts v1.7 ftime deprecated(ftime is obsoleted POSIX2008)//+vaq0I~
+//vas3:230630 ARM;closeall for arm subthread execution             //+vas3I~
+//vas0:230323 sys/timeb.h is not found on ARM                      //~vas0I~
+//vaq0:201022 xts v1.7 ftime deprecated(ftime is obsoleted POSIX2008)//~vaq0I~
 //vaa2:160424 Lnx64 compiler warning(FDATE/FTIME)                  //~vaa2I~
 //vaa0:160417 Lnx compiler warning                                 //~vaa0I~
 //va6c:120808 xts v1.6 FileTimeToDosDateTime round up odd sec to next even number//~va6cI~
@@ -20,7 +22,7 @@
 //*v1.1 *980921 filename .a or ..a etc under win95                 //~v1.1I~
 //***********************************************************
 
-#define VER "V1.7"   //version                                     //~va3uR~//~vaa0R~//+vaq0R~
+#define VER "V1.8"   //version                                     //~va3uR~//~vaa0R~//~vaq0R~//~vas0R~
 #define PGM "xts"                                                  //~v1.1R~
 
 //**********************************************/
@@ -51,8 +53,9 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#ifndef ARM                                                        //~vas0I~
 #include <sys/timeb.h>                                             //~va3vI~
-
+#endif                                                             //~vas0R~
 //*********************************************************************
 #include <ulib.h>
 #include <ufile.h>
@@ -65,8 +68,8 @@
 #ifdef DPMI                 //DPMI version                         //~v1.0I~
 	#include <ufile4.h>                                            //~v1.0I~
 #endif                                                             //~v1.0I~
-#define UFTIME                                                     //+vaq0I~
-#include <umiscf.h>                                                //+vaq0I~
+#define UFTIME                                                     //~vaq0I~
+#include <umiscf.h>                                                //~vaq0I~
 //*********************************************************************
 
 //*********************************************************************
@@ -164,6 +167,7 @@ int main(int parmc,char *parmp[])
 //*                                                                //~v1.0I~
     printf("%s:%s:=(%c)= %s -- ok = %d, err = %d (Dir= %d, Ronly= %d).\n",//~v1.0R~
 			Spgm,Sver,OSTYPE,Sfnm,Sfctr,reqctr-Sfctr,Serrdir,Serrro);//~v1.0R~
+	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//+vas3I~
 	return 0;
 }//main
 //**********************************************************************
@@ -669,14 +673,14 @@ int cmdtime(char *Pcmd,int Ploop)                                  //~va3vI~
     printf("loop=%d,cmd:%s\n",Ploop,Pcmd);                         //~va3vR~
 	do                                                             //~va3vI~
     {                                                              //~va3vI~
-//  	ftime(&tmb);                                               //~va3vR~//+vaq0R~
-    	uftime(&tmb);                                              //+vaq0I~
+//  	ftime(&tmb);                                               //~va3vR~//~vaq0R~
+    	uftime(&tmb);                                              //~vaq0I~
         sec1=(long)tmb.time ;                                      //~va3vI~
         mili1=(long)tmb.millitm;                                   //~va3vR~
 //printf("start %d,%d\n",sec1,mili1);                              //~va3vR~
         system(Pcmd);                                              //~va3vI~
-//  	ftime(&tmb);                                               //~va3vR~//+vaq0R~
-    	uftime(&tmb);                                              //+vaq0I~
+//  	ftime(&tmb);                                               //~va3vR~//~vaq0R~
+    	uftime(&tmb);                                              //~vaq0I~
         sec2=(long)tmb.time ;                                      //~va3vI~
         mili2=(long)tmb.millitm;                                   //~va3vR~
 //printf("end %d,%d\n",sec2,mili2);                                //~va3vR~

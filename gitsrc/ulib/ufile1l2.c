@@ -1,7 +1,8 @@
-//*CID://+v6J0R~:                             update#=  218;       //~v6J0R~
+//*CID://+v779R~:                             update#=  219;       //+v779R~
 //*************************************************************
 //*ufile1l2.c                                                      //~v50GR~
 //*************************************************************
+//v779:230414 update v777,set uri at ulib fro shortpath            //+v779I~
 //v6J0:170205 malloc udirlist filename to  allow more large number of fine in the dir//~v6J0I~
 //v6E4:160719 (ARM)cpl err for mdos disk                           //~v6E4I~
 //v6D3:160424 specify mdir date format by MTOOLS_DATE_STRING=mm-dd-yyyy//~v6D3I~
@@ -37,6 +38,7 @@
 #include <dirent.h>                                                //~v6b1I~
 //*******************************************************
 #include <ulib.h>
+#include <uque.h>                                                  //+v779I~
 #include <ufile.h>
 #include <ufile1l.h>                                               //~v50GI~
 #include <ufile1l2.h>                                              //~v50GI~
@@ -454,8 +456,8 @@ int ufilegetmdosdl(PUDIRLIST *Pppudl,char **Pstdo,int Pstdoctr,    //~v55nR~
             UDIRLIST_FREE(Ppudlparent);                            //~v6qaR~
         }                                                          //~v55nI~
         else                                                       //~v55nI~
-//      	*pudl=*(pudl-1);                                       //+v6J0R~
-          	UDIRLIST_COPY(pudl,(pudl-1));		//parent dir info  //+v6J0I~
+//      	*pudl=*(pudl-1);                                       //~v6J0R~
+          	UDIRLIST_COPY(pudl,(pudl-1));		//parent dir info  //~v6J0I~
 //      strncpy(pudl->name,"..",sizeof(pudl->name));  //cur path entry//~v55nI~//~v6J0R~
     	udirlist_setname(0,pudl,"..",0/*use strlen*/);             //~v6J0R~
         pudl++;                                                    //~v55nI~

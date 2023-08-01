@@ -1,7 +1,8 @@
-//*CID://+vbvkR~:                             update#=  436;       //~vbvkR~
+//*CID://+vby1R~:                             update#=  437;       //+vby1R~
 //*************************************************************
 //*xefunc.c
 //************************************************************* //~v020I~
+//vby1:230323 sys/timeb.h is not found on ARM                      //+vby1I~
 //vbvk:221130 0.1 alias cmd; allow line comment starting by #      //~vbvkI~
 //vbvi:221130 (BUG)FTFLINECHSET:x20 is duplicated with DTUDUPACMD  //~vbviI~
 //vbvf:221129 drop japanese comment for =0.2/0.3 when english mode //~vbvfI~
@@ -150,7 +151,9 @@
 #ifdef W32                                                         //~v560I~
 	#include <sys\timeb.h>                                         //~v560I~
 #else                                                              //~vbs1I~
+  #ifndef ARM                                                      //+vby1I~
     #include <sys/timeb.h>                                         //~vbs1I~
+  #endif                                                           //+vby1I~
 #endif                                                             //~v560I~
 //#ifdef XXE                                                         //~v651I~//~vbs1R~
 //    #include <sys/timeb.h>                                         //~v651I~//~vbs1R~
@@ -2303,12 +2306,12 @@ void funcopdpostp(PUCLIENTWE Ppcw,int Prc)                      //~5504I~
 }//funcopdpostp                                                 //~5504I~
                                                                 //~5504I~
 //**************************************************               //~vbvkR~
-//*rc=1:dropped comment                                            //+vbvkI~
-//**************************************************               //+vbvkI~
-int funcAliasDropComment(char *Pcmd)                               //+vbvkR~
+//*rc=1:dropped comment                                            //~vbvkI~
+//**************************************************               //~vbvkI~
+int funcAliasDropComment(char *Pcmd)                               //~vbvkR~
 {                                                                  //~vbvkR~
 	char *pc,*pc2;                                                 //~vbvkR~
-    int  nestSQ,nestDQ,rc=0;                                       //+vbvkR~
+    int  nestSQ,nestDQ,rc=0;                                       //~vbvkR~
 	pc=strchr(Pcmd,FUNC_COMMENTID_ALIAS);  //'#'  //comment prefix for =0.1 alias cmd//~vbvkR~
     if (pc)                                                        //~vbvkR~
     {                                                              //~vbvkR~
@@ -2336,14 +2339,14 @@ int funcAliasDropComment(char *Pcmd)                               //+vbvkR~
             	if (!nestDQ && !nestSQ)                            //~vbvkR~
                 {                                                  //~vbvkR~
                 	*pc2=0;                                        //~vbvkR~
-                    rc=1;                                          //+vbvkI~
+                    rc=1;                                          //~vbvkI~
                     break;                                         //~vbvkR~
                 }                                                  //~vbvkR~
             }                                                      //~vbvkR~
         }                                                          //~vbvkR~
     }	                                                           //~vbvkR~
-    UTRACEP("%s:rc=%d,pc=%s,out=%s\n",UTT,rc,pc,Pcmd);             //+vbvkR~
-    return rc;                                                     //+vbvkI~
+    UTRACEP("%s:rc=%d,pc=%s,out=%s\n",UTT,rc,pc,Pcmd);             //~vbvkR~
+    return rc;                                                     //~vbvkI~
 }                                                                  //~vbvkR~
 //**************************************************               //~v67CI~
 //*edit alias cmd and set to Gcmdbuff,if part of multicmd save followed cmd//~v67CI~

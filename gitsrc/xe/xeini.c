@@ -1,4 +1,4 @@
-//CID://+vbvqR~:     update#=  35                                  //~vbvqR~
+//CID://+vbvqR~:     update#=  37                                  //~vbvqR~
 //*************************************************************
 //* xeini.c                                                     //~5528R~
 //************************************************************* //~v018I~
@@ -471,7 +471,7 @@ int inigetparm(UCHAR *Pinifile)                                 //~5501I~
     FILE *fh;
 //*********************************
 // 	inisave();		//save for err return                          //~v06HR~
-	                                                            //~5603I~
+	UTRACEP("%s:inifile=%s\n",UTT,Pinifile);                                                            //~5603I~//~vbvqR~
 	if (Pinifile && !*Pinifile)	//""                            //~5501I~
     	return 0;                                               //~5501R~
     if (!(inifile=Pinifile))				//no /I parameter   //~5503R~
@@ -479,16 +479,24 @@ int inigetparm(UCHAR *Pinifile)                                 //~5501I~
 //*operand chk
 	if ((newfile=filefind(inifile,fpath,0,                         //~v55jR~
 			FFNONFMSG*(Pinifile==0)))>4)//no need fstat3 output //~5513R~
+    {                                                              //~vbvqI~
+		UTRACEP("%s:filefind rc=%d>4,fpath=%s\n",UTT,newfile,fpath);//~vbvqI~
         return 8;
+    }                                                              //~vbvqI~
 	if (newfile)	//not found
     {
 //      uerrmsg("No ini file(%s),continue with default parm",   //~5508R~
 //  	     	"INIファイル(%s)がありません,省略値で処理続行", //~5508R~
 //      	    fpath);                                            //~v55jR~
+		UTRACEP("%s:filefind rc=%d,fpath=%s\n",UTT,newfile,fpath); //~vbvqI~
         return 0;
 	}
     if (!(fh=fileopen(fpath,"r")))                                 //~v55jR~
+    {                                                              //~vbvqI~
+		UTRACEP("%s:open err fpath=%s\n",UTT,fpath);               //~vbvqI~
         return 8;
+    }                                                              //~vbvqI~
+	UTRACEP("%s:fileopen fh=%d,fpath=%s\n",UTT,fh,fpath);          //+vbvqI~
 //ini file read
 //	scrgetcolortbl(&Spplinetype,&Spallettenotbl,&Scolornotbl);     //~v075R~
 	Sgetsbuff=UALLOCM(INIRECSZ);                                //~v04dR~
@@ -756,8 +764,8 @@ int inirfunc(int Pwordno)                                       //~5501R~
         }                                                          //~vb55I~
         jj=ii;
     }
-    UTRACED("FTkey",pft->FTkey,sizeof(pft->FTkey));                //+vbvqI~
-    UTRACED("FTkflag",pft->FTkflag,sizeof(pft->FTkflag));          //+vbvqI~
+    UTRACED("FTkey",pft->FTkey,sizeof(pft->FTkey));                //~vbvqI~
+    UTRACED("FTkflag",pft->FTkflag,sizeof(pft->FTkflag));          //~vbvqI~
 //*key process                                                  //~5501I~
     if (Pwordno==1)	//clear req                                 //~5501R~
     {                                                           //~5501I~
@@ -857,8 +865,8 @@ int inirfunc(int Pwordno)                                       //~5501R~
     if (swshiftAC)                                                 //~vb50I~
 		UCBITON(pft->FTkflag[jj],FTSHIFT);	//S+Alt or S+CTL       //~vb50R~
 #endif                                                             //~vb50I~
-	UTRACED("inirdunc exit FTkey",pft->FTkey,sizeof(pft->FTkey));  //+vbvqR~
-    UTRACED("inirfunc exit FTkflag",pft->FTkflag,sizeof(pft->FTkflag));//+vbvqI~
+	UTRACED("inirdunc exit FTkey",pft->FTkey,sizeof(pft->FTkey));  //~vbvqR~
+    UTRACED("inirfunc exit FTkflag",pft->FTkflag,sizeof(pft->FTkflag));//~vbvqI~
 	return 0;
 }//inirfunc
 

@@ -1,7 +1,12 @@
-//*CID://+v6J0R~:                             update#=  354;       //~v6J0R~
+//*CID://+v784R~:                             update#=  374;       //+v784R~
 //******************************************************
 //*ufile.h                                                         //~v5d1R~
 //******************************************************        //~5708I~
+//v784:230721 ARM:xdelete; no entry msg and successefull when 0 member//+v784I~
+//v781:230720 (Bug)del dir fail by errmsg of "no entry but other attr exist" when dir contains only one dir//~v781I~
+//v77p:230502 ARM:request "//" option to delete shortpath root(//Axe etc)//~v77pI~
+//v77j:230428 ARM;udirlist by opendir optionally                   //~v77jI~
+//v777:230403 ARM;udirlistFD                                       //~v777I~
 //v6J0:170205 malloc udirlist filename to  allow more large number of fine in the dir//~v6J0R~
 //v6Hu:170126 expand max allocsz for udirlist 16M-->32M            //~v6HuI~
 //v6Hj:170119 bypass toolong errmsg at xe term                     //~v6HjI~
@@ -187,6 +192,7 @@
 #endif                                                             //~v327I~
                                                                    //~v349I~
 #define PATHLEN(fname) (upathlen(fname))                           //~v016R~
+#define PATHLEN_DOC(fname) (upathlenDoc(0,fname,0/*PplenRoot*/,0/*PpswRoot*/,0/*PplenPrefix*/,0/*Ppalias*/))//~v777I~
 #ifdef WINREMOTESUPP     //\\xxx\yy support                        //~v5nuI~
     #define DIR_WINREMOTE    "\\\\"                                //~v5nuM~
     #define WIN_UNCID '\\'                                         //~v5nuR~
@@ -195,6 +201,15 @@
 	#define WIN_ISREMOTEDRIVE(fname) (*(fname)=='\\' && *(fname+1)==':') //remote drive//~v5nuR~
                                                                    //~v6H9I~
 #endif                                                             //~v5nuI~
+#ifdef ARMXXE                                                      //~v777I~
+    #define PREFIX_ARM_SHARE   "//"                                //~v777I~
+    #define PREFIX_ARM_SHARE_LEN  2                                //~v777I~
+    #define SEP_ARM_SHARE      ':'     //separator between alias and uri//~v777I~
+    #define SEP_ARM_SHARE_PATH "%3A"   //separator between uri and root path//~v777R~
+    #define SEP_ARM_SHARE_PATH_SUBDIR "%2A"   //separator "/"      //~v777I~
+    #define IS_DOCPATH(fname) (*(fname)=='/' && *(fname+1)=='/')   //~v777I~
+    #define IS_DOCROOT(fname) (IS_DOCPATH(fname) && !strchr(fname+PREFIX_ARM_SHARE_LEN,'/'))//~v77pI~
+#endif                                                             //~v777I~
 #ifdef W32                                                         //~v6ygI~
 //*see ufilew.h                                                    //~v6ygI~
 #else                                                              //~v6ygI~
@@ -238,6 +253,10 @@ extern int Gufile_opt;                                             //~v50GI~
 	#define  SET_UDMODE()  (Gufile_opt |= GFILEOPT_UDMODE)         //~v6u9I~
 #endif                                                             //~v6u9I~
 	#define GFILEOPT_XETERMINATING   0x0400 //xe ytermination avoid toolongname errmsg at dlterm//~v6HjI~
+#ifdef ARMXXE                                                      //~v77jI~
+	#define GFILEOPT_NOOPENDIRUDL    0x0800    //udirlist not by opendir//~v77jR~
+	#define IS_NOOPENDIRDL()  (Gufile_opt &  GFILEOPT_NOOPENDIRUDL)//~v77jR~
+#endif                                                             //~v77jI~
 //******************************************************        //~5826I~
 #define MAXFILENAMEZ_FAT  13     //8.3 with term null              //~v101R~
 #define SHORTNAME_FLDSZ    MAXFILENAMEZ_FAT  //13     //8.3 with term null//~v6J0I~
@@ -325,6 +344,9 @@ extern int Gufile_opt;                                             //~v50GI~
     #define FILE_MDOSDISK   0x0008  //files on disket              //~v50GI~
     #define FILE_DIRECTORY  0x0010                                 //~v327R~
     #define FILE_ARCHIVED   0x0020                                 //~v327R~
+#ifdef ARMXXE                                                      //~v777M~
+    #define FILE_DOCUMENT   0x0020  //ARM document file, included inFILE_ALL//~v777I~
+#endif                                                             //~v777M~
     #define FILE_REMOTE     0x0040  //ftp file                     //~v59dI~
     #define FILE_SPECIAL    0x0080  //special file select request  //~v56sI~
                                                                    //~v59fI~
@@ -470,6 +492,10 @@ typedef struct _FILEFINDBUF3 {                                     //~v327I~
 //*                         initline/vv/mm/creation date by FDATE fmt for TSO SPF//~v5jyM~
                   char      slinkuname[MAXUNAMESZ+1];   //for ftp:user name//~v5a6I~
                   char      slinkgname[MAXGNAMESZ+1];   //for ftp:group name//~v5a6I~
+#ifdef ARMXXE                                                      //~v777I~
+				  int docFlags;                                    //~v777I~
+				  int otherflag;       //UDLOF_ARMDOC              //~v777I~
+#endif                                                             //~v777I~
                 } FILEFINDBUF3;                                    //~v327I~
 //*UNX                                                             //~v6b1R~
 typedef struct _UDIRLIST{   //same fmt as findbuf3                 //~v327I~
@@ -513,6 +539,11 @@ typedef struct _UDIRLIST{   //same fmt as findbuf3                 //~v327I~
 #define UDLOF_ALLOC1             0x0004     //name may be null but slink allocated//~v6qdI~
 #define UDLOF_SLINKNAME_NA       0x0008     //psftp dose not show slink target//~v6qbI~
 #define UDLOF_ALLOCNAME          0x0010     //*name point malloc   //~v6J0I~
+#ifdef ARM                                                         //~v777I~
+#define PUDIRLIST_ISARMDOC(pudl) ((pudl->otherflag & UDLOF_ARMDOC)!=0)//~v777I~
+#define UDIRLIST_ISARMDOC(udl) ((udl.otherflag & UDLOF_ARMDOC)!=0) //~v777I~
+#define UDLOF_ARMDOC             0x0020     //*share document file //~v777I~
+#endif                                                             //~v777I~
 #define UDLOF_ALLOC_FLAGS (\
         UDLOF_SLINK_ALLOC  \
        |UDLOF_WKENTRY      \
@@ -520,6 +551,9 @@ typedef struct _UDIRLIST{   //same fmt as findbuf3                 //~v327I~
 /*      UDLOF_SLINKNAME_NA*/ \
        |UDLOF_ALLOCNAME      \
        )                                                           //~v6J0I~
+#ifdef ARM                                                         //~v777I~
+				      int       docFlags;		                   //~v777I~
+#endif                                                             //~v777I~
                       char      slinkdummy[4]; //pslink point this when no slink//~v6qaI~
                       char      uname[MAXUNAMESZ+1];   //for ftp:user name//~v59fI~
                       char      gname[MAXGNAMESZ+1];   //for ftp:group name//~v59fI~
@@ -1046,6 +1080,11 @@ int uchdrive(char Pdriveletter);                                //~5708I~
 //int uchdir(unsigned char *Ppath);                                //~v578R~
 int uchdir(int Popt,unsigned char *Ppath);                         //~v578I~
 #define UCHD_NOMSG 0x01		//no errmsg option                     //~v578I~
+//**********************************************************************//~v781I~
+unsigned udosfindfirstOpt(int Popt,char *Ppfname,HDIR *Pphdir,unsigned int Pattr,FILEFINDBUF3 *Ppfstat3);//~v781I~
+#define UDFFOO_NOMSG      0x01		//no errmsg option             //~v781R~
+#define UDFFOO_ALLOWDIR   0x02		//allow existing dir           //~v781I~
+#define UDFFOO_ERRNOENTRY 0x04		//issue errmsg noentry, optio for not list(browse/edit) dirlist//+v784I~
 //**********************************************************************//~v179I~
 unsigned udosfindfirstnomsg(char *Ppfname,HDIR *Pphdir,unsigned int Pattr,//~v179I~
                         FILEFINDBUF3 *Ppfstat3);                   //~v179I~
@@ -1137,4 +1176,4 @@ int udirlist_setnameW(int Popt,PUDIRLIST Ppudl,UWCH *PsrcW,int Pucsctr);//~v6J0I
 //**************************************************************** //~v6J0I~
 int udirlist_setname_cat(int Popt,PUDIRLIST Ppudl,char *Psrc);     //~v6J0I~
 //**************************************************************** //~v6J0I~
-void ufile_udirlist_swap(int Popt,PUDIRLIST Ppudl1,PUDIRLIST Ppudl2);//+v6J0R~
+void ufile_udirlist_swap(int Popt,PUDIRLIST Ppudl1,PUDIRLIST Ppudl2);//~v6J0R~

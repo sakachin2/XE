@@ -1,4 +1,4 @@
-//*CID://+vbq5R~:                             update#=  256;       //+vbq5R~
+//*CID://+vbq5R~:                             update#=  258;       //~vbq5R~
 //*************************************************************
 //*xedlcmd2.c
 //* each dir line cmd process                                   //~5731R~
@@ -6,7 +6,7 @@
 //* cur dir(.)/expandall(>)/free(f)/view(v)/view edit(w)        //~v04lR~
 //* toggle size display byte count<-->line count                   //~v10rI~
 //*************************************************************
-//vbq5:200516 (Bug)dir sort /ot is err                             //+vbq5I~
+//vbq5:200516 (Bug)dir sort /ot is err                             //~vbq5I~
 //vbq1:200418 "-" dlcmd sort option chk more(/ot[ is not err)      //~vbq1I~
 //vb7a:170104 msg errtoolong for filename is errtoolongpath        //~vb7aI~
 //vb2E:160229 LNX64 compiler warning                               //~vb2EI~
@@ -1135,7 +1135,10 @@ int dlcmdexpand(PUCLIENTWE Ppcw,PUDLCMD Pplc,PUDLCMD Pplcdummy) //~v04bI~
     if (dlcmdexpand1(Ppcw,plh,dirname,filemask))                //~v04bI~
         return 4;                                               //~v04bI~
     if (parentsw)                   //expand set direxpand id   //~v05KI~
+    {                                                              //+vbq5I~
+        UTRACEP("%s:set UDHTPARENT dhname=%s\n",UTT,pdh->UDHname); //+vbq5I~
         pdh->UDHtype=UDHTPARENT;    //recov parent id           //~v05KI~
+    }                                                              //+vbq5I~
     if (pdh->UDHlevel<=pfh->UFHlevel)   //path up               //~v04bI~
         dlcchngfh(Ppcw,pfh,pdh,dirname);//change pfh filename   //~v04bR~
     dlcmdsetszorlc(Ppcw,plh,UCBITCHK(pdh->UDHflag2,UDHF2DISPLC)!=0);//1:lc,0:sz//~v10rI~
@@ -1224,6 +1227,7 @@ int dlcmdexpandbysort(PUCLIENTWE Ppcw,char *Psortopt)              //~v57jR~
 //  if (dlcmdexpand1(Ppcw,plhp,dirname,Psortopt))                  //~v58tR~
     if (dlcmdexpand1(Ppcw,plhp,dirname,filemask))                  //~v58tI~
         return 4;                                                  //~v57jR~
+    UTRACEP("%s:set UDHTPARENT to pdhp dhname=%s\n",UTT,pdhp->UDHname);//+vbq5I~
     pdhp->UDHtype=UDHTPARENT;    //recov parent id                 //~v57jR~
 	dirrenum(plhp);                                                //~v59WI~
     UCBITON(Ppcw->UCWflag,UCWFDRAW);    //full redraw              //~v57jR~
@@ -1264,14 +1268,20 @@ int dlcmdrefreshsub(PUCLIENTWE Ppcw,PULINEH Pplh,PUDIRLH Ppdh)     //~v152R~
     {                                                              //~v485I~
     	Srefreshsw=0;                                              //~v485I~
     	if (parentsw)                   //expand set direxpand id  //~v57bI~
+        {                                                          //+vbq5I~
+	        UTRACEP("%s:set UDHTPARENT dhname=%s\n",UTT,Ppdh->UDHname);//+vbq5I~
         	Ppdh->UDHtype=UDHTPARENT;   //recov parent id          //~v57bI~
+        }                                                          //+vbq5I~
         return 4;                                                  //~v152I~
     }                                                              //~v485I~
     Srefreshsw=0;                                                  //~v485I~
     dlcmdresetdata(Ppdh);			//set new data(it may be mkdir'ed after del)//~v57cM~
     UCBITOFF(Ppdh->UDHupdatetype,UDHUTNOTEXIST);    //clear del/move/rename//~v57cM~
     if (parentsw)                   //expand set direxpand id      //~v152I~
+    {                                                              //+vbq5I~
+	    UTRACEP("%s:set UDHTPARENT dhname=%s\n",UTT,Ppdh->UDHname);//+vbq5I~
         Ppdh->UDHtype=UDHTPARENT;   //recov parent id              //~v152R~
+    }                                                              //+vbq5I~
     dlcmdsetszorlc(Ppcw,Pplh,UCBITCHK(Ppdh->UDHflag2,UDHF2DISPLC)!=0);//1:lc,0:sz//~v152I~
     dlcmdresetparentsz(Ppdh,DLCPSZ_SZ|DLCPSZ_LC,                   //~v152I~
                         Ppdh->UDHsize-oldsz,Pplh->ULHlinenow-oldlc);//update parent sz//~v152I~
@@ -1531,7 +1541,7 @@ int dlcmdgetexpopt(char *Pparm,int *Ppsortopt)                     //~v57fM~
         }                                                          //~vbq1I~
     }                                                              //~vbq1I~
     else                                                           //~vbq1I~
-    if (*pc)                                                       //+vbq5I~
+    if (*pc)                                                       //~vbq5I~
     {                                                              //~vbq1I~
     	uerrmsg("invalid sort option(%s)",                         //~vbq1I~
 	                "\x83\\ートオプションエラー(%s)",              //~vbq1I~
@@ -1574,7 +1584,10 @@ int dlcmdunexpand(PUCLIENTWE Ppcw,PUDLCMD Pplc,PUDLCMD Pplcdummy)//~5806I~
     if (pdh->UDHtype==UDHTPARENT)   //not path                  //~v05KR~
         UCBITON(plh->ULHflag,ULHFHLDIRTYPE);//highlight         //~v05KI~
     else                                                        //~v05KI~
+    {                                                              //~vbq5I~
+        UTRACEP("%s:set UDHTDIR dhname=%s\n",UTT,pdh->UDHname);    //~vbq5I~
         pdh->UDHtype=UDHTDIR;                                   //~v05KR~
+    }                                                              //~vbq5I~
     dlcmdlvlclear(Ppcw,pdh,1,0);    //force clear under the level//~v05oR~
     dirrenum(plh);  //lineno renumber after this line           //~v048R~
     return 0;                                                   //~5806I~
@@ -1635,11 +1648,13 @@ int dlcmdpath(PUCLIENTWE Ppcw,PUDLCMD Pplc,PUDLCMD Pplcdummy)   //~5813I~
     UCBITON(Ppcw->UCWflag,UCWFDRAW);    //full redraw           //~5813I~
     filesetcsr(Ppcw,plh,PANL310LINENO,0);//set csr              //~5813I~
     dlcchngfh(Ppcw,UGETPFH(plh),pdh,dirname);                   //~5819I~
+    UTRACEP("%s:set UDHTPARENT dhname=%s\n",UTT,pdh->UDHname);     //+vbq5I~
     pdh->UDHtype=UDHTPARENT;    //set on also the line          //~v05KI~
     do                                                          //~5813I~
     {                                                           //~5813I~
         dlcmdlvlclear(Ppcw,pdh,0,0);    //clear brother only    //~v05oR~
         pdh=pdh->UDHdirptr;                                     //~5813I~
+	    UTRACEP("%s:set UDHTPARENT dhname=%s\n",UTT,pdh->UDHname); //+vbq5I~
         pdh->UDHtype=UDHTPARENT;                                //~5813I~
         plh=UGETDIRPLH(pdh);        //re-draw dir id            //~5813I~
     } while(pdh->UDHlevel);                                     //~5813I~

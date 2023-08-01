@@ -13,6 +13,7 @@ call parseenv.bat "%LIB%" /LIBPATH:
 set VCLIBPATH=%PARSEENV%
 echo VCLIBPATH=%VCLIBPATH%
 
+echo   nmake "ULIBHDIR=%ULIBHDIR%" "OBJULIB=%OBJULIB%" "OBJLIB=%OBJLIB%" "trace=%TRACE%" "w98=vc10" "vc=22c" "x64=%X64%" "source=no" "debug=%DEBUG%" "PGM=%PGM%" %* /f mkvc22cxsub.mak
      nmake "ULIBHDIR=%ULIBHDIR%" "OBJULIB=%OBJULIB%" "OBJLIB=%OBJLIB%" "trace=%TRACE%" "w98=vc10" "vc=22c" "x64=%X64%" "source=no" "debug=%DEBUG%" "PGM=%PGM%" %* /f mkvc22cxsub.mak
 
 endlocal

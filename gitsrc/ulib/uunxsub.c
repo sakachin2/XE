@@ -1,8 +1,8 @@
-//CID://+v6BkR~:      update#=     1                               //+v6BkR~
+//CID://+v6BkR~:      update#=     4                               //~v6BkR~
 //*************************************************************
 //*uunxsub.c
 //*************************************************************
-//v6Bk:160220 (LNX)compiler warning                                //+v6BkI~
+//v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
 //v6a0:110520 Android porting(-DARM)                               //~v6a0I~
 //v5ib:060607 (BUG)uninitialized variable used compiler warning    //~v5ibI~
 //v50P:010908 gethostname function                                 //~v50PI~
@@ -36,6 +36,7 @@
 #include <ulib.h>
 #include <uerr.h>
 #include <uunxsub.h>
+#include <utrace.h>                                                //~v6BkI~
 
 //*******************************************************          //~v385I~
 typedef  struct _NAMECHAIN	{                                      //~v385I~
@@ -68,6 +69,7 @@ static gid_t Sgid;                                                 //~v385M~
         *Ppuid=Suid;                                               //~v188R~
     if (Ppgid)
         *Ppgid=Sgid;                                               //~v188R~
+    UTRACEP("%s:uid=%d,gid=%d\n",UTT,Suid,Sgid);                   //~v6BkI~
     return;
 }//ugetugid
 //*******************************************************          //~v385I~
@@ -128,14 +130,14 @@ char *uaddugname(int Pid,char *Pname,PNAMECHAIN *Pptop,PNAMECHAIN *Ppend)//~v385
     char          *pname;                                          //~v385I~
 //**************************************                           //~v385I~
 	len=(int)strlen(Pname);                                        //~v385I~
-//  pnc=(PNAMECHAIN)malloc(NAMECHAINSZ+len);//with last null       //~v385R~//+v6BkR~
-    pnc=(PNAMECHAIN)malloc(NAMECHAINSZ+(size_t)len);//with last null//+v6BkI~
+//  pnc=(PNAMECHAIN)malloc(NAMECHAINSZ+len);//with last null       //~v385R~//~v6BkR~
+    pnc=(PNAMECHAIN)malloc(NAMECHAINSZ+(size_t)len);//with last null//~v6BkI~
     pnc->NCnext=0;                                                 //~v385I~
 //  pnc->NCid=id;                                                  //~v5ibR~
     pnc->NCid=Pid;                                                 //~v5ibI~
     pname=pnc->NCname;                                             //~v385I~
-//  memcpy(pname,Pname,len+1);//with last 0                        //~v385R~//+v6BkR~
-    memcpy(pname,Pname,(size_t)len+1);//with last 0                //+v6BkI~
+//  memcpy(pname,Pname,len+1);//with last 0                        //~v385R~//~v6BkR~
+    memcpy(pname,Pname,(size_t)len+1);//with last 0                //~v6BkI~
 //chain                                                            //~v385I~
 	pnctop=*Pptop;                                                 //~v385I~
 	pncend=*Ppend;                                                 //~v385I~
@@ -176,6 +178,7 @@ int unx_fsetlock(char *Pfnm)                                       //~v39sI~
 {                                                                  //~v39sI~
     int fd;                                                        //~v39sI~
 //******************************                                   //~v39sI~
+	UTRACEP("%s:fnm=%s\n",UTT,Pfnm);                               //+v6BkI~
 	if ((fd=open(Pfnm,O_WRONLY|O_CREAT|O_EXCL,0666))<=0)           //~v39sI~
     {                                                              //~v39sI~
     	if (errno==EEXIST)                                         //~v39sI~
@@ -199,6 +202,7 @@ int unx_fsetlock(char *Pfnm)                                       //~v39sI~
 int unx_fresetlock(char *Pfnm)                                     //~v39sI~
 {                                                                  //~v39sI~
 //******************************                                   //~v39sI~
+	UTRACEP("%s:fnm=%s\n",UTT,Pfnm);                               //+v6BkI~
 	if (unlink(Pfnm))                                              //~v39sI~
     {                                                              //~v39sI~
         uerrmsg("%s lock file unlink failed,rc=%d\n",0,            //~v39sI~
@@ -238,6 +242,6 @@ int unx_fchklock(char *Pfnm)                                       //~v39sR~
 int ugethostname(char *Phnm,int len)                               //~v50PI~
 {                                                                  //~v50PI~
 //******************************                                   //~v50PI~
-//  return gethostname(Phnm,len);                                  //~v50PR~//+v6BkR~
-    return gethostname(Phnm,(size_t)len);                          //+v6BkI~
+//  return gethostname(Phnm,len);                                  //~v50PR~//~v6BkR~
+    return gethostname(Phnm,(size_t)len);                          //~v6BkI~
 }//ugethostname                                                    //~v50PI~

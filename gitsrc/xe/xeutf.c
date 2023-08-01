@@ -1,4 +1,4 @@
-//*CID://+vbkbR~:                            update#= 1534;        //~vbkbR~
+//*CID://+vbkbR~:                            update#= 1536;        //~vbkbR~
 //*************************************************************    //~v904I~
 //* xeutf.c                                                        //~v904I~
 //*************************************************************    //~v904I~
@@ -2534,7 +2534,7 @@ int xeutf_cvdata(int Popt,char *Pinp,int Pinplen,UCHAR **Ppout,int *Ppoutlen)//~
     int rc2;                                                       //~va00I~
     char *poutdata;                                                //~v92nI~
 //****************************                                     //~v92nI~
-	UTRACED("xeutf_cvdata Pinp",Pinp,Pinplen);                          //~v92nI~//+vbkbR~
+	UTRACED("xeutf_cvdata Pinp",Pinp,Pinplen);                          //~v92nI~//~vbkbR~
   if (Popt & XEUTFCVO_OUTPARM)   //Ppout is input(output area addr)//~va00I~
 	poutdata=*Ppout;                                               //~va00I~
   else                                                             //~va00I~
@@ -2721,6 +2721,7 @@ int xeutf_cvf2lsetdbcs(int Popt,char *Pinp,int Pinplen,UCHAR **Ppout,UCHAR **Ppd
     ULONG ucs4;                                                    //~va54I~
     int reslen,chszerr,chszu8,ii;                                  //~va54R~
 //****************************                                     //~va00I~
+	UTRACEP("%s:Popt=0x%x\n",UTT,Popt);                            //+vbkbR~
 #ifdef UTF8UCS2                                                    //~va1LI~
 	if (Popt & XEUTFF2LO_DDFMT)	//cv to ucs2                       //~va1LI~
 		return xeutf_cvf2dd(Popt,Pinp,Pinplen,Ppout,Ppdbcs,Ppoutlen);//~va1LI~

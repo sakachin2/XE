@@ -1,8 +1,9 @@
-//CID://+vbmiR~:      update#=   35                                //+vbmiR~
+//CID://+vby4R~:      update#=   36                                //+vby4R~
 //****************************************************************
 //xescr.h                                                          //~va00R~
 //****************************************************************//~5611I~
-//vbmi:180807 (W32:Bug)top panel LC line is corrupted,use not OutputW but OutputCharacterW.(See v6C8)//+vbmiI~
+//vby4:230402 (ARM)shared resource support by //shareName defined by SP(ShortPath) cmd.//+vby4I~
+//vbmi:180807 (W32:Bug)top panel LC line is corrupted,use not OutputW but OutputCharacterW.(See v6C8)//~vbmiI~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
@@ -143,10 +144,10 @@ typedef struct _USCRD {
 //#define USDF3NOLIGATURE 0x02                    //non ligaturemode//~vb4fR~
 //#define USDF3DDFMT      0x02                    //dd fmt for cmdline when containing utf8 code//~vaanR~//~vaarR~
 //                      UCHAR   USDrsv[3];                         //~vb4fR~
-//                      UCHAR   USDuvioo;       //UVIOO_XX for ligature/combine line by line(see uviom.h)//~vb4fI~//+vbmiR~
-//                      UCHAR   USDrsv[2];                         //~vb4fI~//+vbmiR~
-                        UCHAR   USDrsv[1];                         //+vbmiR~
-                        USHORT  USDuvioo;       //UVIOO_XX for ligature/combine line by line(see uviom.h)//+vbmiR~
+//                      UCHAR   USDuvioo;       //UVIOO_XX for ligature/combine line by line(see uviom.h)//~vb4fI~//~vbmiR~
+//                      UCHAR   USDrsv[2];                         //~vb4fI~//~vbmiR~
+                        UCHAR   USDrsv[1];                         //~vbmiR~
+                        USHORT  USDuvioo;       //UVIOO_XX for ligature/combine line by line(see uviom.h)//~vbmiR~
                         int     USDlen;         //write len for data
                         int     USDoff;         //write data offset
                         int     USDnattr0len;   //additional nattr len
@@ -368,3 +369,6 @@ int scronsize(int Prow,int Pcol,int Pcpchngsw);                    //~v500R~
 #endif                                                             //~v69FI~
 //**************************************************************** //~vbd7I~
 PUCLIENTWE scrsrchcwchl(int Popt,int Psplitid);                    //~vbd7I~
+#ifdef ARMXXE                                                      //+vby4I~
+	void uinvalidateARM();                                         //+vby4I~
+#endif                                                             //+vby4I~

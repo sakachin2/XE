@@ -1,8 +1,11 @@
-//*CID://+v6H1R~:                             update#=  352;       //~v6H1R~
+//*CID://+vc5nR~:                             update#=  361;       //+vc5nR~
 //*************************************************************
 //*ufile3.c
 //*  uxcopy,uxmove                                                 //~v5cdR~
 //*************************************************************
+//vc5n 2023/07/19 copyDoc needs copy timestamp                     //+vc5nI~
+//v77Y:230711 ARM;rename could not move to other folder.(ignore ufilefscomp and do copy + delete if not in same folder)//~v77YI~
+//v77h:230424 ARM;copy                                             //~v77hI~
 //v6H1:161231 filename >_MAX_PATH occurse when moved directory on xe(native cmd issue error fo5r xcopy /move)//~v6H1I~
 //v6Bx:160212 (LNX)compiler warning at suse64                      //~v6BxI~
 //v6Bb:160205 (BUG:W32)slink err(target is not dir) when junction target is root dir//~v6BbI~
@@ -141,6 +144,7 @@
 #include <ucalc2.h>                                                //~v6hvI~
 #ifdef UNX                                                         //~v364I~
 	#include <ufile1l.h>                                           //~v59rR~
+	#include <ufiledoc.h>                                          //~v77hI~
 #else  //!UNX                                                      //~v364I~
 #endif //!UNX                                                      //~v364I~
 #ifdef FTPSUPP                                                     //~v59rI~
@@ -249,6 +253,19 @@ int invalidtargetfilename(int Popt,char *Ptfullpath)               //~v6b1I~
 				Ptfullpath);                                       //~v6b1I~
     return -1;                                                     //~v6b1I~
 }//invalidtargetfilename                                           //~v6b1I~
+#ifdef ARM                                                         //~v77YI~
+//*******************************************************          //~v77YI~
+int ufileIsSameDir(char *Psource,char *Ptarget)                    //~v77YI~
+{                                                                  //~v77YI~
+	int pathlen1,pathlen2,rc=0;                                    //~v77YI~
+    pathlen1=PATHLEN(Psource);                                     //~v77YI~
+    pathlen2=PATHLEN(Ptarget);                                     //~v77YI~
+    if (pathlen1==pathlen2 && pathlen1)                            //~v77YI~
+        rc=!memcmp(Psource,Ptarget,(UINT)pathlen1);                //~v77YI~
+    UTRACEP("%s:rc=%d,pathelen=%d,src=%s,tgt=%s\n",UTT,rc,pathlen1,Psource,Ptarget);//~v77YI~
+    return rc;                                                     //~v77YI~
+}                                                                  //~v77YI~
+#endif                                                             //~v77YI~
 //****************************************************************//~5913I~
 //uxcopy                                                        //~5913I~
 //* file/dir copy                                               //~5B12I~
@@ -286,6 +303,7 @@ int uxcopy(UCHAR *Psource,UCHAR *Ptarget,int Popt,unsigned Pattrmask)//~5913I~
 #endif                                                             //~v5cdI~
 	char copysrc[_MAX_PATH],copytgt[_MAX_PATH];                    //~v6kkI~
 //********************                                          //~5913I~
+    UTRACEP("%s:src=%s,tgt=%s\n",UTT,Psource,Ptarget);              //~v77hI~
 	*copytgt=0;                                                    //~v6kkI~
 //  Sslinktargeterr=0;                                             //~v6k5I~//~v6kdR~
 	Ssrctop=Psource;	//to chk relative line out of target       //~v6kfI~
@@ -647,7 +665,7 @@ int ufilecreateparmproc(int Popt,char *Psfullpath,int Pspathlen,ULONG Psattr,cha
       }                                                            //~v6uUI~
     }                                                              //~v5cdR~
 //  if (ufstat(tgtdir,&fstat3t)) //not found                       //~v5cdR~//~v6H1R~
-    rc=(int)ufstat(tgtdir,&fstat3t);                               //+v6H1R~
+    rc=(int)ufstat(tgtdir,&fstat3t);                               //~v6H1R~
     if (rc==ENAMETOOLONG)                                          //~v6H1I~
         return -1;                                                 //~v6H1I~
     if (rc) //not found                                            //~v6H1I~
@@ -1246,6 +1264,19 @@ UTRACEP("udoscopy :%s to %s,opt=%d\n",Psource,Ptarget,Popt);       //~v6kkR~
         typet="ab";     //append binary(create if new)          //~5916R~
     else                                                        //~5916I~
         typet="wb";     //write binary                          //~5916R~
+#ifdef ARMXXE                                                      //~v77hI~
+	if (IS_DOCPATH(Psource)||IS_DOCPATH(Ptarget))                  //~v77hI~
+    {                                                              //~v77hI~
+    	int opt=Popt? UFCDO_APPEND:0;                              //~v77hI~
+    	rc=ufile_copyDoc(opt,Psource,Ptarget);                     //~v77hI~
+		UTRACEP("%s:copyDoc returnec rc=%d\n",UTT,rc);             //~v77hI~
+  		if (!nocopyinfosw)                                         //+vc5nI~
+    		if (!Popt)  //repl mode(not append)                    //+vc5nI~
+        		ucopypathinfo(Psource,Ptarget);                    //+vc5nI~
+		UTRACEP("%s:docpath after ucopypathinfo rc=%d\n",UTT,rc);  //+vc5nI~
+        return rc;                                                 //~v77hI~
+    }                                                              //~v77hI~
+#endif                                                             //~v77hI~
     if ((fhs=fopen(Psource,"rb")),!fhs)                            //~v022R~
     {                                                              //~v59rI~
 #ifdef UNX                                                         //~v352I~
@@ -1330,6 +1361,7 @@ int uxmove(UCHAR *Psource,UCHAR *Ptarget,unsigned Pattrmask,int Popt)//~v520I~
 #endif                                                             //~v6b1I~
 //********************                                          //~5B12M~
 //    Sslinktargeterr=0;                                             //~v6k5I~//~v6kdI~
+    UTRACEP("%s:opt=0x%x,attrMask=0x%x,source=%s,target=%s\n",UTT,Popt,Pattrmask,Psource,Ptarget);//~v77hI~
 	Ssrctop=Psource;	//to chk relative line out of target       //~v6kfI~
 	Gufile_opt&=~GFILEOPT_RC_WARNING;                              //~v6kdI~
 #ifdef FTPSUPP                                                     //~v5b6I~
@@ -1492,6 +1524,7 @@ int uxmove(UCHAR *Psource,UCHAR *Ptarget,unsigned Pattrmask,int Popt)//~v520I~
     }                                                              //~v6H1I~
 //    if (!rc && Sslinktargeterr)                                    //~v6k5R~//~v6kdR~
 //        rc=DCPY_RC_WARNING;// -2                                   //~v6k5R~//~v6kdR~
+    UTRACEP("%s:rc=%d,source=%s,target=%s\n",UTT,rc,Psource,Ptarget);//~v77YI~
     return rc;                                                  //~6120I~
 }//uxmove                                                       //~5B12M~
                                                                 //~5B12M~
@@ -1825,7 +1858,11 @@ int umovesub(UCHAR *Psource,UCHAR *Ptarget,                     //~5B12M~
 #ifdef UNX                                                         //~v327I~
 //  return urename(Psource,Ptarget,0);                             //~v364R~
   if (!swsubdiroverride)//urename2 suuport only file override      //~v6yfR~
+#ifdef ARM                                                         //~v77YI~
+    if (ufileIsSameDir(Psource,Ptarget))//filesystem match         //~v77YR~
+#else                                                              //~v77YI~
     if (!ufilefscomp(Psource,Ptarget))	//filesystem match         //~v364I~
+#endif                                                             //~v77YI~
     {                                                              //~v59rI~
     	if (overridesw)                                            //~v520I~
 	        return urename2(Psource,Ptarget,0);	//can override existing//~v520I~

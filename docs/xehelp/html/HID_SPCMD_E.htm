@@ -35,6 +35,29 @@
                  xcopy sp:ecdir\x1 sp.ecdir\x2
                  cd sp:ecdir
 
+#ifdef Axe (Android版)
+
+          If you specify "//" for sp-name, you can access the folders on Shared storage.
+          "sp add //" will display a android dialog,
+          When you press "Use this folder", the specified folder is registered in the definition file (::xe.shortpath).
+          After that, you can access files in that folder like as "e //folder name".
+          In that dialog you can also create a new folder,
+          for example, if you create a folder named "Axe" and press "Use this folder",
+          "e //Axe" displays the directory list.
+          Android 11 or later.
+            On Android 11 or later, you can set permission of access "All files" or "Media only" in Shared storage.
+            Please answer which permission setting you want in the dialog that appears immediately after installing this App.
+            Even if you did not select "All files" here, it can be changed from the menu, "Settings", "Android related".
+            If you select "all files",
+              As the path name of the Shared storage is displayed in the "Android related" dialog
+              you can also use the pathname directly.
+              If the /sdcard pathname whown in the dialog is the same as the Shared storage pathname
+              /sdcard is also available as pathname.
+              You can also use short names for parameters of command line tools such as grep, xfg on the =6 screen.
+              e.g) "gre findWord //Axe/*.txt".
+
+#endif Axe (Android版)
+2023/06/10
 </SPAN></DIV>
 </PRE>
 </BODY>

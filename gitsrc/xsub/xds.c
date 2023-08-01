@@ -1,9 +1,10 @@
-//*CID://+vae0R~:                             update#=  170;       //+vae0R~
+//*CID://+vas3R~:                             update#=  171;       //+vas3R~
 //***********************************************************      //~v000I~
 //* XDS  : display directory size                                  //~v000I~
 //***********************************************************      //~v000I~
-//vae0:170206 xds v1.11 invalid filename fmt msg for unprintable utf8;if not UD_MODE, ufullpath call _fullpath//+vae0I~
-//                      it drops UD_NOTLC. SET_UDMODE is required. //+vae0I~
+//vas3:230630 ARM;closeall for arm subthread execution             //+vas3I~
+//vae0:170206 xds v1.11 invalid filename fmt msg for unprintable utf8;if not UD_MODE, ufullpath call _fullpath//~vae0I~
+//                      it drops UD_NOTLC. SET_UDMODE is required. //~vae0I~
 //vaa0:160417 Lnx compiler warning                                 //~vaa0I~
 //va71:130618 (W32)dirwalk support windows slink/junction/mountpoint//~va71I~
 //va66:120628 (AMD64) VC10(VS2010) LP64 support                    //~va66I~
@@ -31,7 +32,7 @@
 //xds.c  *v1.1 *000423 v001 modify help msg                        //~v001I~
 //***********************************************************      //~v000I~
                                                                    //~v000I~
-#define VER "V1.11"   //version                                     //~va30R~//~va48R~//~va4rR~//~va71R~//~vaa0R~//+vae0R~
+#define VER "V1.11"   //version                                     //~va30R~//~va48R~//~va4rR~//~va71R~//~vaa0R~//~vae0R~
 #define PGM "xds"                                                  //~v120R~
                                                                    //~v000I~
 //**********************************************/                  //~v000I~
@@ -159,9 +160,9 @@ int main(int parmc,char *parmp[])                                  //~v000I~
 //**********************************                               //~v000I~
 //* main                                                           //~v000I~
 //**********************************                               //~v000I~
-#ifdef W32UNICODE                                                  //+vae0I~
-    SET_UDMODE();  //filename by UD format                         //+vae0I~
-#endif                                                             //+vae0I~
+#ifdef W32UNICODE                                                  //~vae0I~
+    SET_UDMODE();  //filename by UD format                         //~vae0I~
+#endif                                                             //~vae0I~
     rc=0;       //compiler warning,uninitialized                   //~va58I~
 #ifdef DPMI                                     //DPMI version     //~v000I~
     putenv("LFN=Y");                 //need for ufileisvfat        //~v000I~
@@ -324,6 +325,7 @@ int main(int parmc,char *parmp[])                                  //~v000I~
         }                                                          //~v145I~
 #endif                                                             //~v141M~
     printf("%s:%s:==%c== End of process (filemask:%s) ==\n",Spgm,Sver,OSTYPE,Sfilemask);//~v142R~
+	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//+vas3I~
     return max(applrc,rc);                                         //~v000R~
 }//end main                                                        //~v000I~
 //**********************************************************************//~v000I~

@@ -1,7 +1,8 @@
-//*CID://+van4R~:                             update#=   50;       //~van4R~
+//*CID://+vas3R~:                             update#=   52;       //~vas3R~
 //***********************************************************
 //* XDig : apply program into dir/subdir
 //***********************************************************
+//vas3:230630 ARM;closeall for arm subthread execution             //~vas3I~
 //van4:200516 xdig 1.13:/Cx parm for alternative of %, e.g $fp$ by /C$.//~van4I~
 //van3:200515 xdig 1.13:%rp% support(path relative to starting dir)//~van3I~
 //vae1:170206 xdig v1.12 (BUG of 64bit) ptrsize is 8 byte          //~vae1I~
@@ -123,7 +124,7 @@ static FILE *Smsgfh;
 //static char *Scmdrepword[]={"%d%","%f%","%fp%",0};               //~va2jR~
 //static char *Scmdrepword[]={"%d%","%f%","%fp%","%fb%",0};          //~va2jI~//~van3R~
 static char *Scmdrepword[]={"%d%","%f%","%fp%","%fb%","%rp%",0};   //rp:[4]//~van3I~
-static int Ssw_altsign;                                            //+van4I~
+static int Ssw_altsign;                                            //~van4I~
 #ifdef UNX                                                         //~v171I~
 	static int  Sspfsw=0;		//special filesw                   //~v171I~
 #endif                                                             //~va71I~
@@ -218,6 +219,7 @@ int main(int parmc,char *parmp[])
     completemsg();                                                 //~v135I~
   if (Slogosw)                                                     //~v124I~
         titlemsg();
+	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//+vas3I~
         return rc;
 }//end main
 //**********************************************************************//~v135I~
@@ -698,8 +700,8 @@ char **cmdedit(char *Pdir,char *Pfile,char *Pfullpath)
                                                                    //~v138I~
 //  opt=Snullsw;                                                   //~v130R~
     opt=(Snullsw|WORDREP_IC);           //case incensitive             //~v130I~
-    if (Ssw_altsign)                                               //+van4I~
-        opt|=WORDREP_ALTSIGN;                                      //+van4I~
+    if (Ssw_altsign)                                               //~van4I~
+        opt|=WORDREP_ALTSIGN;                                      //~van4I~
         for (ii=0;ii<argno;ii++)
         ppcmdo[ii]=uwordrep(opt,ppcmdi[ii],Scmdrepword,data,0,0);//no ctr output
     ppcmdo[argno]=0;    //last null
@@ -1223,7 +1225,7 @@ void parmchk(int parmc,char *parmp[])
         getcmd(cmdparmno,ppcmdstr);
     if (parmchar!=0)                                               //~van4I~
     {                                                              //~van4I~
-        Ssw_altsign=1;                                             //+van4I~
+        Ssw_altsign=1;                                             //~van4I~
     	int ii;                                                    //~van4I~
     	for (ii=0;;ii++)                                           //~van4I~
         {                                                          //~van4I~

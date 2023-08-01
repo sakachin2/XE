@@ -1,4 +1,4 @@
-UTF8 encoding * CID:||+v29TR~:  2022/12/04  v129T           update#=  717;||~v29tR~||~v29TR~
+UTF8 encoding * CID:||+v29WR~:  2023/07/31  v129W           update#=  720;||+v29WR~
 ************************************************************************
 (Index)
     (0).Introduction.
@@ -5016,11 +5016,11 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
              You may see spaces after prefix by char width on the display, but there should be no spaces between them on the record.||~v29tR~
              For single column width unicode                          ||~v29tR~
                "//*CID:À+v001R~:#71 update#= 29;"                     ||~v29tR~
-             When using Unicode, the display width varies depending on the language environment,||+v29TI~
-             so be careful when sharing the file.                     ||+v29TI~
-             For example, if Windows displays by 2 columns and Linux displays 1 column,||+v29TI~
-             the CID tagged to the update line on Windows is not recognized as CID on Linux.||+v29TI~
-             So the "cid clear" command on Linux may return 0 rows.   ||+v29TI~
+             When using Unicode, the display width varies depending on the language environment,||~v29TI~
+             so be careful when sharing the file.                     ||~v29TI~
+             For example, if Windows displays by 2 columns and Linux displays 1 column,||~v29TI~
+             the CID tagged to the update line on Windows is not recognized as CID on Linux.||~v29TI~
+             So the "cid clear" command on Linux may return 0 rows.   ||~v29TI~
         XXXX is any 4 byte ASCII code CID like as v094.               ||~v29tR~
              Time stamp type CID ymdd is set if "DATE" is coded.
              No CID is set if specified "NONE", use this pattern when ||~v29tR~
@@ -8567,6 +8567,29 @@ by screen expansion)
                  e "sp:ecws\space embedded name"                      ||~v129R~
                  xcopy sp:ecdir\x1 sp.ecdir\x2                        ||~v129R~
                  cd sp:ecdir                                          ||~v129R~
+                                                                      ||+v29WR~
+#ifdef Axe (Android版)                                                ||+v29WR~
+                                                                      ||+v29WR~
+           If you specify "//" for sp-name, you can access the folders on Shared storage.||+v29WR~
+           "sp add //" will display a android dialog,                 ||+v29WR~
+           When you press "Use this folder", the specified folder is registered in the definition file (::xe.shortpath).||+v29WR~
+           After that, you can access files in that folder like as "e //folder name".||+v29WR~
+           In that dialog you can also create a new folder,           ||+v29WR~
+           for example, if you create a folder named "Axe" and press "Use this folder",||+v29WR~
+           "e //Axe" displays the directory list.                     ||+v29WR~
+           Android 11 or later.                                       ||+v29WR~
+             On Android 11 or later, you can set permission of access "All files" or "Media only" in Shared storage.||+v29WR~
+             Please answer which permission setting you want in the dialog that appears immediately after installing this App.||+v29WR~
+             Even if you did not select "All files" here, it can be changed from the menu, "Settings", "Android related".||+v29WR~
+             If you select "all files",                               ||+v29WR~
+               As the path name of the Shared storage is displayed in the "Android related" dialog||+v29WR~
+               you can also use the pathname directly.                ||+v29WR~
+               If the /sdcard pathname whown in the dialog is the same as the Shared storage pathname||+v29WR~
+               /sdcard is also available as pathname.                 ||+v29WR~
+               You can also use short names for parameters of command line tools such as grep, xfg on the =6 screen.||+v29WR~
+               e.g) "gre findWord //Axe/*.txt".                       ||+v29WR~
+                                                                      ||+v29WR~
+#endif Axe (Android版)                                                ||+v29WR~
                                                                       ||~v129R~
    = SPAwn
 

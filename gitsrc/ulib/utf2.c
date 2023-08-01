@@ -1,9 +1,10 @@
-//*CID://+v740R~:                              update#= 1112;      //+v740R~
+//*CID://+v77BR~:                              update#= 1114;      //~v77BR~
 //*********************************************************************//~7712I~
 //utf2.c                                                           //~7716R~
 //* utf8 data manipulation:process using chof                      //~7712I~
 //*********************************************************************//~7712I~
-//v740:201221 modify "mapping tbl overflow" msg                    //+v740I~
+//v77B:230612 ARM;warning by audroidstudio compiler                //~v77BI~
+//v740:201221 modify "mapping tbl overflow" msg                    //~v740I~
 //v70g:200715 (BUG)utfcvl2f retrns err when wcwidth=0 and output char same as input. it should set utf8 even width=0//~v70gI~
 //v70f:200715 (BUG)utcctr2offs have to consider 3/4 byte dbcs      //~v70fI~
 //v70e:200715 (LNX,Axe)Axe use icu as local converter and icu can translate u-00a4 to 8fa2f0(3 byte locale code)//~v70eI~
@@ -3807,9 +3808,7 @@ int utfcvsetparmlocale(int Popt,char *Plocale)                     //~v62GI~
 int utfgetcharset_std(char *Pplocale,char *Ppcodeset)              //~v627I~
 {                                                                  //~v627I~
 //  char *pctype;                                                  //~v627I~//~v634R~//~v68qR~
-#ifndef NOTRACE                                                    //~v6b9I~
-    char *pctype=0;       //init for UTRACE                        //~v68qI~
-#endif                                                             //~v6b9I~
+//  char *pctype=0;       //init for UTRACE                        //~v68qI~//+v77BR~
     char *pzhcncs[]={"GB18030","GBK","GB2312",0};                  //~v627I~
 //  char *pkokrcs[]={"UHC",0};  //unified hangul code              //~v634I~//~v6fkR~
     char *pkokrcs[]={"UHC","EUC-KR",0};  //unified hangul code     //~v6fkI~
@@ -3852,7 +3851,7 @@ int utfgetcharset_std(char *Pplocale,char *Ppcodeset)              //~v627I~
     {                                                              //~v627I~
 		strncpy(Ppcodeset,*ppc,MAXLOCALESZ-1);                     //~v627I~
 #ifndef NOTRACE                                                    //~v6b9I~
-    	pctype=nl_langinfo(CODESET);                               //~v627I~
+//  	pctype=nl_langinfo(CODESET);                               //~v627I~//+v77BR~
 #endif                                                             //~v6b9I~
 //  	if (strcmp(pctype,Ppcodeset))                              //~v627I~//~v634R~
 //      {                                                          //~v627I~//~v634R~
@@ -3882,7 +3881,10 @@ int utfgetcharset_std(char *Pplocale,char *Ppcodeset)              //~v627I~
 //      }                                                          //~v627I~//~v634R~
     }                                                              //~v627I~
 #ifndef ARM                                                        //~v6a0I~
- UTRACEP("utfgetcharset_std rc=%d,locale=%s,codeset=%s,nllang=%s\n",rc,Pplocale,Ppcodeset,pctype);//~v627I~//~v634R~
+#ifndef NOTRACE                                                    //~v77BI~
+//UTRACEP("utfgetcharset_std rc=%d,locale=%s,codeset=%s,nllang=%s\n",rc,Pplocale,Ppcodeset,pctype);//~v627I~//~v634R~//+v77BR~
+UTRACEP("utfgetcharset_std rc=%d,locale=%s,codeset=%s\n",rc,Pplocale,Ppcodeset);//+v77BI~
+#endif                                                             //~v77BI~
 #endif                                                             //~v6a0I~
  	return rc;                                                     //~v627I~
 }//utfgetcharset_std                                               //~v627I~
@@ -3949,8 +3951,8 @@ int utfgetcharset(char *Pplocale,char *Ppcodeset)                  //~v61mI~
 //  uerrmsg("\"locale -a\" has only UTF8 entry for %s, assumed %s as base encoding",0,//~v62WR~//~v68qR~
 //  printf("Warning:\"locale -a\" shows UTF8 entry only for %s, assumed %s as base encoding",//~v6a0R~
 //  printf("Warning:\"locale -a\" shows UTF8 entry only for %s, assumed %s as base encoding\n",//~v6a0R~
-//  printf("Warning:Langinfo shows UTF8(locale:%s), assumed %s as base encoding\n",//+v740R~
-    printf("Note:Langinfo shows UTF8(locale:%s), assumed %s as base encoding\n",//+v740I~
+//  printf("Warning:Langinfo shows UTF8(locale:%s), assumed %s as base encoding\n",//~v740R~
+    printf("Note:Langinfo shows UTF8(locale:%s), assumed %s as base encoding\n",//~v740I~
             Pplocale,ISO88591);                                    //~v62WR~
     strcpy(Ppcodeset,ISO88591);                                    //~v62WI~
   }                                                                //~v62WI~

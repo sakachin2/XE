@@ -1,8 +1,9 @@
-//*CID://+v70dR~:                             update#=    6;       //~v70dR~
+//*CID://+v77TR~:                             update#=    7;       //+v77TR~
 //******************************************************
 //*udos2.h
 //******************************************************
-//v70d:200625 (LNX)setenv may destroy env,use putenv               //+v70dI~
+//v77T:230708 ARM;locale was not set for xsub tool(pass Gjnilocale by putenv)//+v77TI~
+//v70d:200625 (LNX)setenv may destroy env,use putenv               //~v70dI~
 //v6c1:120120 udos_setenv:to append to $PATH,specify explicit option(duplicated fpr ICUDATA)//~v5c1I~
 //v6bo:111214 putenv(dont free)/setenv(copyed, can be free)        //~v6boI~//~v5kpM~
 //v5kp:070613 (BUG)repeated rctl is effective only once(need keyup)//~v5kpI~
@@ -28,5 +29,6 @@ int ugetdrivetype(char Pdriveid,int Pmsgopt);
 //*******************************************************          //~v6boI~//~v5kpM~
 int udos_setenv(int Popt,char *Pkey,char *Pvalue);                 //~v6boI~//~v5kpM~
 #define UDSE_PREPEND 0x01    //for $PATH, prepend to old env       //~v5c1I~
+#define UDSE_IGNOREDUP 0x02  //ignore duplicated set               //+v77TI~
 //*******************************************************          //~v70dI~
 void listenv();                                                    //~v70dI~

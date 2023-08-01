@@ -1,7 +1,8 @@
-//*CID://+vbi3R~:                             update#=   79;       //~vbi3R~
+//*CID://+vbyaR~:                             update#=   80;       //+vbyaR~
 //**************************************************************** //~v54dI~
 //xefile14.h                                                       //~v54dI~
 //**************************************************************** //~v54dI~
+//vbya:230420 (ARM)open doc optionally. limit to load/save now.    //+vbyaI~
 //vbi3:180211 supprt command history list                          //~vbj3I~
 //vaj0:130710 localfile:recfm=V support (E /mV F{MFH|RDW|FD|HD|F|H})//~vaj0I~
 //va6k:000622 COPY cmd considers priofile RECORD mode              //~va6kI~
@@ -21,6 +22,7 @@
 #define FILE_NOSPLITMSG   0x1000       //no split msg by filegetline//~v41qI~
 #define FILE_BINHEXFILE   0x2000       //bin or hex edit/browse cmd//~v70zI~
 #define FILE_READUTF8     0x4000       //reading copy cmd utf8 sourcefile;parm to filegetline//~va00R~
+#define FILE_ALLOWDOC     0x8000       //allow document file for ARMXXE//+vbyaI~
 #ifdef UNX                                                         //~v48cI~
 int filefindopen(UCHAR *Ppfile,FILEFINDBUF3 *Ppfstat3,int Popt,    //~v48cI~
 //  			FILE** Pphfile,int Pmsgopt,UCHAR *Ptempalias);     //~v576R~
@@ -60,9 +62,9 @@ int fileloadchl(int Popt,PUCLIENTWE Ppcw,char *Ppfile,char *Pfullpath,PUFILEH *P
 #define CHLO_UTF8    0x01                                          //~vbi3I~
 #define CHLO_NEW     0x02                                          //~vbi3I~
 #define CHL_FNM      "::chl"                     //fnm for option key//~vbi3I~
-#ifdef WXEXXE                                                      //+vbi3I~
-#define CHL_CMDLIST "s(2Cl)/S/t/x(DbCl)/X/y"                       //+vbi3I~
-#else                                                              //+vbi3I~
+#ifdef WXEXXE                                                      //~vbi3I~
+#define CHL_CMDLIST "s(2Cl)/S/t/x(DbCl)/X/y"                       //~vbi3I~
+#else                                                              //~vbi3I~
 #define CHL_CMDLIST "s/S/t/x/X/y"                                  //~vbi3R~
-#endif                                                             //+vbi3I~
+#endif                                                             //~vbi3I~
 #define CHL_CMDLIST_POS   40     //lig/comb option is not set for chl//~vbi3R~

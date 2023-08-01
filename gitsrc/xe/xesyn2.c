@@ -1,8 +1,9 @@
-//*CID://+vbv2R~:                             update#=  322;       //~vbv2R~
+//*CID://+vbypR~:                             update#=  325;       //+vbypR~
 //*************************************************************
 //*xesyn2.c                                                        //~v780R~
 //*syntax highlight                                                //~v780I~
 //*************************************************************
+//vbyp:230623 (Bug)syn; if stderr not found rc chk is invalid      //+vbypR~
 //vbv2:221119 SyntaxHighlight;add option trate underline as reverse by C_UNDERLINE=R and G_UNDERLINE=R//~vbv2I~
 //vbv1:221118 SyntaxHighlight;support reverse attr                 //~vbv1I~
 //vbv0:221118 (Bug)SyntaxHighlight;when default BG is specified, it override source-hightlight bg color//~vbv0I~
@@ -628,8 +629,8 @@ static UCHAR *Swordtbl="SHCMD\0" "BG\0" "FG\0"                     //~v780I~
         Gsyncfg.SYNCflag|=SYNCF_BG_BROWSE;                         //~v78oR~
         break;                                                     //~v78oR~
     }                                                              //~v780I~
-    UTRACEP("xesyn2.synchkcfgrec opid=%d\n",opid);                 //+vbv2I~
-    UTRACED("xesyn2.synchkcfgrec",Gsyncfg.SYNCsmap,SHSTYLE_MAXNO); //+vbv2I~
+    UTRACEP("xesyn2.synchkcfgrec opid=%d\n",opid);                 //~vbv2I~
+    UTRACED("xesyn2.synchkcfgrec",Gsyncfg.SYNCsmap,SHSTYLE_MAXNO); //~vbv2I~
     return 0;                                                      //~v780R~
 }//synchkcfgrec                                                    //~v780R~
 //**************************************************************** //~v780I~
@@ -864,6 +865,7 @@ int synkicksh2(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh,char *Ppfnmprefix,char *Ppf
     char *pshcmd;                                                  //~v78mR~
     FILE *fh;                                                      //~v78mI~
     char errmsg[256];                                              //~v78mI~
+    char *pread;                                                   //~vbv2I~
     int rc,len;                                                    //~v78mI~
     char *cmdopt;                                                  //~v7atI~
 //  char langtype[MAX_SYNTYPE+8];                                  //~v78mI~
@@ -893,7 +895,10 @@ int synkicksh2(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh,char *Ppfnmprefix,char *Ppf
     fh=fopen(fpatherr,"r");                                        //~v78mI~
     if (fh)		//err file exist                                   //~v78mI~
     {                                                              //~v78mI~
-    	if (fgets(errmsg,sizeof(errmsg),fh))                       //~v78mI~
+//  	if (fgets(errmsg,sizeof(errmsg),fh))                       //~v78mI~//~vbv2R~
+		*errmsg=0;                                                 //~vbv2I~
+    	pread=fgets(errmsg,sizeof(errmsg),fh);                     //~vbv2I~
+    	if (pread)                                                 //~vbv2I~
         {                                                          //~v78mI~
         	len=(int)strlen(errmsg);                               //~v78mI~
             if (len && *(errmsg+len-1)=='\n')                      //~v78mI~
@@ -915,7 +920,8 @@ int synkicksh2(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh,char *Ppfnmprefix,char *Ppf
     else                                                           //~v78mI~
     {                                                              //~v78GR~
       if ((Gsyncfg.SYNCflag & SYNCF_NORESIDENT))   //NORESIDENT    //~v78GR~
-    	if (!rc)	//usyystem rc=ok                               //~v78mI~
+//  	if (!rc)	//usyystem rc=ok                               //~v78mI~//+vbypR~
+    	if ( rc)	//usyystem rc!=ok                              //+vbypR~
         {                                                          //~v78mI~
         	uerrmsg("SyntaxHL:external process failed",0);         //~v78mI~
             rc=4;                                                  //~v78mI~

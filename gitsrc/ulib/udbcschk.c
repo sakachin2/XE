@@ -1,11 +1,11 @@
-//*CID://+v70kR~:                              update#=  803;      //+v70kR~
+//*CID://+v70kR~:                              update#=  804;      //~v70kR~
 //**************************************************
 //*DBCS first byte chk
 //*parm :char to be checked
 //*     :if 0,return 1 if dbcs environment exist                   //~v024I~
 //*rc   :0-not DBCS first byte,1:DBCS first byte
 //**************************************************
-//v70k:200802 (ARM:BUG)uerrmsg always english mode                 //+v70kI~
+//v70k:200802 (ARM:BUG)uerrmsg always english mode                 //~v70kI~
 //v70g:200715 (BUG)utfcvl2f retrns err when wcwidth=0 and output char same as input. it should set utf8 even width=0//~v70gI~
 //v705:200616 ARM compiler warning;conditionally not initialized   //~v705I~
 //vbmk:180813 (XE)for test,try mk_wcwidth_cjk(ambiguous:Wide DBCS) for visibility chk. use /YJ option//~vbmkI~
@@ -388,7 +388,7 @@ UTRACEP("wcinit sw=%x opt=%x,locale=%s\n",Swcinitsw,Popt,Pplocale);//~v627R~
 #endif                                                             //~v62GI~
         }//initsw                                                  //~v5n8R~
     }                                                              //~v5n8I~
-    UTRACEP("udbcschk_wcinit rc=%d, udbcschkflag=%08x\n",rc,Gudbcschk_flag);//~v5n8I~
+    UTRACEP("udbcschk_wcinit rc=%d, Gudbcschk_flag=%08x\n",rc,Gudbcschk_flag);//~v5n8I~//+v70kR~
 #ifdef UTF8SUPPH                                                   //~v62UR~
     if (!UDBCSCHK_ISDBCS())                                        //~v62UR~
     	Popt &= ~UDCWCIO_DBCSREAD;	//ignore DBCS read             //~v62UR~
@@ -431,7 +431,7 @@ UTRACEP("wcinit sw=%x opt=%x,locale=%s\n",Swcinitsw,Popt,Pplocale);//~v627R~
 	utfucsmapinit(0);    //after setlocale to system default for wcwidth()//~v640I~
   }                                                                //~v6b9I~
 #endif                                                             //~v640M~
-    UTRACEP("udbcschk_wcinit rc=%d, udbcschkflag=%08x,system locale=%s\n",rc,Gudbcschk_flag,setlocale(LC_ALL,NULL));//~v62MI~
+    UTRACEP("udbcschk_wcinit rc=%d, Gudbcschk_flag=%08x,system locale=%s\n",rc,Gudbcschk_flag,setlocale(LC_ALL,NULL));//~v62MI~//+v70kR~
     UTRACEP("wcinit last locale=%s\n",setlocale(LC_ALL,NULL));     //~v62UR~
     return rc;                                                     //~v5n8I~
 }//udbcschk_wcinit                                                 //~v5mQI~
@@ -683,13 +683,13 @@ int udbcschk_wclocalereset(int Popt,char *Pplocale)                //~v5n8I~
         if (ustrstri(Pplocale,"EUC") && ustrstri(Pplocale,"JP"))   //~v5nvR~
         {                                                          //~v5nvI~
 			Gudbcschk_flag |=UDBCSCHK_FORCEUCJ;                    //~v5nvI~
-#ifdef ARM            	                                           //+v70kI~
-			if (Gudbcschk_flag & UDBCSCHK_UTF8)                    //+v70kI~
-            {                                                      //+v70kI~
-				Gudbcschk_flag |=UDBCSCHK_UTF8J;                   //+v70kI~
-				Gudbcschk_flag &=~UDBCSCHK_UTF8E;                  //+v70kI~
-            }                                                      //+v70kI~
-#endif                                                             //+v70kI~
+#ifdef ARM            	                                           //~v70kI~
+			if (Gudbcschk_flag & UDBCSCHK_UTF8)                    //~v70kI~
+            {                                                      //~v70kI~
+				Gudbcschk_flag |=UDBCSCHK_UTF8J;                   //~v70kI~
+				Gudbcschk_flag &=~UDBCSCHK_UTF8E;                  //~v70kI~
+            }                                                      //~v70kI~
+#endif                                                             //~v70kI~
         }                                                          //~v5nvI~
     }                                                              //~v5nvI~
     memcpy(Sleadbyte,leadbyte,sizeof(Sleadbyte));                  //~v5n8I~

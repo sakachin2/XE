@@ -1,8 +1,10 @@
-//*CID://+var1R~:                             update#=  687;       //~vaq1R~//+var1R~
+//*CID://+vas7R~:                             update#=  692;       //~vas7R~
 //***********************************************************
 //* XDComp : directory status compare                              //~v1.aR~
 //***********************************************************
-//var1:220614 xdc crash by long path name 4096+6(4096 is linux max)//+var1I~
+//vas7:230728 xdc;option to ignore timestamp of dir; /uf(xcopy dir timestamp maybe  updated by member copy,xe's xcopy set dir timestamp after member copy)//+vas7I~
+//vas3:230630 ARM;closeall for arm subthread execution             //~vas3I~
+//var1:220614 xdc crash by long path name 4096+6(4096 is linux max)//~var1I~
 //vaq1:201029 Debian10 compiler warning -Wformat-overflow          //~vaq1I~
 //vap0:200616 Axe compiler warning;                                //~vap0I~
 //vaj1:180305 xdc-2.29: /CPU8 option:output triler by utf8 to show on xe result of "=" cmd with cpu8 option//~vaj1I~
@@ -149,7 +151,8 @@
 //*             -dir2 only subdir display
 //***********************************************************
 
-#define VER "V2.29"   //version                                    //~vad1R~//~vaj1R~
+//#define VER "V2.29"   //version                                    //~vad1R~//~vaj1R~//~vas7R~
+#define VER "V2.30"   //version                                    //~vas7I~
 //#ifdef UNX                                                         //~v2.3I~//~va9eR~
 	#define PGM "xdc"                                              //~v2.3I~
 //#else                                                              //~v2.3I~//~va9eR~
@@ -208,7 +211,7 @@
 #include <utf.h>                                                   //~va91I~
 //*********************************************************************
 
-#define MAXPATH_ALLOWANCE 32                                       //+var1I~
+#define MAXPATH_ALLOWANCE 32                                       //~var1I~
 #ifdef DOS                                                         //~v1.7R~
 //  #define MAXFNSZ 12                                             //~v1.lR~
     #define MAXFNSZ MAXFILENAMEZ                                   //~v1.lI~
@@ -218,8 +221,8 @@
 	#define TBLSZ   65502                                          //~v1.7R~
     #endif                                                         //~v1.lI~
 #else                                                              //~v1.7R~
-//  #define MAXFNSZ _MAX_PATH                                      //~v1.7R~//+var1R~
-    #define MAXFNSZ (_MAX_PATH+MAXPATH_ALLOWANCE)                  //+var1I~
+//  #define MAXFNSZ _MAX_PATH                                      //~v1.7R~//~var1R~
+    #define MAXFNSZ (_MAX_PATH+MAXPATH_ALLOWANCE)                  //~var1I~
  #ifdef UNX                                                        //~v255I~
 	#define TBLSZ   (sizeof(FNTBL)*10000)                          //~v255I~
  #else                                                             //~v255I~
@@ -227,8 +230,8 @@
     #define TBLSZ   1024*1024                                      //~vai1I~
  #endif                                                            //~v255I~
 #endif                                                             //~v1.7R~
-//#define MAXPATH _MAX_PATH                                          //~v1.7R~//+var1R~
-#define MAXPATH (_MAX_PATH+MAXPATH_ALLOWANCE)                      //+var1I~
+//#define MAXPATH _MAX_PATH                                          //~v1.7R~//~var1R~
+#define MAXPATH (_MAX_PATH+MAXPATH_ALLOWANCE)                      //~var1I~
 #define MAXLEVEL 32                                                //~v1.cI~
 #define FILENAMEFLDSZ 20                                           //~v1.6I~
 #define MAX_FILENAMEFLDSZ 128                                      //~v252I~
@@ -358,6 +361,7 @@ static int Uneqsws=0;                                              //~v23dI~
 static int Uneqswo=0;                                              //~va9fI~
 static int Uneqswt=0;            //list timestamp unmatch only     //~v23eI~
 static int Uneqswu=0;            //uid/gid unmatch                 //~va62I~
+static int Uneqswf=0;            //ignore timestamp unmatch of dir //~vas7I~
 static int Samecnt=0;           //same file cnt                    //~v1.hR~
 static int Swcopt=UFWC_DOS_DEFAULT | UFWC_CASE_DEFAULT;            //~v252R~
 //static int Samecnt2=0;          //date and size is same file cnt //~v1.kR~
@@ -976,6 +980,7 @@ int main(int parmc,char *parmp[])
     			__DATE__,Swarningsw);                              //~va18R~
     }                                                              //~v1.9I~
 //  return !(((Samecnt+Samecntdir)*2)==(Tot1+Tot2));               //~v1.vR~
+	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//~vas3I~
     return Swarningsw;                                             //~v1.vI~
 }//main                                                            //~v1.vR~
 //**********************************************************************//~v1.kI~
@@ -2740,7 +2745,9 @@ int lineprint(FNTBL *Pfnt1,FNTBL *Pfnt2)
   {                                                                //~vaa0I~
     if (Uneqsws)      //size chk                                   //~v23eI~
     {                                                              //~va62I~
-    	if (Uneqswt)         //ts chk                              //~v23eI~
+//    	if (Uneqswt)         //ts chk                              //~v23eI~//~vas7R~
+      	if (Uneqswt          //ts chk                              //~vas7I~
+        &&  !(Uneqswf && bothdirsw))                               //~vas7I~
           switch(Uneqswt)                                          //~v23gI~
           {                                                        //~v23gI~
           case 2:     //Low                                        //~v23gI~
@@ -2761,7 +2768,9 @@ int lineprint(FNTBL *Pfnt1,FNTBL *Pfnt2)
     }                                                              //~va62I~
     else			//ignore size                                  //~v23eI~
     {                                                              //~va62I~
-    	if (Uneqswt)         //ts chk only                         //~v23eI~
+//    	if (Uneqswt)         //ts chk only                         //~v23eI~//~vas7R~
+      	if (Uneqswt          //ts chk only                         //~vas7I~
+        &&  !(Uneqswf && bothdirsw))                               //~vas7I~
           switch(Uneqswt)                                          //~v23gI~
           {                                                        //~v23gI~
           case 2:     //Low                                        //~v23gI~
@@ -3476,6 +3485,9 @@ for (parmno=1;parmno<parmc;parmno++)
                 Uneqswu=1;                                         //~va62I~
                 break;                                             //~va62I~
 #endif                                                             //~va62I~
+          case 'F':                                                //~vas7I~
+                Uneqswf=1;                                         //~vas7I~
+                break;                                             //~vas7I~
           default:                                                 //~v23eR~
                 printf("%s:%s:invalid option value(%s)\n",Spgm,Sver,parmp[parmno]);//~v23eR~
                 exit(4);                                           //~v23eR~
@@ -4327,14 +4339,18 @@ HELPMSG                                                            //~v1.xI~
 #ifdef UNX                                                         //~va62R~
 //"         %cU[S][T][L|H][U]:output unmatch only\n",                //~va62I~//~va9fR~
 //"         %cU[S][T][L|H][U]:不一致のみ出力\n",                     //~va62I~//~va9fR~
-"         %cU[O][S][T][L|H][U]:output unmatch only\n",             //~va9fI~
-"         %cU[O][S][T][L|H][U]:不一致のみ出力\n",                  //~va9fI~
+//"         %cU[O][S][T][L|H][U]:output unmatch only\n",             //~va9fI~//~vas7R~
+//"         %cU[O][S][T][L|H][U]:不一致のみ出力\n",                  //~va9fI~//~vas7R~
+"         %cU[O][S][T][L|H][U][F]:output unmatch only\n",          //~vas7I~
+"         %cU[O][S][T][L|H][U][F]:不一致のみ出力\n",               //~vas7I~
 					CMDFLAG_PREFIX);                               //~va62I~
 #else                                                              //~va62I~
 //"         %cU[S][T][L|H]:output unmatch only\n",                   //~v23gR~//~va9fR~
 //"         %cU[S][T][L|H]:不一致のみ出力\n",                        //~v23gR~//~va9fR~
-"         %cU[O][S][T][L|H]:output unmatch only\n",                //~va9fI~
-"         %cU[O][S][T][L|H]:不一致のみ出力\n",                     //~va9fI~
+//"         %cU[O][S][T][L|H]:output unmatch only\n",                //~va9fI~//~vas7R~
+//"         %cU[O][S][T][L|H]:不一致のみ出力\n",                     //~va9fI~//~vas7R~
+"         %cU[O][S][T][L|H][F]:output unmatch only\n",             //~vas7I~
+"         %cU[O][S][T][L|H][F]:不一致のみ出力\n",                  //~vas7I~
 					CMDFLAG_PREFIX);                               //~v2.3I~
 #endif                                                             //~va62I~
 HELPMSG                                                            //~va9fI~
@@ -4354,6 +4370,9 @@ HELPMSG                                                            //~va62I~
 "                U:means to uid/gid unmatch only(set \"%\" if attr is same)\n",//~va62R~
 "                U:uid/gid不一致のみリストする(属性一致の時\"%\"で\x95\\示)\n");//~va62R~
 #endif                                                             //~va62I~
+HELPMSG                                                            //~vas7I~
+"                F:check timestamp for file only.\n",              //~vas7I~
+"                F:ファイルのみタイムスタンプ不一致をチェックする。\n");//~vas7I~
 HELPMSG                                                            //~va9gI~
 "         %cXmask:file/directory name to be excluded. Allowed any number of parms.\n",//~va9gR~
 "         %cXmask:比較から除外するファイル/ディレクトリ名。複数指定可\n",             //~va9gR~

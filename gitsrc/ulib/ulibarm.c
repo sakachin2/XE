@@ -1,6 +1,10 @@
-//*CID://+v711R~:                             update#=  484;       //+v711R~
+//*CID://+v77TR~:                             update#=  496;       //~v77TR~
 //**************************************************               //~v6a0I~
-//v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //+v711I~
+//v77T:230708 ARM;locale was not set for xsub tool(pass Gjnilocale by putenv)//~v77TI~
+//v77Q:230630 (BUG)utempnam returns /sdcard, it cause permission err. use private for also XSUB//~v77QI~
+//v771:230323 sys/timeb.h is not found on ARM                      //~v771I~
+//v770:230322 for Axe Api33                                        //~v770I~
+//v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //~v711I~
 //vc1c 2020/06/19 ARM;/proc/version access denied, use Build.VERSION.SDK_INT R RELEASE//~vc1cI~
 //v6K1:170225 (ARM)ftime obsoleted at POSIX2008; linker fail by undefined reference by this reason?//~v6K1I~
 //v6z0:150529 by xuerpck(uerrmsg parmchk)                          //~v6z0I~
@@ -18,7 +22,7 @@
 #include <locale.h>                                                //~v6a0I~
 #include <unistd.h>                                                //~v6a0I~
 #include <sys/types.h>                                             //~v6K1I~
-#include <sys/timeb.h>                                             //~v6K1I~
+//#include <sys/timeb.h>                                             //~v6K1I~//~v771R~
 //****************                                                 //~v6a0I~
 #define GBL_ULIBARM		//for ulibarm.h                            //~v6a0I~
 #include <ulib.h>                                                  //~v6a0I~
@@ -39,6 +43,8 @@
 #ifdef ARMXXE
 #include <jnic2ju.h>	//getprivatepath                           //~v6dgR~
 #endif
+#define UFTIME                                                     //~v770I~
+#include <umiscf.h>                                                //~v770I~
 //*********************************************************        //~v6a0I~
 //*********************************************************        //~v6a0I~
 //*  ARM Environment                                               //~v6a0I~
@@ -52,6 +58,29 @@ char *getsdcarddir()                                               //~v6a0I~
         pc="/sdcard";                                              //~v6a0I~
     return pc;                                                     //~v6a0I~
 }                                                                  //~v6a0I~
+char *getenvtmp(char *Pout)                                        //~v77QI~
+{                                                                  //~v77QI~
+	char *pc,*pc2;                                                      //~v77QI~
+//**************                                                   //~v77QI~
+    pc=getenv(ENV_TMPDIR);	//TMPDIR                               //~v77QR~
+    UTRACEP("%s:key=%s,getenv=%s\n",UTT,ENV_TMPDIR,pc);            //~v77QR~
+    if (!pc)                                                       //~v77QI~
+        strcpy(Pout,"/tmp");                                       //~v77QI~
+    else                                                           //~v77QI~
+    {                                                              //~v77QI~
+    	pc2=strchr(pc,':');	                                       //~v77QR~
+        if (!pc2)            //PREPEND option at setenv            //~v77QI~
+        	strcpy(Pout,pc);                                       //~v77QI~
+        else                                                       //~v77QI~
+        {                                                          //~v77QI~
+        	int len=PTRDIFF(pc2,pc);                              //~v77QI~
+        	UmemcpyZ(Pout,pc,(UINT)len);                           //~v77QI~
+        }                                                          //~v77QI~
+    }                                                              //~v77QI~
+    pc=Pout;                                                       //~v77QI~
+    UTRACEP("%s:return %s\n",UTT,pc);                              //~v77QI~
+    return pc;                                                     //~v77QI~
+}                                                                  //~v77QI~
 char *getdatadir()                                                 //~v6a0I~
 {                                                                  //~v6a0I~
 	char *pc;                                                      //~v6a0I~
@@ -68,17 +97,27 @@ static char Sfnm[_MAX_PATH];                                       //~v6a0R~
 	FILEFINDBUF3 ffb3;                                             //~v6a0I~
     int rc;                                                        //~v6a0I~
     char *pc3="Private";                                           //~v6hcR~
+    char tmpdir[_MAX_PATH];                                        //~v77QI~
 //**************                                                   //~v6a0I~
 #ifdef ARMXXE                                                      //~v6dgI~
 //data/data/app/files                                              //~v6dgI~
     pc3=jniu_getPrivatePath(0);                                    //~v6dgI~
     sprintf(Sfnm,"%s/tmp",pc3);                                    //~v6dgI~
+    UTRACEP("%S:Sfnm=%s\n",UTT,Sfnm);                              //~v77QI~
     rc=ufstat(Sfnm,&ffb3);                                         //~v6dgI~
     if (!rc)                                                       //~v6dgI~
         return Sfnm;                                               //~v6dgI~
     if (!umkdir(Sfnm))                                             //~v6dgI~
         return Sfnm;                                               //~v6dgI~
 #endif                                                             //~v6dgI~
+//try private data                                                 //~v77QI~
+    pc1=getenvtmp(tmpdir);                                         //~v77QI~
+    strcpy(Sfnm,pc1);                                         //~v77QI~
+    rc=ufstat(Sfnm,&ffb3);                                         //~v77QI~
+    if (!rc)                                                       //~v77QI~
+        return Sfnm;                                               //~v77QI~
+    if (!umkdir(Sfnm))                                             //~v77QI~
+        return Sfnm;                                               //~v77QI~
 //try sdcard                                                       //~v6dgI~
     pc1=getsdcarddir();                                            //~v6a0I~
     sprintf(Sfnm,"%s/tmp",pc1);                                    //~v6a0I~
@@ -106,6 +145,7 @@ char *gettempnampath(char *Ppath)                                  //~v6a0I~
 static char Sfnm[_MAX_PATH];                                       //~v6a0R~
 	char *pc;                                                      //~v6a0I~
 //**************                                                   //~v6a0I~
+    UTRACEP("%s:Ppath=%s\n",UTT,Ppath);                            //+v77TI~
 	if (!Ppath || !*Ppath)                                         //~v6a0I~
     	return gettempdir();                                       //~v6a0I~
 	if (strlen(Ppath)>=4 && !memcmp(Ppath,"/tmp",4))               //~v6a0R~
@@ -186,6 +226,23 @@ int wctomb_api4(char *Pout,UWCHART Pucs)                           //~v6a0R~
     return outlen;                                                 //~v6a0I~
 }                                                                  //~v6a0I~
 #endif //ARMAPI9                                                   //~v6a0I~
+//*********************************************************        //~v77TI~
+char *ulibarm_getJniLocale(void)                                   //~v77TR~
+{                                                                  //~v77TI~
+#ifndef XXE  //from jni                                            //~v77TI~
+	#ifdef XSUB                                                    //~v77TI~
+        if (!*Gjnilocale)                                           //~v77TI~
+        {                                                          //~v77TI~
+    		char *env=getenv(ENV_AXELOCALE);                       //~v77TR~
+	    	UTRACEP("%s:env=%s,key=\n",UTT,env,ENV_AXELOCALE);     //~v77TR~
+        	if (env)                                               //~v77TR~
+        		strcpy(Gjnilocale,env);                            //~v77TR~
+        }                                                          //~v77TI~
+    #endif                                                         //~v77TI~
+#endif                                                             //~v77TI~
+    UTRACEP("%s:rc=%s\n",UTT,Gjnilocale);                          //~v77TR~
+	return Gjnilocale;                                             //~v77TI~
+}                                                                  //~v77TI~
 //*********************************************************        //~v6a0M~
 //*setlocale returns null                                          //~v6a0I~
 //*********************************************************        //~v6a0I~
@@ -195,15 +252,14 @@ char *ulibarm_getlocale(void)                                      //~v6a0M~
     char *pc;                                                      //~v6K1I~
 //*********                                                        //~v6a0M~
 	pc=ARM_DEFAULT_LOCALE;                                         //~v6a0M~
-#ifdef XXE  //from jni                                             //~v6a0M~
     UTRACEP("ulibarm_getlocale Gjnilocale=%s\n",Gjnilocale);       //~v6a0M~
+    ulibarm_getJniLocale();                                        //~v77TR~
 	if (*Gjnilocale)                                               //~v6a0M~
     {                                                              //~v6a0M~
     	pc=Gjnilocale;                                             //~v6a0M~
         if (!strchr(pc,'.'))                                       //~v6a0M~
         	strcat(pc,"." LOCALEID_UTF_8);	//if no charset specified//~v6a0I~
     }                                                              //~v6a0M~
-#endif                                                             //~v6a0M~
     UTRACEP("ulibarm_getlocale out=%s\n",pc);                      //~v6a0M~
 	return pc;                                                     //~v6a0M~
 }                                                                  //~v6a0M~
@@ -219,6 +275,7 @@ int ulibarm_getdefaultcharset(int Popt,char *Plocale,char *Pcharset)//~v6f9R~
 //*********                                                        //~v6f9I~
 	*Plocale=0;                                                    //~v6f9I~
 	*Pcharset=0;                                                   //~v6f9I~
+    ulibarm_getJniLocale();                                                //~v77TI~
 	pc=Gjnilocale;                                                 //~v6f9I~
     if (!pc)                                                       //~v6f9I~
     	return 4;                                                  //~v6f9R~
@@ -298,17 +355,17 @@ int uviol_konchk2(void)                                            //~v6a0I~
 //*******************************************************          //~v6K1I~
 int ftime(struct timeb * Ptb)                                      //~v6K1R~
 {                                                                  //~v6K1I~
-//    struct timezone tz;                                            //~v6K1I~//+v711R~
-//    struct timeval  tv;                                            //~v6K1I~//+v711R~
-////*********************                                            //~v6K1I~//+v711R~
-//    if (gettimeofday(&tv,&tz)<0)                                   //~v6K1I~//+v711R~
-//        return -1;                                                 //~v6K1I~//+v711R~
-//        Ptb->millitm=tv.tv_usec/1000;                              //~v6K1R~//+v711R~
-//        Ptb->time=tv.tv_sec;                                       //~v6K1R~//+v711R~
-//        Ptb->timezone=tz.tz_minuteswest;                           //~v6K1R~//+v711R~
-//        Ptb->dstflag=tz.tz_dsttime;                                //~v6K1R~//+v711R~
-//    return 0;                                                      //~v6K1I~//+v711R~
-	return uftime(Ptb);                                            //+v711I~
+//    struct timezone tz;                                            //~v6K1I~//~v711R~
+//    struct timeval  tv;                                            //~v6K1I~//~v711R~
+////*********************                                            //~v6K1I~//~v711R~
+//    if (gettimeofday(&tv,&tz)<0)                                   //~v6K1I~//~v711R~
+//        return -1;                                                 //~v6K1I~//~v711R~
+//        Ptb->millitm=tv.tv_usec/1000;                              //~v6K1R~//~v711R~
+//        Ptb->time=tv.tv_sec;                                       //~v6K1R~//~v711R~
+//        Ptb->timezone=tz.tz_minuteswest;                           //~v6K1R~//~v711R~
+//        Ptb->dstflag=tz.tz_dsttime;                                //~v6K1R~//~v711R~
+//    return 0;                                                      //~v6K1I~//~v711R~
+	return uftime(Ptb);                                            //~v711I~
 }//ftime                                                           //~v6K1I~
 //*******************************************************          //~vc1cI~
 void setArmOSVersion(int Popt,int PapiLevel,int PapiRelease)       //~vc1cR~

@@ -1,4 +1,4 @@
-//CID://+vbmjR~:                         Update#=  668             //~vbmjR~
+//CID://+vbmjR~:                         Update#=  670
 //*************************************************************
 //*xefile12.c*                                                     //~v0baR~
 //**save,renum-->xefile15                                          //~v0duR~//~va6FR~
@@ -386,7 +386,7 @@ int filesave(PUCLIENTWE Ppcw,int Pendsw,PUFILEH Ppfh,PULINEH Pplh1,PULINEH Pplh2
 //  if (wxpcmdsw)                                                  //~v625I~//~va87R~
 //  	vhexlineidsw=0;				//no set lineid at top of line //~v625I~//~va87R~
 #endif                                                             //~v625M~
-    swforce=0;  //for compiler warning                             //+vbmjI~
+    swforce=0;  //for compiler warning                             //~vbmjI~
     if (prtpagesw)                                                 //~v40kI~
     {                                                              //~v40kI~
 //  	scrpcw=(PUCLIENTWE)(ULONG)Pplh2;                           //~v445R~
@@ -816,6 +816,7 @@ int filesave(PUCLIENTWE Ppcw,int Pendsw,PUFILEH Ppfh,PULINEH Pplh1,PULINEH Pplh2
 #ifdef UNX                                                         //~v48cI~
 //  	rc=filefindopen(pfh->UFHfilename,&fstat3,appendsw+writebinsw+FILE_OPEN_OUT,&pfh->UFHhfile,FFMSG,pfh->UFHalias);//"w" open//~v574R~
 //  	rc=filefindopen(poutfnm,&fstat3,appendsw+writebinsw+FILE_OPEN_OUT,&pfh->UFHhfile,ffmsgopt,pfh->UFHalias);//"w" open//~v576R~
+//*outfile parm or new file                                       
     	rc=filefindopen(poutfnm,&fstat3,appendsw+writebinsw+FILE_OPEN_OUT,&pfh->UFHhfile,ffmsgopt,pfh->UFHalias,0);//"w" open//~v576I~
 #else                                                              //~v48cI~
 //  	rc=filefindopen(pfh->UFHfilename,&fstat3,appendsw+writebinsw+FILE_OPEN_OUT,&pfh->UFHhfile,FFMSG);//"w" open//~v574R~

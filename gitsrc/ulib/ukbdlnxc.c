@@ -1,9 +1,10 @@
-//*CID://+v712R~:                             update#=  485;       //~v6EYR~//+v712R~
+//*CID://+v77BR~:                             update#=  487;       //~v77BR~
 //*************************************************************
 //*ukbdlnxc.c                                                      //~v5mvR~
 //*kbd get for linux console screen
 //*************************************************************
-//v712:201023 Manjaro;mouse esc seq 0x1b[<b;x;yM  M:down/m:up      //+v712I~
+//v77B:230612 ARM;warning by audroidstudio compiler                //~v77BI~
+//v712:201023 Manjaro;mouse esc seq 0x1b[<b;x;yM  M:down/m:up      //~v712I~
 //v6Fd:160918 (BUG)curses key tbl overflow                         //~v6FdI~
 //v6Ey:160824 for FindPSx register S+C+F5,S+A+F5                   //~v6EYI~
 //v6D1:160418 LNX64 compiler warning                               //~v6D1I~
@@ -731,7 +732,9 @@ static int Skeycode_symid[NR_KEYS];     //symid for all keycode
 static CURSESKEYTBL Scurseskeytbl[CKTNO];                          //~v57NI~
 static int          Scktno;             //count of to use terminfo string//~v324I~
 static int          Seventctr=0;        //kbd or mouse event ctr   //~v592I~
+#ifndef NOCURSES                                                   //+v77BI~
 static int          Smouseeventctr=-2;        //kbd or mouse event ctr//~v592I~
+#endif                                                             //+v77BI~
 static int          Skbdopt;                                       //~v6qhI~
 //*********************************************************************
 void ukbdlnxc_optproc(int Popt,unsigned char *);                   //~v384R~
@@ -962,7 +965,9 @@ static  int Sdbcssw=0;                                             //~v57DI~
     unsigned short code;
     int ii;                                                        //~v536I~
     int rc;                                                        //~v592I~
+#ifndef NOCURSES                                                   //~v77BI~
     struct timeval tv,*ptv;                                        //~v592I~
+#endif                                                             //~v77BI~
 #define PRINTF(casen,top,len)\
     {int xx;char *pc;        \
       if (Scursessw)          \
@@ -986,10 +991,12 @@ static  int Sdbcssw=0;                                             //~v57DI~
 //printf("entry reslen=%d\n",Sreslen);
     *Pmodifier=0;
     *(Pout+1)=0;	//clear scan code                              //~v324I~
+#ifndef NOCURSES                                                   //~v77BI~
     ptv=0;                                                         //~v592I~
     if (Seventctr-Smouseeventctr==1)	//previous is mouse event  //~v592R~
     	if (gettimeofday(&tv,NULL)!=-1) //time before read         //~v592R~
         	ptv=&tv;                                               //~v592R~
+#endif                                                             //~v77BI~
                                                                    //~v592I~
 //  if (!Sreslen)                                                  //~v536R~
     if (Sreslen<=0)                                                //~v536I~
@@ -1147,18 +1154,18 @@ UTRACEP("ukbdlnxc_readkbd residual data shortage reslen=%d",Sreslen);//~v62TI~
         {
 //mouse chk                                                        //~v592I~
 #ifndef NOCURSES                                                   //~v6a0I~
-//          if (Sreslen>=MOUSE_ESCLEN                              //+v712R~
-//      	&&  *(Snextpos+1)=='['                                 //+v712R~
-//      	&&  *(Snextpos+2)==MOUSE_ESCID)     //esc[Mbxy fmt     //+v712R~
-            if (                                                   //+v712I~
-               (Sreslen>=MOUSE_ESCLEN                              //+v712I~
-        	&&  *(Snextpos+1)=='['                                 //+v712I~
-        	&&  *(Snextpos+2)==MOUSE_ESCID)     //esc[Mbxy fmt     //+v712I~
-            ||                                                     //+v712I~
-               (Sreslen>=MOUSE_ESCLEN2                             //+v712I~
-        	&&  *(Snextpos+1)=='['                                 //+v712I~
-        	&&  *(Snextpos+2)==MOUSE_ESCID2)    //esc[Mbxy fmt     //+v712I~
-            )                                                      //+v712I~
+//          if (Sreslen>=MOUSE_ESCLEN                              //~v712R~
+//      	&&  *(Snextpos+1)=='['                                 //~v712R~
+//      	&&  *(Snextpos+2)==MOUSE_ESCID)     //esc[Mbxy fmt     //~v712R~
+            if (                                                   //~v712I~
+               (Sreslen>=MOUSE_ESCLEN                              //~v712I~
+        	&&  *(Snextpos+1)=='['                                 //~v712I~
+        	&&  *(Snextpos+2)==MOUSE_ESCID)     //esc[Mbxy fmt     //~v712I~
+            ||                                                     //~v712I~
+               (Sreslen>=MOUSE_ESCLEN2                             //~v712I~
+        	&&  *(Snextpos+1)=='['                                 //~v712I~
+        	&&  *(Snextpos+2)==MOUSE_ESCID2)    //esc[Mbxy fmt     //~v712I~
+            )                                                      //~v712I~
             {                                                      //~v592I~
 		    	if (Seventctr-Smouseeventctr!=1)	//previous is mouse event//~v592R~
                 	ptv=0;  //no double click chk                  //~v592I~
@@ -1925,7 +1932,11 @@ void ukbdlnxc_chkothersym(void)                                    //~v57RI~
 //int  ukbdlnxc_xbsdel(void)                                       //~v57YR~
 int  ukbdlnxc_xbsdel(int Popt)                                     //~v57YI~
 {                                                                  //~v57NI~
+#ifndef NOCURSES	//key_xxx is defined on term.h                 //~v77BI~
     char *strbs,*strdc;                                            //~v57NI~
+#else                                                              //~v77BI~
+    char *strbs       ;                                            //~v77BI~
+#endif                                                             //~v77BI~
 //************************                                         //~v57NI~
   if (!ukbdlnxc_delopt(Popt))	//no force option                  //~v57YI~
   {                                                                //~v57YI~
@@ -1938,7 +1949,9 @@ int  ukbdlnxc_xbsdel(int Popt)                                     //~v57YI~
     strdc=key_dc;                                                  //~v57NI~
     if (!strdc)                                                    //~v57NI~
 #endif                                                             //~v6a0I~
+#ifndef NOCURSES	//key_xxx is defined on term.h                 //~v77BI~
     	strdc="";                                                  //~v57NI~
+#endif                                                             //~v77BI~
     if (*strbs==CH_DELETE)	//backspace by 7f                      //~v57NR~
     {                                                              //~v57NI~
 		Sbs_del_sw=1; //BS(0x08) changed to Del(0x7f)              //~v57NI~

@@ -1,8 +1,10 @@
-//*CID://+vbkeR~:                             update#=  710;       //~vbkeR~
+//*CID://+vbyiR~:                             update#=  713;       //+vbyiR~
 //*************************************************************
 //*xedcmd4.c                                                       //~v638R~
 //* grep,androsend                                                 //~vaa4R~
 //*************************************************************
+//vbyi:230515 (ARM)for also xfc dcmd, support for external storage(no more need of vbyh)//+vbyiI~
+//vbyh:230514 (ARM)dlcmd "=" support for external storage          //~vbyhI~
 //vbke:180619 add msg to display utf8 code filename                //~vbkeI~
 //vb2D:160221 LNX compiler warning                                 //~vb2DI~
 //vavN:140405 (W32UNICODE)vavM is not effective,spawn dose also multibyte process(invalid UD to dbcs translation),back to by alias//~vavNI~
@@ -417,7 +419,13 @@ int dcmd_comparedlcmd(PUCLIENTWE Ppcw,char *Pcmd,int Pcmdlen,char *Predirectfnm,
     redirsw=PRERC_STDOAPPEND|PRERC_STDEAPPEND;                     //~v75MI~
 //  rc=dcmdsystemcall(Ppcw,Pcmd,redirsw,Predirectfnm,"&1");        //~vavMI~
 //  rc=dcmdsystemcall_spawn(0,Ppcw,Pcmd,redirsw,Predirectfnm,"&1");//~vavMR~//~vavNR~
+//#ifdef ARMXXE                                                      //~vbyhI~//+vbyiR~
+//    Gdcmdtempf|=GDCMDTEMPF_COPY2TEMP;   // 0x4000        //process on temp file copyed from arm shared storage file//~vbyhI~//+vbyiR~
+//#endif                                                             //~vbyhI~//+vbyiR~
     rc=dcmdsystemcall(Ppcw,Pcmd,redirsw,Predirectfnm,"&1");        //~vavNI~
+//#ifdef ARMXXE                                                      //~vbyhI~//+vbyiR~
+//    Gdcmdtempf&=~GDCMDTEMPF_COPY2TEMP;  // 0x4000        //process on temp file copyed from arm shared storage file//~vbyhI~//+vbyiR~
+//#endif                                                             //~vbyhI~//+vbyiR~
 	Gdcmdtempf|=GDCMDTEMPF_COMPODLC;                               //~v75MI~
 #ifdef W32UNICODE                                                  //~vavNI~
   	if (pcmdx)                                                     //~vavNI~
@@ -440,7 +448,7 @@ int dcmdwritehdrline(char *Pfnm,char *Pmode,char *Phdrline,char *Pcmdudx)//~vavN
     UCHAR fpath[_MAX_PATH],timestamp[32];                          //~v75JI~
 #ifdef W32UNICODE                                                  //~vavNI~
 //    UCHAR cmdlc[_MAX_PATH*4];                                    //~vavNR~
-    UCHAR wku8[_MAX_PATH*2+MAXLINEDATA];                           //+vbkeM~
+    UCHAR wku8[_MAX_PATH*2+MAXLINEDATA];                           //~vbkeM~
 #endif                                                             //~vavNI~
 //*******************                                              //~v75JI~
     if (!filefullpath(fpath,Pfnm,_MAX_PATH))                       //~v75JR~

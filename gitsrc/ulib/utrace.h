@@ -1,5 +1,6 @@
-//*CID://+v750R~:                             update#=   67;       //~v70qR~//~v750R~
+//*CID://+v778R~:                             update#=   71;       //~v778R~
 //**********************************************************************
+//v778:230405 add flush function to utrace for arm                 //~v778I~
 //v750:221120 warning ftime deprecated for UTSSTART/UTSEND when TRACE=YES//~v750I~
 //v70q:200919 (ARM)add gettraceopt                                 //~v70qI~
 //v706:200616 ARM:redirect UTRACE to LOGPD                         //~v706I~
@@ -78,10 +79,12 @@ extern  "C"                                                        //~v6ViR~
 	#define UTRACEP(p1,p2...)                                      //~v5mqR~
 	#define UTRACEPF(p1,p2...)                                     //~v6a0I~
 	#define UTRACEPF2(...)                                         //~v6VuI~
+	#define UTRACEP_FLUSH(fmt,...)                                 //+v778I~
   #else                                                            //~v5mqI~
 	#define UTRACEP      utracepnop                                //~v041I~
 	#define UTRACEPF     utracepnop                                //~v6a0I~
 	#define UTRACEPF2    utracepnop                                //~v6VuI~
+	#define UTRACEP_FLUSH utracepnop                               //+v778I~
   #endif                                                           //~v5mqI~
 	#define UTRACEI(comment,int)                                //~v014I~
 	#define UTRACES(comment,string,len)                         //~v014I~
@@ -127,6 +130,7 @@ extern  "C"                                                        //~v6ViR~
 	#define UTRACEP      utracepop                                 //~v041I~
 	#define UTRACEPF     utracepopf  //write regardless trace option//~v6a0I~
 	#define UTRACEPF2(fmt,...) (UTRACEP(fmt,__VA_ARGS__),UTRACEPF(fmt,__VA_ARGS__))//~v6VuI~
+	#define UTRACEP_FLUSH(fmt,...) UTRACEP(fmt,__VA_ARGS__),UTRACE_FLUSH("")//~v778I~
 	#ifdef LNX                                                     //~v60gI~
 		#define UTRACEP_(printfparm) utracepop printfparm; //linux compile err invalid preprocessor token//~v60gI~
 	#else                                                          //~v60gI~
@@ -148,13 +152,13 @@ extern  "C"                                                        //~v6ViR~
         (low1<low2 ? (high1-=high2+1,low1+=1000-low2) :    \
 		             (high1-=high2,low1-=low2))                    //~v5ikI~
 //  #define UTSSTART(starttime) ftime(&starttime)	/*struct timeb*///~v5ikI~//~v750R~
-//  #define UTSEND(starttime,accum)                                //+v750R~
-//    	{                                                          //+v750R~
-//			struct    timeb ct;                                    //+v750R~
-//          ftime(&ct);	/*current*/		                           //+v750R~
-//          UTRACE_TIME_SUB(ct.time,ct.millitm,starttime.time,starttime.millitm);//+v750R~
-//          accum+=ct.time*1000+ct.millitm;                        //+v750R~
-//      }                                                          //~v5ikI~//+v750R~
+//  #define UTSEND(starttime,accum)                                //~v750R~
+//    	{                                                          //~v750R~
+//			struct    timeb ct;                                    //~v750R~
+//          ftime(&ct);	/*current*/		                           //~v750R~
+//          UTRACE_TIME_SUB(ct.time,ct.millitm,starttime.time,starttime.millitm);//~v750R~
+//          accum+=ct.time*1000+ct.millitm;                        //~v750R~
+//      }                                                          //~v5ikI~//~v750R~
     #define UTSSTART(currtime)                                     //~v750I~
     #define UTSEND(starttime,accum)                                //~v750I~
   #endif //NOTSTRACE                                               //~v6wqI~
@@ -181,6 +185,7 @@ extern  "C"                                                        //~v6ViR~
     	void printUWCH(int Popt,char *Pprefix,UWCH *Ppwucs,char *Ppostfix);//~v6u9M~
     	#define PUWCHO_OPEN     0x01                               //~v6u9M~
     #endif                                                                   //~v5ikI~//~v6u9M~
+#define UTRACE_FLUSH utrace_flush                                  //~v778I~
 //*********************************************************************
 #ifdef __cplusplus                                                 //~v570I~
 	extern "C" {                                                   //~v570I~
@@ -212,6 +217,7 @@ int utrace_getopt();                                               //~v70qI~
 //****************************************************************//~v014I~
 void utracepop(char *Pfmt,...);                                    //~v041R~
 void utracepopf(char *Pfmt,...);                                   //~v6a0I~
+void utrace_flush(char *Pcmt);                                     //~v778R~
                                                                 //~v014I~
 //**************************************************************** //~v041I~
 void utracepnop(char *Pfmt,...);                                   //~v041I~

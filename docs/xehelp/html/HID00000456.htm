@@ -11,158 +11,147 @@ a:hover{font-weight:bold;}-->
 </STYLE>
 </HEAD>
 <BODY bgcolor="#FFFFE2">
-<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">||*CID:||+v129R~:  2022/12/15          
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">||*CID:||+v129R~:  2023/06/10     
 ######################################################################
 
-[Japanese]    v1.29 (Refer xereadme.txt for English)
+[Japanese]    v1.29 (Refer xeREADME_en.txt for English)
 
 メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。
 ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。
-各版がDOS, OS/2, Windows, Linux, AIX で共通の操作を提供。
 
     .オプションで変更行に修正タグを自動付与。
-    .ソート、フォーマッティング、コード変換...
+    .Windows版、Linux版あり
     .改行コードなしの固定長レコード/可変長ファイルサポート。
-    .UTF8ファイル、EBCDICファイルを無変換で編集。
+    .UTF8ファイル、EBCDIC(ICUの導入が必要)ファイル編集。
     .バイナリーエディター(縦2段HEXか横HEX表示）
     .ファイラー(フォルダー表示、削除、改名、複写、実行...)
     .リモートアクセス。
-       ftp,samba,rsh,ssh,fuse,TSO3270.
-       fuse(WindowsではDokanパッケージ)を使用してPCからLinux390にアクセスできます。
-       samba(smbclient) で LinuxからWindowsにアクセスできます
-    .64ビット(Windows/Linux版のみ)
-    .Linux390版は Hercules エミュレータでテスト
-     src.tgz を Linux/390上で ./configure &amp;&amp; make してください。
+      ftp,samba,rsh,ssh,fuse
+    .オプションで変更行に修正タグを自動付与。
+
 
 <B>  ライセンス:GNU GPL に従う。</B>
 
                                    By 水巻マチ (sakachin2@yahoo.co.jp)
 
                                    http://hp.vector.co.jp/authors/VA010562
-                                   http://www.geocities.jp/sakachin2/index.htm
+                                   GitHub: sakachin2/XE
 
-(注)DOS版は V-TEXT 対応,640k制限あり.
-      肥え過ぎたのでDOS版は環境によっては動かない可能性もあります,
-      メインテナンスはv1.13で終了です。できればGCC版を使用して下さい.
-      DOS版(但しxe.exe のみv1.13)はGCC版に同梱しています。
-    GCC版はDOSで640kの制限を越えるものです(nifty FEXTにあるDJGPP/GCC v2
-      オリジナル版でコンパイルしました).DPMIサーバーが必要です.
-      Windows,OS/2はDPMIサーバーの一つです.従ってそれぞれの DOS窓でも
-      稼働します。DOSではQEMM386などがそうです.
-      ない場合は同梱のCSDPMI4B.ZIPを解凍してEXEにPATHを通してください
-      (CWSDPMIはNifty FEXT forum から Download しました。配布については
-       C.W.Sandmannの許可を得ています)。
-    WIN版はGUI版とWIN32コンソールアプリケーション版があります。
-      Console版はコマンドプロンプトで動きマウスはサポートしていません。
-      コマンドプロンプトの設定は TrueTypeフォント 使用にしてください
-      WTL/ATL版(MFC不使用)はvs2010Expressでコンパイル、32bit/64bit版があります
-    Linux版はGUI版(gxe)とTerminalEmulator版(xe)があります。
-      フロッピーディスクもサポートしています。
-      RedHat v9/FedoraCore4 でのみ稼動確認。
-    AIX版はTeraTerm(*)経由、Linuxからのtelnet 、X(aixterm,dtterm)で稼動。
-      puTTY(Windows用端末エミュレータ)経由で動かしている方もいるようです。
-      それぞれ設定が必要です。xeaixj.doc を参照してください。
-        (*) TeraTerm は T.Teranisi(寺西 高)氏作のフリーウェアーです。
-      AIX版はテスト環境の関係でv1.18で中断しています。
 
-    尚、v1.0以降はテストは主にWin版とAIX版でしています。
-    その他のバージョンそのシステムに固有の機能以外は基本的な
-      稼動確認をしただけです。
+WIN版はGUI版とWIN32コンソールアプリケーション版があります。
+Console版:xe.exe はコマンドプロンプトで動きマウスはサポートしていません。
+GUI版:wxe.exe はWTL/ATL版(MFC不使用)でvs2017Comunityでコンパイルしたものです
+w64binGit.zipを解凍
+Linux版はGUI版:gxe とTerminalEmulator版:xe があります。
+gxe-x.xx.tar.gz を 解凍し ./configure &amp;&amp; make でインストール
+Android版:Axe は PlayStoreにあります
 
-各版には次のファイルが含まれています
-  Linux版 xelnx___.tgz 含まれるファイルの説明は xelnxj.txt/xelnxe.txtを,
-  またLinux GUI版 はマウス操作、Dialog操作などWXE版と同じです、
-  その部分はxewxej.txt/xelwxee.txtを参照してください。
-  AIX版 xeaix___.tgz 含まれるファイルの説明は xeaixj.doc/xeaixe.docを
-  参照してください。
 
-        gnugpl.txt   GNU GPL のコピー(英語)
-        xereadmj.txt このファイル
-        xereadme.txt 英語版 README
-        xej.txt      日本語マニュアル
-        xee.txt      英語マニュアル
- v1.29  xe.exe       実行ファイル(DOS版はv1.13)
- v1.29  wxe.exe      Windows GUI 版。
- v1.29  gxe.exe      Linux X-Windows 版
-        xehelp\      Windows/Linux版ヘルプファイルDir。
-                     ワークディレクトリーに置くか、xehelp環境変数
-                     あるいは/hdコマンドラインパラメータで位置指定する。
-                     Linux版でのこれ以外の置き場所はxelnxj.docを参照してください
-        xewxej.txt   Windows GUI 版の説明
-        xewxee.txt   Windows GUI 版の説明(English)
-        xehosts      リモートファイルアクセス用サンプルホスツファイル。
-        xe3270.cfg   (Win/Linux)TurnkeyMVSアクセス用設定ファイル。
-        xesynw.cfg   (Win/Linux)シンタックスハイライト用設定ファイル。
-        /xesynl.cfg  
-        cobol.lang   (Win/Linux)シンタックスハイライト用. cobol 言語定義。
-        gnu-source-highlight-mingw.tgz
-                     (Win)GNU source-highlight v2.9 を MinGW上でコンパイルしました。
-                     Windows版で cygwin 無しでシンタックスハイライトが使用できます。
-        xeshm        (Win/Linux)gnu-source-highlight v2.9 を常駐プロセス化しました。
-        xe.bat       環境をチェックしてDOS版,DJGPP版,Win版の
-                     xe.exeを呼び出すサンプルバッチファイル。
- v1.1   XE4S001Z関連 Win/Linux版用で以下のファイルです。Linuxではsample Dirにあります
-                     Turnkey-MVSで使用する メインフレームASMソースファイル
-                     オプションでDirListにSPF情報を表示するために使用。
-                     asmをアセンブルするか、jclをサブミットしてLoadModuleを導入してください。
-                     <A href="HID_TSOE_J.htm">xej.txt (0)-(D)-TSOサポート</A>も参照してください
-        XE4S001Z.asm アセンブラーソース
-        XE4S001Z.aws awsutil で作成した導入用LoadModule
-        XE4S001Z.jcl XE4S001Z.awsからLoadModuleライブラリーに導入するJCL
+以下のコンソール版ツールも含まれています
+    xads     (Win版のみ)NTFSファイルシステムのADS(Alternative Data Stream)アクセス。
+    xbc      簡易計算ツール。
+    xcfont   コマンドプロンプトのフォントを変更
+    xci      C/C++/Javaテキストファイルのインデンテーション
+    xcv      コード変換ツール。(SJIS,EUC,Unicode,UTF-8,EBCDIC,任意のコードページ)
+    xcvsjisc ソースファイル中のSJISコードを８進表記に変換する。
+    xdc      ディレクトリー比較ツール
+    xdd      ディレクトリー削除ツール
+    xdig     ディレクトリーウォークツール
+               ディレクトリー内の全サブディレクトリー/ファイルに指定の
+               コマンドを作用させるプログラム.
+    xds      ディレクトリーサイズ表示ツール
+    xfc      ファイル比較ツール
+    xff      サイズ、タイムスタンプによるファイルサーチ
+    xfg      テキスト/バイナリ−(Recursive)ファイル文字列探索
+    xfmt     ファイルフィールドフォーマッター
+    xfs      ファイルの分割/統合.大きなファイルのディスケットへの
+               バックアップ/リストアーに使えます
+    xkp      (WIN)プロセスIDの表示とプロセスのkill
+    xlow     大文字ファイル名を小文字に改名。
+    xmj      2 ファイルマッチング。
+    xpe      errno(libcのエラー番号)の説明を表示する。
+    xts      ファイルのタイムスタンプの表示/変更
+    xver     OSバージョンからERRORLEVELを設定
 
- v9.38  <A href="HID00000467.htm">xprint</A>.exe   テキストファイルプリントユーティリティ
-        xprint.sh    Linuxでxprintを使用するためのラッパーシェル
-        gxp          Linux GtkPrint版 xprint
-        xpj.txt      xprint 日本語説明
-        xpe.txt      xprint 英語説明
+    xprint テキストファイルプリントユーティリティ
+    gxp Linux GTKPrint版 xprint
 
- v1.3   xeacb.exe    (Win/Linux版のみ)シンタックスハイライト-ブラウザー。
- v1.1   xads.exe     (Win版のみ)NTFSファイルシステムのADS(Alternative Data Stream)アクセス。
- v1.5   xbc.exe      簡易計算ツール。
- v1.01  xcfont.exe   (Win版のみ)コマンドプロンプトのフォント変更
- v1.1   xci.exe      C/C++/Javaテキストファイルのインデンテーション
- v1.20  <A href="HID_XCV_J.htm">xcv</A>.exe      コード変換ツール。(SJIS,EUC,Unicode,UTF-8,EBCDIC,任意のコードページ)||~124FR~,
- v1.2   xcvsjisc.exe ソースファイル中のSJISコードを８進表記に変換する。
- v2.29  xdc.exe      ディレクトリー比較ツール
- v2.1   xdd.exe      ディレクトリー削除ツール
- v1.13  xdig.exe     ディレクトリーウォークツール
-                     ディレクトリー内の全サブディレクトリー/ファイルに指定の
-                     コマンドを作用させるプログラム.
-        xdig.txt     xdig 解説
- v1.11  xds.exe      ディレクトリーサイズ表示ツール
- v1.27  xfc.exe      ファイル比較ツール
- v1.7   xff.exe      サイズ、タイムスタンプによるファイルサーチ
- v1.21  xfg.exe      テキスト/バイナリ−(Recursive)ファイル文字列探索
- v1.4   <A href="HID_XFMT_E.htm">xfmt</A>.exe     ファイルフィールドフォーマッター
- v2.8   xfs.exe      ファイルの分割/統合.大きなファイルのディスケットへの
-                     バックアップ/リストアーに使えます
- v1.4   xkp.exe      (WIN)プロセスIDの表示とプロセスのkill
- v1.6   xlow.exe     大文字ファイル名を小文字に改名。
- v1.2   xmj.exe      2 ファイルマッチング。
- v1.2   xpe.exe      errno(libcのエラー番号)の説明を表示する。
- v1.6   xts.exe      ファイルのタイムスタンプの表示/変更
- v1.08  xver.exe     OSバージョンからERRORLEVELを設定
-                     .BATファイルのなかでxeの版を選択する時などに使用します
+その他のフォルダーの内容
+    xehelp:
+        Browser用ヘルプファイル
+        ワークディレクトリーに置くか、xehelp環境変数
+        あるいは/hdコマンドラインパラメータで位置指定する。
+        Linux版でのこれ以外の置き場所はxelnxj.txtを参照してください
+    sample\doc:
+        テキストファイル形式のマニュアル
+          xej.txt/xee.txt
+          xeREAME_jp.txt/xeREADME_en.txt
+          xelnxj.txt/xelnxe.txt(Linux版用)
+          xewxej.txt/xewxee.txt(GUI版:wxe/gxe用)
+    sample\data:
+          xehosts リモートファイルアクセス用サンプルホスツファイル。
+          xesynw.cfg (Win)シンタックスハイライト用設定ファイル。
+          xeebc.map EBCDIC 変換用設定ファイル
+
+    sample\staff:外部ツールを用意できない場合は以下のものをお使いください
+
+          grep.exe コマンド行の GREp コマンド、=3.14 画面で使用します
+
+          次はシンタックスハイライトで使用します、次のどちらかを選んで xesynw.cfg で指定します
+          使い方は xej.txt や xesynw.cfg を見てください
+              gnu-source-highlight.zip
+                (Win)GNU source-highlight v2.9 を MinGW上でコンパイルしました。
+              WinHighlight31.copies2.zip
+                andre simon's highlight v3.1
+                exe と dll のフォルダーを離さないでください
+          putty063.zip
+              リモートアクセスに putty を使用する場合に必要です
+
 
 起動方法
+  
+  (Windows版)
 
-  (Linux版は xelnxj.txtを、AIX版は xeaixj.docを見てください。)
+    ．ワークフォルダーを作成する、省略値はc:\xe_wdだが <a href="file:///c:/は保護されている可能性があるので避けてください">c:\は保護されている可能性があるので避けてください</a>
+      例えば "mkdir d:\xe_wd"
+    ．ワークフォルダーに zipファイルを置き,そこで解凍する
+      必要に応じて sample\data フォルダーからxehosts などの設定用ファイルをワークフォルダーにコピーし修正してください
+      それらの機能を使用しない場合は コメント行("#") 1行のファイルにしてください
+    . 実行可能ファイルに PATH を通す.
+      Windows10の場合、コントロールパネル--&gt;システムとセキュリティ--&gt;システム--&gt;システムの詳細設定--&gt;環境変数:PATH
+    . ワ−クディレクトリー名を環境変数:xe にセットする
+      あるいは 任意に作成した xe 起動用コマンドファイルを作成する
+      例えば xe.bat
+        set xe=d:\xe010
+        xe.exe 
+      あるは
+        xe.exe /wd:\xe010
+    ．xe [ファイル名] で起動する
+      コマンドライン パラメータは xe /? で表示されます
+    . wxe も同じです
 
-  ．ワークディレクトリー上で.ZIPを解凍(unzip xe___)
-    ワークディレクトリーの省略値はc:\xe_wdです。
-  ．.exe ファイルを PATH の通ったディレクトリーに移動する,あるいは
-    ワ−クディレクトリーに PATH を通す.
-  . ワ−クディレクトリー名を環境変数にセットする
-      OS/2 では config.sys DOS,Windows では autoexec.bat に set xe=d:\xe010
-      等と指定する.あるいは 任意に作成した xe 起動用コマンドファイル
-      (.cmd/.bat)内で set xe=d:\xe010 等と環境変数設定する.
-  ．xe [ファイル名] で起動する
-      コマンドライン exe パラメータは  xe /? で表示されます
-  ．DOS版での内部エラー検知およびOS/2版,WIN版,DJGPP版でのABENDの場合
-    ワ−クディレクトリにダンプ(xe___.dmp)が出力されます.
-    ダンプがでましたらメールしていただけると幸いです．
+  (Linux版)
+    . ターミナルエミュレーターを開き、適当な場所で解凍しconfigure/make/install
+       tar -zxvf gxe-1.xx.tar.gz
+       cd
+    . /configure
+      make
+      sudo make install --&gt;/usr/local/binにインストール
+        問題が発生したらsampleフォルダーの READMEj.txt を参照してください
+        必要なら/usr/local/binにインストールされないコマンドラインツールは
+        src/xsub フォルダーから手動でコピーしてください
+   . ワークフォルダーを home に作成
+       mkdir ~/xe_wdnnnnn nnnnn は ユーザーID番号
+       必要に応じて sample フォルダーからxehosts などの設定用ファイルをワークフォルダーにコピーし修正してください
+       それらの機能を使用しない場合は コメント行("#") 1行のファイルにしてください
+   ．xe [ファイル名] で起動する
+       コマンドライン パラメータは xe -? で表示されます
+       F1、F10 や 修飾キー(Shift/Alt/Ctrl)との組み合わせはターミナルエミュレーターで
+       ショートカットキーに設定されている場合があります
+       xe で F1、F10 などを使用する場合ターミナルエミュレータの設定でショートカットを無効にする必要があります
+   . gxe はターミナルエミュレータのショートカットキーの影響はありません
 
-キー操作,カスタマイズの方法などについては xej.txt ファイルを見て下さい
+
 
 </SPAN></PRE>
 </BODY>

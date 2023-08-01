@@ -1,4 +1,4 @@
-//*CID://+v742R~:                              update#=  493;      //~v743R~//~v742R~
+//*CID://+v742R~:                              update#=  495;      //~v743R~//~v742R~
 //************************************************************* //~5825I~
 //*uproc3.c                                                        //~v5kkR~
 //* ushellexec,uprocconnect                                        //~v5jaR~
@@ -267,6 +267,7 @@ int ushellexecsub(char *Pfpath,char *Pcmd,int Ptermuse);           //~v5g9I~
     GnomeVFSFileInfoOptions optfi;                                 //~v6G2I~
 	char *pmimetypeslow;                                           //~v6G2I~
 //*********************                                            //~v5g9M~
+    UTRACEP("%s:fnm=%s\n",UTT,Pfnm);                               //+v742I~
 	termid=ukbdl_gettermid();                                      //~v5g9R~
     if ((termid & TERM_IDMASK)==TERM_TTYLCONS)                     //~v5g9R~
     {                                                              //~v5g9I~
@@ -974,6 +975,7 @@ int usystemlnxterm(char *Poptions)                                 //~v5gcI~
 //  char  psim[32],**argv;                                         //~v5gcR~//~v6hbR~
     UCHAR psim[32],**argv;                                         //~v6hbR~
 //*********************                                            //~v5gcI~
+    UTRACEP("%s:Poptions=%s\n",UTT,Poptions);                      //~v742I~
 #ifdef XXE                                                         //~v5kkI~
 	ulnxxgettermpgmopt(XGTP_GETPGMNAME,0,psim);	//0:no user cmd    //~v5kkI~
 #else                                                              //~v5kkI~
@@ -997,6 +999,7 @@ int usystemlnxterm(char *Poptions)                                 //~v5gcI~
     uerrmsg("started %s,pid=%d",0,                                 //~v5gcI~
             psim,rc);                                              //~v5gcI~
     ufree(argv);                                                   //~v5kmI~
+    UTRACEP("%s:rc=%d\n",UTT,rc);                                  //~v742I~
     return rc;  //return pid                                       //~v5gcI~
 }//usystemlnxterm                                                  //~v5kkR~
 #endif                                                             //~v5g9M~

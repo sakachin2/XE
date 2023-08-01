@@ -1,8 +1,9 @@
-//*CID://+vb89R~:                             update#=  128;       //~vb89R~
+//*CID://+vby8R~:                             update#=  137;       //~vby8R~
 //*********************************************************************
 //*xesub.h
 //* common routine hdr
 //*********************************************************************
+//vby8:230415 (ARM)open document file                              //~vby8I~
 //vb89:170217 create if not found. ::xehosts ::xesync_.cfg         //~vb89I~
 //vb4h:160804 fnm list reverse len is short because strlen stop by 00 of dbcs unicode//~vb4hI~
 //vb2e:160122 convert filename according IOCHARSET mount option    //~vb2eI~
@@ -256,4 +257,12 @@ int subdeletetempfile(void);                                       //~v76pI~
 int gethomepos(int Popt,PUCLIENTWE Ppcw);                          //~v78ZR~
 //**************************************************               //~vb89I~
 FILE *fileopencreate(int Popt,UCHAR *Ppfile,UCHAR *Ppopt,UCHAR *Pdummyrecord);//~vb89R~
-#define FOCO_CLOSE  0x01      //close at return                    //+vb89I~
+#define FOCO_CLOSE  0x01      //close at return                    //~vb89I~
+//*******************************************************          //~vby8I~
+#ifdef ARMXXE                                                      //~vby8I~
+FILE *xesub_openDoc(int Popt,PUFILEH Ppfh,UCHAR *Ppfile,UCHAR *Ppopt);//~vby8R~
+#endif                                                             //~vby8I~
+//*******************************************************          //~vbyaI~
+FILE *fileopenWithOption(int Popt,UCHAR *Ppfile,UCHAR *Ppopt);       //~vbyaI~//~vby8R~
+#define FOWOO_ALLOWDOC    0x01                                     //~vbyaI~//~vby8R~
+//*******************************************************          //~vbyaI~

@@ -1,8 +1,9 @@
-//*CID://+vbd7R~:                             update#=  327;       //~vbd7R~
+//*CID://+vbydR~:                             update#=  331;       //+vbydR~
 //*************************************************************
 //*xefcmd.c*
 //**file cmd Save/Replace/Create/Tab/Copy/Move/Locate/Append       //~v0iaR~
 //*************************************************************
+//vbyd:230427 copy into cmd cp option;apply environment(CPU8 for ARM)//+vbydI~
 //vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //vb5b:160913 additional to vb54, DBCS space altch is changable by TAB cmd//~vb5bI~
 //vb58:160911 TAB dispchar default was backed to 21be & 21c0,so change example of help msg//~vb58I~
@@ -280,8 +281,8 @@ int func_save_file(PUCLIENTWE Ppcw)
             pfunct=(PFUNCTBL)Ppcw->UCWpfunct;                      //~vbd7I~
             if (!stricmp(Ppcw->UCWcmdverb,pfunct->FTcmda))  //alias "S" is for SAVe and SELlect//~vbd7I~
             {                                                      //~vbd7I~
-				uerrmsg("Specify explicitly not \"S\" but \"SAV\" or \"SEL\" for operand \"ALL\".",//+vbd7R~
-					"\"ALL\" ‚ÌŽž‚Í \"S\" ‚Å‚Í‚È‚­ \"SAV\" ‚© \"SEL\" ‚©–¾Ž¦Žw’è‚µ‚Ä‚­‚¾‚³‚¢");//+vbd7I~
+				uerrmsg("Specify explicitly not \"S\" but \"SAV\" or \"SEL\" for operand \"ALL\".",//~vbd7R~
+					"\"ALL\" ‚ÌŽž‚Í \"S\" ‚Å‚Í‚È‚­ \"SAV\" ‚© \"SEL\" ‚©–¾Ž¦Žw’è‚µ‚Ä‚­‚¾‚³‚¢");//~vbd7I~
 				return 4;                                          //~vbd7R~
             }                                                      //~vbd7I~
         }                                                          //~vbd7I~
@@ -1212,7 +1213,18 @@ int fcmdcopyoptchk(PUCLIENTWE Ppcw,int *Ppcopyopt)                 //~va00I~
         }                                                          //~vaj0I~
     }                                                              //~va6hI~
     else                                                           //~va6hI~
+    {                                                              //+vbydI~
         copyopt|=FSOC_CPLC;                                        //~va6hI~
+    	if (UCBITCHK(Goptopt2,GOPT2_ALLFILEUTF8)                       //~v917R~//~va00I~//+vbydI~
+    	||  (Gutfmode2 & GUM2_ALLFILEUTF8CLP)                          //~v917I~//~va00I~//+vbydI~
+    	||   XEUTF8MODE_ENV_FORCE()) //env=utf8 required for =6 file   //~va0mR~//+vbydI~
+    		if (!(Gutfmode2 & GUM2_ALLFILELCCLP))                          //~va1aI~//+vbydI~
+    			if (!UCBITCHK(Goptopt2,GOPT2_ALLFILELOCALE))                   //~va1pI~//+vbydI~
+                {                                                  //+vbydI~
+			        copyopt&=~FSOC_CPLC;                           //+vbydI~
+        			copyopt|=FSOC_CPU8;                            //+vbydI~
+                }                                                  //+vbydI~
+    }                                                              //+vbydI~
 //  for (ii=1;pc+=strlen(pc)+1,ii<opdno;ii++)                      //~va00I~//~va6gI~
     copysrclrecl=0;                                                //~va6QI~
     for (;ii<opdno;ii++,pc+=strlen(pc)+1)                          //~va6gI~
@@ -1500,6 +1512,7 @@ int fcmdcvf2l(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh,PULINEH Pplh)  //~va00I~
 {                                                                  //~va00I~
 	int rc=0,rc2;                                                  //~va00I~
 //**************                                                   //~va00I~
+	UTRACEP("%s:opt=0x%x,ScopyOpt=0x%x,FHfilename=%s\n",UTT,Popt,Scopyopt,Ppfh->UFHfilename);//~vbd7R~
   if (Popt & FCCVF2LO_BIN)    //no translation lcmd option         //~va7xR~
     Scopyopt|=FSOC_BIN;                                            //~va7xR~
   else  //not binary mode                                          //~va7xR~

@@ -1,7 +1,10 @@
-//*CID://+vag0R~:                             update#=  779;       //~vag0R~
+//*CID://+vas5R~:                             update#=  786;       //~vas5R~
 //***********************************************************
 //* xcv: convert (S)JIS <-->EUC,UCS2,UTF8,EBC                      //~va2oR~
 //***********************************************************
+//vas5:230709 do not beep for help                                 //~vas5I~
+//vas3:230630 ARM;closeall for arm subthread execution             //~vas3I~
+//vas2:230630 errmag issued if /ICU is after /[cvType]or /list option//~vas2I~
 //vag0:170825 xcv v1.20:create ebc mapfile if dll version was gotten by "uconv --version"//~vag0I~
 //vaa2:160424 Lnx64 compiler warning(FDATE/FTIME)                  //~vaa2I~
 //vaa1:160418 Lnx64 compiler warning                               //~vaa1I~
@@ -71,7 +74,7 @@
 //*020406 xcv v111 support sjis->euc(rename xe2j to xcv)           //~v111I~
 //*020406 xe2j v110 v1.1 (BUG)hankaku katakana is not converted.   //~v111R~
 //***********************************************************      //~v1.1I~
-#define VER "V1.20"   //version                                    //~va97R~//~vag0R~
+#define VER "V1.21"   //version                                    //~va97R~//~vag0R~//+vas5R~
 //***********************************************************
 //***********************************************************
 
@@ -377,6 +380,8 @@ UTRACEP("main rc=%d\n",rc);                                        //~va53R~
 //  else                                                           //~v122R~
 		uerrmsg("\n=== %s Process completed===",0,                 //~v125R~
 				Sconvtype);                                        //~v125I~
+	UTRACEP("%s:return rc=%d\n",UTT,rc);                           //~vas2I~
+	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//~vas3I~
 	return rc;
 }//main
 
@@ -451,6 +456,7 @@ int mainproc(void)                                                 //~v145R~
         uerrmsg("input is \"%s\".",0,                              //~v125R~
 				Sfnm);                                             //~v125I~
 		Sfhi=fopen(Sfnm,"rb");	//exit when open faile             //~v121R~
+		UTRACEP("%s:fopen input fnm=%s\n",UTT,Sfnm);               //~vas2I~
         Srbmode=1;		//fread                                    //~v121R~
     }                                                              //~v122I~
     if (!Sfhi)                                                     //~v121R~
@@ -467,7 +473,10 @@ int mainproc(void)                                                 //~v145R~
         Sfho=stdout;        	//write to stdout in binary mode   //~v123I~
     }                                                              //~v123I~
     else                                                           //~v122I~
+    {                                                              //~vas2I~
 		Sfho=fopen(Sfnmo,"wb");	//exit when open faile             //~v121R~
+		UTRACEP("%s:fopen output fnm=%s\n",UTT,Sfnmo);             //~vas2I~
+    }                                                              //~vas2I~
 //UTRACEP("stdout=%d\n",Sstdoutsw);                                //~v131R~
     if (!Sfho)                                                     //~v121R~
         uerrexit("%s open failed",0,                               //~v122I~
@@ -671,6 +680,7 @@ int mainproc(void)                                                 //~v145R~
     if (Sfho!=stdout)                                              //~v121R~
 	    fclose(Sfho);                                              //~v121R~
     ufgetsinit(UFGETS_TERM,0,0,0);	//free iobuff                  //~v122I~
+	UTRACEP("%s:return rc=%d\n",UTT,dbcssw==1);                    //~vas2I~
 	return dbcssw==1;                                              //~v145R~
 }//mainproc                                                        //~v111R~
 //*********************************************************************//~v121I~
@@ -1118,7 +1128,8 @@ void parmchk(int parmc,char *parmp[])
   	if (parmc<2 || *parmp[1]=='?')
   	{
     	help();
-    	exit(4);
+//  	exit(4);                                                   //~vas5R~
+    	exit(0);                                                   //~vas5I~
   	}
 //*******************************
 //* parm process                *
@@ -1152,8 +1163,11 @@ void parmchk(int parmc,char *parmp[])
               if (swlist)                                          //~va97R~
                 Smiscopt|=MISC_ICU;                                //~va97R~
               else                                                 //~va97R~
-        		uerrexit("%c%s option is for M2M,B2x,x2B",0,       //~va63I~
-        			CMDFLAG_PREFIX,OPTICU);                        //~va63I~
+//        		uerrexit("%c%s option is for M2M,B2x,x2B",0,       //~va63I~//~vas2R~
+//      			CMDFLAG_PREFIX,OPTICU);                        //~va63I~//~vas2I~
+          		uerrexit("%c%s option is for M2M,B2x,x2B. (%cList or %c[C]type have to be 1st parameter)",//~vas2I~
+          		         "%c%s は is M2M,B2x,x2B 用です。（%cList や %c[C]type は最初に指定してください)",//~vas2I~
+        			CMDFLAG_PREFIX,OPTICU,CMDFLAG_PREFIX,CMDFLAG_PREFIX,OPTICU);//~vas2I~
                 continue;                                          //~va57I~
             }                                                      //~va57I~
             switch(toupper(*cptr))
@@ -2193,7 +2207,7 @@ HELPMSG                                                            //~va3yI~
 "                 \"N\" は m2b でのみ有効。\n");                   //~va3yR~
 #endif                                                             //~va3yI~
 HELPMSG                                                            //~va57M~
-"    %cICU     :for B2x/x2B(x:B/M/F), specify use ICU when %cMF: is omitted.\n",//~va57R~//+vag0R~
+"    %cICU     :for B2x/x2B(x:B/M/F), specify use ICU when %cMF: is omitted.\n",//~va57R~//~vag0R~
 "    %cICU     :B2x/x2B(x:B/M/F)のとき %cmf:の指定無しで ICU 使用の指定。\n",//~va57R~
 			CMDFLAG_PREFIX,                                        //~va57I~
 			CMDFLAG_PREFIX);                                       //~va57M~

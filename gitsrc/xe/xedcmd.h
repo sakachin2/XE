@@ -1,7 +1,8 @@
-//*CID://+van2R~:      update#=      8                             //~vac2R~//~van2R~
+//*CID://+vbygR~:      update#=     10                             //~vbygR~
 //****************************************************************
 //xedcmd.h
 //****************************************************************
+//vbyg:230508 correct errmsg;distinguish for dlcmd and dcmd        //~vbygI~
 //van2:131127 support deletion of invalid(wildcard) name entry on dir list//~van2I~
 //vac2:120204 (SMB)target:windows consideration                    //~vac2I~
 //vaa4:110520 ANDROID Send command/dlcmd                           //~vaa4I~
@@ -80,6 +81,7 @@ int dcmddelxdd(PUCLIENTWE Ppcw,int Popdno,UINT Pmask,int Pxdelopt,//~v05RI~
 #define DCMDXDDIDDEL      0x00		//called from DEL cmd       //~v060I~
 #define DCMDXDDIDXDD      0x01		//called from XDD cmd       //~v060I~
 #define DCMDXDDIDNOUNDEL  0x02		//called from DEL cmd       //~v060I~
+#define DCMDXDDID_DCMD    0x04		//by not dlcmd but dcmd        //+vbygR~
                                                                 //~v03zI~
 //****************************************************************//~v03pI~
 int dcmdrename(PUCLIENTWE Ppcw,UCHAR *Pfullpathold,UCHAR *Pnewname,UCHAR *Prealnew);//~v11tR~

@@ -1,9 +1,10 @@
-//*CID://+v711R~:                             update#=  601;       //+v711R~
+//*CID://+v771R~:                             update#=  603;       //~v771R~
 //*************************************************************
 //*uftp2.c                                                         //~v5a8R~
 //* get remote file/dir info by ftp                                //~v56nI~
 //*************************************************************
-//v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //+v711I~
+//v771:230323 sys/timeb.h is not found on ARM                      //~v771I~
+//v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //~v711I~
 //v6J0:170205 malloc udirlist filename to  allow more large number of fine in the dir//~v6J0I~
 //v6Di:160625 for compiler warning,-Wformat-security(not literal printf format)//~v6DiI~
 //v6D2:160423 LNX compiler warning for bitmask assignment(FDATE,FTIE)//~v6D2I~
@@ -66,8 +67,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <errno.h>                                                 //~v59dI~
+#ifndef ARM                                                        //~v771I~
 #include <sys/timeb.h>                                             //~v59dI~
-                                                                   //~v59dI~
+#endif                                                             //~v59dI~//~v771R~
 //*******************************************************          //~v59dI~
 #ifdef W32                                                         //~v59dI~
 	#include <dos.h>                                               //~v59dI~
@@ -101,8 +103,9 @@
 #include <ufile1f.h>                                               //~v61kI~
 #include <uftp3.h>                                                 //~v61kI~
 #include <uedit2.h>                                                //~v6D2I~
-#define UFTIME                                                     //+v711I~
-#include <umiscf.h>                                                //+v711I~
+#include <ulibarm.h>                                               //+v771I~
+#define UFTIME                                                     //~v711I~
+#include <umiscf.h>                                                //~v711I~
 //*******************************************************
 #ifdef UNX                                                         //~v59dI~
 //  #define FTPCMD "ftp -nvi < %s"                                 //~v5bdR~
@@ -1338,8 +1341,8 @@ int uftpajustjst(int Popt,PUFTPHOST Ppuftph,FDATE *Ppfdate,FTIME *Ppftime)//~v5d
 	tz=-Ppuftph->UFTPHtz;                                          //~v5afI~
   else                                                             //~v5afI~
   {                                                                //~v5afI~
-//  ftime(&tmb);                                                   //~v59dM~//+v711R~
-    uftime(&tmb);                                                  //+v711I~
+//  ftime(&tmb);                                                   //~v59dM~//~v711R~
+    uftime(&tmb);                                                  //~v711I~
 	tz=tmb.timezone; //(time zone is minus value)                  //~v59dM~
   }                                                                //~v5afI~
 	hh=Ppftime->hours-tz/60; //(time zone is minus value)          //~v59dM~

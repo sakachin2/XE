@@ -1,7 +1,11 @@
-//CID://+v6B8R~:        update#=     12                            //~v6B8R~
+//CID://+v77dR~:        update#=     41                            //~v77aR~//+v77dR~
 //******************************************************           //~v327I~
 //*ufilel.h   UNIX version                                         //~v327I~
 //******************************************************           //~v327I~
+//v77d:230423 ARM;delete                                           //+v77dI~
+//v77a:230415 split ufile1l to ufiledoc                            //~v77aI~
+//v779:230414 update v777,set uri at ulib fro shortpath            //~v779I~
+//v777:230403 ARM;udirlistFD                                       //~v777I~
 //v6B8:160121 add function to check iocharset mount option         //~v6B8I~
 //v6yd:150314 ino_t is not 32 bit                                  //~v6ydI~
 //v6uV:140608 support isvfat,isntfs for LNX                        //~v6uVI~
@@ -12,6 +16,18 @@
 //v50G:010618 LNX:disket support(using mtools)                     //~v50GI~
 //v364:000927 LINUX support(file system chk)                       //~v364I~
 //******************************************************           //~v327I~
+typedef struct _SHORTPATH {                                        //~vba2I~//~v779M~
+                        UQUEE  USPqelem;                           //~vba2I~//~v779M~
+                        char*  USPpname;                           //~vba2I~//~v779M~
+                        char*  USPppath;                           //~vba2I~//~v779M~
+//#ifdef ARMXXE                                                    //~vby4R~//~v779M~
+//                        char*  USPpstrUri;                       //~vby4R~//~v779M~
+//#endif                                                           //~vby4R~//~v779M~
+                        char   USPdata[1];                         //~vba2I~//~v779M~
+							} SHORTPATH,*PSHORTPATH;               //~vba2I~//~v779M~
+#define SHORTPATHSZ (offsetof(SHORTPATH,USPdata))                  //~vba2R~//~v779M~
+#ifdef UNX                                                         //~v779M~
+typedef struct dirent DIRENT,*PDIRENT;                             //+v77dI~
 //**************************************************************** //~v327I~
 ULONG ufilemode2attr(FILEFINDBUF3 *Ppft);                          //~v327R~
 //**************************************************************** //~v327I~
@@ -44,4 +60,7 @@ int filesrchmountpoint(char *Pfilename,void *Pmnt/*ptr to Pbuff*/,char *Pbuff,in
 int ufilegetiocharset(int Popt,char *Pfpath,dev_t Pdevt,char *Ppiocharset,int Poutbuffsz);//~v6B8R~
 #define UFGDO_NEWFILE    0x01    //already stat get rc=2           //~v6B8R~
 #define UFGDO_ROOT       0x02    //parent path is root dir         //~v6B8I~
-#define UFGDO_DEFAULT_CS  "utf8"                                   //+v6B8I~
+#define UFGDO_DEFAULT_CS  "utf8"                                   //~v6B8I~
+//**************************************************************** //~v777I~
+int  ufilelnxwildselect(UCHAR *Pfname,UCHAR *Pwildcard,int Pcasesw);//~v77aI~
+#endif //UNX                                                       //~v779I~

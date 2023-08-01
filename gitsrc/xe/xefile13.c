@@ -1,9 +1,11 @@
-//*CID://+vb79R~:                             update#=   66;       //+vb79R~
+//*CID://+vby6R~:                             update#=   69;       //+vby6R~
 //*************************************************************
 //*xefile13.c*                                                     //~v0d5R~
 //**fileregist,filefree,fileclosefree(2),fncomp                    //~v0d5R~
 //*************************************************************
-//vb79:170104 parsefname chk buffsz                                //+vb79I~
+//vby6:230402 (ARM)adjust by4; go around by shortname and change to uri at ulib(ufile1l)//+vby6I~
+//vby4:230402 (ARM)shared resource support by //shareName defined by SP(ShortPath) cmd.//~vby4I~
+//vb79:170104 parsefname chk buffsz                                //~vb79I~
 //v9@8:080717 3270:fs mode del excluded line                       //~v9@8I~
 //v9@5:080717 3270:TSO FS mode;draw update line only for performance//~v9@5I~
 //v74y:070223 new option to set COLS ON as default  "COLS ON ALL"  //~v74yI~
@@ -284,6 +286,18 @@ int fncomp(PUQUEE Ppfnqe,PVOID Ppfname)
 	return stricmp(Ppfname,((PUFILEH)(PVOID)Ppfnqe)->UFHfilename)!=0;//~4C19R~
 #endif //!UNX                                                      //~v20DI~
 }//fncomp                                                     //~4C17R~
+//#ifdef ARMXXE                                                    //~vby4R~//+vby6R~
+////****************************************************************//~vby4R~//+vby6R~
+//int fncompDoc(PUQUEE Ppfnqe,PVOID Ppfname)                       //~vby4R~//+vby6R~
+//{                                                                //~vby4R~//+vby6R~
+//    PUFILEH pfh;                                                 //~vby4R~//+vby6R~
+////**********************************                             //~vby4R~//+vby6R~
+////retrn 0 if match ,1 if unmatch                                 //~vby4R~//+vby6R~
+//    pfh=(PUFILEH)(PVOID)Ppfnqe;                                  //~vby4R~//+vby6R~
+//    return strcmp(Ppfname,pfh->UFHfpathDoc)!=0;                  //~vby4R~//+vby6R~
+//                                                                 //~vby4R~//+vby6R~
+//}//fncompDoc                                                     //~vby4R~//+vby6R~
+//#endif //ARMXXE                                                  //~vby4R~//+vby6R~
 //****************************************************************
 //!filefree                                                        //~v0ctR~
 //*free all ULINEH entry
@@ -600,8 +614,8 @@ int filefnquate(char *Pfnm)                                        //~v0fsR~
 	pc=Pfnm;                                                       //~v0fsR~
   	if (!pc)                                                       //~v0fsI~
     	return 0;                                                  //~v0fsI~
-//	rc=uparsefname(1,pc,wkfnm,&pos,&len);//cut operand             //+vb79R~
-  	rc=uparsefname(1,pc,wkfnm,&pos,(int)sizeof(wkfnm),&len);//cut operand//+vb79I~
+//	rc=uparsefname(1,pc,wkfnm,&pos,&len);//cut operand             //~vb79R~
+  	rc=uparsefname(1,pc,wkfnm,&pos,(int)sizeof(wkfnm),&len);//cut operand//~vb79I~
     if (rc!=4)		//no quatation detected                        //~v0fsI~
     	return 0;                                                  //~v0fsI~
     *pc++='"';                                                     //~v0fsI~

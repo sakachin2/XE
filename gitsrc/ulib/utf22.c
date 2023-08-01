@@ -1,4 +1,4 @@
-//*CID://+v740R~:                             update#=  509;       //~v70mR~//~v740R~
+//*CID://+v740R~:                             update#=  510;       //~v70mR~//~v740R~
 //*********************************************************************//~7712I~
 //utf2.c                                                           //~7716R~
 //* utf8 data manipulation:process using chof                      //~7712I~
@@ -453,7 +453,7 @@ int utfddflag2sbcsid(int Popt,int Pflag,int Pwidth,int *Ppsbcsid)  //~v640I~
     else                                                           //~v65cI~
 #endif                                                             //~v65cI~
         return 0;               //nothing to do                    //~v640I~
-//UTRACEP("%s:flag=%x,width=%d,sbcsid=%d\n",UTT,Pflag,Pwidth,sbcsid);//~v640I~//+v740R~
+//UTRACEP("%s:flag=%x,width=%d,sbcsid=%d\n",UTT,Pflag,Pwidth,sbcsid);//~v640I~//~v740R~
     *Ppsbcsid=sbcsid;                                              //~v640I~
     return 1;                                                      //~v640I~
 }//utfddflag2sbcsid                                                //~v640I~
@@ -913,7 +913,7 @@ int utfucsmapinit(int Popt)                                        //~v640I~
                     OVFMSG,                                        //~v67ZI~
           			ovfucsw0,ovfucsw0last,ovfctrw0);               //~v67ZI~
     	if (loaded)                                                //~v6c7I~
-	      	uerrmsgcat(";try to clear ::%s.xxx",0,                 //~v6c7R~
+	      	uerrmsgcat(";(W)try to clear ::%s.xxx",0,                 //~v6c7R~//+v740R~
             			SBCSTBFNM);                                //~v6c7I~
 #else                                                              //~v6T7I~
 //         	printf("%s",uerrsprintf("%s. u-%06x-->u-%06x(0x%04x SBCSs of total 0x%04x,unprintable=%d/%d).\n",0,//~v6T7R~//~v740R~
@@ -929,7 +929,7 @@ int utfucsmapinit(int Popt)                                        //~v640I~
                     OVFMSG,                                        //~v6T7I~
           			ovfucsw0,ovfucsw0last,ovfctrw0));              //~v6T7I~
     	if (loaded)                                                //~v6T7I~
-	      	printf("%s",uerrsprintf(";try to clear ::%s.xxx",0,    //~v6T7I~
+	      	printf("%s",uerrsprintf(";(Warning)try to clear ::%s.xxx",0,    //~v6T7I~//+v740R~
             			SBCSTBFNM));                               //~v6T7I~
           	printf("\n");                                          //~v6T7I~
 #endif                                                             //~v6T7I~

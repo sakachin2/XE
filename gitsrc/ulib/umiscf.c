@@ -1,4 +1,6 @@
-//CID://+v711R~:         update#=  127                             //~v711R~
+//CID://+v771R~:         update#=  128                             //+v771R~
+//**************************************************               //+v771I~
+//v771:230323 sys/timeb.h is not found on ARM                      //+v771I~
 //**************************************************
 //*umiscf.c
 //*other miscellaneous function
@@ -16,7 +18,9 @@
 #ifdef UNX                                                         //~v711I~
 	#include <sys/time.h>                                         //~v651I~//~v711R~
 #endif                                                             //~v711I~
+#ifndef ARM                                                        //+v771I~
 #include <sys/timeb.h>                                             //~v711I~
+#endif                                                             //+v771I~
 //*************************************************************
 #ifdef DOS
 #else
@@ -128,8 +132,8 @@ int uftime(struct timeb * Ptb)                                     //~v711R~
     	return -1;                                                 //~v711I~
     Ptb->time=tv.tv_sec;                                           //~v711I~
     Ptb->millitm=(unsigned short)(tv.tv_usec/1000);                //~v711R~
-    Ptb->timezone=(short)(tz.tz_minuteswest);                      //+v711R~
-    Ptb->dstflag=(short)(tz.tz_dsttime);                           //+v711R~
+    Ptb->timezone=(short)(tz.tz_minuteswest);                      //~v711R~
+    Ptb->dstflag=(short)(tz.tz_dsttime);                           //~v711R~
     return 0;                                                      //~v711I~
 #endif                                                             //~v711I~
 }                                                                  //~0610I~//~v711I~
