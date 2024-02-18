@@ -1,8 +1,16 @@
-//*CID://+v77ZR~:                              update#=  499;      //+v77ZR~
+//*CID://+vbzpR~:                              update#=  558;      //~vbzpR~
 //*************************************************************
 //*XE.c*                                                           //~v641R~
 //*************************************************************
-//v77Z:230718 ARM;support CD to shared storage                     //+v77ZI~
+//vbzp:240210 -Yv/Nv parm for also xe console                      //~vbzpI~
+//vbzn:240207 char width adjustment for console. adjust by tbl if /Yv.//~vbznI~
+//vbzk:240202 finaly ccursor chk for cell width is LNX(xe,gxe) and WXE.//~vbzkI~
+//vbzj:240202 Test option /UUxxxx; set unicode for debug breaking. //~vbzjI~
+//vbz5:240120 try vbz3 to XXE(apichk by char extent)               //~vbz5I~
+//vbz4:240120 try vbz3 to WXE                                      //~vbz4I~
+//vbz3:240119 optionally chk wcwidth by cursor.  /Yv(default)      //~vbz3I~
+//vc71 2023/08/20 clear *.lock of =6 when destroyed by Home+swipe  //~vc71I~
+//v77Z:230718 ARM;support CD to shared storage                     //~v77ZI~
 //vbvj:221130 change workdir to %USERPROFILE% (C:\Users\username) fo protection//~vbvjI~
 //vbvg:221130 LNX compiler arning                                  //~vbvgI~
 //vbvf:221129 drop japanese comment for =0.2/0.3 when english mode //~vbvfI~
@@ -283,6 +291,7 @@
 	#include <uunxsub.h>	//ugetugid                             //~v79zI~
 #endif                                                             //~v79zI~
 	#include <udos.h>	//ugetugid                                 //~vbf0I~
+#include <utf.h>	                                               //~vbz3I~
                                                                    //~v19SI~
 #include "xe.h"
 #include "xegbl.h"                                              //~5712I~
@@ -815,7 +824,7 @@ if (Preqtype==WXE_REQ_INIT)                                        //~v501I~
     uharderr(0);    //fail if drive notready                       //~v099I~
 #else                                                              //~v099I~
 #endif                                                             //~v099I~
-    funcsp_init(0);          //before ini recovery of cwd by Scurdir//+v77ZR~
+    funcsp_init(0);          //before ini recovery of cwd by Scurdir//~v77ZR~
     if (Srestorecdsw)        //restore required                    //~v11yI~
         inirestcd();         //restore saved CD                    //~v11yI~
 //  funcinit();                                                    //~v705R~
@@ -826,7 +835,7 @@ if (Preqtype==WXE_REQ_INIT)                                        //~v501I~
     scrinit(Sscrparm);                                             //~v47rI~
     paninit();                                                  //~v032I~
     kbdinit();
-//  funcsp_init(0);                                                //~vba2R~//+v77ZR~
+//  funcsp_init(0);                                                //~vba2R~//~v77ZR~
     dcmdinit(0);                                                   //~v781R~
 #ifdef UNX                                                         //~v19FI~
     dlcmdundelinit();   //undel top dirname edit by userid         //~v19FI~
@@ -1038,7 +1047,17 @@ if (Preqtype==WXE_REQ_TERM)                                        //~v500I~
 #endif                                                             //~v500I~
     return 0;
 }//main
-
+//************************************************                 //~vc71I~
+#ifdef ARMXXE                                                      //~vc71I~
+int xemainOnDestroy()                                              //~vc71I~
+{                                                                  //~vc71I~
+	UTRACEP_FLUSH("%s:entry\n",UTT);                               //~vc71R~
+    dcmdterm(); //clear temporary stdout redirect file,=6 lock file//~vc71I~
+	UTRACEP_FLUSH("%s:exit before utrace_term\n",UTT);             //~vc71I~
+    utrace_term(0);  //close utrace file and stop utrace           //~vc71I~
+    return 0;
+}                                                                  //~vc71I~
+#endif                                                             //~vc71R~
 //************************************************
 //*called from uerrexit                          *
 //************************************************
@@ -1469,6 +1488,17 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
 #ifdef ARM                                                         //~vad0I~
     Swcinitopt|=UDCWCIO_LOCALICU;//use ICU:default for ARM         //~vad0I~
 #endif                                                             //~vad0I~
+#ifdef W32                                                         //~vbz3I~
+	#ifndef WXE                                                    //~vbz3I~
+		Gulibutfmode|=GULIBUTF_APICHK_CSR; //0x08000000  //Default:utfwcwidth chr cursor step//~vbz3I~
+    #else                                                          //~vbz4I~
+		Gulibutfmode|=GULIBUTF_APICHK_CSR; //0x08000000  //Default:utfwcwidth chr cursor step//~vbz4I~
+	#endif                                                         //~vbz3I~
+#else                                                              //~vbz5I~
+//  #ifdef XXE                                                     //~vbz5I~//~vbzpR~
+		Gulibutfmode|=GULIBUTF_APICHK_CSR; //0x08000000  //Default:utfwcwidth chr cursor step//~vbz5I~
+//  #endif                                                         //~vbz5I~//~vbzpR~
+#endif                                                             //~vbz3I~
     for (parmno=1;parmno<Pparmc;parmno++)                          //~v79zI~
     {                                                              //~v79zI~
         cptr=Pparmp[parmno];                                       //~v79zI~
@@ -1487,6 +1517,20 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
                 cptr++;                         //skip :           //~v79zI~
             switch(toupper(ch))       //option                     //~v79zI~
             {                                                      //~v79zI~
+            case 'H':                                              //~vbz3I~
+            case '?':                                              //~vbz3I~
+#ifdef W32                                                         //~vbz3I~
+	#ifndef WXE                                                    //~vbz3I~
+				Gulibutfmode&=~GULIBUTF_APICHK_CSR; //for performance//~vbz3I~
+    #else                                                          //~vbz4I~
+				Gulibutfmode&=~GULIBUTF_APICHK_CSR; //for performance//~vbz4I~
+	#endif                                                         //~vbz3I~
+#else                                                              //~vbz5I~
+//  #ifdef XXE                                                     //~vbz5I~//~vbzpR~
+				Gulibutfmode&=~GULIBUTF_APICHK_CSR; //for performance//~vbz5I~
+//  #endif                                                         //~vbz5I~//~vbzpR~
+#endif                                                             //~vbz3I~
+            	break;                                             //~vbz3I~
 #ifdef WCSUPP                                                      //~v79zI~
 //**************************                                       //~v79zI~
 //* /C: Codepage                                                   //~v79zI~
@@ -1614,6 +1658,18 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
                                 cptr);                             //~v07iM~
                 }                                                  //~v07iM~
                 break;                                             //~v07iM~
+            case 'U':                                              //~vbzjI~
+              	if (toupper(*cptr)=='U')                           //~vbzjI~
+              	{                                                  //~vbzjI~
+                    cptr++;                                        //~vbzjI~
+                    ULONG x2lucs;                                  //~vbzjI~
+                    if (ux2l(cptr,&x2lucs))                        //~vbzjI~
+                        uerrexit("UTF8 option err,invalid Unicode by Hex notation(%s)",0,//~vbzjI~
+                                  Pparmp[parmno]);                 //~vbzjI~
+                    else                                           //~vbzjI~
+                        GutfTestUcs=(ULONG)x2lucs;                  //~vbzjI~
+              	}                                                  //~vbzjI~
+                break;                                             //~vbzjI~
 //**************************                                       //~v79zI~
 //* work dir      /W                                               //~v79zI~
 //**************************                                       //~v79zI~
@@ -1658,9 +1714,24 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
 //#endif //W32                                                       //~vbt3I~//~vbtaR~
 #endif                                                             //~v7a7I~
 #ifdef W32                                                         //~v79zI~
+	#ifndef WXE                                                    //~vbz3I~
+                    case 'V':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~vbz3I~
+						Gulibutfmode|=GULIBUTF_APICHK_CSR; //0x08000000  //utfwcwidth chr cursor step//~vbz3I~
+                        break;                                     //~vbz3I~
+    #else                                                          //~vbz4I~
+                    case 'V':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~vbz4I~
+						Gulibutfmode|=GULIBUTF_APICHK_CSR; //0x08000000  //utfwcwidth chr cursor step//~vbz4I~
+                        break;                                     //~vbz4I~
+    #endif                                                         //~vbz3I~
                     case 'W':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~v79zI~
                         Swcinitopt|=UDCWCIO_FORCEWIDE;             //~v79zI~
                         break;                                     //~v79zI~
+#else                                                              //~vbz5I~
+//  #ifdef XXE                                                     //~vbz5I~//~vbzpR~
+                    case 'V':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~vbz5I~
+						Gulibutfmode|=GULIBUTF_APICHK_CSR; //0x08000000  //utfwcwidth chr cursor step//~vbz5I~
+                        break;                                     //~vbz5I~
+//  #endif                                                         //~vbz5I~//~vbzpR~
 #endif                                                             //~v79zI~
                     default:                                       //~v79zI~
                         ;                                          //~v79zI~
@@ -1699,9 +1770,24 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
 //#endif //W32                                                       //~vbt3I~//~vbtaR~
 #endif                                                             //~v79zI~
 #ifdef W32                                                         //~vbt2I~
+	#ifndef WXE                                                    //~vbz3I~
+                    case 'V':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~vbz3I~
+						Gulibutfmode&=~GULIBUTF_APICHK_CSR; //0x08000000  //utfwcwidth chr cursor step//~vbz3I~
+                        break;                                     //~vbz3I~
+    #else                                                          //~vbz4I~
+                    case 'V':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~vbz4I~
+						Gulibutfmode&=~GULIBUTF_APICHK_CSR; //0x08000000  //utfwcwidth chr cursor step//~vbz4I~
+                        break;                                     //~vbz4I~
+    #endif                                                         //~vbz3I~
                     case 'W':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~vbt2I~
                         Swcinitopt&=~UDCWCIO_FORCEWIDE;            //~vbt2I~
                         break;                                     //~vbt2I~
+#else                                                              //~vbz5I~
+//  #ifdef XXE                                                     //~vbz5I~//~vbzpR~
+                    case 'V':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~vbz5I~
+						Gulibutfmode&=~GULIBUTF_APICHK_CSR; //0x08000000  //utfwcwidth chr cursor step//~vbz5I~
+                        break;                                     //~vbz5I~
+//  #endif                                                         //~vbz5I~//~vbzpR~
 #endif                                                             //~vbt2I~
                     default:                                       //~v79zI~
                         ;                                          //~v79zI~
@@ -1947,6 +2033,11 @@ int  parmproc0(int Pparmc,char *Pparmp[])                          //~v501R~
                     }                                              //~va1nI~
                 }                                                  //~va1nI~
               }                                                    //~va1nI~
+              else                                                 //~vbzjI~
+              if (toupper(*cptr)=='U')                             //~vbzjI~
+              {                                                    //~vbzjI~
+              	cptr++;                                            //~vbzjI~
+              }                                                    //~vbzjI~
               else                                                 //~va1nI~
     	        uerrexit("UTF8 option err(%s)",0,                  //~va1nI~
                               Pparmp[parmno]);                     //~va1nI~
@@ -2259,11 +2350,23 @@ void parmproc(int Pparmc,char *Pparmp[])
                         break;                                     //~vau0I~
 //#endif                                                             //~vau0I~//~vauER~
 #ifdef W32                                                         //~v79zR~
+	#ifndef WXE                                                    //~vbz3I~
+                    case 'V':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~vbz3I~
+                        break;                                     //~vbz3I~
+    #else                                                          //~vbz4I~
+                    case 'V':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~vbz4I~
+                        break;                                     //~vbz4I~
+    #endif                                                         //~vbz3I~
                     case 'W':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~v79zI~
 #ifndef UTF8SUPPH    //proc0 processed                             //~va00I~
                         udbcschk_wcinit(UDCWCIO_FORCEWIDE,0/*out locale*/);//~v79zI~//~va00R~
 #endif                                                             //~va00I~
                         break;                                     //~v79zI~
+#else                                                              //~vbz5I~
+//  #ifdef XXE                                                     //~vbz5I~//~vbzpR~
+                    case 'V':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~vbz5I~
+                        break;                                     //~vbz5I~
+//  #endif                                                         //~vbz5I~//~vbzpR~
 #endif                                                             //~v79zI~
                     case '2':             //Yn                     //~v449I~
 #ifdef W32                                                         //~v449I~
@@ -2360,8 +2463,20 @@ void parmproc(int Pparmc,char *Pparmp[])
                         break;                                     //~vau0I~
 //#endif                                                             //~vau0I~//~vauER~
 #ifdef W32                                                         //~v79zR~
+	#ifndef WXE                                                    //~vbz3I~
+                    case 'V':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~vbz3I~
+                        break;                                     //~vbz3I~
+    #else                                                          //~vbz4I~
+                    case 'V':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~vbz4I~
+                        break;                                     //~vbz4I~
+    #endif                                                         //~vbz3I~
                     case 'W':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~v79zI~
                         break;                                     //~v79zI~
+#else                                                              //~vbz5I~
+//  #ifdef XXE                                                     //~vbz5I~//~vbzpR~
+                    case 'V':  //kbd and vio by widechar even for Codepage=Japanese on Japanese system//~vbz5I~
+                        break;                                     //~vbz5I~
+//  #endif                                                         //~vbz5I~//~vbzpR~
 #endif                                                             //~v79zI~
                     case '2':             //Yn                     //~v449I~
 #ifdef W32                                                         //~v449I~
@@ -2779,6 +2894,12 @@ void help(void)
     HELPMSG "               :specify CPxx,FNxx(xx:U8/LC).\n",      //~vagEI~
             "               :その場合は CPxx,FNxx (xx:U8/LC)を指定\n");//~vagEI~
 #endif                                                             //~va00I~
+  if (Sdebughelp)                                                  //~vbzjI~
+  {                                                                //~vbzjI~
+    HELPMSG "  %cUUxxxx      :For Debug Test, xxxx:unicode breaks debugger.\n",//~vbzjI~
+            "  %cUUxxxx      :デバッグ用; xxxx:デバッガーで停止するユニコード。\n",//~vbzjI~
+                    CMDFLAG_PREFIX);                               //~vbzjI~
+  }                                                                //~vbzjI~
 #ifdef UNX                                                         //~v21cI~
     HELPMSG "  %cWxxxx       :Work dir name(alternative of export %s=xxxx)\n",//~v21cI~
             "  %cWxxxx       :ワークディレクトリ－名(環境変数設定 export %s=xxxx の代り)\n",//+v21cI~//~v21cR~
@@ -2937,6 +3058,23 @@ void help(void)
 //#endif                                                             //~vau0I~//~vauER~
 #ifdef W32                                                         //~v7a3I~
 #ifndef WXE                                                        //~v7a3I~
+//    HELPMSG "      x=v (%cYv):(Windows Console version,Japanese Env) Adjust character cell width\n",//~vbz3R~//~vbzkR~
+////          "      x=v (%cYv):(Windowsコンソール版,日本語環境) 文字幅が不明瞭な文字の場合\n",//~vbz3R~//~vbzjR~//~vbzkR~
+//            "      x=v (%cYv):(Windowsコン\x83\\ール版,日本語環境) 文字幅が不明瞭な文字の場合\n",//~vbzjI~//~vbzkR~
+//            CMDFLAG_PREFIX);                                       //~vbz3I~//~vbzkR~
+//    HELPMSG "                 to the cursor width for the charcter of ambiguous width.\n",//~vbz3I~//~vbzkR~
+////          "                 文字幅をカーソル幅に合わせる。\n");  //~vbz3R~//~vbzjR~//~vbzkR~
+//            "                 文字幅をカー\x83\\ル幅に合わせる。\n");//~vbzjI~//~vbzkR~
+//    HELPMSG "      x=v (%cYv):Adjust the width of Unicode char defined as ambiguous width.\n"//~vbznR~
+//            "                Display by 2 cell for those if %cNv specified.\n",//~vbznR~
+//            "      x=v (%cYv):\x95\\示幅が曖昧と定義されているユニコード文字の幅を調整する。\n"//~vbznR~
+//            "                %cNvとするとそれらは全て２桁\x95\\示する。\n",//~vbznR~
+//              CMDFLAG_PREFIX,CMDFLAG_PREFIX);                    //~vbznR~
+    HELPMSG "      x=v (%cYv):Draw on 1 cell for the Unicode char defined as ambiguous width.\n"//~vbznR~
+            "                Use 2 cell for those if %cNv is specified.\n",//~vbznR~
+            "      x=v (%cYv):\x95\\示幅が曖昧と定義されているユニコード文字を1桁で描画する。\n"//~vbznR~
+            "                %cNvとするとそれらは全て２桁\x95\\示する。\n",//~vbznI~
+              CMDFLAG_PREFIX,CMDFLAG_PREFIX);                      //~vbznI~
   if (Sdebughelp)                                                  //~v7a3I~
   {                                                                //~v7a3I~
 //  HELPMSG "      x=w (%cNw):For TEST,WidecharAPI for ConsoleOutput under Japanese env.\n",//~v7a3R~//~va0DR~
@@ -2947,7 +3085,43 @@ void help(void)
             "      x=w (%cYw):日本語環境でもConsole I/OでWidecharAPIを使用(UTF8 テスト用)\n",//~vbt2I~
 			CMDFLAG_PREFIX);                                       //~v7a3I~
   }                                                                //~v7a3I~
+#else                                                              //~vbz4I~
+//    HELPMSG "      x=v (%cYv):(wxe) Adjust character cell width\n",//~vbz4R~//~vbz5R~//~vbzkR~//~vbznR~
+//            "      x=v (%cYv):(wxe) 文字幅が不明瞭な文字の場合\n",//~vbz4R~//~vbz5R~//~vbzkR~//~vbznR~
+//            CMDFLAG_PREFIX);                                       //~vbz4I~//~vbznR~
+//    HELPMSG "                 to the cursor width for the charcter of ambiguous width.\n",//~vbz4I~//~vbznR~
+////          "                 文字幅をカーソル幅に合わせる。\n");  //~vbz4I~//~vbzjR~//~vbznR~
+//            "                 文字幅をカー\x83\\ル幅に合わせる。\n");//~vbzjI~//~vbznR~
+//    HELPMSG "                 Yv takes some cost at aplication start.\n",//~vbzkR~//~vbznR~
+//            "                 Yv とすると立ち上がりが少し遅れる。\n");//~vbzkR~//~vbznR~
+    HELPMSG "      x=v (%cYv):Adjust the width of Unicode char defined as ambiguous width\n",//~vbznR~
+            "      x=v (%cYv):\x95\\示幅が曖昧と定義されているユニコード文字の幅を調整する。\n",//~vbznR~
+              CMDFLAG_PREFIX);                                     //~vbznI~
+    HELPMSG "                some starting cost. Display by 2 cell for those if %cNv specified.\n",//~vbznR~
+            "                %cNvとするとそれらは全て２桁\x95\\示し、立ち上がりが軽い。\n",//~vbznR~
+              CMDFLAG_PREFIX);                                     //~vbznI~
 #endif                                                             //~v7a3I~
+#else    //!W32                                                    //~vbz5I~
+    #ifdef XXE                                                       //~vbz5I~//~vbzkR~//~vbzpR~
+        HELPMSG "      x=v (%cYv):Cell count for the Unicode char defined as ambiguous width.\n"//+vbzpR~
+                "                %cYv depends glyph width, %cNv always use 2 cells.\n",//~vbzpI~
+                "      x=v (%cYv):\x95\\示幅が曖昧と定義されているユニコード文字の描画桁数。\n"//~vbzpI~
+                "                %cYv はグリフのサイズに従い、%cNvとすると全て２桁\x95\\示する。\n",//~vbzpI~
+                  CMDFLAG_PREFIX,CMDFLAG_PREFIX,CMDFLAG_PREFIX);   //~vbzpI~
+    #else                                                          //~vbzpI~
+//    HELPMSG "      x=v (%cYv):Adjust character cell width\n",//~vbz5R~//~vbzkR~//~vbzpR~
+//            "      x=v (%cYv):文字幅が不明瞭な文字の場合\n", //~vbz5R~//~vbzkR~//~vbzpR~
+//            CMDFLAG_PREFIX);                                       //~vbz5I~//~vbzpR~
+//    HELPMSG "                 to the cursor width for the charcter of ambiguous width.\n",//~vbz5I~//~vbzpR~
+//            "                 文字幅をカー\x83\\ル幅に合わせる。\n");//~vbz5I~//~vbzpR~
+//    HELPMSG "                 Yv takes some cost at aplication start.\n",//~vbzkR~//~vbzpR~
+//            "                 Yv は立ち上がりが少し遅れる。\n");   //~vbzkI~//~vbzpR~
+        HELPMSG "      x=v (%cYv):Draw on 1 cell for the Unicode char defined as ambiguous width.\n"//~vbzpI~
+                "                Use 2 cell for those if %cNv is specified.\n",//~vbzpI~
+                "      x=v (%cYv):\x95\\示幅が曖昧と定義されているユニコード文字を1桁で描画する。\n"//~vbzpI~
+                "                %cNvとするとそれらは全て２桁\x95\\示する。\n",//~vbzpI~
+                  CMDFLAG_PREFIX,CMDFLAG_PREFIX);                  //~vbzpI~
+    #endif                                                           //~vbz5I~//~vbzkR~//~vbzpR~
 #endif                                                             //~v7a3I~
 //#ifdef LNX                                                         //~v79zI~//~v7a7R~
 //    HELPMSG "      x=8 (%cN8):Read UTF8 kbd input byte by byte.\n",//~v79zI~//~v7a7R~

@@ -1,4 +1,4 @@
-//*CID://+vbs6R~:                             update#=  870;       //~vbs6R~
+//*CID://+vc61R~:                             update#=  871;       //+vc61R~
 //*************************************************************    
 //*xefcmd6.c*                                                      //~v78rR~
 //**file cmd:PROfile                                               //~v78rI~
@@ -6,6 +6,7 @@
 //**file cmd:Rotate  ROT { R | L | X | Y | RX | LX | RJ | LJ } [NX] [TAIL] [n-m] [.lab1 .lab2]//~v511R~
 //** NX: x,y,rj,lj only                                            //~v511R~
 //*************************************************************    
+//vc61 2023/08/04 (Bug) Uri to file path failes when space embedding//+vc61I~
 //vbs6:201026 profile COL cmd for dir, "col on dir" follows dir setting//~vbs6I~
 //vb7m:170116 profile filename is too long over 255(CreateFile failes with GetLastError()=123(name syntax err)//~vb7mI~
 //vb7b:170105 (Bug by vb57)profile record is out of profile dir    //~vb7bI~
@@ -1528,7 +1529,11 @@ int func_openwith(PUCLIENTWE Ppcw)                                 //~v564I~
 				pc);                                               //~v652I~
     	return 4;                                                  //~v652I~
     }                                                              //~v652I~
+#ifdef ARM                                                         //+vc61I~
+    rc=dlcmdopenwithsub(Ppcw,fpath,0L);                            //+vc61I~
+#else                                                              //+vc61I~
     rc=dlcmdopenwithsub(Ppcw,fpath);                               //~v564R~
+#endif                                                             //+vc61I~
     if (!rc)                                                       //~v564I~
     	uerrmsg("Associate command accepted for %s",0,             //~v564R~
 				pc);                                               //~v564I~
@@ -2184,7 +2189,7 @@ int fcmdprofmergerecord(PPROFILE Ppprof1,PPROFILE Ppprof2)         //~v78rR~
     if (Ppprof1->PROFcols==' ')                                    //~v78rI~
         Ppprof1->PROFcols=Ppprof2->PROFcols;                       //~v78rI~
     if (Ppprof1->PROFcolstype[0]==' ')                             //~v78rI~
-      if (Ppprof2->PROFcols==PROF_COLSON)	//dir is col on        //+vbs6I~
+      if (Ppprof2->PROFcols==PROF_COLSON)	//dir is col on        //~vbs6I~
         memcpy(Ppprof1->PROFcolstype,Ppprof2->PROFcolstype,MAXCOLSTYPNM);//~v78rR~
 #ifdef UTF8SUPPH                                                   //~v78wR~//~va00R~
     if (Ppprof1->PROFcp==' ')                                      //~v78wI~//~va00I~

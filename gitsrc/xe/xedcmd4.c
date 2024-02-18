@@ -1,9 +1,12 @@
-//*CID://+vbyiR~:                             update#=  713;       //+vbyiR~
+//*CID://+vbzeR~:                             update#=  716;       //+vbzeR~
 //*************************************************************
 //*xedcmd4.c                                                       //~v638R~
 //* grep,androsend                                                 //~vaa4R~
 //*************************************************************
-//vbyi:230515 (ARM)for also xfc dcmd, support for external storage(no more need of vbyh)//+vbyiI~
+//vbze:240130 (Bug)'dlcmd 'g'(grep) hung when search string quatation pair err//+vbzeI~
+//vbzd:240130 (Bug)'grep "A A" fail(space embedding parm)          //~vbzdI~
+//vbzc:240130 (Bug)'grep F"2 *.c' hung by unpared quotation        //~vbzcI~
+//vbyi:230515 (ARM)for also xfc dcmd, support for external storage(no more need of vbyh)//~vbyiI~
 //vbyh:230514 (ARM)dlcmd "=" support for external storage          //~vbyhI~
 //vbke:180619 add msg to display utf8 code filename                //~vbkeI~
 //vb2D:160221 LNX compiler warning                                 //~vb2DI~
@@ -113,6 +116,19 @@ int dcmdstrchk(int Popt,char *Pstr);                               //~va6EI~
 #define  DCSCO_NOMSG       0x01      //no err msg                  //~va6ER~
 #define  DCSCO_PARSE       0x02      //chk after string parse      //~va6ER~
 #define  DCSCO_REDIRECTOK  0x04      //allow ">"                   //~va6EI~
+//**************************************************************** //~vbzcI~
+//*chk doublequotation pair                                        //~vbzcI~
+//**************************************************************** //~vbzcI~
+int chkquotationpair(int Popt,char *Pstr)                          //~vbzcI~
+{                                                                  //~vbzcI~
+	if (strchr(Pstr,'"'))                                          //~vbzcI~
+    {                                                              //~vbzcI~
+		uerrmsg("parameter err(%s)",0,                             //~vbzcI~
+    		    			Pstr);                                 //~vbzcI~
+        return 4;                                                  //~vbzcI~
+    }                                                              //~vbzcI~
+    return 0;                                                      //~vbzcI~
+}                                                                  //~vbzcI~
 //**************************************************************** //~va6EI~
 // cmd string chk                                                  //~va6EI~
 //   err if contains "&" or "|" or "<", ">"                        //~va6EI~
@@ -137,6 +153,8 @@ int dcmdstrchk(int Popt,char *Pstr)                                //~va6EI~
                 	rc=1;                                          //~va6EI~
                 	break;                                         //~va6ER~
                 }                                                  //~va6EI~
+			if (chkquotationpair(0,pc))                            //+vbzeI~
+            	return 4;                                          //+vbzeI~
         }                                                          //~va6EI~
         ufree(podt0);                                              //~va6ER~
         return rc;                                                 //~va6ER~
@@ -173,6 +191,7 @@ int dcmd_grep(PUCLIENTWE Ppcw)
     int ii,opdno,notflagctr;                                       //~v63tR~
     PUPODELMTBL podt;                                              //~v63cI~
     int scrgrepsw,len;                                             //~v647R~
+    int strpos;                                                    //~vbzdI~
 //*******************
     pparm=Ppcw->UCWparm;
     if (!pparm)
@@ -227,11 +246,17 @@ int dcmd_grep(PUCLIENTWE Ppcw)
     	pot=Ppcw->UCWopdpot;                                       //~v63tR~
     	uparse2(pparm,&podt,&pot,&opdno,UPARSE2USEAREAPARM|UPARSE2SETCONTDLM2,0);//~v63tR~
         offsc=0;                                                   //~v63wI~
+        strcpy(cmd,"grep");                                        //~vbzdI~
+        strpos=(int)strlen(cmd);                                   //~vbzdI~
         for (ii=0,notflagctr=0,pc=pot;ii<opdno;ii++,pc+=strlen(pc)+1,podt++)//~v63tR~
         {                                                          //~v63tR~
         	if (!podt->upoquate)                                   //~va6EI~
                 if (dcmdstrchk(0,pc))	//contains pipe char("&" or "|")//~va6EI~
                 	return 4;                                      //~va6EI~
+            if (chkquotationpair(0,pc))                            //~vbzcI~
+            {                                                      //~vbzcI~
+                return 4;                                          //~vbzcI~
+            }                                                      //~vbzcI~
         	if (podt->upoquate||*pc!='-')                          //~v63tR~
             {                                                      //~v63wI~
             	notflagctr++;                                      //~v63tR~
@@ -239,11 +264,15 @@ int dcmd_grep(PUCLIENTWE Ppcw)
                 offsc=podt->upodelmoffs;   //current offs          //~v63wI~
                 pfnm=pc;                                           //~v63wI~
             }                                                      //~v63wI~
+        	if (podt->upoquate)                                    //~vbzdI~
+            	strpos+=sprintf(cmd+strpos," \"%s\"",pc);          //~vbzdI~
+            else                                                   //~vbzdI~
+            	strpos+=sprintf(cmd+strpos," %s",pc);              //~vbzdI~
         }                                                          //~v63tR~
 //      if (Ppcw->UCWopdno==1)                                     //~v63tR~
         if (notflagctr<2)                                          //~v63tR~
             return errmissing();
-	    sprintf(cmd,"grep %s",pparm);   //without redirect parm
+//      sprintf(cmd,"grep %s",pparm);   //without redirect parm    //~vbzdR~
 //      if ((*pfnm==SAMEDIR && Ppcw->UCWtype==UCWTDIR)             //~v644R~
 //      if ((  (*pfnm==SAMEDIR && Ppcw->UCWtype==UCWTDIR)          //~v647R~
         if ((  (*pfnm==SAMEDIR && pfh)                             //~v647R~
@@ -419,13 +448,13 @@ int dcmd_comparedlcmd(PUCLIENTWE Ppcw,char *Pcmd,int Pcmdlen,char *Predirectfnm,
     redirsw=PRERC_STDOAPPEND|PRERC_STDEAPPEND;                     //~v75MI~
 //  rc=dcmdsystemcall(Ppcw,Pcmd,redirsw,Predirectfnm,"&1");        //~vavMI~
 //  rc=dcmdsystemcall_spawn(0,Ppcw,Pcmd,redirsw,Predirectfnm,"&1");//~vavMR~//~vavNR~
-//#ifdef ARMXXE                                                      //~vbyhI~//+vbyiR~
-//    Gdcmdtempf|=GDCMDTEMPF_COPY2TEMP;   // 0x4000        //process on temp file copyed from arm shared storage file//~vbyhI~//+vbyiR~
-//#endif                                                             //~vbyhI~//+vbyiR~
+//#ifdef ARMXXE                                                      //~vbyhI~//~vbyiR~
+//    Gdcmdtempf|=GDCMDTEMPF_COPY2TEMP;   // 0x4000        //process on temp file copyed from arm shared storage file//~vbyhI~//~vbyiR~
+//#endif                                                             //~vbyhI~//~vbyiR~
     rc=dcmdsystemcall(Ppcw,Pcmd,redirsw,Predirectfnm,"&1");        //~vavNI~
-//#ifdef ARMXXE                                                      //~vbyhI~//+vbyiR~
-//    Gdcmdtempf&=~GDCMDTEMPF_COPY2TEMP;  // 0x4000        //process on temp file copyed from arm shared storage file//~vbyhI~//+vbyiR~
-//#endif                                                             //~vbyhI~//+vbyiR~
+//#ifdef ARMXXE                                                      //~vbyhI~//~vbyiR~
+//    Gdcmdtempf&=~GDCMDTEMPF_COPY2TEMP;  // 0x4000        //process on temp file copyed from arm shared storage file//~vbyhI~//~vbyiR~
+//#endif                                                             //~vbyhI~//~vbyiR~
 	Gdcmdtempf|=GDCMDTEMPF_COMPODLC;                               //~v75MI~
 #ifdef W32UNICODE                                                  //~vavNI~
   	if (pcmdx)                                                     //~vavNI~

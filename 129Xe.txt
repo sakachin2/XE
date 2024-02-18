@@ -1,0 +1,34 @@
+//*CID://+@@@1R~:                             update#=  228;
+** UTF8 encoding **
+
+//***************************************************************************
+129X:2024/02/20
+
+     1.BUGs
+       -"cv" command with \u option incorrectly converts Unicode>U-ffff.//+@@@1R~
+       -U+00A0 was not a base character of combining characters.
+       -(gxe) may crash.
+        .When displa a combining character.
+        .When the middle mouse button is pressed.
+        .When "preview" menu button is pressed.
+       -(gxe) box type cursor hides character behind.
+       -grep command (also for "g" line command on directory list).//~@@@1R~
+        .Hangs when double quotes (") in the search string are not closed.
+        .Fails when string contains intermediate spaces.           //~@@@1R~
+
+     2.Additional function.
+	   -Added command line options "-Yv" (default), "-Nv" to specify Unicode display width.
+        "-Nv" displays all characters of ambiguous width in 2 digits.//~@@@1R~
+        "-Yv" displays those in one cell for Windows console version xe,
+        Wxe, gxe and xe-linux versions perform internal determination.
+
+     3.Miscellaneous.
+
+     4.Tools
+       -xcv  v1.22
+         .Added standard input in Hex notation ("-Yh" option)
+          and output in Hex notation ("-Yx" option).
+       -xfc  v1.28                                                 //~@@@1R~
+         .Added case-insensitive comparison option ("-Nc").        //~@@@1R~
+         .Compare positions can now be specified separately
+          for both files ( -Mm-n[/p-q] ).                          //~@@@1R~

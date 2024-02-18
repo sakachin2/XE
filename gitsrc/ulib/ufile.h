@@ -1,8 +1,9 @@
-//*CID://+v784R~:                             update#=  374;       //+v784R~
+//*CID://+v794R~:                             update#=  375;       //+v794R~
 //******************************************************
 //*ufile.h                                                         //~v5d1R~
 //******************************************************        //~5708I~
-//v784:230721 ARM:xdelete; no entry msg and successefull when 0 member//+v784I~
+//v794:230818 ARM:confirm IS_DOCPATH excepting "///"               //+v794I~
+//v784:230721 ARM:xdelete; no entry msg and successefull when 0 member//~v784I~
 //v781:230720 (Bug)del dir fail by errmsg of "no entry but other attr exist" when dir contains only one dir//~v781I~
 //v77p:230502 ARM:request "//" option to delete shortpath root(//Axe etc)//~v77pI~
 //v77j:230428 ARM;udirlist by opendir optionally                   //~v77jI~
@@ -207,7 +208,8 @@
     #define SEP_ARM_SHARE      ':'     //separator between alias and uri//~v777I~
     #define SEP_ARM_SHARE_PATH "%3A"   //separator between uri and root path//~v777R~
     #define SEP_ARM_SHARE_PATH_SUBDIR "%2A"   //separator "/"      //~v777I~
-    #define IS_DOCPATH(fname) (*(fname)=='/' && *(fname+1)=='/')   //~v777I~
+//  #define IS_DOCPATH(fname) (*(fname)=='/' && *(fname+1)=='/')   //~v777I~//+v794R~
+    #define IS_DOCPATH(fname) (*(fname)=='/' && *(fname+1)=='/' && *(fname+2)!='/')//+v794I~
     #define IS_DOCROOT(fname) (IS_DOCPATH(fname) && !strchr(fname+PREFIX_ARM_SHARE_LEN,'/'))//~v77pI~
 #endif                                                             //~v777I~
 #ifdef W32                                                         //~v6ygI~
@@ -1084,7 +1086,7 @@ int uchdir(int Popt,unsigned char *Ppath);                         //~v578I~
 unsigned udosfindfirstOpt(int Popt,char *Ppfname,HDIR *Pphdir,unsigned int Pattr,FILEFINDBUF3 *Ppfstat3);//~v781I~
 #define UDFFOO_NOMSG      0x01		//no errmsg option             //~v781R~
 #define UDFFOO_ALLOWDIR   0x02		//allow existing dir           //~v781I~
-#define UDFFOO_ERRNOENTRY 0x04		//issue errmsg noentry, optio for not list(browse/edit) dirlist//+v784I~
+#define UDFFOO_ERRNOENTRY 0x04		//issue errmsg noentry, optio for not list(browse/edit) dirlist//~v784I~
 //**********************************************************************//~v179I~
 unsigned udosfindfirstnomsg(char *Ppfname,HDIR *Pphdir,unsigned int Pattr,//~v179I~
                         FILEFINDBUF3 *Ppfstat3);                   //~v179I~

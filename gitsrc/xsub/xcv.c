@@ -1,7 +1,11 @@
-//*CID://+vas5R~:                             update#=  786;       //~vas5R~
+//*CID://+vasbR~:                             update#=  842;       //~vasaR~//~vasbR~
 //***********************************************************
 //* xcv: convert (S)JIS <-->EUC,UCS2,UTF8,EBC                      //~va2oR~
 //***********************************************************
+//vasb:240123 xcv;input ucs4 by 3 byte ucs(stdin) cause conv err   //~vasbI~
+//vasa:240123 xcv;change hex input option when stdin               //~vasaI~
+//vas9:240115 xcv;(Bug)dup err of input when xcv - outfile         //~vas9I~
+//vas8:240115 xcv;supporthex code input for stdin by /Yx           //~vas8I~
 //vas5:230709 do not beep for help                                 //~vas5I~
 //vas3:230630 ARM;closeall for arm subthread execution             //~vas3I~
 //vas2:230630 errmag issued if /ICU is after /[cvType]or /list option//~vas2I~
@@ -74,7 +78,7 @@
 //*020406 xcv v111 support sjis->euc(rename xe2j to xcv)           //~v111I~
 //*020406 xe2j v110 v1.1 (BUG)hankaku katakana is not converted.   //~v111R~
 //***********************************************************      //~v1.1I~
-#define VER "V1.21"   //version                                    //~va97R~//~vag0R~//+vas5R~
+#define VER "V1.22"   //version                                    //~va97R~//~vag0R~//~vas5R~//~vasbR~
 //***********************************************************
 //***********************************************************
 
@@ -224,6 +228,11 @@ static char *Sbuff,*Sbuff4;                                        //~v121R~
 static char Scpfrom[64],Scpto[64];                                 //~va42R~
 #endif                                                             //~va47I~
 static int Sebchandle=-1;                                          //~va4pI~
+static int stdinX=0,stdoutX=0;                                     //~vas8R~
+static int parmXin=0;	//input hex parm specified                 //~vasaI~
+static int swQuit=0;                                               //~vas8I~
+static int swBELEparm=0;                                           //~vas8I~
+static int stdoutXUpper=0;                                         //~vas8R~
 static char Sebccp[MAX_CSNAMESZ];                                  //~va4pI~
 //*********************************
 int mainproc(void);                                                //~v145I~
@@ -407,7 +416,10 @@ int mainproc(void)                                                 //~v145R~
 //*file1
 	if (Sstdinsw==1)		//"-" parm                             //~v123R~
     {                                                              //~v122I~
+      if (!swQuit)                                                 //~vas8I~
         uerrmsg("input is stdin,exit by quit.",0);                 //~v125R~
+      else                                                         //~vas8I~
+        uerrmsg("input is stdin.",0);                              //~vas8I~
     	Sfhi=stdin;                                                //~v121R~
         Srbmode=0;       //fgets                                   //~v121R~
     }                                                              //~v122I~
@@ -453,8 +465,8 @@ int mainproc(void)                                                 //~v145R~
             }                                                      //~va1mI~
         }                                                          //~va1mI~
 #endif                                                             //~va1xI~
-        uerrmsg("input is \"%s\".",0,                              //~v125R~
-				Sfnm);                                             //~v125I~
+//      uerrmsg("input is \"%s\".",0,                              //~v125R~//~vas8R~
+//  			Sfnm);                                             //~v125I~//~vas8R~
 		Sfhi=fopen(Sfnm,"rb");	//exit when open faile             //~v121R~
 		UTRACEP("%s:fopen input fnm=%s\n",UTT,Sfnm);               //~vas2I~
         Srbmode=1;		//fread                                    //~v121R~
@@ -669,6 +681,8 @@ int mainproc(void)                                                 //~v145R~
         	break;                                                 //~v124I~
         if (reslen)                                                //~v124I~
         	memcpy(buff,buff+readlen-reslen,(UINT)reslen);         //~v123R~
+		if (Sstdinsw==1 && swQuit)		                           //~vas8I~
+        	break;                                                 //~vas8I~
 //UTRACED("write res",buff,reslen);                                //~v131R~
     }                                                              //~v145I~
     ufree(buff3);                                                  //~v121M~
@@ -696,21 +710,55 @@ int xcvucsmain(void)                                               //~v121R~
 //  int rc;                                                        //~v130R~//~va53R~
     int rc=0;                                                      //~va53I~
     ULONG opt;                                                     //~v130I~
+    int SswLEmsg=0;                                                //~vas8I~
 //**********************************                               //~v121I~
+	if (Sstdinsw==1)		//"-" parm                             //~vasaI~
+    	uerrmsg("stdin input by %s",0,(stdinX?"Hex notation code":"Binary code"));//~vasaR~
     opt=Slesw|Serrch|UCVUCS_NOERRMSG;       //own err msg output   //~v128R~
 	switch(Sconvopt)                                               //~v121I~
     {                                                              //~v121I~
     case CONV_F2U:                                                 //~v121I~
+        if (!SswLEmsg)                                             //~vas8I~
+        {                                                          //~vas8I~
+        	SswLEmsg=1;                                            //~vas8I~
+//          uerrmsg("Output is %s Endian ucs code",0,(opt & UCVUCS_LE) ? "Little" : "Big");//~vas8R~//~vasaR~
+            uerrmsg("Output option is %s Endian.",0,(opt & UCVUCS_LE) ? "Little" : "Big");//~vasaI~
+        }                                                          //~vas8I~
         opt|=UCVUCS_LENERRREP;                                     //~va4nI~
 		rc=ucvfutf2ucs(xcvfuncread,xcvfuncwrite,xcvfuncerr,opt,Sbuff,Sbuffsz,Sbuff4,Sbuff4sz);//~v128R~
         break;                                                     //~v121I~
     case CONV_U2F:                                                 //~v121I~
+    	if (!swBELEparm && stdinX)	//hexcode input by /Yx         //~vas8I~
+//			opt &=~UCVUCS_LE;       //stdin default is BE          //~vas8I~//~vas9R~
+  			opt &=(ULONG)(~UCVUCS_LE);       //stdin default is BE //~vas9I~
+        if (!SswLEmsg)                                             //~vas8I~
+        {                                                          //~vas8I~
+        	SswLEmsg=1;                                            //~vas8I~
+          if (stdinX)                                              //~vasaI~
+//          uerrmsg("Input by %s Endian ucs code",0,(opt & UCVUCS_LE) ? "Little" : "Big");//~vas8R~//~vasaR~
+            uerrmsg("Input option is %s Endian.",0,(opt & UCVUCS_LE) ? "Little" : "Big");//~vasaI~
+        }                                                          //~vas8I~
 		rc=ucvfucs2utf(xcvfuncread,xcvfuncwrite,xcvfuncerr,opt,Sbuff,Sbuffsz,Sbuff4,Sbuff4sz);//~v128R~
         break;                                                     //~v121I~
     case CONV_S2U:                                                 //~v121I~
+        if (!SswLEmsg)                                             //~vas8I~
+        {                                                          //~vas8I~
+        	SswLEmsg=1;                                            //~vas8I~
+//          uerrmsg("Output is %s Endian ucs code",0,(opt & UCVUCS_LE) ? "Little" : "Big");//~vas8R~//~vasaR~
+            uerrmsg("Output option is %s Endian.",0,(opt & UCVUCS_LE) ? "Little" : "Big");//~vasaI~
+        }                                                          //~vas8I~
 		rc=ucvfsjis2ucs(xcvfuncread,xcvfuncwrite,xcvfuncerr,opt,Sbuff,Sbuffsz,Sbuff4,Sbuff4sz);//~v128R~
         break;                                                     //~v121I~
     case CONV_U2S:                                                 //~v121I~
+    	if (!swBELEparm && stdinX)	//hexcode input by /Yx         //~vas8I~
+//			opt &=~UCVUCS_LE;       //stdin default is BE          //~vas8I~//~vas9R~
+  			opt &=(ULONG)(~UCVUCS_LE);       //stdin default is BE //~vas9I~
+        if (!SswLEmsg)                                             //~vas8I~
+        {                                                          //~vas8I~
+        	SswLEmsg=1;                                            //~vas8I~
+//          uerrmsg("Input by %s Endian ucs code",0,(opt & UCVUCS_LE) ? "Little" : "Big");//~vas8R~//~vasaR~
+            uerrmsg("Input option is %s Endian.",0,(opt & UCVUCS_LE) ? "Little" : "Big");//~vasaI~
+        }                                                          //~vas8I~
 		rc=ucvfucs2sjis(xcvfuncread,xcvfuncwrite,xcvfuncerr,opt,Sbuff,Sbuffsz,Sbuff4,Sbuff4sz);//~v128R~
         break;                                                     //~v121I~
     case CONV_S2F:                                                 //~v121I~
@@ -721,6 +769,8 @@ int xcvucsmain(void)                                               //~v121R~
 		rc=ucvfutf2sjis(xcvfuncread,xcvfuncwrite,xcvfuncerr,opt,Sbuff,Sbuffsz,Sbuff4,Sbuff4sz);//~v128R~
         break;                                                     //~v121I~
     }                                                              //~v121I~
+    UTRACED("input",Sbuff,Sbuffsz);                                //~vas8I~
+    UTRACED("outpt",Sbuff4,Sbuff4sz);                              //~vas8R~
     if (Serrctr)                                                   //~v128R~
         uerrmsg("%d error data detected.",                         //~v128R~
                 "%d 個 変換エラー。",                              //~v128R~
@@ -739,10 +789,91 @@ int xcvucsmain(void)                                               //~v121R~
 int xcvfuncread(UCHAR *Pbuff,int Preqlen,int *Preadlen)            //~v121I~
 {                                                                  //~v121I~
     int rc;                                                        //~v123R~
+    static int readctr=0;                                          //~vas8I~
 //**************************                                       //~v121I~
+    if (readctr && Sstdinsw==1 && swQuit)                          //~vas8I~
+        return -1; //eof                                           //~vas8I~
+    readctr++;                                                     //~vas8M~
 	rc=xcvfilegetline(Srbmode,Sfnm,Sfhi,Pbuff,Preqlen,Preadlen);   //~v123R~
     return rc;                                                     //~v121I~
 }//xcvfuncread                                                     //~v121I~
+//**************************************************************** //~vas8I~
+// xcvdropLF                                                       //~vasaR~
+//**************************************************************** //~vas8I~
+int xcvdropLF(UCHAR *Pbuff,int Plen)                               //~vas8I~
+{                                                                  //~vas8I~
+	int len;                                                       //~vas8R~
+    UTRACED("xinput",Pbuff,Plen);                              //~vas8I~//~vasaR~
+    len=Plen;                                                      //~vas8I~
+	if (Plen)                                                      //~vas8I~
+    {                                                              //~vas8I~
+        if (*(Pbuff+len-1)=='\n')                                  //~vas8I~
+        	len--;                                                 //~vas8I~
+    }                                                              //~vas8I~
+    else                                                           //~vas8I~
+    	uerrmsg("null stdin input",0);                             //~vas8I~
+    return len;                                                    //~vas8I~
+}//xcvdropLF                                                       //~vas8I~
+//**************************************************************** //~vas8M~
+// xcvX2S                                                          //~vas8M~
+//**************************************************************** //~vas8M~
+int xcvX2S(UCHAR *Pbuff,int Plen)                                  //~vas8M~
+{                                                                  //~vas8M~
+	int len,rc;                                                    //~vas8R~
+  UTRACED("xcvX2S input",Pbuff,Plen);                              //~vas8I~
+//  memcpy(Sbuff4,Pbuff,Plen);                                     //~vas8I~//~vas9R~
+    memcpy(Sbuff4,Pbuff,(size_t)Plen);                             //~vas9I~
+    len=Plen;                                                      //~vas8I~
+	if (Plen)                                                      //~vas8M~
+    {                                                              //~vas8M~
+        if (*(Pbuff+len-1)=='\n')                                  //~vas8R~
+        	len--;                                                 //~vas8I~
+		if (len%2)                                                 //~vas8R~
+        {                                                          //~vas8M~
+    		len--;                                                 //~vas8R~
+    		uerrmsg("odd number of hex code",0);                   //~vas8I~
+        }                                                          //~vas8M~
+        rc=ugethex(Sbuff4,Pbuff,len);                              //~vas8R~
+	  	UTRACEP("xcvX2S rc=%d,len=%d\n",rc,len);                   //~vas8R~
+        rc=-rc; //for compiler warning                             //+vasbI~
+	  	UTRACED("xcvX2S ugethex",Pbuff,len);                       //~vas8I~
+		if (len%2)                                                 //~vas8I~
+        {                                                          //~vas8I~
+//      	*(Pbuff+len++)=*(Sbuff4+len-1);                        //~vas8R~//~vas9R~
+        	*(Pbuff+len)=*(Sbuff4+len-1);                          //~vas9I~
+            len++;                                                 //~vas9I~
+            len=len/2+1;                                           //~vas8I~
+        }                                                          //~vas8I~
+        else                                                       //~vas8I~
+        	len/=2;                                                //~vas8I~
+    }                                                              //~vas8M~
+    else                                                           //~vas8M~
+    	uerrmsg("null stdin input",0);                             //~vas8I~
+    return len;                                                    //~vas8M~
+}//xcvX2S                                                          //~vas8M~
+//**************************************************************** //~vas8I~
+// xcvB2X                                                          //~vas8I~
+//**************************************************************** //~vas8I~
+int xcvB2X(UCHAR *Pbuff,int Plen,int *Ppoutlen)                    //~vas8I~
+{                                                                  //~vas8I~
+	int outlen,rc,opt=0;                                           //~vas8R~
+    char *buffX;                                                   //~vas8I~
+    buffX=Sbuff4+Plen;                                             //~vas8I~
+  UTRACED("xcvB2X input",Pbuff,Plen);                              //~vas8I~
+    if (!stdoutXUpper)                                             //~vas8R~
+        opt=UXDSO_LOWER;                                           //~vas8I~
+	rc=uxdumpstr(opt,Pbuff,Plen,buffX,Sbuff4sz-Plen,&outlen);      //~vas8R~
+  UTRACED("xcvB2X outpt",buffX,outlen);                            //~vas8R~
+    if (rc)                                                        //~vas8R~
+    {                                                              //~vas8I~
+    	uerrmsg("binary to hex code, buffer overflow buffsz=%d\n",0,Sbuff4sz);//~vas8I~
+        outlen=0;                                                  //~vas8I~
+    }                                                              //~vas8I~
+    else                                                           //~vas8I~
+    	memcpy(Pbuff,buffX,(UINT)outlen);                          //~vas8R~
+    *Ppoutlen=outlen;                                              //~vas8I~
+    return rc;                                                     //~vas8I~
+}//xcvB2X                                                          //~vasaR~
 //**************************************************************** //~v122I~
 // xcvfilegetline                                                  //~v122R~
 //* 1 line get                                                     //~v122I~
@@ -839,7 +970,55 @@ UTRACED("EBC fixed input",Pbuff,Sebclrecl);                        //~va40I~
             return -1;                                             //~v123R~
 //      len=strlen(Pbuff);         //read len                      //~v129R~//~vaa1R~
         len=(UINT)strlen(Pbuff);         //read len                //~vaa1I~
-//UTRACED("inp",Pbuff,(int)len);                                   //~v131R~
+UTRACED("inp",Pbuff,(int)len);                                   //~v131R~//~vas8R~
+		if (stdinX)	//hexcode input by /Yx                         //~vas8R~
+//      len=xcvX2S(Pbuff,len);                                     //~vas8I~//~vas9R~
+        len=(UINT)xcvX2S(Pbuff,(int)len);                          //~vas9R~
+        else                                                       //~vas8I~
+		if (Sstdinsw==1 && swQuit)                                 //~vas8I~
+//      len=xcvdropLF(Pbuff,len);                                  //~vas8I~//~vas9R~
+        len=(UINT)xcvdropLF(Pbuff,(int)len);                       //~vas9R~
+		if (Sconvopt==CONV_U2F || Sconvopt==CONV_U2S)              //~vasbI~
+        {                                                          //~vasbI~
+            if (Slesw & UCVUCS_UCS4)                               //~vasbI~
+            {                                                      //~vasbI~
+                if (len==1)                                        //~vasbI~
+                {                                                  //~vasbI~
+                    Pbuff[3]=Pbuff[0];                             //~vasbI~
+                    Pbuff[0]=0;                                    //~vasbI~
+                    Pbuff[1]=0;                                    //~vasbI~
+                    Pbuff[2]=0;                                    //~vasbI~
+                    len=4;                                         //~vasbI~
+                }                                                  //~vasbI~
+                else                                               //~vasbI~
+                if (len==2)                                        //~vasbI~
+                {                                                  //~vasbI~
+                    Pbuff[2]=Pbuff[0];                             //~vasbI~
+                    Pbuff[3]=Pbuff[1];                             //~vasbI~
+                    Pbuff[0]=0;                                    //~vasbI~
+                    Pbuff[1]=0;                                    //~vasbI~
+                    len=4;                                         //~vasbI~
+                }                                                  //~vasbI~
+                else                                               //~vasbI~
+                if (len==3)                                        //~vasbI~
+                {                                                  //~vasbI~
+                    Pbuff[3]=Pbuff[2];                             //~vasbI~
+                    Pbuff[2]=Pbuff[1];                             //~vasbI~
+                    Pbuff[1]=Pbuff[0];                             //~vasbI~
+                    Pbuff[0]=0;                                    //~vasbI~
+                    len=4;                                         //~vasbI~
+                }                                                  //~vasbI~
+            }                                                      //~vasbI~
+            else	//ucs2                                         //~vasbI~
+            {                                                      //~vasbI~
+                if (len==1)                                        //~vasbI~
+                {                                                  //~vasbI~
+                    Pbuff[1]=Pbuff[0];                             //~vasbI~
+                    Pbuff[0]=0;                                    //~vasbI~
+                    len=2;                                         //~vasbI~
+                }                                                  //~vasbI~
+            }                                                      //~vasbI~
+        }//U2F,U2S                                                 //~vasbI~
     }//rbmode                                                      //~v122I~
 	*Ppoutlen=(int)len;                                            //~v129R~
 //  return 0;                                                      //~v124R~
@@ -929,6 +1108,22 @@ int xcvfileputline(UCHAR *Pfilename,FILE *Phfile,char *Pbuff,int Plen)//~v122R~
       else                                                         //~va3zI~
       {                                                            //~va3zI~
 //      rc=fwrite(Pbuff,1,(UINT)Plen,Phfile);                      //~v129R~//~vaa1R~
+//     if (Sstdinsw && stdoutX)                                    //~vas8R~
+       if (stdoutX)                                                //~vas8I~
+       {                                                           //~vas8I~
+       		int len2;                                              //~vas8I~
+//         	rc=xcvB2X(Pbuff,Plen,&len2);                           //~vas8R~//~vas9R~
+           	rc=(UINT)xcvB2X(Pbuff,Plen,&len2);                     //~vas9I~
+			UTRACED("B2X out",Pbuff,len2);                         //~vas8I~
+	        rc=(UINT)fwrite(Pbuff,1,(UINT)len2,Phfile);            //~vas8I~
+        if ((int)rc<len2)                                          //~vas8I~
+        {                                                          //~vas8I~
+            ufileapierr("fwrite",Pfilename,errno);                 //~vas8I~
+            exit(8);                                               //~vas8I~
+        }                                                          //~vas8I~
+       }                                                           //~vas8I~
+       else                                                        //~vas8I~
+       {                                                           //~vas8I~
         rc=(UINT)fwrite(Pbuff,1,(UINT)Plen,Phfile);                //~vaa1I~
 UTRACED("out",Pbuff,Plen);                                         //~va40R~
         if ((int)rc<Plen)                                          //~v129R~
@@ -936,6 +1131,7 @@ UTRACED("out",Pbuff,Plen);                                         //~va40R~
             ufileapierr("fwrite",Pfilename,errno);                 //~v123R~
             exit(8);                                               //~v122I~
         }                                                          //~v122I~
+       }                                                           //~vas8I~
         if (Sebcopt & EBC2ASC_SETEOL)                              //~va40I~
         	if (Sconvopt==CONV_A2E||Sconvopt==CONV_E2A)            //~va40R~
             {                                                      //~va4jI~
@@ -1174,6 +1370,7 @@ void parmchk(int parmc,char *parmp[])
             {
             case 0  :	// "-" :stdin input                        //~v123R~
                 Sstdinsw=1;                                        //~v123I~
+                posparmno++;                                       //~vas9I~
     			Sfnm="stdin";                                      //~v123I~
                 break;                                             //~v123I~
             case '2'  :	// "-" :stderr file                        //~v131I~
@@ -1541,14 +1738,29 @@ UTRACEP("errdbcs=%x\n",Serrchdbcs);                                //~va42I~
 //                  case 'D':                                      //~va1sR~
 //                      Sebcopt|=EBC2ASC_DBCS;                     //~va1sR~
 //                      break;                                     //~va1sR~
+                    case 'H':                                      //~vas8I~
+	                    stdinX=1;                                  //~vas8M~
+                        parmXin=1;                                 //~vasaI~
+                        break;                                     //~vas8M~
                     case 'I':     //LOCALEICU                      //~va63I~
                         break;                                     //~va63I~
                     case 'L':                                      //~v121I~
+						swBELEparm=1;                              //~vas8I~
 	                    Slesw|=UCVUCS_LE;                          //~v121R~
                         break;                                     //~v121I~
                     case 'M':                                      //~v122I~
 	                    macid=1;                                   //~v122I~
                         break;                                     //~v122I~
+                    case 'Q':                                      //~vas8I~
+	                    swQuit=1;                                  //~vas8I~
+                        break;                                     //~vas8I~
+                    case 'X':                                      //~vas8R~
+	                    stdoutX=1;                                 //~vas8I~
+                        if (*pc=='X')                              //~vas8R~
+                        	stdoutXUpper=1;  //output uppercase    //~vas8I~
+                        else                                       //~vas8I~
+                        	stdoutXUpper=0;                        //~vas8I~
+                        break;                                     //~vas8I~
                     case 'Z':                                      //~v111I~
 	                    Shanzensw=1;                               //~v111I~
                         break;                                     //~v111I~
@@ -1577,15 +1789,26 @@ UTRACEP("errdbcs=%x\n",Serrchdbcs);                                //~va42I~
 //                  case 'D':                                      //~va1sR~
 //                      Sebcopt&=~EBC2ASC_DBCS;                    //~va1sR~
 //                      break;                                     //~va1sR~
+                    case 'H':                                      //~vas8I~
+	                    stdinX=0;                                  //~vas8M~
+                        parmXin=1;                                 //~vasaI~
+                        break;                                     //~vas8M~
                     case 'I':     //LOCALEICU                      //~va63I~
                         break;                                     //~va63I~
                     case 'L':                                      //~v121I~
 //                      Slesw&=~UCVUCS_LE;                         //~v121R~//~va9wR~
                         Slesw&=(ULONG)~UCVUCS_LE;                  //~va9wI~
+						swBELEparm=1;                              //~vas8I~
                         break;                                     //~v121I~
                     case 'M':                                      //~v122I~
 	                    macid=0;                                   //~v122I~
                         break;                                     //~v122I~
+                    case 'Q':                                      //~vas8I~
+	                    swQuit=0;                                  //~vas8I~
+                        break;                                     //~vas8I~
+                    case 'X':                                      //~vas8R~
+	                    stdoutX=0;                                 //~vas8I~
+                        break;                                     //~vas8I~
                     case 'Z':                                      //~v111I~
 	                    Shanzensw=0;                               //~v111I~
                         break;                                     //~v111I~
@@ -1847,6 +2070,9 @@ UTRACEP("errdbcs=%x\n",Serrchdbcs);                                //~va42I~
 						CMDFLAG_PREFIX);                           //~va53I~
     }                                                              //~va53I~
 #endif                                                             //~va3yI~
+	if (!parmXin	//no Y/Nx parm                                 //~vasaM~
+    &&   Sstdinsw==1) //not pipe                                   //~vasaI~
+		stdinX=1;                                                  //~vasaM~
     return;                                                        //~v145I~
 }//parmchk
 //**********************************************************************//~v127I~
@@ -2468,6 +2694,10 @@ HELPMSG                                                            //~v121I~
 //"            d  :japanese DBCS conversion for b2s/s2b.(%cYd)\n", //~va1sR~
 //"            d  :b2s/s2b の時の日本語(DBCS)変換の有無。(%cYd)\n",//~va1sR~
 //            CMDFLAG_PREFIX);                                     //~va1sR~
+HELPMSG                                                            //~vas8M~
+"            h  :input by hex code. (%cYh for stdin else %cNh)\n",//~vas8I~//~vasaR~
+"            h  :入力はHexコード。省略値は標準入力は%cYh 以外は%cNh。\n",//~vasaI~
+			CMDFLAG_PREFIX,CMDFLAG_PREFIX);                        //~vasaR~
 HELPMSG                                                            //~v121I~
 "            L  :Unicode File is Little Endian(%c%cL)\n",          //~va1mR~
 "            L  :Unicode File をLittleEndianで読み書きする。(%c%cL)\n",//~va1mR~//~va4jR~
@@ -2481,6 +2711,15 @@ HELPMSG                                                            //~v122I~
 "            m  :Mac file input(EndOfLine ID is 0x0d).(for not UCS conv).(%cNm)\n",//~v122R~
 "            m  :入力がMac形式(EndOfLine ID が 0x0d)。(UCS変換以外で使用).(%cNm)\n",//~v122R~
 			CMDFLAG_PREFIX);                                       //~v122I~
+HELPMSG                                                            //~vas8I~
+"            q  :just exit for input from stdin.(%cNq)\n",         //~vas8I~
+"            q  :標準入力の時１回の処理で終了する。(%cNq)\n",      //~vas8I~
+			CMDFLAG_PREFIX);                                       //~vas8I~
+HELPMSG                                                            //~vas8I~
+"            x  :output by hex notation. X:uppercase output. (%cNx)\n",//~vas8R~
+//"            x  :Hex表示で出力。Xは大文字出力。(%cNx)\n",          //~vas8R~//~vas9R~
+"            x  :Hex\x95\\示で出力。Xは大文字出力。(%cNx)\n",      //~vas9I~
+			CMDFLAG_PREFIX);                                       //~vas8R~
 HELPMSG                                                            //~v111I~
 "            z  :conv hankaku-katakana to zenkaku among EUC,JIS and SJIS.(%cNz)\n",//~v125R~
 "            z  :SJIS<->EUC<->JIS変換で半角カタカナを全角カタカナにする。(%cNz)\n",//~v125R~

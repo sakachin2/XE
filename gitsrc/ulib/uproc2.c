@@ -1,4 +1,4 @@
-//*CID://+v761R~:                             update#=  440;       //~v761R~
+//*CID://+v761R~:                             update#=  445;       //~v79NR~//~v761R~
 //************************************************************* //~5825I~
 //*uproc2.c                                                        //~v5euR~
 //* parse-redirect,rsh                                             //~v5euR~
@@ -755,7 +755,7 @@ int uproc_getprocaddr(int Popt,char *Pdllname,char *Pdllversion,char *Pprocname,
     int rc=0;                                                      //~v5mPM~
     int opt=0;                                                     //~v5mPI~
 //********************                                             //~v5mPM~
-    UTRACEP("%s:dllname=%s,dllversion=%s,procversion=%s,handle=%p\n",UTT,Pdllname,Pdllversion,Pprocversion,Pphandle);//+v761I~
+    UTRACEP("%s:dllname=%s,dllversion=%s,procversion=%s,handle=%p\n",UTT,Pdllname,Pdllversion,Pprocversion,Pphandle);//~v761I~
 	if (!Pphandle || !(handle=*Pphandle))	//1st time             //~v5mPM~
     {                                                              //~v5mPI~
 //  	rc=uproc_loaddll(0,Pdllname,Pdllversion,&handle);          //~v5mPR~
@@ -775,7 +775,7 @@ int uproc_getprocaddr(int Popt,char *Pdllname,char *Pdllversion,char *Pprocname,
     }                                                              //~v5mPM~
     if (Pphandle)                                                  //~v5mPM~
     	*Pphandle=handle;                                          //~v5mPM~
-    UTRACEP("%s:rc=%d,handle=%p\n",UTT,rc,handle);                 //+v761I~
+    UTRACEP("%s:rc=%d,handle=%p\n",UTT,rc,handle);                 //~v761I~
     return rc;                                                     //~v5mPM~
 }//uproc_getprocaddr                                               //~v5mPM~
 #endif                                                             //~v5mPI~
@@ -831,12 +831,13 @@ int getParentPID(int Ppid)                                         //~v761R~
         } while( Process32Next(h, &pe));                           //~v761R~
     }                                                              //~v761R~
     CloseHandle(h);                                                //~v761R~
-    UTRACEP("%s:return=%d,name=%s\n",UTT,ppid,fnm);                //~v761R~
+    UTRACEP("%s:return=%d,for %d,name=%s\n",UTT,ppid,Ppid,fnm);                //~v761R~//~v79NR~
     return (ppid);                                                 //~v761R~
 }                                                                  //~v761R~
 //*****************************************************************//~v761I~
 //*chk console is conhost or windowsTermminal                      //~v761I~
 //*0:unknown,1:conhost,2:Terminal                                  //~v761I~
+//*!! WindowsTerninal not On path for 1st window(rc:0 mean Terminal)//+v761R~
 //*****************************************************************//~v761I~
 int chkTerminal()                                                  //~v761I~
 {                                                                  //~v761I~

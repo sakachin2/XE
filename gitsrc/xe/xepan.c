@@ -1,4 +1,4 @@
-//*CID://+vbmiR~: update#=  338;                                   //~vbmiR~
+//*CID://+vbmiR~: update#=  345;                                   //~vbmiR~
 //*************************************************************
 //*xepan.c *
 //************************************************************* //~5610I~
@@ -1779,11 +1779,11 @@ int pancmdlf2dd(int Popt,PUSCRD Ppsd,PUPANELC Pppc,UFLDE *Ppfle,UCHAR *Pwkct,int
     u8len=(int)strlen(pu8);                                        //~va5jI~
 //  lclen=(int)strlen(Pppc->UPCline[CMDLINENO].UPLbuff)-fldposs;   //~va5jR~//~vaarR~
     lclen=(int)strlen(plc+fldposs);                                //~vaarR~
-UTRACEP("pancmdlf2dd lclen=%d,u8len=%d\n",lclen,u8len);            //~vaanI~//~vaarM~//+vbmiR~
-UTRACED("pancmdlf2dd cmddata",plc,lclen);                          //~vaarI~//+vbmiR~
-UTRACED("pancmdlf2dd cmddatabyutf8",pu8,u8len);                              //~vaanI~//~vaarI~//+vbmiR~
-UTRACED("pancmdlf2dd cmdcodetb",pct,lclen);                              //~vaanI~//~vaarI~//+vbmiR~
-UTRACED("pancmdlf2dd cmddbcs",pcd,lclen);                          //~vaarI~//+vbmiR~
+UTRACEP("pancmdlf2dd lclen=%d,u8len=%d\n",lclen,u8len);            //~vaanI~//~vaarM~//~vbmiR~
+UTRACED("pancmdlf2dd cmddata",plc,lclen);                          //~vaarI~//~vbmiR~
+UTRACED("pancmdlf2dd cmddatabyutf8",pu8,u8len);                              //~vaanI~//~vaarI~//~vbmiR~
+UTRACED("pancmdlf2dd cmdcodetb",pct,lclen);                              //~vaanI~//~vaarI~//~vbmiR~
+UTRACED("pancmdlf2dd cmddbcs",pcd,lclen);                          //~vaarI~//~vbmiR~
 //  if (!memchr(pct,XEUTFCT_UTF8,lclen)) //contains utf8 code      //~vaarI~//~vb30R~
     if (!memchr(pct,XEUTFCT_UTF8,(size_t)lclen)) //contains utf8 code//~vb30I~
     {                                                              //~vaarI~

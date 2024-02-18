@@ -1,7 +1,10 @@
-//*CID://+vbyxR~:                             update#=  754;       //~vbyxR~
+//*CID://+vc72R~:                             update#=  764;       //+vc72R~
 //*************************************************************
 //*ufiledoc.c                                                      //~v59nR~//~v77aR~
 //*************************************************************
+//vc72 2023/08/21 vc71 did not work, jni call at on destry will be ignored; clear it on java//+vc72I~
+//v793:230817 ARM:(BUG)dlcmd attr missing translate //spname to realpath//~v793I~
+//v792:230817 ARM:close detached FD                                //~v792I~
 //vbyx:230725 ARM:alternative of vbyr. drop copytemp but rep // by real path if available://~vbyxI~
 //vc5r 2023/07/25 try /sdcard for realpath for api<30              //~vc5rR~
 //v786:230724 ARM:try to set env:PWD by cd for file parameter of tools//~v786I~
@@ -47,6 +50,7 @@
 #include <uque.h>                                                  //~v59nI~
 #include <ufile.h>
 #include <ufile1l.h>                                               //~0901R~
+#include <ufile2l.h>                                               //~v793I~
 #include <ufiledoc.h>                                              //~v77aI~
 #include <uerr.h>
 #include <ufemsg.h>
@@ -225,6 +229,7 @@ int ufile_getRealpath29(char *Pshortpath,char *Prpath,char *PstrUri)//~vc5rR~
 }                                                                  //~vc5rR~
 //*******************************************************          //~v77zI~
 //*get realpath                                                    //~v77zI~
+//*rc=0:realpath found                                             //~v793I~
 //*******************************************************          //~v77zI~
 int ufile_getRealpath(char *Pshortpath,char *Prpath,char *PstrUri) //~v77zR~
 {                                                                  //~v77zI~
@@ -266,7 +271,7 @@ int ufile_getRealpath(char *Pshortpath,char *Prpath,char *PstrUri) //~v77zR~
       if (rc==ROPT_REALPATH29)	//api<30; assumed //sp is on /sdcard/sp//~vc5rR~
       {                                                            //~vc5rR~
 		enqDocHandleRealpath(ROPT_REALPATH29,root,Prpath,strUri);  //~vc5rR~
-        rc=0;                                                      //+vbyxI~
+        rc=0;                                                      //~vbyxI~
       }                                                            //~vc5rR~
       else                                                         //~vc5rR~
       if (!rc)                                                     //~v77wI~
@@ -479,6 +484,7 @@ int ufile_statDoc(char *Pfpath,void *Ppstatbuff)                   //~v77mR~
         	err=errno;                                             //~v77mI~
 		UTRACEP("%s:after fstat errno=%d,fd=%d,fpath=%s\n",UTT,err,fd,Pfpath);//~v77mI~
 		UTRACED("statbuff",Ppstatbuff,sizeof(struct stat));        //~v77mR~
+        close(fd);                                                 //~v792I~
     }                                                              //~v77mI~
     UTRACEP("%s:returned exit fpath=%s,err=%d\n",UTT,Pfpath,err);  //~v77mI~
     errno=err;                                                      //~v77mI~
@@ -902,6 +908,14 @@ void ufile_notify_shortpath(UQUEH  *Ppqhsp)                        //~v779R~
 	Spqhsp=Ppqhsp;                                                 //~v779R~
     notifyallsp();  //to USAF                                      //~vc5cI~
 }                                                                  //~v779R~
+//*******************************************************          //+vc72I~
+//*from xedcmd2                                                    //+vc72I~
+//*******************************************************          //+vc72I~
+void ufile_notifyLockfile(char *Pfnm)                              //+vc72I~
+{                                                                  //+vc72I~
+	UTRACEP("%s:fnm=%s\n",UTT,Pfnm);                               //+vc72I~
+	c2j_notifyLockfile(Pfnm);                                     //~vc5c6I~//+vc72I~
+}                                                                  //+vc72I~
 //*******************************************************          //~v779R~
 //*get top uri by alias part of fpath                              //~v77bI~
 //*******************************************************          //~v77bI~
@@ -1855,6 +1869,53 @@ int ufiledoc_utimes(char *Pfnm,struct timeval *Ptv)                //~v77ZI~
 	UTRACEP("%s:rc=%d\n",UTT,rc);                                  //~v77ZI~
     return rc;                                                     //~v77ZI~
 }                                                                  //~v77ZI~
+//**********************************************************************//~v793I~
+//rc:0:ok,-1 err and set Pperrno                                   //~v793I~
+//**********************************************************************//~v793I~
+int ufiledoc_chmod(UCHAR *Pfpath,mode_t Pmode,int *Pperrno)       //~v793I~
+{                                                                  //~v793I~
+    char *strUri;                                                  //~v793I~
+    int rc=0;                                                      //~v793I~
+	int err;                                                       //~v793I~
+    char rpath[_MAX_PATH];                                         //~v793I~
+ //***********************                                         //~v793I~
+	UTRACEP("%s:fpath=%s,mode=0x%lx\n",UTT,Pfpath,Pmode);          //~v793I~
+	strUri=getShortpathUri(Pfpath);                                //~v793I~
+    if (!strUri)                                                   //~v793I~
+    {                                                              //~v793I~
+	    UTRACEP("%s:invalid name fpath=%s\n",UTT,Pfpath);          //~v793I~
+        errno=errinvalispname(Pfpath,EINVAL);                      //~v793I~
+    	return -1;                                                 //~v793I~
+    }                                                              //~v793I~
+	ufile_getRealpath(Pfpath,rpath,strUri);                        //~v793I~
+    if (*rpath)                                                    //~v793I~
+    {                                                              //~v793I~
+    	err=ufilesetmod(rpath,Pmode);                              //~v793I~
+    	UTRACEP("%s:by realpath returned exit err=%d,fpath=%s,rpath=%s\n",UTT,err,Pfpath,rpath);//~v793I~
+	    *Pperrno=err;                                              //~v793I~
+    	return err?-1:0;                                           //~v793I~
+    }                                                              //~v793I~
+    int fd;                                                        //~v793I~
+	err=c2j_statDoc(0,Pfpath,strUri,&fd);                          //~v793I~
+	UTRACEP("%s:after c2j_statDoc err=%d,fd=%d,fpath=%s\n",UTT,err,fd,Pfpath);//~v793I~
+    if (!err)                                                      //~v793I~
+    {                                                              //~v793I~
+		UTRACEP("%s:before chmod fd=%d,fpath=%s\n",UTT,fd,Pfpath); //~v793I~
+        errno=0;                                                   //~v793I~
+		rc=fchmod(fd,Pmode);                                       //~v793I~
+        if (rc)                                                    //~v793I~
+        	err=errno;                                             //~v793I~
+		UTRACEP("%s:after chmod errno=%d,fd=%d,fpath=%s\n",UTT,err,fd,Pfpath);//~v793I~
+        close(fd);                                                 //~v793I~
+    }                                                              //~v793I~
+//    err=c2j_statDoc(0,Pfpath,strUri,&fd);   //TODO test          //~v793R~
+//    close(fd); //TODO test                                       //~v793R~
+//    UTRACEP("%s:after c2j_statDoc2 err=%d,fd=%d,fpath=%s\n",UTT,err,fd,Pfpath);//~v793R~
+                                                                   //~v793I~
+    UTRACEP("%s:returned exit fpath=%s,err=%d\n",UTT,Pfpath,err);  //~v793I~
+    *Pperrno=err;                                                  //~v793I~
+    return err?-1:0;                                               //~v793I~
+}                                                                  //~v793I~
 //**********************************************************************//~v77bI~
 int ufiledoc_fclose(FILE *Pfh)                                      //~v77bR~
 {                                                                  //~v77bI~
@@ -1896,7 +1957,7 @@ int ufiledoc_ferror(FILE *Pfh)                                     //~v77bI~
 size_t ufiledoc_fread(void *Pbuff,size_t Psize,size_t Pctr,FILE *Pfh)//~v77bI~
 {                                                                  //~v77bI~
 //**************                                                   //~v77bI~
-    UTRACEP("%s:pfh=%p\n",UTT,Pfh);                                //~v77bI~
+//  UTRACEP("%s:pfh=%p\n",UTT,Pfh);                                //~v77bI~//~v793R~
     if (IS_DOCFH(Pfh))                                             //~v77bI~
 		return ufile_freadDoc(Pbuff,Psize,Pctr,Pfh);             //~v77bI~
 #undef fread                                                       //~v77bI~

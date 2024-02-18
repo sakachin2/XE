@@ -1,9 +1,13 @@
-//*CID://+vas3R~:                             update#=  358;       //~vas3R~
+//*CID://+vasfR~:                             update#=  376;       //~vasfR~
 //***********************************************************
 //* XFC : compare file(win95 missing comp cmd)
 //***********************************************************
-#define VER "V1.27"   //version                                    //~vaa0R~//~vaj0R~
+#define VER "V1.28"   //version                                    //~vaa0R~//~vaj0R~//~vasdR~
 //***********************************************************
+//vasf:240213 xfc;suuprt margin for 2nd file                       //~vasfI~
+//vase:240213 xfc;add case insensitive option                      //~vaseI~
+//vasd:240210 xfc;show invalid rc(uerrmsg maxparm=10 overflow)     //~vasdI~
+//vasc:240210 xfc;add errmsg for fileeditname_copypath rc=-3(both contains '=')//~vascR~
 //vas3:230630 ARM;closeall for arm subthread execution             //~vas3I~
 //vaj0:180304 /CPU8 option:output triler by utf8 to show on xe result of "=" cmd with cpu8 option//~vaj0I~
 //vaa1:160418 Lnx64 compiler warning                               //~vaa1I~
@@ -191,6 +195,7 @@ static long Sisrtctrprint=0,Sreplctrprint=0,Sdletctrprint=0;       //~va11I~
 static long Sinp1ctr,Sinp2ctr;
 //static int Smargin1,Smargin2,Smarginw=TXTBUFFSZ-1; 		//binary compare//~va36R~
 static int Smargin1,Smargin2,Smarginw=DEFAULT_TXTBUFFSZ-1; 		//binary compare//~va36I~
+static int Smargin21,Smargin22;                                    //~vasfI~
 static ULONG Srange1s,Srange1e=ULMAX,Srange2s,Srange2e=ULMAX;
 static	char Spgmver[16];
 static	char *Stxtbuff;
@@ -214,6 +219,7 @@ static int Sendoffsp1=0,Sendoffsp2=0;	//endoffset parm specified sw//~va30I~
 static int Svfmt,Slrecl,Sbuffsz,Srecordmode;                       //~va79R~
 static int Slinenodigit[2];                                        //~va80I~
 static FILE *Sfhout;                                               //~va92I~
+static int SswNoCase;                                              //~vaseI~
 //*********************************
 int bincomp(void);
 int txtcomp(void);
@@ -249,6 +255,16 @@ FILE *openfilefv(char *Pfnm);                                      //~va79I~
 int readrecfv(char *Ppfnm,FILE *Ppfh,char *Pbuff,int Pline);       //~va79I~
 long getirecfv(char *Pfnm,FILE *Pfh,char *Pbuff,PUQUEH Ppqh,ULONG Pranges,ULONG Prangee);//~va79I~
 int chksamepathparm(char *Pfnm,char *Prangeparm);                  //~va9dR~
+//*********************************************************************//~vaseI~
+int xfc_memcmp(char *Pdata1,char *Pdata2,UINT Plen)                //~vaseI~
+{                                                                  //~vaseI~
+	int rc;                                                        //~vaseI~
+    if (SswNoCase)                                                 //~vaseI~
+		rc=memicmp(Pdata1,Pdata2,Plen);                            //~vaseI~
+    else                                                           //~vaseI~
+		rc=memcmp(Pdata1,Pdata2,Plen);                             //~vaseI~
+	return rc;                                                     //~vaseI~
+}                                                                  //~vaseI~
 //*********************************************************************
 //* return 0:fully equall
 //*        1:textcomp for binfile                                  //~v151R~
@@ -257,7 +273,8 @@ int chksamepathparm(char *Pfnm,char *Prangeparm);                  //~va9dR~
 //*********************************************************************
 int main(int parmc,char *parmp[])
 {
-	int rc;
+//  int rc;                                                        //~vascR~
+    int rc=0;                                                      //~vascI~
 //**********************
 #ifdef W32UNICODE                                                  //~va93I~
     SET_UDMODE();  //filename by UD format                         //~va93I~
@@ -284,7 +301,7 @@ int main(int parmc,char *parmp[])
   if (!Snookmsg || rc)                                             //~v152I~
 	uerrmsg("===Process completed===",
 			"===処理完了===");
-	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//+vas3I~
+	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//~vas3I~
 	return rc;
 }//main
 
@@ -299,8 +316,11 @@ int txtcomp(void)
     UQUEH qh1,qh2;
     ULONG r1s,r1e,r2s,r2e;
     int margin1,margin2;
+    int margin21,margin22;                                         //~vasfI~
     int nullsw=0;                                                  //~va14R~
-    int rc;                                                        //~v151I~
+//  int rc;                                                        //~v151I~//~vascR~
+    int rc=0;                                                      //~vascI~
+    char strmargin[32];                                            //~vasdI~
 //*****************************
 //  if (!(Stxtbuff=malloc(TXTBUFFSZ+LINEHDRSZ+1)))	//for line hdr to print//~v149R~
    if (Slrecl)                                                     //~va79I~
@@ -364,6 +384,21 @@ int txtcomp(void)
     }
     else
     	margin1=margin2=0;
+    if (!Smargin21 && !Smargin22)                                  //~vasfI~
+    {                                                              //~vasfI~
+    	Smargin21=Smargin1;                                        //~vasfI~
+        Smargin22=Smargin2;                                        //~vasfI~
+    }                                                              //~vasfI~
+    if (Smargin21 || Smargin22)                                    //~vasfI~
+    {                                                              //~vasfI~
+        if (!(margin21=Smargin21))                                 //~vasfI~
+        	margin21=1;                                            //~vasfI~
+        else                                                       //~vasfI~
+        	margin21++;                                            //~vasfI~
+        margin22=Smargin22;                                        //~vasfI~
+    }                                                              //~vasfI~
+    else                                                           //~vasfI~
+    	margin21=margin22=0;                                       //~vasfI~
 //  if (!Snookmsg                                                  //~va11R~
 //  ||   Sdletctr||Sisrtctr||Sreplctr)                             //~va11R~
 //    printf("Text file compare: %s (%ld-%ld/%ld) and %s (%ld-%ld/%ld)\n//~va14R~
@@ -407,13 +442,21 @@ int txtcomp(void)
     }                                                              //~v151I~
   	if (!Snookmsg                                                  //~va11I~
   	||   Sdletctr||Sisrtctr||Sreplctr)                             //~va11I~
+    {                                                              //~vasdI~
+      if (margin21!=margin1 || margin22!=margin2)                  //~vasfI~
+		sprintf(strmargin,"%d-%d/%d-%d",margin1,margin2,margin21,margin22);//~vasfI~
+      else                                                         //~vasfI~
+		sprintf(strmargin,"%d-%d",margin1,margin2);                //~vasdR~
 //  	printf("Text file compare: %s (%ld-%ld/%ld) and %s (%ld-%ld/%ld)\n//~va92R~
     	uerrmsg("Text file compare: %s (%ld-%ld/%ld) and %s (%ld-%ld/%ld)\n\
-with margin(%d-%d);rc=%d\n",                                       //~va11I~
+with margin(%s);rc=%d\n",                                          //~vasdI~
+//with margin(%d-%d);rc=%d\n",                                       //~va11I~//~vasdM~
 				0,                                                 //~va93I~
 		        Sfnm1,r1s,r1e,Sinp1ctr,                            //~va11I~
         		Sfnm2,r2s,r2e,Sinp2ctr,                            //~va11I~
-        		margin1,margin2,rc);                               //~va11I~
+//        		margin1,margin2,rc);                               //~va11I~//~vasdR~
+         		strmargin,rc);                                     //~vasdI~
+    }                                                              //~vasdI~
     if (Slogicerr)                                                 //~v102I~
         uerrexit("Internal logic err;check \"?==?\",\"?=!?\"",0);  //~v102R~
 //  return 0;                                                      //~v151R~
@@ -698,7 +741,8 @@ void setnetlen(PURECH Pprh)                                        //~v105R~
                   else                                             //~va25I~
                   if (cmntidstrlen>1                               //~va25R~
 			      &&  data+cmntidstrlen<=datae                     //~va25M~
-                  &&  !memcmp(data,Scmntidstr,(UINT)cmntidstrlen)) //~va25M~
+//                &&  !memcmp(data,Scmntidstr,(UINT)cmntidstrlen)) //~va25M~//~vaseR~
+                  &&  !xfc_memcmp(data,Scmntidstr,(UINT)cmntidstrlen))//~vaseI~
                   	cmpos=data;                                    //~va25I~
                 }                                                  //~va25I~
             }                                                      //~va10I~
@@ -1043,9 +1087,11 @@ int linecompare(PURECH Pprh1,PURECH Pprh2)                         //~v105R~
     UCHAR *data1,*data2;                                           //~v105I~
 //*****************************                                    //~v105I~
     data1=&Pprh1->URHdata+Smargin1;                                //~v105I~
-    data2=&Pprh2->URHdata+Smargin1;                                //~v105I~
+//  data2=&Pprh2->URHdata+Smargin1;                                //~v105I~//~vasfR~
+    data2=&Pprh2->URHdata+Smargin21;                               //~vasfI~
     dlen1=Pprh1->URHdlen-Smargin1;                                 //~v105R~
-    dlen2=Pprh2->URHdlen-Smargin1;                                 //~v105R~
+//  dlen2=Pprh2->URHdlen-Smargin1;                                 //~v105R~//~vasfR~
+    dlen2=Pprh2->URHdlen-Smargin21;                                //~vasfI~
 //printf("linecomp len1=%d,len2=%d,data1=%s,data2=%s\n",dlen1,dlen2,data1,data2);//~v145R~
 //DBGTRC2("comp",Pprh1,Pprh2);                                     //~v146R~
     if (dlen1>Smarginw)                                            //~v105I~
@@ -1057,11 +1103,13 @@ int linecompare(PURECH Pprh1,PURECH Pprh2)                         //~v105R~
     if (dlen2<0)                                                   //~va9aI~
         dlen2=0;                                                   //~va9aI~
     if (dlen1==dlen2        //length match                         //~v105I~
-    &&  (!dlen1 || !memcmp(data1,data2,(UINT)dlen1)))              //~v105R~
+//  &&  (!dlen1 || !memcmp(data1,data2,(UINT)dlen1)))              //~v105R~//~vaseR~
+    &&  (!dlen1 || !xfc_memcmp(data1,data2,(UINT)dlen1)))          //~vaseI~
     	return URHF2SAME;			//completely match             //~v105R~
 //compare except comment                                           //~v105I~
     dlen1=Pprh1->URHdlennet-Smargin1;                              //~v105I~
-    dlen2=Pprh2->URHdlennet-Smargin1;                              //~v105I~
+//  dlen2=Pprh2->URHdlennet-Smargin1;                              //~v105I~//~vasfR~
+    dlen2=Pprh2->URHdlennet-Smargin21;                             //~vasfI~
     if (dlen1>Smarginw)                                            //~v105I~
         dlen1=Smarginw;                                            //~v105I~
     if (dlen2>Smarginw)                                            //~v105I~
@@ -1071,7 +1119,8 @@ int linecompare(PURECH Pprh1,PURECH Pprh2)                         //~v105R~
     if (dlen2<0)                                                   //~va9aI~
         dlen2=0;                                                   //~va9aI~
     if (dlen1==dlen2        //length match                         //~v105I~
-    &&  (!dlen1 || !memcmp(data1,data2,(UINT)dlen1)))              //~v105I~
+//  &&  (!dlen1 || !memcmp(data1,data2,(UINT)dlen1)))              //~v105I~//~vaseR~
+    &&  (!dlen1 || !xfc_memcmp(data1,data2,(UINT)dlen1)))          //~vaseI~
     	return URHF2SAMEC;			//completely match             //~v105R~
 //word matching                                                    //~v105M~
     if (!Swordmatchingsw)                                          //~v105I~
@@ -1082,13 +1131,15 @@ int linecompare(PURECH Pprh1,PURECH Pprh2)                         //~v105R~
     wdlen2=Pprh2->URHwordtblen;                                    //~v105I~
 //printf("wordcomp len1=%d,len2=%d,data1=%s,data2=%s\n",wdlen1,wdlen2,wdata1,wdata2);//~v104R~
     if (wdlen1==wdlen2)                                            //~v105R~
-    	if (!wdlen1 || !memcmp(wdata1,wdata2,(UINT)wdlen1))        //~v105R~
+//  	if (!wdlen1 || !memcmp(wdata1,wdata2,(UINT)wdlen1))        //~v105R~//~vaseR~
+    	if (!wdlen1 || !xfc_memcmp(wdata1,wdata2,(UINT)wdlen1))    //~vaseI~
         	return URHF2SAMEW;                                     //~v105I~
                                                                    //~v105I~
     wdlen1=Pprh1->URHwordtblennet;                                 //~v105I~
     wdlen2=Pprh2->URHwordtblennet;                                 //~v105I~
     if (wdlen1==wdlen2)                                            //~v105I~
-    	if (!wdlen1 || !memcmp(wdata1,wdata2,(UINT)wdlen1))        //~v105I~
+//    	if (!wdlen1 || !memcmp(wdata1,wdata2,(UINT)wdlen1))        //~v105I~//~vaseR~
+      	if (!wdlen1 || !xfc_memcmp(wdata1,wdata2,(UINT)wdlen1))    //~vaseI~
         	return URHF2SAMEWC;                                    //~v105I~
 	return 0;                                                      //~v105I~
 }//linecompare                                                     //~v105R~
@@ -1272,8 +1323,10 @@ int fazymatching(PURECH Pprh1,PURECH Pprh2,PURECH *Ppprh2m)
         dlen1=Smarginw;
 	for (prh2=Pprh2;prh2;prh2=prh2->URHnext)
 	{
-     	data2=&prh2->URHdata+Smargin1;
-        if ((dlen2=prh2->URHdlen-Smargin1)<0)                      //~v105R~
+//   	data2=&prh2->URHdata+Smargin1;                             //~vasfR~
+     	data2=&prh2->URHdata+Smargin21;                            //~vasfI~
+//      if ((dlen2=prh2->URHdlen-Smargin1)<0)                      //~v105R~//~vasfR~
+        if ((dlen2=prh2->URHdlen-Smargin21)<0)                     //~vasfI~
         	continue;	//asume unmatched
         if (dlen2>Smarginw)
             dlen2=Smarginw;
@@ -1325,7 +1378,8 @@ int fazywordmatching(PURECH Pprh1,PURECH Pprh2)                    //~v104I~
 	        pc2=wdata2+*pus2;                                      //~v104I~
 	        len2=*(pus2+1)-*pus2-1;	//wrd len                      //~v104R~
 //printf("word comp ii=%d,jj=%d,len1=%d,len2=%d,word1=%s,word2=%s\n",ii,jj,len1,len2,pc1,pc2);//~v104R~
-            if (len1==len2 && !memcmp(pc1,pc2,(UINT)len1))	//word match//~v104I~
+//          if (len1==len2 && !memcmp(pc1,pc2,(UINT)len1))	//word match//~v104I~//~vaseR~
+            if (len1==len2 && !xfc_memcmp(pc1,pc2,(UINT)len1))	//word match//~vaseI~
             	break;                                             //~v104I~
 		}                                                          //~v104I~
         if (jj==wordno2)	//not matched                          //~v104I~
@@ -1844,7 +1898,8 @@ int bincomp(void)
 //        readctr++;                                               //~va30R~
 //if (!(readctr%100))                                              //~va30R~
 //printf("totlen1=%llx\n",totlen1+pos1);                           //~va30R~
-		if (memcmp(buff1,buff2,BUFFSZ))
+//  	if (memcmp(buff1,buff2,BUFFSZ))                            //~vaseR~
+    	if (xfc_memcmp(buff1,buff2,BUFFSZ))                        //~vaseI~
             for (ii=0,pc1=buff1,pc2=buff2;ii<complen;ii++,pc1++,pc2++)
                 if (*pc1!=*pc2)
                 {
@@ -2228,6 +2283,8 @@ void parmchk(int parmc,char *parmp[])
                 	break;                                         //~va80I~
                 }                                                  //~va80I~
             	marginsw=1;
+                char *pcm2;                                        //~vasfR~
+                pcm2=strchr(cptr+1,'/');                           //~vasfI~
                 pc=strchr(cptr+1,'-');
                 if (pc)
                 {
@@ -2243,6 +2300,26 @@ void parmchk(int parmc,char *parmp[])
 					 && (Smargin2<=Smargin1 || Smargin2==1 || Smargin1>TXTBUFFSZ)))
                 	optionerr("Margin",cptr);
                 Smargin1--;			//offset value
+                Smargin21=Smargin1; Smargin22=Smargin2;            //~vasfI~
+                if (!pcm2)                                         //~vasfI~
+                	break;                                         //~vasfI~
+                pc=strchr(pcm2+1,'-');                             //~vasfI~
+                if (pc)                                            //~vasfI~
+                {                                                  //~vasfI~
+                    *pc++=0;                                       //~vasfI~
+		          	Smargin22=atoi(pc);                            //~vasfI~
+				}                                                  //~vasfI~
+                if (!*(pcm2+1))                                    //~vasfR~
+                    Smargin21=1;                                   //~vasfI~
+                else                                               //~vasfI~
+	          		Smargin21=atoi(pcm2+1);                        //~vasfR~
+                if (Smargin21<=0                                   //~vasfI~
+                ||  (Smargin22                                     //~vasfI~
+					 && (Smargin22<=Smargin21 || Smargin22==1 || Smargin21>TXTBUFFSZ)))//~vasfI~
+                	optionerr("Margin",cptr);                      //~vasfI~
+                Smargin21--;			//offset value             //~vasfI~
+                if (Smargin2-Smargin1!=Smargin22-Smargin21)        //~vasfI~
+                	uerrexit("Different margin width %d and %d\n",0,Smargin2-Smargin1,Smargin22-Smargin21);//+vasfR~
 //              if (Smargin2)                                      //~va3bR~
 //              	Smargin2--;                                    //~va3bR~
 //              else                                               //~va3bR~
@@ -2339,6 +2416,9 @@ void parmchk(int parmc,char *parmp[])
                     	Snobellsw=0;	//alearm                   //~v150R~
 						uerrexit_optinit(UERREXIT_BELL);	//bell when uerrexit//~va14I~
                         break;                                     //~v150I~
+                    case 'C':                                      //~vaseI~
+                    	SswNoCase=0;                               //~vaseI~
+                        break;                                     //~vaseI~
                     case 'M':                                      //~v152I~
                     	Snookmsg=0;		//no output ok msg         //~v152I~
                         break;                                     //~v152I~
@@ -2362,6 +2442,9 @@ void parmchk(int parmc,char *parmp[])
                     	Snobellsw=1;	//alearm                   //~v150I~
 						uerrexit_optinit(0);	//no bell when uerrexit//~va14R~
                         break;                                     //~v150I~
+                    case 'C':                                      //~vaseI~
+                    	SswNoCase=1;                               //~vaseI~
+                        break;                                     //~vaseI~
                     case 'M':                                      //~v152I~
                     	Snookmsg=1;		//no output ok msg         //~v152I~
                         break;                                     //~v152I~
@@ -2404,12 +2487,15 @@ void parmchk(int parmc,char *parmp[])
     {                                                              //~va9cI~
         if (!Smargin2)                                             //~va9cI~
             Smargin2=TXTBUFFSZ;   //after /L was processed         //~va9cR~
+        if (!Smargin22)                                            //~vasfI~
+            Smargin22=TXTBUFFSZ;   //after /L was processed        //~vasfI~
         Smarginw=Smargin2-Smargin1;                                //~va9cI~
     }                                                              //~va9cI~
     else                                                           //~va9cI~
     if (swmaxlen)	//no margin and maxlen changed                 //~va9cI~
     {                                                              //~va9cI~
         Smargin2=TXTBUFFSZ;	//by specifiex max len                 //~va9cR~
+        Smargin22=TXTBUFFSZ;	//by specifiex max len             //~vasfI~
         Smarginw=Smargin2;                                         //~va9cI~
     }                                                              //~va9cI~
 //  fprintf(stderr,"marginsw=%d swmaxlen=%d,Smargin1=%d,Smargin2=%d,Smarginw=%d\n",marginsw,swmaxlen,Smargin1,Smargin2,Smarginw);//~va9cR~
@@ -2435,6 +2521,8 @@ void parmchk(int parmc,char *parmp[])
 	if (swfpathcopaypath)                                          //~va9iI~
         fecopt=FECO_FULLPATH;                                      //~va9iI~
     rcen=fileeditname_copypath(fecopt,fnm1,fnm2,wkfnm1,wkfnm2);    //~va9iR~
+    if (rcen==-3)                                                  //~vascI~
+    	uerrexit("error, both filename contains '='.",0);          //~vascR~
   }                                                                //~va9jI~
     parmfnm1=fnm1;                                                 //~va9dI~
     parmfnm2=fnm2;                                                 //~va9dI~
@@ -2758,8 +2846,12 @@ HELPMSG                                                            //~va36I~
 "   %cLnn       :テキストファイルの最大行長.\n",                   //~va36I~
 					CMDFLAG_PREFIX);                               //~va36I~
 HELPMSG
-"   %cMm-n      :compare column range in the line(Text file compare only).\n",//~v143R~
-"   %cMm-n      :行内の比較対象範囲を桁位置指定(テキストF比較でのみ有効).\n",//~v143R~
+//"   %cMm-n      :compare column range in the line(Text file compare only).\n",//~v143R~//~vasfR~
+//"   %cMm-n      :行内の比較対象範囲を桁位置指定(テキストF比較でのみ有効).\n",//~v143R~//~vasfR~
+"   %cMm-n[/p-q]:compare column range in the line(Text file compare only).\n"//~vasfI~
+"               p-q is for 2nd file.\n",                           //~vasfI~
+"   %cMm-n[/p-q]:行内の比較対象範囲を桁位置指定(テキストF比較でのみ有効)。\n"//~vasfI~
+"               p-q は第二ファイル用。\n",                         //~vasfI~
 					CMDFLAG_PREFIX);                               //~v143I~
 HELPMSG                                                            //~va80I~
 "   %cMP{1|2}n  :top of line of {1st|2nd} file is n-digit lineNo.\n",//~va80I~
@@ -2858,6 +2950,10 @@ HELPMSG                                                            //~v150I~
 "   %cNa        :No err alarm.\n",                                 //~v153I~
 "   %cNa        :エラーのときアラームを鳴らさない。\n",            //~v153I~
 					CMDFLAG_PREFIX);                               //~v150I~
+HELPMSG                                                            //~vaseI~
+"   %cNc        :Case Insensitive compare.\n",                     //~vaseI~
+"   %cNc        :大文字小文字区別なしで比較。\n",                  //~vaseI~
+					CMDFLAG_PREFIX);                               //~vaseI~
 HELPMSG                                                            //~v152I~
 "   %cNm        :No msg output when successful compare.\n",        //~va3pR~
 "   %cNm        :比較OKの時のMSGを出力しない。\n",                 //~v152R~

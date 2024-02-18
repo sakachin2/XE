@@ -70,7 +70,7 @@ MAPOPT8=/MAP:$(MAP8)
 #STCK=""       default 1MB
 STCK=/STACK:4194304
 CONCAT=
-VCLIB=AdvAPI32.lib user32.lib shell32.lib ImageHlp.lib
+VCLIB=AdvAPI32.lib user32.lib shell32.lib ImageHlp.lib Gdi32.lib
 ###
 TMPLST=$(TMP)^\
 ###

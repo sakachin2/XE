@@ -1,9 +1,10 @@
-//*CID://+v77fR~:                             update#=   93;       //~v77fR~
+//*CID://+v793R~:                             update#=  101;       //~v793R~
 //************************************************************* //~5903R~
 //*ufile2l.c                                                       //~0827R~
 //*  UNIX version of                                               //~0827R~
 //      umkdir,urmdir,uattrib,ugetftime,usetftime,ucopypathinfo    //~0827R~
 //************************************************************* //~5617I~
+//v793:230817 ARM:(BUG)dlcmd attr missing translate //spname to realpath//~v793I~
 //v77f:230424 ARM;rmdir                                            //~v77fI~
 //v77c:230422 ARM;mkdir                                            //~v77cI~
 //v702:200615 ARM compiler warning                                 //~v702I~
@@ -219,7 +220,7 @@ int urmdir(UCHAR *Pdirname)                                     //~5909I~
     case ENOTEMPTY:                                                //~v327I~
     case EBUSY:                                                    //~v327I~
         uerrmsg("%s is not empty or opened",                       //~v327I~
-                "%s ÔøΩÔøΩ ÔøΩÔøΩ≈Ç»ÇÔøΩÔøΩÔøΩÔøΩIÔøΩ[ÔøΩvÔøΩÔøΩÔøΩÔøΩ",                      //~v327I~
+                "%s ÇÕ ãÛÇ≈Ç»Ç¢Ç©ÉIÅ[ÉvÉìíÜ",                      //~v77fI~
                 fpath);                                            //~v55nR~
         return rc;                                                 //~v327I~
     }                                                           //~5909I~
@@ -245,6 +246,7 @@ int uattrib(UCHAR *Pfname,ULONG Pattron,ULONG  Pattroff,ULONG  *Poutattr)//~0827
     PUFTPHOST puftph;                                              //~v5afI~
 #endif                                                             //~v5afI~
 //********************                                          //~5903I~
+    UTRACEP("%s:attrOn=0x%lx,attrOff=0x%lx,fname=%s\n",UTT,Pattron,Pattroff,Pfname);//~v793R~
 #ifdef FTPSUPP                                                     //~v59pI~
   	if (uftpisremote(Pfname,&puftph))	//ftp filename             //~v5afR~
 		return uftpattrib(puftph,Pfname,Pattron,Pattroff,Poutattr);//~v5afR~
@@ -261,7 +263,7 @@ int uattrib(UCHAR *Pfname,ULONG Pattron,ULONG  Pattroff,ULONG  *Poutattr)//~0827
         if (ufilespfnchk(Pfname,2))  //if special file for attrib  //~v085I~
         {                                                          //~v085I~
             uerrmsg("%s is prohibitted to reset RONLY attribute",  //~v085I~
-                    "%s ÔøΩÕì«éÔøΩÔøΩpÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩZÔøΩbÔøΩgÔøΩ÷é~ÔøΩÃìÔøΩÔøΩÔøΩtÔøΩ@ÔøΩCÔøΩÔøΩÔøΩ≈ÇÔøΩ",//~v085I~
+                    "%s ÇÕì«éÊêÍópëÆê´ÉäÉZÉbÉgã÷é~ÇÃì¡éÍÉtÉ@ÉCÉãÇ≈Ç∑",//~v77fI~
                     Pfname);                                       //~v085I~
             return EACCES;                                         //~v085R~
         }                                                          //~v085I~
@@ -347,7 +349,7 @@ int uattrxchk(UCHAR *Pfname,int Popt)                              //~0902I~
     {                                                              //~0902I~
         if (Popt & UAXC_MSG)                                       //~0902I~
             uerrmsg("%s has no x-permissin",                       //~0902I~
-                    "%s ÔøΩ…ÇÕéÔøΩÔøΩsÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ‹ÇÔøΩÔøΩÔøΩ",                 //~0902I~
+                    "%s Ç…ÇÕé¿çså†å¿Ç™Ç†ÇËÇ‹ÇπÇÒ",                 //~v77fI~
                     Pfname);                                       //~0902I~
         return 0;                                                  //~0902I~
     }                                                              //~0902I~
@@ -473,7 +475,7 @@ int usetftime2(UCHAR *Pfname,time_t Patime,time_t Pmtime)          //~v365I~
     PUFTPHOST puftph;                                              //~v5afI~
 #endif                                                             //~v5afI~
 //********************                                             //~v365I~
-    UTRACEP("%s:fnm=%s,atime=0x%x,mtime=0x%x\n",UTT,Pfname,Patime,Pmtime);//+v77fR~
+    UTRACEP("%s:fnm=%s,atime=0x%x,mtime=0x%x\n",UTT,Pfname,Patime,Pmtime);//~v77fR~
 #ifdef FTPSUPP                                                     //~v59pI~
   	if (uftpisremote(Pfname,&puftph))	//ftp filename             //~v5afR~
 		return uftpsetftime2(puftph,Pfname,(ULONG)Patime,(ULONG)Pmtime);//~v5afR~
@@ -492,7 +494,7 @@ int usetftime2(UCHAR *Pfname,time_t Patime,time_t Pmtime)          //~v365I~
 #endif                                                             //~v77fM~
     if (!utimes(Pfname,tv))       //set                            //~v365I~
     {                                                              //~v77fI~
-    	UTRACEP("%s:utimes OK,fnm=%s\n",UTT,Pfname);               //+v77fR~
+    	UTRACEP("%s:utimes OK,fnm=%s\n",UTT,Pfname);               //~v77fR~
         return 0;                                                  //~v365I~
     }                                                              //~v77fI~
     rc=errno;                                                      //~v365I~
@@ -569,11 +571,11 @@ int ucopypathinfo(UCHAR *Psource,UCHAR *Ptarget)                //~5910I~
 //#endif                                                           //~v59pR~
     if (rc=usetftime2(Ptarget,ffb3.atime,ffb3.mtime),rc)           //~v365R~
         return rc;                                                 //~0827R~
-    UTRACEP("%s src=%s,atime=%x,mtime=%x\n",UTT,Psource,ffb3.atime,ffb3.mtime);//~v6htI~//+v77fR~
+    UTRACEP("%s src=%s,atime=%x,mtime=%x\n",UTT,Psource,ffb3.atime,ffb3.mtime);//~v6htI~//~v77fR~
   if (!ufstat(Ptarget,&ffb3t)                                      //~v6b8R~
   &&   FILE_GETMODE(ffb3.attrFile)!=FILE_GETMODE(ffb3t.attrFile))  //~v6b8R~
   {                                                                //~v6b8I~
-    UTRACEP("%s tgt=%s,atime=%x,mtime=%x\n",UTT,Ptarget,ffb3t.atime,ffb3t.mtime);//+v77fR~
+    UTRACEP("%s tgt=%s,atime=%x,mtime=%x\n",UTT,Ptarget,ffb3t.atime,ffb3t.mtime);//~v77fR~
 #ifdef ARM                                                         //~v6b8I~
    if (!ustatisvfat(Ptarget,&ffb3t))	//avoid for sdcard         //~v6b8R~
 #endif                                                             //~v6b8I~
@@ -622,7 +624,7 @@ int ufilesetown(UCHAR *Pfname,uid_t Puid,gid_t Pgid)               //~v365R~
 //ufilesetmod                                                      //~v365I~
 //* set modifier                                                   //~v381R~
 //*parm1:target name                                               //~v365I~
-//*parm2:mode  or attr fpr MDOS file                               //~v519R~
+//*parm2:mode  or attr for MDOS file                               //~v519R~//~v77fR~
 //*retrn:rc                                                        //~v365I~
 //**************************************************************** //~v365I~
 int ufilesetmod(UCHAR *Pfname,mode_t Pmode)                        //~v365R~
@@ -632,14 +634,38 @@ int ufilesetmod(UCHAR *Pfname,mode_t Pmode)                        //~v365R~
     PUFTPHOST puftph;                                              //~v5afI~
 #endif                                                             //~v5afI~
 //********************                                             //~v365I~
+    UTRACEP("%s:mode=0x%lx,fname=%s\n",UTT,Pmode,Pfname);          //~v793R~
     Pmode&=FILE_CHMODMASK_UNIX;      //o7777                       //~v538I~
 #ifdef FTPSUPP                                                     //~v59pI~
   	if (uftpisremote(Pfname,&puftph))	//ftp filename             //~v5afR~
 		return uftpsetmod(puftph,Pfname,(ULONG)Pmode);             //~v5afR~
 #endif                                                             //~v59pI~
+    errno=0;                                                       //~v77fI~
+#ifdef ARMXXE                                                      //+v793I~
+	int rc2=0;                                                     //+v793I~
+  	if (IS_DOCPATH(Pfname))                                      //+v793I~
+    {                                                              //+v793I~
+    	ufiledoc_chmod(Pfname,Pmode,&rc2/*errno*/);               //+v793I~
+    }                                                              //+v793I~
+  	else                                                           //+v793I~
+    {                                                              //+v793I~
+    	errno=0;                                                   //+v793I~
+    	if (!chmod(Pfname,Pmode))                                  //+v793I~
+        	rc2=errno;	                                           //+v793I~
+    }                                                              //+v793I~
+    UTRACEP("%s:rc2=%d\n",UTT,rc2);                                //+v793I~
+    errno=rc2;                                                     //+v793I~
+    if (errno)                                                     //+v793I~
+#else                                                              //+v793I~
     if (!chmod(Pfname,Pmode))                                      //~v365R~
+#endif                                                             //+v793I~
+    {                                                              //~v77fI~
+        rc=errno;                                                  //~v77fI~
+    	UTRACEP("%s:rc=0,errno=%d,fnm=%s,mode=0x%lx\n",UTT,rc,Pfname,Pmode);//~v77fI~
         return 0;                                                  //~v365I~
+    }                                                              //~v77fI~
     rc=errno;                                                      //~v365R~
+    UTRACEP("%s:mode=0x%x,errno=%d,fnm=%s\n",UTT,Pmode,rc,Pfname); //~v77fR~
     switch(rc)                                                     //~v365I~
     {                                                              //~v365I~
     case EPERM:                                                    //~v365I~

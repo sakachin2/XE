@@ -1,6 +1,6 @@
-UTF8 encoding ||*CID:||+v29WR~:  2023/07/31                update#=  831;||+v29WR~
+UTF8 encoding ||*CID:||+v29XR~:  2024/02/20                update#=  836;||~v29XR~
 ######################################################################
-[English]    v1.29W                                                   ||~v29VR~||+v29WR~
+[English]    v1.29X                                                   ||~v29VR~||~v29WR~||+v29XR~
 
 This editor is fit for programmers working on both main-frame and PC.
 Its operation is based on mainframe SPF editor,
@@ -24,9 +24,9 @@ LICENSE: use GNU GPL
 For windows, "xe.exe" is console application and "wxe.exe" is GUI application.
    wxe.exe is WTL/ATL application(requires no MFC library) compiled on vs2010Express.
    Thorse are included in w64binGit.zip.
-For Linux, "xe" is console application and "gxe" is GUI application.  ||+v29WR~
+For Linux, "xe" is console application and "gxe" is GUI application.  ||~v29WR~
    Untar gxe-x.xx.tar.gz, and make binary by ./configure && make.
-For Android, install "Axe" from PlayStore.                            ||+v29WR~
+For Android, install "Axe" from PlayStore.                            ||~v29WR~
 Following command line tools are also included.
    xads         For Windows Only,Access to NTFS ADS(Alternative Data Stream).
    xbc          Basic calculator.
@@ -53,7 +53,7 @@ Following command line tools are also included.
    xts          Set/Display File timestamp
    xver         Set ERRORLEVEL from OS version
 
-   xprint       text file print program                               ||+v29WR~
+   xprint       text file print program                               ||~v29WR~
    gxp          (Linux)xprint using GTKPrint
 
 Other contents.
@@ -120,7 +120,7 @@ How to execute.
     See sample/READMEj.txt when install trouble occured.
     If you want, install manually other binary from src/xsub folder than installed by "make install".
   .Create WorkDirectory at home.
-      mkdir ~/xe_wdnnnnn     nnnnn is uid.                            ||+v29WR~
+      mkdir ~/xe_wdnnnnn     nnnnn is uid.                            ||~v29WR~
     Copy setup files such as xehosts from sample folder to the WorkDirectory if you use the function.
     If you do not use the function, create dummy file containing one comment record starting with "#".
   ÅDStart xe by "xe [file-spec]
@@ -569,24 +569,58 @@ How to execute.
                                                                       ||~v29VI~
      3.Miscellaneous.                                                 ||~v29VI~
        -Changed default value of "opt DELZ"(Allow Del line command with no backup) to Off, it is safer side.||~v29VI~
-                                                                      ||+v29WR~
-  .v129W<--129U:(2023/07/31)                                          ||+v29WR~
-                                                                      ||+v29WR~
-     1.BUGs                                                           ||+v29WR~
-                                                                      ||+v29WR~
-     2.Additional function.                                           ||+v29WR~
-       -(Axe)                                                         ||+v29WR~
-        .Utilize Android-11(R):Api30 permission options : All Files.  ||+v29WR~
-        .CD command support                                           ||+v29WR~
-                                                                      ||+v29WR~
-     3.Miscellaneous.                                                 ||+v29WR~
-       -If Shortpath is added by "sp add" command, refresh it and make it effective immediately.||+v29WR~
-       -Axe                                                           ||+v29WR~
-        .DOS commands (full screen shell) are now not supported.      ||+v29WR~
-        ."!" line commands are now not supported.                     ||+v29WR~
-                                                                      ||+v29WR~
-     4.Tools                                                          ||+v29WR~
-       xcv v1.21                                                      ||+v29WR~
-       -xfmt v1.5                                                     ||+v29WR~
-       -xfg  v1.21                                                    ||+v29WR~
-       -xdc  v2.29 -Added UF option (skip print directory timestamp unmatch to unmatch list).||+v29WR~
+                                                                      ||~v29WR~
+  .v129W<--129U:(2023/07/31)                                          ||~v29WR~
+                                                                      ||~v29WR~
+     1.BUGs                                                           ||~v29WR~
+                                                                      ||~v29WR~
+     2.Additional function.                                           ||~v29WR~
+       -(Axe)                                                         ||~v29WR~
+        .Utilize Android-11(R):Api30 permission options : All Files.  ||~v29WR~
+        .CD command support                                           ||~v29WR~
+                                                                      ||~v29WR~
+     3.Miscellaneous.                                                 ||~v29WR~
+       -If Shortpath is added by "sp add" command, refresh it and make it effective immediately.||~v29WR~
+       -Axe                                                           ||~v29WR~
+        .DOS commands (full screen shell) are now not supported.      ||~v29WR~
+        ."!" line commands are now not supported.                     ||~v29WR~
+                                                                      ||~v29WR~
+     4.Tools                                                          ||~v29WR~
+       xcv v1.21                                                      ||~v29WR~
+       -xfmt v1.5                                                     ||~v29WR~
+       -xfg  v1.21                                                    ||~v29WR~
+       -xdc  v2.29 -Added UF option (skip print directory timestamp unmatch to unmatch list).||~v29WR~
+                                                                      ||~v29XI~
+  .v129X<--129W:(2024/02/20)                                          ||~v29XI~
+                                                                      ||~v29XI~
+     1.BUGs                                                           ||~v29XI~
+       -"cv" command with \u option incorrectly converts UNicode>u-ffff.||~v29XR~
+       -U+00A0 was not a base character of combining characters.      ||~v29XI~
+       -(gxe) may crash.                                              ||~v29XI~
+        .When displa a combining character.                           ||~v29XI~
+        .When the middle mouse button is pressed.                     ||~v29XI~
+        .When "preview" menu button is pressed.                       ||~v29XI~
+       -(gxe) box type cursor hides character behind.                 ||~v29XI~
+       -grep command (also for "g" line command on directory list).   ||~v29XI~
+        .Hangs when double quotes (") in the search string are not closed.||~v29XI~
+        .Fails when string contains intermediate spaces.              ||~v29XI~
+                                                                      ||~v29XI~
+     2.Additional function.                                           ||~v29XI~
+	   -Added command line options "-Yv" (default), "-Nv" to specify Unicode display width.||~v29XI~
+        "-Nv" displays all characters of ambiguous width in 2 digits. ||~v29XI~
+        "-Yv" displays those in one cell for Windows console version xe,||~v29XI~
+        Wxe, gxe and xe-linux versions perform internal determination.||~v29XI~
+                                                                      ||~v29XI~
+     3.Miscellaneous.                                                 ||~v29XI~
+       -(Win:Console version) Changing the cursor shape using the Insert key||~v29XI~
+        does not work on WindowsTerminal.If necessary,                ||~v29XI~
+        start xe on Conhost (previous command prompt executable).     ||~v29XI~
+                                                                      ||~v29XI~
+     4.Tools                                                          ||~v29XI~
+       -xcv  v1.22                                                    ||~v29XI~
+         .Added standard input in Hex notation ("-Yh" option)         ||~v29XI~
+          and output in Hex notation ("-Yx" option).                  ||~v29XI~
+       -xfc  v1.28                                                    ||~v29XI~
+         .Added case-insensitive comparison option ("-Nc").           ||~v29XI~
+         .Compare positions can now be specified separately           ||~v29XI~
+          for both files ( -Mm-n[/p-q] ).                             ||~v29XI~

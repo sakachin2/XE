@@ -1,4 +1,4 @@
-//*CID://+vb7fR~:                             update#=  227;       //~vb7fR~
+//*CID://+vb7fR~:                             update#=  228;       //~vb7fR~
 //*************************************************************
 //*xedlcmd4.c
 //* each dir line cmd process
@@ -363,6 +363,7 @@ int dlcmdundelterm(void)
 //*******************
 //  if (!*Sundeldate)	//no undel prepare                         //~v62kR~
 //  	return 0;                                                  //~v62kR~
+    UTRACEP("%s:entry\n",UTT);                                     //+vb7fI~
   if (*Sundeldate)	//no undel prepare                             //~v62kI~
   {                                                                //~v62kI~
 //free undel prepare list
@@ -1150,7 +1151,7 @@ int dlcmdundelprep(PUCLIENTWE Ppcw,UCHAR *Pfullpath,PUDIRLH Ppdh)
 #endif                                                             //~v62hI~
     char *pfpath;                                                  //~van2R~
 //*******************
-	UTRACEP("%s:fpath=%s\n",UTT,Pfullpath);                        //+vb7fI~
+	UTRACEP("%s:fpath=%s\n",UTT,Pfullpath);                        //~vb7fI~
     plh=UGETDIRPLH(Ppdh);                                          //~v62hI~
 #ifdef FTPSUPP                                                     //~v62hI~
     pfh=UGETPFH(plh);                                              //~v62hI~

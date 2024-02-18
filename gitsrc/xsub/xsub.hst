@@ -1,3 +1,21 @@
+//*129W uploaded
+//vasf:240213 xfc;suuprt margin for 2nd file
+//            xfc.c
+//vase:240213 xfc;add case insensitive option
+//            xfc.c
+//vasd:240210 xfc;show invalid rc(uerrmsg maxparm=10 overflow)
+//            xfc.c
+//vasc:240210 xfc;add errmsg for fileeditname_copypath rc=-3(both contains '=')
+//            xfc.c
+//vasb:240123 xcv;input ucs4 by 3 byte ucs(stdin) cause conv err
+//            xcv.c
+//vasa:240123 xcv;change hex input option when stdin
+//            xcv.c
+//vas9:240115 xcv;(Bug)dup err of input when xcv - outfile
+//            xcv.c
+//vas8:240115 xcv;supporthex code input for stdin by /Yx
+//            xcv.c
+//*129W uploaded 23/07/30
 //vas7:230728 xdc;option to ignore timestamp of dir; /uf(xcopy dir timestamp maybe  updated by member copy,xe's xcopy set dir timestamp after member copy)
 //            xdc.c
 //vas6:230709 sjis on help is not printable when /n9

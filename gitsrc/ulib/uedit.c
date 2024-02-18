@@ -1,11 +1,13 @@
-//*CID://+v771R~:                             update#=   86;       //+v771R~
+//*CID://+v79pR~:                             update#=   88;       //~v79pR~
 //*************************************************************
 //*uedit.c                                                         //~v022R~
 //*  unumedit,utimeedit,uitoa10,ucmdparmedit,uwordrep              //~v066R~
 //*  ugethex,ux2l,ux2s,ugetnumrange,ugetxnumrange,unumlen,uatoin   //~v244R~
 //*  ugetnumrange2 ugetnumrange3                                   //~v5fxR~
+//*  ux2is                                                         //~v79pI~
 //*************************************************************
-//v771:230323 sys/timeb.h is not found on ARM                      //+v771I~
+//v79p:240203 add ux2is(get int[] from hex string 0x__,X___,u___ fmt with any spliter//~v79pI~
+//v771:230323 sys/timeb.h is not found on ARM                      //~v771I~
 //v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //~v711I~
 //v6Z0:200516 uwordrep option alternative parm sign                //~v6Z0I~
 //v6T1:180210 add ueditKMG(edit Kiro,mega,Giga value)              //~v6T1I~
@@ -64,9 +66,9 @@
 #include <string.h>
 //*******************************************************
 #ifdef UNX                                                         //~v321R~
-  #ifndef ARM                                                      //+v771I~
+  #ifndef ARM                                                      //~v771I~
     #include <sys/timeb.h>                                         //~v321R~
-  #endif                                                           //+v771I~
+  #endif                                                           //~v771I~
 #else                                                              //~v321R~
     #include <sys/timeb.h>                                         //~v711I~
 #ifdef DOS
@@ -90,7 +92,7 @@
 #ifdef UNX                                                         //~v321R~
     #include <ugcclib.h>                                           //~v321I~
 #endif  //!UNX                                                     //~v321R~
-#include <ulibarm.h>      //timeb.h                                //+v771I~
+#include <ulibarm.h>      //timeb.h                                //~v771I~
 #define UFTIME                                                     //~v711I~
 #include <umiscf.h>                                                //~v711I~
 //*******************************************************
@@ -1768,3 +1770,78 @@ static char Swk[16];                                               //~v6T1I~
     }                                                              //~v6T1I~
 	return Swk;                                                    //~v6T1I~
 }//ueditKMG                                                        //~v6T1I~
+//******************************************************************//~v79pI~
+//*get hex digit to int[],rc gotten ctr                            //~v79pI~
+//*uxxxx,0xxxxx,Xxxxx is ok, max 8 digit                           //~v79pI~
+//******************************************************************//~v79pI~
+int ux2is(int Popt,char *Phex,int Plen,int *Pout,int Pmaxctr,int *Ppchklen)//~v79pI~
+{                                                                  //~v79pI~
+    int  lenstr,outctr=0,lenx,lenxmax=8,rc=-1,chklen;              //~v79pI~
+    char wk10[10];                                                 //~v79pI~
+    char *pc,*pce,ch,*pcxs=0;                                      //~v79pI~
+    ULONG ul;                                                      //~v79pI~
+//********************                                             //~v79pI~
+    if (!(lenstr=Plen))                                            //~v79pI~
+    	lenstr=(int)strlen(Phex);                                  //~v79pI~
+    *Ppchklen=0;                                                   //~v79pI~
+    for (pc=Phex,pce=pc+lenstr;pc<=pce;pc++)                       //~v79pI~
+    {                                                              //~v79pI~
+        ch=(pc==pce ? 0 : *pc);                                    //~v79pI~
+        if (!pcxs)                                                 //~v79pI~
+        {                                                          //~v79pI~
+            if (ch=='0' && pc+2<pce)                               //~v79pI~
+                if ((*(pc+1)=='x' || *(pc+1)=='X') && isxdigit(*(pc+2)))//~v79pI~
+                {                                                  //~v79pI~
+                    pc++;                                          //~v79pI~
+                    continue;                                      //~v79pI~
+                }                                                  //~v79pI~
+            if ((ch=='x' || ch=='X') && pc+1<pce && isxdigit(*(pc+1)))//~v79pI~
+            {                                                      //~v79pI~
+                continue;                                          //~v79pI~
+            }                                                      //~v79pI~
+            if ((ch=='u' || ch=='U') && pc+1<pce && isxdigit(*(pc+1)))//~v79pI~
+            {                                                      //~v79pI~
+                continue;                                          //~v79pI~
+            }                                                      //~v79pI~
+        }                                                          //~v79pI~
+        if (!isxdigit(ch))                                         //~v79pI~
+        {                                                          //~v79pI~
+        	if (!pcxs)                                             //~v79pI~
+            {                                                      //~v79pI~
+            	continue;                                          //~v79pI~
+            }                                                      //~v79pI~
+            lenx=PTRDIFF(pc,pcxs);                                 //~v79pI~
+            if (lenx>lenxmax)                                      //~v79pI~
+                break;       //return -1                           //~v79pI~
+            if (lenx%2)                                            //~v79pI~
+            {                                                      //~v79pI~
+                wk10[0]='0';                                       //~v79pI~
+                memcpy(wk10+1,pcxs,(size_t)lenx);                  //+v79pR~
+                lenx++;                                            //~v79pI~
+            }                                                      //~v79pI~
+            else                                                   //~v79pI~
+                memcpy(wk10,pcxs,(size_t)lenx);                    //+v79pR~
+            wk10[lenx]=0;                                          //~v79pI~
+            if (ux2l(wk10,&ul)) //0:OK                             //~v79pI~
+                break;       //return -1                           //~v79pI~
+            Pout[outctr++]=(int)ul;                                //~v79pI~
+            if (pc==pce)                                           //~v79pI~
+                chklen=lenstr;                                     //~v79pI~
+            else                                                   //~v79pI~
+                chklen=PTRDIFF(pc,Phex);                           //~v79pI~
+            *Ppchklen=chklen;                                      //~v79pI~
+            if (outctr==Pmaxctr || pc==pce)                        //~v79pI~
+            {                                                      //~v79pI~
+	            rc=outctr;                                         //~v79pI~
+                break;                                             //~v79pI~
+            }                                                      //~v79pI~
+            pcxs=0;                                                //~v79pI~
+        }                                                          //~v79pI~
+        else                                                       //~v79pI~
+        {                                                          //~v79pI~
+       	 	if (!pcxs)                                             //~v79pI~
+        		pcxs=pc;                                           //~v79pI~
+        }                                                          //~v79pI~
+    }//for                                                         //~v79pI~
+    return rc;                                                     //~v79pI~
+}//ux2l                                                            //~v79pI~

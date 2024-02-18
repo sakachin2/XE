@@ -1,8 +1,10 @@
-//*CID://+vbygR~:                             update#=  387;       //~vbygR~
+//*CID://+vbz2R~:                             update#=  393;       //+vbz2R~
 //*************************************************************
 //*xedcmd.c                                                     //~v041R~
 //* drive,cd,xdelete,rmdir,mkdir,rename,attrib,xcopy,xmove      //~v05oR~
 //*************************************************************
+//vbz2:230827 del cmd issue warning "it may be remain dir entry" whel delctr=0//+vbz2I~
+//vbz1:230817 ARM:correct errmsg for attrib.(DOS is out of consern)//~vbz1I~
 //vbyg:230508 correct errmsg;distinguish for dlcmd and dcmd        //~vbygI~
 //vbyf:230502 (ARM) "//" option required to delete sortpath root(such as //Axe)//~vbyfI~
 //vby6:230402 (ARM)adjust by4; go around by shortname and change to uri at ulib(ufile1l)//~vby6I~
@@ -1049,7 +1051,7 @@ int dcmddelxdd(PUCLIENTWE Ppcw,int Popdno,UINT Pmask,int Pxdelopt,//~v05RR~
     PFUNCTBL pft;                                                  //~vaw6I~
 #endif                                                             //~vaw6I~
 //********************                                          //~v05QI~
-	UTRACEP("%s:delopt=0x%x,xddopt=0x%x\n",UTT,Pxdelopt,Pxddopt); //+vbygI~
+	UTRACEP("%s:delopt=0x%x,xddopt=0x%x,mask=0x%x\n",UTT,Pxdelopt,Pxddopt,Pmask); //~vbygI~//~vbz1R~
 #ifdef W32UNICODE                                                  //~vaw6I~
 	pft=(PFUNCTBL)Ppcw->UCWpfunct;                                 //~vaw6I~
   	swdcmd=pft && (pft->FTfuncid==FUNCID_DELX||pft->FTfuncid==FUNCID_DOS);	//not dlcmd//~vaw6R~
@@ -1254,7 +1256,7 @@ int dcmdxdelete(PUCLIENTWE Ppcw,UCHAR *Pfullpath,UINT Pattrmask,//~v05RR~
     int total,ronly;                                            //~v05QR~
     int deleted;                                                //~v05QI~
 //********************                                          //~v03pI~
-	UTRACEP("%s:fpath=%s,xdelOpt=0x%x,xddidopt=0x%x\n",UTT,Pfullpath,Pxdelopt,Pxddid);//+vbygI~
+	UTRACEP("%s:fpath=%s,xdelOpt=0x%x,xddidopt=0x%x,attrmask=0x%x\n",UTT,Pfullpath,Pxdelopt,Pxddid,Pattrmask);//~vbygI~//~vbz1R~
     if ((Pxdelopt & UXDELRONLYCHK)  //read only chk             //~v05QR~
     ||  !(Pxdelopt & (UXDELFORCE|UXDELSKIPRONLY)))  //err when ronly//~v05QR~
     {                                                              //~vaa0R~
@@ -1342,7 +1344,13 @@ int dcmdxdelete(PUCLIENTWE Ppcw,UCHAR *Pfullpath,UINT Pattrmask,//~v05RR~
         if (Pxddid & DCMDXDDIDXDD)                              //~v060R~
             rc=uxddsub(Pfullpath,Pxdelopt,UXDDNOCONF,Pfullpath);//~v05QR~
         else                                                    //~v05QI~
+        {                                                          //+vbz2I~
             rc=uxdelete(Pfullpath,Pattrmask,Pxdelopt,&total,&ronly,&deleted);//~v05QR~
+            if (rc && !deleted)                                    //+vbz2I~
+            	if (!(Pattrmask & FILE_DIRECTORY))                 //+vbz2I~
+    				uerrmsgcat("; addtional option is required to delete Directory.",//+vbz2I~
+            					"; ディレクトリーを削除するには追加のオプション指定が必要です");//+vbz2I~
+        }                                                          //+vbz2I~
         if (rc)                                                 //~v05QI~
             return 4;                                           //~v05QR~
         rc=1;   //id of deleted(not undo)                       //~v05QI~
@@ -2807,6 +2815,7 @@ int dcmdattrchng(UCHAR *Pfullpath,ULONG Pattron,ULONG Pattroff,ULONG *Pattrout)/
 	PUFTPHOST puftph;                                              //~vac2I~
     int ftpwin;                                                    //~vac2I~
 //********************                                          //~v03zI~
+	UTRACEP("%s:attrOn=0x%lx,attrOff=0x%lx,fpath=%s\n",UTT,Pattron,Pattroff,Pfullpath);//~vbz1R~
 	uftpisremote(Pfullpath,&puftph);	//each specification       //~vac2I~
     ftpwin=(puftph && (puftph->UFTPHflag & UFTPHFRWIN))? UEFA_RWIN:0;//~vac2R~
     if (uattrib(Pfullpath,0,0,Pattrout))            //query attr//~v03zR~
@@ -2865,9 +2874,15 @@ int dcmdattrchng(UCHAR *Pfullpath,ULONG Pattron,ULONG Pattroff,ULONG *Pattrout)/
             	Pfullpath,attrstring,attrstring2);                 //~vac8I~
           }                                                        //~vac8I~
           else                                                     //~vac8I~
+#ifdef ARM                                                         //~vbz1I~
+	        uerrmsg("%s attr(%s) was not changed;",                //~vbz1I~
+    	        	"%s の 属性(%s)は変更できませんでした。",      //~vbz1I~
+        	    		Pfullpath,attrstring);                     //~vbz1I~
+#else                                                              //~vbz1I~
 	        uerrmsg("%s attr(%s) was not changed;(DOS file system is not supported)",//~v47DI~//~vawKR~
     	        	"%s の 属性(%s)は変更できませんでした(DOSファイルシステムは適用外)",//~v47DI~
         	    		Pfullpath,attrstring);                     //~v47DI~
+#endif                                                             //~vbz1I~
         }                                                          //~vac8I~
         else                                                       //~v47DI~
 #endif                                                             //~v47DI~

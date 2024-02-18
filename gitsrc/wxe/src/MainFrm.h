@@ -1,4 +1,4 @@
-//*CID://+vbdnR~:                                   update#=  112; //~vbdnR~
+//*CID://+vbdnR~:                                   update#=  113; //~vbdnR~
 //*****************************************************************************//~vb20I~
 //vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
 //vbd3:171117 (Wxe)MainMenu enable/disable also on Edit submenu    //~vbd3I~
@@ -62,7 +62,7 @@ public:
 		if (Museact && Mpact)                                      //~@@@@R~
         	if (Mcacc.TranslateAccelerator(m_hWnd,pMsg))           //~@@@@R~
             	return true;                                       //~@@@@I~
-        UTRACEP("MainFrm.h PreTranslateMsg msg=%08x,wp=%08x,lp=%08x\n",pMsg->message,pMsg->wParam,pMsg->lParam);//+vbdnR~
+        UTRACEP("MainFrm.h PreTranslateMsg msg=%08x,wp=%08x,lp=%08x\n",pMsg->message,pMsg->wParam,pMsg->lParam);//~vbdnR~
 		if(CFrameWindowImpl<CMainFrame>::PreTranslateMessage(pMsg))//~@@@@I~
 			return TRUE;
 
@@ -179,6 +179,7 @@ public:
 
 	LRESULT OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 	{
+        UTRACEP("%s\n",UTT);                                       //+vbdnI~
 		// unregister message filtering and idle updates
 		CMessageLoop* pLoop = _Module.GetMessageLoop();
 		ATLASSERT(pLoop != NULL);

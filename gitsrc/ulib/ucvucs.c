@@ -1,5 +1,8 @@
-//*CID://+v6BkR~:                             update#=  113;       //~v6BkR~
+//*CID://+v79dR~:                             update#=  136;       //+v79dR~
 //*************************************************************
+//v79d:240123 (Bug)ucs->utf for UCS4 fails if \u option specified  //+v79dI~
+//v79c:240123 (Bug)utf->ucs with UCS4 option,display uxxxx fmt if it is ucs2(<=0xffff)//~v79cI~
+//v79b:240123 (Bug)ucs2utf for ucs4 by \u. it did not get over 4byte hex.//~v79bI~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
 //v6Bi:160212 (W32)compiler warning                                //~v6BiI~
 //v6x5:150108 (warning C4244)ULONG 64 bit for LNX,32 bit for WIN on 64bit cpu,pointr is 64bit for both LNX and WIN.//~v6x5I~
@@ -631,6 +634,8 @@ int uccvutf2ucss(ULONG Popt,UCHAR *Putf,int Plen,UCHAR *Pucs,int Pbuffsz,int *Pp
 //    int swsurrogate;                                               //~v6r4I~//~v6uBR~
 //*FIXME test ucs4 on LNX:FIXED                                    //~v6uFR~
 //#endif                                                             //~v6u4I~//~v6uBR~
+	UCHAR wkf2u[16];                                               //+v79dI~
+    int lenbyte;                                                   //+v79dI~
 //******************************
 	rc=uccvutf2ucs(Popt,Putf,Plen,&ucs,Ppchklen);
     *Poutlen=0;                                                    //~v5h6I~
@@ -664,24 +669,36 @@ int uccvutf2ucss(ULONG Popt,UCHAR *Putf,int Plen,UCHAR *Pucs,int Pbuffsz,int *Pp
       	int ctr;                                                   //~v6uBI~
         UWCH wkuwch[2];                                            //~v6uBI~
         UWUCS uwucs;                                               //~v6uBI~
-      if (Pbuffsz<4)                                               //~v6uYI~
-       rc=UCVUCS_BUFFOVF;                                          //~v6uYI~
-      else                                                         //~v6uYI~
-      {  	                                                       //~v6uYI~
+//    if (Pbuffsz<4)                                               //~v6uYI~//+v79dR~
+//     rc=UCVUCS_BUFFOVF;                                          //~v6uYI~//+v79dR~
+//    else                                                         //~v6uYI~//+v79dR~
+//    {  	                                                       //~v6uYI~//+v79dR~
 //     if (Popt & UCVUCS_UCS4) //accept ucs4                       //~v6uBI~//~v6uER~
 //     if (Popt & UCVUCS_UCS4W))   //output not surrogate pair but ucs4//~v6uER~//~v6uFR~
        if (Popt & UCVUCS_UCS4) //accept ucs4                       //~v6uFI~
-		ucvsetucss(Popt,ucs,Pucs);   //set BE/LE 4byte ucs         //~v6uBI~
+//		ucvsetucss(Popt,ucs,Pucs);   //set BE/LE 4byte ucs         //~v6uBI~//+v79dR~
+     	lenbyte=ucvsetucss(Popt,ucs,wkf2u);   //set BE/LE 4byte ucs//+v79dI~
        else                                                        //~v6uBI~
        {                                                           //~v6uBI~
         UCS4_TO_UTF16(ucs,wkuwch,&ctr);                            //~v6uBI~
         uwucs=(UWUCS)wkuwch[0];                                    //~v6uBI~
-        ucvsetucss(Popt,uwucs,Pucs);                               //~v6uBI~
+//      ucvsetucss(Popt,uwucs,Pucs);                               //~v6uBI~//+v79dR~
+        lenbyte=ucvsetucss(Popt,uwucs,wkf2u);                      //+v79dI~
         uwucs=(UWUCS)wkuwch[1];                                    //~v6uBI~
-        ucvsetucss(Popt,uwucs,Pucs+2);                             //~v6uBI~
+//      ucvsetucss(Popt,uwucs,Pucs+2);                             //~v6uBI~//+v79dR~
+        lenbyte+=ucvsetucss(Popt,uwucs,wkf2u+lenbyte);             //+v79dI~
        }                                                           //~v6uBI~
-      }                                                            //~v6uYI~
-        *Poutlen=4;                                                //~v6uBI~
+//    }                                                            //~v6uYI~//+v79dR~
+//    *Poutlen=4;                                                //~v6uBI~//+v79dI~
+      	if (Pbuffsz<lenbyte)                                       //+v79dI~
+        {                                                          //+v79dI~
+			rc=UCVUCS_BUFFOVF;                                     //+v79dI~
+        }                                                          //+v79dI~
+      	else                                                       //+v79dI~
+        {                                                          //+v79dI~
+	      *Poutlen=lenbyte;                                        //+v79dI~
+          memcpy(Pucs,wkf2u,(UINT)lenbyte);                        //+v79dI~
+        }                                                          //+v79dI~
       }                                                            //~v6uBI~
       else                                                         //~v6uBI~
 //#endif UTF8UTF16                                                             //~v6uBI~//~v6uYR~
@@ -916,7 +933,9 @@ int ucvsescucs2utf(UCVUCS_FERR *Pferr,ULONG Popt,UCHAR *Pibuff,int Pibufflen,UCH
 	int rc=0,outreslen,ucssz,utflen,reslen,errctr=0,rc2;           //~v5h6R~
 	int shortrecsw,escucssw;                                       //~v5h6I~
 	ULONG ucscode=0;                                                 //~v5h6I~//~v6h7R~
-    char *pucs,*putf,utf[4],xcvwk[4];                              //~v5h6R~
+//  char *pucs,*putf,utf[4],xcvwk[4];                              //~v5h6R~//~v79bR~
+    char *pucs,*putf,utf[8],xcvwk[8];                              //~v79bI~
+    int numlenUcs=0;                                               //~v79bR~
 //*******************************                                  //~v5h6I~
     for (reslen=Pibufflen,pucs=Pibuff,outreslen=Pobufflen,putf=Pobuff;reslen>0;)//~v5h6I~
     {                                                              //~v5h6I~
@@ -947,27 +966,75 @@ int ucvsescucs2utf(UCVUCS_FERR *Pferr,ULONG Popt,UCHAR *Pibuff,int Pibufflen,UCH
 		            Pferr(UCVUCS_FMTERR,Pibufflen-reslen,(int)((ULPTR)putf-(ULPTR)Pobuff),Pibuff,reslen);//~v6hhI~
         	    rc|=UCVUCS_FMTERR;                                 //~v5h6I~
             	errctr++;                                          //~v5h6R~
-	            break;                                             //~v5h6I~
+//	            break;	//advance 1 char                                             //~v5h6I~//~v79bR~
           	}                                                      //~v5h6I~
         }                                                          //~v5h6I~
         else                                                       //~v5h6I~
         {                                                          //~v5h6I~
         	if (shortrecsw)                                        //~v5h6I~
             {                                                      //~v5h6I~
+	        	if (shortrecsw==1) 	//\u but len<6                 //~v79bI~
+                {                                                  //~v79bI~
+	     	    	if (Pferr)                                     //~v79bI~
+                   	{                                              //~v79bI~
+		        	    rc|=UCVUCS_FMTERR;                         //~v79bI~
+				        Pferr(UCVUCS_FMTERR,Pibufflen-reslen,(int)((ULPTR)putf-(ULPTR)Pobuff),Pibuff,reslen);//~v79bR~
+                   	}                                              //~v79bI~
+                }                                                  //~v79bI~
 	            rc|=UCVUCS_LENERR;                                 //~v5h6I~
-	            break;                                             //~v5h6I~
+            	errctr++;                                          //~v79bI~
+//	            break;	//advance 1 char                           //~v79bI~
             }                                                      //~v5h6I~
         }                                                          //~v5h6I~
         if (escucssw)                                              //~v5h6I~
         {                                                          //~v5h6I~
+          if (Popt & UCVUCS_UCS4)                                  //~v79bR~
+          {                                                        //~v79bR~
+            numlenUcs=unumlen(pucs+2,UNUMLEN_HEX,reslen-2);        //~v79bR~
+            if (numlenUcs>8)                                       //~v79bR~
+                numlenUcs=8;                                       //~v79bR~
+            rc2=ugethex(pucs+2,xcvwk,numlenUcs);                   //~v79bR~
+            if (rc2==2) //UCS2                                     //~v79bR~
+                ucscode=(ULONG)((xcvwk[0]<<8)|xcvwk[1]);           //~v79bR~
+            else                                                   //~v79bR~
+            if (rc2==3) //ucs4                                     //~v79bR~
+                ucscode=(ULONG)((xcvwk[0]<<16)|xcvwk[1]<<8|xcvwk[2]);//~v79bR~
+            else                                                   //~v79bR~
+            if (rc2==4) //ucs4                                     //~v79bI~
+                ucscode=(ULONG)((xcvwk[0]<<24)|xcvwk[1]<<16|xcvwk[2]<<8|xcvwk[3]);//~v79bI~
+            else                                                   //~v79bI~
+            {                                                      //~v79bI~
+                if (Pferr)                                         //~v79bI~
+                {                                                  //~v79bI~
+                    Pferr(UCVUCS_FMTERR,Pibufflen-reslen,(int)((ULPTR)putf-(ULPTR)Pobuff),Pibuff,reslen);//~v79bI~
+                }                                                  //~v79bI~
+        	    rc|=UCVUCS_FMTERR;                                 //~v79bI~
+            	errctr++;                                          //~v79bI~
+                escucssw=0;                                        //~v79bR~
+            }                                                      //~v79bI~
+          }                                                        //~v79bR~
+          else                                                     //~v79bR~
+          {                                                        //~v79bR~
         	rc2=ugethex(pucs+2,xcvwk,4);                           //~v5h6R~
             if (rc2==2)                                            //~v5h6R~
             	ucscode=(ULONG)((xcvwk[0]<<8)|xcvwk[1]);           //~v5h6R~
             else                                                   //~v5h6I~
+            {                                                      //~v79bI~
+                if (Pferr)                                         //~v79bI~
+                {                                                  //~v79bI~
+                    Pferr(UCVUCS_FMTERR,Pibufflen-reslen,(int)((ULPTR)putf-(ULPTR)Pobuff),Pibuff,reslen);//~v79bI~
+                }                                                  //~v79bI~
+        	    rc|=UCVUCS_FMTERR;                                 //~v79bI~
+            	errctr++;                                          //~v79bI~
             	escucssw=0;                                        //~v5h6I~
+            }                                                      //~v79bI~
+          }                                                        //~v79bR~
         }                                                          //~v5h6I~
         if (escucssw)                                              //~v5h6I~
         {                                                          //~v5h6I~
+          if (Popt & UCVUCS_UCS4)                                  //~v79bI~
+          	ucssz=2+numlenUcs;                                     //~v79bR~
+          else                                                     //~v79bI~
             ucssz=6;		//input \uxxxx fmt len                 //~v5h6I~
 //          utflen=uccvucs2utf(ucscode,utf);                       //~v5h6I~//~v6BkR~
             utflen=uccvucs2utf((UWUCS)ucscode,utf);                //~v6BkI~
@@ -2171,9 +2238,14 @@ int ucvsetucss(ULONG Popt,UWUCS Pucs,UCHAR *Pucss)                 //~v691I~
   {                                                                //~v5h6I~
   	if (Pucs>>8)	//not sbcs                                     //~v5h6I~
   		if (Popt & UCVUCS_UCS4) //accept ucs4                      //~v5h6I~
+        {                                                          //~v79cI~
 //        	ucssz=sprintf(pc,"\\u%08lx",Pucs);                     //~v5h6I~//~v691R~
 //      	ucssz=sprintf(pc,"\\u%08x",Pucs);                      //~v691I~//~v6BkR~
+          if (Pucs>>16)                                            //~v79cI~
         	ucssz=sprintf(pc,"\\u%08x",(UINT)Pucs);                //~v6BkI~
+          else                                                     //~v79cI~
+        	ucssz=sprintf(pc,"\\u%04x",(UINT)Pucs);                //~v79cI~
+        }                                                          //~v79cI~
         else                                                       //~v5h6I~
 //        	ucssz=sprintf(pc,"\\u%04lx",Pucs);                     //~v5h6I~//~v691R~
 //      	ucssz=sprintf(pc,"\\u%04x",Pucs);                      //~v691I~//~v6BkR~
@@ -2187,7 +2259,7 @@ int ucvsetucss(ULONG Popt,UWUCS Pucs,UCHAR *Pucss)                 //~v691I~
   else                                                             //~v5h6I~
   {                                                                //~v5h6I~
     if (Popt & UCVUCS_LE) //output ucs by little endian
-        if (Popt & UCVUCS_UCS4) //accept ucs4
+        if (Popt & UCVUCS_UCS4) //accept ucs4    
         {
             *pc++=(UCHAR)((Pucs & 0x000000ff));
             *pc++=(UCHAR)((Pucs & 0x0000ff00)>>8);
@@ -2287,7 +2359,7 @@ UWUCS* ucvucs_memchrW4(UWUCS *Ppucs,UWUCS Pucs,int Pucsctr)        //~v6BkI~
     for(pucs=Ppucs,ii=0;ii<Pucsctr;ii++,pucs++)                    //~v6BkI~
     {                                                              //~v6BkI~
     	if (*pucs==Pucs)                                           //~v6BkI~
-		    return pucs;                                           //+v6BkR~
+		    return pucs;                                           //~v6BkR~
     }                                                              //~v6BkI~
     return 0;                                                      //~v6BkI~
 }//ucvucs_memchrW4                                                 //~v6BkI~

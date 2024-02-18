@@ -1,7 +1,8 @@
-//*CID://+v701R~:                             update#=  154;       //~v701R~
+//*CID://+vc60R~:                             update#=  155;       //+vc60R~
 //************************************************************* //~5825I~
 //*proc.h                                                       //~5A10R~
 //************************************************************* //~5825I~
+//vc60 2023/08/03 mediaview as openWith                            //+vc60I~
 //v701:200611 usystem hung warning                                 //~v701I~
 //v6M2:170824 (Bug)v6M0 faile if path is multiple devided by ";"/":"//~v6M2I~
 //v6M0:170808 err "LoadLibrary failed for icuucxx"-=>loaddll using ICU_DATA param//~v6M0I~
@@ -54,12 +55,12 @@
 //v064:970210:uexecchk function add(current and path search for chk executable)//~v064I~
 //*951010 new                                                   //~5A10I~
 //************************************************************* //~5A10I~
-#ifdef UPROC_GBLDEF                                                //+v701R~
-           int GuprocStat;                                         //+v701R~
-#else                                                              //~v39kR~//+v701R~
-    extern int GuprocStat;                                         //+v701R~
-#endif                                                             //~v62XI~//+v701R~
-#define GUPS_SYSTEMCALL  0x01                                      //+v701R~
+#ifdef UPROC_GBLDEF                                                //~v701R~
+           int GuprocStat;                                         //~v701R~
+#else                                                              //~v39kR~//~v701R~
+    extern int GuprocStat;                                         //~v701R~
+#endif                                                             //~v62XI~//~v701R~
+#define GUPS_SYSTEMCALL  0x01                                      //~v701R~
                                                                    //~v701I~
 #define UPROC_MAX_CMDSVRCMD  4096                                  //~v5ezR~
 #define UPROC_MAX_CMDSVRCMD2 (UPROC_MAX_CMDSVRCMD+32)	//overhead //~v5ezR~
@@ -201,7 +202,11 @@ int ushellexec(char *Pfname);                                      //~v5byR~
 //*********************************************************************//~v5g9I~
 	int uproc_gvfsinit(void);                                      //~v5g9I~
 //*********************************************************************//~v5g9I~
+#ifdef ARM                                                         //+vc60I~
+	int ushellexec(int Popt,char *Pfnm,int Psize);                 //+vc60I~
+#else                                                              //+vc60I~
 	int ushellexec(int Popt,char *Pfnm);                           //~v5g9R~
+#endif                                                             //+vc60I~
 	#define USHEXE_CHKONLY   0x01                                  //~v5g9R~
 	#define USHEXE_FORCETERM 0x02                                  //~v5g9I~
 	#define USHEXE_NOMSG     0x04                                  //~v5g9I~

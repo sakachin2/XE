@@ -1,4 +1,4 @@
-//*CID://+v70kR~:                              update#=  804;      //~v70kR~
+//*CID://+v70kR~:                              update#=  809;      //+v70kR~
 //**************************************************
 //*DBCS first byte chk
 //*parm :char to be checked
@@ -388,7 +388,7 @@ UTRACEP("wcinit sw=%x opt=%x,locale=%s\n",Swcinitsw,Popt,Pplocale);//~v627R~
 #endif                                                             //~v62GI~
         }//initsw                                                  //~v5n8R~
     }                                                              //~v5n8I~
-    UTRACEP("udbcschk_wcinit rc=%d, Gudbcschk_flag=%08x\n",rc,Gudbcschk_flag);//~v5n8I~//+v70kR~
+    UTRACEP("udbcschk_wcinit rc=%d, Gudbcschk_flag=%08x\n",rc,Gudbcschk_flag);//~v5n8I~//~v70kR~
 #ifdef UTF8SUPPH                                                   //~v62UR~
     if (!UDBCSCHK_ISDBCS())                                        //~v62UR~
     	Popt &= ~UDCWCIO_DBCSREAD;	//ignore DBCS read             //~v62UR~
@@ -431,7 +431,7 @@ UTRACEP("wcinit sw=%x opt=%x,locale=%s\n",Swcinitsw,Popt,Pplocale);//~v627R~
 	utfucsmapinit(0);    //after setlocale to system default for wcwidth()//~v640I~
   }                                                                //~v6b9I~
 #endif                                                             //~v640M~
-    UTRACEP("udbcschk_wcinit rc=%d, Gudbcschk_flag=%08x,system locale=%s\n",rc,Gudbcschk_flag,setlocale(LC_ALL,NULL));//~v62MI~//+v70kR~
+    UTRACEP("udbcschk_wcinit rc=%d, Gudbcschk_flag=%08x,system locale=%s\n",rc,Gudbcschk_flag,setlocale(LC_ALL,NULL));//~v62MI~//~v70kR~
     UTRACEP("wcinit last locale=%s\n",setlocale(LC_ALL,NULL));     //~v62UR~
     return rc;                                                     //~v5n8I~
 }//udbcschk_wcinit                                                 //~v5mQI~
@@ -538,6 +538,7 @@ int udbcschk_wclocaleinit(int Popt,int Pdbcschkrc,char *Pplocale)  //~v6f3I~
     ULONG phiconv=(ULONG)Sconverters;                              //~v5n8I~
 #endif                                                             //~v5n8I~
 //**********************************                               //~v5n8I~
+    UTRACEP("%s:opt=0x%x,locale=%s,dbcschkrc=%d\n",UTT,Popt,Pplocale,Pdbcschkrc);//~v70kI~
 //if (Popt)   //udbcschk rc=1(Japanese(not Utf8))                  //~v5n8R~//~v6f3R~
   if (Pdbcschkrc)   //udbcschk rc=1(Japanese(not Utf8))            //~v6f3I~
   {                                                                //~v5n8I~
@@ -668,20 +669,46 @@ int udbcschk_wclocalereset(int Popt,char *Pplocale)                //~v5n8I~
         }                                                          //~v5n8R~
     }                                                              //~v5n8R~
     cp=437;                                                        //~v5nvI~
+    UTRACEP("%s:Pplocale=%s,flag=0x%x\n",UTT,Pplocale,Gudbcschk_flag);//~v70kI~
     if (Gudbcschk_flag & (UDBCSCHK_EUC|UDBCSCHK_UTF8J))            //~v5nvI~
     {                                                              //~v5nvI~
+//#ifdef ARM                                                         //~v791I~//+v70kR~
+//        if (ustrstri(Pplocale,"sjis"))                             //~v791I~//+v70kR~
+//        {                                                          //~v791I~//+v70kR~
+//            UTRACEP("%s:locale=sjis\n",UTT);                       //~v791I~//+v70kR~
+//            Gudbcschk_flag &=~UDBCSCHK_EUC;                        //~v791I~//+v70kR~
+//            Gudbcschk_flag |=UDBCSCHK_DBCSJ;                       //~v791I~//+v70kR~
+//        }                                                          //~v791I~//+v70kR~
+//        else                                                       //~v791I~//+v70kR~
+//#endif                                                             //~v791I~//+v70kR~
         if (!ustrstri(Pplocale,"EUC") || !ustrstri(Pplocale,"JP")) //~v5nvR~
         {                                                          //~v5nvI~
 			Gudbcschk_flag &=~(UDBCSCHK_EUC|UDBCSCHK_UTF8J|UDBCSCHK_DBCSJ);//~v5nvR~
 			Gudbcschk_flag |=UDBCSCHK_FORCENONJ;                   //~v5nvR~
         }                                                          //~v5nvI~
         else                                                       //~v5nvI~
+        {                                                          //~v70kI~
+        	UTRACEP("%s:set FORCEUCJ Gudbcschk_flag=0x%x\n",UTT,Gudbcschk_flag);//~v70kI~
 			Gudbcschk_flag |=UDBCSCHK_FORCEUCJ;                    //~v5nvI~
+        }                                                          //~v70kI~
     }                                                              //~v5nvI~
     else                                                           //~v5nvI~
     {                                                              //~v5nvI~
+//#ifdef ARM                                                         //~v791I~//+v70kR~
+//        if (ustrstri(Pplocale,"sjis"))                             //~v791I~//+v70kR~
+//        {                                                          //~v791I~//+v70kR~
+//            UTRACEP("%s:set SJIS\n",UTT);                          //~v791I~//+v70kR~
+//            if (Gudbcschk_flag & UDBCSCHK_UTF8)                    //~v791I~//+v70kR~
+//            {                                                      //~v791I~//+v70kR~
+//                Gudbcschk_flag |=UDBCSCHK_UTF8J;                   //~v791I~//+v70kR~
+//                Gudbcschk_flag &=~UDBCSCHK_UTF8E;                  //~v791I~//+v70kR~
+//            }                                                      //~v791I~//+v70kR~
+//        }                                                          //~v791I~//+v70kR~
+//        else                                                       //~v791I~//+v70kR~
+//#endif                                                             //~v791I~//+v70kR~
         if (ustrstri(Pplocale,"EUC") && ustrstri(Pplocale,"JP"))   //~v5nvR~
         {                                                          //~v5nvI~
+        	UTRACEP("%s:set FORCEUCJ\n",UTT);                      //~v70kI~
 			Gudbcschk_flag |=UDBCSCHK_FORCEUCJ;                    //~v5nvI~
 #ifdef ARM            	                                           //~v70kI~
 			if (Gudbcschk_flag & UDBCSCHK_UTF8)                    //~v70kI~
@@ -1609,6 +1636,7 @@ int udbcschkcp(void)                                               //~v150I~
 #endif                                                             //~v5n8I~
     if (!(Gudbcschk_flag & UDBCSCHK_UTF8))	//not utf8             //~v5n8I~
         Gudbcschk_flag|=UDBCSCHK_DBCSJ; //Japanese special(SJIS/EUC)//~v5n8I~
+    UTRACEP("%s:exit Gudbcschk_flag=0x%x\n",UTT,Gudbcschk_flag);   //~v70kI~
 	return 1;           	//full japanese                        //~v150I~
 }//udbcschkcp                                                      //~v150I~
 //#ifndef WXE                                                      //~v570R~
@@ -2513,9 +2541,12 @@ int udbcschk_setdbcstype(int Popt,char *Pplocale,ULONG Phiconv)    //~v62UR~
 	int cp;                                                        //~v6BBI~
 #endif                                                             //~v62UR~
 //**********************                                           //~v62UR~
-	UTRACEP("%s:opt=%x,Phiconv=%p,Scodepage=%d\n",UTT,Popt,Phiconv,Scodepage);//~v6BBR~
+	UTRACEP("%s:opt=%x,Phiconv=%p,Scodepage=%d,Pplocale=%s\n",UTT,Popt,Phiconv,Scodepage,Pplocale);//~v6BBR~//~v70kR~
     if (ustrstri(Pplocale,LANGEUCID))                              //~v62UR~
+    {                                                              //~v70kI~
+		UTRACEP("%s:set UDBCSCHK_LANGEUC\n",UTT);                  //~v70kI~
         Gudbcschk_flag|=UDBCSCHK_LANGEUC;   //for ss2/ss3 chk      //~v62UR~
+    }                                                              //~v70kI~
 #ifdef LNX	//i could not test windows Gb18030                     //~v62UR~
 	chklen=4;                                                      //~v62UR~
 	opt=EBC2ASC_PARMUCVEXT|UCVEXTO_CHARLEN; //len parm is for one char(for 3 byte euc char)//~v62UR~

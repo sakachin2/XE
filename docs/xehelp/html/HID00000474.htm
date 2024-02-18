@@ -34,7 +34,8 @@ a:hover{font-weight:bold;}
  <SPAN STYLE="color:#000000;font-size:12pt;"> .v129T&lt;--129S:(2022/12/04)</SPAN>
 <SPAN STYLE="color:#000000;font-size:12pt;">  <SPAN STYLE="color:#000000;font-size:12pt;">.v129U&lt;--129T:(2022/12/15)<font size="3">.</font></SPAN></SPAN></SPAN></SPAN></PRE>
 <PRE><font size="3">&nbsp;<SPAN STYLE="color:#000000;font-size:12pt;"><SPAN STYLE="color:#000000;font-size:12pt;"> <SPAN STYLE="color:#000000;font-size:12pt;">.v129V&lt;--129U:(2023/06/10)
-  </SPAN>.v129W&lt;--129V:(2023/07/31)</SPAN></SPAN></font></PRE>
+  </SPAN>.v129W&lt;--129V:(2023/07/31)
+  .v129X&lt;--129W:(2024/02/20)</SPAN></SPAN></font></PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
     1.BUGs
        -(Windows:64)"&"(spawn executable file) dir cmd crush.
@@ -117,6 +118,19 @@ a:hover{font-weight:bold;}
         Setting for S+C and S+A do no work, and same effect as setting of without S+.
         Accodingly, Cut &amp; Paste by mouse dose not work.
        -=Deleting a line on the =0.2 screen causes corrupted key binding.
+
+     (129X)
+       -"cv" command with \u option incorrectly converts Unicode>U-FFFF.
+       -U+00A0 was not a base character of combining characters.
+       -(gxe) may crash.
+        .When displa a combining character.
+        .When the middle mouse button is pressed.
+        .When "preview" menu button is pressed.
+       -(gxe) box type cursor hides character behind.
+       -grep command (also for "g" line command on directory list).
+        .Hangs when double quotes (") in the search string are not closed.
+        .Fails when string contains intermediate spaces.
+
 </font>
 </PRE>
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
@@ -260,6 +274,12 @@ a:hover{font-weight:bold;}
           .Utilize Android-11(R):Api30 permission options : All Files.
           .CD command support
 
+     (129X)
+	   -Added command line options "-Yv" (default), "-Nv" to specify Unicode display width.
+        "-Nv" displays all characters of ambiguous width in 2 digits.
+        "-Yv" displays those in one cell for Windows console version xe,
+        Wxe, gxe and xe-linux versions perform internal determination.
+
 </SPAN>   
  </SPAN>
     3.Miscellaneous.
@@ -340,6 +360,12 @@ a:hover{font-weight:bold;}
        -Axe
           .DOS commands (full screen shell) are now not supported.
           .&quot;!&quot; line commands are now not supported.
+
+     (129X)
+       -(Win:Console version) Changing the cursor shape using the Insert key
+        does not work on WindowsTerminal.If necessary,
+        start xe on Conhost (previous command prompt executable).
+
 
      4.Tool.
      (129C)
@@ -434,6 +460,15 @@ xcfont Mangal H=* ; Codepage will be listed by "xcv /list".
         -xfmt v1.5
         -xfg v1.21
         -xdc v2.29 -Added UF option (skip print directory timestamp unmatch to unmatch list).
+
+    (129X)
+       -xcv  v1.22
+         .Added standard input in Hex notation ("-Yh" option)
+          and output in Hex notation ("-Yx" option).
+       -xfc  v1.28
+         .Added case-insensitive comparison option ("-Nc").
+         .Compare positions can now be specified separately
+          for both files ( -Mm-n[/p-q] ).
 
 </SPAN></SPAN></PRE>
 </BODY>

@@ -1,4 +1,4 @@
-//*CID://+vbs7R~:                             update#=  313;       //~vb7cR~//~vbs7R~
+//*CID://+vbs7R~:                             update#=  315;       //+vbs7R~
 //************************************************************* //~5820I~
 //*xedlcmd3.c                                                   //~5820I~
 //* each dir line cmd process                                   //~5820I~
@@ -273,7 +273,7 @@ int dlcmddelete(PUCLIENTWE Ppcw,PUDLCMD Pplc,PUDLCMD Pplcdummy) //~5820I~
 //    int swwildmultiple=0;                                        //~vaa0R~
 //#endif                                                           //~vaa0R~
 //*******************                                           //~5820I~
-    UTRACEP("%s:reason=%d\n",UTT,Ppcw->UCWreason);                 //+vbs7I~
+    UTRACEP("%s:reason=%d\n",UTT,Ppcw->UCWreason);                 //~vbs7I~
 #ifdef FTPSUPP                                                     //~v609I~
     ftpfiledelsw=UCBITCHK(Pplc->UDLCflag,UDLCFFTPDEL);             //~v609I~
 #endif                                                             //~v609I~
@@ -1132,7 +1132,17 @@ int dlcmdattrib(PUCLIENTWE Ppcw,PUDLCMD Pplc,PUDLCMD Pplcdummy) //~5906R~
 		rc=dcmdattrchng_ftp(0,pfh->UFHpuftph,fullpathname,attron,attroff,&attrout);//~vac2I~
     else                                                           //~v59fI~
 //#endif                                                             //~v59fI~//~vac2R~
+    {                                                              //~vbz2I~
+//#ifdef ARMXXE                                                      //~vbz2I~//+vbs7R~
+//        if (IS_DOCPATH(fullpathname))                              //~vbz2I~//+vbs7R~
+//        {                                                          //~vbz2I~//+vbs7R~
+//            UCHAR  realPath[_MAX_PATH];                            //~vbz2I~//+vbs7R~
+//            if (getParmRealPath(fullpathname,realPath)==0)         //~vbz2I~//+vbs7R~
+//                strcpy(fullpathname,realPath);                     //~vbz2I~//+vbs7R~
+//        }                                                          //~vbz2I~//+vbs7R~
+//#endif                                                             //~vbz2I~//+vbs7R~
 		rc=dcmdattrchng(fullpathname,attron,attroff,&attrout);     //~v59fI~
+    }                                                              //~vbz2I~
 #ifdef FTPSUPP                                                     //~v72pI~
   }//not TSO                                                       //~v72pI~
 #endif                                                             //~v72pI~

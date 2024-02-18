@@ -1,7 +1,8 @@
-//*CID://+vbt4R~:                            update#=  496;        //~vbt4R~
+//*CID://+vbzgR~:                            update#=  497;        //+vbzgR~
 //*************************************************************
 //*xechar.c                                                     //~v04dR~
 //*************************************************************
+//vbzg:240131 v78g do locate cmd by key on prot fld of dirlist. protect it if col=1(top of num fld) for avoid easy jump.//+vbzgI~
 //vbt4:201212 (WIN)apply -Nm on LC file only when utf8 inputmode(A+u)//~vbt4I~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vb97:170311 Trap lcmd ineffective bug(Windows dump is taken by ueh,so change uerrmsg to uerrexit)//~vb97I~
@@ -272,7 +273,7 @@
 #include "xedlcmd.h"                                               //~v63hI~
 #include "xeopt.h"                                                 //~v72NI~
 #include "xegbl.h"                                                 //~v72NI~//~v777I
-#include "xeutf.h"                                             //~5701I~//~va00I//+vbt4I~
+#include "xeutf.h"                                             //~5701I~//~va00I//~vbt4I~
 #ifdef UTF8UCS2                                                    //~va20I~
 	#include "xeutf2.h"                                             //~5701I~//~va00I//~va20R~
 #endif                                                             //~va00I//~va20I~
@@ -345,6 +346,7 @@ int charpan(PUCLIENTWE Ppcw,int Popt)
       if (pfli!=-2) //!dbcsinputerr                                //~va00I
 #endif                                                             //~va00I
     	if (Ppcw->UCWtype==UCWTDIR)                                  //~v034M~//~v78gI
+          if (Ppcw->UCWrcsrx!=1)  //avoid col1                     //+vbzgI~
         	return dirlocate(0,Ppcw);                              //~v78gI
 		return 4;
     }                                                              //~v78gI

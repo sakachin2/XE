@@ -1,5 +1,5 @@
 # XE
-SPF like Editor xe           2023/08/01 V129W
+SPF like Editor xe           2024/02/20 V129X
 
     This editor is fit for programmers working on both main-frame and PC.
     Its operation is based on mainframe SPF editor,
@@ -16,7 +16,7 @@ SPF like Editor xe           2023/08/01 V129W
 
     !! THIS IS FREE SOFTWARE AND COMES WITH ABSOLUTELY NO WARRANTY.
 *********************************************************************************************
-(Japanese)                   2023/08/01 V129W
+(Japanese)                   2024/02/20 V129X
 
     メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。
     ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。

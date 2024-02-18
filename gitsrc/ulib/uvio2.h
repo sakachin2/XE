@@ -1,6 +1,8 @@
-//*CID://+v6hhR~:                             update#=    4;       //+v6hhR~
+//*CID://+v796R~:                             update#=    7;       //~v796R~
 //******************************************************
-//v6hh:120623 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  defines ULPTR(unsigned long long)//+v6hhI~
+//v796:240118 W32:try to chk cursor step for cpu8 file.            //~v796I~
+//            Adjust culumn width by uftwcwidth for cursor width is single column to avoid column string move by cursor position//~v796I~
+//v6hh:120623 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  defines ULPTR(unsigned long long)//~v6hhI~
 //v5fh:050125 (W32)window should be at current last of consolebuff //~v5fhI~
 //v252:990626 (Win):for redirect;Once create console buff and then get inf befre destroy//~v252I~
 //v156:980126 ugetconhwnd:get console appl HWND                    //~v156I~
@@ -58,6 +60,9 @@ int uvio_dosgetvbuff(UCHAR **Ppvbuff);                             //~v044I~
                                                                    //~v156I~
 #ifdef W32                                                         //~v156I~
 //********************************************************************///~v156I~
-//ULONG ugetconhwnd(void);                                           //~v156R~//+v6hhR~
-ULPTR ugetconhwnd(void);                                           //+v6hhI~
+//ULONG ugetconhwnd(void);                                           //~v156R~//~v6hhR~
+ULPTR ugetconhwnd(void);                                           //~v6hhI~
+int uvioGetCursorWidth(int Popt,ULONG Pucs);                       //+v796R~
+#define UVGCWO_OPEN     0x01        //open  consolebuffer handle   //~v796R~
+#define UVGCWO_CLOSE    0x02        //close consolebuffer handle   //~v796I~
 #endif                                                             //~v156I~

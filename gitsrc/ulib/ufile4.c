@@ -1,4 +1,4 @@
-//*CID://+v779R~:                             update#=  290;       //~v779R~
+//*CID://+v779R~:                             update#=  291;       //~v779R~
 //*************************************************************
 //*ufile4.c                                                        //~v083R~
 //*  utempnam udirwalk ugetdiskfree ufileishpfs ufileisvfat ufileisntfs//~v5i0R~
@@ -310,7 +310,7 @@ char *utempnam(char *Pdir,char *Pprefix,char *Ptempfile)           //~v050R~
             temp=Ptempfile;                                        //~v050I~
         }                                                          //~v050I~
     }                                                              //~v050I~
-    UTRACEP("%s:temp=%s\n",UTT,temp);                              //+v779I~
+    UTRACEP("%s:temp=%s\n",UTT,temp);                              //~v779I~
     return temp;                                                   //~v050I~
 }//utempnam                                                        //~v050R~
 #ifdef LNX                                                         //~v5b0I~
@@ -1649,6 +1649,7 @@ int ufsetlock(int Popt,char *Plockfnm)                             //~v5nhI~
     {                                                              //~v5nhI~
 #ifdef UNX                                                         //~v5nhI~
     	rc=unx_fresetlock(Plockfnm);	//free                     //~v5nhI~
+  		UTRACEP("%s:after unx_fresetlock rc=%d,errno=%d,fnm=%s\n",UTT,rc,errno,Plockfnm);//+v779I~
 #else                                                              //~v5nhI~
 		rc=unlink(Plockfnm);	//free                             //~v5nhI~
         if (rc)                                                    //~v5nhI~

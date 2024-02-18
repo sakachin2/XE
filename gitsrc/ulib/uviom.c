@@ -1,4 +1,4 @@
-//*CID://+v700R~:                            update#= 2446;        //~v700R~
+//*CID://+v700R~:                            update#= 2454;        //~v700R~
 //*************************************************************    //~v6VdR~
 //v700:200610 Axe:chtype not defined                               //~v700I~
 //v6Xb:180822 gb18030:dbcs by gb18030 but display width=1, pos differ with hex line//~v6XbI~
@@ -1933,7 +1933,7 @@ UTRACED("uviowrtcellw1 pdata",pdata0,Plen);                        //~v5n8I~
 UTRACED("uviowrtcellw1 pdbcs",Ppdbcs,Plen);                        //~v5n8I~
 UTRACED("uviowrtcellw1 ucs",pucs0,ucsctr*WUCSSZ);                    //~v5n8R~//~v65mR~
 UTRACED("uviowrtcellw1 attr",pattr0,Plen*2);                       //~v5n8I~
-UTRACEP("%s:Shconout=%p\n",UTT,Shconout);                          //+v700I~
+UTRACEP("%s:Shconout=%p\n",UTT,Shconout);                          //~v700I~
     if (!m2uopt	//not dd fmt                                       //~v6G0M~
     )                                                              //~v6G0M~
     {                                                              //~v6G0M~
@@ -7493,10 +7493,11 @@ int uviowrtcellW1_cpu8file_NoLigatureNoCombine(int Popt,WUCS *Ppucs,int Pucsctr,
 #ifdef KKK                                                         //~v6WyI~
 				rc+=uvioWriteConsoleOutputCharacterUCS1(Shconout,ucs,tgtpos,&writelen)==0;//~v6G0I~
 #else                                                              //~v6WyI~
-				rc+=WriteConsoleOutputCharacterW(Shconout,&ucs,1,tgtpos,&writelen)==0;//~v6WyR~
+//  			rc+=WriteConsoleOutputCharacterW(Shconout,&ucs,1,tgtpos,&writelen)==0;//~v6WyR~//+v700R~
+				rc+=uvioWriteConsoleOutputCharacterW(Shconout,&ucs,1,tgtpos,&writelen)==0;//+v700I~
 #endif                                                             //~v6WyI~
                                                                    //~v6G0I~
-//UTRACEP("%s: not combinemode ucs=%04x,col=%d,chwidth=%d\n",UTT,*pucs,tgtpos.X,chwidth);//~v700R~
+  UTRACEP("%s: not combinemode ucs=%04x,col=%d,chwidth=%d,writelen=%d\n",UTT,*pucs,tgtpos.X,chwidth,writelen);//~v700R~
             writelend+=writelen;                                   //~v6G0I~
             pdbcs+=chwidth;                                        //~v6G0I~
             pattr+=chwidth;                                        //~v6G0I~
@@ -7504,6 +7505,7 @@ int uviowrtcellW1_cpu8file_NoLigatureNoCombine(int Popt,WUCS *Ppucs,int Pucsctr,
             tgtpos.X+=(SHORT)chwidth;                              //~v6G0R~
         }//not dbcsspace                                           //~v6G0R~
     }//for                                                         //~v6G0R~
+    UTRACEP("%s:rc=%d\n",UTT,rc);                                  //~v700I~
     return rc;                                                     //~v6G0R~
 }//uviowrtcellW1_cpu8file_NoLigatureNoCombine                     //~v6G0R~//~v6WxR~
 //*********************************************************************************//~v6G0I~
@@ -7587,6 +7589,10 @@ int uviowrtcellW1_cpu8file_NoLigatureCombineColSplit(int Popt,WUCS *Ppucs,int Pu
             else                                                   //~v6G0R~
                 combinectr=0;                                      //~v6G0R~
             UTRACEP("%s:ucs=%x,combinectr=%d,pdbcs=%p\n",UTT,ucs2,combinectr,pdbcs);//~v6G0R~
+            if (ucs2==0x201c)                                      //~v700I~
+            {                                                      //~v700I~
+            	UTRACEP("%s:ucs=%x,combinectr=%d,pdbcs=%p\n",UTT,ucs2,combinectr,pdbcs);//~v700I~
+            }                                                      //~v700I~
             if (combinectr)                                        //~v6G0R~
             {                                                      //~v6G0R~
                 ucsctr=pos-poso;                                   //~v6G0R~

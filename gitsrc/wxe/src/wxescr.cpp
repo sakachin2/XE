@@ -1,5 +1,7 @@
-//CID://+vbdnR~:       update#=   123                              //~vbdnR~
+//CID://+vbziR~:       update#=   131                              //~vbziR~
 //******************************************************************************//~v003I~
+//vbzi:240201 (WXE)vbz4 had no effect. Reason is font=System. SelectFont was not done at scrinit.//~vbziI~
+//vbz4:240120 try vbz3 to WXE                                      //~vbz4I~
 //vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
 //vb4i:160805 vb4f for wxe(specify ligature on/off,combine on/of line by line)//~vb4iI~
 //vb4g:160801 (WXE)dirlist ligature on always like as vb37         //~vb4gI~
@@ -78,6 +80,11 @@ void  CWxemain::scrinit(void)                                      //~v003R~
     scrbgrect(Mpmemdc);                                            //~2A20R~
     createfont();                                                  //~v003I~
     scrpeninit(1);                                                 //~v73tR~
+    Mpmemdc->SelectFont(HFONT(*Mpfont));                           //~vbziI~
+    UTRACEP("%s:Mpmemdc=%p,Mpfont=%p,HFONT=%p\n",UTT,Mpmemdc,Mpfont,HFONT(*Mpfont));//~vbziI~
+    UTRACEP("%s:CClientDC=%p,HDC=%p\n",UTT,pdc,HDC(*pdc));         //~vbziM~
+    csubinit4(HFONT(*Mpfont));                                     //+vbziM~
+    csubinit3(HDC(*pdc));                                          //~vbz4I~
 	return;                                                        //~v003I~
 }//scrinit                                                         //~v003I~
 //===============================================================================//~v73tI~
@@ -684,19 +691,19 @@ UTRACEP("CREATEFONT strput syntax=%d font=%p\n",Pstyle,Mpfonts[Pstyle]);//~va74I
       else                                                         //~v780M~
       {                                                            //~v780M~
         fgcolor=Mwxeintf.WXEIsynrgb[fgpal];                        //~v780M~
-		UTRACEP("strput fgcolor=x%x,fgpal=%d\n",fgcolor,fgpal);    //+vbdnR~
+		UTRACEP("strput fgcolor=x%x,fgpal=%d\n",fgcolor,fgpal);    //~vbdnR~
         if ((fgcolor & WXE_SYNTAXRGB))                             //~v780R~
 	        fgcolor&=~WXE_SYNTAXRGB;                               //~v780I~
         else                                                       //~v780I~
 	        fgcolor=Mwxeintf.WXEIpalrgb[fgpal];                    //~v780I~
-		UTRACEP("strput fgcolor=x%x\n",fgcolor);                   //+vbdnR~
+		UTRACEP("strput fgcolor=x%x\n",fgcolor);                   //~vbdnR~
         bgcolor=Mwxeintf.WXEIsynrgb[bgpal];                        //~v780M~
-		UTRACEP("strput bgcolor=x%x,bgpal=%d\n",bgcolor,bgpal);    //+vbdnR~
+		UTRACEP("strput bgcolor=x%x,bgpal=%d\n",bgcolor,bgpal);    //~vbdnR~
         if ((bgcolor & WXE_SYNTAXRGB))                             //~v780R~
 	        bgcolor&=~WXE_SYNTAXRGB;                               //~v780I~
         else                                                       //~v780I~
 	        bgcolor=Mwxeintf.WXEIpalrgb[bgpal];                    //~v780I~
-		UTRACEP("strput bgcolor=x%x\n",bgcolor);                   //+vbdnR~
+		UTRACEP("strput bgcolor=x%x\n",bgcolor);                   //~vbdnR~
       }                                                            //~v780M~
                                                                    //~2A05I~
         if (Pcapsw==1)                                             //~2A27R~
@@ -955,6 +962,11 @@ UTRACEP("createfont type=%s,h=%d,w=%d truetype=%d,h=%d,outprecision=%d,charset=%
                      Pfontstyle))      //face                      //~2928R~
         uerrlast("CreateFont");                                    //~2928I~
 UTRACEP("CREATEFONT createfontsub font=%p\n",pfont);               //~va74I~
+#ifndef NOTRACE                                                    //~vbz4I~
+		LOGFONT lf;                                                //~vbz4I~
+		pfont->GetLogFont(&lf);                                    //~vbz4I~
+		UTRACED("CREATEFONT createfontsub logfont",&lf,sizeof(lf));//~vbz4R~
+#endif                                                             //~vbz4I~
 	return pfont;                                                  //~2928I~
 }//createfontsub                                                   //~2928I~
 //===============================================================================//~2901I~

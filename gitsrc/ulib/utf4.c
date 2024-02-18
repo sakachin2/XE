@@ -1,5 +1,27 @@
-//*CID://+v70iR~:                             update#=  239;       //~v6X5R~//~v70iR~
+//*CID://+v79KR~:                             update#=  324;       //+v79KR~
 //*********************************************************************//~v62XI~
+//v79K:240213 update Format(categrory Cf:161)                      //+v79KI~
+//v79J:240213 update combining(categrory Mc:SpacingMark/ctr:452)   //~v79JI~
+//v79H:240211 update combining(categrory Mn:NonSpacingMark/1985)   //~v79HI~
+//v79G:240210 (Bug:LNX) update SCM tbl                             //~v79GI~
+//v79z:240206 dbcs chk by tbl search                               //~v79zI~
+//v79y:240206 update combining data from web.                      //~v79yI~
+//v79x:240206 adjust ambiguous for console by Suctb_j.(no need to define Wide if ambiguous)//~v79xI~//~v79zR~
+//v79w:240206 ambigous should be same to all gui because it is adjusted by chkcursor. del utf4_isambiguous_WXE//~v79wI~
+//v79v:240205 apply ambiguous of unicode database to wxe/gxe(chk cursor will be done).apply old ambiguous to console//~v79vI~
+//v79u:240205 0x303f(unpritable box mark) should be ambiguous for wxe(lnx defines it WID on tbl _cjk)//~v79uI~
+//v79s:240205 (WXE)no need u2420/2e26 as sbcs/wide it is adjusted by chkcursor by ambiguous definition//~v79sI~
+//v79q:240204 (XXE)use same ambiguous tbl for JP ans non-JP(it is also same as console)//~v79oI~
+//                 xxe do cursor chk, wider range of ucs code is no problem except performance.//~v79oI~
+//v79o:240202 (WXE)ambiguous/F2C1 chk for non JP env wxe; same as JP env//~v79oI~
+//v79n:240201 (W32)ambiguous f2C1 for non JP env                   //~v79iI~
+//v79i:240128 (W32)add to combining tbl from web(Windows has no wcwidth(),so tbl definition required)//~v79iI~
+//v79h:240128 (LNX)new combining char from web                     //~v79hI~
+//v79g:240125 (LNX)drop private area(u-e000--uf8ff) from ambiguous //~v79gI~
+//v79f:240127 (LNX)ambiguous chk required for non CJK env          //~v79fI~
+//vbz5:240120 try vbz3 to XXE(apichk by char extent)               //~vbz5I~
+//vbz4:240120 try vbz3 to WXE                                      //~vbz4I~
+//v799:240119 v798 by table(kanji is not ambiguout)                //~v799I~
 //v70i:200716 Ucs.java' wcwidth is proper than adjsbcs             //~v70iI~
 //v6X5:180818 (LNX:xe)column shring COMB2SCM(036f+0390) even SPLIT mode,//~v6X5I~
 //v6X3:180816 Hangul 1160-11ff is not combining(Category:Lo:Letter,Other) but combined actualy(u1109+u1161), On W32 Suctbj adjust as DBCS if ISDBCS_J()//~v6X3I~
@@ -116,6 +138,15 @@ struct interval {                                                  //~7719I~
   int first;                                                       //~7719I~
   int last;                                                        //~7719I~
 };                                                                 //~7719I~
+//UCODETB constant                                                 //~v79zR~
+#define UCODETB_HALF    'H'                                        //~v79zR~
+#define UCODETB_FULL    'F'                                        //~v79zR~
+#define UCODETB_WW      'W'                                        //~7925I~//~v79zR~
+//#ifdef LNX                                                         //~v79fI~//~v79iR~
+int utf4_isAmbiguous_NoCJK(int Popt,UWUCS Pucs);                   //~v79fI~
+//#endif                                                             //~v79fI~//~v79iR~
+int utf4_isAmbiguousAmbiguous(UWUCS Pucs);                         //~v79vI~
+int utf4_wcwidthWFH(int Popt,UWUCS ucs);                           //~v79zR~
 //************************************************************     //~v6X0I~
 //int mk_wcwidth_combining2SCM(int Popt,UWUCS ucs);                  //~v6X0R~//~v6X5R~
 //************************************************************     //~v6X0I~
@@ -148,7 +179,7 @@ static int bisearch(wchar_t ucs, const struct interval *table, int max) {//~7719
                 &&  table[high].first<=table[high].last)           //~v650I~
                     mid=table[high].last;                          //~v650I~
                 else                                               //~v650I~
-                    uerrexit("utf4:width tbl %p seq err at %d(%x--%x)",0,//~v650I~
+                    uerrexit("utf4:width tbl %p seq err at %d(0x%04x--0x%04x)",0,//~v650I~//~v79zR~
                                 table,high,table[high].first,table[high].last);//~v650I~
             }                                                      //~v650I~
         }                                                          //~v650I~
@@ -205,7 +236,7 @@ static int bisearch(wchar_t ucs, const struct interval *table, int max) {//~7719
  * This implementation assumes that wchar_t characters are encoded //~7719I~
  * in ISO 10646.                                                   //~7719I~
  */                                                                //~7719I~
-                                                                   //~7719I~
+//*** !UTF8SUPPORTH ****                                                //~7719I~//~v79zR~
 //int mk_wcwidth(wchar_t ucs)                                       //~v5ncR~//~v650R~//~v6a0R~
 int mk_wcwidth(UWCHART ucs)                                        //~v6a0R~
 {                                                                  //~7719I~
@@ -291,7 +322,7 @@ int mk_wcwidth(UWCHART ucs)                                        //~v6a0R~
       (ucs >= 0x20000 && ucs <= 0x2fffd) ||                        //~7719I~
       (ucs >= 0x30000 && ucs <= 0x3fffd)));                        //~7719I~
 }                                                                  //~7719I~
-#else                                                              //~7719I~
+#else    //!UTF8SUPPORTH                                                          //~7719I~//~v79iR~
 //***********************************************************************
 //By 2009/10 Unicode 5.2.0                                         //~v62UR~
 //***********************************************************************
@@ -304,182 +335,8 @@ int mk_wcwidth(wchar_t ucs)
 {
 #endif   //AAA                                                     //~v650I~
 #ifdef BBB                                                         //~v6W9I~
-//*ncurses-6.0 2018/06/06 confirmed                                //~v6V2I~
-  static const struct interval combining[] = {
-	{ 0x0300, 0x036F },
-    { 0x0483, 0x0486 },
-    { 0x0488, 0x0489 },
-    { 0x0591, 0x05BD },
-    { 0x05BF, 0x05BF },
-    { 0x05C1, 0x05C2 },
-    { 0x05C4, 0x05C5 },
-    { 0x05C7, 0x05C7 },
-    { 0x0600, 0x0603 },
-    { 0x0610, 0x0615 },
-    { 0x064B, 0x065E },
-    { 0x0670, 0x0670 },
-    { 0x06D6, 0x06E4 },
-    { 0x06E7, 0x06E8 },
-    { 0x06EA, 0x06ED },
-    { 0x070F, 0x070F },
-    { 0x0711, 0x0711 },
-    { 0x0730, 0x074A },
-    { 0x07A6, 0x07B0 },
-    { 0x07EB, 0x07F3 },
-//  { 0x0800, 0x08ff },    //not defined                           //~v62UR~
-    { 0x0901, 0x0902 },
-    { 0x093C, 0x093C },
-    { 0x0941, 0x0948 },
-    { 0x094D, 0x094D },
-    { 0x0951, 0x0954 },
-    { 0x0962, 0x0963 },
-    { 0x0981, 0x0981 },
-    { 0x09BC, 0x09BC },
-    { 0x09C1, 0x09C4 },
-    { 0x09CD, 0x09CD },
-    { 0x09E2, 0x09E3 },
-    { 0x0A01, 0x0A02 },
-    { 0x0A3C, 0x0A3C },
-    { 0x0A41, 0x0A42 },
-    { 0x0A47, 0x0A48 },
-    { 0x0A4B, 0x0A4D },
-    { 0x0A70, 0x0A71 },
-    { 0x0A81, 0x0A82 },
-    { 0x0ABC, 0x0ABC },
-    { 0x0AC1, 0x0AC5 },
-    { 0x0AC7, 0x0AC8 },
-    { 0x0ACD, 0x0ACD },
-    { 0x0AE2, 0x0AE3 },
-    { 0x0B01, 0x0B01 },
-    { 0x0B3C, 0x0B3C },
-    { 0x0B3F, 0x0B3F },
-    { 0x0B41, 0x0B43 },
-    { 0x0B4D, 0x0B4D },
-    { 0x0B56, 0x0B56 },
-    { 0x0B82, 0x0B82 },
-    { 0x0BC0, 0x0BC0 },
-    { 0x0BCD, 0x0BCD },
-    { 0x0C3E, 0x0C40 },
-    { 0x0C46, 0x0C48 },
-    { 0x0C4A, 0x0C4D },
-    { 0x0C55, 0x0C56 },
-    { 0x0CBC, 0x0CBC },
-    { 0x0CBF, 0x0CBF },
-    { 0x0CC6, 0x0CC6 },
-    { 0x0CCC, 0x0CCD },
-    { 0x0CE2, 0x0CE3 },
-    { 0x0D41, 0x0D43 },
-    { 0x0D4D, 0x0D4D },
-    { 0x0DCA, 0x0DCA },
-    { 0x0DD2, 0x0DD4 },
-    { 0x0DD6, 0x0DD6 },
-    { 0x0E31, 0x0E31 },
-    { 0x0E34, 0x0E3A },
-    { 0x0E47, 0x0E4E },
-    { 0x0EB1, 0x0EB1 },
-    { 0x0EB4, 0x0EB9 },
-    { 0x0EBB, 0x0EBC },
-    { 0x0EC8, 0x0ECD },
-    { 0x0F18, 0x0F19 },
-    { 0x0F35, 0x0F35 },
-    { 0x0F37, 0x0F37 },
-    { 0x0F39, 0x0F39 },
-    { 0x0F71, 0x0F7E },
-    { 0x0F80, 0x0F84 },
-    { 0x0F86, 0x0F87 },
-    { 0x0F90, 0x0F97 },
-    { 0x0F99, 0x0FBC },
-    { 0x0FC6, 0x0FC6 },
-    { 0x102D, 0x1030 },
-    { 0x1032, 0x1032 },
-    { 0x1036, 0x1037 },
-    { 0x1039, 0x1039 },
-    { 0x1058, 0x1059 },
-    { 0x1160, 0x11FF },
-    { 0x135F, 0x135F },
-    { 0x1712, 0x1714 },
-    { 0x1732, 0x1734 },
-    { 0x1752, 0x1753 },
-    { 0x1772, 0x1773 },
-    { 0x17B4, 0x17B5 },
-    { 0x17B7, 0x17BD },
-    { 0x17C6, 0x17C6 },
-    { 0x17C9, 0x17D3 },
-    { 0x17DD, 0x17DD },
-    { 0x180B, 0x180D },
-    { 0x18A9, 0x18A9 },
-//  { 0x18b0, 0x18ff },  //not assigned                            //~v62UR~
-    { 0x1920, 0x1922 },
-    { 0x1927, 0x1928 },
-    { 0x1932, 0x1932 },
-    { 0x1939, 0x193B },
-    { 0x1A17, 0x1A18 },
-//  { 0x1A20, 0x1Aff },  //not defined                             //~v62UR~
-    { 0x1B00, 0x1B03 },
-    { 0x1B34, 0x1B34 },
-    { 0x1B36, 0x1B3A },
-    { 0x1B3C, 0x1B3C },
-    { 0x1B42, 0x1B42 },
-    { 0x1B6B, 0x1B73 },
-//  { 0x1Bc0, 0x1Bff },  //not assigned                            //~v62UR~
-//  { 0x1c80, 0x1cff },  //not assigned                            //~v62UR~
-    { 0x1DC0, 0x1DCA },
-    { 0x1DFE, 0x1DFF },
-    { 0x200B, 0x200F },
-    { 0x202A, 0x202E },
-    { 0x2060, 0x2063 },
-    { 0x206A, 0x206F },
-    { 0x20D0, 0x20EF },
-    { 0x302A, 0x302F },
-    { 0x3099, 0x309A },
-//  { 0xa4d0, 0xa4ff },  //not assigned                            //~v62UR~
-//  { 0xa5a0, 0xa63f },  //not assigned                            //~v62UR~
-//  { 0xa6a0, 0xa6ff },  //not assigned                            //~v62UR~
-    { 0xA806, 0xA806 },
-    { 0xA80B, 0xA80B },
-    { 0xA825, 0xA826 },
-//  { 0xa830, 0xa83f },  //not assigned                            //~v62UR~
-//  { 0xa8e0, 0xa8ff },  //not assigned                            //~v62UR~
-//  { 0xa960, 0xa9ff },  //not assigned                            //~v62UR~
-//  { 0xaa60, 0xabff },  //not assigned                            //~v62UR~
-//  { 0xd7b0, 0xd7ff },  //not assigned                            //~v62UR~
-    { 0xFB1E, 0xFB1E },
-    { 0xFE00, 0xFE0F },
-    { 0xFE20, 0xFE23 },
-    { 0xFEFF, 0xFEFF },
-    { 0xFFF9, 0xFFFB },
-//  { 0x10200, 0x1027f },  //not assigned                          //~v62UR~
-//  { 0x102e0, 0x102ff },  //not assigned                          //~v62UR~
-//  { 0x10350, 0x1037f },  //not assigned                          //~v62UR~
-//  { 0x103e0, 0x103ff },  //not assigned                          //~v62UR~
-//  { 0x104b0, 0x107ff },  //not assigned                          //~v62UR~
-//  { 0x10840, 0x108ff },  //not assigned                          //~v62UR~
-//  { 0x10940, 0x109ff },  //not assigned                          //~v62UR~
-    { 0x10A01, 0x10A03 },
-    { 0x10A05, 0x10A06 },
-    { 0x10A0C, 0x10A0F },
-    { 0x10A38, 0x10A3A },
-    { 0x10A3F, 0x10A3F },
-//  { 0x10a60, 0x11fff },  //not assigned                          //~v62UR~
-//  { 0x12480, 0x1c000 },  //not assigned                          //~v62UR~
-    { 0x1D167, 0x1D169 },
-    { 0x1D173, 0x1D182 },
-    { 0x1D185, 0x1D18B },
-    { 0x1D1AA, 0x1D1AD },
-    { 0x1D242, 0x1D244 },
-//  { 0x1d250, 0x1d2ff },  //not assigned                          //~v62UR~
-//  { 0x1d380, 0x1d3ff },  //not assigned                          //~v62UR~
-//  { 0x1d800, 0x1efff },  //not assigned                          //~v62UR~
-//  { 0x1f0a0, 0x1ffff },  //not assigned                          //~v62UR~
-//  { 0x2a6e0, 0x2f7ff },  //not assigned                          //~v62UR~
-//  { 0x2aa20, 0xdffff },  //not assigned                          //~v62UR~
-    { 0xE0001, 0xE0001 },
-    { 0xE0020, 0xE007F },
-//  { 0xe0080, 0xe00ff },  //not assigned                          //~v62UR~
-    { 0xE0100, 0xE01EF }                                           //~7719I~
-//  { 0xe01f0, 0xeffff },  //not assigned                          //~v62UR~
-  };
 #else  //!BBB                                                      //~v6W9I~
+//**category /Mn(NonSpacingMark)  /1985                            //~v79HI~
   static const struct interval combining[] = { // 2018/07/11 by //www.fileformat.info/info/unicode/category/Mn/list.htm//~v6WcR~
 {0x00300 ,0x0036F },                                               //~v6WcI~
 {0x00483 ,0x00487 },                                               //~v6WcI~
@@ -506,7 +363,9 @@ int mk_wcwidth(wchar_t ucs)
 {0x00825 ,0x00827 },                                               //~v6WcI~
 {0x00829 ,0x0082D },                                               //~v6WcI~
 {0x00859 ,0x0085B },                                               //~v6WcI~
-{0x008D3 ,0x008E1 },                                               //~v6WcI~
+//{0x008D3 ,0x008E1 },                                               //~v6WcI~//~v79yR~
+{0x00898 ,0x0089F }, //[8 LINES]  ARABIC SMALL HIGH WORD AL-JUZ;C ?;C VIEW//~v79yI~
+{0x008CA ,0x008E1 }, //[24 LINES]  ARABIC SMALL HIGH FARSI YEH;C   ?;C VIEW//~v79yI~
 {0x008E3 ,0x00902 },                                               //~v6WcI~
 {0x0093A ,0x0093A },                                               //~v6WcI~
 {0x0093C ,0x0093C },                                               //~v6WcI~
@@ -540,13 +399,15 @@ int mk_wcwidth(wchar_t ucs)
 {0x00B3F ,0x00B3F },                                               //~v6WcI~
 {0x00B41 ,0x00B44 },                                               //~v6WcI~
 {0x00B4D ,0x00B4D },                                               //~v6WcI~
-{0x00B56 ,0x00B56 },                                               //~v6WcI~
+//{0x00B56 ,0x00B56 },                                               //~v6WcI~//~v79yR~
+{0x00B55 ,0x00B56 }, //[2 LINES]  ORIYA SIGN OVERLINE;C   ?;C VIEW //~v79yI~
 {0x00B62 ,0x00B63 },                                               //~v6WcI~
 {0x00B82 ,0x00B82 },                                               //~v6WcI~
 {0x00BC0 ,0x00BC0 },                                               //~v6WcI~
 {0x00BCD ,0x00BCD },                                               //~v6WcI~
 {0x00C00 ,0x00C00 },                                               //~v6WcI~
 {0x00C04 ,0x00C04 },                                               //~v6WcI~
+{0x00C3C ,0x00C3C }, // TELUGU SIGN NUKTA;C ?;C VIEW               //~v79yI~
 {0x00C3E ,0x00C40 },                                               //~v6WcI~
 {0x00C46 ,0x00C48 },                                               //~v6WcI~
 {0x00C4A ,0x00C4D },                                               //~v6WcI~
@@ -563,6 +424,7 @@ int mk_wcwidth(wchar_t ucs)
 {0x00D41 ,0x00D44 },                                               //~v6WcI~
 {0x00D4D ,0x00D4D },                                               //~v6WcI~
 {0x00D62 ,0x00D63 },                                               //~v6WcI~
+{0x00D81 ,0x00D81 }, // SINHALA SIGN CANDRABINDU;C  ?;C VIEW       //~v79yI~
 {0x00DCA ,0x00DCA },                                               //~v6WcI~
 {0x00DD2 ,0x00DD4 },                                               //~v6WcI~
 {0x00DD6 ,0x00DD6 },                                               //~v6WcI~
@@ -570,9 +432,12 @@ int mk_wcwidth(wchar_t ucs)
 {0x00E34 ,0x00E3A },                                               //~v6WcI~
 {0x00E47 ,0x00E4E },                                               //~v6WcI~
 {0x00EB1 ,0x00EB1 },                                               //~v6WcI~
-{0x00EB4 ,0x00EB9 },                                               //~v6WcI~
-{0x00EBB ,0x00EBC },                                               //~v6WcI~
-{0x00EC8 ,0x00ECD },                                               //~v6WcI~
+//{0x00EB4 ,0x00EB9 },                                               //~v6WcI~//~v79yR~
+//{0x00EBa ,0x00EBa },                                               //~v79iI~//~v79yR~
+//{0x00EBB ,0x00EBC },                                               //~v6WcI~//~v79yR~
+{0x00EB4 ,0x00EBC }, //[9 LINES]  LAO VOWEL SIGN I;C  ?;C VIEW     //~v79yI~
+//{0x00EC8 ,0x00ECD },                                               //~v6WcI~//~v79yR~
+{0x00EC8 ,0x00ECE }, //[7 LINES]  LAO TONE MAI EK;C   ?;C VIEW     //~v79yI~
 {0x00F18 ,0x00F19 },                                               //~v6WcI~
 {0x00F35 ,0x00F35 },                                               //~v6WcI~
 {0x00F37 ,0x00F37 },                                               //~v6WcI~
@@ -597,11 +462,12 @@ int mk_wcwidth(wchar_t ucs)
 #ifdef GGG                                                         //~v6X3I~
 //  { 0x1160, 0x11FF },      //hangul                     //~v6WgI~//~v6X0R~//~v6X3R~
 #else                                                              //~v6X3I~
-  { 0x1160, 0x11FF },      //hangul,combining                      //~v6X3I~
+//  { 0x1160, 0x11FF },      //hangul,combining                      //~v6X3I~//~v79yR~
 #endif                                                             //~v6X3I~
 {0x0135D ,0x0135F },                                               //~v6WcI~
 {0x01712 ,0x01714 },                                               //~v6WcI~
-{0x01732 ,0x01734 },                                               //~v6WcI~
+//{0x01732 ,0x01734 },                                               //~v6WcI~//~v79yR~
+{0x01732 ,0x01733 }, //[2 LINES]  HANUNOO VOWEL SIGN I;C  ?;C VIEW //~v79yI~
 {0x01752 ,0x01753 },                                               //~v6WcI~
 {0x01772 ,0x01773 },                                               //~v6WcI~
 {0x017B4 ,0x017B5 },                                               //~v6WcI~
@@ -610,6 +476,7 @@ int mk_wcwidth(wchar_t ucs)
 {0x017C9 ,0x017D3 },                                               //~v6WcI~
 {0x017DD ,0x017DD },                                               //~v6WcI~
 {0x0180B ,0x0180D },                                               //~v6WcI~
+{0x0180F ,0x0180F }, // MONGOLIAN FREE VARIATION SELECTOR FOUR;C?;C VIEW//~v79yI~
 {0x01885 ,0x01886 },                                               //~v6WcI~
 {0x018A9 ,0x018A9 },                                               //~v6WcI~
 {0x01920 ,0x01922 },                                               //~v6WcI~
@@ -627,20 +494,25 @@ int mk_wcwidth(wchar_t ucs)
 {0x01A7F ,0x01A7F },                                               //~v6WcI~
 {0x01AB0 ,0x01ABD },                                               //~v6WcI~
  {0x1ABE     ,0x1ABE  },  //Me(Mark,Enclosing)                                  ||+8722R~//~v6WjI~
+// {0x1ABF     ,0x1AC0  },                                           //~v79hI~//~v79yR~
+{0x01ABF ,0x01ACE }, //[16 LINES]  COMBINING LATIN SMALL LETTER W BELOW;C  ?;C VIEW//~v79yI~
 {0x01B00 ,0x01B03 },                                               //~v6WcI~
 {0x01B34 ,0x01B34 },                                               //~v6WcI~
 {0x01B36 ,0x01B3A },                                               //~v6WcI~
 {0x01B3C ,0x01B3C },                                               //~v6WcI~
 {0x01B42 ,0x01B42 },                                               //~v6WcI~
+//{0x01B44 ,0x01B44 },       //SCM wcwidth=1                         //~v79hR~//~v79HR~
 {0x01B6B ,0x01B73 },                                               //~v6WcI~
 {0x01B80 ,0x01B81 },                                               //~v6WcI~
 {0x01BA2 ,0x01BA5 },                                               //~v6WcI~
 {0x01BA8 ,0x01BA9 },                                               //~v6WcI~
+//{0x01BAa ,0x01BAa },       //SCM wcwidth=1                         //~v79hR~//~v79HR~
 {0x01BAB ,0x01BAD },                                               //~v6WcI~
 {0x01BE6 ,0x01BE6 },                                               //~v6WcI~
 {0x01BE8 ,0x01BE9 },                                               //~v6WcI~
 {0x01BED ,0x01BED },                                               //~v6WcI~
 {0x01BEF ,0x01BF1 },                                               //~v6WcI~
+//{0x01Bf2 ,0x01BF3 },       //SCM wcwidth=2                         //~v79hR~//~v79HR~
 {0x01C2C ,0x01C33 },                                               //~v6WcI~
 {0x01C36 ,0x01C37 },                                               //~v6WcI~
 {0x01CD0 ,0x01CD2 },                                               //~v6WcI~
@@ -649,8 +521,9 @@ int mk_wcwidth(wchar_t ucs)
 {0x01CED ,0x01CED },                                               //~v6WcI~
 {0x01CF4 ,0x01CF4 },                                               //~v6WcI~
 {0x01CF8 ,0x01CF9 },                                               //~v6WcI~
-{0x01DC0 ,0x01DF9 },                                               //~v6WcI~
-{0x01DFB ,0x01DFF },                                               //~v6WcI~
+//{0x01DC0 ,0x01DF9 },                                               //~v6WcI~//~v79yR~
+//{0x01DFB ,0x01DFF },                                               //~v6WcI~//~v79yR~
+{0x01DC0 ,0x01DFF }, //[64 LINES]  COMBINING DOTTED GRAVE ACCENT;C ?;C VIEW//~v79yI~
 {0x020D0 ,0x020DC },                                               //~v6WcI~
  {0x20DD     ,0x20E0  },  //Me(Mark,Enclosing)                                  ||+8722R~//~v6WjI~
 {0x020E1 ,0x020E1 },                                               //~v6WcI~
@@ -660,7 +533,8 @@ int mk_wcwidth(wchar_t ucs)
 {0x02D7F ,0x02D7F },                                               //~v6WcI~
 {0x02DE0 ,0x02DFF },                                               //~v6WcI~
 {0x0302A ,0x0302D },                                               //~v6WcI~
-{0x03099 ,0x0309A },                                               //~v6WcI~
+//{0x0302e ,0x0302f },     //Mn:SCM wcwidth()=2                             //~v79hI~//~v79HR~
+{0x03099 ,0x0309A },     //SCM                                     //~v6WcI~//~v79hR~
 {0x0A66F ,0x0A66F },                                               //~v6WcI~
  {0xA670     ,0xA672  },  //Me(Mark,Enclosing)                                  ||+8722R~//~v6WjM~
 {0x0A674 ,0x0A67D },                                               //~v6WcI~
@@ -670,15 +544,19 @@ int mk_wcwidth(wchar_t ucs)
 {0x0A806 ,0x0A806 },                                               //~v6WcI~
 {0x0A80B ,0x0A80B },                                               //~v6WcI~
 {0x0A825 ,0x0A826 },                                               //~v6WcI~
+{0x0A82c ,0x0A82c },                                               //~v79iI~
 {0x0A8C4 ,0x0A8C5 },                                               //~v6WcI~
 {0x0A8E0 ,0x0A8F1 },                                               //~v6WcI~
 {0x0A8FF ,0x0A8FF },                                               //~v6WcI~
 {0x0A926 ,0x0A92D },                                               //~v6WcI~
 {0x0A947 ,0x0A951 },                                               //~v6WcI~
+//{0x0A953 ,0x0A953 },       //SCM wcwidth=2                         //~v79hR~//~v79HR~
 {0x0A980 ,0x0A982 },                                               //~v6WcI~
 {0x0A9B3 ,0x0A9B3 },                                               //~v6WcI~
 {0x0A9B6 ,0x0A9B9 },                                               //~v6WcI~
-{0x0A9BC ,0x0A9BC },                                               //~v6WcI~
+//{0x0A9BC ,0x0A9BC },                                               //~v6WcI~//~v79yR~
+{0x0A9BC ,0x0A9BD }, //[2 LINES]  JAVANESE VOWEL SIGN PEPET;C ?;C VIEW//~v79yI~
+//{0x0A9c0 ,0x0A9c0 },       //SCM wcwidth=2                         //~v79hR~//~v79HR~
 {0x0A9E5 ,0x0A9E5 },                                               //~v6WcI~
 {0x0AA29 ,0x0AA2E },                                               //~v6WcI~
 {0x0AA31 ,0x0AA32 },                                               //~v6WcI~
@@ -709,28 +587,39 @@ int mk_wcwidth(wchar_t ucs)
 {0x10A3F ,0x10A3F },                                               //~v6WcI~
 {0x10AE5 ,0x10AE6 },                                               //~v6WcI~
 {0x10D24 ,0x10D27 },                                               //~v6WcI~
+{0x10EAB ,0x10EAC },                                               //~v79hI~
+{0x10EFD ,0x10EFF }, //[3 LINES] ARABIC SMALL LOW WORD SAKTA;C   ？;CVIEW//~v79yI~
 {0x10F46 ,0x10F50 },                                               //~v6WcI~
+{0x10F82 ,0x10F85 }, //[4 LINES] OLD UYGHUR COMBINING DOT ABOVE;C？;CVIEW//~v79yI~
 {0x11001 ,0x11001 },                                               //~v6WcI~
 {0x11038 ,0x11046 },                                               //~v6WcI~
+{0x11070 ,0x11070 }, //BRAHMI SIGN OLD TAMIL VIRAMA;C  ？;CVIEW    //~v79yI~
+{0x11073 ,0x11074 }, //[2 LINES] BRAHMI VOWEL SIGN OLD TAMIL SHORT E;C   ？;CVIEW//~v79yI~
 {0x1107F ,0x11081 },                                               //~v6WcI~
 {0x110B3 ,0x110B6 },                                               //~v6WcI~
 {0x110B9 ,0x110BA },                                               //~v6WcI~
+{0x110C2 ,0x110C2 }, //KAITHI VOWEL SIGN VOCALIC R;C   ？;CVIEW    //~v79yI~
 {0x11100 ,0x11102 },                                               //~v6WcI~
 {0x11127 ,0x1112B },                                               //~v6WcI~
 {0x1112D ,0x11134 },                                               //~v6WcI~
 {0x11173 ,0x11173 },                                               //~v6WcI~
 {0x11180 ,0x11181 },                                               //~v6WcI~
 {0x111B6 ,0x111BE },                                               //~v6WcI~
+//{0x111c0 ,0x111c0 },         //SCM wcwidth=2                       //~v79hR~//~v79HR~
 {0x111C9 ,0x111CC },                                               //~v6WcI~
+{0x111CF ,0x111CF }, //SHARADA SIGN INVERTED CANDRABINDU;C ？;CVIEW//~v79yI~
 {0x1122F ,0x11231 },                                               //~v6WcI~
 {0x11234 ,0x11234 },                                               //~v6WcI~
+//{0x11235 ,0x11235 },         //SCM wcwidth=2                       //~v79hR~//~v79HR~
 {0x11236 ,0x11237 },                                               //~v6WcI~
 {0x1123E ,0x1123E },                                               //~v6WcI~
+{0x11241 ,0x11241 }, //KHOJKI VOWEL SIGN VOCALIC R;C   ？;CVIEW    //~v79yI~
 {0x112DF ,0x112DF },                                               //~v6WcI~
 {0x112E3 ,0x112EA },                                               //~v6WcI~
 {0x11300 ,0x11301 },                                               //~v6WcI~
 {0x1133B ,0x1133C },                                               //~v6WcI~
 {0x11340 ,0x11340 },                                               //~v6WcI~
+//{0x1134d ,0x1134d },        //SCM wcwidth=2                        //~v79hR~//~v79HR~
 {0x11366 ,0x1136C },                                               //~v6WcI~
 {0x11370 ,0x11374 },                                               //~v6WcI~
 {0x11438 ,0x1143F },                                               //~v6WcI~
@@ -751,12 +640,20 @@ int mk_wcwidth(wchar_t ucs)
 {0x116AB ,0x116AB },                                               //~v6WcI~
 {0x116AD ,0x116AD },                                               //~v6WcI~
 {0x116B0 ,0x116B5 },                                               //~v6WcI~
+//{0x116B6 ,0x116B6 },        //SCM wcwidth=2                        //~v79hR~//~v79HR~
 {0x116B7 ,0x116B7 },                                               //~v6WcI~
 {0x1171D ,0x1171F },                                               //~v6WcI~
 {0x11722 ,0x11725 },                                               //~v6WcI~
 {0x11727 ,0x1172B },                                               //~v6WcI~
 {0x1182F ,0x11837 },                                               //~v6WcI~
 {0x11839 ,0x1183A },                                               //~v6WcI~
+{0x1193B ,0x1193C }, //[2 LINES] DIVES AKURU SIGN ANUSVARA;C ？;CVIEW//~v79yI~
+//{0x1193d ,0x1193d },                                               //~v79hI~//~v79yR~
+{0x1193e ,0x1193e },                                               //~v79hI~
+{0x11943 ,0x11943 },                                               //~v79hI~
+{0x119D4 ,0x119D7 }, //[4 LINES] NANDINAGARI VOWEL SIGN U;C  ？;CVIEW//~v79yI~
+{0x119DA ,0x119DB }, //[2 LINES] NANDINAGARI VOWEL SIGN E;C  ？;CVIEW//~v79yI~
+{0x119e0 ,0x119e0 },                                               //~v79iI~
 {0x11A01 ,0x11A0A },                                               //~v6WcI~
 {0x11A33 ,0x11A38 },                                               //~v6WcI~
 {0x11A3B ,0x11A3E },                                               //~v6WcI~
@@ -781,11 +678,24 @@ int mk_wcwidth(wchar_t ucs)
 {0x11D95 ,0x11D95 },                                               //~v6WcI~
 {0x11D97 ,0x11D97 },                                               //~v6WcI~
 {0x11EF3 ,0x11EF4 },                                               //~v6WcI~
+{0x11F00 ,0x11F01 }, //[2 LINES] KAWI SIGN CANDRABINDU;C ？;CVIEW  //~v79yI~
+{0x11F36 ,0x11F3A }, //[5 LINES] KAWI VOWEL SIGN I;C ？;CVIEW      //~v79yI~
+{0x11F40 ,0x11F40 }, //KAWI VOWEL SIGN EU;C？;CVIEW                //~v79yI~
+{0x11F42 ,0x11F42 }, //KAWI CONJOINER;C？;CVIEW                    //~v79yI~
+{0x13440 ,0x13440 }, //EGYPTIAN HIEROGLYPH MIRROR HORIZONTALLY;C   ？;CVIEW//~v79yI~
+{0x13447 ,0x13455 }, //[15 LINES] EGYPTIAN HIEROGLYPH MODIFIER DAMAGED AT TOP START;C ？;CVIEW//~v79yI~
 {0x16AF0 ,0x16AF4 },                                               //~v6WcI~
 {0x16B30 ,0x16B36 },                                               //~v6WcI~
+{0x16F4F ,0x16F4F }, //MIAO SIGN CONSONANT MODIFIER BAR;C  ？;CVIEW//~v79yI~
 {0x16F8F ,0x16F92 },                                               //~v6WcI~
+{0x16FE4 ,0x16FE4 }, //KHITAN SMALL SCRIPT FILLER;C？;CVIEW        //~v79yI~
+//{0x16Ff0 ,0x16Ff1 },                                               //~v79hI~//~v79yR~
 {0x1BC9D ,0x1BC9E },                                               //~v6WcI~
+{0x1CF00 ,0x1CF2D }, //[46 LINES] ZNAMENNY COMBINING MARK GORAZDO NIZKO S KRYZHEM ON LEFT;C   ？;CVIEW//~v79yI~
+{0x1CF30 ,0x1CF46 }, //[23 LINES] ZNAMENNY COMBINING TONAL RANGE MARK MRACHNO;C   ？;CVIEW//~v79yI~
+//{0x1D165 ,0x1D166 },         //SCM wcwidth=1                       //~v79hR~//~v79HR~
 {0x1D167 ,0x1D169 },                                               //~v6WcI~
+//{0x1D16d ,0x1D172 },         //SCM wiwidth=2                       //~v79hR~//~v79HR~
 {0x1D17B ,0x1D182 },                                               //~v6WcI~
 {0x1D185 ,0x1D18B },                                               //~v6WcI~
 {0x1D1AA ,0x1D1AD },                                               //~v6WcI~
@@ -801,6 +711,11 @@ int mk_wcwidth(wchar_t ucs)
 {0x1E01B ,0x1E021 },                                               //~v6WcI~
 {0x1E023 ,0x1E024 },                                               //~v6WcI~
 {0x1E026 ,0x1E02A },                                               //~v6WcI~
+{0x1E08F ,0x1E08F }, //COMBINING CYRILLIC SMALL LETTER BYELORUSSIAN-UKRAINIAN I;C  ？;CVIEW//~v79yI~
+{0x1E130 ,0x1E136 },                                               //~v79hI~
+{0x1E2AE ,0x1E2AE }, //TOTO SIGN RISING TONE;C ？;CVIEW            //~v79yI~
+{0x1E2ec ,0x1E2ef },                                               //~v79hI~
+{0x1E4EC ,0x1E4EF }, //[4 LINES] NAG MUNDARI SIGN MUHOR;C？;CVIEW  //~v79yI~
 {0x1E8D0 ,0x1E8D6 },                                               //~v6WcI~
 {0x1E944 ,0x1E94A },                                               //~v6WcI~
 {0xE0100 ,0xE01EF },                                               //~v6WcI~
@@ -819,7 +734,7 @@ int mk_wcwidth_combining(UWUCS ucs)                                //~v6BjI~
   	if (bisearch(ucs, combining,                                   //~v650M~
 	       sizeof(combining) / sizeof(struct interval) - 1))       //~v650M~
     {                                                              //~v6WnI~
-        UTRACEP("%s:%06x is combining char\n",UTT,ucs);            //~v6WnI~
+        UTRACEP("%s:0x%04x is combining char\n",UTT,ucs);            //~v6WnI~//~v79hR~
     	return 0;                                                  //~v650M~
     }                                                              //~v6WnI~
     return 1;                                                      //~v650M~
@@ -849,16 +764,53 @@ int mk_wcwidth(int Popt,UWUCS ucs)                                 //~v6WnI~
 		return UTFWWF_RC_MK_WCWIDTH|UTFWWF_COMB; //by mk_wcwidth() adjustable by wcwidth() but not for combining//~v6WnI~
   }                                                                //~v6WnI~
   if (!(Popt & SUO_CONSOLE))                                       //~v6WnI~
+  {                                                                //~v79fI~
   	if (UDBCSCHK_ISDBCS())  //CJK(including JP)                    //~v6WnR~
     {                                                              //~v6WnI~
-#ifdef LNX    	                                                   //~v6WnI~
-		if (utf4_isAmbiguous_XXE(0,(UWUCS)ucs))                    //~v6WnI~
+//#ifdef LNX                                                         //~v6WnI~//~v79wR~
+//  	if (utf4_isAmbiguous_XXE(0,(UWUCS)ucs))                    //~v6WnI~//~v79oR~
+		if (utf4_isAmbiguous_NoCJK(0,(UWUCS)ucs))                  //~v79oI~
 			return 2+UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v6WnI~
-#else                                                              //~v6WnI~
-		if (utf4_isAmbiguous_WXE(0,(UWUCS)ucs))                    //~v6WnI~
-			return 2+UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v6WnI~
-#endif                                                             //~v6WnI~
+//#else                                                              //~v6WnI~//~v79wR~
+//        if (utf4_isAmbiguous_WXE(0,(UWUCS)ucs))                    //~v6WnI~//~v79wR~
+//            return 2+UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v6WnI~//~v79wR~
+//#endif                                                             //~v6WnI~//~v79wR~
     }                                                              //~v6WnI~
+    else                                                           //~v79fI~
+    {                                                              //~v79fI~
+//#ifdef LNX                                                         //~v79fI~//~v79iR~
+//#ifdef LNX                                                         //~v79oI~//~v79wR~
+		if (utf4_isAmbiguous_NoCJK(0,(UWUCS)ucs))                  //~v79fI~
+			return 2+UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v79fI~
+//#endif                                                             //~v79fI~//~v79iR~
+//#else                                                              //~v79oI~//~v79wR~
+//        if (utf4_isAmbiguous_WXE(0,(UWUCS)ucs))                    //~v79oI~//~v79wR~
+//            return 2+UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v79oI~//~v79wR~
+//#endif                                                             //~v79oI~//~v79wR~
+    }                                                              //~v79fI~
+  }                                                                //~v79fI~
+  else     //console                                               //~v79fI~
+  {                                                                //~v79fI~
+  	if (UDBCSCHK_ISDBCS())  //CJK(including JP)                    //~v79fI~
+    {                                                              //~v79fI~
+//***   ambiguous chk was done at mk_wcwidth_cjk                   //~v79oI~
+		UTRACEP("%s:console ISDBCSJ ucs=0x%04x\n",UTT,ucs);        //~v79fI~
+//#ifdef LNX                                                       //~v79fI~
+//        if (utf4_isAmbiguous_XXE(0,(UWUCS)ucs))                  //~v79fI~
+//            return 2+UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v79fI~
+//#else                                                            //~v79fI~
+//        if (utf4_isAmbiguous_WXE(0,(UWUCS)ucs))                  //~v79fI~
+//            return 2+UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v79fI~
+//#endif                                                           //~v79fI~
+    }                                                              //~v79fI~
+    else                                                           //~v79fI~
+    {                                                              //~v79fI~
+//#ifdef LNX                                                         //~v79fI~//~v79iR~
+		if (utf4_isAmbiguous_NoCJK(0,(UWUCS)ucs))                  //~v79fI~
+			return 2+UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v79fI~
+//#endif                                                             //~v79fI~//~v79iR~
+    }                                                              //~v79fI~
+  }                                                                //~v79fI~
   /* binary search in table of non-spacing characters */
 //  if (bisearch(ucs, combining,                                   //~v6WnR~
 //           sizeof(combining) / sizeof(struct interval) - 1))     //~v6WnR~
@@ -872,6 +824,7 @@ int mk_wcwidth(int Popt,UWUCS ucs)                                 //~v6WnI~
 //return 1 +                                                       //~v6WqR~
   rc=    1 +                                                       //~v6WqI~
 	UTFWWF_RC_MK_WCWIDTH + //0x01000000  //datatype by mk_wcwidth,adjustable by wcwidth()//~v6V7R~
+#ifdef AAA                                                        //~v79zR~
     (ucs >= 0x1100 &&
 //#ifdef UB1710   //test under ub17.10(kernel4.13.0)                 //~v6V1I~//~v6X3R~
 //     (ucs <= 0x11ff ||                    /* Hangul Jamo init. consonants */ //@@@@test//~v6V1I~//~v6X3R~
@@ -897,10 +850,13 @@ int mk_wcwidth(int Popt,UWUCS ucs)                                 //~v6WnI~
       (ucs >= 0xffe0 && ucs <= 0xffe6) ||
       (ucs >= 0x20000 && ucs <= 0x2fffd) ||
       (ucs >= 0x30000 && ucs <= 0x3fffd)));
-//    UTRACEP("%s:rc=%x,ucs=%06x\n",UTT,rc,ucs);                     //~v6WqI~//~v6X5R~
+#else                                                              //~v79zR~
+        utf4_wcwidthWFH(Popt,ucs);                                 //~v79zR~
+#endif                                                             //~v79zR~
+//    UTRACEP("%s:rc=%x,ucs=0x%04x\n",UTT,rc,ucs);                     //~v6WqI~//~v6X5R~//~v79zR~
     return rc;                                                     //~v6WqI~
 }
-#endif
+#endif     //UTF(SUPPORTH                                          //~v79zR~
 #ifdef AAA                                                         //~v6WnI~
 #ifdef UTF8UCS2                                                                   //~7719I~//~v647R~
 //int mk_wcswidth(UWCHART *pwcs, size_t n)                           //~v647R~//~v6BjR~
@@ -937,63 +893,197 @@ int mk_wcswidth(const wchar_t *pwcs, size_t n)                     //~7719I~
 //int mk_wcwidth_cjk(wchar_t ucs)                                    //~7719I~//~v6VbR~
 //#endif                                                             //~v647R~//~v6VbR~
 //{                                                                  //~7719I~//~v6VbR~
+//#ifdef WXEXXE                                                      //~v79vI~//~v79xR~
+#ifndef CCC                                                        //~v79xI~
+//  static const struct interval ambiguous_wxegxe[] = {              //~v79vI~//~v79xR~
+  static const struct interval ambiguous[] = {                     //~v79xI~
+{0x00a1,0x00a1}, // Po         INVERTED EXCLAMATION MARK           //~v79vI~
+{0x00a4,0x00a4}, // Sc         CURRENCY SIGN                       //~v79vI~
+{0x00a7,0x00a8}, //[2 lines]  Po         SECTION SIGN              //~v79vI~
+{0x00aa,0x00aa}, // Lo         FEMININE ORDINAL INDICATOR          //~v79vI~
+{0x00ad,0x00ae}, //[2 lines]  Cf         SOFT HYPHEN               //~v79vI~
+{0x00b0,0x00b4}, //[4 lines]  So         DEGREE SIGN               //~v79vI~
+{0x00b6,0x00ba}, //[4 lines]  Po     [2] PILCROW SIGN..MIDDLE DOT  //~v79vI~
+{0x00bc,0x00bf}, //[2 lines]  No     [3] VULGAR FRACTION ONE QUARTER..VULGAR FRACTION THREE QUARTERS//~v79vI~
+{0x00c6,0x00c6}, // Lu         LATIN CAPITAL LETTER AE             //~v79vI~
+{0x00d0,0x00d0}, // Lu         LATIN CAPITAL LETTER ETH            //~v79vI~
+{0x00d7,0x00d8}, //[2 lines]  Sm         MULTIPLICATION SIGN       //~v79vI~
+{0x00de,0x00e1}, // L&     [4] LATIN CAPITAL LETTER THORN..LATIN SMALL LETTER A WITH ACUTE//~v79vI~
+{0x00e6,0x00e6}, // Ll         LATIN SMALL LETTER AE               //~v79vI~
+{0x00e8,0x00ea}, // Ll     [3] LATIN SMALL LETTER E WITH GRAVE..LATIN SMALL LETTER E WITH CIRCUMFLEX//~v79vI~
+{0x00ec,0x00ed}, // Ll     [2] LATIN SMALL LETTER I WITH GRAVE..LATIN SMALL LETTER I WITH ACUTE//~v79vI~
+{0x00f0,0x00f0}, // Ll         LATIN SMALL LETTER ETH              //~v79vI~
+{0x00f2,0x00f3}, // Ll     [2] LATIN SMALL LETTER O WITH GRAVE..LATIN SMALL LETTER O WITH ACUTE//~v79vI~
+{0x00f7,0x00fa}, //[2 lines]  Sm         DIVISION SIGN             //~v79vI~
+{0x00fc,0x00fc}, // Ll         LATIN SMALL LETTER U WITH DIAERESIS //~v79vI~
+{0x00fe,0x00fe}, // Ll         LATIN SMALL LETTER THORN            //~v79vI~
+{0x0101,0x0101}, // Ll         LATIN SMALL LETTER A WITH MACRON    //~v79vI~
+{0x0111,0x0111}, // Ll         LATIN SMALL LETTER D WITH STROKE    //~v79vI~
+{0x0113,0x0113}, // Ll         LATIN SMALL LETTER E WITH MACRON    //~v79vI~
+{0x011b,0x011b}, // Ll         LATIN SMALL LETTER E WITH CARON     //~v79vI~
+{0x0126,0x0127}, // L&     [2] LATIN CAPITAL LETTER H WITH STROKE..LATIN SMALL LETTER H WITH STROKE//~v79vI~
+{0x012b,0x012b}, // Ll         LATIN SMALL LETTER I WITH MACRON    //~v79vI~
+{0x0131,0x0133}, // L&     [3] LATIN SMALL LETTER DOTLESS I..LATIN SMALL LIGATURE IJ//~v79vI~
+{0x0138,0x0138}, // Ll         LATIN SMALL LETTER KRA              //~v79vI~
+{0x013f,0x0142}, // L&     [4] LATIN CAPITAL LETTER L WITH MIDDLE DOT..LATIN SMALL LETTER L WITH STROKE//~v79vI~
+{0x0144,0x0144}, // Ll         LATIN SMALL LETTER N WITH ACUTE     //~v79vI~
+{0x0148,0x014b}, // L&     [4] LATIN SMALL LETTER N WITH CARON..LATIN SMALL LETTER ENG//~v79vI~
+{0x014d,0x014d}, // Ll         LATIN SMALL LETTER O WITH MACRON    //~v79vI~
+{0x0152,0x0153}, // L&     [2] LATIN CAPITAL LIGATURE OE..LATIN SMALL LIGATURE OE//~v79vI~
+{0x0166,0x0167}, // L&     [2] LATIN CAPITAL LETTER T WITH STROKE..LATIN SMALL LETTER T WITH STROKE//~v79vI~
+{0x016b,0x016b}, // Ll         LATIN SMALL LETTER U WITH MACRON    //~v79vI~
+{0x01ce,0x01ce}, // Ll         LATIN SMALL LETTER A WITH CARON     //~v79vI~
+{0x01d0,0x01d0}, // Ll         LATIN SMALL LETTER I WITH CARON     //~v79vI~
+{0x01d2,0x01d2}, // Ll         LATIN SMALL LETTER O WITH CARON     //~v79vI~
+{0x01d4,0x01d4}, // Ll         LATIN SMALL LETTER U WITH CARON     //~v79vI~
+{0x01d6,0x01d6}, // Ll         LATIN SMALL LETTER U WITH DIAERESIS AND MACRON//~v79vI~
+{0x01d8,0x01d8}, // Ll         LATIN SMALL LETTER U WITH DIAERESIS AND ACUTE//~v79vI~
+{0x01da,0x01da}, // Ll         LATIN SMALL LETTER U WITH DIAERESIS AND CARON//~v79vI~
+{0x01dc,0x01dc}, // Ll         LATIN SMALL LETTER U WITH DIAERESIS AND GRAVE//~v79vI~
+{0x0251,0x0251}, // Ll         LATIN SMALL LETTER ALPHA            //~v79vI~
+{0x0261,0x0261}, // Ll         LATIN SMALL LETTER SCRIPT G         //~v79vI~
+{0x02c4,0x02c4}, // Sk         MODIFIER LETTER UP ARROWHEAD        //~v79vI~
+{0x02c7,0x02c7}, // Lm         CARON                               //~v79vI~
+{0x02c9,0x02cb}, // Lm     [3] MODIFIER LETTER MACRON..MODIFIER LETTER GRAVE ACCENT//~v79vI~
+{0x02cd,0x02cd}, // Lm         MODIFIER LETTER LOW MACRON          //~v79vI~
+{0x02d0,0x02d0}, // Lm         MODIFIER LETTER TRIANGULAR COLON    //~v79vI~
+{0x02d8,0x02db}, // Sk     [4] BREVE..OGONEK                       //~v79vI~
+{0x02dd,0x02dd}, // Sk         DOUBLE ACUTE ACCENT                 //~v79vI~
+{0x02df,0x02df}, // Sk         MODIFIER LETTER CROSS ACCENT        //~v79vI~
+{0x0300,0x036f}, // Mn   [112] COMBINING GRAVE ACCENT..COMBINING LATIN SMALL LETTER X//~v79vI~
+{0x0391,0x03a1}, // Lu    [17] GREEK CAPITAL LETTER ALPHA..GREEK CAPITAL LETTER RHO//~v79vI~
+{0x03a3,0x03a9}, // Lu     [7] GREEK CAPITAL LETTER SIGMA..GREEK CAPITAL LETTER OMEGA//~v79vI~
+{0x03b1,0x03c1}, // Ll    [17] GREEK SMALL LETTER ALPHA..GREEK SMALL LETTER RHO//~v79vI~
+{0x03c3,0x03c9}, // Ll     [7] GREEK SMALL LETTER SIGMA..GREEK SMALL LETTER OMEGA//~v79vI~
+{0x0401,0x0401}, // Lu         CYRILLIC CAPITAL LETTER IO          //~v79vI~
+{0x0410,0x044f}, // L&    [64] CYRILLIC CAPITAL LETTER A..CYRILLIC SMALL LETTER YA//~v79vI~
+{0x0451,0x0451}, // Ll         CYRILLIC SMALL LETTER IO            //~v79vI~
+{0x2010,0x2010}, // Pd         HYPHEN                              //~v79vI~
+{0x2013,0x2016}, //[2 lines]  Pd     [3] EN DASH..HORIZONTAL BAR   //~v79vI~
+{0x2018,0x2019}, //[2 lines]  Pi         LEFT SINGLE QUOTATION MARK//~v79vI~
+{0x201c,0x201d}, //[2 lines]  Pi         LEFT DOUBLE QUOTATION MARK//~v79vI~
+{0x2020,0x2022}, // Po     [3] DAGGER..BULLET                      //~v79vI~
+{0x2024,0x2027}, // Po     [4] ONE DOT LEADER..HYPHENATION POINT   //~v79vI~
+{0x2030,0x2030}, // Po         PER MILLE SIGN                      //~v79vI~
+{0x2032,0x2033}, // Po     [2] PRIME..DOUBLE PRIME                 //~v79vI~
+{0x2035,0x2035}, // Po         REVERSED PRIME                      //~v79vI~
+{0x203b,0x203b}, // Po         REFERENCE MARK                      //~v79vI~
+{0x203e,0x203e}, // Po         OVERLINE                            //~v79vI~
+{0x2074,0x2074}, // No         SUPERSCRIPT FOUR                    //~v79vI~
+{0x207f,0x207f}, // Lm         SUPERSCRIPT LATIN SMALL LETTER N    //~v79vI~
+{0x2081,0x2084}, // No     [4] SUBSCRIPT ONE..SUBSCRIPT FOUR       //~v79vI~
+{0x20ac,0x20ac}, // Sc         EURO SIGN                           //~v79vI~
+{0x2103,0x2103}, // So         DEGREE CELSIUS                      //~v79vI~
+{0x2105,0x2105}, // So         CARE OF                             //~v79vI~
+{0x2109,0x2109}, // So         DEGREE FAHRENHEIT                   //~v79vI~
+{0x2113,0x2113}, // Ll         SCRIPT SMALL L                      //~v79vI~
+{0x2116,0x2116}, // So         NUMERO SIGN                         //~v79vI~
+{0x2121,0x2122}, // So     [2] TELEPHONE SIGN..TRADE MARK SIGN     //~v79vI~
+{0x2126,0x2126}, // Lu         OHM SIGN                            //~v79vI~
+{0x212b,0x212b}, // Lu         ANGSTROM SIGN                       //~v79vI~
+{0x2153,0x2154}, // No     [2] VULGAR FRACTION ONE THIRD..VULGAR FRACTION TWO THIRDS//~v79vI~
+{0x215b,0x215e}, // No     [4] VULGAR FRACTION ONE EIGHTH..VULGAR FRACTION SEVEN EIGHTHS//~v79vI~
+{0x2160,0x216b}, // Nl    [12] ROMAN NUMERAL ONE..ROMAN NUMERAL TWELVE//~v79vI~
+{0x2170,0x2179}, // Nl    [10] SMALL ROMAN NUMERAL ONE..SMALL ROMAN NUMERAL TEN//~v79vI~
+{0x2189,0x2189}, // No         VULGAR FRACTION ZERO THIRDS         //~v79vI~
+{0x2190,0x2199}, //[2 lines]  Sm     [5] LEFTWARDS ARROW..LEFT RIGHT ARROW//~v79vI~
+{0x21b8,0x21b9}, // So     [2] NORTH WEST ARROW TO LONG BAR..LEFTWARDS ARROW TO BAR OVER RIGHTWARDS ARROW TO BAR//~v79vI~
+{0x21d2,0x21d2}, // Sm         RIGHTWARDS DOUBLE ARROW             //~v79vI~
+{0x21d4,0x21d4}, // Sm         LEFT RIGHT DOUBLE ARROW             //~v79vI~
+{0x21e7,0x21e7}, // So         UPWARDS WHITE ARROW                 //~v79vI~
+{0x2200,0x2200}, // Sm         FOR ALL                             //~v79vI~
+{0x2202,0x2203}, // Sm     [2] PARTIAL DIFFERENTIAL..THERE EXISTS  //~v79vI~
+{0x2207,0x2208}, // Sm     [2] NABLA..ELEMENT OF                   //~v79vI~
+{0x220b,0x220b}, // Sm         CONTAINS AS MEMBER                  //~v79vI~
+{0x220f,0x220f}, // Sm         N-ARY PRODUCT                       //~v79vI~
+{0x2211,0x2211}, // Sm         N-ARY SUMMATION                     //~v79vI~
+{0x2215,0x2215}, // Sm         DIVISION SLASH                      //~v79vI~
+{0x221a,0x221a}, // Sm         SQUARE ROOT                         //~v79vI~
+{0x221d,0x2220}, // Sm     [4] PROPORTIONAL TO..ANGLE              //~v79vI~
+{0x2223,0x2223}, // Sm         DIVIDES                             //~v79vI~
+{0x2225,0x2225}, // Sm         PARALLEL TO                         //~v79vI~
+{0x2227,0x222c}, // Sm     [6] LOGICAL AND..DOUBLE INTEGRAL        //~v79vI~
+{0x222e,0x222e}, // Sm         CONTOUR INTEGRAL                    //~v79vI~
+{0x2234,0x2237}, // Sm     [4] THEREFORE..PROPORTION               //~v79vI~
+{0x223c,0x223d}, // Sm     [2] TILDE OPERATOR..REVERSED TILDE      //~v79vI~
+{0x2248,0x2248}, // Sm         ALMOST EQUAL TO                     //~v79vI~
+{0x224c,0x224c}, // Sm         ALL EQUAL TO                        //~v79vI~
+{0x2252,0x2252}, // Sm         APPROXIMATELY EQUAL TO OR THE IMAGE OF//~v79vI~
+{0x2260,0x2261}, // Sm     [2] NOT EQUAL TO..IDENTICAL TO          //~v79vI~
+{0x2264,0x2267}, // Sm     [4] LESS-THAN OR EQUAL TO..GREATER-THAN OVER EQUAL TO//~v79vI~
+{0x226a,0x226b}, // Sm     [2] MUCH LESS-THAN..MUCH GREATER-THAN   //~v79vI~
+{0x226e,0x226f}, // Sm     [2] NOT LESS-THAN..NOT GREATER-THAN     //~v79vI~
+{0x2282,0x2283}, // Sm     [2] SUBSET OF..SUPERSET OF              //~v79vI~
+{0x2286,0x2287}, // Sm     [2] SUBSET OF OR EQUAL TO..SUPERSET OF OR EQUAL TO//~v79vI~
+{0x2295,0x2295}, // Sm         CIRCLED PLUS                        //~v79vI~
+{0x2299,0x2299}, // Sm         CIRCLED DOT OPERATOR                //~v79vI~
+{0x22a5,0x22a5}, // Sm         UP TACK                             //~v79vI~
+{0x22bf,0x22bf}, // Sm         RIGHT TRIANGLE                      //~v79vI~
+{0x2312,0x2312}, // So         ARC                                 //~v79vI~
+{0x2460,0x24e9}, //[2 lines]  No    [60] CIRCLED DIGIT ONE..NUMBER TWENTY FULL STOP//~v79vI~
+{0x24eb,0x254b}, //[2 lines]  No    [21] NEGATIVE CIRCLED NUMBER ELEVEN..NEGATIVE CIRCLED DIGIT ZERO//~v79vI~
+{0x2550,0x2573}, // So    [36] BOX DRAWINGS DOUBLE HORIZONTAL..BOX DRAWINGS LIGHT DIAGONAL CROSS//~v79vI~
+{0x2580,0x258f}, // So    [16] UPPER HALF BLOCK..LEFT ONE EIGHTH BLOCK//~v79vI~
+{0x2592,0x2595}, // So     [4] MEDIUM SHADE..RIGHT ONE EIGHTH BLOCK//~v79vI~
+{0x25a0,0x25a1}, // So     [2] BLACK SQUARE..WHITE SQUARE          //~v79vI~
+{0x25a3,0x25a9}, // So     [7] WHITE SQUARE CONTAINING BLACK SMALL SQUARE..SQUARE WITH DIAGONAL CROSSHATCH FILL//~v79vI~
+{0x25b2,0x25b3}, // So     [2] BLACK UP-POINTING TRIANGLE..WHITE UP-POINTING TRIANGLE//~v79vI~
+{0x25b6,0x25b7}, //[2 lines]  So         BLACK RIGHT-POINTING TRIANGLE//~v79vI~
+{0x25bc,0x25bd}, // So     [2] BLACK DOWN-POINTING TRIANGLE..WHITE DOWN-POINTING TRIANGLE//~v79vI~
+{0x25c0,0x25c1}, //[2 lines]  So         BLACK LEFT-POINTING TRIANGLE//~v79vI~
+{0x25c6,0x25c8}, // So     [3] BLACK DIAMOND..WHITE DIAMOND CONTAINING BLACK SMALL DIAMOND//~v79vI~
+{0x25cb,0x25cb}, // So         WHITE CIRCLE                        //~v79vI~
+{0x25ce,0x25d1}, // So     [4] BULLSEYE..CIRCLE WITH RIGHT HALF BLACK//~v79vI~
+{0x25e2,0x25e5}, // So     [4] BLACK LOWER RIGHT TRIANGLE..BLACK UPPER RIGHT TRIANGLE//~v79vI~
+{0x25ef,0x25ef}, // So         LARGE CIRCLE                        //~v79vI~
+{0x2605,0x2606}, // So     [2] BLACK STAR..WHITE STAR              //~v79vI~
+{0x2609,0x2609}, // So         SUN                                 //~v79vI~
+{0x260e,0x260f}, // So     [2] BLACK TELEPHONE..WHITE TELEPHONE    //~v79vI~
+{0x261c,0x261c}, // So         WHITE LEFT POINTING INDEX           //~v79vI~
+{0x261e,0x261e}, // So         WHITE RIGHT POINTING INDEX          //~v79vI~
+{0x2640,0x2640}, // So         FEMALE SIGN                         //~v79vI~
+{0x2642,0x2642}, // So         MALE SIGN                           //~v79vI~
+{0x2660,0x2661}, // So     [2] BLACK SPADE SUIT..WHITE HEART SUIT  //~v79vI~
+{0x2663,0x2665}, // So     [3] BLACK CLUB SUIT..BLACK HEART SUIT   //~v79vI~
+{0x2667,0x266a}, // So     [4] WHITE CLUB SUIT..EIGHTH NOTE        //~v79vI~
+{0x266c,0x266d}, // So     [2] BEAMED SIXTEENTH NOTES..MUSIC FLAT SIGN//~v79vI~
+{0x266f,0x266f}, // Sm         MUSIC SHARP SIGN                    //~v79vI~
+{0x269e,0x269f}, // So     [2] THREE LINES CONVERGING RIGHT..THREE LINES CONVERGING LEFT//~v79vI~
+{0x26bf,0x26bf}, // So         SQUARED KEY                         //~v79vI~
+{0x26c6,0x26cd}, // So     [8] RAIN..DISABLED CAR                  //~v79vI~
+{0x26cf,0x26d3}, // So     [5] PICK..CHAINS                        //~v79vI~
+{0x26d5,0x26e1}, // So    [13] ALTERNATE ONE-WAY LEFT WAY TRAFFIC..RESTRICTED LEFT ENTRY-2//~v79vI~
+{0x26e3,0x26e3}, // So         HEAVY CIRCLE WITH STROKE AND TWO DOTS ABOVE//~v79vI~
+{0x26e8,0x26e9}, // So     [2] BLACK CROSS ON SHIELD..SHINTO SHRINE//~v79vI~
+{0x26eb,0x26f1}, // So     [7] CASTLE..UMBRELLA ON GROUND          //~v79vI~
+{0x26f4,0x26f4}, // So         FERRY                               //~v79vI~
+{0x26f6,0x26f9}, // So     [4] SQUARE FOUR CORNERS..PERSON WITH BALL//~v79vI~
+{0x26fb,0x26fc}, // So     [2] JAPANESE BANK SYMBOL..HEADSTONE GRAVEYARD SYMBOL//~v79vI~
+{0x26fe,0x26ff}, // So     [2] CUP ON BLACK SQUARE..WHITE FLAG WITH HORIZONTAL MIDDLE BLACK STRIPE//~v79vI~
+{0x273d,0x273d}, // So         HEAVY TEARDROP-SPOKED ASTERISK      //~v79vI~
+{0x2776,0x277f}, // No    [10] DINGBAT NEGATIVE CIRCLED DIGIT ONE..DINGBAT NEGATIVE CIRCLED NUMBER TEN//~v79vI~
+{0x2b56,0x2b59}, // So     [4] HEAVY OVAL WITH OVAL INSIDE..HEAVY CIRCLED SALTIRE//~v79vI~
+{0x3248,0x324f}, // No     [8] CIRCLED NUMBER TEN ON BLACK SQUARE..CIRCLED NUMBER EIGHTY ON BLACK SQUARE//~v79vI~
+{0xe000,0xf8ff}, // Co  [6400] <private-use-E000>..<private-use-F8FF>//~v79vI~
+{0xfe00,0xfe0f}, // Mn    [16] VARIATION SELECTOR-1..VARIATION SELECTOR-16//~v79vI~
+{0xfffd,0xfffd}, // So         REPLACEMENT CHARACTER               //~v79vI~
+{0x1f100,0x1f10a}, // No    [11] DIGIT ZERO FULL STOP..DIGIT NINE COMMA//~v79vI~
+{0x1f110,0x1f12d}, // So    [30] PARENTHESIZED LATIN CAPITAL LETTER A..CIRCLED CD//~v79vI~
+{0x1f130,0x1f169}, // So    [58] SQUARED LATIN CAPITAL LETTER A..NEGATIVE CIRCLED LATIN CAPITAL LETTER Z//~v79vI~
+{0x1f170,0x1f18d}, // So    [30] NEGATIVE SQUARED LATIN CAPITAL LETTER A..NEGATIVE SQUARED SA//~v79vI~
+{0x1f18f,0x1f190}, // So     [2] NEGATIVE SQUARED WC..SQUARE DJ    //~v79vI~
+{0x1f19b,0x1f1ac}, // So    [18] SQUARED THREE D..SQUARED VOD      //~v79vI~
+{0xe0100,0xe01ef}, // Mn   [240] VARIATION SELECTOR-17..VARIATION SELECTOR-256//~v79vI~
+{0xf0000,0xffffd}, // Co [65534] <private-use-F0000>..<private-use-FFFFD>//~v79vI~
+{0x100000,0x10fffd} // Co [65534] <private-use-100000>..<private-use-10FFFD>//~v79vI~
+  };                                                               //~v79vI~
+//#endif //WXEXXW                                                    //~v79vI~//~v79xR~
+#else //CCC                                                        //~v79xI~
   /* sorted list of non-overlapping intervals of East Asian Ambiguous//~7719I~
    * characters, generated by "uniset +WIDTH-A -cat=Me -cat=Mn -cat=Cf c" *///~7719I~
   static const struct interval ambiguous[] = {                     //~7719I~
 #ifdef AAA                                                         //~v62XI~
-    { 0x00A1, 0x00A1 }, { 0x00A4, 0x00A4 }, { 0x00A7, 0x00A8 },    //~7719I~
-    { 0x00AA, 0x00AA }, { 0x00AE, 0x00AE }, { 0x00B0, 0x00B4 },    //~7719I~
-    { 0x00B6, 0x00BA }, { 0x00BC, 0x00BF }, { 0x00C6, 0x00C6 },    //~7719I~
-    { 0x00D0, 0x00D0 }, { 0x00D7, 0x00D8 }, { 0x00DE, 0x00E1 },    //~7719I~
-    { 0x00E6, 0x00E6 }, { 0x00E8, 0x00EA }, { 0x00EC, 0x00ED },    //~7719I~
-    { 0x00F0, 0x00F0 }, { 0x00F2, 0x00F3 }, { 0x00F7, 0x00FA },    //~7719I~
-    { 0x00FC, 0x00FC }, { 0x00FE, 0x00FE }, { 0x0101, 0x0101 },    //~7719I~
-    { 0x0111, 0x0111 }, { 0x0113, 0x0113 }, { 0x011B, 0x011B },    //~7719I~
-    { 0x0126, 0x0127 }, { 0x012B, 0x012B }, { 0x0131, 0x0133 },    //~7719I~
-    { 0x0138, 0x0138 }, { 0x013F, 0x0142 }, { 0x0144, 0x0144 },    //~7719I~
-    { 0x0148, 0x014B }, { 0x014D, 0x014D }, { 0x0152, 0x0153 },    //~7719I~
-    { 0x0166, 0x0167 }, { 0x016B, 0x016B }, { 0x01CE, 0x01CE },    //~7719I~
-    { 0x01D0, 0x01D0 }, { 0x01D2, 0x01D2 }, { 0x01D4, 0x01D4 },    //~7719I~
-    { 0x01D6, 0x01D6 }, { 0x01D8, 0x01D8 }, { 0x01DA, 0x01DA },    //~7719I~
-    { 0x01DC, 0x01DC }, { 0x0251, 0x0251 }, { 0x0261, 0x0261 },    //~7719I~
-    { 0x02C4, 0x02C4 }, { 0x02C7, 0x02C7 }, { 0x02C9, 0x02CB },    //~7719I~
-    { 0x02CD, 0x02CD }, { 0x02D0, 0x02D0 }, { 0x02D8, 0x02DB },    //~7719I~
-    { 0x02DD, 0x02DD }, { 0x02DF, 0x02DF }, { 0x0391, 0x03A1 },    //~7719I~
-    { 0x03A3, 0x03A9 }, { 0x03B1, 0x03C1 }, { 0x03C3, 0x03C9 },    //~7719I~
-    { 0x0401, 0x0401 }, { 0x0410, 0x044F }, { 0x0451, 0x0451 },    //~7719I~
-    { 0x2010, 0x2010 }, { 0x2013, 0x2016 }, { 0x2018, 0x2019 },    //~7719I~
-    { 0x201C, 0x201D }, { 0x2020, 0x2022 }, { 0x2024, 0x2027 },    //~7719I~
-    { 0x2030, 0x2030 }, { 0x2032, 0x2033 }, { 0x2035, 0x2035 },    //~7719I~
-    { 0x203B, 0x203B }, { 0x203E, 0x203E }, { 0x2074, 0x2074 },    //~7719I~
-    { 0x207F, 0x207F }, { 0x2081, 0x2084 }, { 0x20AC, 0x20AC },    //~7719I~
-    { 0x2103, 0x2103 }, { 0x2105, 0x2105 }, { 0x2109, 0x2109 },    //~7719I~
-    { 0x2113, 0x2113 }, { 0x2116, 0x2116 }, { 0x2121, 0x2122 },    //~7719I~
-    { 0x2126, 0x2126 }, { 0x212B, 0x212B }, { 0x2153, 0x2154 },    //~7719I~
-    { 0x215B, 0x215E }, { 0x2160, 0x216B }, { 0x2170, 0x2179 },    //~7719I~
-    { 0x2190, 0x2199 }, { 0x21B8, 0x21B9 }, { 0x21D2, 0x21D2 },    //~7719I~
-    { 0x21D4, 0x21D4 }, { 0x21E7, 0x21E7 }, { 0x2200, 0x2200 },    //~7719I~
-    { 0x2202, 0x2203 }, { 0x2207, 0x2208 }, { 0x220B, 0x220B },    //~7719I~
-    { 0x220F, 0x220F }, { 0x2211, 0x2211 }, { 0x2215, 0x2215 },    //~7719I~
-    { 0x221A, 0x221A }, { 0x221D, 0x2220 }, { 0x2223, 0x2223 },    //~7719I~
-    { 0x2225, 0x2225 }, { 0x2227, 0x222C }, { 0x222E, 0x222E },    //~7719I~
-    { 0x2234, 0x2237 }, { 0x223C, 0x223D }, { 0x2248, 0x2248 },    //~7719I~
-    { 0x224C, 0x224C }, { 0x2252, 0x2252 }, { 0x2260, 0x2261 },    //~7719I~
-    { 0x2264, 0x2267 }, { 0x226A, 0x226B }, { 0x226E, 0x226F },    //~7719I~
-    { 0x2282, 0x2283 }, { 0x2286, 0x2287 }, { 0x2295, 0x2295 },    //~7719I~
-    { 0x2299, 0x2299 }, { 0x22A5, 0x22A5 }, { 0x22BF, 0x22BF },    //~7719I~
-    { 0x2312, 0x2312 }, { 0x2460, 0x24E9 }, { 0x24EB, 0x254B },    //~7719I~
-    { 0x2550, 0x2573 }, { 0x2580, 0x258F }, { 0x2592, 0x2595 },    //~7719I~
-    { 0x25A0, 0x25A1 }, { 0x25A3, 0x25A9 }, { 0x25B2, 0x25B3 },    //~7719I~
-    { 0x25B6, 0x25B7 }, { 0x25BC, 0x25BD }, { 0x25C0, 0x25C1 },    //~7719I~
-    { 0x25C6, 0x25C8 }, { 0x25CB, 0x25CB }, { 0x25CE, 0x25D1 },    //~7719I~
-    { 0x25E2, 0x25E5 }, { 0x25EF, 0x25EF }, { 0x2605, 0x2606 },    //~7719I~
-    { 0x2609, 0x2609 }, { 0x260E, 0x260F }, { 0x2614, 0x2615 },    //~7719I~
-    { 0x261C, 0x261C }, { 0x261E, 0x261E }, { 0x2640, 0x2640 },    //~7719I~
-    { 0x2642, 0x2642 }, { 0x2660, 0x2661 }, { 0x2663, 0x2665 },    //~7719I~
-    { 0x2667, 0x266A }, { 0x266C, 0x266D }, { 0x266F, 0x266F },    //~7719I~
-    { 0x273D, 0x273D }, { 0x2776, 0x277F }, { 0xE000, 0xF8FF },    //~7719I~
-    { 0xFFFD, 0xFFFD }, { 0xF0000, 0xFFFFD }, { 0x100000, 0x10FFFD }//~7719I~
-#else                                                              //~v62XI~
+#else //!AAA                                                       //~v62XI~//~v79iR~
 #ifdef UB1710	//ambiguous; test under ub17.10(kernel4.13.0)      //~v6V1R~
 //*ambiguous:drop/skip sbcs                                        //~v6V8R~
 //  { 0x00A1, 0x00A1 },  //sbcs                                    //~v6V1I~//~v6V8R~
@@ -1152,173 +1242,15 @@ int mk_wcswidth(const wchar_t *pwcs, size_t n)                     //~7719I~
     { 0x273D, 0x273D },                                            //~v6V1I~//~v6V8R~
     { 0x2776, 0x277F },                                            //~v6V1I~//~v6V8R~
     { 0xd7b0, 0xd7fb }, //moved from mk_wcwidth because wcwidth=1  //~v6WgR~
-    { 0xE000, 0xF8FF }, //private use area(gaiji)                  //~v6V1R~
+//  { 0xE000, 0xF8FF }, //private use area(gaiji)                  //~v6V1R~//~v79gR~
 //  { 0xFFFD, 0xFFFD },  //sbcs                                    //~v6V1I~//~v6V8R~
     { 0xF0000, 0xFFFFD }, //Supplementary Private Use Area-A      //~v6V1I~//~v6V8R~
     { 0x100000, 0x10FFFD }//Supplementry Private Use AerA-B        //~v6V1I~//~v6V8R~
-#else                                                              //~v6V1I~
-//*ncusrse6.0 2018/06/06                                           //~v6V2I~
-    { 0x00A1, 0x00A1 },
-    { 0x00A4, 0x00A4 },
-    { 0x00A7, 0x00A8 },
-    { 0x00AA, 0x00AA },
-    { 0x00AE, 0x00AE },
-    { 0x00B0, 0x00B4 },
-    { 0x00B6, 0x00BA },
-    { 0x00BC, 0x00BF },
-    { 0x00C6, 0x00C6 },
-    { 0x00D0, 0x00D0 },
-    { 0x00D7, 0x00D8 },
-    { 0x00DE, 0x00E1 },
-    { 0x00E6, 0x00E6 },
-    { 0x00E8, 0x00EA },
-    { 0x00EC, 0x00ED },
-    { 0x00F0, 0x00F0 },
-    { 0x00F2, 0x00F3 },
-    { 0x00F7, 0x00FA },
-    { 0x00FC, 0x00FC },
-    { 0x00FE, 0x00FE },
-    { 0x0101, 0x0101 },
-    { 0x0111, 0x0111 },
-    { 0x0113, 0x0113 },
-    { 0x011B, 0x011B },
-    { 0x0126, 0x0127 },
-    { 0x012B, 0x012B },
-    { 0x0131, 0x0133 },
-    { 0x0138, 0x0138 },
-    { 0x013F, 0x0142 },
-    { 0x0144, 0x0144 },
-    { 0x0148, 0x014B },
-    { 0x014D, 0x014D },
-    { 0x0152, 0x0153 },
-    { 0x0166, 0x0167 },
-    { 0x016B, 0x016B },
-    { 0x01CE, 0x01CE },
-    { 0x01D0, 0x01D0 },
-    { 0x01D2, 0x01D2 },
-    { 0x01D4, 0x01D4 },
-    { 0x01D6, 0x01D6 },
-    { 0x01D8, 0x01D8 },
-    { 0x01DA, 0x01DA },
-    { 0x01DC, 0x01DC },
-    { 0x0251, 0x0251 },
-    { 0x0261, 0x0261 },
-    { 0x02C4, 0x02C4 },
-    { 0x02C7, 0x02C7 },
-    { 0x02C9, 0x02CB },
-    { 0x02CD, 0x02CD },
-    { 0x02D0, 0x02D0 },
-    { 0x02D8, 0x02DB },
-    { 0x02DD, 0x02DD },
-    { 0x02DF, 0x02DF },
-    { 0x0391, 0x03A1 },
-    { 0x03A3, 0x03A9 },
-    { 0x03B1, 0x03C1 },
-    { 0x03C3, 0x03C9 },
-    { 0x0401, 0x0401 },
-    { 0x0410, 0x044F },
-    { 0x0451, 0x0451 },
-    { 0x2010, 0x2010 },
-    { 0x2013, 0x2016 },
-    { 0x2018, 0x2019 },
-    { 0x201C, 0x201D },
-    { 0x2020, 0x2022 },
-    { 0x2024, 0x2027 },
-    { 0x2030, 0x2030 },
-    { 0x2032, 0x2033 },
-    { 0x2035, 0x2035 },
-    { 0x203B, 0x203B },
-    { 0x203E, 0x203E },
-    { 0x2074, 0x2074 },
-    { 0x207F, 0x207F },
-    { 0x2081, 0x2084 },
-//  { 0x20AC, 0x20AC },	//currency:euro                            //~v6buR~
-    { 0x2103, 0x2103 },
-    { 0x2105, 0x2105 },
-    { 0x2109, 0x2109 },
-    { 0x2113, 0x2113 },
-    { 0x2116, 0x2116 },
-    { 0x2121, 0x2122 },
-    { 0x2126, 0x2126 },
-    { 0x212B, 0x212B },
-    { 0x2153, 0x2154 },
-    { 0x215B, 0x215E },
-    { 0x2160, 0x216B },
-//  { 0x2170, 0x2179 },                                            //~v62XR~
-    { 0x2170, 0x217b },        //add xi,xii                        //~v62XI~
-    { 0x2190, 0x2199 },
-    { 0x21B8, 0x21B9 },
-    { 0x21D0, 0x21D0 },        //add <==                           //~v62XI~
-    { 0x21D2, 0x21D2 },
-    { 0x21D4, 0x21D4 },
-    { 0x21E7, 0x21E7 },
-    { 0x2200, 0x2200 },
-    { 0x2202, 0x2203 },
-    { 0x2207, 0x2208 },
-    { 0x220B, 0x220B },
-    { 0x220F, 0x220F },
-    { 0x2211, 0x2211 },
-    { 0x2215, 0x2215 },
-    { 0x221A, 0x221A },
-    { 0x221D, 0x2220 },
-    { 0x2223, 0x2223 },
-    { 0x2225, 0x2225 },
-    { 0x2227, 0x222C },
-    { 0x222E, 0x222E },
-    { 0x2234, 0x2237 },
-    { 0x223C, 0x223D },
-    { 0x2248, 0x2248 },
-    { 0x224C, 0x224C },
-    { 0x2252, 0x2252 },
-    { 0x2260, 0x2261 },
-    { 0x2264, 0x2267 },
-    { 0x226A, 0x226B },
-    { 0x226E, 0x226F },
-    { 0x2282, 0x2283 },
-    { 0x2286, 0x2287 },
-    { 0x2295, 0x2295 },
-    { 0x2299, 0x2299 },
-    { 0x22A5, 0x22A5 },
-    { 0x22BF, 0x22BF },
-    { 0x2312, 0x2312 },
-    { 0x2460, 0x24E9 },
-    { 0x24EB, 0x254B },
-    { 0x2550, 0x2573 },
-    { 0x2580, 0x258F },
-    { 0x2592, 0x2595 },
-    { 0x25A0, 0x25A1 },
-    { 0x25A3, 0x25A9 },
-    { 0x25B2, 0x25B3 },
-    { 0x25B6, 0x25B7 },
-    { 0x25BC, 0x25BD },
-    { 0x25C0, 0x25C1 },
-    { 0x25C6, 0x25C8 },
-    { 0x25CB, 0x25CB },
-    { 0x25CE, 0x25D1 },
-    { 0x25E2, 0x25E5 },
-    { 0x25EF, 0x25EF },
-    { 0x2605, 0x2606 },
-    { 0x2609, 0x2609 },
-    { 0x260E, 0x260F },
-    { 0x2614, 0x2615 },
-    { 0x261C, 0x261C },
-    { 0x261E, 0x261E },
-    { 0x2640, 0x2640 },
-    { 0x2642, 0x2642 },
-    { 0x2660, 0x2661 },
-    { 0x2663, 0x2665 },
-    { 0x2667, 0x266A },
-    { 0x266C, 0x266D },
-    { 0x266F, 0x266F },
-    { 0x273D, 0x273D },
-    { 0x2776, 0x277F },
-    { 0xE000, 0xF8FF },
-    { 0xFFFD, 0xFFFD },
-    { 0xF0000, 0xFFFFD },
-    { 0x100000, 0x10FFFD }
+#else    //!UB1710                                               //~v6V1I~//~v79iR~
 #endif //UB1710	//test under ub17.10(kernel4.13.0)                 //~v6V1I~
 #endif                                                             //~v62XI~
   };                                                               //~7719I~
+#endif //CCC                                                       //~v79xI~
 #ifdef UB1710	                                                   //~v6V2I~
 //*specify all char in the specific non language block             //~v6V8I~
   static const struct interval Sambiguous_non_langs[] = {          //~v6V8I~
@@ -1341,7 +1273,9 @@ int mk_wcswidth(const wchar_t *pwcs, size_t n)                     //~7719I~
    ,{ 0x2100, 0x214f }  //LetterLike Symbols                       //~v6WpI~
    ,{ 0x2300, 0x23ff }  //Miscellaneous Technical                  //~v6WpI~
 // ,{ 0x2400, 0x243f }  //Control Picures del WXE                  //~v6WpI~
+   ,{ 0x2400, 0x243f }  //Control Picures del WXE                  //~v79sI~
 // ,{ 0x2440, 0x245f }  //Optical Character Recognition del WXE    //~v6WpR~
+   ,{ 0x2440, 0x245f }  //Optical Character Recognition del WXE    //~v79sI~
    ,{ 0x2460, 0x24ff }  //Enclosed Alphanumeric,dup with ambiguous 2460-24e9,24eb-254b//~v6WpI~
    ,{ 0x27f0, 0x27ff }  //Supplemental Arrows-A                    //~v6WpI~
    ,{ 0x2800, 0x28ff }  //Braille Patterns                         //~v6WpI~
@@ -1429,7 +1363,8 @@ int mk_wcswidth(const wchar_t *pwcs, size_t n)                     //~7719I~
     ,{ 0x2d80, 0x2ddf } //  Ethiopic Extended                      //~v6V2I~
     ,{ 0x2de0, 0x2dff } //  Cyrillic Extended-A                    //~v6V2I~
 //  ,{ 0x2e00, 0x2e7f } //  By Suctb_utf8  @@@@test                //~v6V2I~
-    ,{ 0x2e80, 0xa4cf } //  mk_wcwidth dbcs                        //~v6V2I~
+//  ,{ 0x2e80, 0xa4cf } //  mk_wcwidth dbcs                        //~v6V2I~//~v799R~
+    ,{ 0x303f, 0x303f } //  not DBCS by mk_wcwidth                 //~v799I~
     ,{ 0xa4d0, 0xa4ff } //  Lisu                                   //~v6V2I~
     ,{ 0xa500, 0xa63f } //  Vai                                    //~v6V2I~
     ,{ 0xa640, 0xa69f } //  Cyrillic Extended-B                    //~v6V2I~
@@ -1550,7 +1485,8 @@ int mk_wcswidth(const wchar_t *pwcs, size_t n)                     //~7719I~
     ,{ 0x2d80, 0x2ddf } //  Ethiopic Extended                      //~v6WkI~
     ,{ 0x2de0, 0x2dff } //  Cyrillic Extended-A                    //~v6WkI~
 //  ,{ 0x2e00, 0x2e7f } //  By Suctb_utf8  @@@@test                //~v6WkI~
-    ,{ 0x2e80, 0xa4cf } //  mk_wcwidth dbcs                        //~v6WkI~
+//  ,{ 0x2e80, 0xa4cf } //  mk_wcwidth dbcs                        //~v6WkI~//~vbz5R~
+    ,{ 0x303f, 0x303f } //  unprintable mark;not DBCS by mk_wcwidth//~v79sI~
     ,{ 0xa4d0, 0xa4ff } //  Lisu                                   //~v6WkI~
     ,{ 0xa500, 0xa63f } //  Vai                                    //~v6WkI~
     ,{ 0xa640, 0xa69f } //  Cyrillic Extended-B                    //~v6WkI~
@@ -1672,7 +1608,8 @@ int mk_wcswidth(const wchar_t *pwcs, size_t n)                     //~7719I~
     ,{ 0x2d80, 0x2ddf } //  Ethiopic Extended                      //~v6WpI~
     ,{ 0x2de0, 0x2dff } //  Cyrillic Extended-A                    //~v6WpI~
 //  ,{ 0x2e00, 0x2e7f } //  By Suctb_utf8  @@@@test                //~v6WpI~
-    ,{ 0x2e80, 0xa4cf } //  mk_wcwidth dbcs                        //~v6WpI~
+//  ,{ 0x2e80, 0xa4cf } //  mk_wcwidth dbcs                        //~v6WpI~//~vbz4R~
+    ,{ 0x303f, 0x303f } //  unprintable mark;not DBCS by mk_wcwidth//~v79sI~
     ,{ 0xa4d0, 0xa4ff } //  Lisu                                   //~v6WpI~
     ,{ 0xa500, 0xa63f } //  Vai                                    //~v6WpI~
     ,{ 0xa640, 0xa69f } //  Cyrillic Extended-B                    //~v6WpI~
@@ -1715,7 +1652,7 @@ int mk_wcswidth(const wchar_t *pwcs, size_t n)                     //~7719I~
 //      { 0xff61, 0xffef } //  sbcs/dbcs by wcwidth                //~v6WpI~
 //  ,{ 0xfff0, 0xffff } //  Specials                               //~v6WpI~
   };                                                               //~v6WpI~
-#endif                                                             //~v6WpI~
+#endif     //W32                                                        //~v6WpI~//~v79iR~
   static const struct interval Sambiguous_langs_ucs4[] = {         //~v6V2I~
      { 0x0000, 0x0000 } //  dummy                                  //~v6V2I~
 //U+10000..U+1007F  :Linear B Syllabary:Linear B                   //~v6V2I~
@@ -2077,7 +2014,7 @@ int mk_wcwidth_cjk(UWUCS ucs)                                      //~v6VbI~
   {                                                                //~v6WnI~
 //  return 2+UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v6V8I~//~v6W9R~
     rc=2;                                                          //~v6W9I~
-//  UTRACEP("%s:%06x ambiguous non lang\n",UTT,ucs);               //+v70iR~
+//  UTRACEP("%s:0x%04x ambiguous non lang\n",UTT,ucs);               //~v70iR~//~v79zR~
   }                                                                //~v6WnI~
   else                                                             //~v6WkI~
   if (bisearch(ucs, Sambiguous_langs,                              //~v6V2I~
@@ -2086,7 +2023,7 @@ int mk_wcwidth_cjk(UWUCS ucs)                                      //~v6VbI~
 //  return 2;                                                      //~v6V2I~//~v6V8R~
 //  return 2+UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v6V8I~//~v6W9R~
     rc=2;                                                          //~v6W9I~
-//  UTRACEP("%s:%06x ambiguous lang\n",UTT,ucs);                   //+v70iR~
+//  UTRACEP("%s:0x%04x ambiguous lang\n",UTT,ucs);                   //~v70iR~//~v79zR~
   }                                                                //~v6WnI~
   else                                                             //~v6WkI~
   if (bisearch(ucs, Sambiguous_langs_ucs4,                         //~v6V2I~
@@ -2095,18 +2032,19 @@ int mk_wcwidth_cjk(UWUCS ucs)                                      //~v6VbI~
 //  return 2;                                                      //~v6V2I~//~v6V8R~
 //  return 2+UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v6V8I~//~v6W9R~
     rc=2;                                                          //~v6W9I~
-    UTRACEP("%s:%06x ambiguous lang_ucs4\n",UTT,ucs);              //~v6WnI~
+    UTRACEP("%s:0x%04x ambiguous lang_ucs4\n",UTT,ucs);              //~v6WnI~//~v79zR~
   }                                                                //~v6WnI~
   else                                                             //~v6WkI~
 #endif                                                             //~v6V2I~
   /* binary search in table of non-spacing characters */           //~7719I~
-  if (bisearch(ucs, ambiguous,                                     //~7719I~
-	       sizeof(ambiguous) / sizeof(struct interval) - 1))       //~7719I~
+//if (bisearch(ucs, ambiguous,                                     //~7719I~//~v79vR~
+//	       sizeof(ambiguous) / sizeof(struct interval) - 1))       //~7719I~//~v79vR~
+  if (utf4_isAmbiguousAmbiguous(ucs))                              //~v79vR~
   {                                                                //~v6WnI~
 //  return 2;                                                      //~7719I~//~v6V8R~
 //  return 2+UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v6V8I~//~v6W9R~
     rc=2;                                                          //~v6W9I~
-//  UTRACEP("%s:%06x ambiguous\n",UTT,ucs);                        //~v70iR~
+//  UTRACEP("%s:0x%04x ambiguous\n",UTT,ucs);                        //~v70iR~//~v79zR~
   }                                                                //~v6WnI~
     break;                                                         //~v6W9I~
  }	   //for                                                       //~v6W9I~
@@ -2116,11 +2054,10 @@ int mk_wcwidth_cjk(UWUCS ucs)                                      //~v6VbI~
 //        if (!mk_wcwidth_combining(ucs)) //rc=0:combining           //~v6W9R~//~v6WnR~
 ////          return UTFWWF_RC_MK_WCWIDTH|UTFWWF_RC_MK_COMB; //by mk_wcwidth() adjustable by wcwidth() but not for combining//~v6W9R~//~v6WmR~//~v6WnR~
 //            return UTFWWF_RC_MK_WCWIDTH|UTFWWF_COMB; //by mk_wcwidth() adjustable by wcwidth() but not for combining//~v6WmI~//~v6WnR~
-//      UTRACEP("%s:%06x ambigouous\n",UTT,ucs);                   //~v6WnI~//~v6X5R~
+        UTRACEP("%s:0x%04x ambigouous\n",UTT,ucs);                   //~v6WnI~//~v6X5R~//~v79oR~//~v79zR~
     	return rc|UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v6W9I~
     }                                                              //~v6W9I~
 #endif                                                             //~v6W9I~
-                                                                   //~7719I~
 //return mk_wcwidth(ucs);                                          //~7719I~//~v6WnR~
 	Sfromcjk=1;                                                    //~v6WnI~
 //rc=mk_wcwidth(ucs);                                              //~v6WnR~
@@ -2221,323 +2158,10 @@ int mk_wcwidth_adjsbcs(UWUCS ucs)                                  //~v6BjI~
       (ucs >= 0x20000 && ucs <= 0x2fffd) ||                        //~v6c5I~
       (ucs >= 0x30000 && ucs <= 0x3fffd)));                        //~v6c5I~
 }//mk_wcwidth_afterapi                                             //~v6c5I~
-//*************************************************************    //~v6V2I~
-//2018/04/24  https://en/wikipedia.org/wiki/Unicode_block          //~v6V2I~
-//*************************************************************    //~v6V2I~
-////0 BMP                                                          //~v6V2I~
-//U+0000..U+007F    :Basic Latin[g]:Latin (52 characters), Common (76 characters)//~v6V2I~
-//U+0080..U+00FF    :Latin-1 Supplement[h]:Latin (64 characters), Common (64 characters)//~v6V2I~
-//U+0100..U+017F    :Latin Extended-A:Latin                        //~v6V2I~
-//U+0180..U+024F    :Latin Extended-B:Latin                        //~v6V2I~
-//U+0250..U+02AF    :IPA Extensions:Latin                          //~v6V2I~
-//U+02B0..U+02FF    :Spacing Modifier Letters:Bopomofo (2 characters), Latin (14 characters), Common (64 characters)//~v6V2I~
-//U+0300..U+036F    :Combining Diacritical Marks:Inherited         //~v6V2I~
-//U+0370..U+03FF    :Greek and Coptic:Coptic (14 characters), Greek (117 characters), Common (4 characters)//~v6V2I~
-//U+0400..U+04FF    :Cyrillic:Cyrillic (254 characters), Inherited (2 characters)//~v6V2I~
-//U+0500..U+052F    :Cyrillic Supplement:Cyrillic                  //~v6V2I~
-////0 BMP                                                          //~v6V2I~
-//U+0530..U+058F    :Armenian:Armenian (88 characters), Common (1 character)//~v6V2I~
-//U+0590..U+05FF    :Hebrew:Hebrew                                 //~v6V2I~
-//U+0600..U+06FF    :Arabic:Arabic (237 characters), Common (6 characters), Inherited (12 characters)//~v6V2I~
-//U+0700..U+074F    :Syriac:Syriac                                 //~v6V2I~
-//U+0750..U+077F    :Arabic Supplement:Arabic                      //~v6V2I~
-//U+0780..U+07BF    :Thaana:Thaana                                 //~v6V2I~
-//U+07C0..U+07FF    :NKo:Nko                                       //~v6V2I~
-//U+0800..U+083F    :Samaritan:Samaritan                           //~v6V2I~
-//U+0840..U+085F    :Mandaic:Mandaic                               //~v6V2I~
-//U+0860..U+086F    :Syriac Supplement:Syriac                      //~v6V2I~
-////0 BMP                                                          //~v6V2I~
-//U+08A0..U+08FF    :Arabic Extended-A:Arabic (72 characters), Common (1 character)//~v6V2I~
-//U+0900..U+097F    :Devanagari:Devanagari (124 characters), Common (2 characters), Inherited (2 characters)//~v6V2I~
-//U+0980..U+09FF    :Bengali:Bengali                               //~v6V2I~
-//U+0A00..U+0A7F    :Gurmukhi:Gurmukhi                             //~v6V2I~
-//U+0A80..U+0AFF    :Gujarati:Gujarati                             //~v6V2I~
-//U+0B00..U+0B7F    :Oriya:Oriya                                   //~v6V2I~
-//U+0B80..U+0BFF    :Tamil:Tamil                                   //~v6V2I~
-//U+0C00..U+0C7F    :Telugu:Telugu                                 //~v6V2I~
-//U+0C80..U+0CFF    :Kannada:Kannada                               //~v6V2I~
-//U+0D00..U+0D7F    :Malayalam:Malayalam                           //~v6V2I~
-////0 BMP                                                          //~v6V2I~
-//U+0D80..U+0DFF    :Sinhala:Sinhala                               //~v6V2I~
-//U+0E00..U+0E7F    :Thai:Thai (86 characters), Common (1 character)//~v6V2I~
-//U+0E80..U+0EFF    :Lao:Lao                                       //~v6V2I~
-//U+0F00..U+0FFF    :Tibetan:Tibetan (207 characters), Common (4 characters)//~v6V2I~
-//U+1000..U+109F    :Myanmar:Myanmar                               //~v6V2I~
-//U+10A0..U+10FF    :Georgian:Georgian (87 characters), Common (1 character)//~v6V2I~
-//U+1100..U+11FF    :Hangul Jamo:Hangul                            //~v6V2I~
-//U+1200..U+137F    :Ethiopic:Ethiopic                             //~v6V2I~
-//U+1380..U+139F    :Ethiopic Supplement:Ethiopic                  //~v6V2I~
-//U+13A0..U+13FF    :Cherokee:Cherokee                             //~v6V2I~
-////0 BMP                                                          //~v6V2I~
-//U+1400..U+167F    :Unified Canadian Aboriginal Syllabics:Canadian Aboriginal//~v6V2I~
-//U+1680..U+169F    :Ogham:Ogham                                   //~v6V2I~
-//U+16A0..U+16FF    :Runic:Runic (86 characters), Common (3 characters)//~v6V2I~
-//U+1700..U+171F    :Tagalog:Tagalog                               //~v6V2I~
-//U+1720..U+173F    :Hanunoo:Hanunoo (21 characters), Common (2 characters)//~v6V2I~
-//U+1740..U+175F    :Buhid:Buhid                                   //~v6V2I~
-//U+1760..U+177F    :Tagbanwa:Tagbanwa                             //~v6V2I~
-//U+1780..U+17FF    :Khmer:Khmer                                   //~v6V2I~
-//U+1800..U+18AF    :Mongolian:Mongolian (153 characters), Common (3 characters)//~v6V2I~
-//U+18B0..U+18FF    :Unified Canadian Aboriginal Syllabics Extended:Canadian Aboriginal//~v6V2I~
-////0 BMP                                                          //~v6V2I~
-//U+1900..U+194F    :Limbu:Limbu                                   //~v6V2I~
-//U+1950..U+197F    :Tai Le:Tai Le                                 //~v6V2I~
-//U+1980..U+19DF    :New Tai Lue:New Tai Lue                       //~v6V2I~
-//U+19E0..U+19FF    :Khmer Symbols:Khmer                           //~v6V2I~
-//U+1A00..U+1A1F    :Buginese:Buginese                             //~v6V2I~
-//U+1A20..U+1AAF    :Tai Tham:Tai Tham                             //~v6V2I~
-//U+1AB0..U+1AFF    :Combining Diacritical Marks Extended:Inherited//~v6V2I~
-//U+1B00..U+1B7F    :Balinese:Balinese                             //~v6V2I~
-//U+1B80..U+1BBF    :Sundanese:Sundanese                           //~v6V2I~
-//U+1BC0..U+1BFF    :Batak:Batak                                   //~v6V2I~
-////0 BMP                                                          //~v6V2I~
-//U+1C00..U+1C4F    :Lepcha:Lepcha                                 //~v6V2I~
-//U+1C50..U+1C7F    :Ol Chiki:Ol Chiki                             //~v6V2I~
-//U+1C80..U+1C8F    :Cyrillic Extended-C:Cyrillic                  //~v6V2I~
-//U+1CC0..U+1CCF    :Sundanese Supplement:Sundanese                //~v6V2I~
-//U+1CD0..U+1CFF    :Vedic Extensions:Common (15 characters), Inherited (27 characters)//~v6V2I~
-//U+1D00..U+1D7F    :Phonetic Extensions:Cyrillic (2 characters), Greek (15 characters), Latin (111 characters)//~v6V2I~
-//U+1D80..U+1DBF    :Phonetic Extensions Supplement:Greek (1 character), Latin (63 characters)//~v6V2I~
-//U+1DC0..U+1DFF    :Combining Diacritical Marks Supplement:Inherited//~v6V2I~
-//U+1E00..U+1EFF    :Latin Extended Additional:Latin               //~v6V2I~
-//U+1F00..U+1FFF    :Greek Extended:Greek                          //~v6V2I~
-////0 BMP                                                          //~v6V2I~
-//U+2000..U+206F    :General Punctuation:Common (109 characters), Inherited (2 characters)//~v6V2I~
-//U+2070..U+209F    :Superscripts and Subscripts:Latin (15 characters), Common (27 characters)//~v6V2I~
-//U+20A0..U+20CF    :Currency Symbols:Common                       //~v6V2I~
-//U+20D0..U+20FF    :Combining Diacritical Marks for Symbols:Inherited//~v6V2I~
-//U+2100..U+214F    :Letterlike Symbols:Greek (1 character), Latin (4 characters), Common (75 characters)//~v6V2I~
-//U+2150..U+218F    :Number Forms:Latin (41 characters), Common (19 characters)//~v6V2I~
-//U+2190..U+21FF    :Arrows:Common                                 //~v6V2I~
-//U+2200..U+22FF    :Mathematical Operators:Common                 //~v6V2I~
-//U+2300..U+23FF    :Miscellaneous Technical:Common                //~v6V2I~
-//U+2400..U+243F    :Control Pictures:Common                       //~v6V2I~
-////0 BMP                                                          //~v6V2I~
-//U+2440..U+245F    :Optical Character Recognition:Common          //~v6V2I~
-//U+2460..U+24FF    :Enclosed Alphanumerics:Common                 //~v6V2I~
-//U+2500..U+257F    :Box Drawing:Common                            //~v6V2I~
-//U+2580..U+259F    :Block Elements:Common                         //~v6V2I~
-//U+25A0..U+25FF    :Geometric Shapes:Common                       //~v6V2I~
-//U+2600..U+26FF    :Miscellaneous Symbols:Common                  //~v6V2I~
-//U+2700..U+27BF    :Dingbats:Common                               //~v6V2I~
-//U+27C0..U+27EF    :Miscellaneous Mathematical Symbols-A:Common   //~v6V2I~
-//U+27F0..U+27FF    :Supplemental Arrows-A:Common                  //~v6V2I~
-//U+2800..U+28FF    :Braille Patterns:Braille                      //~v6V2I~
-////0 BMP                                                          //~v6V2I~
-//U+2900..U+297F    :Supplemental Arrows-B:Common                  //~v6V2I~
-//U+2980..U+29FF    :Miscellaneous Mathematical Symbols-B:Common   //~v6V2I~
-//U+2A00..U+2AFF    :Supplemental Mathematical Operators:Common    //~v6V2I~
-//U+2B00..U+2BFF    :Miscellaneous Symbols and Arrows:Common       //~v6V2I~
-//U+2C00..U+2C5F    :Glagolitic:Glagolitic                         //~v6V2I~
-//U+2C60..U+2C7F    :Latin Extended-C:Latin                        //~v6V2I~
-//U+2C80..U+2CFF    :Coptic:Coptic                                 //~v6V2I~
-//U+2D00..U+2D2F    :Georgian Supplement:Georgian                  //~v6V2I~
-//U+2D30..U+2D7F    :Tifinagh:Tifinagh                             //~v6V2I~
-//U+2D80..U+2DDF    :Ethiopic Extended:Ethiopic                    //~v6V2I~
-////0 BMP                                                          //~v6V2I~
-//U+2DE0..U+2DFF    :Cyrillic Extended-A:Cyrillic                  //~v6V2I~
-//U+2E00..U+2E7F    :Supplemental Punctuation:Common               //~v6V2I~
-//U+2E80..U+2EFF    :CJK Radicals Supplement:Han                   //~v6V2I~
-//U+2F00..U+2FDF    :Kangxi Radicals:Han                           //~v6V2I~
-//U+2FF0..U+2FFF    :Ideographic Description Characters:Common     //~v6V2I~
-//U+3000..U+303F    :CJK Symbols and Punctuation:Han (15 characters), Hangul (2 characters), Common (43 characters), Inherited (4 characters)//~v6V2I~
-//U+3040..U+309F    :Hiragana:Hiragana (89 characters), Common (2 characters), Inherited (2 characters)//~v6V2I~
-//U+30A0..U+30FF    :Katakana:Katakana (93 characters), Common (3 characters)//~v6V2I~
-//U+3100..U+312F    :Bopomofo:Bopomofo                             //~v6V2I~
-//U+3130..U+318F    :Hangul Compatibility Jamo:Hangul              //~v6V2I~
-////0 BMP                                                          //~v6V2I~
-//U+3190..U+319F    :Kanbun:Common                                 //~v6V2I~
-//U+31A0..U+31BF    :Bopomofo Extended:Bopomofo                    //~v6V2I~
-//U+31C0..U+31EF    :CJK Strokes:Common                            //~v6V2I~
-//U+31F0..U+31FF    :Katakana Phonetic Extensions:Katakana         //~v6V2I~
-//U+3200..U+32FF    :Enclosed CJK Letters and Months:Hangul (62 characters), Katakana (47 characters), Common (145 characters)//~v6V2I~
-//U+3300..U+33FF    :CJK Compatibility:Katakana (88 characters), Common (168 characters)//~v6V2I~
-//U+3400..U+4DBF    :CJK Unified Ideographs Extension A:Han        //~v6V2I~
-//U+4DC0..U+4DFF    :Yijing Hexagram Symbols:Common                //~v6V2I~
-//U+4E00..U+9FFF    :CJK Unified Ideographs:Han                    //~v6V2I~
-//U+A000..U+A48F    :Yi Syllables:Yi                               //~v6V2I~
-////0 BMP                                                          //~v6V2I~
-//U+A490..U+A4CF    :Yi Radicals:Yi                                //~v6V2I~
-//U+A4D0..U+A4FF    :Lisu:Lisu                                     //~v6V2I~
-//U+A500..U+A63F    :Vai:Vai                                       //~v6V2I~
-//U+A640..U+A69F    :Cyrillic Extended-B:Cyrillic                  //~v6V2I~
-//U+A6A0..U+A6FF    :Bamum:Bamum                                   //~v6V2I~
-//U+A700..U+A71F    :Modifier Tone Letters:Common                  //~v6V2I~
-//U+A720..U+A7FF    :Latin Extended-D:Latin (155 characters), Common (5 characters)//~v6V2I~
-//U+A800..U+A82F    :Syloti Nagri:Syloti Nagri                     //~v6V2I~
-//U+A830..U+A83F    :Common Indic Number Forms:Common              //~v6V2I~
-//U+A840..U+A87F    :Phags-pa:Phags Pa                             //~v6V2I~
-////0 BMP                                                          //~v6V2I~
-//U+A880..U+A8DF    :Saurashtra:Saurashtra                         //~v6V2I~
-//U+A8E0..U+A8FF    :Devanagari Extended:Devanagari                //~v6V2I~
-//U+A900..U+A92F    :Kayah Li:Kayah Li (47 characters), Common (1 character)//~v6V2I~
-//U+A930..U+A95F    :Rejang:Rejang                                 //~v6V2I~
-//U+A960..U+A97F    :Hangul Jamo Extended-A:Hangul                 //~v6V2I~
-//U+A980..U+A9DF    :Javanese:Javanese (90 characters), Common (1 character)//~v6V2I~
-//U+A9E0..U+A9FF    :Myanmar Extended-B:Myanmar                    //~v6V2I~
-//U+AA00..U+AA5F    :Cham:Cham                                     //~v6V2I~
-//U+AA60..U+AA7F    :Myanmar Extended-A:Myanmar                    //~v6V2I~
-//U+AA80..U+AADF    :Tai Viet:Tai Viet                             //~v6V2I~
-////0 BMP                                                          //~v6V2I~
-//U+AAE0..U+AAFF    :Meetei Mayek Extensions:Meetei Mayek          //~v6V2I~
-//U+AB00..U+AB2F    :Ethiopic Extended-A:Ethiopic                  //~v6V2I~
-//U+AB30..U+AB6F    :Latin Extended-E:Latin (52 characters), Greek (1 character), Common (1 character)//~v6V2I~
-//U+AB70..U+ABBF    :Cherokee Supplement:Cherokee                  //~v6V2I~
-//U+ABC0..U+ABFF    :Meetei Mayek:Meetei Mayek                     //~v6V2I~
-//U+AC00..U+D7AF    :Hangul Syllables:Hangul                       //~v6V2I~
-//U+D7B0..U+D7FF    :Hangul Jamo Extended-B:Hangul                 //~v6V2I~
-//U+D800..U+DB7F    :High Surrogates:Unknown                       //~v6V2I~
-//U+DB80..U+DBFF    :High Private Use Surrogates:Unknown           //~v6V2I~
-//U+DC00..U+DFFF    :Low Surrogates:Unknown                        //~v6V2I~
-////0 BMP                                                          //~v6V2I~
-//U+E000..U+F8FF    :Private Use Area:Unknown                      //~v6V2I~
-//U+F900..U+FAFF    :CJK Compatibility Ideographs:Han              //~v6V2I~
-//U+FB00..U+FB4F    :Alphabetic Presentation Forms:Armenian (5 characters), Hebrew (46 characters), Latin (7 characters)//~v6V2I~
-//U+FB50..U+FDFF    :Arabic Presentation Forms-A:Arabic (609 characters), Common (2 characters)//~v6V2I~
-//U+FE00..U+FE0F    :Variation Selectors:Inherited                 //~v6V2I~
-//U+FE10..U+FE1F    :Vertical Forms:Common                         //~v6V2I~
-//U+FE20..U+FE2F    :Combining Half Marks:Cyrillic (2 characters), Inherited (14 characters)//~v6V2I~
-//U+FE30..U+FE4F    :CJK Compatibility Forms:Common                //~v6V2I~
-//U+FE50..U+FE6F    :Small Form Variants:Common                    //~v6V2I~
-//U+FE70..U+FEFF    :Arabic Presentation Forms-B:Arabic (140 characters), Common (1 character)//~v6V2I~
-//U+FF00..U+FFEF    :Halfwidth and Fullwidth Forms:Hangul (52 characters), Katakana (55 characters), Latin (52 characters), Common (66 characters)//~v6V2I~
-//U+FFF0..U+FFFF    :Specials:Common                               //~v6V2I~
-////1 SMP                                                          //~v6V2I~
-//U+10000..U+1007F  :Linear B Syllabary:Linear B                   //~v6V2I~
-//U+10080..U+100FF  :Linear B Ideograms:Linear B                   //~v6V2I~
-//U+10100..U+1013F  :Aegean Numbers:Common                         //~v6V2I~
-//U+10140..U+1018F  :Ancient Greek Numbers:Greek                   //~v6V2I~
-//U+10190..U+101CF  :Ancient Symbols:Greek (1 character), Common (12 characters)//~v6V2I~
-//U+101D0..U+101FF  :Phaistos Disc:Common (45 characters), Inherited (1 character)//~v6V2I~
-//U+10280..U+1029F  :Lycian:Lycian                                 //~v6V2I~
-//U+102A0..U+102DF  :Carian:Carian                                 //~v6V2I~
-//U+102E0..U+102FF  :Coptic Epact Numbers:Common (27 characters), Inherited (1 character)//~v6V2I~
-//U+10300..U+1032F  :Old Italic:Old Italic                         //~v6V2I~
-////1 SMP                                                          //~v6V2I~
-//U+10330..U+1034F  :Gothic:Gothic                                 //~v6V2I~
-//U+10350..U+1037F  :Old Permic:Old Permic                         //~v6V2I~
-//U+10380..U+1039F  :Ugaritic:Ugaritic                             //~v6V2I~
-//U+103A0..U+103DF  :Old Persian:Old Persian                       //~v6V2I~
-//U+10400..U+1044F  :Deseret:Deseret                               //~v6V2I~
-//U+10450..U+1047F  :Shavian:Shavian                               //~v6V2I~
-//U+10480..U+104AF  :Osmanya:Osmanya                               //~v6V2I~
-//U+104B0..U+104FF  :Osage:Osage                                   //~v6V2I~
-//U+10500..U+1052F  :Elbasan:Elbasan                               //~v6V2I~
-//U+10530..U+1056F  :Caucasian Albanian:Caucasian Albanian         //~v6V2I~
-////1 SMP                                                          //~v6V2I~
-//U+10600..U+1077F  :Linear A:Linear A                             //~v6V2I~
-//U+10800..U+1083F  :Cypriot Syllabary:Cypriot                     //~v6V2I~
-//U+10840..U+1085F  :Imperial Aramaic:Imperial Aramaic             //~v6V2I~
-//U+10860..U+1087F  :Palmyrene:Palmyrene                           //~v6V2I~
-//U+10880..U+108AF  :Nabataean:Nabataean                           //~v6V2I~
-//U+108E0..U+108FF  :Hatran:Hatran                                 //~v6V2I~
-//U+10900..U+1091F  :Phoenician:Phoenician                         //~v6V2I~
-//U+10920..U+1093F  :Lydian:Lydian                                 //~v6V2I~
-//U+10980..U+1099F  :Meroitic Hieroglyphs:Meroitic Hieroglyphs     //~v6V2I~
-//U+109A0..U+109FF  :Meroitic Cursive:Meroitic Cursive             //~v6V2I~
-////1 SMP                                                          //~v6V2I~
-//U+10A00..U+10A5F  :Kharoshthi:Kharoshthi                         //~v6V2I~
-//U+10A60..U+10A7F  :Old South Arabian:Old South Arabian           //~v6V2I~
-//U+10A80..U+10A9F  :Old North Arabian:Old North Arabian           //~v6V2I~
-//U+10AC0..U+10AFF  :Manichaean:Manichaean                         //~v6V2I~
-//U+10B00..U+10B3F  :Avestan:Avestan                               //~v6V2I~
-//U+10B40..U+10B5F  :Inscriptional Parthian:Inscriptional Parthian //~v6V2I~
-//U+10B60..U+10B7F  :Inscriptional Pahlavi:Inscriptional Pahlavi   //~v6V2I~
-//U+10B80..U+10BAF  :Psalter Pahlavi:Psalter Pahlavi               //~v6V2I~
-//U+10C00..U+10C4F  :Old Turkic:Old Turkic                         //~v6V2I~
-//U+10C80..U+10CFF  :Old Hungarian:Old Hungarian                   //~v6V2I~
-////1 SMP                                                          //~v6V2I~
-//U+10E60..U+10E7F  :Rumi Numeral Symbols:Arabic                   //~v6V2I~
-//U+11000..U+1107F  :Brahmi:Brahmi                                 //~v6V2I~
-//U+11080..U+110CF  :Kaithi:Kaithi                                 //~v6V2I~
-//U+110D0..U+110FF  :Sora Sompeng:Sora Sompeng                     //~v6V2I~
-//U+11100..U+1114F  :Chakma:Chakma                                 //~v6V2I~
-//U+11150..U+1117F  :Mahajani:Mahajani                             //~v6V2I~
-//U+11180..U+111DF  :Sharada:Sharada                               //~v6V2I~
-//U+111E0..U+111FF  :Sinhala Archaic Numbers:Sinhala               //~v6V2I~
-//U+11200..U+1124F  :Khojki:Khojki                                 //~v6V2I~
-//U+11280..U+112AF  :Multani:Multani                               //~v6V2I~
-////1 SMP                                                          //~v6V2I~
-//U+112B0..U+112FF  :Khudawadi:Khudawadi                           //~v6V2I~
-//U+11300..U+1137F  :Grantha:Grantha                               //~v6V2I~
-//U+11400..U+1147F  :Newa:Newa                                     //~v6V2I~
-//U+11480..U+114DF  :Tirhuta:Tirhuta                               //~v6V2I~
-//U+11580..U+115FF  :Siddham:Siddham                               //~v6V2I~
-//U+11600..U+1165F  :Modi:Modi                                     //~v6V2I~
-//U+11660..U+1167F  :Mongolian Supplement:Mongolian                //~v6V2I~
-//U+11680..U+116CF  :Takri:Takri                                   //~v6V2I~
-//U+11700..U+1173F  :Ahom:Ahom                                     //~v6V2I~
-//U+118A0..U+118FF  :Warang Citi:Warang Citi                       //~v6V2I~
-////1 SMP                                                          //~v6V2I~
-//U+11A00..U+11A4F  :Zanabazar Square:Zanabazar Square             //~v6V2I~
-//U+11A50..U+11AAF  :Soyombo:Soyombo                               //~v6V2I~
-//U+11AC0..U+11AFF  :Pau Cin Hau:Pau Cin Hau                       //~v6V2I~
-//U+11C00..U+11C6F  :Bhaiksuki:Bhaiksuki                           //~v6V2I~
-//U+11C70..U+11CBF  :Marchen:Marchen                               //~v6V2I~
-//U+11D00..U+11D5F  :Masaram Gondi:Masaram Gondi                   //~v6V2I~
-//U+12000..U+123FF  :Cuneiform:Cuneiform                           //~v6V2I~
-//U+12400..U+1247F  :Cuneiform Numbers and Punctuation:Cuneiform   //~v6V2I~
-//U+12480..U+1254F  :Early Dynastic Cuneiform:Cuneiform            //~v6V2I~
-//U+13000..U+1342F  :Egyptian Hieroglyphs:Egyptian Hieroglyphs     //~v6V2I~
-////1 SMP                                                          //~v6V2I~
-//U+14400..U+1467F  :Anatolian Hieroglyphs:Anatolian Hieroglyphs   //~v6V2I~
-//U+16800..U+16A3F  :Bamum Supplement:Bamum                        //~v6V2I~
-//U+16A40..U+16A6F  :Mro:Mro                                       //~v6V2I~
-//U+16AD0..U+16AFF  :Bassa Vah:Bassa Vah                           //~v6V2I~
-//U+16B00..U+16B8F  :Pahawh Hmong:Pahawh Hmong                     //~v6V2I~
-//U+16F00..U+16F9F  :Miao:Miao                                     //~v6V2I~
-//U+16FE0..U+16FFF  :Ideographic Symbols and Punctuation:Nushu (1 character), Tangut (1 character)//~v6V2I~
-//U+17000..U+187FF  :Tangut:Tangut                                 //~v6V2I~
-//U+18800..U+18AFF  :Tangut Components:Tangut                      //~v6V2I~
-//U+1B000..U+1B0FF  :Kana Supplement:Hiragana (255 characters), Katakana (1 character)//~v6V2I~
-////1 SMP                                                          //~v6V2I~
-//U+1B100..U+1B12F  :Kana Extended-A:Hiragana                      //~v6V2I~
-//U+1B170..U+1B2FF  :Nushu:Nﾃｼshu                                   //~v6V2I~
-//U+1BC00..U+1BC9F  :Duployan:Duployan                             //~v6V2I~
-//U+1BCA0..U+1BCAF  :Shorthand Format Controls:Common              //~v6V2I~
-//U+1D000..U+1D0FF  :Byzantine Musical Symbols:Common              //~v6V2I~
-//U+1D100..U+1D1FF  :Musical Symbols:Common (209 characters), Inherited (22 characters)//~v6V2I~
-//U+1D200..U+1D24F  :Ancient Greek Musical Notation:Greek          //~v6V2I~
-//U+1D300..U+1D35F  :Tai Xuan Jing Symbols:Common                  //~v6V2I~
-//U+1D360..U+1D37F  :Counting Rod Numerals:Common                  //~v6V2I~
-//U+1D400..U+1D7FF  :Mathematical Alphanumeric Symbols:Common      //~v6V2I~
-////1 SMP                                                          //~v6V2I~
-//U+1D800..U+1DAAF  :Sutton SignWriting:SignWriting                //~v6V2I~
-//U+1E000..U+1E02F  :Glagolitic Supplement:Glagolitic              //~v6V2I~
-//U+1E800..U+1E8DF  :Mende Kikakui:Mende Kikakui                   //~v6V2I~
-//U+1E900..U+1E95F  :Adlam:Adlam                                   //~v6V2I~
-//U+1EE00..U+1EEFF  :Arabic Mathematical Alphabetic Symbols:Arabic //~v6V2I~
-//U+1F000..U+1F02F  :Mahjong Tiles:Common                          //~v6V2I~
-//U+1F030..U+1F09F  :Domino Tiles:Common                           //~v6V2I~
-//U+1F0A0..U+1F0FF  :Playing Cards:Common                          //~v6V2I~
-//U+1F100..U+1F1FF  :Enclosed Alphanumeric Supplement:Common       //~v6V2I~
-//U+1F200..U+1F2FF  :Enclosed Ideographic Supplement:Hiragana (1 character), Common (63 characters)//~v6V2I~
-////1 SMP                                                          //~v6V2I~
-//U+1F300..U+1F5FF  :Miscellaneous Symbols and Pictographs:Common  //~v6V2I~
-//U+1F600..U+1F64F  :Emoticons:Common                              //~v6V2I~
-//U+1F650..U+1F67F  :Ornamental Dingbats:Common                    //~v6V2I~
-//U+1F680..U+1F6FF  :Transport and Map Symbols:Common              //~v6V2I~
-//U+1F700..U+1F77F  :Alchemical Symbols:Common                     //~v6V2I~
-//U+1F780..U+1F7FF  :Geometric Shapes Extended:Common              //~v6V2I~
-//U+1F800..U+1F8FF  :Supplemental Arrows-C:Common                  //~v6V2I~
-//U+1F900..U+1F9FF  :Supplemental Symbols and Pictographs:Common   //~v6V2I~
-//2 SIP                                                            //~v6V2I~
-//U+20000..U+2A6DF  :CJK Unified Ideographs Extension B:Han        //~v6V2I~
-//U+2A700..U+2B73F  :CJK Unified Ideographs Extension C:Han        //~v6V2I~
-//U+2B740..U+2B81F  :CJK Unified Ideographs Extension D:Han        //~v6V2I~
-//U+2B820..U+2CEAF  :CJK Unified Ideographs Extension E:Han        //~v6V2I~
-//U+2CEB0..U+2EBEF  :CJK Unified Ideographs Extension F:Han        //~v6V2I~
-//U+2F800..U+2FA1F  :CJK Compatibility Ideographs Supplement:Han   //~v6V2I~
-////14 SSP                                                         //~v6V2I~
-//U+E0000..U+E007F  :Tags:Common                                   //~v6V2I~
-//U+E0100..U+E01EF  :Variation Selectors Supplement:Inherited      //~v6V2I~
-////15 PUA-A                                                       //~v6V2I~
-//U+F0000..U+FFFFF  :Supplementary Private Use Area-A:Unknown      //~v6V2I~
-////16 PUA-B                                                       //~v6V2I~
-//U+100000..U+10FFFF:Supplementary Private Use Area-B:Unknown      //~v6V2I~
 //******************************************************           //~v6VbI~
 //chk Spacing Combining Mark(glphctr=2 if not combined) for XXE    //~v6VbR~
 //rc:1:SCM, 2:combining(width=0) but trateas SCM by option         //~v6X0I~
+//Mc(spacing mark)/443                                             //~v79GR~
 //******************************************************           //~v6VbI~
 int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
 {                                                                  //~v6VbI~
@@ -2551,8 +2175,9 @@ int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
      {0x093B  ,0x093B  }, //U+093B  DEVANAGARI VOWEL SIGN OOE      //~v6VbI~
 //     {0x093E  ,0x093E  }, //U+093E  DEVANAGARI VOWEL SIGN AA     //~v6VbI~
 //     {0x093F  ,0x093F  }, //U+093F  DEVANAGARI VOWEL SIGN I      //~v6VbI~
-     {0x093E  ,0x093f  },                                          //~v6VbI~
-     {0x0940  ,0x0940  }, //U+0940  DEVANAGARI VOWEL SIGN II       //~v6VbI~
+//     {0x093E  ,0x093f  },                                          //~v6VbI~//~v79JR~
+//     {0x0940  ,0x0940  }, //U+0940  DEVANAGARI VOWEL SIGN II       //~v6VbI~//~v79JR~
+     {0x093E  ,0x0940  },                                          //~v79JI~
 //     {0x0949  ,0x0949  }, //U+0949  DEVANAGARI VOWEL SIGN CANDRA O//~v6VbI~
 //     {0x094A  ,0x094A  }, //U+094A  DEVANAGARI VOWEL SIGN SHORT O//~v6VbI~
 //     {0x094B  ,0x094B  }, //U+094B  DEVANAGARI VOWEL SIGN O      //~v6VbI~
@@ -2566,8 +2191,9 @@ int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
      {0x0982  ,0x0983  },                                          //~v6VbI~
 //     {0x09BE  ,0x09BE  }, //U+09BE  BENGALI VOWEL SIGN AA        //~v6VbI~
 //     {0x09BF  ,0x09BF  }, //U+09BF  BENGALI VOWEL SIGN I         //~v6VbI~
-     {0x09BE  ,0x09Bf  },                                          //~v6VbI~
-     {0x09C0  ,0x09C0  }, //U+09C0  BENGALI VOWEL SIGN II          //~v6VbI~
+//     {0x09BE  ,0x09Bf  },                                          //~v6VbI~//~v79JR~
+//     {0x09C0  ,0x09C0  }, //U+09C0  BENGALI VOWEL SIGN II          //~v6VbI~//~v79JR~
+     {0x09BE  ,0x09C0  },                                          //~v79JI~
 //     {0x09C7  ,0x09C7  }, //U+09C7  BENGALI VOWEL SIGN E         //~v6VbI~
 //     {0x09C8  ,0x09C8  }, //U+09C8  BENGALI VOWEL SIGN AI        //~v6VbI~
      {0x09C7  ,0x09C8  },                                          //~v6VbI~
@@ -2578,13 +2204,15 @@ int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
      {0x0A03  ,0x0A03  }, //U+0A03  GURMUKHI SIGN VISARGA          //~v6VbI~
 //     {0x0A3E  ,0x0A3E  }, //U+0A3E  GURMUKHI VOWEL SIGN AA       //~v6VbI~
 //     {0x0A3F  ,0x0A3F  }, //U+0A3F  GURMUKHI VOWEL SIGN I        //~v6VbI~
-     {0x0A3E  ,0x0A3f  },                                          //~v6VbI~
-     {0x0A40  ,0x0A40  }, //U+0A40  GURMUKHI VOWEL SIGN II         //~v6VbI~
+//     {0x0A3E  ,0x0A3f  },                                          //~v6VbI~//~v79JR~
+//     {0x0A40  ,0x0A40  }, //U+0A40  GURMUKHI VOWEL SIGN II         //~v6VbI~//~v79JR~
+     {0x0A3E  ,0x0A40  },                                          //~v79JI~
      {0x0A83  ,0x0A83  }, //U+0A83  GUJARATI SIGN VISARGA          //~v6VbI~
 //     {0x0ABE  ,0x0ABE  }, //U+0ABE  GUJARATI VOWEL SIGN AA       //~v6VbI~
 //     {0x0ABF  ,0x0ABF  }, //U+0ABF  GUJARATI VOWEL SIGN I        //~v6VbI~
-     {0x0ABE  ,0x0ABf  },                                          //~v6VbI~
-     {0x0AC0  ,0x0AC0  }, //U+0AC0  GUJARATI VOWEL SIGN II         //~v6VbI~
+//     {0x0ABE  ,0x0ABf  },                                          //~v6VbI~//~v79JR~
+//     {0x0AC0  ,0x0AC0  }, //U+0AC0  GUJARATI VOWEL SIGN II         //~v6VbI~//~v79JR~
+     {0x0ABE  ,0x0AC0  },                                          //~v79JI~
      {0x0AC9  ,0x0AC9  }, //U+0AC9  GUJARATI VOWEL SIGN CANDRA O   //~v6VbI~
 //     {0x0ACB  ,0x0ACB  }, //U+0ACB  GUJARATI VOWEL SIGN O        //~v6VbI~
 //     {0x0ACC  ,0x0ACC  }, //U+0ACC  GUJARATI VOWEL SIGN AU       //~v6VbI~
@@ -2644,6 +2272,7 @@ int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
 //     {0x0CD5  ,0x0CD5  }, //U+0CD5  KANNADA LENGTH MARK          //~v6VbI~
 //     {0x0CD6  ,0x0CD6  }, //U+0CD6  KANNADA AI LENGTH MARK       //~v6VbI~
      {0x0CD5  ,0x0CD6  },                                          //~v6VbI~
+     {0x0CF3  ,0x0CF3  },                                          //~v79JI~
 //     {0x0D02  ,0x0D02  }, //U+0D02  MALAYALAM SIGN ANUSVARA      //~v6VbI~
 //     {0x0D03  ,0x0D03  }, //U+0D03  MALAYALAM SIGN VISARGA       //~v6VbI~
      {0x0D02  ,0x0D03  },                                          //~v6VbI~
@@ -2721,6 +2350,8 @@ int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
 //     {0x109B  ,0x109B  }, //U+109B  MYANMAR SIGN KHAMTI TONE-3   //~v6VbI~
 //     {0x109C  ,0x109C  }, //U+109C  MYANMAR VOWEL SIGN AITON A   //~v6VbI~
        {0x109A  ,0x109c  },                                        //~v6VbI~
+     {0x1715  ,0x1715  },                                          //~v79JI~
+     {0x1734  ,0x1734  },                                          //~v79JI~
      {0x17B6  ,0x17B6  }, //U+17B6  KHMER VOWEL SIGN AA            //~v6VbI~
 //     {0x17BE  ,0x17BE  }, //U+17BE  KHMER VOWEL SIGN OE          //~v6VbI~
 //     {0x17BF  ,0x17BF  }, //U+17BF  KHMER VOWEL SIGN YA          //~v6VbI~
@@ -2811,7 +2442,7 @@ int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
      {0x1CE1  ,0x1CE1  }, //U+1CE1  VEDIC TONE ATHARVAVEDIC INDEPENDENT SVARITA//~v6VbI~
 //     {0x1CF2  ,0x1CF2  }, //U+1CF2  VEDIC SIGN ARDHAVISARGA      //~v6VbI~
 //     {0x1CF3  ,0x1CF3  }, //U+1CF3  VEDIC SIGN ROTATED ARDHAVISARGA//~v6VbI~
-     {0x1CF2  ,0x1CF3  },                                          //~v6VbI~
+//     {0x1CF2  ,0x1CF3  }, //del 1cf2,1cf3                          //~v6VbI~//~v79GR~
      {0x1CF7  ,0x1CF7  }, //U+1CF7  VEDIC SIGN ATIKRAMA            //~v6VbI~
 //     {0x302E  ,0x302E  }, //U+302E  HANGUL SINGLE DOT TONE MARK  //~v6VbI~
 //     {0x302F  ,0x302F  }, //U+302F  HANGUL DOUBLE DOT TONE MARK  //~v6VbI~
@@ -2854,7 +2485,8 @@ int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
 //     {0xA9BE  ,0xA9BE  }, //U+A9BE  JAVANESE CONSONANT SIGN PENGKAL//~v6VbI~
 //     {0xA9BF  ,0xA9BF  }, //U+A9BF  JAVANESE CONSONANT SIGN CAKRA//~v6VbI~
 //     {0xA9C0  ,0xA9C0  }, //U+A9C0  JAVANESE PANGKON             //~v6VbI~
-     {0xA9BD  ,0xA9c0  },                                          //~v6VbI~
+//     {0xA9BD  ,0xA9c0  },   //del a9bd                             //~v6VbI~//~v79GR~
+       {0xA9Be  ,0xA9c0  },                                        //~v79GI~
 //     {0xAA2F  ,0xAA2F  }, //U+AA2F  CHAM VOWEL SIGN O            //~v6VbI~
 //     {0xAA30  ,0xAA30  }, //U+AA30  CHAM VOWEL SIGN AI           //~v6VbI~
      {0xAA2F  ,0xAA30  },                                          //~v6VbI~
@@ -2884,8 +2516,9 @@ int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
      {0x11082 ,0x11082 }, //U+11082     KAITHI SIGN VISARGA        //~v6VbI~
 //     {0x110B0 ,0x110B0 }, //U+110B0     KAITHI VOWEL SIGN AA     //~v6VbI~
 //     {0x110B1 ,0x110B1 }, //U+110B1     KAITHI VOWEL SIGN I      //~v6VbI~
-     {0x110B0 ,0x110B1 },                                          //~v6VbI~
-     {0x110B2 ,0x110B2 }, //U+110B2     KAITHI VOWEL SIGN II       //~v6VbI~
+//   {0x110B0 ,0x110B1 },                                          //~v6VbI~//~v79JR~
+//   {0x110B2 ,0x110B2 }, //U+110B2     KAITHI VOWEL SIGN II       //~v6VbI~//~v79JR~
+     {0x110B0 ,0x110B2 },                                          //~v79JI~
 //     {0x110B7 ,0x110B7 }, //U+110B7     KAITHI VOWEL SIGN O      //~v6VbI~
 //     {0x110B8 ,0x110B8 }, //U+110B8     KAITHI VOWEL SIGN AU     //~v6VbI~
      {0x110B7 ,0x110B8 },                                          //~v6VbI~
@@ -2901,6 +2534,7 @@ int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
 //     {0x111BF ,0x111BF }, //U+111BF     SHARADA VOWEL SIGN AU    //~v6VbI~
 //     {0x111C0 ,0x111C0 }, //U+111C0     SHARADA SIGN VIRAMA      //~v6VbI~
      {0x111BF ,0x111c0 },                                          //~v6VbI~
+     {0x111ce ,0x111ce },                                          //~v79GI~
 //     {0x1122C ,0x1122C }, //U+1122C     KHOJKI VOWEL SIGN AA     //~v6VbI~
 //     {0x1122D ,0x1122D }, //U+1122D     KHOJKI VOWEL SIGN I      //~v6VbI~
 //     {0x1122E ,0x1122E }, //U+1122E     KHOJKI VOWEL SIGN II     //~v6VbI~
@@ -2986,6 +2620,14 @@ int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
 //     {0x1182E ,0x1182E }, //U+1182E     DOGRA VOWEL SIGN II     ｡ｩ//~v6VbI~
      {0x1182C ,0x1182e },                                          //~v6VbI~
      {0x11838 ,0x11838 }, //U+11838     DOGRA SIGN VISARGA  ｡ｩ     //~v6VbI~
+     {0x11930 ,0x11935 },                                          //~v79GR~
+     {0x11937 ,0x11938 },                                          //~v79GR~
+     {0x1193d ,0x1193d },                                          //~v79GR~
+     {0x11940 ,0x11940 },                                          //~v79GR~
+     {0x11942 ,0x11942 },                                          //~v79GR~
+     {0x119d1 ,0x119d3 },                                          //~v79GR~
+     {0x119dc ,0x119df },                                          //~v79GR~
+     {0x119e4 ,0x119e4 },                                          //~v79GR~
      {0x11A39 ,0x11A39 }, //U+11A39     ZANABAZAR SQUARE SIGN VISARGA//~v6VbI~
 //     {0x11A57 ,0x11A57 }, //U+11A57     SOYOMBO VOWEL SIGN AI    //~v6VbI~
 //     {0x11A58 ,0x11A58 }, //U+11A58     SOYOMBO VOWEL SIGN AU    //~v6VbI~
@@ -3009,6 +2651,10 @@ int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
 //     {0x11EF5 ,0x11EF5 }, //U+11EF5     MAKASAR VOWEL SIGN E    ｡ｩ//~v6VbI~
 //     {0x11EF6 ,0x11EF6 }, //U+11EF6     MAKASAR VOWEL SIGN O    ｡ｩ//~v6VbI~
      {0x11EF5 ,0x11EF6 },                                          //~v6VbI~
+     {0x11F03 ,0x11F03 },                                          //~v79JI~
+     {0x11F34 ,0x11F35 },                                          //~v79JI~
+     {0x11F3E ,0x11F3F },                                          //~v79JI~
+     {0x11F41 ,0x11F41 },                                          //~v79JI~
 //     {0x16F51 ,0x16F51 }, //U+16F51     MIAO SIGN ASPIRATION    ｡ｩ//~v6VbI~
 //     {0x16F52 ,0x16F52 }, //U+16F52     MIAO SIGN REFORMED VOICING  ｡ｩ//~v6VbI~
 //     {0x16F53 ,0x16F53 }, //U+16F53     MIAO SIGN REFORMED ASPIRATION   ｡ｩ//~v6VbI~
@@ -3055,7 +2701,10 @@ int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
 //     {0x16F7C ,0x16F7C }, //U+16F7C     MIAO VOWEL SIGN OU  ｡ｩ   //~v6VbI~
 //     {0x16F7D ,0x16F7D }, //U+16F7D     MIAO VOWEL SIGN N   ｡ｩ   //~v6VbI~
 //     {0x16F7E ,0x16F7E }, //U+16F7E     MIAO VOWEL SIGN NG  ｡ｩ   //~v6VbI~
-     {0x16F51 ,0x16F7e },                                          //~v6VbI~
+//     {0x16F51 ,0x16F7e },                                          //~v6VbI~//~v79JR~
+//     {0x16F7f ,0x16F87 },                                          //~v79GI~//~v79JR~
+     {0x16F51 ,0x16F87 },                                          //~v79JI~
+     {0x16Ff0 ,0x16Ff1 },                                          //~v79GI~
 //     {0x1D165 ,0x1D165 }, //U+1D165     MUSICAL SYMBOL COMBINING STEM   ｡ｩ//~v6VbI~
 //     {0x1D166 ,0x1D166 }, //U+1D166     MUSICAL SYMBOL COMBINING SPRECHGESANG STEM  ｡ｩ//~v6VbI~
      {0x1D165 ,0x1D166 },                                          //~v6VbI~
@@ -3065,7 +2714,7 @@ int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
 //     {0x1D170 ,0x1D170 }, //U+1D170     MUSICAL SYMBOL COMBINING FLAG-3     ｡ｩ//~v6VbI~
 //     {0x1D171 ,0x1D171 }, //U+1D171     MUSICAL SYMBOL COMBINING FLAG-4     ｡ｩ//~v6VbI~
 //     {0x1D172 ,0x1D172 }, //U+1D172     MUSICAL SYMBOL COMBINING FLAG-5     ｡ｩ//~v6VbI~
-     {0x1D16D ,0x1D172 }, //U+1D16D     MUSICAL SYMBOL COMBINING AUGMENTATION DOT   ｡ｩ//~v6VbI~
+//     {0x1D16D ,0x1D172 }, //U+1D16D     MUSICAL SYMBOL COMBINING AUGMENTATION DOT   ｡ｩ//~v6VbI~//~v79JR~
         };                                                         //~v6VbI~
 #ifndef XXX                                                        //~v6X0I~
 	if ((Popt & UTF4ISCMO_WIDTHPARM) 	//0x0200 		//WIDTHMASK contains width//~v6X0I~
@@ -3073,18 +2722,28 @@ int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
     )   //chk combining2SCM                                        //~v6X0I~
     {                                                              //~v6X0I~
 		if (mk_wcwidth_combining2SCM(0,Pucs))                      //~v6X0R~
+        {                                                          //~v79zI~
+	    	UTRACEP("%s:rc=2,Popt(0x%0x) WIDTHPARM & mk_wcwidth_combining2SCM,ucs=0x%04x\n",UTT,Popt,Pucs);//~v79zI~
         	return 2;                                              //~v6X0I~
+        }                                                          //~v79zI~
     }                                                              //~v6X0I~
 	if (!(Popt & UTF4ISCMO_NOSCM2)) 	//0x0100 		//! No chk combine2//~v6X0I~
     {                                                              //~v6X0I~
 		if (mk_wcwidth_combining2SCM(0,Pucs))                      //~v6X0R~
+        {                                                          //~v79zI~
+	    	UTRACEP("%s:rc=2,Popt(0x%0x)!=NOSCM2 mk_wcwidth_combining2SCM,ucs=0x%04x\n",UTT,Popt,Pucs);//~v79zI~
         	return 2;                                              //~v6X0I~
+        }                                                          //~v79zI~
     }                                                              //~v6X0I~
 #endif                                                             //~v6X0I~
     if (bisearch(Pucs,Suctb_SCM,sizeof(Suctb_SCM) / sizeof(struct interval) - 1))//~v6VbR~
+    {                                                              //~v79zI~
+    	UTRACEP("%s:rc=1,Suctb_SCM,ucs=0x%04x\n",UTT,Pucs);        //~v79zI~
         return 1;                                                  //~v6VbI~
+    }                                                              //~v79zI~
     return 0;                                                      //~v6VbI~
 }//int utf4_isSpacingCombiningMark                                 //~v6VbI~
+#ifdef AAA //no caller                                             //~v79zR~
 //******************************************************           //~v6VbI~
 //chk ambiguous                                                    //~v6VbI~
 //rc: 2:nonlang, 3:lang, 4:langucs4, 1:other                       //~v6VbI~
@@ -3102,7 +2761,8 @@ int utf4_isAmbiguous(int Popt,UWUCS Pucs)                          //~v6VbI~
 	if (bisearch(Pucs, Sambiguous_langs_ucs4,sizeof(Sambiguous_langs_ucs4) / sizeof(struct interval) - 1))//~v6VbR~
 		rc=4;                                                      //~v6VbI~
     else                                                           //~v6VbI~
-  	if (bisearch(Pucs, ambiguous,sizeof(ambiguous) / sizeof(struct interval) - 1))//~v6VbR~
+// 	if (bisearch(Pucs, ambiguous,sizeof(ambiguous) / sizeof(struct interval) - 1))//~v6VbR~//~v79vR~
+   	if (utf4_isAmbiguousAmbiguous(Pucs))                           //~v79vI~
     	rc=1;                                                      //~v6VbI~
     else                                                           //~v6VbI~
 	if (Popt & UTF4IAO_SCM)	// 0x01 chk Spacing Combining Mark     //~v6VbI~
@@ -3111,10 +2771,74 @@ int utf4_isAmbiguous(int Popt,UWUCS Pucs)                          //~v6VbI~
         	rc=5;                                                  //~v6VbR~
     }                                                              //~v6VbI~
     if (rc)                                                        //~v6WnI~
-    	UTRACEP("%s:rc=%d,ucs=%06x ambiguous\n",UTT,rc,Pucs);                    //~v6VbR~//~v6WnR~
+    	UTRACEP("%s:rc=%d,ucs=0x%04x ambiguous\n",UTT,rc,Pucs);                    //~v6VbR~//~v6WnR~//~v79zR~
     return rc;                                                     //~v6VbI~
 }//utf4_isAmbiguous                                                //~v6VbI~
-#ifdef LNX                                                         //~v6WnI~
+#endif //AAA                                                       //~v79zR~
+//#ifdef LNX                                                         //~v6WnI~//~v79iR~
+//******************************************************************//~v79fI~
+int utf4_isAmbiguous_Console(int Popt,UWUCS Pucs)                  //~v79fI~
+{                                                                  //~v79fI~
+    int rc=0;                                                      //~v79fI~
+//*************                                                    //~v79fI~
+//  if (!mk_wcwidth_combining(ucs)) //rc=0:combining               //~v79fI~
+//  	return UTFWWF_RC_MK_WCWIDTH|UTFWWF_COMB; //by mk_wcwidth() adjustable by wcwidth() but not for combining//~v79fI~
+  	if (bisearch(Pucs, Sambiguous_non_langs,                       //~v79fR~
+	       sizeof(Sambiguous_non_langs) / sizeof(struct interval) - 1))//~v79fI~
+  	{                                                              //~v79fI~
+    	rc=2;                                                      //~v79fI~
+  	}                                                              //~v79fI~
+  	else                                                           //~v79fI~
+  	if (bisearch(Pucs, Sambiguous_langs,                           //~v79fR~
+	       sizeof(Sambiguous_langs) / sizeof(struct interval) - 1))//~v79fI~
+  	{                                                              //~v79fI~
+    	rc=2;                                                      //~v79fI~
+	}                                                              //~v79fI~
+  	else                                                           //~v79fI~
+  	if (bisearch(Pucs, Sambiguous_langs_ucs4,                      //~v79fR~
+	       sizeof(Sambiguous_langs_ucs4) / sizeof(struct interval) - 1))//~v79fI~
+  	{                                                              //~v79fI~
+    	rc=2;                                                      //~v79fI~
+  	}                                                              //~v79fI~
+  	else                                                           //~v79fI~
+  	/* binary search in table of non-spacing characters */         //~v79fI~
+//  	if (bisearch(Pucs, ambiguous,                                  //~v79fR~//~v79vR~
+//	       sizeof(ambiguous) / sizeof(struct interval) - 1))       //~v79fI~//~v79vR~
+   	if (utf4_isAmbiguousAmbiguous(Pucs))                           //~v79vI~
+  	{                                                              //~v79fI~
+    	rc=2;                                                      //~v79fI~
+  	}                                                              //~v79fI~
+#ifndef ARM	//non spacing chk at java(Ucs.java)                    //~v79fI~
+ 	if (rc)                                                        //~v79fI~
+ 	{                                                              //~v79fI~
+    	rc|=UTFWWO_MK_AMBIGUOUS; //x2000   //by mk_wcwidth() adjustable by wcwidth()//~v79fI~
+    	UTRACEP("%s:rc=0x%x,ucs=0x%04x\n",UTT,rc,Pucs);              //~v79fI~//~v79iR~
+    }                                                              //~v79fI~
+#endif                                                             //~v79fI~
+                                                                   //~v79fI~
+//  Sfromcjk=1;                                                    //~v79fI~
+//  rc=mk_wcwidth(SUO_CONSOLE,ucs);  //mk_wcwidth_cjk is called under condition of CONSOLE//~v79fI~
+//  Sfromcjk=0;                                                    //~v79fI~
+                                                                   //~v79fI~
+  	return rc;                                                     //~v79fI~
+}                                                                  //~v79fI~
+//#endif                                                           //~v79iR~
+//******************************************************           //~v79fI~
+//*LNX/Win                                                             //~v79fI~//~v79iR~
+//******************************************************           //~v79fI~
+int utf4_isAmbiguous_NoCJK(int Popt,UWUCS Pucs)                    //~v79fI~
+{                                                                  //~v79fI~
+	int rc=0;                                                      //~v79fI~
+//**************************                                       //~v79fI~
+//#ifdef XXE                                                       //~v79fR~
+//    rc=utf4_isAmbiguous_XXE(Popt,Pucs);// XXE table entry is all included inconsole tbl//~v79fR~
+//#else                                                            //~v79fR~
+	rc=utf4_isAmbiguous_Console(Popt,Pucs);                        //~v79fR~
+//#endif                                                           //~v79fR~
+    UTRACEP("%s:rc=%d,ucs=0x%04x\n",UTT,rc,Pucs);                  //~v79fI~
+	return rc;                                                     //~v79fI~
+}//utf4_isAmbiguous_NoCJK                                          //~v79fI~
+#ifdef LNX                                                         //~v79iI~
 //******************************************************           //~v6WkM~
 //ambiguous for XXE                                                //~v6WkM~
 //******************************************************           //~v6WkM~
@@ -3142,25 +2866,26 @@ int utf4_isAmbiguous_WXE(int Popt,UWUCS Pucs)                      //~v6WnI~
   	if (bisearch(Pucs, Sambiguous_non_langs_WXE,                   //~v6WpR~
 	       sizeof(Sambiguous_non_langs_WXE) / sizeof(struct interval) - 1))//~v6WpR~
   	{                                                              //~v6WpI~
-    	UTRACEP("%s:%06x ambiguous non lang\n",UTT,Pucs);          //~v6WpR~
+    	UTRACEP("%s:0x%04x ambiguous non_langs\n",UTT,Pucs);          //~v6WpR~//~v79iR~//~v79zR~
     	rc=2;                                                      //~v6WpI~
   	}                                                              //~v6WpI~
     else                                                           //~v6WpI~
 	if (bisearch(Pucs, Sambiguous_langs_WXE,sizeof(Sambiguous_langs_WXE) / sizeof(struct interval) - 1))//~v6WpR~
     {                                                              //~v6WpI~
-    	UTRACEP("%s:%06x ambiguous lang_WXE\n",UTT,Pucs);          //~v6WpR~
+    	UTRACEP("%s:0x%04x ambiguous langs_WXE\n",UTT,Pucs);          //~v6WpR~//~v79iR~//~v79zR~
     	rc=2;                                                      //~v6WpI~
     }                                                              //~v6WpI~
     else                                                           //~v6WpI~
 	if (bisearch(Pucs, Sambiguous_langs_ucs4_XXE,sizeof(Sambiguous_langs_ucs4_XXE) / sizeof(struct interval) - 1))//~v6WpI~
     {                                                              //~v6WpI~
-    	UTRACEP("%s:%06x ambiguous lang_ucs4_XXE(WXE)\n",UTT,Pucs);//~v6WpR~
+    	UTRACEP("%s:0x%04x ambiguous langs_ucs4_XXE(WXE)\n",UTT,Pucs);//~v6WpR~//~v79iR~//~v79zR~
 		rc=2;                                                      //~v6WpI~
     }                                                              //~v6WpI~
     else                                                           //~v6WpM~
-	if (bisearch(Pucs, ambiguous,sizeof(ambiguous) / sizeof(struct interval) - 1))//~v6WpR~
+//	if (bisearch(Pucs, ambiguous,sizeof(ambiguous) / sizeof(struct interval) - 1))//~v6WpR~//~v79vR~
+   	if (utf4_isAmbiguousAmbiguous(Pucs))                           //~v79vI~
     {                                                              //~v6WpI~
-    	UTRACEP("%s:%06x ambiguous\n",UTT,Pucs);                   //~v6WpI~
+    	UTRACEP("%s:0x%04x ambiguous\n",UTT,Pucs);                   //~v6WpI~//~v79zR~
     	rc=2;                                                      //~v6WpM~
     }                                                              //~v6WpI~
     if (rc)                                                        //~v6WpI~
@@ -3168,6 +2893,21 @@ int utf4_isAmbiguous_WXE(int Popt,UWUCS Pucs)                      //~v6WnI~
 	return rc;                                                     //~v6WnI~
 }//utf4_isAmbiguous_WXE                                            //~v6WnI~//~v6WpR~
 #endif                                                             //~v6WnI~
+//******************************************************           //~v79vM~
+int utf4_isAmbiguousAmbiguous(UWUCS Pucs)                          //~v79vM~
+{                                                                  //~v79vM~
+	int rc=0;                                                      //~v79vM~
+//#ifdef WXEXXE                                                      //~v79vM~//~v79xR~
+//  	if (bisearch(Pucs,ambiguous_wxegxe,sizeof(ambiguous_wxegxe) / sizeof(struct interval) - 1))//~v79vR~//~v79xR~
+//    	rc=1;                                                      //~v79vM~//~v79xR~
+//#else                                                              //~v79vI~//~v79xR~
+    if (bisearch(Pucs,ambiguous,sizeof(ambiguous) / sizeof(struct interval) - 1))//~v79vM~//~v79xR~
+        rc=1;                                                      //~v79vM~//~v79xR~
+//#endif                                                             //~v79vM~//~v79xR~
+    if (rc)                                                        //~v79vM~
+    	UTRACEP("%s:rc=%d,ucs=0x%04x ambiguous\n",UTT,rc,Pucs);      //~v79vM~//~v79zR~
+    return rc;                                                     //~v79vM~
+}                                                                  //~v79vM~
 //******************************************************           //~v6WiI~
 //chk category Cf (wcwidth=0 but show by utfwcwidth=1)             //~v6WiI~
 //******************************************************           //~v6WiI~
@@ -3193,6 +2933,7 @@ int utf4_isFormat(int Popt,UWUCS Pucs)                             //~v6WiI~
  {0xFFF9    ,0xFFFB },                                             //~v6WiI~
  {0x110BD   ,0x110BD},                                             //~v6WiI~
  {0x110CD   ,0x110CD},                                             //~v6WiI~
+ {0x13430   ,0x13438},                                             //+v79KI~
  {0x1BCA0   ,0x1BCA3},                                             //~v6WiI~
  {0x1D173   ,0x1D17A},                                             //~v6WiI~
  {0xE0001   ,0xE0001},                                             //~v6WiI~
@@ -3298,8 +3039,144 @@ int mk_wcwidth_combining2SCM(int Popt,UWUCS ucs)                   //~v6X0R~
   	if (bisearch(ucs, combining2SCM,                               //~v6X0R~
 	       sizeof(combining2SCM) / sizeof(struct interval) - 1))   //~v6X0R~
     {                                                              //~v6X0I~
-        UTRACEP("%s:%06x is combining2SCM char\n",UTT,ucs);        //~v6X0R~
+        UTRACEP("%s:0x%04x is combining2SCM char\n",UTT,ucs);        //~v6X0R~//~v79zR~
     	return 1;                                                  //~v6X0R~
     }                                                              //~v6X0I~
     return 0;                                                      //~v6X0R~
 }//mk_wcwidth_combining                                            //~v6X0I~
+//***************************************************************  //~v79zR~
+//*tbl search of unicode data base typeF/W/H                       //~v79zR~
+//* return 1 if F/W                                                //~v79zR~
+//***************************************************************  //~v79zR~
+int utf4_wcwidthWFH(int Popt,UWUCS Pucs)                           //~v79zR~
+{                                                                  //~v79zR~
+  	static UCODETB SuctbWFH[] = {                                  //~v79zR~
+{ 0x01100 , 0x115f, UCODETB_WW  }, // Lo    [96] HANGUL CHOSEONG KIYEOK..HANGUL CHOSEONG FILLER//~v79zR~
+//{ 0x020a9 , 0x20a9, UCODETB_HALF}, // Sc         WON SIGN        //~v79zR~
+{ 0x0231a , 0x231b, UCODETB_WW  }, // So     [2] WATCH..HOURGLASS  //~v79zR~
+{ 0x02329 , 0x232a, UCODETB_WW  }, //[2 lines]  Ps         LEFT-POINTING ANGLE BRACKET//~v79zR~
+{ 0x023e9 , 0x23ec, UCODETB_WW  }, // So     [4] BLACK RIGHT-POINTING DOUBLE TRIANGLE..BLACK DOWN-POINTING DOUBLE TRIANGLE//~v79zR~
+{ 0x023f0 , 0x23f0, UCODETB_WW  }, // So         ALARM CLOCK       //~v79zR~
+{ 0x023f3 , 0x23f3, UCODETB_WW  }, // So         HOURGLASS WITH FLOWING SAND//~v79zR~
+{ 0x025fd , 0x25fe, UCODETB_WW  }, // Sm     [2] WHITE MEDIUM SMALL SQUARE..BLACK MEDIUM SMALL SQUARE//~v79zR~
+{ 0x02614 , 0x2615, UCODETB_WW  }, // So     [2] UMBRELLA WITH RAIN DROPS..HOT BEVERAGE//~v79zR~
+{ 0x02648 , 0x2653, UCODETB_WW  }, // So    [12] ARIES..PISCES     //~v79zR~
+{ 0x0267f , 0x267f, UCODETB_WW  }, // So         WHEELCHAIR SYMBOL //~v79zR~
+{ 0x02693 , 0x2693, UCODETB_WW  }, // So         ANCHOR            //~v79zR~
+{ 0x026a1 , 0x26a1, UCODETB_WW  }, // So         HIGH VOLTAGE SIGN //~v79zR~
+{ 0x026aa , 0x26ab, UCODETB_WW  }, // So     [2] MEDIUM WHITE CIRCLE..MEDIUM BLACK CIRCLE//~v79zR~
+{ 0x026bd , 0x26be, UCODETB_WW  }, // So     [2] SOCCER BALL..BASEBALL//~v79zR~
+{ 0x026c4 , 0x26c5, UCODETB_WW  }, // So     [2] SNOWMAN WITHOUT SNOW..SUN BEHIND CLOUD//~v79zR~
+{ 0x026ce , 0x26ce, UCODETB_WW  }, // So         OPHIUCHUS         //~v79zR~
+{ 0x026d4 , 0x26d4, UCODETB_WW  }, // So         NO ENTRY          //~v79zR~
+{ 0x026ea , 0x26ea, UCODETB_WW  }, // So         CHURCH            //~v79zR~
+{ 0x026f2 , 0x26f3, UCODETB_WW  }, // So     [2] FOUNTAIN..FLAG IN HOLE//~v79zR~
+{ 0x026f5 , 0x26f5, UCODETB_WW  }, // So         SAILBOAT          //~v79zR~
+{ 0x026fa , 0x26fa, UCODETB_WW  }, // So         TENT              //~v79zR~
+{ 0x026fd , 0x26fd, UCODETB_WW  }, // So         FUEL PUMP         //~v79zR~
+{ 0x02705 , 0x2705, UCODETB_WW  }, // So         WHITE HEAVY CHECK MARK//~v79zR~
+{ 0x0270a , 0x270b, UCODETB_WW  }, // So     [2] RAISED FIST..RAISED HAND//~v79zR~
+{ 0x02728 , 0x2728, UCODETB_WW  }, // So         SPARKLES          //~v79zR~
+{ 0x0274c , 0x274c, UCODETB_WW  }, // So         CROSS MARK        //~v79zR~
+{ 0x0274e , 0x274e, UCODETB_WW  }, // So         NEGATIVE SQUARED CROSS MARK//~v79zR~
+{ 0x02753 , 0x2755, UCODETB_WW  }, // So     [3] BLACK QUESTION MARK ORNAMENT..WHITE EXCLAMATION MARK ORNAMENT//~v79zR~
+{ 0x02757 , 0x2757, UCODETB_WW  }, // So         HEAVY EXCLAMATION MARK SYMBOL//~v79zR~
+{ 0x02795 , 0x2797, UCODETB_WW  }, // So     [3] HEAVY PLUS SIGN..HEAVY DIVISION SIGN//~v79zR~
+{ 0x027b0 , 0x27b0, UCODETB_WW  }, // So         CURLY LOOP        //~v79zR~
+{ 0x027bf , 0x27bf, UCODETB_WW  }, // So         DOUBLE CURLY LOOP //~v79zR~
+{ 0x02b1b , 0x2b1c, UCODETB_WW  }, // So     [2] BLACK LARGE SQUARE..WHITE LARGE SQUARE//~v79zR~
+{ 0x02b50 , 0x2b50, UCODETB_WW  }, // So         WHITE MEDIUM STAR //~v79zR~
+{ 0x02b55 , 0x2b55, UCODETB_WW  }, // So         HEAVY LARGE CIRCLE//~v79zR~
+{ 0x02e80 , 0x2e99, UCODETB_WW  }, // So    [26] CJK RADICAL REPEAT..CJK RADICAL RAP//~v79zR~
+{ 0x02e9b , 0x2ef3, UCODETB_WW  }, // So    [89] CJK RADICAL CHOKE..CJK RADICAL C-SIMPLIFIED TURTLE//~v79zR~
+{ 0x02f00 , 0x2fd5, UCODETB_WW  }, // So   [214] KANGXI RADICAL ONE..KANGXI RADICAL FLUTE//~v79zR~
+{ 0x02ff0 , 0x2ffb, UCODETB_WW  }, // So    [12] IDEOGRAPHIC DESCRIPTION CHARACTER LEFT TO RIGHT..IDEOGRAPHIC DESCRIPTION CHARACTER OVERLAID//~v79zR~
+{ 0x03000 , 0x3000, UCODETB_FULL}, // Zs         IDEOGRAPHIC SPACE //~v79zR~
+{ 0x03001 , 0x303e, UCODETB_WW  }, //[39 lines]  Po     [3] IDEOGRAPHIC COMMA..DITTO MARK//~v79zR~
+{ 0x03041 , 0x3096, UCODETB_WW  }, // Lo    [86] HIRAGANA LETTER SMALL A..HIRAGANA LETTER SMALL KE//~v79zR~
+{ 0x03099 , 0x30ff, UCODETB_WW  }, //[9 lines]  Mn     [2] COMBINING KATAKANA-HIRAGANA VOICED SOUND MARK..COMBINING KATAKANA-HIRAGANA SEMI-VOICED SOUND MARK//~v79zR~
+{ 0x03105 , 0x312f, UCODETB_WW  }, // Lo    [43] BOPOMOFO LETTER B..BOPOMOFO LETTER NN//~v79zR~
+{ 0x03131 , 0x318e, UCODETB_WW  }, // Lo    [94] HANGUL LETTER KIYEOK..HANGUL LETTER ARAEAE//~v79zR~
+{ 0x03190 , 0x31e3, UCODETB_WW  }, //[5 lines]  So     [2] IDEOGRAPHIC ANNOTATION LINKING MARK..IDEOGRAPHIC ANNOTATION REVERSE MARK//~v79zR~
+{ 0x031f0 , 0x321e, UCODETB_WW  }, //[2 lines]  Lo    [16] KATAKANA LETTER SMALL KU..KATAKANA LETTER SMALL RO//~v79zR~
+{ 0x03220 , 0x3247, UCODETB_WW  }, //[2 lines]  No    [10] PARENTHESIZED IDEOGRAPH ONE..PARENTHESIZED IDEOGRAPH TEN//~v79zR~
+{ 0x03250 , 0x4dbf, UCODETB_WW  }, //[9 lines]  So         PARTNERSHIP SIGN//~v79zR~
+{ 0x04e00 , 0xa48c, UCODETB_WW  }, //[5 lines]  Lo [20989] CJK UNIFIED IDEOGRAPH-4E00..CJK UNIFIED IDEOGRAPH-9FFC//~v79zR~
+{ 0x0a490 , 0xa4c6, UCODETB_WW  }, // So    [55] YI RADICAL QOT..YI RADICAL KE//~v79zR~
+{ 0x0a960 , 0xa97c, UCODETB_WW  }, // Lo    [29] HANGUL CHOSEONG TIKEUT-MIEUM..HANGUL CHOSEONG SSANGYEORINHIEUH//~v79zR~
+{ 0x0ac00 , 0xd7a3, UCODETB_WW  }, // Lo [11172] HANGUL SYLLABLE GA..HANGUL SYLLABLE HIH//~v79zR~
+{ 0x0f900 , 0xfaff, UCODETB_WW  }, //[4 lines]  Lo   [366] CJK COMPATIBILITY IDEOGRAPH-F900..CJK COMPATIBILITY IDEOGRAPH-FA6D//~v79zR~
+{ 0x0fe10 , 0xfe19, UCODETB_WW  }, //[4 lines]  Po     [7] PRESENTATION FORM FOR VERTICAL COMMA..PRESENTATION FORM FOR VERTICAL QUESTION MARK//~v79zR~
+{ 0x0fe30 , 0xfe52, UCODETB_WW  }, //[25 lines]  Po         PRESENTATION FORM FOR VERTICAL TWO DOT LEADER//~v79zR~
+{ 0x0fe54 , 0xfe66, UCODETB_WW  }, //[12 lines]  Po     [4] SMALL SEMICOLON..SMALL EXCLAMATION MARK//~v79zR~
+{ 0x0fe68 , 0xfe6b, UCODETB_WW  }, //[3 lines]  Po         SMALL REVERSE SOLIDUS//~v79zR~
+{ 0x0ff01 , 0xff60, UCODETB_FULL}, //[28 lines]  Po     [3] FULLWIDTH EXCLAMATION MARK..FULLWIDTH NUMBER SIGN//~v79zR~
+//{ 0x0ff61 , 0xffbe, UCODETB_HALF}, //[9 lines]  Po         HALFWIDTH IDEOGRAPHIC FULL STOP//~v79zR~
+//{ 0x0ffc2 , 0xffc7, UCODETB_HALF}, // Lo     [6] HALFWIDTH HANGUL LETTER A..HALFWIDTH HANGUL LETTER E//~v79zR~
+//{ 0x0ffca , 0xffcf, UCODETB_HALF}, // Lo     [6] HALFWIDTH HANGUL LETTER YEO..HALFWIDTH HANGUL LETTER OE//~v79zR~
+//{ 0x0ffd2 , 0xffd7, UCODETB_HALF}, // Lo     [6] HALFWIDTH HANGUL LETTER YO..HALFWIDTH HANGUL LETTER YU//~v79zR~
+//{ 0x0ffda , 0xffdc, UCODETB_HALF}, // Lo     [3] HALFWIDTH HANGUL LETTER EU..HALFWIDTH HANGUL LETTER I//~v79zR~
+{ 0x0ffe0 , 0xffe6, UCODETB_FULL}, //[5 lines]  Sc     [2] FULLWIDTH CENT SIGN..FULLWIDTH POUND SIGN//~v79zR~
+//{ 0x0ffe8 , 0xffee, UCODETB_HALF}, //[3 lines]  So         HALFWIDTH FORMS LIGHT VERTICAL//~v79zR~
+{ 0x16fe0 , 0x16fe4,UCODETB_WW  }, //[4 lines]  Lm     [2] TANGUT ITERATION MARK..NUSHU ITERATION MARK//~v79zR~
+{ 0x16ff0 , 0x16ff1,UCODETB_WW  }, // Mc     [2] VIETNAMESE ALTERNATE READING MARK CA..VIETNAMESE ALTERNATE READING MARK NHAY//~v79zR~
+{ 0x17000 , 0x187f7,UCODETB_WW  }, // Lo  [6136] TANGUT IDEOGRAPH-17000..TANGUT IDEOGRAPH-187F7//~v79zR~
+{ 0x18800 , 0x18cd5,UCODETB_WW  }, //[2 lines]  Lo   [768] TANGUT COMPONENT-001..TANGUT COMPONENT-768//~v79zR~
+{ 0x18d00 , 0x18d08,UCODETB_WW  }, // Lo     [9] TANGUT IDEOGRAPH-18D00..TANGUT IDEOGRAPH-18D08//~v79zR~
+{ 0x1b000 , 0x1b11e,UCODETB_WW  }, //[2 lines]  Lo   [256] KATAKANA LETTER ARCHAIC E..HENTAIGANA LETTER RE-2//~v79zR~
+{ 0x1b150 , 0x1b152,UCODETB_WW  }, // Lo     [3] HIRAGANA LETTER SMALL WI..HIRAGANA LETTER SMALL WO//~v79zR~
+{ 0x1b164 , 0x1b167,UCODETB_WW  }, // Lo     [4] KATAKANA LETTER SMALL WI..KATAKANA LETTER SMALL N//~v79zR~
+{ 0x1b170 , 0x1b2fb,UCODETB_WW  }, // Lo   [396] NUSHU CHARACTER-1B170..NUSHU CHARACTER-1B2FB//~v79zR~
+{ 0x1f004 , 0x1f004,UCODETB_WW  }, // So         MAHJONG TILE RED DRAGON//~v79zR~
+{ 0x1f0cf , 0x1f0cf,UCODETB_WW  }, // So         PLAYING CARD BLACK JOKER//~v79zR~
+{ 0x1f18e , 0x1f18e,UCODETB_WW  }, // So         NEGATIVE SQUARED AB//~v79zR~
+{ 0x1f191 , 0x1f19a,UCODETB_WW  }, // So    [10] SQUARED CL..SQUARED VS//~v79zR~
+{ 0x1f200 , 0x1f202,UCODETB_WW  }, // So     [3] SQUARE HIRAGANA HOKA..SQUARED KATAKANA SA//~v79zR~
+{ 0x1f210 , 0x1f23b,UCODETB_WW  }, // So    [44] SQUARED CJK UNIFIED IDEOGRAPH-624B..SQUARED CJK UNIFIED IDEOGRAPH-914D//~v79zR~
+{ 0x1f240 , 0x1f248,UCODETB_WW  }, // So     [9] TORTOISE SHELL BRACKETED CJK UNIFIED IDEOGRAPH-672C..TORTOISE SHELL BRACKETED CJK UNIFIED IDEOGRAPH-6557//~v79zR~
+{ 0x1f250 , 0x1f251,UCODETB_WW  }, // So     [2] CIRCLED IDEOGRAPH ADVANTAGE..CIRCLED IDEOGRAPH ACCEPT//~v79zR~
+{ 0x1f260 , 0x1f265,UCODETB_WW  }, // So     [6] ROUNDED SYMBOL FOR FU..ROUNDED SYMBOL FOR CAI//~v79zR~
+{ 0x1f300 , 0x1f320,UCODETB_WW  }, // So    [33] CYCLONE..SHOOTING STAR//~v79zR~
+{ 0x1f32d , 0x1f335,UCODETB_WW  }, // So     [9] HOT DOG..CACTUS   //~v79zR~
+{ 0x1f337 , 0x1f37c,UCODETB_WW  }, // So    [70] TULIP..BABY BOTTLE//~v79zR~
+{ 0x1f37e , 0x1f393,UCODETB_WW  }, // So    [22] BOTTLE WITH POPPING CORK..GRADUATION CAP//~v79zR~
+{ 0x1f3a0 , 0x1f3ca,UCODETB_WW  }, // So    [43] CAROUSEL HORSE..SWIMMER//~v79zR~
+{ 0x1f3cf , 0x1f3d3,UCODETB_WW  }, // So     [5] CRICKET BAT AND BALL..TABLE TENNIS PADDLE AND BALL//~v79zR~
+{ 0x1f3e0 , 0x1f3f0,UCODETB_WW  }, // So    [17] HOUSE BUILDING..EUROPEAN CASTLE//~v79zR~
+{ 0x1f3f4 , 0x1f3f4,UCODETB_WW  }, // So         WAVING BLACK FLAG //~v79zR~
+{ 0x1f3f8 , 0x1f43e,UCODETB_WW  }, //[3 lines]  So     [3] BADMINTON RACQUET AND SHUTTLECOCK..AMPHORA//~v79zR~
+{ 0x1f440 , 0x1f440,UCODETB_WW  }, // So         EYES              //~v79zR~
+{ 0x1f442 , 0x1f4fc,UCODETB_WW  }, // So   [187] EAR..VIDEOCASSETTE//~v79zR~
+{ 0x1f4ff , 0x1f53d,UCODETB_WW  }, // So    [63] PRAYER BEADS..DOWN-POINTING SMALL RED TRIANGLE//~v79zR~
+{ 0x1f54b , 0x1f54e,UCODETB_WW  }, // So     [4] KAABA..MENORAH WITH NINE BRANCHES//~v79zR~
+{ 0x1f550 , 0x1f567,UCODETB_WW  }, // So    [24] CLOCK FACE ONE OCLOCK..CLOCK FACE TWELVE-THIRTY//~v79zR~
+{ 0x1f57a , 0x1f57a,UCODETB_WW  }, // So         MAN DANCING       //~v79zR~
+{ 0x1f595 , 0x1f596,UCODETB_WW  }, // So     [2] REVERSED HAND WITH MIDDLE FINGER EXTENDED..RAISED HAND WITH PART BETWEEN MIDDLE AND RING FINGERS//~v79zR~
+{ 0x1f5a4 , 0x1f5a4,UCODETB_WW  }, // So         BLACK HEART       //~v79zR~
+{ 0x1f5fb , 0x1f64f,UCODETB_WW  }, //[2 lines]  So     [5] MOUNT FUJI..MOYAI//~v79zR~
+{ 0x1f680 , 0x1f6c5,UCODETB_WW  }, // So    [70] ROCKET..LEFT LUGGAGE//~v79zR~
+{ 0x1f6cc , 0x1f6cc,UCODETB_WW  }, // So         SLEEPING ACCOMMODATION//~v79zR~
+{ 0x1f6d0 , 0x1f6d2,UCODETB_WW  }, // So     [3] PLACE OF WORSHIP..SHOPPING TROLLEY//~v79zR~
+{ 0x1f6d5 , 0x1f6d7,UCODETB_WW  }, // So     [3] HINDU TEMPLE..ELEVATOR//~v79zR~
+{ 0x1f6eb , 0x1f6ec,UCODETB_WW  }, // So     [2] AIRPLANE DEPARTURE..AIRPLANE ARRIVING//~v79zR~
+{ 0x1f6f4 , 0x1f6fc,UCODETB_WW  }, // So     [9] SCOOTER..ROLLER SKATE//~v79zR~
+{ 0x1f7e0 , 0x1f7eb,UCODETB_WW  }, // So    [12] LARGE ORANGE CIRCLE..LARGE BROWN SQUARE//~v79zR~
+{ 0x1f90c , 0x1f93a,UCODETB_WW  }, // So    [47] PINCHED FINGERS..FENCER//~v79zR~
+{ 0x1f93c , 0x1f945,UCODETB_WW  }, // So    [10] WRESTLERS..GOAL NET//~v79zR~
+{ 0x1f947 , 0x1f978,UCODETB_WW  }, // So    [50] FIRST PLACE MEDAL..DISGUISED FACE//~v79zR~
+{ 0x1f97a , 0x1f9cb,UCODETB_WW  }, // So    [82] FACE WITH PLEADING EYES..BUBBLE TEA//~v79zR~
+{ 0x1f9cd , 0x1f9ff,UCODETB_WW  }, // So    [51] STANDING PERSON..NAZAR AMULET//~v79zR~
+{ 0x1fa70 , 0x1fa74,UCODETB_WW  }, // So     [5] BALLET SHOES..THONG SANDAL//~v79zR~
+{ 0x1fa78 , 0x1fa7a,UCODETB_WW  }, // So     [3] DROP OF BLOOD..STETHOSCOPE//~v79zR~
+{ 0x1fa80 , 0x1fa86,UCODETB_WW  }, // So     [7] YO-YO..NESTING DOLLS//~v79zR~
+{ 0x1fa90 , 0x1faa8,UCODETB_WW  }, // So    [25] RINGED PLANET..ROCK//~v79zR~
+{ 0x1fab0 , 0x1fab6,UCODETB_WW  }, // So     [7] FLY..FEATHER      //~v79zR~
+{ 0x1fac0 , 0x1fac2,UCODETB_WW  }, // So     [3] ANATOMICAL HEART..PEOPLE HUGGING//~v79zR~
+{ 0x1fad0 , 0x1fad6,UCODETB_WW  }, // So     [7] BLUEBERRIES..TEAPOT//~v79zR~
+{ 0x20000 , 0x2fffd,UCODETB_WW  }, //[13 lines]  Lo [42718] CJK UNIFIED IDEOGRAPH-20000..CJK UNIFIED IDEOGRAPH-2A6DD//~v79zR~
+{ 0x30000 , 0x3fffd,UCODETB_WW  }, //[2 lines]  Lo  [4939] CJK UNIFIED IDEOGRAPH-30000..CJK UNIFIED IDEOGRAPH-3134A//~v79zR~
+    };                                                             //~v79zR~
+    int datatype=utftbsrch((ULONG)Pucs,SuctbWFH,sizeof(SuctbWFH)/sizeof(UCODETB));//~v79zR~
+    int rc=(datatype!=0);                                          //~v79zR~
+    return rc;                                                     //~v79zR~
+}//utf4_wcwidthWFH(int Popt,UWUCS Pucs)                            //~v79zR~

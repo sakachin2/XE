@@ -1,8 +1,9 @@
-//*CID://+vbkcR~:                             update#=  627;       //~vbkcR~
+//*CID://+vc60R~:                             update#=  628;       //+vc60R~
 //*************************************************************
 //*xepan2.c
 //*   filename list process
 //*************************************************************
+//vc60 2023/08/03 mediaview as openWith                            //+vc60I~
 //vbkc:180619 (BUG)panutil collapse sddata by setting sdlen(width*2)=USDcell size//~vbkcI~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vb4g:160804 like vb3d,set hdr attr not to the char but to pathname to draw at uviom by Ligature same as dir member//~vb4gR~
@@ -550,7 +551,7 @@ int pansetfnmattr(PUCLIENTWE Ppcw,PUSCRD Ppsd,int Prow,int Pfldid,char *Pcodetyp
                 }                                                  //~vb4gI~
             }                                                      //~vb4gI~
         }                                                          //~va00I~
-    UTRACED("out reverse SDcell",Ppsd->USDcell,len0*2);      //~vb4gR~//+vbkcR~
+    UTRACED("out reverse SDcell",Ppsd->USDcell,len0*2);      //~vb4gR~//~vbkcR~
     }                                                              //~va00I~
     else                                                           //~va00I~
     {                                                              //~va00I~
@@ -598,7 +599,7 @@ int pansetfnmattr(PUCLIENTWE Ppcw,PUSCRD Ppsd,int Prow,int Pfldid,char *Pcodetyp
             else                                                   //~va00I~
             	*pattr=nattr;                                      //~va00I~
         }                                                          //~va00I~
-    UTRACED("out SDcell",Ppsd->USDcell,sdlen*2);                    //~vb4gI~//+vbkcR~
+    UTRACED("out SDcell",Ppsd->USDcell,sdlen*2);                    //~vb4gI~//~vbkcR~
     }                                                              //~va00I~
     return 0;                                                      //~va00I~
 }//pansetfnmattr                                                   //~va00I~
@@ -2313,7 +2314,11 @@ int pan300felcmd(PUCLIENTWE Ppcw,UCHAR *Pdata,int Peventid)
     case '!':                                                      //~v55VI~
 //  	*(fnm+len-1)=0;		//drop quote                           //~v61cR~
 //  	rc=dlcmdopenwithsub(Ppcw,fnm+1);	//binary option        //~v61cR~
+#ifdef ARM                                                         //+vc60I~
+    	rc=dlcmdopenwithsub(Ppcw,psc->U3Lfnm,0L);//filename only   //+vc60I~
+#else                                                              //+vc60I~
     	rc=dlcmdopenwithsub(Ppcw,psc->U3Lfnm);//filename only      //~v61cI~
+#endif                                                             //+vc60I~
     	break;                                                     //~v55VI~
 #endif                                                             //~v55VI~
     case LCMDIDDELCH:     //delete entry                           //~v61pR~

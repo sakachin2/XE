@@ -1,8 +1,9 @@
-//*CID://+v77LR~:                             update#=  459;       //~v77LR~
+//*CID://+vc70R~:                             update#=  495;       //~vc70R~
 //************************************************************* //~5825I~
 //*uproc.c                                                         //~v5anR~
 //* usystem,uspawnl,uspawnlp,uspawnvp,uexecchk                     //~v065R~
 //*************************************************************    //~v022I~
+//vc70 2023/08/14 try tool with attr of 110(executable only) to avoid M^X vioration//~vc70I~
 //v77L:230626 ARM;dlclose required each time to clear static valiable//~v77LI~
 //v77K:230622 ARM;use iconv_so(/system/bin/iconv installed as part of toybox. toybox is alternative of busybox and installed to >=android-6)//~v77KI~
 //v77J:230622 (Bug)ARM;dlopen for libhighlight_so.so returns -1, it cause quit xe.//~v77JI~
@@ -160,6 +161,8 @@
 #include <udbcschk.h>                                              //~v5adI~
 #include <utrace.h>                                                //~v5bxI~
 #include <uedit.h>                                                 //~v5ccI~
+#include <uque.h>                                                  //~vc70I~
+#include <uftp.h>                                                  //~vc70I~
 #ifdef UNX                                                         //~v327I~
 	#include <ufile2l.h>                                           //~v327I~
 	#ifdef LNX                                                     //~v5g9I~
@@ -175,6 +178,10 @@
 #include <ufilew.h>                                                //~v6upI~
 #include <ustring.h>                                               //~v77DR~
 #include <udos2.h>                                                 //~v77DI~
+#ifdef ARMXXE	//no support for system call from xsub tool        //~vc70I~
+	#include <jnic2ju.h>                                           //~vc70R~
+	#include <jnia.h>                                              //~vc70I~
+#endif                                                             //~vc70I~
 //*********************************************                    //~v064R~
 #ifdef W32                                                         //~v5j2I~
 	#define SHELLPGM "cmd.exe"                                     //~v5j2I~
@@ -233,6 +240,7 @@ int uspawnvp_pipeclose(int *Ppipe_p2c,int *Ppipe_c2p);             //~v59jI~
 //#endif                                                           //~v5gbR~
 #ifdef ARMXXE                                                      //~v77DI~
 	int systemArm(char *Pcmd,int *Prc);                            //~v77DI~
+	int systemArmProc(char *Pcmd,int *Pretval);                    //~vc70I~
 #endif                                                             //~v77DI~
 #define ERR_ONTHREAD 32767 	//to avoid rc=-1	                   //~v77JR~
 //**************************************************************** //~v77FI~
@@ -392,17 +400,22 @@ int usystem(char *Pcmd)                                         //~5A10I~
 {                                                               //~5A10I~
     int rc;                                                     //~5A10R~
     char *pc;                                                   //~5A15I~
+#ifdef ARMXXE	//no support for system call from xsub tool        //~vc70I~
+    int swSystem;                                                  //~vc70I~
+#endif                                                             //~vc70I~
 //*********************                                         //~5A10I~
     UTRACED("Pcmd",Pcmd,(int)strlen(Pcmd));                        //~v6xiR~
-    UTRACEP("%s:Pcmd=%s,envPATH=%s,PWD=%s\n",UTT,Pcmd,getenv("PATH"),getenv("PWD"));      //~v701I~//~v70cR~//+v77LR~
+    UTRACEP("%s:Pcmd=%s,envPATH=%s,PWD=%s\n",UTT,Pcmd,getenv("PATH"),getenv("PWD"));      //~v701I~//~v70cR~//~v77LR~
 //#ifdef ARM                                                       //~v70cR~
 //    #ifdef XXE                                                   //~v70cR~
 //        setArmEnvPATH();    //TODO test                          //~v70cR~
 //    #endif                                                       //~v70cR~
 //#endif                                                           //~v70cR~
-#ifdef ARM                                                         //~v77CR~
-//  void uproc_callxetoolTest();                                   //~v77CI~//~v77DR~
-//  uproc_callxetoolTest(Pcmd);                                    //~v77CR~//~v77DR~
+#ifdef ARMXXE                                                        //~v77CR~//~vc70R~
+    int uproc_callxetoolTest(char *Pcmd,int *Pprc);                                   //~v77CI~//~v77DR~//~vc70R~
+  if (1)    //TODO Test                                            //~vc70R~
+    if (uproc_callxetoolTest(Pcmd,&rc)) //TODO test                        //~v77CR~//~v77DR~//~vc70R~
+    	return rc;                                                 //~vc70I~
 #endif                                                             //~v77CI~
     GuprocStat|=GUPS_SYSTEMCALL;                                   //~v701R~
 #ifdef W32UNICODE                                                  //~v6upI~
@@ -417,7 +430,24 @@ int usystem(char *Pcmd)                                         //~5A10I~
 #else                                                              //~v6upI~
 //  if (rc=system(Pcmd),rc)                                        //~v701R~
   #ifdef ARMXXE	//no support for system call from xsub tool        //~v77DI~
+    UTRACEP("%s:system or systemArm GaxeStatus=0x%x\n",UTT,GaxeStatus);//~vc70M~
+    rc=0;                                                          //~vc70I~
+    swSystem=0;                                                    //~vc70I~
+   if ((GaxeStatus & AXES_MXTOOL)!=0)	//system call option       //~vc70R~
+   {                                                               //~vc70I~
+    swSystem=1;  //call system()                                   //~vc70R~
+    UTRACEP("%s:call system by AXES_MXTOOL option");               //~vc70I~
+   }                                                               //~vc70I~
+   else                                                            //~vc70I~
+   if ((GaxeStatus & AXES_SOPROC)!=0)	//system call option       //~vc70I~
+   {                                                               //~vc70I~
+    swSystem=systemArmProc(Pcmd,&rc)==0;                           //~vc70I~
+    UTRACEP("%s:after systemArmProc() by AXES_SOPROC rc=%d,cmd=%s\n",UTT,rc,Pcmd);//~vc70I~
+   }                                                               //~vc70I~
+   else                                                            //~vc70I~
    if (!systemArm(Pcmd,&rc))  //not executed alternative of system() api//~v77DI~
+    swSystem=1;                                                    //~vc70I~
+   if (swSystem)                                                   //~vc70I~
   #endif                                                           //~v77DI~
     rc=system(Pcmd);                                               //~v701R~
     UTRACEP("%s:after system() rc=%d,cmd=%s\n",UTT,rc,Pcmd);       //~v77DI~
@@ -2411,6 +2441,7 @@ int func_mainOnThread(FUNC_MAIN Pfunc,char *Ppgm,char *Pcmd)       //~v77DR~
 	UTRACEP("%s:exit rc=%d\n",UTT,retval);                         //~v77DI~
     return retval;                                                 //~v77DR~
 }                                                                  //~v77DR~
+#ifdef ARMXXE                                                      //~vc70I~
 //*****************************************                        //~v77DR~
 int uproc_callxetool(char *Pfnm,char *Ppgm,char *Pcmd)                                  //~v77CR~//~v77DR~
 {                                                                  //~v77CI~
@@ -2472,7 +2503,13 @@ int uproc_callxetoolExec(char *Pfnm,char *Ppgm,char *Pcmd)         //~v77LI~
 //*************************                                        //~v77LI~
 	UTRACEP("%s:entry fnm=%s,pgm=%s,cmd=%s\n",UTT,Pfnm,Ppgm,Pcmd); //~v77LI~
     sprintf(cmd,"%s/%s %s",GjniNativeLibraryPath,Pfnm,Pcmd+strlen(Ppgm));//~v77LI~
-	UTRACEP("%s:call sysem() cmd=%s\n",UTT,cmd);                   //~v77LI~
+	UTRACEP("%s:call system() cmd=%s\n",UTT,cmd);                   //~v77LI~//~vc70R~
+  if (1)                                                           //~vc70I~
+  {                                                                //~vc70I~
+    sprintf(cmd,"%s/%s",GjniNativeLibraryPath,Pfnm);               //~vc70R~
+    rc=c2j_runProcess(cmd/*so fnm*/,Pcmd+strlen(Ppgm)/*parm*/);    //~vc70R~
+  }                                                                //~vc70I~
+  else                                                             //~vc70I~
   if (1)                                                           //~v77LR~
   {                                                                //~v77LI~
     rc=system(cmd);    //bin/sh(actually bash) -c  ==> rc=8b(sigsegv), on logcat: avc denied "diskstat" dev "proc"//~v77LR~
@@ -2488,39 +2525,121 @@ int uproc_callxetoolExec(char *Pfnm,char *Ppgm,char *Pcmd)         //~v77LI~
     return rc;                                                     //~v77LI~
 }                                                                  //~v77LI~
 //*****************************************                        //~v77CI~
-void uproc_callxetoolTest(char *Pcmd)                              //~v77CR~
+int uproc_callxetoolTest(char *Pcmd,int *Pprc)                              //~v77CR~//~vc70R~
 {                                                                  //~v77CI~
     char fnm[_MAX_PATH];                                           //~v77CI~
-    char exe[_MAX_PATH];                                           //~v77DI~
-    char *pc,*pparm;                                               //~v77DI~
-    int len;                                                       //~v77DI~
+//  char *pc,*pparm;                                               //~v77DI~//~vc70R~
+    int rc=0;                                                       //~v77DI~//~vc70R~
 //*************************                                        //~v77CI~
 	UTRACEP("%s:cmd=%s\n",UTT,Pcmd);                               //~v77CI~
-	if (!memcmp(Pcmd,"xtestenv_so",11))                            //~v77CR~
+    *Pprc=0;                                                       //~vc70I~
+	if (!memcmp(Pcmd,"testtest",8))                            //~v77CR~//~vc70R~
     {                                                              //~v77CI~
-        pc=strchr(Pcmd,' ');                                       //~v77DI~
-        if (pc)                                                    //~v77DI~
-        {                                                          //~v77DI~
-        	len=pc-Pcmd;                                           //~v77DI~
-	        pparm=Pcmd+len+1;                                      //~v77DI~
-        }                                                          //~v77DI~
-        else                                                       //~v77DI~
-        {                                                          //~v77DI~
-        	len=(int)strlen(Pcmd);                                 //~v77DI~
-	        pparm="";                                              //~v77DI~
-        }                                                          //~v77DI~
-        memcpy(exe,Pcmd,len);                                      //~v77DI~
-        *(exe+len)=0;                                              //~v77DI~
-   	if (1)                                                         //~v77DI~
-    	sprintf(fnm,"lib%s.so",exe);                               //~v77DR~
-   	else                                                           //~v77DI~
-        sprintf(fnm,"%s/lib%s.so",GjniNativeLibraryPath,exe);      //~v77CI~//~v77DR~
-	  if (!memcmp(Pcmd,"xtestenv_socmd",14))   //TODO test         //~v77CI~//~v77LR~
-		uproc_callxetoolSystem(Pcmd);                              //~v77CI~
-      else                                                         //~v77CI~
-		uproc_callxetool(fnm,exe,pparm);                                     //~v77CR~//~v77DR~
+//		void *handle=uproc_dlopen("libxtestenv_so.so");            //~vc70R~
+//		UTRACEP("%s:handle%p\n",UTT,handle);                       //~vc70R~
+      if (0)                                                       //~vc70R~
+      {                                                            //~vc70I~
+        sprintf(fnm,"%s/xtestenv",GjniNativeLibraryPath);          //~vc70I~
+    	rc=execl(fnm,fnm,(char*)0L);                               //~vc70R~
+        int rc2=errno;          //         -->errno=2              //~vc70R~
+		UTRACEP("%s:after call execl() rc=%d=0x%x,errno=%d,cmd=%s\n",UTT,rc,rc,rc2,fnm);//~vc70R~
+      }                                                            //~vc70I~
+      else                                                         //~vc70I~
+      if (0)                                                       //~vc70R~
+      {                                                            //~vc70I~
+        sprintf(fnm,"%s/libxtestenv_so.so",GjniNativeLibraryPath); //~vc70I~
+    	rc=execl(fnm,fnm,(char*)0L); //-->crash                    //~vc70R~
+		UTRACEP("%s:after call execl() rc=%d=0x%x,cmd=%s\n",UTT,rc,rc,fnm);//~vc70I~
+      }                                                            //~vc70I~
+      else                                                         //~vc70I~
+      if (0)                                                       //~vc70R~
+      {                                                            //~vc70I~
+        sprintf(fnm,"%s/xtestenv",GjniNativeLibraryPath);          //~vc70I~
+    	rc=system(fnm);   //-->inaccesible or not found            //~vc70R~
+		UTRACEP("%s:after call system() rc=%d=0x%x,cmd=%s\n",UTT,rc,rc,fnm);//~vc70I~
+      }                                                            //~vc70I~
+      else                                                         //~vc70I~
+      if (1)                                                    //~vc70I~
+      {                                                            //~vc70I~
+		UINT rc3;                                                  //~vc70I~
+		FILEFINDBUF3 ffb3;                                        //~vc70I~
+	    char dtm[_MAX_PATH];                                       //~vc70I~
+                                                                   //~vc70I~
+        strcpy(fnm,GjniNativeLibraryPath);                         //~vc70I~
+		rc3=ufstat(fnm,&ffb3);                                     //~vc70I~
+		UTRACEP("%s:ufstat rc=%d,fnm=%s\n",UTT,rc3,fnm);           //~vc70R~
+		UTRACEP("%s:ufstat sz=%d,attr=0x%x\n",UTT,(int)(ffb3.cbFile),(int)(ffb3.attrFile));//~vc70R~
+    	sprintf(dtm,"(%02d-%02d-%02d %02d:%02d)",         //~v64bI~//~vc70I~
+    	        (ffb3.fdateLastWrite.year+80)%100,                    //~v64bI~//~vc70I~
+       			ffb3.fdateLastWrite.month,                            //~v64bI~//~vc70I~
+          		ffb3.fdateLastWrite.day,                              //~v64bI~//~vc70I~
+          		ffb3.ftimeLastWrite.hours,                            //~v64bI~//~vc70I~
+          		ffb3.ftimeLastWrite.minutes);                         //~v64bI~//~vc70I~
+		UTRACEP("%s:ufstat date/time=%s\n",UTT,dtm);                   //~vc70I~
+                                                                   //~vc70I~
+        sprintf(fnm,"%s/xtestenv",GjniNativeLibraryPath);          //~vc70R~
+		rc3=ufstat(fnm,&ffb3);                                     //~vc70I~
+		UTRACEP("%s:ufstat rc=%d,fnm=%s\n",UTT,rc3,fnm);           //~vc70I~
+		UTRACEP("%s:ufstat sz=%d,attr=0x%x\n",UTT,(int)(ffb3.cbFile),(int)(ffb3.attrFile));//~vc70I~
+    	sprintf(dtm,"(%02d-%02d-%02d %02d:%02d)",                  //~vc70I~
+    	        (ffb3.fdateLastWrite.year+80)%100,                 //~vc70I~
+       			ffb3.fdateLastWrite.month,                         //~vc70I~
+          		ffb3.fdateLastWrite.day,                           //~vc70I~
+          		ffb3.ftimeLastWrite.hours,                         //~vc70I~
+          		ffb3.ftimeLastWrite.minutes);                      //~vc70I~
+		UTRACEP("%s:ufstat date/time=%s\n",UTT,dtm);               //~vc70I~
+                                                                   //~vc70I~
+        sprintf(fnm,"%s/libxtestenv_so.so",GjniNativeLibraryPath); //~vc70I~
+		rc3=ufstat(fnm,&ffb3);                                     //~vc70I~
+		UTRACEP("%s:ufstat rc=%d,fnm=%s\n",UTT,rc3,fnm);           //~vc70R~
+		UTRACEP("%s:ufstat sz=%d,attr=0x%x\n",UTT,(int)(ffb3.cbFile),(int)(ffb3.attrFile));//~vc70R~
+    	sprintf(dtm,"(%02d-%02d-%02d %02d:%02d)",                  //~vc70I~
+    	        (ffb3.fdateLastWrite.year+80)%100,                 //~vc70I~
+       			ffb3.fdateLastWrite.month,                         //~vc70I~
+          		ffb3.fdateLastWrite.day,                           //~vc70I~
+          		ffb3.ftimeLastWrite.hours,                         //~vc70I~
+          		ffb3.ftimeLastWrite.minutes);                          //~vc70I~
+		UTRACEP("%s:ufstat date/time=%s\n",UTT,dtm);                   //~vc70I~
+		void copyToTempForTest(char *PsrcFpath,char *PtgtName);    //~vc70I~
+        copyToTempForTest(fnm,"libxtestenv_so.so");                //~vc70I~
+    	rc=system(fnm); //-->segment fault                         //~vc70R~
+		UTRACEP("%s:after call system() rc=%d=0x%x,cmd=%s\n",UTT,rc,rc,fnm);//~vc70I~
+      }                                                            //~vc70I~
+      else                                                         //~vc70I~
+      {                                                            //~vc70I~
+        sprintf(fnm,"%s",GjniNativeLibraryPath);      //~v77CI~//~v77DR~//~vc70R~
+    	rc=c2j_runProcess(fnm,"xtestenv");                         //~vc70R~
+		UTRACEP("%s:rc=%d\n",UTT,rc);                              //~vc70I~
+      }                                                            //~vc70I~
+      *Pprc=rc;                                                    //~vc70I~
+      rc=1;                                                        //~vc70I~
     }                                                              //~v77CI~
+    return rc;                                                     //~vc70I~
 }                                                                  //~v77CI~
+//*****************************************                        //~vc70I~
+void copyToTempForTest(char *PsrcFpath,char *PtgtName)             //~vc70I~
+{                                                                  //~vc70I~
+	char tempFpath[_MAX_PATH];                                     //~vc70I~
+    char buff[4096];                                               //~vc70I~
+	UTRACEP("%s:src=%s,tgt=%s\n",UTT,PsrcFpath,PtgtName);          //~vc70I~
+    sprintf(tempFpath,"%s/%s",gettempnampath(0),PtgtName);         //~vc70I~
+    FILE *in=fopen(PsrcFpath,"rb");                                //~vc70I~
+    FILE *out=fopen(tempFpath,"wb");                              //~vc70I~
+    int tot=0;                                                     //~vc70I~
+    for (;;)                                                       //~vc70I~
+    {                                                              //~vc70I~
+        int len=fread(buff,1,4096,in);                             //+vc70R~
+        if (len<=0)                                                //~vc70I~
+        	break;                                                 //~vc70I~
+        tot+=len;                                                  //~vc70I~
+        int lenW=fwrite(buff,1,len,out);                           //+vc70R~
+        if (lenW!=len)                                             //~vc70I~
+        	break;                                                 //~vc70I~
+    }                                                              //~vc70I~
+    fclose(in);                                                    //+vc70I~
+    fclose(out);                                                   //+vc70I~
+	UTRACEP("%s:tot=%d\n",UTT,tot);                                //~vc70I~
+}                                                                  //~vc70I~
 //*****************************************                        //~v77DI~
 int callXeToolSO(char *Ppgm,char *Pcmd)                           //~v77DI~
 {                                                                  //~v77DI~
@@ -2536,6 +2655,23 @@ int callXeToolSO(char *Ppgm,char *Pcmd)                           //~v77DI~
     rc=uproc_callxetool(sonm,Ppgm,Pcmd);                           //~v77LI~
     return rc;//~v77DI~
 }                                                                  //~v77DI~
+//*****************************************                        //~vc70I~
+//*execute process                                                 //~vc70I~
+//*****************************************                        //~vc70I~
+int callXeToolSOProc(char *Ppgm,char *Pcmd)                        //~vc70I~
+{                                                                  //~vc70I~
+    char sonm[32];                                                 //~vc70I~
+	int rc;                                                        //~vc70I~
+//*************************                                        //~vc70I~
+	UTRACEP("%s:pgm=%s,cmd=%s\n",UTT,Ppgm,Pcmd);                   //~vc70I~
+  if (1)    //TODO test                                            //~vc70R~
+    sprintf(sonm,"lib%s.so",Ppgm);     //errno=2                   //~vc70R~
+  else                                                             //~vc70I~
+    sprintf(sonm,"lib%s_so.so",Ppgm);                              //~vc70I~
+	rc=uproc_callxetoolExec(sonm,Ppgm,Pcmd);                       //~vc70R~
+    return rc;                                                     //~vc70I~
+}                                                                  //~vc70I~
+#endif                                                             //~vc70I~
 ////*********************************************************************//~v77DI~//~v77GR~
 ////*for exit() of xsub tool executed for >Android10(dlopen,dlsym,call)//~v77DI~//~v77GR~
 ////*redirect by #define on ulibarm.h                                //~v77DI~//~v77GR~
@@ -2610,9 +2746,33 @@ int systemArm(char *Pcmd,int *Pretval)                             //~v77DI~
     if (!isSupportedSO(pgm))                                       //~v77DI~
     	return 0;                                                  //~v77DI~
 	rc=callXeToolSO(pgm,Pcmd);                                     //~v77DI~
-	UTRACEP("%s:exit callXeToolSo rc=%d\n",UTT,rc);               //~v77DI~//~v77LR~
+	UTRACEP("%s:exit systemArm rc=%d\n",UTT,rc);               //~v77DI~//~v77LR~//~vc70R~
     *Pretval=rc;                                                   //~v77DR~
     return 1;                                                      //~v77DI~
 }                                                                  //~v77DI~
+//*****************************************************            //~vc70I~
+// execute process of tool.so under apiLevel>=__ANDROID_API_Q__    //Q:10:api29//~vc70I~
+//*****************************************************            //~vc70I~
+int systemArmProc(char *Pcmd,int *Pretval)                         //~vc70I~
+{                                                                  //~vc70I~
+	int len,rc;                                                    //~vc70I~
+    char pgm[16],*pc;                                              //~vc70I~
+//**********                                                       //~vc70I~
+	UTRACEP("%s:entry apilevel=%d,cmd=%s\n",UTT,GarmApiLevel,Pcmd);//~vc70I~
+    pc=strchr(Pcmd,' ');                                           //~vc70I~
+    if (pc)                                                        //~vc70I~
+    	len=PTRDIFF(pc,Pcmd);                                      //~vc70I~
+    else                                                           //~vc70I~
+    	len=(int)strlen(Pcmd);                                     //~vc70I~
+    if (len>(int)sizeof(pgm))                                      //~vc70I~
+    	return 0;                                                  //~vc70I~
+    UmemcpyZ(pgm,Pcmd,len);                                        //~vc70I~
+    if (!isSupportedSO(pgm))                                       //~vc70I~
+    	return 0;                                                  //~vc70I~
+	rc=callXeToolSOProc(pgm,Pcmd);                                 //~vc70I~
+	UTRACEP("%s:exit systemArmProc rc=%d\n",UTT,rc);               //~vc70I~
+    *Pretval=rc;                                                   //~vc70I~
+    return 1;                                                      //~vc70I~
+}                                                                  //~vc70I~
 #endif	//ARMXXE                                                   //~v77DI~
 #endif //ARM                                                            //~v77CR~//~v77DR~

@@ -1,8 +1,9 @@
-//*CID://+vbdnR~:                               update#=  576;     //~vbdnR~
+//*CID://+vbz4R~:                               update#=  581;     //~vbz4R~
 //*********************************************************************//~v55cI~
 //* wxe interface definition-3                                     //~v55cI~
 //* rctl; menu enability;openwith;at cmd                           //~v55WR~
 //*********************************************************************//~v55cI~
+//vbz4:240120 try vbz3 to WXE                                      //~vbz4I~
 //vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
 //vb2W:160404 W32 64 compiler warning                              //~vb2WI~
 //vafk:120624 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  use ULPTR(unsigned __int64/ULONG)//~vafkI~
@@ -55,6 +56,7 @@
 #include <ustring.h>                                               //~v56bI~
 #include <uwinsub.h>                                               //~v56bI~
 #include <uftp.h>                                                  //~v68eI~
+#include <utf22.h>                                                 //~vbz4I~
                                                                    //~v55cI~
 #include "xe.h"                                                    //~v55cI~
 #include "xescr.h"                                                 //~v55cI~
@@ -276,7 +278,7 @@ int wxe_errmenuitemDisabled(int Pid)                               //~vbdnI~
 {                                                                  //~vbdnI~
     uerrmsg("MenuItem is disabled on this panel",                  //~vbdnI~
 			"この画面でこのメニュー項目は使用できません");         //~vbdnI~
-    scrdisp();                                                     //+vbdnI~
+    scrdisp();                                                     //~vbdnI~
     return 4;                                                      //~vbdnI~
 }//wxe_errMenuitemDisabled()                                       //~vbdnI~
 //*************************************************************    //~vbdnI~
@@ -1132,3 +1134,18 @@ int wxe_chkUpdateFileMenu(int Popt)                                //~vbdnR~
 	Gwxestat &= ~GWXES_UPDATEMENU;                                 //~vbdnR~
     return rc;                                                     //~vbdnI~
 }//wxe_cckUpdateFileMenu                                           //~vbdnR~
+//*****************************************************************//~vbz4I~
+//*from utf22 apichkConsole                                        //~vbz4I~
+//*****************************************************************//~vbz4I~
+int wxe_GetCursorWidth(int Popt,ULONG Pucs)                        //~vbz4I~
+{                                                                  //~vbz4I~
+    return csubGetCursorPos(Popt,Pucs);                            //~vbz4R~
+}                                                                  //~vbz4I~
+//*****************************************************************//~vbz4I~
+//*call ucs mapinit, it callback wxe_getCursorPos                  //~vbz4I~
+//*****************************************************************//~vbz4I~
+void wxe_mapinit(void)                                             //~vbz4I~
+{                                                                  //~vbz4I~
+	UTRACEP("%s\n",UTT);                                           //+vbz4R~
+    utfucsmapinitWXE();                                            //~vbz4R~
+}                                                                  //~vbz4I~

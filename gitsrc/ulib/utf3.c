@@ -1,8 +1,35 @@
-//*CID://+v6X3R~:                             update#=  688;       //~v6X3R~
+//*CID://+v79ER~:                             update#=  826;       //~v79ER~
 //*********************************************************************//~7712I~
 //utf3.c                                                           //~7817R~
 //* utf8 data manipulation:os library                              //~7712R~
 //*********************************************************************//~7712I~
+//v79E:240209 LNX:like v79C, no tbl reference for xe/gxe.          //~v79EI~
+//v79D:240209 (Bug)LNX:FORMAT was not effective                    //~v79DI~
+//v79C:240208 W32:unicode display width;when ambigous char is written by 2 cell,it consume 3 cell.//~v79CI~
+//            Those shows half width glyph if written by 1 cell even full width when written by 2 cells.//~v79CI~
+//            Finally I decided that write all ambiguous(including WIDE and F2C1 previously defined) by 1 cell except defined as DBCS.//~v79CI~
+//            No adjusting tbl is not required.                    //~v79CI~
+//v79B:240208 W32:update Suctbj(w32 console sbcs/wide adjustment tbl) by current view.//~v79BI~
+//v79A:240206 no char width adjustment by tbl for ambiguous chars. we/gxe adjust by char width native api. console show those ambiguous chars by 2 cell.//~v79AI~
+//v79z:240206 dbcs chk by tbl search                               //~v79zI~
+//v79x:240206 adjust ambiguous for console by Suctb_j.(no need to define Wide if ambiguous)
+//v79u:240205 now reduces unprintable                              //~v79uI~
+//v79t:240205 (LNX)no need to define katakana as sbcs ,mk_wcwidth returns 1.//~v79tI~
+//v79s:240205 (WXE)no need u2420/2e26 as sbcs/wide it is adjusted by chkcursor by ambiguous definition//~v79rI~
+//v79r:240205 (WXE/XXE)fpr mapinit performance return always 1 at before HDC init//~v79rR~
+//vbzj:240202 Test option /UUxxxx; set unicode for debug breaking at utfwcwidthsub.//~vbzjI~
+//v79n:240201 (W32)ambiguous/F2C1 for non JP env                   //~v79nI~
+//v79k:240125 (W32)like LNX set (u-e000--uf8ff) as WIDE. (currently JP env)//~v79kI~
+//v79j:240129 (W32)u2680-268f, xe:WIDE != wxe:SBCS, wxe chk cursor so define as WIDE on also we//~v79jI~
+//v79g:240125 (LNX)revive (u-e000--uf8ff) as WIDE, keep performace by setting dfault default -Nv//~v79gI~
+//v79f:240127 (LNX)ambiguous chk required for non CJK env          //~v79fI~
+//v79e:240125 (XXE)drop private area(u-e000--uf8ff) from widesbcs for performance of cursor width chk//~v79eI~
+//v798:240118 u2033 is csr width=2 on conhost but utfwcwidth=2, define as wide sbcs to change to with=1 on terminal by v796//~v798I~
+//v797:240118 wcwidth=1-->2 for u267f(car chair)                   //~v797I~
+//v795:240115 W32:double quote(u-201c) is not wide sbcs on also console mode==>not Fixed//~v795I~
+//            locale file use writeconsoleoutputcharacter(sjis)<--xe ok//~v795I~
+//            cpu8 file use writeconsoleoutputcharacterW(ucs)<--xew ok but xe ng//~v795I~
+//            on conhost, no problem for both dbcs and widesbcs !  //~v795I~
 //v6X3:180816 Hangul 1160-11ff is not combining(Category:Lo:Letter,Other) but combined actualy(u1109+u1161), On W32 Suctbj adjust as DBCS if ISDBCS_J()//~v6X3I~
 //vbmk:180813 (XE)for test,try mk_wcwidth_cjk(ambiguous:Wide DBCS) for visibility chk. use /YJ option//~vbmkI~
 //v6Wq:180803 Format is not always width=1(u+06dd:End of Ayah is dbcs size)//~v6WqI~
@@ -115,10 +142,10 @@
 	#include <utf22.h>                                             //~v640I~
 #endif                                                             //~v640I~
 //*******************************************************          //~7922I~
-typedef struct _UCODETB {                                          //~7925R~
-  int first;                                                       //~7922I~
-  int last;                                                        //~7922I~
-  int datatype;                                                    //~7922R~
+//typedef struct _UCODETB {                                          //~7925R~//~v79zR~
+//  int first;                                                       //~7922I~//~v79zR~
+//  int last;                                                        //~7922I~//~v79zR~
+//  int datatype;                                                    //~7922R~//~v79zR~
 #define UCODETB_LENMASK  0x03 //length mask of datatype            //~7924I~
 #define UCODETB_UNPF    0x0100 //unprintable                       //~7925R~
 #define UCODETB_CMT     '#'                                        //~7925I~
@@ -132,7 +159,7 @@ typedef struct _UCODETB {                                          //~7925R~
 //*font is wide but next gryph override 2nd half of the font,ex 0xa3:pond//~v640R~
 #define UCODETB_UNP     '-'     //need 2 column to display         //~7925I~
 #define UCODETB_OPTION  '@'     //option entry                     //~7925I~
-} UCODETB,*PUCODETB;                                               //~7925R~
+//} UCODETB,*PUCODETB;                                               //~7925R~//~v79zR~
 //**************************************************               //~7922I~
 static PUCODETB Sutftb=0;                                          //~7925R~
 static int Sutftbentno=0;                                          //~7922I~
@@ -175,7 +202,7 @@ static int Sutftbopt=0;   //user cjk                               //~v641I~
 #endif                                                             //~v6V4I~
 //static int Sviowidth;                                            //~7924R~
 //**************************************************               //~7712I~
-int utftbsrch(ULONG Pucs,PUCODETB Ppuctb,int Pmax);                //~7925I~
+//int utftbsrch(ULONG Pucs,PUCODETB Ppuctb,int Pmax);                //~7925I~//~v79zR~
 int utftbsrch_j(ULONG Pucs);                                       //~7925I~
 #ifdef UTF8UCS2                                                    //~v640I~
 int utfwcwidthsub(int Popt,ULONG Pucs);                            //~v640I~
@@ -188,8 +215,12 @@ int utftbsrch_cjk(ULONG Pucs);                                     //~v62UR~
 #endif                                                             //~v62XI~
 #ifdef LNX                                                         //~v60mI~
 	int utftbsrch_jeuc(ULONG Pucs);                                //~v60mI~
+	int utftbsrch_NO_cjk(ULONG Pucs);                              //~v79fR~
 #endif                                                             //~v60mI~
 int utfwcwidthsubNoMap(int Popt,ULONG Pucs);                       //~v6V4I~
+#ifdef W32                                                         //~v79nI~
+	int utftbsrch_NO_j(ULONG Pucs);                                //~v79nI~
+#endif                                                             //~v79nI~
 //**************************************************               //~7712M~
 //*check utf char                                                  //~7712R~
 //*rc:4:err utf,1:width unknown                                    //~7712I~
@@ -301,17 +332,24 @@ int utfwcwidth(int Popt,ULONG Pucs,int *Ppflag)                    //~v62UR~
   #endif                                                           //~v640I~
 	int opt;                                                       //~v640R~
 #endif                                                             //~v640I~
+#ifndef NOTRACE                                                    //~v79gI~
+	char wku8[12];                                                 //~v79gI~
+	int u8len;                                                     //~v79gI~
+#endif        	                                                   //~v79gI~
 //****************                                                 //~v62UR~
+#ifdef WXEXXE                                                      //~v79rR~
+    if (Gulibutfmode & GULIBUTF_APICHK_CSR) //csr chk option by xe.c//~v79rR~
+    {                                                              //~v79rR~
+        if (!(Gulibutfmode & GULIBUTF_APICHK_CSR2)) //before HDC init//~v79rR~
+        {                                                          //~v79rR~
+            *Ppflag=0;                                             //~v79rR~
+            UTRACEP("%s:rc=1,before mapinit with /Yv option ucs=0x%04x\n",UTT,Pucs);//~v79rR~
+            return 1;   //for errmsg, maybe no dbcd chk required   //~v79rR~
+        }                                                          //~v79rR~
+    }                                                              //~v79rR~
+#endif                                                             //~v79rR~
 //#ifdef UTF8UCS4                                                    //~v65cR~//~v6uBR~
 //#ifdef TEST    //@@@@test                                                    //~v6C3I~//~v6V1R~//~v6VbR~//~v6VoR~
-if (Pucs==0x2f00||Pucs==0x0300||Pucs==0x23ce||Pucs==0x093f||Pucs==0xe000||Pucs==0x1161||Pucs==0x01d16d||Pucs==0x20001||Pucs==0xe0001)//@@@@test//~v6V2R~//~v6VbR~//~v6VoR~//~v6VtR~//~v6X3R~
-{                                                                  //~v6VoI~
-      UTRACEP("ucs=%04x\n",Pucs);                                  //~v6BCR~//~v6C3R~
-}                                                                  //~v6VoI~
-if (Pucs==0x01f880)                                                //~v6WkI~
-{                                                                  //~v6WkI~
-      UTRACEP("ucs=%04x\n",Pucs);                                  //~v6WkI~
-}                                                                  //~v6WkI~
 //#endif                                                             //~v6C3R~//~v6V1R~//~v6VbR~
 	if (Pucs<0x80)      //ascii                                    //~v6WhI~
     {                                                              //~v6WhI~
@@ -398,12 +436,6 @@ UTRACEP("wcwidth only width=%d for ucs=%x\n",wcw,Pucs);   //better to return lar
 //        return len;                                              //~v6BCR~
 //    }                                                            //~v6BCR~
 //#endif     //@@@@test                                            //~v6BCR~
-#ifdef TEST                                                        //~v6V1I~
-    if (Pucs==0xa7||Pucs==0xb1||Pucs==0x0120||Pucs==0x0389||Pucs==0x0391||Pucs==0x2020||Pucs==0x2025||Pucs==0x2191||Pucs==0x2614||Pucs==0x2642||Pucs==0x2661||Pucs==0x2705)//~v6V1R~
-    {                                                              //~v6V1I~
-        UTRACEP("%s:trap ucs=%04x\n",UTT,Pucs);	//@@@@test         //~v6V1R~
-    }                                                              //~v6V1I~
-#endif                                                             //~v6V1I~
 	rc=utfwcwidthsub(opt,Pucs);                                    //~v640R~
 //UTRACEP("wcwidthsub rc=%d for ucs=%x\n",rc,Pucs);                //~v6a0R~//~v6uER~
 #else                                                              //~v640I~
@@ -436,10 +468,22 @@ UTRACEP("wcwidth only width=%d for ucs=%x\n",wcw,Pucs);   //better to return lar
   			len=utfwwapichk(UTFWWO_MK_WCWIDTH,Pucs,len,&flag,&wcw);//~v6WmI~
          }                                                         //~v6WiI~
          else                                                      //~v6V7I~
+         {                                                         //~v79DI~
+          if (rc & UTFWWF_RC_FORMAT)   //datatype by mk_wcwidth,adjustable by wcwidth api for width=0//~v79DI~
+          {                                                        //~v79DI~
+          	if (Gulibutfmode & GULIBUTFAPIWIDTH0) //     0x02000000  //accept wcwidth()=0 for not on utf4:combine tbl//~v79DI~
+				len=utfwwapichk(UTFWWO_APIW0|UTFWWO_FORMAT,Pucs,len,&flag,&wcw);  //len=0 if wcwidth()=0//~v79DI~
+          	else                                                   //~v79DI~
+				len=utfwwapichk(0|UTFWWO_FORMAT,Pucs,len,&flag,&wcw);//~v79DI~
+          }                                                        //~v79DI~
+          else                                                     //~v79DI~
+          {                                                        //~v79DI~
           if (Gulibutfmode & GULIBUTFAPIWIDTH0) //     0x02000000  //accept wcwidth()=0 for not on utf4:combine tbl//~v6V1I~
 			len=utfwwapichk(UTFWWO_APIW0,Pucs,len,&flag,&wcw);  //len=0 if wcwidth()=0//~v6V1I~
           else                                                     //~v6V1I~
 			len=utfwwapichk(0,Pucs,len,&flag,&wcw);                //~v6V7M~
+          }                                                        //~v79DI~
+         }                                                         //~v79DI~
        #else                                                       //~v6VbI~
 			len=utfwwapichk(0,Pucs,len,&flag,&wcw);                //~v640R~
        #endif                                                      //~v6V1I~//~v6VbM~
@@ -459,7 +503,8 @@ UTRACEP("wcwidth only width=%d for ucs=%x\n",wcw,Pucs);   //better to return lar
   }//!UCS4                                                         //~v65cI~
     if (Ppflag)                                                    //~v62UR~
     	*Ppflag=flag;                                              //~v62UR~
-//UTRACEP("%s: return len=%d,flag=%x,ucs=%x\n",UTT,len,flag,Pucs);     //~v6a0R~//~v6uER~//~v6VnR~//~v6VrR~//~v6X3R~
+UTRACEP("%s: return len=%d,flag=0x%04x,ucs=0x%04x( %s )\n",UTT,len,flag,Pucs,//~v79gR~
+		UTF_GETUTF8STR_TRACE(Pucs,wku8,u8len));                          //~v79gI~//+v79ER~
     return len;                                                    //~v62UR~
 }//utfwcwidth                                                      //~v6VbR~
 #ifdef UTF8UTF16     //W32                                              //~v6uBI~//~v6V4I~
@@ -482,13 +527,13 @@ int utfwcwidthNoMap(int Popt,ULONG Pucs,int *Ppflag)               //~v6V4I~
     {                                                              //~v6V4I~
         UTRACEP("%s:trap ucs=%04x\n",UTT,Pucs);	//@@@@test         //~v6V4I~
     }                                                              //~v6V4I~
-    if (Pucs==0x0e0001)                                            //~v6WkI~
-    {                                                              //~v6WkI~
-        UTRACEP("%s:trap ucs=%04x\n",UTT,Pucs);	//@@@@test         //~v6WkI~
-    }                                                              //~v6WkI~
+    if (Pucs==(ULONG)GutfTestUcs)                                  //~vbzjI~
+    {                                                              //~vbzjI~
+        UTRACEP("%s:Debug trap by GutfTestUcs ucs=%04x\n",UTT,Pucs);	//@@@@test//~vbzjI~
+    }                                                              //~vbzjI~
 //#endif                                                           //~v6V4I~
 	rc=utfwcwidthsubNoMap(opt,Pucs);                               //~v6V4I~
-UTRACEP("wcwidthsubNoMap rc=%d for ucs=%x\n",rc,Pucs);             //~v6V4I~
+UTRACEP("wcwidthsubNoMap rc=0x%04x for ucs=%x\n",rc,Pucs);             //~v6V4I~//~vbzjR~
     if (rc>=0 && Pucs>=0x80)   //chk unprintable also for combining char(rc=0)//~v6V4I~
     {                                                              //~v6V4I~
         len=rc & UTFWWF_LENMASK;                                   //~v6V4I~
@@ -602,6 +647,10 @@ int utfwcwidthsub(ULONG Pucs)                                      //~v62UR~
     }                                                              //~v620I~
 #endif                                                             //~v620I~
 #endif                                                             //~v62UR~
+    if (Pucs==(ULONG)GutfTestUcs)                                         //~v79kI~//~vbzjR~
+    {                                                              //~v79kI~
+        UTRACEP("%s:Debug trap by GutfTestUcs ucs=%04x\n",UTT,Pucs);	//@@@@test         //~v79kI~//~vbzjR~
+    }                                                              //~v79kI~
 	datatype=utftbsrch(Pucs,Sutftb,Sutftbentno);                   //~7925R~
 //UTRACEP("utfwcwidth initbsrch ucs=%x,datatype=%x\n",Pucs,datatype);                     //~7926I~//~v650R~
     if (datatype)                                                  //~7925R~
@@ -622,14 +671,17 @@ int utfwcwidthsub(ULONG Pucs)                                      //~v62UR~
       if (!(Popt & UTFWWO_NOJ))                                    //~v640I~
 #endif                                                             //~v640I~
       {                                                            //~v640I~
+       if (!SswWXE && (Gulibutfmode & GULIBUTF_APICHK_CSR)) //Yv option of console mode//~v79AI~
+       {                                                           //~v79AI~
     	datatype=utftbsrch_j(Pucs);//chk before old sjis tbl(for new codepoint//~7925I~
-//UTRACEP("utfwcwidth tbsrch_j wc=%4x,rc=%x\n",Pucs,datatype);     //~v650R~
+UTRACEP("utfwcwidth utftbsrch_j wc=0x%4x,datatype=%x\n",Pucs,datatype);     //~v650R~//~v79uR~
 	    if (datatype)                                              //~7925I~
 //  		return (datatype & UCODETB_LENMASK);                   //~7925I~//~v6VoR~
     		return datatype;                                       //~v6VoR~
+       } //console and APICHK_CSR                                  //~v79AI~
 #ifndef UTF8UCS2                                                   //~v643I~
  		sjis=uccvucs2sjis(0,Pucs);//chk sjis tbl                   //~7925R~
-//UTRACEP("utfwcwidth cvu2s sjis=%x\n",sjis);                      //~v650R~
+//UTRACEP("utfwcwidth cvu2s sjis=%x\n",sjis);                      //~v650R~//~v79rR~
 		if (sjis!=UCVERRUCS)                                       //~7925R~
         {                                                          //~7925I~
 			if (sjis>0xff)                                         //~7925R~
@@ -640,6 +692,15 @@ int utfwcwidthsub(ULONG Pucs)                                      //~v62UR~
 #endif                                                             //~v643I~
       }//NOJ                                                       //~v640I~
     }                                                              //~7920I~
+    else	//Not ISDBCSJ                                          //~v79nI~
+    {                                                              //~v79nI~
+      if (!SswWXE && (Gulibutfmode & GULIBUTF_APICHK_CSR)) //Yv option of console mode//~v79AI~
+      {                                                            //~v79AI~
+    	datatype=utftbsrch_NO_j(Pucs);//chk before old sjis tbl(for new codepoint//~v79nR~
+	    if (datatype)                                              //~v79nI~
+    		return datatype;                                       //~v79nI~
+      } //console and APICHK_CSR                                   //~v79AI~
+    }                                                              //~v79nI~
     if (Sutftbopt & SUO_CJK)                                       //~v62UR~
     {                                                              //~v640I~
 #ifdef UTF8UCS2	//for latin UTF8                                   //~v640I~
@@ -692,7 +753,7 @@ int utfwcwidthsub(ULONG Pucs)                                      //~v62UR~
 #else                                                              //~v647I~
 	    	datatype=mk_wcwidth_cjk((wchar_t)Pucs);   //traditional terminal char spacing//~v62UR~
 #endif                                                             //~v647I~
-//  		UTRACEP("%s:mk_wcwidth_cjk rc=%x,ucs=%06x\n",UTT,datatype,Pucs);//~v6X3R~
+   		UTRACEP("%s:mk_wcwidth_cjk rc=%x,ucs=0x%04x\n",UTT,datatype,Pucs);//~v6X3R~//~v798R~//~v79gR~
 		}                                                          //~v6WpI~
         else                                                       //~v62UR~
         {                                                          //~v6WpI~
@@ -703,7 +764,7 @@ int utfwcwidthsub(ULONG Pucs)                                      //~v62UR~
 #else                                                              //~v647I~
 	    	datatype=mk_wcwidth((wchar_t)Pucs);   //for wxe/gxe    //~v62UR~
 #endif                                                             //~v647I~
-			UTRACEP("%s:mk_wcwidth rc=%x,ucs=%06x\n",UTT,datatype,Pucs);//~v6WpI~
+			UTRACEP("%s:mk_wcwidth rc=%x,ucs=0x%04x\n",UTT,datatype,Pucs);//~v6WpI~//~v79gR~
 		}                                                          //~v6WpI~
 #endif                                                             //~v62UR~
 //UTRACEP("%s:after mk_wcwidth(_chk) ucs=%04x,datatype=%x,console=%x\n",UTT,Pucs,datatype,Sutftbopt & SUO_CONSOLE);   //I don't know other language//~v650R~//~v6uER~//~v6V9R~
@@ -739,10 +800,14 @@ int utfwcwidthsub(ULONG Pucs)                                      //~v62UR~
 #endif                                                             //~v640I~
        if (!(Sutftbopt & SUO_NOEUCTB))//no chk euc tbl             //~v60qR~
        {                                                           //~v60mI~
+#ifdef AAA       	                                               //~v79AI~
     	datatype=utftbsrch_jeuc(Pucs);//chk before old sjis tbl(for new codepoint//~v60mI~
 //UTRACEP("%s:tbsrch_jeuc wc=%4x,rc=%x\n",UTT,Pucs,datatype);  //~v650R~//~v6uER~
 	    if (datatype)                                              //~v60mI~
     		return (datatype & UCODETB_LENMASK);                   //~v60mI~
+#else                                                              //~v79AI~
+		;                                                          //~v79AI~
+#endif //AAA                                                       //~v79AI~
        }                                                           //~v60mI~
     }                                                              //~v60mI~
 //#endif                                                             //~v62UR~//~v640R~
@@ -795,6 +860,12 @@ UTRACEP("%s:ucs=%x,datatype=%x,console=%x\n",UTT,Pucs,datatype,Sutftbopt & SUO_C
 		return datatype;                                           //~v62UR~
       }//NOCJK                                                     //~v640I~
     }                                                              //~v62UR~
+    else  //!UDBCSCHK_ISDBCS()                                     //~v79fI~
+    {                                                              //~v79fI~
+		datatype=utftbsrch_NO_cjk((ULONG)Pucs);                    //~v79fI~
+        if (datatype)                                              //~v79fI~
+        	return datatype;                                       //~v79fI~
+    }                                                              //~v79fI~
 #ifdef AAA                                                         //~v62UR~
   #ifdef XXE   //curses use wcwidth                                //~v60mI~
   	if ((Gulibutfmode & GULIBUTFCHKBYCVL)                          //~v60fR~
@@ -849,11 +920,14 @@ int utfwcwidthsubNoMap(int Popt,ULONG Pucs)                        //~v6V4I~
     {                                                              //~v6V4I~
       	if (!(Popt & UTFWWO_NOJ))                                  //~v6V4I~
       	{                                                          //~v6V4I~
+          if (!SswWXE && (Gulibutfmode & GULIBUTF_APICHK_CSR)) //Yv option of console mode//~v79AI~
+          {                                                        //~v79AI~
     		datatype=utftbsrch_j(Pucs);//chk before old sjis tbl(for new codepoint//~v6V4I~
 			UTRACEP("%s:utfwcwidth tbsrch_j wc=%4x,rc=%x\n",UTT,Pucs,datatype);//~v6V4I~
 	    	if (datatype)                                          //~v6V4I~
 //  			return (datatype & UCODETB_LENMASK);               //~v6V4I~//~v6VoR~
     			return datatype;                                   //~v6VoI~
+          }//console and APICHK_CSR                                //~v79AI~
       	}//NOJ                                                     //~v6V4I~
     }                                                              //~v6V4I~
     if (Sutftbopt & SUO_CJK)                                       //~v6V4I~
@@ -875,12 +949,12 @@ int utfwcwidthsubNoMap(int Popt,ULONG Pucs)                        //~v6V4I~
         else                                                       //~v6V4I~
 //        	datatype=mk_wcwidth((UWUCS)Pucs);   //for wxe/gxe      //~v6V4I~//~v6WnR~
           	datatype=mk_wcwidth(Sutftbopt,(UWUCS)Pucs);   //for wxe/gxe//~v6WnI~
-UTRACEP("%s:after mk_wcwidth(_chk) ucs=%06x,datatype=0x%x,console=%x\n",UTT,Pucs,datatype,Sutftbopt & SUO_CONSOLE);   //I don't know other language//~v6V4I~
+UTRACEP("%s:after mk_wcwidth(_chk) ucs=0x%04x,datatype=0x%x,console=%x\n",UTT,Pucs,datatype,Sutftbopt & SUO_CONSOLE);   //I don't know other language//~v6V4I~//~v79gR~
 		return datatype;                                           //~v6V4I~
     }                                                              //~v6V4I~
 //  datatype=mk_wcwidth((UWUCS)Pucs);   //I don't know other language//~v6V4I~//~v6WnR~
     datatype=mk_wcwidth(Sutftbopt,(UWUCS)Pucs);   //I don't know other language//~v6WnI~
-	UTRACEP("%s:last mk_wcwidth ucs=%06x,datatype=0x%x\n",UTT,Pucs,datatype);   //I don't know other language//~v6V4I~
+	UTRACEP("%s:last mk_wcwidth ucs=0x%04x,datatype=0x%x\n",UTT,Pucs,datatype);   //I don't know other language//~v6V4I~//~v79gR~
     return datatype;                                               //~v6V4I~
 }//utfwcwidthsubNoMap //W32                                        //~v6V4I~
 #else                //LNX                                         //~v6V4I~
@@ -892,7 +966,7 @@ int utfwcwidthsubNoMap(int Popt,ULONG Pucs)                        //~v6V4I~
 {                                                                  //~v6V4I~
     int datatype;                                                  //~v6V4I~
 //*****************                                                //~v6V4I~
-	UTRACEP("%s:ucs=%06x\n",UTT,Pucs);                             //~v6V4I~
+	UTRACEP("%s:ucs=0x%04x\n",UTT,Pucs);                             //~v6V4I~//~v79gR~
 	datatype=utftbsrch(Pucs,Sutftb,Sutftbentno);                   //~v6V4I~
     if (datatype)                                                  //~v6V4I~
     	return (datatype & UCODETB_LENMASK);                       //~v6V4I~
@@ -901,9 +975,13 @@ int utfwcwidthsubNoMap(int Popt,ULONG Pucs)                        //~v6V4I~
       if (!(Popt & UTFWWO_NOJ))                                    //~v6V4I~
        if (!(Sutftbopt & SUO_NOEUCTB))//no chk euc tbl             //~v6V4I~
        {                                                           //~v6V4I~
+#ifdef AAA       	                                               //~v79AI~
     	datatype=utftbsrch_jeuc(Pucs);//chk before old sjis tbl(Suctbj_euc/Suctbj_euc_console)//~v6V4R~
 	    if (datatype)                                              //~v6V4I~
     		return (datatype & UCODETB_LENMASK);                   //~v6V4I~
+#else                                                              //~v79AI~
+			;                                                      //~v79AI~
+#endif                                                             //~v79AI~
        }                                                           //~v6V4I~
     }                                                              //~v6V4I~
     if (Sutftbopt & SUO_CJK)                                       //~v6V4I~
@@ -1006,12 +1084,15 @@ int utfisprint(int Popt,ULONG Pucs)                                //~7817I~
 #ifdef W32                                                         //~7925M~
     if (UDBCSCHK_ISUTF8J())	//japanese                             //~7817I~
     {                                                              //~7925I~
+      if (!SswWXE && (Gulibutfmode & GULIBUTF_APICHK_CSR)) //Yv option of console mode//~v79AI~
+      {                                                            //~v79AI~
     	chartype=utftbsrch_j(Pucs);//chk before old sjis tbl(for new codepoint//~7925I~
 UTRACEP("utfisprint tbsrch_j rc=%x\n",chartype);                   //~7926I~
 		if (chartype & UCODETB_UNPF) //unprintable entry           //~7925I~
     		return 0;		//user defined unprintable             //~7925I~
 		if (chartype)                                              //~7925I~
     		return 1;		//user defined unprintable             //~7925I~
+      }//console and APICHK_CSR                                    //~v79AI~
 UTRACEP("utfisprint cvu2s rc=%x\n",uccvucs2sjis(0,Pucs));	//limit to sjis to avoid print line shrink when horizontal hex display//~7926I~
     	if (uccvucs2sjis(0,Pucs)!=UCVERRUCS)	//limit to sjis to avoid print line shrink when horizontal hex display//~7925R~
         	return 1;                                              //~7920I~
@@ -1036,12 +1117,16 @@ UTRACEP("utfisprint iswprint rc=%x\n",rc);	//limit to sjis to avoid print line s
     {                                                              //~v60mI~
        if (!(Sutftbopt & SUO_NOEUCTB))//no chk euc tbl             //~v60qR~
        {                                                           //~v60mI~
+#ifdef AAA                                                         //~v79AI~
     	chartype=utftbsrch_jeuc(Pucs);//chk before old sjis tbl(for new codepoint//~v60mR~
 //UTRACEP("utfwcwidth tbsrch_jeuc wc=%4x,rc=%x\n",Pucs,chartype);  //~v650R~
 		if (chartype & UCODETB_UNPF) //unprintable entry           //~v60mI~
     		return 0;		//user defined unprintable             //~v60mI~
 		if (chartype)                                              //~v60mI~
     		return 1;		//user defined unprintable             //~v60mI~
+#else                                                              //~v79AI~
+			;                                                      //~v79AI~
+#endif                                                             //~v79AI~
        }                                                           //~v60mI~
     }                                                              //~v60mI~
 #ifdef XXE                                                         //~v60mI~
@@ -1365,15 +1450,18 @@ int utftbsrch_j_WXE(ULONG Pucs)                                    //~v6V4I~
 //    { 0x03b1, 0x03c9,UCODETB_WIDE},                                //~v6V4I~//~v6VrR~
 //U+0400..U+04FF    :Cyrillic:Cyrillic (254 characters), Inherited (2 characters)//~v6VnI~
 //    { 0x0410, 0x0451,UCODETB_WIDE},                                //~v6VnI~//~v6VrR~
-    { 0x2400, 0x2422,UCODETB_SBCS },                               //~v6WpI~
-    { 0x2680, 0x268f,UCODETB_SBCS },                               //~v6WpR~
-    { 0x2e26, 0x2e27,UCODETB_WIDE },                               //~v6WpI~
+//    { 0x2400, 0x2422,UCODETB_SBCS },                               //~v6WpI~//~v79rR~
+//  { 0x2680, 0x268f,UCODETB_SBCS },                               //~v6WpR~//~v79jR~
+//    { 0x2e26, 0x2e27,UCODETB_WIDE },                               //~v6WpI~//~v79rR~
+#ifndef TEST2                                                      //~v79uR~
+    { 0x00a0, 0x02ff,UCODETB_WIDE },                               //~v79uI~
+#endif                                                             //~v79uI~
     { 0x10ffff,0x10ffff,UCODETB_WIDE} //last dummy                 //~v6VnI~
   };                                                               //~v6V4I~
     int datatype;                                                  //~v6V4I~
 //*******************************                                  //~v6V4I~
 	datatype=utftbsrch(Pucs,Suctbj_WXE,sizeof(Suctbj_WXE)/sizeof(UCODETB));//~v6V4I~
-    UTRACEP("%s:ucs=%04x,rc=%x\n",UTT,Pucs,datatype);              //~v6VnR~
+    UTRACEP("%s:ucs=0x%04x,rc=%x\n",UTT,Pucs,datatype);              //~v6VnR~//~vbzjR~
     return datatype;                                               //~v6V4I~
 }//utftbsrch_j_WXE                                                 //~v6V4I~//~v6VnR~
 //******************************************************           //~7925I~
@@ -1386,24 +1474,24 @@ int utftbsrch_j_WXE(ULONG Pucs)                                    //~v6V4I~
 int utftbsrch_j(ULONG Pucs)                                        //~7925I~
 {                                                                  //~7925I~
   	static UCODETB Suctbj[] = {                                    //~7925R~
-#ifdef UTF8UCS2       //over mkwcwidth_cjk                         //~v643I~
+#ifndef BBB        //adjust width ambiguous tbl(no WIDE required because ambiguous is width=2)//~v79xR~//~v79BR~
     { 0x00A1, 0x00A1,UCODETB_SBCS },                               //~v643I~
     { 0x00A4, 0x00A4,UCODETB_SBCS },                               //~v643I~
 //  { 0x00A7, 0x00A8 },                                            //~v643I~
     { 0x00AA, 0x00AA,UCODETB_SBCS},                                //~v643I~
     { 0x00AE, 0x00AE,UCODETB_SBCS},                                //~v643I~
 //  { 0x00B0, 0x00B4 },                                            //~v643I~
-    { 0x00b0, 0x00b1,UCODETB_WIDE},                                //~v6WpR~
+//  { 0x00b0, 0x00b1,UCODETB_WIDE},  //del by Ambiguous[]                //~v6WpR~//~v79xR~
     { 0x00B2, 0x00B3,UCODETB_SBCS},                                //~v643I~
-    { 0x00B4, 0x00B4,UCODETB_WIDE},                                //~v6WpR~
-    { 0x00B6, 0x00B6,UCODETB_WIDE},                                //~v6WpR~
+//  { 0x00B4, 0x00B4,UCODETB_WIDE},  //del by Ambiguous[]                               //~v6WpR~//~v79xR~
+//  { 0x00B6, 0x00B6,UCODETB_WIDE},  //del by Ambiguous[]                               //~v6WpR~//~v79xR~
 //  { 0x00B6, 0x00BA },                                            //~v643I~
     { 0x00B7, 0x00BA,UCODETB_SBCS},                                //~v643I~
     { 0x00BC, 0x00BF,UCODETB_SBCS},                                //~v643R~
     { 0x00C6, 0x00C6,UCODETB_SBCS},                                //~v643I~
     { 0x00D0, 0x00D0,UCODETB_SBCS },                               //~v643I~
 //  { 0x00D7, 0x00D8 },                                            //~v643I~
-    { 0x00D7, 0x00D7,UCODETB_WIDE },                               //~v6WpR~
+//  { 0x00D7, 0x00D7,UCODETB_WIDE },  //del by Ambiguous[]                              //~v6WpR~//~v79xR~
                                                                    //~v643I~
 //    { 0x00D8, 0x00D8,UCODETB_SBCS },                             //~v643I~
 //    { 0x00DE, 0x00E1,UCODETB_SBCS },                             //~v643I~
@@ -1418,7 +1506,7 @@ int utftbsrch_j(ULONG Pucs)                                        //~7925I~
 //    { 0x00F8, 0x00FA,UCODETB_SBCS },                             //~v643I~
 //    { 0x00FC, 0x00FC,UCODETB_SBCS },                             //~v643I~
 //    { 0x00FE, 0x00FE,UCODETB_SBCS },                             //~v643I~
-    { 0x00F7, 0x00F7,UCODETB_WIDE },                               //~v6WpR~
+//  { 0x00F7, 0x00F7,UCODETB_WIDE },       //del by Ambiguous[]                         //~v6WpR~//~v79xR~
     { 0x00f8, 0x00ff,UCODETB_SBCS },                               //~v643R~
                                                                    //~v643I~
 //    { 0x0101, 0x0101,UCODETB_SBCS },                             //~v643I~
@@ -1436,7 +1524,7 @@ int utftbsrch_j(ULONG Pucs)                                        //~7925I~
 //    { 0x0152, 0x0153,UCODETB_SBCS },                             //~v643I~
 //    { 0x0166, 0x0167,UCODETB_SBCS },                             //~v643I~
     { 0x0100, 0x017f,UCODETB_SBCS },                               //~v643I~
-    { 0x01c4, 0x01cc ,UCODETB_UNPF},  //DZ, shrink/expand by display status//~v643R~
+//    { 0x01c4, 0x01cc ,UCODETB_UNPF},  //DZ, shrink/expand by display status//~v643R~//~v79uR~
 //  { 0x01c4, 0x01cc ,UCODETB_SBCS},  //DZ, shrink/expand by display status//~v643R~
 //  { 0x01c4, 0x01cc ,UCODETB_DBCS},  //DZ, shrink/expand by display status//~v643R~
                                                                    //~v643I~
@@ -1448,13 +1536,21 @@ int utftbsrch_j(ULONG Pucs)                                        //~7925I~
 //  { 0x01D8, 0x01D8 },                                            //~v643I~
 //  { 0x01DA, 0x01DA },                                            //~v643I~
 //  { 0x01DC, 0x01DC },                                            //~v643I~
-      { 0x01cd, 0x01dc,UCODETB_DBCS },  //A                        //~v643I~
-      { 0x01f1, 0x01f3 ,UCODETB_UNPF},  //DZ                       //~v643R~
+//    { 0x01cd, 0x01dc,UCODETB_DBCS },  //A Ambiguous:01ce,01d0,01d2,01d4,01d6,01d8,01da,01dc//~v79BR~
+      { 0x01cd, 0x01cd,UCODETB_WIDE },                             //~v79BI~
+      { 0x01cf, 0x01cf,UCODETB_WIDE },                             //~v79BI~
+      { 0x01d1, 0x01d1,UCODETB_WIDE },                             //~v79BI~
+      { 0x01d3, 0x01d3,UCODETB_WIDE },                             //~v79BI~
+      { 0x01d5, 0x01d5,UCODETB_WIDE },                             //~v79BI~
+      { 0x01d7, 0x01d7,UCODETB_WIDE },                             //~v79BI~
+      { 0x01d9, 0x01d9,UCODETB_WIDE },                             //~v79BI~
+      { 0x01db, 0x01db,UCODETB_WIDE },                             //~v79BI~
+//      { 0x01f1, 0x01f3 ,UCODETB_UNPF},  //DZ                       //~v643R~//~v79uR~
 //    { 0x01f1, 0x01f3 ,UCODETB_SBCS},  //DZ                       //~v643R~
 //    { 0x01f1, 0x01f3 ,UCODETB_DBCS},  //DZ                       //~v643R~
-      { 0x01f5, 0x01f5 ,UCODETB_DBCS},  //g                        //~v643I~
-      { 0x0218, 0x0218 ,UCODETB_WIDE},  //g                        //~v6WpR~
-      { 0x021a, 0x021a ,UCODETB_WIDE},  //g                        //~v6WpR~
+//    { 0x01f5, 0x01f5 ,UCODETB_DBCS},  //g                        //~v643I~//~v79uR~
+//    { 0x0218, 0x0218 ,UCODETB_WIDE},  //g   sbcs                 //~v6WpR~//~v79BR~
+//    { 0x021a, 0x021a ,UCODETB_WIDE},  //g   sbcs                 //~v6WpR~//~v79BR~
                                                                    //~v643I~
 //    { 0x0251, 0x0251,UCODETB_SBCS },                             //~v643I~
 //    { 0x0261, 0x0261,UCODETB_SBCS },                             //~v643I~
@@ -1468,32 +1564,35 @@ int utftbsrch_j(ULONG Pucs)                                        //~7925I~
 //    { 0x02DF, 0x02DF,UCODETB_SBCS },                             //~v643I~
 //    { 0x0250, 0x02df,UCODETB_SBCS },                               //~v643I~//~v6WpR~
       { 0x0250, 0x02c9,UCODETB_SBCS },                             //~v6WpR~
-      { 0x02ca, 0x02cb,UCODETB_WIDE },                             //~v6WpR~
+//    { 0x02ca, 0x02cb,UCODETB_WIDE },  //del by Ambiguous[]                            //~v6WpR~//~v79xR~
       { 0x02ce, 0x02df,UCODETB_SBCS },                             //~v6WpR~
-      { 0x0376, 0x0376,UCODETB_WIDE },                             //~v6WpR~
+//    { 0x0376, 0x0376,UCODETB_WIDE },                             //~v6WpR~//~v79BR~
                                                                    //~v643I~
 //  { 0x0391, 0x03A1 },                                            //~v643I~
 //  { 0x03A3, 0x03A9 },                                            //~v643I~
 //U+0370..U+03FF    :Greek and Coptic:Coptic (14 characters), Greek (117 characters), Common (4 characters)//~v6VrR~
-    { 0x0391, 0x03a1,UCODETB_WIDE},     //for xe and wxe, neew width=2 for print on xe not to override 2nd byte by next char//~v6VrR~
-    { 0x03a2, 0x03a2,UCODETB_UNPF},                                //~v6VrR~
-    { 0x03a3, 0x03a9,UCODETB_WIDE},                                //~v6VrR~
-    { 0x03b1, 0x03c9,UCODETB_WIDE},                                //~v6VrR~
+//  { 0x0391, 0x03a1,UCODETB_WIDE},     //del by Ambiguous[] //for xe and wxe, neew width=2 for print on xe not to override 2nd byte by next char//~v6VrR~//~v79xR~
+//  { 0x03a2, 0x03a2,UCODETB_UNPF},                                //~v6VrR~//~v79uR~
+//  { 0x03a3, 0x03a9,UCODETB_WIDE},  //del by Ambiguous[]                               //~v6VrR~//~v79xR~
+//  { 0x03b1, 0x03c9,UCODETB_WIDE},  //del by Ambiguous[]                               //~v6VrR~//~v79xR~
 //  { 0x03B1, 0x03C1 },                                            //~v643I~
 //  { 0x03C3, 0x03C9 },                                            //~v643I~
-    { 0x03d2, 0x03da,UCODETB_WIDE},                                //~v6WpR~
-    { 0x03dc, 0x03dc,UCODETB_WIDE},                                //~v6WpR~
-    { 0x03de, 0x03e8,UCODETB_WIDE},                                //~v6WpR~
-    { 0x03ea, 0x03ee,UCODETB_WIDE},                                //~v6WpR~
-    { 0x03f0, 0x03f1,UCODETB_WIDE},                                //~v6WpR~
-    { 0x03f4, 0x03fb,UCODETB_WIDE},                                //~v6WpR~
+//  { 0x03d2, 0x03da,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
+//  { 0x03dc, 0x03dc,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
+//  { 0x03de, 0x03e8,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
+//  { 0x03ea, 0x03ee,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
+//  { 0x03f0, 0x03f1,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
+//  { 0x03f4, 0x03fb,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
 //  { 0x0401, 0x0401 },                                            //~v643I~
-    { 0x0401, 0x0401,UCODETB_WIDE},                                //~v6WpR~
-    { 0x040d, 0x040d,UCODETB_WIDE},                                //~v6WpR~
+//  { 0x0401, 0x0401,UCODETB_WIDE}, //del by Ambiguous[]                                //~v6WpR~//~v79xR~
+//  { 0x040d, 0x040d,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
 //  { 0x0410, 0x044F },                                            //~v643I~
 //  { 0x0451, 0x0451 },                                            //~v643I~
 //U+0400..U+04FF    :Cyrillic:Cyrillic (254 characters), Inherited (2 characters)//~v6VrI~
-    { 0x0410, 0x0451,UCODETB_WIDE},                                //~v6VrI~
+//  { 0x0410, 0x0451,UCODETB_WIDE},  //del by Ambiguous[]   0410-044f,0451              //~v6VrI~//~v79xR~
+    { 0x0430, 0x044F,UCODETB_SBCS},                                //~v79BI~
+//  { 0x0450, 0x0450,UCODETB_WIDE},  //0450:type N                 //~v79xI~//~v79BR~
+    { 0x0451, 0x0451,UCODETB_SBCS},  //view sbcs                   //~v79BI~
 #ifdef AAA	//DBCS if not combining                                //~v650R~
       { 0x0460, 0x04ff ,UCODETB_DBCS},  //cyrillic                 //~v643I~
       { 0x0600, 0x06ff ,UCODETB_DBCS},  //arabian                  //~v643I~
@@ -1510,35 +1609,40 @@ int utftbsrch_j(ULONG Pucs)                                        //~7925I~
 #ifdef GGG                                                         //~v6X3I~
       { 0x1160, 0x11ff ,UCODETB_DBCS},  //hangle                   //~v643I~
 #endif                                                             //~v6X3R~
-      { 0x1e00, 0x1eff ,UCODETB_DBCS},  //latin                    //~v643I~
+//    { 0x1e00, 0x1eff ,UCODETB_DBCS},  //latin  //ambiguous:1e00-1eff//~v79BR~
+      { 0x1e00, 0x1eff ,UCODETB_SBCS},  //latin  sbcs view         //~v79BI~
 //  { 0x2010, 0x2010 },                                            //~v643I~
-    { 0x2010, 0x2010,UCODETB_WIDE },                               //~v6WpR~
+//  { 0x2010, 0x2010,UCODETB_WIDE }, //del by Ambiguous[]                               //~v6WpR~//~v79xR~
 //  { 0x2013, 0x2016 },                                            //~v643I~
     { 0x2013, 0x2014,UCODETB_SBCS },                               //~v643I~
 //  { 0x2016, 0x2016,UCODETB_SBCS },                               //~v643I~//~v6VrR~
-    { 0x2016, 0x2016,UCODETB_WIDE },                               //~v6VrI~
+//  { 0x2016, 0x2016,UCODETB_WIDE }, //del by Ambiguous[]                               //~v6VrI~//~v79xR~
 //  { 0x2018, 0x2019 },                                            //~v643I~
-    { 0x2018, 0x2019,UCODETB_WIDE },                               //~v6WpR~
+//  { 0x2018, 0x2019,UCODETB_WIDE }, //del by Ambiguous[]                               //~v6WpR~//~v79xR~
 //  { 0x201C, 0x201D },                                            //~v643I~
-    { 0x201c, 0x201d,UCODETB_WIDE },                               //~v6WpR~
+//  { 0x201c, 0x201d,UCODETB_WIDE }, //del by Ambiguous[]                               //~v6WpR~//~v795R~//~v79xR~
+//  { 0x201c, 0x201d,UCODETB_SBCS },                               //~v795R~
+//  { 0x201c, 0x201d,UCODETB_DBCS },                               //~v795R~
 //  { 0x2020, 0x2022 },                                            //~v643I~
-    { 0x2020, 0x2021,UCODETB_WIDE },                               //~v6VrI~
+//  { 0x2020, 0x2021,UCODETB_WIDE },  //del by Ambiguous[]                              //~v6VrI~//~v79xR~
     { 0x2022, 0x2022,UCODETB_SBCS },                               //~v643I~
 //  { 0x2024, 0x2027 },                                            //~v643I~
     { 0x2024, 0x2024,UCODETB_SBCS },                               //~v643I~
     { 0x2027, 0x2027,UCODETB_SBCS },                               //~v643I~
 //  { 0x2030, 0x2030 },                                            //~v643I~
 //  { 0x2032, 0x2033 },                                            //~v643I~
-    { 0x2030, 0x2032,UCODETB_WIDE },                               //~v6WpR~
+//  { 0x2030, 0x2032,UCODETB_WIDE },  //del by Ambiguous[]  2030,2032-2033              //~v6WpR~//~v79xR~
+//  { 0x2031, 0x2031,UCODETB_WIDE },  //2031 is type:N sbcs view   //~v79xI~//~v79BR~
+//  { 0x2033, 0x2033,UCODETB_WIDE },  //del by Ambiguous[]                              //~v798I~//~v79xR~
     { 0x2035, 0x2035,UCODETB_SBCS },                               //~v643I~
 //  { 0x203B, 0x203B },                                            //~v643I~
     { 0x203E, 0x203E,UCODETB_SBCS },                               //~v643I~
-    { 0x2050, 0x2050,UCODETB_WIDE },                               //~v6WpR~
+//  { 0x2050, 0x2050,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
     { 0x2051, 0x2051,UCODETB_WIDE },                               //~v6VnI~
-    { 0x2053, 0x2054,UCODETB_WIDE },                               //~v6WpR~
-    { 0x205a, 0x205a,UCODETB_WIDE },                               //~v6WpR~
-    { 0x205c, 0x205d,UCODETB_WIDE },                               //~v6WpR~
-    { 0x205f, 0x205f,UCODETB_WIDE },   //2060-2064:Format          //~v6WpR~
+//  { 0x2053, 0x2054,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//  { 0x205a, 0x205a,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//  { 0x205c, 0x205d,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//  { 0x205f, 0x205f,UCODETB_WIDE },   //2060-2064:Format          //~v6WpR~//~v79BR~
     { 0x2074, 0x2074,UCODETB_SBCS },                               //~v643I~
     { 0x207F, 0x207F,UCODETB_SBCS },                               //~v643I~
     { 0x2081, 0x2084,UCODETB_SBCS },                               //~v643I~
@@ -1555,14 +1659,16 @@ int utftbsrch_j(ULONG Pucs)                                        //~7925I~
 //  { 0x2121, 0x2122 },                                            //~v643I~
     { 0x2126, 0x2126,UCODETB_SBCS },                               //~v643I~
 //  { 0x212B, 0x212B },                                            //~v643I~
-    { 0x2150, 0x2152,UCODETB_WIDE },                               //~v6WpR~
+//  { 0x2150, 0x2152,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+    { 0x2152, 0x2152,UCODETB_WIDE },                               //~v79BI~
     { 0x2153, 0x2154,UCODETB_SBCS },                               //~v643I~
     { 0x215B, 0x215E,UCODETB_SBCS },                               //~v643I~
 //  { 0x2160, 0x216B },                                            //~v643I~
       { 0x216c, 0x216f ,UCODETB_DBCS},                             //~v643I~
 //  { 0x2170, 0x2179 },                                            //~v643I~
       { 0x217a, 0x2182 ,UCODETB_DBCS},                             //~v643I~
-    { 0x2183, 0x2189 ,UCODETB_WIDE},                               //~v6WpR~
+//  { 0x2183, 0x2189 ,UCODETB_WIDE},                               //~v6WpR~//~v79BR~
+    { 0x2189, 0x2189 ,UCODETB_SBCS},                               //~v79BI~
 //  { 0x2190, 0x2199 },                                            //~v643I~
     { 0x2194, 0x2199,UCODETB_SBCS },                               //~v643I~
     { 0x21B8, 0x21B9,UCODETB_SBCS },                               //~v643I~
@@ -1570,18 +1676,18 @@ int utftbsrch_j(ULONG Pucs)                                        //~7925I~
 //  { 0x21D2, 0x21D2 },                                            //~v643I~
 //  { 0x21D4, 0x21D4 },                                            //~v643I~
     { 0x21E7, 0x21E7,UCODETB_SBCS },                               //~v643I~
-    { 0x21f0, 0x21f2,UCODETB_WIDE },                               //~v6WpR~
-    { 0x21f4, 0x21ff,UCODETB_WIDE },                               //~v6WpR~
+//  { 0x21f0, 0x21f2,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//  { 0x21f4, 0x21ff,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
 //  { 0x2200, 0x2200 },                                            //~v643I~
 //  { 0x2202, 0x2203 },                                            //~v643I~
 //  { 0x2207, 0x2208 },                                            //~v643I~
 //  { 0x220B, 0x220B },                                            //~v643I~
     { 0x220F, 0x220F,UCODETB_SBCS },                               //~v643I~
 //  { 0x2211, 0x2211 },                                            //~v643I~
-    { 0x2211, 0x2211,UCODETB_WIDE },                               //~v6WpR~
+//  { 0x2211, 0x2211,UCODETB_WIDE },  //del by Ambiguous[]                              //~v6WpR~//~v79xR~
     { 0x2215, 0x2215,UCODETB_SBCS },                               //~v643I~
 //  { 0x221A, 0x221A },                                            //~v643I~
-    { 0x221a, 0x221a,UCODETB_WIDE },                               //~v6WpR~
+//  { 0x221a, 0x221a,UCODETB_WIDE },  //del by Ambiguous[]                              //~v6WpR~//~v79xR~
 //  { 0x221D, 0x2220 },                                            //~v643I~
     { 0x2223, 0x2223,UCODETB_SBCS },                               //~v643I~
 //  { 0x2225, 0x2225 },                                            //~v643I~
@@ -1605,8 +1711,8 @@ int utftbsrch_j(ULONG Pucs)                                        //~7925I~
     { 0x2299, 0x2299,UCODETB_SBCS },                               //~v643I~
 //  { 0x22A5, 0x22A5 },                                            //~v643I~
 //  { 0x22BF, 0x22BF },                                            //~v643I~
-    { 0x22f2, 0x22f2,UCODETB_WIDE },                               //~v6WpR~
-    { 0x22fa, 0x22fa,UCODETB_WIDE },                               //~v6WpR~
+//  { 0x22f2, 0x22f2,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//  { 0x22fa, 0x22fa,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
 //  { 0x2312, 0x2312 },                                            //~v643I~
 //  { 0x2460, 0x24E9 },                                            //~v643I~
       { 0x24ea, 0x24ea ,UCODETB_DBCS},                             //~v643I~
@@ -1631,9 +1737,9 @@ int utftbsrch_j(ULONG Pucs)                                        //~7925I~
     { 0x2580, 0x258F,UCODETB_SBCS },                               //~v643I~
 //  { 0x2592, 0x2595,UCODETB_SBCS },                               //~v643I~//~v6WpR~
     { 0x2592, 0x2593,UCODETB_SBCS },                               //~v6WpI~
-    { 0x2594, 0x2594,UCODETB_WIDE },                               //~v6WpR~
+//  { 0x2594, 0x2594,UCODETB_WIDE },  //del by Ambiguous[]                              //~v6WpR~//~v79xR~
     { 0x2595, 0x2595,UCODETB_SBCS },                               //~v6WpI~
-    { 0x2596, 0x259f,UCODETB_WIDE },                               //~v6WpR~
+//  { 0x2596, 0x259f,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
 //  { 0x25A0, 0x25A1 },                                            //~v643I~
     { 0x25A3, 0x25A9,UCODETB_SBCS },                               //~v643I~
 //  { 0x25B2, 0x25B3 },                                            //~v643I~
@@ -1654,11 +1760,22 @@ int utftbsrch_j(ULONG Pucs)                                        //~7925I~
 //  { 0x2614, 0x2615 },                                            //~v643I~
 //  { 0x261C, 0x261C },                                            //~v643I~
 //  { 0x261E, 0x261E },                                            //~v643I~
-      { 0x25ef, 0x2638 ,UCODETB_DBCS},                             //~v643I~
+//    { 0x25ef, 0x2638 ,UCODETB_DBCS},  ambiguous:25ef,2605-2606,2609,260e-260f,261c,261e//~v79BR~
+//    { 0x25f0, 0x2604 ,UCODETB_WIDE},   //view sbcs 25f0-25fc,2600//~v79BR~
+      { 0x25fd, 0x25fe ,UCODETB_WIDE},                             //~v79BR~
+      { 0x2601, 0x2604 ,UCODETB_WIDE},                             //~v79BI~
+      { 0x2607, 0x2608 ,UCODETB_WIDE},                             //~v79BI~
+      { 0x260a, 0x260d ,UCODETB_WIDE},                             //~v79BI~
+//    { 0x2610, 0x261b ,UCODETB_WIDE},   //view sbcs 2618-2619     //~v79BR~
+      { 0x2610, 0x2617 ,UCODETB_WIDE},                             //~v79BI~
+      { 0x261a, 0x261b ,UCODETB_WIDE},                             //~v79BI~
+      { 0x261d, 0x261d ,UCODETB_WIDE},                             //~v79BI~
                                                                    //~v643I~
 //  { 0x2640, 0x2640 },                                            //~v643I~
 //  { 0x2642, 0x2642 },                                            //~v643I~
-      { 0x263d, 0x265f ,UCODETB_DBCS},                             //~v643I~
+//    { 0x263d, 0x265f ,UCODETB_DBCS},    //ambiguous:2640,2642   //~v643I~//~v79BR~
+      { 0x263d, 0x263f ,UCODETB_WIDE},                             //~v79BI~
+      { 0x2641, 0x2641 ,UCODETB_WIDE},                             //~v79BI~
                                                                    //~v643I~
     { 0x2660, 0x2661,UCODETB_SBCS },                               //~v643I~
     { 0x2663, 0x2665,UCODETB_SBCS },                               //~v643I~
@@ -1668,166 +1785,381 @@ int utftbsrch_j(ULONG Pucs)                                        //~7925I~
 //  { 0x266C, 0x266D },                                            //~v643I~
     { 0x266c, 0x266c,UCODETB_SBCS },                               //~v643I~
 //  { 0x266F, 0x266F },                                            //~v643I~
-    { 0x2672, 0x267E,UCODETB_WIDE },                               //~v6WpR~
-    { 0x2680, 0x268f,UCODETB_WIDE },                               //~v6WpR~
-    { 0x2690, 0x26bc,UCODETB_WIDE },                               //~v6WpR~
-    { 0x26bd, 0x26ff,UCODETB_WIDE },                               //~v6WpR~
+//  { 0x2672, 0x267E,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+    { 0x267F, 0x267F,UCODETB_DBCS },                               //~v797I~
+//  { 0x2680, 0x268f,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//  { 0x2690, 0x26bc,UCODETB_WIDE }, //del by Ambiguous[]  by 269e-269f                 //~v6WpR~//~v79xR~
+//  { 0x2690, 0x269d,UCODETB_WIDE }, //view sbcs 2690-2692,2694-26a0/~v79xI~//~v79BR~
+    { 0x2693, 0x2693,UCODETB_WIDE },                               //~v79BI~
+//  { 0x26a0, 0x26bc,UCODETB_WIDE },   //view sbcs 2694-26a0,26a2-26a9,26ac-26bc//~v79BR~
+    { 0x26a1, 0x26a1,UCODETB_WIDE },                               //~v79BI~
+    { 0x26aa, 0x26ab,UCODETB_WIDE },                               //~v79BI~
+//  { 0x26bd, 0x26ff,UCODETB_WIDE },  //del by Ambiguous[] by type:A 26bf,26c6-26cd,26cf-26d3,26d5-26e1,                             //~v6WpR~//~v79xR~
+                                      //26e3,26e8-26e9,26eb-26f1,26f4,26f6-26f9,26fb-26fc,26fe-26ff//~v79xI~
+    { 0x26bd, 0x26be,UCODETB_WIDE },                               //~v79xI~
+//  { 0x26c0, 0x26c5,UCODETB_WIDE },                               //~v79xI~//~v79BR~
+//  { 0x26c0, 0x26c5,UCODETB_WIDE },                               //~v79BI~
+    { 0x26ce, 0x26ce,UCODETB_WIDE },                               //~v79xI~
+    { 0x26d4, 0x26d4,UCODETB_WIDE },                               //~v79xI~
+//  { 0x26e2, 0x26e2,UCODETB_WIDE },                               //~v79xI~//~v79BR~
+//  { 0x26e4, 0x26e7,UCODETB_WIDE },                               //~v79xI~//~v79BR~
+    { 0x26ea, 0x26ea,UCODETB_WIDE },                               //~v79xI~
+    { 0x26f2, 0x26f3,UCODETB_WIDE },                               //~v79xI~
+    { 0x26f5, 0x26f5,UCODETB_WIDE },                               //~v79xI~
+    { 0x26fa, 0x26fa,UCODETB_WIDE },                               //~v79xI~
+    { 0x26fd, 0x26fd,UCODETB_WIDE },                               //~v79xI~
                                                                    //~v643I~
 //  { 0x273D, 0x273D },                                            //~v643I~
 //  { 0x2776, 0x277F },                                            //~v643I~
-      { 0x2700, 0x27ff ,UCODETB_DBCS},                             //~v643I~
-    { 0x2e0e, 0x2e11 ,UCODETB_WIDE},                               //~v6WpR~
+//  { 0x2700, 0x27ff ,UCODETB_DBCS},  //ambiguous: 273d,2776-277f,27f0-27ff//~v79BR~
+    { 0x2701, 0x273c ,UCODETB_WIDE},                               //~v79BI~
+//  { 0x273e, 0x2775 ,UCODETB_WIDE},   //2768-2775:sbcs            //~v79BI~
+    { 0x273e, 0x2767 ,UCODETB_WIDE},                               //~v79BI~
+    { 0x27f0, 0x27ff ,UCODETB_SBCS},   //ambiguous 27f0-27ff       //~v79BI~
+//  { 0x2e0e, 0x2e11 ,UCODETB_WIDE},                               //~v6WpR~//~v79BR~
 //  { 0x3190, 0x319f,UCODETB_SBCS },                               //~v643R~//~v6WpR~
     { 0xa960, 0xa97c ,UCODETB_WIDE},                               //~v6WpR~
                                                                    //~v643I~
 //  { 0xE000, 0xF8FF },    //private                               //~v643I~
-      { 0xfb13, 0xfb17 ,UCODETB_DBCS},                             //~v643I~
-      { 0xfb50, 0xfdff ,UCODETB_DBCS},//arabian A                  //~v643I~
-    { 0xFFFC, 0xFFFD ,UCODETB_WIDE},                               //~v6WpR~
+//  { 0xe000, 0xf8ff , UCODETB_WIDE},// //del by Ambiguous[] gaiji(private use area) wide same as LNX//~v79kR~//~v79xR~
+    { 0xfb13, 0xfb4f ,UCODETB_SBCS},   //Ambiguous:fb00-fb4f, view sbcs     //~v643I~//~v79BR~
+//    { 0xfb50, 0xfdff ,UCODETB_DBCS},//arabian A ambiguous:fb50-fdff~v643I~//~v79BR~
+      { 0xfb50, 0xfbc1 ,UCODETB_SBCS},// view sbcs                 //~v79BR~
+      { 0xfbd3, 0xfbff ,UCODETB_SBCS},// view sbcs                 //~v79BI~
+      { 0xfc5e, 0xfc63 ,UCODETB_SBCS},// view sbcs                 //~v79BI~
+      { 0xfcf2, 0xfcf4 ,UCODETB_SBCS},// view sbcs                 //~v79BI~
+      { 0xfd3c, 0xfd3f ,UCODETB_SBCS},// view sbcs                 //~v79BI~
+      { 0xfdf2, 0xfdf2 ,UCODETB_SBCS},// view sbcs                 //~v79BI~
+      { 0xfdf4, 0xfdf4 ,UCODETB_SBCS},// view sbcs                 //~v79BI~
+      { 0xfdfa, 0xfdfd ,UCODETB_SBCS},// view sbcs                 //~v79BI~
+//  { 0xFFFC, 0xFFFD ,UCODETB_WIDE},   //del by Ambiguous[]  fffd:A                     //~v6WpR~//~v79xR~
+//  { 0xFFFC, 0xFFFC ,UCODETB_WIDE},                               //~v79xI~//~v79BR~
 //  { 0xFFFD, 0xFFFD },                                            //~v643I~
-    { 0x010ff0, 0x010fff,UCODETB_UNPF} //for unprintable test @@@@test//~v6VrI~
+//  { 0x010ff0, 0x010fff,UCODETB_UNPF} //for unprintable test @@@@test//~v6VrI~//~v79uR~
 //  { 0xF0000, 0xFFFFD },                                          //~v643I~
 //  { 0x100000, 0x10FFFD }                                         //~v643I~//~v6VrR~
-#else                                                              //~v643I~
-      { 0x00A2, 0x00A3 ,  UCODETB_SBCS} //cent,pond                //~7926R~
-     ,{ 0x00A7, 0x00A8 ,UCODETB_DBCS}   //ss,"                     //~7925R~
-     ,{ 0x00ac, 0x00ac ,  UCODETB_SBCS} //not                      //~7926R~
-     ,{ 0x00B0, 0x00B1 ,UCODETB_DBCS}   //degree,+-                             //~7925I~
-     ,{ 0x00B4, 0x00B4 ,UCODETB_DBCS}   //'                                     //~7925I~
-     ,{ 0x00B6, 0x00B6 ,UCODETB_DBCS}   //q                                     //~7925I~
-     ,{ 0x00D7, 0x00D7 ,UCODETB_DBCS}   //X                                     //~7925I~
-//   ,{ 0x00F6, 0x00F6 ,UCODETB_DBCS}   //divide                   //~v642R~
-     ,{ 0x00F7, 0x00F7 ,UCODETB_DBCS}   //divide                   //~v642I~
-                                                                   //~7925I~
-     ,{ 0x01cd, 0x01dc ,UCODETB_DBCS}   //
-     ,{ 0x01f5, 0x01f5 ,UCODETB_DBCS}   //g
-///  ,{ 0x0b00, 0x0b6f , UCODETB_UNPF}                             //~7930R~
-///  ,{ 0x0b80, 0x0dff , UCODETB_UNPF}                             //~7930R~
-///  ,{ 0x0e80, 0x0fff , UCODETB_UNPF}                             //~7930R~
-                                                                   //~7925I~
-///  ,{ 0x1000, 0x10cf , UCODETB_UNPF}                             //~7930R~
-     ,{ 0x1160, 0x11f9 ,UCODETB_DBCS}   //hangle                   //~7926R~
-///  ,{ 0x1200, 0x135f , UCODETB_UNPF}  //deny iswprint            //~7930R~
-///  ,{ 0x1780, 0x18af , UCODETB_UNPF}  //iswprint=1 but           //~7930R~
-                                                                   //~7925I~
-     ,{ 0x2011, 0x2014 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2016, 0x2016 ,  UCODETB_SBCS} // ucvucs dup define tbl   //~7927I~
-     ,{ 0x2070, 0x2070 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2074, 0x208e ,  UCODETB_SBCS} // 208f not used           //~7927R~
-     ,{ 0x20a0, 0x20af ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2100, 0x2102 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2104, 0x2105 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2117, 0x2120 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2122, 0x212a ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x212c, 0x2138 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2153, 0x215f ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2160, 0x2182 ,UCODETB_DBCS}   //I-->pignose
-     ,{ 0x2194, 0x21d1 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x21d3, 0x21d3 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x21d5, 0x21ea ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2201, 0x2201 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2204, 0x2206 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2209, 0x220a ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x220c, 0x2210 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2212, 0x2219 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x221a, 0x221a ,UCODETB_DBCS}   //root
-     ,{ 0x221b, 0x221c ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2221, 0x2224 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2226, 0x2226 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x222d, 0x222d ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2230, 0x2233 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2236, 0x223c ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x223e, 0x2251 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2253, 0x225f ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2262, 0x2265 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2268, 0x2269 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x226c, 0x2280 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2283, 0x2284 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2287, 0x22a4 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x22a6, 0x22be ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x22c0, 0x22ff ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2302, 0x2302 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2310, 0x2310 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2320, 0x2320 ,  UCODETB_SBCS} //                         //~7925I~
-///  ,{ 0x2329, 0x232a , UCODETB_UNPF}                             //~7930R~
-     ,{ 0x2474, 0x24ea ,UCODETB_DBCS}   //(1)-->
-     ,{ 0x2504, 0x250b ,  UCODETB_SBCS} //box drawing              //~7927R~
-     ,{ 0x250d, 0x250e ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2511, 0x2512 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2515, 0x2516 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2519, 0x251a ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x251e, 0x251f ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2521, 0x2522 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2526, 0x2527 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2529, 0x252a ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x252d, 0x252e ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2531, 0x2532 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2535, 0x2536 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2539, 0x253a ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x253d, 0x253e ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2540, 0x2541 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2543, 0x254a ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x254c, 0x2595 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x25a2, 0x25b1 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x25b4, 0x25bb ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x25be, 0x25c5 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x25c8, 0x25ca ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x25cc, 0x25cd ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x25d0, 0x25ee ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2600, 0x2613 ,UCODETB_DBCS}   //sun-->X
-     ,{ 0x261a, 0x2638 ,UCODETB_DBCS}   //
-     ,{ 0x2639, 0x263c ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x263d, 0x265f ,UCODETB_DBCS}   //
-     ,{ 0x2660, 0x2667 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2668, 0x2668 ,UCODETB_DBCS}   //
-     ,{ 0x2669, 0x2669 ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x266b, 0x266c ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x266e, 0x266e ,  UCODETB_SBCS} //                         //~7925I~
-     ,{ 0x2701, 0x2704 ,UCODETB_DBCS}   //                         //~7927R~
-     ,{ 0x2706, 0x2709 ,UCODETB_DBCS}   //                         //~7927I~
-     ,{ 0x270c, 0x2727 ,UCODETB_DBCS}   //                         //~7927I~
-     ,{ 0x2729, 0x274b ,UCODETB_DBCS}   //                         //~7927I~
-     ,{ 0x274d, 0x274d ,UCODETB_DBCS}   //                         //~7927I~
-     ,{ 0x274f, 0x2752 ,UCODETB_DBCS}   //                         //~7927I~
-     ,{ 0x2756, 0x2756 ,UCODETB_DBCS}   //                         //~7927I~
-     ,{ 0x2758, 0x275e ,UCODETB_DBCS}   //                         //~7927I~
-     ,{ 0x2761, 0x2794 ,UCODETB_DBCS}   //                         //~7927I~
-     ,{ 0x2798, 0x27af ,UCODETB_DBCS}   //
-     ,{ 0x27b1, 0x27be ,UCODETB_DBCS}   //
-     ,{ 0x2ff0, 0x2ffb ,UCODETB_DBCS}   //
-                                                                   //~7925I~
-     ,{ 0x3000, 0x3020 ,UCODETB_DBCS}   //
-//   ,{ 0x3021, 0x3029 ,  UCODETB_SBCS} //csr is narrow but font is dbcs//~7927R~
-     ,{ 0x3031, 0x3037 ,UCODETB_DBCS}   //
-///  ,{ 0x3038, 0x303a , UCODETB_UNPF}                             //~7930R~
-///  ,{ 0x312a, 0x312c , UCODETB_UNPF}                             //~7930R~
-     ,{ 0x3192, 0x319f ,UCODETB_SBCS}   //csr is narrow            //~7927R~
-///  ,{ 0x31a0, 0x31ff , UCODETB_UNPF}                             //~7930R~
-     ,{ 0x3200, 0x3243 ,UCODETB_DBCS}   //
-     ,{ 0x3260, 0x32b0 ,UCODETB_DBCS}   //
-     ,{ 0x32c0, 0x32cb ,UCODETB_DBCS}   //
-     ,{ 0x32d0, 0x32fe ,UCODETB_DBCS}   //
-     ,{ 0x3300, 0x3376 ,UCODETB_DBCS}   //
-     ,{ 0x337b, 0x33dd ,UCODETB_DBCS}   //                         //~7927R~
-     ,{ 0x33e0, 0x33fe ,UCODETB_DBCS}   //
-///  ,{ 0x3400, 0x3fff , UCODETB_UNPF}                             //~7930R~
-                                                                   //~7925I~
-///  ,{ 0x4000, 0x4dff , UCODETB_UNPF}                             //~7930R~
-                                                                   //~7925I~
-///  ,{ 0xa000, 0xa48c , UCODETB_UNPF}                             //~7930R~
-//   ,{ 0xac00, 0xd7a3 , UCODETB_UNPF}  //hangul,leave it as printable//~7927R~
-                                                                   //~7925I~
-     ,{ 0xf001, 0xf002 ,UCODETB_SBCS}                              //~7927I~
-///  ,{ 0xfb21, 0xfb29 , UCODETB_UNPF}                             //~7930R~
-///  ,{ 0xfe32, 0xfe32 , UCODETB_UNPF}                             //~7930R~
-///  ,{ 0xfe58, 0xfe58 , UCODETB_UNPF}                             //~7930R~
-     ,{ 0xfffc, 0xfffc ,UCODETB_DBCS}   //obj                      //~7927I~
-#endif                                                             //~v643I~
   };                                                               //~7925I~
+#else      //BBB                                                   //~v79xR~
+//#ifdef UTF8UCS2       //over mkwcwidth_cjk                         //~v643I~//~v79BR~
+//    { 0x00A1, 0x00A1,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x00A4, 0x00A4,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x00A7, 0x00A8 },                                            //~v643I~//~v79BR~
+//    { 0x00AA, 0x00AA,UCODETB_SBCS},                                //~v643I~//~v79BR~
+//    { 0x00AE, 0x00AE,UCODETB_SBCS},                                //~v643I~//~v79BR~
+////  { 0x00B0, 0x00B4 },                                            //~v643I~//~v79BR~
+//    { 0x00b0, 0x00b1,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
+//    { 0x00B2, 0x00B3,UCODETB_SBCS},                                //~v643I~//~v79BR~
+//    { 0x00B4, 0x00B4,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
+//    { 0x00B6, 0x00B6,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
+////  { 0x00B6, 0x00BA },                                            //~v643I~//~v79BR~
+//    { 0x00B7, 0x00BA,UCODETB_SBCS},                                //~v643I~//~v79BR~
+//    { 0x00BC, 0x00BF,UCODETB_SBCS},                                //~v643R~//~v79BR~
+//    { 0x00C6, 0x00C6,UCODETB_SBCS},                                //~v643I~//~v79BR~
+//    { 0x00D0, 0x00D0,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x00D7, 0x00D8 },                                            //~v643I~//~v79BR~
+//    { 0x00D7, 0x00D7,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//                                                                   //~v643I~//~v79BR~
+////    { 0x00D8, 0x00D8,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x00DE, 0x00E1,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x00E6, 0x00E6,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x00E8, 0x00EA,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x00EC, 0x00ED,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x00F0, 0x00F0,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x00F2, 0x00F3,UCODETB_SBCS },                             //~v643I~//~v79BR~
+//    { 0x00d8, 0x00F3,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//                                                                   //~v643I~//~v79BR~
+////  { 0x00F7, 0x00FA },                                            //~v643I~//~v79BR~
+////    { 0x00F8, 0x00FA,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x00FC, 0x00FC,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x00FE, 0x00FE,UCODETB_SBCS },                             //~v643I~//~v79BR~
+//    { 0x00F7, 0x00F7,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//    { 0x00f8, 0x00ff,UCODETB_SBCS },                               //~v643R~//~v79BR~
+//                                                                   //~v643I~//~v79BR~
+////    { 0x0101, 0x0101,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x0111, 0x0111,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x0113, 0x0113,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x011B, 0x011B,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x0126, 0x0127,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x012B, 0x012B,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x0131, 0x0133,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x0138, 0x0138,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x013F, 0x0142,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x0144, 0x0144,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x0148, 0x014B,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x014D, 0x014D,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x0152, 0x0153,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x0166, 0x0167,UCODETB_SBCS },                             //~v643I~//~v79BR~
+//    { 0x0100, 0x017f,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////    { 0x01c4, 0x01cc ,UCODETB_UNPF},  //DZ, shrink/expand by display status//~v643R~//~v79uR~//~v79BR~
+////  { 0x01c4, 0x01cc ,UCODETB_SBCS},  //DZ, shrink/expand by display status//~v643R~//~v79BR~
+////  { 0x01c4, 0x01cc ,UCODETB_DBCS},  //DZ, shrink/expand by display status//~v643R~//~v79BR~
+//                                                                   //~v643I~//~v79BR~
+////  { 0x01CE, 0x01CE },                                            //~v643I~//~v79BR~
+////  { 0x01D0, 0x01D0 },                                            //~v643I~//~v79BR~
+////  { 0x01D2, 0x01D2 },                                            //~v643I~//~v79BR~
+////  { 0x01D4, 0x01D4 },                                            //~v643I~//~v79BR~
+////  { 0x01D6, 0x01D6 },                                            //~v643I~//~v79BR~
+////  { 0x01D8, 0x01D8 },                                            //~v643I~//~v79BR~
+////  { 0x01DA, 0x01DA },                                            //~v643I~//~v79BR~
+////  { 0x01DC, 0x01DC },                                            //~v643I~//~v79BR~
+//      { 0x01cd, 0x01dc,UCODETB_DBCS },  //A                        //~v643I~//~v79BR~
+////      { 0x01f1, 0x01f3 ,UCODETB_UNPF},  //DZ                       //~v643R~//~v79uR~//~v79BR~
+////    { 0x01f1, 0x01f3 ,UCODETB_SBCS},  //DZ                       //~v643R~//~v79BR~
+////    { 0x01f1, 0x01f3 ,UCODETB_DBCS},  //DZ                       //~v643R~//~v79BR~
+////    { 0x01f5, 0x01f5 ,UCODETB_DBCS},  //g                        //~v643I~//~v79uR~//~v79BR~
+//      { 0x0218, 0x0218 ,UCODETB_WIDE},  //g                        //~v6WpR~//~v79BR~
+//      { 0x021a, 0x021a ,UCODETB_WIDE},  //g                        //~v6WpR~//~v79BR~
+//                                                                   //~v643I~//~v79BR~
+////    { 0x0251, 0x0251,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x0261, 0x0261,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x02C4, 0x02C4,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x02C7, 0x02C7,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x02C9, 0x02CB,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x02CD, 0x02CD,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x02D0, 0x02D0,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x02D8, 0x02DB,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x02DD, 0x02DD,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x02DF, 0x02DF,UCODETB_SBCS },                             //~v643I~//~v79BR~
+////    { 0x0250, 0x02df,UCODETB_SBCS },                               //~v643I~//~v6WpR~//~v79BR~
+//      { 0x0250, 0x02c9,UCODETB_SBCS },                             //~v6WpR~//~v79BR~
+//      { 0x02ca, 0x02cb,UCODETB_WIDE },                             //~v6WpR~//~v79BR~
+//      { 0x02ce, 0x02df,UCODETB_SBCS },                             //~v6WpR~//~v79BR~
+//      { 0x0376, 0x0376,UCODETB_WIDE },                             //~v6WpR~//~v79BR~
+//                                                                   //~v643I~//~v79BR~
+////  { 0x0391, 0x03A1 },                                            //~v643I~//~v79BR~
+////  { 0x03A3, 0x03A9 },                                            //~v643I~//~v79BR~
+////U+0370..U+03FF    :Greek and Coptic:Coptic (14 characters), Greek (117 characters), Common (4 characters)//~v6VrR~//~v79BR~
+//    { 0x0391, 0x03a1,UCODETB_WIDE},     //for xe and wxe, neew width=2 for print on xe not to override 2nd byte by next char//~v6VrR~//~v79BR~
+////  { 0x03a2, 0x03a2,UCODETB_UNPF},                                //~v6VrR~//~v79uR~//~v79BR~
+//    { 0x03a3, 0x03a9,UCODETB_WIDE},                                //~v6VrR~//~v79BR~
+//    { 0x03b1, 0x03c9,UCODETB_WIDE},                                //~v6VrR~//~v79BR~
+////  { 0x03B1, 0x03C1 },                                            //~v643I~//~v79BR~
+////  { 0x03C3, 0x03C9 },                                            //~v643I~//~v79BR~
+//    { 0x03d2, 0x03da,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
+//    { 0x03dc, 0x03dc,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
+//    { 0x03de, 0x03e8,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
+//    { 0x03ea, 0x03ee,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
+//    { 0x03f0, 0x03f1,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
+//    { 0x03f4, 0x03fb,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
+////  { 0x0401, 0x0401 },                                            //~v643I~//~v79BR~
+//    { 0x0401, 0x0401,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
+//    { 0x040d, 0x040d,UCODETB_WIDE},                                //~v6WpR~//~v79BR~
+////  { 0x0410, 0x044F },                                            //~v643I~//~v79BR~
+////  { 0x0451, 0x0451 },                                            //~v643I~//~v79BR~
+////U+0400..U+04FF    :Cyrillic:Cyrillic (254 characters), Inherited (2 characters)//~v6VrI~//~v79BR~
+//    { 0x0410, 0x0451,UCODETB_WIDE},                                //~v6VrI~//~v79BR~
+//#ifdef AAA  //DBCS if not combining                                //~v650R~//~v79BR~
+//      { 0x0460, 0x04ff ,UCODETB_DBCS},  //cyrillic                 //~v643I~//~v79BR~
+//      { 0x0600, 0x06ff ,UCODETB_DBCS},  //arabian                  //~v643I~//~v79BR~
+//      { 0x0700, 0x074f ,UCODETB_DBCS},  //syriac                   //~v643I~//~v79BR~
+//      { 0x0780, 0x07bf ,UCODETB_DBCS},  //thaana                   //~v643I~//~v79BR~
+//      { 0x0900, 0x097f ,UCODETB_DBCS},  //devanagari               //~v643I~//~v79BR~
+//      { 0x0a00, 0x0a7f ,UCODETB_DBCS},  //guirmukhi                //~v643I~//~v79BR~
+//      { 0x0a80, 0x0aff ,UCODETB_DBCS},  //gujarati                 //~v643I~//~v79BR~
+//      { 0x0b80, 0x0bff ,UCODETB_DBCS},  //tamil                    //~v643I~//~v79BR~
+//      { 0x0c00, 0x0c7f ,UCODETB_DBCS},  //telugu                   //~v643I~//~v79BR~
+//      { 0x0c80, 0x0cff ,UCODETB_DBCS},  //kannada                  //~v643I~//~v79BR~
+//      { 0x0d00, 0x0d7f ,UCODETB_DBCS},  //malayalam                //~v643I~//~v79BR~
+//#endif                                                             //~v650I~//~v79BR~
+//#ifdef GGG                                                         //~v6X3I~//~v79BR~
+//      { 0x1160, 0x11ff ,UCODETB_DBCS},  //hangle                   //~v643I~//~v79BR~
+//#endif                                                             //~v6X3R~//~v79BR~
+//      { 0x1e00, 0x1eff ,UCODETB_DBCS},  //latin                    //~v643I~//~v79BR~
+////  { 0x2010, 0x2010 },                                            //~v643I~//~v79BR~
+//    { 0x2010, 0x2010,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+////  { 0x2013, 0x2016 },                                            //~v643I~//~v79BR~
+//    { 0x2013, 0x2014,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x2016, 0x2016,UCODETB_SBCS },                               //~v643I~//~v6VrR~//~v79BR~
+//    { 0x2016, 0x2016,UCODETB_WIDE },                               //~v6VrI~//~v79BR~
+////  { 0x2018, 0x2019 },                                            //~v643I~//~v79BR~
+//    { 0x2018, 0x2019,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+////  { 0x201C, 0x201D },                                            //~v643I~//~v79BR~
+//    { 0x201c, 0x201d,UCODETB_WIDE },                               //~v6WpR~//~v795R~//~v79BR~
+////  { 0x201c, 0x201d,UCODETB_SBCS },                               //~v795R~//~v79BR~
+////  { 0x201c, 0x201d,UCODETB_DBCS },                               //~v795R~//~v79BR~
+////  { 0x2020, 0x2022 },                                            //~v643I~//~v79BR~
+//    { 0x2020, 0x2021,UCODETB_WIDE },                               //~v6VrI~//~v79BR~
+//    { 0x2022, 0x2022,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x2024, 0x2027 },                                            //~v643I~//~v79BR~
+//    { 0x2024, 0x2024,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2027, 0x2027,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x2030, 0x2030 },                                            //~v643I~//~v79BR~
+////  { 0x2032, 0x2033 },                                            //~v643I~//~v79BR~
+//    { 0x2030, 0x2032,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//    { 0x2033, 0x2033,UCODETB_WIDE },                               //~v798I~//~v79BR~
+//    { 0x2035, 0x2035,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x203B, 0x203B },                                            //~v643I~//~v79BR~
+//    { 0x203E, 0x203E,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2050, 0x2050,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//    { 0x2051, 0x2051,UCODETB_WIDE },                               //~v6VnI~//~v79BR~
+//    { 0x2053, 0x2054,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//    { 0x205a, 0x205a,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//    { 0x205c, 0x205d,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//    { 0x205f, 0x205f,UCODETB_WIDE },   //2060-2064:Format          //~v6WpR~//~v79BR~
+//    { 0x2074, 0x2074,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x207F, 0x207F,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2081, 0x2084,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x20AC, 0x20AC,UCODETB_SBCS },//euro                         //~v643I~//~v6VrR~//~v79BR~
+////U+20A0..U+20CF    :Currency Symbols:Common                       //~v6VrI~//~v79BR~
+////  { 0x20A0, 0x20cf,UCODETB_SBCS },                               //~v6VrI~//~v6WpR~//~v79BR~
+//    { 0x20A0, 0x20b7,UCODETB_SBCS },                               //~v6WpI~//~v79BR~
+////  { 0x20b8, 0x20b8,UCODETB_WIDE },  //ambiguous no lang          //~v6WpR~//~v79BR~
+////  { 0x2103, 0x2103 },                                            //~v643I~//~v79BR~
+//    { 0x2105, 0x2105,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2109, 0x2109,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2113, 0x2113,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x2116, 0x2116 },                                            //~v643I~//~v79BR~
+////  { 0x2121, 0x2122 },                                            //~v643I~//~v79BR~
+//    { 0x2126, 0x2126,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x212B, 0x212B },                                            //~v643I~//~v79BR~
+//    { 0x2150, 0x2152,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//    { 0x2153, 0x2154,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x215B, 0x215E,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x2160, 0x216B },                                            //~v643I~//~v79BR~
+//      { 0x216c, 0x216f ,UCODETB_DBCS},                             //~v643I~//~v79BR~
+////  { 0x2170, 0x2179 },                                            //~v643I~//~v79BR~
+//      { 0x217a, 0x2182 ,UCODETB_DBCS},                             //~v643I~//~v79BR~
+////  { 0x2183, 0x2189 ,UCODETB_WIDE},   //ambiguous no lang 2189:amb//~v79xR~//~v79BR~
+//    { 0x2183, 0x2188 ,UCODETB_WIDE},                               //~v79xI~//~v79BR~
+////  { 0x2190, 0x2199 },                                            //~v643I~//~v79BR~
+//    { 0x2194, 0x2199,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x21B8, 0x21B9,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x21D0, 0x21D0,UCODETB_SBCS },        //add <==              //~v643I~//~v79BR~
+////  { 0x21D2, 0x21D2 },                                            //~v643I~//~v79BR~
+////  { 0x21D4, 0x21D4 },                                            //~v643I~//~v79BR~
+//    { 0x21E7, 0x21E7,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x21f0, 0x21f2,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//    { 0x21f4, 0x21ff,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+////  { 0x2200, 0x2200 },                                            //~v643I~//~v79BR~
+////  { 0x2202, 0x2203 },                                            //~v643I~//~v79BR~
+////  { 0x2207, 0x2208 },                                            //~v643I~//~v79BR~
+////  { 0x220B, 0x220B },                                            //~v643I~//~v79BR~
+//    { 0x220F, 0x220F,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x2211, 0x2211 },                                            //~v643I~//~v79BR~
+//    { 0x2211, 0x2211,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//    { 0x2215, 0x2215,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x221A, 0x221A },                                            //~v643I~//~v79BR~
+//    { 0x221a, 0x221a,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+////  { 0x221D, 0x2220 },                                            //~v643I~//~v79BR~
+//    { 0x2223, 0x2223,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x2225, 0x2225 },                                            //~v643I~//~v79BR~
+////  { 0x2227, 0x222C },                                            //~v643I~//~v79BR~
+////  { 0x222E, 0x222E },                                            //~v643I~//~v79BR~
+////  { 0x2234, 0x2237 },                                            //~v643I~//~v79BR~
+//    { 0x2236, 0x2237,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x223C, 0x223D },                                            //~v643I~//~v79BR~
+//    { 0x223C, 0x223c,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2248, 0x2248,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x224C, 0x224C,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x2252, 0x2252 },                                            //~v643I~//~v79BR~
+////  { 0x2260, 0x2261 },                                            //~v643I~//~v79BR~
+////  { 0x2264, 0x2267 },                                            //~v643I~//~v79BR~
+//    { 0x2264, 0x2265,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x226A, 0x226B },                                            //~v643I~//~v79BR~
+//    { 0x226E, 0x226F,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x2282, 0x2283 },                                            //~v643I~//~v79BR~
+////  { 0x2286, 0x2287 },                                            //~v643I~//~v79BR~
+//    { 0x2295, 0x2295,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2299, 0x2299,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x22A5, 0x22A5 },                                            //~v643I~//~v79BR~
+////  { 0x22BF, 0x22BF },                                            //~v643I~//~v79BR~
+//    { 0x22f2, 0x22f2,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//    { 0x22fa, 0x22fa,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+////  { 0x2312, 0x2312 },                                            //~v643I~//~v79BR~
+////  { 0x2460, 0x24E9 },                                            //~v643I~//~v79BR~
+//      { 0x24ea, 0x24ea ,UCODETB_DBCS},                             //~v643I~//~v79BR~
+////  { 0x24EB, 0x254B },                                            //~v643I~//~v79BR~
+//    { 0x2504, 0x250a,UCODETB_SBCS },//grid                         //~v643R~//~v79BR~
+//    { 0x250d, 0x250e,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2511, 0x2512,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2515, 0x2516,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2519, 0x251a,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x251e, 0x251f,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2521, 0x2522,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2526, 0x2527,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2529, 0x252a,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x252d, 0x252e,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2531, 0x2532,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2535, 0x2536,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2539, 0x253a,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x253d, 0x253e,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2540, 0x2541,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2543, 0x254a,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2550, 0x2573,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2580, 0x258F,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x2592, 0x2595,UCODETB_SBCS },                               //~v643I~//~v6WpR~//~v79BR~
+//    { 0x2592, 0x2593,UCODETB_SBCS },                               //~v6WpI~//~v79BR~
+//    { 0x2594, 0x2594,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//    { 0x2595, 0x2595,UCODETB_SBCS },                               //~v6WpI~//~v79BR~
+//    { 0x2596, 0x259f,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+////  { 0x25A0, 0x25A1 },                                            //~v643I~//~v79BR~
+//    { 0x25A3, 0x25A9,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x25B2, 0x25B3 },                                            //~v643I~//~v79BR~
+//    { 0x25B6, 0x25B7,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x25BC, 0x25BD },                                            //~v643I~//~v79BR~
+//    { 0x25C0, 0x25C1,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x25C6, 0x25C8 },                                            //~v643I~//~v79BR~
+//    { 0x25C8, 0x25C8,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x25CB, 0x25CB },                                            //~v643I~//~v79BR~
+////  { 0x25CE, 0x25D1 },                                            //~v643I~//~v79BR~
+//    { 0x25d0, 0x25d1,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x25E2, 0x25E5,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//                                                                   //~v643I~//~v79BR~
+////  { 0x25EF, 0x25EF },                                            //~v643I~//~v79BR~
+////  { 0x2605, 0x2606 },                                            //~v643I~//~v79BR~
+////  { 0x2609, 0x2609 },                                            //~v643I~//~v79BR~
+////  { 0x260E, 0x260F },                                            //~v643I~//~v79BR~
+////  { 0x2614, 0x2615 },                                            //~v643I~//~v79BR~
+////  { 0x261C, 0x261C },                                            //~v643I~//~v79BR~
+////  { 0x261E, 0x261E },                                            //~v643I~//~v79BR~
+//      { 0x25ef, 0x2638 ,UCODETB_DBCS},                             //~v643I~//~v79BR~
+//                                                                   //~v643I~//~v79BR~
+////  { 0x2640, 0x2640 },                                            //~v643I~//~v79BR~
+////  { 0x2642, 0x2642 },                                            //~v643I~//~v79BR~
+//      { 0x263d, 0x265f ,UCODETB_DBCS},                             //~v643I~//~v79BR~
+//                                                                   //~v643I~//~v79BR~
+//    { 0x2660, 0x2661,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2663, 0x2665,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x2667, 0x266A },                                            //~v643I~//~v79BR~
+//    { 0x2667, 0x2667,UCODETB_SBCS },                               //~v643I~//~v79BR~
+//    { 0x2669, 0x2669,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x266C, 0x266D },                                            //~v643I~//~v79BR~
+//    { 0x266c, 0x266c,UCODETB_SBCS },                               //~v643I~//~v79BR~
+////  { 0x266F, 0x266F },                                            //~v643I~//~v79BR~
+//    { 0x2672, 0x267E,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//    { 0x267F, 0x267F,UCODETB_DBCS },                               //~v797I~//~v79BR~
+//    { 0x2680, 0x268f,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//    { 0x2690, 0x26bc,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//    { 0x26bd, 0x26ff,UCODETB_WIDE },                               //~v6WpR~//~v79BR~
+//                                                                   //~v643I~//~v79BR~
+////  { 0x273D, 0x273D },                                            //~v643I~//~v79BR~
+////  { 0x2776, 0x277F },                                            //~v643I~//~v79BR~
+////  { 0x2700, 0x27ff ,UCODETB_DBCS},    //ambiguous no lang include type:A of 273d,2776-277f//~v79xR~//~v79BR~
+//    { 0x2700, 0x273c ,UCODETB_DBCS},                               //~v79xI~//~v79BR~
+//    { 0x273e, 0x2775 ,UCODETB_DBCS},                               //~v79xI~//~v79BR~
+//    { 0x2e0e, 0x2e11 ,UCODETB_WIDE},                               //~v6WpR~//~v79BR~
+////  { 0x3190, 0x319f,UCODETB_SBCS },                               //~v643R~//~v6WpR~//~v79BR~
+//    { 0xa960, 0xa97c ,UCODETB_WIDE},                               //~v6WpR~//~v79BR~
+//                                                                   //~v643I~//~v79BR~
+////  { 0xE000, 0xF8FF },    //private                               //~v643I~//~v79BR~
+//    { 0xe000, 0xf8ff , UCODETB_WIDE},// gaiji(private use area) wide same as LNX//~v79kR~//~v79BR~
+//      { 0xfb13, 0xfb17 ,UCODETB_DBCS},                             //~v643I~//~v79BR~
+//      { 0xfb50, 0xfdff ,UCODETB_DBCS},//arabian A                  //~v643I~//~v79BR~
+//    { 0xFFFC, 0xFFFD ,UCODETB_WIDE},                               //~v6WpR~//~v79BR~
+////  { 0xFFFD, 0xFFFD },                                            //~v643I~//~v79BR~
+////  { 0x010ff0, 0x010fff,UCODETB_UNPF} //for unprintable test @@@@test//~v6VrI~//~v79uR~//~v79BR~
+////  { 0xF0000, 0xFFFFD },                                          //~v643I~//~v79BR~
+////  { 0x100000, 0x10FFFD }                                         //~v643I~//~v6VrR~//~v79BR~
+//#else                                                              //~v643I~//~v79BR~
+//#endif                                                             //~v643I~//~v79BR~
+//  };                                                               //~7925I~//~v79BR~
+#endif //BBB                                                       //~v79BR~
     int datatype;                                                  //~7925I~
 //static int Solddatatype;                                           //~v60mI~//~v6VtR~
 //static ULONG Solducs;                                              //~v60mI~//~v6VtR~
 //*******************************                                  //~7925R~
+  	if (!UTF_ADJUSTMODE())                                         //~v79CR~
+    	return 0;                                                  //~v79CR~
 	if (Sutftbopt & SUO_NOJ)                                       //~7929I~
         return 0;                                                  //~7929I~
 //    if (Pucs==Solducs)                                             //~v60mI~//~v6VtR~
@@ -1850,13 +2182,363 @@ int utftbsrch_j(ULONG Pucs)                                        //~7925I~
         datatype=(UTFWWF_F1C1|2);  //narrow(fontwidth=1) DBCS      //~v6VoI~
     else                                                           //~v6VoI~
     if (datatype==UCODETB_WIDE)                                    //~v6VoI~
+    {                                                              //~v798I~
+//      UTRACEP("%s:@@@@F2C1 ucs=0x%04x\n",UTT,Pucs);              //~v798I~//~v79eR~
         datatype=(UTFWWF_F2C1|2);  //wide font                     //~v6VoI~
-  if (datatype)                                                    //~v6X3I~
-  {                                                                //~v6X3I~
-    ;//UTRACEP("%s:ucs=%06x,datatype=%x\n",UTT,Pucs,datatype);     //+v6X3R~
-  }                                                                //~v6X3I~
+    }                                                              //~v798I~
+    UTRACEP("%s:ucs=0x%04x,datatype=0x%x\n",UTT,Pucs,datatype);     //~v6X3R~//~v79gR~//~v79xR~//~v79BR~
     return datatype;                                               //~7925I~
 }//utftbsrch_j                                                     //~7925I~
+//******************************************************           //~v79nI~
+//(W32) except japanese                                            //~v79nI~
+//******************************************************           //~v79nI~
+int utftbsrch_NO_j(ULONG Pucs)                                     //~v79nI~
+{                                                                  //~v79nI~
+  	static UCODETB Suctbj_NO_j[] = {                               //~v79nI~
+#ifndef CCC                                                        //~v79AI~
+    { 0x0000, 0x0000,UCODETB_SBCS },                               //~v79AI~
+#ifndef TEST2                                                      //~v79AI~
+    { 0x0391, 0x039f,UCODETB_DBCS },   //@@@@test                  //~v79AI~
+#endif                                                             //~v79AI~
+#else                                                              //~v79AI~
+    { 0x00A1, 0x00A1,UCODETB_SBCS },                               //~v79nI~
+    { 0x00A4, 0x00A4,UCODETB_SBCS },                               //~v79nI~
+//  { 0x00A7, 0x00A8 },                                            //~v79nI~
+    { 0x00AA, 0x00AA,UCODETB_SBCS},                                //~v79nI~
+    { 0x00AE, 0x00AE,UCODETB_SBCS},                                //~v79nI~
+//  { 0x00B0, 0x00B4 },                                            //~v79nI~
+    { 0x00b0, 0x00b1,UCODETB_WIDE},                                //~v79nI~
+    { 0x00B2, 0x00B3,UCODETB_SBCS},                                //~v79nI~
+    { 0x00B4, 0x00B4,UCODETB_WIDE},                                //~v79nI~
+    { 0x00B6, 0x00B6,UCODETB_WIDE},                                //~v79nI~
+//  { 0x00B6, 0x00BA },                                            //~v79nI~
+    { 0x00B7, 0x00BA,UCODETB_SBCS},                                //~v79nI~
+    { 0x00BC, 0x00BF,UCODETB_SBCS},                                //~v79nI~
+    { 0x00C6, 0x00C6,UCODETB_SBCS},                                //~v79nI~
+    { 0x00D0, 0x00D0,UCODETB_SBCS },                               //~v79nI~
+//  { 0x00D7, 0x00D8 },                                            //~v79nI~
+    { 0x00D7, 0x00D7,UCODETB_WIDE },                               //~v79nI~
+                                                                   //~v79nI~
+//    { 0x00D8, 0x00D8,UCODETB_SBCS },                             //~v79nI~
+//    { 0x00DE, 0x00E1,UCODETB_SBCS },                             //~v79nI~
+//    { 0x00E6, 0x00E6,UCODETB_SBCS },                             //~v79nI~
+//    { 0x00E8, 0x00EA,UCODETB_SBCS },                             //~v79nI~
+//    { 0x00EC, 0x00ED,UCODETB_SBCS },                             //~v79nI~
+//    { 0x00F0, 0x00F0,UCODETB_SBCS },                             //~v79nI~
+//    { 0x00F2, 0x00F3,UCODETB_SBCS },                             //~v79nI~
+    { 0x00d8, 0x00F3,UCODETB_SBCS },                               //~v79nI~
+                                                                   //~v79nI~
+//  { 0x00F7, 0x00FA },                                            //~v79nI~
+//    { 0x00F8, 0x00FA,UCODETB_SBCS },                             //~v79nI~
+//    { 0x00FC, 0x00FC,UCODETB_SBCS },                             //~v79nI~
+//    { 0x00FE, 0x00FE,UCODETB_SBCS },                             //~v79nI~
+    { 0x00F7, 0x00F7,UCODETB_WIDE },                               //~v79nI~
+    { 0x00f8, 0x00ff,UCODETB_SBCS },                               //~v79nI~
+                                                                   //~v79nI~
+//    { 0x0101, 0x0101,UCODETB_SBCS },                             //~v79nI~
+//    { 0x0111, 0x0111,UCODETB_SBCS },                             //~v79nI~
+//    { 0x0113, 0x0113,UCODETB_SBCS },                             //~v79nI~
+//    { 0x011B, 0x011B,UCODETB_SBCS },                             //~v79nI~
+//    { 0x0126, 0x0127,UCODETB_SBCS },                             //~v79nI~
+//    { 0x012B, 0x012B,UCODETB_SBCS },                             //~v79nI~
+//    { 0x0131, 0x0133,UCODETB_SBCS },                             //~v79nI~
+//    { 0x0138, 0x0138,UCODETB_SBCS },                             //~v79nI~
+//    { 0x013F, 0x0142,UCODETB_SBCS },                             //~v79nI~
+//    { 0x0144, 0x0144,UCODETB_SBCS },                             //~v79nI~
+//    { 0x0148, 0x014B,UCODETB_SBCS },                             //~v79nI~
+//    { 0x014D, 0x014D,UCODETB_SBCS },                             //~v79nI~
+//    { 0x0152, 0x0153,UCODETB_SBCS },                             //~v79nI~
+//    { 0x0166, 0x0167,UCODETB_SBCS },                             //~v79nI~
+    { 0x0100, 0x017f,UCODETB_SBCS },                               //~v79nI~
+//  { 0x01c4, 0x01cc ,UCODETB_UNPF},  //DZ, shrink/expand by display status//~v79nI~//~v79uR~
+//  { 0x01c4, 0x01cc ,UCODETB_SBCS},  //DZ, shrink/expand by display status//~v79nI~
+//  { 0x01c4, 0x01cc ,UCODETB_DBCS},  //DZ, shrink/expand by display status//~v79nI~
+                                                                   //~v79nI~
+//  { 0x01CE, 0x01CE },                                            //~v79nI~
+//  { 0x01D0, 0x01D0 },                                            //~v79nI~
+//  { 0x01D2, 0x01D2 },                                            //~v79nI~
+//  { 0x01D4, 0x01D4 },                                            //~v79nI~
+//  { 0x01D6, 0x01D6 },                                            //~v79nI~
+//  { 0x01D8, 0x01D8 },                                            //~v79nI~
+//  { 0x01DA, 0x01DA },                                            //~v79nI~
+//  { 0x01DC, 0x01DC },                                            //~v79nI~
+      { 0x01cd, 0x01dc,UCODETB_DBCS },  //A                        //~v79nI~
+//    { 0x01f1, 0x01f3 ,UCODETB_UNPF},  //DZ                       //~v79nI~//~v79uR~
+//    { 0x01f1, 0x01f3 ,UCODETB_SBCS},  //DZ                       //~v79nI~
+//    { 0x01f1, 0x01f3 ,UCODETB_DBCS},  //DZ                       //~v79nI~
+//    { 0x01f5, 0x01f5 ,UCODETB_DBCS},  //g                        //~v79nI~//~v79uR~
+      { 0x0218, 0x0218 ,UCODETB_WIDE},  //g                        //~v79nI~
+      { 0x021a, 0x021a ,UCODETB_WIDE},  //g                        //~v79nI~
+                                                                   //~v79nI~
+//    { 0x0251, 0x0251,UCODETB_SBCS },                             //~v79nI~
+//    { 0x0261, 0x0261,UCODETB_SBCS },                             //~v79nI~
+//    { 0x02C4, 0x02C4,UCODETB_SBCS },                             //~v79nI~
+//    { 0x02C7, 0x02C7,UCODETB_SBCS },                             //~v79nI~
+//    { 0x02C9, 0x02CB,UCODETB_SBCS },                             //~v79nI~
+//    { 0x02CD, 0x02CD,UCODETB_SBCS },                             //~v79nI~
+//    { 0x02D0, 0x02D0,UCODETB_SBCS },                             //~v79nI~
+//    { 0x02D8, 0x02DB,UCODETB_SBCS },                             //~v79nI~
+//    { 0x02DD, 0x02DD,UCODETB_SBCS },                             //~v79nI~
+//    { 0x02DF, 0x02DF,UCODETB_SBCS },                             //~v79nI~
+//    { 0x0250, 0x02df,UCODETB_SBCS },                             //~v79nI~
+      { 0x0250, 0x02c9,UCODETB_SBCS },                             //~v79nI~
+      { 0x02ca, 0x02cb,UCODETB_WIDE },                             //~v79nI~
+      { 0x02ce, 0x02df,UCODETB_SBCS },                             //~v79nI~
+      { 0x0376, 0x0376,UCODETB_WIDE },                             //~v79nI~
+                                                                   //~v79nI~
+//  { 0x0391, 0x03A1 },                                            //~v79nI~
+//  { 0x03A3, 0x03A9 },                                            //~v79nI~
+//U+0370..U+03FF    :Greek and Coptic:Coptic (14 characters), Greek (117 characters), Common (4 characters)//~v79nI~
+#ifndef TEST2                                                      //~v79zI~
+    { 0x0391, 0x03a1,UCODETB_SBCS},     //for xe and wxe, neew width=2 for print on xe not to override 2nd byte by next char//~v79zI~
+#else                                                              //~v79zI~
+    { 0x0391, 0x03a1,UCODETB_WIDE},     //for xe and wxe, neew width=2 for print on xe not to override 2nd byte by next char//~v79nI~
+#endif                                                             //~v79zI~
+//  { 0x03a2, 0x03a2,UCODETB_UNPF},                                //~v79nI~//~v79uR~
+    { 0x03a3, 0x03a9,UCODETB_WIDE},                                //~v79nI~
+    { 0x03b1, 0x03c9,UCODETB_WIDE},                                //~v79nI~
+//  { 0x03B1, 0x03C1 },                                            //~v79nI~
+//  { 0x03C3, 0x03C9 },                                            //~v79nI~
+    { 0x03d2, 0x03da,UCODETB_WIDE},                                //~v79nI~
+    { 0x03dc, 0x03dc,UCODETB_WIDE},                                //~v79nI~
+    { 0x03de, 0x03e8,UCODETB_WIDE},                                //~v79nI~
+    { 0x03ea, 0x03ee,UCODETB_WIDE},                                //~v79nI~
+    { 0x03f0, 0x03f1,UCODETB_WIDE},                                //~v79nI~
+    { 0x03f4, 0x03fb,UCODETB_WIDE},                                //~v79nI~
+//  { 0x0401, 0x0401 },                                            //~v79nI~
+    { 0x0401, 0x0401,UCODETB_WIDE},                                //~v79nI~
+    { 0x040d, 0x040d,UCODETB_WIDE},                                //~v79nI~
+//  { 0x0410, 0x044F },                                            //~v79nI~
+//  { 0x0451, 0x0451 },                                            //~v79nI~
+//U+0400..U+04FF    :Cyrillic:Cyrillic (254 characters), Inherited (2 characters)//~v79nI~
+    { 0x0410, 0x0451,UCODETB_WIDE},                                //~v79nI~
+#ifdef AAA	//DBCS if not combining                                //~v79nI~
+      { 0x0460, 0x04ff ,UCODETB_DBCS},  //cyrillic                 //~v79nI~
+      { 0x0600, 0x06ff ,UCODETB_DBCS},  //arabian                  //~v79nI~
+      { 0x0700, 0x074f ,UCODETB_DBCS},  //syriac                   //~v79nI~
+      { 0x0780, 0x07bf ,UCODETB_DBCS},  //thaana                   //~v79nI~
+      { 0x0900, 0x097f ,UCODETB_DBCS},  //devanagari               //~v79nI~
+      { 0x0a00, 0x0a7f ,UCODETB_DBCS},  //guirmukhi                //~v79nI~
+      { 0x0a80, 0x0aff ,UCODETB_DBCS},  //gujarati                 //~v79nI~
+      { 0x0b80, 0x0bff ,UCODETB_DBCS},  //tamil                    //~v79nI~
+      { 0x0c00, 0x0c7f ,UCODETB_DBCS},  //telugu                   //~v79nI~
+      { 0x0c80, 0x0cff ,UCODETB_DBCS},  //kannada                  //~v79nI~
+      { 0x0d00, 0x0d7f ,UCODETB_DBCS},  //malayalam                //~v79nI~
+#endif                                                             //~v79nI~
+//    { 0x1160, 0x11ff ,UCODETB_DBCS},  //hangle,this is combine,chaked later//~v79nR~
+      { 0x1e00, 0x1eff ,UCODETB_DBCS},  //latin                    //~v79nI~
+//  { 0x2010, 0x2010 },                                            //~v79nI~
+    { 0x2010, 0x2010,UCODETB_WIDE },                               //~v79nI~
+//  { 0x2013, 0x2016 },                                            //~v79nI~
+    { 0x2013, 0x2014,UCODETB_SBCS },                               //~v79nI~
+//  { 0x2016, 0x2016,UCODETB_SBCS },                               //~v79nI~
+    { 0x2016, 0x2016,UCODETB_WIDE },                               //~v79nI~
+//  { 0x2018, 0x2019 },                                            //~v79nI~
+    { 0x2018, 0x2019,UCODETB_WIDE },                               //~v79nI~
+//  { 0x201C, 0x201D },                                            //~v79nI~
+    { 0x201c, 0x201d,UCODETB_WIDE },                               //~v79nI~
+//  { 0x201c, 0x201d,UCODETB_SBCS },                               //~v79nI~
+//  { 0x201c, 0x201d,UCODETB_DBCS },                               //~v79nI~
+//  { 0x2020, 0x2022 },                                            //~v79nI~
+    { 0x2020, 0x2021,UCODETB_WIDE },                               //~v79nI~
+    { 0x2022, 0x2022,UCODETB_SBCS },                               //~v79nI~
+//  { 0x2024, 0x2027 },                                            //~v79nI~
+    { 0x2024, 0x2024,UCODETB_SBCS },                               //~v79nI~
+    { 0x2027, 0x2027,UCODETB_SBCS },                               //~v79nI~
+//  { 0x2030, 0x2030 },                                            //~v79nI~
+//  { 0x2032, 0x2033 },                                            //~v79nI~
+    { 0x2030, 0x2032,UCODETB_WIDE },                               //~v79nI~
+    { 0x2033, 0x2033,UCODETB_WIDE },                               //~v79nI~
+    { 0x2035, 0x2035,UCODETB_SBCS },                               //~v79nI~
+//  { 0x203B, 0x203B },                                            //~v79nI~
+    { 0x203E, 0x203E,UCODETB_SBCS },                               //~v79nI~
+    { 0x2050, 0x2050,UCODETB_WIDE },                               //~v79nI~
+    { 0x2051, 0x2051,UCODETB_WIDE },                               //~v79nI~
+    { 0x2053, 0x2054,UCODETB_WIDE },                               //~v79nI~
+    { 0x205a, 0x205a,UCODETB_WIDE },                               //~v79nI~
+    { 0x205c, 0x205d,UCODETB_WIDE },                               //~v79nI~
+    { 0x205f, 0x205f,UCODETB_WIDE },   //2060-2064:Format          //~v79nI~
+    { 0x2074, 0x2074,UCODETB_SBCS },                               //~v79nI~
+    { 0x207F, 0x207F,UCODETB_SBCS },                               //~v79nI~
+    { 0x2081, 0x2084,UCODETB_SBCS },                               //~v79nI~
+//  { 0x20AC, 0x20AC,UCODETB_SBCS },//euro                         //~v79nI~
+//U+20A0..U+20CF    :Currency Symbols:Common                       //~v79nI~
+//  { 0x20A0, 0x20cf,UCODETB_SBCS },                               //~v79nI~
+    { 0x20A0, 0x20b7,UCODETB_SBCS },                               //~v79nI~
+//  { 0x20b8, 0x20b8,UCODETB_WIDE },  //ambiguous no lang          //~v79nI~
+//  { 0x2103, 0x2103 },                                            //~v79nI~
+    { 0x2105, 0x2105,UCODETB_SBCS },                               //~v79nI~
+    { 0x2109, 0x2109,UCODETB_SBCS },                               //~v79nI~
+    { 0x2113, 0x2113,UCODETB_SBCS },                               //~v79nI~
+//  { 0x2116, 0x2116 },                                            //~v79nI~
+//  { 0x2121, 0x2122 },                                            //~v79nI~
+    { 0x2126, 0x2126,UCODETB_SBCS },                               //~v79nI~
+//  { 0x212B, 0x212B },                                            //~v79nI~
+    { 0x2150, 0x2152,UCODETB_WIDE },                               //~v79nI~
+    { 0x2153, 0x2154,UCODETB_SBCS },                               //~v79nI~
+    { 0x215B, 0x215E,UCODETB_SBCS },                               //~v79nI~
+//  { 0x2160, 0x216B },                                            //~v79nI~
+      { 0x216c, 0x216f ,UCODETB_DBCS},                             //~v79nI~
+//  { 0x2170, 0x2179 },                                            //~v79nI~
+      { 0x217a, 0x2182 ,UCODETB_DBCS},                             //~v79nI~
+    { 0x2183, 0x2189 ,UCODETB_WIDE},                               //~v79nI~
+//  { 0x2190, 0x2199 },                                            //~v79nI~
+    { 0x2194, 0x2199,UCODETB_SBCS },                               //~v79nI~
+    { 0x21B8, 0x21B9,UCODETB_SBCS },                               //~v79nI~
+    { 0x21D0, 0x21D0,UCODETB_SBCS },        //add <==              //~v79nI~
+//  { 0x21D2, 0x21D2 },                                            //~v79nI~
+//  { 0x21D4, 0x21D4 },                                            //~v79nI~
+    { 0x21E7, 0x21E7,UCODETB_SBCS },                               //~v79nI~
+    { 0x21f0, 0x21f2,UCODETB_WIDE },                               //~v79nI~
+    { 0x21f4, 0x21ff,UCODETB_WIDE },                               //~v79nI~
+//  { 0x2200, 0x2200 },                                            //~v79nI~
+//  { 0x2202, 0x2203 },                                            //~v79nI~
+//  { 0x2207, 0x2208 },                                            //~v79nI~
+//  { 0x220B, 0x220B },                                            //~v79nI~
+    { 0x220F, 0x220F,UCODETB_SBCS },                               //~v79nI~
+//  { 0x2211, 0x2211 },                                            //~v79nI~
+    { 0x2211, 0x2211,UCODETB_WIDE },                               //~v79nI~
+    { 0x2215, 0x2215,UCODETB_SBCS },                               //~v79nI~
+//  { 0x221A, 0x221A },                                            //~v79nI~
+    { 0x221a, 0x221a,UCODETB_WIDE },                               //~v79nI~
+//  { 0x221D, 0x2220 },                                            //~v79nI~
+    { 0x2223, 0x2223,UCODETB_SBCS },                               //~v79nI~
+//  { 0x2225, 0x2225 },                                            //~v79nI~
+//  { 0x2227, 0x222C },                                            //~v79nI~
+//  { 0x222E, 0x222E },                                            //~v79nI~
+//  { 0x2234, 0x2237 },                                            //~v79nI~
+    { 0x2236, 0x2237,UCODETB_SBCS },                               //~v79nI~
+//  { 0x223C, 0x223D },                                            //~v79nI~
+    { 0x223C, 0x223c,UCODETB_SBCS },                               //~v79nI~
+    { 0x2248, 0x2248,UCODETB_SBCS },                               //~v79nI~
+    { 0x224C, 0x224C,UCODETB_SBCS },                               //~v79nI~
+//  { 0x2252, 0x2252 },                                            //~v79nI~
+//  { 0x2260, 0x2261 },                                            //~v79nI~
+//  { 0x2264, 0x2267 },                                            //~v79nI~
+    { 0x2264, 0x2265,UCODETB_SBCS },                               //~v79nI~
+//  { 0x226A, 0x226B },                                            //~v79nI~
+    { 0x226E, 0x226F,UCODETB_SBCS },                               //~v79nI~
+//  { 0x2282, 0x2283 },                                            //~v79nI~
+//  { 0x2286, 0x2287 },                                            //~v79nI~
+    { 0x2295, 0x2295,UCODETB_SBCS },                               //~v79nI~
+    { 0x2299, 0x2299,UCODETB_SBCS },                               //~v79nI~
+//  { 0x22A5, 0x22A5 },                                            //~v79nI~
+//  { 0x22BF, 0x22BF },                                            //~v79nI~
+    { 0x22f2, 0x22f2,UCODETB_WIDE },                               //~v79nI~
+    { 0x22fa, 0x22fa,UCODETB_WIDE },                               //~v79nI~
+//  { 0x2312, 0x2312 },                                            //~v79nI~
+//  { 0x2460, 0x24E9 },                                            //~v79nI~
+      { 0x24ea, 0x24ea ,UCODETB_DBCS},                             //~v79nI~
+//  { 0x24EB, 0x254B },                                            //~v79nI~
+    { 0x2504, 0x250a,UCODETB_SBCS },//grid                         //~v79nI~
+    { 0x250d, 0x250e,UCODETB_SBCS },                               //~v79nI~
+    { 0x2511, 0x2512,UCODETB_SBCS },                               //~v79nI~
+    { 0x2515, 0x2516,UCODETB_SBCS },                               //~v79nI~
+    { 0x2519, 0x251a,UCODETB_SBCS },                               //~v79nI~
+    { 0x251e, 0x251f,UCODETB_SBCS },                               //~v79nI~
+    { 0x2521, 0x2522,UCODETB_SBCS },                               //~v79nI~
+    { 0x2526, 0x2527,UCODETB_SBCS },                               //~v79nI~
+    { 0x2529, 0x252a,UCODETB_SBCS },                               //~v79nI~
+    { 0x252d, 0x252e,UCODETB_SBCS },                               //~v79nI~
+    { 0x2531, 0x2532,UCODETB_SBCS },                               //~v79nI~
+    { 0x2535, 0x2536,UCODETB_SBCS },                               //~v79nI~
+    { 0x2539, 0x253a,UCODETB_SBCS },                               //~v79nI~
+    { 0x253d, 0x253e,UCODETB_SBCS },                               //~v79nI~
+    { 0x2540, 0x2541,UCODETB_SBCS },                               //~v79nI~
+    { 0x2543, 0x254a,UCODETB_SBCS },                               //~v79nI~
+    { 0x2550, 0x2573,UCODETB_SBCS },                               //~v79nI~
+    { 0x2580, 0x258F,UCODETB_SBCS },                               //~v79nI~
+//  { 0x2592, 0x2595,UCODETB_SBCS },                               //~v79nI~
+    { 0x2592, 0x2593,UCODETB_SBCS },                               //~v79nI~
+    { 0x2594, 0x2594,UCODETB_WIDE },                               //~v79nI~
+    { 0x2595, 0x2595,UCODETB_SBCS },                               //~v79nI~
+    { 0x2596, 0x259f,UCODETB_WIDE },                               //~v79nI~
+//  { 0x25A0, 0x25A1 },                                            //~v79nI~
+    { 0x25A3, 0x25A9,UCODETB_SBCS },                               //~v79nI~
+//  { 0x25B2, 0x25B3 },                                            //~v79nI~
+    { 0x25B6, 0x25B7,UCODETB_SBCS },                               //~v79nI~
+//  { 0x25BC, 0x25BD },                                            //~v79nI~
+    { 0x25C0, 0x25C1,UCODETB_SBCS },                               //~v79nI~
+//  { 0x25C6, 0x25C8 },                                            //~v79nI~
+    { 0x25C8, 0x25C8,UCODETB_SBCS },                               //~v79nI~
+//  { 0x25CB, 0x25CB },                                            //~v79nI~
+//  { 0x25CE, 0x25D1 },                                            //~v79nI~
+    { 0x25d0, 0x25d1,UCODETB_SBCS },                               //~v79nI~
+    { 0x25E2, 0x25E5,UCODETB_SBCS },                               //~v79nI~
+                                                                   //~v79nI~
+//  { 0x25EF, 0x25EF },                                            //~v79nI~
+//  { 0x2605, 0x2606 },                                            //~v79nI~
+//  { 0x2609, 0x2609 },                                            //~v79nI~
+//  { 0x260E, 0x260F },                                            //~v79nI~
+//  { 0x2614, 0x2615 },                                            //~v79nI~
+//  { 0x261C, 0x261C },                                            //~v79nI~
+//  { 0x261E, 0x261E },                                            //~v79nI~
+      { 0x25ef, 0x2638 ,UCODETB_DBCS},                             //~v79nI~
+                                                                   //~v79nI~
+//  { 0x2640, 0x2640 },                                            //~v79nI~
+//  { 0x2642, 0x2642 },                                            //~v79nI~
+      { 0x263d, 0x265f ,UCODETB_DBCS},                             //~v79nI~
+                                                                   //~v79nI~
+    { 0x2660, 0x2661,UCODETB_SBCS },                               //~v79nI~
+    { 0x2663, 0x2665,UCODETB_SBCS },                               //~v79nI~
+//  { 0x2667, 0x266A },                                            //~v79nI~
+    { 0x2667, 0x2667,UCODETB_SBCS },                               //~v79nI~
+    { 0x2669, 0x2669,UCODETB_SBCS },                               //~v79nI~
+//  { 0x266C, 0x266D },                                            //~v79nI~
+    { 0x266c, 0x266c,UCODETB_SBCS },                               //~v79nI~
+//  { 0x266F, 0x266F },                                            //~v79nI~
+    { 0x2672, 0x267E,UCODETB_WIDE },                               //~v79nI~
+    { 0x267F, 0x267F,UCODETB_DBCS },                               //~v79nI~
+    { 0x2680, 0x268f,UCODETB_WIDE },                               //~v79nI~
+    { 0x2690, 0x26bc,UCODETB_WIDE },                               //~v79nI~
+    { 0x26bd, 0x26ff,UCODETB_WIDE },                               //~v79nI~
+                                                                   //~v79nI~
+//  { 0x273D, 0x273D },                                            //~v79nI~
+//  { 0x2776, 0x277F },                                            //~v79nI~
+      { 0x2700, 0x27ff ,UCODETB_DBCS},                             //~v79nI~
+    { 0x2e0e, 0x2e11 ,UCODETB_WIDE},                               //~v79nI~
+//  { 0x3190, 0x319f,UCODETB_SBCS },                               //~v79nI~
+    { 0xa960, 0xa97c ,UCODETB_WIDE},                               //~v79nI~
+                                                                   //~v79nI~
+//  { 0xE000, 0xF8FF },    //private                               //~v79nI~
+    { 0xe000, 0xf8ff , UCODETB_WIDE},// gaiji(private use area) wide same as LNX//~v79nI~
+      { 0xfb13, 0xfb17 ,UCODETB_DBCS},                             //~v79nI~
+      { 0xfb50, 0xfdff ,UCODETB_DBCS},//arabian A                  //~v79nI~
+    { 0xFFFC, 0xFFFD ,UCODETB_WIDE},                               //~v79nI~
+//  { 0xFFFD, 0xFFFD },                                            //~v79nI~
+    { 0x010ff7, 0x010fff,UCODETB_UNPF} //for unprintable test @@@@test//~v79uI~
+//  { 0xF0000, 0xFFFFD },                                          //~v79nI~
+//  { 0x100000, 0x10FFFD }                                         //~v79nI~
+#endif //CCC                                                       //~v79AI~
+  };                                                               //~v79nI~
+    int datatype;                                                  //~v79nI~
+//*******************************                                  //~v79nI~
+  	if (!UTF_ADJUSTMODE())                                         //~v79CI~
+	    return 0;                                                  //~v79CR~
+//    if (Sutftbopt & SUO_NOJ)                                     //~v79nI~
+//        return 0;                                                //~v79nI~
+    if (SswWXE)                                                    //~v79nI~
+    	datatype=utftbsrch_j_WXE(Pucs);                            //~v79nI~
+    else                                                           //~v79nI~
+        datatype=0;                                                //~v79nI~
+  	if (!datatype)                                                 //~v79nI~
+  	{                                                              //~v79nI~
+		datatype=utftbsrch(Pucs,Suctbj_NO_j,sizeof(Suctbj_NO_j)/sizeof(UCODETB));//~v79nI~
+        if (!datatype)                                             //~v79AI~
+			datatype=utftbsrch_j(Pucs);                            //~v79AI~
+  	}                                                              //~v79nI~
+    if (datatype & UCODETB_UNPF) //unprintable entry               //~v79nI~
+        return -1;      //not 0 to return this value               //~v79nI~
+    if (datatype==UCODETB_NARROW)                                  //~v79nI~
+        datatype=(UTFWWF_F1C1|2);  //narrow(fontwidth=1) DBCS      //~v79nI~
+    else                                                           //~v79nI~
+    if (datatype==UCODETB_WIDE)                                    //~v79nI~
+    {                                                              //~v79nI~
+        datatype=(UTFWWF_F2C1|2);  //wide font                     //~v79nI~
+    }                                                              //~v79nI~
+    UTRACEP("%s:ucs=0x%04x,datatype=%x\n",UTT,Pucs,datatype);  //~v79nI~//~v79AR~
+    return datatype;                                               //~v79nI~
+}//utftbsrch_NO_j                                                  //~v79nI~
 #endif	//W32                                                      //~v640I~
 #ifdef LNX                                                         //~v60mR~
 //******************************************************           //~v60mR~
@@ -2047,8 +2729,8 @@ int utftbsrch_jeuc(ULONG Pucs)                                     //~v60mR~
 //******************************************************           //~v62UR~
 //ajust by test other than japanese                              //~v62UR~//~v640R~
 //******************************************************           //~v62UR~
-int utftbsrch_cjk(ULONG Pucs)                                      //~v62UR~
-{                                                                  //~v62UR~
+//int utftbsrch_cjk(ULONG Pucs)                                      //~v62UR~//~v79fR~
+//{                                                                  //~v62UR~//~v79fR~
 #ifdef UTF8UCS2                                                    //~v640R~
 //*specifiy WIDE for wide char of wcwidth=1                        //~v640I~
 #ifdef UB1710	//test under ub17.10(kernel4.13.0)                 //~v6V1I~
@@ -2266,111 +2948,112 @@ int utftbsrch_cjk(ULONG Pucs)                                      //~v62UR~
     ,{ 0x2e3f, 0x2e3f ,   UCODETB_WIDE  } //                       //~v6WhI~
     ,{ 0x2e43, 0x2e43 ,   UCODETB_WIDE  } //                       //~v6WhI~
     ,{ 0x303f, 0x303f ,   UCODETB_WIDE  } // 303f:wcwidth=1 and mk_wcwidth=1//~v6V1I~//~v6V9R~
+    ,{ 0xe000, 0xf8ff ,   UCODETB_WIDE  } // gaiji(private use area)//~v79gM~
     ,{ 0xfb00, 0xfb02 ,   UCODETB_SBCS  } // over fb00-fb4f(ambiguous_lang), ligature of ff/fi/fl//~v6V9I~
     ,{ 0xfffc, 0xfffc ,   UCODETB_WIDE  } // over ambiguous fff0-ffff//~v6V9I~
      };                                                            //~v6V1I~
-#else                                                              //~v6V1I~
-    static UCODETB Suctb_utf8[] = {                                //~v640R~
-     { 0x0000, 0x0000 ,   UCODETB_SBCS  } //dummy for line cont    //~v640R~
-    ,{ 0x00a1, 0x00a1 ,   UCODETB_SBCS  } //i                      //~v640R~
-    ,{ 0x00a3, 0x00a3 ,   UCODETB_WIDE  } //i                      //~v640I~
-    ,{ 0x00a8, 0x00a8 ,   UCODETB_SBCS  } //..                     //~v640I~
-    ,{ 0x00aa, 0x00aa ,   UCODETB_SBCS  } //a                      //~v640I~
-    ,{ 0x00ae, 0x00ae ,   UCODETB_SBCS  } //R                      //~v640I~
-    ,{ 0x00b0, 0x00b0 ,   UCODETB_SBCS  } //degree                 //~v640I~
-    ,{ 0x00b2, 0x00b4 ,   UCODETB_SBCS  } //                       //~v640I~
-    ,{ 0x00b6, 0x00d5 ,   UCODETB_SBCS  } //                       //~v640I~
-    ,{ 0x00d7, 0x00d7 ,   UCODETB_WIDE  } //X                      //~v640R~
-    ,{ 0x00d8, 0x00f6 ,   UCODETB_SBCS  } //                       //~v640R~
-    ,{ 0x00f7, 0x00f7 ,   UCODETB_WIDE  } //divide                 //~v640I~
-    ,{ 0x00f8, 0x01c3 ,   UCODETB_SBCS  } //divide                 //~v640I~
-    ,{ 0x01c4, 0x01cc ,   UCODETB_WIDE  } //fontw=2 SBCS;  DZ,Dz,dz,LJ,Lj,lj,NJ,Nj,nj//~v640I~
-    ,{ 0x01cd, 0x01f0 ,   UCODETB_SBCS  } //                       //~v640M~
-    ,{ 0x01f1, 0x01f3 ,   UCODETB_WIDE  } //fontw=2 SBCS;  DZ,Dz,dz,LJ,Lj,lj,NJ,Nj,nj//~v640I~
-    ,{ 0x01f4, 0x02df ,   UCODETB_SBCS  } //                       //~v640M~
-    ,{ 0x0386, 0x0386 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x0388, 0x0389 ,   UCODETB_WIDE  } //cn                     //~v640R~
-    ,{ 0x038b, 0x038f ,   UCODETB_WIDE  } //cn                     //~v640I~
-    ,{ 0x03c2, 0x03c2 ,   UCODETB_WIDE  } //                       //~v640R~
-    ,{ 0x03d0, 0x03d1 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x03d5, 0x03d6 ,   UCODETB_WIDE  } //                       //~v640R~
-    ,{ 0x0401, 0x0401 ,   UCODETB_SBCS  } //                       //~v640R~
-//  ,{ 0x0451, 0x0451 ,   UCODETB_SBCS  } //cn                     //~v640I~
-//  ,{ 0x2013, 0x2014 ,   UCODETB_SBCS  } //CN-utf8                //~v640R~
-    ,{ 0x201a, 0x201b ,   UCODETB_SBCS  } //                       //~v640R~
-    ,{ 0x201e, 0x201e ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x2020, 0x2021 ,   UCODETB_SBCS  } //                       //~v640I~
-    ,{ 0x2024, 0x2024 ,   UCODETB_SBCS  } //                       //~v640I~
-//  ,{ 0x203e, 0x203e ,   UCODETB_SBCS  } //cn-utf8                //~v640R~
-    ,{ 0x2042, 0x2042 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x2074, 0x2074 ,   UCODETB_SBCS  } //                       //~v640I~
-    ,{ 0x207f, 0x207f ,   UCODETB_SBCS  } //                       //~v640I~
-//  ,{ 0x20ac, 0x20ac ,   UCODETB_SBCS  } //cn                     //~v640R~
-//  ,{ 0x2116, 0x2116 ,   UCODETB_SBCS  } //cn                     //~v640R~
-    ,{ 0x2118, 0x2118 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x211c, 0x211c ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x2122, 0x2122 ,   UCODETB_SBCS  } //                       //~v640I~
-    ,{ 0x2127, 0x2127 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x2135, 0x2135 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x2155, 0x2155 ,   UCODETB_WIDE  } //                       //~v640I~
-//  ,{ 0x215b, 0x215e ,   UCODETB_SBCS  } //                       //~v640R~
-//  ,{ 0x217a, 0x217b ,   UCODETB_WIDE  } //to mk_cjk              //~v640R~
-//  ,{ 0x2190, 0x2194 ,   UCODETB_SBCS  } //cn                     //~v640R~
-//  ,{ 0x21d0, 0x21d0 ,   UCODETB_WIDE  } //to mk_cjk              //~v640R~
-    ,{ 0x21c4, 0x21c4 ,   UCODETB_WIDE  } //cn                     //~v640I~
-    ,{ 0x21cc, 0x21cc ,   UCODETB_WIDE  } //cn                     //~v640I~
-    ,{ 0x21e6, 0x21e9 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x2202, 0x2202 ,   UCODETB_SBCS  } //                       //~v640I~
-    ,{ 0x2205, 0x2206 ,   UCODETB_WIDE  } //                       //~v640I~
-//  ,{ 0x220f, 0x220f ,   UCODETB_SBCS  } //cn                     //~v640R~
-    ,{ 0x2211, 0x2211 ,   UCODETB_WIDE  } //                       //~v640R~
-    ,{ 0x2215, 0x2215 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x2217, 0x2217 ,   UCODETB_WIDE  } //                       //~v640I~
-//  ,{ 0x221e, 0x221f ,   UCODETB_SBCS  } //cn                     //~v640R~
-//  ,{ 0x2229, 0x2229 ,   UCODETB_SBCS  } //cn                     //~v640R~
-//  ,{ 0x222b, 0x222b ,   UCODETB_SBCS  } //cn                     //~v640R~
-    ,{ 0x222d, 0x222d ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x223c, 0x223c ,   UCODETB_SBCS  } //                       //~v640I~
-    ,{ 0x2243, 0x2243 ,   UCODETB_WIDE  } //                       //~v640I~
-//  ,{ 0x2260, 0x2265 ,   UCODETB_SBCS  } //cn                     //~v640R~
-    ,{ 0x2272, 0x2273 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x2296, 0x2298 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x229e, 0x229e ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x22a0, 0x22a0 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x2307, 0x2307 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x24ea, 0x24ea ,   UCODETB_WIDE  } //                       //~v640R~
-    ,{ 0x2500, 0x2500 ,   UCODETB_SBCS  } //                       //~v640R~
-    ,{ 0x2502, 0x2502 ,   UCODETB_SBCS  } //                       //~v640R~
-    ,{ 0x250c, 0x250c ,   UCODETB_SBCS  } //                       //~v640R~
-    ,{ 0x2510, 0x2510 ,   UCODETB_SBCS  } //                       //~v640R~
-    ,{ 0x2514, 0x2514 ,   UCODETB_SBCS  } //                       //~v640R~
-    ,{ 0x2518, 0x2518 ,   UCODETB_SBCS  } //                       //~v640R~
-    ,{ 0x251c, 0x251c ,   UCODETB_SBCS  } //                       //~v640R~
-    ,{ 0x2524, 0x2524 ,   UCODETB_SBCS  } //                       //~v640R~
-    ,{ 0x252c, 0x252c ,   UCODETB_SBCS  } //                       //~v640R~
-    ,{ 0x2534, 0x2534 ,   UCODETB_SBCS  } //                       //~v640R~
-    ,{ 0x253c, 0x253c ,   UCODETB_SBCS  } //                       //~v640R~
-//  ,{ 0x2550, 0x256c ,   UCODETB_SBCS  } //cn                     //~v640R~
-    ,{ 0x2574, 0x2574 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x2580, 0x2580 ,   UCODETB_SBCS  } //                       //~v640I~
-//  ,{ 0x25a0, 0x25a0 ,   UCODETB_SBCS  } //                       //~v640R~
-    ,{ 0x25a2, 0x25a2 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x25b1, 0x25b1 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x25c9, 0x25c9 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x25d2, 0x25d3 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x25e6, 0x25e6 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x2600, 0x2603 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x261b, 0x261b ,   UCODETB_WIDE  } //                       //~v640I~
-//  ,{ 0x2640, 0x2640 ,   UCODETB_SBCS  } //cn                     //~v640R~
-    ,{ 0x2641, 0x2641 ,   UCODETB_WIDE  } //                       //~v640I~
-//  ,{ 0x2642, 0x2642 ,   UCODETB_SBCS  } //cn                     //~v640R~
-    ,{ 0x2660, 0x2660 ,   UCODETB_SBCS  } //                       //~v640I~
-    ,{ 0x2662, 0x2662 ,   UCODETB_WIDE  } //                       //~v640I~
-    ,{ 0x2663, 0x2663 ,   UCODETB_SBCS  } //                       //~v640I~
-//  ,{ 0x2665, 0x2665 ,   UCODETB_SBCS  } //cn                     //~v640R~
-    ,{ 0x266a, 0x266a ,   UCODETB_SBCS  } //                       //~v640I~
-    ,{ 0x2700, 0x27bf ,   UCODETB_WIDE  } //                       //~v640R~
-     };                                                            //~v640R~
+#else    //!UB1710                                                 //~v6V1I~//~v79jR~
+//    static UCODETB Suctb_utf8[] = {                                //~v640R~//~v79jR~
+//     { 0x0000, 0x0000 ,   UCODETB_SBCS  } //dummy for line cont    //~v640R~//~v79jR~
+//    ,{ 0x00a1, 0x00a1 ,   UCODETB_SBCS  } //i                      //~v640R~//~v79jR~
+//    ,{ 0x00a3, 0x00a3 ,   UCODETB_WIDE  } //i                      //~v640I~//~v79jR~
+//    ,{ 0x00a8, 0x00a8 ,   UCODETB_SBCS  } //..                     //~v640I~//~v79jR~
+//    ,{ 0x00aa, 0x00aa ,   UCODETB_SBCS  } //a                      //~v640I~//~v79jR~
+//    ,{ 0x00ae, 0x00ae ,   UCODETB_SBCS  } //R                      //~v640I~//~v79jR~
+//    ,{ 0x00b0, 0x00b0 ,   UCODETB_SBCS  } //degree                 //~v640I~//~v79jR~
+//    ,{ 0x00b2, 0x00b4 ,   UCODETB_SBCS  } //                       //~v640I~//~v79jR~
+//    ,{ 0x00b6, 0x00d5 ,   UCODETB_SBCS  } //                       //~v640I~//~v79jR~
+//    ,{ 0x00d7, 0x00d7 ,   UCODETB_WIDE  } //X                      //~v640R~//~v79jR~
+//    ,{ 0x00d8, 0x00f6 ,   UCODETB_SBCS  } //                       //~v640R~//~v79jR~
+//    ,{ 0x00f7, 0x00f7 ,   UCODETB_WIDE  } //divide                 //~v640I~//~v79jR~
+//    ,{ 0x00f8, 0x01c3 ,   UCODETB_SBCS  } //divide                 //~v640I~//~v79jR~
+//    ,{ 0x01c4, 0x01cc ,   UCODETB_WIDE  } //fontw=2 SBCS;  DZ,Dz,dz,LJ,Lj,lj,NJ,Nj,nj//~v640I~//~v79jR~
+//    ,{ 0x01cd, 0x01f0 ,   UCODETB_SBCS  } //                       //~v640M~//~v79jR~
+//    ,{ 0x01f1, 0x01f3 ,   UCODETB_WIDE  } //fontw=2 SBCS;  DZ,Dz,dz,LJ,Lj,lj,NJ,Nj,nj//~v640I~//~v79jR~
+//    ,{ 0x01f4, 0x02df ,   UCODETB_SBCS  } //                       //~v640M~//~v79jR~
+//    ,{ 0x0386, 0x0386 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x0388, 0x0389 ,   UCODETB_WIDE  } //cn                     //~v640R~//~v79jR~
+//    ,{ 0x038b, 0x038f ,   UCODETB_WIDE  } //cn                     //~v640I~//~v79jR~
+//    ,{ 0x03c2, 0x03c2 ,   UCODETB_WIDE  } //                       //~v640R~//~v79jR~
+//    ,{ 0x03d0, 0x03d1 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x03d5, 0x03d6 ,   UCODETB_WIDE  } //                       //~v640R~//~v79jR~
+//    ,{ 0x0401, 0x0401 ,   UCODETB_SBCS  } //                       //~v640R~//~v79jR~
+////  ,{ 0x0451, 0x0451 ,   UCODETB_SBCS  } //cn                     //~v640I~//~v79jR~
+////  ,{ 0x2013, 0x2014 ,   UCODETB_SBCS  } //CN-utf8                //~v640R~//~v79jR~
+//    ,{ 0x201a, 0x201b ,   UCODETB_SBCS  } //                       //~v640R~//~v79jR~
+//    ,{ 0x201e, 0x201e ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2020, 0x2021 ,   UCODETB_SBCS  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2024, 0x2024 ,   UCODETB_SBCS  } //                       //~v640I~//~v79jR~
+////  ,{ 0x203e, 0x203e ,   UCODETB_SBCS  } //cn-utf8                //~v640R~//~v79jR~
+//    ,{ 0x2042, 0x2042 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2074, 0x2074 ,   UCODETB_SBCS  } //                       //~v640I~//~v79jR~
+//    ,{ 0x207f, 0x207f ,   UCODETB_SBCS  } //                       //~v640I~//~v79jR~
+////  ,{ 0x20ac, 0x20ac ,   UCODETB_SBCS  } //cn                     //~v640R~//~v79jR~
+////  ,{ 0x2116, 0x2116 ,   UCODETB_SBCS  } //cn                     //~v640R~//~v79jR~
+//    ,{ 0x2118, 0x2118 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x211c, 0x211c ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2122, 0x2122 ,   UCODETB_SBCS  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2127, 0x2127 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2135, 0x2135 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2155, 0x2155 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+////  ,{ 0x215b, 0x215e ,   UCODETB_SBCS  } //                       //~v640R~//~v79jR~
+////  ,{ 0x217a, 0x217b ,   UCODETB_WIDE  } //to mk_cjk              //~v640R~//~v79jR~
+////  ,{ 0x2190, 0x2194 ,   UCODETB_SBCS  } //cn                     //~v640R~//~v79jR~
+////  ,{ 0x21d0, 0x21d0 ,   UCODETB_WIDE  } //to mk_cjk              //~v640R~//~v79jR~
+//    ,{ 0x21c4, 0x21c4 ,   UCODETB_WIDE  } //cn                     //~v640I~//~v79jR~
+//    ,{ 0x21cc, 0x21cc ,   UCODETB_WIDE  } //cn                     //~v640I~//~v79jR~
+//    ,{ 0x21e6, 0x21e9 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2202, 0x2202 ,   UCODETB_SBCS  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2205, 0x2206 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+////  ,{ 0x220f, 0x220f ,   UCODETB_SBCS  } //cn                     //~v640R~//~v79jR~
+//    ,{ 0x2211, 0x2211 ,   UCODETB_WIDE  } //                       //~v640R~//~v79jR~
+//    ,{ 0x2215, 0x2215 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2217, 0x2217 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+////  ,{ 0x221e, 0x221f ,   UCODETB_SBCS  } //cn                     //~v640R~//~v79jR~
+////  ,{ 0x2229, 0x2229 ,   UCODETB_SBCS  } //cn                     //~v640R~//~v79jR~
+////  ,{ 0x222b, 0x222b ,   UCODETB_SBCS  } //cn                     //~v640R~//~v79jR~
+//    ,{ 0x222d, 0x222d ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x223c, 0x223c ,   UCODETB_SBCS  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2243, 0x2243 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+////  ,{ 0x2260, 0x2265 ,   UCODETB_SBCS  } //cn                     //~v640R~//~v79jR~
+//    ,{ 0x2272, 0x2273 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2296, 0x2298 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x229e, 0x229e ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x22a0, 0x22a0 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2307, 0x2307 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x24ea, 0x24ea ,   UCODETB_WIDE  } //                       //~v640R~//~v79jR~
+//    ,{ 0x2500, 0x2500 ,   UCODETB_SBCS  } //                       //~v640R~//~v79jR~
+//    ,{ 0x2502, 0x2502 ,   UCODETB_SBCS  } //                       //~v640R~//~v79jR~
+//    ,{ 0x250c, 0x250c ,   UCODETB_SBCS  } //                       //~v640R~//~v79jR~
+//    ,{ 0x2510, 0x2510 ,   UCODETB_SBCS  } //                       //~v640R~//~v79jR~
+//    ,{ 0x2514, 0x2514 ,   UCODETB_SBCS  } //                       //~v640R~//~v79jR~
+//    ,{ 0x2518, 0x2518 ,   UCODETB_SBCS  } //                       //~v640R~//~v79jR~
+//    ,{ 0x251c, 0x251c ,   UCODETB_SBCS  } //                       //~v640R~//~v79jR~
+//    ,{ 0x2524, 0x2524 ,   UCODETB_SBCS  } //                       //~v640R~//~v79jR~
+//    ,{ 0x252c, 0x252c ,   UCODETB_SBCS  } //                       //~v640R~//~v79jR~
+//    ,{ 0x2534, 0x2534 ,   UCODETB_SBCS  } //                       //~v640R~//~v79jR~
+//    ,{ 0x253c, 0x253c ,   UCODETB_SBCS  } //                       //~v640R~//~v79jR~
+////  ,{ 0x2550, 0x256c ,   UCODETB_SBCS  } //cn                     //~v640R~//~v79jR~
+//    ,{ 0x2574, 0x2574 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2580, 0x2580 ,   UCODETB_SBCS  } //                       //~v640I~//~v79jR~
+////  ,{ 0x25a0, 0x25a0 ,   UCODETB_SBCS  } //                       //~v640R~//~v79jR~
+//    ,{ 0x25a2, 0x25a2 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x25b1, 0x25b1 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x25c9, 0x25c9 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x25d2, 0x25d3 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x25e6, 0x25e6 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2600, 0x2603 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x261b, 0x261b ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+////  ,{ 0x2640, 0x2640 ,   UCODETB_SBCS  } //cn                     //~v640R~//~v79jR~
+//    ,{ 0x2641, 0x2641 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+////  ,{ 0x2642, 0x2642 ,   UCODETB_SBCS  } //cn                     //~v640R~//~v79jR~
+//    ,{ 0x2660, 0x2660 ,   UCODETB_SBCS  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2662, 0x2662 ,   UCODETB_WIDE  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2663, 0x2663 ,   UCODETB_SBCS  } //                       //~v640I~//~v79jR~
+////  ,{ 0x2665, 0x2665 ,   UCODETB_SBCS  } //cn                     //~v640R~//~v79jR~
+//    ,{ 0x266a, 0x266a ,   UCODETB_SBCS  } //                       //~v640I~//~v79jR~
+//    ,{ 0x2700, 0x27bf ,   UCODETB_WIDE  } //                       //~v640R~//~v79jR~
+//     };                                                            //~v640R~//~v79jR~
 #endif                                                             //~v6V1I~
 //*for XXE test result on FC12                                     //~v655R~
     static UCODETB Suctb_utf8_XXE[] = {                            //~v655R~
@@ -2755,7 +3438,8 @@ int utftbsrch_cjk(ULONG Pucs)                                      //~v62UR~
     ,{ 0xd7b0, 0xd7fb ,   UCODETB_WIDE  } //  "                    //~v6WnI~
 #ifdef UB1710	//test under ub17.10(kernel4.13.0)                 //~v6V1I~
 //gaiji(private use area);for console,defined on ambiguose, define in this for xxe to reduce sbcsid//~v6V1I~
-    ,{ 0xe000, 0xf8ff ,   UCODETB_WIDE  } // gaiji(private use area);for console,defined on ambiguose, define in this for xxe//~v6V1R~
+//  ,{ 0xe000, 0xf8ff ,   UCODETB_WIDE  } // gaiji(private use area);for console,defined on ambiguose, define in this for xxe//~v6V1R~//~v79eR~
+    ,{ 0xe000, 0xf8ff ,   UCODETB_WIDE  } // gaiji(private use area)//~v79gI~
 #endif                                                             //~v6V1I~
     ,{ 0xfb00, 0xfb02 ,   UCODETB_SBCS  } // over fb00-fb4f(ambiguous_lang), ligature of ff/fi/fl//~v6WnI~
     ,{ 0xfffc, 0xfffc ,   UCODETB_WIDE  } // =Console              //~v6WnI~
@@ -2771,7 +3455,7 @@ int utftbsrch_cjk(ULONG Pucs)                                      //~v62UR~
     static UCODETB Suctb_cjk_console[] = {                         //~v62UR~
        { 0x0000, 0x0000 ,   UCODETB_SBCS  } //dummy for line cont  //~v62UR~
 #ifdef UTF8UCS2                                                    //~v640R~
-      ,{ 0xFF61, 0xFF9F ,   UCODETB_SBCS  } //katakana             //~v640R~
+//      ,{ 0xFF61, 0xFF9F ,   UCODETB_SBCS  } //katakana             //~v640R~//~v79tR~
 #else        //by logic; treate wcwidth<=0 as unprintable,wcwith=2 as sbcs of 2 column//~v640R~
 //    ,{ 0x0080, 0x009f ,   UCODETB_SBCS  } //test unprintable     //~v62UR~
 //    ,{ 0x00a3, 0x00a3 ,   UCODETB_WIDE  } //fontw=2 SBCS;  pond  //~v62UR~
@@ -3001,9 +3685,13 @@ int utftbsrch_cjk(ULONG Pucs)                                      //~v62UR~
 //    ,{ 0xFFF9, 0xFFFB ,   UCODETB_SBCS  } //width=0 by mk_wcwidth//~v62UR~
 #endif                                                             //~v640I~
   };                                                               //~v62UR~
+int utftbsrch_cjk(ULONG Pucs)	//static tbl to out of function    //~v79fR~
+{                                                                  //~v79fR~
 //  int datatype;                                                  //~v62UR~//~v65eR~
     int datatype=0;                                                //~v65eI~
 //*******************************                                  //~v62UR~
+    if (!UTF_ADJUSTMODE())                                         //~v79ER~
+        return 0;                                                  //~v79ER~
 #ifdef UTF8UCS2                                                    //~v640I~
     if (Gudbcschk_flag & UDBCSCHK_UTF8 //env is utf8;wcwidth is common to all locale//~v640R~
 //	&&  Sutftbopt & SUO_CONSOLE)	//old terminal emulator        //~v640I~//~v655R~
@@ -3019,7 +3707,7 @@ int utftbsrch_cjk(ULONG Pucs)                                      //~v62UR~
     {                                                              //~v655R~
 //      datatype=0;                                                //~v640I~//~v655R~
     	datatype=utftbsrch(Pucs,Suctb_utf8_XXE,sizeof(Suctb_utf8_XXE)/sizeof(UCODETB));//~v655R~
-        UTRACEP("%s:utftbsrch_utf8_XXE datatype=%x,ucs=%x\n",UTT,datatype,Pucs);//~v655R~//~v6uER~//~v6WnR~
+        UTRACEP("%s:utftbsrch_utf8_XXE datatype=0x%x,ucs=0x%x\n",UTT,datatype,Pucs);//~v655R~//~v6uER~//~v6WnR~//~v798R~
 //        if (!datatype)                                             //~v6WkI~//~v6WnR~
 //        {                                                          //~v6WkI~//~v6WnR~
 //            if (utf4_isAmbiguous_XXE(0,(UWUCS)Pucs))               //~v6WkR~//~v6WnR~
@@ -3050,11 +3738,71 @@ int utftbsrch_cjk(ULONG Pucs)                                      //~v62UR~
    			datatype=(UTFWWF_F1C1|2);  //narrow(fontwidth=1) DBCS  //~v62UR~
         else                                                       //~v62UR~
 		if (datatype==UCODETB_WIDE)                                //~v62UR~
+        {                                                          //~v798I~
    			datatype=(UTFWWF_F2C1|2);  //wide font                 //~v62UR~
+//      	UTRACEP("%s:@@@@F2C1 ucs=0x%04x\n",UTT,Pucs);          //~v798I~//~v79eR~
+        }                                                          //~v798I~
     }                                                              //~v62UR~
 //    UTRACEP("utftbsrch_cjk datatype=%x,ucs=%x\n",datatype,Pucs);   //~v650R~//~v65eR~//~v6hHR~//~v6uER~
     return datatype;                                               //~v62UR~
 }//utftbsrch_cjk                                                   //~v62UR~
+//******************************************************           //~v79fR~
+//LNX:chk F2C1 to chk cursor width for XXE under no DBCS env           //~v79fR~//~vbzjR~
+//******************************************************           //~v79fR~
+int utftbsrch_NO_cjk(ULONG Pucs)                                   //~v79fR~
+{                                                                  //~v79fR~
+    int datatype=0,rc=0;                                           //~v79fR~
+//*******************************                                  //~v79fR~
+    if (!UTF_ADJUSTMODE())                                         //~v79ER~
+        return 0;                                                  //~v79ER~
+    if (Gudbcschk_flag & UDBCSCHK_UTF8 //env is utf8;wcwidth is common to all locale//~v79fR~
+    )                                                              //~v79fR~
+  {                                                                //~v79fR~
+    if (Sutftbopt & SUO_CONSOLE)	//old terminal emulator        //~v79fR~
+    {                                                              //~v79fR~
+    	datatype=utftbsrch(Pucs,Suctb_utf8,sizeof(Suctb_utf8)/sizeof(UCODETB));//~v79fR~
+    }                                                              //~v79fR~
+    else                                                           //~v79fR~
+    {                                                              //~v79fR~
+    	datatype=utftbsrch(Pucs,Suctb_utf8_XXE,sizeof(Suctb_utf8_XXE)/sizeof(UCODETB));//~v79fR~
+        UTRACEP("%s:utftbsrch_utf8_XXE datatype=%c,ucs=0x%x\n",UTT,datatype,Pucs);//~v79fR~
+        if (datatype==UCODETB_SBCSF)                               //~v79fR~
+        {                                                          //~v79fR~
+            datatype=UCODETB_SBCS|UTFWWF_SBCSF;	//set flag         //~v79fR~
+        }                                                          //~v79fR~
+    }                                                              //~v79fR~
+  }                                                                //~v79fR~
+//  if (!datatype)                                                 //~v79fR~
+//  {//no entry meaningfull                                        //~v79fR~
+//    if (Sutftbopt & SUO_CONSOLE)    //old terminal emulator      //~v79fR~
+//        datatype=utftbsrch(Pucs,Suctb_cjk_console,sizeof(Suctb_cjk_console)/sizeof(UCODETB));//~v79fR~
+//    else                                                         //~v79fR~
+//        datatype=utftbsrch(Pucs,Suctb_cjk,sizeof(Suctb_cjk)/sizeof(UCODETB));//~v79fR~
+//  }                                                              //~v79fR~
+    UTRACEP("%s:tblsrch datatype=0x%x,ucs=%x\n",UTT,datatype,Pucs);//~v79fR~
+    if (datatype)                                                  //~v79fR~
+    {                                                              //~v79fR~
+	    UTRACEP("%s:found datatype=%c\n",UTT,datatype);            //~v79fI~
+		if (datatype & UCODETB_UNPF) //unprintable entry           //~v79fR~
+        	rc=-1;      //not 0 to return this value               //~v79fR~
+        else                                                       //~v79fR~
+//      if (datatype==UCODETB_NARROW)                              //~v79fR~
+//          datatype=(UTFWWF_F1C1|2);  //narrow(fontwidth=1) DBCS  //~v79fR~
+//      else                                                       //~v79fR~
+		if (datatype==UCODETB_WIDE)                                //~v79fR~
+        {                                                          //~v79fR~
+   			rc=(UTFWWF_F2C1|2);  //wide font                       //~v79fR~
+        }                                                          //~v79fR~
+        else                                                       //~v79fR~
+		if (datatype==UCODETB_SBCS)                                //~v79fR~
+        	rc=1;                                                  //~v79fR~
+        else                                                       //~v79fR~
+		if (datatype==UCODETB_DBCS)                                //~v79fR~
+        	rc=2;                                                  //~v79fR~
+    }                                                              //~v79fR~
+    UTRACEP("%s:rc=0x%x,return datatype=0x%x,ucs=0x%04x\n",UTT,rc,datatype,Pucs);//~v79fR~//~v79gR~
+    return rc;                                                     //~v79fR~
+}//utftbsrch_NO_cjk                                                //~v79fR~
 #endif // LNX                                                      //~v62XI~
 #ifdef LNX                                                         //~v6VbI~
 //******************************************************           //~v6VbI~
@@ -3114,7 +3862,7 @@ int utf3_wcwidthXXE(int Popt,UWUCS Pucs,int *Ppflag,int *Pprc)     //~v6VbI~
     	*Ppflag=flag;                                              //~v6VbI~
     if (Pprc)                                                      //~v6VbI~
     	*Pprc=rc;                                                  //~v6VbI~
-    UTRACEP("%s:ucs=%06x,UDBCSCHK_UTF8=%d,len=%d,flag=%x,rc=%x\n",UTT,Pucs,(Gudbcschk_flag & UDBCSCHK_UTF8)!=0,len,flag,rc);//~v6VbI~
+    UTRACEP("%s:ucs=0x%04x,UDBCSCHK_UTF8=%d,len=%d,flag=%x,rc=%x\n",UTT,Pucs,(Gudbcschk_flag & UDBCSCHK_UTF8)!=0,len,flag,rc);//~v6VbI~//~v79gR~
     return len;                                                    //~v6VbI~
 }//utf3_wcwidthXXE                                                 //~v6VbI~
 #else     //!AAA                                                   //~v6VbI~
@@ -3134,15 +3882,17 @@ int utf3_wcwidthXXE(int Popt,UWUCS Pucs,int *Ppflag,int *Pprc)     //~v6VbI~
 	Sutftbopt |= swconsole;                                        //~v6VbI~
     if (Ppflag)                                                    //~v6VbI~
     	*Ppflag=flag;                                              //~v6VbI~
-    UTRACEP("%s:ucs=%06x,UDBCSCHK_UTF8=%d,rc=len=%d,flag=%\n",UTT,Pucs,(Gudbcschk_flag & UDBCSCHK_UTF8)!=0,len,flag);//~v6VbI~//~v6X3R~
+    UTRACEP("%s:ucs=0x%04x,UDBCSCHK_UTF8=%d,rc=len=%d,flag=%\n",UTT,Pucs,(Gudbcschk_flag & UDBCSCHK_UTF8)!=0,len,flag);//~v6VbI~//~v6X3R~//~v79gR~
     return len;                                                    //~v6VbI~
 }//utf3_wcwidthXXE                                                 //~v6VbI~
 #endif	//!AAA                                                     //~v6VbI~
 #endif //LNX                                                       //~v6VbI~
 #ifdef W32                                                         //~v6V4I~
 #ifndef WXE                                                        //~v6V4I~
+#ifdef AAA  //No Caller                                            //~vbzjR~
 //******************************************************           //~v6V4I~
 //*to test WXE by console version                                  //~v6V4I~
+//*No Caller                                                       //~vbzjI~
 //******************************************************           //~v6V4I~
 int utf3_wcwidthWXE(int Popt,UWUCS Pucs,int *Ppflag,int *Pprc)     //~v6V4I~
 {                                                                  //~v6V4I~
@@ -3160,5 +3910,6 @@ int utf3_wcwidthWXE(int Popt,UWUCS Pucs,int *Ppflag,int *Pprc)     //~v6V4I~
 	Sutftbopt |= swconsole;                                        //~v6WpI~
     return len;                                                    //~v6V4I~
 }//utf3_wcwidthWXE                                                 //~v6V4I~
+#endif  //AAA                                                      //~vbzjI~
 #endif  //!WXE                                                     //~v6V4I~
 #endif  //W32                                                      //~v6V4I~

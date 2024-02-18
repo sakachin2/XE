@@ -1,8 +1,10 @@
-//*CID://+vbyxR~:                             update#=  734;       //~vbyxR~
+//*CID://+vc72R~:                             update#=  743;       //~vc72R~
 //************************************************************* //~v051I~
 //*xedcmd2.c                                                       //~v58JR~
 //* xprint,system,submit,spawn                                     //~v51XR~
 //************************************************************* //~v051I~
+//vc72 2023/08/21 vc71 did not work, jni call at on destry will be ignored; clear it on java//~vc72I~
+//vbz0:230815 ARM:(vbyu & vbyw)ufullpath is not effective for iconv, so support ~/ to $HOME at dcmd2//~vbz0I~
 //vbyx:230725 ARM:alternative of vbyr. drop copytemp but rep // by real path if available://~vbyxI~
 //vc5r 2023/07/25 try /sdcard for realpath for api<30              //~vc5rI~
 //vbyw:230718 ARM:rep vbyu to chk ~ in ufullpath to avoid rep ~ of not file parm.//~vbyuI~
@@ -367,7 +369,7 @@
 #define XXETEMPCMDFNM   "xxe_tmp"                                  //~v64fI~
 //#define XPTEMPWK     "::XE!XPWK!"                                //~v19ER~
 //#define XPTEMPWK     "::XE_XPWK_"                                //~v638R~
-//#define HOMEDIR     '~'     // HOME= ~/xxx                       //~vbyuR~
+#define HOMEDIR     '~'     // HOME= ~/xxx                       //~vbyuR~//~vbz0R~
 #define CURDIR      '.'		// HOME= ~/xxx                         //~v77ZI~
                                                                    //~v20JI~
 #ifdef UNX                                                         //~v20JI~
@@ -1515,19 +1517,21 @@ int dcmdsystemcall(PUCLIENTWE Ppcw,char *Pcmd,int Pflag,char *Pstdofnm,char *Pst
 #endif                                                             //~v21fI~
     return rc;                                                  //~v056I~
 }//dcmdsystemcall                                               //~v056I~
-////****************************************************************//~vbyuR~
-//int repfnmhome(int Popt,char *Pparm/* "~/xxx" */,char *Pfpath)   //~vbyuR~
-//{                                                                //~vbyuR~
-//    int rc=0;                                                    //~vbyuR~
-//    char *phome=getenv("HOME");                 //system env     //~vbyuR~
-//    if (phome)                                                   //~vbyuR~
-//    {                                                            //~vbyuR~
-//        sprintf(Pfpath,"%s%s",phome,Pparm+1);                    //~vbyuR~
-//        rc=1;   //replaced                                       //~vbyuR~
-//    }                                                            //~vbyuR~
-//    UTRACEP("%s:rc=%d,parm=%s,fpath=%s,HOME=%s\n",UTT,rc,Pparm,Pfpath,phome);//~vbyuR~
-//    return rc;                                                     //~vbyvI~//~vbyuR~
-//}                                                                //~vbyuR~
+#ifdef ARMXXE                                                      //~vbz0I~
+//****************************************************************//~vbyuR~//~vbz0R~
+int repfnmhome(int Popt,char *Pparm/* "~/xxx" */,char *Pfpath)   //~vbyuR~//~vbz0R~
+{                                                                //~vbyuR~//~vbz0R~
+    int rc=0;                                                    //~vbyuR~//~vbz0R~
+    char *phome=getenv("HOME");                 //system env     //~vbyuR~//~vbz0R~
+    if (phome)                                                   //~vbyuR~//~vbz0R~
+    {                                                            //~vbyuR~//~vbz0R~
+        sprintf(Pfpath,"%s%s",phome,Pparm+1);                    //~vbyuR~//~vbz0R~
+        rc=1;   //replaced                                       //~vbyuR~//~vbz0R~
+    }                                                            //~vbyuR~//~vbz0R~
+    UTRACEP("%s:rc=%d,parm=%s,fpath=%s,HOME=%s\n",UTT,rc,Pparm,Pfpath,phome);//~vbyuR~//~vbz0R~
+    return rc;                                                     //~vbyvI~//~vbyuR~//~vbz0R~
+}                                                                //~vbyuR~//~vbz0R~
+#endif                                                             //~vbz0I~
 //**************************************************************** //~v77ZI~
 #ifdef ARMXXE                                                      //~vbyuI~
 int repcdirShared(int Popt,char *Pparm/* ".(/xxx)" */,char *Pfpath)//~v77ZI~
@@ -1575,7 +1579,7 @@ int dcmdscrfnmedit(int Popt,PUCLIENTWE Ppcw,UCHAR *Pcmd,char  **Ppout)//~v77yR~
 	parm=0;	//req malloc outarea                                   //~v77yR~
     if (!strchr(Pcmd,SAMEDIR))  //no *\ nor ^*\ exist              //~v77yR~
 #ifdef ARMXXE                                                      //~vbyuI~
-//      if (!strchr(Pcmd,HOMEDIR))  //no *\ nor ^*\ exist          //~vbyuR~
+       if (!strchr(Pcmd,HOMEDIR))  //no *\ nor ^*\ exist          //~vbyuR~//~vbz0R~
        if (!strchr(Pcmd,CURDIR))  //no '.'                         //~v77ZI~
 #endif                                                             //~vbyuI~
     	return 0;                                                  //~v77yR~
@@ -1609,18 +1613,19 @@ int dcmdscrfnmedit(int Popt,PUCLIENTWE Ppcw,UCHAR *Pcmd,char  **Ppout)//~v77yR~
             repcnt++;                                              //~v77yR~
         }                                                          //~v77yR~
 #ifdef ARMXXE                                                      //~vbyuI~
-//        else                                                     //~vbyuR~
-//        if ((*pc2==HOMEDIR)                                      //~vbyuR~
-//        &&  repfnmhome(0,pc2,fpath))                             //~vbyuR~
-//        {                                                        //~vbyuR~
-//            if (strchr(fpath,' '))                               //~vbyuR~
-//            {                                                    //~vbyuR~
-//                uparseindir(0,fpath,fpath2,_MAX_PATH);           //~vbyuR~
-//                strcpy(fpath,fpath2);                            //~vbyuR~
-//            }                                                    //~vbyuR~
-//            len=(int)strlen(fpath)+redirectid;                   //~vbyuR~
-//            repcnt++;                                            //~vbyuR~
-//        }                                                        //~vbyuR~
+        else                                                     //~vbyuR~//~vbz0R~
+        if ((*pc2==HOMEDIR)                                      //~vbyuR~//~vbz0R~
+        &&  (*(pc2+1)=='/' || *(pc2+1)==0) // ~ or ~/             //~vbz0I~
+        &&  repfnmhome(0,pc2,fpath))                             //~vbyuR~//~vbz0R~
+        {                                                        //~vbyuR~//~vbz0R~
+            if (strchr(fpath,' '))                               //~vbyuR~//~vbz0R~
+            {                                                    //~vbyuR~//~vbz0R~
+                uparseindir(0,fpath,fpath2,_MAX_PATH);           //~vbyuR~//~vbz0R~
+                strcpy(fpath,fpath2);                            //~vbyuR~//~vbz0R~
+            }                                                    //~vbyuR~//~vbz0R~
+            len=(int)strlen(fpath)+redirectid;                   //~vbyuR~//~vbz0R~
+            repcnt++;                                            //~vbyuR~//~vbz0R~
+        }                                                        //~vbyuR~//~vbz0R~
         else                                                       //~v77ZI~
         if (*pc2==CURDIR                                           //~v77ZR~
 		&&  repcdirShared(0,pc2,fpath))                                  //~v77ZI~
@@ -1678,23 +1683,24 @@ int dcmdscrfnmedit(int Popt,PUCLIENTWE Ppcw,UCHAR *Pcmd,char  **Ppout)//~v77yR~
             memcpy(pco,fpath,(UINT)len);                           //~v77yR~
         }                                                          //~v77yR~
 #ifdef ARMXXE                                                      //~vbyuI~
-//        else                                                     //~vbyuR~
-//        if ((*pc2==HOMEDIR)                                      //~vbyuR~
-//        &&  repfnmhome(0,pc2,fpath))                             //~vbyuR~
-//        {                                                        //~vbyuR~
-//            if (redirectid)                                      //~vbyuR~
-//            {                                                    //~vbyuR~
-//                memcpy(pco,pc,(UINT)redirectid);                 //~vbyuR~
-//                pco+=redirectid;                                 //~vbyuR~
-//            }                                                    //~vbyuR~
-//            if (strchr(fpath,' '))                               //~vbyuR~
-//            {                                                    //~vbyuR~
-//                uparseindir(0,fpath,fpath2,_MAX_PATH);           //~vbyuR~
-//                strcpy(fpath,fpath2);                            //~vbyuR~
-//            }                                                    //~vbyuR~
-//            len=(int)strlen(fpath);                              //~vbyuR~
-//            memcpy(pco,fpath,(UINT)len);                         //~vbyuR~
-//        }                                                        //~vbyuR~
+        else                                                     //~vbyuR~//~vbz0R~
+        if ((*pc2==HOMEDIR)                                      //~vbyuR~//~vbz0R~
+        &&  (*(pc2+1)=='/' || *(pc2+1)==0) // ~ or ~/             //~vbz0I~
+        &&  repfnmhome(0,pc2,fpath))                             //~vbyuR~//~vbz0R~
+        {                                                        //~vbyuR~//~vbz0R~
+            if (redirectid)                                      //~vbyuR~//~vbz0R~
+            {                                                    //~vbyuR~//~vbz0R~
+                memcpy(pco,pc,(UINT)redirectid);                 //~vbyuR~//~vbz0R~
+                pco+=redirectid;                                 //~vbyuR~//~vbz0R~
+            }                                                    //~vbyuR~//~vbz0R~
+            if (strchr(fpath,' '))                               //~vbyuR~//~vbz0R~
+            {                                                    //~vbyuR~//~vbz0R~
+                uparseindir(0,fpath,fpath2,_MAX_PATH);           //~vbyuR~//~vbz0R~
+                strcpy(fpath,fpath2);                            //~vbyuR~//~vbz0R~
+            }                                                    //~vbyuR~//~vbz0R~
+            len=(int)strlen(fpath);                              //~vbyuR~//~vbz0R~
+            memcpy(pco,fpath,(UINT)len);                         //~vbyuR~//~vbz0R~
+        }                                                        //~vbyuR~//~vbz0R~
         else                                                       //~vbyuI~
         if (*pc2==CURDIR                                           //~v77ZI~
 		&&  repcdirShared(0,pc2,fpath))                                  //~v77ZI~
@@ -1734,8 +1740,8 @@ int dcmdscrfnmedit(int Popt,PUCLIENTWE Ppcw,UCHAR *Pcmd,char  **Ppout)//~v77yR~
 int getParmRealPath(char *Pfpath,char *Prpath)                     //~vbykI~
 {                                                                  //~vbykI~
     int len;                                                       //~vbykI~
-	if (!ufile_isGrantedMemberAccess())                            //+vbyxI~
-    	return 4;                                                  //+vbyxI~
+	if (!ufile_isGrantedMemberAccess())                            //~vbyxI~
+    	return 4;                                                  //~vbyxI~
 	int rc=ufile_getRealpath(Pfpath,Prpath,0/*strUri*/);           //~vbykR~
 	len=getShortpathRootLen(Pfpath);               //~v77zI~//~vbykI~
     if (*(Pfpath+len))                                             //~vbykI~
@@ -1904,16 +1910,16 @@ int dcmdwkdiredit(UCHAR *Pcmd,char  **Ppout)                       //~v095R~
         pc3+=ulen2;                                             //~v05xR~
         memcpy(pc3,Gworkdir,ulen1);                             //~v05xR~
         pc1=pc2+WORKDIRPATHIDLEN;                               //~v05xR~
-        if (!*pc1 || *pc1==' ')  //not subdir                      //~vbyvR~//~vbyuR~
-        {                                                          //~vbyvI~//~vbyuR~
-#ifdef UNX                                                         //~vbyvI~//~vbyuR~
-            if (!memcmp(*Ppout,CMD_XFG,sizeof(CMD_XFG)-1))          //~vbyvI~//~vbyuR~
-#else                                                              //~vbyvI~//~vbyuR~
-            if (!memicmp(*Ppout,CMD_XFG,sizeof(CMD_XFG)-1))         //~vbyvI~//~vbyuR~
-#endif                                                             //~vbyvI~//~vbyuR~
-            {                                                      //~vbyvI~//~vbyuR~
+        if (!*pc1 || *pc1==' ')  //not subdir                      //~vbyvR~
+        {                                                          //~vbyvR~
+#ifdef UNX                                                         //~vbyvR~
+            if (!memcmp(*Ppout,CMD_XFG,sizeof(CMD_XFG)-1))         //~vbyvR~
+#else                                                              //~vbyvR~
+            if (!memicmp(*Ppout,CMD_XFG,sizeof(CMD_XFG)-1))        //~vbyvR~
+#endif                                                             //~vbyvR~
+            {                                                      //~vbyvR~
                 uerrmsg("xfg in ::(workdir) is not allowed. Use it out of xe",//~vbyvI~//~vbyuR~//~vbyvR~
-                        "::(ワークディレクトリー)内への xfg はできません。xe の外でxfg してください");//~vbyvI~//~vbyuR~//~vbyvR~
+                        "::(ワークディレクトリー)内への xfg はできません。xe の外でxfg してください");//~vbyvR~
                 ufree(*Ppout);                                     //~vbyuR~
                 return 4;                                          //~vbyvI~//~vbyuR~
             }                                                      //~vbyvI~//~vbyuR~
@@ -2950,6 +2956,9 @@ int dcmdgetsofname(UCHAR *Psofname,UCHAR *Pfullpath)                  //~v06zR~
                 *Slockfnm=0;   //id of free                        //~v21fI~
                 continue;                                          //~v21fI~
             }                                                      //~v21fI~
+#ifdef ARMXXE                                                      //~vc72I~
+            ufile_notifyLockfile(Slockfnm);                        //~vc72I~
+#endif                                                             //~vc72I~
         }                                                          //~v21fI~
 //#endif                                                           //~v79PR~
         if (!(fh=fopen(fpath,"w")))  //lock chk                    //~v57tR~
@@ -3102,12 +3111,16 @@ int dcmdterm(void)                                              //~v06nI~
         }                                                       //~v06nI~
     }//for wrap                                                 //~v06nI~
 #endif                                                                //~v06xI~
+    UTRACEP("%s:Slockfnm=%s\n",UTT,Slockfnm);                      //~vbz0M~
 #ifdef UNX                                                         //~v21fM~
 	dcmdfresetlock2();                                             //~v21fR~
 #endif                                                             //~v79PI~
     if (*Slockfnm) //I'v gotten lock SOn lock                      //~v21fI~
+    {                                                              //~vbz0I~
+        UTRACEP("%s:call usetlock UNLOCK fnm=%s\n",UTT,Slockfnm);      //~vbz0I~//+vc72R~
 //  	unx_fresetlock(Slockfnm);	//free                         //~v79PR~
 		ufsetlock(UFSLO_UNLOCK,Slockfnm);                          //~v79PR~
+    }                                                              //~vbz0I~
 //#endif                                                           //~v79PR~
     dcmdwdclear();  //for grepwork etc                             //~v636I~
     UTRACEP("%s:return rc=%d\n",UTT,rc);                           //~vbyvI~
@@ -3270,6 +3283,7 @@ int dcmdxxe1cmd(char *Pcmd)                                        //~v64fI~
 //**************************************************************** //~v21fI~
 void dcmdfresetlock2(void)                                         //~v21fI~
 {                                                                  //~v21fI~
+    UTRACEP("%s:Slockfnm2=%s\n",UTT,Slockfnm2);                    //+vc72I~
     if (*Slockfnm2) //I'v gotten lock                              //~v21fI~
     {                                                              //~v21fI~
     	unx_fresetlock(Slockfnm2);	//free                         //~v21fI~

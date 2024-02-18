@@ -1,9 +1,10 @@
-//*CID://+vbs7R~:                             update#=  551;       //+vbs7R~
+//*CID://+vc60R~:                             update#=  552;       //~vbs7R~//+vc60R~
 //************************************************************* //~5428I~
 //* xefunc2.c
 //*        func_char,quit,term,exit,reset,retrieve,help,key,exe    //~v55nR~
 //*************************************************************
-//vbs7:201028 Debian10 compiler warning -Wformat-overflow          //+vbs7I~
+//vc60 2023/08/03 mediaview as openWith                            //+vc60I~
+//vbs7:201028 Debian10 compiler warning -Wformat-overflow          //~vbs7I~
 //vbrg:200824 (AXE)xehelp is now included in assets folder         //~vbrgI~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vb86:170216 display cmdline ctr excluded(fcmd:x,xx; lcmd x)      //~vb86I~
@@ -1361,8 +1362,8 @@ int func_help(PUCLIENTWE Ppcw)                                  //~5428I~
 //    #endif                                                       //~v71AR~
 //#endif                                                           //~v71AR~
 #if defined(W32) || defined(LNX)                                   //~v71AM~
-//  char fpathwk[_MAX_PATH],fpathwk2[_MAX_PATH];                   //~v71AM~//+vbs7R~
-    char fpathwk[_MAX_PATH],fpathwk2[_MAX_PATH+256];               //+vbs7I~
+//  char fpathwk[_MAX_PATH],fpathwk2[_MAX_PATH];                   //~v71AM~//~vbs7R~
+    char fpathwk[_MAX_PATH],fpathwk2[_MAX_PATH+256];               //~vbs7I~
     char *htmlnm,*pc,*tophtml=0;                                   //~v71AM~
   #ifdef LNX                                                       //~v71CI~
   	int ii;                                                        //~v71CI~
@@ -1514,7 +1515,11 @@ int func_help(PUCLIENTWE Ppcw)                                  //~5428I~
 #endif                                                             //~v71CI~
         return 4;                                                  //~v71AM~
     }                                                              //~v71AM~
+#ifdef ARM                                                         //+vc60I~
+    rc=dlcmdopenwithsub(Ppcw,tophtml,0L);                          //+vc60I~
+#else                                                              //+vc60I~
     rc=dlcmdopenwithsub(Ppcw,tophtml);                             //~v71AM~
+#endif                                                             //+vc60I~
     if (!rc)                                                       //~v71AM~
 			uerrmsg("Browser was kicked.(%s)",                     //~v71CR~
                     "ブラウザーを起動しました。(%s)",              //~v71CR~

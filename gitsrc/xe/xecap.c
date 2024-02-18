@@ -1,8 +1,9 @@
-//*CID://+vbdrR~:                                   update#=  279; //~vbdrR~
+//*CID://+vbz7R~:                                   update#=  283; //~vbz7R~
 //*************************************************************
 //*xecap.c                                                         //~v66jR~
 //* cut and paste
 //************************************************************* //~v069I~
+//vbz7:240122 (BUG:gxe) 0c4 by mouse middle button(Paste) when clipboard is null//~vbz7I~
 //vbdr:171130 support label and lineno range option to SEL command //~vbdrI~
 //vbd8:171120 (WXE)stdregion by PFK(F6) should disable PAste REP/INS//~vbd8I~
 //vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
@@ -814,11 +815,11 @@ int capselectallfile(PUCLIENTWE Ppcw)                              //~vbd2I~
 //*******************                                              //~vbd2I~
 //  if (!CSRONFILELINE(Ppcw))				//out of screen        //~vbd2R~
 //		return errcsrpos();                                        //~vbd2R~
-//  if (capsavepointselectall(Ppcw,0)) //startpoint                //~vbd2I~//+vbdrR~
-    if (capsavepointselectall(Ppcw,0,0,0)) //startpoint            //+vbdrI~
+//  if (capsavepointselectall(Ppcw,0)) //startpoint                //~vbd2I~//~vbdrR~
+    if (capsavepointselectall(Ppcw,0,0,0)) //startpoint            //~vbdrI~
 		return 4;                                                  //~vbd2I~
-//  if (capsavepointselectall(Ppcw,1))                             //~vbd2R~//+vbdrR~
-    if (capsavepointselectall(Ppcw,1,0,0))                         //+vbdrI~
+//  if (capsavepointselectall(Ppcw,1))                             //~vbd2R~//~vbdrR~
+    if (capsavepointselectall(Ppcw,1,0,0))                         //~vbdrI~
 		return 4;                                                  //~vbd2R~
     for (plh=Gcapplh1;plh;plh=UGETQNEXT(plh))                      //~vbd2R~
     {                                                              //~vbd2R~
@@ -2617,6 +2618,9 @@ int capsavedata(PUCLIENTWE Ppcw)
  	PUCLIENTWE pcw;
 	int blocksw,len,rc=0;                                          //~v500R~
     int addsosi;                                                   //~vagDI~
+#ifdef WXEXXE                                                      //+vbz7I~
+    int rc_linecmd=0;                                              //~vbz7R~
+#endif                                                             //+vbz7I~
 //*******************
 //#ifdef WXE                                                       //~v641R~
 #ifdef WXEXXE                                                      //~v641I~
@@ -2693,6 +2697,7 @@ int capsavedata(PUCLIENTWE Ppcw)
     strcpy(plh->ULHlinecmd,"C");	//sim copy fcmd                //~v500M~
     UCBITON(pfh->UFHflag6,UFHF6NOUNDO);  //skip save undo data(for ::cb)//~v585I~
 	rc=filelinecmd(pcw);	//lcmdcopy callback wxe                //~v500M~
+    rc_linecmd=rc;                                                 //~vbz7R~
     UCBITOFF(pfh->UFHflag6,UFHF6NOUNDO);  //skip save undo data(for ::cb)//~v585I~
   }                                                                //~v500M~
   else                                                             //~v500M~
@@ -2895,7 +2900,12 @@ int capsavedata(PUCLIENTWE Ppcw)
 	UCBITON(Sblockstat,SBLOCKSAVED);	//block copyed          //~5502I~
 #ifdef WXEXXE                                                      //~v70eI~
     if (!(Gwxestat & GWXES_MOUSECAPCOPY))	//operation by pfkey   //~v70eI~
+    {                                                              //~vbz7I~
+      if (!rc_linecmd)                                             //~vbz7R~
     	wxe_capcopytowincbfromxe();		//copy to windows clipboard//~v70eR~
+      else                                                         //~vbz7R~
+        UTRACEP("%s:@@@@ERR rc_linecmd=%d\n",UTT,rc_linecmd);      //~vbz7R~
+    }                                                              //~vbz7I~
 #endif                                                             //~v70eI~
 //  return 0;                                                      //~v500R~
     return rc;                                                     //~v500I~

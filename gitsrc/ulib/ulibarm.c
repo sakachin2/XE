@@ -1,4 +1,4 @@
-//*CID://+v77TR~:                             update#=  496;       //~v77TR~
+//*CID://+v77TR~:                             update#=  497;       //~v77TR~
 //**************************************************               //~v6a0I~
 //v77T:230708 ARM;locale was not set for xsub tool(pass Gjnilocale by putenv)//~v77TI~
 //v77Q:230630 (BUG)utempnam returns /sdcard, it cause permission err. use private for also XSUB//~v77QI~
@@ -130,6 +130,7 @@ static char Sfnm[_MAX_PATH];                                       //~v6a0R~
     pc2=getdatadir();                                             //~v6a0I~
     sprintf(Sfnm,"%s/tmp",pc2);                                    //~v6a0I~
     rc=ufstat(Sfnm,&ffb3);                                         //~v6a0I~
+    UTRACEP("%s:ufstat rc=%d,Sfnm=%s\n",rc,Sfnm);                  //+v77TI~
     if (!rc)                                                       //~v6a0I~
         return Sfnm;                                               //~v6a0I~
     if (!umkdir(Sfnm))                                             //~v6a0I~
@@ -145,7 +146,7 @@ char *gettempnampath(char *Ppath)                                  //~v6a0I~
 static char Sfnm[_MAX_PATH];                                       //~v6a0R~
 	char *pc;                                                      //~v6a0I~
 //**************                                                   //~v6a0I~
-    UTRACEP("%s:Ppath=%s\n",UTT,Ppath);                            //+v77TI~
+    UTRACEP("%s:Ppath=%s\n",UTT,Ppath);                            //~v77TI~
 	if (!Ppath || !*Ppath)                                         //~v6a0I~
     	return gettempdir();                                       //~v6a0I~
 	if (strlen(Ppath)>=4 && !memcmp(Ppath,"/tmp",4))               //~v6a0R~

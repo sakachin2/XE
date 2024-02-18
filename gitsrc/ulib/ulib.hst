@@ -1,3 +1,121 @@
+//v79Q:240215 W32:drop v79N; errournous cursor movement. and not effective on file contents.
+//            uvio2.c
+//v79P:240213 W32:chk unprintable by GetFontUnicodeRanges; but ineffective for Console.
+//            uvio2.c
+//v79N:240213 (WindowsTerminal)Consoel API:SetConsoleCursorInfo) is not effective. usr VT cmd.
+//            uvio2.c
+//v79M:240213 isolated combining character;defines it starting,ctrl and format.
+//            utf22.c/h
+//v79L:240213 (Bug) base for combining; !isctrl & isalpha is not same.(it should be allowed 00a0)
+//            utf22.c
+//v79K:240213 update Format(categrory Cf:161)
+//            utf4.c
+//v79J:240213 update combining(categrory Mc:SpacingMark/ctr:452)
+//            utf4.c
+//v79H:240211 update combining(categrory Mn:NonSpacingMark/1985)
+//            utf4.c
+//v79G:240210 (Bug:LNX) update SCM tbl
+//            utf4.c
+//v79F:240210 (Bug:LNX) ambiguous chk missing
+//            utf22.c
+//v79E:240209 LNX:like v79C, no tbl reference for xe/gxe.
+//            xe;-Nv:ambigous is all width=2, -Yv:ambiguous is all width=1(no string move occurs by cursor position)
+//            Yv/Nv apply to ambiguous width char.
+//            Byt yet remains some wide width character of Not-ambiguous and wcwidth()=1. 
+//            "cat" cmd on console screen seems to be following wcwidth().
+//            utf3.c utf.h
+//v79D:240209 (Bug)LNX:FORMAT was not effective
+//            utf3.c
+//v79C:240208 W32:unicode display width;when ambigous char is written by 2 cell,it consume 3 cell.
+//            Those shows half width glyph if written by 1 cell even full width when written by 2 cells.
+//            Finally I decided that write all ambiguous(including WIDE and F2C1 previously defined) by 1 cell except defined as DBCS.
+//            No adjusting tbl is not required.
+//            P.S) No tbl use but ambiguous draw by 2 cells if /Nv option
+//            utf3.c utf22.c utf.h
+//v79B:240208 W32:update Suctbj(w32 console sbcs/wide adjustment tbl) by current view.
+//            utf3.c
+//v79A:240206 no char width adjustment by tbl for ambiguous chars. we/gxe adjust by char width native api. console show those ambiguous chars by 2 cell.
+//            utf3.c
+//v79z:240206 dbcs chk by tbl search
+//            utf4.c utf.22.h utf3.c
+//v79y:240206 update combining data from web.
+//            utf4.c
+//v79x:240206 adjust ambiguous for console by Suctb_j.(no need to define Wide if ambiguous)
+//            utf3.c
+//v79w:240206 ambigous should be same to all gui because it is adjusted by chkcursor. del utf4_isambiguous_WXE
+//            utf4.c
+//v79v:240205 apply ambiguous of unicode database to wxe/gxe(chk cursor will be done).apply old ambiguous to console
+//            utf4.c
+//v79u:240205 now reduces unprintable
+//            utf3.c
+//v79t:240205 (LNX)no need to define katakana as sbcs ,mk_wcwidth returns 1.
+//            utf3.c
+//v79s:240205 (WXE)no need u2420/2e26 as sbcs/wide it is adjusted by chkcursor by ambiguous definition
+//           utf3.c utf4.c
+//v79r:240205 (WXE/XXE)fpr mapinit performance return always 1 at before HDC init
+//           utf3.c utf22.c
+//v79q:240204 (XXE)use same ambiguous tbl for JP ans non-JP(it is also same as console)
+//                 xxe do cursor chk, wider range of ucs code is no problem except performance.
+//           utf4.c
+//v79p:240203 add ux2is(get int[] from hex string 0x__,X___,u___ fmt with any spliter
+//           uedit.c/h
+//v79o:240202 (WXE)ambiguous/F2C1 chk for non JP env wxe; same as JP env 
+//           utf4.c
+//v79n:240201 (W32)ambiguous/F2C1 for non JP env
+//           utf4.c
+//v79m:240131 (W32)try cursor chk for console xe.(v796 was not implemented)
+//           utf22.c 
+//v79k:240125 (W32)like LNX set (u-e000--uf8ff) as WIDE. (currently JP env)
+//           utf3.c
+//v79j:240129 (W32)u2680-268f, xe:WIDE != wxe:SBCS, wxe chk cursor so define as WIDE on also we
+//           utf3.c
+//v79i:240128 (W32)add to combining tbl from web(Windows has no wcwidth(),so tbl definition required) 
+//           utf4.c
+//v79h:240128 (LNX)new combining char from web
+//           utf.h utf4.c
+//v79g:240125 (LNX)revive (u-e000--uf8ff) as WIDE, keep performace by setting dfault default -Nv
+//           utf3.c
+//v79f:240127 (LNX)ambiguous chk required for non CJK env
+//           utf4.c utf3.c
+//v79e:240125 (XXE)drop private area(u-e000--uf8ff) from widesbcs for performance of cursor width chk
+//           utf3.c
+//v79d:240123 (LNX & not ARM:Bug?)UTFWWO_API0 is not accompanied by UTFWWO_MK_WCWIDTH. it misses width=0 for wcwidth()=0.
+//           utf22.c
+//v79d:240123 (Bug)ucs->utf for UCS4 fails if \u option specified
+//           ucvucs.c
+//v79c:240123 (Bug)utf->ucs with UCS4 option,display uxxxx fmt if it is ucs2(<=0xffff)
+//           ucvucs.c
+//v79b:240123 (Bug)ucs2utf for ucs4 by \u. it did not get over 4byte hex.
+//           ucvucs.c
+//v79a:240120 (Bug)mapwidth0 issue warning even if sbcsid remains.
+//           utf22.c
+//v799:240119 v798 by table(kanji is not ambiguout)
+//           utf22.c  utf4.c
+//v798:240118 try v796 for ambigupus. 00a7,00a8,01cd,...
+//           utf22.c
+//v798:240118 u2033 is csr width=2 on conhost but utfwcwidth=2, define as wide sbcs to change to with=1 on terminal by v796
+//           utf3.c
+//v797:240118 wcwidth=1-->2 for u267f(car chair)
+//           utf3.c
+//v796:240118 W32:try to chk cursor step for cpu8 file.
+//            Adjust culumn width by uftwcwidth for cursor width is single column to avoid column string move by cursor position
+//           utf22.c uvio2.c/h
+//v795:240115 W32:double quote(u-201c) is not wide sbcs on also console mode==>not Fixed
+//            locale file use writeconsoleoutputcharacter(sjis)<--xe ok
+//            cpu8 file use writeconsoleoutputcharacterW(ucs)<--xew ok but xe ng
+//            on conhost, no problem for both dbcs and widesbcs !
+//           utf3.c
+//v794:230818 ARM:confirm IS_DOCPATH excepting "///"
+//           ufile2l.c ufiledoc.c/h
+//v793:230817 ARM:(BUG)dlcmd attr missing translate //spname to realpath
+//           ufile2l.c ufiledoc.c/h
+//v792:230817 ARM:close detached FD
+//           ufiledoc.c
+//v791:230817 ARM:change uerrmsg trace euc to sjis
+//           ucvext.c udbcschk.c
+//v790:230816 ARM:change ucstbl:start dbcs 12000-->1e000 to avoid warning msg
+//           utf22.h
+//*********  20230811 v129.3 Axe release  *******************************
 //v786:230724 ARM:try to set env:PWD by cd for file parameter of tools
 //           ufiledoc.c ufile1l.c
 //v785:230722 ARM:xopy loop when src is wildcard

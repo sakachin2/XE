@@ -1,8 +1,10 @@
-//CID://+vbyxR~:        update#=    114                            //+vbyxR~
+//CID://+vc72R~:        update#=    116                            //+vc72R~
 //******************************************************           //~v327I~
 //*ufilel.h   UNIX version                                         //~v327I~
 //******************************************************           //~v327I~
-//vbyx:230725 ARM:alternative of vbyr. drop copytemp but rep // by real path if available://+vbyxI~
+//vc72 2023/08/21 vc71 did not work, jni call at on destry will be ignored; clear it on java//+vc72I~
+//v793:230817 ARM:(BUG)dlcmd attr missing translate //spname to realpath//~v793I~
+//vbyx:230725 ARM:alternative of vbyr. drop copytemp but rep // by real path if available://~vbyxI~
 //vc5r 2023/07/25 try /sdcard for realpath for api<30              //~vc5rI~
 //vc5n 2023/07/19 copyDoc needs copy timestamp                     //~vc5nI~
 //v77Z:230718 ARM;support CD to shared storage                     //~v77ZR~
@@ -88,7 +90,7 @@ int ufile_statDoc(char *Pfpath,void *Ppstatbuff);                  //~v77mR~
 int ufile_getCopyTemp(int Popt,char *Pfpath,char *Ptempfnm);       //~vbyhI~
 #define UFGCTO_INIT 0x01                                           //~vbyhI~
 int ufile_isGrantedAllFiles();                                     //~v77zI~
-int ufile_isGrantedMemberAccess();                                 //+vbyxI~
+int ufile_isGrantedMemberAccess();                                 //~vbyxI~
 int ufile_getRealpath(char *Pshortpath,char *Prpath,char *PstrUri);//~v77zR~
 int getShortpathRootLen(char *Pshortpath);                         //~v77zR~
                                                                    //~v77zI~
@@ -98,4 +100,6 @@ char *ufiledoc_cwdReal(unsigned char *Pbuff);                      //~vc5rI~
 int ufiledoc_chdir(int Popt,unsigned char *Ppath,int *Pprc);       //~v77ZR~
 int ufiledoc_utimes(char *Pfnm,struct timeval *Ptv);               //~vc5nI~
 int ufiledoc_setArmPWD(int Popt,unsigned char *Ppath);             //~vc5nI~
+int ufiledoc_chmod(UCHAR *Pfname,mode_t Pmode,int *Pperrno);       //~v793I~
+void ufile_notifyLockfile(char *Pfnm);                             //+vc72I~
 #endif  //ARMXXE                                                   //~v777I~//~v77bR~

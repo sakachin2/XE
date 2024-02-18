@@ -1,3 +1,55 @@
+//vbzp:240210 -Yv/Nv parm for also xe console
+//           xe.c
+//vbzn:240207 char width adjustment for console. adjust by tbl if /Yv.
+//           xe.c
+//vbzm:240203 monospace determination is by dbcs(wide)=sbcs(single)*2 not by size of 'A'= size of ('W) by web document
+//           wxecsub.c
+//vbzk:240202 finaly ccursor chk for cell width is LNX(xe,gxe) and WXE.
+//           xe.c 
+//vbzj:240202 Test option /UUxxxx; set unicode for debug breaking at utfwcwidthsub.
+//           xe.c utf.h utf3.c
+//vbzi:240201 (WXE)vbz4 had no effect. Reason is font=System. SelectFont was not done at scrinit.
+//           wxescr.c wxecsub.c/h
+//vbzh:240201 (WXE)try GetCharWidth/GetABCCharWidths(for TrueTypeFont)
+//           xecsub.c
+//vbzg:240131 v78g do locate cmd by key on prot fld of dirlist. protect it if col=1(top of num fld) for avoid easy jump.
+//           xechar.c
+//vbzf:240131 (WXE:bug)combine char display. if combine mode and ligature off, x1b after eol override eol character
+//           wxecsub.c
+//vbze:240130 (Bug)'dlcmd 'g'(grep) hung when search string quatation pair err. called also from pan(=3.14)
+//           xedcmd4.c
+//vbzd:240130 (Bug)'grep "A A" fail(space embedding parm)
+//           xedcmd4.c
+//vbzc:240130 (Bug)'grep F"2 *.c' hung by unpared quotation
+//           xedcmd4.c
+//vbzc:240130 (WXE)like as XXE sbcswidth by depending that font is monospace or not
+//           wxwcsub.c
+//vbzb:240129 (XXE:Bug)cursor hides background text
+//           xxecsub.c/h gxe.h xxescr.c
+//vbza:240127 (XXE)SBCS determination;reduce single width limit(F2c and ambiguous only,<0x80 is out of range) 
+//           xxecsub.c
+//vbz9:240126 (BUG:gxe)gauge line have underline remaining before corsor.
+//            ==> it depends on font and cell height,No Problem.
+//           xxescr.c
+//vbz8:240124 (BUG:gxe)0c4 when preview menu pushed. printer form may missing displayname
+//           xxecsub2.c
+//vbz7:240122 (BUG:gxe) 0c4 by mouse middle button(Paste) when clipboard is null
+//           xecap.c
+//vbz6:240121 (gxe)core dump by NPE
+//           xxecsub2.c
+//vbz5:240120 try vbz3 to XXE(apichk by char extent)
+//           *xe.c *utf22.c/*h *utf.h *utf4.c *xxexei.h *xxexei3.c *xxecsub.c/h *xxescr.c
+//vbz4:240120 try vbz3 to WXE
+//           *xe.c *utf22.c/h *utf.h *utf4.c *wxexei.h *wxexei3.c *wxecsub.c/h *wxescr.cpp
+//vbz3:240119 optionally chk wcwidth by cursor.  /Yv(default) 
+//           xe.c utf22.c
+//vbz2:230827 del cmd issue warning "it may be remain dir entry" whel delctr=0
+//           xedcmd.c
+//vbz1:230817 ARM:correct errmsg for attrib.(DOS is out of consern)
+//           xedcmd.c
+//vbz0:230815 ARM:(vbyu & vbyw)ufullpath is not effective for iconv, so support ~/ to $HOME at dcmd2
+//           xedcmd2.c
+//*********  20230811 v129.3 Axe release *******************************
 //vbyx:230725 ARM:alternative of vbys. drop copytemp but rep // by real path if available:
 //           xedcmd2.c ufiledoc.c/h
 //vbyw:230718 ARM:rep vbyu to chk ~ in ufullpath to avoid rep ~ of not file parm.

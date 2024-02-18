@@ -1,4 +1,4 @@
-//*CID://+vbs7R~:                             update#=  406;       //~vbj1R~//~vbs7R~
+//*CID://+vc60R~:                             update#=  410;       //~vc60R~
 //*************************************************************
 //*xedlcmd6.c                                                      //~v51WR~
 //* %:apply command                                                //~v51WR~
@@ -6,6 +6,7 @@
 //* #:submit/rsh                                                   //~v59eI~
 //* g:grep                                                         //~v76gI~
 //*************************************************************
+//vc60 2023/08/03 mediaview as openWith                            //~vc60I~
 //vbs7:201028 Debian10 compiler warning -Wformat-overflow          //~vbs7I~
 //vbp0:180922 &(spawn) to msi get errmsg "not found or not executable",add "try !" to execute default app for the extension//~vbp0I~
 //vbj1:180305 cpu8 option to "=" cmd                               //~vb7eI~
@@ -92,7 +93,7 @@
 	#include <uwinsub.h>                                           //~v56eI~
 #endif                                                             //~v55vI~
 #include <ufilew.h>                                                //~vavNI~
-#include <utrace.h>                                                //+vbs7I~
+#include <utrace.h>                                                //~vbs7I~
 
 #include "xe.h"
 #include "xescr.h"                                                 //~v51WI~
@@ -906,7 +907,11 @@ int dlcmdopenwith(PUCLIENTWE Ppcw,PUDLCMD Pplc,PUDLCMD Pplcdummy)  //~v55vI~
     if (dlcgetfullname(pdh,fpath))                                 //~v55vI~
         return 4;                                                  //~v55vI~
 //  rc=ushellexec(fpath); 	//0:no return HINSTANCE                //~v55VR~
+#ifdef ARM                                                         //~vc60I~
+    rc=dlcmdopenwithsub(Ppcw,fpath,pdh->UDHsize); 	//0:no return HINSTANCE//~vc60I~
+#else                                                              //~vc60I~
     rc=dlcmdopenwithsub(Ppcw,fpath); 	//0:no return HINSTANCE    //~v55VI~
+#endif                                                             //~vc60I~
   	filesetcsr(Ppcw,plh,PANL310LINENO,0);//set csr                 //~v583I~
     return rc;                                                     //~v55vI~
 }//dlcmdopenwith                                                   //~v55vI~
@@ -915,7 +920,11 @@ int dlcmdopenwith(PUCLIENTWE Ppcw,PUDLCMD Pplc,PUDLCMD Pplcdummy)  //~v55vI~
 // subbmit associated app and register file to filename list       //~v55VI~
 //*ret  :rc                                                        //~v55VI~
 //**************************************************************** //~v55VI~
+#ifdef ARM                                                         //~vc60I~
+int dlcmdopenwithsub(PUCLIENTWE Ppcw,char *Pfnm,FILESZT Psize)     //~vc60I~
+#else                                                              //~vc60I~
 int dlcmdopenwithsub(PUCLIENTWE Ppcw,char *Pfnm)                   //~v55VI~
+#endif                                                             //~vc60I~
 {                                                                  //~v55VI~
     int rc;                                                        //~v55VI~
 //***********************                                          //~v55VI~
@@ -931,10 +940,14 @@ int dlcmdopenwithsub(PUCLIENTWE Ppcw,char *Pfnm)                   //~v55VI~
     pan300addentry(Pfnm,(int)strlen(Pfnm),0);                      //~vb2DI~
   #ifdef LNX                                                       //~v64vI~
 //   #ifdef ARM                                                    //~va90R~
+     #ifdef ARM                                                    //~vc60I~
 //    rc=errnotsupported("Kick Application by Mime Type","Android");//~va90R~
 //   #else                                                         //~va90R~
+    rc=(ushellexec(0,Pfnm,(int)Psize)==-1);                        //+vc60R~
+     #else                                                         //~vc60I~
     rc=(ushellexec(0,Pfnm)==-1);                                   //~v64vI~
 //   #endif                                                        //~va90R~
+     #endif                                                        //~vc60I~
   #else                                                            //~v64vI~
 	rc=ushellexec(Pfnm); 	//0:no return HINSTANCE                //~v55VI~
   #endif                                                           //~v64vI~

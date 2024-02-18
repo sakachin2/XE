@@ -1,4 +1,4 @@
-//*CID://+v77UR~:                              update#=  337       //~v77UR~
+//*CID://+v77UR~:                              update#=  339       //~v77UR~
 //*************************************************************
 //*uerrexit/uerrmsg/uerrexit_init/uerrmsg_init/ugeterrmsg**
 //*uerrapi1,uerrapi1x,uerrapi0,uerrapi0x                           //~v040R~
@@ -1206,7 +1206,7 @@ void setXsubOptARM(void)                                           //~v77UI~
     if (Gudbcschk_flag & UDBCSCHK_UTF8                             //~v77UI~
     &&  Gudbcschk_flag & UDBCSCHK_UTF8E)                           //~v77UI~
     {                                                              //~v77UI~
-        plocale=ulibarm_getJniLocale();                            //+v77UR~
+        plocale=ulibarm_getJniLocale();                            //~v77UR~
         if (!strcmp(plocale,LANG_JAJP))                            //~v77UR~
         {                                                          //~v77UR~
             UCBITON(Guerropt,GBL_UERR_DBCSMODE);    //not yet chked//~v77UR~
@@ -1257,12 +1257,14 @@ static int Sdoubleentry=0;
 //#endif                                                           //~v607R~
 	int prevlen=0;                                                 //~v200I~
 #ifdef LNX                                                         //~v5nnI~
-  #ifndef XXE                                                      //~v6b9I~
+//#ifndef XXE                                                      //~v6b9I~//+v77UR~
+  #if defined(XXE) || (defined(ARM) && defined(XSUB))              //+v77UI~
+  #else                                                            //+v77UI~
 	int prevdbcssetsw;                                             //~v5nnI~
   #endif                                                           //~v6b9I~
 #endif                                                             //~v5nnI~
 //****************************
-    UTRACEP("%s:entry Suerropt=0x%x,Guerropt=0x%x\n",UTT,Suerropt,Guerropt);//~v771I~
+    UTRACEP("%s:entry Suerropt=0x%x,Guerropt=0x%x,emsg=%s,jmsg=%s\n",UTT,Suerropt,Guerropt,Pemsg,Pjmsg);//~v771I~//~v77UR~
     UCBITOFF(Guerropt,GBL_UERR_SJIS2UTF8|GBL_UERR_SJIS2EUC);    //required to clear each time//~v6v0R~
 //  Guerropt2&=~GBL_UERR2_S2UJMSG;    //clear each time            //~v6v0R~//~v6BkR~
     Guerropt2&=~(UINT)GBL_UERR2_S2UJMSG;    //clear each time      //~v6BkI~
@@ -1286,7 +1288,9 @@ static int Sdoubleentry=0;
 //  if (!Sdbcsenv)					//first time                   //~v060R~
 //  	Sdbcsenv=udbcschk(0x81)+1;	//0x8140 is dbcs space,if rc==0 then no dbcs e//~v060R~
 #ifdef LNX                                                         //~v5nnI~
-  #ifndef XXE                                                      //~v6b9I~
+//#ifndef XXE                                                      //~v6b9I~//+v77UR~
+  #if defined(XXE) || (defined(ARM) && defined(XSUB))              //+v77UI~
+  #else                                                            //+v77UI~
 	prevdbcssetsw=UCBITCHK(Guerropt,GBL_UERR_DBCSSET);             //~v5nnI~
   #endif                                                           //~v6b9I~
 #endif                                                             //~v5nnI~

@@ -1,6 +1,10 @@
-//CID://+v6BiR~:       update#=     121                            //+v6BiR~
+//CID://+v79QR~:       update#=  54                                //+v79QR~
 //*************************************************************
-//v6Bi:160212 (W32)compiler warning                                //+v6BiI~
+//v79Q:240215 W32:drop v79N; errournous cursor movement. and not effective on file contents.//+v79QI~
+//v79P:240213 W32:chk unprintable by GetFontUnicodeRanges; but ineffective for Console.//~v79PI~
+//v79N:240213 (WindowsTerminal)Consoel API:SetConsoleCursorInfo) is not effective. usr VT cmd.//~v79NI~
+//v796:240118 W32:try to chk cursor step for cpu8 file.            //~v796I~
+//v6Bi:160212 (W32)compiler warning                                //~v6BiI~
 //v6hh:120623 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  defines ULPTR(unsigned long long)//~v6hhI~
 //v5fh:050125 (W32)window should be at current last of consolebuff //~v5fhI~
 //v570:020824 wxe support                                          //~v570I~
@@ -63,10 +67,13 @@
 #include <ulib.h>                                                  //~v022R~
 #include <uvio.h>
 #include <uvio2.h>                                                 //~v044I~
+#include <uviom.h>                                                 //~v79NI~
 #include <ustring.h>                                               //~v044I~
 #include <uedit.h>                                                 //~v044I~
 #include <uerr.h>                                                  //~v022I~
+#include <utf.h>                                                   //~v792I~
 #include <utrace.h>                                                //~v151I~
+#include <ualloc.h>                                                //~v79PI~
 #ifdef DPMI                                                        //~v151I~
 	#include <udpmisub.h>	//udpmiint86x                          //~v151I~
 #endif                                                             //~v151I~
@@ -82,6 +89,11 @@
 	#ifdef W32                           //v3.6a                   //~v022I~
 		static 	HANDLE  Shconout;		 //std  output console handle//~v022I~
 		static 	int     Stoplineoffs;    //window top line in consolebuff//~v5fhI~
+		static  HANDLE ShconoutTemp;                               //~v796R~
+		static  int    ShconoutTempErr;                            //~v796R~
+		static  CONSOLE_SCREEN_BUFFER_INFOEX Scsbi;                //~v796R~
+        static int Scposx,Scposy;                                  //~v79NI~
+		int  chkGlyph();                                           //~v79PI~
 	#else                                //v3.6a                   //~v022I~
 	#endif                                                         //~v022I~
 #endif
@@ -105,6 +117,7 @@ void uvio2_init(HANDLE Phconout,int Ptoplineoffs)                  //~v5fhI~
 {                                                                  //~v044I~
 	Shconout=Phconout;                                             //~v044I~
 	Stoplineoffs=Ptoplineoffs;                                     //~v5fhI~
+	chkGlyph();	//TODO test                                        //~v79PI~
 	return;                                                        //~v044I~
 }//uvio2_init                                                      //~v044R~
 //*******************************************************          //~v022M~
@@ -139,8 +152,38 @@ HANDLE uviowincreatecsb(int Popt)                                  //~v252I~
     if (csbh==INVALID_HANDLE_VALUE)                                //~v252I~
     	if (Popt)                                                  //~v252I~
         	printf("CreateConsoleScreenBuffer failed,LastError=%d",GetLastError());//~v252I~
+    UTRACEP("%s:csbh=%p\n",UTT,csbh);                              //~v792I~
 	return csbh;                                                   //~v252I~
 }//uviowincreatecsb                                                //~v252I~
+#ifndef WXE                                                        //~v792I~
+//*******************************************************          //~v792I~
+int copyFontInfo(HANDLE Pto)                                       //~v796R~
+{                                                                  //~v796R~
+	int rc;                                                        //~v796R~
+    CONSOLE_FONT_INFOEX inf;                                       //~v796R~
+	HANDLE hstdo=ugetstdhandle(STD_OUTPUT_HANDLE);                 //~v796R~
+    if (hstdo==INVALID_HANDLE_VALUE)                               //~v796R~
+    	return -1;                                                 //~v796R~
+    inf.cbSize=sizeof(inf);                                        //~v796R~
+    rc=GetCurrentConsoleFontEx(hstdo,FALSE/*maxsize*/,&inf);       //~v796R~
+    if (!rc)                                                       //~v796R~
+    	return -1;                                                 //~v796R~
+    UTRACED("infoex stdout",&inf,sizeof(inf));                     //~v796R~
+    rc=GetCurrentConsoleFontEx(Pto,FALSE/*maxsize*/,&inf);         //~v796R~
+    if (!rc)                                                       //~v796R~
+    	return -1;                                                 //~v796R~
+    UTRACED("infoex Pto",&inf,sizeof(inf));                        //~v796R~
+    rc=SetCurrentConsoleFontEx(Pto,FALSE/*maxsize*/,&inf);         //~v796R~
+    if (!rc)                                                       //~v796R~
+    	return -1;                                                 //~v796R~
+    rc=GetCurrentConsoleFontEx(Pto,FALSE/*maxsize*/,&inf);         //~v796R~
+    if (!rc)                                                       //~v796R~
+    	return -1;                                                 //~v796R~
+    UTRACED("infoex Pto aftercopy",&inf,sizeof(inf));              //~v796R~
+    UTRACEP("%s:return",UTT);                                      //~v796R~
+    return 0;                                                      //~v796R~
+}                                                                  //~v796R~
+#endif                                                             //~v796R~
 #endif                                                             //~v022M~
                                                                    //~v022I~
 //*******************************************************
@@ -178,6 +221,7 @@ UINT uviogetcurpos (int *Pprow,int *Ppcol)
 		*Ppcol=(int)csbi.dwCursorPosition.X;                       //~v022I~
 //  	*Pprow=(int)csbi.dwCursorPosition.Y;                       //~v5fhR~
     	*Pprow=(int)(csbi.dwCursorPosition.Y-Stoplineoffs);        //~v5fhI~
+        UTRACEP("%s:row=%d,col=%d\n",UTT,*Pprow,*Ppcol);           //~v79PR~
 		return (UINT)apiret16;                                     //~v022I~
       #endif //!WXE                                                //~v570I~
     #else                                                          //~v022I~
@@ -218,6 +262,8 @@ UINT uviosetcurpos (int Prow,int Pcol)
     	coord.X=(SHORT)Pcol;                                       //~v022R~
 //  	coord.Y=(SHORT)Prow;                                       //~v5fhR~
     	coord.Y=(SHORT)(Prow+Stoplineoffs);                        //~v5fhI~
+        Scposx=Pcol; Scposy=Prow;                                  //~v79NI~
+        UTRACEP("%s:row=%d,col=%d\n",UTT,Prow,Pcol);               //~v79PR~
         return !SetConsoleCursorPosition(Shconout,coord);          //~v022I~
       #endif //!WXE                                                //~v570I~
     #else                                                          //~v022I~
@@ -260,8 +306,8 @@ UINT uviogetcurtype(PVIOCURSORINFO pvioCursorInfo)
       #else  //!WXE                                                //~v570I~
     	rc16=(APIRET16)!GetConsoleCursorInfo(Shconout,&cci);       //~v022R~
         if (rc16)                                                  //~v034I~
-//          rc16=uerrapi0("GetConsoleCursorInfo",GetLastError());  //~v034I~//+v6BiR~
-            rc16=(USHORT)uerrapi0("GetConsoleCursorInfo",GetLastError());//+v6BiI~
+//          rc16=uerrapi0("GetConsoleCursorInfo",GetLastError());  //~v034I~//~v6BiR~
+            rc16=(USHORT)uerrapi0("GetConsoleCursorInfo",GetLastError());//~v6BiI~
 		pvioCursorInfo->yStart	=(USHORT)cci.dwSize;//percentage(0-100)//~v022R~
 	    pvioCursorInfo->cEnd	=0;                                //~v022I~
 	    pvioCursorInfo->cx		=0;                                //~v022I~
@@ -279,6 +325,61 @@ UINT uviogetcurtype(PVIOCURSORINFO pvioCursorInfo)
 #endif
 }//uviogetcurtype
 
+#ifndef WXE                                                        //~v79NI~
+//*******************************************************          //~v79NI~
+//*for WindowsTerminal set cursor shape                            //~v79NI~
+//*rc=0:done                                                       //~v79NI~
+//*******************************************************          //~v79NI~
+int VTsetCursorShape(CONSOLE_CURSOR_INFO *Ppcci)                   //~v79NI~
+{                                                                  //~v79NI~
+	int rc=0,sz;                                                   //~v79NI~
+    char *escstr;                                                  //~v79NI~
+//    char vintage[16];                                            //~v79NR~
+//    COORD pos;                                                   //~v79NR~
+//    CONSOLE_SCREEN_BUFFER_INFOEX csbi;                           //~v79NR~
+static char *CSR_DEFAULT="\x1B[0 q";                               //~v79NR~
+static char *CSR_BLOCK="\x1B[1 q";          //1:blink,2:stedy      //~v79NI~
+static char *CSR_UNDERSCORE="\x1B[4 q";     //3:blink,4:stedy      //~v79NM~
+//static char *CSR_VINTAGE="\x1B[7:%d q";     //vintage with bpercentage//~v79NR~
+static char *CSR_VINTAGE="\x1B[7 q";     //vintage with bpercentage//~v79NI~
+static char *CSR_SHOW="\x1B[?25h";                                 //~v79NM~
+static char *CSR_HIDE="\x1B[?25l";                                 //~v79NM~
+//static char *CSR_SAVE_POS="\x1B" "7";                            //~v79NR~
+//static char *CSR_REST_POS="\x1B" "8";                            //~v79NR~
+//*************************************                            //~v79NI~
+    UTRACEP("%s:GoptWindowsTerminal=0x%x,IS_ON_TERMINAL=%d,csrSz=%d,csrPosY=%d,csrPosx=%d\n",UTT,GoptWindowsTerminal,IS_ON_TERMINAL(),Ppcci->dwSize,Scposy,Scposx);//~v79NR~
+	if (IS_ON_TERMINAL())                                          //~v79NI~
+    {                                                              //~v79NI~
+//        csbi.cbSize=sizeof(csbi);                                //~v79NR~
+//        if (GetConsoleScreenBufferInfoEx(Shconout,&csbi))        //~v79NR~
+//        {                                                        //~v79NR~
+//            UTRACEP("%s:csrpos before %d,%d\n",UTT,csbi.dwCursorPosition.X,csbi.dwCursorPosition.Y);//~v79NR~
+//      	puts(CSR_SAVE_POS);                                    //~v79NR~
+        	puts("\x1b[s");                                        //~v79NI~
+			sz=Ppcci->dwSize;                                      //~v79NR~
+//	    	escstr=sz>=50 ? CSR_BLOCK : CSR_UNDERSCORE;            //~v79NR~
+  	    	escstr=sz>=50 ? CSR_BLOCK : CSR_DEFAULT;               //~v79NI~
+//    	    sprintf(vintage,CSR_VINTAGE,sz);                       //~v79NR~
+//      	puts(vintage);                                         //~v79NR~
+        	puts(escstr);                                          //~v79NI~
+            UTRACEP("%s:puts shape esc=%s\n",UTT,escstr);          //~v79PI~
+//            UTRACED("vintage",vintage,sizeof(vintage));          //~v79NR~
+        	escstr=Ppcci->bVisible ? CSR_SHOW : CSR_HIDE;          //~v79NR~
+        	puts(escstr);                                          //~v79NR~
+            UTRACEP("%s:puts visible esc=%s\n",UTT,escstr);        //~v79PR~
+//      	puts(CSR_REST_POS);                                    //~v79NR~
+//            GetConsoleScreenBufferInfoEx(Shconout,&csbi);        //~v79NR~
+//            UTRACEP("%s:csrpos after %d,%d\n",UTT,csbi.dwCursorPosition.X,csbi.dwCursorPosition.Y);//~v79NR~
+//            pos=csbi.dwCursorPosition;                           //~v79NR~
+//            SetConsoleCursorPosition(Shconout,pos);              //~v79NR~
+//            puts("\x1b[u");                                      //~v79NR~
+//  		uviosetcurpos(Scposy,Scposx);                          //~v79NI~//~v79PR~
+//        }                                                        //~v79NR~
+    	rc=1;                                                      //~v79NI~
+    }                                                              //~v79NI~
+    return rc;                                                     //~v79NI~
+}                                                                  //~v79NI~
+#endif                                                             //~v79NI~
 //*******************************************************
 //*VioSetCurType
 //*******************************************************
@@ -312,9 +413,15 @@ UINT uviosetcurtype (PVIOCURSORINFO pvioCursorInfo)
 			cci.bVisible=1;                                        //~v022I~
 		else                                                       //~v022I~
 			cci.bVisible=0;   			//hidden                   //~v022I~
+//      if (VTsetCursorShape(&cci))   //not Windows Terminal         //~v79NI~//+v79QR~
+//        rc=0;                                                      //~v79NI~//+v79QR~
+//      else                                                         //~v79NI~//+v79QR~
+//      {                                                            //~v79NI~//+v79QR~
     	rc=!SetConsoleCursorInfo(Shconout,&cci);                   //~v034R~
+        UTRACEP("%s:SetConsoleCursorInfo rc=%d(0:OK)\n",UTT,rc);   //~v79PI~
         if (rc)                                                    //~v034I~
             rc=uerrapi0("SetConsoleCursorInfo",GetLastError());    //~v034I~
+//      }                                                            //~v79NI~//+v79QR~
 		return rc;                                                 //~v034I~
       #endif //!WXE                                                //~v570I~
     #else                                                          //~v022I~
@@ -659,4 +766,118 @@ ULPTR ugetconhwnd(void)                                            //~v6hhI~
 //  return (ULONG)hwnd;                                            //~v156R~//~v6hhR~
     return (ULPTR)hwnd;                                            //~v6hhI~
 }//ugetconhwnd                                                     //~v156M~
+#ifndef WXE                                                        //~v796R~
+//********************************************************************///~v792I~
+int uvioGetCursorWidth(int Popt,ULONG Pucs)                        //~v796R~
+{                                                                  //~v796R~
+	int step=0,rc,writelen;                                        //~v796R~
+    CONSOLE_SCREEN_BUFFER_INFOEX csbi;                             //~v796R~
+    COORD cursorpos={0,0};                                         //~v796R~
+//************************                                         //~v796R~
+    if (!(Gulibutfmode & GULIBUTF_APICHK_CSR)) //0x08000000  //utfwcwidth chr cursor step//~v796R~
+    	return-1;                                                  //~v796R~
+//  UTRACEP("%s:opt=%x,ucs=u-%04x,ShconoutTempErr=%d\n",UTT,Popt,Pucs,ShconoutTempErr);//~v796R~
+	if (Popt & UVGCWO_CLOSE) //    0x01        //close consolebuffer handle//~v796R~
+    {                                                              //~v796R~
+		if (ShconoutTemp)                                          //~v796R~
+		    CloseHandle(ShconoutTemp);                             //~v796R~
+        ShconoutTemp=0;                                            //~v796R~
+		UTRACEP("%s:CLOSE\n",UTT);                                 //~v796R~
+        return 0;                                                  //~v796R~
+    }                                                              //~v796R~
+    else                                                           //~v796R~
+	if (Popt & UVGCWO_OPEN) //    0x01        //close consolebuffer handle//~v796R~
+    {                                                              //~v796R~
+		if (ShconoutTemp)                                          //~v796R~
+			uvioGetCursorWidth(UVGCWO_CLOSE,0);	//free old if gotten//~v796R~
+	    ShconoutTemp=uviowincreatecsb(1/*errmsg*/);                //~v796R~
+        if (ShconoutTemp==INVALID_HANDLE_VALUE)                    //~v796R~
+        {                                                          //~v796R~
+		    ShconoutTemp=0;                                        //~v796R~
+        	ShconoutTempErr=1;                                     //~v796R~
+            return -1;                                             //~v796R~
+        }                                                          //~v796R~
+		if (copyFontInfo(ShconoutTemp))                            //~v796R~
+            return -1;                                             //~v796R~
+	    csbi.cbSize=sizeof(csbi);                                  //~v796R~
+    	if (!GetConsoleScreenBufferInfoEx(ShconoutTemp,&csbi))     //~v796R~
+    	{                                                          //~v796R~
+        	UTRACEP("%s:GetConsoleScreenBufferInfo failed LastError=%d\n",UTT,GetLastError());//~v796R~
+		    ShconoutTemp=0;                                        //~v796R~
+        	ShconoutTempErr=1;                                     //~v796R~
+        	return -1;                                             //~v796R~
+    	}                                                          //~v796R~
+        Scsbi=csbi;                                                //~v796R~
+    	ShconoutTempErr=0;                                         //~v796R~
+		UTRACEP("%s:OPEN\n",UTT);                                  //~v796R~
+    }                                                              //~v796R~
+    else                                                           //~v796R~
+    if (ShconoutTempErr)                                           //~v796R~
+    	return -1;                                                 //~v796R~
+    else                                                           //~v796R~
+    {                                                              //~v796R~
+	    if (!ShconoutTemp)                                         //~v796R~
+        	return -1;                                             //~v796R~
+        rc=SetConsoleCursorPosition(ShconoutTemp,cursorpos);       //~v796R~
+        if (!rc)                                                   //~v796R~
+        {                                                          //~v796R~
+			UTRACEP("%s:SetConsoleCursorPos ERRrc=%d\n",UTT,rc);   //~v796R~
+        	return -1;                                             //~v796R~
+        }                                                          //~v796R~
+		rc=WriteConsoleW(ShconoutTemp,&Pucs,1,&writelen,NULL);     //~v796R~
+        if (!rc)                                                   //~v796R~
+        {                                                          //~v796R~
+	    	UTRACEP("%s:writeconsoleW ERR rc=%d,writelen=%d\n",UTT,rc,writelen);//~v796R~
+        	return -1;                                             //~v796R~
+        }                                                          //~v796R~
+	    rc=GetConsoleScreenBufferInfoEx(ShconoutTemp,&Scsbi);      //~v796R~
+        if (!rc)                                                   //~v796R~
+        {                                                          //~v796R~
+    		UTRACEP("%s:GetConsoleScreenBufferInfoEx ERR rc=%d,pos=%d\n",UTT,rc,Scsbi.dwCursorPosition.X);//~v796R~
+        	return -1;                                             //~v796R~
+        }                                                          //~v796R~
+	    step=Scsbi.dwCursorPosition.X;                             //~v796R~
+    }                                                              //~v796R~
+    UTRACEP("%s:step=rc=%d,ucs=0x%04x\n",UTT,step,Pucs);           //~v796R~
+    return step;                                                   //~v796R~
+}//uvioGetCursorWidth                                              //~v796R~
+#endif  //!WXE                                                     //~v796R~
+//******************************************************           //~v79PI~
+int  chkGlyphRange(HDC Phdc)                                       //~v79PI~
+{                                                                  //~v79PI~
+    GLYPHSET *pgs;                                                 //~v79PI~
+    int sz,ii,rc;                                                  //~v79PI~
+    sz=GetFontUnicodeRanges(Phdc,NULL);                            //~v79PI~
+    UTRACEP("%s:sz=%d,Phdc=%p\n",UTT,sz,Phdc);                     //~v79PI~
+    pgs=umalloc(sz);                                               //~v79PI~
+    memset(pgs,0,sz);                                              //~v79PI~
+    pgs->cbThis=sz;                                                //~v79PI~
+    rc=GetFontUnicodeRanges(Phdc,pgs);                             //~v79PR~
+    UTRACEP("%s:glyphset ctr=%d,rc=%d,err=%d\n",UTT,pgs->cRanges,rc,GetLastError());//~v79PI~
+    UTRACED("Glyph",pgs,sz);                                       //~v79PI~
+    for (ii=0;ii<(int)pgs->cRanges;ii++)                           //~v79PR~
+    {                                                              //~v79PI~
+    	WCRANGE *pr=pgs->ranges+ii;                                //~v79PI~
+        UTRACEP("%s:range ii=%04d low=0x%04x,ctr=0x%04x\n",UTT,ii,pr->wcLow,pr->cGlyphs);//~v79PI~
+    }                                                              //~v79PI~
+    ufree(pgs);                                                    //~v79PI~
+    return 0;                                                      //~v79PI~
+}                                                                  //~v79PI~
+//******************************************************           //~v79PI~
+HDC  getDC()                                                       //~v79PI~
+{                                                                  //~v79PI~
+    HWND wnd;                                                      //~v79PI~
+    HDC  hdc;                                                      //~v79PI~
+    wnd=GetConsoleWindow();                                        //~v79PI~
+    hdc=GetDC(wnd);                                                //~v79PI~
+    return hdc;                                                    //~v79PI~
+}                                                                  //~v79PI~
+//******************************************************           //~v79PI~
+int  chkGlyph()                                                    //~v79PI~
+{                                                                  //~v79PI~
+    HDC  hdc;                                                      //~v79PI~
+    hdc=getDC();                                                   //~v79PI~
+	chkGlyphRange(hdc);                                            //~v79PI~
+    return 0;                                                      //~v79PI~
+}                                                                  //~v79PI~
 #endif                                                             //~v156I~

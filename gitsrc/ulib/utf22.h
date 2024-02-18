@@ -1,7 +1,11 @@
-//*CID://+v6Y0R~: update#=  388;                                   //~v6Y0R~
+//*CID://+v79zR~: update#=  400;                                   //~vbz5R~//~v79zR~
 //******************************************************           //~v600I~
 //*utf22.h                                                         //~v640R~
 //******************************************************           //~v600I~
+//v79z:240206 dbcs chk by tbl search                               //~v79zI~
+//vbz5:240120 try vbz3 to XXE(apichk by char extent)               //~vbz5I~
+//vbz4:240120 try vbz3 to WXE                                      //~vbz4I~
+//v790:230816 ARM:change ucstbl:start dbcs 12000-->1e000 to avoid warning msg//~v790I~
 //v6Y0:180823 additional to v6Xc,accept unicode specification as \uxxxx,add utfcvu2dd()//~v6Y0I~
 //v6X5:180818 (LNX:xe)column shring COMB2SCM(036f+0390) even SPLIT mode,//~v6X5I~
 //v6X0:180813 combining require 2 cell when split such as u309a    //~v6X0I~
@@ -72,6 +76,12 @@
 //v650:100121 print width=0(combine mdeo)                          //~v650I~
 //v640:091125 (UTF8)UTF8 full support(display utf8 also unprintable as locale code)//~v640I~
 //******************************************************           //~v600I~
+typedef struct _UCODETB {                                          //~v79zI~
+  int first;                                                       //~v79zI~
+  int last;                                                        //~v79zI~
+  int datatype;                                                    //~v79zI~
+} UCODETB,*PUCODETB;                                               //~v79zI~
+                                                                   //~v79zI~
 #ifdef UTF8UCS2                                                    //~v640I~
 //  #define UTF22_TABALT1       0x21be      //TAB(0x09) display char//~v6F6R~
 //  #define UTF22_TABALT2       0x21c0      //TAB padding display char//~v6F6R~
@@ -174,7 +184,8 @@
 		 && iswalpha((wint_t)(ucs))   /* ! iswcntrl && ! iswdigit && ! iswpunct && ! iswspace */ \
 		)                                                          //~v6BTI~
 #else                                                              //~v6VsI~
-	#define UTF_COMBINABLE(ucs) utf_iscombinable(0,(ULONG)(ucs))   //~v6VsR~
+//  #define UTF_COMBINABLE(ucs) utf_iscombinable(0,(ULONG)(ucs))   //~v6VsR~//~v79zR~
+    #define UTF_COMBINABLE(ucs) utf_iscombinable(UICAO_NOSPACE,(ULONG)(ucs))	//space is not recommended//~v79zI~
 #endif                                                             //~v6VsI~
 //*******************************************************************//~v640I~
 typedef struct _UCS2DDMAP {                                        //~v640R~
@@ -218,10 +229,18 @@ typedef struct _UCS2DDMAP {                                        //~v640R~
 #define UCS4_DBCSTOP      0x00020000    //CJK Unified Ideographs Extension B and Supplement//~v65cI~
 #define UCS4_DBCSLAST     0x00040000    //except xxxfe/xxxff for BOM?//~v65cI~
 #define UCS4_MAX          0x0010ffff    //max ucs4                 //~v65cI~
-  #ifdef UTF8UTF16                                                 //~v6uBI~
+  #ifdef UTF8UTF16           //W32                                      //~v6uBI~
+// #ifdef TEST2                                                    //+v79zR~
 	#define UCS2DDMAP_ENTNO   0x00010000    //tbl size             //~v6uBI~
+// #else                                                           //+v79zR~
+//  #define UCS2DDMAP_ENTNO   UCS4_DBCSTOP                         //+v79zR~
+// #endif                                                          //+v79zR~
   #else                                                            //~v6uBI~
+    #ifdef ARM                                                     //~v790I~
+		#define UCS2DDMAP_ENTNO   0x0001e000    //avoid  obcstbl overflow msg//~v790I~
+    #else                                                          //~v790I~
 #define UCS2DDMAP_ENTNO   UCS4_DBCSTOP                             //~v65cR~
+    #endif                                                         //~v790I~
   #endif                                                           //~v6uBI~
 #else                                                              //~v65cI~
 #define UCS2DDMAP_ENTNO   0x00010000    //tbl size                 //~v640R~
@@ -289,6 +308,12 @@ int utfgetwcw(int Popt,UCHAR *Pdata,int Plen,ULONG *Ppucs,int *Pchklen,int *Ppwi
 #define UTFGWCWO_GETSBCSID    0x02     //return sbcsid             //~v640I~
 //*******************************************************************//~v640I~
 int utfucsmapinit(int Popt);                                       //~v640I~
+#ifdef WXE                                                         //~vbz4I~
+	void utfucsmapinitWXE();                                       //~vbz4R~
+#endif                                                             //~vbz4I~
+#ifdef XXE                                                         //~vbz5I~
+	void utfucsmapinitXXE();                                       //~vbz5I~
+#endif                                                             //~vbz5I~
 //*******************************************************************//~v640I~
 int utfucsmapmodify(int Popt,int Pdatatype,int Pstartucs,int Penducs);//~v640R~
 //*******************************************************************//~v640I~
@@ -324,7 +349,7 @@ int utfcvu2dd1(int Popt,WUCS Pucs,UCHAR *Ppoutdata,UCHAR *Ppoutdbcs,int *Ppoutle
 #ifdef W32UNICODE                                                  //~v6uBI~
 int utfcvu2dd1wUCS4(int Popt,ULONG Pulucs,UCHAR *Ppoutdata,UCHAR *Ppoutdbcs,int *Ppoutlen);//~v6uBI~
 #endif                                                             //~v6uBI~
-int utfcvu2dd1UWUCS(int Popt,UWUCS Pucs,UCHAR *Ppdddata,UCHAR *Ppdddbcs,int *Ppoutlen);//+v6Y0I~
+int utfcvu2dd1UWUCS(int Popt,UWUCS Pucs,UCHAR *Ppdddata,UCHAR *Ppdddbcs,int *Ppoutlen);//~v6Y0I~
 int utfcvu2dd(int Popt,UWUCS/*UINT4*/*Ppucs,int Pucsctr,UCHAR *Ppoutdata,UCHAR *Ppoutdbcs,int Poutbuffsz,int *Ppoutlen);//~v6Y0I~
 //*******************************************************************//~v640I~
 int utfddoffs2pos(int Popt,char *Pdata,char *Pdbcs,int Plen,int Poffs,int *Pppos);//~v640I~
@@ -670,3 +695,5 @@ int utf_iscombining(int Popt,int Pdbcsid,int Pucs);                //~v6WrR~
 #define UICRC_COMB2SCM 0x08   //Mn but SCM for windows angxe       //~v6X5I~
 //*******************************************************************//~v6X5I~
 int mk_wcwidth_combining2SCM(int Popt,UWUCS ucs);                  //~v6X5I~
+//*******************************************************************//~v79zI~
+int utftbsrch(ULONG Pucs,PUCODETB Ppuctb,int Pmax);                //~v79zI~

@@ -1,7 +1,8 @@
-//*CID://+vbj2R~:                             update#=  398;       //~vbj2R~
+//*CID://+vbz4R~:                             update#=  400;       //~vbz4R~
 //*********************************************************************//~v440I~
 //* wxe interface definition                                       //~v440I~
 //*********************************************************************//~v440I~
+//vbz4:240120 try vbz3 to WXE                                      //~vbz4I~
 //vbj2:180424 popup menu on cmd history list                       //~vbj2I~
 //vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
 //vbd8:171120 (WXE)stdregion by PFK(F6) should disable PAste REP/INS//~vbd8I~
@@ -356,8 +357,9 @@ int wxe_dndcopyfile(int Popt,int Pseq,int Ptot,char *Psource,char *Ptarget);//~v
 	#define XXECCPI_GETVHEXCSR(inf) (((inf) & XXECCPI_VHEXCSRMASK)>>XXECCPI_VHEXCSRSHIFT)//~va3tR~
 	int xxe_getlinenofldsz(int Popt,int Prow,int *Poutcols);       //~vb3pR~
 	int wxe_chkUpdateFileMenu(int Popt);                           //~vbdnR~
-	void *wxe_isCHLLine(int Popt);                                 //+vbj2R~
+	void *wxe_isCHLLine(int Popt);                                 //~vbj2R~
 	int  wxe_CHLcmd(int Popt,int Pcmd);                            //~vbj2R~
+	void wxe_mapinit(void);                                        //+vbz4I~
                                                                    //~va3DI~
 //*****************************************************************//~v440R~
 #ifdef __cplusplus                                                 //~v440I~
@@ -394,6 +396,7 @@ int wxe_dndcopyfile(int Popt,int Pseq,int Ptot,char *Psource,char *Ptarget);//~v
 	int wxe_scrdraw(void);                                         //~v55WI~
     int wxe_capcopytowincbfromxe();                                //~v70eR~
 	int wxe_kbdwcinit(int Popt,int Pkbdstat,int Pcodepage);        //~v79zR~
+    int wxe_GetCursorWidth(int Popt,ULONG Pucs);                   //~vbz4I~
 #endif	// .c                                                      //~v440I~
 #ifdef __cplusplus                                                 //~v440I~
 }                                                                  //~v440I~

@@ -1,7 +1,10 @@
-//*CID://+vb4iR~:                             update#=  118;       //~vb4iR~
+//*CID://+vbziR~:                             update#=  122;       //~vbzhR~//+vbziR~
 //*********************************************************************//~2818I~
 //* wxecsub.h                                                      //~2818I~
 //*********************************************************************//~2818I~
+//vbzi:240201 (WXE)vbz4 had no effect. Reason is font=System. SelectFont was not done at scrinit.//+vbziI~
+//vbzh:240201 (WXE)try GetCharWidth/GetABCCharWidths(for TrueTypeFont)//~vbzhI~
+//vbz4:240120 try vbz3 to WXE                                      //~vbz4I~
 //vb4i:160805 vb4f for wxe(specify ligature on/off,combine on/of line by line)//~vb4iI~
 //vb4g:160801 (WXE)dirlist ligature on always like as vb37         //~vb4gI~
 //vaz7:150109 ULPTR and ULONG (by C4244)                           //~vaz7I~
@@ -44,6 +47,8 @@ extern  "C"                                                        //~2818I~
 //  int csubinit1(HWND Phwnd,HBITMAP *Phbmtbl);                    //~2914R~
 	int csubinit1(HWND Phwnd);                                     //~2914I~
 	int csubinit2(int Pcellh,int Pcellw);                          //~2901I~
+	void csubinit3(HDC Phdc);                                      //~vbz4I~
+	void csubinit4(HFONT Pfh);                                     //+vbziR~
 //  int uscrresize(int Pwidth,int Pheight);                        //~2A14R~
 	int usetcaret(int Pdbcssw,int Pheightrate,int Pcellw,int Pcellh,int Pfonth);//~2914I~
 	int ushowcaret(void);                                          //~2831I~
@@ -79,10 +84,10 @@ extern  "C"                                                        //~2818I~
 	void wxefree(void *Paddr);                                     //~v53tI~
 //  ULONG usetfocus(void);                                         //~vaz7R~
     ULPTR usetfocus(void);                                         //~vaz7I~
-//	int upostmsg(UINT Pmsg,ULONG Pwparm, ULONG Plparm);            //~v54yI~//+vb4iR~
-  	int upostmsg(UINT Pmsg,ULPTR Pwparm, ULPTR Plparm);            //+vb4iI~
-//  int upostmsgp(UINT Pmsg,ULONG Pwparm, ULONG Plparm);           //~v55DI~//+vb4iR~
-    int upostmsgp(UINT Pmsg,ULPTR Pwparm, ULPTR Plparm);           //+vb4iI~
+//	int upostmsg(UINT Pmsg,ULONG Pwparm, ULONG Plparm);            //~v54yI~//~vb4iR~
+  	int upostmsg(UINT Pmsg,ULPTR Pwparm, ULPTR Plparm);            //~vb4iI~
+//  int upostmsgp(UINT Pmsg,ULONG Pwparm, ULONG Plparm);           //~v55DI~//~vb4iR~
+    int upostmsgp(UINT Pmsg,ULPTR Pwparm, ULPTR Plparm);           //~vb4iI~
 	int usettimer(UINT Ptimerid,int Pintvlms,void *Pcallback);     //~v55ZI~
 	int ukilltimer(UINT Ptimerid);                                 //~v560I~
 	int uopenwith(char *Pfname,HINSTANCE *Phi);                    //~v55uI~
@@ -120,6 +125,7 @@ int csubtextoutw1_locale(int Popt,HDC Phdc,int Pxx,int Pyy,char *Pdata,int Plen)
 //**************************************************************** //~vavzI~
 	int csubtextoutWW(int Popt,HDC Phdc,int Pxx,int Pyy,UWCH *Pucs,int Pucsctr);//~vavzI~
 #endif                                                             //~vavzI~
+int csubGetCursorPos(int Popt,ULONG Pucs);                         //~vbz4I~
 #ifdef __cplusplus                                                 //~2818I~
 }                                                                  //~2818I~
 #endif                                                             //~2818I~

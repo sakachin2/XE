@@ -1,4 +1,4 @@
-//*CID://+v77XR~:                                   update#= 1060; //~v77XR~
+//*CID://+v77XR~:                                   update#= 1064; //+v77XR~
 //***********************************************************************
 //v77X:230709 ARM;Android9(api28);xcv fails ctr cvname return 0,set env ICU_DATA//~v77XI~
 //v77W:230709 ARM;Android9(api28);xcv fails to dlopen libicuuc by  //~v77WI~
@@ -1391,7 +1391,7 @@ int ucvext_icuinit_env(int Popt,PUCVEXTCFG Ppcfg)                  //~v6baR~
 #ifdef XXE                                                         //~v6buR~
 //*************************************************************************//~v6bqI~
 //*set datadir by icu api                                          //~v6bqI~
-//*!!! never called                                                //+v77XI~
+//*!!! never called                                                //~v77XI~
 //*************************************************************************//~v6bqI~
 char *addarmdatadir(PUCVEXTCFG Ppcfg,char *Ppenvicudata)           //~v6bqI~
 {                                                                  //~v6bqI~
@@ -1515,7 +1515,7 @@ UTRACEP("%s env %s=%s\n",UTT,ICU_DATAENVNAME,getenv(ICU_DATAENVNAME));//~v77WR~
 //#endif                                                             //~v6c3I~//~v77WR~
 	dir=getenv(ICU_DATAENVNAME);                                   //~v6bpI~
 #ifdef ARM                                                         //~v77WI~
-	if (1)    //ICU_DATA env is required ? NO-->skip addarmadatadir//+v77XR~
+	if (1)    //ICU_DATA env is required ? NO-->skip addarmadatadir//~v77XR~
     {                                                              //~v77WI~
 		UTRACEP("%s:ARM returns 0 without addarmdatadir\n",UTT);   //~v77WI~
     	return 0;                                                  //~v77WI~
@@ -2513,7 +2513,11 @@ int ucvext_getstdcharset(int Popt,char *Pcharset)                  //~v6f9R~
     char *pzhcncs[]={"GB18030","GBK","GB2312",0};                  //~v6f9I~
 //  char *pkokrcs[]={"EUC-KR",0};  //unified hangul code           //~v6f9I~//~v6fkR~
     char *pkokrcs[]={"korean","EUC-KR",0};  //icu supports UHC as "korean"//~v6fkR~
+//#ifdef ARM                                                         //~v791R~//+v77XR~
+//    char *pjajpcs[]={"sjis","EUC-JP",0};  //unified hangul code    //~v791R~//+v77XR~
+//#else                                                              //~v791R~//+v77XR~
     char *pjajpcs[]={"EUC-JP",0};  //unified hangul code           //~v6f9I~
+//#endif                                                             //~v791R~//+v77XR~
     char *pzhtwcs[]={"Big5-HKSCS","Big5",0};//when on green console//~v6f9R~
     char *pothercs[]={"ISO-8859-1",0};//when on green console      //~v6f9R~
     char **ppc=0;                                                  //~v6f9I~
@@ -3888,6 +3892,7 @@ int ucvext_setdefaultlocale(int Popt,char *Pcharset)               //~v6f3I~
     } while(0);                                                    //~v6f3I~
     if (rc) 	//failed to get icu default                        //~v6f3I~
 	    UstrncpyZ(Pcharset,utfcvsetdefaultlocaleICU(0),MAXLOCALESZ);  //get from LANG//~v6f3R~
+    UTRACEP("%s:out=%s\n",UTT,Pcharset);                           //~v791I~
     return 0;                                                      //~v6f3I~
 }//ucvext_setdefaultlocale                                         //~v6f3I~
 #endif //WIN/LNX

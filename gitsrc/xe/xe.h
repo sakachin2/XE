@@ -1,7 +1,8 @@
-//*CID://+vby5R~:                             update#=  143;       //~vby5R~
+//*CID://+vc71R~:                             update#=  144;       //+vc71R~
 //*********************************************************************
 //* common routine hdr                                             //~v07uR~
 //*********************************************************************
+//vc71 2023/08/20 clear *.lock of =6 when destroyed by Home+swipe  //+vc71I~
 //vby5:230411 opt DELZ; change default to off                      //~vby5I~
 //vbvf:221129 drop japanese comment for =0.2/0.3 when english mode //~vbvfI~
 //vbi3:180211 supprt command history list                          //~vbi3I~
@@ -253,7 +254,7 @@ EXT UCHAR   Gopt4;              //option4 not save to save file    //~v0f9I~
 #define     GOPT5ACS            0x04    //LNX:use acs for drawing line//~v69MR~
 #define     GOPT5COLSON         0x02    //COLS ON as default       //~v74yI~
 #define     GOPT5CIDAPPEND      0x01    //CID APPEND MODE          //~v79UI~
-EXT UCHAR   Gopt5 INIT(GOPT5DLCZOFF);	//        0x08    //reject dlcmd z/0//+vby5M~
+EXT UCHAR   Gopt5 INIT(GOPT5DLCZOFF);	//        0x08    //reject dlcmd z/0//~vby5M~
                                                                 //~5507I~
 EXT UCHAR   Gscrstatus;         //srcreen status
 #define     GSCRSINS            0x01        //insert mode
@@ -593,3 +594,6 @@ EXT int GWinInfoVersion;                                           //~vbf0R~
 #ifdef WXEXXE                                                      //~v641I~
 	int xemain(int Preqtype,int parmc,char *parmp[]);              //~v500I~
 #endif    // WXE                                                   //~v500I~
+#ifdef ARMXXE                                                      //+vc71I~
+	int xemainOnDestroy();                                         //+vc71I~
+#endif                                                             //+vc71I~

@@ -1,4 +1,4 @@
-//*CID://+v783R~:                             update#=  646;       //~v783R~
+//*CID://+v783R~:                             update#=  650;       //~v783R~
 //*************************************************************
 //*ufile.c                                                         //~v5d1R~
 //*************************************************************    //~v053R~
@@ -297,9 +297,9 @@ static int   Ssavehandle[3];                                    //~5A14R~
 #ifdef W32                                                         //~v6uGI~
 	static int Sswgetslink;                                        //~v6uGI~
 #endif                                                             //~v6uGI~
-#ifndef UNX                                                        //+v783I~
+#ifndef UNX                                                        //~v783I~
 	static int SswFFopt=0;                                                //~v781I~//~v783R~
-#endif                                                             //+v783I~
+#endif                                                             //~v783I~
 //*******************************************************
 #if (_MSC_VER >= 800)                                      //+v034I~//~v034R~
     #define MAXHDIR 100                                            //~v034I~
@@ -1993,6 +1993,7 @@ unsigned udosfindfirst(char *Ppfname,HDIR *Pphdir,unsigned int Pattr,
     PUFTPHOST puftph;                                              //~v5afI~
 #endif                                                             //~v5afI~
 //*********************************
+    UTRACEP("%s:fnm=%s,attr=0x%x,hdir=%p\n",UTT,Ppfname,Pattr,Pphdir);//~v783I~
     Snomsgffnext=0;                                                //~v6k7I~
     SdirlistOtherAttrCtr=0;                                        //~v6kmR~
     SdirlistOtherAttrCtr_Dir=0;                                    //~v781I~
@@ -2042,7 +2043,10 @@ unsigned udosfindfirst(char *Ppfname,HDIR *Pphdir,unsigned int Pattr,
 #endif                                                             //~v59nI~
             *phdir=FindFirstFile(Ppfname,&w32fd);                  //~v034M~
             if (*phdir==INVALID_HANDLE_VALUE)                      //~v034M~
+            {                                                      //~v783I~
                 rc=GetLastError();                                 //~v034M~
+            	UTRACEP("%s:FindFirstFile lastError=%d,fnm=%s\n",UTT,rc,Ppfname);//~v783I~
+            }                                                      //~v783I~
             else                                                   //~v034M~
             {                                                      //~v034M~
                 if (!udosiswinnt() //win95/98                      //~v5fsI~
@@ -2343,6 +2347,7 @@ unsigned udosfindnextmsg(char *Ppath,HDIR Phdir,FILEFINDBUF3 *Ppfstat3)//~v6k7I~
                 if (rc==FALSE)                                     //~v034M~
                 {                                                  //~v034M~
                     rc=GetLastError();                             //~v034M~
+                	UTRACEP("%s:FindNexFile lastError=%d,path=%s\n",UTT,rc,Ppath);//+v783I~
                     break;                                         //~v034M~
                 }                                                  //~v034M~
                 rc=0;                                              //~v034R~//~v034M~
@@ -2530,6 +2535,7 @@ int udirlist(char *Ppdirname,unsigned Pattr,PUDIRLIST *Pppudirlist,
     int filectr;
     PUDIRLIST pudirlist;
 //***********************
+    UTRACEP("%s:fnm=%s,attr=0x%x,sortType=%c\n",UTT,Ppdirname,Pattr,(char)Psorttype);//~v783R~
 #ifdef ARMXXE                                                      //~v777I~
     if (IS_NOOPENDIRDL())       // not use native opendir          //~v77jI~
     if (IS_DOCPATH(Ppdirname))    // name start by "//"            //~v777R~

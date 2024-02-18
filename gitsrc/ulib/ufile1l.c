@@ -1,4 +1,4 @@
-//*CID://+v786R~:                             update#=  605;       //~v786R~
+//*CID://+v786R~:                             update#=  610;
 //*************************************************************
 //*ufile1l.c                                                       //~v59nR~
 //*************************************************************
@@ -645,12 +645,12 @@ void ufilegetftime(FTIME* Pft,FDATE *Pfd,time_t Ptime_t)           //~v364I~
 //*******************************************************
                                                                    //~v70bI~
 char *ufullpath(char *Pfullpath,char *Pfilename,size_t Plen)
-#if defined(ARM) && defined(XXE)                                   //~v70bR~
+#if defined(ARM) && defined(XXE)                                   //~v70bR~//~v790R~
 {                                                                  //~v70bI~
 	char *pfpath;                                                  //~v70bI~
     char wk[_MAX_PATH];                                            //~v70bI~
+    int rc;                                                        //~v70bI~//~v790M~
     char wk2[_MAX_PATH];                                           //~v70bI~
-    int rc;                                                        //~v70bI~
 	char *ufullpathARMsub(char *Pfullpath,char *Pfilename,size_t Plen);//~v70bI~
 //*************************                                        //~v70bI~
     if (USTRHEADIS(Pfilename,ARM_TMPID) && getenv(ENV_TMPDIR))     //~v70bR~
@@ -884,7 +884,7 @@ char *ufullpathARMsub(char *Pfullpath,char *Pfilename,size_t Plen) //~v70bI~
     strcpy(Pfullpath,wk);                                          //~0827R~
     UTRACEP("%s:rc=%s,pfnm=%s\n",UTT,Pfullpath,Pfilename);         //~v70bR~
     return Pfullpath;                                              //~0827R~
-}//ufullpath
+}//ufullpathARMsub                                                 //+v786R~
 //*******************************************************
 //*get file path name length(length containing last '/' from top)
 //*parm 1:filename
@@ -905,16 +905,16 @@ int upathlen(char *Pfilename)
 //*******************************************************
 char *ugetcwd(unsigned char *Pbuff)
 {
-	char *pcwd;                                                    //+v786I~
+	char *pcwd;                                                    //~v786I~
 //*********************************
 #ifdef ARMXXE                                                      //~v77ZR~
 	if (ufiledoc_cwd(Pbuff))                                       //~v77ZI~
     	return Pbuff;                                              //~v77ZI~
 #endif                                                             //~v77ZR~
-//  return getcwd(Pbuff,_MAX_PATH);                                //+v786R~
-    pcwd=getcwd(Pbuff,_MAX_PATH);                                  //+v786I~
-    UTRACEP("%s:rc=%s\n",UTT,pcwd);                                //+v786I~
-    return pcwd;                                                   //+v786I~
+//  return getcwd(Pbuff,_MAX_PATH);                                //~v786R~
+    pcwd=getcwd(Pbuff,_MAX_PATH);                                  //~v786I~
+    UTRACEP("%s:rc=%s\n",UTT,pcwd);                                //~v786I~
+    return pcwd;                                                   //~v786I~
 }//ugetcwd
 //*******************************************************
 //*change current directory

@@ -1,8 +1,29 @@
-//*CID://+v740R~:                             update#=  510;       //~v70mR~//~v740R~
+//*CID://+v79MR~:                             update#=  659;       //~v79MR~
 //*********************************************************************//~7712I~
-//utf2.c                                                           //~7716R~
+//utf22.c                                                           //~7716R~//~vbz3R~
 //* utf8 data manipulation:process using chof                      //~7712I~
 //*********************************************************************//~7712I~
+//v79M:240213 isolated combining character;defines it starting,ctrl and format.//~v79MI~
+//v79L:240213 (Bug) base for combining; !isctrl & isalpha is not same.(it should be allowed 00a0)//~v79LI~
+//v79F:240210 (Bug:LNX) ambiguous chk missing                      //~v79FI~
+//v79E:240209 LNX:like v79C, no tbl reference for xe/gxe.          //~v79EI~
+//            xe;-Nv:ambigous is all width=2, -Yv:ambiguous is all width=1//~v79EI~
+//v79C:240208 W32:unicode display width;when ambigous char is written by 2 cell,it consume 3 cell.//~v79CI~
+//            Those shows half width glyph if written by 1 cell even full width when written by 2 cells.//~v79CI~
+//            Finally I decided that write all ambiguous(including WIDE and F2C1 previously defined) by 1 cell except defined as DBCS.//~v79CI~
+//            No adjusting tbl is not required.                    //~v79CI~
+//            P.S) No tbl use but ambiguous draw by 2 cells if /Nv option//~v79CI~
+//v79r:240205 (WXE/XXE)fpr mapinit performance return always 1 at before HDC init//~v79rR~
+//v79m:240131 (W32)try cursor chk for console xe                   //~v79mI~
+//v79d:240123 (LNX & not ARM:Bug?)UTFWWO_API0 is not accompanied by UTFWWO_MK_WCWIDTH. it misses width=0 for wcwidth()=0.//~v79dI~
+//vbz5:240120 try vbz3 to XXE(apichk by char extent)               //~vbz5I~
+//v79a:240120 (Bug)mapwidth0 issue warning even if sbcsid remains. //~v79aI~
+//vbz4:240120 try vbz3 to WXE                                      //~vbz4I~
+//vbz3:240119 optionally chk wcwidth by cursor.  /Yv(default)      //~vbz3I~
+//v799:240119 v798 by table(kanji is not ambiguout)                //~v799I~
+//v798:240118 try v796 for ambigupus. 00a7,00a8,01cd,...           //~v798I~
+//v796:240118 W32:try to chk cursor step for cpu8 file.            //~v796I~
+//            Adjust culumn width by uftwcwidth for cursor width is single column to avoid column string move by cursor position//~v796I~
 //v740:201221 modify "mapping tbl overflow" msg                    //~v70mI~
 //v70m:200820 (ARM:BUG)save and load ucsmap missing width0top      //~v70mI~
 //v70i:200716 Ucs.java' wcwidth is proper than adjsbcs             //~v70iI~
@@ -165,6 +186,7 @@
 #include <uedit.h>                                                 //~v640R~
 #include <utf22.h>                                                 //~v640I~
 #include <uvio.h>                                                  //~v640R~
+#include <uvio2.h>                                                 //~v796I~
 #ifdef LNX                                                         //~v6V5R~//~v700I~
     #ifndef XXE                                                    //~v6V5I~//~v700I~
 		#ifndef NOCURSES                                                   //~v6a0I~//~v700I~
@@ -174,10 +196,20 @@
 #endif                                                              //~v6V5R~//~v700R~
 #ifdef W32                                                         //~v6c7I~
 	#include <udos.h>                                              //~v6c7I~
+    #ifdef WXE                                                     //~vbz4I~
+		#include <wxexei.h>                                        //~vbz4I~
+    #endif                                                         //~vbz4I~
+#else                                                              //~vbz5I~
+    #ifdef XXE                                                     //~vbz5R~
+		#include <xxexei.h>                                        //~vbz5I~
+    #endif                                                         //~vbz5I~
 #endif                                                             //~v6c7I~
 #include <ulibarm.h>                                               //~v6k1I~
 #include <ucvebc.h>                                                //~v6DbI~
 //**************************************************               //~v61bI~
+//#define PRIVATE_REGION(ucs) (ucs>=0xe000 && ucs<0xf900)          //~v798R~//~v799R~
+//#define KANJI_REGION(ucs) (ucs>=0x2e80 && ucs<0xa000)            //~v798R~//~v799R~
+//#define DBCS_REGION(ucs) (PRIVATE_REGION(ucs)||KANJI_REGION(ucs)) //~v798R~//~v799R~
 typedef struct _SAVESBCSTB                                         //~v6c7I~
 {                                                                  //~v6c7I~
 	int SSTversion;                                                //~v6c7I~
@@ -237,18 +269,71 @@ int utf22_setdbcsspacealt(int Popt,UWUCS Pucs,char *Ppdbcs,int Preslen,int *Ppal
 //**************************************************               //~7801M~
 #ifdef UTF8UCS2                                                    //~v640R~
 #ifdef LNX                                                         //~v640M~
+//***************************************************************************//~vbz5I~
+//***************************************************************************//~vbz5I~
+#ifdef XXE                                                         //~vbz5I~
+int utfwwapichkCursorXXE(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag)//~vbz5I~
+{                                                                  //~vbz5I~
+	int flag,width,cursorstep,swcallxxe;                           //~vbz5R~
+#ifndef NOTRACE                                                    //~vbz5I~
+    UCHAR utf8[12];                                                //~vbz5I~
+    int u8len;                                                     //~vbz5I~
+#endif    	                                                       //~vbz5I~
+//*************************                                        //~vbz5I~
+	flag=*Ppflag;                                                  //~vbz5I~
+    width=Pmkwidth;                                                //~vbz5I~
+    if (!(Gulibutfmode & GULIBUTF_APICHK_CSR)) //0x08000000  //utfwcwidth chr cursor step//~vbz5I~
+    	return width;                                              //~vbz5I~
+    if (!(Gulibutfmode & GULIBUTF_APICHK_CSR2)) //after Font init  //~vbz5R~
+    	return width;                                              //~vbz5I~
+    if (IS_UTF16_HIGH(Pucs)||IS_UTF16_LOW(Pucs))  //UTF16 pair     //~vbz5R~
+    	return width;                                              //~vbz5I~
+    UTRACEP("%s:entry ucs=0x%04x,utf8=(  %s  ),wcwidth=%d,Pmkwidth=%d,flag=0x%04x\n",UTT,Pucs,(u8len=uccvucs2utf((UWUCS)Pucs,utf8),utf8[u8len]=0,utf8),wcwidth((wchar_t)Pucs),width,flag);//~vbz5R~
+    if (width==0 || width==-1)                                     //~vbz5I~
+        return width;                                              //~vbz5I~
+    swcallxxe=0;                                                   //~vbz5I~
+	if (flag & UTFWWO_MK_AMBIGUOUS)  //x2000   //by mk_wcwidth() adjustable by wcwidth()//~vbz5I~
+        if (wcwidth((wchar_t)Pucs)!=2)                             //~vbz5I~
+    		swcallxxe=1;                                           //~vbz5I~
+    if (flag & UTFWWF_F2C1)  //  0x80   //WideSBCS; font width=2,distance to next column=1//~vbz5I~
+    	swcallxxe=1;                                               //~vbz5I~
+    if (swcallxxe)                                                 //~vbz5I~
+    {                                                              //~vbz5I~
+	    if (flag & UTFWWO_MK_AMBIGUOUS)  //x2000   //by mk_wcwidth() adjustable by wcwidth()//~vbz5R~
+        	if (wcwidth((wchar_t)Pucs)==2)                         //~vbz5R~
+            	return width;    //2                               //~vbz5R~
+        cursorstep=xxe_GetCursorWidth(0,Pucs);                     //~vbz5R~
+        if (cursorstep>0 && cursorstep!=width)                     //~vbz5R~
+        {                                                          //~vbz5R~
+            *Ppflag=0;                                             //~vbz5R~
+            width=cursorstep;                                      //~vbz5R~
+        }                                                          //~vbz5R~
+        UTRACEP("%s:callxxe ucs=x%04x,utf8=(  %s  ),width=%d->%d,wcwidth()=%d,flag=0x%04x,updated=%s\n",UTT,Pucs,(u8len=uccvucs2utf((UWUCS)Pucs,utf8),utf8[u8len]=0,utf8),Pmkwidth,width,wcwidth((wchar_t)Pucs),flag,Pmkwidth==width?"N":"Y");//~vbz5R~
+    }                                                              //~vbz5I~
+    return width;                                                  //~vbz5I~
+}//utfwwapichkCursorXXE                                            //~vbz5R~
+#endif  //XXE                                                      //~vbz5I~
 //*******************************************************          //~v640M~
 //*set flag by wcwidth return code                                 //~v640M~
 //*for ucs which utfwcwidthsub determind printable(rc>=0)          //~v6c5I~
 //*for ARM4,edtermin from wcwidth() at first                       //~v6c5I~
 //*******************************************************          //~v640M~
-int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag,int *Ppwcwidth)//~v640M~
+int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag/*masked*/,int *Ppwcwidth)//~v640M~//~vbz3R~
 {                                                                  //~v640M~
 	int wcw,flag,width;                                            //~v640M~
 #ifndef XXX                                                        //~v6WvI~
     int rc2;                                                       //~v6WvI~
 #endif                                                             //~v6WvI~
+#ifndef NOTRACE                                                    //~vbz5I~
+    UCHAR utf8[12];                                                //~vbz5I~
+    int u8len;                                                     //~vbz5I~
+#endif                                                             //~vbz5I~
+	int swAmbigChange;                                             //~v79EI~
 //*************************                                        //~v640M~
+    if (Pucs==(ULONG)GutfTestUcs)                                  //~v79FI~
+    {                                                              //~v79FI~
+        UTRACEP("%s:Debug trap by GutfTestUcs ucs=%04x\n",UTT,Pucs);	//@@@@test//~v79FI~
+    }                                                              //~v79FI~
 	flag=*Ppflag;                                                  //~v640M~
     width=Pmkwidth;                                                //~v640M~
 //  wcw=wcwidth((wchar_t)Pucs);   //better to return large value even displayed 1 cell on english terminal//~v640M~//~v6a0R~
@@ -274,13 +359,34 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag,int *Ppwcwidth)//~v
         else                                                       //~v640M~
         if (!(flag & UTFWWF_F2C1))   //no tbl defintion            //~v640M~
         {                                                          //~v640M~
-    	    if ((Popt & UTFWWO_MK_AMBIGUOUS) 	//ARM4             //~v6V7I~
-            &&  wcw==0                                             //~v6V7I~
-            &&  Pmkwidth!=wcw)                                     //~v6V7I~
-            {                                                      //~v6V7I~
-            	width=wcw;                                         //~v6V7I~
-                UTRACEP("%s:unmatch wcwidth()=%d,utfwcw=%d,return width=%d\n",UTT,wcw,Pmkwidth,width);//~v6V7I~
-            }                                                      //~v6V7I~
+        	swAmbigChange=0;                                       //~v79EI~
+    	    if ((flag & UTFWWO_MK_AMBIGUOUS)                       //~v79FR~
+            &&  wcw==1                                             //~v79EI~
+            &&  Pmkwidth==2)                                       //~v79EI~
+            {                                                      //~v79EI~
+#ifdef XXE            	                                           //~v79EI~
+#else                                                              //~v79EI~
+				if (UTF_AMBIG2CELLMODE())	//1 cell mode for ambiguous//~v79EI~
+                	width=2;                                       //~v79EI~
+                else                                               //~v79EI~
+                	width=1;                                       //~v79EI~
+#endif                                                             //~v79EI~
+	        	swAmbigChange=1;                                   //~v79EI~
+            }                                                      //~v79EI~
+            if (swAmbigChange)                                     //~v79EI~
+            {                                                      //~v79EI~
+                UTRACEP("%s:ambigous ucs=0x%04x(%s),wcwidth()=%d,Pmkwidth=%d,set width=%d\n",//~v79ER~
+						UTT,Pucs,UTF_GETUTF8STR(Pucs,utf8,u8len),wcw,Pmkwidth,width);//~v79ER~
+            }                                                      //~v79EI~
+//          else                                                   //~v79EI~//~v79FR~
+//  	    if ((Popt & UTFWWO_MK_AMBIGUOUS) 	//ARM4             //~v6V7I~//~v79FR~
+//    	    if ((flag & UTFWWO_MK_AMBIGUOUS)                       //~v79FR~
+//          &&  wcw==0                      !! NO path by wcw=0    //~v79FR~
+//          &&  Pmkwidth!=wcw)                                     //~v6V7I~//~v79FR~
+//          {                                                      //~v6V7I~//~v79FR~
+//          	width=wcw;                                         //~v6V7I~//~v79FR~
+//              UTRACEP("%s:ambiguous wcw=0 wcwidth()=%d,utfwcw=%d,return width=%d\n",UTT,wcw,Pmkwidth,width);//~v6V7I~//~v79FR~
+//          }                                                      //~v6V7I~//~v79FR~
             else                                                   //~v6V7I~
     	    if ((Popt & UTFWWO_MK_WCWIDTH) 	//ARM4                 //~v6V7I~
             &&  Pmkwidth!=wcw)                                     //~v6V7I~
@@ -334,17 +440,20 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag,int *Ppwcwidth)//~v
 #else                                                              //~v70iI~
       if (!(Popt & UTFWWO_FORMAT))                                 //~v6WiR~
       {                                                            //~v6WiI~
-       	if (Pmkwidth && (Popt & (UTFWWO_APIW0|UTFWWO_MK_WCWIDTH))==(UTFWWO_APIW0|UTFWWO_MK_WCWIDTH))//ARM4//~v6WiI~
+//     	if (Pmkwidth && (Popt & (UTFWWO_APIW0|UTFWWO_MK_WCWIDTH))==(UTFWWO_APIW0|UTFWWO_MK_WCWIDTH))//ARM4//~v6WiI~//~v79dR~
+      	if (Pmkwidth && (Popt & UTFWWO_APIW0))                     //~v79dR~
         {                                                          //~v6V7I~
         	width=0;				//accept result of wcwidth(),get sbcsid for width0//~v6c5I~
-            UTRACEP("%s:unmatch wcwidth()=%d,mk_wcwidth()=%d,return width=%d,flag=%x\n",UTT,wcw,Pmkwidth,width,flag);//~v6V7I~//~v6VpM~
 			flag|=UTFWWF_WIDTH0;    //combining char               //~v6V7I~
+            UTRACEP("%s:@@@@set ucs=0x%04x,width=0 by unmatch wcwidth()=%d,mk_wcwidth()=%d,return width=%d,flag=%x\n",UTT,Pucs,wcw,Pmkwidth,width,flag);//~v6V7I~//~v6VpM~//~v79dI~//~vbz5R~
         }                                                          //~v6V7I~//~v6VpM~
-        UTRACEP("%s:%06x unmatch wcwidth()=%d not Format ,mk_wcwidth()=%d,return width=%d,flag=%x\n",UTT,Pucs,wcw,Pmkwidth,width,flag);//~v6WiR~
+        UTRACEP("%s:%06x unmatch wcwidth()=%d not Format ,mk_wcwidth()=%d,return width=%d,flag=0x%04x\n",UTT,Pucs,wcw,Pmkwidth,width,flag);//~v6WiR~//~vbz5R~
       }                                                            //~v6WiI~
+      else                                                         //~v79dI~
+        UTRACEP("%s:@@@@FORMAT ucs=0x%04x wcwidth()=%d ,mk_wcwidth()=%d,return width=%d,flag=0x%04x\n",UTT,Pucs,wcw,Pmkwidth,width,flag);//~v79dR~//~vbz5R~
 #endif                                                             //~v70iI~
     }                                                              //~v6c5I~
-//UTRACEP("apichk sizeof uwchart=%d,ucs=%4x,wcwidth=%d,mkw=%d,ret-width=%d,flag=%x->%x\n",sizeof(UWCHART),Pucs,wcw,Pmkwidth,width,*Ppflag,flag);//~v6a0R~//~v6b9R~//~v6c5R~//~v6p2R~
+//UTRACEP("apichk sizeof uwchart=%d,ucs=%4x,wcwidth=%d,mkw=%d,ret-width=%d,flag=0x%04x->0x%04x\n",sizeof(UWCHART),Pucs,wcw,Pmkwidth,width,*Ppflag,flag);//~v6a0R~//~v6b9R~//~v6c5R~//~v6p2R~//~vbz5R~
 #ifdef XXX                                                         //~v6WvI~
 	if (!flag && (width==1||width==2))                             //~v6VbR~
 #else                                                              //~v6WvI~
@@ -370,11 +479,118 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag,int *Ppwcwidth)//~v
 			UTRACEP("%s:SCM set DBCS ucs=%04x,wcw=%d,Pmkwidth=%d,out width=%d,flag=%x\n",UTT,Pucs,wcw,Pmkwidth,width,flag);//~v6VbR~
         }                                                          //~v6VbR~
     }                                                              //~v6VbR~
+#ifdef XXE                                                         //~vbz5R~
+    width=utfwwapichkCursorXXE(Popt,Pucs,width,&flag);             //~vbz5R~
+#endif                                                             //~vbz5R~
+	UTRACEP("%s:return ucs=0x%04x,(  %s  ),newwidth=%d,mkwidth=%d,wcwidth()=%d,flag=0x%04x-->0x%04x,%s\n",UTT,Pucs,//~vbz5R~//~v79CI~
+			    (u8len=uccvucs2utf((UWUCS)Pucs,utf8),utf8[u8len]=0,utf8),//~vbz5I~//~v79CM~
+				width,Pmkwidth,wcw,*Ppflag,flag,(width!=Pmkwidth?"updated":"same"));//~vbz5R~//~v79CI~
     *Ppflag=flag;                                                  //~v640M~
-	UTRACEP("%s:ucs=x%4x,width=%d,mkwidth=%d,flag=x%x\n",UTT,Pucs,width,Pmkwidth,flag);//~v70iR~
     return width;                                                  //~v640M~
 }//utfwwapichk                                                     //~v640M~
 #else	//WIN                                                      //~v697I~
+//*******************************************************          //~v796I~
+#ifndef WXE                                                        //~v796I~
+//*******************************************************          //~vbz4R~
+//bypass for w32 console                                           //~vbz4R~
+//*******************************************************          //~v79mR~
+int utfwwapichkCursorW32(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag)//~v796I~//~v79mR~
+{                                                                  //~v796I~//~v79mR~
+    int flag,width;                                                //~v79mR~
+//  int cursorstep;                                                //~v79mI~
+#ifndef NOTRACE                                                    //~v79mI~
+	char wku8[12];                                                 //~v79mI~
+	int u8len;                                                     //~v79mI~
+#endif                                                             //~v79mI~
+//*************************                                        //~v796I~//~v79mR~
+    flag=*Ppflag;                                                  //~v796I~//~v79mR~
+    width=Pmkwidth;                                                //~v796I~//~v79mR~
+//    if (flag==UTFWWF_F2C1  //  0x80   //WideSBCS; font width=2,distance to next column=1//~v796R~//~v798R~//~v79mR~
+////  ||  width==2 && (flag & UTFWWO_MK_AMBIGUOUS) && !DBCS_REGION(Pucs))  //x2000   //by mk_wcwidth() adjustable by wcwidth() //~v798R~//~v799R~//~v79mR~
+//    ||  width==2 && (flag & UTFWWO_MK_AMBIGUOUS))  //x2000   //by mk_wcwidth() adjustable by wcwidth() //~v798I~//~v799R~//~v79mR~
+//    {                                                              //~v796I~//~v79mR~
+    if (IS_UTF16_HIGH(Pucs)||IS_UTF16_LOW(Pucs))  //UTF16 pair     //~v79mI~
+    	return width;                                              //~v79mI~
+    UTRACEP("%s:entry ucs=x%04x( %s ),width=%d,flag=0x%04x\n",UTT,Pucs,UTF_GETUTF8STR_TRACE(Pucs,wku8,u8len),width,*Ppflag);//~v798I~//~v79mR~//~v79MR~
+    if (width==0 || width==-1)                                     //~v79mI~
+        return width;                                              //~v79mI~
+	if (width==2                                                   //~v79CI~
+	&&  flag==UTFWWO_MK_AMBIGUOUS  //x2000   //ambiguous only(exclude space combining)//~v79CI~
+    )                                                              //~v79CI~
+    {                                                              //~v79CI~
+		if (!UTF_AMBIG2CELLMODE())	//1 cell mode for ambiguous    //~v79CI~
+        {                                                          //~v79CI~
+            flag &=~UTFWWO_MK_AMBIGUOUS; //x2000                   //~v79CI~
+            *Ppflag=flag;                                          //~v79CI~
+            return 1;                  //use 1 cell if 2cellmode off//~v79CI~
+        }                                                          //~v79CI~
+    }                                                              //~v79CI~
+//*** flag0080(F2C1) and flag0x2000(Ambiguous) of step=1 have both type of 1/2 cell drawing.//~v79mI~
+//*** uvioGetCursorWidth can not determines drawing width          //~v79mI~
+//*** It may be cursor step depend to cell attribute of 0x01xx(DBCS1st) 0x02xx(DBCS2nd cell) and not to glyph width.//~v79mI~
+//        cursorstep=uvioGetCursorWidth(0,Pucs); //uvio2                    //~v796I~//~v79mR~
+//        if (cursorstep>0 && cursorstep!=width)                     //~v796R~//~v79mR~
+//        {                                                          //~v796I~//~v79mR~
+//            *Ppflag=0;                                             //~v796I~//~v79mR~
+//            width=cursorstep;                                      //~v796I~//~v79mR~
+//            UTRACEP("%s:updated ucs=x%04x,width=%d->%d,flag=0x%04x->0x%04x\n",UTT,Pucs,Pmkwidth,width,flag,*Ppflag);//~v796R~//~v79mR~
+//        }                                                          //~v796I~//~v79mR~
+//    UTRACEP("%s:ucs=x%04x ( %s ),width=%d-->%d,old flag=0x%04x,update=%c\n",UTT,Pucs,UTF_GETUTF8STR(Pucs,wku8,u8len),Pmkwidth,width,flag,(width!=Pmkwidth?'Y':'N'));//~v796R~//~v798R~//~v79mI~
+//    }                                                              //~v796I~//~v79mR~
+    return width;                                                  //~v796I~//~v79mR~
+}//utfwwapichkCursorw32                                            //~v796R~//~v79mR~
+#else //WXE                                                        //~v79mR~
+//*******************************************************          //~v79mR~
+int utfwwapichkCursorWXE(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag)//~vbz4R~
+{                                                                  //~vbz4I~
+	int flag,width,cursorstep;                                     //~vbz4I~
+#ifndef NOTRACE                                                    //~vbz4I~
+    UCHAR utf8[12];                                                //~vbz4I~
+    int u8len;                                                     //~vbz4I~
+#endif                                                             //~vbz4I~
+//*************************                                        //~vbz4I~
+    	                                                           //~vbz4I~
+	flag=*Ppflag;                                                  //~vbz4I~
+    width=Pmkwidth;                                                //~vbz4I~
+	if (width==2                                                   //~v79CI~
+	&&  flag==UTFWWO_MK_AMBIGUOUS  //x2000   //ambiguous only(exclude space combining)//~v79CI~
+    )                                                              //~v79CI~
+    {                                                              //~v79CI~
+		if (UTF_AMBIG2CELLMODE())	//2 cell mode for ambiguous    //~v79CI~
+        {                                                          //~v79CI~
+            return width;                  //else(1 cellmode) chkcursor//~v79CI~
+        }                                                          //~v79CI~
+    }                                                              //~v79CI~
+    if (!(Gulibutfmode & GULIBUTF_APICHK_CSR)) //0x08000000  //utfwcwidth chr cursor step//~vbz4I~
+    	return width;                                              //~vbz4R~
+    if (!(Gulibutfmode & GULIBUTF_APICHK_CSR2)) //after HDC        //~vbz4I~
+    	return width;                                              //~vbz4R~
+    UTRACEP("%s:entry ucs=x%04x ( %s ),width=%d,flag=0x%04x\n",UTT,Pucs,//~vbz4M~
+//  		    (u8len=uccvucs2utf((UWUCS)Pucs,utf8),utf8[u8len]=0,utf8),//~vbz4M~//~v79MR~
+    		    UTF_GETUTF8STR_TRACE(Pucs,utf8,u8len),             //+v79MR~
+				width,*Ppflag);                                    //~vbz4M~
+    if ((flag & UTFWWF_F2C1)  //  0x80   //WideSBCS; font width=2,distance to next column=1//~vbz4R~
+    ||  width==2 && (flag & UTFWWO_MK_AMBIGUOUS))  //x2000   //by mk_wcwidth() adjustable by wcwidth()//~vbz4I~
+    {                                                              //~vbz4I~
+    	UTRACEP("%s:callwxe getcursorwidth ucs=x%04x ( %s ),width=%d,flag=0x%04x\n",UTT,Pucs,//~vbz4R~
+//  		    (u8len=uccvucs2utf((UWUCS)Pucs,utf8),utf8[u8len]=0,utf8),//~vbz4I~//~v79MR~
+    		    UTF_GETUTF8STR_TRACE(Pucs,utf8,u8len),             //~v79MR~
+				width,*Ppflag);                                    //~vbz4I~
+        cursorstep=wxe_GetCursorWidth(0,Pucs);                     //~vbz4R~
+        if (cursorstep>0 && cursorstep!=width)                     //~vbz4R~
+        {                                                          //~vbz4R~
+            *Ppflag=0;                                             //~vbz4R~
+            width=cursorstep;                                      //~vbz4R~
+            UTRACEP("%s:updated ucs=0x%04x (%s ),width=%d->%d,flag=0x%04x->0x%04x\n",//~vbz4R~
+					UTT,Pucs,                                      //~vbz4I~
+    			    UTF_GETUTF8STR_TRACE(Pucs,utf8,u8len),         //~v79MR~
+					Pmkwidth,width,flag,*Ppflag);                  //~vbz4I~
+        }                                                          //~vbz4R~
+    }                                                              //~vbz4I~
+    return width;                                                  //~vbz4I~
+}//utfwwapichkCursorWXE                                            //~vbz4R~
+                                                                   //~vbz4I~
+#endif                                                             //~v796I~
 //*******************************************************          //~v697I~
 //*(WIN)set flag by wcwidth return code                            //~v697I~
 //*******************************************************          //~v697I~
@@ -408,7 +624,7 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag,int *Ppwcwidth)//~v
         {                                                          //~v6WvI~
 			if (rc2=utf4_isSpacingCombiningMark(UTF4ISCMO_WIDTHPARM|width,(UWUCS)Pucs),rc2)//~v6WvI~
         	{                                                      //~v6WvI~
-				UTRACEP("%s:SCM ucs=%04x,Pmkwidth=%d,flag=%x\n",UTT,Pucs,Pmkwidth,flag);//~v6WvR~
+				UTRACEP("%s:SCM ucs=%04x,rc2=%d,Pmkwidth=%d,flag=%x\n",UTT,Pucs,Pmkwidth,flag);//~v6WvR~//~v79mR~
           		if (rc2==2)	//combining2scm                        //~v6WvI~
             	{                                                  //~v6WvI~
 					flag|=UTFWWF_COMB2SCM;    //assume combining as spacing combining char//~v6WvI~
@@ -419,6 +635,11 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag,int *Ppwcwidth)//~v
             }                                                      //~v6WvI~
         }                                                          //~v6WvI~
 #endif                                                             //~v6WvI~
+#ifndef WXE                                                   //~v570I~//~v796I~
+    width=utfwwapichkCursorW32(Popt,Pucs,width,&flag);             //~vbz4R~
+#else                                                              //~vbz4I~
+    width=utfwwapichkCursorWXE(Popt,Pucs,width,&flag);             //~vbz4R~
+#endif                                                             //~v796I~
     *Ppflag=flag;                                                  //~v697I~
     if (Ppwcwidth)                                                 //~v697I~
         *Ppwcwidth=width;                                          //~v697I~
@@ -431,7 +652,7 @@ int utfwwapichkWucs4(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag,int *Ppwcwidth
 {                                                                  //~v6V4I~
     return Pmkwidth;                                               //~v6V4I~
 }//utfwwapichkWucs4                                                //~v6V4I~
-#endif	//LNX                                                      //~v640M~
+#endif	//W32                                                      //~v79mR~
 //*******************************************************          //~v640I~
 //*get sbcsid from utfwcwidth flag                                 //~v640I~
 //*rc1:1:sbcsid was set                                            //~v640I~
@@ -531,6 +752,7 @@ int utfddgetlenflag(int Popt,ULONG Pucs,int *Pplen,int *Ppflag)    //~v640I~
         break;                                                     //~v640I~
     case UCSDDID_WIDESBCS:         //wcwidth=1,wide SBCS           //~v640R~
 		flag|=UTFWWF_F2C1;      //wide font SBCS                   //~v640R~
+//      UTRACEP("%s:@@@@F2C1 ucs=0x%04x\n",UTT,Pucs);              //~vbz5R~
         len=2;                                                     //~v640I~
         break;                                                     //~v640I~
     case UCSDDID_NARROWDBCS:         //wcwidth=2,narrow dbcs       //~v640R~
@@ -596,7 +818,7 @@ int utfddgetlenflag(int Popt,ULONG Pucs,int *Pplen,int *Ppflag)    //~v640I~
     if (Ppflag)                                                    //~v640I~
 	    *Ppflag=flag;                                              //~v640I~
     *Pplen=len;                                                    //~v640I~
-//  UTRACEP("utfddgetlenflag flag=%x,len=%d\n",flag,len);          //~v740R~
+    UTRACEP("utfddgetlenflag ucs=0x%04x,flag=0x%04x,len=%d\n",Pucs,flag,len);          //~v740R~//~vbz5R~
     return 0;                                                      //~v640I~
 }//utfddgetlenflag                                                 //~v640I~
 #ifdef WWW                                                         //~v6BYI~
@@ -654,17 +876,19 @@ int utf22_mapwidth0(WUCS *Plist_width0,int Psbcsw0ctr,int *Ppovfucs,int *Ppovfuc
         	seqnow0=(seqnow0 & 0xff00)-1;	               //keep 0x00--<0x20 as free//~v6BYR~
         else                                                       //~v6BYM~
   		  	seqnow0--;                                             //~v6BYM~
-//      UTRACEP("%s:ii=%d,seqnow0=%04x\n",UTT,ii,seqnow0);         //~v6BYR~
+        UTRACEP("%s:ii=%d,seqnow0=%04x\n",UTT,ii,seqnow0);         //~v6BYR~//~vbz4R~
     }                                                              //~v6BYM~
   if (!seqnow0)                                                    //~v70hR~
     Gudbcschk_width0top=UCS4_MAX;	//width0 start sbcsid          //~v70hI~
   else                                                             //~v70hI~
     Gudbcschk_width0top=seqnow0;	//width0 start sbcsid          //~v6BYM~
+    UTRACEP("%s:width0Top sbcsid=0x%04x,sbcs0ctr=0x%04x\n",UTT,Gudbcschk_width0top,sbcsw0ctr);//~vbz4R~
 //update sbcsid for width0                                         //~v6BYM~
     for (ii=0,plist_width0=Plist_width0;ii<sbcsw0ctr;ii++)         //~v6BYR~
     {                                                              //~v6BYM~
     	ucs2w0=*plist_width0++;                                    //~v6BYM~
     	ucs2sbcs=Gucs2ddmap_i2u[seqnow0];                          //~v6BYM~
+      if (ucs2sbcs>=UCSDDID_STARTUCS)  //sbcsid is already assigned for Not width0//~v79aI~
         if (ucs2sbcs>=UCSDDID_STARTUCS)  //sbcsid is already assigned//~v6BYR~
         {                                                          //~v6BYM~
             Gucs2ddmap[ucs2sbcs].UCS2DDsbcsid=UCSDDID_OVERFLOW;   //change to SBCS overflow//~v6BYM~
@@ -721,6 +945,47 @@ int utf22_mapwidth0(WUCS *Plist_width0,int Psbcsw0ctr,int *Ppovfucs,int *Ppovfuc
 //    return seqnow0;                                                //~v6BYI~//~v6BZR~
 //}//utf22_mapwidth0_modify                                          //~v6BYI~//~v6BZR~
 #endif //!WWW                                                      //~v6BYI~
+#ifdef W32                                                         //~vbz4I~
+	#ifdef WXE                                                     //~vbz4I~
+//*******************************************************          //~vbz4I~
+//*SBCS mapping tabl init for u0000-uffff                          //~vbz4I~
+//aftr HDC created to adjust by textextent                         //~vbz4I~
+//*******************************************************          //~vbz4I~
+void utfucsmapinitWXE()                                            //~vbz4I~
+{                                                                  //~vbz4I~
+	UTRACEP("%s Gulibutfmode APICHK_CSR=%s\n",UTT,((Gulibutfmode & GULIBUTF_APICHK_CSR)?"ON":"OFF"));//~vbz4I~
+	if (!(Gulibutfmode & GULIBUTF_APICHK_CSR))                     //~vbz4I~
+    	return;                                                    //~vbz4I~
+	if ((Gulibutfmode & GULIBUTF_APICHK_CSR2))                     //~vbz4I~
+    	return;	//dup scrinit                                      //~vbz4I~
+	Gulibutfmode |= GULIBUTF_APICHK_CSR2;	//after HDC init       //~vbz4I~
+	Gulibutfmode&=~GULIBSETUCS2MAP;	//redo mapinit                 //~vbz4I~
+    memset(Gucs2ddmap,0,sizeof(Gucs2ddmap));                       //~v79aI~
+    memset(Gucs2ddmap_i2u,0,sizeof(Gucs2ddmap_i2u));               //~v79aI~
+	utfucsmapinit(0);                                              //~vbz4R~
+}//utfucsmapinitWXE()                                              //~vbz4I~
+    #endif                                                         //~vbz4I~
+#else                                                              //~vbz5I~
+	#ifdef XXE                                                     //~vbz5I~
+//*******************************************************          //~vbz5I~
+//*SBCS mapping tabl init for u0000-uffff                          //~vbz5I~
+//aftr HDC created to adjust by textextent                         //~vbz5I~
+//*******************************************************          //~vbz5I~
+void utfucsmapinitXXE()                                            //~vbz5I~
+{                                                                  //~vbz5I~
+	UTRACEP("%s Gulibutfmode APICHK_CSR=%s\n",UTT,((Gulibutfmode & GULIBUTF_APICHK_CSR)?"ON":"OFF"));//~vbz5I~
+	if (!(Gulibutfmode & GULIBUTF_APICHK_CSR))                     //~vbz5I~
+    	return;                                                    //~vbz5I~
+	if ((Gulibutfmode & GULIBUTF_APICHK_CSR2))                     //~vbz5I~
+    	return;	//dup scrinit                                      //~vbz5I~
+	Gulibutfmode |= GULIBUTF_APICHK_CSR2;	//after HDC init       //~vbz5I~
+	Gulibutfmode&=~GULIBSETUCS2MAP;	//redo mapinit                 //~vbz5I~
+    memset(Gucs2ddmap,0,sizeof(Gucs2ddmap));                       //~vbz5I~
+    memset(Gucs2ddmap_i2u,0,sizeof(Gucs2ddmap_i2u));               //~vbz5I~
+	utfucsmapinit(0);                                              //~vbz5I~
+}//utfucsmapinitWXE()                                              //~vbz5I~
+    #endif  //XXE                                                  //~vbz5I~
+#endif                                                             //~vbz4I~
 //*******************************************************          //~v640I~
 //*SBCS mapping tabl init for u0000-uffff                          //~v640I~
 //unicode map to ddfmt unicodeid                                   //~v640I~
@@ -746,6 +1011,16 @@ int utfucsmapinit(int Popt)                                        //~v640I~
 #endif                                                             //~v6BYI~
 	int unpctr=0,dbcsctr=0,sbcsidctr=0;                            //~v@@@R~
 //*********************                                            //~v640I~
+#ifdef WXEXXE                                                      //~v79rR~
+    if (Gulibutfmode & GULIBUTF_APICHK_CSR) //csr chk option by xe.c//~v79rI~
+    {                                                              //~v79rI~
+        if (!(Gulibutfmode & GULIBUTF_APICHK_CSR2)) //before HDC init//~v79rI~
+        {                                                          //~v79rI~
+            UTRACEP("%s:NOP before mapinit with /Yv option\n",UTT);//~v79rR~
+            return 0;   //for errmsg, maybe no dbcd chk required   //~v79rI~
+        }                                                          //~v79rI~
+    }                                                              //~v79rI~
+#endif                                                             //~v79rI~
 	if (Gulibutfmode & GULIBSETUCS2MAP)  //dup call                //~v640I~
     	return 4;                                                  //~v640I~
 #ifdef UB1710	//test under ub17.10(kernel4.13.0)                 //~v6V1R~
@@ -773,7 +1048,14 @@ int utfucsmapinit(int Popt)                                        //~v640I~
     plist_width0_size=UCS2DDMAP_ENTNO*(int)sizeof(plist_width0[0]);         //~v6BYR~
     plist_width00=plist_width0=umalloc((UINT)plist_width0_size);   //~v6BYR~
 #endif                                                             //~v6BYI~
-//  UTRACEPF("mapinit start\n");                                   //~v6a0R~//~v6b9R~
+    UTRACEP("%s:start\n",UTT);                                   //~v6a0R~//~v6b9R~//~vbz4R~
+#ifdef W32	                                                       //~v796I~
+	#ifndef WXE                                                    //~v796I~
+//    	Gulibutfmode|=GULIBUTF_APICHK_CSR; //0x08000000  //utfwcwidth chr cursor step;xe.c set this optionally //~v796I~//~vbz3R~
+        UTRACEP("%s:Gulibutfmode:APICHK_CSR=0x%08x\n",UTT,Gulibutfmode & GULIBUTF_APICHK_CSR);//~vbz3I~
+  		uvioGetCursorWidth(UVGCWO_OPEN,0);                         //~v796I~//~v798R~
+    #endif                                                         //~v796I~
+#endif                                                             //~v796I~
     opt=UTFWWO_UTF8UCS2;                                           //~v640R~
 //#ifdef LNX                                                       //~v640R~
 //    opt|=UTFWWO_APIONLY;    //anyway                             //~v640R~
@@ -781,11 +1063,11 @@ int utfucsmapinit(int Popt)                                        //~v640I~
 	for (ii=UCSDDID_STARTUCS,pud=Gucs2ddmap+ii;ii<UCS2DDMAP_ENTNO;ii++,pud++)//~v640R~
     {                                                              //~v640I~
 //#ifdef TEST                                                      //~v@@@R~
-        if (ii==0xa7||ii==0xad||ii==0xb1||ii==0x0120||ii==0x0300||ii==0x0389||ii==0x0391||ii==0x0488||ii==0x0816||ii==0x093b||ii==0x1160||ii==0x2020||ii==0x2025||ii==0x2191||ii==0x223c||ii==0x231a||ii==0x25fd||ii==0x25fe||ii==0x2614||ii==0x2642||ii==0x2661||ii==0x2705||ii==0x2b55||ii==0x303f||ii==0x309a||ii==0xa960||ii==0xd7b0||ii==0xfffc||ii==0xfffd||ii==0x100e0||ii==0x10190||ii==0x10a01||ii==0x01d16d)////~v6V1R~//~v6V5R~//~v6V7R~//~v6VaR~//~v6VmR~//~v6VsR~//~v6W9R~//~v6WiR~
+        if (ii==0xa7||ii==0xad||ii==0xb1||ii==0x01c4||ii==0x0300||ii==0x0389||ii==0x0391||ii==0x0488||ii==0x0816||ii==0x093b||ii==0x1160||ii==0x2020||ii==0x2025||ii==0x2191||ii==0x223c||ii==0x231a||ii==0x25fd||ii==0x25fe||ii==0x2614||ii==0x2642||ii==0x2661||ii==0x2705||ii==0x2b55||ii==0x303f||ii==0x309a||ii==0xa960||ii==0xd7b0||ii==0xfffc||ii==0xfffd||ii==0x100e0||ii==0x10190||ii==0x10a01||ii==0x01d16d)////~v6V1R~//~v6V5R~//~v6V7R~//~v6VaR~//~v6VmR~//~v6VsR~//~v6W9R~//~v6WiR~//~v740R~
         {                                                          //~v@@@I~
         	UTRACEP("%s:trap\n",UTT);	//@@@@test                 //~v@@@I~
         }                                                          //~v@@@I~
-        if (ii==0x231a||ii==0x2e0e||ii==0x309a||ii==0x10330)                              //~v6WiI~//~v6WmR~
+        if (ii==0x0313||ii==0x2033||ii==0x2032||ii==0x10330)                              //~v6WiI~//~v6WmR~//~v740R~
         {                                                          //~v6WiI~
         	UTRACEP("%s:trap\n",UTT);	//@@@@test                 //~v6WiI~
         }                                                          //~v6WiI~
@@ -893,10 +1175,16 @@ int utfucsmapinit(int Popt)                                        //~v640I~
 	utf22_mapwidth0(plist_width00,sbcsw0ctr,&ovfucs,&ovfucslast,&ovfctr);//~v6BYR~
     ufree(plist_width00);                                          //~v6BYM~
 #endif //!WWW not fixed width0 boundary                            //~v6BYM~
+#ifdef W32                                                         //~v796I~
+	#ifndef WXE                                                    //~v796I~
+		uvioGetCursorWidth(UVGCWO_CLOSE,0);                        //~v796I~
+    #endif                                                         //~v796I~
+#endif                                                             //~v796I~
   }//tbl not loaded                                                //~v6c7I~
 	Gulibutfmode|=GULIBSETUCS2MAP;  //map for utfwcwidth was initialized//~v640I~
 //  Slastsbcsid=seqno;                                             //~v67ZR~
 //  Slastsbcsidw0=seqnow0;                                         //~v67ZR~
+	UTRACEP("%s:ovfctr=%d,ovfctrw=%d,ovfucs=0x%04x\n",UTT,ovfctr,ovfctrw0,ovfucs);//~v79aI~
     if (ovfctr||ovfctrw0)                                          //~v650I~
     {                                                              //~v67ZI~
 //    	uerrmsg("sbcs map overflow ovfctr=%x(max=%x), for width0:%x(max=%x)",0,//~v67ZR~
@@ -913,29 +1201,45 @@ int utfucsmapinit(int Popt)                                        //~v640I~
                     OVFMSG,                                        //~v67ZI~
           			ovfucsw0,ovfucsw0last,ovfctrw0);               //~v67ZI~
     	if (loaded)                                                //~v6c7I~
-	      	uerrmsgcat(";(W)try to clear ::%s.xxx",0,                 //~v6c7R~//+v740R~
+	      	uerrmsgcat(";(W)try to clear ::%s.xxx",0,                 //~v6c7R~//~v740R~
             			SBCSTBFNM);                                //~v6c7I~
 #else                                                              //~v6T7I~
+         {                                                         //~vbz4I~
 //         	printf("%s",uerrsprintf("%s. u-%06x-->u-%06x(0x%04x SBCSs of total 0x%04x,unprintable=%d/%d).\n",0,//~v6T7R~//~v740R~
            	printf("%s",uerrsprintf("%s. u-%06x-->u-%06x(%d SBCSs of total %d,unprintable=%d/%d).\n",0,//~v740I~
                     OVFMSG,                                        //~v6T7I~
           			ovfucs,ovfucslast,ovfctr,sbcsctr,unpctr,UCS2DDMAP_ENTNO));            //~v6T7I~//~v@@@R~
+           	UTRACEP("%s:@@@@Warn %s\n",UTT,uerrsprintf("%s. u-%06x-->u-%06x(%d SBCSs of total %d,unprintable=%d/%d).\n",0,//~vbz4I~
+                    OVFMSG,                                        //~vbz4I~
+          			ovfucs,ovfucslast,ovfctr,sbcsctr,unpctr,UCS2DDMAP_ENTNO));//~vbz4I~
+         }                                                         //~vbz4I~
+       if (ovfucs)                                                 //~v79aI~
          if (ovfucs<UCS2DDMAP_ENTNO)	//mapmodify reject if over //~v740I~
+         {                                                         //~vbz4I~
           	printf("%s",uerrsprintf("Note:Unicode u-%06x-->u-%06x occupies 2 columns.(Adjustable by UnicodeTbl option of ini file if you want)\n",//~v740R~
           							"注意:u-%06x-->u-%06xのユニコードは２桁\x95\\示になります.(不都合ならiniファイルのUnicodeTblパラメータで調整できます)",//~v740R~
           			ovfucs,ovfucslast));                           //~v70mI~
+          	UTRACEP("%s:@@@@Warn %s\n",UTT,uerrsprintf("Note:Unicode u-%06x-->u-%06x occupies 2 columns.(Adjustable by UnicodeTbl option of ini file if you want)\n",//~vbz4I~
+          							"注意:u-%06x-->u-%06xのユニコードは２桁\x95\\示になります.(不都合ならiniファイルのUnicodeTblパラメータで調整できます)",//~vbz4I~
+          			ovfucs,ovfucslast));                           //~vbz4I~
+        }                                                          //~vbz4I~
     	if (ovfctrw0)                                              //~v6T7I~
+        {                                                          //~vbz4I~
 	      	printf("%s",uerrsprintf(";%s. u-%06x-->u-%06x(x%04x ucs) for width=0.",0,//~v6T7I~
                     OVFMSG,                                        //~v6T7I~
           			ovfucsw0,ovfucsw0last,ovfctrw0));              //~v6T7I~
+	      	UTRACEP("%s:@@@@Warn %s\n",UTT,uerrsprintf(";%s. u-%06x-->u-%06x(x%04x ucs) for width=0.",0,//~vbz4I~
+                    OVFMSG,                                        //~vbz4I~
+          			ovfucsw0,ovfucsw0last,ovfctrw0));              //~vbz4I~
+        }                                                          //~vbz4I~
     	if (loaded)                                                //~v6T7I~
-	      	printf("%s",uerrsprintf(";(Warning)try to clear ::%s.xxx",0,    //~v6T7I~//+v740R~
+	      	printf("%s",uerrsprintf(";(Warning)try to clear ::%s.xxx",0,    //~v6T7I~//~v740R~
             			SBCSTBFNM));                               //~v6T7I~
           	printf("\n");                                          //~v6T7I~
 #endif                                                             //~v6T7I~
 	Gulibutfmode|=GULIBUTFSBCSIDOVF; //mapinit SBCSid overflow     //~v67ZI~
     }                                                              //~v67ZI~
-    UTRACEP("sbcscount=%d,sbcsctr=%06x,sbcsw0ctr=%06x\n",seqno,sbcsctr,sbcsw0ctr);//~v67ZR~//~v69bR~//~v6DhR~
+    UTRACEP("seqno=%d,Max=%d,sbcsctr=0x%06x,sbcsw0ctr=0x%06x,ovfucs=0x%04x,ovfctrw0=0x%04x\n",seqno,UCS2DDMAXSBCSID,sbcsctr,sbcsw0ctr,ovfucs,ovfctrw0);//~vbz4R~
     UTRACEP("sbcscount=0x%x-0x%x,width0top=0x%04x,end=0x%04x\n",UCSDDID_STARTSBCSID,seqno,/*UCSDDID_STARTWIDTH0*/Gudbcschk_width0top,UCS2DDMAXSBCSID);//~v6BYR~
 //  UTRACED("mapinit",Gucs2ddmap,sizeof(Gucs2ddmap));              //~v6a0R~
 //#ifdef UTF8UCS4                                                    //~v65cI~//~v67ZR~
@@ -965,6 +1269,7 @@ int utfucsmapinit(int Popt)                                        //~v640I~
         opt=0;                                                     //~v6c7R~
         utfucssavemap(opt,&savehdr);                               //~v6c7R~
     }                                                              //~v6c7I~
+    UTRACEP("%s:completed",UTT);                                   //~v79rI~
     return seqno;                                                  //~v640I~
 }//utfucsmapinit                                                   //~v640I~
 //*******************************************************          //~v6c7I~
@@ -1132,9 +1437,13 @@ int utfucsloadmap(int Popt,PSAVESBCSTB Ppsbcstbhdr)                //~v6c7I~
     {                                                              //~v6c7I~
         sz1=sizeof(Gucs2ddmap);                                    //~v6c7R~
         sz2=sizeof(Gucs2ddmap_i2u);                                //~v6c7R~
+    	UTRACEP("%s:sz1=0x%x,sz2=0x%x,SSTlength1=0x%x,SSTlength2=0x%x\n",UTT,sz1,sz2,Ppsbcstbhdr->SSTlength1,Ppsbcstbhdr->SSTlength2);//~v740I~
         if (sz1!=Ppsbcstbhdr->SSTlength1                           //~v6c7R~
         ||  sz2!=Ppsbcstbhdr->SSTlength2)                          //~v6c7R~
+        {                                                          //~v740I~
+	    	UTRACEP("%s:rc=4 by size unmatch\n");                  //~v740I~
             rc=4;                                                  //~v6c7R~
+        }                                                          //~v740I~
     }                                                              //~v6c7I~
     if (!rc)                                                       //~v6c7I~
     {                                                              //~v6c7I~
@@ -1194,9 +1503,12 @@ int utfucssavemap(int Popt,PSAVESBCSTB Ppsbcstbhdr)                //~v6c7I~
   		uerrmsgcat("Sbcsmap table file write failed(%s)",0,        //~v6k1I~
         	Ssbcstbfnm);                                           //~v6k1I~
     else                                                           //~v6c7I~
+    {                                                              //~v740I~
 //		uerrmsgcat("Sbcsmap table file was created",0);            //~v6k1R~
-  		uerrmsgcat("Sbcsmap table file was created(%s)",0,         //~v6k1R~
-        	Ssbcstbfnm);                                           //~v6k1I~
+//		uerrmsgcat("Sbcsmap table file was created(%s)",0,         //~v6k1R~//~v740R~
+//      	Ssbcstbfnm);                                           //~v6k1I~//~v740R~
+  		UTRACEP("%s:Sbcsmap table file was created(%s)\n",UTT,Ssbcstbfnm);//~v740I~
+    }                                                              //~v740I~
     fclose(fh);                                                    //~v6c7I~
     return rc;                                                     //~v6c7R~
 }//utfucssavemap                                                   //~v6c7I~
@@ -5433,7 +5745,7 @@ int utf_iswidth0(int Popt,int Pdbcsid,ULONG Pucs)                  //~v6VqR~
 //*****************************************************************//~v6VsR~
 int utf_iscombinable(int Popt,ULONG Pucs)                          //~v6VsR~
 {                                                                  //~v6VsR~
-	int rc,flag,width,opt;                                         //~v6VsR~
+	int rc/*,flag,width,opt*/;                                         //~v6VsR~//~v79MR~
 //**************************                                       //~v6VsR~
 	if (UCSIS_NONCHARACTER(Pucs))                                  //~v6VsR~
     	rc=0;                                                      //~v6VsR~
@@ -5445,9 +5757,11 @@ int utf_iscombinable(int Popt,ULONG Pucs)                          //~v6VsR~
     }                                                              //~v6WuI~
     else                                                           //~v6W8I~
 	if (Pucs<0x0100)                                               //~v6VsR~
-    	rc=iswalpha((wint_t)Pucs);                                 //~v6VsR~
+//    	rc=iswalpha((wint_t)Pucs);                                 //~v6VsR~//~v79LR~
+      	rc=iswcntrl((wint_t)Pucs)==0;                              //~v79LR~
     else                                                           //~v6VsR~
     {                                                              //~v6VsR~
+#ifdef AAA                                                         //~v79MI~
       	opt=UTFWWO_UTF8UCS2;     //do APICHK                       //~v6VsR~
 		width=utfwcwidth(opt,Pucs,&flag);                          //~v6VsR~
         rc=(width==1||width==2);  //sbcs or dbcs,except -1(unp) and 0(width0)//~v6VsR~
@@ -5459,6 +5773,12 @@ int utf_iscombinable(int Popt,ULONG Pucs)                          //~v6VsR~
 			if (flag & UTFWWF_SCM)     //both SCM and COMB2SCM     //~v6WvI~
 #endif                                                             //~v6WvI~
             	rc=0;                                              //~v6WtI~
+#else                                                              //~v79MI~
+		if (utf4_isFormat(0,(UWUCS)Pucs))                          //~v79MR~
+        	rc=0;                                                  //~v79MI~
+        else                                                       //~v79MI~
+        	rc=1;                                                  //~v79MI~
+#endif                                                             //~v79MI~
     }                                                              //~v6VsR~
     UTRACEP("%s:rc=%d,ucs=%04x\n",UTT,rc,Pucs);                    //~v6VsR~
     return rc;                                                     //~v6VsR~

@@ -1,4 +1,4 @@
-UTF8 encoding * CID:||+v29WR~:  2023/07/31  v129W           update#=  720;||+v29WR~
+UTF8 encoding * CID:||+v29XR~:  2023/07/31  v129W           update#=  721;||+v29XR~
 ************************************************************************
 (Index)
     (0).Introduction.
@@ -8567,29 +8567,29 @@ by screen expansion)
                  e "sp:ecws\space embedded name"                      ||~v129R~
                  xcopy sp:ecdir\x1 sp.ecdir\x2                        ||~v129R~
                  cd sp:ecdir                                          ||~v129R~
-                                                                      ||+v29WR~
-#ifdef Axe (Android版)                                                ||+v29WR~
-                                                                      ||+v29WR~
-           If you specify "//" for sp-name, you can access the folders on Shared storage.||+v29WR~
-           "sp add //" will display a android dialog,                 ||+v29WR~
-           When you press "Use this folder", the specified folder is registered in the definition file (::xe.shortpath).||+v29WR~
-           After that, you can access files in that folder like as "e //folder name".||+v29WR~
-           In that dialog you can also create a new folder,           ||+v29WR~
-           for example, if you create a folder named "Axe" and press "Use this folder",||+v29WR~
-           "e //Axe" displays the directory list.                     ||+v29WR~
-           Android 11 or later.                                       ||+v29WR~
-             On Android 11 or later, you can set permission of access "All files" or "Media only" in Shared storage.||+v29WR~
-             Please answer which permission setting you want in the dialog that appears immediately after installing this App.||+v29WR~
-             Even if you did not select "All files" here, it can be changed from the menu, "Settings", "Android related".||+v29WR~
-             If you select "all files",                               ||+v29WR~
-               As the path name of the Shared storage is displayed in the "Android related" dialog||+v29WR~
-               you can also use the pathname directly.                ||+v29WR~
-               If the /sdcard pathname whown in the dialog is the same as the Shared storage pathname||+v29WR~
-               /sdcard is also available as pathname.                 ||+v29WR~
-               You can also use short names for parameters of command line tools such as grep, xfg on the =6 screen.||+v29WR~
-               e.g) "gre findWord //Axe/*.txt".                       ||+v29WR~
-                                                                      ||+v29WR~
-#endif Axe (Android版)                                                ||+v29WR~
+                                                                      ||~v29WR~
+#ifdef Axe (Android版)                                                ||~v29WR~
+                                                                      ||~v29WR~
+           If you specify "//" for sp-name, you can access the folders on Shared storage.||~v29WR~
+           "sp add //" will display a android dialog,                 ||~v29WR~
+           When you press "Use this folder", the specified folder is registered in the definition file (::xe.shortpath).||~v29WR~
+           After that, you can access files in that folder like as "e //folder name".||~v29WR~
+           In that dialog you can also create a new folder,           ||~v29WR~
+           for example, if you create a folder named "Axe" and press "Use this folder",||~v29WR~
+           "e //Axe" displays the directory list.                     ||~v29WR~
+           Android 11 or later.                                       ||~v29WR~
+             On Android 11 or later, you can set permission of access "All files" or "Media only" in Shared storage.||~v29WR~
+             Please answer which permission setting you want in the dialog that appears immediately after installing this App.||~v29WR~
+             Even if you did not select "All files" here, it can be changed from the menu, "Settings", "Android related".||~v29WR~
+             If you select "all files",                               ||~v29WR~
+               As the path name of the Shared storage is displayed in the "Android related" dialog||~v29WR~
+               you can also use the pathname directly.                ||~v29WR~
+               If the /sdcard pathname whown in the dialog is the same as the Shared storage pathname||~v29WR~
+               /sdcard is also available as pathname.                 ||~v29WR~
+               You can also use short names for parameters of command line tools such as grep, xfg on the =6 screen.||~v29WR~
+               e.g) "gre findWord //Axe/*.txt".                       ||~v29WR~
+                                                                      ||~v29WR~
+#endif Axe (Android版)                                                ||~v29WR~
                                                                       ||~v129R~
    = SPAwn
 
@@ -14585,6 +14585,13 @@ by screen expansion)
           x=r (/Nr):Use Right-Ctrl key as Execute key
           x=rr(/Nrr):Use Right-Ctrl key as Next line key(effective only when Rctl ON)||~v124R~
           x=t (/Nt):Tab display or not
+          x=v (/Yv):                                                  ||+v29XI~
+            Windows Console version:                                  ||+v29XI~
+                    "-Yv":displays ambiguous width characters in one cell.||+v29XI~
+                    "-Nv":displays those in two cell.                 ||+v29XI~
+            Wxe, gxe and xe-linux versions:                           ||+v29XI~
+                    "-Yv":one or two is by performing internal determination.||+v29XI~
+                    "-Nv":displays those in two cell.                 ||+v29XI~
       //           :End of parameter(ignore following)
                     Use to cut re-displayed command by DOSKEY etc.
 

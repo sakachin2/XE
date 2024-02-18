@@ -1,8 +1,9 @@
-//CID://+v6Z0R~:        update#=15                                 //+v6Z0R~
+//CID://+v79pR~:        update#=16                                 //+v79pR~
 //*******************************************************
 //*uedit.h                                                         //~v57WR~
 //*******************************************************
-//v6Z0:200516 uwordrep option alternative parm sign                //+v6Z0I~
+//v79p:240203 add ux2is(get int[] from hex string 0x__,X___,u___ fmt with any spliter//+v79pI~
+//v6Z0:200516 uwordrep option alternative parm sign                //~v6Z0I~
 //v6T1:180210 add ueditKMG(edit Kiro,mega,Giga value)              //~v6T1I~
 //v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~v6L5I~
 //v6xk:150115 (BUG:W32)spwanxx deplicated,use _spawnxx(return intptr_t, Linux returns int pid)//~v6xkI~
@@ -62,7 +63,7 @@ char *uwordrep(int Popt,char *Pinp,char **Pkwd,char **Pdata,int *Prepctr,int *Pn
 #define WORDREP_IC  			0x01	//ignore case              //~v066I~
 #define WORDREP_UNMATCHNULL  	0x02	//rep by null if unmatch kwd(%...%)//~v066I~
 #define WORDREP_NODATANULL  	0x04	//rep by null if no data ptr//~v066I~
-#define WORDREP_ALTSIGN     	0x08	//alternative parmsign     //+v6Z0I~
+#define WORDREP_ALTSIGN     	0x08	//alternative parmsign     //~v6Z0I~
                                                                    //~v066I~
 //******************************************************************//~v025I~
 int ugethex(char *Phex,char *Pbin,int Plen);                       //~v025I~
@@ -117,3 +118,5 @@ char *ueditFILESZ(int Popt,char *Pout,int Pbuffsz,char *Pfmt,FILESZT Psz);//~v6x
 char *ueditLONGHANDLE(int Popt,char *Pout,int Pbuffsz,char *Pfmt,LONGHANDLE Phandle);//~v6xkI~
 //*******************************************************          //~v6T1I~
 char *ueditKMG(int Popt,size_t Psz);                               //~v6T1I~
+//*******************************************************          //+v79pI~
+int ux2is(int Popt,char *Phex,int Plen,int *Pout,int Pmaxctr,int *Ppchklen);//+v79pI~

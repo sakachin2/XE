@@ -60,15 +60,15 @@ int main(int parmc,char *parmp[], char *penv[])                   //~v100I~//~v1
     char swcase='0';                                               //~v108R~
 //  char *penv[20];                                                //~v108R~
     int exitcode=1;                                                //~v108R~
-#ifdef ARM                                                         //+v108I~
-#else                                                              //+v108I~
+#ifdef ARM                                                         //~v108I~
+#else                                                              //~v108I~
 	char *fnmtrc="/data/user/0/com.xe.AxeA9.debug/files/tmp/xcv.trc";//~v108I~
-#endif                                                             //+v108I~
+#endif                                                             //~v108I~
 #define macTest(sw,code) if (sw) {code}                            //~v108R~
 #define macTest2(code) code                                        //~v108R~
 #define macTest3(sw,codes,elsecodes) if (sw) {codes} else {elsecodes}//~v108I~
 //**********************                                           //~v100I~
-    PLINE("entry %c\n",swcase);                                    //~v108I~
+    PLINE("entry v1.1 %c\n",swcase);                               //+v108R~
     macTest(1,                                                     //~v108I~
     		PLINE("mactest1\n");                                     //~v108I~
     		PLINE("mactest2\n");                                     //~v108I~

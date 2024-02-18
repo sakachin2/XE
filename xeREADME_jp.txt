@@ -1,6 +1,6 @@
-UTF8 encodinng ||*CID:||+v29WR~:  2023/07/31                update#=  830;||~v29VR~||+v29WR~
+UTF8 encodinng ||*CID:||+v29XR~:  2024/02/20                update#=  835;||~v29XR~
 ######################################################################
-[Japanese]    v1.29W  (Refer xeREADME_en.txt for English)             ||~v29VR~||+v29WR~
+[Japanese]    v1.29X  (Refer xeREADME_en.txt for English)             ||~v29XR~
 
 メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。||~129GR~
 ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。||~129GR~
@@ -23,12 +23,12 @@ UTF8 encodinng ||*CID:||+v29WR~:  2023/07/31                update#=  830;||~v29
 
 WIN版はGUI版とWIN32コンソールアプリケーション版があります。||~129GR~
    Console版:xe.exe はコマンドプロンプトで動きマウスはサポートしていません。||~129GR~
-   GUI版:wxe.exe はWTL/ATL版(MFC不使用)でvs2017Comunityでコンパイルしたものです||~129GR~||+v29WR~
+   GUI版:wxe.exe はWTL/ATL版(MFC不使用)でvs2017Comunityでコンパイルしたものです||~129GR~||~v29WR~
    w64binGit.zipを解凍                                             ||~129GR~
 Linux版はGUI版:gxe とTerminalEmulator版:xe があります。    ||~129GR~
    gxe-x.xx.tar.gz を 解凍し ./configure && make でインストール||~129GR~
-Android版:Axe は PlayStoreにあります                                  ||+v29WR~
-                                                                      ||+v29WR~
+Android版:Axe は PlayStoreにあります                                  ||~v29WR~
+                                                                      ||~v29WR~
 以下のコンソール版ツールも含まれています          ||~129GR~
    xads         (Win版のみ)NTFSファイルシステムのADS(Alternative Data Stream)アクセス。||~129GR~
    xbc          簡易計算ツール。                              ||~129GR~
@@ -68,7 +68,7 @@ Android版:Axe は PlayStoreにあります                                  ||+
   sample\doc:
     テキストファイル形式のマニュアル                  ||~129GR~
       xej.txt/xee.txt
-      xeREADME_jp.txt/xeREADME_en.txt                                 ||+v29WR~
+      xeREADME_jp.txt/xeREADME_en.txt                                 ||~v29WR~
       xelnxj.txt/xelnxe.txt(Linux版用)                              ||~129GR~
       xewxej.txt/xewxee.txt(GUI版:wxe/gxe用)                        ||~129GR~
   sample\data:
@@ -80,7 +80,7 @@ Android版:Axe は PlayStoreにあります                                  ||+
 
       grep.exe     コマンド行の GREp コマンド、=3.14 画面で使用します||~129GR~
 
-      次の２つはシンタックスハイライトで使用します、次のどちらかを選んで xesynw.cfg で指定します||~129GR~||+v29WR~
+      次の２つはシンタックスハイライトで使用します、次のどちらかを選んで xesynw.cfg で指定します||~129GR~||~v29WR~
         使い方は xej.txt や xesynw.cfg を見てください     ||~129GR~
         gnu-source-highlight.zip
                      (Win)GNU source-highlight v2.9 を MinGW上でコンパイルしました。||~129GR~
@@ -568,24 +568,55 @@ Android版:Axe は PlayStoreにあります                                  ||+
                                                                       ||~v29VI~
      3.その他                                                         ||~v29VI~
        -opt DELZ(バックアップを取らないDel行コマンドの許可)の省略値を安全側のオフに変更した||~v29VI~
-                                                                      ||+v29WR~
-  .v129W<--129V:(2023/07/31)                                          ||+v29WR~
-                                                                      ||+v29WR~
-     1.BUGs                                                           ||+v29WR~
-                                                                      ||+v29WR~
-     2.機能追加                                                       ||+v29WR~
-       -(Axe)                                                         ||+v29WR~
-         .Android-11(R):api30 許可オプション:全てのファイル を利用可能とする||+v29WR~
-         .CD コマンドサポート                                         ||+v29WR~
-                                                                      ||+v29WR~
-     3.その他                                                         ||+v29WR~
-       -短縮名がsp add コマンドで追加されたらrefreshしてすぐ有効にする||+v29WR~
-       -Axe                                                           ||+v29WR~
-         .DOSコマンド(全画面シェル)はサポートされない                 ||+v29WR~
-         ."!"行コマンドは受け付けない                                 ||+v29WR~
-                                                                      ||+v29WR~
-     4.ツール。                                                       ||~v129R~||+v29WR~
-       -xcv  v1.21                                                    ||+v29WR~
-       -xfmt v1.5                                                     ||+v29WR~
-       -xfg  v1.21                                                    ||+v29WR~
-       -xdc  v2.29 -UF オプション（ディレクトリーのタイムスタンプ不一致は不一致リストに出力しない）追加||+v29WR~
+                                                                      ||~v29WR~
+  .v129W<--129V:(2023/07/31)                                          ||~v29WR~
+                                                                      ||~v29WR~
+     1.BUGs                                                           ||~v29WR~
+                                                                      ||~v29WR~
+     2.機能追加                                                       ||~v29WR~
+       -(Axe)                                                         ||~v29WR~
+         .Android-11(R):api30 許可オプション:全てのファイル を利用可能とする||~v29WR~
+         .CD コマンドサポート                                         ||~v29WR~
+                                                                      ||~v29WR~
+     3.その他                                                         ||~v29WR~
+       -短縮名がsp add コマンドで追加されたらrefreshしてすぐ有効にする||~v29WR~
+       -Axe                                                           ||~v29WR~
+         .DOSコマンド(全画面シェル)はサポートされない                 ||~v29WR~
+         ."!"行コマンドは受け付けない                                 ||~v29WR~
+                                                                      ||~v29WR~
+     4.ツール。                                                       ||~v129R~||~v29WR~
+       -xcv  v1.21                                                    ||~v29WR~
+       -xfmt v1.5                                                     ||~v29WR~
+       -xfg  v1.21                                                    ||~v29WR~
+       -xdc  v2.29 -UF オプション（ディレクトリーのタイムスタンプ不一致は不一致リストに出力しない）追加||~v29WR~
+                                                                      ||~v29XR~
+  .v129X<--129W:(2024/02/20)                                          ||~v29XR~
+                                                                      ||~v29XR~
+     1.BUGs                                                           ||~v29XR~
+       -\u オプションの "cv" コマンドが ユニコード>u-ffff の変換を誤る||+v29XR~
+       -U+00A0 が結合文字の基底文字から外れていた                     ||~v29XR~
+       -(gxe)クラッシュすることがある                                 ||~v29XR~
+        .結合文字を表示するとき                                       ||~v29XR~
+        .マウスの中ボタンを押したとき                                 ||~v29XR~
+        .Preview メニューボタンを押したとき                           ||~v29XR~
+       -(gxe)箱型カーソルのときテキストが見えなくなる                 ||~v29XR~
+       -grep コマンド (デレクトリーリストの "g" 行コマンドも同じ)     ||~v29XR~
+        .文字列の二重引用符(")が閉じてないときハングする              ||~v29XR~
+        .文字列が間にスペースを含むとき失敗する                       ||~v29XR~
+                                                                      ||~v29XR~
+     2.機能追加                                                       ||~v29XR~
+       -ユニコードの表示幅を指定するコマンドラインオプション -Yv(省略値),-Nv を追加||~v29XR~
+        表示幅が曖昧と定義されている文字を -Nv では全て２桁表示、     ||~v29XR~
+        -Yv ではWindows コンソール版 xeでは１桁表示とするが           ||~v29XR~
+        wxe,gxe,xe-linux版では内部的な判定を行う。                    ||~v29XR~
+                                                                      ||~v29XR~
+     3.その他                                                         ||~v29XR~
+       -(Win:コンソール版) WindowsTerminal 上では Insert キーによるカーソル形状の変更が効きません。||~v29XI~
+        必要な場合は Conhost（以前のコマンドプロンプトの実行プログラム) 上で起動してください。||~v29XI~
+                                                                      ||~v29XR~
+     4.ツール。                                                       ||~v29XR~
+       -xcv  v1.22                                                    ||~v29XR~
+        .Hex表記の標準入力("-Yh" オプション)、Hex表記の出力("-Yx" オプション)を追加||~v29XR~
+       -xfc  v1.28                                                    ||~v29XR~
+        .大文字小文字区別なしの比較オプション("-Nc")を追加            ||~v29XR~
+        .比較位置の指定を別々に指定できるようにした( -Mm-n[/p-q] )    ||~v29XR~

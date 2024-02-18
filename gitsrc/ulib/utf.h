@@ -1,7 +1,16 @@
-//*CID://+v70gR~:                             update#=  632;       //~v6XOR~//~v70gR~
+//*CID://+v79ER~:                             update#=  646;       //~v79ER~
 //*********************************************************************//~v600I~
 //* utf8 data manipulation                                         //~v600I~
 //*********************************************************************//~v600I~
+//v79E:240209 LNX:like v79C, no tbl reference for xe/gxe.          //~v79EI~
+//            xe;-Nv:ambigous is all width=2, -Yv:ambiguous is all width=1//~v79EI~
+//vbzj:240202 Test option /UUxxxx; set unicode for debug breaking at utfwcwidthsub.//~vbzjI~
+//vbzj:240202 Test option /UUxxxx; set unicode for debug breaking. //~vbzjI~
+//v79h:240128 (LNX)new combining char from web                     //~v79hI~
+//vbz5:240120 try vbz3 to XXE(apichk by char extent)               //~vbz5I~
+//vbz4:240120 try vbz3 to WXE                                      //~vbz4I~
+//v796:240118 W32:try to chk cursor step for cpu8 file.            //~v796I~
+//            Adjust culumn width by uftwcwidth for cursor width is single column to avoid column string move by cursor position//~v796I~
 //v70g:200715 (BUG)utfcvl2f retrns err when wcwidth=0 and output char same as input. it should set utf8 even width=0//~v70gI~
 //v6X0:180813 combining require 2 cell when split such as u309a    //~v6XOI~
 //vbmk:180813 (XE)for test,try mk_wcwidth_cjk(ambiguous:Wide DBCS) for visibility chk. use /YJ option//~vbmkI~
@@ -561,6 +570,7 @@ extern  "C"                                                        //~v60aI~
     #define UTF8MODEICONVLOCALEINIT()   (UTF8MODEICONV() && (Gulibutfmode & GULIBLOCALEINIT))   //use iconv for conversion//~v5n0R~
     #define UTF8SETICONV()    Gulibutfmode|=GULIBMBICONV     //use iconv for conversion//~v61gI~
 //*****************                                                //~v600M~
+	EXT_UTF ULONG GutfTestUcs;                                     //~vbzjR~
 	EXT_UTF WUCS Gutfcombaltch;                                    //~v6EkR~
 	EXT_UTF int Gutfrc;                                            //~v600I~
 	EXT_UTF int Gulibutfmode;                                      //~v600M~
@@ -595,6 +605,22 @@ extern  "C"                                                        //~v60aI~
 	#define GULIBUTFCOMBINE_NP    0x01000000  //altch mode         //~v6EkI~
 	#define GULIBUTFAPIWIDTH0     0x02000000  //accept wcwidth()=0 for not on utf4:combine tbl//~v6V1I~
 	#define GULIBUTF_CJK          0x04000000  //force mk_wcwidth_cjk//~vbmkI~
+#ifdef W32                                                         //~v796I~
+  #ifndef WXE                                                      //~v796I~
+	#define GULIBUTF_APICHK_CSR   0x08000000  //utfwcwidth chr cursor step//~v796I~
+  #else                                                            //~vbz4I~
+	#define GULIBUTF_APICHK_CSR   0x08000000  //utfwcwidth chk cursor step//~vbz4R~
+	#define GULIBUTF_APICHK_CSR2  0x10000000  //utfwcwidth chk cursor after HDC//~vbz4I~
+  #endif                                                           //~v796I~
+#else                                                              //~vbz5I~
+//#ifdef XXE                                                       //~vbz5I~//~v79ER~
+	#define GULIBUTF_APICHK_CSR   0x08000000  //utfwcwidth chk cursor step//~vbz5I~
+	#define GULIBUTF_APICHK_CSR2  0x10000000  //utfwcwidth chk cursor after HDC//~vbz5I~
+//#endif                                                           //~vbz5I~//~v79ER~
+#endif                                                             //~v796I~
+	#define GULIBUTF_ADJUST_TBL   0x20000000  //width adjust by tbl//~vbzjI~
+#define UTF_ADJUSTMODE()     ((Gulibutfmode & GULIBUTF_ADJUST_TBL)!=0)  //adjust char display width by table definition//~vbzjI~
+#define UTF_AMBIG2CELLMODE() ((Gulibutfmode & GULIBUTF_APICHK_CSR)==0)  //draw ambiguous by 2 cell if csrchk off//~vbzjI~
 //**************************************************************************//~v600I~
 	#define UTF_INIT(opt) utf_init(opt);                           //~v600I~
 	int  utf_init(int Popt);                                       //~v600I~
@@ -718,7 +744,7 @@ int utftbterm(void);                                               //~v600I~
 #ifdef W32UNICODE                                                  //~v6unI~
 #define UTFCVO_ALLOWSUBCH  0x200000          //continue even if rep to subch//~v6unR~
 #endif                                                             //~v6unI~
-#define UTFCVO_WIDTH0RC    0x400000          //notify on rcif width0//+v70gI~
+#define UTFCVO_WIDTH0RC    0x400000          //notify on rcif width0//~v70gI~
                                                                    //~v61bM~
 #define UTFCVRC_ALLASCII 0x01         //dbcs found                 //~v61bI~
 #define UTFCVRC_DBCS     0x02         //dbcs found                 //~v61bI~
@@ -902,6 +928,12 @@ int utfcvf2lany1mb(int Popt,char *Pout,int Poutbufflen,char *Pinp,int Pinplen,//
 	#define UTFCVFDRC_OVF      0x20   //buffser overflow           //~v640R~
   #endif                                                           //~v640I~
 #endif //WCSUPP                                                    //~v5n0I~
+#define  UTF_GETUTF8STR(Pucs,Pwku8,Plen) (Plen=uccvucs2utf((UWUCS)(Pucs),Pwku8),Pwku8[Plen]=0,Pwku8)//~v79hR~
+#ifndef NOTRACE                                                    //~v79EI~
+#define  UTF_GETUTF8STR_TRACE(Pucs,Pwku8,Plen) UTF_GETUTF8STR(Pucs,Pwku8,Plen)//~v79EI~
+#else                                                              //~v79EI~
+#define  UTF_GETUTF8STR_TRACE(Pucs,Pwku8,Plen) "UTF_GETUTF8STR_TRACE:NOTRACE"//+v79ER~
+#endif                                                             //~v79EI~
 //*******************************************************************//~v60dI~
 //#ifdef UTF8SUPP                                                    //~v60aI~//~v650R~
 #ifdef UTF8SUPPH                                                   //~v650I~

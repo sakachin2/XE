@@ -1,4 +1,4 @@
-//*CID://+vbdnR~:                             update#=  337;       //~vbdnR~
+//*CID://+vbdnR~:                             update#=  338;       //~vbdnR~
 //************************************************************************//~v51dI~
 //vbdo:171125 (wxe:BUG)crashh when File/New is canceled            //~vbdnI~//~vbdoR~
 //vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
@@ -223,6 +223,7 @@ void CMainFrame::OnClose()
 {
     WINDOWPLACEMENT wp;                                            //~2A19I~
 //*******************************                                  //~2A19I~
+	UTRACEP("%s:Mpxemain=%p\n",UTT,Mpxemain);                      //+vbdnI~
     if (Mpxemain)                                                  //~2A20R~
     {                                                              //~2A20I~
         Mpxemain->iniput(&Mwxeinidata);//write scr size            //~2A20R~
@@ -611,7 +612,7 @@ int  CMainFrame::updatemainmenuFile(CMenu *Pmenu)                  //~vbdnI~
         }                                                          //~vbdnI~
     }//all sub menu                                                //~vbdnI~
     return updatectr;                                              //~vbdnR~
-}//updatemainmenuFile                                              //+vbdnR~
+}//updatemainmenuFile                                              //~vbdnR~
 //***********************************************                  //~3104I~
 //*ret 0:no update required                                        //~3104I~
 //***********************************************                  //~3104I~
