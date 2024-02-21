@@ -1,6 +1,6 @@
-UTF8 encoding ||*CID:||+v29XR~:  2024/02/20                update#=  836;||~v29XR~
+UTF8 encoding ||*CID:||+v29XR~:  2024/02/20                update#=  837;||~v29XR~
 ######################################################################
-[English]    v1.29X                                                   ||~v29VR~||~v29WR~||+v29XR~
+[English]    v1.29X                                                   ||~v29VR~||~v29WR~||~v29XR~
 
 This editor is fit for programmers working on both main-frame and PC.
 Its operation is based on mainframe SPF editor,
@@ -610,6 +610,8 @@ How to execute.
         "-Nv" displays all characters of ambiguous width in 2 digits. ||~v29XI~
         "-Yv" displays those in one cell for Windows console version xe,||~v29XI~
         Wxe, gxe and xe-linux versions perform internal determination.||~v29XI~
+        Font:Consolas is recommended for Windows console version,     ||+v29XI~
+        it is monospace and display ambiguous chars  by one cell.     ||+v29XI~
                                                                       ||~v29XI~
      3.Miscellaneous.                                                 ||~v29XI~
        -(Win:Console version) Changing the cursor shape using the Insert key||~v29XI~

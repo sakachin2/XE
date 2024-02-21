@@ -1,11 +1,11 @@
-//*CID://+@@@1R~:                             update#=  228;
+//*CID://+@@@1R~:                             update#=  229;
 ** UTF8 encoding **
 
 //***************************************************************************
 129X:2024/02/20
 
      1.BUGs
-       -"cv" command with \u option incorrectly converts Unicode>U-ffff.//+@@@1R~
+       -"cv" command with \u option incorrectly converts Unicode>U-ffff.//~@@@1R~
        -U+00A0 was not a base character of combining characters.
        -(gxe) may crash.
         .When displa a combining character.
@@ -21,8 +21,13 @@
         "-Nv" displays all characters of ambiguous width in 2 digits.//~@@@1R~
         "-Yv" displays those in one cell for Windows console version xe,
         Wxe, gxe and xe-linux versions perform internal determination.
+        Font:Consolas is recommended for Windows console version,  //+@@@1I~
+        it is monospace and display ambiguous chars  by one cell.  //+@@@1I~
 
      3.Miscellaneous.
+       -(Win:Console version) Changing the cursor shape using the Insert key//+@@@1I~
+        does not work on WindowsTerminal.If necessary,             //+@@@1I~
+        start xe on Conhost (previous command prompt executable).  //+@@@1I~
 
      4.Tools
        -xcv  v1.22

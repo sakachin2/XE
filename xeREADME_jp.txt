@@ -1,4 +1,4 @@
-UTF8 encodinng ||*CID:||+v29XR~:  2024/02/20                update#=  835;||~v29XR~
+UTF8 encodinng ||*CID:||+v29XR~:  2024/02/20                update#=  836;||~v29XR~
 ######################################################################
 [Japanese]    v1.29X  (Refer xeREADME_en.txt for English)             ||~v29XR~
 
@@ -593,7 +593,7 @@ Android版:Axe は PlayStoreにあります                                  ||~
   .v129X<--129W:(2024/02/20)                                          ||~v29XR~
                                                                       ||~v29XR~
      1.BUGs                                                           ||~v29XR~
-       -\u オプションの "cv" コマンドが ユニコード>u-ffff の変換を誤る||+v29XR~
+       -\u オプションの "cv" コマンドが ユニコード>u-ffff の変換を誤る||~v29XR~
        -U+00A0 が結合文字の基底文字から外れていた                     ||~v29XR~
        -(gxe)クラッシュすることがある                                 ||~v29XR~
         .結合文字を表示するとき                                       ||~v29XR~
@@ -609,6 +609,8 @@ Android版:Axe は PlayStoreにあります                                  ||~
         表示幅が曖昧と定義されている文字を -Nv では全て２桁表示、     ||~v29XR~
         -Yv ではWindows コンソール版 xeでは１桁表示とするが           ||~v29XR~
         wxe,gxe,xe-linux版では内部的な判定を行う。                    ||~v29XR~
+        Windows コンソール版 ではフォント:Consolasを使用すると        ||+v29XI~
+        曖昧文字は１桁表示されるのでお勧めです。                      ||+v29XI~
                                                                       ||~v29XR~
      3.その他                                                         ||~v29XR~
        -(Win:コンソール版) WindowsTerminal 上では Insert キーによるカーソル形状の変更が効きません。||~v29XI~
