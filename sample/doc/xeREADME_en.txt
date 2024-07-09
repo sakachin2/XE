@@ -1,6 +1,6 @@
-UTF8 encoding ||*CID:||+v29XR~:  2024/02/20                update#=  836;||~v29XR~
+UTF8 encoding ||*CID:||+v130R~:  2024/07/05                update#=  850;||~v130R~
 ######################################################################
-[English]    v1.29X                                                   ||~v29VR~||~v29WR~||+v29XR~
+[English]    v1.30                                                    ||~v130R~
 
 This editor is fit for programmers working on both main-frame and PC.
 Its operation is based on mainframe SPF editor,
@@ -133,494 +133,533 @@ How to execute.
 ## Change History.
   .v010:(95/06/04)
         initial release
+  .v020:(95/07/09)
+      .fixed CID support
+      .file name input panel support(MENU 1,2)
+
+  .v021:(95/07/10)
+      .Bug correction.
+
+  .v050:(95/10/08)
+      .Directory list support
+      .New DOS command(ATTrib,MKDir,RMDir,DELete,REName,XCOpy)
+
+  .v060:(96/02/11)
+      .Additional DOS command(XMOve,XDD,XPRINT)
+      .Native DOS,OS/2 command is available.
+
+  .v070:(96/04/15)
+      .Extended function for Native DOS,OS/2 command process.
+        (&quot;&gt;&quot; command prefix,option 6 on menu screen)
+      .Support valiable length of line-no field.
+
+  .v080:(96/09/07)
+      .Support MENU Option 0(set color)..
+      .Dir list line command copy function.
+
+  .v090:(96/12/16)
+      .XE(Windows 95 version) is added.
+      .File partial EDIT/BROWSE function.
+
+  .v091:(97/01/04)
+      .Bug correction.
+
+  .v092:(97/06/01)
+      .DPMI(DOS PROTECT MODE INTERFACE) version added.
+
+  .v094:(97/10/05)
+      .Binary file support.
+      .UNIX text file support.
+      .Support  margin.
+      .Support Line-Numbered file.
+      .New line cmd &quot;/&quot; and &quot;+&quot;.
+
+  .v097:(97/12/27)
+      .Long File Name support.(W95/GCC version)
+
+  .v098:(98/04/28)
+      .WindowsNT support(w95 version)
+      .Allow range specification to &quot;O&quot;(on),&quot;P&quot;(paste) command(&quot;OO&quot;,&quot;PP&quot;).
+      .Search line range support for Find/Change command.
+      .New EXClude/IX(case insensitive EXClude) cmd
+      .New DROp cmd.
+
+  .v099:(98/04/29)
+      .Bug correction.
+
+  .v100:(98/07/21)
+      .BUGS -(W95 version only) Start fail on V4.00.950B.
+        Now tested under v4.00.1111, and also Windows98 4.10.1998.
+      .Additional line-command function.
+       -Bundled lines function for each line command.
+      .New option on Menu screen.
+       -Command assignment to Fn key,Key assignment changed/display.
+      .Other miscellaneous.
+       -(WIN version only)Add bypass DBCS input process option on
+        exe parameter(/Yn).
+
+  .v101:(98/12/01)
+      .Additional Function.
+       -SUBmit command(Execute script file).Line command &quot;=&quot;(compare).
+  .v102:(99/05/01)
+      .Additional Function.
+       -HEX digit input mode support(toggle by HEX cmd or Alt+F12)
+       -New option to Edit/Browse/Select command.
+        /Mb[nn][s]:b:binary mode.nn:line width.s:save.
+        /Mn       :mode of 80 column line-numbered file with no CID.
+        New cmd BB/EB/SB for /Mb and BN/EN/SN for /Mn.
+        Dir-list line cmd &quot;1&quot;(Browse Binary) and &quot;2&quot;(Edit Binary).
+       -SORT command.
+       -F6 key on dir-list. Toggle file size display by byte and lineno.
+
+  .v103:(99/09/01)
+       -Cols command.Column-gauge is displayed. Any gauge fmt can be set.
+       -Option for binary file.
+        Edit/Browse/Select command. /O :file input range by Hex digit offs
+                                    /Mo,/Ml:Line no is hex offset or no.
+        Num command. NUM XON|XOFF[,S] :line number type.S:save.
+        Locate command. LOC [O|L]nn[,C] O:Hex offset,L:line number digit.
+                        C:location on current status.
+       -&quot;EXClude ALL&quot; hides all lines.
+       -To print currently displayed file enter &quot;XPRint *&quot;.
+
+  .v104:(99/11/27)
+      . *\ support to also Edit screen cmd(Edit,Save,Repl,Copy,...).
+
+  .v105:(00/02/26)
+      .For Edit/Browse/Select with wildcard filename specification,
+       display the file if only one filename is correspond to it.
+
+  .v106:(2000/05/08)
+       -Sort cmd.
+        Duplicated-key check and Key-break check option is added.
+       -Refresh cmd to refresh directory list.
+       -Basic calculation command BC.
+       -Table calculation command TC.
+
+  .v107:(2000/12/01)
+     1.Additional function.
+       -CID(ChangeID:updated line tag)
+        .New option on top CID line,option to maintenance update-ctr
+         on top CID line and option to clear TAB at save file.
+         Update counter is automaticaly 1 up at save.
+       -Filename history list.
+     2.Linux Console Version.
+     3.AIX TeraTerm Version.
+       -It works on AIX through TeraTerm(*).
+        (*)TeraTerm is a freeware terminal emulator by T.Teranisi.
+           I tested with Ter Term Pro version 2.3.
+  .v108:(2001/10/08)
+       -New line cmd &quot;[&quot; and &quot;]&quot;. shift reducing intermediate space.
+       -New function key, &quot;Alt+.&quot; and &quot;Alt+,&quot;.
+        .Search the pair of the parenthesis (,),[,],{,},&lt;,&gt;,/* or */.
+       -XBC(Basic Calc) cmd.
+        .Double word calc support.(Decimal is up to 19 digit).
+        .Timestamp conversion. (Mainframe HOST TOD is also supported).
+       -eXclude cmd.
+        .Exclude repeated lines by &quot;x *=[n] all&quot;.
+       -DROp cmd.
+        .Rep option replace excluded lines by a comment line
+         &quot;!!  nn line excluded -----&quot;.
+       -COBOL support.
+        .Left most column displayed and indentation pos when line
+         insert is col 7.
+        .Col 73-80 is optionally CID column.
+
+######################################################################||~v29XI~
+  .v109:(2001/10/08)
+       -Binary Editor.
+       -New line-cmd on directory list.
+        .h(Hex), i(SPFCOB-with col 1-6 seqno),j(SPFCOB w/o seqno),
+         k(COB w/o seqno), L(COB with seqno), n(SPF file)
+       -Find,eXclude cmd.
+        .&amp;:search line containing 2 word. ex). word1 &amp; word2.
+        .-an or -bn:display and exclude n lines after or before
+         the line containing search word.
+        .-c:keep screen to display the found word to the rightmost.
+        .-d[&lt;|&gt;]n:distance of 2 word of &amp; search. n:line count.
+         ex) -d&gt;n:distance is over than n lines.
+         -d&lt;n:distance is lower than n lines. -dn:word2 is on the next
+         n'th line. without -d option or -d0,&amp; search 2nd word only
+         on the same line as 1st word found.
+       -Macro pair search.
+        .Search same nest level corresponding macro of #if/#ifdef/
+         #ifndef/#else/#endif/#elif.
+        .Use &quot;Alt+.&quot; or &quot;Alt+,&quot; when csr is on the char of &quot;#&quot;.
+       -New SPLit command.
+                                                                      ||~v29XI~
+######################################################################||~v29XI~
+  .v110:(2002/01/14)
+      .Linux version BUG corection.
+
+######################################################################||~v29XI~
+  .v111:(2002/05/19)
+       -&quot;OPT EOL eol-char [ON|OFF]&quot; cmd.
+       -&quot;JOIn {X|NX} [all] [.lab1 .lab2]&quot; cmd.
+       -Alt+F12. repeat previous cmd.
+       -Find/eXclude cmd.
+        Accept minus value for -ann and -bnn option.
+       -(UNX)Floppy disk support.
+       -Dir-list line cmd &quot;o&quot;(Open).
+       -/M{P|U|M} (EndOfLIne code change) parm to CREate,REPlace,APPend
+        and SAVe. P:0d0a, U:0a, M:0d.
+       -String Input Shortcut key.
+                                                                      ||~v29XI~
+######################################################################||~v29XI~
+  .v112:(2003/01/19)
+       -(WIN)WXE is a new member.
+       -FINd/EXClude cmd.
+         -*L option.
+         -*=[n](search continued same n line) option is supported
+       -TC cmd.
+        support &quot;==&quot;(compare) operation.
+       -CV cmd.
+        JSI&lt;--&gt;SJIS,JIS&lt;--&gt;EUC and Unicode conversion(SJISM&lt;--&gt;UCS2&lt;--&gt;UTF8)
+        is now supported.
+       -REN(or NUM RENUM) cmd.
+        added function to set line number on any position of text area.
+
+######################################################################||~v29XI~
+  .v113:(2003/09/06)
+
+       -2 word &amp;(and) search support on also dir list.
+       -% edit dir list line command.
+       -CV cmd.
+        .EBCDIC&lt;--&gt;ASCII conversion(except DOSversion)
+        .Hankaku(SBCS)katakana&lt;--&gt;English lower case letter conversion(except DOSversion)
+        .HexNotation string--&gt;Char conversion(except DOSversion)
+       -ROTate cmd.
+       -SPAwn cmd.
+       -(LNXversion)
+        .supports X-Window                                            ||~v29XR~
+       -(AIXversion)
+        .support telnet from Linux.
+        .supports X-Window.                                           ||~v29XR~
+                                                                      ||~v29XI~
+######################################################################||~v29XI~
+  .v114:(2003/09/15)
+     . binary compiled by RedHat v9 is packaged.
+       (xe compiled by TurboLinux v9 will ABEND at gnome-terminal on
+        RedHat v9 when Kanji input.)
+                                                                      ||~v29XI~
+######################################################################||~v29XI~
+  .v115:(2004/03/02)
+       -FTP support(remote file access).
+       -(WIN) AT new command.
+         AT/&amp; [-i] interval [repeat-count];command-1;command-2,...;command-n
+         Repeat command-1 -- command-n repeat-count times by interval seconds.
+         Without repeat-count,loops infinitly.
+       -(WIN) Sleep new command.
+       -EXE cmd added.
+        .execute edit command in the file.
+       -TC cmd.
+        .&quot;~&quot; new operation to count existing record.
+       -Find cmd.
+        .&quot;-j&quot; option. join lines in -a and -b or -d for &amp;(and search) range.
+        .search word *\n to positioning End-Of-Line.
+         &quot;*&quot;\n is for search &quot;*&quot; in the EOL position.
+        .eol option to search word in the EOL.
+       -Opt cmd.
+        .Beep [on|off]  :Beep when err.
+        .RCTL [on|off]  :use Right-Ctrl key as execute function.
+        .CCFUNC [on|off]:to use Ctrl+Char key as function key.
+        .FREECSR [on|off]:scroll or wrap around when cursor reached to
+                          edge of the screen.
+                          Always wrap when cursor is on lineno column.
+       -CV cmd.
+        .\u  :use with u2s. convert \uxxxx unicode format.
+        .-Hpre[XXpost]:use with x2c. convert between prefix and postfix.
+       -JOIn cmd.
+        n-b-s option:repeat b times of n lines concatination then skip s lines.
+       -Alt+w function key copies word to clipboard.
+       -Alt+Left(Up),Alt+Right(Down) edit/browse the file/dir on the path
+        of currently displayed file/dir.
+       -S+right,S+Left is supported also on dir-list screen.
+       -(WIN)Start application associated with filename extension.
+       -(WXE)
+        .wxp cmd. print by wxe function not by xprint tool.
+       -(LNX)
+        .mouse support.
+                                                                      ||~v29XI~
+######################################################################||~v29XI~
+  .v116:(2004/12/21)                                                  ||~v29XI~
+       -EXE cmd.
+        .ignore error of each cmd in the cmd file and continue to process.
+       -RSH new cmd.
+       -SORt cmd.
+        .support sort by timestamp/filesize on dirlist.
+       -TC cmd.
+        .option to output summary(subtotal,total) line to file.
+        .support copy operation.
+           opd3=opd2 [INS] [RJust]
+       -remote file access.
+        .support print local by XPRint cmd, &quot;p&quot; dirlist line cmd.
+        .% dirlist line cmd on remote dirlist is done by rsh.
+       -&quot;n&quot; edit line cmd support.
+       -&quot;#&quot; dirlist line cmd support.
+
+######################################################################||~v29XI~
+  .v117:(2005/04/15)
+       -File on another screen of splitted.
+        .&quot;^*&quot; means the file on another screen of splitted.
+         &quot;^*\&quot; means path of the file or dir itself and may be used
+         like as &quot;e ^*\file2&quot;.
+       -3 line HEX display mode.
+       -Find cmd.
+        .-Llcmd option.
+        .-m[n] option. keep reverse display of found word.            ||~v29XR~
+        .matching function.
+         *=Mn, n:key column of the other screen file.
+       -remote file access.
+        .support &quot;u&quot;(undo) DirList line cmd for also remote file.
+       -Command Log.
+        .logging option is set OPT CMDLOG [ON|OFF]. default:OFF.
+       -&quot;#&quot; new edit line cmd.
+
+######################################################################||~v29XI~
+  .v118:(2005/07/04)
+       -GREp cmd support.
+       -(WXE)Drag &amp; Drop.
+        .support Drag from dirlist screen and drop out of xe.
+
+######################################################################||~v29XI~
+  .v119:(2005/07/30)
+       -(LNX)new member gxe(Gnome GUI version executable) is added.
+       -OPT DELZ {ON|OFF}
+       -Support wildcard path specification for Copy/Move DOS cmd and dirlist line cmd.||~v29XR~
+       -(WXE)Accept Shift+PrtScr key as file print request.
+       -(LNX)support OpenWith(Open by associated application)
+       -(LNX)Scroll by wheel mouse middle button is supported.
+       -(LNX)support child shell(terminal window) creation by &quot;DOS sh&quot; or
+         &quot;&gt; sh&quot;.
+
+######################################################################||~v29XI~
+  .v120:(2005/12/12)
+       -New &quot;&amp;&quot; DirList line cmd.
+       -(XXE)support printer selection on Preview dialog.
+       -(XXE)Help(display xe html help)support.
+       -Support Windows like Cut&amp;Paste operation.
+
+######################################################################||~v29XI~
+  .v121:(2006/04/17)
+       -Retrieve command of the screen.
+        F12 retrieve all command input on any panel,A+F12 retrieve
+        command only input on the panel.
+       -Alias cmd.
+        Set alias cmd on short-cut-key panel(&quot;0.1 SC-CMD&quot; of top menu).
+        Add line prefixed &quot;Alias:&quot;.
+       -CV command.
+        support &quot;\u&quot; option(uni-code by \uxxxx format) for also conversion
+        type s2u/f2u(uni-code output) and u2f(uni-code input).
+       -(WXE/XXE)Drag&amp;Drop
+        Copy the file into the dir if dropped on the dir-list panel.
+        Inter-splitted-screen drag&amp;drop is also available.
+
+######################################################################||~v29XI~
+  .v122:(2006/12/14)
+       -Display file description on dir-list panel.
+       -Horizontal scrolling.
+       -(WXE)Forward/Backword button click of 5 button mouse is treated
+        as DPU/DPD(FilePath Up/Down) command.
+       -LOCate cmd.
+        .search labeled line by .label operand spcification.
+       -Fix keyboad input to uppercase.
+        .New command CAP.
+       -Setup &quot;Line Drawing Character&quot; by the ini file.
+       -SUBmit command.
+       -(Win) Turnkey MVS support.
+       -Edit command
+        .New option Fn[-m] to force the record length to n and set
+         left margin to m.
+        .New TC|NOTC option to specify TAB clear(change to space at save).
+       -B2A/A2B(EBCDIC&lt;==&gt;ASCII) conversion option is added.
+        (Ignore 0x0e/0x0f as SO/SI of SBCS(Japanese DBCS))
+       -Change command.
+        IC(CaseInsensitive) and ICN(CaseInSensitive,change displayed line only)
+        commands are added.
+                                                                      ||~v29XI~
+######################################################################||~v29XI~
+  .v123:(2007/09/17)
+       -(WXE/XXE)GUI version support CrossHair cursor(ruler).
+       -It is configurable to popup exit-confirmation-dialog on setup dialog.
+        To bypass the dialog check on QuietExit checkbox.
+       -COL [on|off] ALL; command set option to display default type column gauge||~v29XR~
+        line at open for all file.
+       -Line cmd(_:LowerCase conversion) support.                     ||~v29XR~
+       -BOUnds(BNDs) command support.
+          BND [col1] [col2] [ext]
+       -Text Flow function.
+       -TS line command.
+         Split the line at the cursor point.
+       -E8/B8/S8 command.
+        Open the file by Fixed LRECL=80 without line-number on col.73-80.
+       -New DirList line command.
+        .&quot;g&quot;:grep in the file or directory.
+        .&quot;=&quot;:compare two files using tool &quot;xfc&quot; in this package.
+        .&quot;3&quot;:open the file by binary mode(browse or edit depends on the dir mode)
+        .&quot;8&quot;:open the file by Fixed LRECL=80 without line-number-column.
+       -New panel 3.12(File/Directory compare), 3.14(Search) support.
+       -ROTate cmd.
+       -Fixed Record Length file.
+       -Expand parameter input area for DirList line cmd &quot;#&quot;.
+       -Linux version is now packaged using libtool to enable installing
+        xe from source file by &quot;./configure &amp;&amp; make&quot;.
+       -Remote file access.
+        .Deal with the FTP server of active mode only.
+
+######################################################################||~v29XI~
+  .v124 :(2009/04/13)
+       -Remote Access(FTP).
+        .Support TinyFTP daemon on Windows server.
+        .Support PSFTP in PuTTY. (SSH2 was tested under v060)
+       -Assign Alt+g to the new function to jump cursor between Char-part and Hex-part
+        when horizontal/vertical HEX display mode.
+       -CRLF option of SPLit cmd
+        Split lines by the width or CRLF code,used to change the display width of text mode.
+       -UTF8 support version.                                         ||~124FR~,
+       -Another word search function key.                             ||+124GR~,
+                  CaseSensitive        CaseInsensitive
+            Bwd     C+[, A+S+[           A+[
+            Fwd     C+], A+S+]           A+]
+       -Another word paste function key.                              ||~124GI~,
+          Ctrl+w:append the word on the cursor into command line.
+                 In this function the word means space delimited word.
+       -EXE cmd redirect parameter.                                   ||~124GI~,
+          EXE [!] { * | ^* | filename } [parm1 parm2...]  [&lt; {@parmfile | [S] wildcard  [D[+]] ]
+       -SYN new cmd.                                                  ||~124GI~,
+        .Using GNU source-highlight, text is optionally displayed with syntax specific color.
+        .andre-simon's &quot;Highlight&quot; is also tested.
+       -CUT/PASte new cmd.                                            ||~124GI~,
+       -Find/Change cmd new option.
+        &quot;-g&quot; (grep) support regular expression.
+       -Profile function.                                             ||+124LI~,
+       -3270 connection.                                              ||~124NI~,
+        Now connection with S390 by tn3270 was tested.                ||~124NI~,
+       -NLS Spport.
+        .Support Korean and Chinese encoded file and IME imput.
+       -(Win) Support ENC format(\\server\sharefolder\file) filename.
+       -(Win) C:\ may protected on Vista.
+       -LineDrawingCharcter input function(Default key assign ment:Alt+0 to Alt+9)
+
+######################################################################||~v29XI~
+  .v125K:(2011/02/11)                                                 ||~v29XI~
+       -UTF8 Support.
+         .UTF8 encoded file is processed after translated to UCS2(16bit UCS) for windows version,
+          Unicode input by hex notation and unicode synthesis by &quot;u&quot; key is supported.
+       -NLS support                                                   ||~v29XR~
+         .(LNX).4 byte DBCS of GB18030 is displayed as 4 columns char followed by 2 column padding chars.
+         .Ligature support.
+       -CV(Code conVersion) cmd.                                      ||~v29XR~
+        .f2e/e2f(UTF8&lt;--&gt;Japanese-EUC) option was added
+       -HEX cmd new option to move cursor zigzag.                     ||~v29XM~
+          HEX [ On | Off | YZ | NZ ]                                  ||~v29XM~
+       -RECORD Mode Edit cmd option.                                  ||~v29XR~
+        .Edit fiels with no EndOfLine ID.
+       -EBCDIC file support.                                          ||~v29XR~
+        .EBCDIC encoded file is maintained as it is without translation to locale codepage.
+       -64bit support(Tested only by Linux version)
+
+######################################################################||~v29XI~
+  .v127S                                                  (2015/03/10)||~v29XI~
+           -Symbolic Link(JunctionPoint/MountPoint also for Windows) consideration.
+           -RECFM=V support.
+           -(LNX)gtk3 support.
+           -Supports Ctl+W(copy string to command line) also on dir-list.
+           -(Win)display Filename of foreign language by unicode.
+           -FINd cmd, new option &quot;U4&quot; to search not 2 byte ucs but 4 byte ucs
+           -For PuTTY 0.63, additional function key by modifier+Fn key combination.
+           -Expanded record display width from 9999 to 32760.
 ######################################################################
-  .v129A<--129:(2017/06/24)
+  .v128K                                                  (2017/03/29)||~v29XI~
+       -Unicode input by Alt+n (n:1-9,h,v)                            ||~v29XI~
+        use u-xxxx format in the file ::xelch{win|lnx}.ini[.locale]   ||~v29XI~
+       - Find cmd new option.                                         ||~v29XI~
+        . { FINd | IFInd | FNX | INX } [find-options] [-{PSP|PSF}[X|R|D]]||~v29XI~
+        . PSD command                                                 ||~v29XI~
+       - Utilizes Shift+Alt+Fn, Shift+Ctrl+Fn keys.                   ||~v29XI~
+       - Tab cmd, new altch option.                                   ||~v29XI~
+        . TAB { on [altch] | off | clear | =default | nn [asdefault] }||~v29XI~
+       - Select command.                                              ||~v29XI~
+        . new lineno option:  "S -lineno" (1st member if lineno is missing)||~v29XI~
+       -command verb "LIG" to toggle ligature mode(A+";" key)         ||~v29XI~
+        and "CMB" to toggle combine mode(A+":" key) was added.        ||~v29XI~
+######################################################################||~v29XI~
+  .v129X                                                  (2024/02/20)||~v29XI~
+       -Shortcut pathname                                             ||~v29XI~
+        .SP { edit | refresh | add sp-name { file-spec | *\\ | ^*\\ } }||~v29XI~
+        .To utilize Shortcut pathname, add prefix "sp:" to file-spec. ||~v29XI~
+       -SelectAll                                                     ||~v29XI~
+        .SEL [all] [col1 col2] [.label1 .label2]                      ||~v29XI~
+        .Select range to Cut/Copy/Paste on Edit panel.                ||~v29XI~
+       -XML tag pairing searchv by Alt+"/"                            ||~v29XI~
+        .It is convenient to correct html text.                       ||~v29XI~
+       -CommandHistoryList.                                           ||~v29XI~
+        Mouse operation support.                                      ||~v29XI~
+       -TC fmt cmd -D"..." and -S"..." option                         ||~v29XI~
+        Accept escape secuence such as \x, \t as Delimeter(\t(0x09) is not allowed for -S).||~v29XI~
+       -COL command (Display column gauge to enable setting of tab stop position)||~v29XI~
+        .COL [on|off] [ALL|type|default]                              ||~v29XI~
+       -Syntax Highlight.                                             ||~v29XI~
+		Supports ANSI:reverse attributes of Andre Simon's Highlight and GNU source-highlight.||~v29XI~
+	   -Unicode support for CID prefix.                               ||~v29XI~
+	    U-235d is a comment prefix in APL language, CID supports it.  ||~v29XI~
+       -(Axe)                                                         ||~v29XI~
+        .And.Android 13 (Api-33) compatible.                          ||~v29XI~
+        .Shared storage support.                                      ||~v29XI~
+######################################################################
+  .v130 <--129X:(2024/06/30)                                          ||~v29XR~
 
-     1.BUGs
-       -(Windows:64)"&"(spawn executable file) dir cmd crush.
-       -(64Bit) =3.14 crush
-
-     3.Miscellaneous.
-       -(Windows) add "msi" as executable binary extension
-
-  .v129B<--129A:(2017/07/10)
-
-     1.BUGs
-
-       -(Win64) Erroneous calculation when Datatype is X(Hex),O(octal).
-       -(Win64) DragDrop between split panels(file copy) crashes.
-
-     2.Additional function.
-
-       -Shortcut pathname
-        .SP { edit | refresh | add sp-name { file-spec | *\\ | ^*\\ } }
-            edit   : show edit panel of Shortcut pathname definition file(::xe.shortpath).
-                     Update is enabled when restart xe,
-                     or enabled if "refresh" after saved.
-                     Format of the line of definition file is "Shortcut-pathname fullpath-name".
-                     Put "#" at top of line to comment out.
-                     e.g.) srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test
-                           ecws  "c:\Program Files\Android\Android Studio\gradle"
-            refresh: reload  definition file of ::xe.shortpath.
-                     Use after "sp edit", modify then saved or directly updated ::xe.shortpath by
-                     another process.
-            add    : add a line to definition file by sp-name:Shortcut pathname and file-spec:shortcut target fullpath name.
-                     This definition is enabled instantly.
-                     Following specifications are effective at proper situation.
-                       *\ :the file currently opened on this panel.
-                       ^*\:the file currently opened on another split panel.
-                     e.g.) sp add srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test
-                           sp add ecws  "c:\Program Files\Android\Android Studio\gradle"
-        .To utilize Shortcut pathname, add prefix "sp:" to file-spec.
-         (If xxx of sp:xxx is not defined, "sp:xxx" is used as is.)
-           e.g.) e sp:srctest1\Main.java
-                 e sp:ecws
-                 e "sp:ecws\space embedded name"
-                 xcopy sp:ecdir\x1 sp.ecdir\x2
-                 cd sp:ecdir
-                                                                      ||~129CI~
-  .v129C<--129B:(2017/09/04)                                          ||~129CI~
-                                                                      ||~129CI~
-     1.BUGs                                                           ||~129CI~
-                                                                      ||~129CI~
-     2.Additional function.                                           ||~129CI~
-       -Find cmd                                                      ||~129CI~
-          Search file attribute column on dir-list panel.             ||~129CI~
-          Parameter is case insensitive.                              ||~129CI~
-          Use "d" for directory, "L" for symbolic link.               ||~129CI~
-          Specify "d" and "L" alone each.                             ||~129CI~
-          For other attributes, on Windows, select the line having all attributes of parameter,||~129CI~
-          on Linux, select the line having string of attribute parameter.||~129CI~
-          Following attribute IDs are specific to Linux.              ||~129CI~
-            u:setuid, g:setgid, S:setuid+setgid, t:stickey            ||~129CI~
-            c:char device, b:block device, p:pipe, s:socket           ||~129CI~
-          e.g.) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr||~129CI~
-                (Linux)   f 775 attr ; f u attr                       ||~129CI~
-                                                                      ||~129CI~
-     3.Miscellaneous.                                                 ||~129CI~
-       -(Windows)If LoadLibrary failed for EBCDIC library for ICU(libicuuc.dll),||~129CI~
-        search in the directory of ICU_DATA parameter of xeebc.map and also||~129CI~
-        ICU_DATA environment variable.                                ||~129CI~
-        (Linex)It is need to set LD_LIBRARY_PATH if the ICU so is not on default path like as /usr/lib etc.||~129CI~
-       -When ICU_DLL_SUFFIX and ICU_APP_SUFFIX  are missing,          ||~129CI~
-        set both bt ICU utility  uconv(.exe).                         ||~129CI~
-       -Reject /Mr(Recordmode) option for CPU8 file because string length of UTF8 code is indefinite.||~129CI~
-                                                                      ||~129CI~
-     4.Tool.                                                          ||~129CI~
-       -xprint v9.38                                                  ||~129CI~
-        ./Tabon: new parameter added                                  ||~129CI~
-           Specify alternative char for DBCS space, TAB(0x09) and its following space.||~129CI~
-           /Tabon:x:y:z ;Text mode alternative char for DBCS space,Tab(0x09),Tab-skip.||~129CI~
-                        ;For x,y,z each, specify Char itself, Unicode or Hex notation.||~129CI~
-                        ;e.g.) /Tabon:x2020:x18:x1a  /Tabon::u2191:u2192 /Tabon::u25cb||~129CI~
-                        ;      /Tabon:u2750                           ||~129CI~
-                        ;Default is /Tabon:u3000:x20:x20(UTF8/EBCDIC file)||~129CI~
-                        ;       and /Tabon:x8140:x20:x20(other file). ||~129CI~
-        .For EBCDIC file EBCDIC, if /BCfilename is missing to translate by ICU,||~129CI~
-         Search ICU shared library(DLL or so) on PATH or LD_LIBRARY_PATH.||~129CI~
-         If library found, supply ICU version using ICU utility uconv(.exe).||~129CI~
-           e.g.) xprint x1ebc22 -cpeb=cp930 -me -icu                  ||~129CI~
-       -xcv 1.20                                                      ||~129CI~
-        .When translating EBCDIC file by ICU, if /BCfilename parameter is missing,||~129CI~
-         Search ICU shared library(DLL or so) on PATH or LD_LIBRARY_PATH.||~129CI~
-         If library found, supply ICU version using ICU utility uconv(.exe).||~129CI~
-           e.g) xcv x1ebc22 x1ebc22m -b2m -cpeb=cp930 -icu            ||~129CI~
-                                                                      ||~129CI~
-  .v129D<--129C:(2017/12/03)                                          ||~129CI~
-                                                                      ||~129CI~
-     1.BUGs                                                           ||~129CI~
-       -(Linux)Under GTK3 environmentt, Accelerator option on Setup dialog was not work.||~129CI~
-       -(Wxe)Crash when File->New menuitem was selected.              ||~129CI~
-                                                                      ||~129CI~
-     2.Additional function.                                           ||~129CI~
-       -SelectAll                                                     ||~129CI~
-          .Command.                                                   ||~129CI~
-             SEL [all] [col1 col2] [.label1 .label2]                  ||~129CI~
-               label1/2:line range  col1/2:column range               ||~129CI~
-               numeric specification for both label 1 and 2 are accepted as lineno.||~129CI~
-               Block mode with col1/2, Range mode without col1/2.     ||~129CI~
-               "Selct All" without label/column.                      ||~129CI~
-               e.g.) sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;       ||~129CI~
-          .Select range to Cut/Copy/Paste on Edit panel.              ||~129CI~
-           Under range mode, selected range itself is target of Paste Range mode.||~129CI~
-          .Abridged format command "S" is not available               ||~129CI~
-           "S" means "SAVe" on Browse/Edit panel.                     ||~129CI~
-        (Wxe,gxe)                                                     ||~129CI~
-          ."SelectAll" menuitem was added to File submenu and popup menu on edit panel.||~129CI~
-          .Set shotcut key to Ctrl+A and cabnged to Ctrk+Shift+A for SaveAs.||~129CI~
-                                                                      ||~129CI~
-     3.Miscellaneous.                                                 ||~129CI~
-       -Disable also menuitem of File submenu depending panel type.   ||~129CI~
-        e.g. Save is disable for directory list panel.                ||~129CI~
-                                                                      ||~129EI~
-  .v129E<--129D:(2018/01/09)                                          ||~129ER~
-                                                                      ||~129EI~
-     1.BUGs                                                           ||~129EI~
-                                                                      ||~129EI~
-       -(Windows Console version) Japanese Error msg on header line may be corrupted.||~129EI~
-                                                                      ||~129EI~
-     2.Additional function.                                           ||~129EI~
-                                                                      ||~129EI~
-       -XML tag pairing search                                        ||~129EI~
-          .Default shortcut key is Alt+"/"                            ||~129EI~
-          .Use shortcut key on "<" or ">"                             ||~129EI~
-          .Comment portion(from "<!--" to  "-->") is ignored          ||~129EI~
-           and recognize nested tag.                                  ||~129EI~
-           It is convenient to correct html automation tool generated.||~129EI~
-                                                                      ||~129EI~
-     3.Miscellaneous.                                                 ||~129EI~
-                                                                      ||~129EI~
-       -(Windows Console version) When ligature:on on windows10,      ||~129EI~
-        UTF8 file lines of Japanese Kanji shrinks to unreadable.      ||~129EI~
-        So, reject Ligature:On for from Windows7.                     ||~129EI~
-                                                                      ||~129FI~
-  .v129F<--129E:(2018/01/23)                                          ||~129FI~
-                                                                      ||~129FI~
-     1.BUGs                                                           ||~129FI~
-                                                                      ||~129FI~
-       -Edit/Browse Command                                           ||~129FI~
-        .Shows only last record when record mode with RecordSize>4096 ||~129FI~
-         and 1st record contains ControlChar(<0x20).                  ||~129FI~
-         Or crashes if FileSize>128K                                  ||~129FI~
-        .CPLC option registered on profile record was ignored when record mode.||~129FI~
-         ("CPLC" option was required each time)                       ||~129FI~
-                                                                      ||~129HI~
-  .v129G<--129F:(2018/01/30)                                          ||~129GI~
-                                                                      ||~129GI~
-     1.BUGs                                                           ||~129GI~
-                                                                      ||~129GI~
-       -(Linux) On Ubuntu17.10, DirList line command:"!"(start application corresoponding to the file extension)||~129GI~
-        failes by "No application defined to the MIME type".          ||~129GI~
-       -(Wxe/gxe) Cut&Paste by mouse may paste trash data with length of CID of source line.||~129GI~
-                                                                      ||~129GI~
-     2.Additional function.                                           ||~129GI~
-                                                                      ||~129GI~
-     3.Miscellaneous.                                                 ||~129GI~
-                                                                      ||~129GI~
-       -(Linux)Adjusted configure.ac through installation to S390x on Hercules emulater.||~129GI~
-               And updated TroubleShooting notes(READMEe.txt).        ||~129GI~
-                                                                      ||~129FI~
-  .v129H<--129G:(2018/02/22)                                          ||~129HI~
-                                                                      ||~129HI~
-     1.BUGs                                                           ||~129HI~
-       -(gxe:GTK3)printer selection on PrintDialog is applied incorrectly.||~129HI~
-       -(gxe:GTK3)screen size at termination is not recovered correctly and enlarged.||~129HI~
-                                                                      ||~129HI~
-     2.Additional function.                                           ||~129HI~
-       -P=nn(PortNo) option in xehots                                 ||~129HI~
-        .specific to the psftp destination other than default SSH portNo(22).||~129HI~
-       -Command History List.                                         ||~129HI~
-        .Shift+Ctrl+F12 shows CommandHistoryList, use "x" key to execute cmd on the line.||~129HI~
-        .Available commands are                                       ||~129HI~
-          s : set to the command input line after closed the command history panel.||~129HI~
-          S : set to the command input line of the command history panel.||~129HI~
-          t : set on the other panel if screen is split.              ||~129HI~
-              same as "S" if not split                                ||~129HI~
-          x : executhe the command after closed the command history panel.||~129HI~
-          X : execute on the command history panel.                   ||~129HI~
-          y : execute on the other panel if screen is split.          ||~129HI~
-              same as "X" if not split.                               ||~129HI~
-        .Max 40 entry is saved at xe terminate.                       ||~129HI~
-                                                                      ||~129HI~
-     3.Miscellaneous.                                                 ||~129HI~
-       -Function:"R-Retrieve-OfTheScr"(Retrieve command of Next of the panel)||~129HI~
-        had not function key assigned, assign Shift+Alt+F12.          ||~129HI~
-                                                                      ||~129JI~
-  .v129J<--129H:(2018/05/10)                                          ||~129JI~
-                                                                      ||~129JI~
-     1.BUGs                                                           ||~129JI~
-                                                                      ||~129JI~
-     2.Additional function.                                           ||~129JI~
-       -CommandHistoryList.                                           ||~129JI~
-        Mouse operation support.                                      ||~129JI~
-        .R-button popups context menu.                                ||~129JI~
-        .Double click works as "x" cmd(execute the command after closed the command history panel).||~129JI~
-        .Click on the selected line works as "s" cmd(set to the command input line after closed the command history panel).||~129JI~
-                                                                      ||~129JI~
-     3.Miscellaneous.                                                 ||~129JI~
-       -Add "CPU8" option to dirlist cmd "="(compare file/directory). ||~129JI~
-                                                                      ||~129JI~
-     4.Tool.                                                          ||~129JI~
-       -xdc v2.29,xfc v1.27                                           ||~129JI~
-        Add "CPU8" option.                                            ||~129JI~
-                                                                      ||~129JI~
-  .v129K<--129J:(2018/08/27)                                          ||~129KI~
-     1.BUGs                                                           ||~129KI~
-       -Around processing of UTF8 file.                               ||~129KI~
-         .DisplayCellWidth was reviced.                               ||~129KI~
-         .Trouble around displaying UCS4,SpacingCombiningMarks adn NonSpacingMark.||~129KI~
-         .Expanded Maxmum combining up to 8 chracters.(case of Tibtan)||~129KI~
-          For Linux Console version max is yet 4 characters.          ||~129KI~
-         .When unicode>=U01000(Windows) or unicode>=U020000(Linux)    ||~129KI~
-            -Invalid hexcode display on top-left header line.         ||~129KI~
-            -Could not update on vertical hex display line.           ||~129KI~
-         .(LNX)When U01000<= unicode <U020000                         ||~129KI~
-            -SBCS(CellWidth=1) was changed to another character at save.||~129KI~
-            -"v" line cmd on vertical hex line(cmd to accept 3 consecutive hex code as unicode) failed.||~129KI~
-         .On =3.12 panel(Compare Tool) was corrupted when filename encoding is UTF8.||~129KI~
-         .(WinConsole)New tool:xcfont can change font of command prompt.||~129KI~
-          It enables to view foreign script suach as Devanagari.      ||~129KI~
-       -When gb18030, differece of cursor position between charcter and vertical hex line||~129KI~
-        occurs for characters of CelWidth=1.                          ||~129KI~
-       -Consecutive Esc key clear line cmd except label,              ||~129KI~
-        but cmd specified the labe get error of label not found.      ||~129KI~
-       -When screen is split, it may occurs that line cmd on edit panel is ignored.||~129KI~
-                                                                      ||~129KI~
-     2.Additional function.                                           ||~129KI~
-       -TC fmt cmd -D"..." and -S"..." option                         ||~129KI~
-        Accept escape secuence such as \x, \t as Delimeter(\t(0x09) is not allowed for -S).||~129KI~
-        Accept DBCS as  -S option.                                    ||~129KI~
-     3.Miscellaneous.                                                 ||~129KI~
-       -3.12 Panel(File/Dir compare)                                  ||~129KI~
-        "-CPU8" option was added to view compare result as CPU8 file. ||~129KI~
-       -Diplay hex code on top-left for also directory list except ASCII code.||~129KI~
-       -Limit to SBCS for alternative character of "OPT UNICOMB U-xxxx" cmd||~129KI~
-       -Explicit "Force" option is required at save when timestamp was changed from loading time.||~129KI~
-        Re-enter of PF3 is not effective from now, use "SAVe -Force" or "END -force" cmd.||~129KI~
-                                                                      ||~129KI~
-     4.Tool.                                                          ||~129KI~
-       -(Win)xkp v1.4                                                 ||~129KI~
-        Exe name was not fullpath from Windows7, show fullpath.       ||~129KI~
-       -xfg v1.20                                                     ||~129KI~
-        grep may hungup when srach string is starting with "-".       ||~129KI~
-       -(Win)New tool xcfont v1.01 (available from Windows Vista)     ||~129KI~
-        It chages font of command prompt.                             ||~129KI~
-        Chcp may required depending on font family.                   ||~129KI~
-        For example, to view Devanagari script                        ||~129KI~
-        Change font like as "xcfont Mangal" after "chcp 57002".       ||~129KI~
-        You can see Devaganari(U+0900-097f) on xe.                    ||~129KI~
-        For wxe or Linux version you need nothing special.            ||~129KI~
-                                                                      ||~129KI~
-  .v129L<--129K:(2019/09/18)                                          ||~129KI~
-                                                                      ||~129KI~
-     1.BUGs                                                           ||~129KI~
-       -Bug of function Alt+"/" (<tag > pairing search for xml/html text)||~129KI~
-                                                                      ||~129KI~
-     2.Additional function.                                           ||~129KI~
-       -TC fmt cmd on UTF8 file.                                      ||~129KI~
-        accept unicode specification for -D:input splitter and -S:output splitter.||~129KI~
-        e.g) tc fmt d\u00c1                                           ||~129KI~
-                                                                      ||~129KI~
-     3.Miscellaneous.                                                 ||~129KI~
-       -(Linux)on debian10, gnome2 is obsoleted.                      ||~129KI~
-       -(Linux)PPD api is deprecated at cups-1.6.                     ||~129KI~
-       -(Windows)Last line of panel of console version was for IME on Windows95.||~129KI~
-                                                                      ||~129KI~
-     4.Tool.                                                          ||~129KI~
-       -(Windows) xlow (covert case of filename）1.6 (bug corrected)  ||~129KI~
-                                                                      ||~129MI~
-  .v129M<--129L:(2020/05/17)                                          ||~129MI~
-                                                                      ||~129MI~
-     1.BUGs                                                           ||~129MI~
-       -Function:"Search word on the cursor" (Alt/Ctrl+"["/"]")       ||~129MI~
-        e.g) Search "ABC+DEFG" if cusror is on the "+" of "ABC+DEFG", ||~129MI~
-        search "ABC" if on the "C".                                   ||~129MI~
-        Repeating the same key finds next.                            ||~129MI~
-        Intermediate PgDn/PgUp/PgLeft(F10)/PgRight(F11) key looses    ||~129MI~
-        concatinated word search effect at start.                     ||~129MI~
-       -exe cmd (sequencially execute cmds in the specified file) may crush.||~129MI~
-        e.g) xe crush by "exe ! cmdfile" on dir list panel.           ||~129MI~
-        "exe ! cmdfile <s *.html" is valid.                           ||~129MI~
-       -SORt cmd on dir list panel.                                   ||~129MI~
-        Descendant option(/Ot-,/Os-) works but ascendant option(/Ot,/Os) did not.||~129MI~
-                                                                      ||~129MI~
-     2.Additional function.                                           ||~129MI~
-                                                                      ||~129MI~
-     3.Miscellaneous.                                                 ||~129MI~
-       -Accept Shift+Del on also excluded line(- n line excluded ---).||~129MI~
-                                                                      ||~129MI~
-     4.Tool.                                                          ||~129MI~
-       -xfg v1.21 (Serach string in the directory)                    ||~129MI~
-          ./cpu8, /cplc option is added to search by translated string.||~129MI~
-          .(Win)"-e" option cause crush.(Temporally file was plased on c:\ which is protected on Windows10)||~129MI~
-       -xdig v1.13 (Applay the commands to all files in the directory)||~129MI~
-          .Accept parameter sign other than %.                        ||~129MI~
-           e.g) By /C$, $fp$ in the cmd string is replaced to fullpath name of the file in the directory.||~129MI~
-          .%rp% is added for path name relative to starting directory.||~129MI~
-                                                                      ||~129PI~
-  .v129N<--129M:(2020/09/23)                                          ||~129PI~
-                                                                      ||~129PI~
-     1.BUGs                                                           ||~129PI~
-       -Cursor positioning failure on comman line for 3 bytes(EUC 8fxxyy) and 4 bytes(GB18030) DBCS.||~129PI~
-       -Fails to display combining character(display width=0) on command line.||~129PI~
-       -There was conflict on Flag control by Command "OPT unicomb comb" and "UTF file".||~129PI~
-       -(Linux) "a"(Attrib) line command on directory list panel may cause crash.||~129PI~
-                                                                      ||~129PI~
-     2.Additional function.                                           ||~129PI~
-                                                                      ||~129PI~
-     3.Miscellaneous.                                                 ||~129PI~
-       -Fix for Axe(Android version).                                 ||~129PI~
-       -(Windows console version) external command (xfg, grep etc.) may freeze xe.||~129PI~
-        Issues warnin when detected.                                  ||~129PI~
-                                                                      ||~129PI~
-     4.Tool.                                                          ||~129PI~
-                                                                      ||~129PI~
-  .v129P<--129N:(2020/10/28)                                          ||~129PI~
-                                                                      ||~129PI~
-     1.BUGs                                                           ||~129PI~
-       -(Linux) GTK3 version gxe; Screen size was not kept over App restart.||~129PI~
-                                                                      ||~129PR~
-     2.Additional function.                                           ||~129PI~
-       -COL command (Display column gauge to enable setting of tab stop position)||~129PI~
-        .COL [on|off] [ALL|type|default]                              ||~129PI~
-        .It can be used also on directory list panel.                 ||~129PI~
-        .On directory list, "COL on type" sets default gauge type for all member of the directory.||~129PI~
-         "COL off" resets it. You have to prepare following gauge file in work directory.||~129PI~
-           (Win) ::xe!col!.type   (Linux) ::xe_col_.type              ||~129PI~
-        .When Col type is set to a directory, use COL command for each members to set different option.||~129PI~
-         "COL [on|off] [type|default]"                                ||~129PI~
-            default:display default gauge for the member file.        ||~129PI~
-                    This option is not for directory but file.        ||~129PI~
-            on     :follows directory setting if new type is not specified.||~129PI~
-            off    :hide gauge and reset type for the file,           ||~129PI~
-                    and next "COL on" refers directory setting.       ||~129PI~
-                                                                      ||~129PR~
-     3.Miscellaneous.                                                 ||~129PI~
-       -For Manjaro Linux.                                            ||~129PI~
-        .Linker's spec was changed and issues error:"duplicated symbol".||~129PI~
-        .Function ftime was deprecated.                               ||~129PI~
-        .Accept another type of ncurses mouse event input.            ||~129PI~
-        .libncursesw is provided, but /usr/include/ncursesw is not provided.||~129PI~
-                                                                      ||~129PR~
-  .v129Q<--129P:(2020/12/16)                                          ||~v129R~
-                                                                      ||~v129R~
-     1.BUGs                                                           ||~v129R~
-       -(gxe) IME's output always same character.                     ||~v129R~
-                                                                   //~1291I~||~v129R~
-     3.Miscellaneous.                                                 ||~v129R~
-       -(wxe) Handle unprintable character input of UTF8 code by 3rd party IME.||~v129R~
-       -/Nm command line switch function was changed.                 ||~v129R~
-		  When /Nm is specified, for UTF8 code input to CPLC(non UTF8) file||~v129R~
-          set UTF8 code itself if Alt+u ON(indecated by =u=> on command input line),||~v129R~
-          set translated locale code if Alt+u OFF(===>) or "?" if translation error occured.||~v129R~
-                                                                      ||~v129R~
-  .v129R<--129Q:(2020/12/18)                                          ||~v129I~
-                                                                      ||~v129I~
-     1.BUGs                                                           ||~v129I~
-       -(Linux console version) Crashes by mouse drag.                ||~v129I~
-                                                                      ||~v129I~
-  .v129S<--129R:(2020/12/24)                                          ||~v129I~
-                                                                      ||~v129I~
-     1.BUGs                                                           ||~v129I~
-       -(Linux:gxe) On Gnome desktop, ">"(open console window) command did not work.(gnome-terminal option parameter was deprecated)||~v129I~
-       -(Linux:gxe) On Xfce desktop, following Warning may issued.    ||~v129I~
-                    Gtk-Warning Calling org.xfce.Session.Manager IsInhibited failed...||~v129I~
-                                                                      ||~v129I~
-  .v129T<--129S:(2022/12/04)                                          ||~v29TI~
-                                                                      ||~v29TI~
-     1.BUGs                                                           ||~v29TI~
-	   -It can't change sc line on =0.1 screen.                       ||~v29TI~
-		Setting for S+C and S+A do no work, and same effect as setting of without S+.||~v29TI~
-        Accodingly, Cut & Paste by mouse dose not work.               ||~v29TI~
-	   -=Deleting a line on the =0.2 screen causes corrupted key binding.||~v29TI~
-                                                                      ||~v29TI~
-     2.Additional function.                                           ||~v29TI~
-       -Syntax Highlight.                                             ||~v29TI~
-		Supports ANSI:reverse attributes of Andre Simon's Highlight and GNU source-highlight.||~v29TI~
-		Also, by specifying C_UNDERLINE=R/G_UNDERLINE=R in xesynl.cfg/::xesynl.cfg,||~v29TI~
-        you can get reverse effect for underline attribute.           ||~v29TI~
-	   -Unicode support for CID prefix.                               ||~v29TI~
-	    U-235d(？) is a comment prefix in APL language, CID supports it.||~v29TI~
-		You can also set the extensions to apply by specifying the following in the ::xe.ini file:||~v29TI~
-          Change_ID_Type_4  = 60 = u-235d= APL                        ||~v29TI~
-		With this setting, you can specify APL by CID type like as "CID on APL"||~v29TI~
-        When using Unicode, the display width varies depending on the language environment,||~v29TI~
-        so be careful when sharing the file.                          ||~v29TI~
-        For example, if Windows displays by 2 columns and Linux displays 1 column,||~v29TI~
-        the CID tagged to the update line on Windows is not recognized as CID on Linux.||~v29TI~
-        So the "cid clear" command on Linux may return 0 rows.        ||~v29TI~
-                                                                      ||~v29TI~
-     3.Miscellaneous.                                                 ||~v29TI~
-	   -Windows Terminal seems to have become the default command prompt PGM in Windows 11.||~v29TI~
-        Line commands may cause problems.                             ||~v29TI~
-        Use old command prompt PGM c:\Windows\System32\conhost.exe.   ||~v29TI~
-	   -Added NOAPPEND option for easier resetting of APPEND in -CID command.||~v29TI~
-	   -Support comment description starting with "#" on =0.1 screen. ||~v29TI~
-	   -Review =0.2 and =0.3 screen.                                  ||~v29TI~
-		Box-line character default is changed and added character by unicode.||~v29TI~
-	   -(Win) Changed default location of work directory from C:\ to C:\users\[username]\.||~v29TI~
-        If you already have C:\xe_wd, it continue to be used, it is applied from new installation.||~v29TI~
-                                                                      ||~v29TI~
-  .v129U<--129T:(2022/12/15)                                          ||~v29UI~
-                                                                      ||~v29UI~
-     1.BUGs                                                           ||~v29UI~
-                                                                      ||~v29UI~
-     2.Additional function.                                           ||~v29UI~
-                                                                      ||~v29UI~
-     3.Miscellaneous.                                                 ||~v29UI~
-	   -(LNX) In ./configure Automatically detect --enable-libgnome2=yes | no.||~v29UI~
-       -(WIN:Console) Supports WindowsTerminal.                       ||~v29UI~
-        Corresponds to the difference between WindosTerminal and Conhost.||~v29UI~
-        Distortion of the display when entering a line command, display of a binary file, etc.||~v29UI~
-                                                                      ||~v29VI~
-  .v129V<--129U:(2023/06/10)                                          ||~v29VI~
-                                                                      ||~v29VI~
-     1.BUGs                                                           ||~v29VI~
-                                                                      ||~v29VI~
-     2.Additional function.                                           ||~v29VI~
-       -(Axe)                                                         ||~v29VI~
-        .And.Android 13 (Api-33) compatible.                          ||~v29VI~
-        .Shared storage support.                                      ||~v29VI~
-           You can set a dedicated folder in the shared storage by "sp add //" command,||~v29VI~
-           and access the folder like as "e //Axe".                   ||~v29VI~
-           Also, since Android 11 (Api-30), access permission:"All files" can be set.||~v29VI~
-           If permission is set, command line tools such as grep and xfg can also access Shared storage.||~v29VI~
-        .Correspond to changes in usage environment of .icu library.  ||~v29VI~
-                                                                      ||~v29VI~
-     3.Miscellaneous.                                                 ||~v29VI~
-       -Changed default value of "opt DELZ"(Allow Del line command with no backup) to Off, it is safer side.||~v29VI~
-                                                                      ||~v29WR~
-  .v129W<--129U:(2023/07/31)                                          ||~v29WR~
-                                                                      ||~v29WR~
-     1.BUGs                                                           ||~v29WR~
-                                                                      ||~v29WR~
-     2.Additional function.                                           ||~v29WR~
-       -(Axe)                                                         ||~v29WR~
-        .Utilize Android-11(R):Api30 permission options : All Files.  ||~v29WR~
-        .CD command support                                           ||~v29WR~
-                                                                      ||~v29WR~
-     3.Miscellaneous.                                                 ||~v29WR~
-       -If Shortpath is added by "sp add" command, refresh it and make it effective immediately.||~v29WR~
-       -Axe                                                           ||~v29WR~
-        .DOS commands (full screen shell) are now not supported.      ||~v29WR~
-        ."!" line commands are now not supported.                     ||~v29WR~
-                                                                      ||~v29WR~
-     4.Tools                                                          ||~v29WR~
-       xcv v1.21                                                      ||~v29WR~
-       -xfmt v1.5                                                     ||~v29WR~
-       -xfg  v1.21                                                    ||~v29WR~
-       -xdc  v2.29 -Added UF option (skip print directory timestamp unmatch to unmatch list).||~v29WR~
-                                                                      ||~v29XI~
-  .v129X<--129W:(2024/02/20)                                          ||~v29XI~
-                                                                      ||~v29XI~
      1.BUGs                                                           ||~v29XI~
-       -"cv" command with \u option incorrectly converts UNicode>u-ffff.||~v29XR~
-       -U+00A0 was not a base character of combining characters.      ||~v29XI~
-       -(gxe) may crash.                                              ||~v29XI~
-        .When displa a combining character.                           ||~v29XI~
-        .When the middle mouse button is pressed.                     ||~v29XI~
-        .When "preview" menu button is pressed.                       ||~v29XI~
-       -(gxe) box type cursor hides character behind.                 ||~v29XI~
-       -grep command (also for "g" line command on directory list).   ||~v29XI~
-        .Hangs when double quotes (") in the search string are not closed.||~v29XI~
-        .Fails when string contains intermediate spaces.              ||~v29XI~
+       -(Linux) ./configure may fail by "/gth.h Not found".           ||~v29XI~
+       -(Linux:gxe) When using Gtk3, the widget size is not fixed and changes at each start.||~v29XI~
+       -(LNX:gxe) プリントアイコンを押すとブランクページを印刷したりクラッシュすることがある||+v130I~
                                                                       ||~v29XI~
      2.Additional function.                                           ||~v29XI~
-	   -Added command line options "-Yv" (default), "-Nv" to specify Unicode display width.||~v29XI~
-        "-Nv" displays all characters of ambiguous width in 2 digits. ||~v29XI~
-        "-Yv" displays those in one cell for Windows console version xe,||~v29XI~
-        Wxe, gxe and xe-linux versions perform internal determination.||~v29XI~
+       -Improved display of UTF-8 files                               ||~v29XI~
+         .For ZWJ(u-200d), ZWNJ(u-200c), or other chars in category Cf(Format).||~v29XI~
+       -Added 2 options to specify the display width of Unicode chars whose display width is ambiguous.||~v29XI~
+         ./G{Y|N}{y|0|1|2}                                            ||~v29XI~
+            :Specy cell width of unicode defined width is ambiguous.  ||~v29XI~
+            Y:Fit to font width.                                      ||~v29XI~
+              You can also specify the second option for chars in unfamiliar languages.||~v29XI~
+              However, this option takes a cost, the start-up will be slightly slower.||~v29XI~
+            N: Specify the display width uniformly using the second option.||~v29XI~
+            The default value is /GY2.                                ||~v29XI~
+            Ex.) /GN2: All ambiguous chars are displayed in two cells.||~v29XI~
+                 /GYy: All ambiguous chars are adjusted according to the font.||~v29XI~
+                 /GY0: Unfamiliar languages are displayed as ':;' instead.||~v29XI~
+         ./F{fontname[:charset] | @font_param_filename}               ||~v29XI~
+            The font name required for /G option is---                ||~v29XI~
+            when running on Windows Terminal, setting.json is checked,||~v29XI~
+            when running on Linux, on gnome-terminal, konsole, etc.,  ||~v29XI~
+            the profile of the Home dir is checked by xeGetFont.sh.   ||~v29XI~
+            But if it fails, specify this option.                     ||~v29XI~
+            Use font_param_filename when specifying indirectly from a file, use font_param_filename.||~v29XI~
+            See Microsoft's documentation for the appropriate charset for the font.||~v29XI~
+            Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.                ||~v29XI~
+                 /F"\uff2d\uff33 \u660e\u671d".                       ||~v29XI~
+       -XBC command supports ucs4<-->utf16 conversion.                ||~v29XI~
+            Ex.) xbc 1f468/s    ==> x1f468/s:=d83ddc68                ||~v29XI~
+            Ex.) xbc d83ddc68/s ==> xd83ddc68/s:=0001f468             ||~v29XI~
+       -"-cont" option added to Find command.                         ||~v29XI~
+          When selecting lines in a large file by the Find command in the Exe cmd file,||~v29XI~
+          from a performance consideration,                           ||~v29XI~
+          when NotFound occurred, the next Find will start not from the first line,||~v29XI~
+          but from the last Found line.                               ||~v29XI~
+          It will be better on condition that files were sorted.      ||~v29XI~
+       -Screen hard copy output.                                      ||~v29XI~
+          Alt+z writes a screen hard copy to ::hcopy in append mode   ||~v29XI~
+          Ctrl+h is also available for except Linux Console version.  ||~v29XI~
                                                                       ||~v29XI~
      3.Miscellaneous.                                                 ||~v29XI~
-       -(Win:Console version) Changing the cursor shape using the Insert key||~v29XI~
-        does not work on WindowsTerminal.If necessary,                ||~v29XI~
-        start xe on Conhost (previous command prompt executable).     ||~v29XI~
+       -(LNX) Gtk2 support has been discontinued, only Gtk3 is supported.||~v29XI~
+       -(LNX) Install scripts to check font settings for the console version||~v29XI~
+              into /usr/local/bin. Also install xprint.sh.            ||~v29XI~
                                                                       ||~v29XI~
      4.Tools                                                          ||~v29XI~
-       -xcv  v1.22                                                    ||~v29XI~
-         .Added standard input in Hex notation ("-Yh" option)         ||~v29XI~
-          and output in Hex notation ("-Yx" option).                  ||~v29XI~
-       -xfc  v1.28                                                    ||~v29XI~
-         .Added case-insensitive comparison option ("-Nc").           ||~v29XI~
-         .Compare positions can now be specified separately           ||~v29XI~
-          for both files ( -Mm-n[/p-q] ).                             ||~v29XI~
+       -xbc  v1.7                                                     ||~v29XI~
+          Added ucs4 <--> utf16 conversion.                           ||~v29XI~
+       -xcv  v1.23                                                    ||~v29XI~
+          Limits option /Yh (input in hexadecimal notation) to standard input including pipe.||~v29XI~
+       -xprint.c 3.39                                                 ||~v29XI~
+          (LNX)The right edge of lines may exceed the right margin and text may be cut off.||~v29XI~

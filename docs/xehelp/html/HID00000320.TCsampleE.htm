@@ -1,0 +1,844 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8"">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>TC sampleE</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;">    = Table Calculation example.
+
+<B>(Ex.1) Extracting necessary parts of text file.</B>
+
+(1) source file.
+
+EDIT---|x:\x11 =L(24-07-03 14:42)------------------------------------------------------------------- 001-(   1)-114=Rep
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001|U+0000..U+007F↾⇀Basic Latin[一覧 9]↾基本ラテン文字↵                                                               
+0002|Basic Latin↾128↾128↾ラテン文字 (52文字), Common (76文字)↵                                                         
+0003|U+0080..U+00FF↾⇀Latin-1 Supplement[一覧 10]↾ラテン1補助↵                                                          
+0004|Latin-1 Supplement↾⇀128↾128↾ラテン文字 (64文字), Common (64文字)↵                                                 
+0005|U+0100..U+017F↾⇀Latin Extended-A↾⇀⇀⇀ラテン文字拡張A↵                                                              
+0006|en:Latin Extended-A↾128↾128↾ラテン文字↵                                                                           
+0007|U+0180..U+024F↾⇀Latin Extended-B↾⇀⇀⇀ラテン文字拡張B↵                                                              
+0008|en:Latin Extended-B↾208↾208↾ラテン文字↵                                                                           
+0009|U+0250..U+02AF↾⇀IPA Extensions↾⇀IPA拡張↵                                                                          
+0010|en:IPA Extensions↾⇀⇀96↾⇀96↾⇀ラテン文字↵                                                                           
+0011|U+02B0..U+02FF↾⇀Spacing Modifier Letters↾⇀⇀⇀前進を伴う修飾文字↵                                                   
+0012|en:Spacing Modifier Letters↾80↾⇀80↾⇀注音符号 (2文字), ラテン文字 (14文字), Common (64文字)↵                       
+0013|U+0300..U+036F↾⇀Combining Diacritical Marks↾合成可能なダイアクリティカルマーク↵                                   
+0014|en:Combining Diacritical Marks↾⇀112↾112↾Inherited↵                                                                
+0015|U+0870..U+089F↾⇀Arabic Extended-B↾⇀⇀アラビア文字拡張B↵                                                            
+
+
+(2) Delete unnecessary lines.
+    (2-1) Display only the lines you need by xx and i command.
+
+EDIT---|x:\x11 =L(24-07-03 14:42)------------------------------------------------------------------- 001-(   1)-114=Rep
+===><B>xx;i U 1 all</B>                                                                                              ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001|U+0000..U+007F↾⇀Basic Latin[一覧 9]↾基本ラテン文字↵                                                               
+0002|Basic Latin↾128↾128↾ラテン文字 (52文字), Common (76文字)↵                                                         
+0003|U+0080..U+00FF↾⇀Latin-1 Supplement[一覧 10]↾ラテン1補助↵                                                          
+0004|Latin-1 Supplement↾⇀128↾128↾ラテン文字 (64文字), Common (64文字)↵                                                 
+0005|U+0100..U+017F↾⇀Latin Extended-A↾⇀⇀⇀ラテン文字拡張A↵                                                              
+0006|en:Latin Extended-A↾128↾128↾ラテン文字↵                                                                           
+0007|U+0180..U+024F↾⇀Latin Extended-B↾⇀⇀⇀ラテン文字拡張B↵                                                              
+0008|en:Latin Extended-B↾208↾208↾ラテン文字↵                                                                           
+0009|U+0250..U+02AF↾⇀IPA Extensions↾⇀IPA拡張↵                                                                          
+0010|en:IPA Extensions↾⇀⇀96↾⇀96↾⇀ラテン文字↵                                                                           
+0011|U+02B0..U+02FF↾⇀Spacing Modifier Letters↾⇀⇀⇀前進を伴う修飾文字↵                                                   
+0012|en:Spacing Modifier Letters↾80↾⇀80↾⇀注音符号 (2文字), ラテン文字 (14文字), Common (64文字)↵                       
+0013|U+0300..U+036F↾⇀Combining Diacritical Marks↾合成可能なダイアクリティカルマーク↵                                   
+0014|en:Combining Diacritical Marks↾⇀112↾112↾Inherited↵                                                                
+0015|U+0870..U+089F↾⇀Arabic Extended-B↾⇀⇀アラビア文字拡張B↵                                                            
+
+    (Result)
+
+Found 31 times =L(24-07-03 14:42)------------------------------------------------------------------- 001-(   1)-114=Rep
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001|U+0000..U+007F↾⇀Basic Latin[一覧 9]↾基本ラテン文字↵                                                               
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+0003|U+0080..U+00FF↾⇀Latin-1 Supplement[一覧 10]↾ラテン1補助↵                                                          
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+0005|U+0100..U+017F↾⇀Latin Extended-A↾⇀⇀⇀ラテン文字拡張A↵                                                              
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+0007|U+0180..U+024F↾⇀Latin Extended-B↾⇀⇀⇀ラテン文字拡張B↵                                                              
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+0009|U+0250..U+02AF↾⇀IPA Extensions↾⇀IPA拡張↵                                                                          
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+0011|U+02B0..U+02FF↾⇀Spacing Modifier Letters↾⇀⇀⇀前進を伴う修飾文字↵                                                   
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+0013|U+0300..U+036F↾⇀Combining Diacritical Marks↾合成可能なダイアクリティカルマーク↵                                   
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+0015|U+0870..U+089F↾⇀Arabic Extended-B↾⇀⇀アラビア文字拡張B↵                                                            
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+0017|U+1100..U+11FF↾⇀Hangul Jamo↾ハングル字母↵                                                                         
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+
+    (2-2) Delete unnecessary lines by del command.
+
+EDIT---|x:\x11 =L(24-07-03 14:42)------------------------------------------------------------------- 001-(   1)-114=Rep
+===><B>del x all</B>                                                                                                 ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001|U+0000..U+007F↾⇀Basic Latin[一覧 9]↾基本ラテン文字↵                                                               
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+0003|U+0080..U+00FF↾⇀Latin-1 Supplement[一覧 10]↾ラテン1補助↵                                                          
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+0005|U+0100..U+017F↾⇀Latin Extended-A↾⇀⇀⇀ラテン文字拡張A↵                                                              
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+0007|U+0180..U+024F↾⇀Latin Extended-B↾⇀⇀⇀ラテン文字拡張B↵                                                              
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+0009|U+0250..U+02AF↾⇀IPA Extensions↾⇀IPA拡張↵                                                                          
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+0011|U+02B0..U+02FF↾⇀Spacing Modifier Letters↾⇀⇀⇀前進を伴う修飾文字↵                                                   
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+0013|U+0300..U+036F↾⇀Combining Diacritical Marks↾合成可能なダイアクリティカルマーク↵                                   
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+0015|U+0870..U+089F↾⇀Arabic Extended-B↾⇀⇀アラビア文字拡張B↵                                                            
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+0017|U+1100..U+11FF↾⇀Hangul Jamo↾ハングル字母↵                                                                         
+----|-      1 line excluded -------------------------------------------------------------------------------------------
+
+    (Result)
+
+31 line deleted=L(24-07-03 14:42)------------------------------------------------------------------- 001-(   1)-114=Rep
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001|U+0000..U+007F↾⇀Basic Latin[一覧 9]↾基本ラテン文字↵                                                               
+0003|U+0080..U+00FF↾⇀Latin-1 Supplement[一覧 10]↾ラテン1補助↵                                                          
+0005|U+0100..U+017F↾⇀Latin Extended-A↾⇀⇀⇀ラテン文字拡張A↵                                                              
+0007|U+0180..U+024F↾⇀Latin Extended-B↾⇀⇀⇀ラテン文字拡張B↵                                                              
+0009|U+0250..U+02AF↾⇀IPA Extensions↾⇀IPA拡張↵                                                                          
+0011|U+02B0..U+02FF↾⇀Spacing Modifier Letters↾⇀⇀⇀前進を伴う修飾文字↵                                                   
+0013|U+0300..U+036F↾⇀Combining Diacritical Marks↾合成可能なダイアクリティカルマーク↵                                   
+0015|U+0870..U+089F↾⇀Arabic Extended-B↾⇀⇀アラビア文字拡張B↵                                                            
+0017|U+1100..U+11FF↾⇀Hangul Jamo↾ハングル字母↵                                                                         
+0019|U+1AB0..U+1AFF↾⇀Combining Diacritical Marks Extended↾⇀⇀⇀合成可能なダイアクリティカルマーク拡張↵                   
+0021|U+1C90..U+1CBF↾⇀Georgian Extended↾⇀⇀グルジア文字拡張↵                                                             
+0023|U+1DC0..U+1DFF↾⇀Combining Diacritical Marks Supplement↾⇀合成可能なダイアクリティカルマーク補助↵                   
+0025|U+2E80..U+2EFF↾⇀CJK Radicals Supplement↾CJK部首補助↵                                                              
+0027|U+2F00..U+2FDF↾⇀Kangxi Radicals↾康煕部首↵                                                                         
+0029|U+2FF0..U+2FFF↾⇀Ideographic Description Characters↾⇀漢字構成記述文字↵                                             
+
+(3) Align columns by TC FMT command.
+                                                                                                                       
+EDIT---*x:\x11 =L(24-07-03 14:42)------------------------------------------------------------------- 001-(   1)-114=Rep
+===><B>tc fmt -D\t L</B>                                                                                             ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001|U+0000..U+007F↾⇀Basic Latin[一覧 9]↾基本ラテン文字↵                                                               
+0003|U+0080..U+00FF↾⇀Latin-1 Supplement[一覧 10]↾ラテン1補助↵                                                          
+0005|U+0100..U+017F↾⇀Latin Extended-A↾⇀⇀⇀ラテン文字拡張A↵                                                              
+0007|U+0180..U+024F↾⇀Latin Extended-B↾⇀⇀⇀ラテン文字拡張B↵                                                              
+0009|U+0250..U+02AF↾⇀IPA Extensions↾⇀IPA拡張↵                                                                          
+0011|U+02B0..U+02FF↾⇀Spacing Modifier Letters↾⇀⇀⇀前進を伴う修飾文字↵                                                   
+0013|U+0300..U+036F↾⇀Combining Diacritical Marks↾合成可能なダイアクリティカルマーク↵                                   
+0015|U+0870..U+089F↾⇀Arabic Extended-B↾⇀⇀アラビア文字拡張B↵                                                            
+0017|U+1100..U+11FF↾⇀Hangul Jamo↾ハングル字母↵                                                                         
+0019|U+1AB0..U+1AFF↾⇀Combining Diacritical Marks Extended↾⇀⇀⇀合成可能なダイアクリティカルマーク拡張↵                   
+0021|U+1C90..U+1CBF↾⇀Georgian Extended↾⇀⇀グルジア文字拡張↵                                                             
+0023|U+1DC0..U+1DFF↾⇀Combining Diacritical Marks Supplement↾⇀合成可能なダイアクリティカルマーク補助↵                   
+0025|U+2E80..U+2EFF↾⇀CJK Radicals Supplement↾CJK部首補助↵                                                              
+0027|U+2F00..U+2FDF↾⇀Kangxi Radicals↾康煕部首↵                                                                         
+0029|U+2FF0..U+2FFF↾⇀Ideographic Description Characters↾⇀漢字構成記述文字↵                                             
+                                                                                                                       
+    (Result)
+                                                                                                                       
+fmt -D\t L:total 31, updated=31,outovf=0------------------------------------------------------------ 001-(   1)-114=Rep
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*   U+0000..U+007F  Basic Latin[一覧 9]                     基本ラテン文字                        ↵                
+0003*   U+0080..U+00FF  Latin-1 Supplement[一覧 10]             ラテン1補助                           ↵                
+0005*   U+0100..U+017F  Latin Extended-A                        ラテン文字拡張A                       ↵                
+0007*   U+0180..U+024F  Latin Extended-B                        ラテン文字拡張B                       ↵                
+0009*   U+0250..U+02AF  IPA Extensions                          IPA拡張                               ↵                
+0011*   U+02B0..U+02FF  Spacing Modifier Letters                前進を伴う修飾文字                    ↵                
+0013*   U+0300..U+036F  Combining Diacritical Marks             合成可能なダイアクリティカルマーク    ↵                
+0015*   U+0870..U+089F  Arabic Extended-B                       アラビア文字拡張B                     ↵                
+0017*   U+1100..U+11FF  Hangul Jamo                             ハングル字母                          ↵                
+0019*   U+1AB0..U+1AFF  Combining Diacritical Marks Extended    合成可能なダイアクリティカルマーク拡張↵                
+0021*   U+1C90..U+1CBF  Georgian Extended                       グルジア文字拡張                      ↵                
+0023*   U+1DC0..U+1DFF  Combining Diacritical Marks Supplement  合成可能なダイアクリティカルマーク補助↵                
+0025*   U+2E80..U+2EFF  CJK Radicals Supplement                 CJK部首補助                           ↵                
+0027*   U+2F00..U+2FDF  Kangxi Radicals                         康煕部首                              ↵                
+0029*   U+2FF0..U+2FFF  Ideographic Description Characters      漢字構成記述文字                      ↵                
+                                                                                                                       
+(4) Delete unnecessary column.
+    (4-1)Truncate unnecessary columns by SPL command.
+                                                                                                                       
+EDIT---*x:\x11 =L(24-07-03 14:42)------------------------------------------------------------------- 001-(   1)-114=Rep
+===><B>spl tail 59</B>                                                                                               ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*   U+0000..U+007F  Basic Latin[一覧 9]                     基本ラテン文字                        ↵                
+0003*   U+0080..U+00FF  Latin-1 Supplement[一覧 10]             ラテン1補助                           ↵                
+0005*   U+0100..U+017F  Latin Extended-A                        ラテン文字拡張A                       ↵                
+0007*   U+0180..U+024F  Latin Extended-B                        ラテン文字拡張B                       ↵                
+0009*   U+0250..U+02AF  IPA Extensions                          IPA拡張                               ↵                
+0011*   U+02B0..U+02FF  Spacing Modifier Letters                前進を伴う修飾文字                    ↵                
+0013*   U+0300..U+036F  Combining Diacritical Marks             合成可能なダイアクリティカルマーク    ↵                
+0015*   U+0870..U+089F  Arabic Extended-B                       アラビア文字拡張B                     ↵                
+0017*   U+1100..U+11FF  Hangul Jamo                             ハングル字母                          ↵                
+0019*   U+1AB0..U+1AFF  Combining Diacritical Marks Extended    合成可能なダイアクリティカルマーク拡張↵                
+0021*   U+1C90..U+1CBF  Georgian Extended                       グルジア文字拡張                      ↵                
+0023*   U+1DC0..U+1DFF  Combining Diacritical Marks Supplement  合成可能なダイアクリティカルマーク補助↵                
+0025*   U+2E80..U+2EFF  CJK Radicals Supplement                 CJK部首補助                           ↵                
+0027*   U+2F00..U+2FDF  Kangxi Radicals                         康煕部首                              ↵                
+0029*   U+2FF0..U+2FFF  Ideographic Description Characters      漢字構成記述文字                      ↵                
+                                                                                                                       
+    (Result)
+                                                                                                                       
+31 line(s) cut(24-07-03 14:42)===------------------------------------------------------------------- 001-(  11)-114=Rep
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*   U+0000..U+007F  Basic Latin[一覧 9]                     ↵                                                      
+0003*   U+0080..U+00FF  Latin-1 Supplement[一覧 10]             ↵                                                      
+0005*   U+0100..U+017F  Latin Extended-A                        ↵                                                      
+0007*   U+0180..U+024F  Latin Extended-B                        ↵                                                      
+0009*   U+0250..U+02AF  IPA Extensions                          ↵                                                      
+0011*   U+02B0..U+02FF  Spacing Modifier Letters                ↵                                                      
+0013*   U+0300..U+036F  Combining Diacritical Marks             ↵                                                      
+0015*   U+0870..U+089F  Arabic Extended-B                       ↵                                                      
+0017*   U+1100..U+11FF  Hangul Jamo                             ↵                                                      
+0019*   U+1AB0..U+1AFF  Combining Diacritical Marks Extended    ↵                                                      
+0021*   U+1C90..U+1CBF  Georgian Extended                       ↵                                                      
+0023*   U+1DC0..U+1DFF  Combining Diacritical Marks Supplement  ↵                                                      
+0025*   U+2E80..U+2EFF  CJK Radicals Supplement                 ↵                                                      
+0027*   U+2F00..U+2FDF  Kangxi Radicals                         ↵                                                      
+0029*   U+2FF0..U+2FFF  Ideographic Description Characters      ↵                                                      
+                                                                                                                       
+    (4-2)Truncate unnecessary spaces on end of line by SPL command.
+                                                                                                                       
+EDIT---*x:\x11 =L(24-07-03 14:42)------------------------------------------------------------------- 001-(   1)-114=Rep
+===><B>spl tail</B>                                                                                                  ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*   U+0000..U+007F  Basic Latin[一覧 9]                     ↵                                                      
+0003*   U+0080..U+00FF  Latin-1 Supplement[一覧 10]             ↵                                                      
+0005*   U+0100..U+017F  Latin Extended-A                        ↵                                                      
+0007*   U+0180..U+024F  Latin Extended-B                        ↵                                                      
+0009*   U+0250..U+02AF  IPA Extensions                          ↵                                                      
+0011*   U+02B0..U+02FF  Spacing Modifier Letters                ↵                                                      
+0013*   U+0300..U+036F  Combining Diacritical Marks             ↵                                                      
+0015*   U+0870..U+089F  Arabic Extended-B                       ↵                                                      
+0017*   U+1100..U+11FF  Hangul Jamo                             ↵                                                      
+0019*   U+1AB0..U+1AFF  Combining Diacritical Marks Extended    ↵                                                      
+0021*   U+1C90..U+1CBF  Georgian Extended                       ↵                                                      
+0023*   U+1DC0..U+1DFF  Combining Diacritical Marks Supplement  ↵                                                      
+0025*   U+2E80..U+2EFF  CJK Radicals Supplement                 ↵                                                      
+0027*   U+2F00..U+2FDF  Kangxi Radicals                         ↵                                                      
+0029*   U+2FF0..U+2FFF  Ideographic Description Characters      ↵                                                      
+                                                                                                                       
+    (Result)
+                                                                                                                       
+31 line(s) cutted(24-07-03 14:42)------------------------------------------------------------------- 001-(   8)-114=Rep
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*   U+0000..U+007F  Basic Latin[一覧 9]↵                                                                           
+0003*   U+0080..U+00FF  Latin-1 Supplement[一覧 10]↵                                                                   
+0005*   U+0100..U+017F  Latin Extended-A↵                                                                              
+0007*   U+0180..U+024F  Latin Extended-B↵                                                                              
+0009*   U+0250..U+02AF  IPA Extensions↵                                                                                
+0011*   U+02B0..U+02FF  Spacing Modifier Letters↵                                                                      
+0013*   U+0300..U+036F  Combining Diacritical Marks↵                                                                   
+0015*   U+0870..U+089F  Arabic Extended-B↵                                                                             
+0017*   U+1100..U+11FF  Hangul Jamo↵                                                                                   
+0019*   U+1AB0..U+1AFF  Combining Diacritical Marks Extended↵                                                          
+0021*   U+1C90..U+1CBF  Georgian Extended↵                                                                             
+0023*   U+1DC0..U+1DFF  Combining Diacritical Marks Supplement↵                                                        
+0025*   U+2E80..U+2EFF  CJK Radicals Supplement↵                                                                       
+0027*   U+2F00..U+2FDF  Kangxi Radicals↵                                                                               
+0029*   U+2FF0..U+2FFF  Ideographic Description Characters↵                                                            
+
+<B>(Ex.2) Adding up the numerical items in a file</B>
+
+(1) source file.
+
+EDIT---|G:\src\xe\tcdata1E23 =L(24-07-03 20:21)----------------------------------------------------- 001-(   1)-114    
+===>                                                                                                          ===>HALF 
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001|1206,"Instruments","2011/01/02","Equipment",410↵                                                                  
+0002|1206,"Instruments","2011/01/02","Equipment",1780↵                                                                 
+0003|4329,"Research","2011/01/06","BookFee",3129↵                                                                      
+0004|4316,"Transportation","2011/01/07","Transportation",1710↵                                                         
+0005|4329,"Research","2011/01/07","BookFee",700↵                                                                       
+0006|4316,"Transportation","2011/01/09","Transportation",1280↵                                                         
+0007|4316,"Transportation","2011/01/09","Transportation",1150↵                                                         
+0008|4317,"TelecomCost","2011/01/14","Stamp",1000↵                                                                     
+0009|4316,"Transportation","2011/01/15","Transportation",800↵                                                          
+0010|4316,"Transportation","2011/01/15","Transportation",800↵                                                          
+0011|4316,"Transportation","2011/01/16","Transportation",1070↵                                                         
+0012|4316,"Transportation","2011/01/16","Transportation",1200↵                                                         
+0013|4329,"Research","2011/01/17","BookFee",1998↵                                                                      
+0014|4329,"Research","2011/01/17","BookFee",1998↵                                                                      
+0015|4316,"Transportation","2011/01/18","Transportation",2600↵                                                         
+0016|4316,"Transportation","2011/01/18","Transportation",7860↵                                                         
+
+(2) Align the columns of items.
+    (2-1) Use the TC FMT command to align columns of items separated by ",". Numeric items are right-justified, and the rest are left-justified.
+
+EDIT---|G:\src\xe\tcdata1E23 =L(24-07-03 20:21)----------------------------------------------------- 001-(   1)-114    
+===><B>tc fmt -d L L L L r</B>                                                                                       ===>HALF 
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001|1206,"Instruments","2011/01/02","Equipment",410↵                                                                  
+0002|1206,"Instruments","2011/01/02","Equipment",1780↵                                                                 
+0003|4329,"Research","2011/01/06","BookFee",3129↵                                                                      
+0004|4316,"Transportation","2011/01/07","Transportation",1710↵                                                         
+0005|4329,"Research","2011/01/07","BookFee",700↵                                                                       
+0006|4316,"Transportation","2011/01/09","Transportation",1280↵                                                         
+0007|4316,"Transportation","2011/01/09","Transportation",1150↵                                                         
+0008|4317,"TelecomCost","2011/01/14","Stamp",1000↵                                                                     
+0009|4316,"Transportation","2011/01/15","Transportation",800↵                                                          
+0010|4316,"Transportation","2011/01/15","Transportation",800↵                                                          
+0011|4316,"Transportation","2011/01/16","Transportation",1070↵                                                         
+0012|4316,"Transportation","2011/01/16","Transportation",1200↵                                                         
+0013|4329,"Research","2011/01/17","BookFee",1998↵                                                                      
+0014|4329,"Research","2011/01/17","BookFee",1998↵                                                                      
+0015|4316,"Transportation","2011/01/18","Transportation",2600↵                                                         
+0016|4316,"Transportation","2011/01/18","Transportation",7860↵                                                         
+
+    (Result)
+
+EDIT---*G:\src\xe\tcdata1E23 =L(24-07-03 20:21)----------------------------------------------------- 001-(   1)-114    
+===>                                                                                                          ===>HALF 
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*   1206, "Instruments"   , "2011/01/02", "Equipment"     ,   410↵                                                 
+0002*   1206, "Instruments"   , "2011/01/02", "Equipment"     ,  1780↵                                                 
+0003*   4329, "Research"      , "2011/01/06", "BookFee"       ,  3129↵                                                 
+0004*   4316, "Transportation", "2011/01/07", "Transportation",  1710↵                                                 
+0005*   4329, "Research"      , "2011/01/07", "BookFee"       ,   700↵                                                 
+0006*   4316, "Transportation", "2011/01/09", "Transportation",  1280↵                                                 
+0007*   4316, "Transportation", "2011/01/09", "Transportation",  1150↵                                                 
+0008*   4317, "TelecomCost"   , "2011/01/14", "Stamp"         ,  1000↵                                                 
+0009*   4316, "Transportation", "2011/01/15", "Transportation",   800↵                                                 
+0010*   4316, "Transportation", "2011/01/15", "Transportation",   800↵                                                 
+0011*   4316, "Transportation", "2011/01/16", "Transportation",  1070↵                                                 
+0012*   4316, "Transportation", "2011/01/16", "Transportation",  1200↵                                                 
+0013*   4329, "Research"      , "2011/01/17", "BookFee"       ,  1998↵                                                 
+0014*   4329, "Research"      , "2011/01/17", "BookFee"       ,  1998↵                                                 
+0015*   4316, "Transportation", "2011/01/18", "Transportation",  2600↵                                                 
+0016*   4316, "Transportation", "2011/01/18", "Transportation",  7860↵                                                 
+
+    (2-2) Sort lines not by date but itemID.
+
+EDIT---*G:\src\xe\tcdata1E23 =L(24-07-03 20:21)----------------------------------------------------- 001-(   1)-114    
+===><B>sor 1-7</B>                                                                                                   ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*   1206, "Instruments"   , "2011/01/02", "Equipment"     ,   410↵                                                 
+0002*   1206, "Instruments"   , "2011/01/02", "Equipment"     ,  1780↵                                                 
+0003*   4329, "Research"      , "2011/01/06", "BookFee"       ,  3129↵                                                 
+0004*   4316, "Transportation", "2011/01/07", "Transportation",  1710↵                                                 
+0005*   4329, "Research"      , "2011/01/07", "BookFee"       ,   700↵                                                 
+0006*   4316, "Transportation", "2011/01/09", "Transportation",  1280↵                                                 
+0007*   4316, "Transportation", "2011/01/09", "Transportation",  1150↵                                                 
+0008*   4317, "TelecomCost"   , "2011/01/14", "Stamp"         ,  1000↵                                                 
+0009*   4316, "Transportation", "2011/01/15", "Transportation",   800↵                                                 
+0010*   4316, "Transportation", "2011/01/15", "Transportation",   800↵                                                 
+0011*   4316, "Transportation", "2011/01/16", "Transportation",  1070↵                                                 
+0012*   4316, "Transportation", "2011/01/16", "Transportation",  1200↵                                                 
+0013*   4329, "Research"      , "2011/01/17", "BookFee"       ,  1998↵                                                 
+0014*   4329, "Research"      , "2011/01/17", "BookFee"       ,  1998↵                                                 
+0015*   4316, "Transportation", "2011/01/18", "Transportation",  2600↵                                                 
+0016*   4316, "Transportation", "2011/01/18", "Transportation",  7860↵                                                 
+
+    (Result)
+
+EDIT---*G:\src\xe\tcdata1E23 =L(24-07-03 20:21)----------------------------------------------------- 001-(   1)-114    
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*   1206, "Instruments"   , "2011/01/02", "Equipment"     ,   410↵                                                 
+0002*   1206, "Instruments"   , "2011/01/02", "Equipment"     ,  1780↵                                                 
+0003*   1206, "Instruments"   , "2011/02/19", "Equipment"     ,   680↵                                                 
+0004*   1206, "Instruments"   , "2011/02/25", "Equipment"     ,  3978↵                                                 
+0005*   1206, "Instruments"   , "2011/03/05", "Equipment"     ,   200↵                                                 
+0006*   1206, "Instruments"   , "2011/03/05", "Equipment"     ,   500↵                                                 
+0007*   1206, "Instruments"   , "2011/03/05", "Equipment"     ,   500↵                                                 
+0008*   1206, "Instruments"   , "2011/03/14", "Equipment"     ,  2940↵                                                 
+0009*   1206, "Instruments"   , "2011/04/29", "Equipment"     ,  1880↵                                                 
+0010*   1206, "Instruments"   , "2011/07/04", "Equipment"     , 42800↵                                                 
+0011*   1206, "Instruments"   , "2011/07/07", "Equipment"     ,   780↵                                                 
+0012*   1206, "Instruments"   , "2011/07/07", "Equipment"     ,   580↵                                                 
+0013*   1206, "Instruments"   , "2011/07/10", "Equipment"     ,  2625↵                                                 
+0014*   1206, "Instruments"   , "2011/07/17", "Equipment"     ,   750↵                                                 
+0015*   1206, "Instruments"   , "2011/07/17", "Equipment"     , 19800↵                                                 
+0016*   1206, "Instruments"   , "2011/08/28", "Equipment"     ,   200↵                                                 
+0017*   1206, "Instruments"   , "2011/08/28", "Equipment"     ,   735↵                                                 
+0018*   1206, "Instruments"   , "2011/09/18", "Equipment"     ,  9480↵                                                 
+0019*   1206, "Instruments"   , "2011/10/10", "Equipment"     ,   920↵                                                 
+0020*   1206, "Instruments"   , "2011/12/11", "Equipment"     ,  1280↵                                                 
+0021*   4316, "Transportation", "2011/01/07", "Transportation",  1710↵                                                 
+0022*   4316, "Transportation", "2011/01/09", "Transportation",  1280↵                                                 
+0023*   4316, "Transportation", "2011/01/09", "Transportation",  1150↵                                                 
+0024*   4316, "Transportation", "2011/01/15", "Transportation",   800↵                                                 
+
+(3) Add up numerical items.
+    (3-1)no insert position specified.
+
+EDIT---*G:\src\xe\tcdata1E23 =L(24-07-03 20:21)----------------------------------------------------- 001-(   1)-114    
+===><B>tc 59-66+/1-7</B>                                                                                             ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*   1206, "Instruments"   , "2011/01/02", "Equipment"     ,   410↵                                                 
+0002*   1206, "Instruments"   , "2011/01/02", "Equipment"     ,  1780↵                                                 
+0003*   1206, "Instruments"   , "2011/02/19", "Equipment"     ,   680↵                                                 
+0004*   1206, "Instruments"   , "2011/02/25", "Equipment"     ,  3978↵                                                 
+0005*   1206, "Instruments"   , "2011/03/05", "Equipment"     ,   200↵                                                 
+0006*   1206, "Instruments"   , "2011/03/05", "Equipment"     ,   500↵                                                 
+0007*   1206, "Instruments"   , "2011/03/05", "Equipment"     ,   500↵                                                 
+0008*   1206, "Instruments"   , "2011/03/14", "Equipment"     ,  2940↵                                                 
+0009*   1206, "Instruments"   , "2011/04/29", "Equipment"     ,  1880↵                                                 
+0010*   1206, "Instruments"   , "2011/07/04", "Equipment"     , 42800↵                                                 
+0011*   1206, "Instruments"   , "2011/07/07", "Equipment"     ,   780↵                                                 
+0012*   1206, "Instruments"   , "2011/07/07", "Equipment"     ,   580↵                                                 
+0013*   1206, "Instruments"   , "2011/07/10", "Equipment"     ,  2625↵                                                 
+0014*   1206, "Instruments"   , "2011/07/17", "Equipment"     ,   750↵                                                 
+0015*   1206, "Instruments"   , "2011/07/17", "Equipment"     , 19800↵                                                 
+0016*   1206, "Instruments"   , "2011/08/28", "Equipment"     ,   200↵                                                 
+0017*   1206, "Instruments"   , "2011/08/28", "Equipment"     ,   735↵                                                 
+0018*   1206, "Instruments"   , "2011/09/18", "Equipment"     ,  9480↵                                                 
+0019*   1206, "Instruments"   , "2011/10/10", "Equipment"     ,   920↵                                                 
+0020*   1206, "Instruments"   , "2011/12/11", "Equipment"     ,  1280↵                                                 
+0021*   4316, "Transportation", "2011/01/07", "Transportation",  1710↵                                                 
+0022*   4316, "Transportation", "2011/01/09", "Transportation",  1280↵                                                 
+0023*   4316, "Transportation", "2011/01/09", "Transportation",  1150↵                                                 
+0024*   4316, "Transportation", "2011/01/15", "Transportation",   800↵                                                 
+
+    (Result)A row of the total value for each item is inserted each time the value of the item changes,
+            and finally a row of the total is inserted at last.
+
+EDIT---*G:\src\xe\tcdata1E23 =L(24-07-03 20:21)----------------------------------------------------- 001-(   1)-114=Rep
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+0228*   4324, "Rent"          , "2011/03/31", "Apartment"     , 12300↵                                                 
+0229*   4324, "Rent"          , "2011/04/29", "Apartment"     , 12300↵                                                 
+0230*   4324, "Rent"          , "2011/05/26", "Apartment"     , 12300↵                                                 
+0231*   4324, "Rent"          , "2011/06/23", "Apartment"     , 12300↵                                                 
+0232*   4324, "Rent"          , "2011/07/29", "Apartment"     , 12300↵                                                 
+0233*   4324, "Rent"          , "2011/08/24", "Apartment"     , 12300↵                                                 
+0234*   4324, "Rent"          , "2011/09/27", "Apartment"     , 12300↵                                                 
+0235*   4324, "Rent"          , "2011/10/31", "Apartment"     , 12300↵                                                 
+0236*   4324, "Rent"          , "2011/11/30", "Apartment"     , 12300↵                                                 
+0237*   4324, "Rent"          , "2011/12/01", "Apartment"     , 12300↵                                                 
+0237*=   4324                                                  = 147600↵                                               
+0238*   4329, "Research"      , "2011/01/06", "BookFee"       ,  3129↵                                                 
+0239*   4329, "Research"      , "2011/01/07", "BookFee"       ,   700↵                                                 
+0240*   4329, "Research"      , "2011/01/17", "BookFee"       ,  1998↵                                                 
+0241*   4329, "Research"      , "2011/01/17", "BookFee"       ,  1998↵                                                 
+0242*   4329, "Research"      , "2011/01/26", "BookFee"       ,   700↵                                                 
+0243*   4329, "Research"      , "2011/02/24", "BookFee"       ,   680↵                                                 
+0244*   4329, "Research"      , "2011/04/13", "BookFee"       ,   714↵                                                 
+0245*   4329, "Research"      , "2011/06/19", "BookFee"       ,  1890↵                                                 
+0246*   4329, "Research"      , "2011/06/22", "BookFee"       ,  1260↵                                                 
+0247*   4329, "Research"      , "2011/06/22", "BookFee"       ,   525↵                                                 
+0248*   4329, "Research"      , "2011/06/27", "BookFee"       ,   997↵                                                 
+0249*   4329, "Research"      , "2011/07/26", "BookFee"       ,  1470↵                                                 
+0250*   4329, "Research"      , "2011/08/27", "BookFee"       ,   860↵                                                 
+0251*   4329, "Research"      , "2011/09/25", "BookFee"       ,  1110↵                                                 
+0252*   4329, "Research"      , "2011/10/10", "BookFee"       ,   459↵                                                 
+0253*   4329, "Research"      , "2011/10/18", "BookFee"       ,  1260↵                                                 
+0254*   4329, "Research"      , "2011/10/23", "BookFee"       ,  2690↵                                                 
+0255*   4329, "Research"      , "2011/10/26", "BookFee"       ,  1638↵                                                 
+0256*   4329, "Research"      , "2011/11/12", "BookFee"       ,  1659↵                                                 
+0257*   4329, "Research"      , "2011/11/15", "BookFee"       ,  2058↵                                                 
+0258*   4329, "Research"      , "2011/11/17", "BookFee"       ,  1476↵                                                 
+0259*   4329, "Research"      , "2011/11/21", "BookFee"       ,  3990↵                                                 
+0260*   4329, "Research"      , "2011/12/24", "BookFee"       ,   609↵                                                 
+0261*=   4329                                                  =  33870↵                                               
+0262*********                                                 *= 975267↵                                               
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+
+    (3-2)insert position is specified.
+
+EDIT---*G:\src\xe\tcdata1E2 =L(24-07-03 20:20)------------------------------------------------------ 001-(   1)-114=Ins
+===><B>tc 59-66+/1-7 aft</B>                                                                                         ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*   1206, "Instruments"   , "2011/01/02", "Equipment"     ,   410↵                                                 
+0002*   1206, "Instruments"   , "2011/01/02", "Equipment"     ,  1780↵                                                 
+0003*   1206, "Instruments"   , "2011/02/19", "Equipment"     ,   680↵                                                 
+0004*   1206, "Instruments"   , "2011/02/25", "Equipment"     ,  3978↵                                                 
+0005*   1206, "Instruments"   , "2011/03/05", "Equipment"     ,   200↵                                                 
+0006*   1206, "Instruments"   , "2011/03/05", "Equipment"     ,   500↵                                                 
+0007*   1206, "Instruments"   , "2011/03/05", "Equipment"     ,   500↵                                                 
+0008*   1206, "Instruments"   , "2011/03/14", "Equipment"     ,  2940↵                                                 
+0009*   1206, "Instruments"   , "2011/04/29", "Equipment"     ,  1880↵                                                 
+0010*   1206, "Instruments"   , "2011/07/04", "Equipment"     , 42800↵                                                 
+0011*   1206, "Instruments"   , "2011/07/07", "Equipment"     ,   780↵                                                 
+0012*   1206, "Instruments"   , "2011/07/07", "Equipment"     ,   580↵                                                 
+0013*   1206, "Instruments"   , "2011/07/10", "Equipment"     ,  2625↵                                                 
+0014*   1206, "Instruments"   , "2011/07/17", "Equipment"     ,   750↵                                                 
+0015*   1206, "Instruments"   , "2011/07/17", "Equipment"     , 19800↵                                                 
+0016*   1206, "Instruments"   , "2011/08/28", "Equipment"     ,   200↵                                                 
+0017*   1206, "Instruments"   , "2011/08/28", "Equipment"     ,   735↵                                                 
+0018*   1206, "Instruments"   , "2011/09/18", "Equipment"     ,  9480↵                                                 
+0019*   1206, "Instruments"   , "2011/10/10", "Equipment"     ,   920↵                                                 
+0020*   1206, "Instruments"   , "2011/12/11", "Equipment"     ,  1280↵                                                 
+0021*   4316, "Transportation", "2011/01/07", "Transportation",  1710↵                                                 
+0022*   4316, "Transportation", "2011/01/09", "Transportation",  1280↵                                                 
+0023*   4316, "Transportation", "2011/01/09", "Transportation",  1150↵                                                 
+0024*   4316, "Transportation", "2011/01/15", "Transportation",   800↵                                                 
+0025*   4316, "Transportation", "2011/01/15", "Transportation",   800↵                                                 
+0026*   4316, "Transportation", "2011/01/16", "Transportation",  1070↵                                                 
+0027*   4316, "Transportation", "2011/01/16", "Transportation",  1200↵                                                 
+0028*   4316, "Transportation", "2011/01/18", "Transportation",  2600↵                                                 
+0030*   4316, "Transportation", "2011/01/18", "Transportation",  7860↵                                                 
+0031*   4316, "Transportation", "2011/01/21", "Transportation",  1070↵                                                 
+0032*   4316, "Transportation", "2011/01/21", "Transportation",  2810↵                                                 
+0033*   4316, "Transportation", "2011/01/22", "Transportation",  7860↵                                                 
+0034*   4316, "Transportation", "2011/01/30", "Transportation",  6830↵                                                 
+0035*   4316, "Transportation", "2011/02/03", "Transportation",  1070↵                                                 
+0036*   4316, "Transportation", "2011/02/03", "Transportation",  1200↵                                                 
+0037*   4316, "Transportation", "2011/02/08", "Transportation",  1760↵                                                 
+
+    (Result)Total lines are all inserted after last line.
+
+EDIT---*G:\src\xe\tcdata1E2 =L(24-07-03 20:20)------------------------------------------------------ 001-(   1)-114=Ins
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+0251*   4329, "Research"      , "2011/08/27", "BookFee"       ,   860↵                                                 
+0252*   4329, "Research"      , "2011/09/25", "BookFee"       ,  1110↵                                                 
+0253*   4329, "Research"      , "2011/10/10", "BookFee"       ,   459↵                                                 
+0254*   4329, "Research"      , "2011/10/18", "BookFee"       ,  1260↵                                                 
+0255*   4329, "Research"      , "2011/10/23", "BookFee"       ,  2690↵                                                 
+0256*   4329, "Research"      , "2011/10/26", "BookFee"       ,  1638↵                                                 
+0257*   4329, "Research"      , "2011/11/12", "BookFee"       ,  1659↵                                                 
+0258*   4329, "Research"      , "2011/11/15", "BookFee"       ,  2058↵                                                 
+0259*   4329, "Research"      , "2011/11/17", "BookFee"       ,  1476↵                                                 
+0260*   4329, "Research"      , "2011/11/21", "BookFee"       ,  3990↵                                                 
+0261*   4329, "Research"      , "2011/12/24", "BookFee"       ,   609↵                                                 
+0262*=   1206                                                  =  92818↵                                               
+0263*=   4316                                                  = 599080↵                                               
+0264*=   4317                                                  =  23724↵                                               
+0265*=   4318                                                  =  78175↵                                               
+0266*=   4324                                                  = 147600↵                                               
+0267*=   4329                                                  =  33870↵                                               
+0268*********                                                 *= 975267↵                                               
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+
+<B>(Ex.3) Calculate the difference.</B>
+
+    (1)source
+
+EDIT---|G:\src\xe\tcpdump.data12 =L(24-07-04 05:56)------------------------------------------------- 001-(   1)-114=Rep
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001|10:02:17.997433 IP SHARP.1608 > 203.141.35.113.80: S 1196886:1196886(0) win 46720 <mss 1460,nop,nop,sackOK> (DF)↵ 
+0002|10:02:18.015324 IP 203.141.35.113.80 > SHARP.1608: S 2022380599:2022380599(0) ack 1196887 win 65535 <mss 1460> (DF
+0003|10:02:18.015573 IP SHARP.1608 > 203.141.35.113.80: . ack 1 win 46720 (DF)↵                                        
+0004|10:02:18.038352 IP SHARP.1608 > 203.141.35.113.80: P 1:715(714) ack 1 win 46720 (DF)↵                             
+0005|10:02:18.080459 IP 203.141.35.113.80 > SHARP.1608: . 1:1461(1460) ack 715 win 65535 (DF)↵                         
+0006|10:02:18.084081 IP 203.141.35.113.80 > SHARP.1608: . 1461:2921(1460) ack 715 win 65535 (DF)↵                      
+0007|10:02:18.085267 IP SHARP.1608 > 203.141.35.113.80: . ack 2921 win 46720 (DF)↵                                     
+0008|10:02:18.087856 IP 203.141.35.113.80 > SHARP.1608: . 2921:4381(1460) ack 715 win 65535 (DF)↵                      
+0009|10:02:18.112882 IP 203.141.35.113.80 > SHARP.1608: . 5841:7301(1460) ack 715 win 65535 (DF)↵                      
+0010|10:02:18.114123 IP SHARP.1608 > 203.141.35.113.80: . ack 4381 win 46720 (DF)↵                                     
+0011|10:02:18.116349 IP 203.141.35.113.80 > SHARP.1608: FP 7301:8747(1446) ack 715 win 65535 (DF)↵                     
+0012|10:02:18.117503 IP SHARP.1608 > 203.141.35.113.80: . ack 4381 win 46720 (DF)↵                                     
+0013|10:02:19.329817 IP 203.141.35.113.80 > SHARP.1608: . 4381:5841(1460) ack 715 win 65535 (DF)↵                      
+0014|10:02:19.331097 IP SHARP.1608 > 203.141.35.113.80: . ack 8747 win 46720 (DF)↵                                     
+0015|10:02:19.349783 IP 203.141.35.113.80 > SHARP.1608: F 8747:8747(0) ack 715 win 65535 (DF)↵                         
+0016|10:02:19.349972 IP SHARP.1608 > 203.141.35.113.80: . ack 8748 win 46720 (DF)↵                                     
+0017|10:02:19.354948 IP SHARP.1608 > 203.141.35.113.80: F 715:715(0) ack 8748 win 46720 (DF)↵                          
+0018|10:02:19.460322 IP 203.141.36.246.80 > SHARP.1609: P 1:86(85) ack 653 win 65535 (DF)↵                             
+0019|10:02:19.460528 IP 203.141.36.246.80 > SHARP.1609: F 86:86(0) ack 653 win 65535 (DF)↵                             
+0020|10:02:19.460695 IP SHARP.1610 > 203.141.36.246.80: P 1:654(653) ack 1 win 46720 (DF)↵                             
+0021|10:02:19.460707 IP SHARP.1609 > 203.141.36.246.80: . ack 87 win 46635 (DF)↵                                       
+0022|10:02:23.346126 IP SHARP.1621 > 203.141.36.246.80: F 631:631(0) ack 4167 win 46720 (DF)↵                          
+0023|10:02:23.361141 IP 203.141.36.246.80 > SHARP.1621: . ack 632 win 65535 (DF)↵                                      
+0024|11:02:23.361140 TestTest **************************************************↵                                      
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+                                                                                                                       
+    (2) Set up columns for calculation.
+
+EDIT---|G:\src\xe\tcpdump.data12 =L(24-07-04 05:56)------------------------------------------------- 001-(   1)-114=Rep
+===><B>tc 17-40=1-15 ins</B>                                                                                         ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001|10:02:17.997433 IP SHARP.1608 > 203.141.35.113.80: S 1196886:1196886(0) win 46720 <mss 1460,nop,nop,sackOK> (DF)↵ 
+0002|10:02:18.015324 IP 203.141.35.113.80 > SHARP.1608: S 2022380599:2022380599(0) ack 1196887 win 65535 <mss 1460> (DF
+0003|10:02:18.015573 IP SHARP.1608 > 203.141.35.113.80: . ack 1 win 46720 (DF)↵                                        
+0004|10:02:18.038352 IP SHARP.1608 > 203.141.35.113.80: P 1:715(714) ack 1 win 46720 (DF)↵                             
+0005|10:02:18.080459 IP 203.141.35.113.80 > SHARP.1608: . 1:1461(1460) ack 715 win 65535 (DF)↵                         
+0006|10:02:18.084081 IP 203.141.35.113.80 > SHARP.1608: . 1461:2921(1460) ack 715 win 65535 (DF)↵                      
+0007|10:02:18.085267 IP SHARP.1608 > 203.141.35.113.80: . ack 2921 win 46720 (DF)↵                                     
+0008|10:02:18.087856 IP 203.141.35.113.80 > SHARP.1608: . 2921:4381(1460) ack 715 win 65535 (DF)↵                      
+0009|10:02:18.112882 IP 203.141.35.113.80 > SHARP.1608: . 5841:7301(1460) ack 715 win 65535 (DF)↵                      
+0010|10:02:18.114123 IP SHARP.1608 > 203.141.35.113.80: . ack 4381 win 46720 (DF)↵                                     
+0011|10:02:18.116349 IP 203.141.35.113.80 > SHARP.1608: FP 7301:8747(1446) ack 715 win 65535 (DF)↵                     
+0012|10:02:18.117503 IP SHARP.1608 > 203.141.35.113.80: . ack 4381 win 46720 (DF)↵                                     
+0013|10:02:19.329817 IP 203.141.35.113.80 > SHARP.1608: . 4381:5841(1460) ack 715 win 65535 (DF)↵                      
+0014|10:02:19.331097 IP SHARP.1608 > 203.141.35.113.80: . ack 8747 win 46720 (DF)↵                                     
+0015|10:02:19.349783 IP 203.141.35.113.80 > SHARP.1608: F 8747:8747(0) ack 715 win 65535 (DF)↵                         
+0016|10:02:19.349972 IP SHARP.1608 > 203.141.35.113.80: . ack 8748 win 46720 (DF)↵                                     
+0017|10:02:19.354948 IP SHARP.1608 > 203.141.35.113.80: F 715:715(0) ack 8748 win 46720 (DF)↵                          
+0018|10:02:19.460322 IP 203.141.36.246.80 > SHARP.1609: P 1:86(85) ack 653 win 65535 (DF)↵                             
+0019|10:02:19.460528 IP 203.141.36.246.80 > SHARP.1609: F 86:86(0) ack 653 win 65535 (DF)↵                             
+0020|10:02:19.460695 IP SHARP.1610 > 203.141.36.246.80: P 1:654(653) ack 1 win 46720 (DF)↵                             
+0021|10:02:19.460707 IP SHARP.1609 > 203.141.36.246.80: . ack 87 win 46635 (DF)↵                                       
+0022|10:02:23.346126 IP SHARP.1621 > 203.141.36.246.80: F 631:631(0) ack 4167 win 46720 (DF)↵                          
+0023|10:02:23.361141 IP 203.141.36.246.80 > SHARP.1621: . ack 632 win 65535 (DF)↵                                      
+0024|11:02:23.361140 TestTest **************************************************↵                                      
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+                                                                                                                       
+    (Result)
+
+17-40=1-15 ins:total 24, err=0, dataovf=0.04 05:56)------------------------------------------------- 001-(   1)-114=Rep
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*10:02:17.997433 10:02:17.997433         IP SHARP.1608 > 203.141.35.113.80: S 1196886:1196886(0) win 46720 <mss 146
+0002*10:02:18.015324 10:02:18.015324         IP 203.141.35.113.80 > SHARP.1608: S 2022380599:2022380599(0) ack 1196887 
+0003*10:02:18.015573 10:02:18.015573         IP SHARP.1608 > 203.141.35.113.80: . ack 1 win 46720 (DF)↵                
+0004*10:02:18.038352 10:02:18.038352         IP SHARP.1608 > 203.141.35.113.80: P 1:715(714) ack 1 win 46720 (DF)↵     
+0005*10:02:18.080459 10:02:18.080459         IP 203.141.35.113.80 > SHARP.1608: . 1:1461(1460) ack 715 win 65535 (DF)↵ 
+0006*10:02:18.084081 10:02:18.084081         IP 203.141.35.113.80 > SHARP.1608: . 1461:2921(1460) ack 715 win 65535 (DF
+0007*10:02:18.085267 10:02:18.085267         IP SHARP.1608 > 203.141.35.113.80: . ack 2921 win 46720 (DF)↵             
+0008*10:02:18.087856 10:02:18.087856         IP 203.141.35.113.80 > SHARP.1608: . 2921:4381(1460) ack 715 win 65535 (DF
+0009*10:02:18.112882 10:02:18.112882         IP 203.141.35.113.80 > SHARP.1608: . 5841:7301(1460) ack 715 win 65535 (DF
+0010*10:02:18.114123 10:02:18.114123         IP SHARP.1608 > 203.141.35.113.80: . ack 4381 win 46720 (DF)↵             
+0011*10:02:18.116349 10:02:18.116349         IP 203.141.35.113.80 > SHARP.1608: FP 7301:8747(1446) ack 715 win 65535 (D
+0012*10:02:18.117503 10:02:18.117503         IP SHARP.1608 > 203.141.35.113.80: . ack 4381 win 46720 (DF)↵             
+0013*10:02:19.329817 10:02:19.329817         IP 203.141.35.113.80 > SHARP.1608: . 4381:5841(1460) ack 715 win 65535 (DF
+0014*10:02:19.331097 10:02:19.331097         IP SHARP.1608 > 203.141.35.113.80: . ack 8747 win 46720 (DF)↵             
+0015*10:02:19.349783 10:02:19.349783         IP 203.141.35.113.80 > SHARP.1608: F 8747:8747(0) ack 715 win 65535 (DF)↵ 
+0016*10:02:19.349972 10:02:19.349972         IP SHARP.1608 > 203.141.35.113.80: . ack 8748 win 46720 (DF)↵             
+0017*10:02:19.354948 10:02:19.354948         IP SHARP.1608 > 203.141.35.113.80: F 715:715(0) ack 8748 win 46720 (DF)↵  
+0018*10:02:19.460322 10:02:19.460322         IP 203.141.36.246.80 > SHARP.1609: P 1:86(85) ack 653 win 65535 (DF)↵     
+0019*10:02:19.460528 10:02:19.460528         IP 203.141.36.246.80 > SHARP.1609: F 86:86(0) ack 653 win 65535 (DF)↵     
+0020*10:02:19.460695 10:02:19.460695         IP SHARP.1610 > 203.141.36.246.80: P 1:654(653) ack 1 win 46720 (DF)↵     
+0021*10:02:19.460707 10:02:19.460707         IP SHARP.1609 > 203.141.36.246.80: . ack 87 win 46635 (DF)↵               
+0022*10:02:23.346126 10:02:23.346126         IP SHARP.1621 > 203.141.36.246.80: F 631:631(0) ack 4167 win 46720 (DF)↵  
+0023*10:02:23.361141 10:02:23.361141         IP 203.141.36.246.80 > SHARP.1621: . ack 632 win 65535 (DF)↵              
+0024*11:02:23.361140 11:02:23.361140         TestTest **************************************************↵              
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+                                                                                                                       
+    (3) Calculate the difference.
+       In this case, the format hh:mm:ss.xxx is considered it is timestamp.
+       for hhmmss.xxx format, specify explicitly it is timestamp column like as T17-33.
+                                                                                                                       
+EDIT---*G:\src\xe\tcpdump.data12 =L(24-07-04 05:56)------------------------------------------------- 001-(   1)-114=Rep
+===><B>tc 17-35--</B>                                                                                                ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*10:02:17.997433 10:02:17.997433         IP SHARP.1608 > 203.141.35.113.80: S 1196886:1196886(0) win 46720 <mss 146
+0002*10:02:18.015324 10:02:18.015324         IP 203.141.35.113.80 > SHARP.1608: S 2022380599:2022380599(0) ack 1196887 
+0003*10:02:18.015573 10:02:18.015573         IP SHARP.1608 > 203.141.35.113.80: . ack 1 win 46720 (DF)↵                
+0004*10:02:18.038352 10:02:18.038352         IP SHARP.1608 > 203.141.35.113.80: P 1:715(714) ack 1 win 46720 (DF)↵     
+0005*10:02:18.080459 10:02:18.080459         IP 203.141.35.113.80 > SHARP.1608: . 1:1461(1460) ack 715 win 65535 (DF)↵ 
+0006*10:02:18.084081 10:02:18.084081         IP 203.141.35.113.80 > SHARP.1608: . 1461:2921(1460) ack 715 win 65535 (DF
+0007*10:02:18.085267 10:02:18.085267         IP SHARP.1608 > 203.141.35.113.80: . ack 2921 win 46720 (DF)↵             
+0008*10:02:18.087856 10:02:18.087856         IP 203.141.35.113.80 > SHARP.1608: . 2921:4381(1460) ack 715 win 65535 (DF
+0009*10:02:18.112882 10:02:18.112882         IP 203.141.35.113.80 > SHARP.1608: . 5841:7301(1460) ack 715 win 65535 (DF
+0010*10:02:18.114123 10:02:18.114123         IP SHARP.1608 > 203.141.35.113.80: . ack 4381 win 46720 (DF)↵             
+0011*10:02:18.116349 10:02:18.116349         IP 203.141.35.113.80 > SHARP.1608: FP 7301:8747(1446) ack 715 win 65535 (D
+0012*10:02:18.117503 10:02:18.117503         IP SHARP.1608 > 203.141.35.113.80: . ack 4381 win 46720 (DF)↵             
+0013*10:02:19.329817 10:02:19.329817         IP 203.141.35.113.80 > SHARP.1608: . 4381:5841(1460) ack 715 win 65535 (DF
+0014*10:02:19.331097 10:02:19.331097         IP SHARP.1608 > 203.141.35.113.80: . ack 8747 win 46720 (DF)↵             
+0015*10:02:19.349783 10:02:19.349783         IP 203.141.35.113.80 > SHARP.1608: F 8747:8747(0) ack 715 win 65535 (DF)↵ 
+0016*10:02:19.349972 10:02:19.349972         IP SHARP.1608 > 203.141.35.113.80: . ack 8748 win 46720 (DF)↵             
+0017*10:02:19.354948 10:02:19.354948         IP SHARP.1608 > 203.141.35.113.80: F 715:715(0) ack 8748 win 46720 (DF)↵  
+0018*10:02:19.460322 10:02:19.460322         IP 203.141.36.246.80 > SHARP.1609: P 1:86(85) ack 653 win 65535 (DF)↵     
+0019*10:02:19.460528 10:02:19.460528         IP 203.141.36.246.80 > SHARP.1609: F 86:86(0) ack 653 win 65535 (DF)↵     
+0020*10:02:19.460695 10:02:19.460695         IP SHARP.1610 > 203.141.36.246.80: P 1:654(653) ack 1 win 46720 (DF)↵     
+0021*10:02:19.460707 10:02:19.460707         IP SHARP.1609 > 203.141.36.246.80: . ack 87 win 46635 (DF)↵               
+0022*10:02:23.346126 10:02:23.346126         IP SHARP.1621 > 203.141.36.246.80: F 631:631(0) ack 4167 win 46720 (DF)↵  
+0023*10:02:23.361141 10:02:23.361141         IP 203.141.36.246.80 > SHARP.1621: . ack 632 win 65535 (DF)↵              
+0024*11:02:23.361140 11:02:23.361140         TestTest **************************************************↵              
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+                                                                                                                       
+    (Result)
+
+17-35--:total 24, err=0, outovf=0=L(24-07-04 05:56)------------------------------------------------- 001-(   1)-114=Rep
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*10:02:17.997433 10:02:17.997433         IP SHARP.1608 > 203.141.35.113.80: S 1196886:1196886(0) win 46720 <mss 146
+0002*10:02:18.015324     00:00:00.017891     IP 203.141.35.113.80 > SHARP.1608: S 2022380599:2022380599(0) ack 1196887 
+0003*10:02:18.015573     00:00:00.000249     IP SHARP.1608 > 203.141.35.113.80: . ack 1 win 46720 (DF)↵                
+0004*10:02:18.038352     00:00:00.022779     IP SHARP.1608 > 203.141.35.113.80: P 1:715(714) ack 1 win 46720 (DF)↵     
+0005*10:02:18.080459     00:00:00.042107     IP 203.141.35.113.80 > SHARP.1608: . 1:1461(1460) ack 715 win 65535 (DF)↵ 
+0006*10:02:18.084081     00:00:00.003622     IP 203.141.35.113.80 > SHARP.1608: . 1461:2921(1460) ack 715 win 65535 (DF
+0007*10:02:18.085267     00:00:00.001186     IP SHARP.1608 > 203.141.35.113.80: . ack 2921 win 46720 (DF)↵             
+0008*10:02:18.087856     00:00:00.002589     IP 203.141.35.113.80 > SHARP.1608: . 2921:4381(1460) ack 715 win 65535 (DF
+0009*10:02:18.112882     00:00:00.025026     IP 203.141.35.113.80 > SHARP.1608: . 5841:7301(1460) ack 715 win 65535 (DF
+0010*10:02:18.114123     00:00:00.001241     IP SHARP.1608 > 203.141.35.113.80: . ack 4381 win 46720 (DF)↵             
+0011*10:02:18.116349     00:00:00.002226     IP 203.141.35.113.80 > SHARP.1608: FP 7301:8747(1446) ack 715 win 65535 (D
+0012*10:02:18.117503     00:00:00.001154     IP SHARP.1608 > 203.141.35.113.80: . ack 4381 win 46720 (DF)↵             
+0013*10:02:19.329817     00:00:01.212314     IP 203.141.35.113.80 > SHARP.1608: . 4381:5841(1460) ack 715 win 65535 (DF
+0014*10:02:19.331097     00:00:00.001280     IP SHARP.1608 > 203.141.35.113.80: . ack 8747 win 46720 (DF)↵             
+0015*10:02:19.349783     00:00:00.018686     IP 203.141.35.113.80 > SHARP.1608: F 8747:8747(0) ack 715 win 65535 (DF)↵ 
+0016*10:02:19.349972     00:00:00.000189     IP SHARP.1608 > 203.141.35.113.80: . ack 8748 win 46720 (DF)↵             
+0017*10:02:19.354948     00:00:00.004976     IP SHARP.1608 > 203.141.35.113.80: F 715:715(0) ack 8748 win 46720 (DF)↵  
+0018*10:02:19.460322     00:00:00.105374     IP 203.141.36.246.80 > SHARP.1609: P 1:86(85) ack 653 win 65535 (DF)↵     
+0019*10:02:19.460528     00:00:00.000206     IP 203.141.36.246.80 > SHARP.1609: F 86:86(0) ack 653 win 65535 (DF)↵     
+0020*10:02:19.460695     00:00:00.000167     IP SHARP.1610 > 203.141.36.246.80: P 1:654(653) ack 1 win 46720 (DF)↵     
+0021*10:02:19.460707     00:00:00.000012     IP SHARP.1609 > 203.141.36.246.80: . ack 87 win 46635 (DF)↵               
+0022*10:02:23.346126     00:00:03.885419     IP SHARP.1621 > 203.141.36.246.80: F 631:631(0) ack 4167 win 46720 (DF)↵  
+0023*10:02:23.361141     00:00:00.015015     IP 203.141.36.246.80 > SHARP.1621: . ack 632 win 65535 (DF)↵              
+0024*11:02:23.361140     00:59:59.999999     TestTest **************************************************↵              
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+
+<B>(Ex.4) Calculate the cumulative.</B>
+
+    (1)Source
+
+EDIT---|G:\src\xe\tcdata1-1 =L(24-07-04 19:30)------------------------------------------------------ 001-(   1)-114=Rep
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001|   24258 ↵                                                                                                        
+0002|     410 ↵                                                                                                        
+0003|    1780 ↵                                                                                                        
+0004|     680 ↵                                                                                                        
+0005|    3978 ↵                                                                                                        
+0006|     200 ↵                                                                                                        
+0007|     500 ↵                                                                                                        
+0008|     500 ↵                                                                                                        
+0009|    2940 ↵                                                                                                        
+0010|    1880 ↵                                                                                                        
+0011|   42800 ↵                                                                                                        
+0012|     780 ↵                                                                                                        
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+                                                                                                                       
+    (2) Set the comment column:month.
+
+EDIT---|G:\src\xe\tcdata1-1 =L(24-07-04 19:30)------------------------------------------------------ 001-(   1)-114=Rep
+===><B>num seti 1-2</B>                                                                                              ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001|   24258 ↵                                                                                                        
+0002|     410 ↵                                                                                                        
+0003|    1780 ↵                                                                                                        
+0004|     680 ↵                                                                                                        
+0005|    3978 ↵                                                                                                        
+0006|     200 ↵                                                                                                        
+0007|     500 ↵                                                                                                        
+0008|     500 ↵                                                                                                        
+0009|    2940 ↵                                                                                                        
+0010|    1880 ↵                                                                                                        
+0011|   42800 ↵                                                                                                        
+0012|     780 ↵                                                                                                        
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+                                                                                                                       
+    (Result)
+
+EDIT---*G:\src\xe\tcdata1-1 =L(24-07-04 19:30)------------------------------------------------------ 001-(   1)-114=Rep
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*01   24258 ↵                                                                                                      
+0002*02     410 ↵                                                                                                      
+0003*03    1780 ↵                                                                                                      
+0004*04     680 ↵                                                                                                      
+0005*05    3978 ↵                                                                                                      
+0006*06     200 ↵                                                                                                      
+0007*07     500 ↵                                                                                                      
+0008*08     500 ↵                                                                                                      
+0009*09    2940 ↵                                                                                                      
+0010*10    1880 ↵                                                                                                      
+0011*11   42800 ↵                                                                                                      
+0012*12     780 ↵                                                                                                      
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+                                                                                                                       
+    (3) Set the columns to output.
+
+EDIT---*G:\src\xe\tcdata1-1 =L(24-07-04 19:30)------------------------------------------------------ 001-(   1)-114=Rep
+===><B>tc 15-25=5-10 rj</B>                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*01   24258 ↵                                                                                                      
+0002*02     410 ↵                                                                                                      
+0003*03    1780 ↵                                                                                                      
+0004*04     680 ↵                                                                                                      
+0005*05    3978 ↵                                                                                                      
+0006*06     200 ↵                                                                                                      
+0007*07     500 ↵                                                                                                      
+0008*08     500 ↵                                                                                                      
+0009*09    2940 ↵                                                                                                      
+0010*10    1880 ↵                                                                                                      
+0011*11   42800 ↵                                                                                                      
+0012*12     780 ↵                                                                                                      
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+                                                                                                                       
+    (Result)
+
+15-25=5-10 rj:total 12, err=0, dataovf=0.9:30)------------------------------------------------------ 001-(   1)-114=Rep
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*01   24258          24258↵                                                                                        
+0002*02     410            410↵                                                                                        
+0003*03    1780           1780↵                                                                                        
+0004*04     680            680↵                                                                                        
+0005*05    3978           3978↵                                                                                        
+0006*06     200            200↵                                                                                        
+0007*07     500            500↵                                                                                        
+0008*08     500            500↵                                                                                        
+0009*09    2940           2940↵                                                                                        
+0010*10    1880           1880↵                                                                                        
+0011*11   42800          42800↵                                                                                        
+0012*12     780            780↵                                                                                        
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+                                                                                                                       
+    (4) Output the cumulative.
+
+15-25=5-10 rj:total 12, err=0, dataovf=0.9:30)------------------------------------------------------ 001-(   1)-114=Rep
+===><B>tc 15-25++</B>                                                                                       ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*01   24258          24258↵                                                                                        
+0002*02     410            410↵                                                                                        
+0003*03    1780           1780↵                                                                                        
+0004*04     680            680↵                                                                                        
+0005*05    3978           3978↵                                                                                        
+0006*06     200            200↵                                                                                        
+0007*07     500            500↵                                                                                        
+0008*08     500            500↵                                                                                        
+0009*09    2940           2940↵                                                                                        
+0010*10    1880           1880↵                                                                                        
+0011*11   42800          42800↵                                                                                        
+0012*12     780            780↵                                                                                        
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+                                                                                                                       
+    (Result)
+
+15-25++:total 12, err=0, outovf=0-07-04 19:30)------------------------------------------------------ 001-(   1)-114=Rep
+===>                                                                                                        ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*01   24258          24258↵                                                                                        
+0002*02     410          24668↵                                                                                        
+0003*03    1780          26448↵                                                                                        
+0004*04     680          27128↵                                                                                        
+0005*05    3978          31106↵                                                                                        
+0006*06     200          31306↵                                                                                        
+0007*07     500          31806↵                                                                                        
+0008*08     500          32306↵                                                                                        
+0009*09    2940          35246↵                                                                                        
+0010*10    1880          37126↵                                                                                        
+0011*11   42800          79926↵                                                                                        
+0012*12     780          80706↵                                                                                        
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+</SPAN></PRE>
+</BODY>
+</HTML>

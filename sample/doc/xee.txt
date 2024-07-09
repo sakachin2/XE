@@ -1,4 +1,4 @@
-UTF8 encoding * CID:||+v29XR~:  2023/07/31  v129W           update#=  721;||+v29XR~
+UTF8 encoding * CID:||+v130R~:  2023/07/31  v129W           update#=  735;||+v130R~
 ************************************************************************
 (Index)
     (0).Introduction.
@@ -4387,7 +4387,26 @@ sample)
         %^   :fullpath name currently opened on the other split screen.||~127ER~
         %@   :all remaining parameters not used by %n up to the position.||~127ER~
         %* and %^ is replaced to space if the screen is not file/dir panel.||~127ER~
-        e.g. grep %1 %^>::tmp; e ::tmp;                                ||~127ER~||~v128R~
+                                                                      ||+v130R~
+      <B>Example</B>                                                  ||+v130R~
+                                                                      ||+v130R~
+            0106|********   Alias  :*sl1 e %1 ;x all; i error; del x all #this is comment line
+            0107|Alias  :ls e x:\x1 ; i aaaa
+            0108|Alias  :al1 e abc
+            0109|Alias  :grn gre -n %1 %2 %3
+            0110|Alias  :gri gre -ni %1 %2 %3
+            0111|Alias  :trc e ::xewin.trc.*
+            0112|Alias  :trw e ::xewxe.trc.*
+            0136|Alias  :s0  s --
+            0137|Alias  :ilr i "getammount longranks="
+            0139|Alias  :u8d e g:\src\xe\utf8data.0000-ffff
+            0140|Alias  :ud4 e g:\src\ulib\combinedata\unicodeDatabase1.unicode.All.testwcw.e.o
+            0142|Alias  :lp3 i lineput       & row=3
+            0143|Alias  :lpn i lineput       & row=%1                 ||+v130R~
+            0144|Alias  :wc3 i uviowrtcellw1 & row=3
+            0145|Alias  :wc4 i uviowrtcellw1 & row=4
+            0146|Alias  :chi i ukbdcharin last
+            0147*Alias  :jsn b c:\Users\S*\AppData\Local\Packages\*WindowsTerminal*\LocalState\Settings.json
                                                                       ||~v129R~
              Find.exe cmd is available on Windows 10 as alternative of grep.||~v129R~
              Register cmd like as following.                          ||~v129R~
@@ -5339,6 +5358,7 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
  |Line Include last|        |Alt+l                                  |
  |Input Shortcut   |        |Alt+a                          #12     | ||~v124R~
  |Display Shortcut |        |Alt+q                          #12     | ||~v124R~
+ |ScreenHardCopy   |        |Alt+z,Ctl+h                    #16     | ||~v130I~||+v130R~
  |Dir Size option  |        |F6                                     |
  |Dir LongFileName |LFN     |Shift+F11                              |
  |Dir FileDesc     |        |Shift+F10                      #14     |
@@ -5514,6 +5534,8 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
          of the file. Control char(<0x20) is replaced by ".".
    - #15:PathUp displays the parent directory of the file currently displayed.||~v124R~
          PathDown back to the file before PathUp.                     ||~v124R~
+   - #16:Output to ::hcopy(file in workDir)                           ||~v130I~||+v130R~
+         Ctrl+h is available except Linux Console version.            ||~v130I~||+v130R~
                                                                       ||~v124R~
 ************************************************************************
 (2).Panel
@@ -7299,6 +7321,7 @@ by screen expansion)
                      [U[B|L|8|4]]                                     ||~v125R~
                      [col-range] [& [!] string2 [col-range2] [-d[<|>]n]
                      [all | next | + | prev | - | first | last]
+                     [-cont]                                          ||~v130M~||+v130R~
                      [.lab1 .lab2] [l-column | LM | RM [r-column]]
                      [-a[-]n] [-b[-]n] [-c[{L|R}m][{T|B}n]] [-j|-je]
                      [-Llcmd] -m[n] [-nx] [.lab1 .lab2]               
@@ -7311,7 +7334,7 @@ by screen expansion)
             FIN     :Case sensitive search
             IFI     :Case Insensitive search
             EXC     :Find string and then exclude the line.
-            IX      :IFind string and then exclude the line.
+            IX      :IFInd string and then exclude the line.          ||~v130R~||~v@@1R~
             FNX     :FINd excluding excluded line.
             INX     :IFInd excluding excluded line.
 
@@ -7481,6 +7504,14 @@ by screen expansion)
             -       :same as prev
             first   :search forward from start of file.
             last    :search backward from end of file.
+            -cont   :search starts from the succeeded found position just before.||~v130I~||+v130R~
+                     When selecting lines in a large file by the Find command in the Exe cmd file,||~v130I~||+v130R~
+                     from a performance consideration,                        //~@@@1I~||~v130I~||+v130R~
+                     when NotFound occurred, the next Find will start not from the first line,//~@@@1I~||~v130I~||+v130R~
+                     but from the last Found line.                            //~@@@1I~||~v130I~||+v130R~
+                     It will be better on condition that files were sorted.||~v130I~||+v130R~
+                     Available only in Exe cmd file.                  ||+v130R~
+                     (See html Help for sample usage.)                ||+v130R~
             .lab1/2 :Limit search line range using a pair of label
                      on lineno column. line number may be used so as to
                      limit line range with no label on lineno column.
@@ -9915,6 +9946,7 @@ by screen expansion)
                x:hexadecimal, o:octal, d:decimal, u:unsigned decimal,
                z:decimal by zzz,zz9, uz:unsigned decimal by zzz,zz9,
                t:hh:mm:ss.xxx edit fmt,
+               s:translation of UCS-4 unicode and its UCS-2 surrogate.||~v130I~||~v@@1R~
                l(lower L):convert to clock from a word(seconds from 1970)
                or double word(Mainframe TOD. In double word bit 51 is 
                unit of micro second).
@@ -9933,6 +9965,8 @@ by screen expansion)
                XBC 12345678..abcdef0/30a2 ; XBC 3acf19fe/l
                xbc 1234.56*7.89 v2r       ; xbc 123.45/6.789 vr       ||~v129R~
                xbc 200/3.3*35 v2r         ; xbc 1+2+3+4+5+6+7+8+9+10  ||~v129R~
+               xbc 1f468/s  ==> x1f468/s:=d83ddc68                    ||~v130I~||~v@@1R~
+               xbc d83ddc68 ==> xd83ddc68/s:=0001f468                 ||~v130I~||~v@@1R~
 
         (Command line tool XBC is also packaged in zip file.)
 
@@ -14451,6 +14485,27 @@ by screen expansion)
                     :t:debug option not to delete temp file for ftp get.
                     :hosts:hosts filename for xe.
                     Default is /F1:xehosts(xehosts on work directory)
+      -F{fontname[:charset] | @font_param_filename}            //~@@@1R~||~v130R~||+v130R~
+                   :The font name required for /G option is---             //~@@@1I~||~v130I~||+v130R~
+                    when running on Windows Terminal, setting.json is checked,//~@@@1I~||~v130I~||+v130R~
+                    when running on Linux, on gnome-terminal, konsole, etc.,||~v130I~||+v130R~
+                    the profile of the Home dir is checked by xeGetFont.sh.||~v130I~||+v130R~
+                    But if it fails, specify this option.                  //~@@@1I~||~v130I~||+v130R~
+                    Use font_param_filename when specifying indirectly from a file, use font_param_filename.//~@@@1I~||~v130I~||+v130R~
+                    See Microsoft's documentation for the appropriate charset for the font.//~@@@1I~||~v130I~||+v130R~
+                    Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.             //~@@@1I~||~v130I~||+v130R~
+                         /F"\uff2d\uff33 \u660e\u671d".                    //~@@@1I~||~v130I~||+v130R~
+      -G{Y|N}{y|0|1|2}:Specy cell width of unicode defined width is ambiguous.||~v130R~||+v130R~
+                        Y:Fit to font width.                                   //~@@@1I~||~v130I~||+v130R~
+                          You can also specify the 2nd option for chars in unfamiliar languages.||+v130R~
+                          However, this option takes a cost, the start-up will be slightly slower.//~@@@1I~||~v130I~||+v130R~
+                          (See html Help for those languages.)        ||+v130R~
+                        N: Specify the display width uniformly using the second option.//~@@@1I~||~v130I~||+v130R~
+                        The default value is /GY2.                             //~@@@1I~||~v130I~||+v130R~
+                        Ex.) /GN2: All ambiguous chars are displayed in two cells.//~@@@1I~||~v130I~||+v130R~
+                             /GYy: All ambiguous chars are adjusted according to the font.//~@@@1I~||~v130I~||+v130R~
+                             /GY0: Unfamiliar languages are displayed as ':;' instead.//~@@@1I~||~v130I~||+v130R~
+                                                                      ||+v130R~
       -h,-?        :Help
       -hnn         :Screen height.                                    ||~v124R~
                     Use when screen height and screen buffer size is not||~v124R~
@@ -14527,17 +14582,34 @@ by screen expansion)
       /E           :Edit mode open(default)
                     Use when edit file name is "0","1","2" or "6"
                     (same as menu option id).
-      -Fx[t][:hosts]:x=0:FTP is not used, x=1:FTP avail(without log)
+      /Fx[t][:hosts]:x=0:FTP is not used, x=1:FTP avail(without log)  ||~v130R~||+v130R~
                      x=w:output ftplog, x=a:ftplog by append mode.
                     :t:debug option not to delete temp file for ftp get.
                     :hosts:hosts filename for xe.
                     Default is /F1:xehosts(xehosts on work directory)
+      /F{fontname[:charset] | @font_param_filename}            //~@@@1R~||~v130R~||+v130R~
+                   :The font name required for /G option is---             //~@@@1I~||~v130I~||+v130R~
+                    when running on Windows Terminal, setting.json is checked,//~@@@1I~||~v130I~||+v130R~
+                    when running on Linux, on gnome-terminal, konsole, etc.,||~v130I~||+v130R~
+                    the profile of the Home dir is checked by xeGetFont.sh.||~v130I~||+v130R~
+                    But if it fails, specify this option.                  //~@@@1I~||~v130I~||+v130R~
+                    Use font_param_filename when specifying indirectly from a file, use font_param_filename.//~@@@1I~||~v130I~||+v130R~
+                    See Microsoft's documentation for the appropriate charset for the font.//~@@@1I~||~v130I~||+v130R~
+                    Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.             //~@@@1I~||~v130I~||+v130R~
+                         /F"\uff2d\uff33 \u660e\u671d".                    //~@@@1I~||~v130I~||+v130R~
+      /G{Y|N}{y|0|1|2}:Specy cell width of unicode defined width is ambiguous.||~v130R~||+v130R~
+                        Y:Fit to font width.                                   //~@@@1I~||~v130I~||+v130R~
+                          You can also specify the second option for chars in unfamiliar languages.//~@@@1I~||~v130I~||+v130R~
+                          However, this option takes a cost, the start-up will be slightly slower.//~@@@1I~||~v130I~||+v130R~
+                        N: Specify the display width uniformly using the second option.//~@@@1I~||~v130I~||+v130R~
+                        The default value is /GY2.                             //~@@@1I~||~v130I~||+v130R~
+                        Ex.) /GN2: All ambiguous chars are displayed in two cells.//~@@@1I~||~v130I~||+v130R~
+                             /GYy: All ambiguous chars are adjusted according to the font.//~@@@1I~||~v130I~||+v130R~
+                             /GY0: Unfamiliar languages are displayed as ':;' instead.//~@@@1I~||~v130I~||+v130R~
       /H,/?        :Help
-#if defined(W32)
       /Hnn         :Screen height. max is screen buff size.           ||~v124R~
                     Use when screen height and screen buffer size is not||~v124R~
                     same on DOS prompt under Windows 2000.
-#endif
       /I[fname]    :ini filename to be used. If not use, specify simply /I
                    :to use default values.
                    :default is xe.ini if missing this option
@@ -14585,13 +14657,13 @@ by screen expansion)
           x=r (/Nr):Use Right-Ctrl key as Execute key
           x=rr(/Nrr):Use Right-Ctrl key as Next line key(effective only when Rctl ON)||~v124R~
           x=t (/Nt):Tab display or not
-          x=v (/Yv):                                                  ||+v29XI~
-            Windows Console version:                                  ||+v29XI~
-                    "-Yv":displays ambiguous width characters in one cell.||+v29XI~
-                    "-Nv":displays those in two cell.                 ||+v29XI~
-            Wxe, gxe and xe-linux versions:                           ||+v29XI~
-                    "-Yv":one or two is by performing internal determination.||+v29XI~
-                    "-Nv":displays those in two cell.                 ||+v29XI~
+          x=v (/Yv):                                                  ||~v29XI~
+            Windows Console version:                                  ||~v29XI~
+                    "-Yv":displays ambiguous width characters in one cell.||~v29XI~
+                    "-Nv":displays those in two cell.                 ||~v29XI~
+            Wxe, gxe and xe-linux versions:                           ||~v29XI~
+                    "-Yv":one or two is by performing internal determination.||~v29XI~
+                    "-Nv":displays those in two cell.                 ||~v29XI~
       //           :End of parameter(ignore following)
                     Use to cut re-displayed command by DOSKEY etc.
 

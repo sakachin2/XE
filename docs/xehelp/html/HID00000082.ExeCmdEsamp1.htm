@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>EXEcute SampleE</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+
+---------------------------------------------
+Extract lines by EXE command
+---------------------------------------------
+(1) Prepare a command file.
+   (1-1) Create space to set search commands by the "(" line command.
+
+EDIT---*G:\src\ulib\combinedata\ambiguous.xe0307.findcmd =L(24-03-28 17:40)------------------------- 001-(   1)-113=Ins
+===>                                                                                                          ===>HALF 
+col  |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11...
+*****|*L*t**l*** TOP OF FILE *******Lig:OFF ***************************************************************************
+<B>))</B>   * 00a4 ↵                                                                                                          
+00003* 00a7 ↵                                                                                                          
+00004* 00a8 ↵                                                                                                          
+00005* 00aa ↵                                                                                                          
+00006* 00ad ↵                                                                                                          
+00007* 00ae ↵                                                                                                          
+00008* 00b0 ↵                                                                                                          
+00009* 00b1 ↵                                                                                                          
+00010* 00b2 ↵                                                                                                          
+
+   (Result)
+
+EDIT---*G:\src\ulib\combinedata\ambiguous.xe0307.findcmd =L(24-03-28 17:40)------------------------- 001-(   1)-113=Ins
+===>                                                                                                          ===>HALF 
+col  |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11...
+*****|*L*t**l*** TOP OF FILE *******Lig:OFF ***************************************************************************
+00002*     00a4 ↵                                                                                                      
+00003*     00a7 ↵                                                                                                      
+00004*     00a8 ↵                                                                                                      
+00005*     00aa ↵                                                                                                      
+00006*     00ad ↵                                                                                                      
+00007*     00ae ↵                                                                                                      
+00008*     00b0 ↵                                                                                                      
+00009*     00b1 ↵                                                                                                      
+00010*     00b2 ↵                                                                                                      
+
+   (1-2) Set search command by m-oo line command.
+
+EDIT---*G:\src\ulib\combinedata\ambiguous.xe0307.findcmd =L(24-03-28 17:40)------------------------- 001-(   1)-113=Ins
+===>                                                                                                          ===>HALF 
+col  |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11...
+*****|*L*t**l*** TOP OF FILE *******Lig:OFF ***************************************************************************
+<B>m</B>    *ix         50 70 -cont↵                                                                                          
+ <B>oo</B>  *     00a1 ↵                                                                                                      
+00002*     00a4 ↵                                                                                                      
+00003*     00a7 ↵                                                                                                      
+00004*     00a8 ↵                                                                                                      
+00005*     00aa ↵                                                                                                      
+00006*     00ad ↵                                                                                                      
+00007*     00ae ↵                                                                                                      
+00008*     00b0 ↵                                                                                                      
+00009*     00b1 ↵                                                                                                      
+00010*     00b2 ↵                                                                                                      
+
+   (Result)
+
+E---69-*G:\src\ulib\combinedata\ambiguous.xe0307.findcmd =L(24-03-28 17:40)------------------------- 001-(   1)-113=Ins
+===>                                                                                                          ===>HALF 
+col  |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11...
+*****|*L*t**l*** TOP OF FILE *******Lig:OFF ***************************************************************************
+00000*ix   00a1  50 70 -cont↵                                                                                          
+00002*ix   00a4  50 70 -cont↵                                                                                          
+00003*ix   00a7  50 70 -cont↵                                                                                          
+00004*ix   00a8  50 70 -cont↵                                                                                          
+00005*ix   00aa  50 70 -cont↵                                                                                          
+00006*ix   00ad  50 70 -cont↵                                                                                          
+00007*ix   00ae  50 70 -cont↵                                                                                          
+00008*ix   00b0  50 70 -cont↵                                                                                          
+00009*ix   00b1  50 70 -cont↵                                                                                          
+00010*ix   00b2  50 70 -cont↵                                                                                          
+---------
+
+(2)Hide lines that contain strings.
+   In this example, the screen is split to display the command file,
+   and "EXE *^" is executed.
+   "*^" means the file displayed on the other side of the split screen
+   The "-cont" option is to start the search from the found line just before.
+   This is used to increase efficiency, assuming that both files are sorted.
+---------
+
+EDIT---*G:\src\ulib\combinedata\ambiguousAmbiguous.xe0307.findcmd =L(24-03-07 17:56)---------------- 001-(   1)-114=Rep
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*ix 00a1  50 70 ↵                                                                                                  
+0002*ix 00a4  50 70 -cont  ↵                                                                                           
+0004*ix 00a8  50 70 -cont  ↵                                                                                           
+0005*ix 00aa  50 70 -cont  ↵                                                                                           
+0007*ix 00ae  50 70 -cont  ↵                                                                                           
+0008*ix 00b0  50 70 -cont  ↵                                                                                           
+0009*ix 00b1  50 70 -cont  ↵                                                                                           
+0010*ix 00b2  50 70 -cont  ↵                                                                                           
+0011*ix 00b3  50 70 -cont  ↵                                                                                           
+0012*ix 00b4  50 70 -cont  ↵                                                                                           
+0013*ix 00b6  50 70 -cont  ↵                                                                                           
+0014*ix 00b7  50 70 -cont  ↵                                                                                           
+0015*ix 00b8  50 70 -cont  ↵                                                                                           
+0016*ix 00b9  50 70 -cont  ↵                                                                                           
+0017*ix 00ba  50 70 -cont  ↵                                                                                           
+EDIT---|G:\src\ulib\combinedata\ambiguousAmbiguous.xe0307 =L(24-03-07 16:13)------------------------ 001-(   1)-114    
+===><B>exe ! ^*</B>                                                                                                    ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001|= 10:40:17.554 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00a1 ambiguous↵                                        
+0002|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00a4 ambiguous↵                                        
+0003|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00a7 ambiguous↵                                        
+0004|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00a8 ambiguous↵                                        
+0005|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00aa ambiguous↵                                        
+0006|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00ad ambiguous↵                                        
+0007|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00ae ambiguous↵                                        
+0008|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00b0 ambiguous↵                                        
+0009|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00b1 ambiguous↵                                        
+0010|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00b2 ambiguous↵                                        
+0011|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00b3 ambiguous↵                                        
+0012|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00b4 ambiguous↵                                        
+0013|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00b6 ambiguous↵                                        
+0014|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00b7 ambiguous↵                                        
+0015|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00b8 ambiguous↵                                        
+0016|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00b9 ambiguous↵                                        
+0017|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00ba ambiguous↵                                        
+
+---------
+   As a result, the NotFound lines by "ix" commands are remain.
+---------
+
+EDIT---*G:\src\ulib\combinedata\ambiguousAmbiguous.xe0307.findcmd =L(24-03-07 17:56)---------------- 001-(   1)-114=Rep
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*ix 00a1  50 70 ↵                                                                                                  
+0002*ix 00a4  50 70 -cont  ↵                                                                                           
+0004*ix 00a8  50 70 -cont  ↵                                                                                           
+0005*ix 00aa  50 70 -cont  ↵                                                                                           
+0007*ix 00ae  50 70 -cont  ↵                                                                                           
+0008*ix 00b0  50 70 -cont  ↵                                                                                           
+0009*ix 00b1  50 70 -cont  ↵                                                                                           
+0010*ix 00b2  50 70 -cont  ↵                                                                                           
+0011*ix 00b3  50 70 -cont  ↵                                                                                           
+0012*ix 00b4  50 70 -cont  ↵                                                                                           
+0013*ix 00b6  50 70 -cont  ↵                                                                                           
+0014*ix 00b7  50 70 -cont  ↵                                                                                           
+0015*ix 00b8  50 70 -cont  ↵                                                                                           
+0016*ix 00b9  50 70 -cont  ↵                                                                                           
+0017*ix 00ba  50 70 -cont  ↵                                                                                           
+Forward Search ; result is on ::#exeguousAmbiguous.xe0307 =L(24-03-07 16:13)------------------------ 001-(   1)-114    
+===><B>del x all</B>                                                                                                 ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+----|-      2 line excluded -------------------------------------------------------------------------------------------
+0003|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00a7 ambiguous↵                                        
+----|-      2 line excluded -------------------------------------------------------------------------------------------
+0006|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00ad ambiguous↵                                        
+----|-   6974 line excluded -------------------------------------------------------------------------------------------
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+                                                                                                                       
+                                                                                                                       
+---------
+(3)When you enter the DEL command to delete the hidden lines,
+   the lines that were not found by the ix command remain.
+---------
+
+EDIT---*G:\src\ulib\combinedata\ambiguousAmbiguous.xe0307.findcmd =L(24-03-07 17:56)---------------- 001-(   1)-114=Rep
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001*ix 00a1  50 70 ↵                                                                                                  
+0002*ix 00a4  50 70 -cont  ↵                                                                                           
+0004*ix 00a8  50 70 -cont  ↵                                                                                           
+0005*ix 00aa  50 70 -cont  ↵                                                                                           
+0007*ix 00ae  50 70 -cont  ↵                                                                                           
+0008*ix 00b0  50 70 -cont  ↵                                                                                           
+0009*ix 00b1  50 70 -cont  ↵                                                                                           
+0010*ix 00b2  50 70 -cont  ↵                                                                                           
+0011*ix 00b3  50 70 -cont  ↵                                                                                           
+0012*ix 00b4  50 70 -cont  ↵                                                                                           
+0013*ix 00b6  50 70 -cont  ↵                                                                                           
+0014*ix 00b7  50 70 -cont  ↵                                                                                           
+0015*ix 00b8  50 70 -cont  ↵                                                                                           
+0016*ix 00b9  50 70 -cont  ↵                                                                                           
+0017*ix 00ba  50 70 -cont  ↵                                                                                           
+6978 line deletedib\combinedata\ambiguousAmbiguous.xe0307 =L(24-03-07 16:13)------------------------ 001-(   1)-114    
+===>                                                                                                          ===>HALF 
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+...10....+...11....
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0003|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00a7 ambiguous↵                                        
+0006|= 10:40:17.570 = utf4_isAmbiguousAmbiguous-2908:rc=1,ucs=0x00ad ambiguous↵                                        
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+
+</SPAN></PRE>
+</BODY>
+</HTML>

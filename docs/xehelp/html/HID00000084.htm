@@ -20,6 +20,7 @@ a:hover{font-weight:bold;}-->
                      [-g]
                      [U[B|L|8|4]]
                      [all | next | + | prev | - | first | last]
+                     [-cont]                                         
                      [-a[-]n] [-b[-]n] [-c[{L|R}m][{T|B}n]] [-j|-je]
                      [-Llcmd] -m[n] [-nx] [.lab1 .lab2]
                      [-{PSP|PSF}[X|R|D]]
@@ -29,7 +30,7 @@ a:hover{font-weight:bold;}-->
             FIN     :大文字/小文字 区別有
             IFI     :大文字/小文字 区別無(case Insensitive)
             EXC     :Find後その行を非表示化
-            IX      :IFind後その行を非表示化
+            IX      :IFInd後その行を非表示化
             FNX     :非表示行を除くFINd.
             INX     :非表示行を除くIFInd.
 
@@ -190,6 +191,13 @@ a:hover{font-weight:bold;}-->
             -       :prevと同じ
             first   :ファイルの最初から探索,見つかった所にカーソルを移動
             last    :ファイルの最後から探索,見つかった所にカーソルを移動
+            -cont   :直前の成功した find コマンドの一から探索開始
+                     <a href="HID00000082.htm">Exe</a> コマンドで大きなファイルをFindコマンドを設定したファイルで
+                     行選択するとき、パフォーマンスの観点から、
+                     NotFound となったとき次のFindを最初の行から探すのではなく
+                     最後にFoundとなった行から探し始めるときに使用する
+                     ファイルがソートされている前提で有効なオプションです
+                     Exe コマンドファイル内でのみ使用できます
             .lab1/2 :行番号欄に設定したラベルを対で指定して探索行範囲を
                      限定する.行番号を使用しての範囲指定も可.
             c1      :探索範囲の左端桁位置.

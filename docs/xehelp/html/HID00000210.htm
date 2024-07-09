@@ -41,10 +41,26 @@ a:hover{font-weight:bold;}-->
                     :t:debug option not to delete temp file for ftp get.
                     :hosts:hosts filename for xe.
                     Default is /F1:xehosts(xehosts on <a href="HID00000236.htm">work directory</a>)
+      -F{fontname[:charset] | @font_param_filename}           
+                   :The font name required for /G option is---             
+                    when running on Windows Terminal, setting.json is checked,
+                    when running on Linux, on gnome-terminal, konsole, etc.,
+                    the profile of the Home dir is checked by xeGetFont.sh.
+                    But if it fails, specify this option.                  
+                    Use font_param_filename when specifying indirectly from a file, use font_param_filename.
+                    See Microsoft's documentation for the appropriate charset for the font.
+                    Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.            
+                         /F"\uff2d\uff33 \u660e\u671d".                   
+      -G{Y|N}{y|0|1|2}:Specy cell width of unicode defined width is ambiguous.
+                        Y:Fit to font width.                                  
+                          You can also specify the second option for chars in <A href="HID00000210.ambiglangE.htm">unfamiliar languages</A>..
+                          However, this option takes a cost, the start-up will be slightly slower.
+                        N: Specify the display width uniformly using the second option.
+                        The default value is /GY2.                             
+                        Ex.) /GN2: All ambiguous chars are displayed in two cells.
+                             /GYy: All ambiguous chars are adjusted according to the font.
+                             /GY0: Unfamiliar languages are displayed as ':;' instead.
       -h,-?        :Help
-      -hnn         :Screen height.
-                    Use when screen height and screen buffer size is not
-                    same on TeraTerm ini file specification.
       -i[fname]    :<a href="HID00000209.htm">ini filename</a> to be used. If not use, specify simply -I
                    :to use default values.
                    :default is xe.ini if missing this option
@@ -118,17 +134,34 @@ a:hover{font-weight:bold;}-->
       /E           :Edit mode open(default)
                     Use when edit file name is &quot;0&quot;,&quot;1&quot;,&quot;2&quot; or &quot;6&quot;
                     (same as menu option id).
-      -Fx[t][:hosts]:x=0:<a href="HID00000218.htm">FTP</a> is not used, x=1:FTP avail(without log)
+      /Fx[t][:hosts]:x=0:<a href="HID00000218.htm">FTP</a> is not used, x=1:FTP avail(without log)
                      x=w:output ftplog, x=a:ftplog by append mode.
                     :t:debug option not to delete temp file for ftp get.
                     :hosts:hosts filename for xe.
                     Default is /F1:xehosts(xehosts on <a href="HID00000236.htm">work directory</a>)
+      /F{fontname[:charset] | @font_param_filename}           
+                   :The font name required for /G option is---             
+                    when running on Windows Terminal, setting.json is checked,
+                    when running on Linux, on gnome-terminal, konsole, etc.,
+                    the profile of the Home dir is checked by xeGetFont.sh.
+                    But if it fails, specify this option.                  
+                    Use font_param_filename when specifying indirectly from a file, use font_param_filename.
+                    See Microsoft's documentation for the appropriate charset for the font.
+                    Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.            
+                         /F"\uff2d\uff33 \u660e\u671d".                   
+      /G{Y|N}{y|0|1|2}:Specy cell width of unicode defined width is ambiguous.
+                        Y:Fit to font width.                                  
+                          You can also specify the second option for chars in unfamiliar languages.
+                          However, this option takes a cost, the start-up will be slightly slower.
+                        N: Specify the display width uniformly using the second option.
+                        The default value is /GY2.                             
+                        Ex.) /GN2: All ambiguous chars are displayed in two cells.
+                             /GYy: All ambiguous chars are adjusted according to the font.
+                             /GY0: Unfamiliar languages are displayed as ':;' instead.
       /H,/?        :Help
-#if defined(W32)
       /Hnn         :Screen height. max is screen buff size.
                     Use when screen height and screen buffer size is not
                     same on DOS prompt under Windows 2000.
-#endif
       /I[fname]    :<a href="HID00000209.htm">ini filename</a> to be used.if not use,specify simply /I
                    :to use default values.
                    :default is xe.ini if missing this option

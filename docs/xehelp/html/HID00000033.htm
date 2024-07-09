@@ -33,7 +33,7 @@ a:hover{font-weight:bold;}
       ユーザーコマンドキー
         最後に&quot;;&quot;があれば全コマンドを連続実行し,なければ文字列が
         単にコマンド行に表示されるだけ.
- 　　　 行末コメントは "#" に続けて記述する
+        行末コメントは "#" に続けて記述する
         WindowsでもLinuxでもショートカットキーとしてシステムが割り当てているがあります、
         それらをxeは受け取れません
         wxe/gxe の場合ルーラー用(カーソル位置に細い線を表示)の割り当て、省略値はS+C+F1/F2/F3があります
@@ -60,7 +60,27 @@ a:hover{font-weight:bold;}
         %^   :画面分割で他方の画面で開いているファイルのフルパス名
         %@   :その位置までで未使用（%nで使用されなかった）のパラメータ
         %* and %^ は 該当画面がファイル/デレクトリーリストでない場合はスペースになります
-        例) grep %1 %^&gt;::tmp; e ::tmp;
+
+      <B>設定例</B>
+
+            0106|********   Alias  :*sl1 e %1 ;x all; i error; del x all #this is comment line↵                                    
+            0107|Alias  :ls e x:\x1 ; i aaaa↵                                                                                      
+            0108|Alias  :al1 e abc↵                                                                                                
+            0109|Alias  :grn gre -n %1 %2 %3↵                                                                                      
+            0110|Alias  :gri gre -ni %1 %2 %3↵                                                                                     
+            0111|Alias  :trc e ::xewin.trc.*↵                                                                                      
+            0112|Alias  :trw e ::xewxe.trc.*↵                                                                                      
+            0136|Alias  :s0  s --↵                                                                                                 
+            0137|Alias  :ilr i "getammount longranks="↵                                                                            
+            0139|Alias  :u8d e g:\src\xe\utf8data.0000-ffff↵                                                                       
+            0140|Alias  :ud4 e g:\src\ulib\combinedata\unicodeDatabase1.unicode.All.testwcw.e.o↵                                   
+            0142|Alias  :lp3 i lineput       & row=3↵                                                                              
+            0143|Alias  :lpn i lineput       & row=%1↵                                                                             
+            0144|Alias  :wc3 i uviowrtcellw1 & row=3↵                                                                              
+            0145|Alias  :wc4 i uviowrtcellw1 & row=4↵                                                                              
+            0146|Alias  :chi i ukbdcharin last↵                                                                                    
+            0147*Alias  :jsn b c:\Users\S*\AppData\Local\Packages\*WindowsTerminal*\LocalState\Settings.json↵                      
+
 </SPAN></PRE>
 <PRE>
 <SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">        grep コマンドはWindows用のものもネットを探せばあると思います

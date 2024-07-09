@@ -1,116 +1,11 @@
-V129U 2022/12/11 
+V130 2024/06/30
 
-Reffer following (A) for old linux version.
 open by "tar -zxvf gxe-xxx.tar.gz", then run "./configure && make".
 After successfull compilation, run "make install" to copy bin to‚Å /usr/local/bin.
 
 --------------------------------------------------------------------
-
-(M) V129U (--enable-libgnome2=no is now not required)
-
-(M1) on Debian11
-
-configure: error: no acceptable C compiler found in $PATH
-
-==>	apt-get install gcc
-
-configure: error: "FATAL:term.h not found. Install ncurses-devel."
-==>	apt-file search /term.h
-   	if apt-file not found
-		apt-get install apt-file
-		apt-file update
-   	fi
-	apt-get install libncurses-dev
-
-configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
-==>	apt-file search cups/cups.h
-	apt-get install libcups2-dev
-
-configure: error: "FATAL:libglib2 is required if libgnome2 is not installed"
-==>	apt-file search libglib2
-	apt-get install libglib2.0-dev
-
-configure: error: install GTK2(>=2.10.0) or GTK3(>=3.4.0) if NOT enable-gxe=no.
-==>	apt-file search /gtk/gtk.h
-	apt-get install libgtk-3-dev
-
-(M2) on CentOS Stream 9
-
-configure: error: no acceptable C compiler found in $PATH
-==>	yum install gcc
-
-configure: error: "FATAL:term.h not found. Install ncurses-devel."
-==>	yum provides */term.h|grep ncurses
-	yum install ncurses-devel
-
-configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
-==>	yum provides */cups/cups.h
-	yum install cups-devel
-
-checking for glib-2.0... no
-configure: error: "FATAL:libglib2 is required if libgnome2 is not installed"
-==>	yum provides */gtk.h
-	yum install gtk3-devel
-
-(L) V129T
-
-(L2)= TroubleShooting for ./configure (case of CentOS stream 9. 2022/12/10).
-
-    configure: error: no acceptable C compiler found in $PATH
-    ==>yum install gcc
-
-    configure: error: "FATAL:term.h not found. Install ncurses-devel."
-    ==>yum provides */term.h|grep curses
-       yum search ncurses-devel
-       yum install ncurses-devel.x86_64
-
-    configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
-    ===yum provides */cups/cups.h|grep devel
-       yum search cups-devel
-       yum install cups-devel.x86_64
-
-    error: install GTK2(>=2.10.0) or GTK3(>=3.4.0) if NOT enable-gxe=no.
-    ==>yum provides  gtk3
-       yum search    gtk3-devel
-       yum install   gtk3-devel.x86_64
-
-    configure: error: !!! libgnome-2.0 installation required, OR specify --enable-libgnome2=no with glib-2.0 gio-2.0 installed.configure: error: !!! libgnome-2.0 installation required, OR specify --enable-libgnome2=no with glib-2.0 gio-2.0 installed.
-    ==>./configure --enable-libgnome2=no
-
-	Now, you can do make.
-
-(L1)= TroubleShooting for ./configure (case of debian11. 2022/12/04).
-
-        configure: error: in `/home2/Projects/gxeinsttestdebian/gxe-1.29':
-        configure: error: no acceptable C compiler found in $PATH
-
-            ===>apt-get install gcc
-
-        configure: error: "FATAL:term.h not found. Install ncurses-devel."
-
-            ===>apt-file search tearm.h | grep curses
-            ===>apt-get install libncurses-dev
-
-        configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
-
-            ===>apt-file search cups/cups.h
-            ===>apt-get install libcups2-dev
-
-        configure: error: install GTK2(>=2.10.0) or GTK3(>=3.4.0) if NOT enable-gxe=no.
-
-        	===>apt-file search /gtk.h
-        	===>apt-get install libgtk-3-dev
-
-        configure: error: !!! libgnome-2.0 installation required, OR specify --enable-libgnome2=no with glib-2.0 gio-2.0 installed.
-
-			===>./configure enable-libgnome2=no
-
-        make: command not found
-
-        	===>apt-get install make
-
-//**********************************************************************
-(A) Automake package installation step
+Automake package installation step
+--------------------------------------------------------------------
 
     You may update configure before ./configure
         packagehelpdir   :html help install dir     (current=/usr/local/share/gnome/help/gxe)
@@ -142,10 +37,155 @@ configure: error: "FATAL:libglib2 is required if libgnome2 is not installed"
        gxe at s390
        		--> WARNING **:Couldn't connect to accessibility bus: Failed to connect to socket /tmp/dbus-xxx
        		==>export NO_AT_BRIDGE=1
-(B) trouble shooting.
-        tested--RH9, FC5, Kubuntu6, Ubuntu7, openSUSE10, Vine4, TurbolinuxFUJItrial
-                Debian4.0r2(2008/01/25)
-                ubuntu8, FC12
+------------------------------------------------------------------
+trouble shooting.
+------------------------------------------------------------------
+
+  (P) ManjaroXfce 24.0.1                 2024/06/09( gxe v1.30X )
+      ./configure
+          "no acceptable C compiler"
+              after sudo pacman -Fy
+              pacman -F gcc
+              sudo pacman -S gcc
+      ./configure
+          "pkg-config was not found"
+              pacman -F pkg-config
+              sudo pacman -S pkgconf     (!! not pkg-config but pkgconf)
+      ./configure
+           "ncursesw/ncurses.h not found"
+      ./configure --enable-ncursesw=no
+           "Something went wrong ... configure MAKE="qmake" ..."
+              sudo pacman -S make
+      ./configure --enable-ncursesw=no
+           (done)
+      make
+          (done)
+      sudo make install
+          (ls /usr/local/bin -l)
+      adjust xfce4-terminal setting; shortcut tab: remove F1, F10, F11, Shft+PgUp, Shift+PGDn, ...
+                                     detaile tab: disable emanu-shortcut(F10).
+
+  (N) Kubuntu24.04                       2024/06/01( gxe v1.29X )
+          "term.h is not found"
+              (
+                sudo apt install apt-file
+                sudo apt-file update
+              )
+              apt-file find term.h | grep ncurses
+              ==> sudo apt install libncurses-dev
+          "cups/cups.h is not found"
+              apt-file find cups.h
+              ==> sudo apt install libcups2-dev
+          "libglib2 is required if libgnome2 is not installed"
+              apt-file find gio/gio.h
+              ==> sudo apt install libglib2.0-dev
+          "install GTK2 or GTK3"
+              apt-file find gtk.h | grep libgtk
+              ( select GTK3, GTK2 development was stopped at 2011 )
+              ==> sudo apt install libglib-3-dev
+
+  (M) V129U (--enable-libgnome2=no is now not required)
+
+  (M1) on Debian11
+
+  configure: error: no acceptable C compiler found in $PATH
+
+  ==> apt-get install gcc
+
+  configure: error: "FATAL:term.h not found. Install ncurses-devel."
+  ==> apt-file search /term.h
+      if apt-file not found
+          apt-get install apt-file
+          apt-file update
+      fi
+      apt-get install libncurses-dev
+
+  configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
+  ==> apt-file search cups/cups.h
+      apt-get install libcups2-dev
+
+  configure: error: "FATAL:libglib2 is required if libgnome2 is not installed"
+  ==> apt-file search libglib2
+      apt-get install libglib2.0-dev
+
+  configure: error: install GTK2(>=2.10.0) or GTK3(>=3.4.0) if NOT enable-gxe=no.
+  ==> apt-file search /gtk/gtk.h
+      apt-get install libgtk-3-dev
+
+  (M2) on CentOS Stream 9
+
+  configure: error: no acceptable C compiler found in $PATH
+  ==> yum install gcc
+
+  configure: error: "FATAL:term.h not found. Install ncurses-devel."
+  ==> yum provides */term.h|grep ncurses
+      yum install ncurses-devel
+
+  configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
+  ==> yum provides */cups/cups.h
+      yum install cups-devel
+
+  checking for glib-2.0... no
+  configure: error: "FATAL:libglib2 is required if libgnome2 is not installed"
+  ==> yum provides */gtk.h
+      yum install gtk3-devel
+
+  (L) V129T
+
+  (L2)= TroubleShooting for ./configure (case of CentOS stream 9. 2022/12/10).
+
+      configure: error: no acceptable C compiler found in $PATH
+      ==>yum install gcc
+
+      configure: error: "FATAL:term.h not found. Install ncurses-devel."
+      ==>yum provides */term.h|grep curses
+         yum search ncurses-devel
+         yum install ncurses-devel.x86_64
+
+      configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
+      ===yum provides */cups/cups.h|grep devel
+         yum search cups-devel
+         yum install cups-devel.x86_64
+
+      error: install GTK2(>=2.10.0) or GTK3(>=3.4.0) if NOT enable-gxe=no.
+      ==>yum provides  gtk3
+         yum search    gtk3-devel
+         yum install   gtk3-devel.x86_64
+
+      configure: error: !!! libgnome-2.0 installation required, OR specify --enable-libgnome2=no with glib-2.0 gio-2.0 installed.configure: error: !!! libgnome-2.0 installation required, OR specify --enable-libgnome2=no with glib-2.0 gio-2.0 installed.
+      ==>./configure --enable-libgnome2=no
+
+      Now, you can do make.
+
+  (L1)= TroubleShooting for ./configure (case of debian11. 2022/12/04).
+
+          configure: error: in `/home2/Projects/gxeinsttestdebian/gxe-1.29':
+          configure: error: no acceptable C compiler found in $PATH
+
+              ===>apt-get install gcc
+
+          configure: error: "FATAL:term.h not found. Install ncurses-devel."
+
+              ===>apt-file search tearm.h | grep curses
+              ===>apt-get install libncurses-dev
+
+          configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
+
+              ===>apt-file search cups/cups.h
+              ===>apt-get install libcups2-dev
+
+          configure: error: install GTK2(>=2.10.0) or GTK3(>=3.4.0) if NOT enable-gxe=no.
+
+              ===>apt-file search /gtk.h
+              ===>apt-get install libgtk-3-dev
+
+          configure: error: !!! libgnome-2.0 installation required, OR specify --enable-libgnome2=no with glib-2.0 gio-2.0 installed.
+
+              ===>./configure enable-libgnome2=no
+
+          make: command not found
+
+              ===>apt-get install make
 
   (B1) "./configure" error
 
@@ -564,7 +604,7 @@ configure: error: "FATAL:libglib2 is required if libgnome2 is not installed"
          ncursesw/ncurses.h not found ==> ./configure --enable-ncursesw=no
          pkg-config not found         ==> pacman -S pkg-config
          lingnome-2 required          ==> ./configure --enable-libgnome2=no
-         correct make to qmake        ==> packman -S make
+         correct make to qmake        ==> pacman -S make
 
          console version Backspec dose not work ==>  specify --7 option "xe --7B"
                   OR on Preference dialog, assign Ctrl-H to backspace, ASCII DEL to Delete key.
@@ -577,3 +617,4 @@ configure: error: "FATAL:libglib2 is required if libgnome2 is not installed"
 				==>./configure --enable-libgnome2=no ==>completed succssfully.
 				(glib2.0(including gio.h) is installed by dependency of gtk3-devel)
 		Check it that gio.h is refered by "pkg-config --cflags glib-2.0"
+        (apt-file find xxx<==> dnf provides */xxx)

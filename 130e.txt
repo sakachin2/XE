@@ -1,0 +1,60 @@
+//*CID://+@@@1R~:                             update#=  237;
+** UTF8 encoding **
+
+//***************************************************************************
+130 :2024/06/30                                                    //~@@@1R~
+
+     1.BUGs
+       -(Linux) ./configure may fail by "/gth.h Not found".        //~@@@1R~
+       -(Linux:gxe) When using Gtk3, the widget size is not fixed and changes at each start.//~@@@1R~
+       -(Linux:gxe) Pressing the print icon may result in a blank page being printed or a crash//+@@@1I~
+
+     2.Additional function.
+       -Improved display of UTF-8 files                            //~@@@1I~
+         .For ZWJ(u-200d), ZWNJ(u-200c), or other chars in category Cf(Format).//~@@@1I~
+       -Added 2 options to specify the display width of Unicode chars whose display width is ambiguous.//~@@@1I~
+         ./G{Y|N}{y|0|1|2}                                         //~@@@1R~
+            :Specy cell width of unicode defined width is ambiguous.//~@@@1I~
+            Y:Fit to font width.                                   //~@@@1I~
+              You can also specify the second option for chars in unfamiliar languages.//~@@@1I~
+              However, this option takes a cost, the start-up will be slightly slower.//~@@@1I~
+            N: Specify the display width uniformly using the second option.//~@@@1I~
+            The default value is /GY2.                             //~@@@1I~
+            Ex.) /GN2: All ambiguous chars are displayed in two cells.//~@@@1I~
+                 /GYy: All ambiguous chars are adjusted according to the font.//~@@@1I~
+                 /GY0: Unfamiliar languages are displayed as ':;' instead.//~@@@1I~
+         ./F{fontname[:charset] | @font_param_filename}            //~@@@1R~
+            The font name required for /G option is---             //~@@@1I~
+            when running on Windows Terminal, setting.json is checked,//~@@@1I~
+            when running on Linux, on gnome-terminal, konsole, etc.,//~@@@1R~
+            the profile of the Home dir is checked by xeGetFont.sh.//~@@@1I~
+            But if it fails, specify this option.                  //~@@@1I~
+            Use font_param_filename when specifying indirectly from a file, use font_param_filename.//~@@@1I~
+            See Microsoft's documentation for the appropriate charset for the font.//~@@@1I~
+            Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.             //~@@@1I~
+                 /F"\uff2d\uff33 \u660e\u671d".                    //~@@@1I~
+       -XBC command supports ucs4<-->utf16 conversion.             //~@@@1I~
+            Ex.) xbc 1f468/s    ==> x1f468/s:=d83ddc68             //~@@@1R~
+            Ex.) xbc d83ddc68/s ==> xd83ddc68/s:=0001f468          //~@@@1R~
+       -"-cont" option added to Find command.                      //~@@@1I~
+          When selecting lines in a large file by the Find command in the Exe cmd file,//~@@@1I~
+          from a performance consideration,                        //~@@@1I~
+          when NotFound occurred, the next Find will start not from the first line,//~@@@1R~
+          but from the last Found line.                            //~@@@1I~
+          It will be better on condition that files were sorted.   //~@@@1I~
+       -Screen hard copy output.                                   //~@@@1I~
+          Alt+z writes a screen hard copy to ::hcopy in append mode//~@@@1I~
+          Ctrl+h is also available for except Linux Console version.//~@@@1I~
+
+     3.Miscellaneous.
+       -(LNX) Gtk2 support has been discontinued, only Gtk3 is supported.//~@@@1I~
+       -(LNX) Install scripts to check font settings for the console version//~@@@1I~
+              into /usr/local/bin. Also install xprint.sh.         //~@@@1I~
+
+     4.Tools
+       -xbc  v1.7                                                  //~@@@1I~
+          Added ucs4 <--> utf16 conversion.                        //~@@@1I~
+       -xcv  v1.23                                                 //~@@@1R~
+          Limits option /Yh (input in hexadecimal notation) to standard input including pipe.//~@@@1I~
+       -xprint.c 3.39                                              //~@@@1I~
+          (LNX)The right edge of lines may exceed the right margin and text may be cut off.//~@@@1I~

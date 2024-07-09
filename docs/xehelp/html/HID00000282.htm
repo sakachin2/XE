@@ -20,6 +20,7 @@ a:hover{font-weight:bold;}-->
                      [U[B|L|8|4]]
                      [col-range] [&amp; [!] string2 [col-range2] [-d[&lt;|&gt;]n]
                      [all | next | + | prev | - | first | last]
+                     [-cont]
                      [.lab1 .lab2] [l-column | LM | RM [r-column]]
                      [-a[-]n] [-b[-]n] [-c[{L|R}m][{T|B}n]] [-j|-je]
                      [-Llcmd] -m[n] [-nx] [.lab1 .lab2]
@@ -32,7 +33,7 @@ a:hover{font-weight:bold;}-->
             FIN     :Case sensitive search
             IFI     :Case Insensitive search
             EXC     :Find string and then exclude the line.
-            IX      :IFind string and then exclude the line.
+            IX      :IFInd string and then exclude the line.
             FNX     :FINd excluding excluded line.
             INX     :IFInd excluding excluded line.
 
@@ -200,6 +201,13 @@ a:hover{font-weight:bold;}-->
             -       :same as prev
             first   :search forward from start of file.
             last    :search backward from end of file.
+            -cont   :search starts from the succeeded found position just before.
+                     When selecting lines in a large file by the Find command in the <a href="HID00000280.htm"><B>EXE</B></a> cmd file,
+                     from a performance consideration,
+                     when NotFound occurred, the next Find will start not from the first line,
+                     but from the last Found line.                       
+                     It will be better on condition that files were sorted.
+                     Available only in Exe cmd file.
             .lab1/2 :Limit search line range using a pair of label
                      on lineno column. line number may be used so as to
                      limit line range with no label on lineno column.
@@ -254,7 +262,7 @@ a:hover{font-weight:bold;}-->
                      ex) f StartLineID -Lcc;f EndLineID -Lcc;rep partialcopyfile
                      create partialcopyfile from the line contains &quot;StartLineID&quot;
                      to the line contains &quot;EndLineID&quot;.
-                     this is for cmd in the <a href="HID00000280.htm">EXE cmd</a> file.
+                     this is for cmd in the <a href="HID00000280.htm"><B>EXE</B></a> cmd file.
             -m[n]   :not reset previous found word reverse display.
                      it is effective for next r-find(PF5)
                      n:do that from next r-find(PF5).

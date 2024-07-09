@@ -37,18 +37,32 @@ a:hover{font-weight:bold;}-->
                   ファイル名が &quot;0&quot;,&quot;1&quot;,&quot;2&quot;や&quot;6&quot;などメニューオプションと
                   同じ場合に使用するとよい.
                   ファイル名が &quot;=&quot; で始まる時もどちらか指定する。
-    /fx[t][:hosts]:x=0:FTP 不使用, x=1:FTP 使用(log無し)
+    -fx[t][:hosts]:x=0:FTP 不使用, x=1:FTP 使用(log無し)
                    x=w:ftplog 出力, x=a:追加モード ftplog
                   :t:一時ファイルを削除しないDebug用オプション
                   :hosts: xe 用のホストファイル名。
             省略値は /f1:xehosts(xehostsはワークディレクトリー)
 
+    -F{fontname[:charset] | @font_param_filename}
+                  :/G オプションで使用されるフォントの名前
+                   xeはWindowsの場合WindowsTerminal 上で実行するときsetting.jsonを
+                   Linuxの場合xeGetFont.shでgnome-terminal, konsole などでは
+                   Home dir のProfileを調べるが失敗する場合はこのオプションを指定する。
+                   ファイルで間接的に指定するときは font_param_filename を使用。
+                   フォントに合った charset は Microsoft の ドキュメント参照。
+                   例) /F"ＭＳ 明朝":128 、/F@.\fontParm.txt。
+                       /F"\uff2d\uff33 \u660e\u671d"。
+    -G{Y|N}{y|0|1|2}
+                 :表示幅が曖昧とされるユニコード文字の表示幅を指定する
+                    Y:フォントの表示幅に合わせる
+                      この時、<A href="HID00000198.ambiglangJ.htm">馴染みのない言語</A>の文字については2番目のオプションを指定できる
+                      但し、Yを指定すると立ち上がりが多少遅くなる。
+                    N:表示幅を一律２番目のオプションで指定する
+                   省略値は /GY2。
+                   例）/GN2: 全ての曖昧文字は２桁表示
+                       /GYy: 全ての曖昧文字をフォントに従い調整する
+                       /GY0: 馴染みの少ない言語は':;' で代替表示
     -h,-?        :ヘルプ
-#if defined(W32)
-    /hnn         :画面高(行数)
-                 TeraTermの設定で画面サイズ!=画面バッファサイズと設定した
-                 時、スクロルサイズを画面サイズにする時に使用する。
-#endif
     -i[fname]    :使用する <a href="HID00000197.htm">iniファイル</a>名.
                   使用しない時は単に -I とする,このとき内部定義の
                   省略値が使用されます.
@@ -123,12 +137,29 @@ a:hover{font-weight:bold;}-->
                   :t:一時ファイルを削除しないDebug用オプション
                   :hosts: xe 用のホストファイル名。
             省略値は /F1:xehosts(xehostsはワークディレクトリー)
+    /F{fontname[:charset] | @font_param_filename}
+                  :/G オプションで使用されるフォントの名前
+                   xeはWindowsの場合WindowsTerminal 上で実行するときsetting.jsonを
+                   Linuxの場合xeGetFont.shでgnome-terminal, konsole などでは
+                   Home dir のProfileを調べるが失敗する場合はこのオプションを指定する。
+                   ファイルで間接的に指定するときは font_param_filename を使用。
+                   フォントに合った charset は Microsoft の ドキュメント参照。
+                   例) /F"ＭＳ 明朝":128 、/F@.\fontParm.txt。
+                       /F"\uff2d\uff33 \u660e\u671d"。
+    /G{Y|N}{y|0|1|2}
+                 :表示幅が曖昧とされるユニコード文字の表示幅を指定する
+                    Y:フォントの表示幅に合わせる
+                      この時馴染みのない言語の文字については2番目のオプションを指定できる
+                      但し、Yを指定すると立ち上がりが多少遅くなる。
+                    N:表示幅を一律２番目のオプションで指定する
+                   省略値は /GY2。
+                   例）/GN2: 全ての曖昧文字は２桁表示
+                       /GYy: 全ての曖昧文字をフォントに従い調整する
+                       /GY0: 馴染みの少ない言語は':;' で代替表示
     /H,/?        :ヘルプ
-#if defined(W32)
     /Hnn         :<a href="HID00000456.htm">画面高(行数)</a>                  Windows2000ではDOS窓のプロンプトの現在の画面の高さで
                   内部画面行数が決まる。BufferSizeまでは広げられるので
                   そうしたいときに使用する。
-#endif
 
     /I[fname]    :使用する iniファイル名.
                   使用しない時は単に /I とする,このとき内部定義の

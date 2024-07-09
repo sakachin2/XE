@@ -1,0 +1,466 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>今回の変更点</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}
+.auto-style1 {
+	font-family: "ＭＳ ゴシック";
+	font-size: 12pt;
+}
+-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+######################################################################
+  .v129B<--129 :(2017/07/27)
+  .v129C<--129B:(2017/09/04)
+  .v129D&lt;--129C:(2017/11/30)
+  .v129E&lt;--129D:(2018/01/09)
+  .v129F&lt;--129E:(2018/01/23)
+  .v129G&lt;--129F:(2018/01/30)
+  .v129H&lt;--129G:(2018/02/22)
+  .v129J&lt;--129H:(2018/05/10)
+  .v129K&lt;--129J:(2018/08/27)
+  .v129L&lt;--129J:(2019/09/18)
+  .v129M&lt;--129L:(2020/05/17)
+  .v129N&lt;--129M:(2020/09/23)
+  .v129P&lt;--129N:(2020/10/28)
+  .v129Q&lt;--12PN:(2020/12/16)
+  .v129S&lt;--12PQ:(2020/12/24)</SPAN><span class="auto-style1"> </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+  .v129T&lt;--129S:(2022/12/04)
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">  .v129U&lt;--129T:(2022/12/15)</SPAN>
+  .v129V&lt;--129U:(2023/06/10)
+  <SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">.v129W&lt;--129V:(2023/07/31)
+  .v129X&lt;--129W:(2024/02/20)
+</SPAN>   1.BUGs
+       -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする
+       -(64Bit) =3.14 がクラッシュする
+       -(Win64) データタイプ X(Hex),O(octal) の計算結果の誤り
+       -(Win64) 分割画面間のドラッグドロップ(ファイルのコピー)がクラッシュ
+    (129D)
+       -(Linux)GTK3環境の時セットアックダイアログでのメニューアクセラレーター(Ctrl+)オプションの
+        オン/オフが効かない
+       -(Wxe)ファイル-New(新規ファイル)でクラッシュ
+    (129E)
+       -Window コンソール版：ヘッダー行のエラーメッセージが文字化けすることがある
+    (129F)
+       -Edit/Browse コマンド
+        .レコードモードでレコードサイズ&gt;4096かつ最初のレコードに制御文字(&lt;0x20)があると
+         最後のレコードのみが表示される。またファイルサイズが128K超だとクラッシュする
+        .レコードモードの時プロファイルに記録したのCPLCが無視される（毎回CPLCの指定が必要になる)
+    (129G)
+       -(Linux)Ubuntu17.10 で ディレクトリーリスト行コマンド:&quot;!&quot;(拡張子対応アプリの起動)が
+        &quot;MIME タイプアプリ未定義&quot;で失敗する
+       -(Wxe/gxe)マウス でのカット＆ペーストでごみが入ることがある</SPAN></PRE>
+<PRE><span class="auto-style1">    (129H)</span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> </SPAN></SPAN></PRE>
+<PRE><span class="auto-style1">     </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">  -(gxe:GTK3)Previewダイアログでプリンター選択が1つ分だけずれる
+       -(gxe:GTK3)終了時画面サイズ正しく保存されずに再スタートで大きくなる
+
+    (129K)
+       -UTF8 ファイルの処理の各種問題
+        .文字の表示幅(1セルか2セルか)の見直し
+        .UCS4,SpacingCombiningMarks,NonSpacingMark表示の問題
+        .結合文字は最大8文字まで許容(Tibtan)
+         但しLinux Console版は最大4文字で変わらず
+        .Windowsで &gt;=U01000、Linuxで &gt;=U020000 のときの問題
+         -ヘッダー行に表示するユニコード表示が正しくない
+         -ヘキサ表示行でユニコードを修正できない
+        .(LNX)ユニコードが U01000&lt;= 〜 &lt;U020000 の問題
+         -ファイル読み込み時、SBCS(表示幅が１桁)の文字のUTF8コード解釈を誤り、ファイル出力で別の文字にしてしまう
+         -ヘキサ表示行での &quot;v&quot; 行コマンド(連続３桁ヘキサコードをユニコードとして読み直す)が誤る
+        .3.12画面でファイル名がUTF8コードのとき画面表示が乱れる
+        .(WinConsole)新規のツール xcfont で コマンドプロンプトのフォントを変更することにより
+         デバガナリーなどのユニコードをWinコンソール版で表示可能にした
+       -gb18030 で 1桁表示文字の桁ずれ
+       -Esc を 連続２回押すとラベルを残して行コマンドはクリアーされるが
+        ラベル指定のコマンドはラベルが見つからないエラーになる
+       -画面分割してるとき編集の行コマンドが無視されることがある
+    (129L)
+       -Alt+&quot;/&quot;(xml,html の &lt;tag &gt; のペアリング探索 のバグ
+    (129M)
+       -カーソル上のワード探索（Alt/Ctrl+"["/"]"）でカーソルが例えば "ABC+DEFG" の
+        "C"にあるときは "ABC" を "+" にあるときは "ABC+DEFG" を探すが
+        同じキー操作を連続しても間にPgDn/PgUp/PgLeft(F10)/PgRight(F11)がはいると
+        "ABC" の探索になってしまう
+       -exe コマンド(指定のコマンドファイルの各行のコマンドを順次実行する）が
+        クラッシュすることがある。
+        例えば "exe ! cmdfile" を Dirリスト画面で実行するとクラッシュする
+        "exe ! cmdfile &amp;lt;s *.html" が正しい
+       -Dirリスト画面上で SORt コマンドで 降順オプション(/Ot-,/Os-) は 効くが
+        昇順(/Ot,/Os)が効かない。
+
+    (129N)
+       -3バイト(EUC 8fxxyy),4バイト(GB18030) DBCSでコマンド行のカーソル位置付けを誤る//+@@@1R~
+       -結合文字（文字幅=0)が表示されないことがある //+@@@1R~
+       -"OPT unicomb comb" コマンドと "UTF file" コマンドのフラグ操作がバッティングしていた//+@@@1I~
+       -(Linux) directory list の "a"(Attrib) 行コマンド で クラッシュすることがある//+@@@1I~
+
+    (129P)
+       -(Linux) GTK3 バージョンの時 gxe の画面サイズがアプリリスタートで元に戻る
+
+    (129Q)
+       -(gxe) IME入力処理が常に同じ文字を出力していた
+    (129S)
+       -(Linux:gxe) Gnome デスクトップのとき "&gt;"(コンソール窓を開く)コマンドが働かない(gnome-terminal のパラメータが廃止されていた)
+       -(Linux:gxe) Xfce デスクトップのとき以下のWarningがでることがある
+                    Gtk-Warning Calling org.xfce.Session.Manager IsInhibited failed...
+       -(Linux:xe) マウスドラッグでクラッシュする。
+
+   (129T)
+       -=0.1 画面で sc 行の変更ができない
+         また S+C/S+A を設定してもできない S+ なしと同一視される
+         そのことで wxe でマウスによるカット&amp;ペーストが効かなくなる
+       -=0.2 画面で 行を削除するとキー割り当てができなくなる
+
+   (129X)
+       -\u オプションの "cv" コマンドが ユニコード>U-FFFF の変換を誤る
+       -U+00A0 が結合文字の基底文字から外れていた
+       -(gxe)クラッシュすることがある
+        .結合文字を表示するとき
+        .マウスの中ボタンを押したとき
+        .Preview メニューボタンを押したとき
+       -(gxe)箱型カーソルのときテキストが見えなくなる
+       -grep コマンド (デレクトリーリストの "g" 行コマンドも同じ)
+        .文字列の二重引用符(")が閉じてないときハングする
+        .文字列が間にスペースを含むとき失敗する
+
+     2.機能追加
+
+       -長いパス名に短縮名を定義
+        .SP { edit | refresh | add sp-name { file-spec | *\\ | ^*\\ } }
+            edit   : 定義ファイル(::xe.shortpath) を編集表示
+                     修正して保存すれば、次回から有効になる
+                     あるいは保存後 "refresh" すれば有効になります
+                     定義ファイルの各行は"短縮名 フルパス名" の形式
+                     コメント行は先頭に "#"
+                     例) srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test
+                         ecws  "c:\Program Files\Android\Android Studio\gradle"
+            refresh: 定義ファイルを修正した場合に、その修正を反映させる
+                     "sp edit" 画面で修正、保存後 あるいは直接 ::xe.shortpath ファイルを
+                     他のプロセスで修正した後に使用する
+            add    : 定義ファイルに sp-name:短縮名, file-spec:ターゲットファイル名 の行を追加
+                     この定義はすぐ使用できる
+                     *\ :現在開いているファイル/ディレクトリー,
+                     ^*\:分割画面の他方で現在開いているファイル/ディレクトリー
+                     も状況が適当ならば使用できる
+                     例) sp add srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test
+                         sp add ecws  "c:\Program Files\Android\Android Studio\gradle"
+        .短縮名は "sp:"プレフィックスで使用する
+         (sp:xxx の xxx が未定義の場合はそのまま "sp:xxx" として使用される)
+           例) e sp:srctest1\Main.java
+               e sp:ecws
+               e "sp:ecws\space embedded name"
+               xcopy sp:ecdir\x1 sp.ecdir\x2
+               cd sp:ecdir
+     (129C)
+       -Find コマンド
+          ディレクトリーリスト上で ATTR(属性)欄のみを探すオプションを追加
+          大文字小文字の区別はしません
+          属性欄には表示されていないが ディレクトリーには "d"、シンボリックリンクには "L" を指定する
+          また "d" と "L" はそれぞれ単独で指定してください
+          それ以外の属性は Windowsでは 指定の一つ一つの属性すべてを含む行が一致行とし
+          Linuxでは属性指定の文字列を含む行が一致行とする
+          Linuxで特殊な属性欄の値は
+            u:setuid, g:setgid, S:setuid+setgid, t:stickey
+            c:char device, b:block device, p:pipe, s:socket
+        例) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr
+            (Linux)   f 775 attr ; f u attr
+     (129D)
+       -SelectAll
+          .コマンド
+             SEL [all] [col1 col2] [.label1 .label2]
+               label1/2 で行範囲指定、col1/2 でカラム範囲指定
+               labelは1/2とも数字による行番号指定でもよい
+               col の指定があるとブロックモード、ないと領域モード
+               label/column の指定がないと全選択 
+               例）sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;
+
+          .Edit画面で 行選択し、Cut/Copy/Pasteにつなげていきます
+             領域モードではすぐPaste の対象にもなります
+          .省略型:&quot;S&quot;は使用できません、
+            ファイル表示/編集画面で&quot;S&quot; は &quot;SAVe&quot; になります
+       (Wxe,gxe)
+          .Editサブメニュー、ポップアップメニューにも &quot;SelectAll&quot; メニュー項目追加
+          .ショートカットはCtrl+Aに設定 SaveAs(別名保存)はCtrl+Shift+Aに変更 
+     (129E)
+       -XMLタグ ペア探索
+          .デフォルトで Alt+&quot;/&quot; を割り当て
+          .カーソルを &quot;&lt;&quot; または &quot;&gt;&quot; の位置において &quot;Alt+/&quot; を使用
+          .コメント内(&quot;&lt;!--&quot; から &quot;--&gt;&quot;)は無視、ネストも処理、
+　　　　　 html 自動生成ツールの不具合を修正するのに便利です
+     (129H)
+       -xehosts で P=nn(ポートNoオプション)サポート
+          .psftp で 宛先ごとにデフォルト SSH ポート(22)以外を指定したいとき使用する
+       -コマンド履歴リストサポート
+          .Shift+Ctrl+F12 でコマンド履歴を表示,任意の行上で &quot;x&quot; で実行
+          .この画面のライン上で使用できるコマンドキーは
+            s : 履歴画面は終了してそのあとの画面のコマンド入力行にセット
+            S : 履歴画面は終了せず履歴画面のコマンド入力行にセット
+            t : 画面分割の他方の画面のコマンド入力行にセット
+                分割していないときは &quot;S&quot; と同じ
+            x : 履歴画面は終了してそのあとの画面上でコマンドを実行
+            X : 履歴画面は終了せず履歴画面上でコマンドを実行
+            y : 画面分割の他方の画面でコマンドを実行
+                分割していないときは &quot;X&quot; と同じ
+          .xe終了時に保存されるエントリー数は最大40
+     (129J)
+       -コマンド履歴リスト。
+        wxe/gxe でマウス操作のサポート
+          .右ボタンでコンテキストメニュー表示
+          .ダブルクリックで &quot;x&quot; コマンド処理(履歴画面は終了してそのあとの画面上でコマンドを実行)
+          .選択した行のクリックで &quot;s&quot; コマンド処理( 履歴画面は終了してそのあとの画面のコマンド入力行にセット)
+     (129K)
+       -TC fmt -D&quot;分離文字&quot; -S&quot;出力用分離文字&quot; オプションで \x や \t などのエスケープ文字指定を受け付ける
+        (\t(=0x09) は　-S では使用できません). -SではDBCSを使用できるようにしました
+     (129L)
+       -CPU8(UTF8ファイル)では TC fmt -D&quot;分離文字&quot; -S&quot;出力用分離文字&quot; オプションで
+        ユニコード(\Uxxxx)指定を受け付ける
+          例） tc fmt d\u00c1
+
+     (129P)
+       -COL コマンド（タブ停止位置を設定できるカラムゲージを表示）
+        .COL [on|off] [ALL|type|default]
+        .type 指定をディレクトリーにも可能とする
+        .ディレクトリーリストを開いて "COL on type" と入力するとそのディレクトリーのメンバーの省略値となり
+         "COL off" でその省略値をリセット。work ディレクトリーに次のゲージファイルを用意する必要がある
+           (Win) ::xe!col!.type (Linux) ::xe_col_.type
+        .ディレクトリーリストで "COL on" としたとき個別のメンバーにたいしてはそのメンバーを開いて
+         "COL [on|off] [type|default]"
+            default:ファイルに対してはdirの指定にかかわらず省略値のゲージを表示
+                    ディレクトリーに対しては指定できない
+            on     :新たな type の指定がなければディレクトリーの指定に従う
+            off    :ゲージを表示しない。ファイルの設定はリセットされるので次に on すると
+                    ディレクトリーの設定が復活する
+     (129T)
+       -シンタックスハイライト
+        Andre Simon氏 の Highlight、GNU の source-highlightのANSI:反転属性をサポート。
+        また xesynl.cfg/::xesynl.cfg の C_UNDERLINE=R/G_UNDERLINE=R 指定で
+        アンダーライン属性を反転とすることも可能
+　     -CIDプレフィックスでユニコードをサポート
+        APL 言語では u-235d(⍝) がコメントプレフィックスなのでこれに対応。
+        ::xe.ini ファイルで次のような指定をして適用する拡張子を設定することも可能
+           Change_ID_Type_4 = 60 = u-235d= APL
+        この設定をすると "CID on APL" のように CIDタイプでAPLが指定できる
+        ユニコード使用の場合、言語環境によっては表示幅が異なるのでシェアーしている場合は注意が必要
+        例えばWindowsで2桁表示、Linuxで1桁表示の場合Windowsで更新行に付与されたCIDは        
+        LinuxではCIDと認識されません。従ってLinuxでの"cid clear"コマンドは0行を返すことになります
+</SPAN></PRE>
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">     (129V)</SPAN>
+       -(Axe)
+         .Android13(Api-33)対応
+         .共有ストレージサポート
+            "sp add //"コマンドで共有ストレージ内に専用フォルダーを設定可能で、
+            "e //Axe"のように専用フォルダー内をアクセスする。
+            また、Android11(Api-30)以降はアクセス権限："すべてのファイル"を設定可能で
+            許可設定するとgrep, xfg などのコマンドラインツールでも共有ストレージを利用可能
+         .icu ライブラリの利用環境の変更に対応
+
+     (129W)
+       -(Axe)
+         .Android-11(R):api30 許可オプション:全てのファイル を利用可能とする
+         .CD コマンドサポート
+
+     (129X)
+       -ユニコードの表示幅を指定するコマンドラインオプション -Yv(省略値),-Nv を追加
+        表示幅が曖昧と定義されている文字を -Nv では全て２桁表示、
+        -Yv ではWindows コンソール版 xeでは１桁表示とするが
+        wxe,gxe,xe-linux版では内部的な判定を行う。
+
+    3.その他
+       -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加
+     (129C)
+       -(Windows)ICU EBCDIC変換ライブラリー(libicuuc.dll)が見つからないとき
+        xeebc.mapに ICU_DATA の指定があればそのフォルダー内もチェックする
+        なければ 環境変数 ICU_DATA もチェックする
+        (Linux)/usr/lib など以外にある場合は LD_LIBRARY_PATH 環境変数に ICU の so のパスをしてしてください
+       -xeebc.map に ICU_DLL_SUFFIX, ICU_APP_SUFFIX が ないとき
+        ICU の uconv(.exe) で ICU のバージョンが分かればそれを補う
+       -CPU8(UTF8)ファイルではレコード長は不定なので/Mr(レコードモード)オプションは受け付けない
+     (129D)
+       -Fileサブメニューのメニュー項目も画面の状況によっては不活性化する
+        例えば、ディレクトリー画面での保存メニュー項目など
+     (129E)
+       -(Windows Console version) When ligature:on on windows10,
+        UTF8 file lines of Japanese Kanji shrinks to unreadable.
+        So, reject Ligature:On for from Windows7. </SPAN></PRE>
+<PRE><span class="auto-style1">     </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">(129G)
+       -(Linux)Hercules emulater:S390x インストール作業で configure.ac を改善
+        また 経験をトラブルシューティング(READMEj.txt)に反映</SPAN></PRE>
+<PRE><span class="auto-style1">    </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> (129H)
+       -機能:&quot;次コマンド-画面毎&quot;に機能キーが未割当だった、Shift+Alt+F12 を割り当てる
+     (129J)
+       -ディレクトリーリスト行コマンド &quot;=&quot;(ファイル内容の比較) で CPU8 オプション指定の追加
+     (129K)
+       -3.12 画面(ファイル/ディレクトリーの比較)に &quot;-CPU8&quot; オプションを追加
+        比較の結果をUTF8ファイルとして表示
+       -ディレクトリーリスト画面でもASCII以外は画面左上に文字のヘキサコードを表示
+       -OPT UNICOMB U-xxxx の 代替表示文字はSBCSのみ認める
+       -ファイル編集の保存時、ファイルのタイムスタンプがロード時と変わっているとき
+        警告しているが、解消は PF3 再入力ではなく &quot;SAVe -Force&quot; または &quot;END -Force&quot; コマンドが必要とする
+     (129L)
+       -(Linux)debian10などgnome2が廃止になったことへの対応
+       -(Linux)cupsの PPD api が非推になったことへの対応
+       -(Windows)コンソール版の画面の最下行、昔はIME用の行だった、これを表示用に変更
+     (129M)
+       -Shift+Del キーが 非表示行 (- n line excluded ---)上でも使えるようにした
+     (129N)
+       -Axe(Android版) 対応 //+@@@1R~
+       -Windows console版で grep などの外部コマンド呼び出しが応答なしになることがある。//+@@@1I~
+        それを検知したら警告を出す。 //+@@@1I~
+
+     (129P)
+       -Manjaro Linux 対応 //+@@@1R~
+        .linker の仕様が変わって duplicated symbol のエラーがでる
+        .ftime が廃止された
+        .Manjaro のマウスアクション入力形式に対応
+        .ncursesw フォルダーが提供されない(libncurseswは存在する)
+
+     (129Q)
+       -(wxe) 3rd party IME による システムのロケールに変換できない文字コードの入力に対応
+       -/Nmコマンドラインスイッチの機能変更(A+u を絡ませた)
+          コマンドラインスイッチ/Nmを指定した場合はCPLC(UTF8でない)ファイルに
+          Alt+u ON(コマンド入力行に =u=&gt; を表示)のときはUTF8コードをセット、
+          Alt+u OFF(===&gt;)のとき変換エラー文字は時は"?"を
+          変換できた時はローケールコードをセットする。
+
+     (129T)
+      -Windows Terminal が Windows11 で 省略値のコマンドプロンプト PGM となった様ですが
+       行コマンドで不具合が生じることがあります。
+       旧コマンドプロンプトの c:\Windows\System32\conhost.exe を使用してください
+      -CID コマンドで APPEND のリセットを簡単にするため NOAPPEND オプションを追加
+      -=0.1 画面で "#" で始まるコメント記述をサポート。
+      -=0.2、=0.3 画面の見直し。
+       罫線文字も見直し、ユニコードの省略値を追加
+      -(Win)ワークディレクトリーの省略値の場所を C:\ から C:\users\[username]\に変更
+       既に C:\xe_wd がある場合は継続してこれを使用するが新規導入から適用
+
+     (129U)
+      -(LNX) ./configure で --enable-libgnome2=yes | no を自動で判断する様にした
+      -(WIN:Console) WindowsTerminal 対応。conhost上動きとの違いに対応。
+       行コマンド入力時の表示の乱れ、バイナリーファイルの表示の乱れなど
+ </SPAN></PRE>
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">     (129V) </SPAN></PRE>
+<PRE><span class="auto-style1">    </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">  -opt DELZ(バックアップを取らないDel行コマンドの許可)の省略値を安全側のオフに変更した
+</SPAN></PRE>
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">     (129W) </SPAN></PRE>
+<PRE><span class="auto-style1">    </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">   -短縮名がsp add コマンドで追加されたらrefreshしてすぐ有効にする
+       -Axe
+         .DOSコマンド(全画面シェル)はサポートされない
+         ."!"行コマンドは受け付けない
+
+     (129X)
+       -(Win:コンソール版) WindowsTerminal 上では Insert キーによるカーソル形状の変更が効きません。
+        必要な場合は Conhost（以前のコマンドプロンプトの実行プログラム) 上で起動してください。
+
+</SPAN></PRE>
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+    4.ツール。
+     (129C)
+       -xprint v9.38
+        ./Tabon: パラメータサポート追加
+           DBCSスペース、TAB(0x09)とそれに続く桁空けに表示する代替文字を指定する
+           /Tabon:x:y:z ;テキストモードのときのDBCSスペース,タブ文字,タブスキップの
+                        ;代替印刷文字。x,y,zは 文字、ヘキサ文字またはユニコード。
+                        ;例) /Tabon:x2020:x18:x1a  /Tabon::u2191:u2192 /Tabon::u25cb
+                        ;    /Tabon:u2750
+                        ;省略値は UTF8/EBCDICファイル /Tabon:u3000:x20:x20
+                        ;                        以外 /Tabon:x8140:x20:x20
+        .EBCDIC ファイルを ICU で変換して印刷するときで /BCfilename の指定がない場合
+         ICU の 共有ライブラリー(DLL または so)が PATH または LD_LIBRARY_PATH にあれば
+         探して ICU バージョンは uconv(.exe) を発行して それを補う
+           例) xprint x1ebc22 -cpeb=cp930 -me -icu
+       -xcv 1.20
+        .EBCDIC ファイルを ICU で変換するときで /BCfilename の指定がない場合
+         ICU の 共有ライブラリー(DLL または so)が PATH または LD_LIBRARY_PATH にあれば
+         探して ICU バージョンは uconv(.exe) を発行して それを補う
+           例) xcv x1ebc22 x1ebc22m -b2m -cpeb=cp930 -icu
+    (129J)
+       -xdc v2.29,xfc v1.27
+         CPU8 オプション指定の追加
+    (129K)
+       -(Win)xkp v1.4
+          Windows7 から exe 名前がフルパスでなくなっていた
+       -xfg v1.20
+         (Bug)探索文字が &quot;-&quot; で始まるときハングすることがある
+       -(Win)xcfont v1.01 (Windows Vista からサポート)
+         Windows コマンドプロンプトのフォントを変更する
+         フォントによっては chcp でコードページの変更も必要
+         例えば、デバナガリ文字の場合
+         &quot;chcp 57002&quot;とした後 &quot;xcfont Mangal&quot; とする
+         Mangal は ASCII の表示は変わりなく、xe で utf8 ファイルの
+         Devaganari(U+0900-097f) 文字を表示できる   
+         尚、wxeやLinuxではDevanagariの表示で特別なことはする必要がありません
+--------------------------------------------------------------------------
+xcfont:V1.01(6): Change Current Console Font. (Supported From Vista.)
+xcfont [/options] [ &lt;name&gt; ] [ No=&lt;seqno&gt; ] [ CharSet={&lt;charset&gt;|?} ]
+[ H=&lt;height&gt; ] [ W=&lt;width&gt; ] [ Weight=&lt;weight&gt; ]
+*******************************************************************************
+&lt;name &gt; :Partial string of FontName(StartsWith).
+&quot;*&quot; means current font.
+Prefix:&quot;*&quot; means Contains.
+&lt;seqno&gt; :Select font by SeqNo from listed fonts,
+to allow name is not full specification.
+&lt;charset&gt;:Select filtering by charset.
+List available value by &quot;charset=?&quot;.
+&lt;height&gt; :Font Height. &quot;*&quot; means copy from current.
+&lt;width&gt; :Font Width. &quot;*&quot; means copy from current.
+if missing, calculated from height.
+&lt;weight&gt; :Weight. specify Regular/Bold.
+if missing, adopted from selected font.
+/options
+/A:Accept System Selection.
+Not restore even when system set differently from requested.
+/B:Select Not TrueType fonts(Raster) only.
+/D:Detail Query Information.
+/F:Select Fixed Pitch fonts only.
+/Q:Query candidate fonts.
+/T:Select TrueType fonts only.
+/V:Select Variable Pitch fonts only.
+e.g. ----- (all are case insensitive) -----
+xcfont /Q charset=222 ; List fonts of charset:THAI.
+xcfont charset=? ; List available charset .
+xcfont /Qf ; List FixedPitch font.
+xcfont /Q * ; Show current font set.
+xcfont /Q Microsoft ; List fontname starting with &quot;Microsoft&quot;.
+xcfont /Q *Sans ; List fontname containing &quot;Sans&quot;.
+xcfont Microsoft No=2 ; Select second font listed by &quot;Microsoft&quot;.
+xcfont SimSun charset=238 ; Select SimSun with charset:EASTEUROPE.
+xcfont Tahoma H=* ; H=current, W=H*rate of W/H of selected.
+xcfont * H=16 W=10 ; Update current font sizes
+xcfont * Weight=Bold ; Set current font weight to Bold
+chcp 57002 ; 57002:Devanagari, &quot;Mangal&quot; requires it.
+xcfont Mangal H=* ; Codepage will be listed by &quot;xcv /list&quot;.
+</SPAN></PRE>
+<PRE><span class="auto-style1">    </span><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">(129L)
+       -(Windows) xlow 1.6 (ファイル名を大文字/小文字に変更）のバグ
+    (129M)
+       -xfg v1.21 (ディレクトリー内文字列探索)
+        ./cpu8, /cplc オプション追加, パラメータの探索文字を変換して探索
+        .(Win)"-e" オプションを使用するとクラッシュする（一時ファイルを置く c:\ がWindows10では保護されるため）
+       -xdig v1.13 (ディレクトリー内、全ファイルにコマンドを適用する)
+        .% 以外にも置換対象ワード指定文字を指定可能
+         例えば、/C$ 指定すると コマンド文字列内の $fp$ が フルパス名に置換される
+        .相対パス指定の追加。%rp% が 開始ディレクトリからの相対パスに置換される
+<span class="auto-style1">    </span>(129W)
+       -(Windows) xlow 1.6 (ファイル名を大文字/小文字に変更）のバグ
+       -xcv v1.21
+       -xfmt v1.5
+       -xfg v1.21
+       -xdc v2.29 -UF オプション（ディレクトリーのタイムスタンプ不一致は不一致リストに出力しない）追加
+
+    (129X)
+       -xcv  v1.22
+        .Hex表記の標準入力("-Yh" オプション)、Hex表記の出力("-Yx" オプション)を追加
+       -xfc  v1.28
+        .大文字小文字区別なしの比較オプション("-Nc")を追加
+        .比較位置の指定を別々に指定できるようにした( -Mm-n[/p-q] )
+
+</SPAN></PRE>
+</BODY>
+</HTML>

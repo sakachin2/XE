@@ -41,6 +41,7 @@ a:hover{font-weight:bold;}-->
                X:16進数、O:8進数、D:10進数、U:符号無し10進数、
                Z:zzz,zz9 形式の10進数、UZ:zzz,zz9 形式の符号無し10進数
                T:hh:mm:ss.xxx 形式の時間、
+               S:UCS-4 ユニコードとそのUCS-2 サロゲート表示との変換。
                L:16進数ワード(1970年からの経過秒),又はダブルワード
                (HOST-TOD:ダブルワードのビット51がマイクロ秒です)を
                を時刻に変換。但しHOST-TODは2000年1月1日以前は
@@ -59,6 +60,8 @@ a:hover{font-weight:bold;}-->
                XBC 12345678..abcdef0/30a2 ; XBC 3acf19fe/l
                xbc 1234.56*7.89 v2r ; xbc 123.45/6.789 vr
                xbc 200/3.3*35 v2r ; xbc 1+2+3+4+5+6+7+8+9+10
+               xbc 1f468/s  ==> x1f468/s:=d83ddc68
+               xbc d83ddc68 ==> xd83ddc68/s:=0001f468
 
 
           (注) XBC は <a href="HID00000456.htm">単独の exe もパッケージング</a>しています.

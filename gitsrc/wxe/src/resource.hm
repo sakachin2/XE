@@ -1,9 +1,0 @@
-// Microsoft Developer Studio generated Help ID include file.
-// Used by wxe.rc
-//
-#define HIDC_CHECK_FREECSR              0x80820440    // IDD_SETUP
-#define HIDC_CHECK_RCTL                 0x80820434    // IDD_SETUP
-#define HIDC_CHECK_USEACT               0x8082042f    // IDD_SETUP
-#define HIDC_CHECK_USEMK                0x80820431    // IDD_SETUP
-#define HIDC_STATIC_CELLH               0x80870457    // IDD_PAGE_SETUP
-#define HIDC_STATIC_STYLE               0x80870456    // IDD_PAGE_SETUP
