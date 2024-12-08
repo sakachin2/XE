@@ -1,0 +1,1041 @@
+//vbBy:241129 Windows:for EOFid(0x1a) dir size or line-ctr(syn color file:no need because simons highlight dose not support 0x1a)
+//            xesub.c ufile5.c/h
+//vbBx:241128 xe help correct
+//            xe.c
+//vbBw:241127 label support for cid clear
+//            xefcmd3.c xefile43.c/h
+//vbBv:241121 S+F1(Dir refresh) dose not clear when file mask specified and it has no members.
+//            xedlcmd2.c
+//vbBu:241119 Edit/Browse /Mz option for ebc file to accept 0x0d15 as EOL 
+//            ufile5.c/h xefile.h xefile5.c xcv.c ucvebc.c ucvext.h
+//vbBt:241114 add /ebc;defaultmapeuro
+//            xe.c ucvext.c/h
+//vbBs:241114 del vbB9(process cp931(cp300+cp037)) because m2b from sjis generates 0e0f dbcs word for byte of sjis 1st byte whichi is byte of iso-8859.
+//            ucvebc.h ucvext.c xe.c xcv.c
+//            xe.c xeopt2.c ucvebc3.c
+//vbBr:241108 (bug of va6h)copy utf8 file into bin mode ebcfile; execute not f2dd but f2l the dbcstbl 1/2(locale mode) was set
+//            xefile6.c
+//vbBq:241108 display green when lcmd copy b2m/m2b when cv err
+//            xefile6.c xeebc.c ucvebc3.c
+//vbBp:241107 cancel vbBd(change cp931(not exist in icu) to CP939L(cp300+cp037)). ibm doc defines cp931
+//            ucvbc.h
+//vbBn:241105 display green when b2dd err
+//            xeebc.c
+//vbBm:241105 tabdisplay dbcs; when cv err and fffd(ambiguous) is sbcs width by /Gnn. output remains 0xcc(not set)  data and dbcs. clear it before call b2dddbcs1
+//            xeebc.c
+//vbBk:241103 (BUG)cfg-SUCHAR was not work
+//            xeebc.c ucvebc3.c ucvebc.h xefcmd5.c
+//vbBj:241019 (BUG)cfg E2A(converter is not external) was ignored when ebc<0x40
+//            xeebc.c
+//vbBi:241012 (BUG)EBC info,when converter=1, display cvnam=CP930+CP930
+//            xeopt2.c
+//vbBh:241009 vbB3 but, revive k2l/l2k even if not round-trip conversion
+//            xefcmd5.c xcv.c
+//vbBg:241006 ebcfile header line;set cvname cp037-internal 
+//            ucvext.c
+//vbBf:241006 adjust ebc file header line. del "CFG:" when by cmdline /ebc
+//            xeopt2.c ucvebc4.c
+//vbBe:241005 assume /ebccfg=no when /ebc:cvtype is specified
+//            xe.c
+//vbBd:240923 change cp931(not exist in icu) to CP939L(cp300+cp037)
+//            ucvbc.h xe.c ucvext.c
+//vbBc:240910 support ebcidic cfg file cmdline parameter
+//            xeini2.c xe.c xeebc.c/h ucvext.c
+//vbBa:240827 lcmd help; add (lower) to "_"
+//            xelcmd.c
+//vbB9:240824 add cp931(cp300+cp037) 
+//            xe.c xeopt2.c ucvebc.c/h ucvext.c/h ucvebc3.c
+//vbB8:240823 change ebc option parm /EBC[:]{kana|eng|Latin|CP930|CP939|CP037}
+//            xe.c ucvebc.h ucvext.c
+//vbB7:240820 accept converter=0 sjisopt BASE
+//            xeopt2.c
+//vbB6:240818 add cmdline parm for ext_eng(ext_kana is default) /C{cp930|cp939|cp037}
+//            xe.c ucvebc.h ucvext.c
+//vbB5:240816 trap if UTRACE ON; xewd change to c:\ from c:\users\sakStyle
+//            xe.c
+//vbB4:240816 EBC cmd;display ebc cfg status 
+//            xeopt2.c ucvext.c/h
+//vbB3:240815 (Bug)l2k/k2l miss to translate. char such as katakana-so(x75 on cp1027, x90 on cp290. but x90 on cp1027 is unprintable, cannot find reverse char)
+//            del l2k/k2l option from cv cmd
+//            xefcmd5.c xcv.c
+//vbB2:240814 (Bug)when cv cmd with option cp1027/ENG-EXT cause invalid translation 
+//           xefcmd5.c
+//vbB1:240801 (Bug)saved msg for "prof reset" cmd. have to issue "reset".
+//           xefcmd6.c
+//vbB0:240731 (Bug) missed to change version 1.29->1.30
+//           xegbl.h
+
+//****:240709 v1.30 gitup 
+######################################################################
+  .v130 <--129X:(2024/06/30)
+
+     1.BUGs
+       -(LNX) ./configure が /gth.h Not found で失敗することがある
+       -(LNX:gxe) Gtk3 のとき widget サイズが固定されずにスタート毎に変動する
+
+     2.機能追加
+       -ユニコードファイルの表示の改善
+         .ZWJ(u-200d), ZWNJ(u-200c), またその他 カテゴリーCf(Format) 文字対応
+       -表示幅が曖昧とされるユニコード文字の表示幅を２つのオプションで指定する
+         ./G{Y|N}{y|0|1|2}
+            Y:フォントの表示幅に合わせる
+              この時馴染みのない言語の文字については2番目のオプションを指定できる
+              但し、Yを指定すると立ち上がりが多少遅くなる。
+            N:表示幅を一律２番目のオプションで指定する
+            省略値は /GY2。
+            例）/GN2: 全ての曖昧文字は２桁表示
+                /GYy: 全ての曖昧文字をフォントに従い調整する
+                /GY0: 馴染みの少ない言語は':;' で代替表示
+         ./F{fontname[:charset] | @font_param_filename}
+            /G オプションで必要なフォントの名前は
+            Windowsの場合WindowsTerminal 上で実行するときsetting.jsonを
+            Linuxの場合xeGetFont.shでgnome-terminal, konsole などでは
+            Home dir のProfileを調べるが失敗する場合はこのオプションを指定する。
+            ファイルで間接的に指定するときは font_param_filename を使用。
+            フォントに合った charset は Microsoft の ドキュメント参照。
+            例) /F"ＭＳ 明朝":128 、/F@.\fontParm.txt。
+                /F"\uff2d\uff33 \u660e\u671d"。
+       -XBC コマンドで ucs4<-->utf16 変換をサポート
+          例) xbc 1f468/s    ==> x1f468/s:=d83ddc68
+          例) xbc d83ddc68/s ==> xd83ddc68/s:=0001f468
+       -find コマンドで -cont オプション追加
+          exe コマンドで大きなファイルをFindコマンドを設定したファイルで
+          行選択するとき、パフォーマンスの観点から、
+          NotFound となったとき次のFindを最初の行から探すのではなく
+          最後にFoundとなった行から探し始めるときに使用する
+          ファイルがソートされている前提で有効なオプションです
+       -画面ハードコピーの出力
+          Alt+z で画面のハードコピーを::hcopyに追加モードで書き出す
+          Linux Console版以外では Ctrl+h も使用可能
+
+     3.その他
+       -(LNX) Gtk2 のサポートは停止、Gtk3 のみサポート
+       -(LNX) コンソール版でフォントの設定を調べる script "xeGetFont.sh" を
+              /usr/local/bin に install する。加えて xprint.sh も。
+
+     4.ツール。
+       -xbc  v1.7
+          ucs4 <--> utf16 変換を追加
+       -xcv  v1.23
+          オプション/Yh(Hex表記の入力)はパイプも含め標準入力に限定
+       -xprint.c 3.39
+          (LNX) 行の右端が右マージンを超えて表示が切れることがある
+
+//vbAw:240708 (gxe:Bug)"Print to LPR" is also default (multiple defaulT)
+//           xxecsub2.c
+//vbAv:240708 (gxe:Bug)page displayname may be null(name is not null)
+//           xxecsub2.c
+//vbAu:240708 (gxe:Bug)crash when pushed print icon
+//           xxecsub2.c
+//vbAt:240704 (Bug)find -cont should be used in exe cmd file. If not save plh pos may cause 0c4
+//           xefunc2.c xefcmd2.h xefcmd25.c
+//vbAs:240703 (Bug)cutted --> cut
+//           xefcmd43.c
+//vbAr:240702 (gxe:Bug)ddstr and u8 string column unmatch by utfcvdd2f for x1b<-->e286bc. Invalid char is show.
+//           utf22.c/h xxescr.c
+//vbAq:240702 (gxe:Bug)case in Liguture occured when non-ligaturemode, line disppear(ii was init initialized)
+//           xxescr.c
+//vbAp:240701 (gxe)  hardcopy support
+//           xedcmd2.c xxexei3.c xxexei.h xxemain.h
+//vbAn:240627 for performance, bypass glyphchk when help
+//           xe.c uvio2.c/h xxexei3.c wxexei3.c
+//vbAm:240626 (wxe)if LigOff and combinemode,need write at once when combined by ZWJ .(wincon display mixed figure of emoji evben write split)
+//           wxecsub.c
+//vbAk:240621 (gxe)display "="(same as xe) for format char other than zwj/zwnj
+//           xxescr.c
+//vbAj:240619 (gxe)if LIG:ON and COMB:ON, allow expand line by large glyph when no split by cursor
+//           xxescr.c xxexei.c/h
+//vbAi:240619 (gxe:bug)setmonospace adjust have to consider dbcs width
+//           xxecsub2.c
+//vbAh:240616 (gxe)display split combining(lig on and off). when added non space(for ex 'A') after combining half width shadow appears. use this effect.
+//           xxescr.c xxecsub.c/h
+//vbAg:240616 (gxe:bug)window size gradually increase (additionall to vbs3)
+//           gxemfrm.c
+//vbAf:240614 (gxe:bug)lig:on.comb:on; comb disappear 
+//           xxecsub2.c xxescr.c
+//vbAe:240612 (gxe:bug)multiple combining occupy next col(it is valid for a+. it may be not 3 geom but 2(1 with combined and 2nd combining) glyph.
+//            u1080+u1060+u1082:NG, u1080+u1082+u1060:OK. sequence may have meaning. so do nothing
+//           xxecsub2.c
+//vbAe:240612 gxe:combining without base color was yello.
+//           xxescr.c
+//vbAd:240608 lnx: compiler warning; stringop-override for UDDattrflag
+//           xefcmd26.c
+//vbAc:240607 (gxe)Manjaro missing pkg-config
+//           configure.ac
+//vbAb:240607 (gxe)glib2 reuires dev pkg, so chk header[gio.h] 
+//           configure.ac
+//vbAa:240606 (gxe)install xeGetFont.sh
+//           doc/Makefile.am
+//vbA9:240606 (gxe)version up to 1.30
+//           configure.ac
+//vbA8:240606 (gxe)drom xe3270 to install
+//           xe/Makefile.am
+//vbA7:240602 (gxe)autoconf warning;AM_CONFIG_HEADER
+//           configure.ac
+//vbA6:240602 (gxe)autoconf warning;
+//				configure.ac:567: warning: AC_CHECK_HEADERS(${ac_cv_cache_val_gtkprinter}): you should use literals
+//           configure.ac
+//vbA5:240602 gtk2 is not supported now(GTK2 development was stopped at 2011/01)
+//           configure.ac
+//vbA4:240601 (Bug:gxe)./configure fails by /gtk/gtk.h not found. TODO test was remained
+//           configure.ac
+//vbA3:240531 (Bug:gxe)SCM remaining char shown by altch color
+//           xxescr.c
+//vbA2:240529 (gxe) gdk_color_to_string was deprecated
+//           xxecsub.c/h
+//vbA1:240528 (gxe:bug) dbcs combining(x309a) split when lig off and split
+//           xefile23.c
+//vbA0:240528 G_APPLICATION_FLAGS_NONE was depricated at gio2-74
+//            but ub22, No G_APPLICATION_DEFAULT_FLAGS
+//           main.c
+//vbzZ:240503 LNX:del vbzY because wcwidth()=1 is same as -G1
+//           xe.c uvio2.h
+//vbzY:240503 LNX:use wcwidth() for ambiguous when -gN and allow specification to ambig lang
+//           xe.c uvio2.h
+//vbzx:240425 Win:related vbq6 set default debugmode:skip on, relese mode skip off(seteh);
+//           xe.c
+//vbzW:240425 errmsg of ini file err by func 3270 was deleted
+//           xeini.c
+//vbzV:240422 SCM(Mc) by green attr
+//           xefile23.c utf22./c xefile6.c
+//vbzU:240419 (Bug)utf8 file vhex update, when changed part of ucs to x09(TAB) replaced to tab
+//           xefile.c
+//vbzT:240418 chk profile for copy file cmd if no cpu8/.. was specified.
+//           xefile.c
+//vbzS:240418 ligature mode; need redraw also when csr is on lineno to reset back to normal combine mode when csr is back to lineno fld
+//           xefile23.c
+//vbzR:240414 C+h is backspace but use as hcopy
+//           xefunct.c
+//vbzQ:240414 xekbchk; for performance trace off while mapinit
+//           xekbchk.c
+//vbzP:240412 (LNXCON)support hardcopy function(also change key C+h-->A+z)
+//           xefunct.c xedcmd2.c uviol.c uviom.c/h
+//vbzN:240411 (WXE)dbcspace is not displayed by altch even if tabon.
+//            GSCRSDBCS is ON on wxe(8140 is dbcsspace as fixed.),
+//            OFF on xe(chk dbcs space code by utfcvu2any1mb and a1a1 is dbcsspace on gb18030).
+//           xefile6.c
+//vbzM:240408 (WXE) support hardcopy function
+//           xedcmd2.c uvio.h/c wxexei.h  wxexei3.c wxescr.cpp wxemain.h wxecsub.c
+//           xeutf22.c/h
+//vbzL:240406 print pid at term to chk utrace name
+//           xe.c
+//vbzK:240404 change default /Nn to Yn
+//           xe.c
+//vbzJ:240403 appendmode screen print to ::hp by Ctrl+h (hardcopy) 
+//           xefunct.c xefunc.h xedcmd2.c/h xekbchk.c xedcmd4.h
+//           uvio.c/h uviom.c
+//vbzH:240403 (Bug of vbx4)WINCON:0x01-0x06 cause column shift on windows terminal
+//           xefile6.c uvio.c
+//vbzG:240401 fc39 compile warning
+//           xe3270f2.c xekbchk.c
+//vbzF:240328 As default,chk glyph size by TextDraw additional to ExtentPoint for also not Ambiguous chars.
+//           xe.c
+//vbzE:240328 /GA Option to chk glyph size by TextDraw additional to ExtentPoint for also not Ambiguous chars.
+//           xe.c
+//vbzD:240327 find cmd; change option -next2 to -cont
+//           xfcmd22.c
+//vbzC:240323 /Ffontname parm; suuport \uxxxx specification
+//           xe.c uvio2.c
+//vbzB:240317 XBC; support translation between UCS4 and ucs2 surrogate presentation by ucalc
+//           xecalc.c
+//vbzA:240315 WINCON,try to get fontface from settings.json at uvio2
+//           xe.c
+//vbzz:240311 arrange vbz3,vbzp:/Yv and vbzy:YL to /Gv[L]
+//           (Warning)for over u-20000,to keep unicode on data+dbcs 4 byte no unpritable mark is not displayed.
+//           xe.c uvio2.h utf4.c utf22.c utf.h utf3.c
+//vbzy:240310 /YL, optionally ambiguous chk for language by performance reason.
+//           xe.c utf.h utf4.c
+//vbzx:240307 Find cmd;add option "-next2", start pos is same as previous failed next cmd for performance of "exe" cmd by sorted find word.
+//            ==>nevertheless found or not found, start pos is from topline of the page. So performance gain is not so large. effective when continued not found with large following line.
+//           xefcmd25.c xefcmd22.c/h
+//vbzw:240306 try get plyph width by pango api
+//           xe.c xekbchk.c xechksim xe3270.c
+//vbzv:240302 CV cmd;avoid errmsg of "on utf8 file" when help (CV ?).
+//           xefcmd5.c
+//vbzu:240302 add test option to notrace while mapinit for performance. (del prev option /Yn/Nn to winNT option)
+//           xe.c utf.h utrace.h/c utf22.c
+//vbzt:240302 (BUG)crush by UTRACE parm err
+//           xesub.c
+//vbzs:240302 requied to append sepc(\ or /) to wkdir
+//           xe.c
+//vbzr:240302 chk workdir to enable to use :: for /F@fontinfofile
+//           xe.c uvio2.c
+//vbzq:240228 (W32:Console) /Ffontname[:charset] for WindowsTerminal
+//           xe.c uvio2.c/h
+######################################################################
+  .v129B<--129 :(2017/07/27)
+  .v129C<--129B:(2017/09/04)
+  .v129D<--129C:(2017/11/30)
+  .v129E<--129D:(2018/01/09)
+  .v129F<--129E:(2018/01/23)
+  .v129G<--129F:(2018/01/30)
+  .v129H<--129G:(2018/02/22)
+  .v129J<--129H:(2018/05/10)
+  .v129K<--129J:(2018/08/27)
+  .v129L<--129J:(2019/09/18)
+  .v129M<--129L:(2020/05/17)
+  .v129N<--129M:(2020/09/23)
+  .v129P<--129N:(2020/10/28)
+  .v129Q<--12PN:(2020/12/16)
+  .v129S<--12PQ:(2020/12/24)
+  .v129T<--12PS:(2022/12/04)
+  .v129U<--12PT:(2022/12/15)
+  .v129V<--12PU:(2023/06/10)
+  .v129W<--12PV:(2023/07/30)
+  .v129X<--12PW:(2024/02/20)
+
+     1.BUGs
+       -(Windows:64)"&"(バイナリーファイル非同期実行) ディレクトリーリストコマンドがクラッシュする
+       -(64Bit) =3.14 がクラッシュする
+       -(Win64) データタイプ X(Hex),O(octal) の計算結果の誤り
+       -(Win64) 分割画面間のドラッグドロップ(ファイルのコピー)がクラッシュ
+
+     (129D)
+       -(Linux)GTK3環境の時セットアックダイアログでのメニューアクセラレーター(Ctrl+)オプションの
+        オン/オフが効かない
+       -(Wxe)ファイル-New(新規ファイル)でクラッシュ
+
+     (129E)
+       -Window コンソール版：ヘッダー行のエラーメッセージが文字化けすることがある
+
+     (129F)
+       -Edit/Browse コマンド
+        .レコードモードでレコードサイズ>4096かつ最初のレコードに制御文字(<0x20)があると
+         最後のレコードのみが表示される。またファイルサイズが128K超だとクラッシュする
+        .レコードモードの時プロファイルに記録したのCPLCが無視される（毎回CPLCの指定が必要になる)
+
+     (129G)
+       -(Linux)Ubuntu17.10 で ディレクトリーリスト行コマンド:"!"(拡張子対応アプリの起動)が
+        "MIME タイプアプリ未定義"で失敗する
+       -(Wxe/gxe)マウス でのカット＆ペーストでごみが入ることがある
+
+     (129H)
+       -(gxe:GTK3)Previewダイアログでプリンター選択が1つ分だけずれる
+       -(gxe:GTK3)終了時画面サイズ正しく保存されずに再スタートで大きくなる
+
+     (129K)
+       -UTF8 ファイルの処理の各種問題
+         .文字の表示幅(1セルか2セルか)の見直し
+         .UCS4,SpacingCombiningMarks,NonSpacingMark表示の問題
+         .結合文字は最大8文字まで許容(Tibtan)
+          但しLinux Console版は最大4文字で変わらず
+         .Windowsで >=U01000、Linuxで >=U020000 のときの問題
+            -ヘッダー行に表示するユニコード表示が正しくない
+            -ヘキサ表示行でユニコードを修正できない
+         .(LNX)ユニコードが U01000<= ？ <U020000 の問題
+            -ファイル読み込み時、SBCS(表示幅が１桁)の文字のUTF8コード解釈を誤り、ファイル出力で別の文字にしてしまう
+            -ヘキサ表示行での "v" 行コマンド(連続３桁ヘキサコードをユニコードとして読み直す)が誤る
+         .3.12画面でファイル名がUTF8コードのとき画面表示が乱れる
+         .(WinConsole)新規のツール xcfont で コマンドプロンプトのフォントを変更することにより
+          デバガナリーなどのユニコードをWinコンソール版で表示可能にした
+       -gb18030 で 1桁表示文字の桁ずれ
+       -Esc を 連続２回押すとラベルを残して行コマンドはクリアーされるが
+        ラベル指定のコマンドはラベルが見つからないエラーになる
+       -画面分割してるとき編集の行コマンドが無視されることがある
+
+     (129L)
+       -Alt+"/"(xml,html の <tag > のペアリング探索 のバグ
+
+     (129M)
+       -カーソル上のワード探索（Alt/Ctrl+"["/"]"）でカーソルが例えば "ABC+DEFG" の
+        "C"にあるときは "ABC" を "+" にあるときは "ABC+DEFG" を探すが
+        同じキー操作を連続しても間にPgDn/PgUp/PgLeft(F10)/PgRight(F11)がはいると
+        "ABC" の探索になってしまう
+       -exe コマンド(指定のコマンドファイルの各行のコマンドを順次実行する）が
+        クラッシュすることがある。
+        例えば "exe ! cmdfile" を Dirリスト画面で実行するとクラッシュする
+        "exe ! cmdfile &lt;s *.html" が正しい
+       -Dirリスト画面上で SORt コマンドで 降順オプション(/Ot-,/Os-) は 効くが
+        昇順(/Ot,/Os)が効かない。
+
+     (129N)
+       -3バイト(EUC 8fxxyy),4バイト(GB18030) DBCSでコマンド行のカーソル位置付けを誤る
+       -結合文字（文字幅=0)が表示されないことがある
+       -"OPT unicomb comb" コマンドと "UTF file" コマンドのフラグ操作がバッティングしていた
+       -(Linux) directory list の "a"(Attrib) 行コマンド で クラッシュすることがある
+
+     (129P)
+       -(Linux) GTK3 バージョンの時 gxe の画面サイズがアプリリスタートで元に戻る
+
+     (129Q)
+       -(gxe) IME入力処理が常に同じ文字を出力していた
+
+     (129S)
+       -(Linux:gxe) Gnome デスクトップのとき ">"(コンソール窓を開く)コマンドが働かない(gnome-terminal のパラメータが廃止されていた)
+       -(Linux:gxe) Xfce デスクトップのとき以下のWarningがでることがある
+                    Gtk-Warning Calling org.xfce.Session.Manager IsInhibited failed...
+       -(Linux:xe)  マウスドラッグでクラッシュする。
+
+     (129T)
+       -=0.1 画面で sc 行の変更ができない
+        また S+C/S+A を設定してもできない S+ なしと同一視される
+        そのことで wxe でマウスによるカット&ペーストが効かなくなる
+       -=0.2 画面で 行を削除するとキー割り当てができなくなる
+     (129X)
+       -\u オプションの "cv" コマンドが ユニコード>U-ffff の変換を誤る
+       -U+00A0 が結合文字の基底文字から外れていた
+       -(gxe)クラッシュすることがある
+        .結合文字を表示するとき
+        .マウスの中ボタンを押したとき
+        .Preview メニューボタンを押したとき
+       -(gxe)箱型カーソルのときテキストが見えなくなる
+       -grep コマンド (デレクトリーリストの "g" 行コマンドも同じ)
+        .文字列の二重引用符(")が閉じてないときハングする
+        .文字列が間にスペースを含むとき失敗する
+
+     2.機能追加
+
+       -長いパス名に短縮名を定義
+        .SP { edit | refresh | add sp-name { file-spec | *\\ | ^*\\ } }
+            edit   : 定義ファイル(::xe.shortpath) を編集表示
+                     修正して保存すれば、次回から有効になる
+                     あるいは保存後 "refresh" すれば有効になります
+                     定義ファイルの各行は"短縮名 フルパス名" の形式
+                     コメント行は先頭に "#"
+                     例) srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test
+                         ecws  "c:\Program Files\Android\Android Studio\gradle"
+            refresh: 定義ファイルを修正した場合に、その修正を反映させる
+                     "sp edit" 画面で修正、保存後 あるいは直接 ::xe.shortpath ファイルを
+                     他のプロセスで修正した後に使用する
+            add    : 定義ファイルに sp-name:短縮名, file-spec:ターゲットファイル名 の行を追加
+                     この定義はすぐ使用できる
+                     *\ :現在開いているファイル/ディレクトリー,
+                     ^*\:分割画面の他方で現在開いているファイル/ディレクトリー
+                     も状況が適当ならば使用できる
+                     例) sp add srctest1 d:\eclipse-workspace\testproject1\src\com\debug\test
+                         sp add ecws  "c:\Program Files\Android\Android Studio\gradle"
+        .短縮名は "sp:"プレフィックスで使用する
+         (sp:xxx の xxx が未定義の場合はそのまま "sp:xxx" として使用される)
+           例) e sp:srctest1\Main.java
+               e sp:ecws
+               e "sp:ecws\space embedded name"
+               xcopy sp:ecdir\x1 sp.ecdir\x2
+               cd sp:ecdir
+     (129C)
+       -Find コマンド
+          ディレクトリーリスト上で ATTR(属性)欄のみを探すオプションを追加
+          大文字小文字の区別はしません
+          属性欄には表示されていないが ディレクトリーには "d"、シンボリックリンクには "L" を指定する
+          また "d" と "L" はそれぞれ単独で指定してください
+          それ以外の属性は Windowsでは 指定の一つ一つの属性すべてを含む行が一致行とし
+          Linuxでは属性指定の文字列を含む行が一致行とする
+          Linuxで特殊な属性欄の値は
+            u:setuid, g:setgid, S:setuid+setgid, t:stickey
+            c:char device, b:block device, p:pipe, s:socket
+        例) (Windows) f SH attr ; f R attr & 17-08 ; f D attr & L attr
+            (Linux)   f 775 attr ; f u attr
+     (129D)
+       -SelectAll
+          .コマンド
+             SEL [all] [col1 col2] [.label1 .label2]
+               label1/2 で行範囲指定、col1/2 でカラム範囲指定
+               labelは1/2とも数字による行番号指定でもよい
+               col の指定があるとブロックモード、ないと領域モード
+               label/column の指定がないと全選択
+               例）sel; sel .a .b; sel 1 20; sel 10 20 .1 .4;
+          .Edit画面で 行選択し、Cut/Copy/Pasteにつなげていきます
+           領域モードではすぐPaste の対象にもなります
+          .省略型:"S"は使用できません、
+           ファイル表示/編集画面で"S" は "SAVe" になります
+        (Wxe,gxe)
+          .Editサブメニュー、ポップアップメニューにも "SelectAll" メニュー項目追加
+          .ショートカットはCtrl+Aに設定 SaveAs(別名保存)はCtrl+Shift+Aに変更
+
+     (129E)
+       -XMLタグ ペア探索
+          .デフォルトで Alt+"/" を割り当て
+          .カーソルを "<" または ">" の位置において "Alt+/" を使用
+          .コメント内("<!--" から "-->")は無視、ネストも処理、
+           html 自動生成ツールの不具合を修正するのに便利です
+
+     (129H)
+       -xehosts で P=nn(ポートNoオプション)サポート
+        .psftp で 宛先ごとにデフォルト SSH ポート(22)以外を指定したいとき使用する
+       -コマンド履歴リストサポート
+        .Shift+Ctrl+F12 でコマンド履歴を表示,任意の行上で "x" で実行
+        .この画面のライン上で使用できるコマンドキーは
+          s : 履歴画面は終了してそのあとの画面のコマンド入力行にセット
+          S : 履歴画面は終了せず履歴画面のコマンド入力行にセット
+          t : 画面分割の他方の画面のコマンド入力行にセット
+              分割していないときは "S" と同じ
+          x : 履歴画面は終了してそのあとの画面上でコマンドを実行
+          X : 履歴画面は終了せず履歴画面上でコマンドを実行
+          y : 画面分割の他方の画面でコマンドを実行
+              分割していないときは "X" と同じ
+        .xe終了時に保存されるエントリー数は最大40
+
+     (129J)
+       -コマンド履歴リスト。
+        wxe/gxe でマウス操作のサポート
+        .右ボタンでコンテキストメニュー表示
+        .ダブルクリックで "x" コマンド処理(履歴画面は終了してそのあとの画面上でコマンドを実行)
+        .選択した行のクリックで  "s" コマンド処理( 履歴画面は終了してそのあとの画面のコマンド入力行にセット)
+
+     (129K)
+       -TC fmt -D"分離文字" -S"出力用分離文字" オプションで \x や \t などのエスケープ文字指定を受け付ける
+        (\t(=0x09)は -S では使用できません). -SではDBCSを使用できるようにしました
+
+     (129L)
+       -CPU8(UTF8ファイル)では TC fmt -D"分離文字" -S"出力用分離文字" オプションで
+        ユニコード(\Uxxxx)指定を受け付ける
+        例） tc fmt d\u00c1
+
+     (129P)
+       -COL コマンド（タブ停止位置を設定できるカラムゲージを表示）
+        .COL [on|off] [ALL|type|default]
+        .type 指定をディレクトリーにも可能とする
+        .ディレクトリーリストを開いて "COL on type" と入力するとそのディレクトリーのメンバーの省略値となり
+         "COL off" でその省略値をリセット。work ディレクトリーに次のゲージファイルを用意する必要がある
+           (Win) ::xe!col!.type   (Linux) ::xe_col_.type
+        .ディレクトリーリストで "COL on" としたとき個別のメンバーにたいしてはそのメンバーを開いて
+         "COL [on|off] [type|default]"
+            default:ファイルに対してはdirの指定にかかわらず省略値のゲージを表示
+                    ディレクトリーに対しては指定できない
+            on     :新たな type の指定がなければディレクトリーの指定に従う
+            off    :ゲージを表示しない。ファイルの設定はリセットされるので次に on すると
+                    ディレクトリーの設定が復活する
+
+     (129T)
+       -シンタックスハイライト
+		Andre Simon の Highlight、GNU の source-highlightのANSI:反転属性をサポート。
+		また xesynl.cfg/::xesynl.cfg の C_UNDERLINE=R/G_UNDERLINE=R 指定で
+		アンダーライン属性を反転とすることも可能
+       -CIDプレフィックスでユニコードをサポート
+		APL 言語では u-235d(？) がコメントプレフィックスなのでこれに対応。
+		::xe.ini ファイルで次のような指定をして適用する拡張子を設定することも可能
+          Change_ID_Type_4  = 60 = u-235d= APL
+        この設定をすると "CID on APL" のように CIDタイプでAPLが指定できる
+     (129V)
+       -(Axe)
+        .Android13(Api-33)対応
+        .共有ストレージサポート
+           "sp add //"コマンドで共有ストレージ内に専用フォルダーを設定可能で、
+           "e //Axe"のように専用フォルダー内をアクセスする。
+           また、Android11(Api-30)以降はアクセス権限："すべてのファイル"を設定可能で
+           許可設定するとgrep, xfg などのコマンドラインツールでも共有ストレージを利用可能
+        .icu ライブラリの利用環境の変更に対応
+     (129W)
+       -(Axe)
+         .Android-11(R):api30 許可オプション:全てのファイル を利用可能とする
+         .CD コマンドサポート
+     (129X)
+       -ユニコードの表示幅を指定するコマンドラインオプション -Yv(省略値),-Nv を追加
+        表示幅が曖昧と定義されている文字を -Nv では全て２桁表示、
+        -Yv ではWindows コンソール版 xeでは１桁表示とするが
+        wxe,gxe,xe-linux版では内部的な判定を行う。
+        Windows コンソール版 ではフォント:Consolasを使用すると
+        曖昧文字は１桁表示されるのでお勧めです。
+
+
+     3.その他
+       -(Windows)拡張子:"msi" を実行可能ファイルの拡張子に追加
+     (129C)
+       -(Windows)ICU EBCDIC変換ライブラリー(libicuuc.dll)が見つからないとき
+        xeebc.mapに ICU_DATA の指定があればそのフォルダー内もチェックする
+        なければ 環境変数 ICU_DATA もチェックする
+        (Linux)/usr/lib など以外にある場合は LD_LIBRARY_PATH 環境変数に ICU の so のパスをしてしてください
+       -xeebc.map に ICU_DLL_SUFFIX, ICU_APP_SUFFIX が ないとき
+        ICU の uconv(.exe) で ICU のバージョンが分かればそれを補う
+       -CPU8(UTF8)ファイルではレコード長は不定なので/Mr(レコードモード)オプションは受け付けない
+     (129D)
+       -Fileサブメニューのメニュー項目も画面の状況によっては不活性化する
+        例えば、ディレクトリー画面での保存メニュー項目など
+     (129E)
+       -Window コンソール版：Windows10ではリガチャー:ONにすると UTF8 ファイルの
+        DBCS 表示が桁ずれするので Windos7以降 コンソール版ではリガチャー:ONを受け付けない
+     (129G)
+       -(Linux)Hercules emulater:S390x インストール作業で configure.ac を改善
+               また 経験をトラブルシューティング(READMEj.txt)に反映
+     (129H)
+       -機能:"次コマンド-画面毎"に機能キーが未割当だった、Shift+Alt+F12 を割り当てる
+     (129J)
+       -ディレクトリーリスト行コマンド "="(ファイル内容の比較) で CPU8 オプション指定の追加
+     (129K)
+       -3.12 画面(ファイル/ディレクトリーの比較)に "-CPU8" オプションを追加
+        比較の結果をUTF8ファイルとして表示
+       -ディレクトリーリスト画面でもASCII以外は画面左上に文字のヘキサコードを表示
+       -OPT UNICOMB U-xxxx の 代替表示文字はSBCSのみ認める
+       -ファイル編集の保存時、ファイルのタイムスタンプがロード時と変わっているとき
+        警告しているが、解消は PF3 再入力ではなく "SAVe -Force" または "END -Force" コマンドが必要とする
+
+     (129L)
+       -(Linux)debian10などgnome2が廃止になったことへの対応
+       -(Linux)cupsの PPD api が非推奨になったことへの対応
+       -(Windows)コンソール版の画面の最下行、昔はIME用の行だった、これを表示用に変更
+
+     (129M)
+       -Shift+Del キーが 非表示行 (- n line excluded ---)上でも使えるようにした
+
+     (129N)
+       -Axe(Android版) 対応
+       -Windows console版で grep などの外部コマンド呼び出しが応答なしになることがある。
+        それを検知したら警告を出す。
+
+     (129P)
+       -Manjaro Linux 対応
+        .linker の仕様が変わって duplicated symbol のエラーがでる
+        .ftime が廃止された
+        .Manjaro のマウスアクション入力形式に対応
+        .ncursesw フォルダーが提供されない(libncurseswは存在する)
+
+     (129Q)
+       -(wxe) 3rd party IME による システムのロケールに変換できない文字コードの入力に対応
+       -/Nmコマンドラインスイッチの機能変更(A+u を絡ませた)
+		  コマンドラインスイッチ/Nmを指定した場合はCPLC(UTF8でない)ファイルに
+          Alt+u ON(コマンド入力行に =u=> を表示)のときはUTF8コードをセット、
+		  Alt+u OFF(===>)のとき変換エラー文字は時は"?"を
+          変換できた時はローケールコードをセットする。
+
+     (129T)
+       -Windows Terminal が Windows11 で 省略値のコマンドプロンプト PGM となった様ですが
+        行コマンドで不具合が生じることがあります。
+		旧コマンドプロンプトの c:\Windows\System32\conhost.exe を使用してください
+       -CID コマンドで APPEND のリセットを簡単にするため NOAPPEND オプションを追加
+       -=0.1 画面で "#" で始まるコメント記述をサポート。
+       -=0.2、=0.3 画面の見直し。
+        罫線文字も見直し、ユニコードの省略値を追加
+       -(Win)ワークディレクトリーの省略値の場所を C:\ から C:\users\[username]\に変更
+        既に C:\xe_wd がある場合は継続してこれを使用するが新規導入から適用
+     (129U)
+       -(LNX) ./configure で --enable-libgnome2=yes | no を自動で判断する様にした
+       -(WIN:Console) WindowsTerminal 対応。conhost上動きとの違いに対応。
+        行コマンド入力時の表示の乱れ、バイナリーファイルの表示の乱れなど
+     (129V)
+       -opt DELZ(バックアップを取らないDel行コマンドの許可)の省略値を安全側のオフに変更した
+     (129W)
+       -短縮名がsp add コマンドで追加されたらrefreshしてすぐ有効にする
+       -Axe
+         .DOSコマンド(全画面シェル)はサポートされない
+         ."!"行コマンドは受け付けない
+     (129X)
+       -(Win:コンソール版) WindowsTerminal 上では Insert キーによるカーソル形状の変更が効きません。
+        必要な場合は Conhost（以前のコマンドプロンプトの実行プログラム) 上で起動してください。
+
+     4.ツール。
+     (129C)
+       -xprint v9.38
+        ./Tabon: パラメータサポート追加
+           DBCSスペース、TAB(0x09)とそれに続く桁空けに表示する代替文字を指定する
+           /Tabon:x:y:z ;テキストモードのときのDBCSスペース,タブ文字,タブスキップの
+                        ;代替印刷文字。x,y,zは 文字、ヘキサ文字またはユニコード。
+                        ;例) /Tabon:x2020:x18:x1a  /Tabon::u2191:u2192 /Tabon::u25cb
+                        ;    /Tabon:u2750
+                        ;省略値は UTF8/EBCDICファイル /Tabon:u3000:x20:x20
+                        ;                        以外 /Tabon:x8140:x20:x20
+        .EBCDIC ファイルを ICU で変換して印刷するときで /BCfilename の指定がない場合
+         ICU の 共有ライブラリー(DLL または so)が PATH または LD_LIBRARY_PATH にあれば
+         探して ICU バージョンは uconv(.exe) を発行して それを補う
+           例) xprint x1ebc22 -cpeb=cp930 -me -icu
+       -xcv 1.20
+        .EBCDIC ファイルを ICU で変換するときで /BCfilename の指定がない場合
+         ICU の 共有ライブラリー(DLL または so)が PATH または LD_LIBRARY_PATH にあれば
+         探して ICU バージョンは uconv(.exe) を発行して それを補う
+           例) xcv x1ebc22 x1ebc22m -b2m -cpeb=cp930 -icu
+     (129J)
+       -xdc v2.29,xfc v1.27
+        CPU8 オプション指定の追加
+     (129K)
+       -(Win)xkp v1.4
+        Windows7 から exe 名前がフルパスでなくなっていた
+       -xfg v1.20
+        (Bug)探索文字が "-" で始まるときハングすることがある
+       -(Win)xcfont v1.01 (Windows Vista からサポート)
+        Windows コマンドプロンプトのフォントを変更する
+        フォントによっては chcp でコードページの変更も必要
+        例えば、デバナガリ文字の場合
+        "chcp 57002"とした後 "xcfont Mangal" とする
+        Mangal は ASCII の表示は変わりなく、xe で utf8 ファイルの
+        Devaganari(U+0900-097f) 文字を表示できる
+        尚、wxeやLinuxではDevanagariの表示で特別なことはする必要がありません
+        --------------------------------------------------------------------------
+        xcfont:V1.01(6): Change Current Console Font. (Supported From Vista.)
+         xcfont  [/options] [ <name> ] [ No=<seqno> ] [ CharSet={<charset>|?} ]
+                            [ H=<height> ] [ W=<width> ] [ Weight=<weight> ]
+        *******************************************************************************
+         <name >  :Partial string of FontName(StartsWith).
+                   "*" means current font.
+                   Prefix:"*" means Contains.
+         <seqno>  :Select font by SeqNo from listed fonts,
+                   to allow name is not full specification.
+         <charset>:Select filtering by charset.
+                   List available value by "charset=?".
+         <height> :Font Height. "*" means copy from current.
+         <width>  :Font Width. "*" means copy from current.
+                   if missing, calculated from height.
+         <weight> :Weight. specify Regular/Bold.
+                   if missing, adopted from selected font.
+          /options
+             /A:Accept System Selection.
+                Not restore even when system set differently from requested.
+             /B:Select Not TrueType fonts(Raster) only.
+             /D:Detail Query Information.
+             /F:Select Fixed Pitch fonts only.
+             /Q:Query candidate fonts.
+             /T:Select TrueType fonts only.
+             /V:Select Variable Pitch fonts only.
+         e.g. ----- (all are case insensitive) -----
+           xcfont /Q charset=222     ; List fonts of charset:THAI.
+           xcfont charset=?          ; List available charset .
+           xcfont /Qf                ; List FixedPitch font.
+           xcfont /Q *               ; Show current font set.
+           xcfont /Q Microsoft       ; List fontname starting with "Microsoft".
+           xcfont /Q *Sans           ; List fontname containing "Sans".
+           xcfont Microsoft No=2     ; Select second font listed by "Microsoft".
+           xcfont SimSun charset=238 ; Select SimSun with charset:EASTEUROPE.
+           xcfont Tahoma H=*         ; H=current, W=H*rate of W/H of selected.
+           xcfont * H=16 W=10        ; Update current font sizes
+           xcfont * Weight=Bold      ; Set current font weight to Bold
+           chcp 57002                ; 57002:Devanagari, "Mangal" requires it.
+           xcfont Mangal H=*         ; Codepage will be listed by "xcv /list".
+
+     (129L)
+       -(Windows) xlow 1.6 (ファイル名を大文字/小文字に変更）のバグ
+
+     (129M)
+       -xfg v1.21 (ディレクトリー内文字列探索)
+          ./cpu8, /cplc オプション追加, パラメータの探索文字を変換して探索
+          .(Win)"-e" オプションを使用するとクラッシュする（一時ファイルを置く c:\ がWindows10では保護されるため）
+       -xdig v1.13 (ディレクトリー内、全ファイルにコマンドを適用する)
+          .% 以外にも置換対象ワード指定文字を指定可能
+           例えば、/C$ 指定すると コマンド文字列内の $fp$ が フルパス名に置換される
+          .相対パス指定の追加。%rp% が 開始ディレクトリからの相対パスに置換される
+     (129W)
+       -xcv  v1.21
+       -xfmt v1.5
+       -xfg  v1.21
+       -xdc  v2.29 -UF オプション（ディレクトリーのタイムスタンプ不一致は不一致リストに出力しない）追加
+######################################################################
+//*********  20240220 v129X release ******************************************
+//vbzp:240210 -Yv/Nv parm for also xe console
+//           xe.c
+//vbzn:240207 char width adjustment for console. adjust by tbl if /Yv.
+//           xe.c
+//vbzm:240203 monospace determination is by dbcs(wide)=sbcs(single)*2 not by size of 'A'= size of ('W) by web document
+//           wxecsub.c
+//vbzk:240202 finaly ccursor chk for cell width is LNX(xe,gxe) and WXE.
+//           xe.c 
+//vbzj:240202 Test option /UUxxxx; set unicode for debug breaking at utfwcwidthsub.
+//           xe.c utf.h utf3.c
+//vbzi:240201 (WXE)vbz4 had no effect. Reason is font=System. SelectFont was not done at scrinit.
+//           wxescr.c wxecsub.c/h
+//vbzh:240201 (WXE)try GetCharWidth/GetABCCharWidths(for TrueTypeFont)
+//           xecsub.c
+//vbzg:240131 v78g do locate cmd by key on prot fld of dirlist. protect it if col=1(top of num fld) for avoid easy jump.
+//           xechar.c
+//vbzf:240131 (WXE:bug)combine char display. if combine mode and ligature off, x1b after eol override eol character
+//           wxecsub.c
+//vbze:240130 (Bug)'dlcmd 'g'(grep) hung when search string quatation pair err. called also from pan(=3.14)
+//           xedcmd4.c
+//vbzd:240130 (Bug)'grep "A A" fail(space embedding parm)
+//           xedcmd4.c
+//vbzc:240130 (Bug)'grep F"2 *.c' hung by unpared quotation
+//           xedcmd4.c
+//vbzc:240130 (WXE)like as XXE sbcswidth by depending that font is monospace or not
+//           wxwcsub.c
+//vbzb:240129 (XXE:Bug)cursor hides background text
+//           xxecsub.c/h gxe.h xxescr.c
+//vbza:240127 (XXE)SBCS determination;reduce single width limit(F2c and ambiguous only,<0x80 is out of range) 
+//           xxecsub.c
+//vbz9:240126 (BUG:gxe)gauge line have underline remaining before corsor.
+//            ==> it depends on font and cell height,No Problem.
+//           xxescr.c
+//vbz8:240124 (BUG:gxe)0c4 when preview menu pushed. printer form may missing displayname
+//           xxecsub2.c
+//vbz7:240122 (BUG:gxe) 0c4 by mouse middle button(Paste) when clipboard is null
+//           xecap.c
+//vbz6:240121 (gxe)core dump by NPE
+//           xxecsub2.c
+//vbz5:240120 try vbz3 to XXE(apichk by char extent)
+//           *xe.c *utf22.c/*h *utf.h *utf4.c *xxexei.h *xxexei3.c *xxecsub.c/h *xxescr.c
+//vbz4:240120 try vbz3 to WXE
+//           *xe.c *utf22.c/h *utf.h *utf4.c *wxexei.h *wxexei3.c *wxecsub.c/h *wxescr.cpp
+//vbz3:240119 optionally chk wcwidth by cursor.  /Yv(default) 
+//           xe.c utf22.c
+//vbz2:230827 del cmd issue warning "it may be remain dir entry" whel delctr=0
+//           xedcmd.c
+//vbz1:230817 ARM:correct errmsg for attrib.(DOS is out of consern)
+//           xedcmd.c
+//vbz0:230815 ARM:(vbyu & vbyw)ufullpath is not effective for iconv, so support ~/ to $HOME at dcmd2
+//           xedcmd2.c
+//*********  20230811 v129.3 Axe release *******************************
+//vbyx:230725 ARM:alternative of vbys. drop copytemp but rep // by real path if available:
+//           xedcmd2.c ufiledoc.c/h
+//vbyw:230718 ARM:rep vbyu to chk ~ in ufullpath to avoid rep ~ of not file parm.
+//           xedcmd2.c ufiledoc.c ufile1l.c
+//vbyv:230705 Reject xfg input is ::. It may cause loop because redirect output is in ::
+//           xedcmd2.c
+//vbyu:230705 ARM:shell did ~/ to $HOME/; tools on subthread requirs to support ~/.
+//           xedcmd2.c
+//vbyt:230705 ARM:support iconv/xfmt by copytemp
+//           xedcmd2.c
+//vbys:230704 ARM:support xcv by copytemp
+//           xedcmd2.c
+//vbyr:230704 ARM:slso do refresh when added
+//           xefcmd7.c
+//vbyq:230623 (Bug)syn; crash by UTRACE for updateline after syn executed
+//           xesyn.c
+//vbyp:230623 (Bug)syn; if stderr not found rc chk is invalid
+//           xesyn2.c
+//vbyn:230621 ARM;>cmd on cmdline,reject cmd=null because fullscree mode is not supported(hit anykey)
+//           xedcmd2.c
+//vbym:230612 ARM;warning by audroidstudio compiler
+//           xechar13.c xefcmd23.c jnij2c.c
+//*********  20230610 v129V release  *******************************
+//vbyk:230515 (ARM)>=API30, fpath for shared storage is supported, apply to cmd parm
+//           xedcmd2.c
+//vbyi:230515 (ARM)for also xfc dcmd, support for external storage(no more need of vbyh)
+//           xedcmd2.c xedcmd4.c/h
+//vbyh:230514 (ARM)dlcmd "=" support for external storage
+//           xedcmd4.c/h xedcmd2.c ufiledoc.c/h SAF2.java
+//vbyg:230508 correct errmsg;distinguish for dlcmd and dcmd
+//           xedcmd.c/h
+//vbyf:230502 (ARM) "//" option required to delete sortpath root(such as //Axe)
+//           xedcmd.c USAF2.java AxeJNI
+//vbye:230501 "sp add" cmd for Doc ; not allow alias(//alias) but allow "//" only.
+//           xefcmd7
+//vbyd:230427 copy into cmd cp option;apply environment(CPU8 for ARM)
+//           xefcmd
+//vbyc:230421 (ARM)reject open range parameter([O]n[t]-m[t]) for Document file. because fseek is not yet supported
+//           xefile5.c
+//vbyb:230421 (ARM)del bya9 because mkstemp failed and no bkup written
+//           xefsub.c
+//vbya:230420 (ARM)open doc optionally. limit to load/save now (not copy file).
+//           xefile14.c/h xesub.c/h xefsub.c
+//vby9:230419 (ARM)temporarlly save by no bkupmode for DOC file TO test 
+//           xefsub.c
+//vby8:230415 (ARM)open document file
+//           xesub.c/h xefsub.c jnic2ju.h jnic2j.c xefile14.c jnia.c/h jnij2c.c 
+//vby7:230415 (ARM)split ufile1l.c to ufiledoc.c
+//           xefcmd7.c xedir.c
+//vby6:230402 (ARM)adjust by4; go around by shortname and change to uri at ulib(ufile1l)
+//           xefile.c/h xefile13.c/h xedcmd.c xedir.c xefsub.c xefcmd7.c/h xesub.c
+//vby5:230411 opt DELZ; change default to off
+//           xe.h
+//vby4:230402 (ARM)shared resource support by //shareName defined by SP(ShortPath) cmd.
+//           xefcmd7.c/h jnic2ju.h jnic2j.c xescr.c/h xefile.c/h xefile13.c/h 
+//           xesub.c xefsub.c xedir2.c xedcmd.c xedir.c
+//vby3:230331 (Bug)ARM UTF8 localeid for iconv is UTF-8
+//           xefcmd5.c
+//vby2:230327 (Bug)ARM(maybe also Linux) shows DHname for top entry. it may be by no "."/".." entry on dirlist by permission
+//                 for ~(app/files/myhome) . and .. is gotten
+//           xedir2.c
+//vby1:230323 sys/timeb.h is not found on ARM
+//           xefunc.c cpp/csub/ulib/sys/timeb.h
+//vby0:230322 for Axe Api33; ld duplicate symbole 
+//           jnij2c.c jnia.h jni/gxe/gxe.h jni/gxe/gxepage.h ulib\gnuregex\regex.h xxemain.h
+//*********  20221215 v129U release  *******************************
+//vbx4:221214 qurious on WinddowsTerminal
+//           xefile6.c
+##vbx3:221212 (BUG) gnome2 not found err msg when --enable-libgnome2=no
+//           configure.ac
+##vbx2:221211 (BUG) ac_cv_cache_glib2 <-- ac_cv_chache_glib2
+//           configure.ac
+##vbx1:221211 chk gtk.h even lib is installed for development
+//           configure.ac
+##vbx0:221211 change defaut nognome2
+//           configure.ac
+//*********  20221207 v129T released *******************************
+//vbw4:221206 space was allowd for cid prefix from old version
+//           xefile4.c
+//vbw3:221205 accept cidtype by unicode fo cid on/clear cmd
+//           xefile4.c/h xefcmd3.c
+//vbw2:221205 (Bug of vbv6)cid on cmd for ext:unicode file,could not set non unicode cid  
+//           xefile4
+//vbw1:221205 (Bug of vbv6)cid chk match by data only. have to chk dbcs for DD fmt
+//           xefile4
+//vbw0:221203 (Bug)Shift+ was ignored with Ctrl+/Alt
+//           xekbd.c
+//vbvz:221203 (Bug)=0.1;missing set string terminater null
+//           xefile7.c
+//vbvy:221203 =0.1;do not show S+C+Pfn assigned.(It cause failure of cut and paste by mouse)
+//           xefile7.c
+//vbvx:221203 =0.2;not err but "No file" when xelinechxx is not found
+//           xefunct2.c
+//vbvw:221203 =0.1 comment by Japanese
+//           xefile7.c
+//vbvv:221203 =0.1 comment for user command, and comment support
+//           xefile7.c xekbd.c
+//vbvu:221202 win link err for xekbchk
+//           xekbchkl.h xekbchk.c
+//vbvt:221202 =0.2/=0.3 display code itself for default box char for japanese
+//           xefunc.h xefunct2.c xefunct.c xefile7.c
+//vbvs:221202 (BUG of vbvd)find cmd fail for =0.2(ULHdbcs setup required)
+//           xefile7.c
+//vbvr:221201 (BUG)whe deleted line of =0.2, it key is cleared and changed to cmd mode
+//           xefile7.c
+//vbvq:221201 (BUG)key ctr of the functbl is errornous when line of xe.ini was deleted. keep key with deleted sign.
+//           xeini.c
+//vbvp:221201 (BUG)FTkey index is not valid by Protected line(Fixed key assign)
+//           xefile7.c
+//vbvo:221201 show sample for sc cmd of =0.1
+//           xefile7.c xekbchk.c
+//vbvn:221201 (BUG)=0.1 shortcutkey cause err "not alphnum"
+//           xefile7.c/h
+//vbvm:221130 show alias sample line to 0.1 panel
+//           xefile7.c
+//vbvk:221130 0.1 alias cmd; allow line comment starting by #
+//           xefunc.c/h
+//vbvj:221130 change workdir to %USERPROFILE% (C:\Users\username) fo protection
+//           xe.c
+//vbvi:221130 (BUG)FTFLINECHSET:x20 is duplicated with DTUDUPACMD
+//           xefunc.c/h xefunct2.c file7.c xeini
+//vbvh:221130 =0.2; clear key did not update xe.ini 
+//           xefile7.c xe.ini
+//vbvg:221130 LNX compiler warning
+//           xe.c xe3270.c
+//vbvf:221129 drop japanese comment for =0.2/0.3 when english mode
+//           xefile7.c xe.c/h xefunc.c xekbchk.c
+//vbve:221126 change Default SJIS linechar from old(<0x20) to DBCS
+//           xefuct2.c xefunct.h
+//vbvd:221125 on 0.2/0.3 display hex/sjis string by utf8 avoiding line err(lineno green)
+//           xefuct2.c
+//vbvc:221125 functbl search miss to search english linechar because same funcid
+//           xefuct2.c xefunct.c/h
+//vbvb:221125 opt 0.2/0.3 as utf8 file for utf8 graphic char display
+//           xefile7.c xefunct2.c
+//vbva:221125 (Bug)cid on //,cid clear apl,sav-->update line cid remains apl; it should be //
+//           xefile4.c
+//vbv9:221124 add cid type apl for extension=.apl
+//           xefile4.c/h xefile.h xeini2.c
+//vbv8:221123 (Bug)output same graphic char by Ctl+Pad1(locale assigned but utf8 not assigned) after Alt+Shift+1(UTF8 assigned by xelchwxe.ini).
+//            A+S+1 output UTF8 string and next C+Pad1 also output same utf8 string.
+//            Caused by missing clear UCWF2UTF7STR.
+//           xekebd.c
+//vbv7:221123 set default line char by utf8 when Shift+
+//           xefunct2.c
+//vbv6:221121 add NOAPPEND to CID cmd
+//           xefcmd3.c
+//vbv6:221121 support unicode cid (length>2)
+//            APL cid prefix;APL comment is u-235d. CID top -->cid on 1st line frmat error(it should be ascii for UTF8 file).
+//            AND cid on prefix --> xx is not valid CID type
+//            suport utf8 3 byte
+//           xefile4.c/h xefile.h
+//vbv5:221120 warning /g/src/xe/xedir2.c:1812:49: warning: "%12s" directive writing between 12 and 15 bytes into a region of size 8 [-Wformat-overflow=]
+//           xedir2.c 
+//vbv4:221120 UTSSTART/UTSEND was made NOP by ftime deprecation; so timeb is became unused
+//           gxeview.c xxescr.c
+//vbv2:221119 SyntaxHighlight;add option trate underline as reverse by C_UNDERLINE=R and G_UNDERLINE=R
+//           xesyn2.c/h wxedef.h
+//vbv1:221118 SyntaxHighlight;support reverse attr
+//           xesyn2.c/h
+//vbv0:221118 (Bug)SyntaxHighlight;when default BG is specified, it override source-hightlight bg color
+//           xesyn2.c
+//*********  20201224 v129S release  *******************************
+//vbu1:201222 (LNX)On Manjaro/XFCE;following warning by gtk_application_is_inhibited()
+//             Gtk-Warning Calling org.xfce.Session.Manager IsInhibited failed: GDBus.Error.UnknownMethod:No such Method "IsInhibited"
+//            gxe.c gxe.h gxeview.c xxescr.c
+//vbu0:201217 Debian10 compiler warning
+//            xxexei.c xxefile.c xxecsub.c xxekbd.c xxecsub2.c
+//*********  20201216 v129Q release  *******************************
+//vbtb:201214 (BUG) TODO TEST was remained(IME conv err for SJIS) From 129N:update=2020/07/31
+//            xxexei.c
+//vbta:201214 allow -Nm for linux(abondon vbt3)
+//            xe.c xxexei.c
+//vbt9:201214 WXE help was double line, exceed screen height when /??
+//            wxexei.c
+//vbt8:201214 (WXE:bug)receive two WM_IME_CHAR for DBCS(by SJIS) on Japanase when used Dyalog IME.
+//            It is OK on notepad etc. For Wxe ok when system locale setting is changed to English.
+//             e.g u00a8 is DBCS 814E on SJIS and receive 81 and 4E. It is valid generating u00a8 only at 81 and ignore 4e.
+//            wxekbd.cpp
+//vbt7:201213 (WXE:bug)WM_CHAR receives UTF16,do not chk DBCS. WizKey input is checked as dbcs 1st byte.
+//            wxexei.c
+//vbt7:201213 (WXE)ignore VK_PACKET,it may generate WM_CHAR
+//            wxekbd.cpp
+//vbt6:201213 (WXE)try check VK_PACKET
+//            wxekbd.cpp
+//vbt5:201212 (WIN)apply utf8 code input(-NM) not also DBCS env
+//            xe.c
+//vbt4:201212 (WIN)apply -Nm on LC file only when utf8 inputmode(A+u)
+//            xekbd.c
+//vbt3:201212 (LNX)Drop -Nm option
+//            xe.c
+//vbt2:201211 Y/Nw default is /Yw(correct help)
+//            xe.c
+//vbt1:201210 WXE:when kbd changed to 2nd language DBCS chk should be changed
+//            wxedlg.cpp wxemain.cpp/h
+//vbt0:201209 (LNX)correct configure msg
+//            configure.ac
+//*********  20201028 v129P release  *******************************
+//vbs7:201028 Debian10 compiler warning -Wformat-overflow
+//            xe.c xedlcmd3.c xefcmd3.c xetso.c xedlcmd6.c xepan23.c xefunc2.c xedcmd3.c xedcmd2.c xe3270s.c/h
+//vbs6:201026 profile COL cmd for dir, "col on dir" follows dir setting; specify "col on default" for each file.
+//            xefunct.c xefcmd4.c xefcmd6.c/h xefunc.c/h
+//vbs5:201023 help more for --7(backspace and del)
+//            xemainl.c
+//vbs4:201023 (Bug) coding scr width/height exchanged
+//            xxemain.c
+//vbs3:201023 GTK3:screenresize lost at app restart(no more //vbi9:180221 (GTK3:bug)window size recovery err)
+//            gxemfrm.c
+//vbs2:201022 ncursesw folder is not provided on arch or manjaro linux.
+//            configure.ac
+//vbs1:201022 ftime deprecated(ftime is obsoleted POSIX2008)
+//            xefunc.c
+//            xxecsub2.c xxekbd.c xxemouse.c xxescr.c
+//vbs0:201021 compile/link err on Manjaro(multiple definition error)
+//            xedcmd2.h xekbchk.c gxe.h interface.c/h gxepage.c/h gxemfrm.h
+//*********  20200923 v129N release  *******************************
+//vbrm:200918 by xuerpchk(uerr fmt chk)
+//            xefcmd22.c
+//vbrk:200918 (AXE)first time scrgetcw fails, allow it
+//            xekbd.c
+//vbrj:200903 (AXE)highlight cmd;dir parm using $HOME
+//            xesyn2.c
+//vbri:200831 (Bug)editfattr overflow work when UFEA_DIR option from dcmdattrchange
+//            xedcmd.c
+//vbrh:200824 (AXE)notify ruler changed to Axe dialog
+//            xxescr.c jnic2j.c/h AxeJNI.java
+//vbrg:200824 (AXE)xehelp is now included in assets folder
+//            xefunc2.c
+//vbrf:200821 A+a/A+q(shortcut/query) repeat err(not alpnumeric stop repeat)
+//            xekbd.c
+//vbre:200821 (ARM)(Bug)set 2 byte "??" for f2lerr of width0 char
+//            ARM/xxexei.c
+//vbrd:200801 (ARM)del wxp cmd because print dialog not supported
+//            xedcmd2.c
+//vbrc:200801 (ARM)default is CPU8 file and filename
+//            xe.c
+//vbrb:200801 (gxe)uerrexit msgbox corrupted (already utf8)
+//            xxecsub.c
+//vbra:200731 (ARM)set default for GUM2_KBDUTF8  
+//            xeopt.h xeopt2.c 
+//vbr9:200729 (BUG)Goptopt2 flag duplicated of GOPT2_ALLFILELOCALE and GOPT2_COMBINE by 0x20==>kept old mode as aresult
+//            xeopt.h xeopt2.c 
+//vbr8:200724 0x8300 is generated by Alt+^ and Alt+= depending kbd type
+//            ARM/xxe:xxekbd.c
+//vbr7:200724 when conv err,f2lerr conv to ucs to utf because wcrtomb's locale is utf8
+//            ARM:xxexei.c  (no need for xxe(xxe reject /Yi(LOCALICU))
+//vbr6:200724 when conv err by icu under ICULOCAL iconv is called even Gconverter is of ICU
+//            ARM:xxexei.c  (no need for xxe(xxe reject /Yi(LOCALICU))
+//vbr5:200721 (ARM)logcat hung at utrace output([0x1a..) , it may be Esc[
+//            xekbd.c xefunc
+//vbr4:200716 rc=1 when utfwcwidth=0(currentry no user chekking rc)
+//            xeutf2.c
+//vbr3:200620 ARM:sdcard permission chk
+//            xefsub.c xefile.h
+//vbr2:200620 ARM:abort at sprintf(__builtin___vsprintf_chk)(UMEMSPRINTF by ustring.h)
+//            But finally,it can be avoided by -D_FORTIFY_SOURCE=1(compile warning only).  
+//            -D_FORTIFY_SOURCE=2 chk at runtime then abort.
+//            xedir2.c 
+//vbr1:200615 ARM compiler warning
+//            xe.c xefcmd26.c xekbd.c
+//vbr0:200522 move dirlist cmd crashed by stack overflow;expanded stack size default:1MB to 4MB(STCK=/STACK:4194304)
+//           linux: -Wl,--stack,4194304, but this is for mingW. someone says "use ulimit".
+//            xe17cinc wxe-property(Debug and Release)
+//*********  20200517 v129M release  *******************************
+//vbq7:200516 option to bypass useteh for MS visual studio exception handling(request restart visual studio)
+//            xe.c
+//vbq6:200516 (Bug)word of errmsg of "Alt+] not found" corrupted(UTF8 and Locale)
+//            xefcmd24.c
+//vbq5:200516 (Bug)dir sort /ot is err
+//            xedlcmd2.c xedir3.c
+//vbq4:200515 (Bug)exe cmd abend at cmderr() when last is end cmd because it free Ppcw. have to chk UCWF3EXECMD on dir also
+//            xedir.c
+//vbq3:200420 Alt/Ctrl+[/](search word); miss prev word containing splitter by pgdn/up/left/right
+//            xefcmd24.c
+//vbq2:200418 change warning msg; to find label pattern such as .a with label, issue warning enclose by parenthesys.
+//            xefcmd22.c
+//vbq1:200418 "-" dlcmd sort option chk more(/ot[ is not err)
+//            xedlcmd2.c
+//vbq0:200418 del excluded by S+Del
+//            xechar2.c
+//*********  20190917 v129L release  *******************************

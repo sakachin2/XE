@@ -1,0 +1,1027 @@
+//****:240709 v1.30 gitup ******************************************
+//v9j4:240630 (LNX)size in fontname by int
+//            xplnxp.c
+//v9j3:240629 ubuntu; font size is rounddown to integer and cause wide margin at right.
+//            rown up to next integer and apply scale(it works)
+//            xppf.c xp.h
+//v9j2:240629 (Bug)when Yn and WN=n, hedaer1 is set "LIN LINE|..."
+//            xppf.c
+//v9j1:240629 cairo scaling did not work?(line overflow page width)-->expanded right margin
+//            xplnxp.c xppf.c
+//v9j0:240628 show Trace option on Help msg
+//            xphlp.c 
+//v9i0:201217 Debian10 compiler warning
+//            xplnxp.c
+*** 129P release 2020/10/28 ******************************************************************
+*** 129M release 2020/05/17 ******************************************************************
+*** 129L release 2019/09/17 ******************************************************************
+//v9h1:190913 no neeed input file when query printer
+//            xprint.c xphlp.c 
+//v9h0:190913 gnome2 obsoleted
+//            xplnxp.c
+*** 129G release 2018/01/30 ******************************************************************
+//v9g0:180129 (Ubuntu 17.10:gcc7.2)Lnx warning not reachable
+//            xplnxp.c
+*** update history ******************************************************************
+//*********  20171130 v129D updated   ****************
+//v9f0:171123 compiler warning at FC25(GCC6); self-comparison always evaluates to true [-Wtautological-compare]
+//            xpinp.c
+//*********  20170812 v129C updated   ****************
+//v9e7:170826 compiler warning
+//            xprint.c xpebc.c xppf.c
+//v9e6:170826 compiler warning samename parm and gbl
+//            xpmult.c xpesc.c xpwinp.c xphlp.c
+//v9e5:170826 get dll suffix by uconv --version
+//            xpebc.c xprint.c xpmult.c
+//v9e4:170812 print params on trailer
+//            xppf.c xprint.c
+//v9e3:170810 shorten trailer msg for small /c parm
+//            xppf.c
+//v9e2:170809 compiler warning(duplicate define in local variable)
+//            xphex.c xpebc.c
+//v9e1:170809 (BUG)TAB(0x09) was output when utf8 file. No actual damage because 0x09 was not printed.
+//            xppf.c
+//v9e0:170807 v9.38 tabchar support(tabon:c/x__/u__)
+//            xprint.c xp.h xphelp.c xppf.c/h xpebc.c
+//*********  20170218 v128H released  ****************
+//v9d0:170218 v9.37 from xe,xpr ** total page number is not valid
+//            xprint.c xp.h
+//*********  20170202 v128G released  ****************
+//v9c0:170128 v9.36 Gtk3 deprecated
+//            xplnxp.c
+//*********  20160624 v128F released  ****************
+//v9b0:161220 v9.35 warning when NOTRACE or GTK3
+//            xppf.c xplnxp.c
+//*********  20160624 v128C released  ****************
+//v9a2:160623 v9.34 issue msg "-qfile is not supported by gxp"
+//            xplnxp.c
+//*********  20160426 v128C updated   ****************
+//v9a1:160418 v9.33 LNX64 Compiler warning
+//            xp2p.c xpebc.c xpinp.c xpmult.c xppf.c xplnxp.c
+//v9a0:160418 v9.33 LNX compiler warning
+//            xp2p.c xpdesp.c xpmult.c xpsub1.c xprint.c xplnxp.c
+//*********  20160404 v128B released  ****************
+//v998:160404 v9.32 W64 compiler warning
+//            xpdesp.c xpmult.c xppf.c
+//v997:160309 v9.32 (LNX)compiler warning
+//            xphex.c xppf.c xputf.c xpebc.c
+//v996:160309 v9.32 (BUG)utfdd2u buffsize parm is not ctr but size
+//            xpebc.c/h xppf.c
+//v995:160309 v9.32 (BUG)trailer line print uninitialized string
+//            xppf.c
+//v994:160308 v9.32 W32 compiler warning
+//            xputf.c xpwinp.c xpebc.c
+//v993:160308 v9.32 ucs4 support
+//            xp.h xputf.h xppf.c xphex.c
+//*********  20150602 v128A updated   ****************
+//v992:150529 v9.31 uerrmsg parm count err by xuerpck
+//            xplnxp.c xpsub1.c xp.h
+//*********  20150310 127Sreleased  ****************
+//*********  20140624 127M updated ****************
+//v991:140624 v9.30 s390x compiler warning
+//            xpinp.c
+//*********  20140602 127M updated ****************
+//v990:140506 v9.30 (W32UNICODE) filename by UD fmt
+//            xpinp.c xp.h xppf.c xpmult.c xpwinp.c
+//20140319 updated V127L ***v9.29 ******
+//v98q:140312 v9.29 print selected papersize
+//            xplnxp.c xp.h
+//20140219 updated V127J ***v9.27 ******
+//v98p:140219 v9.28 helpmsg print dbcs on xterm
+//            xphelp.c xp.h
+//20140214 doc updated V127H ***v9.27 ******
+//v98n:140214 no need to get margin from ppd,PageSetup prepare it.
+//            xplnxp.c
+//v98m:140213 select default papersize which was set by printer setting
+//            xplnxp.c
+//20140210 doc updated V127H ***v9.27 ******
+//v98k:140209 confirm GtkPaperSize and ppd not by sequence but by name
+//            xplnxp.c
+//v98j:140209 Margin by double
+//            xplnxp.c
+//v98i:140208 (BUG)Paper width/haight re-evaluation is required when orientation was changed by dialog
+//            xplnxp.c xpesc.c/h
+//v98h:140208 v98g is no effect;add margin option because origin shift may cut opposit side.
+//            xplnxp.c xphlp.c
+//v98g:140208 (GTK:BUG?)confusing b5 an jb5 for papersize;ppd is valid for papersize
+//            xplnxp.c
+//v98f:140208 try not fullpage to avoid edge cut by margin
+//            xplnxp.c
+//v98e:140208 (BUG)if printer changed by dialog,paper list was not changed
+//            xplnxp.c
+//v98d:140207 (BUG)errexit by printer "" not found  if no default printer defined.
+//            xplnxp.c
+//v98c:140206 forced to default printer if dialog was not opened
+//            xplnxp.c
+//v98b:140206 (BUG)multiple printer err when -q is default printer
+//            xplnxp.c xphlp.c
+//v98a:140206 simple shift parameter(previous shift function is expand papersize as custom paper size
+//			  to avoid printer warning of papersize unmatch)
+//            xplnxp.c xphlp.c
+//v989:140203 (BUG) could not select printer by multiple match. select it when fully match.
+//            xplnxp.c
+//v988:140201 default margin by gtkpaperlist is common to all,get from ppd
+//            xplnxp.c
+//v987:140201 (BUG)when papersize change by dialog,need to adjust maxcol/maxline
+//            xplnxp.c xpesc.c/h
+//v986:140131 (BUG)papersize change by dialog had no effect
+//            xplnxp.c
+//v985:140130 2 job was submit by init_dialogt,use printunix dialog
+//            xplnxp.c
+//v984:140130 try wait requrest_details
+//            xplnxp.c
+//v983:140130 display displaynem of papersize for -e/? like as print operation dialog
+//            xplnxp.c xphlp.c
+//v982:140130 gtk_print_list_papers use ppd internaly but fail because reuest_detail is asynchronous("details_acquired" signal handling:see gtkprintunixdialog)
+//            xplnxp.c
+//v981:140128 gtk_print_operation_run returns cancelled when not action:dialog
+//            xplnxp.c
+//v980:140128 gtk3 support
+//            xplnxp.c
+//20131120 doc updated V127D ***************
+//v97J:131118 (BUG)xpr ** for ebc,lineno/cmtline shows ? for ascii
+//            xpebc.c
+//v97H:131118 (BUG)vhexlinech initial clear missing
+//            xprint.c
+//v97G:131118 (BUG)xpr **;line is cut short by Gdatalinenosz for not UTF8 file
+//            xprint.c xppf.c
+//v97F:131118 (BUG)xpr **; adjust header1 for lineno prefix data
+//            xppf.c
+//v97E:131118 print "." for SO/SI when dumpmode
+//            xppf.c
+//v97D:131118 (BUG)tab should be unprintable when textmode vhex dump to adjust column
+//            xppf.c
+//v97C:131118 (BUG)formfeed should be ignored for ebc file
+//            xppf.c
+//v97B:131117 (BUG)-mxu && R/V lineno up when dbcs split by dumpwidth
+//            xputf.c
+//v97A:131117 (BUG)-mtxu && -nn split dbcs was printed by utf8code
+//            xputf.c
+//v97z:131117 (BUG)-mxu && -mr did not fold when utf8 was split
+//            xputf.c
+//v97y:131115 (BUG)-n8 is not effective for ebc file,issue errmsg
+//            xprint.c
+//v97x:131115 (BUG)ebc text mode split;contline is invalid(recorddumpcopyoffs is set only dump mode)
+//            xpebc.c
+//v97w:131115 (BUG)record mode vhex dump;heder1 length=105(!=lrecl) 
+//            xprint.c
+//v97v:131114 (BUG)-nl(no crlf) was ignored(it is default for R/V). it CRLF should be unprintable for R/V.
+//            xppf.c xpinp.c
+//v97u:131113 (BUG)recordmode line fold at col=65(min maxcol)
+//            xppf.c
+//v97t:131113 (BUG)record mode vhex print EOLDELM('|')
+//            xphex.c
+//v97s:131111 (BUG of v96t)utf8 n8 prints 2nd byte only on vhexline
+//            xputf.c
+//v97r:131110 (BUG)utf8 null(x00)will cut text string
+//            xplnxp.c
+//v97q:131110 (BUG)when utf8 file hhex dump,split utf8 code was printted to next line.
+//            xputf.c xppf.c
+//v97p:131110 hexline monospace(vhex and hhex partially)
+//            xp.h xphex.c xplnxp.c xpdesp.h
+//v97n:131105 (LNX:BUG) sigseg when wildcard filename was specified,shell expand too long cmdline parm
+//            xprint.c
+//v97m:131104 (gxp)header print err for utf8 filename;chk utf8 encoding for filename
+//            xplnxp.c xp.h xppf.c xputf.c/h xpdesp.h xpinp.c
+//v97k:131104 (gxp)when no multijob(=Nj),not all page printed;prohibit Nj option
+//            xprint.c xphlp.c
+//v97j:131104 (gxp)prohibit fastpath(-Yf) option pagecont not determined
+//            xprint.c
+//v97i:131104 (UNX)no docname parameter(-J) (deleted on xphlp but not on parmchk)
+//            xprint.c
+//v97h:131104 conjunct mode subheader should be monospace
+//            xppf.c xp.h xplnxp.c
+//v97g:131104 (BUG)conjunct mode subheader overflow area
+//            xppf.c
+//v97f:131104 (BUG)Order option default was not applied(issues errmsg)
+//            xprint.c xphlp.c
+//v97e:131104 (BUG)Order option was changed from -Y/No to -Oxx by v924
+//            xprint.c
+//v97d:131030 reuse widget without destroy(avoid flicker)
+//            xplnxp.c
+//v97c:131029 chk pagerange of printdialog
+//            xplnxp.c xpdesp.c xppf.c
+//v97b:131029 abandon v97a(printer do not expand paper width to landscape width)
+//            xplnxp.c xphlp.c
+//v97a:131027 -E/A4L/P P:rotate option for printer was not set to Landscape
+//            xplnxp.c xp.h xphlp.c
+//v979:131027 (LNX)display printer list by -q?
+//            xplnxp.c xehlp.c
+//v978:131026 compiler warninig "type-punned pointer"
+//            xpinp.c
+//v977:131025 (gxp)other pagesize support by margin shift /E/paper/[T|B|L|R[nn]]
+//            xplnxp.c xpesc.c xphlp.c 
+//v976:131024 (Lnx:Bug)eucjp dbcs was not printed
+//            xplnxp.c xppf.c
+//v975:131022 (GtkPrint)option of scaling for each line if width overflow
+//            xprint.c xphlp.c xp.h
+//v974:131011 (GtkPrint)no cmdfile support
+//            xprint.c xphlp.c xpesc.c
+//v973:131011 (GtkPrint)new form option(E[w]/form[L](2p is by /Y2 only)
+//            xphlp.c xpesc.c xplnxp.c/h xprint.c
+//v972:131011 add trace option /Yt/Nt
+//            xprint.c
+//v971:130923 Lnx color should be black(404040ff-->ff000000)
+//            xplnxp.h
+//v970:130922 GtkPrint for alternative of Gnomeprint
+//            ignore fastpath option
+//            xplnxp.c/h xppf.c xprint.c xpdesp.c/h xphlp.c 
+//20130908 doc updated V127C ***************
+//20130816 doc updated V127B ***************
+//v96D:130811 (BUG:Linux)TAB(0x09) should be tabctr=1 for record mode or vfmt because if expanded overflow lrecl(eject line)//+v96DI~
+//            xppf.c xprint.c
+//v96C:130811 (BUG:Linux)UTF8 file print err on Linux;WUCS size is 4 for linux
+//            xputf.c
+//v96B:130810 record mode line length err when line contains 0x15
+//            xpebc.c
+//v96A:130810 samechk defualt is 0 for recfm=F,V if not hhex dump
+//            xprint.c
+//v96z:130809 (BUG:LNX not gxp)EBCFILE ucs2local1 output utf8 when LANG=UTF8,ucvext_b2mDbcsstr cut by 2 byte each
+//            set EBCBYUCS(set dd to buff) and convert to utf8 at write
+//            xpebc.c xp.h xpmult.c xp2p.c
+//20130808 doc updated V127B ***************
+//v96y:130808 (BUG)indirect file print;tabskip have to be saved
+//            xpmult.c
+//v96x:130807 (BUG)xpr **(utf8 file) contline lineno prefix not cleared
+//            xppf.c
+//v96w:130807 lineno field is by ascii from xe(xpr **/***) for english small letter translation
+//            xpebc.c/h xppf.c
+//v96v:130804 long vhex scr print from xe(xpr **) vhexline split err
+//            xppf.c
+//v96u:130804 Y/Ns option is for hexdump only
+//            xprint.c
+//v96t:130804 (BUG)"mtxu /Rxx /n8" loop
+//            xputf.c xppf.c
+//v96s:130804 (BUG)"xpr **" for ebcfile hhex; b2dd twice
+//            xp.h xprint.c xpebc.c
+//v96r:130804 (BUG)"xpr **" for ebcfile hhex+vhex; vhexline length is same as hhex line len
+//            xp.h xpebc.c xppf.c
+//v96q:130804 (BUG)"xpr **" for ebcfile from xe;nor crlf is controled
+//            xp.h xprint.c xppf.c xpebc.c
+//v96p:130803 (BUG)v9.25 -mxe(ebc hexdump) with -ns(no same chk);all space in char part print
+//            xpebc.c
+//v96n:130803 v9.25 Test option /tu for test !EBCBYUCS
+//            xprint.c xp.h xpebc.c
+//v96m:130801 v9.25 Recordmode vhexdump print dbcs split
+//            xpbc.c xp.h
+//v96k:130731 v9.25 Recordmode vhexdump by -mtx not by mx(hhex dump)
+//            xprint.c xphex.c
+//v96j:130727 v9.25 avoid tabskip when dumpmode
+//            xppf.c
+//v96i:130726 v9.25 add -EOLPRINT: option to identify eol of vfmt
+//            xprint.c xp.h xphlp.c xpinp xpsub1.c xpebc.c
+//v96h:130726 v9.25 new -ICU option to support for EBC file on Windows
+//            xprint.c xp.h xpebc.c xphlp.c
+//v96g:130725 v9.25 (LNX:BUG)header0 shrink detect '/' of page number
+//            xppf.c
+//v96f:130725 v9.25 header0 shrink if record mode recordsz is too small
+//            xprint.c xp.h xppf.c
+//v96e:130724 v9.25 recfm=V(-Vvfmt) support
+//            xpinp.c/h xp.h xphlp.c xpmult.c xpsub1.c/h xpebc.c xppf.c xphex.c
+//20130707 released V127A ***************
+//v96d:130618 v9.24 findnext required dirname by ulib:v64k(win symlink support)
+//            xpinp xp.h
+//*****121219 **** v126K released
+//121219 v96c v9.23(Lnx)chk result of cupsGetDests(report from .at; folowing free() was crashed on RHEL5.73)
+//		      xplnxp.c
+//*****120715 **** v126H released
+//120705 v96b warning on suse64
+//            xpinp.c
+//120629 v96a (Win:BUG)c: may be protected; use temp
+//            xprint.c xp.h
+//120629 v969 VC2010:printf formt %n is deprecated and cause assetion break
+//            xppf.c
+//120629 v968 VC2010:LP64 support
+//            desp.c hex.c inp.c mult.c pf.c utf.c winp.c ebc.c xp.h
+//120616 v967 for VC6:/W4 warning except C4115,C4214,C4100,C4706,C4244,C4210,C4127,C4245
+//            xpinp.c xpwinp.c
+//120613 v966 warning(variable may not be uninitialized) on FC12
+//            xpinp.c xplnxp.c
+//120611 v965 avoid C4701 warning(variable may not be uninitialized)
+//            xprint.c xp2p.c xpesc.c xpinp.c xpmult.c xpsub1.c xputf.c xpwinp.c xppf.c
+//*****111106 **** v126C updated
+//111117 v964 (gcc4.6)Warning:unused-but-set
+//            xprint.c hex.c lnxp.c 
+//111115 v963 V9.21 compiler warning, unused variable
+//            xplnxp.c
+//111106 v962 V9.21(Win:BUG)if without /c for multiple file(wildcard) print,char-height shrink gradually
+//            height/width rate shirink by maxcol 82:41-->98(by lineCellHeight<106):53-->75:41
+//            xp.h xpwinp.c
+//*****111106 **** v126B updated
+//*****101025 **** v125K updated
+//101025 v961 (BUG of V942)from V125F;"Invalid name format" err for indirect print
+//            xpmult.java
+//101004 v960 option of hex dump by ucs/utf8 for utf8 (/Y8,/N8)
+//            xphlp.c xputf.c xprint.c xp.h xppf.c
+//101004 v959 correct help msg
+//            xphlp.c
+//100924 v958 (BUG)vhex print invalid hexdigit if utf8 string split at eol
+//            xputf.c
+//100923 v957 v9.20 /Wxxx(workdir existance chk)
+//            xprint.c
+//100923 v956 v9.20 (BUG) "too long line" err msg when from xe(xpr ** for ebc vhex mode. /Me oprion ignored)
+//            xpinp.c xp.h xpebc.h/c xppf.c
+//*****100911 **** v125J updated
+//100909 v955 v9.19 print EBC file by TextOutW for avoid print "?" for trans err to locale code 
+//            xpebc.c/h xp.h xppf.c xputf.h xpwinp.c xplnxp.c xphex.c
+//100908 v954 v9.19 allow tab as indirect file seperator
+//            xpmult.c
+//100908 v953 v9.19 EBC convertername support /CPEB:
+//            xpebc.c/h xp.h xprint.c xppf.c xpinp.c xphlp xpmult.c
+//*****100803 **** v125H updated
+//100803 v952 v9.18 japanese help for Linux
+//            xphlp.c
+//100802 v951 v9.18(BUG)rc not initialized;errmsg issued printertype!=W for utf8
+//            xplnxp.c
+//100706 v950 v9.18 64bit compile
+//            xp.h xpdesp.c xphlp.c xputf.c/h xphex.c xppf.h/c xplnxp.c
+//*****100709 **** v125g updated
+//100725 v945 v9.17 OSTYPE='G' for gxp
+//            xp.h
+//100706 v944 v9.17 (gxp)accept cups destination by -q parameter
+//            (use gtk because update of gpa_root by cups printer is done through asyncrronous gtk dispatching system)
+//            xplnxp.c xp.h xphlp.c
+//*****100701 **** v125F released                                  //+0324I~
+//100430 v943 (BUG)vhex mode;input fmt err msg when HHEX+VHEX
+//            xpinp.c
+//100429 v942 option support for each file on filename list
+//            xpmult.c xprint.c
+//100428 v941 v9.16 ebcdic print support
+//            xp.h xprint.c/h xpinp.c xppf.c xphlp.c xpebc.h/c
+//*CID://+dateR~:                             update#=  164;       //~5801M~
+//*****100324 **** v125D released                                  //+0324I~
+//****:100113  readme updated                                        **************//~0113I~
+//091215 v940 v9.15 unicode vhex line support by /WNU              //~9C15I~
+//            xp.h xprint.c xpinp.c xppf.c                         //~9C15R~
+//****:091115  V125A hpb doc updated                                 **************//~9912I~//~9B15R~
+//090728 v93v v9.14 -cmax(max coloumn(=512)) parm for 1 output line/1 input line//~9728I~
+//            xp.h xprint.c xphlp.c                                //~9728R~
+//090414 v92v (LNX)compiler warning                                //~9414I~
+//            xplnxp.c                                             //~9414I~
+//****:080207  V124G readmj updated                                 **************//~8227I~
+//080215 v92u (BUG)v9.13 ABEND when hex dump not UTF8mode          //~8215I~
+//            xphex.c xppf.c xp.h                                  //~8907R~
+//****:080201  V124F release                                     **************//~8201I~
+//080130 v92t (BUG)v9.12 help english spell check                  //~8130R~
+//            xphlp.c xp.hst                                       //~8130R~
+//****:080123  V9.11 * readme/xpj.doc updated *xe 1.124E released**************//~8130R~
+//080109 v92s (UTF:BUG)crlf was inserted before "|" of h-hexdump   //~8109I~
+//            xphex.c                                              //~8109I~
+//080108 v92r (UTF:BUG)toolong line write when /mxu                //~8108I~
+//            under win long line was cut  and bug disppear but linux print "?"//~8108I~
+//            xphex.c                                              //~8108I~
+//080108 v92q (LNX)new version of utfcvf2u                         //~8108I~
+//            xphex.c                                              //~8108I~
+//****:071108  V9.10 * v124D upload*************************************//~7B08I~
+//071029 v92p (LNX)src pkg packaging err(xpw95s.h missing err)     //~7A29I~
+//            sub1.c                                               //~7A29I~
+//****:071025  V9.10 * v124B upload*************************************//~7A25I~
+//071024 v92n (LNX)support utf8 file(conv to locale)               //~7A24I~
+//            /Y3 optio to control SS3(0x8f) for EUC               //~7A24R~
+//            xpesc.c xputf.c/h xp2p.c xp.h xprint.c xplnxp.c xphlp.c sub1.c//~7A24R~
+//071024 v92m (GXP)warning "missing /Mu" when locale2utf8 conversion err//~7A24I~
+//            xplnxp.c xprint.c                                    //~7A24R~
+//071023 v92k (Win/GXP)merge to src\xp                             //~7A23I~
+//****:071015  xp_.doc * v124A upload *************************************//~7A23R~
+//071014 v92j (Win/GXP)set maxline when line pitch specified without line count//~7A14I~
+//            xpesc.c                                              //~7A14I~
+//071014 v92h (GXP)color parameter                                 //~7A14I~
+//            xprint.c xplnxp.c xphlp.c                            //~7A14R~
+//071013 v92g (Win)letter size is for height                       //~7A13I~
+//            xphlp.c                                              //~7A13I~
+//071013 v92f (Win/gxp)auto-set maxcol/maxline when not predefined pich specified//~7A14R~
+//            xpesc.c xpwinp.c/h                                   //~7A13I~
+//071011 v92e (Lnx:BUG)/N9 ignored for help                        //~7A11I~
+//            xphlp.c                                              //~7A11I~
+//071006 v92d (Lnx)UTF8 support                                    //~7A11I~
+//            xplnxp.c/h xp.h xprint.c xp2p.c xputf.c xphlp.c      //~7A14I~
+//071005 v92c (Win)UTF8 support(v92b text mode vhex dump support)  //~7A11I~
+//            xputf.c/h xprint.c xp.h hphlp.c xppf.c/h xpwinp xpinp.c xphex.c//~7A11I~
+//071006 v92b text mode vhex dump support                          //~7A05I~
+//            xprint.c xp.h xppf.c xphex.c/h hlp.c                 //~7A05R~
+//071006 v92a Help msg for vhex mode(/Mx + /R)                     //~7A04I~
+//            xphlp.c                                              //~7A04I~
+//071006 v929 (W32)helpmsg screen height;chk screen buff           //~7A04I~
+//            xphlp.c                                              //~7A04I~
+//071005 v928 (Win)UTF8 support                                    //~7A04I~
+//            xputf.c/h xprint.c xp.h hphlp.c xppf.c/h xpwinp xpinp.c xphex.c//~7A11I~
+//070511 v927 (BUG)compile err by LONG LONG file size support      //~7524R~
+//            xpw95s.c xp.h xpinp.c                                //~7524R~
+//****:050731  readme updated *****************************        //~5801I~
+//050712 v926 (BUG)when doubled -q parm,last parm only is not efective.(stdout flag remain) 
+//            xrint.c
+//050712 v925 (BUG)page overflow;line count is not data line count but print line count for vhex mode//~7A04R~
+//            xppf.c
+//****:050607  readme and xpj.doc/xpe.doc updated *****************************        //~5410I~
+//050607 v924 /Yo option is duplicated with /O
+//            (reorder when /O except /Ol is specified)
+//            xphlp.c xprint.c
+//050607 v923 Doc correction
+//            xphlp.c
+//050606 v922 (UNX)same effect of default /yo option as other than UNX//~5801R~
+//            (if no -Y/No is specified,sort when no /Ol and widlcard/dir input)
+//            to sort double quation for wildcard
+//            xprint.c xphlp.c
+//050606 v921 outputfilename by -q parm only to avoid override for also other than UNX
+//            xprint.c xphlp.c
+//050606 v920 (UNX:BUG)help msg ostype err
+//            xphlp.c xprint.c
+//050606 v91z (BUG of v90k)help msg correct(/y2 option is not only for win)
+//            xphlp.c
+//050606 v91y (BUG of v91w)help by japanese(uhelpmsg support SJIS to EUC conversion)
+//            xphlp.c xprint.c
+//050606 v91x add /Nu option to bypass set 0x0c(form feed) for linux convenience
+//            xprint.c xp.h xphlp.c xppf.c xp2p.c
+//050604 v91w (BUG)printf by SJIS,so force english                 //~5817R~
+//            xprint.c                                             //~5817R~
+//****:050511  readme updated ***v117 rel**************************//~5801R~
+//050511 v91v (BUG)help bug,-Y/Ne option defualt is Ye for also UNX
+//            xpinp.c xp.h
+//050410 v91u (BUG)vhex mode;input fmt err msg when line contain 0x1a(fgets return 0)//~5410I~
+//            xpinp.c                                              //~5410I~
+//050410 v91t (BUG)vhex mode;too long line err msg when line contain 0x00//~5410I~
+//            xpinp.c                                              //~5410I~
+//050322 v91s help exit by 'q'                                     //~5322I~
+//            xphlp.c                                              //~5322I~
+//050309 v91r vhex print support for xe(/WN___X);line split and page eject//~5309I~
+//            xprint.c xp.h xppf.c inp.c/h                         //~5309I~
+//****:041225 v9.5 released with xe v1.16 *****************        //~5309I~
+//041009 v91q (BUG)exit when restart file is canceled.             //~4A09I~
+//            xpinp.c                                              //~4A09I~
+//040920 v91p :correct error msg(form type err)                    //~4920I~
+//            xpesc.c                                              //~4920I~
+//040605 v91n :no "*" on hdr fname when ftp(<xx>yy fmt)            //~4605I~
+//            xpinp.c                                              //~4605I~
+//040605 v91m :additional to 90b,allow dir without wildcard        //~4605I~
+//				for also indirect file if not remote dir.          //~4605I~
+//            xpinp.c/h xpmult.c                                   //~4605I~
+//040531 v91k (FTP)remote file print support;"<orgfname>LocalTempFile" fmt//~4531I~
+//                 on parm and indirect file.                      //~4531I~
+//            xpinp.c/h xprint.c xpmult.c xphlp.c                  //~4531R~
+//040417 v91j (WIN)uattlib parm changed char to long               //~4417I~
+//            xpinp.c                                              //~4417I~
+//030926 v91i (LNX) conv dbcs to euc from sjis(supported by uerr)  //~3927I~
+//            xpsub1.c                                             //~3920I~
+//****:030118 doc updated. v9.4  *********************             //~3118I~
+//030116 v91g (BUG) /Nd option ignored                             //~3116I~
+//            xprint.c                                             //~3116I~
+//030113 v91f try driver setting chng,success when prompt issued   //~3817R~
+//            xpwinp.c                                             //~3113I~
+//021223 v91e missing help msg for 2p fmt                          //~2C23I~
+//            xhlp.c                                               //~2C23I~
+//****:020803 doc updated. v9.4  *********************             //~2803I~
+//020803 v91d ajust default cols/line table                        //~2803I~
+//            xpesc.c xp.h                                         //~2810R~
+//020802 v91c (BUG)for dbcs split;1 byte long required for 2p save area//~2803I~
+//            xp2p.c                                               //~2803I~
+//020727 v91b (BUG)1st page drop when /y2 mode start page is even number//~2727R~
+//            xp2p.c                                               //~2727I~
+//020727 v91a ajust maxcol of form2p                               //~2727I~
+//            xpesc.c                                              //~2727I~
+//020727 v919 chng inter-space 2-->0(/yn),left margin 2-->0(/nn)   //~2727R~
+//            xp2p.c                                               //~2727I~
+//020727 v918 (BUG)line overflow whe form2p and /nn(no number fld) //~2727I~
+//            xp2p.c                                               //~2727I~
+//020727 v917 (BUG)minimum colomn for form2p is not 70(COLMAX1)    //~2727I~
+//            xprint.c esc.c                                       //~2727R~
+//020720 v916 (WIN)auto set form orientation by option /Yd         //~2721R~
+//            xpwinp.c esc.c/h xprint.c hlp.c                      //~2721R~
+//020719 v915 support FORM2P/WIN2P for prntyp OS2                  //~2720I~
+//            xppf.c xp2p.c job.c                                  //~2720I~
+//020719 v914 support FORM2P for prntyp WIN                        //~2720I~
+//            xppf.c xp2p.c winp.c                                 //~2720R~
+//020719 v913 (BUG)2p for hex dump mode is /y2 only,form2p not supported//~2720I~
+//            because max col is fixed to 16 or 32                 //~2720I~
+//            xprint.c                                             //~2720I~
+//020719 v912 (BUG)despage wkfile is text mode,so EOF(0x1a) cut file for fgets.//~2720I~
+//            So,replace 0x1a by '.'.                              //~2720I~
+//            desp.c                                               //~2720I~
+//020718 v911 form2p support(ex a42,b4l2). /y2 max col is of a4,b4l2 max col is of b5//~2718I~
+//             xp.h esc.c 2p.c/h xprint.c pf.c desp.c              //~2719R~
+//020703 v910 lineno and page continue opt by /I[x]xx-xx/[nn] parm //~2703R~
+//             xprint.c xppf.c xphlp.c xp.h                        //~2703R~
+//****:020518 doc updated. v9.3  xe v111 realeased **              //~2718R~
+//020518 v9.3 v90y support form parm for printer type=win          //~2518I~
+//             esc.c                                               //~2518I~
+//020518 v9.3 v90x set default when printer type missing(like as /E/B4)//~2518I~
+//             esc.c                                               //~2518I~
+//****:020406 doc updated. v9.3  *********************             //~2406I~
+//020408 v90w :(BUG)compiler warning for aix                       //~2518I~
+//             esc.c                                               //~2518I~
+//020406 v9.3 v90v (WIN)Letter support(ZHnn) for the case drive setup is not work//~2406R~
+//             winp.c hlp.c xprint.c xp.h                          //~2406R~
+//****:020112 doc updated. xe v1.09 *********************          //~2112I~
+//020107 v90u (BUG)not applicable errmsg when dir has subdir only  //~2107I~
+//             xpinp.c                                             //~2107I~
+//011227 v90t (BUG)/K (keisen) is ignored for /Ei                  //~1C27R~
+//             xppf.c                                              //~1C27I~
+//011227 v90s another english mode keisen                          //~1C27R~
+//             xppf.c xphlp.c xp.h xprint.c                        //~1C27R~
+//011225 v90r :back UNX default /ne to /ye                         //~1C27I~
+//011218 v90q :v90p has no effect(2nd page back to default font)   //~1C18I~
+//             win95 reset at startpage.                           //~1C18I~
+//             xpwinp.c                                            //~1C18I~
+//011218 v90p :(TEST)try setmapmode also when /Nr                  //~1C18I~
+//             xpwinp.c                                            //~1C18I~
+//011209 v90n :(BUG)help msg for /Yr,default is /Yr                //~1C18I~
+//             xphlp.c                                             //~1C18I~
+//011209 v90m :support stdout output                               //~1C09I~
+//             xprint.c xpinp.c xppf.c xphlp.c xp.h xpsub1.c       //~1C28R~
+//011008 **** :v 9.1 released with xe v1.08 ***************        //~1A08R~
+//010527 v90k :2 page support for also not unx version             //~1C09I~
+//             xprint.c xppf.c xp2p.c/h xp.h                       //~1C09I~
+//010526 v90j :ScrPrt support(/WN=linenosz /WS=xxx(xxx=org filename))//~1526I~
+//             xprint.c xp.h xppf.c                                //~1526R~
+//010522 v90i :LINUX support(default change-->/N1)                 //~1526R~
+//             xprint.c xpesc.c                                    //~1526R~
+//010522 v90h :AIX support(hline is dup with curses rtn)           //~1526I~
+//             xphlp.c                                             //~1526I~
+//010521 v90g :LINUX support:double pageing                        //~1521I~
+//             xp.h xppf.c xpunxp.c/h xprint.c                     //~1521R~
+//010521 v90f :LINUX support:shell expand wildcard(outfile is by -q only)//~1521R~
+//             xprint.c xpinp.c                                    //~1521R~
+//010521 v90e :(BUG)at uexit,free not yet malloced
+//             xp.h xprint.c xpmult.c
+//010521 v90d :LINUX support:no esc cmd as default
+//             xprint.c
+//010520 v90c :LINUX support:no archive option
+//             xprint.c
+//010520 v90b :LINUX support(allow dirname without wild card because shell expand wild card)
+//             xprint.c xpmult.c
+//010520 v90a :LINUX support(multifile seperater change from "/" to ":")
+//             xpmult.c xprint.c/h xphlp.c
+//010520 v909 :filename extention is after last .(for win/os2/linux)
+//             xpinp.c
+//010520 v908 :line feed required  for errmsg
+//             xpdesp.c
+//010519 v907 :LINUX support
+//             xp.h xpinp.c/h xpmult.c xppf.c xpsub1.c xprint.c xphlp.c xpdesp.c
+//010407 v906 :first null chk for /Y,/N parm
+//010402 **** :doc updated *v 9.1***************************************
+//010402 v905 :newpage reset may not required when new windows version.
+//            (Skip reset for each page when /Nr to page print speed up)
+//             xphlp.c xpwinp.c xprint.c xp.h
+//010401 v904 :2 parts print suport for windows printer
+//            (no form parm for windows,auto pich calc by device info)
+//             xpesc.c xprint.c xp.h xpwinp.c xpdesp.c xphlp.c
+//010331 **** :v 9.0 released with xe v1.07 ***************
+//001210 **** :doc updated *v 9.0***************************************
+//001210 v903 :(BUG)abend when /L parm err
+//             xprint.c
+//001119 **** :doc updated *v 9.0***************************************
+//001105 v902 :new sort order option "F"(fullname),not base+ext
+//             xpinp.c xprint.c xphlp.c
+//001105 v901 :(BUG)file name sort(name seq) extention should be case insensitive
+//             xpinp.c  
+//991120 **** :doc updated *v 8.9***************************************
+//000115 v899 :more errchk /o option
+//             xprint.c
+//000115 v898 :y2k:2000 year displayed as 100
+//             xpinp.c xppf.c
+//991120 **** :doc updated *v 8.8************************
+//991120 v897 :line feed by 0x0a only for UNIX file also when dump mode
+//991031 **** :doc updated ******************************
+//991003 v896 :(BUG)of v890.del v892
+//             if crlf if just on the line limit,colomn width is changed
+//             between phase.so page number differ phase2 and phase1
+//             At phase 1 crlf at 80 is line count 1 because maxline is 115,
+//             At phase 2 crlf at 80 is line count 2 because maxline is 80.
+//             page on header is printed like as 15/14.
+//             Change getinput to chk lf when cr then return lf when text mode.
+//             xppf.c xpinp.c
+//990918 **** :doc updated ******************************
+//990918 v895 :move trt file option to /Kfxxxx from /Mmfxxxx
+//             xprint.c xsub1.c/h xppf.c xphlp.c
+//990918 v894 :(BUG)2 set print when last is dbcs 1st byte
+//             xppf.c xpinp.c
+//990918 v893 :supprt TRT by file
+//             xprint.c xppf.c xphelp.c xpsub1.c/h
+//990917 v892 :(bug of v890)need process cr+lf as lf for text mode(by bin mode open)
+//             xppf.c
+//990915 v891 :EBCDIC support /M.e[k/e]
+//             xprint.c xpesc.c xppf.c xphlp.c
+//990911 v890 :Win stop read at 0x1a;change r to rb of readmode.
+//             xpinp.c   
+//990822 **** :doc updated ** v8.7 with xe v103 released ****************
+//990829 v889 :/Yt win trace option for win.
+//             xpwinp.c xprint.c
+//990828 v888 :/W= support(filename on header;for xe current file print thru work)
+//             xprint.c inp.c
+//990828 v887 :(BUG)bug of v886;expansion of header1p destroy header0 by memcpy len err
+//             xppf.c        -->>it is not bug.length is valid.
+//990626 v886 :(WIN:BUG)coloumn gage too short,MAXCOLMAX=512
+//                      abend when 512 by header1w is too short by esccmd space
+//             xppf.c xp.h
+//***********************************************************
+//990425 **** :doc updated *** v8.6 released
+//981219 v885 :(WIN)left margin
+//             xpwinp.c
+//***********************************************************
+//981201 v8.5 :released
+//981123 **** :doc updated
+//981124 v884 :helpmsg correxct
+//             xphlp.c
+//981116 v883 :(WIN)calc lpi for also line numbers not specified(default)
+//             xesc.c xphlp.c
+//981116 v882 :(BUG)spip1stff ignored when restart page
+//             xepf.c
+//981116 v881 :(CANON)for non FONT case also,soft reset cmd is at 1st page only
+//             xesc.c
+//981116 v880 :(WIN)calc cpi for also calc char numbers
+//             xesc.c
+//981116 v879 :LinePrinter-Bold is not unreadable print
+//             xesc.c
+//981115 v878 :allow /L/lpi(no maxline parm) format
+//             xprint.c
+//981115 v877 :(WIN)any value lpi
+//             esc.c hlp.c
+//981115 v876 :(WIN)drop 18cpi because cpi can be any value and may calc by maxcol
+//             esc.c hlp.c
+//981114 v875 :(WIN)set lpi when specified maxline only(no lpi/no form specified)
+//             esc.c winp  hlp.c
+//981114 v874 :(WIN)set cpi when specified maxcol only(no cpi/no form specified)
+//             esc.c xprint.c winp hlp.c
+//981114 v873 :(WIN)any cpi value support min=28(14)cpi max=1cpi
+//             esc.c hlp.c
+//981114 v872 :(WIN)133 colum support(18cpi)
+//             esc.c hlp.c
+//981114 v871 :(CANON)esccmd jobstart+soft reset cause printer performance down
+//             wirte it at top of page of each file
+//             ascii default is DUT
+//             xpesc.c xppf.c
+//981104 v870 :(BUG:cannon)DBCS space should be double of SBCS,
+//              and it is scalable if chande to G2
+//             -add SYM font type
+//             xpesc.c
+//981101 **** :doc updated
+//981028 v869 :docname parm support(/J)
+//             xprint.c xpjob.c xphlp.c xpwinp.c
+//981028 v868 :(BUG)fullpath failed when dest is "ƒvƒŠƒ“ƒ^["
+//             for chk input and out put is same name.
+//             xpinp.c xprint.c
+//981025 v867 :(WIN)same closedoc timing as os2
+//             (need not chk conjunctmode.loop all input in printfile() whn that mode)
+//             xppf.c xprint.c
+//981024 v866 :despage work data is raw(no jis kanji conv) data
+//             so pagesize is net datalen for pagework buff use chk
+//             xppf.c
+//981024 v865 :(OS2)docname set by startdoc api
+//             xprint.c xppf.c xpjob.c/h
+//981024 v864 :setup graphic set for CANON
+//             Swiss,Dutch,Ncourier for ascii
+//             xpesc.c
+//981024 v863 :(WIN)change keisen default
+//             xprint.c xp.h xphlp.c
+//981024 v862 :(WIN)delete logfont at each closedoc
+//             xpwinp.c
+//981024 v861 :(WIN)support other port
+//             xpwinp.c
+//981024 v860 :(WIN)chk output is printer by enumprinter
+//             xprint.c xpwinp.c/h
+//981023 v859 :(BUG of v844)output should not to be open when _WIN
+//             xprint.c xpdesp.c/h xppf.c
+//981023 v858 :(BUG of v844)win and outfile err should chk after outdevprn chk
+//             xprint.c
+//981010 v857 :/Yk-->/Kx;x=0(through),g(graphic),k(katakana),any char
+//             xprint.c xp.h xppf.c xphlp.c
+//981010 v856 :last formfeed set to last page(currentry new job of x0c line only)
+//             xprint.c
+//981007 v855 :fistpage formfeed skip option(/Y1)+despage(/Yp) cause 1st page print
+//             top of page by x0c miss because 1st page has no x0c
+//             xpesc.c xppf.c xpwinp.c
+//981006 v854 :IBM printer CPI=7.2 is ignored
+//             xpesc.c
+//981006 v853 :change default char set for hexdump mode to 'j'(keisen by '.') from 'd'
+//             xprint.c xphlp.c
+//981006 v852 :MAXLINEWIDTH*5 miss to MAXCOLMAX+LINENOSZ+10*5(need parethesys)
+//             xp.h
+//981006 v851 :write formfeed at exit
+//             xppf.c xprint.c
+//981006 v850 :display printed pageno when ESC cancel
+//             xppf.c xpsub1.c xpdesp.c
+//981005 v849 :esccmd should not be converted
+//             xppf.c
+//981005 v848 :char set cmd for ESCP(ESCt)
+//             ext-graph if a(ascii) else katakana for /m
+//             xpesc.c xppf.c
+//981005 v847 :dbcsenvchk by ulib rtn because chk also codepage
+//             xpsub1.c
+//981001 v846 :keisen print for non ibm(/yk,/nk)
+//             default /Nk when /Mx else /Yk
+//             ESCP:katakana:x'90'-->x'9b'(dbcs 1st byte range)
+//                  ext graph:x'b9'-->x'ce'
+//             CANON/WIN:katakana:'/'(because dbcs 1st byte range)
+//                  ext graph:x'b9'-->x'ce'
+//             xppf.c xprint.c xphlp.c
+//981001 v845 :printer type=IBM/CANON,cpi=75 treated as cpi=7.2
+//             xpesc.c
+//980927 v844 :(WIN) /EW option(use Win32 API to use spool)
+//             fontname query by ?
+//             default is W(if no outfile) or E(if outfile)
+//             xpwinp.c/h xpesc.c xp.h xprint.c xppf.c xpsub1.c xphlp.c
+//980926 v843 :(BUG)Win version also need shift-jis to jis when ESC cmd
+//                  and it may be also for OS/2(see v78a)
+//             xppf.c
+//980923 v842 :(BUG)/lpt1 is not rejected
+//             xprint.c
+//980923 v841 :(BUG:WIN/GCC)wild card *.* or * is rejected because it is directory
+//             set parm SUBDIR flag and use nomsg option findfirst
+//             xpinp.c
+//***********************************************************
+//971001 v8.4 :released          
+//***********************************************************
+//971221 v83a :2000 year consideration
+//             xpsub1.c
+//971130 v839 :findfirst with dir option to avoid dup errmsg
+//             xpinp.c
+//971130 v838 :new option /Qoutfile to avoid positional parm for xe
+//             xprint.c xphlp.c
+//971130 v837 :(BUG)access area after free(abend when w95)
+//             xpmult.c
+//971129 v836 :GCC version
+//             xphlp.c:title msg --G--
+//             xprint.c/h:putenv(LFN),chk lfn support
+//             xpinp.c,xpjob.c:alias and lfn
+//971125 v835 :GCC version
+//             _dos_findfirst/_dos_findnext\_dos_setfileattr
+//						-->udosfindfirst/udosfindnext/uattrib
+//            xpinp.c
+//971124 v834 :GCC version
+//            xppf.c xpsub1.c xpinp
+//971124 v832 :split xpdesp from xprint
+//            xprint.c xp.h xpdesp.c/h xppf.c
+//971124 v831 :split xppf from xprint
+//            xp.h xprint.c xppf.c/h
+//971124 v830 :split xphex from xprint
+//            xp.h xprint.c xphex.c/h
+//971123 v829 :(BUG:W95)wait kbd input
+//            w95s.c
+//971123 v828 :(BUG) title msg err(reverse date and type)
+//            xphlp.c
+//971123 v827 :(BUG) stuck overflow(missing /ST parm on mak)
+//            xprint.mak
+//971123 v827 :split xpsub1 from xrint.c
+//            xprint.c/h xpsub1.c/h esc.c inp.c
+//970928 v826 :w95 version
+//             xprnt:compiler warning:comp singned and unsigned
+//                   _bios_keybrd-->xpw95kbinp
+//                   intdos 6300 -->xpw95dbcsenv
+//             inp:compiler warning:comp singned and unsigned
+//                 _dos_findfirst/_dos_findnext\_dos_setfileattr
+//						-->udosfindfirst/udosfindnext/uattrib
+//             hlp:put version id for help/last line
+//             xprint.c xpw95s.c/h xpesc.c xpfsub.c xphlp.c xpinp.c xpmult.c
+//***********************************************************
+//971001 v8.3 :released          
+//970928 doc updated
+//970607 v825 :(BUG)ext key for confirma reply cause line destroy.
+//            xpinp.c
+//970607 v824 :bypass confirm before restart file for also /ol(no sort)
+//            xpinp.c
+//970607 v823 :(BUG)display invalid filename on confirmation when /ol
+//                  (static pathlen changed by fullpath PATHLEN)
+//            xpinp.c
+//970607 v822 :(BUG)unmatch with restart/prn file when path is  specified
+//            xpinp.c
+//970607 v821 :(BUG)drive specification dropped when no \ embedded in filename
+//            xpinp.c
+//970601 v8.2 :released
+//970512 v80a:display filename after replyed 'A'll.
+//            xpinp.c
+//970503 v809:(BUG:DOS only)space embeddig filename.missing on header line
+//            xpfsub.c
+//970413 v808:break at page eject timing not but line print
+//            xprint.c
+//970214 v807:use FINDBUF3 by ufile.h
+//            xpinp.c xpmult.c
+//970214 v806:header filename:split filename from dir name      
+//            xpinp.c 
+//970214 v805:pathlen considering dbcs filename
+//            xpinp.c 
+//970209 v804:change sort sequece default to name form extention
+//            xprint.c
+//970208 v803:(BUG)header0 overflow when when fast print because
+//                 header0 has not yet pageno
+//            xprint.c xp.h
+//970207 v802:confirm reply 'E'(all selected) 'Esc'(cancel)
+//            xpinp.c
+//970206 v801:/Yv option to print files in a dir conjunctly
+//            (dir sort mode only to avoid double confirmation)
+//            xprint.c xpinp.c hphlp.c
+//v8.0 release
+//961217 v78c:ESCP kanji need kanji command(set:[FS]& and reset:[FS].)
+//            xprint.c
+//961215 v78b:in ESCP,LIPS text mode,change IBM keisen moji to "/"
+//            xprint.c
+//961214 v78a:kanji conversion jis to shift-jis when ESCP for DOS version
+//            xprint.c
+//961214 v789:char set for cannon(dbcs but x00-x1f is unprintable)
+//            xprint.c xphlp.c
+//961210 v788:72cpi for ibm pagep
+//            xpesc.c
+//961210 v787:lipsIII kanji cpi is fixed at 72 cpi(max colum=100)
+//            xpesc.c
+//961210 v786:use unit 1/180 inchi not but 1/360 inch
+//            because canon escp emulator not supported 1/360
+//            xpesc.c
+//961108 v785:1st page EJECT bypass option
+//            xphlp.c xprint.c xp.h xpesc.c
+//961106 v784:ESCP has ROMAN font
+//            xpesc.c xphlp.c
+//961106 v783:Cannon printer support(LIPS-III)
+//            xphlp.c xprint.c xpesc.c xp.h
+//961106 v782:(BUG) esc kanji font style chk
+//v7.9 release*
+//960918 v781(v7.9):(BUG) /mx /y6 position of '-' mot after 8 byte
+//v7.8 release*
+//960824 v769(v7.8):(BUG of v769)need reset also pagepos when shorten header0
+//960721 v768 :(BUG)2 line header0 when long pathname
+//960707 v767 :(BUG)missing help for /Yi
+//960707 v766 :ibmc2-->msc6
+//960707 v765 :form feed ignore option for text mode w/o record option
+//960606 v764 :confirm reply all option
+//960606 v763 :confirm only following of specified restart file
+//960606 v762 :(BUG)strupr cause err for some DBCS filename,use memicmp
+//960221 v761 :(BUG of v747)proc end msg for mode x(not dropped tab)
+//***********************************************************
+//960210 release with xe v060 as V7.5
+//960113 v752 :set lpitch default to 6-lpi
+//951123 v751 :err msg for dir name as input(xpinp)
+//951123 v74r :err msg when no condition match file exist
+//951123 v74q :split xpinp
+//951122 v74p :open err whe \hhh format(drop first \ )          //~v74pI~
+//951110 v74o :page concat by '+' not by ',' for xe use         //~v74nI~
+//951110 v74n :page restart bug(print only 1 page)              //~v74nI~
+//951110 v74m :LAN support(xpjob.c)                             //~v74lI~
+//951105 v74l :form id on /E                                    //~v74lR~
+//951028 v74k :time stamp on confirm msg                        //~v74lR~
+//951028 v74j :date AND/OR support                              //~v74lR~
+//951028 v74i :cpi by file max col but under /C parm(not fixed) //~v74lR~
+//951028 v74h :multiple page range specification                //~v74lR~
+//951028 v74g :terminate process after input range when fastpath//~v74lR~
+//951028 v74f :fullpath filename on hdr                         //~v74lR~
+//951028 v74e :XP=wkdir env variable                            //~v74lR~
+//951028 v74d :hidden file print                                //~v74lR~
+//951028 v74c :(BUG)no total msg when merge case(wild card etc) //~v74lR~
+//951028 v74b :background option                                //~v74lR~
+//951028 v74a :for ERROR_KBD_EXTENDED_SG(pm session)            //~v74lR~
+//951028 v749 :top \n for spooler err msg                       //~v74lR~
+//951028 v748 :err when no page for /P                          //~v74lR~
+//951028 v747 :drop tab= of trailer when hex mode               //~v74lR~
+//951028 v746 :avoid print trailer only page                    //~v74lR~
+//951028 v745 :separate xpesc                                   //~v74lR~
+//951022 v744 :set cr to output err msg                         //~v74lR~
+//951022 v743 :indirect option                                  //~v74lR~
+//             -reverse seq of file specification               //~v743I~
+//             -set cr to output err msg                        //~v744I~
+//951021 v742 :input file stdin support                         //~v74lR~
+//             -cistrcmp --> stricmd                            //~v742I~
+//             -multifile list malloc                           //~v742I~
+//             -exit --> uexit(free malloc area)                //~v742I~
+//             -share findfile(not exit but return not found at first)//~v742I~
+//             -/N0 deny stdin,(stdin is file)                  //~v742I~
+//951010 v741 :reduce module size(move genaral/help/history to xp.doc)//~v74lR~
+//950208 v7.3-1:/innn (missing -mmm) cause abend                //~5208R~
+//940927 v7.291:chng parm key /= --> /E (BAT file can not accept "=")//~5208I~
+//             :force sbcsenv /N9 option                        //~5208I~
+//940826 v7.28:ESC/P kanji font style
+//       v7.29:bypass print \n when /Nhg
+//940820 v7.27:last ff missed bug when output to prn
+//940820 v7.26:/Yf:fast process option(phase2 only)
+//940820 v7.25:exsact input range of offset for hex non record dump
+//940819 v7.24:char pitch,line pitch,font style parameter.
+//940818 v7.23:/?(short help msg) and /h(long help msg)
+//            :help option by alph order
+//            :msg for DosFindFirst err rc=3(path not found),2(file not found)
+//            :devide program to compile under ibmc2
+//940817 v7.22:allow multi output file for dos
+//940816 v7.21:/Inn-mm(lineno),/Ixnnnn-mmmm(offset) select option
+//            :record mode lineno maintenance bug
+//            :/Ys msg for help
+//            :assume record mode  if /Nl under record mode
+//940815 v7.2 :/Ym(clear archive attr) /Ya(select archive attr file)
+//            :file time stamp condition unmatch msg for single file
+//940814 v7.13:no trailer output when /Nh
+//940808 v7.12:/Ng:no colomn gage output option
+//            :/Nh:no header output optin
+//            :/Nn:no number(line prefix) output optin
+//            :expand MALLOC size for os/2
+//            :"XDUMP" to end of process msg
+//940808 v7.11:os/2;document name set function(/Yd)
+//            :    ;DosFindFirst bug(filecount=0 for multi input file)
+//940805 v7.1:os/2;use primary kbd(handle 0)
+//           :    ;fflush print start msg for os2
+//           :    ;multi print-job option
+//           :    ;end of process msg err
+//           :    ;chk fbStatus not but chScan(ipmd hung)
+//           :dos ;for the case display-lineno get fail
+//           :PGMID/VER-->static
+//           :multiple toggle char for /Y,/N
+//940728 v7.0:os/2
+//           :malloc only when page-reverse option used
+//           :reverse print bug
+//           :FP_OFFS-->ULONG cast
+//940727 v6.9:screen size by int 10 for dosv ext
+//           :allow preceding crlf
+//           :ignore tab when record/hexdump
+//940725 v6.8:restart chk for not wildcard case
+//           :restart file neame preceding "/" chk
+//940725 v6.7:hex dump/record dump support
+//           :6+1 byte line header for 6 byte offset,default maxcol=110
+//940705 v6.6:edit offset for skim dump
+//           :CR+LF chk bug when dump mode
+//           :8+1 byte line header for 8 byte offset,default maxcol=100
+//940705 v6.5:/M option format chng(ascii is sub code of dump mode,add sbcs mode)
+//           :allow printable even if <x20 for japanes dos char set
+//940704 v6.4:avoid compiler warning(conversion pointer to long)
+//940704 v6.3:char compare bug(unsigned char and int)
+//           :getinput unsigned char bug(return 2 byte to ax)
+//940704 v6.2:page restart for multifile print(add file name parm to /P)
+//940701 v6.1:confirm after sorted when sort
+//940628 v6.0:stop Y/n reply by Esc.
+//           :stop Y/n reply msg to std err
+//940628 v5.9:/? /h /g option
+//           :inpfile ? is not help but wild card
+//           :close input file after phase1 when databuff use
+//940623 v5.8:performace up(use malloc area for input data)
+//           :performace up(use malloc area for pos work)
+//           :bug when dump mode(read count int)
+//           :breakchk at print line(symple logic)
+//           :seperate findfile routine from openinput
+//940623 v5.7:multiple input file specification(sort by file name without dir name)
+//           :sort option default change(on when wildcard)
+//940623 v5.6:bug of esccmd set
+//            (no colomn parn and multi-file and short line file then default line length file)
+//940621 v5.5:esc cmd file support
+//940620 v5.4:remove work file after completed
+//940614 v5.3:page descending order print option
+//940614 v5.2:confirm wait by bios_keybrd not by scanf(enter is not need more)
+//940614 v5.1:max colomn determine automaticaly.(chek input data max colomn)
+//940614 v5.0:protect loop(chk output file is printed)
+//940609 v4.9:japanese msg
+//           :PGMID
+//940609 v4.8:file selection by time stamp
+//940605 v4.7:title colomn arangement
+//           :multi page help msg
+//940604 v4.6:wild card file-list sort function
+//           :file count duplicated bug
+//           :display total line count
+//940525 v4.5:ESC/P printer support(tested by cannon bj15v)
+//           :upper/lower parm char chk by toupper function
+//940512 v4.4:end page display "PAGE nnnn/mmmm"
+//940512 v4.3:chk x0D and x0A for dump mode
+//940424 v4.2:-if dump mode open by binary mode(ignore 0x1a:eof)
+//            -read input by blocking mode(speed up)
+//            -break(Esc key) chk for print cancel operation
+//            -asciimode compare bug
+//940424 v4.1:file name msg before at print start not after print
+//940228 v4.0:_dos_findfirst/_dos_findnext r.c cchk bug
+//           :bug when drive letter+file name(without dir delm)
+//940228 v3.9:bypass empty file msg when print skipped
+//           :bug when drive letter+file name(without dir delm)
+//940225 v3.8:option by /Nx or /Yx (x:esc,confirm etc)
+//940224 v3.7:wild card file name support
+//940206 v3.6:DOS(ibmc2) support
+//            -DosQueryFileInfo-->stat
+//            -16 bit integer
+//931019 v3.5:support double space/tripple space line advancing
+//           :bug when xxx\f(appear \f on first line)          
+//931013 v3.4:clear deleted line
+//931013 v3.3:Esc cmd issue option
+//931013 v3.2:print page range parameter add
+//931013 v3.1:maxcolom,maxline,tabskip option by / paraneter
+//           :/p option by /dnn or /ann (nn!=0)
+//931007 v3.0:dbcs secon byte additional chk
+//931007 v2.9:write pich command to each page for printer power off/on case
+//930910 v2.8:-/pn(n=1/2/3):minimum printable char string count option
+//           :-text mode on last complete msg
+//930908 v2.7:-accept \n only after printable evenif dumpmode
+//           :-accept \t(tab) after printable evenif dumpmode
+//           :-ignore one byte printable if compress dumpmode
+//           :-ignore two byte DBCS printable if compress dumpmode
+//           :-chk DBCS second byte(must >=x'40')
+//           :-unprintable SBCS chk by code tbl
+//           :-last line not printed bug when eof without crlf
+//930906 v2.6:-option by /x or -x format
+//            -option /n (accept cr evenif dumpmode)
+//            -option /a (ascii dump)
+//930906 v2.5:-dumpmode "p"/"P" compress dump mode
+//930906 v2.4:-compress contunuas unprintable char if "p" dump mode
+//930903 v2.3:-send pich cmd to printer by linesize
+//           :-default maxcolomn ->110
+//930903 v2.2:-\f(form feed char) process(eject page)
+//930902 v2.1 -line no 5 char(over 9999)
+//            -tabskip count default change 10-->4(mifes default)
+//930709 v2.0:-dump mode(replace unprintable char by '.')  
+//            -put last form feed
+//930421 v1.9: end of list id to last colomn indicator line
+//930420 v1.8: consideration for DBCS char separation when line over
+//930419 v1.7: not use hard tab, but repl HTAB to space for multiline
+//930416 v1.6: drop tabstart parm,use tabskip only
+//930322 v1.5: HTAV option                       
+//930319 v1.4: for the case next of maxcol is \n
+//           : avoid type transformation warning
+//921221 v1.3: time stamp from directory
+//921218 v1.2: input parm delm is blank not comma
+//921007 v1.1: display curr date-time/page on header
+//921001 v1.0: first release

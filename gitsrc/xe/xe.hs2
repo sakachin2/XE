@@ -1,0 +1,3055 @@
+//***********************************************************************//~1331I~
+  .v107:(2000/12/01)
+     1.BUG修正
+       -End-Of-File-ID(0x0a).
+        .バイナリーモードのテキストファイル編集で最後のEOFID(0x1a)を
+         削除できない。
+       -PRINTコマンドをINIファイルで設定した時 Print 行コマンドが
+        パラメータエラーになる。
+       -DirリストのRefreshコマンド(S+F1)でファイル名のワイルドカード
+        マスクが無視される。
+       -DirリストUndo用DirからUndoするとAbendすることがある。
+     2.機能追加
+       -CID(ChangeID:更新行タグ).
+        .ファイルの先頭行のCID行に更新回数を表示したり、ファイル保存時
+         タブをスペースクリアーするオプションを設定可能。
+         CID行を挿入した初回だけは更新回数を設定できますが次回から
+         更新回数はファイル保存時に自動更新されます。
+        .CIDコマンド
+          オペランド無しでヘルプ表示。
+          "CID TOP" でファイルの先頭に更新回数表示用のCID行を挿入する。
+          (例) //*CID://+dateR~:                     update#=    1;
+          "CID TOPA" で全オプションを含むサンプルCID行を挿入する。
+          (例) //*CID://+dateR~:#63 option=(m72,n,p0,tabclear) update#=1;
+       -表示/編集ファイルの History リスト。
+        ファイル名入力画面(初期メニューで 1 か 2 を選択)でそれまでに
+        表示/編集したファイル名をリストします。
+        カーソル移動しEnterキーでコマンド行にそのファイルの表示/編集
+        コマンドを 表示。
+        "b" か "e" のキーでメニューの選択に拘らず表示或いは編集、
+        "1" と "2" はそれぞれバイナリーモードの表示/編集コマンドを実行。
+     3.リナックス コンソール版の追加。
+       -Slackware-3.5,TurboLinux6.0 WS でのみの稼動確認です。
+       -X 画面では動きません、コンソール画面でのみ稼動します。
+        Alt+Fn(F1 から F6 まで)でコンソールを切り替えてのマルチ
+        セッションをサポート。
+       -英語モードのみの対応です。
+        kon 上では漢字表示できます。
+       (その他、PC系の版との相違は xeunxj.doc を参照。)
+     4.AIX TeraTerm版の追加。
+       -TeraTerm(*)接続で AIX 上で動きます。
+       (*) TeraTerm は T.Teranisi(寺西 高)氏作のフリーウェアーです。
+           Tera Teram Pro version 2.3 でテストしました。
+       (TeraTermの設定その他、PC系の版との相違は xeaixj.doc を参照。)
+     5.その他。
+       -ワイルドカード指定で対象ファイルが１つでもDirリストを表示する
+        には /l オプションを指定する。
+       -リナックス と共通にするため COLコマンドのキー割り当てを
+        A+F2 から S+F11 に変更。
+       -Dirリストでファイル名表示欄を拡張。
+        S+F6 で切り替えて長いファイル名を表示することができます。
+       -桁ゲージ(ルーラー)上カーソル位置を反転表示。
+        またゲージでタブ設定も可能。
+     6.ツール。
+       -XPRINT v9.0
+        .(BUG)ファイルのベース名順+拡張子順出力(/On)の時、
+         拡張子のソート順が大文字/小文字区別ありになっていた。
+        ./O オプションにベース名、拡張子を区別しないオプション /Onを
+         追加。従来の /On は /Ob に変更。但し省略値も/Obに変更。
+       -XFC v1.3
+        .比較対象が同じファイル名ならディレクトリー名のみの指定が可能。
+        .タブは１バイト表示。表示文字はオプション。
+
+//v404:010309 LINUX support:no break key chk                       //~1331I~
+//            xekbd.c                                              //~1331I~
+//v403:010306 AIX-X support:terminfo string                        //~1331I~
+//            kbdchk.c                                             //~1331I~
+//v402:010306 AIX support:string print                             //~1331I~
+//            kbchk.c                                              //~1331I~
+//v401:010305 X support:kterm is dbcs like as kon                  //~1331I~
+//            xescr.c                                              //~1331I~
+//v400:010305 X support:for cursor key string not by terminfo for xterm/kterm//~1331I~
+//            xekbchk.c                                            //~1331I~
+//v30e:010107 AIX support:original key string change function by -k parm.//~1331I~
+//            xemainl.c                                            //~1331I~
+//v30d:010104 AIX support:(BUG)if dbcs space disp char is same as dbcssplit char,//~1331I~
+//            split char is highlighten.                           //~1331I~
+//            xe.h                                                 //~1331I~
+//****:010102 AIX   merge(v30c) -->linyux                          //~1331I~
+//v30c:010102 AIX support:vc++ compare by unsigned when unsigned char and int.//~1331I~
+//            for ex. return true for (UCHAR)5<(int)-1.            //~1331I~
+//            dlcmd5.c                                             //~1331I~
+//****:010102 AIX   merge(v30a,v30b) -->linyux                     //~1331I~
+//v30b:001213 AIX support:no highlight of eolid for aix            //~1331I~
+//            file2.c                                              //~1331I~
+//v30a:001213 AIX support:(BUG of 302)                             //~1331I~
+//            file2.c                                              //~1331I~
+//****:001209 AIX   merge(v306) -->linyux                          //~1331I~
+//            csr.c                                                //~1331I~
+//****:001209 AIX   merge(v309) -->linyux                          //~1331I~
+//            scr.c                                                //~1331I~
+//****:001202 AIX   merge(v303) -->linyux                          //~1331I~
+//            xe.h                                                 //~1331I~
+//****:001202 AIX   merge(v301) -->linyux                          //~1331I~
+//            file2.c                                              //~1331I~
+//****:001202 AIX   merge(v304,v305) -->linyux                     //~1331I~
+//            gbl.c                                                //~1331I~
+//****:001202 AIX   merge(v216) -->linyux                          //~1331I~
+//            pan22.c                                              //~1331I~
+//****:001126 AIX   merge(v307,v308) -->linyux                     //~1331I~
+//            scr.c                                                //~1331I~
+//v309:001209 AIX support:eol highlight for AIX only               //~1331I~
+//            scr.c                                                //~1331I~
+//v308:001130 AIX support:chtype format different(char is last 2 byte)//~1331I~
+//            scr.c                                                //~1331I~
+//v307:001129 AIX support:tate/yoko ID is unprintable              //~1331I~
+//            scr.c                                                //~1331I~
+//v306:001124 AIX support:csr move by screen write;so always csr write for ins/del key etc//~1331I~
+//            csr.c                                                //~1331I~
+//v305:001124 AIX support:tab disp char                            //~1331I~
+//            gbl.c                                                //~1331I~
+//v304:001124 AIX support:unprintable char definition for teraterm //~1331I~
+//            gbl.c                                                //~1331I~
+//v303:001124 AIX support:unprintable char by '.'(ctl char unprintable under tera term)//~1331I~
+//            xe.h                                                 //~1331I~
+//v302:001124 AIX support:Because mono-color,highlite unprintable and eol char.//~1331I~
+//            file2,c                                              //~1331I~
+//v301:001124 AIX support:end of line id by "_"                    //~1331I~
+//            file2,c                                              //~1331I~
+//v21r:010211 tabstop id on gauge
+//            fcmd4.c char2.c
+//v21r:010204 LINUX support:support print string                   //~1331M~
+//            xekbchk.c                                            //~1331M~
+//v21q:010211 revers gauge csrpos
+//            file2.c
+//v21q:010204 LINUX support:reverse gauage csrpos                  //~1331I~
+//            file2.c                                              //~1331I~
+//*doc updated *010103*v107           *********************************
+//****:010103 LINUX merge(v21b) <---linyux
+//            funct.c
+//*doc updated *001210*v107           *********************************
+//****:001209 LINUX merge(v19E) <---linyux
+//            fcmd2.c
+//****:001209 LINUX merge(v190,19c,19X,205,20f) <---linyux
+//            dir.h
+//****:001209 LINUX merge(v19a,19y,20f,20h) <---linyux
+//            dir3.c
+//****:001209 LINUX merge(v20c,v20d,v20e,v20f,v20h) <---linyux
+//            funct.c
+//****:001209 LINUX merge(v20i,v20f) <---linyux
+//            func.h
+//****:001202 AIX   merge(v216) -->linyux
+//            pan22.c
+//v21p:010204 LINUX support:no driveid on fullpath                 //~1331I~
+//            dcmd.c                                               //~1331I~
+//v21o:010114 LINUX support:unprintable when sbcs>=80 for kon screen stability//~1331I~
+//            sub.c                                                //~1331I~
+//v21n:010114 LINUX support:wordrep may dsetroy dbcs conbination   //~1331I~
+//            fcmd2.c sub.c/h fsub.c/h                             //~1331I~
+//v21m:010114 LINUX support:rigid euc chk to avoid screen destroy  //~1331I~
+//            sub.c file6.c                                        //~1331I~
+//v21k:010113 LINUX support:dbcs ctl should be under kon even if euc//~1331I~
+//            dir2.c file6.c func2.c xe.c                          //~1331I~
+//v21j:010113 LINUX support:english keisen code change for curses acs//~1331I~
+//            funct.c                                              //~1331I~
+//v21i:010113 LINUX support:euc code dbcs support                  //~1331I~
+//            xe.c gbl.h/c dir2.c file6.c func2.c                  //~1331I~
+//v21h:010107 LINUX support:xemainl option for x7f meaning(BS or Del)//~1331I~
+//            xemainl.c                                            //~1331I~
+//v21g:010107 LINUX support:lower case filename CB-->cb            //~1331I~
+//            xe.h                                                 //~1331I~
+//v21f:010107 LINUX support:so file lock is not avail by open for linux//~1331I~
+//            dcmd2.c                                              //~1331I~
+//v21e:010106 LINUX support:small letter filename                  //~1331I~
+//            fcmd4.c                                              //~1331I~
+//v21d:010106 LINUX support:small letter filename                  //~1331I~
+//            dcmd2.c                                              //~1331I~
+//v21c:010106 LINUX support:cmd line parm help                     //~1331I~
+//            xe.c                                                 //~1331I~
+//v21b:010203 LINUX support:key assign chnage S+F11:guage(edit),longfilename(dir)
+//            funct.c
+//v21a:001209 LINUX support:lower case exe name(xe)                //~1331I~
+//            xe.h/c ini.c dlcmd4.c                                //~1331I~
+//v219:001209 LINUX support:screen clear by white space under mono color mode//~1331I~
+//            scr.c                                                //~1331I~
+//v218:001126 LINUX support:protect unprintable char on other thna file data area.//~1331I~
+//            func2.c                                              //~1331I~
+//v217:001126 LINUX support:printable EOL id for kon               //~1331I~
+//            file2.c                                              //~1331I~
+//v216:001202 file name list;chance to modify e/b cmd for enter key.
+//            pan22.c
+//v215:001126 LINUX support:back to use A+Fn etc excep A+F2;
+//            Because C+Ins is same as C+0
+            funct.c                                                //~1331I~
+//v214:001126 LINUX support:no eof processing;ufgets now return eof id as data.//~1331I~
+//            no eofchk and eofwrite required under unix.          //~1331I~
+//            fsub.c                                               //~1331I~
+//****:001126 LINUX merge(v213) -->linyux
+//            fsub.c
+//v213:001126 deney v20B:no automaticaly delete EOFID.It should be binary mode.
+//            fsub.c
+//v212:001126 LINUX support:chng attr cmd help sSGt -->sSgt.       //~1331I~
+//            dcmd.c                                               //~1331I~
+//v211:001126 LINUX support:nomore file parm(drop from help)       //~1331I~
+//            mainl.c                                              //~1331I~
+//*doc updated*001125*v107           *****************
+//****:001124 LINUX merge(v20X) -->linyux
+//            fcmd3,c 
+//v20Z:001125 LINUX support:monocolor:err msg by reverse           //~1331I~
+//            scr.c                                                //~1331I~
+//v20Y:001125 LINUX support:arm for cid topa                       //~1331I~
+//            fcmd3.c                                              //~1331I~
+//v20X:001124 missing prot parm for cid topa
+//            fcmd3.c
+//v20W:001124 highline for unprintable char when mono-color mode   //~1331I~
+//            file2.c                                              //~1331I~
+//****:001124 LINUX merge(v20V) -->linyux
+//            fcmd,c 
+//v20V:001124 (BUG)english mode errmsg(alreadt TAB ON should be OFF)
+//            fcmd.c
+//****:001124 LINUX merge(v19k) <--linyux
+//            file2,c 
+//****:001124 LINUX merge(v20U) -->linyux
+//            file2,c file6.c/h
+//v20U:001119 display tab and dbcs space when binary mode
+//            file2,c file6.c/h
+//*doc updated*001123*v107           *****************
+//****:001119 LINUX merge(v20S,v20R,20T) -->linyux
+//            gbl.h fcmd3.c
+//v20T:001119 (BUG)miss to set cid to cidtop line
+//            fcmd3.c
+//v20S:001119 CID cmd:protect when browse mode or partial edit mode
+//            fcmd3.c
+//v20R:001119 set versio 1.07
+//            gbl.h
+//****:001111 LINUX merge(v20Q) -->linyux
+//            dlcmd2.c
+//v20Q:001111 (BUG)dir list reflesh ignore filename mask
+//            dlcmd2.c
+//****:001111 LINUX merge(v19V) <--linyux
+//            dlcmd2.c
+//v20P:001111 allow topline upctr init value when no line at load time
+//            file12.c file42.c
+//v20N:001111 cid cmd option to insert cid top line;with and w/o options//~1331I~
+//            fcmd3.c                                              //~1331I~
+//****:001111 LINUX merge(v181) -->linyux
+//            lcmd2.c
+//v20M:001105 (BUG)avoid submit under func-key screen              //~1331I~
+//            dcmd2.c                                              //~1331I~
+//v20L:001105 LINUX support:/K parm is invalid when linux,ignore init cmd on ini file//~1331I~
+//            dcmd2.c                                              //~1331I~
+//v20K:001105 LINUX support:set and restore echo/raw before/after shell mode//~1331I~
+//            dcmd2.c                                              //~1331I~
+//v20J:001104 LINUX support:CMD-->shell name "sh"(temporary)       //~1331I~
+//            dcmd2.c                                              //~1331I~
+//v20H:001104 LINUX support:printf ignored in ncurses mode(dos cmd:"hit any key" msg)//~1331I~
+//            dcmd2.c                                              //~1331I~
+//v20G:001104 LINUX support:print cmd on ini for LINUX             //~1331I~
+//            ini2.c                                               //~1331I~
+//****:001104 LINUX merge(v20F) -->linyux
+//            dlcmd3.c
+//v20F:001104 (BUG)print dlcmd cause parm err when print cmd specified on ini file.
+//            dlcmd3.c
+//****:001104 LINUX merge(v20A) <--linyux
+//            dlcmd3.c
+//****:001103 LINUX merge(v20E) <--linyux
+//            dlcmd4.c file.c file13.c
+//v20E:001103 (BUG)undel from save dir:destroy UDHrenamesv-->not alloced err when free)//~1331I~
+//            dlcmd4.c                                             //~1331I~
+//v20D:001103 LINUX support:filename compare is case sensitive     //~1331I~
+//            dlcmd4.c dlcmd5.c file.c file13.c                    //~1331I~
+//v20C:001103 LINUX support:0x1a input avail                       //~1331I~
+//            kbd.c                                                //~1331I~
+//****:001103 LINUX merge(v20B) -->linyux
+//            fsub.c
+//v20B:001103 drop EOF when write mode=unix text
+//            fsub.c
+//****:001103 LINUX merge(v19L) <--linux
+//            sub.c fsub.c                                         //~1331I~
+//v20A:001029 LINUX support:(BUG)too may operand msg;by flag chk("/") process//~1331I~
+//            dlcmd3.c dcmd2.c                                     //~1331I~
+//            fsub.c
+//v20z:001029 LINUX support:filename compare is case sensitive     //~1331I~
+//            dlcmd3.c                                             //~1331I~
+//****:001028 LINUX merge(v20y)
+//            pan.c/h pan2.c pan22.c/h file13.c dir2.c ini3.c scr.c
+//v20y:001028 new function:filename selection on menu 1/2 name list
+//            pan.c/h pan2.c pan22.c/h file13.c dir2.c ini3.c scr.c
+//****:001028 LINUX merge
+//            dir2.c ini3.c csr.c
+//****:001028 LINUX merge
+//            fcmd3.c
+//v20x:001028 cid cmd option to insert cid top line
+//            fcmd3.c
+//v20w:001028 cid cmd help by no operand(current status is by ?)
+//            fcmd3.c
+//****:001022 LINUX merge
+//            file12.c file.h file42.c
+//v20v:001022 topcid line option to tab clear when file output(option=(tabclear))
+//            file12.c file.h file42.c
+//****:001022 LINUX merge<---linux
+//            file.c
+//****:001022 LINUX merge(v20t)
+//            pan.h/c pan2.c
+//v20u:001022 LINUX support(drop drive line from filename panel)   //~1331I~
+//            pan.h/c pan2.c                                       //~1331I~
+//v20t:001022 Source update ctr support on CID line (UPDATE#=00000)
+//            file.h file42.c
+//***s:001022 LINUX merge
+//            file42.c file.h
+//***s:001021 LINUX merge
+//            scr.c/h gbl.c/h pan.c pan2.c
+//v20s:001015 (BUG)err msg of color change N/A when XE!SAVE! not exist.
+//            gbl.c ini3.c
+//v20r:001015 protect color value input when color change not avail
+//            pan2.c pan.c
+//v20q:001015 max color number display on panel 0.0
+//            pan.c gbl.h scr.c
+//v20p:001015 LINUX support(color panel max color=8)
+//            pan2.c pan.c
+//v20n:001015 LINUX support(fix max color=8)
+//            scr.c/h
+//v20m:001015 LINUX support(xprint name change XPRINT.EXE-->xprint)//~1331I~
+//            gbl.c                                                //~1331I~
+//v20h:001015 LINUX support("*"(all member) confirmation;"*" is not pfh-name;//~1331I~
+//            for rename,xcopy,xmove,attribute,xprint(not edit screen only)//~1331I~
+//            dcmd.c/h dcmd2.c                                     //~1331I~
+//v20h:001015 LINUX support(unix like wild card proocess for ".")  //~1331I~
+//            gbl.c                                                //~1331I~
+//v20i:001009 dupkey list order;on edit screen-->dirlist screen    //~1331I~
+//            func.h/c kbd.c                                       //~1331I~
+//v20h:001003 LINUX support(F6:size,S+F6:uid and username toggle)  //~1331I~
+//            funct.c dir3.c dir2.c                                //~1331I~
+//v20g:001001 LINUX support(confirm when all member copy,move,...) //~1331I~
+//            xe.h                                                 //~1331I~
+//v20f:001001 LINUX support(uid/gid display on dirlist)            //~1331I~
+//            xe.h dir3.c func.h funct.c dir2.c dir.h xegbl.c      //~1331I~
+//v20e:001001 LINUX support(BUG of v20c:C+End is same value as Pad1;it's cause duplication//~1331I~
+//            Home,Pgup,Pgdn is also same as Pad key)              //~1331I~
+//            xefunct.c                                            //~1331I~
+//v20d:001001 LINUX support(more after v20c;for Enter,A+Enter catched by Win95//~1331I~
+//            for fullscreen<-->windows change)                    //~1331I~
+//            xefunct.c                                            //~1331I~
+//v20c:001001 LINUX support(more after v20b;for Ins,Del,End)       //~1331I~
+//            xefunct.c                                            //~1331I~
+//v20b:001001 LINUX support(default change A+Fn-->Ctl+Fn)          //~1331I~
+//            xefunct.c                                            //~1331I~
+//v20b:001001 LINUX support(chk xe assign not by pfk parm)         //~1331I~
+//            xemainl.c                                            //~1331I~
+//v20a:000931 del trace option from help msg                       //~1331I~
+//            xe.c                                                 //~1331I~
+//v209:000930 LINUX support(same format mkdir mode parm as attr cmd)//~1331I~
+//            dcmd.c                                               //~1331I~
+//v208:000930 add chmod cmd(also for other platform)               //~1331I~
+//            dcmd.c/h                                             //~1331I~
+//v207:000930 attrib cmd help                                      //~1331I~
+//            dcmd.c                                               //~1331I~
+//v206:000930 attrib cmd parm pos chng;attr is first and then follow files)//~1331I~
+//            dcmd.c                                               //~1331I~
+//v205:000930 LINUX support(DDATTRSZ expanded to 5 from 4)         //~1331I~
+//            dir.h dir2.c                                         //~1331I~
+//v204:000930 LINUX support(for 4byte attr,UCBITxx is invalid)     //~1331I~
+//            dcmd.c                                               //~1331I~
+//v203:000930 LINUX support(new attr specification)                //~1331I~
+//            xedir2.c/h dcmd.c                                    //~1331I~
+//v202:000929 LINUX support(ufileisvfat is for DPMI and WIN only)  //~1331I~
+//            xefile.c                                             //~1331I~
+//v201:000929 LINUX support(mkdir -mmode parm)                     //~1331I~
+//            xedcmd.c                                             //~1331I~
+//v19Z:000929 LINUX support(free ALTL+Pfn parm)                    //~1331I~
+//            mainl.c                                              //~1331I~
+//v19Y:000929 LINUX support(dir tbit means protection of another owners file from rename/unlink)//~1331I~
+//            But it is effective only if the dir owner is not me) //~1331I~
+//            dlcmd4.c                                             //~1331I~
+//v19X:000928 LINUX support(save uid/gid on UFILEH/UDIRH)          //~1331I~
+//            file.h/c udir.h/c dlcmd5.c                           //~1331I~
+//v19W:000928 LINUX support(4 bye attr for also UFILEH)            //~1331I~
+//            file.h/c                                             //~1331I~
+//v19V:000928 LINUX support("*" mean all member,"*.*" require intermediate ".";//~1331I~
+//            under windows those are same effect)                 //~1331I~
+//            udirlist use ufileeditname(of windows logic),so no bad effect but correct//~1331I~
+//            dir.c dlcmd2.c dlcmd3.c                              //~1331I~
+//v19U:000928 LINUX support(undo dirlist;pre chk owner;only owner can unlink/rename)//~1331I~
+//            dlcmd4.c                                             //~1331I~
+//v19T:000928 LINUX support(Global userid var;from now new grobal is on xegbl.h)//~1331I~
+//            xegbl.c/h xe.c dlcmd4.c                              //~1331I~
+//v19S:000928 LINUX support(work dir for each user as default;permission reason)//~1331I~
+//            xe.c                                                 //~1331I~
+//v19R:000927 LINUX support(func name on permission errmsg)        //~1331I~
+//            sub.c                                                //~1331I~
+//v19Q:000927 LINUX support(copy/move "/" flag is from 3rd opd)    //~1331I~
+//            xedcmd.c                                             //~1331I~
+//v19P:000927 no alloc16 msg for except os2                        //~1331I~
+//            xe.c                                                 //~1331I~
+//v19N:000925 LINUX support(xemtrchk.c:compiler warning;main parm UCHAR* -->char *)//~1331I~
+//            xemtrchk.c                                           //~1331I~
+//v19M:000925 LINUX support(user id by 5 digit for undo dir)       //~1331I~
+//            dlcmd4.c                                             //~1331I~
+//v19L:000925 LINUX support(permission err msg for fopen)          //~1331I~
+//            sub.c fsub.c                                         //~1331I~
+//v19K:000925 LINUX support(No drive id for undo of dirlist)       //~1331I~
+//            dlcmd4.c                                             //~1331I~
+//v19J:000925 LINUX support(insert cursor option;BLINK and/or REVERSE)//~1331I~
+//            mainl.c                                              //~1331I~
+//v19H:000925 LINUX support(for attr cmd filename is not first opd;"/" of 1st is flag)//~1331I~
+//            dcmd.c                                               //~1331I~
+//v19G:000925 LINUX support(no driveid:temporary modification until get file system info)//~1331I~
+//            dlcmd4.c                                             //~1331I~
+//v19F:000925 LINUX support(XE_UNDEL_%d:add uid to undo dir name for permition)//~1331I~
+//            dlcmd4.c/h xe.c                                      //~1331I~
+//v19E:000925 LINUX support(like XE!UNDEL-->XE_UNDEL; ! has mean to bash)//~1331I~
+//             XE!SAVE!,XE!TEMP,XE!XPWK!,XP!XPIN!,XE_COL_          //~1331I~
+//            dlcmd4.c dcmd2.c dlcmd3.c fcmd4.c fcmd2.c            //~1331I~
+//v19D:000925 LINUX support(command flag prefix is mainly '-')     //~1331I~
+//            dcmd.c xe.c calc3.c                                  //~1331I~
+//v19C:000924 LINUX support(move PALNO_xx gro xe.h to uvio.h fo uviol.c)//~1331I~
+//            xe.h xegbl.c                                         //~1331I~
+//v19B:000924 LINUX support(uninit var warning)                    //~1331I~
+//            pan2.c                                               //~1331I~
+//v19A:000924 (BUG)no beep for pallette change under Windows
+//            pan2.c
+//v19z:000924 LINUX support(mono color support)                    //~1331I~
+//            scr.c mainl.c                                        //~1331I~
+//v19y:000924 LINUX support(skip drive id chk for fullpath)        //~1331I~
+//            dlcmd5.c dir3.c                                      //~1331I~
+//v19x:000923 LINUX support(another main for other parm by -- and external parm)//~1331I~
+//            xe.c gbl.c/h                                         //~1331I~
+//v19w:000923 LINUX support(ugetdiskfree parm changed)             //~1331I~
+//            dir2.c                                               //~1331I~
+//v19v:000923 LINUX support(set UNIX file when file len=0)         //~1331I~
+//            file.c                                               //~1331I~
+//v19u:000923 LINUX support(dir list by longfilename fmt(not 8.3)) //~1331I~
+//            dir.c                                                //~1331I~
+//v19t:000923 LINUX support(cmd PWD support)                       //~1331I~
+//            dmcd.c/h                                             //~1331I~
+//v19s:000917 LINUX support(Edit cmd parm by also - additionaly /)
+//            file5.c
+//v19r:000917 LINUX support(set New file attt to UNIX)             //~1331I~
+//            file.c                                               //~1331I~
+//v19p:000917 LINUX support(max color=8(<--16))                    //~1331I~
+//            scr.c                                                //~1331I~
+//v19o:000916 LINUX support(csr type height level:0-->2)           //~1331I~
+//            csr.c                                                //~1331I~
+//v19n:000915 LINUX support(msg PC file,but not UNIX file)         //~1331I~
+//            file.c                                               //~1331I~
+//v19m:000915 LINUX support(unprintable char)                      //~1331I~
+//            gbl.c                                                //~1331I~
+//v19k:000910 LINUX support(diplay other than 0x1b for EOLID)      //~1331I~
+//            xefile2.c                                            //~1331I~
+//v19j:000904 LINUX support(option parm flag change "/"-->"-")     //~1331I~
+//            xe.c                                                 //~1331I~
+//v19i:000904 LINUX support(kbd io)                                //~1331I~
+//            xekbd.c xe.h/c xegbl.c                               //~1331I~
+//v19h:000904 (BUG)title msg scroll 1 line of helpmsg              //~1331I~
+//            xe.c                                                 //~1331I~
+//v19g:000904 LINUX support(XE!SAVE!-->XE_SAVE_; ! has mean to bash)//~1331I~
+//            ini3.c                                               //~1331I~
+//v19f:000904 LINUX support(use curses)                            //~1331I~
+//            scr.c                                                //~1331I~
+//v19e:000904 LINUX support(version 1.09)                          //~1331I~
+//            gbl.h                                                //~1331I~
+//v19c:000904 LINUX support(attr size,1-->4)                       //~1331I~
+//            dcmd.c/h (uedit2.c/h) dlcmd3.c dir.h                 //~1331I~
+//v19b:000903 LINUX support(OSTYPE)                                //~1331I~
+//            xe.c                                                 //~1331I~
+//v19a:000903 LINUX support(dir path seperator)                    //~1331I~
+//            sub.c xe.c dir.c dir2.c dir3.c dlcmd2.c dlcmd3.c dlcmd4.c dlcmd5.c pan2.c//~1331I~
+//v199:000902 LINUX support(attr changed to ULONG)                 //~1331I~
+//            dlcmd.c                                              //~1331I~
+//v198:000902 LINUX support(setrate/setstatus dropped)             //~1331I~
+//            kbd.c                                                //~1331I~
+//v197:000902 LINUX support(uextchk dropped:submit cmd filename chk)//~1331I~
+//            dcmd2.c                                              //~1331I~
+//v196:000902 LINUX support(drop drive func;uchdrive/ugetdrive)    //~1331I~
+//            dcmd.c ini3.c dlcmd2.c                               //~1331I~
+//v195:000902 LINUX support(drop upopup func)                      //~1331I~
+//            xe.c                                                 //~1331I~
+//v194:000902 LINUX support(EISOPEN not defined)                   //~1331I~
+//            sub.c                                                //~1331I~
+//v193:000902 LINUX support(skip hdr include)                      //~1331I~
+//            dcmd2.c                                              //~1331I~
+//v192:000902 LINUX support(un-init var usage warning)             //~1331I~
+//            undo.c                                               //~1331I~
+//v191:000902 LINUX support(del EOF id)                            //~1331I~
+//            pan.h func.h func2.h kbd.h ini.h dlcmd.h scr2.h/c    //~1331I~
+//            file2.h fcmd22.h undo.h lcmd.h lcmd2.h fsub.h err.h cap.h//~1331I~
+//            calc.h file6.h calc2.h calc3.h char2.h fcmd3.h sub.h //~1331I~
+//            fcmd.h csr.h file4.h char.h char12.h pan2.h char.c   //~1331I~
+//            char12.c file3.h lcmd3.h char2.c dcmd.h dir3.c       //~1331I~
+//            dlcmd.c err.c fcmd2.h funct.h file43.h fcmd3.c       //~1331I~
+//            fcmd4.c/h file3.c file4.c file42.c file43.c          //~1331I~
+//            lcmd.c lcmd3.c pan3.c/h                              //~1331I~
+//v190:000902 LINUX support(CRLF)                                  //~1331I~
+//            xe.h/c scr.h file.h dir.h func2.c ini.c              //~1331I~
+//********************************************************************
+//v185:010128 browse/edit file when only one menmber of dir is optional by /l option(dir list)
+//            file.c/h file5.c
+//v184:001210 (BUG)clear mask when dirlist expand reduced(+)
+//            dlcmd2.c
+//v183:001209 long filename display on dirlist;expand to rename fld
+//            dir2.c dir.h fcmd2.c
+//v182:001209 long filename display on dirlist(over attr fld)
+//            func.h funct.c dir2.c dir3.c dir.h fcmd2.c
+//v181:001111 (BUG)errornus result msg(skip/bandle count) of lcmd comment
+//            lcmd2.c
+//v180:000820 (BUG)dont write eof when binary update
+//            fsub.c
+//*v1.6 released           *****************
+  .v106:(2000/05/08)
+     1.BUG修正
+       -挿入した行がカット&ペーストブロックの境界行のとき挿入が
+        UNDOされるとABENDする。
+       -(Win版のみ)ABENDハンドラーで再ABENDすることがある。
+       -(Win版のみ)画面を左右に縦分割したとき画面幅が短か過ぎるとABEND。
+       -画面の左右縦分割のとき F4(EXIt)がコマンドエラーになることがある。
+       -非表示行コマンドを連続したときそのUNDOが両方をUNDOする。
+       -SORtコマンドのラベルエラー,キー無しエラーメッセージが表示されない。
+       -部分ファイル更新後PF4でExitするとABEND.(Close Err)
+     2.機能追加
+       -Sort コマンド。
+        重複キーチェック、キーブレークチェックオプション追加。
+        また、コマンド行数制限も拡張｡(DOS版以外は無制限)
+        非表示行がある時の処理も変更しました。表示行のみのSortは NX
+        オプションが必要で、省略値は非表示行も対象になります。
+       -ディレクトリーリスト REFresh コマンド(ショートカット：Shift+F1)
+       -行連結行コマンド(j)に3行以上の行連結オプション。
+         (JJi,j.k形式：i行連結をj回繰り返しk行スキップ、この繰り返し)
+        また、行連結行コマンドでは分割行は全体で1行とし、非表示行も
+        1行づつがカウント対象とするように変更しました。
+       -簡易計算コマンド BC.
+            基数変換：BC value [/conv-option]
+                      10進数,8進数,16進数,時間の相互変換
+                  例：BC xff10  ; BC T013922 ; BC o177 /x
+            四則演算：  BC value1 operation value2 [/output-type]
+                      10進数,8進数,16進数,時間の演算.
+                      +,-,*,!(累乗),/,%  <,>(シフト),|,&,^(排他OR)
+                  例：BC 4000/13 ; BC T010239+89 ; BC xdeadbeef%xff
+       -簡易表計算コマンド TC.
+            TC [opd3=][opd1]operation[opd2] [options] [.label1 .label2]
+            ファイル内のテーブル上で演算する(+,-,*,/,%,合算,差分)。
+            小数点もサポート。
+            合算は行数、キーブレーク、キーの値の範囲で小計がとれる。
+            オペランドはカラム指定。オペランド1/2の表が異なるファイル
+            のときはカット&ペースト機能でブロック指定する。
+            オペランドは x12-15 のように10進数以外は数字の型指定をする。
+                  例：TC 1-10*=12-14        乗算の結果を1-10桁に置く。
+                      TC t24-32=t1-10+12-14 時刻と秒の加算結果を時刻で出す
+                      TC o10-15--           1行前との差分で置換。(8進数)
+                      TC 10-15+ ave max     合計,平均,最大,最小を表示
+                      TC +                  Alt+F7指定のブロック上で合計
+                      TC 10-15+/1-3 aft     1-3桁をブレークキーとして
+                                            小計をとり後ろに結果行挿入
+                      TC FMT L  .100 .200   100-200行の範囲の表を左詰め
+                                            で整列。
+
+     3.その他
+       -カーソルのラップ時のビープをやめた。
+       -バイナリーファイルの省略値行番号タイプをHEXオフセットに変更,
+        省略値表示幅を 72 に変更。
+       -HEX行番号表示中もRENUMコマンドをサポート。
+
+     4.ツール。
+       -XBC v1.0 :(新規）簡易計算。BC コマンドの外出し。
+
+//v17j:000513 count msg for sort dupchk
+//            fcmd4.c
+//v17i:000513 move BC cmd to ulib for utility XBC
+//            calc.c/h calc2.c
+//v17h:000513 TC cmd:2 line range support.
+//            calc2.c
+//*doc updated*000508*v106           *****************
+//v17g:000507 (BUG)fclose abend when pf4 after partile file update.
+//            file12.c
+//v17f:000501 change TCN to TC and NX option.
+//            calc2.c calc3.c/h funct.c func.h
+//v17e:000501 SORT for also excluded.By NX option,sort displayed line only.
+//            fcmd4.c
+//v17d:000501 Add break search option to SORT cmd
+//            fcmd4.c
+//v17c:000501 No beep for Homekey when already home
+//            csr.c
+//v17b:000501 (BUG)lcmd repeat msg for join,missing l for JJl,m.n
+//            lcmd2.c
+//v17a:000501 for join linecmd,treate all split line as a line.
+//            skip is for not only display line
+//            lcmd4.c
+//v179:000501 (BUG)when n line join is overflow,errmsg "Already one of split line"
+//            So,join to split last line.
+//            char.c fsub.c/h
+//v178:000430 renum support for lineno hex mode
+//            file12.c file2.c lcmd2.c undo.c/h fsub.c/h
+//v177:000430 reject "num xon" to spf file
+//            fcmd3.c
+//v176:000430 default change for bin file line width from 999 to 72
+//            gbl.c/h
+//v175:000430 ver set to v1.06
+//            gbl.h
+//v174:000430 default change for bin file to hex lineno.
+//            gbl.c
+//v173:000430 ajust linenosz when num XON/XOFF
+//            file13.h/c fcmd3.c
+//v172:000422 add dupkey chk option to SORT
+//            fcmd4.c
+//v171:000422 (TEST)console reset to redraw unabalable trouble test
+//            func2.c
+//v170:000422 (BUG)double sum top remain previous sum line as err
+//            calc2.c lcmd2.c
+//*doc updated*000420*v106           *****************
+//v169:000418 add ! (power) to BC func
+//            calc.c
+//v168:000418 add table format function to TC/TCN cmd
+//            TC[N] fmt [[fldno]{R|L}]
+//            calc2.c calc3.c/h char2.c/h
+//v167:000418 add |,&,^ to BC
+//            calc.c
+//v166:000414 sort cmd key count=0 err chk
+//            fcmd4.c
+//v165:000414 (BUG)label err msg not displayed(sort cmd)
+//            fcmd4.c fcmd3.c/h
+//v164:000411 (BUG)previos exclude line is undoed when exclude lcmd is over
+//            the previous excluded line.
+//            lcmd2.c
+//v163:000410 func to set line data from string.(reviced from charcap(line to line)).
+//            char2.c/h
+//v162:000409 beep is noisy.no beep for wrap by csr key.
+//            func.c
+//v161:000409 (BUG)when vsplitted with short cmd line space,
+//            RET cmd from PF4 is destroyed.
+//            (if cmd space=0,it also destroy 1 byte before).
+//            func2.c func.c
+//v160:000409 (win:BUG)same as ulib-v305 attr tbl lengthe is scrwidth.
+//            But on file2,it shoud be limit to screen width.(safety chk).
+//            (trigger is vsplit at pos  before linenosz with line reversed.
+//            width-linenosz became to minus and memcpy abend).
+//            file2.c
+//v159:000409 (win:BUG)abend msg is mixed with prev scr strings.
+//            normaly buffuse flag is off,but abend at draw_file/draw_pan
+//            reave the flag then bug of uvio cased abend at ueh. 
+//            xe.c
+//v158:000404 (BUG)when cap boundary plh is freed by undo which is inserted line,
+//            Ssortplh is not now on plh chain.It cause abend at capreset to reset reverse.
+//            cap.c undo.c xe.h
+//v157:000403 (BUG)cid clear rejected when cid is NONE("cid clear c" is ok so change guide)
+//            fcmd3.c
+//v156:000403 join lcmd option to join n lines(jjl,m.n fmt(jj-jj only))
+//            lcmd.c lcmd4.c
+//v155:000318 numeric calc func
+//            funct.c  func.h calc.c/h calc2.c/h cap.c/h err.c/h file13.c
+//v154:000314 csr wait mark for end_file,cancel_file
+//            file.c
+//v153:000314 MAX Sort line ctr up except for DOS
+//            fcmd4.c
+//v152:000311 dir-list REFresh cmd 
+//            funct.c/h dlcmd2.c/h
+//v151:000311 set csr wait sign for dir cmd toggle size<->lineno
+//            dir3.c
+//v150:000210 v1.05 
+//            gbl.h
+//*doc updated*000210* v1.05 release *****************
+  .v105:(2000/02/10)
+     1.BUG修正
+       -(Win版のみ)
+        Enterキーで余分なキー入力が発生することがある。(Beepが鳴る)
+       -ヘッダー行のファイル日付、2000年が100と表示される。
+       -キー割当などINIファイル情報を変更すると終了時にABEND。
+     2.その他
+       -改行による最下行から最初の行への、また分割画面間の移動での
+        Beepを消した。
+       -Edit/Browse/Select がワイルドカード指定で該当するファイルが
+        1つしかないときディレクトリー画面せずに該当ファイルを表示。
+     3.ツール.
+       -xprint  v8.9 :(BUG)Y2K.2000年が100と表示される。
+       -xdc     v2.2 :同上
+//v146:000220:(BUG)of v13d(filesrchpfh has new parm pcw,but at term func_ini pcw parm is 0)
+//                 it cause abend at term when ini inf updated.
+//            ini.c
+//v145:000213:(BUG)Y2K filedate on title line
+//            file2.c
+//v144:000210:(BUG)parse err when space embeding for select file name.
+//            dir3.c
+//v143:000210:enter edit/browse mode for wild card edit/browse/select if only one member
+//            file.c
+//v142:000131:(BUG:WIN)over v0hn;1c/0a follow 1c/0d not only on cmd line etc.
+//            0x0a is set on file area by cmd+enter.
+//            reject 1c/0a when ctrl shift is off(Ctrl+Enter=1c/0a)
+//           -add kbd trace option
+//            xekbd.c xe.c
+//v141:000115 it is noisy,no beep only once for same reason(continuous from same pos)
+//            xe.c (uerr.c)
+//v140:000115 it is noisy, so no beep when current client screen changed
+//            csr.c
+//*doc updated*991121* v1.04 release *****************
+//v140:990822 v1.04 
+//            gbl.h
+  .v104:(99/11/22)
+     1.BUG修正
+       -SORT コマンド．
+        複数キー指定のとき2番目以降のキーの位置取りに誤りがあった。
+       -Find コマンド．
+        .探索文字列が"a ; b"のように' '+';'を含む時失敗.
+        .タブを含む行を逆方向探索する時タブ拡張前の範囲しか探索しない.
+        .バイナリーファイルのとき複数行跨りもサポート.
+       -INI ファイルで'#'をCID文字として指定できない
+       -(OS/2版以外) 省略値のままだとINI コマンドでINIファイルに
+        XPrint_Command="(null)" が出力され,XPRint コマンドが失敗する.
+       -(Win版) Cancel/EndのときABENDすることがある。
+       -ディスクスペース不足などでクローズエラーとなってもEndコマンドが
+        終了して不完全な出力に気が付かない.クローズエラーのとき
+        編集画面を残して他のドライブへの保存を促す.
+       -XPRint * で 編集結果が反映されてない事がある。
+       -Append コマンド宛先ファイル名がないときディレクトリが作成される
+     2.機能追加
+       -編集コマンド(Edit,Save,Repl,Copy,...)でもファイル名に *\
+        (現表示ディレクトリー名)をサポート。
+       -INIファイルに Beep オプションを追加。Beep オフに設定可能。
+     3.その他
+       -HEX入力モード．
+        バイナリーファイルの場合,入力禁止文字チェック,DBCSチェックを
+        はずした．
+       -ディレクトリー画面で最後の行に入力した時半画面スクロールする
+       -XAPP コマンドも編集画面でのAPPendコマンドとして登録した。
+       -Appendコマンドでの /s オプションは禁止.
+       -バイナリーファイル判定基準を変更
+        最初の1024バイト中30以上の制御文字がある時バイナリーファイル。
+     4.ツール.
+       -xdd     v1.2 :各ファイル削除確認をするオプションの追加.
+                     :(BUG)ディレクトリー指定のときListオプションで
+                      メンバーがリストされない。
+       -xdig    v1.5 :(BUG)/Pdのとき%fp%が置換されない.
+                      (/Pdのとき%dは経路名で%f%はディレクトリー名です)
+       -xfs     v1.4 :書込み保護のとき再試行の機会設ける.
+                     :復元時の宛先にディレクトリー指定を受け付ける
+       -xprint  v8.8 :EBCDIC文字セットのサポート(/M)
+                     :文字セット変換テーブルファイル指定オプションを
+                      サポート.(/K)
+                     :(Win/DOS版のBUG)テキストモードのときEOFID(0x1a)
+                      以降読めない.
+                     :(BUG)EOF直前がDBCS第一文字のとき２重印刷
+                     :dump mode(/Md)のとき0x0d0aのみならず0x0aでも改行
+//v13r:991108 (BUG)width parm ignored without b option like as /M16
+//            file.c
+//v13q:991108 bin file min width change 10 to 16
+//            file5.c
+//v13p:991106 find/rep consideration for bin file
+//            fcmd2.c fcmd23.c/h
+//v13o:991106 find fail;search word containing space will unmatch with tab+word line
+//            before tab expanded.
+//            fcmd2.c
+//v13n:991031 warning to doubled display for dir
+//            file.c dlcmd5
+//v13m:991031 no bell option support
+//            xe.h/c ini2.c
+//v13k:991029 (BUG of v11M)xprint * may miss update version.
+//            dcmd2.c
+//v13j:991029 (BUG)It should not be end when close err by disk space shortage.
+//            chk also close err(flush err) at save then notify and wait.
+//            fsub.c/h file12.c sub.c
+//v13i:991029 inhibit /s for append because OS/2 rc=5(access_denied) when
+//            append to dir.
+//            dcmd.c
+//v13h:991029 (BUG)prev find may fail if line has tab and search word expanded to
+//            the offset out of non-expnaded len.
+//            fcmd2.c
+//v13g:991025 (BUG:WIN/DOS/GCC)xprint fail.(INI cmd write "(null)" to .ini)
+//            ini2.c
+//v13f:991023 add xappend cmd for append like as xco/xmo on edit scr
+//            dcmd.c
+//v13e:991023 copy/append/move target file change from wild card to specific
+//            dcmd.c
+//v13d:991023 *\ support for filecmd(edit/browsw/select/save/repl/create/append/copy/move/ini)
+//            fcmd.c file.c/h ini.c sub.c dir3
+//v13c:991023 csrhome when csr is 1st line by csrrestore
+//            csr.c
+//v13b:991023 (BUG)abend by concat cmd "can ; dir *.c".pcw is freed bu can.
+//            func_cmd access the pcw by setflddata.
+//            funct.c
+//v13a:991023 (BUG) space before ";" is dropped by v0jo,but it cause err for find "a ; b"
+//            func.c
+//v139:991023 (BUG) CID "//," is written on .ini,"//" is valid.but not serious problem.
+//            ini2.c
+//v138:991023 (BUG) # for CID is err because # and follower is comment on .INI
+//            ini.c
+//*doc updated*991003*********************************
+//v137:991003 scroll down when reached to bottom line by field full on dir list
+//            func2.c file3.c/h dir.c/h csr.c/h dir3.c(f11)
+//v136:990918 NUM cmd help change(add [s])
+//            fcmd3.c
+//v135:990911 allow a: b: as a:*.* b:*.* for xdd/del
+//            dcmd.c
+//v134:990911 for new xddsub(Selcet option support);deney /S for xe to avoid
+//            key input.
+//            dcmd.c
+//v133:990911 no dbcs chk when binary file
+//            func2.c
+//v132:990911 accept inhibit char input when hex input mode on binary file
+//            func2.c
+//v131:990908 (BUG)SORT seq chk err when 2 sort field specified.
+//            fcmd4.c
+//*doc updated*990904**** v103 released *************
+  .v103:(99/09/01)
+     1.BUG修正
+       -WORKDIR環境変数に後スペースがある時の不具合
+       -表示モードでも置換コマンドが効く.(保存はされない)
+       -Find "" ALL (全空文字探索)のエラー
+       -ESC指定探索文字列にタブ(x09)が含まれているとFind失敗
+       -DOSとその他のバージョンでワークディレクトリーを共有している時
+        文字列探索が失敗することがある
+       -タブを含むファイルでSORTコマンドが失敗する
+       -行番号付きファイルの中へファイルを複写するとABEND
+       -分割画面の一方でオープン済みの同じファイルをEditしようとすると
+        その画面がその分割画面の最後(メニュー画面もない)の画面の時ABEND
+       -Undo した時前の行コマンドが残ってエラーとなる事がある
+       -行コマンドを残した行を行数指定のDelete行コマンドで削除すると
+        ABENDする
+     2.機能追加
+       -Cols コマンド.
+        桁定規の表示.定規のパターンは任意に設定可能
+       -Edit/Browse/Select の追加オプション。
+        /O :入力範囲をオフセット指定   /O[xxxx][-][yyyy]
+        /Mo,/Ml:行番号欄表示属性をHEXオフセットあるいは行番号とする
+            バイナリーファイルでの省略値はNUMコマンドで設定.
+            但し,入力範囲指定のあるときはそれに従う.
+       -Num コマンドの追加オプション。
+        NUM XON|XOFF[,S] :行番号欄表示属性の設定。
+                          S:バイナリーファイルの省略時属性を設定保存する
+                            (テキストファイルでは省略値は行番号)
+       -Locateコマンドの追加オプション。
+        LOC [O|L]nn[,C] O:HEXオフセット指定,L:行番号指定
+                        省略値は行番号欄表示属性に従う.
+                        C:編集後の位置.指定無は編集前の状態での位置。
+       -"EXClude ALL" で全行非表示化
+       -Resetコマンド
+        Escキー2回またはRESET コマンドでエラー行反転表示のリセット.
+        また "RESet X" で全非表示行を再表示
+       -Xprint コマンド
+        表示/編集画面で "XPRint *" で現表示ファイルの印刷
+       -省略時ドライブ,現行ディレクトリー
+        CD * で現表示ファイル/ディレクトリーから現行デレクトリー設定。
+        XE /R でCD,d:コマンドで以前に設定した現行ディレクトリーから
+        現行ディレクトリー更にはそのドライブを省略時ドライブとして
+        再設定する。
+       -XE * で前回最後に閉じたファイル/ディレクトリーをオープン
+     3.その他
+       -Findコマンドで見つからない時連続入力でTOP/ENDから再探索する。
+       -Findコマンドでのスクロールは検索行を画面中央に位置づける
+       -INI ファイルのCommand_Stackパラメータはファイルに保存する
+        コマンドヒストリーの制限値とし現セッションでのメモリー上の
+        保存はDOS版以外では無制限とする
+       -HEX入力モードで DBCS 第 1 文字のみの入力には x キー使用で転送
+       -行範囲指定に行番号をサポート.(Drop/Sort/Find/Change/Exclude).
+        .123 の様に全て数字の時行番号とみなす
+       -ディレクトリー画面での行コマンド複写(F10/F11)
+        R(改名)行コマンドのサポート追加.
+       -宛先名にワイルドカードをサポート。
+        Rename,Xcopy,Xmove DOS コマンド，ディレクトリー行コマンド．
+       -DOSコマンドでもファイル名に *\ (現表示ディレクトリー名)を
+        サポート。
+       -オペランド指定なしの時 1 行ヘルプメッセージ出力
+        Sort/Edit/Browse/Select/Locate/Find/Change/Exclude/Drop/Num
+     4.ツール.
+       -xfc     v1.2 :タブ/スぺースの桁数を無視した語句比較(/w),
+                      //コメントを無視する(/c) オプションの追加
+       -xprint  v8.7 :(BUG修正:Win版)印刷幅150桁超でのヘッダー行表示
+                      の不具合,500桁超でABEND
+
+//v130:990822 v1.03 
+//            gbl.h
+//v11T:990905 (BUG of v11z):int size cause version unmatch with dos and others
+//            int3.c 
+//v11S:990904 Alt+F2 to COLS
+//            funct.c
+//v11R:990904 skip cols line when tab/prevtab csr move
+//            csr.c
+//v11Q:990904 keep csr pos when csr is on cols line for pgright/left
+//            scr.h file3.c
+//v11P:990904 (BUG of 11J)dlcmd copy fail if dirlist is by wild card
+//            dcmd.c
+//v11N:990829 COL cmd support
+//            cap.c file.h file2.c file3.c fcmd2.c fcmd22.c fcmd4.c/h scr.h/c
+//            func.h funct.c
+//*doc updated*990828*********************************
+//v11M:990828 dcmd xprint;filename=* should be current status(updated).
+//            dcmd2.c dcmd.c/h dlcmd3.c
+//v11L:990828 protect source=* for rename/attr/xcopy/xmove,warning to use *.*
+//            dcmd.c
+//v11K:990828 *\ support for sorce file of mkdir/rmdir/cd
+//            dcmd.c/h
+//*doc updated*990822*********************************
+//v11J:990822 dcmd copy/move target wild card support by ulib
+//            for the case of source wild card.del v11G.
+//            dcmd.c
+//v11I:990822 (BUG) fullpath err when file name is wild card with start *
+//            sub.c
+//v11H:990822 *\ support for sorce file of xcopy/xmove/append/rename/attr/del/xdd
+//            dcmd.c/h
+//v11G:990822 wild card target support for lcmd/dcmd copy/move(append)
+//            dlcmd3.c dcmd.c
+//v11F:990822 real name is not returned when rename wild card source
+//            dcmd.c
+//v11E:990822 use helpmsg for help
+//            xe.c
+//v11D:990822 help for num cmd
+//            fcmd3.c
+//v11C:990821 required *\ process for valid errmsg of v11r
+//            dcmd2.c
+//v11B:990821 no storage cmd stack limit for not DOS(write in limit to !save!)
+//            func2.c
+//v11A:990821 edit option /N(lineno type) is conflict with /N(yes/no) option
+//            change to /Mo(offset),/Ml(lineno). /I is also conflict.
+//            file5.c
+//v11z:990821 support filename=* (last closed file) on cmd line
+//            ini3.c/h file.c dir.c xe.c file.h file5.c
+//v11y:990821 support /R option to restore previous default drv/directory
+//            ini3.c/h dcmd.c xe.c
+//v11x:990821 support "CD *";set default drve and curr path to current file directory
+//            dcmd.c file.h
+//v11w:990813 (BUG)abend after pending lcmd is deleted;dd--c--dd is lcmd err
+//            but d9--c delete lcmd-c line remaining lcmd pending list.
+//            undo.c
+//v11v:990813 (BUG)when undoed rep,reset lcmd remaining pending list-->paring err
+//            undo.c
+//v11u:990813 hidden line reset by reset x cmd
+//            func2.c lcmd2.c/h
+//v11t:990813 rename target wild card support
+//            dcmd.c/h dlcmd3.c file12.c 
+//v11s:990808 (BUG) not allowed \x string search if \x09 is contained.Allow to bin file.
+//            fcmd2.c fcmnd22.c/h
+//v11r:990730 xprint dcmd:curr file print by * for filename  *\ for cur dir
+//            dcmd2.c
+//v11q:990726 errmsg when csrpos err for shift+enter(split line) to chk shift lcmd err bug
+//            chsr2.c lcmd.c
+//v11p:990725 accept "EXClude all" (no search word  case)
+//            fcmd2.c fcmd22.c/h
+//v11o:990720 (BUG)compatibility to DOS;find parm save len change int to SHORT
+//            fcmd2.c
+//v11n:990720 set debug trace for find cmd/shift lcmd beep
+//            lcmd.c fcmd2.c
+//v11m:990718 drop cmd help
+//            fcmd3.c
+//v11l:990718 allow label by lineno .nnnn not when hex-lineno mode
+//            lcmd.c
+//v11k:990718 Find/change/Exclude cmd help
+//            fcmd2.c fcmd22.c/h
+//v11j:990718 display on menue 'a'-'c' shortID for '0.1'-'0.3' 
+//            pan.c
+//v11i:990718 edit cmd help
+//            file5.c/h file.c
+//v11h:990717 support f10/f11 cut/paste of rename on dirlist
+//            dir3.c dlcmd3.c
+//v11g:990717 set found line in the middle of page
+//            fcmd2.c fcmd22.c/h
+//v11f:990711 (BUG) Lcate fail for last line when offset-line mode
+//            fcmd.c
+//v11e:990710 (BUG) abend at scrdisp when other split side is gone by 
+//            RE-edit/browse cmd(same file name).No pcw enqed by Gstatus remain
+//            as splitted.
+//            scr.c
+//(DUMPP)v10h:990703 (BUG) virtual addr calc err of disas
+//            dumpp.c
+//v11d:990703 (BUG) but no actual effect(sort cmd). & shoud be &&
+//            fcmd4.c
+//v11c:990630 help for Locate cmd
+//            fcmd.c
+//v11b:990626 (Win)redirect err msg(getconsolemode may ok,but err at setcurcor etc)
+//            scr.c 
+//v11a:990619 locate cmd default Base by lineno fmt
+//            fcmd.c
+//v119:990619 change edit option X-->O(ffset),N-->L(ineno)
+//            file5.c
+//v118:990613 reset errline by esc*2 or reset cmd
+//            lcmd.c
+//v117:990612 end hex input mode at inetrmedeate of DBCS by "x" key
+//            func2.c
+//v116:990612 locate by hex offset;use line offset at read if not especialy
+//            option specified else use search on current update status(",c" option)
+//            And support ",C" option for lineno locate cmd
+//            fcmd.c
+//v115:990612 issue errmsg for undo cmd(not pfk) with opd
+//            undo.c
+//v114:990612 erase "specify copy dest" msg after successfull completion
+//            fcmd.c
+//v113:990612 (BUG)copy file after cmd abend when into spf file(not yet pfh set before enq)
+//                 from v1.02(v106)
+//            lcmd3.c
+//v112:990606 (BUG)SORT cmd faile;filechktabdbcs return 4 when no tab
+//            fcmd4.c
+//v111:990606 SORT cmd help
+//            fcmd4.c
+//v110:990606 input range by x____ for alternative of /Nx____
+//            file5.c
+//v10Z:990606 allow Locate X command for text file also
+//            (inserted line assumed with no eol data)
+//            fcmd.c
+//v10Y:990606 support input range by hex offset value(/NXxxx-Xxxx) for edit/browsw cmd
+//            (lineno is couted from 1 even if offset!=0)
+//            file.h/c file12.c file4.c file5.c
+//v10X:990605 hex digit lineno display for binary file 
+//           (default is effective for binary only,for text use opt each time)
+//           (/N option for edit/browse cmd)
+//            xe.h file.h/c file13.c file2.c file5.c fcmd3.c ini3.c
+//v10W:990605 support Locate by hex offset for binary file
+//            xfcmd.c
+//v10V:990605 (BUG)drop Prev bug(dest change after rfind key with search word)
+//            xfcmd2.c
+//v10U:990605 wrap also when find cmd not found like as rfind
+//            xfcmd2.c
+//v10T:990605 protect search word is null;for change all no csr advance and
+//            line expand to max line length and stop at there.
+//            Allow only when exclude cmd to for the case all line exclude
+//            xfcmd2.c
+//v10S:990605 (BUG)workdir env var may be followed with space
+//            xe.c
+//v10R:990605 (BUG)change works on browse screen
+//            fcmd2.c
+//v10Q:990508 (BUG)pf6 set and leave casesense-sw,it may be better 
+//            to keep it over f6 for f5.
+//            fcmd2.c
+//v10P:990508 issue errmsg(csr pos err) for F6 on dirlist
+//            dir3.c
+//v10N:990502 support record width of binary by optbin
+//            file.c fcmd.c
+//*v1.2 released 990501 ******************************
+  .v102:(99/05/01)
+     1.BUG修正
+       -999桁超の行にタブ文字がある時,分割境界で1文字余分に重複出力.
+       -行が丁度1000桁のとき出力で1000桁目が1文字脱落。
+       -行連結(行の最後の改行マークの削除)で連結行が999桁超の時アベンド
+       -バイナリーファイルなどで最後に行区切り文字(0x0d0aなど)がないとき
+        行区切り文字が追加される。
+       -ディレクトリーリストからSELectコマンド開いた新規ファイルを
+        更新なしでのENDするか更新してもCANcelで閉じるとディレクトリー
+        リストが一行削除されLOCateコマンドが正しく働かない.
+       -ディレクトリーリスト上でのFINdコマンドが探索文字列がx行コマンド
+        で非表示行になっている時アベンドする.
+       -"."(2eh)より小さい文字,例えば$(24h)などが第一文字となるファイル名
+        があるとディレクトリーリストの表示順が狂う.
+       -(GCC版)OS/2のDOSセッションでファイル削除処理がアベンド.
+     2.機能追加
+       -ヘキサ文字による入力(Alt+F12)
+       -表示/編集コマンドのオプション追加。
+        /Mb[nn][s]:バイナリーモード。(改行コードを無視)
+                   nn は 行表示幅でテキストモードでも指定可能。
+                   's' は行表示幅を省略値として保存する指定。
+        /Mn       :CID無し80桁行番号付きファイルモード。
+
+          また、各オプションを省略できるコマンドをEDIt/BROwse/SELect各々に
+          追加。EB/BB/SBは /Mb を,EN/BN/SNは /Mn を省略値としたコマンド.
+          ディレクトリーリスト行コマンドとしても"1"(バイナリー表示),
+          "2"(バイナリー編集)を追加。
+       -FNX/INX/CNXコマンド.
+          非表示行内は対象としない文字列探索/置換.
+       -SORT コマンド.
+          編集画面での行の整列。複数キー,行範囲指定も可。
+       -ディレクトリーリストでの F6.
+          行番号表示<-->ファイルサイズ表示.
+          ディレクトリーの行にも表示メンバーの合計を表示.
+       -コマンド行へのCut & Paste による貼付をサポート
+     3.機能変更
+       -RENUM コマンドのとき最初のRenum行のページへのジャンプをやめる
+       -下に重ねられた画面を前面にだすとき下に押し下げた時のカーソル位置
+        を復元するが、メニュー画面に限ってホームポジションに設定する。
+       -バイナリーファイルではタブ文字(0x09)によるタブ位置合わせはしない
+       -テキストファイルでは省略時解釈で 0d0ah も 0ah も行区切り文字とする.
+        出力は 入力が全行 0ah でない限り全行 0d0ah を区切り文字とする.
+     4.ツール.
+       -xfc     v1.1 :(BUG)ループすることがある.
+                      (BUG:DOS)記憶域不足になるとハングする.
+       -xprint  v8.6 :(Win版)左マージンの微調整.
+
+//*doc updated*990424*********************************
+//v10M:990424 support cap to cmdline 
+//            cap.c funct.c func.h
+//v10L:990424 EN/BN/SN edit/browse command for SPF file specific.(No cid,margin=72,P=1)
+//            file4.c file42.c file5.c/h file.h/c funct.c func.h dir3.c
+//*doc updated*990418*********************************
+//v10K:990418 (BUG)buff is shorten case,undo area destroy(occur at sort case)
+//            undo.c 
+//v10J:990418 (BUG)fulldraw required when lineno pos change by large line isrt 
+//            file2.c
+//v10I:990417 sort cmd
+//            fcmd4.c/h func.h funct.c
+//*doc updated*990417*********************************
+
+//v10H:990417 (BUG)uerrmsg parm count chk by xuerpck
+//            fcmd3.c file.c lcmd3.c sub.c func2.c
+//v10G:990417 EB/BB/SB for "e /mx","b /mx","s /mb"
+//            funct.c func.h file.c file5.c/h dir3.c
+//v10F:990417 force width= for CLIPBOAD file etc
+//            file.c
+//v10E:990417 another width value save for edit
+//            file5.c ini3.c xe.h
+//v10D:990417 limit screen width function to browse only when implicit
+//            file.c file5.c/h
+//*doc updated*990411*********************************
+//v10C:990411 errmsg modigy(valid cidpos)
+//            file42.c
+//v10B:990411 cid for margin file when line width specified.(issue warning).
+//            if in-margin case give up to set cid,else search cid from last
+//            file4.c file.c
+//v10A:990411 (BUG)splitupctr clear miss.following aplit is trated as all updated
+//            file12.c
+//v10z:990411 (BUG)pos of cid for split last line is too far.
+//            it should consider prev split continued line length.
+//            (But probrem remain in the case cid is spritted or on prev line,
+//            new cid dose not replace but added.)
+//            file12.c file4.c/h
+//v10y:990410 (BUG)at load time,eol dropped when split last line is 1 byte(+eol) and
+//            next line is also splitted.
+//            file.c
+//v10x:990410 change display width keep is option /mnnS
+//            file5.c
+//v10w:990410 display width for each text and binary
+//            xe.h ini3.c file5.c
+//*doc updated*990410*********************************
+//v10v:990410 chng browse binary mode:"2" -->"1",and add "2" as edit binary mode
+//            dlcmd.c dlcmd2.c/h err.h/c
+//v10u:990406 read mode default is PC and UNIX(write mode is PC if 0d0a found)
+//            m option for mix for read
+//            file5.c file.c
+//v10t:990404 csr restore after view split end
+//            dlcmd2.c dlcmd5.c scr.c
+//v10s:990404 move csr to split scr for view/vieedit
+//            dlcmd.c/h dlcmd2.c
+//v10r:990327 display lineno on dir list,accum size/line cnt to dir line
+//            sub.c/h dlcmd2.c/h dlcmd3.c dlcmd4.c dlcmd5.c/h dir.c/h dir2.c dir3.c
+//            file.c funct.c func.h
+//v10q:990327 treate .xxx as data if opdno=1(find) or 2(change)
+//            fcmd22.c
+//v10p:990326 new dlcmd "2";browse binary mode
+//            dlcmd.c dlcmd2.c/h
+//v10o:990324 (BUG)abend by find cmd on dirlist if line is excluded by x-dlcmd
+//                 -->on dirlist,search limit to displayed line only
+//            fcmd2.c 
+//v10n:990324 Find/Ifind/Change NX (FNX/INX/CNX) cmd;search not excluded line only
+//            (on dir list,search on display line only;see v10o)
+//            fcmd2.c funct.c func.h
+//v10m:990322 binary mode specification change /Mx-->/Mb,and save width once used
+//            until next explicit specification.(save also to sav file)
+//            xe.h file.c file5.c ini3.c
+//v10k:990322 (BUG)after select cmd for new file on dirlist,end with no update
+//            or cancel update file cause deletion of parent dir plh.
+//            So locate cmd faile and move csr to last entry.
+//            dlcmd2.c file.c/h
+//v10j:990320 display current option before errchk for opt LFN cmd
+//            xeopt.c
+//v10i:990221 exclude line count display by 6 char(<--5)
+//            xelcmd2.c
+//v10h:990117 (BUG)of 10e;copy file into edit screen at first.
+//            Slinewidth is not yet initialized if not through edit cmd
+//            xefile.c
+//v10g:981227 dump:caddr is another output parm(parm changed)
+//v10f:981223 dump virtual addr support
+//            xedumpp.c
+//*doc updated*981218*********************************
+//v10e:981218 e/b cmd display width parm for bin/text both type file
+//            file5.c file.c/h
+//v10d:981218 if bin,no cid set
+//            file4.c fcmd3.c
+//v10c:981218 if explicitly text mode specified,request no optbin
+//            file.c/h file5.c
+//v10b:981213 (BUG)charconcatline need set returncode;if return 0;
+//            area destroy because buff is not expanded
+//            char2.c lcmd4.c
+//v10a:981213 (BUG)if last line ended remaining 1 byte,last byte is dropped.
+//            file.c
+//v109:981213 (BUG of v106)not yet enqed to pfh,UGETPFH failed.
+//            file.c
+//v108:981213 binary mode edit(no crlf/no split process)
+//            file12.c file.c
+//v107:981213 use new opt of ufgetsinit for binary chk(del filechkbin)
+//            file.c/h fil5.c/h fcmd.c
+//*doc updated*981212*********************************
+//v106:981212 no tab expand when binaly file
+//            xe.h file6.c char.c
+//v105:981212 no csr restore at popup,it is better to move to home pos when menu
+//            scr.c
+//v104:981212 no csr move when renum
+//            file12.c
+//v103:981212 (BUG)for binaly file edit,last 0d0a is added
+//            0d0a is added at end of file eveif input has no 0d0a
+//            skip add only when thatline is at end of file,if moved to other
+//            position,\d0a is added.
+//            xefile.h/c file12.c
+//v102:981212 (BUG)for binaly file edit,redunt byte write occur.
+//            For the case tab containing line is over 999,last char is doubly written
+//            xefile12.c
+//v101:981205 hex input 
+//            xe.h func2.c file2.c funct.c/h char2.c
+//*V1.01 released *981201*********************************
+  .v101:(98/12/01)
+     1.BUG修正
+       -F/Y行コマンドで先頭行の描画がもれることがある。
+       -.aaaや..aaaなどのファイル名の処理に不具合あり
+     2.機能追加
+       -SUBmit コマンド
+        編集中のファイルやファイル名指定でスクリプトファイルを実行
+       -行コマンド "="--- 行の比較
+     3.ツール.
+       -xdd  v1.1 :削除ファイルの属性/サイズの表示
+       -xdc  v2.1 :DOS版とその他の版の中間ファイルの互換性を採る
+                   不一致表示を詳細化
+       -xdig v1.4 :/L(実行をとどめるディレクトリーの深さ)オプションが
+                   有効でない不具合の対処
+       -xds  v1.0 :ディレクトリーサイズ表示(新規)
+       -xfc  v1.0 :ファイル比較ツール(新規)
+       -xfs  v1.3 :チェクサムによる入出力確認,ベリファイ機能追加。
+                   操作性の向上、再開始/再試行機能追加。
+       -xprint 8.5:(Win版)Windows印刷する。任意のCPI/LPIを指定可能,
+                    任意のフォント名が指定可能。
+                   (OS/2版)リモートプリンター対応。/Ndでベース印刷。
+                   (BUG)ESC/Pのとき漢字のSJIS-->JIS変換がもれていた。
+                    その他詳細は xpj.doc 参照
+
+//v0k4:981128 SUBmit cmd
+//            funct.c func.h dcmd2.c
+//v0k3:981011 "=" lcmd(compare line)
+//            lcmd.c/h lcmd5.c/h 
+//v0k2:980920 use ueditfattr for dirattrstr
+//            dcmd.c dir2.c/h
+//v0k1:980919 (BUG)windows allow filename ".aaa" or "..aaa"
+//            it is trated as current/parent dir on dirlest
+//            dir.c dlcmd5.c
+//v0k0:980919 (BUG)miss line re-display for f/y lcmd when excluded is top line
+//            file2.c/h lcmd2.c 
+//*V1.00 released ********************************************
+  .v100:(98/07/21)
+      .BUG修正 -(W95版のみ) V4.00.950B で立ち上がらない.
+        v4.00.1111で確認しました.Windows98 v4.10.1998でも確認しました
+      .行コマンドの機能追加
+       -"行束(たば)"指定機能を各行コマンドに追加
+       -"Y"(非表示行の一括再表示)の範囲指定(YY),行数指定(Yn)をサポート
+       -"S"(Split:行分割),"J"(Join:2行連結)を行コマンドとしてもサポート.
+      .メニュー画面からの追加機能.
+        Fn キーへのコマンド文字列を割当て、機能へのキー割当の変更、
+        全キーについて割当のキー順表示
+      .その他
+       -APPend コマンド追加
+       -DROpコマンドに行範囲指定機能追加(ラベルサポート)
+       -LOCateコマンドをディレクトリー表示画面でもサポート
+       -(WIN版のみ)exe パラメータに日本語入力処理回避のオプション/Yn
+      .ツール.
+       -xfs  v1.2 :大きなファイルのディスケットへのバックアップ/リストアー
+
+//*doc updated 980724 *******************
+//v0jt:980724 (WIN only)option to force nt mode kbd input for future version up
+//            xe.c   
+//v0js:980723 (BUG)no prot chk for browse screen if linenosz<7
+//            file2.c
+//v0jr:980723 call scrdisp for mult cmd because active screen may change
+//            so no need for POS cmd
+//            func.c csr.c
+//v0jq:980723 confirm UCWrcsrx/y is valid for cmd key
+//            func.c
+//v0jp:980723 cmd verb for enter;"ENT"
+//            funct.c
+//v0jo:980723 UPARSESETCONDELM of uparse2 generate 3 opd for "xx ;"
+//            it may cause too many opd
+//            func.c
+//v0jn:980723 KEY cmd
+//            funct.c func.h func2.c
+//v0jm:980723 INS cmd(operand=ON/OFF)
+//            funct.c scr2.c
+//v0jl:980723 no rc(no bell) set when already home for home func
+//            csr.c
+//v0jk:980723 add HOMe cmd
+//            funct.c
+//v0jj:980723 POS cmd relative offset support,no err evenif out of range
+//            csr.c
+//*doc updated 980722 *******************
+//v0ji:980722 tab for key cmd(0.1)
+//            file7.c char2.c
+//v0jh:980722 reject char key for key assign change 
+//            file7.c ini.c
+//v0jg:980722 scroll page to err line for fkey/pfkey
+//            file7.c
+//v0jf:980722 move csr to top-of-line after press for fkey panel
+//            file7.c
+//v0je:980722 allow s+ for alternative of Shift+ for key assign in ini
+//            ini.c kbd.c file7.c
+//v0jd:980722 fix ctrl+2(null char),drop from ini and assign chng screen
+//            file7.c ini.c funct.c
+//v0jc:980721 (BUG)keycmd cut if expanded by % edit
+//            kbd.c
+//v0jc:980721 W95-->WIN
+//            xe.c 
+//v0jb:980721 v1.00
+//            gbl.h
+//v0ja:980721 change define value by change opt start from 0.0
+//            file7.h/c pan.h/c pan2.c xe.c file.c char2.c kbd.c
+//v0j9:980721 (BUG)filefk double line enque when re-display
+//            file7.c
+//v0j8:980720 (BUG)no fkctt stopper,use entno
+//            file7.c
+//v0j7:980720 int size of DOS and W32(ini write entno)
+//            kbd.h
+//v0j6:980720 GCC warning
+//            file4.c funct.c
+//v0j5:980720 (BUG of v0ij)string terminator for no exec cmd
+//            kbd.c
+//v0j4:980720 return normal when split is same as current for pfk comd string
+//            scr.c
+//v0j3:980720 (BUG)operand no is of concatinated cmd cause too many opd
+//            funct.c
+//v0j2:980720 POS cmd for fn-cmd key
+//            funct.c func.h csr.c
+//v0j1:980720 concatinated cmd for opt screen(hsp;6;.. rejected. hsp;=6;.. accepted)
+//            func.c pan2.c/h
+//v0j0:980720 (BUG of v06a)prevtab of HDR line shoud be end of line
+//            char2.c file2.c
+//v0iz:980720 tab for change key assign screen
+//            char2.c file2.c
+//v0iy:980718 fix assign Home key
+//            funct.c
+//v0ix:980718 key assign by key press
+//            file7.c/h kbd.c/h func.c
+//v0iw:980718 pfk cmd support(del 0.5,cmd change by ini only)
+//            key assign reject for cmd only func
+//            cmd assign reject for graph char or null char
+//            file7.h/c pan.h/c pan2.c xe.c func.c/h
+//v0iv:980717 (BUG)keyname err,Left-allow-->Left-arrow 
+//            kbd.c
+//v0iu:980717 cmd compare by strcpy not by memcpy because i and iii is dup
+//            func.c/h pan.c fcmd2.c
+//v0it:980717 funckey change option support
+//            write to ini when cmd/key assign changed
+//            xe.c/h func.c/h ini.c
+//v0is:980705 change max key number assign to func 8 to 4
+//            func.h funct.c
+//v0ir:980702 (BUG)func name "Reset" contain space "Reset   "(search err)
+//            No effect because it is fixed assign func.
+//            funct.c
+//v0iq:980702 (BUG)spf flag reset bug at ulhcopyno; effect?
+//            lcmd3.c
+//v0ip:980702 (BUG of v0i9:bandle/skip support)
+//            only 1 line copy when copy file into spf file 
+//            lcmd3.c
+//v0io:980702 pfk cmd support(opt 0.4)
+//            pan.c/h pan2.c file7.h xe.c kbd.c/h lcmd3.c func.c/h
+//v0im:980627 pfk cmd support(long cmd ove screenwidth)
+//            func.c func2.c/h scr.h
+//v0in:980625 (BUG)func name spell err
+//            funct.c
+//v0im:980625 pfk cmd support(optk1 and optk2)
+//            pand.c/h pan2.c file7.c/h xe.c/h file.c/h file12.c file2.c
+//v0il:980626 (BUG)string on find errmsg is of previous for f */*e 
+//            fcmd2.c
+//v0ik:980625 num cmd avail for kf again
+//            fcmd3.c
+//v0ij:980625 pfk cmd support(save to ini)
+//            kbd.c/h ini3.c
+//v0ih:980621 pfk cmd support(pfk table)
+//            func.c/h kbd.c/h file7.c ini2.c
+//v0ii:980621 display protected margin by browse attr
+//            file2.c
+//v0ih:980621 pfk cmd support(input protect)
+//            char.c cap.c char2.c
+//v0ig:980620 (BUG)abend when start line specified
+//            file13.c file2.c
+//v0if:980620 pfk cmd support(panel,display)
+//            xe.c/h file.c/h file7.c/h pan.c/h pan2.c fcmd3.c file13.c
+//            file2.c file3.c file4.c file12.c
+//*doc updated 980613 *******************
+//v0ie:980607 Locate cmd for disrlist(base is pfhname,else specify from root)
+//            funct.c func.h dir3.c dlcmd5.c/h
+//v0id:980607 (BUG)abend at reset when lcmd line deleted 
+//            lcmd.c
+//v0ic:980607 label support for DROP cmd
+//            fcmd3.c file7.c/h fcmd22.h/c
+//v0ib:980530 v0i9 cotinued for other than file copy
+//            lcmd3.c file12.c/h fcmd.h/c file.h lcmd2.h/c
+//v0ia:980530 add APPend cmd(avail by also CAP Alt+h)
+//            avail for also file(dcmd);same as XCOPY with /+ operand
+//            fcmd.c/h func.h/c funct.c file12.c file.h/c cap.c dcmd.h/c
+//v0i9:980526 lcmd bandle/skip support for pair cmd("C","M","A","B","P","P")
+//            copy file An,l.m  : n times (l,m) pair
+//            copy file An,0.m  : n times (full line,m) pair
+//            copy file A,l.m  : (l,m) pair until eof
+//            lcmd.c lcmd3.c
+//v0i8:980522 move csrposerr to xeerr
+//            cap.c err.c/h
+//v0i7:980520 line cmd split cmd('S')/join('J') support
+//            (bandle/skip is display line number)
+//            (for bandle=1 or no bandle,if join start from EXCLUDE,no next line use) 
+//            lcmd2.c lcmd.c lcmd4.c/h char2.c/h char.c/h
+//v0i6:980512 count/range support for Y lcmd
+//            lcmd2.c lcmd.c
+//v0i5:980511 TRACE for debug NT strip
+//            func2.c
+//v0i4:980503 try not PROCESS_INPUT for output to chk strip on screen trouble
+//            scr.c
+//v0i3:980503 consolemode restore should be done at scrreset for abend case
+//            scr.c
+//v0i2:980501 skip dup data dump print  v1.a
+//            dumpp.c
+//v0i1:980430 move version def to gbl.h from gbl.c
+//            gbl.c/h
+//v0i0:980429 lcmd skip/bandle support
+//            970517 del  Dn/l.m  DD/l.m     del l-line,skip m-line
+//            970517 rep  RR/l.m             rep l-line,skip m-line
+//            970517 isrt In/l.m             ist l-line,skip m-line
+//            970517 excl Xn/l.m  XX/l.m     exc l-line,skip m-line
+//            970517 ccom /n/l.m  ///l.m     c-comm l-line,skip m-line
+//            970517 incf /n/l.m  ///l.m     c-comm l-line,skip m-line
+//            lcmd.h/c fsub.c/h lcmd2.c/h lcmd4.c/h
+//*v099 released *980429 ************
+//*v099 released *980429 ************
+//v0hR:980429 version v099
+//            gbl.c  
+//v0hQ:980429 (BUG)filetabcler clear next 09(it may be winNT malloc len on hdr)
+//            under NT issue area destroy at ufree.
+//            file6.c
+//*v098 released *980428 ************
+//*doc updated **980428****
+//v0hP:980428 I changed mind,abondon DEL x all,use DRo  only.
+//            funct.c func.h
+//v0hO:980426 (BUG of v0hA) copy inter 2 file may reject by line overlap
+//            lcmd3.c
+//v0hN:980426 On cmd line,ctl char should be allowed for find cmd
+//            (reject x0a and x0d only)
+//            char.c
+//v0hM:980426 version v098
+//            gbl.c
+//v0hL:980419 (BUG) of v0hs:if copy file not found,errmsg is override by as "null file"
+//            lcmd3.c
+//v0hK:980418 binary file chk.(reject tab clear)
+//            file.c file5.c/h 
+//v0hJ:980418 support "tab clear" cmd
+//            fcmd.c file6.c/h
+//v0hI:980418 (BUG)max operand number incleased change a b all col1 col2 lab1 lab2
+//            fcmd2.c
+//v0hH:980418 (BUG)last/prev search with label fail if last/csr line len is shorter
+//            than label line.offset should be reset by last label line.
+//            fcmd2.c
+//v0hG:980418 (BUG)label on EXCLUDE line disappear when word found on excluded
+//            so prohibit label on EXCLUDE line.
+//            lcmd.c
+//v0hF:980418 (BUG)Swrapsw need clear for find(not rfind)
+//                (Swrapsw on by rfind,the find cmd issue re-searched msg)
+//            fcmd2.c
+//v0hE:980418 bypass each found msg for all search for performance up
+//            fcmd2.c
+//v0hD:980418 (BUG)Sdirstep effect on search all on edit/browse(skip Sdirstep)
+//                 it cause find miss next word on same line.
+//            fcmd2.c
+//v0hC:980418 (BUG)on dir list,it cannot be find .ext
+//            fcmd22.c
+//v0hB:980418 (BUG)change a b,find *u.rchange-->chnage update line by b.
+//                 so,repword clear at *u/*e(next rchange is not availe 
+//                 because no repword)
+//            fcmd2.c
+//v0hB:980418 (BUG)of v0hB.a+c fail.dest shoud chk between start and stop
+//            lcmd3.c
+//v0hA:980413 (BUG)copy lcmd loop when dest is included in Cn range
+//            chk and err return if dest is contained range for copy/move
+//            lcmd3.c
+//v0hz:980412 EXCLUDE/IEXCLUDE cmd support
+//            (pending other lcmd is deleted)
+//            fcmd2.c func.h funct.c lcmd2.h/c
+//v0hy:980411 csr pos on err not pending
+//            lcmd.c
+//v0hx:980410 label lcmd support for find etc.
+//            alternative of v0hk and  v0hw is not needed anymore.
+//            lcmd.c/h fcmd2.c fcmd22.c/h
+//v0hw:980410 (BUG)need allow A/B lcmd for also browsw for FIND line range support
+//                 but need protect copy into etc by another method.
+//            lcmd.c
+//v0hv:980410 (BUG)delete line between excluded remain 2 excluded line
+//            lcmd2.c
+//v0hu:980410 DEL cmd on edit screen(same as DROP)
+//            and cmd fmt change (drop xall-->drop x all)
+//            funct.c func.h
+//v0hu:980410 not scroll left/right for find if word is in the range
+//            even if it is inthe range of leftmost page.
+//            user may not want scroll.(deny v068)
+//            fcmd2.c
+//v0ht:980410 W95 report 0d1e additionaly to 0d1c(enter).
+//            over v0hp and v0hn.
+//            prohibit ctl char(<20h) except BS(08)/TAB(09)/ESC(1b)
+//            char.c
+//v0hs:980410 err msg when null file copy into
+//            lcmd3.c
+//v0hr:980329 (BUG)when vsplit and its column is shorter than 5.
+//            destroy next malloc hdr,cause area is not malloced abend.
+//            xefile2.c
+//v0hq:980316 add DROP cmd(del all line XON/XOFF)
+//            func.h funct.c fcmd3.c file7.c/h
+//v0hp:980308 (BUG of v0hn)v0hn reject BS(x08) input
+//            char.c
+//*doc updated ************
+//            (GCC版)under NT _use_lfn return no lfn support(dpmi int fail)
+//v0ho:980221 range support for on/pase pos cmd
+//            lcmd.c lcmd3.c
+//v0hn:980221 W95 sometimes return 1c0a after 1c0d.(8000 entry generated)
+//            especialy at startup.So prohibit input 0a on lineno or cmdline.
+//            char.c
+//v0hm:980215 pend/err lcmd reset by double Esc or typed RESET
+//            func2.c lcmd.c/h dlcmd.c/h funct.c
+//v0hl:980215 (BUG)v09m BUT,after err msg beep only condition need clear
+//            err msg line.
+//            pan2.c
+//v0hk:980214 support line range by A/B for find/change all cmd
+//            (fcmd2 split to fcmd2a as include file)
+//            lcmd.c/h fcmd2.c fcmd21.c
+//v0hj:980214 (BUG:DOS under WinNT)WinNT version DOS shell dose not support
+//            /K (command execute and do not exit).
+//            so ignore init cmd parm(default "propmt $p$l")
+//            dcmd2.c
+//v0hi:980201 over v0hh,csr set is requierd for DOS
+//            scr.c dcmd2.c
+//v0hh:980131 DOS under NT english,if setmode at term,printf msg is not displayed
+//            until re-open dos box.-->avoid setmode but clear scr by space.
+//            No problem if scrclear by space write;reason is unclear but.
+//            scr.c
+//v0hg:980131 scr height for W95 english mode(set value included IME line,
+//            caller chk english mode and count down.it is same as DOS)
+//            W95 return lineno containning ime line
+//            is_win return 1 when W95 but 0 when WNT
+//            so use new function udosiswinnt for DOS.
+//            OS2 DOS session hight is 24 for win,25 for fullscr.
+//            win has ime on out of crient area,full scr has no ime line.
+//            so return as DOS area,xescr ajust to 24 line both.
+//            scr.c
+//v0hf:980130 performance tuning
+//            draw only after deleted/inserted/exclude/include/copy/rep line
+//            lcmd2.c lcmd3.c file2.c/h file.h
+//v0he:980130 cap save operation for paste after end/cancel(Alt+f9)
+//            cap.c func.h/c
+//v0hd:980126 allow (shift+)pf5+"i xxx"/"f xxx"
+//            fcmd2.c
+//v0hc:980126 (BUG)word pallette-->palette
+//            pan.c
+//v0hb:980126 (BUG)when END retuen after error input on pallet no
+//            no input field value (internaly set 255) is save on opt.
+//            At next restart time pallette no 255 is used.
+//            pan2.c
+//v0ha:980120 need differrentiate codepage and dbcs tbl
+//            w95J codepdge 437 hase dbcs table and first half of DBCS on
+//            rightmost column effect on first column of next line
+//            xe.c
+//v0h9:980118 performance tuning when vsplit
+//            use buff write for active screen
+//            scr.c
+//v0h8:980118 (BUG)when vsplit,left screen boundary splitted DBCS effect to boundary char
+//            scr.c
+//v0h7:980116 (BUG)inactdrawsw init clear missing;cause performance down when vsplit
+//            scr.c
+//v0h6:980116 performance tuning
+//            avoid double screen write by char and followed csr move
+//            (func_char set GPROCSCSRRIGHT/GPROCSCSRDOWN by calling
+//            csrcharright or filecharcsr(call csrcharright/csrchardown).
+//            kbdproc simulate csr right/down input when flag on.
+//            so,if these flag on bypass scrdisp.screen will be written
+//			  at this simulated key event)
+//            scr.c
+//v0h5:980116 no kbd rate set when both parm is 0
+//            kbd.c
+//v0h4:980116 (W32)performance(write a once)
+//            xescr.c
+//v0h3:980116 (W32)NT support
+//            for cell write required case(NT,english mode)
+//            xescr.c
+//v0h2:980115 uget/usetconsolemode for std in/out each
+//            xekbd.c xescr.c
+//v0h1:980111 dbcs space help msg for english help
+//            xe.c
+//*v097 released ********************
+//1217:doc updated
+//v134:971224 ulib;udpmilib.c/memchr;bug for dbcs
+//v0g4:971210 lcmd print for space embedding file
+//            dlcmd3.c
+//v0g3:971210 os/dos spwanvp concatibnate parm and re-evaluate
+//            so use spaunlp for dosd/os2/win,use spawnvp for gcc
+//            dcmd2.c
+//v0g2:971210 use uparsecmd for dos cmd
+//            dcmd2.c
+//v0g1:971207 print parm by short filename option(opt plfn on/off)
+//            opt.c/h xe.h ini3.c dlcmd3.c dlcmd2.c/h dcmd2.c
+//v0g0:971207 strstr is ambiguous for xprint cmdf compare
+//            default set on gbl(if printcmd!=0 set off)
+//            (cmd parm string ignored when xprint is used on print cmd parm)
+//            ini2.c gbl.c dlcmd3.c
+//v0fz:971201 print/xprint cmd on .ini for each os
+//            ini2.c/h gbl.c
+//v0fy:971130 (BUG)%n parm on xprint cmd text is not effective.
+//                 %2,%3 etc is deleted if requested one by one to ucmdparmedit
+//            dcmd2.c
+//v0fx:971116 (BUG)select for space embedding dir,cause parse err.
+//                 membx of dir "a b"-->edit a b\membx
+//            dir3.c
+//v0fw:971116 (GCC:BUG)need force chk use_lfn when change env var LFN
+//                     change n to y
+//            xe.c opt.c
+//v0fv:971116 set version
+//            gbl.c
+//v0fu:971116 (BUG)sort sequence of dump addr for ff______(GCP);dumpp v1.8
+//            dumpp.c
+//v0ft:971109 allow a\"b c" for filename input
+//            pan2.c
+//v0fs:971109 (BUG)fullpath fail when select cmd with quatation
+//                                 for space containing filename(a\"b c" cause err)
+//            file.c file13.h/c
+//v0fr:971109 dir list sort by fully for longname
+//            dir.c/h dlcmd2.c dlcmd5.c
+//v0fq:971109 new file by select cmd has alias but it is temporary name
+//            it may duplicated alias name.
+//            dont created new pdh if new,isrt at end file if new file.
+//            file12.c dlcmd5.c file.h/c
+//v0fp:971108 split dlcmd2-->dlcmd5.c
+//            dlcmd2.c/h dlcmd5.c/h dir3.c
+//v0fo:971106 (GCC:W32)ugetvfatalias new option parm
+//            dir.c fsub.c
+//v0fn:971103 (GCC:W32)dirlist merge by shortname
+//            dlcmd2.c
+//v0fm:971103 new function to set filename and alias to ufh
+//            fsub.c/h dlcmd2.c file.c file12.c
+//v0fl:971103 lfn support exec option /Yl,/Nl;default is /Yl
+//            xe.c
+//v0fk:971103 set alias also when re-expand filename change
+//            dlcmd2.c
+//v0fj:971021 (BUG)no highlight when found on attr
+//            dir2.c
+//v0fi:971021 step to next column when find on dir
+//            fcmd2.c
+//v0fh:971019 find cmd on dir list;allow search on time field etc.
+//            distinguish ifind and find.
+//            fcmd2.c
+//v0fg:971019 deleted name may long on renamesv
+//            dir2.c
+//v0ff:971019 (w95/GCC)dir sort seq is by alias
+//            dlcmd2.c
+//v0fe:971019 (w95/GCC)deney v0fd;copy etc need keep long filename.
+//                     long name and short name is kept.
+//            dir.c/h dir2.c
+//v0fd:971018 (w95/GCC)udhname is long or short,but only one of them is needed.//+v0fdI~
+//            dir.c/h dlcmd2.c
+//v0fc:971018 vfat flag should be on ufh not but ufc because uddname created by it
+//            file.h dir.c dir2.c fcmd2.c
+//v0fb:971018 UFHshortname for W95/GCC for path display on dirlist
+//            file.h dir.c
+//v0fa:971017 fatname from udhalias for w95/gcc under no LFN mode
+//            dir.h dir2.c dir.c
+//v0f9:971017 UFCFLFN flag for lfn(common to os2/w95/gcc/dos)
+//            xe.h xefile.c/h dir2.c dlcmd.c fcmd2.c
+//v0f8:971015 long filename support
+//            dir list fine new logic sna split to fcmd2.c+fcmd23.c
+//            allow multifind in udhname it may be hidden.
+//            search othe field on the screen(time stamp field my match).
+//            fcmd2.c fcmd23.c/h
+//v0f7:971014 long filename support
+//            search on dir list,it may be hiddlen if too long
+//            fcmd2.c dir2.c
+//v0f6:971012 (BUG)reverse pos err for find dirlist when indent opt=0
+//            fcmd2.c dir2.c
+//v0f4:971012 (BUG)USDcell clear len overflow for dirlist
+//            dir2.c
+//v0f3:971012 long filename support
+//            input long rename field
+//                 dlcmd.c dir2.c
+//v0f2:971010 (BUG)"/" lcmd stop process if no shift occued at a line
+//            lcmd4.c
+//v0f1:971010 os2 new malloc dump logic;no need initial heap alloc
+//            xe.h xe.c ini2.c
+//v0f0:971010 long filename support
+//            file.h    ;maxfilename,fs=hpfs drive id
+//            dir.h     ;maxfilename(data) and maxfilename_fat(display)
+//            dir.c     ;hpfs id on pfh
+//                      ;win95 lfn
+//            dir2.c    ;member name display setup
+//            file5.c/dlcmd4.c:ext search from last
+//            win95 alias dir list option(OPT LFN cmd)
+//                      xe.h ini3.c opt.c/h dir2.c
+//            offset not by MAXFILENAME but field size(refind dose not step)
+//                  fcmd2.c
+//*****971005 v094 released ***************
+//v0eP:971005 change margin parm for Find/Change.1M,2M-->LM,RM
+//            fcmd22.c
+//v0eO:971005 (BUG)dropping N option leave NUMOK/NUMERR flag on pfh
+//            with spfpos=0.it cause to write lineno at pos=0 when save.
+//            file42.h
+//v0eN:970927 for DOS icc compile warning
+//            file42.h
+//v0eM:970927 for w95 vc compile warning
+//            lcmd4.c
+//v0eL:970927 (BUG)renum for spf need boundar dbcs/tab
+//            file12
+//v0eK:970927 margin and cap
+//            for SPFERR/SPFOK file;oom update prohibit
+//            for mergined file;prohibit over mergin line.
+//                             ;avail on oom
+//            cap.c
+//v0eJ:970927 accept protect option only if mergin specified
+//            file42.c
+//v0eI:970927 margin and copy on/paste
+//            for SPFERR/SPFOK file;oom update prohibit
+//            for mergined file;avail over mergin line if not protected
+//            lcmd3.c char2.c
+//v0eH:970926 if err return,it should not to set Srange1/2
+//            fcmd2.c fcmd22.c
+//v0eG:970926 (BUG)of wrap search;after session restart it is wrap search
+//            because Snotfinpctr=0 which match with Gkbdinpctr(=0)
+//            fcmd2.c
+//v0eF:970926 (BUG)of v0eB;return before clear Swrapsw cause abend
+//            because of missing set plh before linesrchstring.
+//            fcmd2.c
+//v0eD:970926 (BUG)of v0eB;read range must be from first record
+//            file2.c
+//v0eC:970926 (BUG)csr pos display on hdr line not change after find cmd
+//            file2.c
+//v0eB:970923 find/change range support
+//            fcmd2.c fcmd22.c/h undo.c
+//v0eA:970922 assume cid(no operand) as cid ?
+//            fcmd3.c
+//v0ez:970922 v0ep to charcap insert
+//            char2.c
+//v0ey:970922 v0eq to change cmd
+//            fcmd2.c file42.c
+//v0ex:970922 (BUG)filemerginchk;trailer space len must after cpos
+//            file42.c
+//v0ew:970922 split fcmd2 to fcmd22
+//            fcmd2/h fcmd22.c/h undo.c
+//v0ev:970922 abondan /v0ep/v0er/v0es/v0eu;
+//            use filetabexp2(expand in mergin only)
+//            file6.c/h file42.c char.c fcmd2.c
+//v0eu:970921 (BUG)same as v0er for change cmd
+//            fcmd2.c
+//v0et:970921 split char12 from char
+//            char.c/h char12.c/h fcmd2.c
+//v0es:970921 for v0ep,by method of v0er
+//            char.c
+//v0er:970921 (BUG)shitback err when isrt if tab is on oom
+//            char.c file42.h/c
+//v0eq:970920 optionaize to update oom.default is prohibit(option=(p1))
+//            xe.h file.h file42.c lcmd4.c
+//v0ep:970920 (BUG)shitback err when del tab on mergin boundary
+//            char.c
+//v0eo:970920 (BUG)tab expand and clear when copy into spf file
+//            if expanded at display,overflow to num fld.but not invalid spf line.
+//            lcmd3.c
+//v0en:970920 default mergin no consideration for cid pos(all yellow)
+//            file4.c
+//v0em:970919 topline cid;option Mnn instead of MERGIN=
+//            file42.c
+//v0el:970919 (BUG)select with wild card dir create like as "e *.c\x3.c"
+//            dir3.c
+//v0ek:970915 file_lineend;for cid on out of mergin file,stop once at mergin
+//            file3.c
+//v0ej:970915 search oom only if cidpos>mergin for mergined file
+//            file4.c
+//v0ei:970915 split line;ignore mergin.if pos is in mergin,
+//            out of mergin to be copyed?
+//            char2.c
+//v0eh:970915 (BUG) split line leave half of DBCS on 2nd line
+//            char2.c
+//v0eg:970915 (BUG) by v0di,spli use EEOL alos
+//            char2.c
+//v0ef:970915 return copylen not contlen for new reclen;
+//            file4.c/h lmd3.c char2.c
+//v0ed:970915 generaly search cid in mergin if cidpos<mergin not only for spffile.
+//            file4.c
+//v0ec:970915 cap same prohibit for mergined file as spf file.
+//            cap.c
+//v0eb:970915 paste source len;same logic as copy lcmd(fullline)
+//            char2.c
+//v0ea:970915 (BUG) of v0df;Scontle cout when !=' '
+//            file4.c
+//v0e9:970915 Also for mergin file with in-mergin cid like as spf file,
+//            clear/shift cid in mergin.(see v06e)
+//            file43.c
+//v0e8:970915 (BUG)need expand before valid spf line chk
+//            file12.c
+//v0e7:970915 (BUG)need chk also valid spfnum for renum.
+//            file12.c
+//v0e6:970915 Also for mergin file with in-mergin cid like as spf file,
+//            chk/set cid in mergin.
+//            file4.c
+//v0e5:970914 cid for valid line of spf err file
+//            file4.c
+//v0e4:970914 (BUG)endofline stop at col0 when all space line of no mergin file
+//            file3.c
+//v0e3:970914 allow change cmd on out of mergin
+//            file42.c
+//v0e2:970914 deny of v0bd;isrt updated line is splitted after re-load.
+//                         it is confusing because not same line imsge.
+//            file.c
+//v0e1:970914 (BUG)pgright;err if scrollsz>lrecl for mergined file
+//            file3.c
+//v0e0:970914 MAXLINEDATA chk need if allowed insert into out of mergin
+//            char.c
+//v0dz:970914 shift on out of mergin except spf valid line
+//            lcmd4.c
+//v0dy:970914 search cid in mergin for also spferr file err line
+//            file4.c
+//v0dx:970914 split fileclear from xefile4.c
+//            file4.c/h file43.c/h
+//v0dw:970914 CTOL up to mergin for mergin file(also for spf err line)
+//            char.c
+//v0dv:970914 spf scroll for find/change cmd
+//            fcmd2.c file3.c/h
+//v0du:970909 for performance,use flag once chked spfnumok
+//            set on at load/renum,reset when line update or insert.
+//            file.h undo.c file12.c/h lcmd3.c char.c file4.c
+//v0dt:970908 (BUG)cid shift/clear miss if ulhlen==mergin
+//            file4.c
+//v0ds:970908 (BUG)cid shift drop away cid when short rec on mergin file
+//            file4.c
+//v0dr:970908 (BUG)cid shift to left remain old value when in mergin ope.
+//            file4.c
+//v0dq:970908 dose not drop out of mergin for ETOL(cap cut use ETOL)
+//            char.c
+//v0dp:970907 no page shift for ETOL because out of mergin ETOL dose not
+//            clear in mergin by v0d0
+//            char2.c
+//v0do:970907 clear lineno fld by EEOL for spf ok line to do join line
+//            (change ulhlen).also for ETOL change ulhlen
+//            char.c
+//v0dn:970907 source of cap not avail from out of mergin for also spferr file
+//            cap.c
+//v0dn:970907 (BUG)cont and spfline fld drop by cid shift cmd
+//            file4.c
+//v0dm:970907 (BUG)abend when cap isrt if len<cpos for mergin file
+//            char2.c
+//v0dl:970907 (BUG) of v0dg;for rep/cre cmd dest ulh is dummy,has no pfh
+//            file4.c
+//v0dk:970907 (BUG)cid not set if cont exist.(see also v0df)
+//            file4.c
+//v0dj:970907 short record is valid for spf char input like as d9
+//            char.c
+//v0di:970907 undo unit for EEOL,ETOL,CTOL
+//            char2.c file.h/c
+//v0dh:970907 allow update out of mergin
+//            char.c
+//v0dg:970831 chk valid spf record for nomal copy
+//            lcmd3.c
+//v0df:970831 (BUG)cid not set if cont exist.(see also v0d3)
+//            file4.c/h lcmd3.c
+//v0de:970831 EEOL in mergin when csr <mergin for also not spf mergin file
+//            char.c
+//v0dd:970831 (BUG)capisrt shift out of mergin
+//            cap.c
+//v0dc:970831 for spf;reject capblock is out of mergin
+//            cap.c
+//v0db:970831 for spf;EEOL in mergin,reject EEOL/ETOL/CTOL out of mergin
+//            char.c
+//v0da:970831 (BUG)spf flag was set for cb file when CID header line is capped
+//            file4.c
+//v0d9:970831 valid if ulhlen<mergin for file copy into
+//            lcmd3.c
+//v0d8:970831 allow err line copy into spf file
+//            undo.h/c lcmd3.c
+//v0d7:970831 csr wrap(not pageshift) for 80 byte spf file
+//            file3.c file.h
+//v0d6:970831 linenosz default 8 for 80 byte spf file
+//            file13.c
+//v0d5:970831 split xefile13 from xefile,fileregist etc.
+//            file.h/c file13.h/c
+//v0d4:970830 CID header spf file id by OPTION=N parm
+//            file42.c
+//v0d3:970818 (BUG)cont column dropped when copy
+//            file4.c
+//v0d2:970818 cut long line by mergin if copy file into spf file
+//            lcmd3.c
+//v0d1:970818 (BUG)copy ON/PASTE position if csr is on lineno-fld and UFCleft!=0
+//            lcmd3.c
+//v0cz:970818 null cid //+NONE~R
+//            file12.c file4.c/h file3.c fcmd3.c
+//v0cy:970818 csr to end of mergin at once for mergin file by lineend key
+//            file3.c
+//v0cx:970818 pgright max up to lrecl for spf file
+//            file3.c
+//v0cw:970818 drop tab(change to space) at write for spf file
+//            file12.c
+//v0cv:970818 (BUG)renum suffix(exclude line lineno must same as next)
+//            lcmd2.c
+//v0cu:970814 renumsuffix maxintval is 100 for spf file
+//            lcmd2.c file.h undo.c
+//v0ct:970814 RENUM(NUM reset) Force option for spf file
+//            fcmd3.c file12.c file.h/c undo.h/c
+//v0cs:970814 (BUG)do RENUM after err chk end
+//            fcmd3.c
+//v0cr:970814 NUM VER subcmd --> VER cmd
+//            fcmd3.c funct.c func.h
+//v0cq:970814 display version number at time of load,+1 at save.
+//            fil12.c
+//v0cp:970814 undo maxver msg
+//            undo.c
+//v0cp:970813 csr set for cid clear/shift
+//            file4.c
+//v0co:970813 undo set ver even if pfh set only case
+//            undo.c/h file12.c
+//v0cn:970813 RENUM undo support(move filerenum from xefile to xefile12)
+//            undo.c/h file.c/h fcmd3.c file12.h/c file4.c
+//v0cm:970812 NUM VER subcmd(reset spf version,value set at save)
+//            (BUG)duplicated cid clear for same line create cid
+//            undo.c/h fcmd3.c file12 file4.c file.h
+//v0cl:970811 spf NUM field support
+//            file.h/c file12.h/c file4.c file42.c
+//v0ck:970811 search cid regardless mergin for cid clear/shift
+//            file4.c
+//v0cj:970811 8 byte cid=//~dateR(no postfix"~",support cid header only)
+//            file4.c
+//v0ci:970810 (BUG)cid clear abend(oldpos is last cidpos)
+//            file4.c
+//v0ch:970810 line-copy copy full line except cid regardless mergin
+//            lcmd3.c
+//v0cg:970810 shorten reclen by eol regardless csr pos
+//            char.c
+//v0cf:970810 ignore mergin of next line when join line
+//            char2.c
+//v0ce:970810 (BUG)no csr plh when undo if update line then concatinate
+//            to prev line.(last undo line is deleted)
+//            char.c
+//v0cd:970810 allow split at out of mergin
+//            char2.c
+//v0cc:970803 filegetcidlen return last cidpos
+//            file4.c/h  char.c char2.c
+//v0cb:970802 split allow for long rec even if at out of mergin
+//            EOL   allow for long rec even if at out of mergin
+//            if mergin=cidpos=topcidpos remain cid
+//            else same as no mergin specified
+//            char.c char2.c file4.c/h  file.h file42.c
+//v0ca:970802 dont create split lines by del csr when mergin specified
+//            (cid pos is fixed if mergin specified.and it is for continuation column)
+//            char.c
+//v0c9:970802 filecidlrecl return len in mergin and before cidpos
+//            (cid pos is fixed if mergin specified.and it is for continuation column)
+//            file4.c
+//v0c8:970802 filecidlrecl return len in mergin if cidps<mergin
+//            file4.c/h char.c file42.c
+//v0c7:970802 full draw needed even if filegetcid faled(mergin may changed default)
+//            fcmd3.c
+//v0c6:970802 continue column before mergin is arbitaly            //+v0c6R~
+//            file42.c
+//v0c5:970802 cid set column fix when mergin specified(miss if data exist,
+//            but cid previously exist override it.)
+//            file4.c
+//v0c4:970802 dbcssplit chk,tab reset needed for also char del/eol etc
+//            char.c
+//v0c3:970802 del keep mergin
+//            char.c
+//v0c2:970728 simple principle.do not touch/move out of mergin
+//            if mergin not specified,last space is not dropped
+//            file.h file4.c file42.c
+//v0c1:970728 errornous cid shift when 2 continuous cid
+//            file4.c
+//v0bz:970728 if last is tab,expandlen over mergin cause expand err.
+//            but it can be cut in mergin and set cid on normal pos.
+//            file6.c file42
+//v0by:970728 retore cid for isrt char
+//            char.c
+//v0bx:970728 malloc errexit option by EXE parm
+//            xe.c
+//v0bw:970728 hdrline parameter change MAXREC-->MERGIN
+//            if cid pos is in the range of mergin,
+//            if cid pos is in the range meginchk dose not ignore cid
+//            Cid set can be missed by long data
+//            file4.c file42.c
+//v0bv:970728 split file4-->file42
+//            file4.c/h file42.c/h char.c char2.c fcmd2.c lcmd4.c
+//v0bu:970728 draw mergin
+//            cid ? need fulldraw for mergin change redraw
+//            fcmd3.c
+//v0bt:970727 allow rep in the mergin by change cmd
+//            fcmd2.c
+//v0bs:970727 chand esc search req cmd fmt *\__-->\__
+//            fcmd2.c
+//v0br:970727 support RENUM command alias of NUM RESET
+//            num renum is also avail
+//            func.c fcmd3.c
+//v0bq:970727 support find *e(search err line)
+//            fcmd2.c
+//v0bp:970727 allow erase end of line at out of mergin
+//            char.c
+//v0bo:970727 allow crlf pos del key to concatinate line
+//            reverse of splitline split.
+//            char.c char2.c
+//v0bn:970727 split line csr must on the crlf pos,err if over lrecl
+//            like as del
+//            char2.c
+//v0bm:970727 (BUG)missing draw set when split line
+//            char2.c
+//v0bl:970727 split concat line by split_line when csr is out of line
+//            char2.c
+//v0bk:970727 copy out from splitline is also split if multiple
+//            (reverse v0bc)
+//            lcmd2.c lcmd3.c
+//v0bj:970727 no split cid by split-line funckey
+//            char2.c
+//v0bi:970727 (BUG)for line isrt csr pos when indent requested,csr move to
+//                 home when indent pos is out of page.move to line top.
+//            lcmd2.c
+//v0bh:970727 chk all space for line isrt csr pos when indent requested
+//            lcmd2.c
+//v0bg:970727 mergin err notify to cap to protect err msg override
+//            lcmd.h lcmd3.c cap.c
+//v0bf:970726 mergin chk before capmove(avoid del then return)
+//            cap.c
+//v0be:970726 filemerginchk return lrecl witoutcid(change over v0b7)
+//            file4.c/h lcmd4.c
+//v0bd:970726 split line size redundancy for split line update
+//            file.c
+//v0bc:970726 (BUG)a line copy from a plit lines remain split line attr
+//            lcmd3.c
+//v0bb:970726 limit tabctr max 12,and tab expand limit chk
+//            fcmd.c file.c file6.c file12.c xe.h
+//v0ba:970726 split xefile,xefile12(save)
+//            file.c/h file12.c/h fcmd.c
+//v0b9:970725 (BUG)cid for long line(multiline record) has to set at last line
+//            file4.c/h lcmd4.c
+//v0b8:970725 keep cid pos when shift left if cid shift into mergin
+//            file4.c/h lcmd4.c
+//v0b7:970725 filemerginchk return avail space(last data to mergin)
+//            file4.c/h char.c fcmd2.c
+//v0b6:970725 do shift for excluded line when plh1 or plh2 is exclude type
+//            lcmd4.c
+//v0b5:970725 move lcmdshift to lcmd4.c
+//            lcmd2.c lcmd4.c/h
+//v0b4:970724 (BUG)simple coding miss.1 byte esc forward search abend.
+//            fcmd2.c
+//v0b3:970723 clear tab when shift,it is easy to expectate.
+//            lcmd2.c file6.c file4.c
+//v0b2:970723 split uparse fro ustring to uparse.c
+//            dcmd.c dcmd2.c dlcmd3.c  fcmd.c fcmd2.c fcmd3.c file.c file3.c
+//            func.c ini.c ini2.c opt.c pan2.c
+//v0b1:970723 (BUG)csr remain when pgright/pgleft
+//            file3.c
+//v0az:970720 errline reverse display
+//            file.h file2.c undo.c lcmd3.c char.c
+//v0ay:970720 (BUG)save-->undo-->update-->save save no update because
+//                 upctr is same value as upctrsave
+//            undo.c
+//v0ax:970720 (BUG)cid pos remain after "#cidpos" clear(use ustrlen by strlen)
+//            file4.c
+//v0aw:970720 command result area FG color default change 14-->15(white)
+//            gbl.c
+//v0av:970720-fixed lrecl support(mergin support,MAXLEN=nn[N])
+//            file.h file4.c file3.c lcmd2.c
+//           -filetoplinecid/filegetcid return rc
+//            file.c file4.c file4.h fcmd3.c
+//           -charmaxovererr has maxlen parm
+//           (drop out of mergin area when line concatination)
+//            char.h char.c fcmd2.c file4.c file4.h char2.c
+//           -expand pre chk(split file2 to file6)
+//            file6.h file6.c file2.c file2.h
+//           -move lcmdtabshift->filetabshift(file4.c)
+//            file4.h file4.c
+//v0au:970719 undo max ctr change for other than dos.20-->32768
+//            undo.c
+//v0at:970719 (BUG)chk missed for range lcmd has different repeat number
+//            lcmd2.c
+//v0as:970719 general comment command(+)
+//            lcmd.h lcmd.c lcmd2.c lcmd4.c
+//v0ar:970719 (BUG)lcmd Dn on end of file line cause abend,also Cn on end
+//            lcmd2.c lcmd3.c
+//v0aq:970719 add lcmd //(c comment out)
+//            lcmd.c lcmd2.c lcmd4.c lcmd4.h
+//v0ap:970713 no length limit for esc seq search(hex char must be even number)
+//            fcmd2.c
+//v0ao:970713 input avail as default 0x00
+//            kbd.c
+//v0an:970713 (BUG)if split line has tab,ULHlen over MAXLINEDATA.
+//                 So lineend csr pos is invalid.And right-scroll
+//                 is limmited by MAXLINEDATA.
+//                 Use MAXLINEDATA limit for a pg-right key.
+//            file3.c
+//v0am:970713 (BUG)ini fgets buffsize MAXLINEDATA-->INIRECSZ
+//            ini.c
+//v0al:970713 split msg for first record not last
+//            file.c
+//v0ak:970713 input avail as default 0x0a to cut long split line
+//            kbd.c
+//v0aj:970712 also for copyed line about v0af
+//            file.c
+//v0ai:970712 renum for split line(same lineno)
+//            file.c
+//v0ah:970712 (BUG)locate cmd locate to first of lineno(lowest suffix)
+//            fcmd.c
+//v0ag:970712 same lineno for split line of copyed after last line
+//            lcmd2.c
+//v0ag:970712 line id;split top,split cont,top updt,cont updt
+//            file2.c
+//v0af:970712 insert line into split line is also in the line
+//            lcmd2.c
+//v0ae:970712 do not long line cut at save
+//            file.c
+//v0ad:970712 assign same lineno to split line
+//            file.c
+//v0ac:970712 option without -   /Mrw format
+//            file5.c
+//v0ab:970712:write by binaly mode
+//            option without -   /Mrw format
+//            file.h file.c fcmd.c file5.c
+//v0aa:970708:default write mode set from read mode
+//            Read:PC/UNIX/TEXT/BIN,Write PC/UNIX
+//            default-Read:PC   default Write:PC
+//                    Read:UNIX default Write:UNIX
+//                    Read:TEXT default Write:PC
+//                    PC  -->PC  :0d0a-->0d0a  ,0a-->0a
+//                    PC  -->UNIX:0d0a-->0a    ,0a-->0a
+//                    UNIX-->UNIX:0d0a-->0d0a  ,0a-->0a
+//                    UNIX-->PC  :0d0a-->0d0d0a,0a-->0d0a
+//                    TEXT-->PC  :0d0a-->0d0a  ,0a-->0d0a
+//                    TEXT-->UNIX:0d0a-->0a    ,0a-->0a
+//            file5.c
+//v0a9:970707:preserve bin serach cmd for xe!save!
+//            fcmd2.c
+//v0a8:970706:allow cmd input line copy(lineno atrr and last is input)
+//            dcmd2.c pan2.c
+//v0a7:970706:csr wait for cmd rom result edit last line
+//            dcmd2.c
+//v0a6:970706:(BUG)reverse for find overflow line which is previously
+//                 reverse by find cmd.
+//            fcmd2.c
+//v0a5:970705:(BUG)abend when space only on cmd result area cmd
+//            dcmd2.c
+//v0a4:970705:ignore null cmd(len=0) to avoid "" ended msg
+//            dcmd2.c
+//v0a3:970705:bell when ini parm err
+//            xe.c
+//v0a2:970705:allow 00 input
+//            valid ctl char tbl start from 0(also accept old version)
+//            ini2.c
+//            ext_key NULL(ctrl+2) definition
+//            funct.c func.h
+//            inhibit chk at func_char(null is EXT key)
+//            null input inhibit other than file data field inpt
+//            func.c func2.c
+//v0a1:970705:NULL data accept as 0x00.and change str___ to mem___
+//            for ex. find cmd,cid search.
+//            xe.h file2.c sub.c file.c file4.c fcmd2.c
+//v09Z:970702:(BUG)drop boundary 1 byte when over >maxlen*2(split line)
+//            file.c
+//v09Y:970629:file NULL(0x00) support
+//            edit/brows /Mrmodewmode option mode=PC/UNIX   file5 xe.c
+//            (copy into file assumed as same as destination file)
+//            bynaly read using ufgets                       file
+//            set dbcstbl(new function for file area only)   sub
+//            filegetline parm changed                       fcmd
+//            optionchk need before open for binaly mode open file
+//            open by "rb"                                    file
+//            fileofchk by last read 1a for bin mode          fsub
+//            xe.c file.c file5.c file.h sub.c sub.h fcmd2 file2
+//v09X:970629:.ini tab display char parm
+//            xe.h xegbl.c xeini2.c
+//v09W:970628:(BUG)csr restore by DBCS/TAB yet active after nextline
+//            (1)up set savepos because dbcs 2nd byte
+//            (2)enter move csr to top of line
+//            (3)up move csr to prev saved pos
+//            -also bug when wrap case
+//            csr.c
+//v09V:970628:change inhibit char table because upnprintable char can be
+//            displayable by v09U
+//            kbd.c
+//v09U:970628:display unprintable char by 0x0e(J) or 0x16(E)
+//            file2.c xe.c xegbl.c xe.h ini2.c file.c
+//v09T:970625:(BUG)invalid current csr pos(minus of left most)
+//             on hdr line when fulldraw
+//            file2.c
+//v09S:970625:display hex notation for edit/browse
+//            file2.c
+//v09R:970625:display tab by lineno color
+//            file2.c
+//v09Q:970625:allow x'7f' to be input as default
+//            kbd.c
+//v09P:970625:reject inhibit char input by change esc cmd(Gbl ptr)
+//            fcmd2.c func.c func.h xe.h kbd.c
+//v09O:970625:allow repl esc other than \t(same as srch char except 0x00)
+//            fcmd2.c
+//v09N:970625:allow srch esc char only 1 byte.
+//            fcmd2.c
+//v09M:970623:(BUG)change cmd leave half of DBCS or TAb padd
+//            fcmd2.c
+//v09L:970622:Find/Change *\x__,*\a etc(no support for replacing char)
+//            fcmd2.c xe.h
+//v09K:970622:change char define value on dbcs tbl
+//            xe.h sub.c char.c csr.c
+//v09J:970621:(BUG)Re-change after Change xx ""(NULL) cause "At first use Change cmd"
+//            (BUG)Re-change after find cause "At first use Change cmd"
+//            fcmd2.c
+//v09I:970621:Find/Change *\t support(search tab char)
+//            new function charcleattabdbcs for fcmd2(char.c,char.h)
+//            fcmd2.c char.c char.h
+//v09H:970617:(BUG)reverse offset err for not first line for
+//            find *u(update line) all
+//            fcmd2.c
+//v09G:970614:(BUG)remain fix CID effect even if first line deleted
+//            file4.c
+//v09F:970614:CID postfix support
+//            CID cmd support postfix(ex. cid clear,asm,?? or cid clear //,??)
+//            .ini support postfix(ex. "//,??)
+//            (change CIDTBL fmt,cidfmt conatin only prefix and postfix)
+//            ini2.c file4.h file4.c file.h fcmd3.c file.c
+//************after v092 relesed
+//v09E:970601:relesed v092
+//            gbl
+//v09A:970531:(BUG)abend when dir line deleted which is on top of screen
+//            of splitted
+//            dlcmd2.c
+//v09z:970525:dir upctr tell to parent dir list
+//            so enq when also browse(it may be dir)
+//            dir.c
+//v09y:970525:(BUG)need view Q when del dir line,if not ABEND
+//            dir.c
+//v09x:970525:system/hidden update reject under os/2,issue errmsg
+//            fsub.c
+//v09w:970524:Select cmd support on dir list
+//            duplcate alias support
+//            update pdh line timstamp/size
+//            isrt pdh if no entry at open by select
+//            dir3.c funct.c func.h func.c dlcmd2.c dlcmd2.h file.h file.c
+//v09v:970524:(BUG)line data will not be updated
+//                 -dlcmdresetdata:filefind rc chk bug
+//                 -dlcmdfree:dont deq now,it need until dlcmddeqpfc
+//                 (dlcmdddeqpfc call dlcmdresetdata if qued)
+//            dcmd2.c
+//v09u:970524:(BUG)-path and comspec mismatch case,">" cmd return
+//                  with DOS version mismatch
+//                 -W95 only,csr type inherit to chile shell,
+//					so need reset before system call.
+//                  but,if box csr(it may be ins or rep mode by .ini) 
+//                  before call system,ins key dose not chage csr type by
+//                  ins key.so need set underline csr before system call.
+//                  That is for DOS/GCC under windows95.
+//            dcmd2.c
+//v09t:970523:(BUG)(OS/2 only)need re-init kbd binary mode after child shell
+//                 first kbdinput may be shift report if bynaly mode
+//            kbd.c kbd.h dcmd2.c
+//v09s:970523:(BUG)force csr write after child shell
+//            (csrwrite bypass write if position not changed)
+//            dcmd2.c csr.c csr.h
+//v09r:970521:arbitaly CID type by first line
+//            -UFILEH has pos info.
+//            -filecidtypechk return cidtbl ptr not but cid for get pos
+//            -filegetcid parm 0:always chk first line,2 chk if sline==0
+//            -reject change cid type if hdr line cid exist
+//            -reject cid shift when browse
+//            -cid type on clear/shift is temporary
+//            -no cid msg for invalid ext
+//            -before clear/shift reset by 1st line
+//            file.h ini2.c fcmd3.c file4.c file4.h
+//v09q:970521:allow DATE type cid
+//            file4.c
+//v09p:970519:already opened msg for os2
+//            sub.c
+//v09o:970519:rewrite vsplit line only for redraw line
+//            (errmsg cut by modification of v09m)
+//            scr.c
+//v09n:970519:err msg must be displayed on old active pcw
+//            scr.c
+//v09m:970518:pre-chk missing dest lcmd for copy/move on edit screen
+//            for rapid csr movement
+//            func.c pan2.c
+//v09l:970518:csr wait mark in dlcmd or cmd processing
+//            drop pcw parm not used on scrcsrtyperestore
+//            (BUG:W95)csr max hight is 99 not 100
+//            csr.c csr.h dlcmd.c func.c scr2.c scr2.h dcmd2.c func.c
+//v09k:970518:assume "a"fter input when linectr==0 for COPY/MOVE cmd
+//            fcmd.c
+//v09j:970517:accept isrt mode as rep mode when 1 byte field input
+//            char.c
+//v09i:970517:rename field length 12->14 for quatation
+//            pan.h dir.h
+//v09h:970517:(BUG)dirgetflddata need size=strlen + 1,expand mask invalid
+//            dlcmd2.c
+//v09g:970517:-shift linenosz by line number of file.(file.c)
+//            -set default even if operand is same as current pcw size(fcmd3.c)
+//            file.c fcmd3.c
+//v09f:970517:(BUG)when 6 digit line number(>99999),"|" replaced by "0"(suffix)
+//            So,shorten sufix digit 1,0 if >99999,>999999".
+//            file2.c
+//v09e:970517:update  line search by *u (identify by offset==-1)
+//            fcmd2.c file2.c file.h ini3.c dir2.c
+//v09d:970517:identify "*" and * for find cmd
+//            fcmd2.c
+//v09c:970515:re-search from  top/last after not found by rfind
+//            fcmd2.c
+//v09b:970510:disk free space display
+//            -reject attr/rename/move for root dir(dlcmd.c)
+//            -display current free space value on root line(dir2.c)
+//            -req update free space info(dlcmd3.c,dlcmd4.c,dlcmd3.h)
+//            -req update free space info at edit from dirlist(dlcmd2.c)
+//v09a:970503:space imbedding filename support(last space is not supported)
+//            -dlcmd "r":parse newname field(dlcmd3.c)
+//            -dlcmd "a":ignore " " attr specification(dcmd.c)
+//            -dlcmd "c"/"m":enclose source filename for space embedding case
+//                   rigid method over v04c(dlcmd3.c,ustring.c)
+//            -cmd Edit/Brows:enclosed file name(file.c)
+//            -dlcmd "."/cmd chdir:chk parseout parm(dcmd.c,dlcmd2.c)
+//            -file name input panel:dir/fname may space embedding(pan2.c)
+//            dlcmd3.c dcmd.c file.c dlcmd2.c pan2.c
+//v099:970420:(GCC)user harderr(gcc abort when drive not ready)
+//            (os/2 popup and reply(need twice when drive not ready)
+//            w95 return err code,dos accept a/f/r)
+//            xe.c
+//v098:970413:(BUG)avail update on browse line(but its is not saved)
+//            by Shift+Ins/Del/F10(rep)/Enter(Split).
+//            (move errmsg to xeerr.c from xecap.c)
+//            char2.c err.c cap.c
+//v097:970413:(BUG)edit avail on display screen when same file is opened 
+//            on other size of screen with edit mode.
+//            lcmd.c
+//v096:970412:(DOS:BUG)under Win95,0x000d is generated,cause abend at funccall
+//            by invalid match with ckftrt.the code is not on manual.ignore it.
+//            but xefunc chk also scancode==0 before ckftrt chk.
+//            kbd.c func.c
+//v095:970405:DPMI version
+//            -spawnlp-->spawnlv
+//             DOS accept "a b" as "a" "b",but gcc is not;cause xprint parm err
+//             dcmd2.c
+//            -INS/REP-->ins/rep for DPMI
+//             scr.c
+//            -exception handler and abend when uerrexit
+//             xe.c
+//            -fputs rc is -1 if err like as W32,OS/2
+//             dlcmd3.c
+//            -abend when double Esc(test func) like as W32,OS/2
+//             func2.c
+//            -compile strong chk function
+//             -printf format chk
+//              ini.c lcmd2
+//             -structure init type chk(need braces for sub structure/array)
+//              dcmd.c file4.c opt.c kbd.c
+//             -type chk char * and UCHAR *
+//             	dcmd2.c pan2.c file4.c gbl.c
+//             -not used variable
+//              fcmd2.c ini2.c lcmd2.c scr.c
+//            -errno need errno.h(c6 has it in stdlib.h)
+//             file.c file5.c sub.c
+//            -\ of dbcs 2nd byte
+//             xe.c cap.c dlcmd.c fcmd.c fcmd2.c fcmd3.c file.c funct
+//             lcmd.c opt.c ini.c kbd.c dir3.c
+//v094:970401:(BUG)max line no ajust when line range specified
+//            (disappear delm between lineno and text column)
+//            file2.c
+//v093:970330:DPMI version
+//            dumpp.c
+//v092:970301:(BUG)like v055,undo del isrted line which may registered lcmd
+//            cause abend
+//            undo.c
+//v091:970104:v091 relese *******************************
+//            gbl.c
+//v091:970104:(BUG) of v085 loop(next plh no setup by continue)
+//            dlcmd2.c
+//v090:961221:v090 relese *******************************
+//v08x:961208:different file name of .map/.trc/.mtr/.dmp for DOS/OS2/W95
+//            xe.c
+//v08w:961208:key default assign change for f7=pgup f8=pgdn like spf
+//            funct.c
+//v08v:961208:help file name change .doc -->.htx
+//            func2.c
+//v08u:961207:(BUG)/Y9 or /N9 is not effective for /?
+//            xe.c
+//v08t:961207:exec parameter /e(browse) or /b(edit) and other option
+//            xe.c
+//v08s:961207:(DOS:BUG)eof(x1a)drop,it can be easyly checked by feof for all(dos,win,os2)
+//            fsub.c
+//v08r:961201:chk read only attr when reopen at save
+//            file.c fsub.c sub.c
+//v08q:961201:edit partial file(continued from v08l)
+//            file.c
+//v08p:961201:lcmd '<' dose not add padding space now,because trailing space
+//            add more cid to after the space
+//            lcmd2.c
+//v08o:961124:(BUG)on loaded err msg for save cmd when same file name opd
+//            fcmd.c
+//v08n:961123:(BUG)when no dir name on filename pannel,set null filename
+//            (concatination of dirname and filename cause file not found)
+//            pan2.c
+//v08m:961123:cmd len chk for dos
+//            dcmd.c
+//v08l:961123:edit/browse line range parameter
+//            func.c scr.h file.c file.h pan2.c cap.c dlcmd2.c xe.h
+//v08k:961112:(W95:BUG)for full draw,avoid write to last IME line
+//            scr.c
+//v08j:961112:(W95)save and restore console mode(at exit to dos prompt
+//            need echo mode)
+//            kbd.c
+//v08i:961109:(W95)draw performance(block write for cap block)
+//            scr.c
+//v08h:961107:too many operand chk for save/repl/create
+//            fcmd.c
+//v08g:961106:split uvio to uvio and uvio2
+//            csr.c dcmd2.c scr.c
+//v08f:961106:performance up
+//			  only once redraw for previous update/previous undo
+//            file2.c file.h undo.c
+//			  block draw only when block is not closed
+//            cap.c
+//v08e:961104:(W95)performance up
+//				  cell setup by char string and WORD attr table
+//                file2.c scr.c
+//v08d:961104:(W95)performance up
+//            csr write only when csr pos changed
+//                csr.c             
+//            other
+//                file2.c
+//v08c:961104:(BUG)capreset must be executed before plh free
+//                 must be call not from deqcw but from end/cancel
+//            dir.c file.c scr.c
+//v08b:961103:(BUG)when first split popupped,UCWpsd point 1st half of USD
+//                 but USDpfld etc is of 2nd half which disppeared.
+//                 for win95 it may be page freed cause c0000005.
+//            scr.c pan.c file2.c dir2.c
+//v08a:961103:reset precize flag by other duplication parameter
+//            xe.c
+//v089:961102:(W95)write screen by once.
+//            scr.c
+//v087:961027:when the case RGB value cannot be changed,cursor and err field hiright 
+//            is on current value field.
+//            pan2.c
+//v086:961024:it can be share xe!save! file(int size)
+//            func2.c ini3.c
+//v085:961024:W95 VC
+//      header,compiler warning
+//            xe.c cap.c csr.c dcmd.c dcmd2.c dir.c dir2.c dlcmd3.c dlcmd4.c
+//            fcmd2.c fsub.c func.c func2.c funct.c kbd.c pan.c scr.c sub.c
+//            xedumpp.c
+//      logic
+//            xe     :ueh(same as os/2),msg of autoexec.bat for env set(same as dos),
+//                    put crlf when exit to command prompt(same as dos)
+//                    stack usage msg(W32 ogic),dump at uerrexit exit func(dos only)
+//                    abend by option at uerrexit exit func(same as os/2)
+//                    screen reset at abend exit(same as os/2)
+//            csr    :cursor hight(win is percent value(0-->100)
+//            dcmd2  :command processor name is COMMAND(same as dos)
+//            dlcmd3 :fputs rc(same as os/2)
+//            file   :ulh buff redundant allocation(safe mode,same as dos) 
+//            fsub   :eof mark read rc
+//            func2  :abend test logic(cause c0000005 abend,same as os/2)
+//            pan2   :pallette change not avail
+//            scr    :write white space at screen reset(same as os/2)
+//                   :cls by not scroll(scroll not effective whe fullscreen of w95)
+//                   :screen height -1 for IMM line
+//  				 :pallette change not avail msg
+//         free destroy free area(need UGETQNEXT before ufree),or may pagefree
+//            pan2.c dlcmd2 func2
+//v084:961001:(BUG)for dir list find,revese req once match as current pos
+//            fcmd2.c
+//v083:961001:(BUG)hilight pos for dir list find when muched after '.'
+//            fcmd2.c(not dir2 for set also cursir pos)
+//v082:961001:(BUG)expand type change to dir even if expanded before re-expand
+//            so keep type around re-expand.
+//            (additional to v07m,for also path dir)
+//            dlcmd2.c
+//v081:960906:(BUG)free err when storage shortage at dirload
+//                 fileclosefree2 was called at xefile.it must be dirclosefree2
+//            file.c dir.c dir.h
+//     960930:(BUG)dump write lenchk bug cause write err for DOS
+//            v033 ulib\uehdump.c
+//     960930 (BUG)process terminate when datalen=0
+//            v1.5 xedumpp.c
+//v080:960906:v080 relese (xe085)
+//v07x:960923:(BUG)one ESC trated as double ESC at first time after kick
+//            func2.c
+//v07w:960920:dosdump support
+//            (bypass fcloseall because funcmap fseek faile)
+//            xe.c
+//v07v:960916:(BUG)">" cause storage destroy
+//            xelcmd2.c
+//v07u:960916:chk printcmd string where xprint is used
+//            xe.h ini2.c dlcmd dlcmd3
+//v07t:960916:(BUG)rename err when del XE!UNDEL(bug when del root dir)
+//            dlcmd4.c
+//v080:960906:v080
+//v07s:960825:new ulib.h/ulibdef.h/ulibos2.h(no need base def by os2.h)
+//            to speed up compile,drop include(caused by WIN95 modify)
+//            except xe.c     :use ukbd.h
+//                   xecap.c  :use ukbd.h
+//                   xecsr.c  :use uvio.h
+//                   xedcmd.c :use DCOPY_ 
+//                   xedcmd2.c:use ukbd.h
+//                   xefunc.c :use ukbd.h
+//                   xefunct.c:use ukbd.h
+//                   xekbd.c  :use ukbd.h
+//                   xescr.c  :use uvio.h
+//                   xesub.c  :use ERROR_PATH_NOT_FOUND
+//v07r:960828:(BUG)storage ovwrwrite when find word overflow
+//            max check missed at first time multiple(2 find word on a line)
+//            fcmd2.c
+//v07r:960721:(BUG)copy dlcmd with /y remain filename with \y
+//            v020:960721:BUG of OS/2 _fullpath,"fnm /y"-->"fnm\y"
+//            ufile.c(OS2)
+//v07q:960720:(BUG)root dir may contain .. or . entry when dosfind
+//            g:\ has no .. or . but r:\ has .. and .
+//            dir.c
+//v07p:960714:(BUG)if workdir is root,"e ::" cause err "g: not found"
+//            sub.c
+//v07o:960714:(BUG)filename panel,if dir input is g: it become g:\
+//            pan2.c
+//v07n:960714:(BUG)(DOS)ufullpath fail when last is 2bcs 2nd byte '\'
+//            v018:960714:other case need to chk DBCS 2nd byte '\'
+//            ufile.c(DOS)
+//v07m:960714:(BUG)expand type change to dir even if expanded before re-expand
+//            so keep type around re-expand.
+//            dlcmd2.c
+//v07l:960713:(BUG)also for other than PATHLEN(strpbrk,strchr etc)
+//            dcmd.c dir.c pan2.c sub.c xe.c file4.c dlcmd3.c dir2.c dlcmd4.c
+//            (ULIB)-v017:add ustrchr2(strchr protecting detect dbcs 2nd byte)
+//            ustring.c ustring.h
+//v07k:960713:(BUG)PATHLEN need chk dbcs 1st byte + '\' ex 噂(x895c)
+//            (ULIB)-v016:960211:(BUG)PATHLEN need chk dbcs 2nd byte '\',ex 噂
+//            sub.c ufile.h ufile.c
+//v07j:960713:echo line of cmd result,bg color if length=0(at init open case)
+//            file2.c
+//v07i:960713:for malloc trace matching,trace option process before ini proc(parmproc0)
+//            xe.c
+//v07h:960713:(BUG)"dbcs tbl 2nd byte flag set" destroy next malloc free chain
+//            when last byte is dbcs 1st byte if binary file read.
+//            It cause hung up by malloc chain fail.
+//            sub.c
+//v07g:960707:printed msg on dir list
+//            dlcmd.c  dir.h dir2.c
+//v07f:960701:(BUG)if next adjacent excluded line with linecmd x is deleted
+//                 as a result of x line cmd,abend at undoprep because
+//                 it is not on lineq anymore(it is dequed).
+//                 -->avoid delete leaving 2 adjacent excluded line.
+//            xelcmd2.c
+//v07f:960701:if field is protected when nextvalue/prevvalue,move csr there.
+//            xepan3.c
+//v07e:960629:dir lcmd copy(PF10 and PF11)
+//            rensmasv for also copy
+//            copy target clear by space key
+//            func.h funct.c dir3.c dlcmd3.h dlcmd3.c dir2.c dlcmd.c 
+//v07d:960624:long cmd input at cmd result screen last line
+//            dcmd2.c file2.c pan2.c
+//v07c:960624:allow xe 0/1/2/6 not as edit 0 etc.
+//            xe.c
+//v07b:960615:(BUG) FUNCID definition is duplicated
+//            func.h
+//v07a:960615:allow dup key assign to differrent function by set of assigned key
+//            color option-2
+//              -field next value function for color register field
+//            funct.c func.h func.c pan3.c pan3.h pan2.c pan2.h pan.c
+//v079:960610:color option-2
+//            .(BUG)blackout when exit after display menu 0 without no enter
+//            .(BUG)fullscreen pallette14(yellow)is hilight after windows mode end
+//            .(BUG)cahnge not avail msg even if no input on pallette color
+//            .display current RGB value
+//            .reverse color change req field if window mode err
+//            .(BUG)field full err when insert mode
+//            pan2.c scr.c pan.c
+//v078:960608:(BUG)panlinetopfld rc(=-1) is not checked;
+//			  for os2 -1 entry is UFL case loop next line,for dos L(004c) cause break
+//            csr.c
+//v077:960608:(BUG)too long record msg for the case last line has no crlf
+//            ini.c
+//v076:960608:getfldpos abend(chk pfl exist)
+//            sub.c
+//v075:960608:color option
+//            .move Spallassigntbl/Spallette to Gpallasigntbl/Gpallette
+//            .drop .ini [COLOR] section
+//            .write Gpallette/Gpallassigntbl to !SAVE!
+//            pan.c pan.h pan2.c scr.c scr.h xe.h ini3.c
+//v074:960602:num reset cmd(renumber line number)
+//           fcmd3.c file.c file.h
+//v073:960602:csr on the cmd line for menu opt 6 both normal/error case
+//           :cmd result time stamp edit.no preceding space time(upper char for hhmm)
+//            dcmd2.c
+//v072:960602:(BUG)reset cursor type changed by cmd shell
+//            dcmd2.c scr2.c scr2.h
+//v071:960602:(BUG)menu opt 6 screen first line is of OS/2 screen,
+//            redraw first split part
+//            dcmd2.c
+//v070:960526:v070 relese
+//ufile:v003:960519:v001 is spec not bug for DOS 6.3.
+//ufile:v002:960519:(DOS)findfirst may return dir flag depending on file seq in dir
+//            reset dir flag for ufstat
+//ufile3:v014:960519:(DOS)findfirst may return dir flag depending on file seq in dir
+//            copy x* cause  err that x*\*.* is not found
+//ufile2:v017:960519:(BUG)contain current dir chk bug for wild card case
+//ufile:v001:960519:ufullpath:add .* for x*
+//           (under DOS6.3 x* is not same as x*.*,OS/2 and DOS5.0 is same)
+//v06S:960427:(BUG of v069)only one UFLD for browse(destroy area) 
+//            file2.c
+//ufile2:v013:960427:(BUG)(OS/2 DOSsession only)_dos_setftime fail(errno=22)
+//			  success if opened with write permission but need no read only
+//            attribute for write open.so need before attr set
+//v06R:960427:(BUG)cut & paste block key on lineno fld dose not mean 
+//            line mode if UFCleft!=0
+//            xap.c
+//v06Q:960427:(BUG)not hilighten if reverse range is cut by UFCleft
+//            file2.c
+//v06P:960427:(BUG)of v06M,line split also caused hi-litened
+//            called from xechar2 'B'(before) option,clear flag at init.
+//            lcmd3.c
+//v06O:960427:drop Shift+F7 from line mark
+//            funct.c
+//v06N:960424:(BUG)DOS /Os(storage optimize) bug for max(0,int-UCHAR)
+//            max(0,int-int) or max(int,int-UCHAR) is ok
+//            xe.h
+//v06M:960424:hi-lighten insert line by cut and paste
+//            char2.c char2.h lcmd3.c
+//v06L:960424:alternative of v06I,use /J(unsigned char),it is default of cpp
+//            xe.h    
+//v06K:960421:(BUG)=xxx cmd duplicated on stack
+//            func2.c
+//v06J:960421:(BUG of v065)cmd stack stack is reverse seq
+//            func2.c
+//v06I:960421:(BUG)for DOS,reverce color is not requested because
+//            signed char expanded flag for Gattrtbl
+//            xe.h
+//v06H:960421:(BUG of v064)effect disappear when twice restarted
+//            tabdisplay flag,nocid flag,tab ctr need set to also ini variable
+//            move saveini to ini3.c
+//            ini3.c ini.c 
+//v06G:960421:(BUG of v06D)operand dropped
+//            dcmd.c
+//v06F:960420:work ::SO start from ::SO not from ::SO!
+//            dcmd2.c
+//v06E:960415:abondan line insert by additional SHIFT key
+//            cap.c
+//v06D:960407:accept not found cmd as DOS cmd when menu 6 screen
+//            dcmd.c dcmd2.c
+//v06C:960407:CID pos default for num=4
+//            file.h file4.c
+//v06B:960407:set so filename on last msg
+//            dcmd2.c
+//v06A:960407:allow rc=255 for usystem
+//            dcmd2.c
+//v06z:960407:stdout work last used seqno save to xe!SAVE!
+//            xe.h ini3.c dcmd2.c file.c dcmd2.h
+//v06y:960407:protect edit so file when it is used by cmd result
+//            (cmd edit identification only by PANMOCMD)
+//            file.c file.h file2.c file2.h file3.c fcmd3.c dcmd2.c
+//v06x:960406:save so file(no delete at term)
+//            dcmd2.c
+//v06w:960406:(BUG)use panel client color for the line after the bottom
+//            file2.c dir2.c
+//v06v:960406:assign pallette no to dir,cmd
+//            scr.c dir2.c file2.c xe.h
+//v06u:960406:cmd so screen:lineno color for input cmd echo line
+//            file.h file2.c dcmd2.c lcmd3.c
+//v06t:960406:cmd so screen:append cmd result
+//            file.c file.h dcmd2.c dcmd2.h cap.h cap.c pan.c pan2.c
+//v06s:960330:(BUG)eof is dropped when edit after load by browse
+//            file.c
+//v06r:960325:cid pos for lineno field len =4 as default
+//            and support CID shift(colomn re-arange)
+//            file4.h file4.c fcmd3.c
+//v06q:960324:(BUG)of v069,it must be change all pfld
+//            file2.c
+//v06p:960324:(BUG)find ";;" fail issueing no operand
+//            ustring.c ustring.h func.c
+//v06o:960320:(BUG)alias name display for also NEW file
+//            file2.c
+//v06n:960320:menu option 6(cmd) support
+//            xe.h xe.c pan.h pan2.c file.h file.c file2.c file3.c
+//            dcmd.c dcmd2.h dcmd2.c gbl.c fcmd3.c ini3.c
+//v06m:960317:csr pos on x line for F/L lcmd,on next line for X lcmd
+//            lcmd2
+//v06l:960317:rearange key for no num option
+//           -shift key to insert line for insert/copy/move/null move
+//           -add alt+e to block clear
+//           -alt+i/j/k to line insert mode copy/move/null move
+//           -change alt+l --> alt+h for line mark
+//           -change copy/move/null move is insert mode only,
+//			  so join alt+c	to alt+Ins
+//           -COPY/MOVE destination not by alt+a but by any line insert cmd
+//           -REPL/CREATE avail from any line mode
+//           -REPL/CREATE after line range closed
+//           -include/exclude/include last/include first
+//            cap.c cap.h funct.c func.h lcmd.h lcmd.c
+//v06k:960316:(BUG)line not cleared when line mode by alt+End(pos1=pos2=0)
+//            err when block mode and pos1=pos2
+//            cap.c
+//v06j:960316:(BUG)line mode move(alt+m) abend(Gcappcw cleared at lcmddel)
+//            cap.c
+//v06i:960310:support REPl/CREate file by ALt+l for no line-no display mode
+//            fcmd.c cap.c fcmd.h
+//v06h:960310:support Copy/Move file by ALt+a for no line-no display mode
+//            file.h cap.c fcmd.c  func.h funct.c lcmd.c lcmd.h
+//v06g:960310:Alt+c for copy ins/rep by Ins mode
+//            func.h funct.c cap.c
+//v06f:960309:change paste key Alt+o-->Alt+p,add Alt+o as override
+//            func.h funct.c cap.c
+//v06e:960309:for num off case,
+//            add line mark(Alt+l) and inster line after(Alt+a)
+//            block mode also when col=1
+//            cap.c func.h funct.c func.c
+//v06d:960309:collect line cmd by full length for internal plc(COPY/REPL/CRE)
+//            lcmd.c
+//v06c:960224:line end scroll displaying to first half
+//            file3.c
+//v06b:960224:(BUG)tab pad char is not displayed when left most is tab pad char
+//            file2.c
+//v06a:960224:(BUG)back tab skip to end of cur line,if curr csr is on lineno fld
+//            char2.c
+//v069:960224:linenosz changeable for edit/browse
+//            xe.h scr.h fcmd2.c fcmd3.c gbl.c ini3.c funct.c func.h
+//            lcmd.c lcmd2.c lcmd3.c cap.c char.c char2.c csr.c 
+//            file2.c file2.h file3.c dlcmd.c dir.c
+//v068:960224:find scroll position,shift to one more left
+//            fcmd2.c
+//v067:960217:(BUG)csr skip to next field when insert mode field full
+//            if some following char after cursor pos.
+//            char.c
+//v066:960217:cursor move to top when call shell(need when splitted)
+//            dcmd2.c
+//v065:960217:save also cmd history to XE!SAVE!
+//            ini3.c func2.c func2.h xe.h file3.c fcmd.c fcmd2.c fcmd3.c opt.c
+//v064:960217:split inifile for Ginitscroll/Giniopt_/Ginifiletabskip
+//            xe.c xe.h fcmd2.c fcmd2.h ini2.c ini3.c ini3.h opt.c
+//v063:960217:sub shell prompt
+//            xe.h ini2.c gbl.c
+//v062:960217:get togeter > and >> to >(display child shell)
+//            dcmd.c
+//v061:960211:SHELL cmd(CMD,COM,>>)
+//            scr.c dcmd.c dcmd2.c dcmd2.h scr.h
+//*************************** v060 nifty release 960210 *************
+//v060:960204:add dir lcmd "z","0"(undeletable delete)
+//            dcmd.c dcmd2.h dcmd2.c scr.c scr.h
+//v05Z:960203:DOS inter dir move of dir
+//            ufile3.c(V013) dlcmd4.c
+//v05Y:960203:add /s option as default to dlcmd copy 
+//            dlcmd3.c dcmd.c
+//v012:960203:(BUG)(DOS)attr change for dir failed because
+//			  subdir mask bit must be dropped evenid for dir.
+//			  so I can also call pathinfo but cannot _dos_open for dir,
+//            so copy only attr
+//            ufile2.c	ufile3.c
+//v05X:960203:for dos start/end is not pell but number 0-->7
+//            csr.c
+//v05W:960203:attrib cmd "/" option support(set attr)
+//            dcmd.c
+//v012:960203:(ULIB)(BUG)attr change for dir failed because
+//			         subdir mask bit must be dropped evenid for dir.
+//v05V:960203:.(BUG)reset expand id when undo(entry deleted)
+//            .del undel entry expanded before del
+//            dlcmd3.c dlcmd4.c
+//v05U:960203:(BUG)need full draw when entry deleted
+//            dlcmd2.c
+//v05T:960131:change csr height for normal to higher
+//            csr.c
+//v05S:960131:force delete r-only from dlcmd("/" cmd)
+//            dlcmd.c dlcmd3.c
+//v05R:960131:rmdir/file del by all xdd for read only chk
+//            dlcmd3.c dcmd.c dcmd.h
+//v05Q:960121:xdd force option for move inter-drive,delete undel save at term
+//            dcmd.c dcmd.h dlcmd4 dlcmd3
+//v05P:960120:(BUG)-(expand) dose'nt update tyep,caused "it is dir" msg
+//            for type is file on list (but actualy dir) 
+//            dlcmd2.c
+//v05O:960120:copy/move cmd *\(same as source)/**\(parent of source) support
+//            sub.c sub.h dlcmd3.c dcmd.c scr.h
+//v05N:960114:add function undo rename/move on dir list
+//            xedlcmd4.c xedlcmd3.c
+//v05M:960113:(BUG)xprint /Yb option must precede to all(ex. /? etc)
+//            xedcmd2.c
+//v05L:960113:err not dir msg for dlcmd
+//            xedlcmd2.c
+//v05K:960107:path id(:) for also edit/bowse dir
+//            xedir.c xedir2.c xedlcmd2.c
+//v05J:960107:(BUG) of v05h(reverse selected) for NO indent option
+//            xedir2.c
+//v05I:960107:dir list indentation space -->'|'(lineno attr)
+//            xedir2.c xedir.h
+//v05H:960106:update time stamp when expand("-"/">") file
+//            xedlcmd2.c
+//v05G:960105:update time stamp of dir list when edit saved(add to v04j)
+//            change interface of dlcgetfullname(plc-->pdh parm)
+//            xedlcmd2.c xedlcmd2.h xedir3.c xedir.c xedir.h
+//v05F:960105:rename save field realloc each time(undeleted file may
+//            re-moved to long path name)
+//            xedir2.c xedir2.h xedlcmd3 xedlcmd2.c
+//v05E:960105:save move to name on rename fld
+//            xedcmd3.c xedir2.c
+//v05D:960105:move deleted line chk to xedlcmd from xechar
+//            xedcmd.c  xechar.c
+//v05C:960104:(BUG)xprint cmd cause abend when no operand
+//            xedcmd2.c
+//v05B:960104:Option commnad
+//            xefunc.h xefunct.c xeopt.h xeopt.c xeerr.c
+//v05A:951224:(BUG)ignored edit xe.ini(always written at term by storage
+//            value which is read at init).
+//            temporary set GPROCSINIUPDATE only when changed(v03n)
+//            xefile3.c
+//v05z:951224:(BUG)del and re-create and expand dir list,remain D flag
+//            xedlcmd2.c
+//v05y:951223:(BUG)csr set bug of v05w
+//v05x:951216:redirected work dir file(>::xxx <::yyy etc) for dos cmd
+//            xprint workdir file
+//            xedcmd.c
+//v05w:951203:find cmd for dir list
+//            xefcmd2.c xefunct.c xedir2.c xecsr.c
+//v05v:951203:(BUG)find all offset table shared,it must be for each pfh
+//            xefile.h xefile2.c xefcmd2.c xefile.c
+//v05u:951202:undelete dlcmd(rename when delete)
+//            free opton from ini
+//            xedlcmd.c xeini2.c xedlcmd4.c xedcmd.c xedlcmd3
+//v05t:951202:(BUG)retype dlcmd lcmdin1<->lcmdin2,should clear attr or
+//            rename fld input
+//            xedlcmd.c
+//v05s:951126:MOVE edit command
+//            xefcmd.c
+//v05r:951126:dlcmd cursor
+//            xedlcmd.c xedlcmd2.c xedlcmd3.c
+//v05q:951126:MOVE flag on memver of dir
+//            xedlcmd2.c xedlcmd3.c
+//v05p:951126:COPY/MOVE command under except edit/browse screen
+//            xefunct.c
+//v05o:951125:dlcmd dir delete woth confirmation support
+//            xedcmd.c xedlcmd3.c
+//v05n:951125:use native command when ">"
+//            xedcmd.c
+//v05m:951123:xdd command(del dir)
+//            xedcmd.c
+//v05l:951123:dos command verb change,del print
+//            xedcmd.c
+//v05k:951123:del dir confirm
+//            xe.h xedcmd.c xescr2.c
+//v05j:951119:move dlcmd
+//            xedlcmd.c xedlcmd2.c
+//v05i:951114:xmove cmd
+//            xedir2.c
+//v05h:951112:dir list,reverse selected entry
+//            xedir2.c
+//v05g:951112:original name for original DOS command
+//            xedcmd.c
+//v05f:951111:(BUG)invalid dlcmd cleared(treated competed) after enter key
+//            xedlcmd.c
+//v05e:951111:dir list cmd line colour(yellow)
+//            xedir2.c
+//v05d:951111:/N9 option to force english err msg to test
+//            xe.c
+//v05c:951111:(BUG)line split abend when CID only after split point
+//            xechar2.c
+//v05b:951104:xcopy override option,accept also /Y
+//            xedcmd.c
+//v05a:951104:xprint cmd string by ini file
+//            xegbl.c xeini2.c xedcmd2.c xe.h
+//v059:951028:xprint background option
+//            xedcmd2.c
+//v058:951022:print forward sequential
+//            xedlcmd.c xedlcmd3.c
+//v057:951015:(BUG)same as v055 for capdel del CR(line concat)
+//            xechar2.c xecap.c xelcmd2.c xelcmd3.c xechar.c xelcmd2.h
+//v056:951015:general DOS command
+//            xescr.h xefunc.c xedcmd.c xedcmd2.c xedcmd2.h
+//v055:951014:(BUG)abend when delete lcmd input line by Shist+Del key
+//            because pfh->UFHcmdline remain point deleted line.
+//            xechar2.c xelcmd.c
+//v054:951014:freopen faile if once freopen failed even if after closed
+//            another open(errno=9:EISOPEN)
+//            change freopen to fclose + fopen
+//            xefsub.c
+//v053:951014:file name change for find parm !FIND! --> XE!FIND!
+//            ufile2.c 
+//v052:951014:xcopy file already exist msg for dir,it must be "in dir"
+//            ufile2.c 
+//v051:951014:print dlcmd
+//            xedlcmd.c xedlcmd3.c xegbl.c xedcmd.c xedcmd2.c xeini.c xe.c
+//*******************************************************************
+//v050:951008:NIFTY release
+//v04l:951008:free view/edit screen when delete
+//            xedlcmd2.c xedlcmd3.c
+//v04k:951007:(BUG)v03o close after load when browse.edit for same file
+//            can not reopen to save because hfile is null(errno=12
+//            ENULLFCB).drop v03o.leave ini cmd err when browsing.
+//            open chk at ini by srchpfh
+//            xefile.c xeini.c
+//v04j:951007:update id for edit saved file on dir list
+//            xefile.h xefile.c xedlcmd.c xedlcmd2.c
+//v04i:951007:add DOS "copy"(same as xcopy),used by >copy
+//            xedcmd.c
+//v04h:951007:retrive re-design,same as doskey(no wrap around)
+//            xefunc2.c xepan2.c
+//v04g:951007:(BUG)retrive cmd;no cut occur when not file screen
+//            xefunc2.c
+//v04f:951005:(BUG)dummy plc for copy comand remain on pvlcmd and the back
+//            to UFHcmdline by otherclient(FCMD del only UFHcmdline)
+//            when enter key from other screen.
+//            (no save dummy and no need delsh)
+//            savependlcmd xefcmd.c
+//v04e:951001:initial malloc for uvio work(uvio.c) to avoid storage
+//            shortage at draw,so free at scrreset
+//            xescr.c
+//v04d:950930:malloc/calloc rc chk for dos
+//v04c:950924:space containing filename WP ROOT SF,EA DATA SF etc 
+//            copy lcmd fail by too many operand
+//            xedlcmd3.c
+//v04b:950924:expand all dlcmd(>)
+//            xedlcmd.c xedlcmd2.c xedlcmd2.h
+//v04a:950924:process dir lcmd from last to be able to del empty dir
+//            no need to reverse for browse/edit
+//            xedlcmd.c xedlcmd2.c
+//v049:950924:lcmd repeat max chk to avoid swapper full
+//            xelcmd.c
+//v048:950924:dir renum from current line(performance)
+//            xedir.c xedir.h xedlcmd2.c
+//v047:950924:file output err(disk full)->close err/reopen err
+//            xesub.c xefsub.c
+//v046:950923:view dir lcmd
+//            xedlcmd.c xedlcmd2.c xefile.h xefile2.c xedir.c xedir2.c
+//v045:950918:clear errmsg when lcmd input/clear
+//            xedlcmd.c
+//v044:950918:process cmd at first when both dir lcmd and cmd are used
+//            xepan2.c
+//v043:950917:cur dir lcmd(.)
+//            xedlcmd.c xedlcmd2.c
+//v042:950916:xcopy  cmd,copy line cmd
+//            xedcmd.c xedcmd.h xedlcmd.c xedlcmd3.c xedlcmd3.h xedir2.c
+//v041:950916:attrib cmd wild card support
+//            xedcmd.c
+//v040:950916:dir name only for ::(drop last \)
+//            xesub.c
+//*******************************************************************
+//*******************************************************************
+//v011:950610:fullpath err when "copy ::xxx"(workdir member) command
+//            xefcmd.c
+//     950610:reset reverse when double ESC
+//            xefile.h,xe.h,xefunc2.c,xekbd.c,xefile2.c,xeundo.c
+//     950611:nexttab/prevtab for browse mode
+//            xechar2.c
+//v012:950611:fixed CID
+//            xefile.c,xefile.h,xefile4.c,xefile4.h
+//     950618:rcsr set bug when draw other client
+//            funccall
+//v013:950624:find scroll horizontal by scroll volume
+//            sethalfhscrollsz,sethalfvscrollsz(xefile3.c/h), 
+//			  linesrchstring(xefcmd2.c)                       
+//v014:950624:bug:when save not displayed line after copy file
+//            filesetcid(xefile4.h/c),filesave(xefile.c)       
+//v015:950624:ini parm for fixed CID                           
+//            xeini.c,xefile4.c                                
+//v016:950627:for warp english version,clear scr at term       
+//            scrreset
+//v017:950701:dos/os2 id on hdr line(rep/ins) DOS upper,OS/2 lower
+//            xescr
+//           :fld len set bug for manel
+//            xechar
+//           :fixed cid change  //CID:-->CID:
+//            xefile4
+//v018:950702:write version and date of xe.c compile to xe.ini
+//            xe.c,xe.h,xeini.c
+//v019:950702:cid cut by source file cid attribute not but dest file
+//            for copy line cmd,cut & paste.
+//            (move and copy file copy cid)
+//            lcmdrenumsuffix,lcmdcopy
+//v01a:950705:kbd rate ini option(entry and exit value)
+//            xekbd.c,xeini.c,xe.h
+//v01b:950708:bug for capsave when over reclen(need clear also dbcs tbl)
+//            charfldedit
+//v01c:950708:stack used size chk(os2 only,dos not clear memory at init)
+//            xe.c
+//v020:950610:dir display support
+//    :950616:field full intercept
+//            xechar.c,xefunc2.c,xepan.c,xepan2.c
+//            xescr.h,xepan.h,xepan2.h
+//    :950616:fldprotchk return pfld addr
+//            xesub.h,xesub.c,xechar.c,xepan2.c,xepan3.c
+//    :950616:getuflde move from xepan to xesub(return PVOID)
+//            xefile2.c,xefunc2.c,xepan.c,xepan3.c,xepan.h,xesub.h,xesub.c
+//    :950616:reverse pan field err
+//            xechar.c,xepan.c,xepan2.c,xepan.h,xepan2.h
+//    :950616:dir err when save/repl/create/copy
+//            xefcmd.c,xefile.c,xefile.h
+//    :950628:init csr to filename fld for pan300
+//            xepan2.c
+//    :950628:init csr to cmdline when edit/browse steal
+//            xepan2.c
+//    :950628:release version(protect display dir)
+//            xefile.c
+//    :950708:change dir support
+//            xepan.c,xepan2.c,xepan2.h,xefunc.c,xedcmd.c,xedcmd.h
+//v021:950710:bug when no ini file(fixed CID process)
+//            xe.c,xeini.c,xefile4.c
+//v030:950709:dir proc avail flag on by 2nd line version id
+//            xe.h,xe.c,func_browse_file,inigetparm
+//     950709:dir /func_char_file/pgup/pgdn/filetop/fileend/lineup/
+//				linedown share with file
+//     950709:no csr move to hdr line
+//            func_lineup_file,func_linedown_file
+//v031:950712:new member,xegbl.c/xegbl.h for gbl init
+//     950712:fixed cid variable apart from Scidtbl(alternative of v021)
+//v032:950712:UFLD for each ppc and expand for PANDIR
+//            xepan.c xepan.h xescr.c xecsr.c xesub.c xefile2.c xefunc2.c
+//v033:950715:SCROLL cmd for dir list scroll(bug when CSR opd)
+//            xefile3.c,xefile3.h,xefunc.h,xefunct.c,xefcmd3.c
+//            common err msg
+//            xefcmd.c xefcmd2.c xefcmd3.c xeerr.c xeerr.h
+//v034:950715:use func_char_pan for dir(field event for dir list)
+//            xefunc2.c xepan2.c
+//v035:950722:bug when DEL cmdline string then first char is space
+//            xefunc.c
+//v036:950722:bug when dir proc \(root)
+//            DosFindFirst return no more file for \(root)
+//            and need accept \. ..\ etc(dir chk after fullpath,
+//			  fullpath set g:-->g:\  g:.-->g:\		
+//            xesub.c
+//v037:950723:pcw enq to target option to display FIFO seq for dir
+//            screnq,xefile.c
+//v038:950723:bug of v014(addlen calc)
+//            filesetcid
+//v039:950728:bug,setflddata need set dbcstbl also
+//            setflddata,getfldpos,xepan,xepan3,xesub.h
+//v03a:950730:bug of v032(vsplitchk using static UFLD addr,
+//            destroy freed UFLDE area after panfree)
+//            vsplitchk
+//            reverse full field if scrollerr by null
+//            xefile2.c
+//            scroll err flag clear when input
+//            xechar.c
+//v03b:950730:zenkaku err msg for lineno,scroll fld etc
+//            xechar.c xeerr.c xeerr.h xepan3.c xesub.c(fldprotchk)
+//v03c:950731:(bug)scroll cmd cannot set scroll field when vsplit
+//            if field len=0
+//            xefile2.c
+//v03d:950731:(bug)dir list scroll field input ignored
+//            ->cmd line process by charfile(func_char_dir)
+//            xechar.c xefunc2.c xefunc.h
+//v03e:950731:set to ULHdata for dir list
+//            xechar.c
+//v03f:950731:scroll value err revese(common rtn with xefile2)
+//            xefile2.c xefile2.h xedir2.c
+//v03g:950808:ignore trace open err(dup open)
+//            xe.c utrace.c utrace.h
+//v03h:950810:split xeini.c  to xeini.c and xeini2.c
+//            xeini.c xeini2.c xeini.h xeini2.h
+//v03i:950813:bug,wild card become new file when no file exist
+//            filefind(xesub)
+//v03j:950813:trac file/malloc trace file close when err
+//            ualloc.c xe.c
+//v03k:950813:bug,erase top of line,ULHlen set too long
+//            xechar.c
+//v03l:950817:bug,dont strupr for DBCS filename,it cause (デ-->ェ)
+//            xefile.c ufile.c
+//v03m:950818:bug,when wkdir is root,err path not found for g:\\xe.ini
+//            xe.c
+//v03n:950819:initial scroll option from xe.ini(max 9999)
+//            save to ini when scroll changed
+//            xeini2.c xe.h xefile3 xefcmd3 uedit.c uedit.h
+//v03o:950820:xe.ini open err rc=9 when ini cmd under xe.ini browsing
+//            (close file after load if browse mode)
+//            xefile.c
+//v03p:950820:dos command delete/rename,cmd compare top 3 byte only
+//            xedcmd.c xedcmd.h
+//v03q:950826:bug,lcmd ignored by ULHFLINECMD flag on for other client 
+//            it may ended after lcmd input.
+//            xechar.c
+//v03r:950826:for dos accept ctrl+Pause(break=00/00) and uerrexit
+//            when break off(when break on,it cannot get ctl)
+//            xekbd.c
+//v03s:950827:for test,option to abend/uerrexit by double Esc(/DxxA or 
+//            /DxxE)
+//            xe.c xefunc2.c
+//v03t:950827:for DOS,when uerrexit,map open err not displayed
+//            because Shandle1 of uerr.c is set 0 at loop start
+//            xe.c
+//v03u:950827:bug;ULHFLINECMD(lcmd reg sw) reset by xechar ignore 
+//            lcmd input from other side of same pfc.
+//            so move lcmd stack to pfh from pfc.(alt of v03q)
+//            xefile.h xechar.c xefile2.c xefile3.c xefcmd.c xelcmd.c
+//            xedlcmd.c xedir.c xedir3.c
+//v03v:950829:trace file open err process by xe(ulib only issue printf
+//            for other user link simplicity)
+//            trace opt reset when 2nd byte not specified for the case
+//            /d21 /20(duplicated)
+//            utrace.c xe.c
+//v03w:950902:upopup separate from uerr to avoid linkage(uvio/ukbd)
+//            uerr.c   xe.c
+//v03x:950902:addr err lcmd to pend cmd to always set err
+//            if not,err lcnmd hiddden by page scroll
+//            xelcmd.c xedlcmd.c xeerr.c xeerr.h
+//v03y:950903:pfh path name length for dir entry matching
+//            xefile.h xefile4.c xefile.c xedlcmd2.c xesub.c xesub.h
+//v03z:950903:attrib cmd,rmdir,mkdir
+//            xedcmd.c xedcmd.h xepan.c xedlcmd.c xedlcmd3
