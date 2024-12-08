@@ -16,50 +16,32 @@ a:hover{font-weight:bold;}
 </STYLE>
 </HEAD>
 <BODY bgcolor="#FFFFE2">
-<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">#if defined(W32) || defined(LNX)
+<PRE>
+**2024/11/30
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
 
-   .シンタックスハイライト。
+   .<B>シンタックスハイライト</B>
 
-    シンタックスハイライトとはキーワード、コメントなどを色を変えて表示する機能です。
-    xe のシンタックスハイライトはandre-simonのHighlightかまたはGNU source-highlight を利用します
+      シンタックスハイライトとはキーワード、コメントなどを色を変えて表示する機能です。
+      xe のシンタックスハイライトは André Simon のHighlightかまたはGNU source-highlight を利用します
+      設定は ::xesynw.cfg(Windows) / ::xesynl.cfg(Linux) で行います
 
-      GNU source-highlighの場合(configファイルでSHCMD=またはSHCMDR=で指定)
-         source-highlight(Windows版ないしはLinux版)の導入が必要です。
-         (http://www.gnu.org/software/src-highlite/source-highlight.html)
-         source-highlightは boostのregexに依存するのでこれも導入が必要かもしれません。
-         (http://www.boost.org)
-         Win版用にcygwinでコンパイルしたものは遅いのでMinGWでコンパイルしたものをHPにアップしています。
-         これを使用すればcygwinの導入も不要です。(2008/03/21)
+      GNU source-highlighの場合(configファイルでSHCMD=で指定)
+      source-highlight(Linux版) の導入が必要です。
+      例えば ubuntu の場合 "sudo apt-get install source-highlight"
+      --data-dir は /usr/share/source-highlight です　
+      Window では binary はメンテナンスされておらず導入のハードルが高いので
+      次の André Simon さんの Highlightが使いやすいでしょう
 
-
-       andre-simon さんの Highlightの場合(configファイルでSHCMDA=で指定)
-         こちらのほうが使いやすいようです。
-         andre-simon さんの ホームページからプラットホームにあったバイナリーを導入してください。
-         (コマンドラインpgm &quot;highlight&quot;をxeパッケージのsampleディレクトリーに同梱しています）
-         Windows版はinstaller付きです。
-         commandline プログラムのみ使用するので、Linux版ではgui版はコンパイルできなくてもかまいません。
-         boost依存もないので導入は簡単です。
-         COBOL,PLIなどサポートする言語タイプも多いようです,
-         カラーの変更はxeのcfgファイル CMAPオプション指定でしてください。
-         このハイライターはオープンソースですが、軽いので常駐モードは作っていません。
-
-         Windows 版は sample デレクトリーに xe に必要な範囲でコピーを入れてあります。
-         Windows版は cfg ファイルなど Dataディレクトリーは省略値で exe のある場所のようです。
-         Linux は /usr/share/highlight ですが --data-dir= で指定変更できます。
-
-         ansi オプションは v3.1 では -A は無効で --out-format=ansi が有効となっています
-         従って、xe は内部指定をやめたので、cfg ファイルで
-             ::xesynw.cfg(Windows), ::xesynl.cfg(Linux), ::xesyna.cfg(Android)
-         バージョンにあわせたオプションを指定してください
-            旧: SHCMDA= &quot;d:\gnuwin32\WinHighlight\highlight.exe -q -A
-            新: SHCMDA= &quot;d:\gnuwin32\WinHighlight\highlight.exe -q --out-format=ansi
-         アンドロイド版は v2.16を同梱しています。データファイルは以下の場所に展開しています
-           SHCMDA= &quot;highlight -q --data-dir=/data/data/com.xe.Axe/files/highlight-data --add-config-dir=/data/data/com.xe.Axe/files/highlight-data --out-format=ansi &quot;
+      André Simon さんの Highlightの場合(configファイルでSHCMDA=で指定)
+         André Simon さんの ホームページから導入してください。
+         commandline プログラムのみ使用するので、Linux版ではgui版の make は失敗してもかまいません。
+         尚、Windows版は github の sample デレクトリーに xe に必要な範囲を zip して入れてあります。
+         Windows版は Dataディレクトリーは省略値で exe のある場所のようです。
 
     ハイライターのANSI-escタイプの出力をパイプで受け取り解析しその出力をxeが表示します。
     escタイプの出力にはカラーとフォントスタイル情報を指定するANSI ESC シーケンスコードが含まれています。
     (元のソースにescコードが含まれていると正しく表示できません。)
-    (注）プロセスのI/Oを監視するウィルス対策ソフトがパフォーマンスに影響することがあります。
 
     (ANSI のフォントスタイルコードは NORMAL:0, BOLD:1, UNDERLINE:4, BLINK:5, REVERSE:7, INVISIBLE:8. カラーコードは後述)
     (添付ツールxeacbは単独でANSI Esc シーケンス入りのファイルのブラウザーとしても使用できます。)
@@ -103,67 +85,67 @@ a:hover{font-weight:bold;}
 
        ワークディレクトリー(省略値はc:\xe_wdないしは/home/userID/xe_wdnnnn)にcfgファイルを作成してください。
        (Windows版はxesynw.cfg,Linux版はxesynl.cfg,Android版はxesyna.cfg)
-       source-highlightの設定は後述(d)、andre-simon's Highlight の設定については後述-(e).
+       source-highlightの設定は後述(d)、André Simon's Highlight の設定については後述-(e).
        ANSI ESC シーケンスについては後述-(f)を参照。
+       設定ファイルのエラーを示すメッセージが出たとき、修正後 "SYN RESET" で再ロードできます
 
           SHCMD=       :source-highlight 実行コマンド。
-                        省略値は &quot;source-hightlight -f esc&quot;。 -f escは自動で付与されます。
-                        Windowsでバッチファイルを使用するときはコマンドの前に
-                        &quot;@&quot;を付けてコマンドのエコーが標準出力に出ないようにしてください。
-                        そうしないと&quot;Invalid Index file&quot;等のエラーメッセジが出ます。 
-          SHCMDA=      :andre-simonのHighlightを実行します。
+                        Windows で bat ファイル を使うときは $* で xe からのパラメータを受けてください
+                        Linux で shell を使うときは $@ で xe からのパラメータを受けてください
+                        又、標準出力/標準エラーへの出力は避けてください、"Invalid Index file" 等のエラーメッセジが出ます。
+          SHCMDA=      :André SimonのHighlightを実行します。
                        パスがスペースを含む場合は次のように指定してください
-                         SHCMDA= '&quot;&quot;c:\Program Files\WinHighlight\highlight.exe&quot;&quot; -q --out-format=ansi'
-
-          ENTER =      :Enterキー入力をシンタックスの再評価のトリガーに閾値をファイルの行数で指定。
-                        ファイルを開く時行数がここでの指定以内の場合Enterキー入力が再評価(更新行のみ)のトリガーになります。
-                        ファイルを開いた後ではSYNコマンドで変更できます。
-                        &quot;0&quot; はOFFで再評価はCtrl+sで実施。
-                        &quot;-1&quot;は無制限でEnterキーをトリガーとします。
+                         SHCMDA= '""c:\Program Files\WinHighlight\highlight.exe"" -q --out-format=ansi'
+                       Windows で bat ファイル を使うときは $* で xe からのパラメータを受けてください
+                       Linux で shell を使うときは $@ で xe からのパラメータを受けてください
+                       又、標準出力/標準エラーへの出力は避けてください、"Invalid Index file" 等のエラーメッセジが出ます。 
+          ENTER =      :Enterキー入力をシンタックスの再評価のトリガーとする閾値をファイルの行数で指定。
+                        ファイルを開く時行数がここでの指定以内の場合、Enerキー入力が更新行の再評価のトリガーになります。
+                        OPEN=y のとき、又、ファイルを開いた後ではSYNコマンド(Ctrl+s)で SYN ON であるときにのみトリガーになります。
+                        "0" は Enter キーでは 更新行の再評価はしません。
+                        "-1"はファイルの行数に関係なくEnterキーで再評価します。
                         省略値は-1。
-
           OPEN  =      :ファイルを開く時にシンタックスハイライト評価をする指定。
                         &quot;Y&quot;:次の OPEN_EXT パラメータに指定がある拡張子のファイルをONとする。
                         &quot;N&quot;:ファイルを開く時はOFFとする。後でSYNコマンドでONにできます。
                         &quot;A&quot;:全てのファイルでファイルを開く時からONとする。
           OPEN_EXT=    :OPEN=y 指定の時に対象となるファイル拡張子のリストを指定。
                         例) OPEN_EXT=c cpp h hpp
-          UPDONLY_EXT  :&quot;SYN ON&quot;コマンド(Ctrl+s)での再評価を更新行に限る言語タイプの拡張子をリストします。
+          UPDONLY_EXT  :"SYN ON"コマンド(Ctrl+s)での再評価を更新行に限る言語タイプの拡張子をリストします。
                         C言語の/* */コメントのように複数行にわたるシンタックスを持たない言語タイプでは
-                        更新行だけ再評価すればよいので&quot;SYN ON&quot;(Ctrl+s)の応答が速くなります。
-                        ENTERキーをトリガーキー設定している場合はENTERキーで更新行のみの再評価は実施
-                        されているので&quot;SYN ON&quot;(Ctrl+s)を使用する理由がないので意味がありません。
-                        Enterキーの応答がトリガーキー設定で少しでも遅くなるのを嫌う場合で
-                        その言語は本来マルチラインシンタックスをもってはいるが&quot;SYN ON&quot;コマンドの応答を早くしたい場合に意味があります。
-                        この設定に該当する場合でも&quot;SYN ALL&quot;でファイル全体の再評価がされます。
+                        更新行だけ再評価すればよいのでここで指定することにより、
+                        全行を再評価する"SYN ON"(Ctrl+s)コマンドの応答が速くなります。
+                        Enterキーの応答がトリガーキー設定で遅くなるのを嫌い "Enter=0" とした場合、
+                        SYN コマンドで再評価することになりますが、
+                        その言語は本来マルチラインシンタックスをもってはいるが "SYN ON" の応答を早くしたい場合使用します。
+                        この設定にをした場合でも "SYN ALL" でファイル全体の再評価をすることができます。
                         UPDONLY_EXT=default とすると全てのファイルが対象となる。
-                        例) ULO_EXT=cob
+                        例) UPDONLY_EXT=cbl
           PATH_EXT_xxx=:適切な拡張子を持たないファイルのためにディレクトリパス名で拡張子を与えます。
                         xxx(最大７桁まで)に拡張子を指定。１行１経路指定です。
                         指定されたディレクトリー内のファイルはその本来の拡張子にかかわらず
                         xxxの拡張子を持つものとされます。
-                        例) PATH_cob=d:\src\cobs
-                             PATH_syslog=d:\logs\windows\actlog
+                        例) PATH_EXT_cob=d:\src\cobs    PATH_syslog=d:\logs\windows\actlog
 
           BG=          :背景色のパレット番号。各パレット番号の色は0.0画面でチェックしてください。
-                        番号は &quot;0&quot; から &quot;15(Windows)/&quot;7&quot;(Linux)。
+                        番号は &quot;0&quot; から "15"(Windows)/"7"(Linux)。
           BG_BROWSE    :Browse(表示)モードの時の背景色。
                         省略値は BG に同じ
           FG=          :前景色のパレット番号。
-                        番号は &quot;0&quot; から &quot;15。
+                        番号は "0"; から "15"。
           BG_EOL=      :行末以降の背景色パレット番号。
-    　　　　　　　　　　省略値は BG(編集モード)またはBG_BROWSE(表示モード)に同じ。
+                        省略値は BG(編集モード)またはBG_BROWSE(表示モード)に同じ。
           BG_TAB=      :TAB/印刷不能文字の背景色パレット番号。
-    　　　　　　　　　　省略値は BG(編集モード)またはBG_BROWSE(表示モード)に同じ。
+                        省略値は BG(編集モード)またはBG_BROWSE(表示モード)に同じ。
           BG_UPD=      :更新後未評価の行の背景色パレット番号。
-    　　　　　　　　　　省略値は 0(黒)
+                        省略値は 0(黒)
           BG_REVERSE_EDIT=  :Editパネル上のFindコマンド、カット＆ペーストなどの反転時の背景色
                              省略値は 14(黄色)、但しLinux Console版では 6(茶色)
           BG_REVERSE_BROWSE=:Browseパネル上のFindコマンド、カット＆ペーストなどの反転時の背景色
                              省略値は 15(白色)、但しLinux Console版では 6(茶色)
           CMAP  =      :source-highlightはその構成定義にしたがってANSI ESCシーケンスで色番号を
                         出力しますがそれをxeのパレット番号とせずマッピングを換えるときに指定。
-                        andre-simon's Highlightはその構成定義ではマッピングを変更出来ないようです。(後述(e)参照)
+                        André Simon's Highlightはその構成定義ではマッピングを変更出来ないようです。(後述(e)参照)
                         CMAPを使ってください。
                         カラー番号&quot;0&quot;から順に必要なだけ指定。
                         例) CMAP  =__.04.10.__.01  # 赤と青の入れ替え、緑を高輝度に設定。&quot;__&quot;は変更無しの意味です。
@@ -174,7 +156,7 @@ a:hover{font-weight:bold;}
           ITALIC_ESC = :source-highlightのesc.outlangで italics に 与えたANSI ESC シーケンスコードをxeに知らせます。
                         "0", "1":bold, "4":underline 以外を指定してください。
                         省略値は&quot;5&quot;:blinkです。省略値をイタリックとするにはesc.outlangを変更してください。
-                        andre-simon's Highlightはフォントスタイル指定できません。
+                        André Simon's Highlightはフォントスタイル指定できません。
           C_BOLD     = :コンソール版でのフォントスタイル=1(Bold)の扱い。 Windows 版のみ。
                          "H":高輝度(省略値), "N":無視、"R":反転。
          C_UNDERLINE= :コンソール版でのフォントスタイル=4(Underline)の扱い。
@@ -191,108 +173,76 @@ a:hover{font-weight:bold;}
     (c)サンプルファイル。
 
     ######################################################################################
-    # xesynw.cfg
+    # xesynw.cfg(Win)/xesynl.cfg(Linux)
     # ==syntax highlight configuration==
     #
-    #   if err detected, correct, save then use &quot;SYN RESET&quot; cmd to re-load config file.
+    ### execution
     #
-    ### execution 
-    #
-    #  select highight command from SHCMD or SHCMDR or SHCMDA
-    #     SHCMDA is recomended(installation required,&quot;sample&quot; dir contains required files(highlight-3.7)
-    #
+    #  select highight command from SHCMD or SHCMDA
     #     SHCMD=       :Specify source-highlight command
-    #                   default &quot;source-highlight -f esc&quot;. &quot;-f esc&quot; (outlang:esc) is always appended.
-    #                   If use .bat file on Windows, use &quot;@&quot; to avoid that cmd echo is written to stdout.
-    #     SHCMDA=      :Specify andre-simon's Highlight command
-    #                    Specify as following if space is embedded in the path.
-    #                    SHCMDA= '&quot;&quot;c:\Program Files\WinHighlight\highlight.exe&quot;&quot; -q --out-format=ansi'
-    #     ENTER =      :Specify file line count threshold to use Enter key as trigger of SyntaxHighlight re-evaluation.
-    #                   If the file line count is under this value at open,
-    #                   Enter key is treated as trigger of re-evaluation of updated lines..
-    #                   You can change triger ON/OFF status by SYN cmd later.
-    #                   0 :Do not use as trigger. Use Ctrl+s to evaluate syntax.
-    #                   -1:No line count limit.(Default)
-    ### file type 
+    #                   e.g.  SHCMD = "source-highlight"
+    #     SHCMDA=      :Specify André Simon's Highlight command
+    #                   e.g.  SHCMDA= '""w:\highlight.dir\hl64.exe"" -q --out-format=ansi'
+    #     ENTER =      :File line count at open to re-evaluate updated lines by Enter key when SYN ON..
+    #                   0 :Do not re-evaluate by Enter key. -1:No line count limit.(Default)
+    ### file type
     #     OPEN  =      :SyntaxHighlight mode at opening file.
-    #                   &quot;Y&quot;:SyntaxHighlight mode if the extention is listed by OPEN_EXT
-    #                   &quot;N&quot;:always No SyntaxHighlight mode at open
-    #                   &quot;A&quot;:always SyntaxHighlight mode at open
+    #                   "Y":SyntaxHighlight mode if the extention is listed by OPEN_EXT
+    #                   "N":always No SyntaxHighlight mode at open
+    #                   "A":always SyntaxHighlight mode at open
     #     OPEN_EXT=    :Specify file extention list for the case of OPEN=y.
-    #                   ex) OPEN_EXT=c cpp h hpp
-    #     UPDONLY_EXT= :Specify file extention list to limit evaluation by &quot;SYN ON&quot;(Ctrl+s) cmd to updated lines only.
-    #                   If the language has no multiline syntax such as /* */ comment in c-like language,
-    #                   You get better response by limiting syntax evaluation to updated lines only.
-    #                   If you set ENTER key as trigger of re-evaluation,there is no need to use &quot;SYN ON&quot; cmd
-    #                   because updated lines evaluation is done by ENTER key.
-    #                   If you not want to set ENTER key trigger,and evaluate by &quot;SYN ON&quot;(Ctrl+S) cmd each time
-    #                   even the language has multiline syntax, register extension in this list.
-    #                   For all lines re-evaluation,&quot;SYN ALL&quot; cmd is used in this case.
-    #                   &quot;UPDONLY_EXT=default&quot; means all file extension.
-    #                   ex) UPDONLY_EXT=cob
-    #     PATH_EXT_xxx=:For the file with missing or improper extension name,specify extention name.
-    #                   xxx:max 7 byte extension name. Specify 1 pathname/line.
-    #                   All files in the directory is assumed as xxx is its extension name.
-    #                   ex) PATH_cob=d:\src\cobs
-    #                       PATH_syslog=d:\logs\windows\actlog
+    #                   e.g. OPEN_EXT=c cpp h hpp
+    #     UPDONLY_EXT  :Lists the extensions for language types that limit reevaluation by the "SYN ON" (Ctrl+s) to updated lines only.
+    #                   e.g. UPDONLY_EXT=cob
+    #     PATH_EXT_xxx=:Gives an extension in the directory path name for files that do not have a proper extension.
+    #                   e.g. PATH_EXT_cob=d:\src\cobs
     ### color
-    #     BG=          :BackGround color palette number.
-    #                   You can check the palette color on =0.0 panel.
-    #                   Valid value is &quot;0&quot; to &quot;15&quot;(Windows) or &quot;1 to &quot;7&quot;(Linux).
+    #     BG=          :Palette number of background color. Check the color of each palette number on the 0.0 screen.
+    #                   Numbers are from "0" to "15" (Windows)/"7" (Linux).
     #     BG_BROWSE    :BackGround color palette number for browse panel
     #                   Default is same as BG
     #     FG=          :ForeGround color palette number
-    #                   Valid value is &quot;0&quot; to &quot;15&quot;
+    #                   Valid value is "0" to "15"
     #     BG_EOL=      :Background color for the right of EndOfLine.
     #                   Default is same as BG(Edit) or BG_BROWSE(Browse)
     #     BG_TAB=      :Background color for TAB/UnPrintable Character.
     #                   Default is same as BG(Edit) or BG_BROWSE(Browse)
     #     BG_UPD=      :Background color for updated and not yet re-evaluated line.
     #                   Default:0(black)
-    #     BG_REVERSE_EDIT=  :Background color for reverse on edit panel(Find cmd,Cut&amp;Paste)
+    #     BG_REVERSE_EDIT=  :Background color for reverse on edit panel(Find cmd,Cut & Paste)
     #                        Default:14(yellow) except linux console version(6:brown)
-    #     BG_REVERSE_BROWSE=:Background color for reverse on browse panel(Find cmd,Cut&amp;Paste)
+    #     BG_REVERSE_BROWSE=:Background color for reverse on browse panel(Find cmd,Cut&Paste)
     #                        Default:15(white) except Linux console version(6:brown)
     #     CMAP  =      :Color palette re-mapping. Remap ANSI color number to xe's palette.
     #                   Specify from color palette number from 0 to max 15 each.
-    #                   Use this option when using andre-simon's Highlight because it is not customizable.
-    #                   ex) CMAP=__.04.10.__.01   # swap Red and Blue and use Intense Green(&quot;__&quot; means no change.)
+    #                   e.g. CMAP=__.04.10.__.01   # swap Red and Blue and use Intense Green("__" means no change.)
     #     RGBn  =      :RGB value for each palette (wxe and gxe only)
-    #                   n:0--&gt;15 (correspond to palette number of xe 0.0 panel)
-    #                   ex) rgb2=20e030   # palette No2(green)'rgb value is R:0x20, G:0xe0, B:0x30.
+    #                   n:0-->15 (correspond to palette number of xe 0.0 panel)
+    #                   e.g. rgb2=20e030   # palette No2(green)'rgb value is R:0x20, G:0xe0, B:0x30.
     ### font style
     #     ITALIC_ESC = :ANSI esc code for italic.
-    #                   Notify value specified on esc.lang file of source-highlight as ANSI font style code:italic. 
-    #                   Valid value is one digit except reserved &quot;1&quot;:bold, &quot;4&quot;:underline.
-    #                   Default is &quot;5&quot;:blink. (If you use this default,specify it on esc.outlang).
+    #                   Notify value specified on esc.lang file of source-highlight as ANSI font style code:italic.
+    #                   Valid value is one digit except reserved "0","1":bold, "4":underline.
+    #                   Default is "5":blink. (If you use this default, specify it on esc.outlang).
     #     C_BOLD     = :treatment of font style:1(BOLD) for console version xe
     #                   "H":HighIntensity, "N":Ignore, "R":Reverse. Default is "H".
     #     C_UNDERLINE= :treatment of font style:4(UNDERLINE) for console version xe. Not supported for Linux version.
-    #                   &quot;H&quot;:HighIntensity, &quot;N&quot;:Ignore<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">, "R":Reverse</SPAN>.  Default is &quot;N&quot;.
+    #                   "H":HighIntensity, "N":Ignore, "R":Reverse.  Default is "N".
     #     C_ITALIC   = :treatment of font style:5(or value of ITALIC_ESC parameter if used) for console version xe
-    #                   &quot;H&quot;:HighIntensity, &quot;N&quot;:Ignore<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">, "R":Reverse</SPAN>.  Default is &quot;N&quot;.
+    #                   "H":HighIntensity, "N":Ignore, "R":Reverse.  Default is "N".
     #     G_BOLD     = :treatment of font style:1(BOLD) for GUI version xe(wxe,gxe)
-    #                   &quot;H&quot;:HighIntensity, &quot;Y&quot;:Bold, &quot;N&quot;:Ignore<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">, "R":Reverse</SPAN>. Default is &quot;YH&quot;.
+    #                   "H":HighIntensity, "Y":Bold, "R":Reverse, "N":Ignore. Default is "YH".
     #     G_UNDERLINE= :treatment of font style:4(UNDERLINE) for GUI version xe(wxe). Not supported for gxe.
-    #                   &quot;H&quot;:HighIntensity, &quot;Y&quot;:Underline, &quot;N&quot;:Ignore<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">, "R":Reverse</SPAN>. Default is &quot;Y&quot;.
+    #                   "H":HighIntensity, "Y":Underline, "R":Reverse, "N":Ignore. Default is "Y".
     #     G_ITALIC   = :treatment of font style:5(or value of ITALIC_ESC parameter if used) for GUI version xe(wxe,gxe)
-    #                   &quot;H&quot;:HighIntensity, &quot;Y&quot;:Italic, &quot;N&quot;:Ignore<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">, "R":Reverse</SPAN>. Default is &quot;Y&quot;.
-    ### sample ###########################
-    #
-    #     SHCMD = &quot;g:\src\syntaxh\GnuWin32\bin\source-highlight --data-dir=g:\src\syntaxh\GnuWin32\share\source-highlight&quot;
-    ###   SHCMD = &quot;/usr/local/bin/source-highlight --data-dir=/use/local/share/source-highlight&quot;
-    #     OPEN  = y              # display color at file open.
-    #     ENTER = -1             # Enter key is trigger of re-evaluation
-    #     BG    = 7              # Black on White
-    #     BG_TAB= 7              # Draw TAB/Unprintable by BG color.
-    #     CMAP  =__.04.10.__.01  # swap Red and Blue and Intense Green(&quot;__&quot; means no change.)
-    #     G_ITALIC=N             # ignore italic style
-    #
+    #                   "H":HighIntensity, "Y":Italic, "R":Reverse, "N":Ignore. Default is "Y".
     #####################################################################
-    #SHCMD = &quot;g:\src\syntaxh\GnuWin32\bin\source-highlight --data-dir=g:\src\syntaxh\GnuWin32\share\source-highlight --style-file=esc.style&quot;   #see source highlight document
-    #SHCMDA= &quot;d:\gnuwin32\WinHighlight\highlight.exe -q&quot;
-     SHCMDA= '&quot;&quot;c:\Program Files\WinHighlight\highlight.exe&quot;&quot; -q --out-format=ansi'
-    #SHCMDA= '/h/objlinux/up/sample/highlight-3.7/highlight -q --out-format=ansi -D /h/objlinux/up/sample/highlight-3.7 --add-config=/h/objlinux/up/sample/highlight-3.7'
+    ### sample ###########################
+    #####################################################################
+    #Linux
+    #SHCMD = "source-highlight"
+    #Windows
+     SHCMDA= '""w:\highlight-4.4-x64\highlight.exe"" -q --out-format=ansi'
     #ENTER =0
      BG    = 7
      FG    = 0
@@ -301,15 +251,15 @@ a:hover{font-weight:bold;}
     #BG_UPD= 7
     #BG_REVERSE_EDIT=14;
     #BG_REVERSE_BROWSE=1
-    #CMAP  =__.04.10.__.01.__.14  # swap Red and Blue and Intense Green(&quot;__&quot; means no change.)
+    #CMAP  =__.04.10.__.01.__.14  # swap Red and Blue and Intense Green("__" means no change.)
     #RGB1 = 20e030
+    #RGB4 = 80f020
     #RGB14= f01080
-     RGB14= f01080
     #ITALIC_ESC= 0
     #C_BOLD=h
     #C_ITALIC=n
     #C_UNDERLINE=n
-    #G_BOLD=y 
+    #G_BOLD=y
     #G_ITALIC=hy
      G_UNDERLINE=h
      OPEN  = y
@@ -322,8 +272,8 @@ a:hover{font-weight:bold;}
 
        詳細は前述のsource-highlightのHPを見て下さい。 
        ここでは変更箇所など関連部のみかいつまんで記述します。
-       (source-highlight v2.8時点では COBOL の対応がありません。最後のCOBOLシンタックス記述は自作です
-        data-dirにコピーして使用してください)
+       source-highlight v3.1.8 では COBOL も対応されています。
+       拡張子と lang を対応させるためには lang.map を確認してください
 
        .lang.map
 
@@ -340,47 +290,7 @@ a:hover{font-weight:bold;}
             hpp = cpp.lang
 
         COBOL を使用する場合はファイル拡張子を例えば .cob とした場合次のような行を追加します。
-        cobol.lang ファイルは後述。
             cob  = cobol.lang 
-
-       .cpp.lang
-         
-        c 言語のシンタックス(コメント、キーワードなどの判定方法)がsource-highlightの文法と
-        正規表現で記述されています。
-
-        ###
-            include &quot;c_comment.lang&quot;
-
-            state preproc start '^[[:blank:]]*#(?:[[:blank:]]*include)' begin
-                    string delim &quot;&lt;&quot; &quot;&gt;&quot; 
-                    string delim &quot;\&quot;&quot; &quot;\&quot;&quot; escape &quot;\\&quot;
-                    include &quot;c_comment.lang&quot;
-            end
-
-            preproc = '^[[:blank:]]*#([[:blank:]]*[[:word:]]*)'
-
-            include &quot;number.lang&quot;
-
-            string delim &quot;\&quot;&quot; &quot;\&quot;&quot; escape &quot;\\&quot;
-            string delim &quot;'&quot; &quot;'&quot;  escape &quot;\\&quot;
-
-            keyword = &quot;__asm|__cdecl|__declspec|__export|__far16|__fastcall|__fortran|__import&quot;,
-                  &quot;__pascal|__rtti|__stdcall|_asm|_cdecl|__except|_export|_far16|_fastcall&quot;,
-                  &quot;__finally|_fortran|_import|_pascal|_stdcall|__thread|__try|asm|auto&quot;,
-                  &quot;break|case|catch|cdecl|class|const|const_cast|continue|default|delete&quot;,
-                  &quot;do|dynamic_cast|else|enum|explicit|extern|false|for|friend|goto&quot;,
-                  &quot;if|inline|mutable|namespace|new|operator|pascal|private|protected&quot;,
-                  &quot;public|register|reinterpret_cast|return|sizeof|static|static_cast&quot;,
-                  &quot;struct|switch|template|this|throw|true|try|typedef|typeid|typename|union&quot;,
-                  &quot;using|virtual|volatile|while&quot;
-
-            type = &quot;bool|char|double|float|int|long|short|signed|unsigned|void|wchar_t&quot;
-
-            include &quot;symbols.lang&quot;
-
-            cbracket = &quot;{|}&quot;
-
-            include &quot;function.lang&quot;
 
        .default.style
          
@@ -411,177 +321,11 @@ a:hover{font-weight:bold;}
 
          ANSI 定義は後述(f)を参照してください.
 
-        ###
-            extension &quot;txt&quot;
-
-            styletemplate &quot;\x1b[$stylem$text\x1b[m&quot;
-            styleseparator &quot;;&quot;
-
-            bold &quot;01$style&quot;
-            underline &quot;04$style&quot;
-            italics &quot;$style&quot;
-            color &quot;$style&quot;
-
-
-            colormap
-            &quot;green&quot; &quot;32&quot;
-            &quot;red&quot; &quot;31&quot;
-            &quot;darkred&quot; &quot;31&quot;
-            &quot;blue&quot; &quot;34&quot;
-            &quot;brown&quot; &quot;33&quot;
-            &quot;pink&quot; &quot;35&quot;
-            &quot;yellow&quot; &quot;33&quot;
-            &quot;cyan&quot; &quot;36&quot;
-            &quot;purple&quot; &quot;35&quot;
-            &quot;orange&quot; &quot;31&quot;
-            &quot;brightorange&quot; &quot;31&quot;
-            &quot;brightgreen&quot; &quot;32&quot;
-            &quot;darkgreen&quot; &quot;32&quot;
-            &quot;black&quot; &quot;30&quot;
-            &quot;teal&quot; &quot;37&quot;
-            &quot;gray&quot; &quot;37&quot;
-            &quot;darkblue&quot; &quot;34&quot;
-            default &quot;30;&quot;
-            end
-
-            # Decorate text with terminal control sequences (escape sequences).
-            # To set the attribute/fg_color/bg_color we need to print
-            #   &quot;\033[AA;FF;BBm&quot;
-            # where AA is one of these:
-            # 00=none 01=bold 04=underscore 05=blink 07=reverse 08=concealed,
-            # FF is one of these:
-            # 30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
-            # BB is one of these:
-            # 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
-            #
-            # Any of AA,FF,BB may be omited.
-            #
-            # To reset do default color/attribute we need to print
-            # &quot;\033[m&quot;
-
-       .cobol.outlang
-
-         キーワードはvim の定義を参照しました。
-         Col.1-6をコメントとしない場合は次の行を抜いてください
-            comment='^.{6}'                                #col.1-6:comment 
-         Col.73以降をコメントとする方法はわかりません。教えてください。
-
-        ###
-
-            ######################################
-            # for COBOL
-            ######################################
-            #delm
-            # minus&quot;-&quot; may be part of variable
-            #
-            #symbol = &quot;~&quot;,&quot;!&quot;,&quot;%&quot;,&quot;^&quot;,&quot;*&quot;,&quot;(&quot;,&quot;)&quot;,&quot;-&quot;,&quot;+&quot;,&quot;=&quot;,&quot;[&quot;,
-            symbol = &quot;~&quot;,&quot;!&quot;,&quot;%&quot;,&quot;^&quot;,&quot;*&quot;,&quot;(&quot;,&quot;)&quot;,&quot;+&quot;,&quot;=&quot;,&quot;[&quot;,
-                    &quot;]&quot;,&quot;\\&quot;,&quot;:&quot;,&quot;;&quot;,&quot;,&quot;,&quot;.&quot;,&quot;/&quot;,&quot;?&quot;,&quot;&amp;&quot;,&quot;&lt;&quot;,&quot;&gt;&quot;,&quot;\|&quot;
-            symbol = '[[:blank:]]+-[[:blank:]]+'
-
-            ######################################
-            #data type to PICTURE
-            ######################################
-            type=&quot;BINARY|PACKED-DECIMAL&quot;
-            type='(COMP|COMPUTATIONAL)-[123456XN]'
-            type='(PIC|PICTURE)[[:blank:]]+X(\([[:digit:]]+\)|X*)'
-            type='(PIC|PICTURE)[[:blank:]]+[S]?(9\([[:digit:]]+\)|9+)[V]?(9\([[:digit:]]+\)|9+)?'
-            type='(PIC|PICTURE)[[:blank:]]+[+-]?([Z9]\([[:digit:]]+\)|[Z9]+)([\.,]?([Z9]\([[:digit:]]+\)|[Z9]+)?)*(E[+-]?9+)?'
-            ######################################
-            # keyword from VIM  2008/02/26
-            ######################################
-            keyword=&quot;DIVISION&quot;
-            keyword=&quot;IDENTIFICATION|ENVIRONMENT|DATA|PROCEDURE&quot;
-            keyword=&quot;PROGRAM-ID|SOURCE-COMPUTER|OBJECT-COMPUTER|SPECIAL-NAMES|FILE-CONTROL|I-O-CONTROL&quot;
-            keyword=&quot;CONFIGURATION|INPUT-OUTPUT|FILE|WORKING-STORAGE|LOCAL-STORAGE|LINKAGE&quot;
-            keyword=&quot;FUNCTION-POINTER|PROCEDURE-POINTER&quot;
-            keyword = &quot;ACCEPT|ACCESS|ADD|ADDRESS|ADVANCING|AFTER|ALPHABET|ALPHABETIC&quot;,
-                &quot;ALPHABETIC-LOWER|ALPHABETIC-UPPER|ALPHANUMERIC|ALPHANUMERIC-EDITED|ALS&quot;,
-                &quot;ALTERNATE|AND|ANY|ARE|AREA|AREAS|ASCENDING|ASSIGN|AT|AUTHOR|BEFORE|BINARY&quot;,
-                &quot;BLANK|BLOCK|BOTTOM|BY|CANCEL|CBLL|CD|CF|CH|CHARACTER|CHARACTERS|CLASS&quot;,
-                &quot;CLOCK-UNITS|CLOSE|COBOL|CODE|CODE-SET|COLLATING|COLUMN|COMMA|COMMON&quot;,
-                &quot;COMMUNICATIONS|COMPUTATIONAL|COMPUTE|CONTENT|CONTINUE&quot;,
-                &quot;CONTROL|CONVERTING|CORR|CORRESPONDING|COUNT|CURRENCY|DATE|DATE-COMPILED&quot;,
-                &quot;DATE-WRITTEN|DAY|DAY-OF-WEEK|DE|DEBUG-CONTENTS|DEBUG-ITEM|DEBUG-LINE&quot;,
-                &quot;DEBUG-NAME|DEBUG-SUB-1|DEBUG-SUB-2|DEBUG-SUB-3|DEBUGGING|DECIMAL-POINT&quot;,
-                &quot;DELARATIVES|DELETE|DELIMITED|DELIMITER|DEPENDING|DESCENDING|DESTINATION&quot;,
-                &quot;DETAIL|DISABLE|DISPLAY|DIVIDE|DIVISION|DOWN|DUPLICATES|DYNAMIC|EGI|ELSE|EMI&quot;,
-                &quot;ENABLE|END-ADD|END-COMPUTE|END-DELETE|END-DIVIDE|END-EVALUATE|END-IF&quot;,
-                &quot;END-MULTIPLY|END-OF-PAGE|END-READ|END-RECEIVE|END-RETURN&quot;,
-                &quot;END-REWRITE|END-SEARCH|END-START|END-STRING|END-SUBTRACT|END-UNSTRING&quot;,
-                &quot;END-WRITE|EQUAL|ERROR|ESI|EVALUATE|EVERY|EXCEPTION|EXIT&quot;,
-                &quot;EXTEND|EXTERNAL|FALSE|FD|FILLER|FINAL|FIRST|FOOTING|FOR|FROM&quot;,
-                &quot;GENERATE|GIVING|GLOBAL|GREATER|GROUP|HEADING|HIGH-VALUE|HIGH-VALUES|I-O&quot;,
-                &quot;IN|INDEX|INDEXED|INDICATE|INITIAL|INITIALIZE&quot;,
-                &quot;INITIATE|INPUT|INSPECT|INSTALLATION|INTO|IS|JUST&quot;,
-                &quot;JUSTIFIED|KEY|LABEL|LAST|LEADING|LEFT|LENGTH|LOCK|MEMORY&quot;,
-                &quot;MERGE|MESSAGE|MODE|MODULES|MOVE|MULTIPLE|MULTIPLY|NATIVE|NEGATIVE|NEXT|NO|NOT&quot;,
-                &quot;NUMBER|NUMERIC|NUMERIC-EDITED|OCCURS|OF|OFF|OMITTED|ON|OPEN&quot;,
-                &quot;OPTIONAL|OR|ORDER|ORGANIZATION|OTHER|OUTPUT|OVERFLOW|PACKED-DECIMAL|PADDING&quot;,
-                &quot;PAGE|PAGE-COUNTER|PERFORM|PF|PH|PIC|PICTURE|PLUS|POINTER|POSITION|POSITIVE&quot;,
-                &quot;PRINTING|PROCEDURES|PROCEDD|PROGRAM|PURGE|QUEUE|QUOTES&quot;,
-                &quot;RANDOM|RD|READ|RECEIVE|RECORD|RECORDS|REDEFINES|REEL|REFERENCE|REFERENCES&quot;,
-                &quot;RELATIVE|RELEASE|REMAINDER|REMOVAL|REPLACE|REPLACING|REPORT|REPORTING&quot;,
-                &quot;REPORTS|RERUN|RESERVE|RESET|RETURN|RETURNING|REVERSED|REWIND|REWRITE|RF|RH&quot;,
-                &quot;RIGHT|ROUNDED|RUN|SAME|SD|SEARCH|SECTION|SECURITY|SEGMENT|SEGMENT-LIMITED&quot;,
-                &quot;SELECT|SEND|SENTENCE|SEPARATE|SEQUENCE|SEQUENTIAL|SET|SIGN|SIZE|SORT&quot;,
-                &quot;SORT-MERGE|SOURCE|STANDARD&quot;,
-                &quot;STANDARD-1|STANDARD-2|START|STATUS|STOP|STRING|SUB-QUEUE-1|SUB-QUEUE-2&quot;,
-                &quot;SUB-QUEUE-3|SUBTRACT|SUM|SUPPRESS|SYMBOLIC|SYNC|SYNCHRONIZED|TABLE|TALLYING&quot;,
-                &quot;TAPE|TERMINAL|TERMINATE|TEST|TEXT|THAN|THEN|THROUGH|THRU|TIME|TIMES|TO|TOP&quot;,
-                &quot;TRAILING|TRUE|TYPE|UNIT|UNSTRING|UNTIL|UP|UPON|USAGE|USE|USING|VALUE|VALUES&quot;,
-                &quot;VARYING|WHEN|WITH|WORDS|WRITE&quot;
-            keyword=&quot;CONTAINS&quot;
-            keyword=&quot;IF|INVALID|END|EOP&quot;
-            keyword=&quot;ALL&quot;
-            keyword=&quot;SPACE|SPACES|NULL|ZERO|ZEROES|ZEROS|LOW-VALUE|LOW-VALUES&quot;
-            keyword=&quot;GO|GOTO&quot;
-            keyword=&quot;COPY&quot;
-            keyword=&quot;ALTER|ENTER|RENAMES&quot;
-            keyword=&quot;OCCURS|DEPENDING|VARYING|BINARY|COMP|REDEFINES&quot;
-            keyword=&quot;REPLACING|RUN&quot;
-            keyword=&quot;EXEC|END-EXEC&quot;
-            keyword=&quot;CALL|END-CALL|CANCEL|GOBACK|PERFORM|END-PERFORM|INVOKE&quot;
-            #keyword='(?=.*[[:lower:]])(?=.*[[:upper:]])(?=.*[[:punct:]]).+'
-            #keyword='(?=.*[[:lower:]])A.*'
-            #keyword='(?(?=.{80}).{8}$)'        //cond not support 
-            #keyword='(?(?=xx)AAB|AAC)'     //cond not support 
-
-            ######################################
-            #comment:no consideration of COL.1-6,73-
-            ######################################
-            #comment start '^.{72}(?=.+)'
-            comment start '^.{6}[*/C]'                     #*,/,C on col.7
-            comment='^.{6}'                                #col.1-6:comment 
-            #state comment start '^.{72}'    begin
-            #   comment='.{8}'
-            #end
-            #environment comment start '^.' begin
-            #   comment = '^.{6}' exitall
-            #end
-            #comment start `(?(?=^.{72}).{8}$)`
-            #comment start '(^[[:blank:]]{72}).{8}$'
-            ######################################
-            #string:no consideration of COL.1-6,73-
-            ######################################
-            #string delim &quot;\&quot;&quot; &quot;\&quot;&quot; escape &quot;\&quot;\&quot;&quot;
-            #string delim &quot;'&quot;  &quot;'&quot;  escape &quot;''&quot;
-            string delim '[X]?\&quot;'  '(\&quot;|.$)' 
-            string delim '[X]?\''  '(\'|.$)' 
-            ######################################
-            # numbers
-            ######################################
-            number = '\&lt;[+-]?(([[:digit:]]*\.)?[[:digit:]]+([eE][+-]?[[:digit:]]+)?)\&gt;'
-
-            ######################################
-            #include &quot;function.lang&quot;
-            # no function definition
-            ######################################
-    (e)andre-simon's Highlight 設定。
+    (e)André Simon's Highlight 設定。
 
        .v2.7 でテストしました。
        .installで構成ファイルの場所はRegistryに登録されます。
-       .構成定義はandre-simonのhomepageを見て下さい。
+       .構成定義は André Simon のhomepageを見て下さい。
         ANSI 出力は ansigenerator.cppで以下のように固定されているようです。
         (&quot;31&quot;,&quot;34&quot;...の意味は後述(f)ANSIの定義を参照してください.)
         カラーの変更は xesynw.cfg/xesynl.cfg の CMAP オプションで与えてください。
@@ -630,8 +374,6 @@ a:hover{font-weight:bold;}
              46 cyan
              47 white
 
-#endif  //W32 || LNX
 </SPAN></PRE>
-<PRE class="auto-style1">*** 2022/12/04</PRE>
 </BODY>
 </HTML>

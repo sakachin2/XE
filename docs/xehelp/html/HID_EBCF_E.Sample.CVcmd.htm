@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>EBCDIC file support-E Sample CV cmd</TITLE>
+<STYLE TYPE="text/css">
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>2024/11/25
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:MS UI Gthic">
+    <B><B>.CV command example</B></B>
+
+      (Example 1) m2b
+
+EDIT---|G:\src\xe\htmlwk\x1ebc3cplc =L(24-10 001-(   1)-058=Ins
+===>cv m2b                                            ===>HALF
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ********************
+0001|$@ STUVWXYZ 0123456789↵
+    |2425555555523333333333↵
+    |4003456789a00123456789↵
+****|*L*t**l*** END OF FILE *******Lig:OFF ********************
+
+             The results are displayed by CPLC.
+
+1 line convertede\htmlwk\x1ebc3cplc =L(24-10 001-(   6)-058=Ins
+===>                                                  ===>HALF
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ********************
+0001*烟@粤蒟跚韜@     ↵
+    *e74eeeeeeee4ffffffffff↵
+    *0c02345678900123456789↵
+****|*L*t**l*** END OF FILE *******Lig:OFF ********************
+
+             Reopen by CPEB
+
+EDIT---*G:\src\xe\htmlwk\x1ebc3cplc =L(24-10 001-(   1)-058=Ins
+===>end;e x1ebc3cplc cpeb                             ===>HALF
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ********************
+0001*烟@粤蒟跚韜@     ↵
+    *e74eeeeeeee4ffffffffff↵
+    *0c02345678900123456789↵
+****|*L*t**l*** END OF FILE *******Lig:OFF ********************
+
+             The results are displayed by CPEB.
+
+EDIT---|G:\src\xe\htmlwk\x1ebc3cplc =E(24-10 001-(   1)-058=Ins
+===>                                                  ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP930-Internal *********
+0001|$@ STUVWXYZ 0123456789↵
+    |e74eeeeeeee4ffffffffff↵
+    |0c02345678900123456789↵
+****|*E*e**l*** END OF FILE ******* cp=CP930-Internal *********
+
+      (Example 2) b2b
+
+EDIT---|G:\src\xe\htmlwk\x1ebc4 =E(24-10-11  001-(   1)-058=Rep
+===>cv b2b cpeb:cp939                                 ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CFG:cp930(ICU) *********
+0001|$ STUVWXYZ abcd 01234↵
+    |e4eeeeeeee466664fffff↵
+    |002345678902345001234↵
+****|*E*e**l*** END OF FILE ******* cp=CFG:cp930(ICU) *********
+
+             The results are displayed by C930.
+
+1 line converted (cp930-->cp939) ,Use "SETCP" option or Use "EB
+C SETCP=xxx" cmd to change current codepage(disply by it)>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CFG:cp930(ICU) *********
+0001*¥ STUVWXYZ ｱｲｳｴ 01234↵
+    *54eeeeeeee488884fffff↵
+    *b02345678901234001234↵
+****|*E*e**l*** END OF FILE ******* cp=CFG:cp930(ICU) *********
+
+      (Example 3) b2b setcp
+
+EDIT---|G:\src\xe\htmlwk\x1ebc4 =E(24-10-11  001-(   1)-058=Rep
+===>cv b2b cpeb:cp939 setcp                           ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CFG:cp930(ICU) *********
+0001|$ STUVWXYZ abcd 01234↵
+    |e4eeeeeeee466664fffff↵
+    |002345678902345001234↵
+****|*E*e**l*** END OF FILE ******* cp=CFG:cp930(ICU) *********
+
+             The results are displayed by CP939.
+
+1 line converted (cp930-->cp939) with SETCP  001-(   1)-058=Rep
+===>                                                  ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=cp939(ICU) *************
+0001*$ STUVWXYZ abcd 01234↵
+    *54eeeeeeee488884fffff↵
+    *b02345678901234001234↵
+****|*E*e**l*** END OF FILE ******* cp=cp939(ICU) *************
+</SPAN></PRE>
+</BODY>
+</HTML>

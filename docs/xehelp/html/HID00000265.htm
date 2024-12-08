@@ -12,10 +12,12 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-<SPAN STYLE="color:#000000;font-size:12pt;">    = <a href="HID00000237.htm">Change ID</a> tag.
+**2024/11/30
+<SPAN STYLE="color:#000000;font-size:12pt;">    = <B><a href="HID00000237.htm">Change ID</a> tag</B>.
 
         CID [on | off | clear | shift | defon | defoff | top___ | copyon | copyoff | ?]
                     [ [cid-type|prefix[,postfix]] | APPEND ]
+                    [.lab1 .lab2]
 
                     :If operand missing,it is assumed ? is specified.
             on      :Add change id tag to updated line when saved.
@@ -86,13 +88,15 @@ a:hover{font-weight:bold;}-->
             (Use quotation for prefix or postfix when it contain
              these char,&quot;,&quot;,&quot;;&quot;,&quot; &quot;.)
 
-            APPEND  :Append new CID after the previous CID on the line
-                     if new CID is not same as old CID.
+            APPEND| :Append new CID after the previous CID on the line
+            NOAPEND  if new CID is not same as old CID.
                      If CID type is date, append if date is changed.
                      This is effective only if CID position is not fixed by CID header line.
                      Specify with on/off/defon/defoff.
                      &quot;(def)off APPEND&quot; resets APPEND status only,
                      &quot;(def)off&quot; resets (def)on and APPEND status.
+
+            lab1 lab2 : Used for clear and shift. Specify the line range by a pair of labels set in the line number field.
 
 </SPAN></PRE>
 </BODY>

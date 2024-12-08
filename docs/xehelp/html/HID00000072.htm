@@ -12,7 +12,8 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = コード変換 (ConVersion)
+2024/11/30
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = <B>コード変換</B> (ConVersion)
 　　　
         CV   {e2s|s2e|e2e|s2s|s2j|j2s|e2j|j2e} [z] [NX] [.lab1 .lab2]
         CV   {s2u|u2s|s2f|f2s|u2f|f2u|e2f|f2e|m2f|f2m} [bom] [ucs4] [be|le] [ibm|nec]
@@ -52,6 +53,7 @@ a:hover{font-weight:bold;}-->
 #endif
             u2f/f2u :UCS2&lt;--&gt;UTF8
             b2s/s2b :IBM-EBCDIC&lt;--&gt;SJIS 変換。
+            b2e/e2b :IBM-EBCDIC<-->EUC-JP 変換。
             b2a/a2b :IBM-EBCDIC&lt;--&gt;ASCII 変換。SO/SI(0x0e/0x0f)は無視されます。
             k2L/L2k :半角カタカナ&lt;--&gt;英小文字変換。
                      EBCDIC--&gt;ASCII変換で英小文字が半角カタカナに
@@ -122,7 +124,7 @@ a:hover{font-weight:bold;}-->
                         省略値は IBM。
              JIS78     :JIS78(旧JIS)-&gt;JIS83(新JIS)で 28文字のコードポイント
                         の入れ替えがあったがJIS78に従った変換をする。
-             ANK       :制御文字は置換文字で置き換え。
+             ANK       :EBCDIC 制御文字の変換は代替文字(B2Mでは'?'、など)で置き換え。
              \u        :\uxxxx形式のユニコードを置換する(u2s,u2f)
                        :\uxxxx形式のユニコードへ置換する(s2u,f2u)
              CRLF      :制御文字はCR,LFのみ置換する。

@@ -6,133 +6,50 @@
 <META http-equiv="Content-Style-Type" content="text/css">
 <TITLE>EBCDIC file support-E</TITLE>
 <STYLE TYPE="text/css">
-<!--
-a:hover{font-weight:bold;}-->
 </STYLE>
 </HEAD>
 <BODY bgcolor="#FFFFE2">
-<PRE><SPAN STYLE="color:#000000;font-size:12pt;">
+<PRE>2024/11/25
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:MS UI Gthic">
 
-#if defined(W32) || defined(LNX)
+   .<B><B>EBCDIC file support.</B></B>
 
-   .EBCDIC file support.
+      -CPEB option is used for <B><A href="HID00000277.htm">EDIt</A></B>/<B><A href="HID00000260.htm">BROwse</A></B>/<B><A href="HID00000311.htm">SAVe</A></B>/<B><A href="HID00000268.htm">REPlace</A></B>/<B><A href="HID00000268.htm">CREate</A></B>/<B><A href="HID00000268.htm">APPend</A></B>/<B><A href="HID00000268.htm">CUT</A></B>/<B><A href="HID00000278.htm">END</A></B>/<B><A href="HID00000267.htm">COPy</A></B>/<B><A href="HID00000296.htm">MOVe</A></B>/<B><A href="HID00000267.htm">PASte</A></B> cmd.
+         e.g. "e file1 cpeb:IBM1047"
+       The code page of the cpeb option is stored in the profile, so you only need to specify it at first time.
+       To reset the profile record, specify null, like "CPEB=".
 
-      (See also next section &quot;<A href="HID_EBC_E.htm">EBCDIC translation</A>&quot; about <A href="HID00000270.htm">CV</A> cmd, <A href="HID_XCV_E.htm">XCV</A> utility and EBCDIC cfg file)
+       When opening a directory list, the CPEB option is the default for files in the folder.
+       If you open with other options (CPLC/CPU8/CPAS), the profile will be overwritten.
 
-      -EBCDIC encoded file is maintained as it is without translation to locale codepage.
-       Hex display mode displays EBCDIC code.
-       Use this function for the file downloaded from mainframe with no translation option
-       or NFS mounted with no translation option.
-       It is useful when accessing Linux/390 using sshfs(Dokan sshfs on windows)
-       Unicode is used to display code, it enable to display wider range of printable character.
-       Default EBCDIC converter is CP930 on Japanese environment and CP037 on the other env.
-       This env is local env, specify proper converter on EBCDIC cfg file if remote env is
-       different from local.
-       And also try to select other than default charset on setup dialog of wxe
-       if invalid glyph is displayed.
+       The embedded <B><A href="HID_XCV_E.htm">XCV</A></B> utility is a tool similar to Linux's iconv that converts EBCDIC<-->Unicode<-->locale code.
+       See the next <B><A href="HID_EBC_E.htm">"EBCDIC translation"</A></B> about cfg file(default value is ::xeebc.map).
+       You can use multiple converters by specifying "Converter 1" (ICU) or "Converter 2" (CodePage on Windows, iconv on Linux) in the cfg file.
 
-      -CPEB option is used for <A href="HID00000277.htm">EDIt</A>/<A href="HID00000311.htm">SAVe</A>/<A href="HID00000268.htm">REPlace/CREate/APPend/CUT</A>/<A href="HID00000278.htm">END</A>/<A href="HID00000267.htm">COPy</A>/<A href="HID00000296.htm">MOVe</A>/<A href="HID00000267.htm">PASte</A> cmd.
-       IE option may be required if invalid EBCDIC code is contained.
-       Indicator on header line is &quot;=E&quot; , and &quot;=e&quot; when binary mode.
-       (The file containing unprintable char with some extent is opened as binary file,
-        and DBCS is not detected when binary mode. /Mt is option to force text mode.)
-       LineFeed is 0x15 if /Mp(0x0d0a) or /Mu(0x0a) is not specified.
-         ex). &quot;e file1 cpeb&quot;
-       When cfg file is not prepared or to use different codepage than defined on cfg file,
-       use CPEB:codepage format.
-         ex) &quot;e file1 cpeb:IBM1047&quot;
-       Specify null like as &quot;CPEB=&quot; when back to cfg definition.
-       xe accept max 7 codepages. xe can not recognize alias name.
+      -EDIt/BROwse displays/edits directly without converting to locale code.
+       Displays codes in Unicode on screen, and in HEX display displays the EBCDIC code itself.
+       The line feed code is 0x15 unless /Mp(0x0d0a) /Mu(0x0a) is specified.
+       It is intended for editing mainframe EBCDIC files downloaded without conversion,
+       or for editing/displaying EBCDIC files mounted by NFS with the no conversion option.
+       It can also be used if you have access to Linux on IBM Z via sshfs.
+       The header line displays "=E", and in binary mode, "=e".
+       DBCS is not taken into account when opening in binary mode (EB command).
+       If there are too many control characters and it is determined to be binary file,
+       open with the ET command or with /Mt option.
 
-       COPy/MOVe/PASte cmd inserts lines after translated from specified codepage to the encoding of the opened file.
-       SAVe/REPlace/CREate/APPend/CUT/END cmd write lines after translated to the specified codepage.
-         ex). &quot;rep file2 cpeb nx ie&quot;
+      -If you experience broken-gryph when using -wxe, try changing the charset in the Setup dialog to something other than Default.
 
-       CPEB:codepage option is available for these cmd.
-       Specified option on output cmd is registered to profile.
-       COPy/MOVe/PASte cmd checks profile, so you may not be required to specify CPxx option.
-       But naming may differ between ICU and iconv/Windows codepage.
-       So, when you changed CONVERTER parameter of cfg file between ICU and not ICU,
-       codepage name on profile may invalid.  Paste may fail in that case.
-       Re-specify CPEB parameter on Edit cmd for these case.
-       Even when CPEB is not specified translation occurs if codepage is registered to profile.
-       Specify &quot;B&quot;(Binary) suffix option if you do not want it.
-       &quot;B&quot; option is not supported for UTF8 file as copy target.
-       See &quot;C&quot;(Copy)/&quot;M&quot;(Move) lcmd for &quot;B&quot; suffix.
+      -Line feed character.
+       PC files are 0x0a or 0x0d0a, but the EBCDIC line feed code is 0x15.
+       The following commands support line feed code and record mode LRECL specification.
+       However, SAVe can only be available in the case of specifying a file name.
+           EDIt/BROwse, END, CREate/REPlace, SAVe, COPy/MOVe.
+       When writing to the file by END/SAVe after "CV b2m", change the line feed character with /Mu, etc.
+       If you simply END/SAVe, the EBDCIC line feed character x15 will be written as is.
 
-       Option specified to a directory is default for the file in the directory.
-       To reset profile specify explicitly other(CPLC/CPU8/CPAS) encoding option at open.
-       EBCDIC codepage is displayed on the TopOfLine and EndOfLine.
-
-       Cmd for write dose not update profile if translation error is detected,
-       file is written up to EOF replacing those error character to substitution character.
-       Substitution character depends to the codepage, you can change it by cfg parameter.
-       Sometimes DBCS subchar is not defined, xe try to translate u-fffd, u-ff1f(DBCS &quot;?&quot;),u-3000(DBCS space)
-       in this sequence the use it if available.
-
-      -&quot;C&quot;/&quot;M&quot; line cmd also execute translation when codepage differs.
-       Specify &quot;B&quot;(Binary) suffix option if you do not want it.
-       &quot;B&quot; option is not supported for UTF8 file as both copy source and copy target.
-       Spaces by Tab expansion is dropped when copy from locale code file to EBCDIC file.
-         {A|B}[B][C][n][,b][.s]
-           A : After, B: Before, B : Binary Mode, C : Copy with CID
-           n : repeat, b : bandle, s : skip
-         ex)  c3
-              :       Copy 3 lines After by Binary mode
-              ab
-
-      -&quot;=&quot;(Compare) line cmd compares the line after translated if the codepage differs.
-       (EBCDIC file is translated to UTF8/Locale coed then compared)
-       Use &quot;B&quot; suffix to compare by binary code.
-       Spaces by Tab expansion is ignored.
-         =[B][n][,b][.s]
-         ==[B]
-         (supply &quot;B&quot; at any one of the line cmds)
-
-      -CV cmd.
-
-      -CV cmd B2M/M2B option is for CPLC(Locale code)file only.
-       Cfg file is shared with EDIt cmd, -MFcfgfile option is discarded.
-       CPEB:ebcdic-codepage parameter for B2M/M2B allows translation by out mapping cfg file specified on ini file.
-       If CPEB is missing for the ebcidic file B2M uses the codepage of the opend file.
-         ex) cv m2b cpeb:37
-       Use B2B option to translate between different EBCDIC codepage.
-         ex) cv b2b cpeb:1026
-       B2B without SETCP option dose not change the codepage of current file, the file is displayed using original
-       codepage.
-       To change also the codepage itself, use SETCP option.
-         ex) cv b2b cpeb:1026 SETCP
-
-      -EBC cmd.
-
-       EBC cmd also changes the codepage of the file.
-         ex) EBC SETCP=CP935
-       EBC cmd dose not change original code, but display the code according the codepage.
-       So, close operation dose not write back to the file if there are no other modification to the file.
-       Undo function restores SETCP effects of CV/EBC cmd.
-       Codepage by SETCP option is registered to profile at close operation(not CANcel but END operation)
-       Use &quot;EBC SETCP=&quot; to back to default codepage.
-
-      -xcv utility.
-
-         &quot;m&quot; of &quot;m2b/b2m&quot; is current codepage only, specify codepage for &quot;b&quot; using ebcmap file or -CPEB: option.
-           ex) xcv -cm2b -cpeb:37 -mseteol localfile1  ebcfile1
-         To translate to the different EBCDIC codepage, use B2B option.
-           ex) xcv -cb2b -f:37 -t:1026 ebcfile1 -oebcfile2
-         &quot;-MF:&quot; parameter is also required if use ICU converter. Specify CONVERTER=1 on the cfg file.
-         Or specify -ICU option.
-           e.g. xcv -cb2b -f:IBM037 -t:IBM1047 -mf:xeebc.map ebcfile1 ebcfile2
-                xcv -cb2b -f:IBM037 -t:IBM1047 -ICU          ebcfile1 ebcfile2
-
-      -EndOfLine-ID.
-       Supports not only <A href="HID_RECORD_E.htm">RecordMode</A> but also Text mode by EndOfLineID of 0x15(EBCDIC-NL).
-       Default of EBCDIC file is text mode.
-       Following cmds has EOL related option. LRECL can be changed.
-         EDIt/BROwse, END, CREate/REPlace, SAVe, COPy/MOVe.
-       For SAVe cmd, new option is accepted when filename parameter is specified.
-       For COPy/MOVe cmd Fxx option is LRECL of copy source file.
-       RecordMod:On/Off and LRECL is saved to corresponding profile record,
-       but EOL-ID is required each time.
+       The Fxx in the COPy/MOVe command specifies the LRECL of the source file to copy.
+       The record mode ON/OFF and LRECL are saved in the profile,
+       but the line feed character must be specified each time, except for the default value.
            /M{t|p|u|m|e|r} /Fnn[-mm]
              e:EBCDIC-NL(0x15), r;RecordMode, nn:LRECL
        e.g.
@@ -147,117 +64,182 @@ a:hover{font-weight:bold;}-->
            rep u8f1 nx CPU8 /mp                : translate (from RecordMode EBCDIC file) to UTF8 file.
                                                  EOL-ID:0x0d0a is appended to each line.
 
-      -About DBCS
-       Double Byte Character is indicated by SO(ShiftOut:0x0e) and SI(ShiftIn:0x0f) in EBCDIC.
-       SO and SI enclose DBCS string. ex). 0e-40-40-0f is DBCS space.
-       In other than EBCDIC, specific leading byte and some following bytes is combination of DBCS.
-       Display width of DBCS is 2 column and it may be consists by 3 byte (EUC-SS3) or 3 byte(GB18030).
-       ex). DBCS space is 81-40 in MS932.
-       Accordingly translation between EBCDIC and Locale code changes line length if DBCS is contained.
-       Option of treatment of SO/SI is prepared on translation cmd.
-       Set default to cfg file.
-       cfg option is applied to &quot;C&quot;opy line cmd which has no parameter for SI/SI option.
-         ex).  COPy     file1 cpeb -sd       :Delete SO/SI from EBCDIC copy source file. Line length will shrink.
-               COPy     file1 cpeb -sr       :SO/SI is replaced to one space.
-               REPlace  file1 cpeb -sr       :SO/SI is inserted at translation to EBCDIC,
-                                              but replace both side of space if avail.
-               REPlace  file1 cpeb -si       :SO/SI is inserted simply. Line length will expand.
-       Define default action on cfg file.
-           SOSI_A2E      REP (=&quot;-sr&quot;) or INS (&quot;=-si&quot;)
-           SOSI_E2A      DEL (=&quot;-sd&quot;) or REP (&quot;=-sr&quot;)
+       The EBCDIC line feed code is 0x15, but the converter may map it as follows:
+       EBC-NL(0x15)<-->ASCII-0x85, EBC-LF(0x25)<-->ASCII-LF(0x0a).
+       When opened the file by text mode, lines are split at 0x15 and 0x15 is not displayed.
+       (If you also want 0x0d15 to be a line feed, specify the /Mz option.)
+       When text mode, line feed chars are not displayed, so they are not subject to conversion by the CV command.
+       However, if you open the file in binary mode and run "CV b2m", those will be converted as 0x15->0x85 (0x0d will remain unchanged).
+       If 0x85 is not printable as a locale code, it will be converted to '?'.
+       If you are not using an external converter ("CONVERTER 0"), you can use two correction options to convert 0x15-->0x0a
+          cv b2m crlf / cv m2b crlf
+       Or, in the cfg file, specify
+          MAP_E2A  0x15: 0x0a   # EBCDIC 0x15(NL) -> ASCII 0a(LF)
+       In the case of M2B conversion, if opened in text mode, 0x0d0a/0x0a will not be converted,
+       and 0x15 will be output with the "e" of the output option /Mpe,
+       but in binary mode, the CRLF option and MAP_E2A are effective, and 0x0a-->0x15 conversion is enabled,
+       but 0x0d0a will become 0x0d15.
+       With the -m2b option of the xcv command, -Mseteol can be specified to convert 0d0a/0a->0x15.
+       Without Mseteol, 0d0a/0a will be ignored and 0x15 will not be output.
+       If you want both 0x0d15 and 0x15 to be line feede characters in B2M, specify the crlfz option.
 
-      -Codepage and translation option by cfg file.
-         Specify cfg filename on <A href="HID00000209.htm">INI file</A>. Default is ::xeebc.cfg.
-           EBCDIC_cfg        =&quot;&quot; #(&quot;::xeebc.map&quot;)# EBCDIC translation config filename
-         Syntax is same as previously used for 3270 connection.
-           Following option is added for non-3270 as alternative of option in xehosts file.
-           This is for Windows/Japanese user with no external converter option only.
-            SJIS_OPT  ENG_EXT      # Japanese English-Extension(CP939=CP1027)
-            SJIS_OPT  KANA_EXT     # Japanese Katakana-Extension(CP930=CP290)
-         -MF:mapfile option of CV cmd for B2M/M2B was discarded,
-         <A href="HID00000270.htm">CV</A> cmd share mapping option specified on INI file.
-         Default option when missing cfg file is as following.
-           (Windows)
-             Japanese :Codepage=CP930(Internal mapping table equivalent to Japanese-Katakana Extension), JIS83.
-             else     :Codepage=CP037, No DBCS(SO/SI) consideration.
-           (Linux)
-             Japanese :Codepage=EUC-JP(Internal mapping table equivalent to Japanese-Katakana Extension), JIS83.
-             else     :Codepage=CP037, No DBCS(SO/SI) consideration.
-           Above default is used when CONVERTER=0 on cfg file, you can specify additional option
-           such as SOSI,SJIS option.
-           SOSI option is effective for CV cmd only, ignored for EDIt operation.
+         :====>See below: <B><A href="HID_EBCF_E.Sample.CRLF.htm">(e.g.01)</A></B> LineFeed character.
 
-         (ex.)sample to use External(ICU/iconv) converter, Windows codepage.
-               On Windows, you may have to add the EBCDIC codepage using
-                 Control-Panel--&gt;Region and Languages
-               WindowsXP currently have no EBCDIC codepage supporting DBCS.
-               So, CJK user may have to install ICU to use DBCS EBCDIC. (COVERTER=0 supports Japanese)
-               To use ICU you may have to set PATH for DLL/so. Set PATH(LIBPATH is not used) or LD_LIBRARY_PATH.
+      -If you do not use a configuration file, the internal conversion table supports only one of the following, and B2B conversion is not possible.
+       Specify this with a command line parameter.
+       If you specify "CONVERTER 0" in the cfg file, you can also set the same option by SJIS_OPT.
 
-               Codepage value on CHARSET statement varies by ICU/Windows/LinuxICONV.
-               Confirm it using &quot;uconv -l&quot; (ICU) or &quot;iconv -l&quot;.
-               For codepage on Windows, check it by Control-panel--&gt;Region and Language.
+        xe /EBC[=]{KANA_EXT | ENG_EXT | DefaultMap | DefaultMapEuro | cfg=filepath}
+                KANA_EXT(=CP930=CP290+CP300)  : Japanese extension, Katakana
+                ENG_EXT(=CP939=CP1027+CP300)  : Japanese extension, alphanumeric lowercase
+                DefaultMap(=CP037)            : Latin-1, No Support of Kanji
+                DefaultMapEuro(=CP037+Euro)   : ebc-9f:u-20ac
+                cfg=filepath : The default value is specified in the ini file.
 
-               -Use ICU SBCS.
-                  CONVERTER          1
-                  ICU_DLL_SUFFIX    44
-                  ICU_API_SUFFIX   _44
-                  SBCS_CHARSET     cp1047          //EBCDIC Latin/1 Open System(iso-8859-1)
+       The default values are as follows:
+         (Windows)
+           In a Japanese environment, the code page is displayed on the screen as CP930 and JIS83.
+           In other environments, the code page is CP037 and No DBCS (SO/SI) consideration.
+         (Linux)
+           In a Japanese environment, the code page is displayed on the screen as EUC-JP (=CP930) and JIS83.
+           In other environments, the code page is CP037 and No DBCS (SO/SI) consideration.
 
-               -Use ICU DBCS.
-                  CONVERTER          1
-                  ICU_DLL_SUFFIX    44
-                  ICU_API_SUFFIX   _44
-                  DBCS_CHARSET     cp1388          //chinese simplified. superset of cp935
+         :====>See below: <B><A href="HID_EBCF_E.Sample.Internal.htm">(e.g.02)</A></B> Example of internal conversion table.
 
-               -Use Windows MultiByteToWideChar/WideCharToMultibute API.
-                  CONVERTER          2
-                  SBCS_CHARSET       20924        //EBCDIC Latin/1 Open System(1047+Euro)
+      -COPy/MOVe/PASte commands convert from the specified code page to the destination code page,
+       if you don't want conversion, specify the "B" (Binary mode) suffix on the line command
+       (see Line Commands below)
 
-               -Use Linux iconv API.
-                  CONVERTER          2
-                  SBCS_CHARSET       cp1047
+         :====>See below: <B><A href="HID_EBCF_E.Sample.Copy.htm">(e.g.03)</A></B> Copy/Move/Paste example.
 
-         Translation of EndOfLine ID may not be preferable.
-             EBCDIC NL(x15)--&gt;u0085, LF(x25)--&gt;u000a
-             ASCII  LF(0x0a)--&gt;EBC-15/EBC-25
-         You can remap it as following.
-             MAP_E2A  0x15: 0x0a   # EBCDIC 0x15(NL) -&gt; ASCII 0a(LF)
-             MAP_E2A  0x25: 0x3b   # EBCDIC 0x25(LF) -&gt; ASCII &quot;?&quot;
-             MAP_A2E  0x0a: 0x15   # EBCDIC 0x15(NL) &lt;- ASCII 0a(LF)
+      -SAVe/REPlace/CREate/APPend/CUT/END convert to the specified code page, then written to the file.
+       END command does not output a file if there are no changes, so specifying CPEB is meaningless.
+       COPy/MOVe/PASte commands with a specified file name use the profile record of that file.
+       If a record exists, there is no need to specify CPxx.
+       However, if you change the CONVERTER parameter in cfg from ICU to something other than ICU
+       or vice versa over session close, the naming will be different, which may result in the code page not being found.
+       If you get an "invalid code page" error, open the file with "CPEB=" (null specification) and reset the code page once.
 
+       Even if there is a conversion error in the output command, it will be output to the end of the file, but the profile will not be updated.
+       Conversion error characters will be replaced with alternative characters.
+       Alternative characters depend on the code page.
+       If no DBCS alternative characters are defined, the following will be used in this order:
+       u-fffd, u-ff1f (DBCS "?"), u-3000 (DBCS space).
 
-      -<A href="HID00000270.htm">CV</A> cmd B2M/M2B option is for CPLC(Locale code)file only.
-       To translate the file opened by CPEB option, use REP cmd.
-       Cfg file is shared with EDIt cmd, -MFcfgfile option is discarded.
-       xe display the file translated by CV cmd width B2M by the locale code,
-       The file opened by CPEB option is displayed by Unicode.
-       There may be difference in looks.
+         :====>See below: <B><A href="HID_EBCF_E.Sample.Save.htm">(e.g.04)</A></B> Example of Save/Replace/Cretae/Append/Cut/End.
 
-      -0x09 is not TAB (0x05:EBC-HT also is  not treated as TAB skip character).
-       When Tab Key is pressed, TAB char(0x09,0x05) is not inserted into the line,
-       but jump some columns even when INS mode.
-      -<A href="HID00000284.htm">HEX input mode(Ctrl+F11)</A> send byte by byte(no DBCS consideration)
-      -SO(0x0e)/SI(0x0f)(DBCS enclosure) is displayed by alternative char &quot;?&quot;.
-       SO/SI is inserted when DBCS kbd input.
-       For Cut&amp;Paste DBCS re-evaluation is done each time.
-       DBCS is even byte string enclosed by SO and SI.
-       For ex, when paste EBCDIC line into UTF8/Locale code file,
-       Translation will be done but unless SO/SI is not included in the pasting data
-       DBCS translation is not done and SBCS translation is done.
-       When Joined 2 line split at DBCS position, DBCS may revive.
-       <A href="HID00000742.htm">TFLow</A> cmd also join line but insert single space between the line joined,
-       so DBCS may not revive.
-       Invalid DBCS-EBCDIC is displayed by &quot;:;&quot;, confirm the code by vertical hex line.
-      -Binary mode by <A href="HID00000277.htm">EB</A> cmd or by the reason that file contains too may control char
-       dose not consider DBCS. Use <A href="HID00000277.htm">ET</A> cmd for later case.
-      -<A href="HID00000282.htm">Find</A>/<A href="HID00000262.htm">Change</A> cmd.
-         Regardless of kbd mode is <A href="HID_UTF8_E.htm">UTF8</A> or not, search and replace by EBCDI Code on EBCDIC file.
-         No DBCS consideration for the file opened by binary mode.
-         -g (Grep), P'.' option is not supported.
-      - <A href="HID00000706.htm">&quot;#&quot;</A> line cmd(Execute cmd described on the line) is not supported.
+      -The line commands "C"/"M" will also convert if the source and destination code pages are different.
+       If you do not want to convert, specify the "B" (Binary mode) suffix.
+       Binary mode does not support UTF8 files for either the source or destination.
+       When converting locale file to EBCDIC, spaces caused by TAB (0x09) expansion will be deleted.
 
-#endif
+        Line Commands: Destination Line Format
+          {A|B}[B][C][n][,b][.s]
+            A : After, B: Before, B : Binary Mode, C : Copy with CID
+            n : repeat, b : bandle, s : skip
+
+       The line command "=" will also convert the source and destination code pages if they are different.
+       (When comparing with UTF8 and locale code files, EBCDIC-->UTF8 is compared after locale conversion)
+       If you want to compare in binary mode, specify the "B" (binary mode) suffix.
+
+        =[B][n][,b][.s]
+        ==[B]
+
+         :====>See below: <B><A href="HID_EBCF_E.Sample.Lcmd.htm">(e.g.05)</A></B> Example of line command.
+
+      -The B><A href="HID00000270.htm">CV</A></B> command can use B2M/M2B for CPLC (Locale code) files.
+       When "CONVERTER 0" is specified in the cfg file, Japanese conversion options such as JIS83 can be specified.
+       When using ICU/iconv, various EBCDIC code pages can be used
+       by specifying the CPEB:ebcidc-codepage parameter in B2M/M2B.
+       When performing B2M for an EBCDIC file opened, omitting CPEB will use the code page of that file.
+       If you want to change the code page of an EBCDIC file, use the B2B option.
+       However, because the code page attribute of the file is not been changed, the screen display shows the codes in the original code page.
+       To switch to a new code page, specify the SETCP option.
+
+         :====>See below: <B><A href="HID_EBCF_E.Sample.CVcmd.htm">(e.g.06)</A></B> CV command example.
+
+      -EBC command.
+
+       You can check the current cfg file settings by "EBC".
+       You can also change the code page with "EBC SETCP".
+       With SETCP the original code is not changed. It is displayed according to the specified code page.
+       Therefore, if there are no other changes, the file will not be rewritten by a save operation.
+       The UNDo function will revert the code page set with the SETCP option of the EBC/CV command.
+       The code page set with the SETCP option is recorded in the profile when you save a file.
+       "EBC SETCP=" will return to the default code page.
+
+         :====>See below: <B><A href="HID_EBCF_E.Sample.EBCcmd.htm">(e.g.07)</A></B> Example of EBC command.
+
+      -xcv Utility
+       xcv is a command line tool included in the xe package that runs in the command prompt/Terminal emulator.
+       In B2M/M2B, "M" is the current local code page, and "B" is specified with /MF:mapfile or /CPEB:cp.
+       If you want to change the EBCDIC code page, use B2B.
+       The /Mseteol option enables you to add a line feed code when converting from PC to EBCDIC.
+           /mASCEOL: set line feed code of the EBCDIC file to Windows:0x0d0a, Linux 0x0a. Default:0x15.
+           /mSETEOL: Adds an line feed code to each output line. For x2B and record mode B2x.
+       The fixed length LRECL is specified with the /F option.
+           /F[nn][N]:EBCDIC file is fixed length. nn:LRECL(default=80).
+                     LRECL of B2x (input) or x2B (output) for EBCDIC file.
+                     N: The last 8 digits of the line are the line number field. Adjust the line length by inserting SO/SI.
+                        "N" is only valid for m2b.
+
+         :====>See below: <B><A href="HID_EBCF_E.Sample.XCVcmd.htm">(e.g.08)</A></B> Example of xcv command.
+
+      -About DBCS (Double-Byte Character Set)
+
+       In EBCDIC, double-byte characters are enclosed by SO(0x0e) and SI(0x0f). For example, 0e-40-40-0f is a DBCS space.
+       SO/SI encloses the whole string, not necessarily one character at a time.
+       In non-EBCDIC code pages, except UTF8, DBCS is a combination of a specific leading byte (>=0x80) and the next character.
+       It can be 3 bytes (EUC-SS3), or 4 bytes (GB18030). For example, the DBCS space is 81-40 in MS932.
+       Therefore, line length changes in EBCDIC<-->locale code page conversion.
+       DBCS enclosing char(SO:0x0e and SI:0x0f) are displayed as "?".
+       SO/SI is inserted when typing DBCS.
+       When "Cut and Paste" from an EBC file, only when it is enclosed in SO/SI (even bytes only) will it be evaluated as DBCS.
+       For example, when pasting into a UTF8/locale code file, the code will be converted, but if the SO/SI are not brought, it will be converted as SBCS.
+       After splitting a line at a DBCS position with the <B><A href="HID00000352.htm">Split</A></B> line command,
+       joining the lines with the Join line command can be evaluated as DBCS, but the <B><A href="HID00000742.htm">TFLow</A></B> command inserts a space
+       between the lines, so it will not go back to the original.
+       Invalid DBCS-EBCDIC is displayed on the screen as ":;". Check the hex code in vertical HEX display.
+
+       Specify the SO/SI handling in the command options.
+       The default value is specified in the cfg file. The Copy line command is lacking parameters of SO/SI option, so the cfg file is applied.
+         e.g. COPy ebcfile -sd  : When copying an EBCDIC file into the PC file screen, SO/SI will be deleted and the line length will change.
+              COPy ebcfile -sr  : When copying an EBCDIC file into the PC file screen, SO/SI will be replaced with spaces, and the line length will not change. Default value.
+              COPy pcfile  -si  : When copying a PC file into an EBCDIC file, SO/SI will be inserted, and the line length will change. Default value.
+              COPy pcfile  -sr  : When copying a PC file into an EBCDIC file, SO/SI will be inserted,
+                                  but if there are spaces before SO or after SI, that spaces will be deleted.
+       In cfg, set the default value.
+           SOSI_A2E     REP       # REP(="-sr") or INS ("=-si")
+           SOSI_E2A     DEL       # DEL(="-sd") or REP ("=-sr")
+
+      -0x09 is not treated as a tab. (0x05 is also not treated as a tab)
+       When in character insert mode, the Tab key does not insert 0x09 but jumps to next tab position like in character replace mode.
+
+      -In HEX input mode (Ctrl+F11), DBCS is not taken into account and each byte is sent to the screen.
+
+      -<B><A href="HID00000282.htm">Find</A></B>/<B><A href="HID00000262.htm">Change</A></B> command.
+       Search and replace in EBCDIC code regardless of kbd's UTF8 mode.
+       DBCS is not taken into account when opened in binary mode.
+       Option: -g (Grep) and search-word: P'.' are not supported.
+
+      -<B><A href="HID00000742.htm">TFLow</A></B> cmd
+       When lines are concatenated by TFLow command, a space is inserted at the concatenation point,
+       so that there is an odd number of chars, then usually the SO on the previous line and the SI on the next line will not reconstruct DBCS.
+
+      -The <B><A href="HID00000706.htm">"#"</A></B> line command (which executes what is on that line as a native command) is not supported.
+
+      -About fixed length records.
+
+       For the XCV command, if the /F[xx][N] command line option is specified (the CV command does not have the /F option),
+       when converting from PC to EBCDIC, long sentences are split and short sentences are padded with spaces up to the LRECL.
+       Also, newline characters are not written.
+       The N option in /F[xx][N] specifies that the last 8 chars of the line are the line number.
+       When a line is extended by inserting SO/SI during DBCS conversion, if there are spaces before the line number field
+       it will delete that spaces to keep the LRECL. If it is not possible
+       the line will be split, but if N is specified the line number field will be truncated.
+       When converting from EBCDIC to PC, fixed-length files are read in binary mode (ignoring line feed codes),
+       converted, and output with line feed codes added.
+
 </SPAN></PRE>
 </BODY>
 </HTML>

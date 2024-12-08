@@ -12,11 +12,12 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = ファイル編集
+**2024/11/30
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = <B>ファイル編集</B>
 
         {EDIt | ET | EB | EH | <a href="HID00000028.htm">EN | EC(=EL) | ECN(=Ei) | EK | EKN(=EJ) | E8</a>}
                ファイル名 [/P[0|1]] [CAP|NOCAP] [TC|NOTC] [NB] [NONUM] [F{n[-m]|vfmt}]
-               [CPU8|CPLC|CPAS|CPEB] [IE] [FNU8|FNLC|FNAS]
+               [CPU8|CPLC|CPAS|CPEB[:converter]] [IE] [FNU8|FNLC|FNAS]
                [/L] [/Ln] [[/O][n[t]]-[m[t]]]
                [/M[r[w]][B|C|H|K][n][o|L][X][width[S]][d]]
 
@@ -80,7 +81,12 @@ a:hover{font-weight:bold;}-->
             CPU8: <A href="HID_UTF8_J.htm">UTF8ファイル</A>として開く
             CPLC: 各国語ファイルとして開く
             CPAS: 環境変数に従う。(省略値)
-            CPEB: <A href="HID_EBCF_J.htm">EBCDIC ファイル</A>として開く
+            CPEB[:converter]: <B><A href="HID_EBCF_J.htm">EBCDIC ファイル</A></B>として開く
+                  converter:CP930 などの EBCDIC codepage
+                  EBCDIC cfg ファイル を設定すれば ICU/iconv の converter を指定できます
+                  EBCDIC cfg ファイル を設定しない場合は CP037, CP939, CP930, が指定できます
+                  converter オプションを指定しない場合は cfg ファイルのconverterが使用され
+                  cfg ファイルがない場合は 省略値は 日本語環境では CP930 それ以外では CP037 です
 
               指定されたオプションはプロファイルに保存されます。
               同じファイルでは二度目以降は指定不要です。
@@ -132,6 +138,8 @@ a:hover{font-weight:bold;}-->
                                   ですが /Mpt とすると 保存時に 0x0a は 0x0d0a に置換されます。
                             (注)  EBCDIC ファイルに対し &quot;ET&quot; コマンドは 0x15 を改行文字としますが
                                   /Mt は 0a ないし 0d0a を改行文字とするので違いがあります。
+                                  プロファイルに可変長モードと記録されているためにHeaderエラーで開けない場合には
+                                  /Mtで開いてください
                 M:MACモード      :0x0a  を行区切り文字と見なす
                 E:EBCDICモード   :0x15  を行区切り文字と見なす
                 R:<A href="HID_RECORD_J.htm">レコードモード</A> :改行コードはないものとし固定長でRead/Write

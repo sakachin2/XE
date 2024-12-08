@@ -12,7 +12,8 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-<SPAN STYLE="color:#000000;font-size:12pt;"></SPAN><SPAN STYLE="color:#000000;font-size:12pt;font-family:�l�r �S�V�b�N">    = # command
+**2024/11/30
+<SPAN STYLE="color:#000000;font-size:12pt;">    = <B># command</B>
         .no [n][,b][.s] parameter is supported
         .2 option is avail. set after the &quot;#&quot;.
          ^ : execute those command on the other side of split screen.
@@ -24,12 +25,11 @@ a:hover{font-weight:bold;}-->
              in this example, this file is ::cl(command log) and
              timestamp field is ignored.(ignore up to next &quot;=&quot; if column.1 is &quot;=&quot;)
 
-            0055|=20:50:17.937:s file1
-            ##^ |=20:50:23.828:i word1 -m all
-            0057|=20:50:56.953:i word2 -m all
-            ##! |=20:51:00.484:i wodr3 -m all
-            0059|=20:51:06.203:s
-
+            0055|s file1
+            ##^ |i word1 -m all
+            0057|i word2 -m all
+            ##! |i wodr3 -m all
+            0059|s
 
 </SPAN></PRE>
 </BODY>

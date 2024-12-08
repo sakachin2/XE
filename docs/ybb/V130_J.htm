@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>V130-J</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+
+130 :2024/06/30
+     1.BUGs
+       -(LNX) ./configure が /gth.h Not found で失敗することがある
+       -(LNX:gxe) Gtk3 のとき widget サイズが固定されずにスタート毎に変動する
+       -(LNX:gxe) プリントアイコンを押すとブランクページを印刷したりクラッシュすることがある
+
+     2.機能追加
+       -ユニコードファイルの表示の改善
+         .ZWJ(u-200d), ZWNJ(u-200c), またその他 カテゴリーCf(Format) 文字対応
+       -表示幅が曖昧とされるユニコード文字の表示幅を２つのオプションで指定する
+         ./G{Y|N}{y|0|1|2}
+            Y:フォントの表示幅に合わせる
+              この時馴染みのない言語の文字については2番目のオプションを指定できる
+              但し、Yを指定すると立ち上がりが多少遅くなる。
+            N:表示幅を一律２番目のオプションで指定する
+            省略値は /GY2。
+            例）/GN2: 全ての曖昧文字は２桁表示
+                /GYy: 全ての曖昧文字をフォントに従い調整する
+                /GY0: 馴染みの少ない言語は':;' で代替表示
+         ./F{fontname[:charset] | @font_param_filename}
+            /G オプションで必要なフォントの名前は
+            Windowsの場合WindowsTerminal 上で実行するときsetting.jsonを
+            Linuxの場合xeGetFont.shでgnome-terminal, konsole などでは
+            Home dir のProfileを調べるが失敗する場合はこのオプションを指定する。
+            ファイルで間接的に指定するときは font_param_filename を使用。
+            フォントに合った charset は Microsoft の ドキュメント参照。
+            例) /F"ＭＳ 明朝":128 、/F@.\fontParm.txt。
+                /F"\uff2d\uff33 \u660e\u671d"。
+       -XBC コマンドで ucs4<-->utf16 変換をサポート
+          例) xbc 1f468/s    ==> x1f468/s:=d83ddc68
+          例) xbc d83ddc68/s ==> xd83ddc68/s:=0001f468
+       -find コマンドで -cont オプション追加
+          exe コマンドで大きなファイルをFindコマンドを設定したファイルで
+          行選択するとき、パフォーマンスの観点から、
+          NotFound となったとき次のFindを最初の行から探すのではなく
+          最後にFoundとなった行から探し始めるときに使用する
+          ファイルがソートされている前提で有効なオプションです
+       -画面ハードコピーの出力
+          Alt+z で画面のハードコピーを::hcopyに追加モードで書き出す
+          Linux Console版以外では Ctrl+h も使用可能
+
+     3.その他
+       -(LNX) Gtk2 のサポートは停止、Gtk3 のみサポート
+       -(LNX) コンソール版でフォントの設定を調べる script "xeGetFont.sh" を
+              /usr/local/bin に install する。加えて xprint.sh も。
+
+     4.ツール。                                                       ||~v129R~
+       -xbc  v1.7
+          ucs4 <--> utf16 変換を追加
+       -xcv  v1.23
+          オプション/Yh(Hex表記の入力)はパイプも含め標準入力に限定
+       -xprint.c 3.39
+          (LNX) 行の右端が右マージンを超えて表示が切れることがある
+</SPAN></PRE>
+</BODY>
+</HTML>

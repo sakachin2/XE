@@ -12,10 +12,12 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
+***2024/11/30
 <SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = 行変更タグ (<a href="HID00000039.htm">Change ID</a>)
 
         CID [on | off | clear | shift | defon | defoff | top___ | copyon | copyoff | ?]
                     [ [cid-type|prefix[,postfix]] | APPEND ]
+                    [.lab1 .lab2]
 
                     :オペランドなしは ? 指定とみなします
             on      :現ファイルの保存時に変更行に変更タグつけます
@@ -87,15 +89,15 @@ a:hover{font-weight:bold;}-->
                      shift のとき後置文字つきのCIDを整列する
             (&quot;,&quot;,&quot;;&quot;,&quot; &quot;,をprefix,postfixに指定する時は引用符が必要)
 
-            APPEND  :設定するCIDが現在の行に設定されているものと異なる場合
-                     現在のものは残してその後ろに新たなCIDを設定します。
+            APPEND| :設定するCIDが現在の行に設定されているものと異なる場合
+            NOAPPEND 現在のものは残してその後ろに新たなCIDを設定します。
                      CIDタイプが日付の場合は日付が異なるとき追加になります。
                      CID位置が固定されてない場合のみ作用します。
                      on/off/defon/defoff とともに指定します。
                      (def)off でAPPENDを指定するとAPPENDオプションのみが
                      リセットされ、APPENDを指定しないと(def)onと
                      APPENDの両方をリセットします。
-***2022/12/04
+            lab1 lab2 : clear と shift で使用。適用範囲を行番号欄に設定したラベルの対で指定する。
 </SPAN></PRE>
 </BODY>
 </HTML>

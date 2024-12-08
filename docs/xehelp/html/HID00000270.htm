@@ -12,7 +12,8 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-<SPAN STYLE="color:#000000;font-size:12pt;">    = Code Conversion
+**2024/11/30
+<SPAN STYLE="color:#000000;font-size:12pt;">    = <B>Code Conversion</B>
 
         CV   [e2s|s2e|e2e|s2s|s2j|j2s|e2j|j2e] [z] [NX] [.lab1 .lab2]
         CV   {s2u|u2s|s2f|f2s|u2f|f2u|e2f|f2e|m2f|f2m} [bom] [ucs4] [be|le] [ibm|nec]
@@ -51,6 +52,7 @@ a:hover{font-weight:bold;}-->
 #endif
             u2f/f2u :UCS2&lt;--&gt;UTF8
             b2s/s2b :IBM-EBCDIC&lt;--&gt;SJIS(Japanese DBCS conversion).
+            b2e/e2b :IBM-EBCDIC<-->EUC-JP conversion.
             b2a/a2b :IBM-EBCDIC&lt;--&gt;ASCII SBCS(SO/SI(0x0e/0x0f) is ignored).
             k2L/L2k :HankakuKatakana&lt;--&gt;EnglishLowerCase letter.
                      When EBCDIC--&gt;ASCII translated lowercase letter to
@@ -115,7 +117,7 @@ a:hover{font-weight:bold;}-->
                         use with u2s,f2s. default is IBM.
              JIS78     :DBCS conversion by OLD-JIS sequence.
                         default is JIS83(NEW-JIS) sequence.
-             ANK       :replace control char by 'err-rep-char',
+             ANK       :replace control char by 'err-rep-char'(e.g. '?' for B2M),
              \u        :\uxxxx format unicode input conversion(u2s,u2f).
                        :\uxxxx format unicode output conversion(s2u,f2u).
              CRLF      :replace CR,LF by 'err-rep-char'.

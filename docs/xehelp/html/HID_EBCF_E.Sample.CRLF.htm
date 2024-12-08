@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>EBCDIC file support-E Sample CRLF</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>2024/11/25<SPAN STYLE="color:#000000;font-size:12pt;">
+
+      <B><B>Line feed character</B></B>
+
+          <B>(1)</B> Source data
+
+             e x1ebc0d15 <B>/mb</B> (binary mode display)
+
+ASCII Off.\src\xe\htmlwk\x1ebc0d15 =e(24-11-18 10:59)--------- 0000(0000)004b=Rep
+===>                                                                    ===>HALF 
+****|*e*t**l*** TOP OF FILE ******* cp=CP930-Internal ***************************
+0000|0015<B></B>0025<B>▪</B>a0d15<B>▪</B><B></B>|                              
+    |ffff<B>1</B>ffff<B>2</B>6f6ff<B>0</B><B>1</B>|                              
+    |0015<B>5</B>0025<B>5</B>20515<B>d</B><B>5</B>|                              
+****|*e*t**l*** END OF FILE ******* cp=CP930-Internal ***************************
+
+             e x1ebc0d15 (text mode display, newline at 0x15)
+
+EDIT---|G:\src\xe\htmlwk\x1ebc0d15 =E(24-11-18 10:59)--------- 001-(   1)-076=Rep
+===>                                                                    ===>HALF 
+****|*E*e**l*** TOP OF FILE ******* cp=CP930-Internal ***************************
+0001|0015↵                                                                       
+    |ffff↵                                                                       
+    |0015↵                                                                       
+0002|0025<B>▪</B>a0d15<B>▪</B>↵                                                  
+    |ffff<B>2</B>6f6ff<B>0</B>↵                                                  
+    |0025<B>5</B>20515<B>d</B>↵                                                  
+****|*E*e**l*** END OF FILE ******* cp=CP930-Internal ***************************
+
+          <B>(2)</B> Binary mode "CV b2m"
+
+             e x1ebc0d15 <B>/mb</B> ; cv b2m
+               No crlf option. ebc:0x15-->ascii:3f, 0x25-->0x0a, 0x0d-->0x0d
+
+1 line convertede\htmlwk\x1ebc0d15 =e(24-11-18 10:59)--------- 0000(0000)004b=Rep
+===>                                                                    ===>HALF 
+****|*e*t**l*** TOP OF FILE ******* cp=CP930-Internal ***************************
+0000*<B></B>▪<B></B>/c<B>▪</B><B></B>|                              
+    *3333<B>3</B>3333<B>0</B>63633<B>0</B><B>3</B>|                              
+    *0015<B>f</B>0025<B>a</B>10415<B>d</B><B>f</B>|                              
+****|*e*t**l*** END OF FILE ******* cp=CP930-Internal ***************************
+
+             e x1ebc0d15 <B>/mb</B> ; cv b2m <B>crlf</B>
+               With crlf option. 0x15-->0x0a
+
+1 line convertede\htmlwk\x1ebc0d15 =e(24-11-18 10:59)--------- 0000(0000)004b=Ins
+===>                                                                    ===>HALF
+****|*e*t**l*** TOP OF FILE ******* cp=CP930-Internal ***************************
+0000*<B></B>▪<B></B>/c</B>▪</B><B></B>|                             
+    *3333<B>0</B>3333<B>0</B>63633</B>0</B><B>0</B>|                             
+    *0015<B>a</B>0025<B>a</B>10415</B>d</B><B>a</B>|                             
+****|*e*t**l*** END OF FILE ******* cp=CP930-Internal ***************************
+
+          <B>(3)</B> Text file output after b2m, no newline code specified
+
+             e x1ebc0d15 ; cv b2m ; s x1ebc0d15.b2m.save ; e x1ebc0d15.b2m.save cplc <B>/mb</B>
+                The line feed code between the first and second lines is 0x0a, which is by 0x25-->0x0a/CP930 conversion
+
+===>                                                                       ===>HALF
+****|*b*t**l*** TOP OF FILE *******Lig:OFF *****************************************
+0000|0015<B>▪</B>0025<B>▪</B>a0d15▪<B>▪</B>|                                        
+    |3333<B>1</B>3333<B>0</B>636330<B>1</B>|                                        
+    |0015<B>5</B>0025<B>a</B>10415d<B>5</B>|                                        
+****|*b*t**l*** END OF FILE *******Lig:OFF *****************************************
+
+             e x1ebc0d15 ; cv b2m ; s x1ebc0d15.b2m.save ; e x1ebc0d15.b2m.save cplc
+               In text mode, line feed is 0x15, and when saving, EBCDIC line feed code 0x15 is written.
+
+ :UNIX filesrc\xe\htmlwk\x1ebc0d15.b2m.save =L(24-11-18 15:41)--- 001-(   1)-079=Rep
+===>                                                                       ===>HALF
+****|*L*t**l*** TOP OF FILE *******Lig:OFF *****************************************
+0001|0015<B>▪</B>0025↵                                                              
+    |3333<B>1</B>3333↵                                                              
+    |0015<B>5</B>0025↵                                                              
+0002|a0d15<B>▪</B><B>▪</B>↵                                                         
+    |63633<B>0</B><B>1</B>↵                                                         
+    |10415<B>d</B><B>5</B>↵                                                         
+****|*L*t**l*** END OF FILE *******Lig:OFF *****************************************
+
+          <B>(4)</B> Text file output after b2m, with line feed code specified.
+
+             e x1ebc0d15 ; cv b2m ; s x1ebc0d15.b2m.save.mu <B>/mu</B> ; e x1ebc0d15.b2m.save.mu cplc <B>/mb</B>
+               When reading a file, the newline character is 0x15. When saving, /mu will replace 0x15 with 0x0a (Linux newline character).
+
+ASCII Off.\src\xe\htmlwk\x1ebc0d15.b2m.save.mu =b(24-11-18 16:43)- 0000(0000)006b
+===>                                                                       ===>HALF
+****|*b*t**l*** TOP OF FILE *******Lig:OFF *****************************************
+0000|0015<B>▪</B>0025<B>▪</B>a0d15<B>▪</B><B>▪</B>|                                 
+    |3333<B>0</B>3333<B>0</B>63633<B>0</B><B>0</B>|                                 
+    |0015<B>a</B>0025<B>a</B>10415<B>d</B><B>a</B>|                                 
+****|*b*t**l*** END OF FILE *******Lig:OFF *****************************************
+
+             e x1ebc0d15 ; cv b2m ; s x1ebc0d15.b2m.save.mu <B>/mu</B> ; e x1ebc0d15.b2m.save.mu cplc
+
+Vertical Hex display(YZ)\x1ebc0d15.b2m.save.mu =L(24-11-18 15:44) 001-(   1)-079=Ins||+v@@2R~
+===>                                                                       ===>HALF
+****|*L*t**l*** TOP OF FILE *******Lig:OFF *****************************************
+0001|0015↵                                                                          
+    |3333↵                                                                          
+    |0015↵                                                                          
+0002|0025↵                                                                          
+    |3333↵                                                                          
+    |0025↵                                                                          
+0003|a0d15↵                                                                         
+    |63633↵                                                                         
+    |10415↵                                                                         
+****|*L*t**l*** END OF FILE *******Lig:OFF *****************************************
+
+             e x1ebc0d15 ; cv b2m ; s x1ebc0d15.b2m.save.mp <B>/mp</B> ; e x1ebc0d15.b2m.save.mp cplc <B>/mb</B>
+               /mp outputs the Windows newline character 0x0d0a. EBC:0d15 becomes ASCII:0d0d0a.
+
+EDIT---|G:\src\xe\htmlwk\x1ebc0d15.b2m.save.mp =b(24-11-18 20:15) 0000(0000)006b=Rep
+===>                                                                       ===>HALF
+****|*b*t**l*** TOP OF FILE *******Lig:OFF *****************************************
+0000|0015<B>▪▪</B>0025<B>▪</B>a0d15<B>▪▪▪</B>|                                                                                        
+    |3333<B>00</B>3333<B>0</B>63633<B>000</B>|                                                                                        
+    |0015<B>da</B>0025<B>a</B>10415<B>dda</B>|                                                                                        
+****|*b*t**l*** END OF FILE *******Lig:OFF *****************************************
+
+             e x1ebc0d15 ; cv b2m ; s x1ebc0d15.b2m.save.mp <B>/mp</B> ; e x1ebc0d15.b2m.save.mp cplc
+
+ :Mixed EndOfLine ID,will be unified to PC form at save-18 20:22) 001-(   1)-108=Ins
+===>                                                                       ===>HALF
+****|*L*t**l*** TOP OF FILE *******Lig:OFF *****************************************
+0001|0015↵                                                                          
+    |3333↵                                                                          
+    |0015↵                                                                          
+0002|0025↵                                                                          
+    |3333↵                                                                          
+    |0025↵                                                                          
+0003|a0d15<B>▪</B>↵                                                                        
+    |63633<B>0</B>↵                                                                        
+    |10415<B>d</B>↵                                                                        
+****|*L*t**l*** END OF FILE *******Lig:OFF *****************************************
+
+          <B>(5)</B> Output after binary mode b2m with crlf. (Line feed code cannot be specified for binary files)
+
+             e x1ebc0d15 <B>/mb</B> ; cv b2m <B>crlf</B> ; s x1ebc0d15.mb.b2mcrlf.save ; e x1ebc0d15.mb.b2mcrlf.save cplc <B>/mb</B>
+
+ASCII Off.\src\xe\htmlwk\x1ebc0d15.mb.b2mcrlf.save =b(24-11-18 15:48) 0000(0000)006b=Ins
+===>                                                                      ===>HALF
+****|*b*t**l*** TOP OF FILE *******Lig:OFF ****************************************
+0000|0015<B>▪</B>0025<B>▪</B>a0d15<B>▪▪</B>|                                                            
+    |3333<B>0</B>3333<B>0</B>63633<B>00</B>|                                                            
+    |0015<B>a</B>0025<B>a</B>10415<B>da</B>|                                                            
+****|*b*t**l*** END OF FILE *******Lig:OFF ****************************************
+
+             e x1ebc0d15 <B>/mb</B> ; cv b2m <B>crlf</B> ; s x1ebc0d15.mb.b2mcrlf.save ; e x1ebc0d15.mb.b2mcrlf.save cplc
+
+ :Mixed EndOfLine ID,will be unified to PC form at save4-11-18 15:48) 001-(   1)-108=Ins
+===>                                                                      ===>HALF
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************
+0001|0015↵                                                                         
+    |3333↵                                                                         
+    |0015↵                                                                         
+0002|0025↵                                                                         
+    |3333↵                                                                         
+    |0025↵                                                                         
+0003|a0d15↵                                                                        
+    |63633↵                                                                        
+    |10415↵                                                                        
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************
+
+          <B>(6)</B> /Mz option (both 0x15 and 0x0d15 as line feed)
+
+             e x1ebc0d15 <B>/mze</B>
+
+EDIT---|G:\src\xe\htmlwk\x1ebc0d15 =E(24-11-18 10:59)----- 001-(   1)-072=Rep
+===>                                                                ===>HALF
+****|*E*eu*l*** TOP OF FILE ******* cp=CP930-Internal ***********************
+0001|0015↵
+    |ffff↵
+    |0015↵
+0002|0025▪a0d15↵
+    |ffff26f6ff↵
+    |0025520515↵
+****|*E*eu*l*** END OF FILE ******* cp=CP930-Internal ***********************
+
+             e x1ebc0d15 <B>/mze</B> ; s x1ebc0d15.me ; e x1ebc0d15.me <B>/mb</B> ; hex
+
+EDIT---|G:\src\xe\htmlwk\x1ebc0d15.me =e(24-11-20 13:11)-- 0000(0000)0047
+===>                                                                ===>HALF
+****|*e*t**l*** TOP OF FILE ******* cp=CP930-Internal ***********************
+0000|00150025▪a0d15<B></B>|
+    |ffff1ffff26f6ff<B>1</B>|
+    |001550025520515<B>5</B>|
+****|*e*t**l*** END OF FILE ******* cp=CP930-Internal ***********************
+
+</SPAN></PRE>
+</BODY>
+</HTML>

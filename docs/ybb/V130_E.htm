@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html;>
+<META http-equiv=" Content-Style-Type">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>V130-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:font 12pt;">
+
+130 :2024/06/30
+
+     1.BUGs
+       -(Linux) ./configure may fail by "/gth.h Not found".
+       -(Linux:gxe) When using Gtk3, the widget size is not fixed and changes at each start.
+       -(Linux:gxe) Pressing the print icon may result in a blank page being printed or a crash
+
+     2.Additional function.
+       -Improved display of UTF-8 files
+         .For ZWJ(u-200d), ZWNJ(u-200c), or other chars in category Cf(Format).
+       -Added 2 options to specify the display width of Unicode chars whose display width is ambiguous.
+         ./G{Y|N}{y|0|1|2}
+            :Specy cell width of unicode defined width is ambiguous.
+            Y:Fit to font width.
+              You can also specify the second option for chars in unfamiliar languages.
+              However, this option takes a cost, the start-up will be slightly slower.
+            N: Specify the display width uniformly using the second option.
+            The default value is /GY2.
+            Ex.) /GN2: All ambiguous chars are displayed in two cells.
+                 /GYy: All ambiguous chars are adjusted according to the font.
+                 /GY0: Unfamiliar languages are displayed as ':;' instead.
+         ./F{fontname[:charset] | @font_param_filename}
+            The font name required for /G option is---
+            when running on Windows Terminal, setting.json is checked,
+            when running on Linux, on gnome-terminal, konsole, etc.,
+            the profile of the Home dir is checked by xeGetFont.sh.
+            But if it fails, specify this option.
+            Use font_param_filename when specifying indirectly from a file, use font_param_filename.
+            See Microsoft's documentation for the appropriate charset for the font.
+            Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.
+                 /F"\uff2d\uff33 \u660e\u671d".
+       -XBC command supports ucs4<-->utf16 conversion.
+            Ex.) xbc 1f468/s    ==> x1f468/s:=d83ddc68
+            Ex.) xbc d83ddc68/s ==> xd83ddc68/s:=0001f468
+       -"-cont" option added to Find command.
+          When selecting lines in a large file by the Find command in the Exe cmd file,
+          from a performance consideration,
+          when NotFound occurred, the next Find will start not from the first line,
+          but from the last Found line.
+          It will be better on condition that files were sorted.
+       -Screen hard copy output.
+          Alt+z writes a screen hard copy to ::hcopy in append mode
+          Ctrl+h is also available for except Linux Console version.
+
+     3.Miscellaneous.
+       -(LNX) Gtk2 support has been discontinued, only Gtk3 is supported.
+       -(LNX) Install scripts to check font settings for the console version
+              into /usr/local/bin. Also install xprint.sh.
+
+     4.Tools
+       -xbc  v1.7
+          Added ucs4 <--> utf16 conversion.
+       -xcv  v1.23
+          Limits option /Yh (input in hexadecimal notation) to standard input including pipe.
+       -xprint.c 3.39
+          (LNX)The right edge of lines may exceed the right margin and text may be cut off.
+
+</SPAN></PRE>
+</BODY>
+</HTML>

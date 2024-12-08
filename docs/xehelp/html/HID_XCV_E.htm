@@ -13,26 +13,28 @@ a:hover{font-weight:bold;}-->
 <BODY bgcolor="#FFFFE2">
 <PRE>
 <SPAN STYLE="color:#000000;font-size:12pt;">
-** 2012/01/05 v1.16
+** 2024/11/23 v1.24
+<B><B>XCV</B></B>
 
-There are many options, most general usage is
+There are many options, but the general usage is
   xcv -cm2m -f:cpfrom -t:-cpto inputfile -ooutputfile
-&quot;m&quot; of m2f/f2m corresponds to current codepage, you can change it by -L option.
+In m2f/f2m, "m" corresponds to the current codepage, but you can specify a codepage other than the current one with -L.
 
 For EBCDIC file, use the following pattern
   xcv -cb2b -f:cpfrom -t:-cpto inputfile -mf:ebcmapfile
-&quot;m&quot; of &quot;m2b/b2m&quot; is current codepage only, specify codepage for &quot;b&quot; using ebcmap file or -CPEB: option.
+For b2m/m2b, "m" is the current local codepage and "b" is specified in ebcmapfile or with -CPEB:
   xcv -cb2m inputfile -cpeb:cp939
 Related option to EBCDIC translation are CRLF(-Masceol/-Mseteol), DBCS SOSI(-Sx), Fixed Record Length(-Fnn), etc.
 
-On Windows(No-EBCDIC-support) or to use EBCDIC codepage not supported by Linux iconv, install ICU.
-You can add your converter into ICU.
+On Windows(currentry No-EBCDIC-DBCS support) or to use EBCDIC codepage not supported by Linux iconv, install ICU.
+You can add your converter into ICU. ICU seems to be available on Windows 11.
+ICU also allows you to add your own conversion tables.
 When you placed your own converter to other than ICU install directory,
 you may have to set ICU_DATA environment-variable or ICU_DATA parameter of xe's EBCDIC cfg file.
 (On android, the directory ICU installed may be protected)
   xcv -cb2b -f:cpfrom -t:-cpto inputfile -icu
 ICU supports swaplfnm(s390 standard) on some EBCDIC converter.
- (std :ebc-x15--&gt;U0085, ebc-x25--&gt;U000a ==&gt; swap:ebc-x15--&gt;U000a, ebc-x25--&gt;U0085)
+ (std :ebc-x15-->U0085, ebc-x25-->U000a ==> swap:ebc-x15-->U000a, ebc-x25-->U0085)
   xcv -cb2m inputfile -cpeb:ibm37,swaplfnl -f80
 
 Use m2f/f2m/b2f/f2b for UTF-8 translation.
@@ -40,71 +42,77 @@ Use m2f/f2m/b2f/f2b for UTF-8 translation.
 u2f/f2u supports \uxxxx notation of unicode.
 Unicode related options are -Y4(ucs4) -Yb(BOM read/write) -yL/nL(Little/Big Endian)
 
-Other options are related to Japanese(Old/New JIS, IBM/NEC etc.)
+Other NEC/IBM, JIS83/JIS78... etc. are options for Japanese conversion such as B2S/S2B
 
 *********************************************************************
-**(Use &quot;-&quot; as alternative of &quot;/&quot; on Unix)
+**(Use "-" as alternative of "/" on Unix)
 *********************************************************************
 
-xcv:V1.16(W): Code conversion on SJIS,JIS,EUC,UCS,UTF-8,EBCDIC,
+xcv:V1.24(6): Code conversion on SJIS,JIS,EUC,UCS,UTF-8,EBCDIC,
               Any other iconv/WindowsCP/ICU.
 format:
  xcv  [/options] [ infile | - ] [outfile]
-  infile   :Source file name. if missing,assume pipe input. &quot;-&quot; is for stdin.
-            specify &quot;print&quot; to print dbcs mapping table for b2s/s2b.
+  infile   :Source file name. if missing,assume pipe input. "-" is for stdin.
+            specify "print" to print dbcs mapping table for b2s/s2b.
   outfile  :Output File Name, stdout if missing.
   /options :See bellow. CaseInsensitive.
     /2errf :stderr redirect file forr errmsg.
-    /[C]x2y:x2y is following.
-            e2s/s2e: EUC&lt;--&gt;SJIS.
-            j2s/s2j: JIS&lt;--&gt;SJIS.
-            j2e/e2j: JIS&lt;--&gt;EUC.
-            e2e,s2s: for hankaku-katakana--&gt;zenkaku-katakana conv on EUC,SJIS.
-            b2s/s2b: EBCDIC&lt;--&gt;SJIS.
-            b2e/e2b: EBCDIC&lt;--&gt;EUC-Japanese.
-            b2a/a2b: EBCDIC&lt;--&gt;ASCII.(Ignore SO/SI,No DBCS processing)
-            b2m/m2b: EBCDIC&lt;--&gt;LOCAL CodePage by external converter(ICU/iconv)
-            b2f/f2b: EBCDIC&lt;--&gt;UTF-8 by external converter(ICU/iconv)
-            k2L/L2k: EBCDIC re-conversion by CP1027(L) and CP290(k) vice versa.
-                     Use for EBCDIC--&gt;ASCII converted file.
-            s2u,u2s: SJIS&lt;--&gt;UCS2 (16bit Unicode).
-            s2f,f2s: SJIS&lt;--&gt;UTF-8 (8bit Unicode Translation Format).
-            e2f,f2e: EUC(Japanese)&lt;--&gt;UTF-8.
-            m2f,f2m: MB(LocaleCode)&lt;--&gt;UTF-8.
-            m2m/b2b: translation between &quot;/F:&quot; and  &quot;/T:&quot;
+    /[C]x2y:x2y is following. (Specify as first parameter.)
+            e2s/s2e: EUC<-->SJIS.
+            j2s/s2j: JIS<-->SJIS.
+            j2e/e2j: JIS<-->EUC.
+            e2e,s2s: for hankaku-katakana-->zenkaku-katakana conv on EUC,SJIS.
+            b2s/s2b: EBCDIC<-->SJIS.
+            b2e/e2b: EBCDIC<-->EUC-Japanese.
+            b2a/a2b: EBCDIC<-->ASCII.(Ignore SO/SI,No DBCS processing)
+            b2m/m2b: EBCDIC<-->LOCAL CodePage by external converter(ICU/iconv)
+            b2f/f2b: EBCDIC<-->UTF-8 by external converter(ICU/iconv)
+            k2L/L2k: hankaku-katakana(K)<-->alphabet Lower case(L).
+                     To converted ASCII file, retranslate by the other.
+            s2u,u2s: SJIS<-->UCS.
+            s2f,f2s: SJIS<-->UTF-8 (8bit Unicode Translation Format).
+            e2f,f2e: EUC(Japanese)<-->UTF-8.
+            m2f,f2m: MB(LocaleCode)<-->UTF-8.
+            m2m/b2b: translation between "/F:" and  "/T:"
                      select from Windows CP, iconv --list, uconv -l.
                      For Windows Codepage and ICU
-                     use &quot;/List&quot; to list candidate.
-            u2f,f2u: UCS2&lt;--&gt;UTF-8.
-    /CPEB:cp :EBCDIC codepage for B2M/M2B. Alternative of /MF:mapfile option.
+                     use "/List" to list candidate.
+            u2f,f2u: UCS<-->UTF-8.
+    /CPEB:cp :EBCDIC codepage for B2M/M2B.
     /Enn   :conv err max msg output count. default=10.
     /F:from:For m2m/b2b, codepage translated from.
 #ifdef W32
-            Default is &quot;0&quot;(CP_ACP). &quot;UTF8&quot; is alternative of 65001.
+            Default is "0"(CP_ACP). "UTF8" is alternative of 65001.
 #else
-&quot;           Determined using &quot;locale -a&quot; if not specified.
+            Determined using "locale -a" if not specified.
 #endif
     /F[nn][N]:EBCDIC file is fixed record length. nn:LRECL(default=80).
               Input(B2x) or Output(x2B) LRECL.
               N: last 8 byte is line-number-filed. adjust SO/SI insertion.
-                 &quot;N&quot; is effective for m2b only.
-    /ICU     :for B2x/x2B(x:B/M/F), use ICU when mf: omitted.
+                 "N" is effective for m2b only.
+    /ICU     :for B2x/x2B(x:B/M/F), specify use ICU when /MF: is omitted.
+              If /MF:mapfile option is not specified,
+              set PATH to uconv.exe or ICU library(.dll)
+    /ICU_DATA:For /List, directory containing icudt*.dat.
+              Alternative of /MF.
+              Windows default is c:\Windows\Globalization\ICU.
     /List  :list ICU converter(with /ICU option) or Windows Codepage.
 #ifdef LNX
     /Llocale:LocaleCode for m2f/f2m conversion.
-             Determined using &quot;locale -a&quot; if not specified.
+             Determined using "locale -a" if not specified.
              ex) -Leucjp , -Lsjis , -Liso88591
 #endif
     /Mxxx  :optional mapping type.
-            (specify multiple like as &quot;/mJIS78 /mNEC&quot; if required.)
+            (specify multiple like as "/mJIS78 /mNEC" if required.)
             CP943C / MS932 / SJIS(default). use with s2u,stf.
               Mapping selection for the code SJIS:Unicode=1:n.
             NEC / IBM(default). use with u2s,f2s,b2s.
               Mapping selection for the code SJIS:Unicode/EBCDIC=n:1.
               IBM:IBM Selected, NEC:NEC selected or NEC's IBM Selected.
             SBCS: use with B2x,x2B,no DBCS consideration.
-            ANK / CRLF. use with B2x,x2B.
+            ANK / CRLF / CRLFZ. use with B2x,x2B.
               ANK:translate ctl char to '?'. CRLF:translate CR,LF and ANK.
+              CRLFZ: Both NL(0x15) and CR+CR(0x0d15) are EndOfLine of EBCDIC.
 #ifdef UNX
             ASCEOL: EBCDIC file EOL-ID is 0x0a. Default:0x0x15.
 #else
@@ -113,19 +121,20 @@ format:
             SETEOL: append EOL-ID to each line. for m2m, x2B, RecordMode B2x.
             JIS78 / JIS83(default). use with B2x,x2B.
               JIS78(old) or JIS83(new) mapping seq.(28 pair,56 char affected)
-            CP290:use CP290 for alternative of CP1027 tbl. use with B2x,x2B.
-              CP290:Japanese Katakana Extension. CP1027:Latin Extension.
-              &quot;KANA-EXT&quot;:CP290, &quot;ENG-EXT&quot;:CP1027.
+            CP290/CP037:use CP290 or CP037 for alt of CP1027 tbl.(B2x,x2B).
+              CP290:Japanese Katakana Extension. CP1027:Japanese English Ext.
+              CP037:Latin and ISO8859-1.
+              "KANA-EXT":CP290, "ENG-EXT":CP1027.
     /MF:mapfile :mapping parameter file for B2M/M2B/B2B transplation.
                   (See CV command description in xee.txt)
                  /CPEB:cp is alternative of this option.
                  But, To use ICU, specify in this file or use /ICU.
-    /Ofnm  :same as outfile parm.
+    /Ofnm  :same as outfile parm. e.g) -oOutFile
     /Rx    :1 byte char to replace translation err code. ex, /r: /r'^'.
             Default is '?'. Use only with u2s,f2s,B2x,x2B and m2m.
             2 byte hex digit notation is available. ex, /r7f.
-            for DBCS,specify 2 byte char or 4 hex digit.default is DBCS &quot;?&quot;.
-            specify both if required like as &quot;/r. /r8148&quot;.
+            for DBCS,specify 2 byte char or 4 hex digit.default is DBCS "?".
+            specify both if required like as "/r. /r8148".
     /Sx    :SO(0e)/SI(0f) handling option for B2x/x2B.
             for B2x; x=d:Delete. x=a:Assume SO before the line.
                         x=r:Replace SO/SI by space.
@@ -136,49 +145,46 @@ format:
                         This option override option of mapping file for m2B.
     /T:to  :For m2m/b2b, codepage translated to.
 #ifdef W32
-            Default is &quot;0&quot;(CP_ACP). &quot;UTF8&quot; is alternative of 65001.
+            Default is "0"(CP_ACP). "UTF8" is alternative of 65001.
 #else
-&quot;           Determined using &quot;locale -a&quot; if not specified.
+            Determined using "locale -a" if not specified.
 #endif
     /\u    :DBCS unicode by \uxxxx format.
     /Yx,/Nx:toggle type switch; x is as following.default is in ( ).
+            4  :4 byte unicode(==>0x10ffff).(/N4)
             b  :UTF-8 BOM check(input) or write(output).(/Nb)
+            h  :input by hex code. (/Yh for stdin else /Nh)
+            i  :Use ICU for M2M(/Ni)
 #ifdef UNX
             L  :Unicode File is Little Endian(/NL)
 #else
             L  :Unicode File is Little Endian(/YL)
 #endif
             m  :Mac file input(EndOfLine ID is 0x0d).(for not UCS conv).(/Nm)
+            q  :just exit for input from stdin.(/Nq)
+            x  :output by hex notation. X:uppercase output. (/Nx)
             z  :conv hankaku-katakana to zenkaku among EUC,JIS and SJIS.(/Nz)
- ex) xcv /cs2u sjis1 | xcv /u2s &gt;sjis2; xcv /j2s -; xcv /cu2f /YLb ucsbe1 /of1
-     xcv /ce2s /yz euc1 sjis3; xcv /u2s /r&quot;/&quot; /mNEC ucsdata sjis1
+ ex) xcv /cs2u sjis1 | xcv /u2s >sjis2; xcv /j2s -; xcv /cu2f /YLb ucsbe1 /of1
+     xcv /ce2s /yz euc1 sjis3; xcv /u2s /r"/" /mNEC ucsdata sjis1
      xcv /cm2b ms932 ibm939.txt  /mf:sjisebc.map /F80 /Mseteol /Masceol
-         (locale--&gt;ebcdic, output LRECL=80, set ASCII-EOL-ID)
+         (locale-->ebcdic, output LRECL=80, set ASCII-EOL-ID)
      xcv /cm2b ms932 ibm939.txt /mf:sjisebc.map  /Masceol /Mseteol
-         (locale--&gt;ebcdic, output line with appened ASCII-EOL)
+         (locale-->ebcdic, output line with appened ASCII-EOL)
      xcv /cb2m ebcf1 ascf2 /mf:sjisebc.map /F80 /Mseteol
-         (locale&lt;--ebcdic, input LRECL=80, output line with appened ASCII-EOL)
+         (locale<--ebcdic, input LRECL=80, output line with appened ASCII-EOL)
      xcv /cb2m ebcf1 ascf2 /mf:sjisebc.map /Masceol
-         (locale&lt;--ebcdic, input line with ASCII-EOL-ID
+         (locale<--ebcdic, input line with ASCII-EOL-ID
 #ifdef W32
-     xcv /cb2m ebcf1 ascf2 /CPEB:37
+     xcv /cb2m ebcf1 ascf2 /mf:mapcv1 /CPEB:37
      xcv /cm2m latin1 latin15 /Mseteol /f:28591 /t:28605
 #else
-     xcv -cb2m ebcf1 ascf2 -CPEB:cp037
+     xcv -cb2m ebcf1 ascf2 -mf:mapcv1 /CPEB:37
      xcv -cm2m latin1 latin15 -Mseteol -f:ISO-8859-1 -t:ISO-8859-15
 #endif
      xcv /cm2m latin1 latin15 /Mseteol /f:28591 /t:28605
      xcv /cb2b ebc1   ebc2 /Mf:ebc.map /Mseteol /f:cp930 /t:cp939
-     xcv /cf2b utf1 -oebc1 /Mf:xeebc.map /cpeb:cp932
-     xcv -cf2b utf1 -oebc1 -ICU -cpeb:ibm-37,swaplfnl
-
-
-
-
-
-
-
-
+     xcv /cf2b utf1 -oebc1 /Mf:xeebc.map /cpeb:cp939
+     xcv /cf2b utf1 -oebc1 /ICU /cpeb:ibm-37,swaplfnl /mf:cfgmap.cv1
 
 </SPAN></PRE>
 </BODY>

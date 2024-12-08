@@ -12,11 +12,12 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
+**2024/11/30
 <SPAN STYLE="color:#000000;font-size:12pt;">    = File edit
 
         {EDIt | ET | EB | EH | EN | EC(=EL) | ECN(=Ei) | EK | EKN(=EJ) | E8}
             file-name [/P[0|1]] [CAP|NOCAP] [TC|NOTC] [NB] [NONUM] [F{n[-m]|vfmt}]
-            [CPU8|CPLC|CPAS|CPEB] [IE] [FNU8|FNLC|FNAS]
+            [CPU8|CPLC|CPAS|CPEB[:converter]] [IE] [FNU8|FNLC|FNAS]
             [/L] [/Ln] [[/O][n[t]]-[m[t]]]
             [/M[r[w]][B|C|H|K][n][o|L][X][width[S]][d]]
 
@@ -82,7 +83,12 @@ a:hover{font-weight:bold;}-->
             CPU8: Open as <A href="HID_UTF8_E.htm">UTF8 file</A>.
             CPLC: Open as locale code file.
             CPAS: by the LANG environment. Default.
-            CPEB: Open as <A href="HID_EBCF_E.htm">EBCDIC file</A>.
+            CPEB[:converter]: Open as <A href="HID_EBCF_E.htm">EBCDIC file</A>.
+                  converter:EBCDIC codepage such as CP930.
+                  You can use ICU/iconv converter by EBCDIC cfg file prepared.
+                  If you do not use the EBCDIC cfg file, you can specify CP037, CP939, or CP930.
+                  If you do not specify this converter option, the converter in the cfg file is used.
+                  If no cfg file is prepared, the default is CP930 in Japanese environments, and CP037 otherwise.
 
               CPxx option is save to profile.
               No need to specify for the 2nd open.
@@ -129,6 +135,9 @@ a:hover{font-weight:bold;}-->
                             but it is new EOL-ID at next open after saved.
                      (Note) &quot;ET&quot; cmd check 0x15 as EOL character for EBCDIC file.
                             On the other hands, /Mt recognize 0x0a and 0x0d0a as EOL character.
+                            If you cannot open the file due to a header error
+                            because the file is recorded as variable length mode in the profile, open it with /Mt.
+
               M:Mac  mode  :0x0d   is line delimitter.
               E:EBCDIC mode:0x15   is line delimiter.
               R:<A href="HID_RECORD_E.htm">Fixed Length Record mode</A>

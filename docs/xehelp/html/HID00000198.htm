@@ -12,8 +12,9 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
+**2024/11/30
 <SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> ************************************************************************
-(7)コマンドライン パラメータ
+(7)<B>コマンドライン パラメータ</B>
 ************************************************************************
 
 #ifdef UNX
@@ -36,13 +37,17 @@ a:hover{font-weight:bold;}-->
     -e           :編集モードでファイルを開く(省略値)
                   ファイル名が &quot;0&quot;,&quot;1&quot;,&quot;2&quot;や&quot;6&quot;などメニューオプションと
                   同じ場合に使用するとよい.
-                  ファイル名が &quot;=&quot; で始まる時もどちらか指定する。
-    -fx[t][:hosts]:x=0:FTP 不使用, x=1:FTP 使用(log無し)
-                   x=w:ftplog 出力, x=a:追加モード ftplog
-                  :t:一時ファイルを削除しないDebug用オプション
-                  :hosts: xe 用のホストファイル名。
-            省略値は /f1:xehosts(xehostsはワークディレクトリー)
-
+                  ファイル名が "=" で始まる時も必要
+    -EBC[=]{KANA_EXT|ENG_EXT|DefaultMap|DefaultMapEuro|cfg=filepath} : 変換表あるいは cfg ファイルの指定
+                  KANA_EXT(=CP930=CP290+CP300)  : 日本語拡張,カタカナ
+                  ENG_EXT(=CP939=CP1027+CP300)  : 日本語拡張,英数小文字
+                  DefaultMap(=CP037)            : 全Latin-1, 漢字なし
+                  DefaultMapEuro(=CP037+Euro)
+                  cfg=filepath : <A href="HID00000197.htm">iniファイル</A>の<A href="HID_EBC_J.htm">EBCDIC_cfg</A>の一時的変更
+    -FTPx[:hosts]:FTP option: x=0:FTP 不使用, x=1:FTP 使用(log無し),
+                              x=w:ftplog 出力, x=a:追加モードftplog
+                  hosts: xe 用のホストファイル名。
+                  省略値は -FTP1。(hosts="::xehosts", log="::xeftplog")。
     -F{fontname[:charset] | @font_param_filename}
                   :/G オプションで使用されるフォントの名前
                    xeはWindowsの場合WindowsTerminal 上で実行するときsetting.jsonを
@@ -63,6 +68,11 @@ a:hover{font-weight:bold;}-->
                        /GYy: 全ての曖昧文字をフォントに従い調整する
                        /GY0: 馴染みの少ない言語は':;' で代替表示
     -h,-?        :ヘルプ
+    -HDdirname   :dirname:ヘルプ用 html ファイルのディレクトリー
+    -Hnn         :画面高(行数)
+                  Windows2000ではDOS窓のプロンプトの現在の画面の高さで
+                  内部画面行数が決まる。BufferSizeまでは広げられるので
+                  そうしたいときに使用する。
     -i[fname]    :使用する <a href="HID00000197.htm">iniファイル</a>名.
                   使用しない時は単に -I とする,このとき内部定義の
                   省略値が使用されます.
@@ -132,11 +142,17 @@ a:hover{font-weight:bold;}-->
     /E           :編集モードでファイルを開く(省略値)
                   ファイル名が &quot;0&quot;,&quot;1&quot;,&quot;2&quot;や&quot;6&quot;などメニューオプションと
                   同じ場合に使用するとよい.
-    /Fx[t][:hosts]:x=0:FTP 不使用, x=1:FTP 使用(log無し)
-                   x=w:ftplog 出力, x=a:追加モード ftplog
-                  :t:一時ファイルを削除しないDebug用オプション
-                  :hosts: xe 用のホストファイル名。
-            省略値は /F1:xehosts(xehostsはワークディレクトリー)
+                  ファイル名が "=" で始まる時も必要
+    /EBC[=]{KANA_EXT|ENG_EXT|DefaultMap|DefaultMapEuro|cfg=filepath} : 変換表あるいは cfg ファイルの指定
+                  KANA_EXT(=CP930=CP290+CP300)  : 日本語拡張,カタカナ
+                  ENG_EXT(=CP939=CP1027+CP300)  : 日本語拡張,英数小文字
+                  DefaultMap(=CP037)            : 全Latin-1, 漢字なし
+                  DefaultMapEuro(=CP037+Euro)
+                  cfg=filepath : <A href="HID00000197.htm">iniファイル</A>の<A href="HID_EBC_J.htm">EBCDIC_cfg</A>の一時的変更
+    /FTPx[:hosts]:FTP option: x=0:FTP 不使用, x=1:FTP 使用(log無し),
+                              x=w:ftplog 出力, x=a:追加モードftplog
+                  hosts: xe 用のホストファイル名。
+                  省略値は /FTP1。(hosts="::xehosts", log="::xeftplog")。
     /F{fontname[:charset] | @font_param_filename}
                   :/G オプションで使用されるフォントの名前
                    xeはWindowsの場合WindowsTerminal 上で実行するときsetting.jsonを
@@ -157,6 +173,7 @@ a:hover{font-weight:bold;}-->
                        /GYy: 全ての曖昧文字をフォントに従い調整する
                        /GY0: 馴染みの少ない言語は':;' で代替表示
     /H,/?        :ヘルプ
+    /HDdirname   :dirname:ヘルプ用 html ファイルのディレクトリー
     /Hnn         :<a href="HID00000456.htm">画面高(行数)</a>                  Windows2000ではDOS窓のプロンプトの現在の画面の高さで
                   内部画面行数が決まる。BufferSizeまでは広げられるので
                   そうしたいときに使用する。

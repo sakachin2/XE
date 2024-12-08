@@ -4,143 +4,59 @@
 <META http-equiv="Content-Type" content="text/html; charset=utf-8">
 <META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
 <META http-equiv="Content-Style-Type" content="text/css">
-<TITLE>EBCDIC file-J</TITLE>
+<TITLE>EBCDIC ファイル support-J</TITLE>
 <STYLE TYPE="text/css">
-<!--
-a:hover{font-weight:bold;}-->
 </STYLE>
 </HEAD>
 <BODY bgcolor="#FFFFE2">
-<PRE>2010/07/25<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+<PRE>2024/11/25
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
 
-#if defined(W32) || defined(LNX)
+   .<B><B>EBCDICファイルサポート</B></B>
 
-   .EBCDICファイルサポート。
-
-     (CV コマンド、、<A href="HID_XCV_J.htm">XCV</A> ユーティリティー、cfg ファイルの設定については次の<A href="HID_EBC_J.htm">EBCDIC変換</A>も見て下さい)
-
-     -ロケールコードに変換せずに直接編集、HEX表示はEBCDICコードを表示します。
-      メインフレームのEBCDICファイルを無変換でダウンロードしたファイルを編集したり
-      無変換オプションでEBCDICファイルをNFSマウントして編集する場合を想定しています
-      sshfs(Windowsには Dokan sshfs があります) で Linux/390 にアクセスする場合にも使用できます
-      画面にはユニコードで出力するのでローカルのコードページにない文字も表示可能です。
-      EBCDICコンバータは省略値が日本語環境はCP930,日本語環境以外ではCP037です。
-      これはローカルの環境のことですのでリモートの環境がローカルと異なる場合は
-      cfg ファイルで コンバータを指定してください。
-      wxeで文字化けする場合SetupダイアログでcharsetもDefault以外を試して見て下さい。
-
-     -<A href="HID00000079.htm">EDIt</A>/<A href="HID00000113.htm">SAVe</A>/<A href="HID00000070.htm">REPlace/CREate/APPend/CUT</A>/<A href="HID00000080.htm">END</A>/<A href="HID00000069.htm">COPy</A>/<A href="HID00000098.htm">MOVe</A>/<A href="HID00000069.htm">PASte</A> コマンドで CPEB オプションを指定
-      不正なEBCDIC文字があるときこれを無視して開く時は IE オプションを指定する。
-      ヘッダー行には &quot;=E&quot; , バイナリーモードの場合は &quot;=e&quot; で表示されます
-      (ある程度の印刷不能文字があるとバイナリーモードとみなしますが、バイナリーモードとなると
-      DBCSが表示されません、/Mt オプションを付けて強制的にテキストモードで開けばDBCSが表示されます)   
-      改行コードは /Mp(0x0d0a) /Mu(0x0a) を指定しない場合 0x15 です
-        例。 &quot;e file1 cpeb&quot;
-
-      cfg無しの場合あるいはcfg以外のコードページを使用する場合は CPEB:codepage の形式を使用します
-        例。 &quot;e file1 cpeb:IBM1047&quot;
-      cfg に戻す時には &quot;CPEB=&quot; のように空白のコードページを指定する
-      セッションにつき最大７種類のコードページが使用できます。
-      xe は 別名を認識できないので同じコードページには決まった名前を使用してください。
-
-      COPy/MOVe/PASte コマンドは指定のコードページからコピー先のコードページに変換され、
-      SAVe/REPlace/CREate/APPend/CUT/ENDでは指定のコードページに変換して出力されます。
-        例。 &quot;rep file2 cpeb nx ie&quot;
-      出力時のオプションはプロファイルに記録されるので1度指定すればセッションを跨って有効です。
-      またCOPy/MOVe/PASte コマンドはプロファイルの記録をチェックするので通常はCPxxの指定は不要でしょう。
-      但しセッション間で　cfg　の　CONVERTER　パラメータを ICU から ICU 以外に変更、
-      またはその逆の変更をするとネイミングが異なるため、コードページが見つからない結果になる可能性がある。
-      そのため Cut&amp;Paste の Paste の時 &quot;無効なコードページ&quot; のエラーが出ることもあります。
-      その場合はcfgに従って変換される。
-      セッション間で CONVERTER パラメータを変更した場合は改めて CPEB=xxxを指定してください。
-
-      COPy/MOVe/PASte コマンドでプロファイルの記録に従った変換をしたくない場合は
-      &quot;B&quot;(Binaryモード)サフィックスを指定してください
-      Binaryモードは複写先:UTF8ファイルはサポートされません。
-      &quot;B&quot;サフィックスの指定は下記、コピー行コマンドの場合と同じです。
+     -<B><A href="HID00000079.htm">EDIt</A></B>/<B><A href="HID00000062.htm">BROwse</A></B>/<B><A href="HID00000113.htm">SAVe</A></B>/<B><A href="HID00000107.htm">REPlace</A></B>/<B><A href="HID00000070.htm">CREate</A></B>/<B><A href="HID00000059.htm">APPend</A></B>/<B><A href="HID00000070.htm">CUT</A></B>/<B><A href="HID00000080.htm">END</A></B>/<B><A href="HID00000069.htm">COPy</A></B>/<B><A href="HID00000098.htm">MOVe</A></B>/<B><A href="HID00000069.htm">PASte</A></B> コマンドで CPEB オプションを使用します
+        (例) "e file1 cpeb:IBM1047"
+      cpeb オプションのコードページはプロファイルに記憶されるので指定は最初だけでよい。
+      プロファイルの記録をリセットするには "CPEB=" のように空白を指定します。
 
       デレクトリーリストを開く時のCPEBオプションはフォルダー内のファイルの省略値となります。
       他のオプション(CPLC/CPU8/CPAS)で開くとプロファイルは上書きされます。
-      尚、コードページは &quot;TOP OF LINE&quot; と &quot;END OF LINE&quot; 行に表示されます。
 
-      出力コマンドで変換エラーがあるときも最後まで出力されますがプロファイルは更新されません。
-      変換エラー文字は代替文字に置換されます。
-      代替文字はコードページ依存ですが cfg ファイルで設定できます(外部コンバーター使用の場合)。
-      DBCSの代替文字は定義されてない場合 u-fffd,u-ff1f(DBCS &quot;?&quot;),u-3000(DBCS space)の順に
-      変換可能なものを採用します。
+      同梱の <B><A href="HID_XCV_J.htm">XCV</A></B> ユーティリティーは Linuxの iconv 様のツールで EBCDIC<-->ユニコード<-->ロケールコードのコード変換を行います
+      設定ファイル（cfgファイル、省略値は::xeebc.map)については次の<B><A href="HID_EBC_J.htm">EBCDIC変換設定ファイル</A></B>を見て下さい
+      cfgで"Converter 1"(ICU) または "Converter 2"(WindowsのCodePage、Linuxではiconv) を指定すれば
+      複数のコンバータが利用できます。
 
-     -行コマンド &quot;C&quot;/&quot;M&quot; でも コピー元とコピー先のコードページが異なれば変換されます。
-      変換したくない場合は &quot;B&quot;(Binaryモード)サフィックスを指定してください
-      Binaryモードは複写元、先とも UTF8ファイルはサポートされません。
-      ロケールファイル--&gt;EBCDICファイルのとき TAB(0x09)拡張によるスペースは削除されます。
-        {A|B}[B][C][n][,b][.s]
-          A : After, B: Before, B : Binary Mode, C : Copy with CID
-          n : repeat, b : bandle, s : skip
-        例)　c3
-             :       Copy 3 lines After by Binary mode
-             ab
+     -EDIt/BROwseではロケールコードに変換せずに直接 表示/編集します。
+      画面にはユニコードで表示、HEX表示ではEBCDICコードそのものを表示します。
+      改行コードは /Mp(0x0d0a) /Mu(0x0a) を指定しない場合 0x15 です
+      メインフレームのEBCDICファイルを無変換でダウンロードしたファイルを編集したり
+      無変換オプションでEBCDICファイルをNFSマウントして編集/表示する場合を想定しています
+      sshfs で Linux on IBM Z にアクセスできる場合にも使用できます
+      ヘッダー行には "=E" , バイナリーモードの場合は "=e" が表示されます
+      バイナリーモードで開くと(EB コマンド) DBCSは考慮されません
+      制御文字が多すぎてバイナリーモードと判定された場合は ET コマンドないしは /Mt オプション付きで開いてください。
 
-     -行コマンド &quot;=&quot; でも コピー元とコピー先のコードページが異なれば変換されます。
-      (UTF8、ロケールコードファイルとの比較ではEBCDIC--&gt;UTF8,ロケール変換後に比較されます)
-      Binaryモードで比較したい場合は &quot;B&quot;(Binaryモード)サフィックスを指定してください
-      Binaryモードは UTF8ファイルではサポートされません。
-      ロケールファイル--&gt;EBCDICファイルのとき TAB(0x09)拡張によるスペースは無視されます。
-        =[B][n][,b][.s]
-        ==[B]
-      (どこか一箇所に&quot;B&quot;をつけてください。)
-
-     -CV コマンドは CPLC(Locale コード)ファイルに対して B2M/M2B を使用できます。
-      変換オプションは前記のcfgファイルを共用します。 -MFcfgfile  オプションは廃止です。
-
-      B2M/M2B で CPEB:ebcidc-codepage パラメータを指定することで mapping cfg 以外の
-      EBCDIC コードページで変換できます。
-      EBCDIC ファイルを開いて B2M する場合は CPEB を省略するとそのファイルのコードページが使用されます。
-        例) cv m2b cpeb:37
-      EBCDICファイルのコードページを変更する場合は B2B オプションを使用してください
-        例) cv b2b cpeb:1026
-      但し、ファイルのコードページ属性は変更してないので画面表示は元のコードぺーじで表示される。
-      新しいコードページに移行するには SETCP オプションを指定してください。
-        例) cv b2b cpeb:1026 SETCP
-
-     -EBC コマンド。
-
-      EBC コマンドでもコードページを変更できます。
-        例) EBC SETCP=CP935
-      EBC コマンドでは元のデータは変更されません。指定のコードページに従って表示されます。
-      従って他に変更がなければ保存操作でファイルは書き直されません。
-      UNDo機能で、EBC/CV コマンドの SETCP オプションで設定したコードページは戻されます。
-      SETCP オプションで設定したコードページはファイルを保存するとプロファイルに記録されます。
-      &quot;EBC SETCP=&quot; で省略値のコードページに戻ります。
-
-     -xcv ユーティリティー
-
-        B2M/M2B で &quot;m&quot;は現在のローカルコードページで&quot;b&quot;はebcmapfileで指定するか-CPEB:で指定します
-          例) xcv -cb2b -f:37 -t:1026 ebcfile1 -oebcfile2
-        EBCDICのコードページを変更する場合は B2B を使用してください。
-          例) xcv -cb2b -f:37 -t:1026 ebcfile1 ebcfile2
-        ICU コンバータを使用する場合は -mf: で指定のcfg ファイルで CONVERTER=1 を指定してするか
-        -ICU オプションを指定してください
-          例) xcv -cb2b -f:IBM037 -t:IBM1047 -mf:xeebc.map ebcfile1 ebcfile2
-              xcv -cb2b -f:IBM037 -t:IBM1047 -ICU          ebcfile1 ebcfile2
+     -wxeで文字化けする場合SetupダイアログでcharsetもDefault以外を試して見て下さい。
 
      -改行文字。
-        cfgファイルの改行コードの変換指定はREPlaceコマンドなどで変換出力
-        するときに適用されますが、編集表示ではファイルは0x15 を 行末文字として行分割されます。
-        行末文字と<A href="HID_RECORD_J.htm">レコードモード</A>のLRECL指定を以下のコマンドでサポート。
-        LRECLの変更も可能。
+      PC ファイルは 0x0a ないし 0x0d0a ですが EBCDIC の改行コードは 0x15 です
+      行末文字とレコードモードのLRECL指定を以下のコマンドでサポート。
+      但しSAVeはファイル名指定のときのみ指定可能
           EDIt/BROwse, END, CREate/REPlace, SAVe, COPy/MOVe。
-        但しSAVeはファイル名指定のときのみ指定可能
-        COPy/MOVe コマンドの Fxx は コピー元のLRECLの指定になります。
-        尚 レコードモードのON/OFF, LRECL はプロファイルに保存しますが
-        行末文字の指定は省略値以外は毎回指定が必要です。
+      "CV b2m" した後 END/SAVe 等でファイル出力するときは /Mu 等で 改行文字を変更してください
+      単に END/SAVe すると EBDCIC 改行文字 x15 がそのまま出力されます
+
+      COPy/MOVe コマンドの Fxx は コピー元のLRECLの指定になります。
+      尚 レコードモードのON/OFF, LRECL はプロファイルに保存しますが
+      行末文字の指定は省略値以外は毎回指定が必要です。
 
             /M{t|p|u|m|e|r} /Fnn[-mm]
               e:EBCDIC-NL(0x15), r;RecordMode, nn:LRECL
-        例。
+        (例)
             e ebcf1 CPEB                        : EBCDIC ファイルテキストモード(行末文字=0x15)
             e ebcf1 CPEB  /mp                   : EBCDIC ファイルテキストモード(行末文字=0x0d0a)
             e ebcf1 CPEB  /mr /F72              : EBCDIC ファイル固定長レコードモード(LRECL=72)
-                                                  LRECLの省略地は80.
             end /mu                             : 行末文字を 0x0a に変更。
             end /mr /f80                        : LRECL=80の固定長ファイル(行末文字無し)として保存。
             s ebcf1 CPEB /mr /F80               : (PC ファイルから) EBCDIC ファイルに変換。
@@ -148,105 +64,183 @@ a:hover{font-weight:bold;}-->
             rep u8f1 nx CPU8 /mp                : (固定長EBCDICファイルから) UTF8 ファイルに変換。
                                                   各行に行末文字0x0d0a追加されます。
 
+
+      EBCDIC の改行コードは 0x15 ですがコンバーターのマッピングでは
+      EBC-NL(0x15)<-->ASCII-0x85, EBC-LF(0x25)<-->ASCII-LF(0x0a) となっていることがあります。
+      テキスト表示のときは 0x15 で行分割され 0x15 は表示されません。
+      (加えて 0x0d15 をも改行としたい場合は /Mz オプションを指定してください)
+      テキスト表示のときは 改行文字は表示されないので CV コマンドの変換対象文字になりませんが、
+      バイナリーモードで開き "CV b2m" すると 0x15->0x85 と変換されます(0x0d は そのまま)。
+      そして、もし 0x85 が ロケールコードとして印刷不能の場合 '?' に変換されます。
+      外部コンバータ使用ではない("CONVERTER 0")場合は 0x15-->0x0a とする2種類の修正オプションが使えます
+          cv b2m crlf / cv m2b crlf
+      あるいは cfg ファイルで次の指定をする
+          MAP_E2A  0x15: 0x0a   # EBCDIC 0x15(NL) -> ASCII 0a(LF)
+      M2B 変換の場合もテキストモードで開いた場合は 0x0d0a/0x0a は変換対象ではならずに
+      出力オプション /Mpe の "e" で 0x15が出力されますがバイナリモードの場合は
+      CRLF オプション、MAP_E2Aが有効で、0x0a-->0x15 とすることができますが
+      0x0d0a は 0x0d15 となります
+      xcv コマンドの -m2b では -Mseteol を指定することで 0d0a/0a->0x15 変換します
+      Mseteol がないと 0d0a/0a は無視され 0x15 は出力されません
+      B2M で 0x0d15 と 0x15 両方を改行文字とする場合は crlfz オプションを指定してください
+
+       <B><A href="HID_EBCF_J.Sample.CRLF.htm">(例) 改行文字</A></B>
+
+     -設定ファイルを使用しない場合、内部変換テーブルで以下の内、
+      一種類のみをサポートし、B2B 変換はできません
+      コマンドラインパラメータで指定します
+      cfg ファイルで "CONVERTER 0" を指定した場合、SJIS_OPT でも同じ設定ができます
+
+        xe /EBC[=]{KANA_EXT | ENG_EXT | DefaultMap | DefaultMapEuro | cfg=filepath}
+                KANA_EXT(=CP930=CP290+CP300)  : 日本語拡張,カタカナ
+                ENG_EXT(=CP939=CP1027+CP300)  : 日本語拡張,英数小文字
+                DefaultMap(=CP037)            : 全Latin-1, 漢字なし
+                DefaultMapEuro(=CP037+Euro)   : ebc-9f:u-20ac
+                cfg=filepath : 省略値はiniファイルで指定します
+
+      省略値は以下のようになります。
+          (Windows)
+            日本語環境のとき コードページはCP930、JIS83 で画面表示されます。
+            日本語環境以外の コードページはCP037、DBCS(SO/SI)は考慮されません
+          (Linux)
+            日本語環境のとき コードページはEUC-JP(=CP930)、JIS83 で画面表示されます。
+            日本語環境以外の コードページはCP037、DBCS(SO/SI)は考慮されません
+
+       <B><A href="HID_EBCF_J.Sample.Internal.htm">内部変換テーブルの例</A></B>
+
+     -COPy/MOVe/PASte コマンドは指定のコードページからコピー先のコードページに変換します、
+      変換をしたくない場合は行コマンドの "B"(Binaryモード)サフィックスを指定してください
+      (以下の行コマンドの項を参照)
+
+       <B><A href="HID_EBCF_J.Sample.Copy.htm">Copy/Move/Paste の例</A></B>
+
+     -SAVe/REPlace/CREate/APPend/CUT/ENDでは指定のコードページに変換して出力されます。
+      END コマンドは変更がないときはファイル出力しないのでCPEB指定は無意味です
+      またファイル名指定の COPy/MOVe/PASte コマンドをはそのファイルのプロファイルの記録を利用します。
+      記録があればCPxxの指定は不要です。
+      但しセッション間で cfg の CONVERTER パラメータを ICU から ICU 以外に変更、
+      またはその逆の変更をするとネイミングが異なるため、コードページが見つからない結果になる可能性がある。
+      "無効なコードページ" のエラーが出る場合は "CPEB=" (null 指定) でそのファイルを開いて一旦コードページをリセットしてください
+
+      出力コマンドで変換エラーがあっても最後まで出力されますがプロファイルは更新されません。
+      変換エラー文字は代替文字に置換されます。
+      代替文字はコードページ依存です
+      DBCSの代替文字が定義されてない場合 u-fffd,u-ff1f(DBCS "?"),u-3000(DBCS space)の順に
+      変換可能なものを採用します。
+
+       <B><A href="HID_EBCF_J.Sample.Save.htm">Save/Replace/Cretae/Append/Cut/End の例</A></B>
+
+     -行コマンド "C"/"M" でも コピー元とコピー先のコードページが異なれば変換されます。
+      変換したくない場合は "B"(Binaryモード)サフィックスを指定してください
+      Binaryモードは複写元、先とも UTF8ファイルはサポートされません。
+      ロケールファイル-->EBCDICファイルのとき TAB(0x09)拡張によるスペースは削除されます。
+        行コマンド：宛先行の形式
+          {A|B}[B][C][n][,b][.s]
+            A : After, B: Before, B : Binary Mode, C : Copy with CID
+            n : repeat, b : bandle, s : skip
+
+      行コマンド "=" でも コピー元とコピー先のコードページが異なれば変換されます。
+      (UTF8、ロケールコードファイルとの比較ではEBCDIC-->UTF8,ロケール変換後に比較されます)
+      Binaryモードで比較したい場合は "B"(Binaryモード)サフィックスを指定してください
+
+        =[B][n][,b][.s]
+        ==[B]
+
+        <B><A href="HID_EBCF_J.Sample.Lcmd.htm">行コマンドの例</A></B>
+
+     -<B><A href="HID00000072.htm">CV</A></B> コマンドは CPLC(Locale コード)ファイルに対して B2M/M2B を使用できます。
+      cfgファイルでは "CONVERTER 0" のとき JIS83 などの日本語の変換オプションを指定できます
+      ICU/iconv 使用の場合は B2M/M2B で CPEB:ebcidc-codepage パラメータの指定により、
+      多種のEBCDIC コードページを利用できます。
+      EBCDIC ファイルを開いて B2M する場合は CPEB を省略するとそのファイルのコードページが使用されます。
+      EBCDICファイルのコードページを変更する場合は B2B オプションを使用してください
+      但し、ファイルのコードページ属性は変更してないので画面表示は元のコードぺーじで表示される。
+      新しいコードページに移行するには SETCP オプションを指定してください。
+
+        <B><A href="HID_EBCF_J.Sample.CVcmd.htm">CV コマンドの例</A></B>
+
+     -EBC コマンド。
+
+      "EBC" で現在の cfg ファイルの設定を確認できます
+      又、"EBC SETCP" でコードページを変更もきます。
+      SETCPでは元のデータは変更されません。指定のコードページに従って表示されます。
+      従って他に変更がなければ保存操作でファイルは書き直されません。
+      UNDo機能で、EBC/CV コマンドの SETCP オプションで設定したコードページは戻されます。
+      SETCP オプションで設定したコードページはファイルを保存するとプロファイルに記録されます。
+      "EBC SETCP=" で省略値のコードページに戻ります。
+
+        <B><A href="HID_EBCF_J.Sample.EBCcmd.htm">EBC コマンドの例</A></B>
+
+     -xcv ユーティリティー
+
+        xcv は コマンドプロンプト/Terminal エミュレーターで動作する xe パーッケージ同梱のコマンドラインツールです。
+        B2M/M2B で "M"は現在のローカルコードページ、"B"は /MF:mapfile で指定するか /CPEB:cp で指定します
+        EBCDICのコードページを変更する場合は B2B を使用してください。
+        /Mseteolオプションで PC<-->EBCDIC変換で改行コードを付与できます。
+            /mASCEOL: EBCDIC ファイルの行末コードが Windows:0x0d0a, Linux 0x0a。省略値:0x15。
+            /mSETEOL: 出力各行にEOL-IDを追加出力。x2B と レコードモード B2x用。
+        尚、固定長LRECL は /F オプションで指定します
+            /F[nn][N]:EBCDIC ファイルが固定長。nn:LRECL(省略値=80)。
+                      B2x(入力) 又は x2B(出力) EBCDIC ファイルのLRECL。
+                      N: 行末8桁が行番号欄。SO/SI挿入で行長を調整する。
+                         "N" は m2b でのみ有効。
+
+        <B><A href="HID_EBCF_J.Sample.XCVcmd.htm">XCV コマンドの例</A></B>
+
      -DBCS について
+
       EBCDIC では 2バイト文字は SO(0x0e)とSI(0x0f)で囲まれます。例えば 0e-40-40-0f で DBCS のスペース。
       SO/SIは1文字ずつ囲む必要はなく文字列を囲みます。
-      EBCDIC 以外では DBCS は 特定のLeadingバイト(&gt;=0x80)と次の文字の組み合わせです。
+      UTF8を除く EBCDIC 以外のコードページでは DBCS は 特定のLeadingバイト(>=0x80)と次の文字の組み合わせです。
       3バイト(EUC-SS3),4バイト(GB18030)の場合もあります。 DBCSスペースは例えば MS932 では 81-40 です。
-      従ってEBCDIC&lt;--&gt;ロケールコードページの変換では行の長さが変わります。
+      従ってEBCDIC<-->ロケールコードページの変換では行の長さが変わります。
+      SO(0x0e)/SI(0x0f):DBCS 囲み文字は "?" で表示されます。
+      DBCS入力時はSO/SIが挿入されます。
+      EBCファイルから"Cut and Paste"の場合SO/SIで囲まれて初めて(偶数バイトのみ)DBCS評価されます。
+      例えば、UTF8/ロケールコードファイルにPasteする場合コード変換されますがSO/SIも
+      一緒にCopyしてないとSBCS変換されます。
+      DBCS位置で<B><A href="HID00000154.htm">Split</A></B>行コマンドで行分割された後、
+      </B><A href="HID00000148.htm">Join</A></B> 行コマンドでの行連結ではDBCS評価され得ますが<B><A href="HID00000741.htm">Tflow</A></B> コマンドは間に1スペース
+      挿入するのでもとには戻りません。
+      無効なDBCS-EBCDICは ":;" で画面表示されます。縦HEX表示でHexコードを確認してください。
+
       コマンドのオプションででSO/SIの扱いを指定してください。
       省略値はcfg ファイルで指定する。行コマンドのCopyはパラメータ指定できないのでcfgが適用されます。
-        例.   COPy     file1 cpeb -sd       :EBCDIC ファイルを画面内にコピーする時 SO/SI を削除。
-              COPy     file1 cpeb -sr       :SO/SIはスペース置換されます。行長が変わりません。
-              REPlace  file1 cpeb -sr       :EBCDIC に変換して出力する時 SO/SIが挿入されるが
-                                             前後がスペースであればそれを置き換える。
-              REPlace  file1 cpeb -si       :SO/SIが挿入されるので行長が変わります。
+        例.   COPy     ebcfile -sd          :EBCDIC ファイルをPCファイル画面内にコピーする時 SO/SI を削除、行長が変わります
+              COPy     ebcfile -sr          :EBCDIC ファイルをPCファイル画面内にコピーする時 SO/SI をスペースに置換、行長は不変。省略値。
+              COPy     pcfile  -si          :PCファイルをEBCDICファイル内にコピーするときSO/SIを挿入、行長が変わります。省略値。
+              COPy     pcfile  -sr          :PCファイルをEBCDICファイル内にコピーするときSO/SIを挿入するが
+                                             SO の前、SI の後ろにスペースがあればスペースを削除します
       cfg では省略値を設定します。
-          SOSI_A2E      REP (=&quot;-sr&quot;) または INS (&quot;=-si&quot;)
-          SOSI_E2A      DEL (=&quot;-sd&quot;) または REP (&quot;=-sr&quot;)
-
-     -コードページ、オプションは cfg ファイルで指定。
-        形式は従来 3270接続 で使用したものと共通です。
-        cfgファイルがない時の省略値は以下のようになります。
-          (Windows)
-            日本語環境のとき コードページはCP930(日本語カタカナ拡張、内部変換テーブル)、JIS83 で画面表示されます。
-            日本語環境以外の コードページはCP037で画面表示。DBCS(SO/SI)は考慮されません
-          (Linux)
-            日本語環境のとき コードページはEUC-JP(日本語カタカナ拡張、内部変換テーブル)、JIS83 で画面表示されます。
-            日本語環境以外の コードページはCP037で画面表示。DBCS(SO/SI)は考慮されません
-          cfg ファイルで CONVERTER=0 を指定した時もコードページの省略値は同じですが
-          SOSI,SJIS オプションを指定することが出来ます。
-          但しSOSIオプションは CV コマンドに対してのみに有効で、編集では無視されます(0x0E/0x0Fで表示)
-
-        (例)外部、Windowsの変換テーブルを使用するときはcfgファイルで以下のように指定します
-              コントロールパネル-&gt;地域と言語のオプションで追加が必要かもしれません。
-              Windows では DBCS はサポートされてないようです。
-              従って日本語以外のCJKではWindowsではICUの導入が必要となります。
-              ICU を使用する場合 DLL/so のPATHを設定する必要があるかもしれません。
-              PATH(LIBPATH は使用されません) / LD_LIBRARY_PATH などOSにあわせて設定してください。
-
-              CHARSETで指定する値はICU/Windows/LinuxICONVなどで異なります
-              文字セットのリストは &quot;uconv -l&quot;(ICU) ないし &quot;iconv -l&quot; で得ることができます。
-              Windows の CP はコントロールパネル-&gt;地域と言語のオプションで調べる。
-
-              -ICU を使用:SBCS言語
-                 CONVERTER          1
-                 ICU_DLL_SUFFIX    44
-                 ICU_API_SUFFIX   _44
-                 SBCS_CHARSET     cp1047          //EBCDIC Latin/1 Open System(iso-8859-1)
-
-              -ICU を使用:DBCS言語
-                 CONVERTER          1
-                 ICU_DLL_SUFFIX    44
-                 ICU_API_SUFFIX   _44
-                 DBCS_CHARSET     cp1388          //chinese simplified. superset of cp935
-
-              -Windows の MultiByteToWideChar/WideCharToMultibute API を使用
-                 CONVERTER          2
-                 SBCS_CHARSET       20924        //EBCDIC Latin/1 Open System(1047+Euro)
-
-              -Linux の iconv API を使用
-                 CONVERTER          2
-                 SBCS_CHARSET       cp1047
-
-        改行コードの変換は実用と定義とが不明確になっています
-            EBCDIC NL(x15)--&gt;u0085, LF(x25)--&gt;u000a
-            ASCII  LF(0x0a)--&gt;EBC-15/EBC-25
-        コードページの変換を変更したい時は次のオプションを指定してください。
-            MAP_E2A  0x15: 0x0a   # EBCDIC 0x15(NL) -&gt; ASCII 0a(LF)
-            MAP_E2A  0x25: 0x3b   # EBCDIC 0x25(LF) -&gt; ASCII &quot;?&quot;
-            MAP_A2E  0x0a: 0x15   # EBCDIC 0x15(NL) &lt;- ASCII 0a(LF)
-
-
-     -<A href="HID00000072.htm">CV</A> コマンドは CPLC(Locale コード)ファイルに対して B2M/M2B を使用できます。
-      CPEBで開いたファイルには使えません REP コマンドなどで変換してください
-      変換オプションは前記のcfgファイルを共用します。 -MFcfgfile  オプションは廃止です。
-      B2M はロケールコードまで変換するので変換エラー表示の可能性(代替文字表示)が高くなります。
-      編集ではユニコード変換した後にローケールコード変換せずに表示しています。
+          SOSI_A2E      REP # REP(="-sr") または INS ("=-si")
+          SOSI_E2A      DEL # DEL(="-sd") または REP ("=-sr")
 
      -0x09はタブとしては扱われません。(0x05もタブとはしません)
       文字挿入モード時のTabキーは0x09の挿入ではなく文字置換モード時と同様タブジャンプとなります
+
      -<A href="HID00000699.htm">HEX入力モード(Ctrl+F11)</A>の時DBCS考慮はなく1バイトづつ画面に送られます。
-     -SO(0x0e)/SI(0x0f):DBCS 囲み文字は &quot;?&quot; で表示されます。
-      DBCS入力時はSO)/SIが挿入されます。
-      EBCファイルからCut&amp;Pasteの場合SO/SIで囲まれて初めて(偶数バイトのみ)DBCS評価されます。
-      例えば、UTF8/ロケールコードファイルにPasteする場合コード変換されますがSO/SIも
-      一緒にCopyしてないとSBCS変換されます。
-      DBCS位置で<A href="HID00000154.htm">Split行コマンド</A>で行分割された後、
-      <A href="HID00000148.htm">Join 行コマンド</A>での行連結ではDBCS評価され得ますがTflow コマンドは間に1スペース
-      挿入するのでもとには戻りません。
-      無効なDBCS-EBCDICは &quot;:;&quot; で画面表示されます。縦HEX表示でHexコードを確認してください。
-     -バイナリーモードで開くと(<A href="HID00000079.htm">EB コマンド</A>) DBCSは考慮されません(SO/SIは無変換でコピーされます)
-      制御文字が多すぎてバイナリーモードと判定された場合は <A href="HID00000079.htm">ET コマンド</A>で開いてください。
-     -<A href="HID00000084.htm">Find</A>/<A href="HID00000064.htm">Change</A> コマンド。
+
+     -<B><A href="HID00000084.htm">Find</A></B>/<B><A href="HID00000064.htm">Change</A></B> コマンド。
         kbdのUTF8モードにかかわらずEBCDICコードで探索、置換します。
         バイナリーモードで開いた時はDBCSは考慮されません
         -g (Grep), P'.' 探索はサポートされていません。
-     -<A href="HID00000741.htm">TFLow</A> コマンドで 行が連結される場合連結部には1スペースが挿入されるので
-      奇数桁になり、通常は前の行の SO と 次の行の SI が DBCSを再構成することはないでしょう。
-     - <A href="HID00000702.htm">&quot;#&quot;</A> 行コマンド(その行に記述を Native コマンドとして実行) はサポートされません。
 
-#endif
+     -<B><A href="HID00000741.htm">TFLow</A></B> コマンドで 行が連結される場合連結部には1スペースが挿入されるので
+      奇数桁になり、通常は前の行の SO と 次の行の SI が DBCSを再構成することはないでしょう。
+
+     -<B><A href="HID00000702.htm">"#"</A></B> 行コマンド(その行に記述を Native コマンドとして実行) はサポートされません。
+
+     -固定長レコードについて。
+
+      XCVコマンドの場合は/F[xx][N]コマンドラインオプションを指定した(CVコマンドには /F オプションはありません)場合で、
+      固定長の場合PC->EBCDIC変換の時長文は分割され短文はLRECLまでスペースパディングされます。
+      また、改行文字は出力されません。
+      /F[xx][N]のNオプションは行末8桁が行番号であることの指定です。
+      DBCS変換でSO/SIの挿入により伸びた行は行番号欄の前にスペースがあれば
+      そのスペースを削除してLRECLを保持しようとします。それが出来ない場合
+      行分割されますが N 指定があれば行番号欄は切り捨てられます
+      EBCDIC->PC変換の場合、固定長ファイルはバイナリーモード(改行コード無視)で
+      読み込み、コード変換され改行コードを付与して出力されます。
 
 </SPAN></PRE>
 </BODY>

@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>EBCDIC file support-E Sample LineCmd</TITLE>
+<STYLE TYPE="text/css">
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>2024/11/25
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:MS UI Gthic">
+    <B><B>.Line Command Examples</B></B>
+
+      <B>(Example 1)</B> Copy EBCDIC-->CPU8
+
+===>                                                  ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP037-Internal *********
+c   |µ~stuvwxyz¡¿ÐÝÞ®^£¥·©▪▪¼½¾[]¯▪▪▪{ABCDEFGHI­ôöòóõ↵
+    |aaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbcccccccccccccccc↵
+    |0123456789abcdef0123456789abcdef0123456789abcdef↵
+****|*E*e**l*** END OF FILE ******* cp=CP037-Internal *********
+
+EDIT---|G:\src\xe\htmlwk\x1ebc1u8 =U(NEW FIL 001-(   1)-058
+===>                                                  ===>HALF
+a   |*U*t**l*** TOP OF FILE *******Lig:OFF, Unicomb: COMB *****
+****|*U*t**l*** END OF FILE *******Lig:OFF, Unicomb: COMB *****
+
+EDIT---|G:\src\xe\htmlwk\x1ebc1 =E(24-10-11  001-(   1)-058=Rep
+===>                                                  ===>HALF
+****|*<B>E</B>*e**l*** TOP OF FILE ******* cp=CP037-Internal *********
+0001|µ~<B>s</B>tuvwxyz¡¿ÐÝÞ®^£¥·©▪▪¼½¾[]¯▪▪▪{ABCDEFGHI­ôöòóõ↵
+    |aa<B>a</B>aaaaaaaaaaaaabbbbbbbbbbbbbbbbcccccccccccccccc↵
+    |01<B>2</B>3456789abcdef0123456789abcdef0123456789abcdef↵
+****|*E*e**l*** END OF FILE ******* cp=CP037-Internal *********
+
+             Result. EBCDIC:CP0387-->UTF8
+
+EDIT---*G:\src\xe\htmlwk\x1ebc1u8 =U(NEW FIL 001-(   1)-058
+===>                                                  ===>HALF
+****|*<B>U</B>*t**l*** TOP OF FILE *******Lig:OFF, Unicomb: COMB *****
+0001*µ~<B>s</B>tuvwxyz¡¿ÐÝÞ®^£¥·©§¶¼½¾[]¯¨´×{ABCDEFGHI­ôöòóõ↵
+    *0b<B>7</B>777777770a0b0d0d0d0a50a0a0b0a0a0b0b0b0b550a0a0b0d744444
+    *05<B>e</B>3456789a010f000d0e0ee0305070907060c0d0ebd0f080407b12345
+****|*U*t**l*** END OF FILE *******Lig:OFF, Unicomb: COMB *****
+
+      <B>(Example 2)</B> Copy CPLC-->CPEB
+
+EDIT---|G:\src\xe\htmlwk\x1ebc1 =E(24-10-11  001-(   1)-058=Ins
+===>                                                  ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP037-Internal *********
+a   |µ~stuvwxyz¡¿ÐÝÞ®^£¥·©▪▪¼½¾[]¯▪▪▪{ABCDEFGHI­ôöòóõ↵
+    |aaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbcccccccccccccccc↵
+    |0123456789abcdef0123456789abcdef0123456789abcdef↵
+****|*E*e**l*** END OF FILE ******* cp=CP037-Internal *********
+
+EDIT---*G:\src\xe\htmlwk\x1lc =l(NEW FILE)-- 001-(   1)-058
+===>                                                  ===>HALF
+****|*<B>l</B>*t**l*** TOP OF FILE *******Lig:OFF ********************
+c   *<B>a</B>bcd 1234↵
+    *<B>6</B>66623333↵
+    *<B>1</B>23401234↵
+****|*l*t**l*** END OF FILE *******Lig:OFF ********************
+
+             Result. ASCII-->CPEB:CP037
+
+EDIT---*G:\src\xe\htmlwk\x1ebc1 =E(24-10-11  001-(   1)-058=Ins
+===>                                                  ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP037-Internal *********
+0001|µ~stuvwxyz¡¿ÐÝÞ®^£¥·©▪▪¼½¾[]¯▪▪▪{ABCDEFGHI­ôöòóõ↵
+    |aaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbcccccccccccccccc↵
+    |0123456789abcdef0123456789abcdef0123456789abcdef↵
+0002*<B>a</B>bcd 1234↵
+    *<B>8</B>8884ffff↵
+    *<B>1</B>23401234↵
+****|*E*e**l*** END OF FILE ******* cp=CP037-Internal *********
+
+EDIT---*G:\src\xe\htmlwk\x1lc =l(NEW FILE)-- 001-(   1)-058
+===>                                                  ===>HALF
+****|*l*t**l*** TOP OF FILE *******Lig:OFF ********************
+0001*abcd 1234↵
+    *666623333↵
+    *123401234↵
+****|*l*t**l*** END OF FILE *******Lig:OFF ********************
+
+      <B>(Example 3)</B> No conversion Copy.
+
+EDIT---|G:\src\xe\htmlwk\x1ebc3 =E(24-10-11  001-(   1)-058=Ins
+===>                                                  ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP037-Internal *********
+c   |<B>\▪</B>STUVWXYZ²ÔÖÒÓÕ0123456789³ÛÜÙÚ▪↵
+    |<B>ee</B>eeeeeeeeeeeeeeffffffffffffffff↵
+    |<B>01</B>23456789abcdef0123456789abcdef↵
+
+EDIT---|G:\src\xe\htmlwk\x1lc3 =l(NEW FILE)- 001-(   1)-058
+===>                                                  ===>HALF
+a<B>b</B>  |*l*t**l*** TOP OF FILE *******Lig:OFF ********************
+****|*l*t**l*** END OF FILE *******Lig:OFF ********************
+
+             As a result, the hex code will not change, and the display will follow the CP options of the destination.
+
+EDIT---|G:\src\xe\htmlwk\x1ebc3 =E(24-10-11  001-(   1)-058=Ins
+===>                                                  ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP037-Internal *********
+0001|\▪STUVWXYZ²ÔÖÒÓÕ0123456789³ÛÜÙÚ▪↵
+    |eeeeeeeeeeeeeeeeffffffffffffffff↵
+    |0123456789abcdef0123456789abcdef↵
+****|*E*e**l*** END OF FILE ******* cp=CP037-Internal *********
+
+EDIT---*G:\src\xe\htmlwk\x1lc3 =l(NEW FILE)- 001-(   1)-058
+===>                                                  ===>HALF
+0001*<B>珮</B>粤蒟跚韜▪▪▪▪▪▪     涇▪▪▪▪↵
+    *<B>ee</B>eeeeeeeeeeeeeeffffffffffffffff↵
+    *<B>01</B>23456789abcdef0123456789abcdef↵
+****|*l*t**l*** END OF FILE *******Lig:OFF ********************
+
+</SPAN></PRE>
+</BODY>
+</HTML>

@@ -12,9 +12,12 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
-   .可変長レコードファイル。
+   <B>.可変長レコードファイル。</B>
 
-     -レコードへッダー形式
+     -PC では行は改行コードで区切られますが、ここではレコード長ヘッダー付きの、
+      メインフレームでいうところの RECFM=V ファイルを扱います。
+
+     -レコードへッダー形式 (/Fvfmt)
         RDW:LLZZ 形式(２バイトヘッダー長を含むレコード長+0x0000),省略値
         H  :2バイトLL(ヘッダー長を含む長さ)
         HD :2バイトLL(ヘッダー長を含まない長さ)
@@ -32,7 +35,7 @@ a:hover{font-weight:bold;}-->
 
         /Mv, /Fvfmt指定はプロファイルに保存されます
         一度Browse/Editで指定すれば次回からは指定不要です
-        SAVe/CREate/REPlace/END コマンドでの指定も書き込んだふぁいるの
+        SAVe/CREate/REPlace/END コマンドでの指定も書き込んだファイルの
         プロファイルとして保存されます
 
      -各コマンドでのオプション指定は以下のようになります
@@ -40,9 +43,8 @@ a:hover{font-weight:bold;}-->
         Browse /Mv  /Fvfmt
             vfmt:レコードヘッダー形式を指定
               例)  B vfile /Mv /Frdw
-        Edit   /Mrv /Fvfmt
-            r=v:read as vfmt
-            w=v:save as vfmt
+        Edit   /Mrw /Fvfmt
+            r=v:read as vfmt, w=v:save as vfmt. read/write どちらか一方が指定できます
               例)  E vfile /Mv /Fh
             保存時にレコード形式を変更するときに &quot;r&quot; と &quot;w&quot; を指定します
               例)  E vfile /Mvr /F130 /Ff (vfmt=F で読み, RECFM=F+LRECL=130 で保存)
@@ -67,6 +69,7 @@ a:hover{font-weight:bold;}-->
              プロファイルに登録済みの場合は不要です
              また画面ファイル印刷(&quot;XPRint *&quot;/&quot;XPRint **&quot;)の場合も指定不要です
 
+<B><B><a href="HID_RECFMV_J.Sample.htm">実行例</B></B>
 </SPAN></PRE>
 </BODY>
 </HTML>

@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>EBCDIC file support-J Sample Internal Table</TITLE>
+<STYLE TYPE="text/css">
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE>2024/11/25
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:MS UI Gthic">
+    <B><B>.内部変換テーブルの例</B></B>
+
+      <B>(例1)</B>
+          <B>(1)</B> ソースデータ
+              バイナリーモード表示。 0x15はNL(New Line)。
+
+"e x1ebc2 /m24 cplc"
+
+EDIT---|G:\src\xe\htmlwk\x1ebc2 =b(24-10 0000(0000)0035=Rep
+===>                                              ===>HALF
+****|*b*t**l*** TOP OF FILE *******Lig:OFF ****************
+0000|銹  ~`abcdefghijklmno▪|
+    |eff6fc766666666666666661|
+    |760066e0123456789abcdef5|
+0018|鋩  ~▪≠ ヤ▪▪㊧炎旧克▪▪|
+    |eff6fc788888888888888881|
+    |780086e0123456789abcdef5|
+0030|酖 ﾃﾆ~ﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏ▪|
+    |ecf6cc7cccccccccccccccc1|
+    |730036e0123456789abcdef5|
+0048|酥 ﾆﾆ~     涇▪▪▪▪▪|
+    |ecf6cc7ffffffffffffffff1|
+    |760066e0123456789abcdef5|
+0060|ﾑﾁﾗﾁﾕﾅ簀`翡鈬z▪EbEfH▪▪|
+    |dcdcdcec6ecee7046464e0|
+    |1171552503573ae525687f|
+****|*b*t**l*** END OF FILE *******Lig:OFF ****************
+
+          <B>(2)</B> CO930 (KANA_EXT)
+              0x81が日本語半角カタカナ
+              日本語DBCSは 0x0e-0x0f で囲まれる
+
+"xe x1ebc2 cpeb -ebcKana_ext"
+
+EDIT---|G:\src\xe\htmlwk\x1ebc2 =E(24-10 001-(   1)-054=Rep
+===>                                              ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP930-Internal *****
+0001|X60-6F=-/abcdefgh▪,%_>?↵
+    |eff6fc76666666666666666↵
+    |760066e0123456789abcdef↵
+0002|X80-8F=]<B>ｱ</B>ｲｳｴｵｶｷｸｹｺqｻｼｽｾ↵
+    |eff6fc78<strong>8</strong>88888888888888↵
+    |780086e0<strong>1</strong>23456789abcdef↵
+0003|XC0-CF={ABCDEFGHI▪▪▪▪▪▪↵
+    |ecf6cc7cccccccccccccccc↵
+    |730036e0123456789abcdef↵
+0004|XF0-FF=0123456789▪▪▪▪▪▪↵
+    |ecf6cc7ffffffffffffffff↵
+    |760066e0123456789abcdef↵
+0005|JAPANESE-TEXT<strong>:?日本語?</strong>↵
+    |dcdcdcec6ecee7<strong>0</strong>46464e<strong>0</strong>↵
+    |1171552503573a<strong>e</strong>525687<strong>f</strong>↵
+****|*E*e**l*** END OF FILE ******* cp=CP930-Internal *****
+
+
+          <B>(3)</B> CO939 (ENG_EXT)
+              0x81が英小文字
+
+"xe x1ebc2 cpeb -ebcEng_ext"
+
+EDIT---|G:\src\xe\htmlwk\x1ebc2 =E(24-10 001-(   1)-054=Rep
+===>                                              ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP939-Internal *****
+0001|X60-6F=-/ｲｳｴｵｶｷｸｹ▪,%_>?↵
+    |eff6fc76666666666666666↵
+    |760066e0123456789abcdef↵
+0002|X80-8F=▪<B>a</B>bcdefghiﾃﾄﾅﾆﾇﾈ↵
+    |eff6fc78<B>8</B>88888888888888↵
+    |780086e0<B>1</B>23456789abcdef↵
+0003|XC0-CF={ABCDEFGHI▪▪▪▪▪▪↵
+    |ecf6cc7cccccccccccccccc↵
+    |730036e0123456789abcdef↵
+0004|XF0-FF=0123456789▪▪▪▪▪▪↵
+    |ecf6cc7ffffffffffffffff↵
+    |760066e0123456789abcdef↵
+0005|JAPANESE-TEXT:<B>?日本語?</B>↵
+    |dcdcdcec6ecee7<B>0</B>46464e<B>0</B>↵
+    |1171552503573a<B>e</B>525687<B>f</B>↵
+****|*E*e**l*** END OF FILE ******* cp=CP939-Internal *****
+
+
+          <B>(4)</B> CP037 (DefaultMap)
+              SBCS は Latin-1(IOS8859-1), 日本語は表示されません
+
+"xe x1ebc2 cpeb -ebcDefaultMap"
+
+EDIT---|G:\src\xe\htmlwk\x1ebc2 =E(24-10 001-(   1)-054=Rep
+===>                                              ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP037-Internal *****
+0001|X60-6F=-/ÂÄÀÁÃÅÇÑ¦,%_>?↵
+    |eff6fc76666666666666666↵
+    |760066e0123456789abcdef↵
+0002|X80-8F=Øabcdefghi«»ðýþ▪↵
+    |eff6fc78888888888888888↵
+    |780086e0123456789abcdef↵
+0003|XC0-CF={ABCDEFGHI­ôöòóõ↵
+    |ecf6cc7cccccccccccccccc↵
+    |730036e0123456789abcdef↵
+0004|XF0-FF=0123456789³ÛÜÙÚ▪↵
+    |ecf6cc7ffffffffffffffff↵
+    |760066e0123456789abcdef↵
+0005|JAPANESE-TEXT:<B>▪</B><B>áÂáÃçX</B><B>▪</B>↵
+    |dcdcdcec6ecee7<B>0</B>46464e<B>0</B>↵
+    |1171552503573a<B>e</B>525687<B>f</B>↵
+****|*E*e**l*** END OF FILE ******* cp=CP037-Internal *****
+
+
+</SPAN></PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,33 @@
+//*CID://+@@@1R~:                             update#=  267;
+** UTF8 encoding **
+
+//***************************************************************************
+130A:2024/11/30
+     1.BUGs
+       -Hard copy (Alt+z) may be garbled with substitute characters for unprintable characters.
+       -When you use S+F1 (update list) with the directory list with a file mask specified,
+        the list will not be updated if there are no matching members.
+
+     2.Additional function.
+       -CID command.
+        clear/shfit option now supports label specification.
+
+     3.Miscellaneous.
+       -EBCDIC file support has been improved.
+        Euro support, -Mz option treats ebcdic 0x0d15 as a line feed,
+        Addition of command line options -EBC (internal conversion table, cfg file specification),
+        Revision of cfg file options, etc.
+
+     4.Tools
+       -xcv v1.24     (Character set conversion)
+        .-icudata=, -Mcp037 options are added.
+        .When the option to ignore mismatched end-of-line comments is specified, tabs up to the comment also have to be ignored.
+
+       -xdig v1.14    (apply any command to each directory level)
+        .dir-mask  
+           Multiple specifications are concatenated with ";".  e.g. "dirA;subsirB*"
+           You can specify both the top dir target and all dir targets, connect them with ";;".  e.g. "top1;top2;;subdir*".
+
+       -xfc v1.30     (compare files and show inconsistencies)
+        .(Windows:Bug) 0x1a is considered as the end of file.      //~@@@1I~
+

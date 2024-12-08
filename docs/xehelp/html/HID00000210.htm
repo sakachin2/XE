@@ -12,8 +12,9 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
+**2024/11/30
 <SPAN STYLE="color:#000000;font-size:12pt;"> ************************************************************************
-(7).Command line parameter.
+(7).<B>Command line parameter</B>.
 ************************************************************************
 #ifdef UNX
    .format:
@@ -36,11 +37,16 @@ a:hover{font-weight:bold;}-->
                     Use when edit file name is &quot;0&quot;,&quot;1&quot;,&quot;2&quot; or &quot;6&quot;
                     (same as menu option id),
                     or start with &quot;=&quot;.
-      -Fx[t][:hosts]:x=0:<a href="HID00000218.htm">FTP</a> is not used, x=1:FTP avail(without log)
-                     x=w:output ftplog, x=a:ftplog by append mode.
-                    :t:debug option not to delete temp file for ftp get.
-                    :hosts:hosts filename for xe.
-                    Default is /F1:xehosts(xehosts on <a href="HID00000236.htm">work directory</a>)
+      -EBC[=]{KANA_EXT|ENG_EXT|DefaultMap|DefaultMapEuro|cfg=filepath} : Specify conversion table or cfg file.
+                    KANA_EXT(=CP930=CP290+CP300)  : Japanese extended, Katakana.
+                    ENG_EXT(=CP939=CP1027+CP300)  : Japanese extended, lowercase alphabetic.
+                    DefaultMap(=CP037)            : Latin-1, no Kanji.
+                    DefaultMapEuro(=CP037+Euro)
+                    cfg=filepath : Temporarily change EBCDIC_cfg option in the ini file.
+      -FTPx[t][:hosts]:x=0:FTP is not used, x=1:FTP avail(without log)
+                                            x=w:output ftplog, x=a:ftplog by append mode.
+                    hosts:hosts filename for xe.
+                    Default is -FTP1(hosts="::xehosts", log="::xeftplog").
       -F{fontname[:charset] | @font_param_filename}           
                    :The font name required for /G option is---             
                     when running on Windows Terminal, setting.json is checked,
@@ -61,6 +67,10 @@ a:hover{font-weight:bold;}-->
                              /GYy: All ambiguous chars are adjusted according to the font.
                              /GY0: Unfamiliar languages are displayed as ':;' instead.
       -h,-?        :Help
+      -HDdirname   :dirname:Directory for help html files.
+      -hnn         :Screen height.
+                    Use when screen height and screen buffer size is not
+                    same on TeraTerm ini file specification.
       -i[fname]    :<a href="HID00000209.htm">ini filename</a> to be used. If not use, specify simply -I
                    :to use default values.
                    :default is xe.ini if missing this option
@@ -134,11 +144,16 @@ a:hover{font-weight:bold;}-->
       /E           :Edit mode open(default)
                     Use when edit file name is &quot;0&quot;,&quot;1&quot;,&quot;2&quot; or &quot;6&quot;
                     (same as menu option id).
-      /Fx[t][:hosts]:x=0:<a href="HID00000218.htm">FTP</a> is not used, x=1:FTP avail(without log)
-                     x=w:output ftplog, x=a:ftplog by append mode.
-                    :t:debug option not to delete temp file for ftp get.
-                    :hosts:hosts filename for xe.
-                    Default is /F1:xehosts(xehosts on <a href="HID00000236.htm">work directory</a>)
+      /EBC[=]{KANA_EXT|ENG_EXT|DefaultMap|DefaultMapEuro|cfg=filepath} : Specify conversion table or cfg file.
+                    KANA_EXT(=CP930=CP290+CP300)  : Japanese extended, Katakana.
+                    ENG_EXT(=CP939=CP1027+CP300)  : Japanese extended, lowercase alphabetic.
+                    DefaultMap(=CP037)            : Latin-1, no Kanji.
+                    DefaultMapEuro(=CP037+Euro)
+                    cfg=filepath : Temporarily change EBCDIC_cfg option in the ini file.
+      /FTPx[t][:hosts]:x=0:FTP is not used, x=1:FTP avail(without log)
+                                            x=w:output ftplog, x=a:ftplog by append mode.
+                    hosts:hosts filename for xe.
+                    Default is -FTP1(hosts="::xehosts", log="::xeftplog").
       /F{fontname[:charset] | @font_param_filename}           
                    :The font name required for /G option is---             
                     when running on Windows Terminal, setting.json is checked,
@@ -159,6 +174,7 @@ a:hover{font-weight:bold;}-->
                              /GYy: All ambiguous chars are adjusted according to the font.
                              /GY0: Unfamiliar languages are displayed as ':;' instead.
       /H,/?        :Help
+      /HDdirname   :dirname:Directory for help html files.
       /Hnn         :Screen height. max is screen buff size.
                     Use when screen height and screen buffer size is not
                     same on DOS prompt under Windows 2000.
