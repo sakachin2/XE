@@ -1,4 +1,4 @@
-UTF8 encoding * CID:||+v130R~:  2023/07/31  v129W           update#=  735;||+v130R~
+UTF8 encoding * CID:||+v@@6R~:  2023/07/31  v129W           update#=  758;||~v130R~||~v@@6R~
 ************************************************************************
 (Index)
     (0).Introduction.
@@ -16,7 +16,7 @@ UTF8 encoding * CID:||+v130R~:  2023/07/31  v129W           update#=  735;||+v13
             .NLS support.                                             ||~v125R~
             .Japanese DBCS,Code conversion
             .EBCDIC file support.                                     ||~v125R~
-            .EBCDIC translation.                                      ||~v124R~
+            .EBCDIC conversion configuration file
             .UTF8 support.                                            ||~v124R~
             .ShortPathName.                                           ||~v129R~
             .SyntaxHighlight                                          ||~v124R~
@@ -937,574 +937,1192 @@ UTF8 encoding * CID:||+v130R~:  2023/07/31  v129W           update#=  735;||+v13
       to from column 100.                                             ||~v124R~
       XCV cmd enclosed is external tool to file encoding translation. ||~v124I~
                                                                       ||~v124R~
-#if defined(W32) || defined(LNX)                                      ||~v124R~
                                                                       ||~v124R~
-   .EBCDIC file support.                                              ||~v125R~
-                                                                      ||~v125R~
-      (See also next section "EBCDIC translation" about CV cmd, XCV utility and EBCDIC cfg file)||~v125R~||~v125R~
-                                                                      ||~v125R~
-      -EBCDIC encoded file is maintained as it is without translation to locale codepage.||~v125R~
-       Hex display mode displays EBCDIC code.                         ||~v125R~
-       Use this function for the file downloaded from mainframe with no translation option||~v125R~
-       or NFS mounted with no translation option.                     ||~v125R~
-       It is useful when accessing Linux/390 using sshfs(Dokan sshfs on windows)||~v125I~
-       Unicode is used to display code, it enable to display wider range of printable character.||~v125R~
-       Default EBCDIC converter is CP930 on Japanese environment and CP037 on the other env.||~v125I~
-       This env is local env, specify proper converter on EBCDIC cfg file if remote env is||~v125I~
-       different from local.                                           ||~v125I~
-       And also try to select other than default charset on setup dialog of wxe||~v125R~
-       if invalid glyph is displayed.                                 ||~v125I~
-                                                                      ||~v125R~
-      -CPEB option is used for EDIt/SAVe/REPlace/CREate/APPend/CUT/END/COPy/MOVe/PASte cmd.||~v125R~
-       IE option may be required if invalid EBCDIC code is contained. ||~v125R~
-       Indicator on header line is "=E" , and "=e" when binary mode.  ||~v125R~
-       (The file containing unprintable char with some extent is opened as binary file,||~v129R~
-       and DBCS is not detected when binary mode. /Mt is option to force text mode.)||~v129R~
-       LineFeed is 0x15 if /Mp(0x0d0a) or /Mu(0x0a) is not specified. ||~v129R~
-         e.g. "e file1 cpeb"                                          ||~v125R~||~v128R~
-       When cfg file is not prepared or to use different codepage than defined on cfg file,||~v125R~
-       use CPEB:codepage format.                                      ||~v125R~
-         e.g. "e file1 cpeb:IBM1047"                                   ||~v125R~||~v128R~
-       Specify null like as "CPEB=" when back to cfg definition.      ||~v125R~
-       xe accept max 7 codepages. xe can not recognize alias name.    ||~v125R~
-                                                                      ||~v125R~
-       COPy/MOVe/PASte cmd inserts lines after translated from specified codepage to the encoding of the opened file.||~v125R~
-       SAVe/REPlace/CREate/APPend/CUT/END cmd write lines after translated to the specified codepage.||~v125R~
-         e.g. "rep file2 cpeb nx ie"                                  ||~v125R~||~v128R~
-                                                                      ||~v125R~
-       CPEB:codepage option is available for these cmd.               ||~v125R~
-       Specified option on output cmd is registered to profile.       ||~v125R~
-       COPy/MOVe/PASte cmd checks profile, so you may not be required to specify CPxx option.||~v125R~
-       But naming may differ between ICU and iconv/Windows codepage.  ||~v125R~
-       So, when you changed CONVERTER parameter of cfg file between ICU and not ICU,||~v125R~
-       codepage name on profile may invalid.  Paste may fail in that case.||~v125R~
-       Re-specify CPEB parameter on Edit cmd for these case.          ||~v125R~
-                                                                      ||~v125R~
-       Even when CPEB is not specified translation occurs if codepage is registered to profile.||~v125R~
-       Specify "B"(Binary) suffix option if you do not want it.       ||~v125R~
-       "B" option is not supported for UTF8 file as copy target.      ||~v125R~
-       See "C"(Copy)/"M"(Move) lcmd for "B" suffix.                   ||~v125R~
-                                                                      ||~v125R~
-       Option specified to a directory is default for the file in the directory.||~v125R~
-       To reset profile specify explicitly other(CPLC/CPU8/CPAS) encoding option at open.||~v125R~
-       EBCDIC codepage is displayed on the TopOfLine and EndOfLine.   ||~v125R~
-                                                                      ||~v125R~
-       Cmd for write dose not update profile if translation error is detected,||~v125R~||~v125R~
-       file is written up to EOF replacing those error character to substitution character.||~v125R~
-       Substitution character depends to the codepage, you can change it by cfg parameter.||~v125R~
-       Sometimes DBCS subchar is not defined, xe try to translate u-fffd, u-ff1f(DBCS "?"),u-3000(DBCS space)||~v125R~
-       in this sequence the use it if available.                      ||~v125R~
-                                                                      ||~v125R~
-      -"C"/"M" line cmd also execute translation when codepage differs.||~v125R~
-       Specify "B"(Binary) suffix option if you do not want it.       ||~v125R~
-       "B" option is not supported for UTF8 file as both copy source and copy target.||~v125R~
-       Spaces by Tab expansion is dropped when copy from locale code file to EBCDIC file.||~v125R~
-         {A|B}[B][C][n][,b][.s]                                       ||~v125R~
-           A : After, B: Before, B : Binary Mode, C : Copy with CID   ||~v125R~
-           n : repeat, b : bundle, s : skip                           ||~v125R~
-         e.g. c3                                                      ||~v125R~||~126FR~||~v128R~
-              :       Copy 3 lines After by Binary mode               ||~v125R~
-              ab                                                      ||~v125R~
-                                                                      ||~v125R~
-      -"="(Compare) line cmd compares the line after translated if the codepage differs.||~v125R~
-       (EBCDIC file is translated to UTF8/Locale coed then compared)  ||~v125R~
-       Use "B" suffix to compare by binary code.                      ||~v125R~
-       Spaces by Tab expansion is ignored.                            ||~v125R~
-         =[B][n][,b][.s]                                              ||~v125R~
-         ==[B]                                                        ||~v125R~
-         (supply "B" at any one of the line cmds)                     ||~v125R~
-                                                                      ||~v125R~
-      -CV cmd.                                                        ||~v125R~
-                                                                      ||~v125R~
-      -CV cmd B2M/M2B option is for CPLC(Locale code)file only.       ||~v125R~||~v125R~
-       Cfg file is shared with EDIt cmd, -MFcfgfile option is discarded.||~v125R~||~v125R~
-       CPEB:ebcdic-codepage parameter for B2M/M2B allows translation by out mapping cfg file specified on ini file.||~v125R~
-       If CPEB is missing for the ebcidic file B2M uses the codepage of the opend file.||~v125R~
-         e.g. cv m2b cpeb:37                                           ||~v125R~||~v128R~
-       Use B2B option to translate between different EBCDIC codepage. ||~v125R~
-         e.g. cv b2b cpeb:1026                                         ||~v125R~||~v128R~
-       B2B without SETCP option dose not change the codepage of current file, the file is displayed using original||~v125R~
-       codepage.                                                      ||~v125R~
-       To change also the codepage itself, use SETCP option.          ||~v125R~
-         e.g. cv b2b cpeb:1026 SETCP                                   ||~v125R~||~v128R~
-                                                                      ||~v125R~
-      -EBC cmd.                                                       ||~v125R~
-                                                                      ||~v125R~
-       EBC cmd also changes the codepage of the file.                 ||~v125R~
-         e.g. EBC SETCP=CP935                                          ||~v125R~||~v128R~
-       EBC cmd dose not change original code, but display the code according the codepage.||~v125R~
-       So, close operation dose not write back to the file if there are no other modification to the file.||~v125R~
-       Undo function restores SETCP effects of CV/EBC cmd.            ||~v125R~
-       Codepage by SETCP option is registered to profile at close operation(not CANcel but END operation)||~v125R~
-       Use "EBC SETCP=" to back to default codepage.                  ||~v127I~
-                                                                      ||~v125R~
-      -xcv utility.                                                   ||~v125R~
-                                                                      ||~v125R~
-         "m" of "m2b/b2m" is current codepage only, specify codepage for "b" using ebcmap file or -CPEB: option.||~126DI~
-           e.g. xcv -cm2b -cpeb:37 -mseteol localfile1  ebcfile1       ||~v125R~||~v128R~
-         To translate to the different EBCDIC codepage, use B2B option.||~v125R~
-           e.g. xcv -cb2b -f:37 -t:1026 ebcfile1 -oebcfile2              ||~v125R~||~126DR~||~v128R~
-         "-MF:" parameter is also required if use ICU converter. Specify CONVERTER=1 on the cfg file.||~v125R~
-         Or specify -ICU option.                                      ||~126DI~
-           e.g. xcv -cb2b -f:IBM037 -t:IBM1047 -mf:xeebc.map ebcfile1 ebcfile2||~v125R~||~v128R~
-                xcv -cb2b -f:IBM037 -t:IBM1047 -ICU          ebcfile1 ebcfile2||~126DI~||~v128R~
-                                                                      ||~v125R~
-      -EndOfLine-ID.                                                  ||~v125R~
-       Supports not only RecordMode but also Text mode by EndOfLineID of 0x15(EBCDIC-NL).||~v125R~
-       Default of EBCDIC file is text mode.                           ||~v125R~
-       Following cmds has EOL related option. LRECL can be changed.   ||~v125R~
-         EDIt/BROwse, END, CREate/REPlace, SAVe, COPy/MOVe.           ||~126FR~
-       For SAVe cmd, new option is accepted when filename parameter is specified.||~v125R~
-       For COPy/MOVe cmd Fxx option is LRECL of copy source file.     ||~v125R~
-       RecordMod:On/Off and LRECL is saved to corresponding profile record,||~v125R~
-       but EOL-ID is required each time.                              ||~v125R~
-           /M{t|p|u|m|e|r} /Fnn[-mm]                                  ||~v125R~
-             e:EBCDIC-NL(0x15), r;RecordMode, nn:LRECL                ||~v125R~
-       e.g.                                                           ||~v125R~||~v128R~
-           e ebcf1 CPEB                        : EBCDIC file TextMode(EOL-ID=0x15)||~v125R~
-           e ebcf1 CPEB  /mp                   : EBCDIC file TextMode(EOL-ID:0x0d0a)||~v125R~
-           e ebcf1 CPEB  /mr /F72              : EBCDIC file RecordMode(LRECL=72)||~v125R~
-                                                 Default LRECL is 80. ||~v125R~
-           end /mu                             : Change EOL-ID to 0x0a.||~v125R~
-           end /mr /f80                        : Save as LRECL=80 RecordMode file(no EOL-ID).||~v125R~
-           s ebcf1 CPEB /mr /F80               : translate (From PC file) to EBCDIC file.||~v125R~
-                                                 Output is LRECL=80 RecordMode file.||~v125R~
-           rep u8f1 nx CPU8 /mp                : translate (from RecordMode EBCDIC file) to UTF8 file.||~v125R~
-                                                 EOL-ID:0x0d0a is appended to each line.||~v125R~
-                                                                      ||~v125R~
-      -About DBCS                                                     ||~v125R~
-       Double Byte Character is indicated by SO(ShiftOut:0x0e) and SI(ShiftIn:0x0f) in EBCDIC.||~v125R~
-       SO and SI enclose DBCS string. e.g. 0e-40-40-0f is DBCS space. ||~v125R~||~v128R~
-       In other than EBCDIC, specific leading byte and some following bytes is combination of DBCS.||~v125R~
-       Display width of DBCS is 2 column and it may be consists by 3 byte (EUC-SS3) or 3 byte(GB18030).||~v125R~
-       e.g. DBCS space is 81-40 in MS932.                             ||~v125R~||~v128R~
-       Accordingly translation between EBCDIC and Locale code changes line length if DBCS is contained.||~v125R~
-       Option of treatment of SO/SI is prepared on translation cmd.  ||~v125R~
-       Set default to cfg file.                                       ||~v125R~
-       cfg option is applied to "C"opy line cmd which has no parameter for SI/SI option.||~v125R~
-         e.g.  COPy     file1 cpeb -sd       :Delete SO/SI from EBCDIC copy source file. Line length will shrink.||~v125R~||~v128R~
-               COPy     file1 cpeb -sr       :SO/SI is replaced to one space.||~v125R~
-               REPlace  file1 cpeb -sr       :SO/SI is inserted at translation to EBCDIC,||~v125R~
-                                              but replace both side of space if avail.||~v125R~
-               REPlace  file1 cpeb -si       :SO/SI is inserted simply. Line length will expand.||~v125R~
-       Define default action on cfg file.                             ||~v125R~
-           SOSI_A2E      REP (="-sr") or INS ("=-si")                 ||~v125R~
-           SOSI_E2A      DEL (="-sd") or REP ("=-sr")                 ||~v125R~
-                                                                      ||~v125R~
-      -Codepage and translation option by cfg file.                   ||~v125R~
-         Specify cfg filename on INI file. Default is ::xeebc.cfg.    ||~v125R~
-           EBCDIC_cfg        ="" #("::xeebc.map")# EBCDIC translation config filename||~v125R~
-         Syntax is same as previously used for 3270 connection.       ||~v125R~
-           Following option is added for non-3270 as alternative of option in xehosts file.||~v125R~
-           This is for Windows/Japanese user with no external converter option only.||~v125R~
-            SJIS_OPT  ENG_EXT      # Japanese English-Extension(CP939=CP1027)||~v125R~
-            SJIS_OPT  KANA_EXT     # Japanese Katakana-Extension(CP930=CP290)||~v125R~
-         -MF:mapfile option of CV cmd for B2M/M2B was discarded,      ||~v125R~
-         CV cmd share mapping option specified on INI file.           ||~v125R~
-         Default option when missing cfg file is as following.        ||~v125R~
-           (Windows)                                                  ||~v125R~
-             Japanese :Codepage=CP930(Internal mapping table equivalent to Japanese-Katakana Extension), JIS83.||~v125R~
-             else     :Codepage=CP037, No DBCS(SO/SI) consideration.  ||~v125R~
-           (Linux)                                                    ||~v125R~
-             Japanese :Codepage=EUC-JP(Internal mapping table equivalent to Japanese-Katakana Extension), JIS83.||~v125R~
-             else     :Codepage=CP037, No DBCS(SO/SI) consideration.  ||~v125R~
-           Above default is used when CONVERTER=0 on cfg file, you can specify additional option||~v125R~
-           such as SOSI,SJIS option.                                  ||~v125R~
-           SOSI option is effective for CV cmd only, ignored for EDIt operation.||~v125R~
-                                                                      ||~v125R~
-         (e.g.)sample to use External(ICU/iconv) converter, Windows codepage.||~v126R~||~v128R~
-               On Windows, you may have to add the EBCDIC codepage using||~v125R~
-                 Control-Panel-->Region and Languages                 ||~v125R~
-               WindowsXP currently have no EBCDIC codepage supporting DBCS.||~v125R~
-               So, CJK user may have to install ICU to use DBCS EBCDIC. (COVERTER=0 supports Japanese)||~v125R~
-               To use ICU you may have to set PATH for DLL/so. Set PATH(LIBPATH is not used) or LD_LIBRARY_PATH.||~v126R~
-                                                                      ||~v125R~
-               Codepage value on CHARSET statement varies by ICU/Windows/LinuxICONV.||~v125R~
-               Confirm it using "uconv -l" (ICU) or "iconv -l".       ||~v125R~
-               For codepage on Windows, check it by Control-panel-->Region and Language.||~v125R~
-                                                                      ||~v125R~
-               -Use ICU SBCS.                                         ||~v125R~
-                  CONVERTER          1                                ||~v125R~
-                  ICU_DLL_SUFFIX    44                                ||~v125R~
-                  ICU_API_SUFFIX   _44                                ||~v125R~
-                  SBCS_CHARSET     cp1047          //EBCDIC Latin/1 Open System(iso-8859-1)||~v125R~
-                                                                      ||~v125R~
-               -Use ICU DBCS.                                         ||~v125R~
-                  CONVERTER          1                                ||~v125R~
-                  ICU_DLL_SUFFIX    44                                ||~v125R~
-                  ICU_API_SUFFIX   _44                                ||~v125R~
-                  DBCS_CHARSET     cp1388          //chinese simplified. superset of cp935||~v125R~
-                                                                      ||~v125R~
-               -Use Windows MultiByteToWideChar/WideCharToMultibute API.||~v125R~
-                  CONVERTER          2                                ||~v125R~
-                  SBCS_CHARSET       20924        //EBCDIC Latin/1 Open System(1047+Euro)||~v125R~
-                                                                      ||~v125R~
-               -Use Linux iconv API.                                  ||~v125R~
-                  CONVERTER          2                                ||~v125R~
-                  SBCS_CHARSET       cp1047                           ||~v125R~
-                                                                      ||~v125R~
-         Translation of EndOfLine ID may not be preferable.           ||~v125R~
-             EBCDIC NL(x15)-->u0085, LF(x25)-->u000a                  ||~v125R~
-             ASCII  LF(0x0a)-->EBC-15/EBC-25                          ||~v125R~
-         You can remap it as following.                               ||~v125R~
-             MAP_E2A  0x15: 0x0a   # EBCDIC 0x15(NL) -> ASCII 0a(LF)  ||~v125R~
-             MAP_E2A  0x25: 0x3b   # EBCDIC 0x25(LF) -> ASCII "?"     ||~v125R~
-             MAP_A2E  0x0a: 0x15   # EBCDIC 0x15(NL) <- ASCII 0a(LF)  ||~v125R~
-                                                                      ||~v125R~
-                                                                      ||~v125R~
-                                                                      ||~v125R~
-      -0x09 is not TAB (0x05:EBC-HT also is  not treated as TAB skip character).||~v125R~
-       When Tab Key is pressed, TAB char(0x09,0x05) is not inserted into the line,||~v125R~
-       but jump some columns even when INS mode.                      ||~v125R~
-      -HEX input mode(Ctrl+F11) send byte by byte(no DBCS consideration)||~v125R~
-      -SO(0x0e)/SI(0x0f)(DBCS enclosure) is displayed by alternative char "?".||~v125R~
-       SO/SI is inserted when DBCS kbd input.                         ||~v125R~
-       For Cut&Paste DBCS re-evaluation is done each time.            ||~v125R~
-       DBCS is even byte string enclosed by SO and SI.                ||~v125R~
-       For ex, when paste EBCDIC line into UTF8/Locale code file,     ||~v125R~
-       Translation will be done but unless SO/SI is not included in the pasting data||~v125R~
-       DBCS translation is not done and SBCS translation is done.     ||~v125R~
-       When Joined 2 line split at DBCS position, DBCS may revive.    ||~v125R~
-       TFLow cmd also join line but insert single space between the line joined,||~v125R~
-       so DBCS may not revive.                                        ||~v125R~
-       Invalid DBCS-EBCDIC is displayed by ":;", confirm the code by vertical hex line.||~v125R~
-      -Binary mode by EB cmd or by the reason that file contains too may control char||~v125R~
-       dose not consider DBCS. Use ET cmd for later case.             ||~v125R~
-      -Find/Change cmd.                                               ||~v125R~
-         Regardless of kbd mode is UTF8 or not, search and replace by EBCDI Code on EBCDIC file.||~v125R~
-         No DBCS consideration for the file opened by binary mode.    ||~v125R~
-         -g (Grep), P'.' option is not supported.                     ||~v125R~
-      - "#" line cmd(Execute cmd described on the line) is not supported.||~v125R~
-                                                                      ||~v125R~
-   .EBCDIC translation.                                               ||~v124R~
-                                                                      ||~v124R~
-      You can use external converter such as ICU/iconv for EBCDIC translation.||~v124R~
-      CV cmd(XCV is embedded tool for translation) and xe3270 FTP utilize those converter.||~v124R~
-      Prepare parameter file for it, followings are description for the parameter file.||~v124R~
-      (See "EBCDIC file support" about editing direct EBCDIC file.)  ||~v125R~
-                                                                      ||~v124R~
-      ****************************************************************************||~v124R~
-                                                                      ||~v124R~
-        This file defines EBCDIC translation parameter                ||~v124R~
-        which is use for EBCDIC file support, CV edit cmd, xe3270 FTP, XCV utility.||~v125R~
-        Links to this file is CHARSET_CFG parameter in the xe3270.cfg for xe3270 FTP,||~v124R~||~v125R~
-        /MF:mapfile parameter for XCV cmd.                    ||~v124R~||~v125R~
-        For EBCDIC file support and CV edit cmd, specify on INI file. ||~v125R~
-            EBCDIC_cfg   ="" #("::xeebc.map")# EBCDIC translation config filename||~v125R~
-                                                                      ||~v124R~
-        There are 3 translation pattern.                              ||~v124R~
-         Other than required parameter for each case is ignored.      ||~v124R~
-         (a). Japanese translation using internal mapping table.      ||~v124R~
-              XCV and CV cmd has related parameter and those are adopted if specified.||~v124R~
-              For xe3270 FTP, you can specify those parameters in this file if required.||~v124R~
-              SJIS_OPT, SOSI_A2E and SOSI_E2A are the only effective parameters.||~v124R~
-         (b). Translation using external(ICU) or system(Windows NLS API or Linux iconv) converter.||~v124R~
-              You may use standalone tool, uconv of ICU or iconv of Linux.||~v124R~
-              Use this file to use these converter in xe3270 FTP.     ||~v124R~
-              This file may be used from CV and XCV cmd to adjust translation by those converter.||~v124R~
-              MAP_A2E/MAP_E2A is applied to the specific codepoint.   ||~v124R~
-              You can get the list of charset by "uconv -l" (ICU), "iconv -l"(iconv).    ||~v124R~||~v125R~
-              List of codepage of Windows or ICU converter is gotten by "xcv -List"||~126DR~
-              (It seems to be no DBCS EBCDIC codepage in Windows,     ||~v124R~
-               ICU will be required for DBCS user if pattern (a) above is not proper).||~v124I~
-         (c). Apply mapping after and download and before upload by s3270+IND$FILE transfer.||~v124R~
-              MAP_A2F is applied before upload and MAP_F2A is applied after download||~v124R~
-              to adjust the s3270 translation.                        ||~v124R~
-              Other option than MAP_A2F and MAP_F2A are ignored.      ||~v124R~
-                                                                      ||~v124R~
-        About 3270 FTP.                                               ||~v124R~
-          .For DBCS user.                                             ||~v124R~
-              IND$FILE dose not support DBCS(DoubleByteCharSet) translation.||~v124R~
-              (s3270 made by --enable-DBCS option translates screen data only.)||~v124R~
-              So, xe3270 translates FTP data using internal/external converter, then send/receive by binary mode.||~v124R~
-              (Binary mode is a little bit faster than text mode transfer).||~v124I~
-              It supports fixed-record-length DATASET MEMBER only.    ||~v124R~
-              For variable-record length DATASET(MEMBER) SBCS translation is applied,||~v124R~
-              and you can adjust it using (c) of above.               ||~v124R~
-                                                                      ||~v124R~
-              And, you have to specify DBCS= option in the xehosts file.||~v124R~
-              If DBCS=CP939 or DBCS=CP930, xe3270 uses internal translation table.(pattern(a))||~v124R~
-                                                                      ||~v124R~
-              If DBCS=OTHER and CONVERTER=1, xe3270 uses external/system converter(case(b)).||~v124R~
-              Parameters in this file are applied as following.       ||~v124R~
-                Upload to host.                                       ||~v124R~
-                  [PCcode]->{mbrtowc/LOCAL_CHARSET}->[UCS2]->{DBCS_CHARSET/SBCS_CHARSET}->[EBCDIC]||~v124R~
-                        ===>(binary mode xfer)===>HOST                ||~v124R~
-                Download from host                                    ||~v124R~
-                  [PCcode]<-{wcrtomb/LOCAL_CHARSET}<-[UCS2]<-{DBCS_CHARSET/SBCS_CHARSET}<-[EBCDIC]||~v124R~
-                        <===(binary mode xfer)<===HOST                ||~v124R~
-              MAP_A2E,MAP_E2A and SUBCHAR_xxx options are used to adjusts SBCS translation.||~v124R~
-              Codepoints defined there are mapped without using converter.||~v124R~
-                                                                      ||~v124R~
-          .For SBCS user.                                             ||~v124R~
-              s3270 supports some translation table by --charset option.||~v124R~
-              (See http://x3270.bgp.nu/s3270-man.html for supported charset)||~v124R~
-              It seems there are no need to install external converter for s3270 FTP.||~v124R~
-              If there are some code points which dose not fit to your environments,||~v124R~
-              use MAP_F2A and MAP_A2F with CONVERTER=0(case (c)).     ||~v124R~
-              Parameters in this file are applied as following.       ||~v124R~
-                Upload to host.                                       ||~v124R~
-                  [PCcode]->{MAP_A2F}->[PCcode]->(s3270)->[PCcode]===>(IND$FILE)->[EBCDIC]||~v124R~
-                Download from host                                    ||~v124R~
-                  [PCcode]<-{MAP_F2A}<-[PCcode]<-(s3270)<===[PCcode]<-(IND$FILE)<-[EBCDIC]||~v124R~
-                                                                      ||~v124R~
-              You can also use SBCS_CHARSET and MAP_A2E/MAP_E2A for fixed-record-length DATASET MEMBER.||~v124R~
-              If CONVERTER=1 and SBCS_CHARSET is specified,       ||~v124R~
-              SBCS translation is done like as DBCS translation for fixed-record-length DATASET MEMBER..||~v124R~
-              If SBCS_CHARSET is DEFAULTMAP, translation is done without using converter||~v124R~
-              by mapping table same as of s3270(ISO-8859-1 and CP037).||~v124R~
-                                                                      ||~v124R~
-        About Fixed-Record-Length.                                    ||~v124R~
-          When DATASET's RECFM attribute is fixed for xe3270 FTP,     ||~v124R~
-          when /F[xx][N] cmdline option is specified for XCV cmd,(No Fixed option for CV cmd)||~v124R~
-          long lines are split and short lines are expanded at translation to EBCDIC.||~v124R~
-          NO EndOfLineID(0x0a) is written(XCV cmd support /Mseteol option).||~v124R~
-          "N" option means last 8 byte of line-number-field.          ||~v124R~
-          Expanded line by insertion of SO/SI for DBCS is shrunk    ||~v124R~
-          to the LRECL if space is available before the line-number-field.||~v124R~
-          The line number field overflowed the LRECL will be cut if "N" specified.||~v124R~
-          For xe3270 FTP, set profile:NUMSTD by PRO cmd.              ||~v124R~
-          (Open a MENBER with /Mn option,then enter "PRO path save")  ||~v124R~
-                                                                      ||~v124R~
-          When translated from EBCDIC, lines are read by binary mode(0x0a is also translated)||~v124R~
-          and EOL-ID is written.                                      ||~v124R~
-                                                                      ||~v124R~
-        By /Mseteol option of XCV cmd EOL-ID is append to each line for both To and From EBCDIC case.||~v124R~||~v125R~
-            /mASCEOL: EOL-ID of EBCDIC file is Windows:0x0d0a, Linux 0x0a. Default is 0x15.||~v125R~
-            /mSETEOL: EOL-ID is appended to each output line. for x2B and B2x with RecordMode.||~v125R~
-          (                                                           ||~v125R~
-           Specify LRECL by /Fxx option                               ||~v125R~
-              /F[nn][N]:EBCDIC file is fixed record length. nn:LRECL(default=80).||~v125R~
-                        Input(B2x) or Output(x2B) LRECL.              ||~v125R~
-                        N: last 8 byte is line-number-filed. adjust SO/SI insertion.||~v125R~
-                           "N" is effective for m2b only.             ||~v125R~
-          )                                                           ||~v125R~
-          e.g.                                                        ||~v125R~||~v128R~
-           xcv /cm2b ms932 ibm939.txt  /mf:sjisebc.map /F80 /Mseteol /Masceol||~v125R~
-               (locale-->ebcdic, output LRECL=80, set ASCII-EOL-ID)   ||~v125R~
-           xcv /cm2b ms932 ibm939.txt /mf:sjisebc.map  /Masceol /Mseteol||~v125R~
-               (locale-->ebcdic, output line with appened ASCII-EOL-ID)||~v125R~
-           xcv /cb2m ebcf1 ascf2 /mf:sjisebc.map /F80 /Mseteol        ||~v125R~
-               (locale<--ebcdic, input LRECL=80, output line with appened ASCII-EOL-ID)||~v125R~
-           xcv /cb2m ebcf1 ascf2 /mf:sjisebc.map /Masceol             ||~v125R~
-               (locale<--ebcdic, input line with ASCII-EOL-ID         ||~v125R~
-                                                                      ||~v124R~
-      ## sample file ##                                               ||~v124R~
-                                                                      ||~v124R~
+   .EBCDIC file support.
+
+      -CPEB option is used for EDIt/SAVe/REPlace/CREate/APPend/CUT/END/COPy/MOVe/PASte cmd.
+         e.g. "e file1 cpeb:IBM1047"
+       The code page of the cpeb option is stored in the profile, so you only need to specify it at first time.
+       To reset the profile record, specify null, like "CPEB=".
+
+       When opening a directory list, the CPEB option is the default for files in the folder.
+       If you open with other options (CPLC/CPU8/CPAS), the profile will be overwritten.
+
+       The embedded XCV utility is a tool similar to Linux's iconv that converts EBCDIC<-->Unicode<-->locale code.
+       See the next "EBCDIC configuration file" about cfg file(default value is ::xeebc.map).
+       You can use multiple converters by specifying "Converter 1" (ICU) or "Converter 2" (CodePage on Windows, iconv on Linux) in the cfg file.
+
+      -EDIt/BROwse displays/edits directly without converting to locale code.
+       Displays codes in Unicode on screen, and in HEX display displays the EBCDIC code itself.
+       The line feed code is 0x15 unless /Mp(0x0d0a) /Mu(0x0a) is specified.
+       It is intended for editing mainframe EBCDIC files downloaded without conversion,
+       or for editing/displaying EBCDIC files mounted by NFS with the no conversion option.
+       It can also be used if you have access to Linux on IBM Z via sshfs.
+       The header line displays "=E", and in binary mode, "=e".
+       DBCS is not taken into account when opening in binary mode (EB command).
+       If there are too many control characters and it is determined to be binary file,
+       open with the ET command or with /Mt option.
+
+      -If you experience broken-gryph when using -wxe, try changing the charset in the Setup dialog to something other than Default.
+
+      -Line feed character.
+       PC files are 0x0a or 0x0d0a, but the EBCDIC line feed code is 0x15.
+       The following commands support line feed code and record mode LRECL specification.
+       However, SAVe can only be available in the case of specifying a file name.
+           EDIt/BROwse, END, CREate/REPlace, SAVe, COPy/MOVe.
+       When writing to the file by END/SAVe after "CV b2m", change the line feed character with /Mu, etc.
+       If you simply END/SAVe, the EBDCIC line feed character x15 will be written as is.
+
+       The Fxx in the COPy/MOVe command specifies the LRECL of the source file to copy.
+       The record mode ON/OFF and LRECL are saved in the profile,
+       but the line feed character must be specified each time, except for the default value.
+           /M{t|p|u|m|e|r} /Fnn[-mm]
+             e:EBCDIC-NL(0x15), r;RecordMode, nn:LRECL
+       e.g.
+           e ebcf1 CPEB                        : EBCDIC file TextMode(EOL-ID=0x15)
+           e ebcf1 CPEB  /mp                   : EBCDIC file TextMode(EOL-ID:0x0d0a)
+           e ebcf1 CPEB  /mr /F72              : EBCDIC file RecordMode(LRECL=72)
+                                                 Default LRECL is 80.
+           end /mu                             : Change EOL-ID to 0x0a.
+           end /mr /f80                        : Save as LRECL=80 RecordMode file(no EOL-ID).
+           s ebcf1 CPEB /mr /F80               : translate (From PC file) to EBCDIC file.
+                                                 Output is LRECL=80 RecordMode file.
+           rep u8f1 nx CPU8 /mp                : translate (from RecordMode EBCDIC file) to UTF8 file.
+                                                 EOL-ID:0x0d0a is appended to each line.
+
+       The EBCDIC line feed code is 0x15, but the converter may map it as follows:
+       EBC-NL(0x15)<-->ASCII-0x85, EBC-LF(0x25)<-->ASCII-LF(0x0a).
+       When opened the file by text mode, lines are split at 0x15 and 0x15 is not displayed.
+       (If you also want 0x0d15 to be a line feed, specify the /Mz option.)
+       When text mode, line feed chars are not displayed, so they are not subject to conversion by the CV command.
+       However, if you open the file in binary mode and run "CV b2m", those will be converted as 0x15->0x85 (0x0d will remain unchanged).
+       If 0x85 is not printable as a locale code, it will be converted to '?'.
+       If you are not using an external converter ("CONVERTER 0"), you can use two correction options to convert 0x15-->0x0a
+          cv b2m crlf / cv m2b crlf
+       Or, in the cfg file, specify
+          MAP_E2A  0x15: 0x0a   # EBCDIC 0x15(NL) -> ASCII 0a(LF)
+       In the case of M2B conversion, if opened in text mode, 0x0d0a/0x0a will not be converted,
+       and 0x15 will be output with the "e" of the output option /Mpe,
+       but in binary mode, the CRLF option and MAP_E2A are effective, and 0x0a-->0x15 conversion is enabled,
+       but 0x0d0a will become 0x0d15.
+       With the -m2b option of the xcv command, -Mseteol can be specified to convert 0d0a/0a->0x15.
+       Without Mseteol, 0d0a/0a will be ignored and 0x15 will not be output.
+       If you want both 0x0d15 and 0x15 to be line feede characters in B2M, specify the crlfz option.
+
+         :====>See below: (e.g.01) LineFeed character
+
+      -If you do not use a configuration file, the internal conversion table supports only one of the following, and B2B conversion is not possible.
+       Specify this with a command line parameter.
+       If you specify "CONVERTER 0" in the cfg file, you can also set the same option by SJIS_OPT.
+
+        xe /EBC[=]{KANA_EXT | ENG_EXT | DefaultMap | DefaultMapEuro | cfg=filepath}
+                KANA_EXT(=CP930=CP290+CP300)  : Japanese extension, Katakana
+                ENG_EXT(=CP939=CP1027+CP300)  : Japanese extension, alphanumeric lowercase
+                DefaultMap(=CP037)            : Latin-1, No Support of Kanji
+                DefaultMapEuro(=CP037+Euro)   : ebc-9f:u-20ac
+                cfg=filepath : The default value is specified in the ini file.
+
+       The default values are as follows:
+         (Windows)
+           In a Japanese environment, the code page is displayed on the screen as CP930 and JIS83.
+           In other environments, the code page is CP037 and No DBCS (SO/SI) consideration.
+         (Linux)
+           In a Japanese environment, the code page is displayed on the screen as EUC-JP (=CP930) and JIS83.
+           In other environments, the code page is CP037 and No DBCS (SO/SI) consideration.
+
+         :====>See below: (e.g.02) Example of internal conversion table
+
+      -COPy/MOVe/PASte commands convert from the specified code page to the destination code page,
+       if you don't want conversion, specify the "B" (Binary mode) suffix on the line command
+       (see Line Commands below)
+
+         :====>See below: (e.g.03) Copy/Move/Paste example
+
+      -SAVe/REPlace/CREate/APPend/CUT/END convert to the specified code page, then written to the file.
+       END command does not output a file if there are no changes, so specifying CPEB is meaningless.
+       COPy/MOVe/PASte commands with a specified file name use the profile record of that file.
+       If a record exists, there is no need to specify CPxx.
+       However, if you change the CONVERTER parameter in cfg from ICU to something other than ICU
+       or vice versa over session close, the naming will be different, which may result in the code page not being found.
+       If you get an "invalid code page" error, open the file with "CPEB=" (null specification) and reset the code page once.
+
+       Even if there is a conversion error in the output command, it will be output to the end of the file, but the profile will not be updated.
+       Conversion error characters will be replaced with alternative characters.
+       Alternative characters depend on the code page.
+       If no DBCS alternative characters are defined, the following will be used in this order:
+       u-fffd, u-ff1f (DBCS "?"), u-3000 (DBCS space).
+
+         :====>See below: (e.g.04) Example of Save/Replace/Cretae/Append/Cut/End
+
+      -The line commands "C"/"M" will also convert if the source and destination code pages are different.
+       If you do not want to convert, specify the "B" (Binary mode) suffix.
+       Binary mode does not support UTF8 files for either the source or destination.
+       When converting locale file to EBCDIC, spaces caused by TAB (0x09) expansion will be deleted.
+
+        Line Commands: Destination Line Format
+          {A|B}[B][C][n][,b][.s]
+            A : After, B: Before, B : Binary Mode, C : Copy with CID
+            n : repeat, b : bandle, s : skip
+
+       The line command "=" will also convert the source and destination code pages if they are different.
+       (When comparing with UTF8 and locale code files, EBCDIC-->UTF8 is compared after locale conversion)
+       If you want to compare in binary mode, specify the "B" (binary mode) suffix.
+
+        =[B][n][,b][.s]
+        ==[B]
+
+         :====>See below: (e.g.05) Example of line command
+
+      -The CV command can use B2M/M2B for CPLC (Locale code) files.
+       When "CONVERTER 0" is specified in the cfg file, Japanese conversion options such as JIS83 can be specified.
+       When using ICU/iconv, various EBCDIC code pages can be used
+       by specifying the CPEB:ebcidc-codepage parameter in B2M/M2B.
+       When performing B2M for an EBCDIC file opened, omitting CPEB will use the code page of that file.
+       If you want to change the code page of an EBCDIC file, use the B2B option.
+       However, because the code page attribute of the file is not been changed, the screen display shows the codes in the original code page.
+       To switch to a new code page, specify the SETCP option.
+
+         :====>See below: (e.g.06) CV command example
+
+      -EBC command.
+
+       You can check the current cfg file settings by "EBC".
+       You can also change the code page with "EBC SETCP".
+       With SETCP the original code is not changed. It is displayed according to the specified code page.
+       Therefore, if there are no other changes, the file will not be rewritten by a save operation.
+       The UNDo function will revert the code page set with the SETCP option of the EBC/CV command.
+       The code page set with the SETCP option is recorded in the profile when you save a file.
+       "EBC SETCP=" will return to the default code page.
+
+         :====>See below: (e.g.07) Example of EBC command
+
+      -xcv Utility
+       xcv is a command line tool included in the xe package that runs in the command prompt/Terminal emulator.
+       In B2M/M2B, "M" is the current local code page, and "B" is specified with /MF:mapfile or /CPEB:cp.
+       If you want to change the EBCDIC code page, use B2B.
+       The /Mseteol option enables you to add a line feed code when converting from PC to EBCDIC.
+           /mASCEOL: set line feed code of the EBCDIC file to Windows:0x0d0a, Linux 0x0a. Default:0x15.
+           /mSETEOL: Adds an line feed code to each output line. For x2B and record mode B2x.
+       The fixed length LRECL is specified with the /F option.
+           /F[nn][N]:EBCDIC file is fixed length. nn:LRECL(default=80).
+                     LRECL of B2x (input) or x2B (output) for EBCDIC file.
+                     N: The last 8 digits of the line are the line number field. Adjust the line length by inserting SO/SI.
+                        "N" is only valid for m2b.
+
+         :====>See below: (e.g.08) Example of xcv command
+
+      -About DBCS (Double-Byte Character Set)
+
+       In EBCDIC, double-byte characters are enclosed by SO(0x0e) and SI(0x0f). For example, 0e-40-40-0f is a DBCS space.
+       SO/SI encloses the whole string, not necessarily one character at a time.
+       In non-EBCDIC code pages, except UTF8, DBCS is a combination of a specific leading byte (>=0x80) and the next character.
+       It can be 3 bytes (EUC-SS3), or 4 bytes (GB18030). For example, the DBCS space is 81-40 in MS932.
+       Therefore, line length changes in EBCDIC<-->locale code page conversion.
+       DBCS enclosing char(SO:0x0e and SI:0x0f) are displayed as "?".
+       SO/SI is inserted when typing DBCS.
+       When "Cut and Paste" from an EBC file, only when it is enclosed in SO/SI (even bytes only) will it be evaluated as DBCS.
+       For example, when pasting into a UTF8/locale code file, the code will be converted, but if the SO/SI are not brought, it will be converted as SBCS.
+       After splitting a line at a DBCS position with the Split line command,
+       joining the lines with the Join line command can be evaluated as DBCS, but the Tflow command inserts a space
+       between the lines, so it will not go back to the original.
+       Invalid DBCS-EBCDIC is displayed on the screen as ":;". Check the hex code in vertical HEX display.
+
+       Specify the SO/SI handling in the command options.
+       The default value is specified in the cfg file. The Copy line command is lacking parameters of SO/SI option, so the cfg file is applied.
+         e.g. COPy ebcfile -sd  : When copying an EBCDIC file into the PC file screen, SO/SI will be deleted and the line length will change.
+              COPy ebcfile -sr  : When copying an EBCDIC file into the PC file screen, SO/SI will be replaced with spaces, and the line length will not change. Default value.
+              COPy pcfile  -si  : When copying a PC file into an EBCDIC file, SO/SI will be inserted, and the line length will change. Default value.
+              COPy pcfile  -sr  : When copying a PC file into an EBCDIC file, SO/SI will be inserted,
+                                  but if there are spaces before SO or after SI, that spaces will be deleted.
+       In cfg, set the default value.
+           SOSI_A2E     REP       # REP(="-sr") or INS ("=-si")
+           SOSI_E2A     DEL       # DEL(="-sd") or REP ("=-sr")
+
+      -0x09 is not treated as a tab. (0x05 is also not treated as a tab)
+       When in character insert mode, the Tab key does not insert 0x09 but jumps to next tab position like in character replace mode.
+
+      -In HEX input mode (Ctrl+F11), DBCS is not taken into account and each byte is sent to the screen.
+
+      -Find/Change command.
+       Search and replace in EBCDIC code regardless of kbd's UTF8 mode.
+       DBCS is not taken into account when opened in binary mode.
+       Option: -g (Grep) and search-word: P'.' are not supported.
+
+      -TFLow cmd
+       When lines are concatenated by TFLow command, a space is inserted at the concatenation point,
+       so that there is an odd number of chars, then usually the SO on the previous line and the SI on the next line will not reconstruct DBCS.
+
+      -The "#" line command (which executes what is on that line as a native command) is not supported.
+
+      -About fixed length records.
+
+       For the XCV command, if the /F[xx][N] command line option is specified (the CV command does not have the /F option),
+       when converting from PC to EBCDIC, long sentences are split and short sentences are padded with spaces up to the LRECL.
+       Also, newline characters are not written.
+       The N option in /F[xx][N] specifies that the last 8 chars of the line are the line number.
+       When a line is extended by inserting SO/SI during DBCS conversion, if there are spaces before the line number field
+       it will delete that spaces to keep the LRECL. If it is not possible
+       the line will be split, but if N is specified the line number field will be truncated.
+       When converting from EBCDIC to PC, fixed-length files are read in binary mode (ignoring line feed codes),
+       converted, and output with line feed codes added.
+
+*********************************************************************************************
+*(example)
+*********************************************************************************************
+
+!!!!!(e.g.01) Line feed character !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+          (1) Source data
+
+             e x1ebc0d15 /mb (binary mode display)
+
+ASCII Off.\src\xe\htmlwk\x1ebc0d15 =e(24-11-18 10:59)--------- 0000(0000)004b=Rep
+===>                                                                    ===>HALF
+****|*e*t**l*** TOP OF FILE ******* cp=CP930-Internal ***************************
+0000|00150025▪a0d15▪|
+    |ffff1ffff26f6ff01|
+    |001550025520515d5|
+****|*e*t**l*** END OF FILE ******* cp=CP930-Internal ***************************
+
+             e x1ebc0d15 (text mode display, newline at 0x15)
+
+EDIT---|G:\src\xe\htmlwk\x1ebc0d15 =E(24-11-18 10:59)--------- 001-(   1)-076=Rep
+===>                                                                    ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP930-Internal ***************************
+0001|0015↵
+    |ffff↵
+    |0015↵
+0002|0025▪a0d15▪↵
+    |ffff26f6ff0↵
+    |0025520515d↵
+****|*E*e**l*** END OF FILE ******* cp=CP930-Internal ***************************
+
+          (2) Binary mode "CV b2m"
+
+             e x1ebc0d15 /mb ; cv b2m
+               No crlf option. ebc:0x15-->ascii:3f, 0x25-->0x0a, 0x0d-->0x0d
+
+1 line convertede\htmlwk\x1ebc0d15 =e(24-11-18 10:59)--------- 0000(0000)004b=Rep
+===>                                                                    ===>HALF
+****|*e*t**l*** TOP OF FILE ******* cp=CP930-Internal ***************************
+0000*▪/c▪|
+    *33333333306363303|
+    *0015f0025a10415df|
+****|*e*t**l*** END OF FILE ******* cp=CP930-Internal ***************************
+
+             e x1ebc0d15 /mb ; cv b2m crlf
+               With crlf option. 0x15-->0x0a
+
+1 line convertede\htmlwk\x1ebc0d15 =e(24-11-18 10:59)--------- 0000(0000)004b=Ins
+===>                                                                    ===>HALF
+****|*e*t**l*** TOP OF FILE ******* cp=CP930-Internal ***************************
+0000*▪/c▪|
+    *33330333306363300|
+    *0015a0025a10415da|
+****|*e*t**l*** END OF FILE ******* cp=CP930-Internal ***************************
+
+          (3) Text file output after b2m, no newline code specified
+
+             e x1ebc0d15 ; cv b2m ; s x1ebc0d15.b2m.save ; e x1ebc0d15.b2m.save cplc /mb
+                The line feed code between the first and second lines is 0x0a, which is by 0x25-->0x0a/CP930 conversion
+
+===>                                                                       ===>HALF
+****|*b*t**l*** TOP OF FILE *******Lig:OFF *****************************************
+0000|0015▪0025▪a0d15▪▪|
+    |33331333306363301|
+    |001550025a10415d5|
+****|*b*t**l*** END OF FILE *******Lig:OFF *****************************************
+
+             e x1ebc0d15 ; cv b2m ; s x1ebc0d15.b2m.save ; e x1ebc0d15.b2m.save cplc
+               In text mode, line feed is 0x15, and when saving, EBCDIC line feed code 0x15 is written.
+
+ :UNIX filesrc\xe\htmlwk\x1ebc0d15.b2m.save =L(24-11-18 15:41)--- 001-(   1)-079=Rep
+===>                                                                       ===>HALF
+****|*L*t**l*** TOP OF FILE *******Lig:OFF *****************************************
+0001|0015▪0025↵
+    |333313333↵
+    |001550025↵
+0002|a0d15▪▪↵
+    |6363301↵
+    |10415d5↵
+****|*L*t**l*** END OF FILE *******Lig:OFF *****************************************
+
+          (4) Text file output after b2m, with line feed code specified.
+
+             e x1ebc0d15 ; cv b2m ; s x1ebc0d15.b2m.save.mu /mu ; e x1ebc0d15.b2m.save.mu cplc /mb
+               When reading a file, the newline character is 0x15. When saving, /mu will replace 0x15 with 0x0a (Linux newline character).
+
+ASCII Off.\src\xe\htmlwk\x1ebc0d15.b2m.save.mu =b(24-11-18 16:43)- 0000(0000)006b
+===>                                                                       ===>HALF
+****|*b*t**l*** TOP OF FILE *******Lig:OFF *****************************************
+0000|0015▪0025▪a0d15▪▪|
+    |33330333306363300|
+    |0015a0025a10415da|
+****|*b*t**l*** END OF FILE *******Lig:OFF *****************************************
+
+             e x1ebc0d15 ; cv b2m ; s x1ebc0d15.b2m.save.mu /mu ; e x1ebc0d15.b2m.save.mu cplc
+
+Vertical Hex display(YZ)\x1ebc0d15.b2m.save.mu =L(24-11-18 15:44) 001-(   1)-079=Ins
+===>                                                                       ===>HALF
+****|*L*t**l*** TOP OF FILE *******Lig:OFF *****************************************
+0001|0015↵
+    |3333↵
+    |0015↵
+0002|0025↵
+    |3333↵
+    |0025↵
+0003|a0d15↵
+    |63633↵
+    |10415↵
+****|*L*t**l*** END OF FILE *******Lig:OFF *****************************************
+
+             e x1ebc0d15 ; cv b2m ; s x1ebc0d15.b2m.save.mp /mp ; e x1ebc0d15.b2m.save.mp cplc /mb
+               /mp outputs the Windows newline character 0x0d0a. EBC:0d15 becomes ASCII:0d0d0a.
+
+EDIT---|G:\src\xe\htmlwk\x1ebc0d15.b2m.save.mp =b(24-11-18 20:15) 0000(0000)006b=Rep
+===>                                                                       ===>HALF
+****|*b*t**l*** TOP OF FILE *******Lig:OFF *****************************************
+0000|0015▪▪0025▪a0d15▪▪▪|
+    |3333003333063633000|
+    |0015da0025a10415dda|
+****|*b*t**l*** END OF FILE *******Lig:OFF *****************************************
+
+             e x1ebc0d15 ; cv b2m ; s x1ebc0d15.b2m.save.mp /mp ; e x1ebc0d15.b2m.save.mp cplc
+
+ :Mixed EndOfLine ID,will be unified to PC form at save-18 20:22) 001-(   1)-108=Ins
+===>                                                                       ===>HALF
+****|*L*t**l*** TOP OF FILE *******Lig:OFF *****************************************
+0001|0015↵
+    |3333↵
+    |0015↵
+0002|0025↵
+    |3333↵
+    |0025↵
+0003|a0d15▪↵
+    |636330↵
+    |10415d↵
+****|*L*t**l*** END OF FILE *******Lig:OFF *****************************************
+
+          (5) Output after binary mode b2m with crlf. (Line feed code cannot be specified for binary files)
+
+             e x1ebc0d15 /mb ; cv b2m crlf ; s x1ebc0d15.mb.b2mcrlf.save ; e x1ebc0d15.mb.b2mcrlf.save cplc /mb
+
+ASCII Off.\src\xe\htmlwk\x1ebc0d15.mb.b2mcrlf.save =b(24-11-18 15:48) 0000(0000)006b=Ins
+===>                                                                      ===>HALF
+****|*b*t**l*** TOP OF FILE *******Lig:OFF ****************************************
+0000|0015▪0025▪a0d15▪▪|
+    |33330333306363300|
+    |0015a0025a10415da|
+****|*b*t**l*** END OF FILE *******Lig:OFF ****************************************
+
+             e x1ebc0d15 /mb ; cv b2m crlf ; s x1ebc0d15.mb.b2mcrlf.save ; e x1ebc0d15.mb.b2mcrlf.save cplc
+
+ :Mixed EndOfLine ID,will be unified to PC form at save4-11-18 15:48) 001-(   1)-108=Ins
+===>                                                                      ===>HALF
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************
+0001|0015↵
+    |3333↵
+    |0015↵
+0002|0025↵
+    |3333↵
+    |0025↵
+0003|a0d15↵
+    |63633↵
+    |10415↵
+****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************
+
+          (6) /Mz option (both 0x15 and 0x0d15 as line feed)
+
+             e x1ebc0d15 /mze
+
+EDIT---|G:\src\xe\htmlwk\x1ebc0d15 =E(24-11-18 10:59)----- 001-(   1)-072=Rep
+===>                                                                ===>HALF
+****|*E*eu*l*** TOP OF FILE ******* cp=CP930-Internal ***********************
+0001|0015↵
+    |ffff↵
+    |0015↵
+0002|0025▪a0d15↵
+    |ffff26f6ff↵
+    |0025520515↵
+****|*E*eu*l*** END OF FILE ******* cp=CP930-Internal ***********************
+
+             e x1ebc0d15 /mze ; s x1ebc0d15.me ; e x1ebc0d15.me /mb ; hex
+
+EDIT---|G:\src\xe\htmlwk\x1ebc0d15.me =e(24-11-20 13:11)-- 0000(0000)0047
+===>                                                                ===>HALF
+****|*e*t**l*** TOP OF FILE ******* cp=CP930-Internal ***********************
+0000|00150025▪a0d15|
+    |ffff1ffff26f6ff1|
+    |0015500255205155|
+****|*e*t**l*** END OF FILE ******* cp=CP930-Internal ***********************
+
+
+!!!!!(e.g.02) Example of internal conversion table !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+          (1) Source data
+              Binary mode display. 0x15 is NL (New Line).
+
+"e x1ebc2 /m24 cplc"
+
+EDIT---|G:\src\xe\htmlwk\x1ebc2 =b(24-10 0000(0000)0035=Rep
+===>                                              ===>HALF
+****|*b*t**l*** TOP OF FILE *******Lig:OFF ****************
+0000|銹  ~`abcdefghijklmno▪|
+    |eff6fc766666666666666661|
+    |760066e0123456789abcdef5|
+0018|鋩  ~▪≠ ヤ▪▪㊧炎旧克▪▪|
+    |eff6fc788888888888888881|
+    |780086e0123456789abcdef5|
+0030|酖 ﾃﾆ~ﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏ▪|
+    |ecf6cc7cccccccccccccccc1|
+    |730036e0123456789abcdef5|
+0048|酥 ﾆﾆ~     涇▪▪▪▪▪|
+    |ecf6cc7ffffffffffffffff1|
+    |760066e0123456789abcdef5|
+0060|ﾑﾁﾗﾁﾕﾅ簀`翡鈬z▪EbEfH▪▪|
+    |dcdcdcec6ecee7046464e0|
+    |1171552503573ae525687f|
+****|*b*t**l*** END OF FILE *******Lig:OFF ****************
+
+          (2) CO930 (KANA_EXT)
+              0x81 is Japanese half-width katakana.
+              Japanese DBCS is surrounded by SO(0x0e) and SI(0x0f).
+
+"xe x1ebc2 cpeb -ebcKana_ext"
+
+EDIT---|G:\src\xe\htmlwk\x1ebc2 =E(24-10 001-(   1)-054=Rep
+===>                                              ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP930-Internal *****
+0001|X60-6F=-/abcdefgh▪,%_>?↵
+    |eff6fc76666666666666666↵
+    |760066e0123456789abcdef↵
+0002|X80-8F=]ｱｲｳｴｵｶｷｸｹｺqｻｼｽｾ↵
+    |eff6fc78888888888888888↵
+    |780086e0123456789abcdef↵
+0003|XC0-CF={ABCDEFGHI▪▪▪▪▪▪↵
+    |ecf6cc7cccccccccccccccc↵
+    |730036e0123456789abcdef↵
+0004|XF0-FF=0123456789▪▪▪▪▪▪↵
+    |ecf6cc7ffffffffffffffff↵
+    |760066e0123456789abcdef↵
+0005|JAPANESE-TEXT:?日本語?↵
+    |dcdcdcec6ecee7046464e0↵
+    |1171552503573ae525687f↵
+****|*E*e**l*** END OF FILE ******* cp=CP930-Internal *****
+
+
+          (3) CO939 (ENG_EXT)
+              0x81 is a lowercase English letter
+
+"xe x1ebc2 cpeb -ebcEng_ext"
+
+EDIT---|G:\src\xe\htmlwk\x1ebc2 =E(24-10 001-(   1)-054=Rep
+===>                                              ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP939-Internal *****
+0001|X60-6F=-/ｲｳｴｵｶｷｸｹ▪,%_>?↵
+    |eff6fc76666666666666666↵
+    |760066e0123456789abcdef↵
+0002|X80-8F=▪abcdefghiﾃﾄﾅﾆﾇﾈ↵
+    |eff6fc78888888888888888↵
+    |780086e0123456789abcdef↵
+0003|XC0-CF={ABCDEFGHI▪▪▪▪▪▪↵
+    |ecf6cc7cccccccccccccccc↵
+    |730036e0123456789abcdef↵
+0004|XF0-FF=0123456789▪▪▪▪▪▪↵
+    |ecf6cc7ffffffffffffffff↵
+    |760066e0123456789abcdef↵
+0005|JAPANESE-TEXT:?日本語?↵
+    |dcdcdcec6ecee7046464e0↵
+    |1171552503573ae525687f↵
+****|*E*e**l*** END OF FILE ******* cp=CP939-Internal *****
+
+
+          (4) CP037 (DefaultMap)
+              SBCS is Latin-1(IOS8859-1), Japanese DBCS is not displayed
+
+"xe x1ebc2 cpeb -ebcDefaultMap"
+
+EDIT---|G:\src\xe\htmlwk\x1ebc2 =E(24-10 001-(   1)-054=Rep
+===>                                              ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP037-Internal *****
+0001|X60-6F=-/ÂÄÀÁÃÅÇÑ¦,%_>?↵
+    |eff6fc76666666666666666↵
+    |760066e0123456789abcdef↵
+0002|X80-8F=Øabcdefghi«»ðýþ▪↵
+    |eff6fc78888888888888888↵
+    |780086e0123456789abcdef↵
+0003|XC0-CF={ABCDEFGHI­ôöòóõ↵
+    |ecf6cc7cccccccccccccccc↵
+    |730036e0123456789abcdef↵
+0004|XF0-FF=0123456789³ÛÜÙÚ▪↵
+    |ecf6cc7ffffffffffffffff↵
+    |760066e0123456789abcdef↵
+0005|JAPANESE-TEXT:▪áÂáÃçX▪↵
+    |dcdcdcec6ecee7046464e0↵
+    |1171552503573ae525687f↵
+****|*E*e**l*** END OF FILE ******* cp=CP037-Internal *****
+
+!!!!!(e.g.03) Copy/Move/Paste example !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+      (Example 1) No converter specified
+
+           (1) Source file
+
+EDIT---|x:\x11 =L(24-10-11 15:01)-------------------- 001-(   1)-067=Rep
+===>                                                           ===>HALF
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+..
+****|*L*t**l*** TOP OF FILE *******Lig:OFF *****************************
+0001|abcd↵
+    |6666↵
+    |1234↵
+****|*L*t**l*** END OF FILE *******Lig:OFF *****************************
+
+EDIT---|G:\src\xe\htmlwk\x256.c1c2 =l(24-10-11 14:58) 001-(   1)-067
+===>                                                           ===>HALF
+****|*l*t**l*** TOP OF FILE *******Lig:OFF *****************************
+0001|ﾁﾂ↵
+    |cc↵
+    |12↵
+****|*l*t**l*** END OF FILE *******Lig:OFF *****************************
+
+           (2) No CPEB option.
+
+EDIT---*x:\x11 =L(24-10-11 15:01)-------------------- 001-(   1)-067=Rep
+===>copy x256.c1c2                                             ===>HALF
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+..
+****|*L*t**l*** TOP OF FILE *******Lig:OFF *****************************
+0001|abcd↵
+    |6666↵
+    |1234↵
+0002*ﾁﾂ↵
+    *cc↵
+    *12↵
+****|*L*t**l*** END OF FILE *******Lig:OFF *****************************
+
+           (3) with CPEB option.
+                (If CPEB is recorded in the profile, it is not necessary to specify CPEB.)
+
+EDIT---*x:\x11 =L(24-10-11 15:01)-------------------- 001-(  20)-067=Rep
+===>copy x256.c1c2  cpeb                                       ===>HALF
+col |....+....1....+....2....+....3....+....4....+....5....+....6....+..
+****|*L*t**l*** TOP OF FILE *******Lig:OFF *****************************
+0001|abcd↵
+    |6666↵
+    |1234↵
+0002*ﾁﾂ↵
+    *cc↵
+    *12↵
+0003*AB↵
+    *44↵
+    *12↵
+****|*L*t**l*** END OF FILE *******Lig:OFF *****************************
+
+      (Example 2) Converter specified (ICU or iconv in the cfg file)
+
+           (1) Source file
+
+               copy from ("e x20cp930 cpeb:cp930")
+
+EDIT---|G:\src\xe\htmlwk\x20cp930 =E(24-10-11 15:33)- 001-(   1)-067=Rep
+===>                                                           ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CFG:cp930(ICU) ******************
+0001|abcd 1234↵
+    |66664ffff↵
+    |234501234↵
+****|*E*e**l*** END OF FILE ******* cp=CFG:cp930(ICU) ******************
+
+               Copy to ("e x20cp930 cpeb:cp939)
+
+EDIT---|G:\src\xe\htmlwk\x20cp939 =E(NEW FILE)------- 001-(   1)-067
+===>                                                           ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=cp939(ICU) **********************
+****|*E*e**l*** END OF FILE ******* cp=cp939(ICU) **********************
+
+           (2) copy (without CPEB option)
+               Converted from the source code page (CP930) to the destination code page.
+
+EDIT---|G:\src\xe\htmlwk\x20cp939 =E(NEW FILE)------- 001-(   1)-067
+===>copy x20cp930                                              ===>HALF
+a   |*E*e**l*** TOP OF FILE ******* cp=cp939(ICU) **********************
+****|*E*e**l*** END OF FILE ******* cp=cp939(ICU) **********************
+
+EDIT---*G:\src\xe\htmlwk\x20cp939 =E(NEW FILE)------- 001-(  13)-067
+===>                                                           ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=cp939(ICU) **********************
+0001*abcd 1234↵
+    *88884ffff↵
+    *123401234↵
+****|*E*e**l*** END OF FILE ******* cp=cp939(ICU) **********************
+
+           (3) copy (with CPEB option)
+               The code page of the CPEB option is the source code page and is converted to the destination code page.
+               In this case, since it is the same as the destination code page, no conversion is performed
+               and it is interpreted using the destination code page.
+               The display is different from the source.
+
+EDIT---*G:\src\xe\htmlwk\x20cp939 =E(NEW FILE)------- 001-(  25)-067
+===>copy x20cp930 cpeb:cp939                                   ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=cp939(ICU) **********************
+a   *abcd 1234↵
+    *88884ffff↵
+    *123401234↵
+****|*E*e**l*** END OF FILE ******* cp=cp939(ICU) **********************
+
+EDIT---*G:\src\xe\htmlwk\x20cp939 =E(NEW FILE)------- 001-(  21)-067
+===>                                                           ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=cp939(ICU) **********************
+0001*abcd 1234↵
+    *88884ffff↵
+    *123401234↵
+0002*ｲｳｴｵ 1234↵
+    *66664ffff↵
+    *234501234↵
+****|*E*e**l*** END OF FILE ******* cp=cp939(ICU) **********************
+
+!!!!!(e.g.04) Save/Replace/Cretae/Append/Cut/End の例 !!!!!!!!!!!!!!!
+
+           (1) Source file
+
+EDIT---|G:\src\xe\htmlwk\x20 =l(24-10-11 15:20)------ 001-(   1)-067=Rep
+===>                                                           ===>HALF
+****|*l*t**l*** TOP OF FILE *******Lig:OFF *****************************
+0001|ABCD 1234↵
+    |444423333↵
+    |123401234↵
+****|*l*t**l*** END OF FILE *******Lig:OFF *****************************
+
+           (2) SAVe command with CPEB option.
+
+EDIT---|G:\src\xe\htmlwk\x20 =l(24-10-11 15:20)------ 001-(   1)-067=Rep
+===>s x20ebc cpeb /me                                          ===>HALF
+****|*l*t**l*** TOP OF FILE *******Lig:OFF *****************************
+0001|ABCD 1234↵
+    |444423333↵
+    |123401234↵
+****|*l*t**l*** END OF FILE *******Lig:OFF *****************************
+
+           (3) Results
+
+EDIT---|G:\src\xe\htmlwk\x20ebc =E(24-10-11 15:26)--- 001-(   1)-067=Rep
+===>                                                           ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP930-Internal ******************
+0001|ABCD 1234↵
+    |cccc4ffff↵
+    |123401234↵
+****|*E*e**l*** END OF FILE ******* cp=CP930-Internal ******************
+
+!!!!!(e.g.05) Example of line command !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+      (Example 1) Copy EBCDIC-->CPU8
+
+===>                                                  ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP037-Internal *********
+c   |µ~stuvwxyz¡¿ÐÝÞ®^£¥·©▪▪¼½¾[]¯▪▪▪{ABCDEFGHI­ôöòóõ↵
+    |aaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbcccccccccccccccc↵
+    |0123456789abcdef0123456789abcdef0123456789abcdef↵
+****|*E*e**l*** END OF FILE ******* cp=CP037-Internal *********
+
+EDIT---|G:\src\xe\htmlwk\x1ebc1u8 =U(NEW FIL 001-(   1)-058
+===>                                                  ===>HALF
+a   |*U*t**l*** TOP OF FILE *******Lig:OFF, Unicomb: COMB *****
+****|*U*t**l*** END OF FILE *******Lig:OFF, Unicomb: COMB *****
+
+EDIT---|G:\src\xe\htmlwk\x1ebc1 =E(24-10-11  001-(   1)-058=Rep
+===>                                                  ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP037-Internal *********
+0001|µ~stuvwxyz¡¿ÐÝÞ®^£¥·©▪▪¼½¾[]¯▪▪▪{ABCDEFGHI­ôöòóõ↵
+    |aaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbcccccccccccccccc↵
+    |0123456789abcdef0123456789abcdef0123456789abcdef↵
+****|*E*e**l*** END OF FILE ******* cp=CP037-Internal *********
+
+             Result EBCDIC:CP0387-->UTF8.
+
+EDIT---*G:\src\xe\htmlwk\x1ebc1u8 =U(NEW FIL 001-(   1)-058
+===>                                                  ===>HALF
+****|*U*t**l*** TOP OF FILE *******Lig:OFF, Unicomb: COMB *****
+0001*µ~stuvwxyz¡¿ÐÝÞ®^£¥·©§¶¼½¾[]¯¨´×{ABCDEFGHI­ôöòóõ↵
+    *0b7777777770a0b0d0d0d0a50a0a0b0a0a0b0b0b0b550a0a0b0d744444
+    *05e3456789a010f000d0e0ee0305070907060c0d0ebd0f080407b12345
+****|*U*t**l*** END OF FILE *******Lig:OFF, Unicomb: COMB *****
+
+      (例2) Copy CPLC-->CPEB
+
+EDIT---|G:\src\xe\htmlwk\x1ebc1 =E(24-10-11  001-(   1)-058=Ins
+===>                                                  ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP037-Internal *********
+a   |µ~stuvwxyz¡¿ÐÝÞ®^£¥·©▪▪¼½¾[]¯▪▪▪{ABCDEFGHI­ôöòóõ↵
+    |aaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbcccccccccccccccc↵
+    |0123456789abcdef0123456789abcdef0123456789abcdef↵
+****|*E*e**l*** END OF FILE ******* cp=CP037-Internal *********
+
+EDIT---*G:\src\xe\htmlwk\x1lc =l(NEW FILE)-- 001-(   1)-058
+===>                                                  ===>HALF
+****|*l*t**l*** TOP OF FILE *******Lig:OFF ********************
+c   *abcd 1234↵
+    *666623333↵
+    *123401234↵
+****|*l*t**l*** END OF FILE *******Lig:OFF ********************
+
+             Result ASCII-->CPEB:CP037
+
+EDIT---*G:\src\xe\htmlwk\x1ebc1 =E(24-10-11  001-(   1)-058=Ins
+===>                                                  ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP037-Internal *********
+0001|µ~stuvwxyz¡¿ÐÝÞ®^£¥·©▪▪¼½¾[]¯▪▪▪{ABCDEFGHI­ôöòóõ↵
+    |aaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbcccccccccccccccc↵
+    |0123456789abcdef0123456789abcdef0123456789abcdef↵
+0002*abcd 1234↵
+    *88884ffff↵
+    *123401234↵
+****|*E*e**l*** END OF FILE ******* cp=CP037-Internal *********
+
+EDIT---*G:\src\xe\htmlwk\x1lc =l(NEW FILE)-- 001-(   1)-058
+===>                                                  ===>HALF
+****|*l*t**l*** TOP OF FILE *******Lig:OFF ********************
+0001*abcd 1234↵
+    *666623333↵
+    *123401234↵
+****|*l*t**l*** END OF FILE *******Lig:OFF ********************
+
+      (Example 3) Copy without conversion.
+
+EDIT---|G:\src\xe\htmlwk\x1ebc3 =E(24-10-11  001-(   1)-058=Ins
+===>                                                  ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP037-Internal *********
+c   |\▪STUVWXYZ²ÔÖÒÓÕ0123456789³ÛÜÙÚ▪↵
+    |eeeeeeeeeeeeeeeeffffffffffffffff↵
+    |0123456789abcdef0123456789abcdef↵
+****|*E*e**l*** END OF FILE ******* cp=CP037-Internal *********
+
+EDIT---|G:\src\xe\htmlwk\x1lc3 =l(NEW FILE)- 001-(   1)-058
+===>                                                  ===>HALF
+ab  |*l*t**l*** TOP OF FILE *******Lig:OFF ********************
+****|*l*t**l*** END OF FILE *******Lig:OFF ********************
+
+             As a result, the hex code will not change, and the display will follow the CP options of the destination.
+
+EDIT---|G:\src\xe\htmlwk\x1ebc3 =E(24-10-11  001-(   1)-058=Ins
+===>                                                  ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP037-Internal *********
+0001|\▪STUVWXYZ²ÔÖÒÓÕ0123456789³ÛÜÙÚ▪↵
+    |eeeeeeeeeeeeeeeeffffffffffffffff↵
+    |0123456789abcdef0123456789abcdef↵
+****|*E*e**l*** END OF FILE ******* cp=CP037-Internal *********
+
+EDIT---*G:\src\xe\htmlwk\x1lc3 =l(NEW FILE)- 001-(   1)-058
+===>                                                  ===>HALF
+****|*l*t**l*** TOP OF FILE *******Lig:OFF ********************
+0001*珮粤蒟跚韜▪▪▪▪▪▪     涇▪▪▪▪↵
+    *eeeeeeeeeeeeeeeeffffffffffffffff↵
+    *0123456789abcdef0123456789abcdef↵
+****|*l*t**l*** END OF FILE *******Lig:OFF ********************
+
+!!!!!(e.g.06) Example of CV command !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+      (Example 1) m2b
+
+EDIT---|G:\src\xe\htmlwk\x1ebc3cplc =L(24-10 001-(   1)-058=Ins
+===>cv m2b                                            ===>HALF
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ********************
+0001|$@ STUVWXYZ 0123456789↵
+    |2425555555523333333333↵
+    |4003456789a00123456789↵
+****|*L*t**l*** END OF FILE *******Lig:OFF ********************
+
+             The results are displayed in CPLC.
+
+1 line convertede\htmlwk\x1ebc3cplc =L(24-10 001-(   6)-058=Ins
+===>                                                  ===>HALF
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ********************
+0001*烟@粤蒟跚韜@     ↵
+    *e74eeeeeeee4ffffffffff↵
+    *0c02345678900123456789↵
+****|*L*t**l*** END OF FILE *******Lig:OFF ********************
+
+             Reopen with CPEB
+
+EDIT---*G:\src\xe\htmlwk\x1ebc3cplc =L(24-10 001-(   1)-058=Ins
+===>end;e x1ebc3cplc cpeb                             ===>HALF
+****|*L*t**l*** TOP OF FILE *******Lig:OFF ********************
+0001*烟@粤蒟跚韜@     ↵
+    *e74eeeeeeee4ffffffffff↵
+    *0c02345678900123456789↵
+****|*L*t**l*** END OF FILE *******Lig:OFF ********************
+
+             The results are displayed in CPEB.
+
+EDIT---|G:\src\xe\htmlwk\x1ebc3cplc =E(24-10 001-(   1)-058=Ins
+===>                                                  ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CP930-Internal *********
+0001|$@ STUVWXYZ 0123456789↵
+    |e74eeeeeeee4ffffffffff↵
+    |0c02345678900123456789↵
+****|*E*e**l*** END OF FILE ******* cp=CP930-Internal *********
+
+      (Example 2) b2b
+
+EDIT---|G:\src\xe\htmlwk\x1ebc4 =E(24-10-11  001-(   1)-058=Rep
+===>cv b2b cpeb:cp939                                 ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CFG:cp930(ICU) *********
+0001|$ STUVWXYZ abcd 01234↵
+    |e4eeeeeeee466664fffff↵
+    |002345678902345001234↵
+****|*E*e**l*** END OF FILE ******* cp=CFG:cp930(ICU) *********
+
+             The results are displayed by C930.
+
+1 line converted (cp930-->cp939),,Use \"SETCP\" option or Use
+"EBC SETCP=xxx" cmd to change current codepage(disply by it)
+****|*E*e**l*** TOP OF FILE ******* cp=CFG:cp930(ICU) *********
+0001*¥ STUVWXYZ ｱｲｳｴ 01234↵
+    *54eeeeeeee488884fffff↵
+    *b02345678901234001234↵
+****|*E*e**l*** END OF FILE ******* cp=CFG:cp930(ICU) *********
+
+      (Example 3) b2b setcp
+
+EDIT---|G:\src\xe\htmlwk\x1ebc4 =E(24-10-11  001-(   1)-058=Rep
+===>cv b2b cpeb:cp939 setcp                           ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CFG:cp930(ICU) *********
+0001|$ STUVWXYZ abcd 01234↵
+    |e4eeeeeeee466664fffff↵
+    |002345678902345001234↵
+****|*E*e**l*** END OF FILE ******* cp=CFG:cp930(ICU) *********
+
+             The results are displayed by CP939.
+
+1 line converted (cp930-->cp939) with SETCP  001-(   1)-058=Rep
+===>                                                  ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=cp939(ICU) *************
+0001*$ STUVWXYZ abcd 01234↵
+    *54eeeeeeee488884fffff↵
+    *b02345678901234001234↵
+****|*E*e**l*** END OF FILE ******* cp=cp939(ICU) *************
+
+!!!!!(e.g.07) Example of EBC command !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+      (Example 1)
+
+EDIT---|G:\src\xe\htmlwk\x1ebc4 =E(24-10-11 22:06 001-(   1)-063=Rep
+===>ebc                                                    ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CFG:cp930(ICU) **************
+0001|$ STUVWXYZ abcd 01234↵
+    |e4eeeeeeee466664fffff↵
+    |002345678902345001234↵
+****|*E*e**l*** END OF FILE ******* cp=CFG:cp930(ICU) **************
+
+=====>
+
+EBC SETCP=codepage; (cfg info:CONVERTER=1,default converter=cp930)ep
+===>                                                       ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CFG:cp930(ICU) **************
+0001|$ STUVWXYZ abcd 01234↵
+    |e4eeeeeeee466664fffff↵
+    |002345678902345001234↵
+****|*E*e**l*** END OF FILE ******* cp=CFG:cp930(ICU) **************
+
+      (Example 2) (037 is an alias for IBM037)
+
+EDIT---|G:\src\xe\htmlwk\x1ebc4 =E(24-10-11 22:06 001-(   1)-063=Rep
+===>ebc setcp=037                                          ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CFG:cp930(ICU) **************
+0001|$ STUVWXYZ abcd 01234↵
+    |e4eeeeeeee466664fffff↵
+    |002345678902345001234↵
+****|*E*e**l*** END OF FILE ******* cp=CFG:cp930(ICU) **************
+
+=====>
+
+EBCDIC codepage was changed to 037 from cp9322:06 001-(   1)-063=Rep
+===>                                                       ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=037(ICU) ********************
+0001|\ STUVWXYZ ÂÄÀÁ 01234↵
+    |e4eeeeeeee466664fffff↵
+    |002345678902345001234↵
+****|*E*e**l*** END OF FILE ******* cp=037(ICU) ********************
+
+!!!!!(e.g.08) xcv command example !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+      (Example 1) m2b. Running on =6 screen.
+
+EDIT---|G:\src\xe\htmlwk\x14 =l(24-10-12 10:30)----------------------------------------------------- 001-(   1)-114=Rep
+===>                                                                                                          ===>HALF
+****|*l*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001|ABCD 1234 abcd ↵
+    |444423333266662↵
+    |123401234012340↵
+****|*l*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+
+
+CMD----|::SO22 =l(24-10-12 10:40)------------------------------------------------------------------- 001-(   1)-114
+===>xcv -cm2b -cpeb:037 -mseteol -mf:c:\users\user1\xe_wd\xeebc.cv1 x14 x14ebc                                ===>HALF
+****|*l*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+0001|↵
+****|*l*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+
+=====>
+
+CMD----*::SO22 =l(24-10-12 10:40)------------------------------------------------------------------- 001-(   1)-114
+===>                                                                                                          ===>HALF
+0002*10:40:12 ===>> xcv -cm2b -cpeb:037 -mseteol -mf:c:\users\user1\xe_wd\xeebc.cv1 x14 x14ebc↵
+0003*xcv:V1.23(6): ICU .dll-suffix="",api-suffix="" ICU_DATA="c:\Windows\Globalization\ICU".↵
+0004*↵
+0005*xcv:V1.23(6): === m2b Process completed===↵
+****|*l*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+
+EDIT---|G:\src\xe\htmlwk\x14ebc =E(24-10-12 10:40)-------------------------------------------------- 001-(   1)-114=Rep
+===>                                                                                                          ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=037(ICU) ***********************************************************************
+0001|ABCD 1234 abcd ↵
+    |cccc4ffff488884↵
+    |123401234012340↵
+****|*E*e**l*** END OF FILE ******* cp=037(ICU) ***********************************************************************
+
+      (例2) b2b.
+
+EDIT---|G:\src\xe\htmlwk\x14ebc =E(24-10-12 10:40)-------------------------------------------------- 001-(  21)-114=Ins
+===>                                                                                                          ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=037(ICU) ***********************************************************************
+0001|ABCD 1234 abcd ↵
+    |cccc4ffff488884↵
+    |123401234012340↵
+****|*E*e**l*** END OF FILE ******* cp=037(ICU) ***********************************************************************
+
+CMD----*::SO22 =l(24-10-12 10:40)------------------------------------------------------------------- 001-(  38)-114
+===>xcv -cb2b -f:037 -t:930 x14ebc  x1ebc930 -mf:c:\users\sakstyle\xe_wd\xeebc.cv1                            ===>HALF
+****|*l*t**l*** TOP OF FILE *******Lig:OFF ****************************************************************************
+****|*l*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+
+=====>
+
+xcv -cb2b -f:037 -t:930 x14ebc  x1ebc930 -mf:c:\users\sakstyle\xe_wd\xeebc.cv1 が終了,rc=0(x00)----- 001-(   1)-114
+===>                                                                                                          ===>HALF
+0001*10:56:49 ===>> xcv -cb2b -f:037 -t:930 x14ebc  x1ebc930 -mf:c:\users\sakstyle\xe_wd\xeebc.cv1↵
+0002*xcv:V1.23(6): ICU .dll-suffix="",api-suffix="" ICU_DATA="c:\Windows\Globalization\ICU".↵
+0003*↵
+0004*xcv:V1.23(6): === b2b Process completed===↵
+****|*l*t**l*** END OF FILE *******Lig:OFF ****************************************************************************
+
+Vertical Hex display(YZ)\x1ebc930 =E(24-10-12 10:56)------------------------------------------------ 001-(   1)-114
+===>                                                                                                          ===>HALF
+****|*E*e**l*** TOP OF FILE ******* cp=CFG:cp930(ICU) *****************************************************************
+0001|ABCD 1234 abcd ↵
+    |cccc4ffff466664↵
+    |123401234023450↵
+****|*E*e**l*** END OF FILE ******* cp=CFG:cp930(ICU) *****************************************************************
+
+   .EBCDIC conversion configuration file
+
+
+      In addition to the specific internal conversion table,
+      EBCDIC file support allows the use of external converters such as ICU/WindowsApi/iconv.
+      When using the internal conversion table, you can also specify a specific EBCDIC conversion
+      without a cfg file by specifying a command line parameter.
+
+      The location of the cfg file is specified in the ini file. The default is ::xeebc.map
+
+            EBCDIC_cfg   ="" #("::xeebc.map")# EBCDIC translation config filename
+
+      In the XCV utility, this is specified by the /MF:mapfile parameter.
+
+      ****************************************************************************
+
+      There are two types of conversion patterns.
+          (a).Japanese conversion using internal tables.
+              In addition to specifying command line parameters, you can specify conversion options.
+              Options such as SJIS_OPT, SOSI_A2E, and SOSI_E2A are provided.
+          (b).Conversion using ICU or system converter(Windows API, Linux iconv).
+              You can use the uconv command for ICU and the iconv command for iconv.
+              List of converters can be obtained with "uconv -l" (ICU) or "iconv -l".
+              In Windows 11, ICU seems to be installed by default, but uconv.exe is not available.
+              If uconv is not available, try "xcv -list -ICU".
+              The Windows code page and ICU code page can be listed by "xcv -List".
+              Note:Windows code page 20290 is a Japanese Katakana extension,
+              but Japanese Kanji does not seem to be supported. If DBCS is required, use ICU.
+
+      Optional parameter.
+
+        #####################################################################################
+
+           CONVERTER      : Converter selection
+                            0 : Convert using internal tables only.
+                                MAP_E2A, MAP_A2E allows Character-by-character adjustment.
+                            1 : Convert using ICU (requires ICU to be installed)
+                            2 : Convert using iconv API on Linux, WideCharToMultibyte/MultiByteToWideChar on Windows.
+                              e.g.
+                                 CONVERTER   1           # use ICU converter
+
+        ## The following ICU_DLL_SUFFIX and ICU_API_SUFFIX are required for "CONVERTER 1",
+           but xe checks the system directory, so you probably don't need to specify them.
+           If an error occurs, please specify them.
+           (On Windows, check c:\Windows\System32, and on Linux, use "uconv --version" to check.)
+
+           ICU_DLL_SUFFIX : Suffix for ".dll" or ".so" library name.
+                              e.g.
+                                 ICU_DLL_SUFFIX   44
+           ICU_API_SUFFIX : Suffix for the ICU API name.
+                              e.g.
+                                 ICU_DLL_SUFFIX  _44
+
+        ## The next ICU_DATA does not need to be specified if c:\Windows\Globalization\ICU is OK on Windows 11.
+           It is not necessary to specify it on Linux if "uconv --version" is OK.
+           If the converter Open fails, search libicudata.so.xx then specify its directory.
+           When you have created your own ".cnv" file and placed it somewhere other than the default folder,
+           you will need to specify its location.
+           You can also set it in the environment variable ICU_DATA.
+
+           ICU_DATA
+                              e.g. (Linux)   ICU_DATA /system/usr/icu:/data/data/yourcnvs
+                                   (Windows) ICU_DATA w:\icu\icu562\icu\bin;w:\icu\icu481\icu\bin
+
+           DBCS_CHARSET   : Specifies the converter that supports DBCS in UCS<-->EBCDIC conversion.
+                            If this is not specified, all conversions will be SBCS mode.
+                            When "CONVERTER 0" is used, specify it in SJIS_OPT instead of DBCS_CHARSET.
+
+                              e.g.
+                                 DBCS_CHARSET cp939     #Japanese
+                                 DBCS_CHARSET cp933     #Korean Mixed EBCDIC
+                                 DBCS_CHARSET cp935     #Chinese(Simplified) Mixed EBCDIC
+                                 DBCS_CHARSET cp937     #Chinese(Traditional)Mixed EBCDIC
+
+           SBCS_CHARSET   : Specify the UCS2<-->EBCDIC SBCS converter.
+                            Not required if DBCS_CHARSET is specified.
+                            If "DefaultMap" is specified, the internal table equivalent to ISO8859-1<-->EBCDIC of CP037 is used.
+                            "DefaultMapEuro" is equivalent to CP1140, and converts ebc-9f to u-20ac (Euro Sign) instead of u00a4 (Currency Sign).
+                            If "CONVERTER 0" is specified, only DEFAULTMAP/DeafultMapEuro can be specified, and DBCS_CHARSET cannot be specified.
+                            If "CONVERTER 1" is specified, there are converters that define 9f-->20ac (Euro sign)
+                            such as cp037 vs cp1140 and cp273 vs cp1141, so use them appropriately.
+
+                              e.g.
+                                 SBCS_CHARSET DefaultMap
+                                 SBCS_CHARSET CP1140     #ICU; EBCDIC 037+Euro
+                                 SBCS_CHARSET 500        #Windows codepage;IBM EBCDIC International
+
+           LOCAL_CHARSET  : Name of the Unicode<-->PC code page converter.
+                            If not specified, the code page will be determined from the environment variables, etc.
+                            e.g.
+                                LOCAL_CHARSET   437          # Windows codepage
+                                LOCAL_CHARSET ISO-8859-1     # Linux, iconv converter
+
+           MAP_E2A/MAP_A2E: Specifies the SBCS conversion adjustment for each code point.
+                            Only effective when "CONVERTER 0" is used.
+                            E2A is effective for "CV b2m" but has no effect on "CV m2b".
+                            The inverse of E2A must be specified separately by A2E.
+                              e.g.
+                                 MAP_E2A  0xa0:0xaf
+                                 MAP_A2E  0xaf:0xa0
+                                 MAP_E2A  0xa1:~      # EBCDIC 0xa1 -> ASCII tilde
+                                 MAP_E2A  0xa1:u0101  # Uxxxx format is target of MAP_E2A only
+                                 MAP_A2E     ~:0xa1   # EBCDIC 0xa1 <- ASCII tilde
+
+                            If you use SJIS_OPT KANA_EXT/ENG_EXT, you need to be careful when you set Ascii>0x80 in E2A.
+                            In ShiftJis, 0x81<-->0x9f, 0xe0<-->0xfc, and in EUC-JP, 0xa1<-->0xfe are defined
+                            as the first byte of Japanese DBCS, so if you M2B the output of B2M, there is a possibility that SBCS will be mistakenly converted to DBCS.
+                            For example, the following example is thought to be intended to swap ebc-15 and ebc-25.
+                                MAP_E2A   0x15:0x0a
+                                MAP_E2A   0x25:0x85
+                                MAP_A2E   0x0a:0x15
+                                MAP_A2E   0x85:0x25
+                            However, since 0x85 is the first byte of SJIS DBCS.
+                            So, the B2M output 0x85xx is considered Japanese DBCS when combined with the byte following 0x85.
+
+           SUBCHAR_0a     : Controls the output of 0x0a (line feed code) when converting to a PC code page.
+                            Parameter valid only for pattern (b)-Use external converter above.
+                            1 : Replace 0x0a with converted SBCS alternative character.
+                            0 : Output 0x0a as it is. (Default value)
+
+           SUBCHAR_S2D    : When converting to a PC code page, is EBCDIC SBCS->multibyte conversion allowed?
+                            This parameter is only valid for pattern (b)-Use external converter.
+                            For example, in cp037, ebc-a7==>u-00a7, but in cp932, "CV b2m" results in u-00a7==> 0x8198 (Double-Byte).
+                            If you set "SUBCHAR_S2D 1", it will be u-00a7==> '?'.
+                            1 : Replace with SBCS alternative character.
+                            0 : Allow multibyte output. (Default value)
+
+           SJIS_OPT       : Specifies SJIS conversion options.
+                            This parameter is only valid for pattern (a)-Use internal table.
+                            The XCV/CV command has optional parameter with the same effect,
+                            and the command parameter specification takes precedence.
+
+                            ENG_EXT: Japanese English Lowercase Extended (CP939=CP300+CP1027)
+                            KANA_EXT: Japanese Katakana Extended (CP930=CP300+CP290)
+
+                            IBM: Maps EBCDIC kanji to the SJIS-IBM area (default value)
+                            NEC: Maps EBCDIC kanji to the SJIS-NEC area
+                            JIS78: SJIS 1978 version
+                            JIS83: SJIS 1983 version (default value)
+                              e.g.
+                                 SJIS_OPT      NEC
+                                 SJIS_OPT      JIS78
+                                 SJIS_OPT      KANA_EXT
+
+           SOSI_A2E       : SO/SI setting option when converting DBCS to EBCDIC.
+                            The XCV/CV/SAVe/REPlace/COPy/... commands have optional parameters with the same effect which take precedence.
+                            The default value is INS.
+
+                            INS  : Inserts SO(0xe), SI(0x0f). The output is expanded.
+                            REP  : Replaces spaces before and after the DBCS string if there are any, inserts if not.
+                            SHIFT: In addition to REP, absorbs the expansion caused by the insertion by deleting the trailing spaces.
+                              e.g.
+                                 SOSI_A2E      REP
+
+           SOSI_E2A       : How SO/SI is handled when converting DBCS from EBCDIC.
+                            Commands such as XCV/CV/SAVe/REPlace/COPy/... have optional parameters with the same effect which takes precedence.
+
+                            DEL : Delete SO/SI. This shortens the output line length.
+                            REP : Replace SO/SI with ASCII space (default).
+
+
+      ## Sample file ##
+
         xeebc.map                                                     ~
-        ##################################################################################
-        #                                                             
-        #   CONVERTER      : Converter selection                      
-        #                    0 : SBCS translation by MAP_A2F and MAP_F2A mapping
-        #                        Other option than MAP_A2F and MAP_F2A will be ignored.
-        #                    1 : converter is ICU (ICU installation is required)
-        #                    2 : converter is iconv(Linux) or WideCharToMultibyte/MultiByteToWideChar(Windows)
-        #                                                             
-        #                    For 1 and 2, apply CHARSET_DBCS, CHARSET_DBCS (LOCAL_CHARSET)
-        #                    with  optional adjustment by MAP_E2A and MAP_A2E.
-        #                    MAP_A2F and MAP_F2A will be ignored.     
-        #                      sample                                 
-        #                         CONVERTER   1           # apply converter
-        #   ICU_DLL_SUFFIX : .dll/.so library name suffix.            
-        #                    This is required if "CONVERTER 1".       
-        #                    Required when following default is not proper.||~v126R~
-        #                       Android     : /system/lib             ||~v126R~
-        #                       Linux       : /usr/local/lib:usr/lib:$(LD_LIBRARY_PATH)||~v126R~
-        #                       Linux-64    : /usr/local/lib64:usr/lib64:$(LD_LIBRARY_PATH)||~v126R~
-        #                       Windows     : GetSystemDirectory();GetWindowsDirectory();$(PATH)||~v126R~
-        #                                     e.g.    GetSystemDirectory() : c:\Windows\system32||~v126R~||~v128R~
-		#   									      GetWindowsDirectory(): c:\Windows||~v126R~
-        #                      sample                                 
-        #                         ICU_DLL_SUFFIX 44          # if dllname is icuuc40.dll||~v125R~
-        #   ICU_API_SUFFIX : ICU api name suffix.                     
-        #                    This is required if "CONVERTER 1".       
-        #                    Required when default dll/so library is not available.||~v126R~
-        #                    For ex, real name of "ucnv_open" is ucnv_open_4_0 on icuuc40.dll||~126DR~
-        #                      sample                                 
-        #                         ICU_DLL_SUFFIX _44        # if dllname is icuuc40.dll||~v125R~
-        #                    See followings if you have source package.(ICU v44)||~v125R~
-        #                         $(icu)/source/common/unicode/uvernum.h||~v125R~
-		#		                      #define        U_ICU_VERSION_SHORT         "44"||~v125R~
-		#			                  #define        U_ICU_ENTRY_POINT_RENAME(x)  x ## _44||~v125R~
-        #                                                             
-        #   ICU_DATA       : Use when you installed your own converter(.cnv file)||~126DI~
-        #                     e.g.(Linux)   ICU_DATA /system/usr/icu:/data/data/yourcnvs||~126DI~||~v128R~||~v128R~||~v129R~
-        #                         (Windows) ICU_DATA w:\icu\icu562\icu\bin;w:\icu\icu481\icu\bin||~v128R~||~v128R~||~v129R~
-        #                    Put your cnv file into sub-folder yourcnvs/icudt__l  ; __ is version like as icudt44l.||~126DI~
-        #                    (Windows) search ICU library(dll) also in ICU_DATA folder and in ICU_DATA environment variable.||~v129R~
-        #                    (Linux) set path to the .so to LD_LIBRARY_PATH.||~v129R~
-        #                                                             ||~126DI~
-        #   DBCS_CHARSET   : Defines EBCDIC charset name to translate UCS<-->EBCDIC which supports DBCS.||~v125R~
-        #                    You can get the list of charset by "uconv -l" (ICU), "iconv -l"(iconv).||~v125R~
-        #                    If missing this parameter All chars are translated byte by byte.
-        #                    (Note) DBCS=OTHER parameter in the xehosts file is required for xe3270 FTP.
-        #                      sample                                 
-        #                         DBCS_CHARSET cp939     #Japanese     ||~v124I~
-        #                         DBCS_CHARSET cp933     #Korean Mixed EBCDIC||~v124I~
-        #                         DBCS_CHARSET cp935     #Chinese(Simplified) Mixed EBCDIC||~v124I~
-        #                         DBCS_CHARSET cp937     #Chinese(Traditional)Mixed EBCDIC||~v124I~
-        #   SBCS_CHARSET   : Defines EBCDIC charset name to translate UCS2<-->EBCDIC
-        #                    You can get the list of charset by "uconv -l" (ICU), "iconv -l"(iconv).||~v125R~
-        #                    If DBCS_CHARSET can translate also SBCS, no need to specify SBCS_CHARSET.
-        #                    "DEFAULTMAP" means to use internal mapping table corresponding to
-        #                    iso8859-1<-->EBCDIC US same as IBM37,swaplfnl.||~126DR~
-        #                    ibm37,swaplfnl is s390 standard.         ||~126DR~
-        #                      EBCDIC-0x25<-->ASCII-0x85, EBCDIC-0x15<-->ASCII<-->0x0a||~126DR~
-        #                      sample                                 
-        #                         SBCS_CHARSET CP037          #use external converter
-        #                         SBCS_CHARSET DEFAULTMAP     #use internal map corresponding to ISO-8859-1 and CP037
-        #                      For CONVERTER=2 on Windows.            ||~v127I~
-        #                        SBCS_CHARSET 1047           #EBCDIC latin||~v127I~
-        #   LOCAL_CHARSET  : defines local charset name to translate UCS2<-->local codepage
-        #                    If SBCS_CHARSET is DEFAULTMAP, this parameter is ignored
-        #                    If missing, Codepage is determined by environment variable(LANG, codepage).||~v125R~
-        #                    For Axe, ICU is used.                    ||~v126R~
-        #                      sample                                 
-        #                         LOCAL_CHARSET ISO-8859-1     #use external converter
-        #                         LOCAL_CHARSET SHIFT_JISX0213 #for iconv,0xe0-0xfc is not DBCS if "SJIS" is specified
-        #                      Specify CodePage Number on Windows.    ||~v127I~
-        #                        LOCAL_CHARSET   932          #JP     ||~v127I~
-        #   MAP_E2A/MAP_A2E: mapping to adjust SBCS translation for each codepoint.
-        #                    For ex,. 0x7e is tilde on iso-8859-1 upper-bar on cp897.
-        #                    And 0xa0 is upper-bar and 0xa1 is tilde on CP1027(EBCDIC),
-        #                    0xa1 is upper-bar and 0xa0 is tilde on cp290(EBCDIC),
-        #                    When CP1027 is not supported by s3270 specify as following
-        #                    with "s3270 -charset CP290"              
-        #                      sample                                 
-        #                         MAP_E2A  0xa0: 0xaf   # EBCDIC 0xa0 -> ASCII upper-bar
-        #                         MAP_E2A  0xa1: ~      # EBCDIC 0xa1 -> ASCII tilde
-        #                         MAP_A2E  0xaf: 0xa0   # EBCDIC 0xa0 <- ASCII upper-bar
-        #                         MAP_A2E     ~: 0xa1   # EBCDIC 0xa1 <- ASCII tilde
-        #   MAP_A2F/MAP_F2A: Effective for 3270 FTP case (c) only.    
-        #                    For the purpose of adjusting translation by s3270+IND$FILE
-        #                    MAP_A2F is applied to ASCII file to be upload to host,
-        #                    MAP_F2A is applied to ASCII data downloaded from host.
-        #                      sample                                 
-        #                         MAP_A2F  0xaf: ~      # upload 0xaf(upper bar) as 0x7e(tilde)
-        #                         MAP_F2A  0x1f: .      # convert downloaded 0x1f to printable char
-        #   SUCHAR_SBCS    : substitution character by unicode for the case single byte translation error.
-        #                    default is U001a.                        
-        #   SUCHAR_DBCS    : substitution character by unicode for the case double byte translation error.
-        #                    default is Ufffd.                        
-        #                    ICU subchar of codepage->unicode translation is fixed to 0x1a and 0xfffd.
-        #                    ICU subchar of codepage<-unicode translation is defined on each .ucm file of ICU.
-        #                    xe accept both for EBCDIC<->unicode  and local codepage<->unicode if specified.
-        #                    So, SUBCHAR_SBCS and SUBCHAR_DBCS is applied to following 2 case.
-        #                      LOCAL_CHARSET is not specified.(wcr2mb and mbrtowc are used)
-        #                      "CONVERTER 2" is specified.(system converters are used)
-        #                    If xe detected error, output is result of translation of this substitution char.
-        #                      sample                                 
-        #                         SUBCHAR_SBCS  0x003f       # "?" for translation err
-        #                         SUBCHAR_DBCS  0x30fb       # EBCDIC 0x4345 in CP939
-        #                    For other than ICU, default value Ufffd and U001a may not be valid for the codepage.
-        #                    In those case original code will be left. You would be better to
-        #                    specify SUBCHAR_xxxx parameter.          
-        #   SUBCHAR_0a     : control converter's output 0x0a when translate to pc-codepage.
-        #                    1 : replace by SBCS substitution char.   
-        #                    0 : output 0x0a. (Default)               
-        #   SUBCHAR_S2D    : replace converter output by substitution char when SBCS is translated to pc-codepage DBCS.
-        #                    1 : replace by SBCS substitution char.   
-        #                    0 : allow multibyte output. (Default)    
-        #   SJIS_OPT       : Specify options for SJIS(Japanese) translation.
-        #                    Effective only for case (a) of xe3270 FTP(for the case DBCS=CP939 or CP930 in the xehosts file)
-        #                    For CV and XCV cmd, cmdline parameter override this parameter.
-        #                    IBM  :map EBCDIC kanji to SJIS-IBM area (Default)
-        #                    NEC  :map EBCDIC kanji to SJIS-NEC area  
-        #                    JIS78:SJIS 1978 version                  
-        #                    JIS83:SJIS 1983 version (Default)        
-        #                    ENG_EXT :Japanese English Extension(CP939=CP1027)||~v125R~
-        #                    KANA_EXT:Japanese Katakana Extension(CP930=CP290)||~v125R~
-        #                      sample                                 
-        #                         SJIS_OPT      NEC                   
-        #                         SJIS_OPT      JIS78                 
-        #                         SJIS_OPT      KANA_EXT              ||~v125R~
-        #   SOSI_A2E       : SO/SI setting option when translate DBCS to EBCDIC
-        #                    It can be overridden command option of CV/XCV/SAVe/REPlace/COPy/... cmd.||~v125R~
-        #                    Default is SHIFT for xe3270 FTP, INS for the else.||~v125R~
-        #                                                             ||~v125R~
-        #                    INS  :insert SO(0xe) and SI(0x0f) enclosing DBCS string. Output may expand.
-        #                    REP  :replace boundary space if exist, else insert.
-        #                    SHIFT:(xe3270 Only) more over REP operation, delete following space by the inserted count.||~v125R~
-        #                      sample                                 
-        #                         SOSI_A2E      REP                   ||~v125R~
-        #   SOSI_E2A       : SO/SI treatment when translate DBCS from EBCDIC
-        #                    It can be overridden command option of CV/XCV/SAVe/REPlace/COPy/... cmd.||~v125R~
-        #                                                             ||~v125R~
-        #                    DEL  :delete SO and SI. Output may shrink.
-        #                    REP  :replace SO and SI by ASCII space. (Default)
-        #                                                             
-        ##########################################################    
-        # CONVERTER             1     # 0:s3270 translation, 1:ICU, 2:iconv/WindowsAPI||+v124R
-        # ICU_DLL_SUFFIX      44      # ICU dllname suffix            ||~v125R~
-        # ICU_API_SUFFIX      _44     # ICU apiname suffix            ||~v125R~
+        ###########################################################################
+        # CONVERTER             1     # 0:Internal Table, 1:ICU, 2:iconv/WindowsAPI||+v124R
+        # ICU_DLL_SUFFIX      44      # ICU dllname suffix
+        # ICU_API_SUFFIX      _44     # ICU apiname suffix
         # DBCS_CHARSET        cp939   #(Linux)EBCDIC Japanese English lower-case letter extension.~||+v124R
-        # DBCS_CHARSET        nnnn    #(Windows)No corresponding Windows Codepage||+v124I
-        # SBCS_CHARSET        cp037   #(Linux)EBCDIC-US               ||+v124R
-        # SBCS_CHARSET        cp939                                   
-        # SBCS_CHARSET        CP037   #Linux                          
-        # SBCS_CHARSET        37      #Windows Codepage for CP037(EBCDIC US)
+        # SBCS_CHARSET        cp037   #(ICU)EBCDIC-US               ||+v124R
+        # SBCS_CHARSET        37      #(Windows)ECDIC-US              ||+v124I
+        # SBCS_CHARSET DefaultMapEuro # for "Converter 0"
         # LOCAL_CHARSET    ISO-8859-1 #(Linux)Latin-1                 ||+v124R
         # LOCAL_CHARSET    28591      #(Windows Codepage) for ISO-8859-1||+v124R
-        #                                                             
-        #     MAP_A2F    0xaf: ~      # upload 0xaf(upper bar) as 0x7e(tilde)
-        #     MAP_A2F    0x30: 0x31   # upload 0xaf(upper bar) as 0x7e(tilde)
-        #     MAP_A2F    0x31: 0x30   # upload 0xaf(upper bar) as 0x7e(tilde)
-        #     MAP_F2A    0x1f: .      # convert downloaded 0x1f to printable char
-        #     MAP_F2A    0x31: 0x30   # upload 0xaf(upper bar) as 0x7e(tilde)
-        #     MAP_F2A    0x30: 0x31   # upload 0xaf(upper bar) as 0x7e(tilde)
-        #     MAP_F2A       {: }      # upload 0xaf(upper bar) as 0x7e(tilde)
-        #     MAP_F2A       }: {      # upload 0xaf(upper bar) as 0x7e(tilde)
-        #                                                             
-        #     MAP_E2A    0xa2: 0x5c   # Yen sign and backslash        
-        #     MAP_A2E    0x5c: 0xa2   #                               
-        #     MAP_E2A    0xa1: ~      # tilde and upper bar           
-        #     MAP_A2E       ~: 0xa1   #                               
-        #     MAP_E2A    0xa0: ?      # tilde and upper bar           
-        #                                                             
-        #     MAP_E2A    0x25: ?      # avoid 0x0a generation         
-        #     MAP_E2A    0x4a: ?      # Cent, avoid DBCS output by CP939
-        #     MAP_E2A    0x5f: ?      # Not , avoid DBCS output by CP939
-        #     MAP_E2A    0xb1: ?      # Pond, avoid DBCS output by CP939
-        #                                                             
-        #     MAP_E2A    0x31: 1      # Pond, avoid DBCS output by CP939
-        #     MAP_E2A    0x32: 2      # Pond, avoid DBCS output by CP939
-        #     MAP_E2A    0x33: 3      # Pond, avoid DBCS output by CP939
-        #                                                             
-        #   SOSI_A2E   INS : SOSI setting option when translate DBCS to EBCDIC
-        #   SUBCHAR_DBCS    0x30fb                                    
-        #   SUBCHAR_SBCS    0x1a                                      
-        #   SUBCHAR_0a     1  # replace by SBCS substitution char.    
-        #   SUBCHAR_S2D    1  # replace converter output by substitution char when SBCS is translated to pc-codepage DBCS.
+        #
+        #     SJIS_OPT     ENG_EXT    # ENG_EXT/KANA_EXT
+        #     SJIS_OPT     NEC        # IBM/NEX/JIS78/JIS83
+        #
+        #     MAP_E2A    0xa2: 0x5c   # Yen sign and backslash
+        #     MAP_A2E    0x5c: 0xa2   #
+        #     MAP_E2A    0xa1: ~      # tilde and upper bar
+        #     MAP_A2E       ~: 0xa1   #
+        #     MAP_E2A    0xa0: ?      # tilde and upper bar
+        #
+        #   SOSI_A2E   INS            # INS/REP/SHIFT
+        #   SOSI_E2A   DEL            # DEL/REP
+        #   SUBCHAR_0a     1          #1/0 replace by SBCS substitution char.
+        #   SUBCHAR_S2D    1          #1/0 replace converter output by sub-char when SBCS is translated to pc-DBCS.
         ##################################################################################||~v124R
-        #                                                             ||~v125R~
-        ## Use ICU , SBCS codepage                                    ||~v125R~
-        #                                                             ||~v125R~
-        #        CONVERTER          1                                 ||~v125R~
-        #        ICU_DLL_SUFFIX    44                                 ||~v125R~
-        #        ICU_API_SUFFIX   _44                                 ||~v125R~
-        #        SBCS_CHARSET     cp1047          //EBCDIC Latin/1 Open System(iso-8859-1)||~v125R~
-        #                                                             ||~v125R~
-        ## Use ICU , DBCS codepage                                    ||~v125R~
-        #                                                             ||~v125R~
-        #        CONVERTER          1                                 ||~v125R~
-        #        ICU_DLL_SUFFIX    44                                 ||~v125R~
-        #        ICU_API_SUFFIX   _44                                 ||~v125R~
-        #        DBCS_CHARSET     cp1388          //Chinese simplified. superset of cp935||~v125R~
-        #                                                             ||~v125R~
-        ## Use API (Windows:MultiByteToWideChar/WideCharToMultibute)  ||~v125R~
-        #                                                             ||~v125R~
-        #        CONVERTER          2                                 ||~v125R~
-        #        SBCS_CHARSET       20924        //EBCDIC Latin/1 Open System(1047+Euro)||~v125R~
-        #                                                             ||~v125R~
-        ## Use API (Linux:iconv)                                      ||~v125R~
-        #                                                             ||~v125R~
-        #        CONVERTER          2                                 ||~v125R~
-        #        SBCS_CHARSET       cp1047                            ||~v125R~
-        #                                                             ||~v125R~
-        ##################################################################################||~v125R~
-                                                                      ~
-#endif                                                                ||~v124R~
-                                                                      ||~v124R~
+        #
+        ## Use Internal mapping table
+        #
+        #        CONVERTER          0
+        #        SJIS_OPT           KANA_EXT
+        #        MAP_E2A            0x15:0x0a
+        #
+        ## Use ICU , DBCS codepage
+        #
+        #        CONVERTER          1
+        #        DBCS_CHARSET       cp930
+        #
+        ## Use ICU , SBCS codepage
+        #
+        #        CONVERTER          1
+        #        SBCS_CHARSET       cp037
+        #
+        ## Use iconv (Linux)
+        #
+        #        CONVERTER          2
+        #        SBCS_CHARSET       cp1047
+        #
+        ##################################################################################
                                                                       ||~v124R~
 #if defined(W32)||defined(LNX)                                        ||~v125R~
                                                                       ||~v124R~
@@ -1789,50 +2407,30 @@ UTF8 encoding * CID:||+v130R~:  2023/07/31  v129W           update#=  735;||+v13
                "e sp:srctest1" command is replaced by                 ||~v129R~
                "e d:\eclipse-workspace\testproject1\src\com\debug\test".||~v129R~
                                                                       ||~v129R~
-#if defined(W32) || defined(LNX)                                      ||~v124R~
                                                                       ||~v124R~
    .SyntaxHighlight.                                                  ||~v124R~
                                                                       ||~v124R~
     Syntax highlight display text with each color and font style according to the language syntax.||~v124R~
-    xe's syntax-highlight use the function of andre-simon's Highlight or GNU source-highlight.   ||~v124R~||~v124R~
+    xe's syntax-highlight use the function of André Simon's Highlight or GNU source-highlight.   ||~v124R~||~v124R~||~v@@2R~
+    Configuration file is ::xesynw.cfg(Windows) / ::xesynl.cfg(Linux).||~v@@2I~
                                                                       ||~v124R~
-      GNU source-highlight (specified by SHCMD= or SHCMDR= in the cfg file)||~v124R~
-         Source-highlight(Windows version or Linux version) installation is required.||~v124R~
-         (http://www.gnu.org/software/src-highlite/source-highlight.html)||~v124R~
-         Boost regex may be also required on which source-highlight depends.||~v124R~
-         (http://www.boost.org)                                       ||~v124R~
-         source-highlight compiled on cygwin is little bit slow,      ||~v124I~
-         Binary compiled on MinGW was uploaded to my HP at 2008/03/21.||~v124I~
-         There is no need to install cygwin if you use it.            ||~v124I~
-                                                                      ||~v124R~
-      Mr.andre-simon's Highlight (specified by SHCMDA= in the cfg file)  ||~v124R~||~v125R~
-         This one is easy to use.                                     ||~v124R~
-         Install from Mr.andre-simon's homepage.(commandline "highlight" is included in sample directory of xe package)||~v126R~
-         The windows version is installer.                            ||~v124R~
-         xe use command-line binary, leave GUI version even if its compilation failed.||~v124R~||~v129R~
-         This is not depend on boost package, installation is easy.   ||~v124R~
-         It support many variety of language such as COBOL, PLI. ||~v124R~||~v124R~
-         To customize color, use CMAP option of xe's cfg file.        ||~v124R~
-         This tool is relatively small and light.                     ||~v124R~
-         So, it is open-source but I did not create resident mode version.||~v124R~
+      GNU source-highlight (specified by SHCMD= in the cfg file)||~v124R~||~v@@2R~
+      You need to install source-highlight (Linux version).           ||~v@@4I~
+      For example, in the case of ubuntu, "sudo apt-get install source-highlight".||~v@@4I~
+      --data-dir is /usr/share/source-highlight.                      ||~v@@4I~
+      On Windows, its binary is not maintained and the installation hurdle may be high.||~v@@4I~
+      So the next André Simon's Highlight is easier to use.          ||~v@@4I~
+                                                                      ||~v@@4I~
+      André Simon's Highlight (specified by SHCMDA= in the cfg file)  ||~v124R~||~v125R~||~v@@2R~
+         Install from André Simon's homepage.                         ||~v@@2R~
+         xe use command-line binary, leave GUI version even if its "make" failed.||~v124R~||~v129R~||~v@@2R~
                                                                       ||~v125R~
-         xe Windows version package contains Highlight package in "sample" directory.||~v125R~||~v129R~
-         Put data directory at where the exe file existing or specify it||~v125R~
-         by --data-dir= parameter.                                    ||~v125R~
-         Linux version's default folder is /usr/share/highlight.      ||~v125R~
-                                                                      ||~v125R~
-         On v3.1 "-A" is invalid. xe dropped it from internal setting.||~v125R~
-         You have to specify it on CMDA parameter of cfg file         ||~v126R~
-             ::xesynw.cfg(Windows), ::xesynl.cfg(Linux), ::xesyna.cfg(Android)||~v126R~
-           OldVersion: SHCMDA= "d:\gnuwin32\WinHighlight\highlight.exe -q -A"||~v125R~
-           NewVersion: SHCMDA= "d:\gnuwin32\WinHighlight\highlight.exe -q --out-format=ansi"||~v125R~
-         For Android version(2.16), data folder is as followings.     ||~v126R~
-           SHCMDA= "highlight -q --data-dir=/data/data/com.xe.Axe/files/highlight-data --add-config-dir=/data/data/com.xe.Axe/files/highlight-data --out-format=ansi "||~v126R~
+         For the Windows version, the necessary files for xe have been zipped and placed in the sample directory on GitHub.||~v@@2I~
+         For the Windows version, the Data directory appears to be the default location of the exe.||~v@@2I~
                                                                       ||~v124I~
     xe accept outlang:esc format output from highlighter through stdout pipe.||~v124R~
+    Output of type esc contains ANSI ESC sequence codes that specify color and font style information.||~v@@2I~
     (xe fail to display color if original source contains esc code)   ||~v124R~
-    (Note.) Some anti-virus-soft watches external process i/o         ||~v124I~
-            and that may be cause of syntax highlight's slow response.||~v124I~
                                                                       ||~v124R~
     (ANSI Esc sequence style code is NORMAL:0, BOLD:1, UNDERLINE:4, BLINK:5, REVERSE:7, INVISIBLE:8. About color code see later.)||~v124R~
     (xeacb is also used as utility to browse file contains ANSI Esc sequence code.)||~v124R~
@@ -1876,150 +2474,199 @@ UTF8 encoding * CID:||+v130R~:  2023/07/31  v129W           update#=  735;||+v13
        Put cfg file on work-dir(c:\xe_wd or /home/userID/xe_wdnnnn, nnnn:userIDnumber as default).||~v124R~
        (cfg file name is xesynw.cfg(Windows version) or xesynl.cfg(Linux version)) or xesyna.cfg(Android version)||~v126R~
        See later, (d) for source-highlight configuration,             ||~v124R~
-       (e) for andre-simon's Highlighter configuration, (f) ANSI Esc sequence code.||~v124R~
+       (e) for André Simon's Highlighter configuration, (f) ANSI Esc sequence code.||~v124R~||~v@@2R~
+       If you get messages indicating an error in your configuration file, you can fix it and reload it by "SYN RESET".||~v@@5I~
                                                                       ||~v124R~
-       About option on cfg file,see next (c) "sample cfg file".       ||~v124R~
+          SHCMD=     :source-highlight execution command.             ||~v@@5I~
+                      When using a bat file on Windows, use $* to receive parameters from xe.||~v@@5I~
+                      When using a shell on Linux, use $@ to receive parameters from xe.||~v@@5I~
+                      Also, avoid outputting to standard output/standard error,||~v@@5I~
+                      as this will result in an error message such as "Invalid Index file".||~v@@5I~
+          SHCMDA=    :Runs André Simon's Highlight.                   ||~v@@5I~
+                      If the path contains spaces, specify as follows ||~v@@5I~
+                        SHCMDA= '""c:\Program Files\WinHighlight\highlight.exe"" -q --out-format=ansi'||~v@@5I~
+                      When using a bat file on Windows, use $* to receive parameters from xe.||~v@@5I~
+                      When using a shell on Linux, use $@ to receive parameters from xe.||~v@@5I~
+                      Also, avoid outputting to standard output/standard error,||~v@@5I~
+                      as this will result in an error message such as "Invalid Index file".||~v@@5I~
+          ENTER =    :Specify the threshold of number of lines of the file, that will cause Enter key presses to trigger a re-evaluation of syntax.||~v@@5I~
+                      When the file is opened and the number of lines is within the number specified here, Enter key will trigger a re-evaluation of updated lines.||~v@@5I~
+                      It will only be triggered when OPEN=y, or after the file has been opened, when SYN is ON by SYN command (Ctrl+s).||~v@@5I~
+                      "0" means that Enter key is not a triggar,      ||~v@@5I~
+                      "-1" means that Enter key will re-evaluate regardless of the number of lines in the file.||~v@@5I~
+                      The default value is -1.                        ||~v@@5I~
+          OPEN =     :Specifies that syntax highlighting is evaluated at the file is opened or not.||~v@@5I~
+                      "Y": Turns ON for files with the extension specified in the next OPEN_EXT parameter.||~v@@5I~
+                      "N": Turns OFF when the file is opened. Can be turned ON later with the SYN command.||~v@@5I~
+                      "A": Turns ON for all files when the file is opened.||~v@@5I~
+          OPEN_EXT=  :Specifies the list of file extensions to be targeted when OPEN=y is specified.||~v@@5I~
+                      e.g.  OPEN_EXT=c cpp h hpp                      ||~v@@5I~
+          UPDONLY_EXT:Lists the extensions for language types that limit reevaluation by the "SYN ON" (Ctrl+s) to updated lines only.||~v@@5I~
+                      For language types that do not have multi-line syntax such as the /* */ comments in C,||~v@@5I~
+                      only updated lines need to be reevaluated.      ||~v@@5I~
+                      So by specifying this here, the response of the "SYN ON" that reevaluates all lines will be faster.||~v@@5I~
+                      If you mind the Enter key slow response and set "Enter=0", you will use "SYN" to reevaluate.||~v@@5I~
+                      Even the language originally has a multi-line syntax but you want to speed up the "SYN ON" response, use this setting.||~v@@5I~
+                      Even with this setting, you can still reevaluate the entire file with "SYN ALL".||~v@@5I~
+                      If you set UPDONLY_EXT=default, pplied to all files.||~v@@5I~
+                        Example: UPDONLY_EXT=cbl                      ||~v@@5I~
+          PATH_EXT_xxx=:Gives an extension in the directory path name for files that do not have a proper extension.||~v@@5I~
+                        Specify the extension in xxx (up to 7 digits). One path is specified per line.||~v@@5I~
+                        Files in the specified directory will be assumed to have the extension xxx,||~v@@5I~
+                        regardless of their original extension.       ||~v@@5I~
+                        e.g. PATH_EXT_cob=d:\src\cobs PATH_EXT_syslog=d:\logs\windows\actlog||~v@@5I~||~v@@6R~
+          BG=        :Palette number of background color. Check the color of each palette number on the 0.0 screen.||~v@@5I~
+                      Numbers are from "0" to "15" (Windows)/"7" (Linux).||~v@@5R~
+          BG_BROWSE  :Background color palette number in Browse mode.                ||~v@@5I~||~v@@6R~
+                      The default value is the same as BG.            ||~v@@5I~
+          FG=        :Palette number of foreground color.             ||~v@@5I~
+                      Numbers are from "0" to "15".                   ||~v@@5R~
+          BG_EOL=    :Background color palette number for the area after the end of the line.||~v@@5I~
+                      The default value is the same as BG (edit mode) or BG_BROWSE (browse mode).||~v@@5I~
+          BG_TAB=    :Background color palette number for TAB/non-printable characters.||~v@@5I~
+                      The default value is the same as BG (edit mode) or BG_BROWSE (browse mode).||~v@@5I~
+          BG_UPD=    :Background color palette number for unevaluated lines after updated.||~v@@5I~
+                      The default value is 0 (black)                  ||~v@@5I~
+          BG_REVERSE_EDIT=:Background color when inverted for Find command, Cut and Paste, etc. on the Edit panel||~v@@5I~
+                           The default value is 14 (yellow) for Windows, 6 (brown) for the Linux Console version.||~v@@5I~
+          BG_REVERSE_BROWSE=: Background color when inverted for Find command, cut and paste, etc. on the Browse panel||~v@@5I~
+                           The default value is 15 (white) for Windows, 6 (brown) for the Linux Console version.||~v@@5I~
+          CMAP =     :source-highlight outputs the color number in the ANSI ESC sequence||~v@@5I~
+                      according to the configuration definition.      ||~v@@5I~
+                      Specifies this when changing the mapping without making it a xe palette number.||~v@@5I~
+                      André Simon's Highlight does not seem to be able to change the mapping with its configuration definition. (See (e) below)||~v@@5I~
+                      So use CMAP.                                    ||~v@@5I~
+                      Specify as many as necessary, starting with color number "0".||~v@@5I~
+                        e.g.  CMAP =__.04.10.__.01 # Swap red and blue, set green to high intensity. "__" means no change.||~v@@5I~
+          RGBn =     :In the GUI version (wxe, gxe), the palette number color can be set continuous value.||~v@@5I~
+                      n is a palette number from 0 to 15.             ||~v@@5I~
+                        e.g. rgb2=20e030 # Set the RGB values of palette number 2 (green) to R:0x20, G:0xe0, B:0x30.||~v@@5I~
+          ITALIC_ESC=:Informs xe of the ANSI ESC sequence code given to italics in esc.outlang in source-highlight.||~v@@5I~
+                      Specify a value other than "0", "1":bold, or "4":underline.||~v@@5I~
+                      The default value is "5":blink. Change esc.outlang to set the default value to italics.||~v@@5I~
+                      Font style cannot be specified for André Simon's Highlight.||~v@@5I~
+          C_BOLD =   :Font style = 1 (Bold) in the console version. Windows version only.||~v@@5I~
+                      "H": High intensity (default value), "N": Ignored, "R": Inverted.||~v@@5I~
+          C_UNDERLINE=:Treate Font style = 4 (Underline) in the console version.||~v@@5I~
+                       "H": High intensity, "N": Ignored (default value), "R": Inverted.||~v@@5I~
+          C_ITALIC = :Treate Font style = 5 in the console version (or the value specified by ITALIC_ESC if specified).||~v@@5I~
+                      "H": High intensity, "N": Ignored (default value), "R": Inverted.||~v@@5I~
+          G_BOLD =   :Trate Font style = 1 (Bold) in the GUI version (wxe, gxe).||~v@@5I~
+                      "H": High intensity, "Y": Bold, "N": Ignored, "R": Inverted. Default value is "YH".||~v@@5I~
+          G_UNDERLINE=:Treat font style = 4 (Underline) in GUI version (wxe). Not supported in gxe.||~v@@5I~
+                       "H": High intensity, "Y": Underline, "N": Ignored, "R": Inverted. Default value is "Y".||~v@@5I~
+          G_ITALIC = :Treat font style = 5 (or the value specified by ITALIC_ESC) in GUI version (wxe, gxe).||~v@@5I~
+                      "H": High intensity, "Y": Italic, "N": Ignored, "R": Inverted. Default value is "Y".||~v@@5I~
                                                                       ||~v124R~
     (c)sample cfg file.                                               ||~v124R~||~v124R~
                                                                       ||~v124R~
-    ######################################################################################||~v124R~
-    # xesynw.cfg                                                      ||~v124R~
-    # ==syntax highlight configuration==                              ||~v124R~
-    #                                                                 ||~v124R~
-    #   if err detected, correct, save then use "SYN RESET" cmd to re-load config file.||~v124R~
-    #                                                                 ||~v124R~
-    ### execution                                                     ||~v124R~
-    #                                                                 ||~v124R~
-    #  select highlight command from SHCMD or SHCMDR or SHCMDA         ||~v126R~
-    #     SHCMDA is recommended(installation required, "sample" dir contains required files(highlight-3.7)||~v126R~
-    #                                                                 ||~v126R~
-    #     SHCMD=       :Specify source-highlight command              ||~v124R~
-    #                   default "source-highlight -f esc". "-f esc" (outlang:esc) is always appended.||~v124R~
-    #                   If use .bat file on Windows, use "@" to avoid that cmd echo is written to stdout.||~v124R~
-    #     SHCMDA=      :Specify andre-simon's Highlight command       ||~v124R~
-    #                    Specify as following if space is embedded in the path.||~v125R~
-    #                    SHCMDA= '""c:\Program Files\WinHighlight\highlight.exe"" -q --out-format=ansi'||~v125R~
-    #     ENTER =      :Specify file line count threshold to use Enter key as trigger of SyntaxHighlight re-evaluation.||~v124R~
-    #                   If the file line count is under this value at open,||~v124R~
-    #                   Enter key is treated as trigger of re-evaluation of updated lines..||~v124I~
-    #                   You can change trigger ON/OFF status by SYN cmd later.||~v124I~
-    #                   0 :Do not use as trigger. Use Ctrl+s to evaluate syntax.||~v124I~
-    #                   -1:No line count limit.(Default)              ||~v124I~
-    ### file type                                                     ||~v124R~
-    #     OPEN  =      :SyntaxHighlight mode at opening file.         ||~v124R~
-    #                   "Y":SyntaxHighlight mode if the extension is listed by OPEN_EXT||~v124R~
-    #                   "N":always No SyntaxHighlight mode at open    ||~v124R~
-    #                   "A":always SyntaxHighlight mode at open       ||~v124R~
-    #     OPEN_EXT=    :Specify file extension list for the case of OPEN=y.||~v124R~
-    #                   e.g. OPEN_EXT=c cpp h hpp                      ||~v124R~||~v128R~
-    #     UPDONLY_EXT= :Specify file extension list to limit evaluation by "SYN ON"(Ctrl+s) cmd to updated lines only.||~v124I~
-    #                   If the language has no multiline syntax such as /* */ comment in c-like language,||~v124I~
-    #                   You get better response by limiting syntax evaluation to updated lines only.||~v124I~
-    #                   If you set ENTER key as trigger of re-evaluation, there is no need to use "SYN ON" cmd||~v124I~
-    #                   because updated lines evaluation is done by ENTER key.||~v124I~
-    #                   If you not want to set ENTER key trigger, and evaluate by "SYN ON"(Ctrl+S) cmd each time||~v124I~
-    #                   even the language has multiline syntax, register extension in this list.||~v124I~
-    #                   For all lines re-evaluation, "SYN ALL" cmd is used in this case.||~v124I~
-    #                   e.g. UPDONLY_EXT=cob                           ||~v124I~||~v128R~
-    #     PATH_EXT_xxx=:For the file with missing or improper extension name, specify extension name.||~v124R~
-    #                   xxx:max 7 byte extension name. Specify 1 pathname/line.||~v124R~
-    #                   All files in the directory is assumed as xxx is its extension name.||~v124R~
-    #                   e.g. PATH_cob=d:\src\cobs                      ||~v124R~||~v128R~
-    #                        PATH_syslog=d:\logs\windows\actlog        ||~v124R~||~v128R~
-    ### color                                                         ||~v124R~
-    #     BG=          :Background color palette number.              ||~v124R~
-    #                   You can check the palette color on =0.0 panel.||~v124R~
-    #                   Valid value is "0" to "15"(Windows) or "1 to "7"(Linux).||~v124R~
-    #     BG_BROWSE    :Background color palette number for browse panel||~v124R~
-    #                   Default is same as BG                         ||~v124R~
-    #     FG=          :Foreground color palette number               ||~v124R~
-    #                   Valid value is "0" to "15"                    ||~v124R~
-    #     BG_EOL=      :Background color for the right of EndOfLine.  ||~v124R~
-    #                   Default is same as BG(Edit) or BG_BROWSE(Browse)||~v124R~
-    #     BG_TAB=      :Background color for TAB/UnPrintable Character.||~v124R~
-    #                   Default is same as BG(Edit) or BG_BROWSE(Browse)||~v124R~
-    #     BG_UPD=      :Background color for updated and not yet re-evaluated line.||~v124R~
-    #                   Default:0(black)                              ||~v124R~
-    #     BG_REVERSE_EDIT=  :Background color for reverse on edit panel(Find cmd, Cut&Paste)||~v124R~
-    #                        Default:14(yellow) except linux console version(6:brown)||~v124R~
-    #     BG_REVERSE_BROWSE=:Background color for reverse on browse panel(Find cmd, Cut&Paste)||~v124R~
-    #                        Default:15(white) except Linux console version(6:brown)||~v124R~
-    #     CMAP  =      :Color palette re-mapping. Remap ANSI color number to xe's palette.||~v124R~
-    #                   Specify from color palette number from 0 to max 15 each.||~v124R~
-    #                   Use this option when using andre-simon's Highlight because it is not customizable.||~v124R~
-    #                   e.g. CMAP=__.04.10.__.01   # swap Red and Blue and use Intense Green("__" means no change.)||~v124R~||~v128R~
-    #     RGBn  =      :RGB value for each palette (wxe and gxe only) ||~v124R~
-    #                   n:0-->15 (correspond to palette number of xe 0.0 panel)||~v124R~
-    #                   e.g. rgb2=20e030   # palette No2(green)'rgb value is R:0x20, G:0xe0, B:0x30.||~v124R~||~v128R~
-    ### font style                                                    ||~v124R~
-    #     ITALIC_ESC = :ANSI esc code for italic.                     ||~v124R~
-    #                   Notify value specified on esc.lang file of source-highlight as ANSI font style code:italic.||~v124R~
-    #                   Valid value is one digit except "0", "1":bold, "4":underline.||~v124R~||~v29tR~
-    #                   Default is "5":blink. (If you use this default, specify it on esc.outlang).||~v124R~
-    #     C_BOLD     = :treatment of font style:1(BOLD) for console version xe||~v124R~
-    #                   "H":HighIntensity, "N":Ignore, "R":Reverse.  Default is "H".||~v124R~||~v29tR~
-    #     C_UNDERLINE= :treatment of font style:4(UNDERLINE) for console version xe. Not supported for Linux version.||~v124R~
-    #                   "H":HighIntensity, "N":Ignore, "R":Reverse.  Default is "N".||~v124R~||~v29tR~
-    #     C_ITALIC   = :treatment of font style:5(or value of ITALIC_ESC parameter if used) for console version xe||~v124R~
-    #                   "H":HighIntensity, "N":Ignore, "R":Reverse.  Default is "N".||~v124R~||~v29tR~
-    #     G_BOLD     = :treatment of font style:1(BOLD) for GUI version xe(wxe,gxe)||~v124R~
-    #                   "H":HighIntensity, "Y":Bold, "N":Ignore, "R":Reverse. Default is "YH".||~v124R~||~v29tR~
-    #     G_UNDERLINE= :treatment of font style:4(UNDERLINE) for GUI version xe(wxe). Not supported for gxe.||~v124R~
-    #                   "H":HighIntensity, "Y":Underline, "N":Ignore, "R":Reverse. Default is "Y".||~v124R~||~v29tR~
-    #     G_ITALIC   = :treatment of font style:5(or value of ITALIC_ESC parameter if used) for GUI version xe(wxe,gxe)||~v124R~||~v127R~
-    #                   "H":HighIntensity, "Y":Italic, "N":Ignore, "R":Reverse. Default is "Y".||~v124R~||~v29tR~
-    ### sample ###########################                            ||~v124R~
-    #                                                                 ||~v124R~
-    #     SHCMD = "g:\src\syntaxh\GnuWin32\bin\source-highlight --data-dir=g:\src\syntaxh\GnuWin32\share\source-highlight"||~v124R~
-    ###   SHCMD = "/usr/local/bin/source-highlight --data-dir=/use/local/share/source-highlight"||~v124R~
-    #     OPEN  = y              # display color at file open.        ||~v124R~
-    #     ENTER = -1             # Enter key is trigger of re-evaluation||~v124R~
-    #     BG    = 7              # Black on White                     ||~v124R~
-    #     BG_TAB= 7              # Draw TAB/Unprintable by BG color.  ||~v124R~
-    #     CMAP  =__.04.10.__.01  # swap Red and Blue and Intense Green("__" means no change.)||~v124R~
-    #     G_ITALIC=N             # ignore italic style                ||~v124R~
-    #                                                                 ||~v124R~
-    #####################################################################||~v124R~
-    #SHCMD = "g:\src\syntaxh\GnuWin32\bin\source-highlight --data-dir=g:\src\syntaxh\GnuWin32\share\source-highlight --style-file=esc.style"   #see source highlight document||~v124R~
-    #SHCMDA= "d:\gnuwin32\WinHighlight\highlight.exe -q"              ||~v124R~||~v125R~
-     SHCMDA= '""c:\Program Files\WinHighlight\highlight.exe"" -q --out-format=ansi'||~v125R~
-    #SHCMDA= '/h/objlinux/up/sample/highlight-3.7/highlight -q --out-format=ansi -D /h/objlinux/up/sample/highlight-3.7 --add-config=/h/objlinux/up/sample/highlight-3.7'||~v126R~
-    #ENTER =0                                                         ||~v126R~
-     BG    = 7                                                        ||~v124R~
-     FG    = 0                                                        ||~v124R~
-     BG_EOL= 6                                                        ||~v126R~
-     BG_TAB= 10                                                       ||~v126R~
-    #BG_UPD= 7                                                        ||~v126R~
-    #BG_REVERSE_EDIT=14;                                              ||~v124R~
-    #BG_REVERSE_BROWSE=1                                              ||~v124R~
-    #CMAP  =__.04.10.__.01.__.14  # swap Red and Blue and Intense Green("__" means no change.)||~v124R~
-    #RGB1 = 20e030                                                    ||~v124R~
-    #RGB4 = 80f020                                                    ||~v124R~
-    #RGB14= f01080                                                    ||~v124R~
-    #ITALIC_ESC= 0                                                    ||~v124R~
-    #C_BOLD=h                                                         ||~v124R~
-    #C_ITALIC=n                                                       ||~v124R~
-    #C_UNDERLINE=n                                                    ||~v124R~
-    #G_BOLD=y                                                         ||~v124R~
-    #G_ITALIC=hy                                                      ||~v124R~
-     G_UNDERLINE=h                                                    ||~v124R~
-     OPEN  = y                                                        ||~v124R~
-     OPEN_EXT= c cpp java                                             ||~v126R~
-    #######                                                           ||~v124R~
-    PATH_EXT_cob=g:\src\xe\cobs                                       ||~v124R~
-    #####################################################################||~v124R~
+    ######################################################################################||~v@@5I~
+    # xesynw.cfg(Win)/xesynl.cfg(Linux)                               ||+v@@6I~
+    # ==syntax highlight configuration==                              ||~v@@5I~
+    #                                                                 ||~v@@5I~
+    ### execution                                                     ||~v@@5I~
+    #                                                                 ||~v@@5I~
+    #  select highight command from SHCMD or SHCMDA                   ||~v@@5I~
+    #     SHCMD=       :Specify source-highlight command              ||~v@@5I~
+    #                   e.g.  SHCMD = "source-highlight"              ||~v@@5I~
+    #     SHCMDA=      :Specify André Simon's Highlight command       ||~v@@5I~
+    #                   e.g.  SHCMDA= '""w:\highlight.dir\hl64.exe"" -q --out-format=ansi'||~v@@5I~
+    #     ENTER =      :File line count at open to re-evaluate updated lines by Enter key when SYN ON..||~v@@5I~
+    #                   0 :Do not re-evaluate by Enter key. -1:No line count limit.(Default)||~v@@5I~
+    ### file type                                                     ||~v@@5I~
+    #     OPEN  =      :SyntaxHighlight mode at opening file.         ||~v@@5I~
+    #                   "Y":SyntaxHighlight mode if the extention is listed by OPEN_EXT||~v@@5I~
+    #                   "N":always No SyntaxHighlight mode at open    ||~v@@5I~
+    #                   "A":always SyntaxHighlight mode at open       ||~v@@5I~
+    #     OPEN_EXT=    :Specify file extension list for the case of OPEN=y.||~v@@5I~||~v@@6R~
+    #                   e.g. OPEN_EXT=c cpp h hpp                      ||~v@@5I~||~v@@6R~
+    #     UPDONLY_EXT  :Lists the extensions for language types that limit reevaluation by the "SYN ON" (Ctrl+s) to updated lines only.||~v@@5I~
+    #                   e.g. UPDONLY_EXT=cob                           ||~v@@5I~||~v@@6R~
+    #     PATH_EXT_xxx=:Gives an extension in the directory path name for files that do not have a proper extension.||~v@@5I~
+    #                   e.g. PATH_EXT_cob=d:\src\cobs                  ||~v@@5I~||~v@@6R~
+    ### color                                                         ||~v@@5I~
+    #     BG=          :Palette number of background color. Check the color of each palette number on the 0.0 screen.||~v@@5I~
+    #                   Numbers are from "0" to "15" (Windows)/"7" (Linux).||~v@@5R~
+    #     BG_BROWSE    :BackGround color palette number for browse panel||~v@@5I~
+    #                   Default is same as BG                         ||~v@@5I~
+    #     FG=          :ForeGround color palette number               ||~v@@5I~
+    #                   Valid value is "0" to "15"                    ||~v@@5I~
+    #     BG_EOL=      :Background color for the right of EndOfLine.  ||~v@@5I~
+    #                   Default is same as BG(Edit) or BG_BROWSE(Browse)||~v@@5I~
+    #     BG_TAB=      :Background color for TAB/UnPrintable Character.||~v@@5I~
+    #                   Default is same as BG(Edit) or BG_BROWSE(Browse)||~v@@5I~
+    #     BG_UPD=      :Background color for updated and not yet re-evaluated line.||~v@@5I~
+    #                   Default:0(black)                              ||~v@@5I~
+    #     BG_REVERSE_EDIT=  :Background color for reverse on edit panel(Find cmd,Cut & Paste)||~v@@5I~
+    #                        Default:14(yellow) except linux console version(6:brown)||~v@@5I~
+    #     BG_REVERSE_BROWSE=:Background color for reverse on browse panel(Find cmd,Cut&Paste)||~v@@5I~
+    #                        Default:15(white) except Linux console version(6:brown)||~v@@5I~
+    #     CMAP  =      :Color palette re-mapping. Remap ANSI color number to xe's palette.||~v@@5I~
+    #                   Specify from color palette number from 0 to max 15 each.||~v@@5I~
+    #                   e.g. CMAP=__.04.10.__.01   # swap Red and Blue and use Intense Green("__" means no change.)||~v@@5I~||~v@@6R~
+    #     RGBn  =      :RGB value for each palette (wxe and gxe only) ||~v@@5I~
+    #                   n:0-->15 (correspond to palette number of xe 0.0 panel)||~v@@5I~
+    #                   e.g. rgb2=20e030   # palette No2(green)'rgb value is R:0x20, G:0xe0, B:0x30.||~v@@5I~||~v@@6R~
+    ### font style                                                    ||~v@@5I~
+    #     ITALIC_ESC = :ANSI esc code for italic.                     ||~v@@5I~
+    #                   Notify value specified on esc.lang file of source-highlight as ANSI font style code:italic.||~v@@5I~
+    #                   Valid value is one digit except reserved "0","1":bold, "4":underline.||~v@@5I~
+    #                   Default is "5":blink. (If you use this default, specify it on esc.outlang).||~v@@5I~||~v@@6R~
+    #     C_BOLD     = :treatment of font style:1(BOLD) for console version xe||~v@@5I~
+    #                   "H":HighIntensity, "N":Ignore, "R":Reverse. Default is "H".||~v@@5I~
+    #     C_UNDERLINE= :treatment of font style:4(UNDERLINE) for console version xe. Not supported for Linux version.||~v@@5I~
+    #                   "H":HighIntensity, "N":Ignore, "R":Reverse.  Default is "N".||~v@@5I~
+    #     C_ITALIC   = :treatment of font style:5(or value of ITALIC_ESC parameter if used) for console version xe||~v@@5I~
+    #                   "H":HighIntensity, "N":Ignore, "R":Reverse.  Default is "N".||~v@@5I~
+    #     G_BOLD     = :treatment of font style:1(BOLD) for GUI version xe(wxe,gxe)||~v@@5I~
+    #                   "H":HighIntensity, "Y":Bold, "R":Reverse, "N":Ignore. Default is "YH".||~v@@5I~
+    #     G_UNDERLINE= :treatment of font style:4(UNDERLINE) for GUI version xe(wxe). Not supported for gxe.||~v@@5I~
+    #                   "H":HighIntensity, "Y":Underline, "R":Reverse, "N":Ignore. Default is "Y".||~v@@5I~
+    #     G_ITALIC   = :treatment of font style:5(or value of ITALIC_ESC parameter if used) for GUI version xe(wxe,gxe)||~v@@5I~
+    #                   "H":HighIntensity, "Y":Italic, "R":Reverse, "N":Ignore. Default is "Y".||~v@@5I~
+    #####################################################################||~v@@5I~
+    ### sample ###########################                            ||~v@@5I~
+    #####################################################################||~v@@5I~
+    #Linux                                                            ||~v@@5I~
+    #SHCMD = "source-highlight"                                       ||~v@@5I~
+    #Windows                                                          ||~v@@5I~
+     SHCMDA= '""w:\highlight-4.4-x64\highlight.exe"" -q --out-format=ansi'||~v@@5I~
+    #ENTER =0                                                         ||~v@@5I~
+     BG    = 7                                                        ||~v@@5I~
+     FG    = 0                                                        ||~v@@5I~
+     BG_EOL= 6                                                        ||~v@@5I~
+     BG_TAB= 10                                                       ||~v@@5I~
+    #BG_UPD= 7                                                        ||~v@@5I~
+    #BG_REVERSE_EDIT=14;                                              ||~v@@5I~
+    #BG_REVERSE_BROWSE=1                                              ||~v@@5I~
+    #CMAP  =__.04.10.__.01.__.14  # swap Red and Blue and Intense Green("__" means no change.)||~v@@5I~
+    #RGB1 = 20e030                                                    ||~v@@5I~
+    #RGB4 = 80f020                                                    ||~v@@5I~
+    #RGB14= f01080                                                    ||~v@@5I~
+    #ITALIC_ESC= 0                                                    ||~v@@5I~
+    #C_BOLD=h                                                         ||~v@@5I~
+    #C_ITALIC=n                                                       ||~v@@5I~
+    #C_UNDERLINE=n                                                    ||~v@@5I~
+    #G_BOLD=y                                                         ||~v@@5I~
+    #G_ITALIC=hy                                                      ||~v@@5I~
+     G_UNDERLINE=h                                                    ||~v@@5I~
+     OPEN  = y                                                        ||~v@@5I~
+     OPEN_EXT= c cpp java                                             ||~v@@5I~
+    #######                                                           ||~v@@5I~
+    PATH_EXT_cob=g:\src\xe\cobs                                       ||~v@@5I~
+    #####################################################################||~v@@5I~
                                                                       ||~v124R~
     (d)source-highlight configuration.                                ||~v124R~||~v124R~
                                                                       ||~v124R~
        See source-highlight previously shown about detail information.||~v124R~
        This section is brief description related to xe.               ||~v124R~
-       (source-highlight v2.8 has no configuration for COBOL.        ||~v124R~
-        cobol.lang later shown is for myself, copy it into data-dir when you use it.)||~v124R~
+       Source-highlight v3.1.8 also supports COBOL.                   ||~v@@4I~
+       Check lang.map to find the correspondence of file extension and lang.||~v@@4I~
                                                                       ||~v124R~
        .lang.map                                                      ||~v124R~
                                                                       ||~v124R~
-        Each lines are extension = lang-file format to map extension to input file language syntax file.||~v124R~
-        following lines are for the c-like language.                  ||~v124R~
+        Each lines are extension = lang-file format to map extension to input file language syntax file.||~v@@4I~
+        Following lines are for the c-like language.                  ||~v@@4I~
         ###                                                           ||~v124R~
             cpp = cpp.lang                                            ||~v124R~
             c = cpp.lang                                              ||~v124R~
@@ -2031,47 +2678,8 @@ UTF8 encoding * CID:||+v130R~:  2023/07/31  v129W           update#=  735;||+v13
             hpp = cpp.lang                                            ||~v124R~
                                                                       ||~v124R~
         To utilize COBOL,on assumption its extension is cob, insert following line into lang.map file.||~v124R~
-        (cobol.lang is described later.)                              ||~v124R~
             cob  = cobol.lang                                         ||~v124R~
                                                                       ||~v124R~
-       .cpp.lang                                                      ||~v124R~
-                                                                      ||~v124R~
-        c-like language syntax(how to determine keyword, comment etc.) is coded by source-syntax and||~v124R~
-        regular-expression syntax.                                    ||~v124R~
-                                                                      ||~v124R~
-        ###                                                           ||~v124R~
-            include "c_comment.lang"                                  ||~v124R~
-                                                                      ||~v124R~
-            state preproc start '^[[:blank:]]*#(?:[[:blank:]]*include)' begin||~v124R~
-                    string delim "<" ">"                              ||~v124R~
-                    string delim "\"" "\"" escape "\\"                ||~v124R~
-                    include "c_comment.lang"                          ||~v124R~
-            end                                                       ||~v124R~
-                                                                      ||~v124R~
-            preproc = '^[[:blank:]]*#([[:blank:]]*[[:word:]]*)'       ||~v124R~
-                                                                      ||~v124R~
-            include "number.lang"                                     ||~v124R~
-                                                                      ||~v124R~
-            string delim "\"" "\"" escape "\\"                        ||~v124R~
-            string delim "'" "'"  escape "\\"                         ||~v124R~
-                                                                      ||~v124R~
-            keyword = "__asm|__cdecl|__declspec|__export|__far16|__fastcall|__fortran|__import",||~v124R~
-                  "__pascal|__rtti|__stdcall|_asm|_cdecl|__except|_export|_far16|_fastcall",||~v124R~
-                  "__finally|_fortran|_import|_pascal|_stdcall|__thread|__try|asm|auto",||~v124R~
-                  "break|case|catch|cdecl|class|const|const_cast|continue|default|delete",||~v124R~
-                  "do|dynamic_cast|else|enum|explicit|extern|false|for|friend|goto",||~v124R~
-                  "if|inline|mutable|namespace|new|operator|pascal|private|protected",||~v124R~
-                  "public|register|reinterpret_cast|return|sizeof|static|static_cast",||~v124R~
-                  "struct|switch|template|this|throw|true|try|typedef|typeid|typename|union",||~v124R~
-                  "using|virtual|volatile|while"                      ||~v124R~
-                                                                      ||~v124R~
-            type = "bool|char|double|float|int|long|short|signed|unsigned|void|wchar_t"||~v124R~
-                                                                      ||~v124R~
-            include "symbols.lang"                                    ||~v124R~
-                                                                      ||~v124R~
-            cbracket = "{|}"                                          ||~v124R~
-                                                                      ||~v124R~
-            include "function.lang"                                   ||~v124R~
                                                                       ||~v124R~
        .default.style                                                 ||~v124R~
                                                                       ||~v124R~
@@ -2103,174 +2711,7 @@ UTF8 encoding * CID:||+v130R~:  2023/07/31  v129W           update#=  735;||+v13
                                                                       ||~v124R~
          See later (f) for ANSI definition for color esc code.        ||~v124R~
                                                                       ||~v124R~
-        ###                                                           ||~v124R~
-            extension "txt"                                           ||~v124R~
-                                                                      ||~v124R~
-            styletemplate "\x1b[$stylem$text\x1b[m"                   ||~v124R~
-            styleseparator ";"                                        ||~v124R~
-                                                                      ||~v124R~
-            bold "01$style"                                           ||~v124R~
-            underline "04$style"                                      ||~v124R~
-            italics "$style"                                          ||~v124R~
-            color "$style"                                            ||~v124R~
-                                                                      ||~v124R~
-                                                                      ||~v124R~
-            colormap                                                  ||~v124R~
-            "green" "32"                                              ||~v124R~
-            "red" "31"                                                ||~v124R~
-            "darkred" "31"                                            ||~v124R~
-            "blue" "34"                                               ||~v124R~
-            "brown" "33"                                              ||~v124R~
-            "pink" "35"                                               ||~v124R~
-            "yellow" "33"                                             ||~v124R~
-            "cyan" "36"                                               ||~v124R~
-            "purple" "35"                                             ||~v124R~
-            "orange" "31"                                             ||~v124R~
-            "brightorange" "31"                                       ||~v124R~
-            "brightgreen" "32"                                        ||~v124R~
-            "darkgreen" "32"                                          ||~v124R~
-            "black" "30"                                              ||~v124R~
-            "teal" "37"                                               ||~v124R~
-            "gray" "37"                                               ||~v124R~
-            "darkblue" "34"                                           ||~v124R~
-            default "30;"                                             ||~v124R~
-            end                                                       ||~v124R~
-                                                                      ||~v124R~
-            # Decorate text with terminal control sequences (escape sequences).||~v124R~
-            # To set the attribute/fg_color/bg_color we need to print ||~v124R~
-            #   "\033[AA;FF;BBm"                                      ||~v124R~
-            # where AA is one of these:                               ||~v124R~
-            # 00=none 01=bold 04=underscore 05=blink 07=reverse 08=concealed,||~v124R~
-            # FF is one of these:                                     ||~v124R~
-            # 30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white||~v124R~
-            # BB is one of these:                                     ||~v124R~
-            # 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white||~v124R~
-            #                                                         ||~v124R~
-            # Any of AA,FF,BB may be omitted.                          ||~v124R~
-            #                                                         ||~v124R~
-            # To reset do default color/attribute we need to print    ||~v124R~
-            # "\033[m"                                                ||~v124R~
-                                                                      ||~v124R~
-       .cobol.outlang                                                 ||~v124R~
-                                                                      ||~v124R~
-         keyword list is selected from vim configuration.             ||~v124R~
-         To leave Col.1-6 not as comment, delete following line.      ||~v124R~
-            comment='^.{6}'                                #col.1-6:comment||~v124R~
-         I don't know how to set Col.73-80 to comment column.                    ||~v124R~
-                                                                      ||~v124R~
-        ###                                                           ||~v124R~
-                                                                      ||~v124R~
-            ######################################                    ||~v124R~
-            # for COBOL                                               ||~v124R~
-            ######################################                    ||~v124R~
-            #delm                                                     ||~v124R~
-            # minus"-" may be part of variable                        ||~v124R~
-            #                                                         ||~v124R~
-            #symbol = "~","!","%","^","*","(",")","-","+","=","[",    ||~v124R~
-            symbol = "~","!","%","^","*","(",")","+","=","[",         ||~v124R~
-                    "]","\\",":",";",",",".","/","?","&","<",">","\|" ||~v124R~
-            symbol = '[[:blank:]]+-[[:blank:]]+'                      ||~v124R~
-                                                                      ||~v124R~
-            ######################################                    ||~v124R~
-            #data type to PICTURE                                     ||~v124R~
-            ######################################                    ||~v124R~
-            type="BINARY|PACKED-DECIMAL"                              ||~v124R~
-            type='(COMP|COMPUTATIONAL)-[123456XN]'                    ||~v124R~
-            type='(PIC|PICTURE)[[:blank:]]+X(\([[:digit:]]+\)|X*)'    ||~v124R~
-            type='(PIC|PICTURE)[[:blank:]]+[S]?(9\([[:digit:]]+\)|9+)[V]?(9\([[:digit:]]+\)|9+)?'||~v124R~
-            type='(PIC|PICTURE)[[:blank:]]+[+-]?([Z9]\([[:digit:]]+\)|[Z9]+)([\.,]?([Z9]\([[:digit:]]+\)|[Z9]+)?)*(E[+-]?9+)?'||~v124R~
-            ######################################                    ||~v124R~
-            # keyword from VIM  2008/02/26                            ||~v124R~
-            ######################################                    ||~v124R~
-            keyword="DIVISION"                                        ||~v124R~
-            keyword="IDENTIFICATION|ENVIRONMENT|DATA|PROCEDURE"       ||~v124R~
-            keyword="PROGRAM-ID|SOURCE-COMPUTER|OBJECT-COMPUTER|SPECIAL-NAMES|FILE-CONTROL|I-O-CONTROL"||~v124R~
-            keyword="CONFIGURATION|INPUT-OUTPUT|FILE|WORKING-STORAGE|LOCAL-STORAGE|LINKAGE"||~v124R~
-            keyword="FUNCTION-POINTER|PROCEDURE-POINTER"              ||~v124R~
-            keyword = "ACCEPT|ACCESS|ADD|ADDRESS|ADVANCING|AFTER|ALPHABET|ALPHABETIC",||~v124R~
-                "ALPHABETIC-LOWER|ALPHABETIC-UPPER|ALPHANUMERIC|ALPHANUMERIC-EDITED|ALS",||~v124R~
-                "ALTERNATE|AND|ANY|ARE|AREA|AREAS|ASCENDING|ASSIGN|AT|AUTHOR|BEFORE|BINARY",||~v124R~
-                "BLANK|BLOCK|BOTTOM|BY|CANCEL|CBLL|CD|CF|CH|CHARACTER|CHARACTERS|CLASS",||~v124R~
-                "CLOCK-UNITS|CLOSE|COBOL|CODE|CODE-SET|COLLATING|COLUMN|COMMA|COMMON",||~v124R~
-                "COMMUNICATIONS|COMPUTATIONAL|COMPUTE|CONTENT|CONTINUE",||~v124R~
-                "CONTROL|CONVERTING|CORR|CORRESPONDING|COUNT|CURRENCY|DATE|DATE-COMPILED",||~v124R~
-                "DATE-WRITTEN|DAY|DAY-OF-WEEK|DE|DEBUG-CONTENTS|DEBUG-ITEM|DEBUG-LINE",||~v124R~
-                "DEBUG-NAME|DEBUG-SUB-1|DEBUG-SUB-2|DEBUG-SUB-3|DEBUGGING|DECIMAL-POINT",||~v124R~
-                "DELARATIVES|DELETE|DELIMITED|DELIMITER|DEPENDING|DESCENDING|DESTINATION",||~v124R~
-                "DETAIL|DISABLE|DISPLAY|DIVIDE|DIVISION|DOWN|DUPLICATES|DYNAMIC|EGI|ELSE|EMI",||~v124R~
-                "ENABLE|END-ADD|END-COMPUTE|END-DELETE|END-DIVIDE|END-EVALUATE|END-IF",||~v124R~
-                "END-MULTIPLY|END-OF-PAGE|END-READ|END-RECEIVE|END-RETURN",||~v124R~
-                "END-REWRITE|END-SEARCH|END-START|END-STRING|END-SUBTRACT|END-UNSTRING",||~v124R~
-                "END-WRITE|EQUAL|ERROR|ESI|EVALUATE|EVERY|EXCEPTION|EXIT",||~v124R~
-                "EXTEND|EXTERNAL|FALSE|FD|FILLER|FINAL|FIRST|FOOTING|FOR|FROM",||~v124R~
-                "GENERATE|GIVING|GLOBAL|GREATER|GROUP|HEADING|HIGH-VALUE|HIGH-VALUES|I-O",||~v124R~
-                "IN|INDEX|INDEXED|INDICATE|INITIAL|INITIALIZE",       ||~v124R~
-                "INITIATE|INPUT|INSPECT|INSTALLATION|INTO|IS|JUST",   ||~v124R~
-                "JUSTIFIED|KEY|LABEL|LAST|LEADING|LEFT|LENGTH|LOCK|MEMORY",||~v124R~
-                "MERGE|MESSAGE|MODE|MODULES|MOVE|MULTIPLE|MULTIPLY|NATIVE|NEGATIVE|NEXT|NO|NOT",||~v124R~
-                "NUMBER|NUMERIC|NUMERIC-EDITED|OCCURS|OF|OFF|OMITTED|ON|OPEN",||~v124R~
-                "OPTIONAL|OR|ORDER|ORGANIZATION|OTHER|OUTPUT|OVERFLOW|PACKED-DECIMAL|PADDING",||~v124R~
-                "PAGE|PAGE-COUNTER|PERFORM|PF|PH|PIC|PICTURE|PLUS|POINTER|POSITION|POSITIVE",||~v124R~
-                "PRINTING|PROCEDURES|PROCEDD|PROGRAM|PURGE|QUEUE|QUOTES",||~v124R~
-                "RANDOM|RD|READ|RECEIVE|RECORD|RECORDS|REDEFINES|REEL|REFERENCE|REFERENCES",||~v124R~
-                "RELATIVE|RELEASE|REMAINDER|REMOVAL|REPLACE|REPLACING|REPORT|REPORTING",||~v124R~
-                "REPORTS|RERUN|RESERVE|RESET|RETURN|RETURNING|REVERSED|REWIND|REWRITE|RF|RH",||~v124R~
-                "RIGHT|ROUNDED|RUN|SAME|SD|SEARCH|SECTION|SECURITY|SEGMENT|SEGMENT-LIMITED",||~v124R~
-                "SELECT|SEND|SENTENCE|SEPARATE|SEQUENCE|SEQUENTIAL|SET|SIGN|SIZE|SORT",||~v124R~
-                "SORT-MERGE|SOURCE|STANDARD",                         ||~v124R~
-                "STANDARD-1|STANDARD-2|START|STATUS|STOP|STRING|SUB-QUEUE-1|SUB-QUEUE-2",||~v124R~
-                "SUB-QUEUE-3|SUBTRACT|SUM|SUPPRESS|SYMBOLIC|SYNC|SYNCHRONIZED|TABLE|TALLYING",||~v124R~
-                "TAPE|TERMINAL|TERMINATE|TEST|TEXT|THAN|THEN|THROUGH|THRU|TIME|TIMES|TO|TOP",||~v124R~
-                "TRAILING|TRUE|TYPE|UNIT|UNSTRING|UNTIL|UP|UPON|USAGE|USE|USING|VALUE|VALUES",||~v124R~
-                "VARYING|WHEN|WITH|WORDS|WRITE"                       ||~v124R~
-            keyword="CONTAINS"                                        ||~v124R~
-            keyword="IF|INVALID|END|EOP"                              ||~v124R~
-            keyword="ALL"                                             ||~v124R~
-            keyword="SPACE|SPACES|NULL|ZERO|ZEROES|ZEROS|LOW-VALUE|LOW-VALUES"||~v124R~
-            keyword="GO|GOTO"                                         ||~v124R~
-            keyword="COPY"                                            ||~v124R~
-            keyword="ALTER|ENTER|RENAMES"                             ||~v124R~
-            keyword="OCCURS|DEPENDING|VARYING|BINARY|COMP|REDEFINES"  ||~v124R~
-            keyword="REPLACING|RUN"                                   ||~v124R~
-            keyword="EXEC|END-EXEC"                                   ||~v124R~
-            keyword="CALL|END-CALL|CANCEL|GOBACK|PERFORM|END-PERFORM|INVOKE"||~v124R~
-            #keyword='(?=.*[[:lower:]])(?=.*[[:upper:]])(?=.*[[:punct:]]).+'||~v124R~
-            #keyword='(?=.*[[:lower:]])A.*'                           ||~v124R~
-            #keyword='(?(?=.{80}).{8}$)'        //cond not support    ||~v124R~
-            #keyword='(?(?=xx)AAB|AAC)'     //cond not support        ||~v124R~
-                                                                      ||~v124R~
-            ######################################                    ||~v124R~
-            #comment:no consideration of COL.1-6,73-                  ||~v124R~
-            ######################################                    ||~v124R~
-            #comment start '^.{72}(?=.+)'                             ||~v124R~
-            comment start '^.{6}[*/C]'                     #*,/,C on col.7||~v124R~
-            comment='^.{6}'                                #col.1-6:comment||~v124R~
-            #state comment start '^.{72}'    begin                    ||~v124R~
-            #   comment='.{8}'                                        ||~v124R~
-            #end                                                      ||~v124R~
-            #environment comment start '^.' begin                     ||~v124R~
-            #   comment = '^.{6}' exitall                             ||~v124R~
-            #end                                                      ||~v124R~
-            #comment start `(?(?=^.{72}).{8}$)`                       ||~v124R~
-            #comment start '(^[[:blank:]]{72}).{8}$'                  ||~v124R~
-            ######################################                    ||~v124R~
-            #string:no consideration of COL.1-6,73-                   ||~v124R~
-            ######################################                    ||~v124R~
-            #string delim "\"" "\"" escape "\"\""                     ||~v124R~
-            #string delim "'"  "'"  escape "''"                       ||~v124R~
-            string delim '[X]?\"'  '(\"|.$)'                          ||~v124R~
-            string delim '[X]?\''  '(\'|.$)'                          ||~v124R~
-            ######################################                    ||~v124R~
-            # numbers                                                 ||~v124R~
-            ######################################                    ||~v124R~
-            number = '\<[+-]?(([[:digit:]]*\.)?[[:digit:]]+([eE][+-]?[[:digit:]]+)?)\>'||~v124R~
-                                                                      ||~v124R~
-            ######################################                    ||~v124R~
-            #include "function.lang"                                  ||~v124R~
-            # no function definition                                  ||~v124R~
-            ######################################                    ||~v124R~
-                                                                      ||~v124R~
-    (e) andre-simon's Highlight configuration.                        ||~v124R~
+    (e) André Simon's Highlight configuration.                        ||~v124R~||~v@@2R~
                                                                       ||~v124R~
        .tested using v2.7.                                            ||~v124R~
        .configuration folder is registered at installation.           ||~v124R~
@@ -2324,7 +2765,6 @@ UTF8 encoding * CID:||+v130R~:  2023/07/31  v129W           update#=  735;||+v13
              46 cyan                                                  ||~v124R~
              47 white                                                 ||~v124R~
                                                                       ||~v124R~
-#endif   //W32 || LNX                                                 ||~v124R~
                                                                       ||~v124I~
 #if defined(W32) || defined(UNX)
    .Remote file access.
@@ -2558,7 +2998,6 @@ sample)
        cmd output. It is convenient to collect information from multiple
        remote hosts.
 
-#endif
 
 #if defined(W32) || defined(LNX)
 
@@ -2872,7 +3311,7 @@ sample)
             CHARSET_CFG    :Conversion parameter file when use external converter such as ICU/iconv.||~v124R~
                             (See "EBCDIC translation")                ||~v124R~
                                                                       ||~v124R~
-            Ex). ("#" on the top of line means comment line)          ||~v124R~
+            e.g. ("#" on the top of line means comment line)          ||~v124R~||~v@@6R~
             #####################################################################||~v124I~
             # xe3270.cfg                                              ||~v124I~
             #          Following options may be destination specific by the format of OPT.dest=xxxx.||~v124I~
@@ -4387,9 +4826,9 @@ sample)
         %^   :fullpath name currently opened on the other split screen.||~127ER~
         %@   :all remaining parameters not used by %n up to the position.||~127ER~
         %* and %^ is replaced to space if the screen is not file/dir panel.||~127ER~
-                                                                      ||+v130R~
-      <B>Example</B>                                                  ||+v130R~
-                                                                      ||+v130R~
+                                                                      ||~v130R~
+      <B>Example</B>                                                  ||~v130R~
+                                                                      ||~v130R~
             0106|********   Alias  :*sl1 e %1 ;x all; i error; del x all #this is comment line
             0107|Alias  :ls e x:\x1 ; i aaaa
             0108|Alias  :al1 e abc
@@ -4402,7 +4841,7 @@ sample)
             0139|Alias  :u8d e g:\src\xe\utf8data.0000-ffff
             0140|Alias  :ud4 e g:\src\ulib\combinedata\unicodeDatabase1.unicode.All.testwcw.e.o
             0142|Alias  :lp3 i lineput       & row=3
-            0143|Alias  :lpn i lineput       & row=%1                 ||+v130R~
+            0143|Alias  :lpn i lineput       & row=%1                 ||~v130R~
             0144|Alias  :wc3 i uviowrtcellw1 & row=3
             0145|Alias  :wc4 i uviowrtcellw1 & row=4
             0146|Alias  :chi i ukbdcharin last
@@ -5358,7 +5797,7 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
  |Line Include last|        |Alt+l                                  |
  |Input Shortcut   |        |Alt+a                          #12     | ||~v124R~
  |Display Shortcut |        |Alt+q                          #12     | ||~v124R~
- |ScreenHardCopy   |        |Alt+z,Ctl+h                    #16     | ||~v130I~||+v130R~
+ |ScreenHardCopy   |        |Alt+z,Ctl+h                    #16     | ||~v130I~||~v130R~
  |Dir Size option  |        |F6                                     |
  |Dir LongFileName |LFN     |Shift+F11                              |
  |Dir FileDesc     |        |Shift+F10                      #14     |
@@ -5534,8 +5973,8 @@ col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7..
          of the file. Control char(<0x20) is replaced by ".".
    - #15:PathUp displays the parent directory of the file currently displayed.||~v124R~
          PathDown back to the file before PathUp.                     ||~v124R~
-   - #16:Output to ::hcopy(file in workDir)                           ||~v130I~||+v130R~
-         Ctrl+h is available except Linux Console version.            ||~v130I~||+v130R~
+   - #16:Output to ::hcopy(file in workDir)                           ||~v130I~||~v130R~
+         Ctrl+h is available except Linux Console version.            ||~v130I~||~v130R~
                                                                       ||~v124R~
 ************************************************************************
 (2).Panel
@@ -6554,6 +6993,7 @@ by screen expansion)
 
         CID [on | off | clear | shift | defon | defoff | top___ | copyon | copyoff | ?]||~v125R~
                     [ [cid-type|prefix[,postfix]] | APPEND ]          ||~v124I~
+                    [.lab1 .lab2]                                     ||~v@@@I~
 
                     :If operand missing,it is assumed ? is specified.
             on      :Add change id tag to updated line when saved.
@@ -6624,14 +7064,15 @@ by screen expansion)
             (Use quotation for prefix or postfix when it contain
              these char,",",";"," ".)
                                                                       ||~v124I~
-            APPEND  :Append new CID after the previous CID on the line||~v124I~
-                     if new CID is not same as old CID.               ||~v124I~
+            APPEND/ :Append new CID after the previous CID on the line||~v124I~||~v@@@R~
+            NOAPPEND if new CID is not same as old CID.               ||~v124I~||~v@@@R~
                      If CID type is date, append if date is changed.  ||~v124I~
                      This is effective only if CID position is not fixed by CID header line.||~v124I~
                      Specify with on/off/defon/defoff.                ||~v124I~
                      "(def)off APPEND" resets APPEND status only,     ||~v124I~
                      "(def)off" resets (def)on and APPEND status.     ||~v124I~
                                                                       ||~v124I~
+            lab1 lab2 : Used for clear and shift. Specify the line range by a pair of labels set in the line number field.||~v@@@R~
 
    = Combine mode                                                     ||~v129R~
                                                                       ||~v129R~
@@ -6837,6 +7278,7 @@ by screen expansion)
 #endif                                                                ||~v124R~
             u2f/f2u :UCS2<-->UTF8
             b2s/s2b :IBM-EBCDIC<-->SJIS(Japanese DBCS conversion).
+            b2e/e2b :IBM-EBCDIC<-->EUC-JP conversion.                 ||~v@@@I~
             b2a/a2b :IBM-EBCDIC<-->ASCII SBCS(SO/SI(0x0e/0x0f) is ignored).
             k2L/L2k :HankakuKatakana<-->EnglishLowerCase letter.
                      When EBCDIC-->ASCII translated lowercase letter to
@@ -6902,7 +7344,7 @@ by screen expansion)
                         use with u2s,f2s. default is IBM.
              JIS78     :DBCS conversion by OLD-JIS sequence.
                         default is JIS83(NEW-JIS) sequence.
-             ANK       :replace control char by 'err-rep-char',
+             ANK       :replace control char by 'err-rep-char'(e.g. '?' for B2M),||~v@@@R~
              \u        :\uxxxx format unicode input conversion(u2s,u2f).
                        :\uxxxx format unicode output conversion(s2u,f2u).
              CRLF      :replace CR,LF by 'err-rep-char'.              ||~v125R~
@@ -7032,7 +7474,7 @@ by screen expansion)
 
         {EDIt | ET | EB | EH | EN | EC(=EL) | ECN(=Ei) | EK | EKN(=EJ) | E8}||~v124R~
             file-name [/P[0|1]] [CAP|NOCAP] [TC|NOTC] [NB] [NONUM] [F{n[-m]|vfmt}]||~127BR~
-            [CPU8|CPLC|CPAS|CPEB] [IE] [FNU8|FNLC|FNAS]               ||~v126R~
+            [CPU8|CPLC|CPAS|CPEB[:converter]] [IE] [FNU8|FNLC|FNAS]   ||~v@@@I~
             [/L] [/Ln] [[/O][n[t]]-[m[t]]]
             [/M[r[w]][B|C|H|K][n][o|L][X][width[S]][d]]               ||~v125R~
                                                                       
@@ -7098,7 +7540,12 @@ by screen expansion)
             CPU8: Open as UTF8 file.                                  ||~v125R~
             CPLC: Open as locale code file.                           ||~v125R~
             CPAS: by the LANG environment. Default.                   ||~v125R~
-            CPEB: Open as EBCDIC file.                                ||~v125R~
+            CPEB[:converter]: Open as EBCDIC file.                                ||~v125R~||~v@@@R~
+                  converter:EBCDIC codepage such as CP930.            ||~v@@@I~
+                  You can use ICU/iconv converter by EBCDIC cfg file prepared.||~v@@@I~
+                  If you do not use the EBCDIC cfg file, you can specify CP037, CP939, or CP930.||~v@@@I~
+                  If you do not specify this converter option, the converter in the cfg file is used.||~v@@@I~
+                  If no cfg file is prepared, the default is CP930 in Japanese environments, and CP037 otherwise.||~v@@@I~
                                                                       ||~v125R~
               CPxx option is save to profile.                         ||~v125R~
               No need to specify for the 2nd open.                    ||~v125R~
@@ -7146,6 +7593,8 @@ by screen expansion)
                             but it is new EOL-ID at next open after saved.||~v125R~
                      (Note) "ET" cmd check 0x15 as EOL character for EBCDIC file.||~v125R~
                             On the other hands, /Mt recognize 0x0a and 0x0d0a as EOL character.||~v125R~
+                            If you cannot open the file due to a header error||~v@@@I~
+                            because the file is recorded as variable length mode in the profile, open it with /Mt.||~v@@@I~
                                                                       ||~v125R~
               M:Mac  mode  :0x0d   is line delimiter.                 ||~v125R~
               E:EBCDIC mode:0x15   is line delimiter.                 ||~v125R~
@@ -7321,7 +7770,7 @@ by screen expansion)
                      [U[B|L|8|4]]                                     ||~v125R~
                      [col-range] [& [!] string2 [col-range2] [-d[<|>]n]
                      [all | next | + | prev | - | first | last]
-                     [-cont]                                          ||~v130M~||+v130R~
+                     [-cont]                                          ||~v130M~||~v130R~
                      [.lab1 .lab2] [l-column | LM | RM [r-column]]
                      [-a[-]n] [-b[-]n] [-c[{L|R}m][{T|B}n]] [-j|-je]
                      [-Llcmd] -m[n] [-nx] [.lab1 .lab2]               
@@ -7504,14 +7953,14 @@ by screen expansion)
             -       :same as prev
             first   :search forward from start of file.
             last    :search backward from end of file.
-            -cont   :search starts from the succeeded found position just before.||~v130I~||+v130R~
-                     When selecting lines in a large file by the Find command in the Exe cmd file,||~v130I~||+v130R~
-                     from a performance consideration,                        //~@@@1I~||~v130I~||+v130R~
-                     when NotFound occurred, the next Find will start not from the first line,//~@@@1I~||~v130I~||+v130R~
-                     but from the last Found line.                            //~@@@1I~||~v130I~||+v130R~
-                     It will be better on condition that files were sorted.||~v130I~||+v130R~
-                     Available only in Exe cmd file.                  ||+v130R~
-                     (See html Help for sample usage.)                ||+v130R~
+            -cont   :search starts from the succeeded found position just before.||~v130I~||~v130R~
+                     When selecting lines in a large file by the Find command in the Exe cmd file,||~v130I~||~v130R~
+                     from a performance consideration,                        //~@@@1I~||~v130I~||~v130R~
+                     when NotFound occurred, the next Find will start not from the first line,//~@@@1I~||~v130I~||~v130R~
+                     but from the last Found line.                            //~@@@1I~||~v130I~||~v130R~
+                     It will be better on condition that files were sorted.||~v130I~||~v130R~
+                     Available only in Exe cmd file.                  ||~v130R~
+                     (See html Help for sample usage.)                ||~v130R~
             .lab1/2 :Limit search line range using a pair of label
                      on lineno column. line number may be used so as to
                      limit line range with no label on lineno column.
@@ -13109,11 +13558,11 @@ by screen expansion)
              in this example, this file is ::cl(command log) and      
              timestamp field is ignored.(ignore up to next "=" if column.1 is "=")||~v125R~
 
-            0055|=20:50:17.937:s file1
-            ##^ |=20:50:23.828:i word1 -m all
-            0057|=20:50:56.953:i word2 -m all
-            ##! |=20:51:00.484:i wodr3 -m all
-            0059|=20:51:06.203:s
+            0055|s file1                                              ||~v@@@R~
+            ##^ |i word1 -m all                                       ||~v@@@R~
+            0057|i word2 -m all                                       ||~v@@@R~
+            ##! |i wodr3 -m all                                       ||~v@@@R~
+            0059|s                                                    ||~v@@@R~
 
 *********************
  (B) Directory List *
@@ -14480,33 +14929,39 @@ by screen expansion)
                     (same as menu option id),                         ||~v124R~
                     or start with "=".                                ||~v124R~
                                                                       ||~v124R~
-      -Fx[t][:hosts]:x=0:FTP is not used, x=1:FTP avail(without log)
-                     x=w:output ftplog, x=a:ftplog by append mode.
-                    :t:debug option not to delete temp file for ftp get.
-                    :hosts:hosts filename for xe.
-                    Default is /F1:xehosts(xehosts on work directory)
-      -F{fontname[:charset] | @font_param_filename}            //~@@@1R~||~v130R~||+v130R~
-                   :The font name required for /G option is---             //~@@@1I~||~v130I~||+v130R~
-                    when running on Windows Terminal, setting.json is checked,//~@@@1I~||~v130I~||+v130R~
-                    when running on Linux, on gnome-terminal, konsole, etc.,||~v130I~||+v130R~
-                    the profile of the Home dir is checked by xeGetFont.sh.||~v130I~||+v130R~
-                    But if it fails, specify this option.                  //~@@@1I~||~v130I~||+v130R~
-                    Use font_param_filename when specifying indirectly from a file, use font_param_filename.//~@@@1I~||~v130I~||+v130R~
-                    See Microsoft's documentation for the appropriate charset for the font.//~@@@1I~||~v130I~||+v130R~
-                    Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.             //~@@@1I~||~v130I~||+v130R~
-                         /F"\uff2d\uff33 \u660e\u671d".                    //~@@@1I~||~v130I~||+v130R~
-      -G{Y|N}{y|0|1|2}:Specy cell width of unicode defined width is ambiguous.||~v130R~||+v130R~
-                        Y:Fit to font width.                                   //~@@@1I~||~v130I~||+v130R~
-                          You can also specify the 2nd option for chars in unfamiliar languages.||+v130R~
-                          However, this option takes a cost, the start-up will be slightly slower.//~@@@1I~||~v130I~||+v130R~
-                          (See html Help for those languages.)        ||+v130R~
-                        N: Specify the display width uniformly using the second option.//~@@@1I~||~v130I~||+v130R~
-                        The default value is /GY2.                             //~@@@1I~||~v130I~||+v130R~
-                        Ex.) /GN2: All ambiguous chars are displayed in two cells.//~@@@1I~||~v130I~||+v130R~
-                             /GYy: All ambiguous chars are adjusted according to the font.//~@@@1I~||~v130I~||+v130R~
-                             /GY0: Unfamiliar languages are displayed as ':;' instead.//~@@@1I~||~v130I~||+v130R~
-                                                                      ||+v130R~
+      -EBC[=]{KANA_EXT|ENG_EXT|DefaultMap|DefaultMapEuro|cfg=filepath} : Specify conversion table or cfg file.||~v@@@I~
+                    KANA_EXT(=CP930=CP290+CP300)  : Japanese extended, Katakana.||~v@@@I~
+                    ENG_EXT(=CP939=CP1027+CP300)  : Japanese extended, lowercase alphabetic.||~v@@@I~
+                    DefaultMap(=CP037)            : Latin-1, no Kanji.||~v@@@I~
+                    DefaultMapEuro(=CP037+Euro)                       ||~v@@@I~
+                    cfg=filepath : Temporarily change EBCDIC_cfg option in the ini file.||~v@@@I~
+      -FTPx[t][:hosts]:x=0:FTP is not used, x=1:FTP avail(without log)||~v@@@R~
+                                            x=w:output ftplog, x=a:ftplog by append mode.||~v@@@R~
+                    hosts:hosts filename for xe.                      ||~v@@@R~
+                    Default is -FTP1(hosts="::xehosts", log="::xeftplog").||~v@@@R~
+      -F{fontname[:charset] | @font_param_filename}            //~@@@1R~||~v130R~||~v130R~
+                   :The font name required for /G option is---             //~@@@1I~||~v130I~||~v130R~
+                    when running on Windows Terminal, setting.json is checked,//~@@@1I~||~v130I~||~v130R~
+                    when running on Linux, on gnome-terminal, konsole, etc.,||~v130I~||~v130R~
+                    the profile of the Home dir is checked by xeGetFont.sh.||~v130I~||~v130R~
+                    But if it fails, specify this option.                  //~@@@1I~||~v130I~||~v130R~
+                    Use font_param_filename when specifying indirectly from a file, use font_param_filename.//~@@@1I~||~v130I~||~v130R~
+                    See Microsoft's documentation for the appropriate charset for the font.//~@@@1I~||~v130I~||~v130R~
+                    Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.             //~@@@1I~||~v130I~||~v130R~
+                         /F"\uff2d\uff33 \u660e\u671d".                    //~@@@1I~||~v130I~||~v130R~
+      -G{Y|N}{y|0|1|2}:Specy cell width of unicode defined width is ambiguous.||~v130R~||~v130R~
+                        Y:Fit to font width.                                   //~@@@1I~||~v130I~||~v130R~
+                          You can also specify the 2nd option for chars in unfamiliar languages.||~v130R~
+                          However, this option takes a cost, the start-up will be slightly slower.//~@@@1I~||~v130I~||~v130R~
+                          (See html Help for those languages.)        ||~v130R~
+                        N: Specify the display width uniformly using the second option.//~@@@1I~||~v130I~||~v130R~
+                        The default value is /GY2.                             //~@@@1I~||~v130I~||~v130R~
+                        Ex.) /GN2: All ambiguous chars are displayed in two cells.//~@@@1I~||~v130I~||~v130R~
+                             /GYy: All ambiguous chars are adjusted according to the font.//~@@@1I~||~v130I~||~v130R~
+                             /GY0: Unfamiliar languages are displayed as ':;' instead.//~@@@1I~||~v130I~||~v130R~
+                                                                      ||~v130R~
       -h,-?        :Help
+      -HDdirname   :dirname:Directory for help html files.            ||~v@@@I~
       -hnn         :Screen height.                                    ||~v124R~
                     Use when screen height and screen buffer size is not||~v124R~
                     same on TeraTerm ini file specification.
@@ -14582,31 +15037,38 @@ by screen expansion)
       /E           :Edit mode open(default)
                     Use when edit file name is "0","1","2" or "6"
                     (same as menu option id).
-      /Fx[t][:hosts]:x=0:FTP is not used, x=1:FTP avail(without log)  ||~v130R~||+v130R~
-                     x=w:output ftplog, x=a:ftplog by append mode.
-                    :t:debug option not to delete temp file for ftp get.
-                    :hosts:hosts filename for xe.
-                    Default is /F1:xehosts(xehosts on work directory)
-      /F{fontname[:charset] | @font_param_filename}            //~@@@1R~||~v130R~||+v130R~
-                   :The font name required for /G option is---             //~@@@1I~||~v130I~||+v130R~
-                    when running on Windows Terminal, setting.json is checked,//~@@@1I~||~v130I~||+v130R~
-                    when running on Linux, on gnome-terminal, konsole, etc.,||~v130I~||+v130R~
-                    the profile of the Home dir is checked by xeGetFont.sh.||~v130I~||+v130R~
-                    But if it fails, specify this option.                  //~@@@1I~||~v130I~||+v130R~
-                    Use font_param_filename when specifying indirectly from a file, use font_param_filename.//~@@@1I~||~v130I~||+v130R~
-                    See Microsoft's documentation for the appropriate charset for the font.//~@@@1I~||~v130I~||+v130R~
-                    Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.             //~@@@1I~||~v130I~||+v130R~
-                         /F"\uff2d\uff33 \u660e\u671d".                    //~@@@1I~||~v130I~||+v130R~
-      /G{Y|N}{y|0|1|2}:Specy cell width of unicode defined width is ambiguous.||~v130R~||+v130R~
-                        Y:Fit to font width.                                   //~@@@1I~||~v130I~||+v130R~
-                          You can also specify the second option for chars in unfamiliar languages.//~@@@1I~||~v130I~||+v130R~
-                          However, this option takes a cost, the start-up will be slightly slower.//~@@@1I~||~v130I~||+v130R~
-                        N: Specify the display width uniformly using the second option.//~@@@1I~||~v130I~||+v130R~
-                        The default value is /GY2.                             //~@@@1I~||~v130I~||+v130R~
-                        Ex.) /GN2: All ambiguous chars are displayed in two cells.//~@@@1I~||~v130I~||+v130R~
-                             /GYy: All ambiguous chars are adjusted according to the font.//~@@@1I~||~v130I~||+v130R~
-                             /GY0: Unfamiliar languages are displayed as ':;' instead.//~@@@1I~||~v130I~||+v130R~
+                    or start with "=".                                ||~v@@@I~
+      /EBC[=]{KANA_EXT|ENG_EXT|DefaultMap|DefaultMapEuro|cfg=filepath} : Specify conversion table or cfg file.||~v@@@I~
+                    KANA_EXT(=CP930=CP290+CP300)  : Japanese extended, Katakana.||~v@@@I~
+                    ENG_EXT(=CP939=CP1027+CP300)  : Japanese extended, lowercase alphabetic.||~v@@@I~
+                    DefaultMap(=CP037)            : Latin-1, no Kanji.||~v@@@I~
+                    DefaultMapEuro(=CP037+Euro)                       ||~v@@@I~
+                    cfg=filepath : Temporarily change EBCDIC_cfg option in the ini file.||~v@@@I~
+      /FTPx[t][:hosts]:x=0:FTP is not used, x=1:FTP avail(without log)  ||~v130R~||~v130R~||~v@@@R~
+                                            x=w:output ftplog, x=a:ftplog by append mode.||~v@@@R~
+                    hosts:hosts filename for xe.                      ||~v@@@R~
+                    Default is -FTP1(hosts="::xehosts", log="::xeftplog").||~v@@@I~
+      /F{fontname[:charset] | @font_param_filename}            //~@@@1R~||~v130R~||~v130R~
+                   :The font name required for /G option is---             //~@@@1I~||~v130I~||~v130R~
+                    when running on Windows Terminal, setting.json is checked,//~@@@1I~||~v130I~||~v130R~
+                    when running on Linux, on gnome-terminal, konsole, etc.,||~v130I~||~v130R~
+                    the profile of the Home dir is checked by xeGetFont.sh.||~v130I~||~v130R~
+                    But if it fails, specify this option.                  //~@@@1I~||~v130I~||~v130R~
+                    Use font_param_filename when specifying indirectly from a file, use font_param_filename.//~@@@1I~||~v130I~||~v130R~
+                    See Microsoft's documentation for the appropriate charset for the font.//~@@@1I~||~v130I~||~v130R~
+                    Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.             //~@@@1I~||~v130I~||~v130R~
+                         /F"\uff2d\uff33 \u660e\u671d".                    //~@@@1I~||~v130I~||~v130R~
+      /G{Y|N}{y|0|1|2}:Specy cell width of unicode defined width is ambiguous.||~v130R~||~v130R~
+                        Y:Fit to font width.                                   //~@@@1I~||~v130I~||~v130R~
+                          You can also specify the second option for chars in unfamiliar languages.//~@@@1I~||~v130I~||~v130R~
+                          However, this option takes a cost, the start-up will be slightly slower.//~@@@1I~||~v130I~||~v130R~
+                        N: Specify the display width uniformly using the second option.//~@@@1I~||~v130I~||~v130R~
+                        The default value is /GY2.                             //~@@@1I~||~v130I~||~v130R~
+                        Ex.) /GN2: All ambiguous chars are displayed in two cells.//~@@@1I~||~v130I~||~v130R~
+                             /GYy: All ambiguous chars are adjusted according to the font.//~@@@1I~||~v130I~||~v130R~
+                             /GY0: Unfamiliar languages are displayed as ':;' instead.//~@@@1I~||~v130I~||~v130R~
       /H,/?        :Help
+      /HDdirname   :dirname:Directory for help html files.            ||~v@@@I~
       /Hnn         :Screen height. max is screen buff size.           ||~v124R~
                     Use when screen height and screen buffer size is not||~v124R~
                     same on DOS prompt under Windows 2000.

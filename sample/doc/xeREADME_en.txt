@@ -1,18 +1,18 @@
-UTF8 encoding ||*CID:||+v130R~:  2024/07/05                update#=  850;||~v130R~
+UTF8 encoding ||*CID:||+v130R~:  2024/12/080                update#=  855;||+v130R~
 ######################################################################
-[English]    v1.30                                                    ||~v130R~
+[English]    v1.30A                                                   ||~v130R~
 
-This editor is fit for programmers working on both main-frame and PC.
-Its operation is based on mainframe SPF editor,
-and like as other editor on PC, convenient short-cut key operation is hybrid.
+An easy-to-use editor for programmers who work on both mainframes (also useful for editing SPF files) and PCs.||~v130I~
+A hybrid of the host's SPF and the convenient key operations of a PC EDITOR.||~v130I~
 
     .Available to Windows and Linux.
     .Supports Fixed-Length and Variable-Length record file.
-    .Suppors text file encoded by UTF8 and EBCDIC(requires ICU installation).
+    .Suppors text file encoded by UTF8 or EBCDIC(requires ICU installation).||~v130R~
     .Supports binary file edit. Vertical 2 line and horizontal dump format.
-    .Filer fuction (apply Delete, Rename, Copy, Move, Execute, ...) is available.
+    .Filer fuctions (Delete, Rename, Copy, Move, Execute, ...) are supported.||~v130R~
     .Supports Remote file access using ftp,samba,rsh,ssh,fuse.
-    .Optionally update-tag:CID(ChangeID) is automatically appended to updated lines.
+    .Automatically assigns update tags to changed lines, helping for version control.||~v130I~
+    .A rich set of commands convenient for data processing.           ||~v130I~
 
 LICENSE: use GNU GPL
 
@@ -22,11 +22,13 @@ LICENSE: use GNU GPL
                                    GitHub: sakachin2/XE
 
 For windows, "xe.exe" is console application and "wxe.exe" is GUI application.
-   wxe.exe is WTL/ATL application(requires no MFC library) compiled on vs2010Express.
-   Thorse are included in w64binGit.zip.
+   Console version: xe.exe runs in a command prompt and does not support the mouse.||~v130I~
+   GUI version: wxe.exe is a WTL/ATL version (without MFC) compiled with vs2022Comunity.||~v130I~
+   Unzip w64binGit.zip.                                               ||~v130I~
 For Linux, "xe" is console application and "gxe" is GUI application.  ||~v29WR~
-   Untar gxe-x.xx.tar.gz, and make binary by ./configure && make.
+   Untar gxe-x.xx.tar.gz, and make binary by ./configure && make && sudo make install.||~v130R~
 For Android, install "Axe" from PlayStore.                            ||~v29WR~
+                                                                      ||~v130I~
 Following command line tools are also included.
    xads         For Windows Only,Access to NTFS ADS(Alternative Data Stream).
    xbc          Basic calculator.
@@ -58,19 +60,20 @@ Following command line tools are also included.
 
 Other contents.
   xehelp:
-    Html files for Help.
+    Html files for Help. To open html using "?" command               ||~v130R~
     put it WorkDirectory, set "xehelp=..." environment variable
     or use -hd commandline parameter.
     Under linux you can put it in /usr/local\/shareLinux(see xelnxe.txt).
   sample/doc:
     Manual text files.
       xej.txt/xee.txt
-      xereadmj.txt/xereadme.txt
+      xeREADME_jp.txt/xeREADME_en.txt                                 ||~v130I~
       xelnxj.txt/xelnxe.txt(For Linux)
       xewxej.txt/xewxee.txt(For wxe and gxe)
   sample/data:
       xehosts      setup file for remote access.
-      xesynw.cfg   (Win)setup file to use syntax highlight.
+      xesynw.cfg   setup file to use syntax highlight.                ||~v130R~
+       /xesynl.cfg                                                    ||~v130I~
       xeebc.map    setup fie for EBCDIC conversion
 
   sample/staff:use following external tools if you have not in hand.
@@ -78,12 +81,14 @@ Other contents.
       grep.exe     It is used by GREp command and =3.14 panel.
 
       Select one from following syntax highlight tool and specify it xesynw.cfg
-      See xee.txt and xesynw.cfg for how-to-use.
+      See xee.txt for how-to-use.                                     ||~v130R~
         gnu-source-highlight.zip
                      (Win)GNU source-highlight v2.9 is compiled on MinGW.
-        WinHighlight31.copies2.zip
+        On Linux, install using apt-get etc.                          ||~v130I~
+        highlight-4.4-x64.forXE.Win.zip                               ||~v130I~
                      andre simon's highlight v3.1
                      Put dll in the same folder as exe.
+        recomended gnu-source-highlight on Linux, highlight on Windows.||~v130I~
       putty063.zip
                      Required when use putty for remote file access.
 
@@ -92,20 +97,20 @@ How to execute.
 
   (Windows)
 
-  ．Create WorkDirectory, default is c:\xe_wd, avoid default value when c:\ is protected.
-    e.g)  "mkdir d:\xe_wd"
+  . Create a WorkDirectory.                                           ||~v130I~
+    The default is c:Users\USERNAME\xe_wd, which will be "mkdir" at first startup.||~v130I~
   ．Put zip file in the WorkDirectory, then unzip it.
-      copy xehosts etc. from sample\data to the WorkDirectory if you use those function.
-      Put dummy file consist of one comment line(starting by "#" when you do not use the function.
+      copy xehosts etc. from sample\data to the WorkDirectory.        ||~v130R~
+      Adjust it according xeee.txt etc.                               ||~v130R~
   . Put executable binary on PATH environment valiable.
       Windows10 case:ControlPanel-->System and Security-->System-->Advanced Setting-->EnvironmentVariable:PATH
-  . Set WorkDirectory to environment variable xe.
-      Or, prepare .bat file
-      e.g) xe.bat
-               set xe=d:\xe010
+  . If the working directory is not the default, set the directory name to the environment variable :xe||~v130I~
+    Or create a command file for starting xe that you have created yourself||~v130I~
+      e.g. xe.bat                                                     ||~v130R~
+               set xe=d:\xewd010                                      ||~v130R~
                xe.exe
              OR
-               xe.exe /wd:\xe010
+               xe.exe /wd:\xewd010                                    ||~v130R~
   ．Start by "xe [file-spec]".
       "xe /?" shows commandline parameters.
   . Above is also applied to wxe.
@@ -113,16 +118,16 @@ How to execute.
   (Linux)
   .On terminal emulator, install xe.
       tar -zxvf gxe-1.xx.tar.gz
-      cd
+      cd xxxx                                                         ||~v130R~
       ./configure
       make
       sudo make install   -->install to /usr/local/bin
-    See sample/READMEj.txt when install trouble occured.
-    If you want, install manually other binary from src/xsub folder than installed by "make install".
+    See gxeinstallREADMe.txt when install trouble occured.            ||~v130R~
+    If you want, install manually other binary from src/xsub folder other than installed by "make install".||~v130R~
   .Create WorkDirectory at home.
       mkdir ~/xe_wdnnnnn     nnnnn is uid.                            ||~v29WR~
     Copy setup files such as xehosts from sample folder to the WorkDirectory if you use the function.
-    If you do not use the function, create dummy file containing one comment record starting with "#".
+    And adjust it according your environment.                         ||~v130R~
   ．Start xe by "xe [file-spec]
       "xe -?" shows command line parameter
       Terminal emulator defines shortcut key such as  F1, F10 and ModifierKey(Shift/Alt/Ctrl) combination.
@@ -612,7 +617,7 @@ How to execute.
      1.BUGs                                                           ||~v29XI~
        -(Linux) ./configure may fail by "/gth.h Not found".           ||~v29XI~
        -(Linux:gxe) When using Gtk3, the widget size is not fixed and changes at each start.||~v29XI~
-       -(LNX:gxe) プリントアイコンを押すとブランクページを印刷したりクラッシュすることがある||+v130I~
+       -(LNX:gxe) プリントアイコンを押すとブランクページを印刷したりクラッシュすることがある||~v130I~
                                                                       ||~v29XI~
      2.Additional function.                                           ||~v29XI~
        -Improved display of UTF-8 files                               ||~v29XI~
@@ -663,3 +668,34 @@ How to execute.
           Limits option /Yh (input in hexadecimal notation) to standard input including pipe.||~v29XI~
        -xprint.c 3.39                                                 ||~v29XI~
           (LNX)The right edge of lines may exceed the right margin and text may be cut off.||~v29XI~
+######################################################################||~v130I~
+130A:2024/11/30                                                       ||~v130I~
+                                                                      ||~v130I~
+     1.BUGs                                                           ||~v130I~
+       -Hard copy (Alt+z) may be garbled with substitute characters for unprintable characters.||~v130I~
+       -When you use S+F1 (update list) with the directory list with a file mask specified,||~v130I~
+        the list will not be updated if there are no matching members.||~v130I~
+                                                                      ||~v130I~
+     2.Additional function.                                           ||~v130I~
+       -CID command.                                                  ||~v130I~
+        clear/shfit option now supports label specification.          ||~v130I~
+                                                                      ||~v130I~
+     3.Miscellaneous.                                                 ||~v130I~
+       -EBCDIC file support has been improved.                        ||~v130I~
+        Euro support, -Mz option treats ebcdic 0x0d15 as a line feed, ||~v130I~
+        Addition of command line options -EBC (internal conversion table, cfg file specification),||~v130I~
+        Revision of cfg file options, etc.                            ||~v130I~
+                                                                      ||~v130I~
+     4.Tools                                                          ||~v130I~
+       -xcv v1.24     (Character set conversion)                      ||~v130I~
+        .-icudata=, -Mcp037 options are added.                        ||~v130I~
+        .When the option to ignore mismatched end-of-line comments is specified, tabs up to the comment also have to be ignored.||~v130I~
+                                                                      ||~v130I~
+       -xdig v1.14    (apply any command to each directory level)     ||~v130I~
+        .dir-mask                                                     ||~v130I~
+           Multiple specifications are concatenated with ";".  e.g. "dirA;subsirB*"||~v130I~
+           You can specify both the top dir target and all dir targets, connect them with ";;".  e.g. "top1;top2;;subdir*".||~v130I~
+                                                                      ||~v130I~
+       -xfc v1.30     (compare files and show inconsistencies)        ||~v130I~
+        .(Windows:Bug) 0x1a is considered as the end of file.         ||~v130I~
+                                                                      ||~v130I~

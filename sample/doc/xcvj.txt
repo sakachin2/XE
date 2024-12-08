@@ -1,145 +1,156 @@
-//*CID:||+v120R~:   2017/08/26                update#=   19;          ||~v118R~||~v120R~
+//*CID:||+v124R~:   2024/11/19                update#=   29;          ||~v124R~
 
-��������I�v�V����������܂�����ʓI�Ȏg������                        ||~v116R~
+たくさんオプションがありますが一般的な使い方は                        ||~v116R~||+v124R~
   xcv -cm2m -f:cpfrom -t:-cpto inputfile -ooutputfile                 ||~v116I~
-m2f/f2m�ł�"m"�ɂ͌��݂̃R�[�h�y�[�W���Ή����܂��� -L �Ō��݂̃R�[�h�y�[�W�ȊO���w��ł��܂�||~v116R~
+m2f/f2mでは"m"には現在のコードページが対応しますが -L で現在のコードページ以外を指定できます||~v116R~||+v124R~
                                                                       ||~v116I~
-EBDCDIC�t�@�C���̏ꍇ��                                               ||~v116R~
+EBDCDICファイルの場合は                                               ||~v116R~||+v124R~
   xcv -cb2b -f:cpfrom -t:-cpto inputfile -mf:ebcmapfile               ||~v116I~
-b2m/m2b�ł�"m"�͌��݂̃��[�J���R�[�h�y�[�W��"b"��ebcmapfile�Ŏw�肷�邩-CPEB:�Ŏw�肵�܂�||~v116R~
+b2m/m2bでは"m"は現在のローカルコードページで"b"はebcmapfileで指定するか-CPEB:で指定します||~v116R~||+v124R~
   xcv -cb2m inputfile -cpeb:cp939                                     ||~v116I~
-EBCDIC�ϊ��ł͉��s�R�[�h(-Masceol/-Mseteol),DBCS SOSI����(-Sx),-Fnn(�Œ蒷���R�[�h�T�C�Y)||~v116R~
-�Ȃǂ��֘A����I�v�V�����ł�                                          ||~v116R~
+EBCDIC変換では改行コード(-Masceol/-Mseteol),DBCS SOSI処理(-Sx),-Fnn(固定長レコードサイズ)||~v116R~||+v124R~
+などが関連するオプションです                                          ||~v116R~||+v124R~
                                                                       ||~v116I~
-Window�Ȃ�EBCDIC ���T�|�[�g�w��Ȃ����ꍇ�A                           ||~v116R~
-���邢��Linux��iconv ���T�|�[�g���Ă��Ȃ��R�[�h�y�[�W�̏ꍇ           ||~v116R~
-ICU�𓱓����Ă��������BICU�ł͓Ǝ��̕ϊ��e�[�u�����ǉ��ł��܂��B      ||~v116R~
-�ǉ��̕ϊ��e�[�u����ICU�����f�B���N�g���[�ȊO�ɂ������ꍇ��           ||~v116I~
-���ϐ� ICU_DATA�� xe��EBCDIC cfg�t�@�C���� ICU_DATA ���w�肷��K�v������������܂���||~v116I~
-(�A���h���C�h�ł�ICU�����f�B���N�g���[�͕ی삳��Ă���\��������܂�)||~v116I~
+Windowなど EBCDIC をサポートしていない場合、           ||+v124R~
+あるいはLinuxでiconv がサポートしていないコードページの場合           ||~v116R~||+v124R~
+ICUを導入してください。Windows11では ICU が使えるようです。||+v124R~
+ICUでは独自の変換テーブルも追加できます。          ||+v124R~
+追加の変換テーブルをICU導入ディレクトリー以外においた場合は           ||~v116I~||+v124R~
+環境変数 ICU_DATAか xeのEBCDIC cfgファイルの ICU_DATA を指定する必要があかもしれません||~v116I~||+v124R~
+(アンドロイドではICU導入ディレクトリーは保護されている可能性があります)||~v116I~||+v124R~
   xcv -cb2b -f:cpfrom -t:-cpto inputfile -icu                         ||~v116I~
-ICU���g�p���Ă���ꍇ�� swaplfnl(390std) ���w��ł���ꍇ������܂�   ||~v116R~
+ICUを使用している場合は swaplfnl(390std) を指定できる場合があります   ||~v116R~||+v124R~
  (std :ebc-x15-->U0085, ebc-x25-->U000a ==> swap:ebc-x15-->U000a, ebc-x25-->U0085)||~v116I~
   xcv -cb2m inputfile -cpeb:ibm37,swaplfnl -f80                       ||~v116I~
                                                                       ||~v116I~
-UTF8�ϊ��̏ꍇ�́@m2f/f2m/b2f/f2b ���g�p���܂�                        ||~v116R~
+UTF8変換の場合は m2f/f2m/b2f/f2b を使用します                        ||~v116R~||+v124R~
                                                                       ||~v116I~
-u2f/f2u�ł�\uxxxx�\�L�̃��j�R�[�h�ɑΉ����܂�                         ||~v116R~
-���j�R�[�h�֘A�I�v�V������ -Y4(ucs4) -Yb(BOM read/write) -yL/nL(Little/Big Endian)�B||~v116R~
+u2f/f2uでは\uxxxx表記のユニコードに対応します                         ||~v116R~||+v124R~
+ユニコード関連オプションは -Y4(ucs4) -Yb(BOM read/write) -yL/nL(Little/Big Endian)。||~v116R~||+v124R~
                                                                       ||~v116I~
-���̑��̕ϊ��^�C�v�͋����̓��{��ϊ��p�̃I�v�V�����ł�                ||~v116R~
+その他の NEC/IBM,JIS83/JIS78... 等は B2S/S2B など日本語変換用のオプションです                ||~v116R~||+v124R~
                                                                       ||~v116I~
 ********************************************************************* ||~v116I~
-**(Unix �ł� "/" �̂ł͂Ȃ� "-" ���g�p����)                           ||~v116R~
+**(Unix では "/" のではなく "-" を使用する)                           ||~v116R~||+v124R~
 ********************************************************************* ||~v116I~
                                                                       ||~v116I~
-xcv:V1.20(W): SJIS,JIS,EUC,UCS,UTF-8,EBCDIC                           ||~v118R~||~v120R~
-              �C�ӂ�iconv/ICU�����Z�b�g/WindowsCP �R�[�h�ϊ� PGM�B    ||~v116R~
+xcv:V1.24(6): SJIS,JIS,EUC,UCS,UTF-8,EBCDIC                           ||~v118R~||~v120R~||~v124R~
+              任意のiconv/ICU文字セット/WindowsCP コード変換 PGM。    ||~v116R~||+v124R~
 format:
  xcv  [/options] [ infile | - ] [outfile]
-  infile   :���t�@�C�����B�ȗ�����ƃp�C�v���́B"-"�͕W�����́B       ||~v116R~
-            b2s/s2b �̂Ƃ� "print"�Ǝw�肷���DBCS�ϊ��e�[�u�����o�͂���B||~v116R~
-  outfile  :�o�̓t�@�C�����B�ȗ�����ƕW���o�͂ɏo�́B                ||~v116R~
-  /options :�ȉ��A�啶����������ʂȂ��B                              ||~v116R~
-    /2errf :�W���G���[����t�@�C���B                                  ||~v116R~
-    /[C]x2y:x2y �͈ȉ��B(�I�v�V�����p�����[�^�Ƃ��čŏ��Ɏw�肷�邱��)||~v120I~
+  infile   :元ファイル名。省略するとパイプ入力。"-"は標準入力。       ||~v116R~||+v124R~
+            b2s/s2b のとき "print"と指定するとDBCS変換テーブルを出力する。||~v116R~||+v124R~
+  outfile  :出力ファイル名。省略すると標準出力に出力。                ||~v116R~||+v124R~
+  /options :以下、大文字小文字区別なし。                              ||~v116R~||+v124R~
+    /2errf :標準エラー宛先ファイル。                                  ||~v116R~||+v124R~
+    /[C]x2y:x2y は以下。(オプションパラメータとして最初に指定すること)||~v120I~||+v124R~
             e2s/s2e: EUC<-->SJIS.
             j2s/s2j: JIS<-->SJIS.
             j2e/e2j: JIS<-->EUC.
-            e2e,s2s: EUC/SJIS�̔��p�J�^�J�i-->�S�p�J�^�J�i�ϊ��Ɏg�p����B||~v116R~
-            b2s/s2b: EBCDIC<-->SJIS�B                                 ||~v116R~
-            b2e/e2b: EBCDIC<-->EUC-Japanese�B                         ||~v116R~
-            b2a/a2b: EBCDIC<-->ASCII�B(SO/SI�͖����ADBCS��������)     ||~v116R~
-            b2m/m2b: EBCDIC<-->LOCAL CodePage�B�O���ϊ��c�[��(ICU/iconv)�g�p||~v116R~
-            b2f/f2b: EBCDIC<-->UTF-8 �B�O���ϊ��c�[��(ICU/iconv)�g�p  ||~v116R~
-            k2L/L2k: CP1027(L)��CP290(k) �ł�EBCDIC�ϊ��̂�蒼���B   ||~v116R~
-                     EBCDIC->ASCII�ϊ����ꂽ�t�@�C���ɓK�p����B      ||~v116R~
-            s2u,u2s: SJIS<-->UCS2 (16bit Unicode).
+            e2e,s2s: EUC/SJISの半角カタカナ-->全角カタカナ変換に使用する。||~v116R~||+v124R~
+            b2s/s2b: EBCDIC<-->SJIS。                                 ||~v116R~||+v124R~
+            b2e/e2b: EBCDIC<-->EUC-Japanese。                         ||~v116R~||+v124R~
+            b2a/a2b: EBCDIC<-->ASCII。(SO/SIは無視、DBCS処理せず)     ||~v116R~||+v124R~
+            b2m/m2b: EBCDIC<-->LOCAL CodePage。外部変換ツール(ICU/iconv)使用||~v116R~||+v124R~
+            b2f/f2b: EBCDIC<-->UTF-8 。外部変換ツール(ICU/iconv)使用  ||~v116R~||+v124R~
+            k2L/L2k: SJISの半角カタカナ(K)<-->英小文字変換(L)。||+v124R~
+                     ASCII変換されたファイルを他方で再変換する。||+v124R~
+            s2u,u2s: SJIS<-->UCS.                                     ||~v124I~
             s2f,f2s: SJIS<-->UTF-8 (8bit Unicode Translation Format).
             e2f,f2e: EUC(Japanese)<-->UTF-8.
             m2f,f2m: MB(LocaleCode)<-->UTF-8.
-            m2m/b2b: "/F:", "/T:" �Ŏw�肷��R�[�h�Ԃ̕ϊ�            ||~v116R~
-                     Windows�̃R�[�h�y�[�W�ԍ�,iconv --list,uconv -l����I��||~v116R~
-                     Windows Codepage, ICU �ł�                       ||~v116R~
-                     �w��\�Ȓl�� "/List" �Ń��X�g����܂�          ||~v116I~
-            u2f,f2u: UCS2<-->UTF-8.
-    /CPEB:cp :EBCDIC �R�[�h�y�[�W�B B2M/M2B�p�B                       ||~v120I~
-    /Enn   :�ϊ��G���[MSG�ő�o�́B�ȗ��l=10�B                        ||~v116R~
-    /F:from:�ϊ����R�[�h�y�[�W�Bm2m/b2b �Ŏg�p                        ||~v116R~
+            m2m/b2b: "/F:", "/T:" で指定するコード間の変換            ||~v116R~||+v124R~
+                     Windowsのコードページ番号,iconv --list,uconv -lから選択||~v116R~||+v124R~
+                     Windows Codepage, ICU では                       ||~v116R~||+v124R~
+                     指定可能な値は "/List" でリストされます          ||~v116I~||+v124R~
+            u2f,f2u: UCS<-->UTF-8.                                    ||~v124I~
+    /CPEB:cp :EBCDIC コードページ。 B2M/M2B用。                       ||~v120I~||+v124R~
+    /Enn   :変換エラーMSG最大出力。省略値=10。                        ||~v116R~||+v124R~
+    /F:from:変換元コードページ。m2m/b2b で使用                        ||~v116R~||+v124R~
 #ifdef W32
-            �ȗ��l�� "0"(CP_ACP). 65001�̑����"UTF8"�ł��ǂ��B     ||~v116R~
+            省略値は "0"(CP_ACP). 65001の代わりに"UTF8"でも良い。     ||~v116R~||+v124R~
 #else
-"           �w�肪�Ȃ��� "locale -a"�Œ��ׂČ��߂�B                  ||~v116R~
+            指定がないと "locale -a"で調べて決める。                  ||~v116R~||+v124R~
 #endif
-    /F[nn][N]:EBCDIC �t�@�C�����Œ蒷�Bnn:LRECL(�ȗ��l=80)�B          ||~v116R~
-              B2x(����) ���� x2B(�o��) EBCDIC �t�@�C����LRECL�B       ||~v116R~
-              N: �s��8�����s�ԍ����BSO/SI�}���ōs���𒲐�����B       ||~v116R~
-                 "N" �� m2b �ł̂ݗL���B                              ||~v116R~
-    /ICU     :B2x/x2B(x:B/M/F)�̂Ƃ� mf:�̎w�薳���� ICU �g�p�̎w��B ||~v116R~
-              /MF:mapfile ���w�肵�Ȃ��ꍇ��                          ||~v120I~
-              uconv.exe, ICU library(.dll)��PATH ��ʂ�����           ||~v120I~
-    /List  :ICU�R���o�[�^�[(/ICU�w�莞)�܂���Windows�R�[�h�y�[�W�����X�g�B||~v116I~
+    /F[nn][N]:EBCDIC ファイルが固定長。nn:LRECL(省略値=80)。          ||~v116R~||+v124R~
+              B2x(入力) 又は x2B(出力) EBCDIC ファイルのLRECL。       ||~v116R~||+v124R~
+              N: 行末8桁が行番号欄。SO/SI挿入で行長を調整する。       ||~v116R~||+v124R~
+                 "N" は m2b でのみ有効。                              ||~v116R~||+v124R~
+    /ICU     :B2x/x2B(x:B/M/F)のとき /mf:の指定無しで ICU 使用の指定。 ||~v116R~||+v124R~
+              /MF:mapfile を指定しない場合は                          ||~v120I~||+v124R~
+              uconv.exe, ICU library(.dll)にPATH を通すこと           ||~v120I~||+v124R~
+    /ICU_DATA:/Listのとき icudt*.dat を含むディレクトリーの指定。||+v124R~
+              /MF の代わりに指定                               ||+v124R~
+              Winowsの省略値は c:\Windows\Globalization\ICU      ||+v124R~
+    /List  :ICUコンバーター(/ICU指定時)またはWindowsコードページをリスト。||~v116I~||+v124R~
 #ifdef LNX
-    /Llocale:m2f/f2m�Ŏg�p���郍�P�[���R�[�h�B                        ||~v116R~
-              �w�肪�Ȃ��� "locale -a"�Œ��ׂČ��߂�B                ||~v116R~
+    /Llocale:m2f/f2mで使用するロケールコード。                        ||~v116R~||+v124R~
+              指定がないと "locale -a"で調べて決める。                ||~v116R~||+v124R~
               ex) -Leucjp , -Lsjis , -Liso88591
 #endif
-    /Mxxx  :�}�b�s���O�I�v�V�����B                                    ||~v116R~
-            (�K�v�Ȃ� "/mJIS78 /mNEC" �̂悤�ɕ����w�肵�Ă��������B) ||~v116R~
-            CP943C / MS932 / SJIS(�ȗ��l)�Bs2u,s2f�Ŏg�p�B            ||~v116R~
-              SJIS:Unicode=1:n �̃R�[�h�̂Ƃ��ǂ�Mapping���Ƃ邩�I������B||~v116R~
-            NEC / IBM(�ȗ��l)�Bu2s,f2s,b2s�Ŏg�p�B                    ||~v116R~
-              SJIS:Unicode/EBCDIC=n:1 �̎��ǂ̗̈��SJIS��Mapping���邩�B||~v116R~
-              IBM:IBM�g�������ANEC:NEC���ꕶ���Ȃ���NEC�I��IBM�g�������B||~v116R~
-            SBCS: B2x,x2B�Ŏg�p�B���ׂĈ�o�C�g�����Ƃ��ĕϊ�         ||~v116R~
-            ANK / CRLF�BB2x,x2B�Ŏg�p�B                               ||~v116R~
-              ANK:���䕶����'?'�ɕϊ��BCRLF:���䕶���� CR �� LF �̂ݕϊ��B||~v116R~
+    /Mxxx  :マッピングオプション。                                    ||~v116R~||+v124R~
+            (必要なら "/mJIS78 /mNEC" のように複数指定してください。) ||~v116R~||+v124R~
+            CP943C / MS932 / SJIS(省略値)。s2u,s2fで使用。            ||~v116R~||+v124R~
+              SJIS:Unicode=1:n のコードのときどのMappingをとるか選択する。||~v116R~||+v124R~
+            NEC / IBM(省略値)。u2s,f2s,b2sで使用。                    ||~v116R~||+v124R~
+              SJIS:Unicode/EBCDIC=n:1 の時どの領域のSJISにMappingするか。||~v116R~||+v124R~
+              IBM:IBM拡張文字、NEC:NEC特殊文字ないしNEC選定IBM拡張文字。||~v116R~||+v124R~
+            SBCS: B2x,x2Bで使用。すべて一バイト文字として変換         ||~v116R~||+v124R~
+            ANK / CRLF / CRLFZ。B2x,x2Bで使用。                  ||+v124R~
+              ANK:制御文字は'?'に変換。CRLF:制御文字は CR と LF のみ変換。||~v116R~||+v124R~
+              CRLFZ: NL(0x15) と CR+NL(0x0d15) 両方で EBC ファイルを行分割||+v124R~
 #ifdef UNX
-"           ASCEOL: EBCDIC �t�@�C���̍s���R�[�h�� 0x0a�B�ȗ��l:0x15�B ||~v116R~
+            ASCEOL: EBCDIC ファイルの行末コードが 0x0a。省略値:0x15。 ||~v116R~||+v124R~
 #else
-            ASCEOL: EBCDIC �t�@�C���̍s���R�[�h�� 0x0d0a�B�ȗ��l:0x15�B||~v116R~
+            ASCEOL: EBCDIC ファイルの行末コードが 0x0d0a。省略値:0x15。||~v116R~||+v124R~
 #endif
-            SETEOL: �o�͊e�s��EOL-ID��ǉ��o�́Bm2m, x2B, ���R�[�h���[�h B2x�p||~v116R~
-            JIS78 / JIS83(�ȗ��l)�BB2x,x2B�Ŏg�p�B                    ||~v116R~
-              �VJIS ��JIS���w��B�V����28��56����������ւ���Ă���B ||~v116R~
-            CP290:CP1027(�ȗ��l)�̑����CP290�ϊ�TBL�g�p�B B2x,x2B �Ŏg�p�B||~v116R~
-              CP290:�J�^�J�i�g���BCP1027:�p�������g���B               ||~v116R~
-              "KANA-EXT":�J�^�J�i�g���B"ENG-EXT":�p�������g���B       ||~v116R~
-    /MF:mapfile :B2M/M2B/B2B �p�}�b�s���O�p�����[�^�t�@�C���B         ||~v116R~
-                  (cv �R�}���h�̐���(xej.txt��)���Q��)                ||~v116R~
-                 /CPEB:cp �� EBCDIC �R�[�h�y�[�W���w�肵�Ă��ǂ�      ||~v116R~
-                 �A���AICU���g�p����ꍇ��/ICU�����̃t�@�C�����Ŏw��  ||~v120I~
-    /Ofnm  :outfile �p�����[�^�ɓ����B                                ||~v116R~
-    /Rx    :�����ȕϊ��s�\������u�������镶���B/r: /r'^' ���B        ||~v116R~
-            �ȗ��l�� '?'�Bu2s,f2s,B2x,x2B,m2m �ł̂ݎg�p�B            ||~v116R~
-            2 �o�C�g�w�L�T�����w����\�B/r7f ���                    ||~v116R~
-            DBCS�u�������� 2 �������� 4 ���w�L�T���l�Ŏw��B�ȗ��l��"�H"�B||~v116R~
-            �����K�v�ȂƂ��� "/r. /r�B" �̂悤�Ɏw�肷��B            ||~v116R~
-    /Sx    :B2x/x2B �� SO(0e)/SI(0f)�̎�舵���I�v�V�����B            ||~v116R~
-            B2x �̏ꍇ; x=d:�폜�Bx=a:SO���s���ɂ���Ƒz��B          ||~v116R~
-                        x=r:SO/SI ���X�y�[�X�ɒu���B                  ||~v116R~
-                        B2m�̏ꍇ�Amapping�t�@�C���̃I�v�V�������㏑������B||~v116R~
-            x2B �̏ꍇ; x=r:�O�オ�X�y�[�X�Ȃ�u���A�����łȂ��Ƃ��͑}���B||~v116R~
-                        x=s:�X�y�[�X�u�������A�}�����͌㑱�̃X�y�[�X���k�߂�B||~v116R~
-                        x=d:SO/SI��ݒ肵�Ȃ��Bx=i:SO/SI��}���B      ||~v116R~
-                        m2B�̏ꍇ�Amapping�t�@�C���̃I�v�V�������㏑������B||~v116R~
-    /T:to  :�ϊ���R�[�h�y�[�W�Bm2m/b2b �Ŏg�p                        ||~v116R~
+            SETEOL: 出力各行にEOL-IDを追加出力。m2m, x2B, レコードモード B2x用||~v116R~||+v124R~
+            JIS78 / JIS83(省略値)。B2x,x2Bで使用。                    ||~v116R~||+v124R~
+              新JIS 旧JISを指定。新旧で28対56文字が入れ替わっている。 ||~v116R~||+v124R~
+            CP290/CP037:CP1027の代わりにCP290/CP037変換TBL使用。 B2x,x2B で使用||+v124R~
+              CP290:カタカナ拡張。CP1027:英小文字拡張。               ||~v116R~||+v124R~
+              CP037:ラテン１ と ISO-88591。                     ||+v124R~
+              "KANA-EXT":カタカナ,"ENG-EXT":英小文字          ||+v124R~
+    /MF:mapfile :B2M/M2B/B2B 用マッピングパラメータファイル。         ||~v116R~||+v124R~
+                  (cv コマンドの説明(xej.txt内)を参照)                ||~v116R~||+v124R~
+                 /CPEB:cp で EBCDIC コードページを指定しても良い      ||~v116R~||+v124R~
+                 但し、ICUを使用する場合は/ICUかこのファイル内で指定  ||~v120I~||+v124R~
+    /Ofnm  :outfile パラメータに同じ。 e.g) -oOutFile        ||+v124R~
+    /Rx    :無効な変換不能文字を置きかえる文字。/r: /r'^' 等。        ||~v116R~||+v124R~
+            省略値は '?'。u2s,f2s,B2x,x2B,m2m でのみ使用。            ||~v116R~||+v124R~
+            2 バイトヘキサ文字指定も可能。/r7f 等｡                    ||~v116R~||+v124R~
+            DBCS置換文字は 2 桁文字か 4 桁ヘキサ数値で指定。省略値は"？"。||~v116R~||+v124R~
+            両方必要なときは "/r. /r。" のように指定する。            ||~v116R~||+v124R~
+    /Sx    :B2x/x2B で SO(0e)/SI(0f)の取り扱いオプション。            ||~v116R~||+v124R~
+            B2x の場合; x=d:削除。x=a:SOが行頭にあると想定。          ||~v116R~||+v124R~
+                        x=r:SO/SI をスペースに置換。                  ||~v116R~||+v124R~
+                        B2mの場合、mappingファイルのオプションを上書きする。||~v116R~||+v124R~
+            x2B の場合; x=r:前後がスペースなら置換、そうでないときは挿入。||~v116R~||+v124R~
+                        x=s:スペース置換だが、挿入分は後続のスペースを縮める。||~v116R~||+v124R~
+                        x=d:SO/SIを設定しない。x=i:SO/SIを挿入。      ||~v116R~||+v124R~
+                        m2Bの場合、mappingファイルのオプションを上書きする。||~v116R~||+v124R~
+    /T:to  :変換先コードページ。m2m/b2b で使用                        ||~v116R~||+v124R~
 #ifdef W32
-            �ȗ��l�� "0"(CP_ACP). 65001�̑����"UTF8"�ł��ǂ��B     ||~v116R~
+            省略値は "0"(CP_ACP). 65001の代わりに"UTF8"でも良い。     ||~v116R~||+v124R~
 #else
-"           �w�肪�Ȃ��� "locale -a"�Œ��ׂČ��߂�B                  ||~v116R~
+            指定がないと "locale -a"で調べて決める。                  ||~v116R~||+v124R~
 #endif
-    /\u    :DBCS�̃��j�R�[�h��\uxxxx �\�L�B                           ||~v116R~
-    /Yx,/Nx:Yes/No �t���O�I�v�V�����Ax �͈ȉ��B�ȗ��l�� ( )���B       ||~v116R~
-            b  :UTF-8 File�ǂ݂��ݎ��擪 BOM ��CHK,�������ݎ�BOM���o�́B(/Nb)||~v116R~
+    /\u    :DBCSのユニコードが\uxxxx 表記。                           ||~v116R~||+v124R~
+    /Yx,/Nx:Yes/No フラグオプション、x は以下。省略値は ( )内。       ||~v116R~||+v124R~
+            4  :4 バイトユニコード(/N4)                       ||+v124R~
+            b  :UTF-8 File読みこみ時先頭 BOM をCHK,書きこみ時BOMを出力。(/Nb)||~v116R~||+v124R~
+            h  :入力はHexコード。省略値は標準入力は/Yh 以外は/Nh。||+v124R~
+            i  :M2M で ICU 使用の指定。(/Ni)                   ||+v124R~
 #ifdef UNX
-            L  :Unicode File ��LittleEndian�œǂݏ�������B(/NL)      ||~v116R~
+            L  :Unicode File をLittleEndianで読み書きする。(/NL)      ||~v116R~||+v124R~
 #else
-            L  :Unicode File ��LittleEndian�œǂݏ�������B(/YL)      ||~v116R~
+            L  :Unicode File をLittleEndianで読み書きする。(/YL)      ||~v116R~||+v124R~
 #endif
-            m  :���͂�Mac�`��(EndOfLine ID �� 0x0d)�B(UCS�ϊ��ȊO�Ŏg�p).(/Nm)||~v116R~
-            z  :SJIS<->EUC<->JIS�ϊ��Ŕ��p�J�^�J�i��S�p�J�^�J�i�ɂ���B(/Nz)||~v116R~
- ��) xcv /cs2u sjis1 | xcv /u2s >sjis2; xcv /j2s -; xcv /cu2f /YLb ucsbe1 /of1||~v116R~
+            m  :入力がMac形式(EndOfLine ID が 0x0d)。(UCS変換以外で使用).(/Nm)||~v116R~||+v124R~
+            q  :標準入力の時１回の処理で終了する。(/Nq)||+v124R~
+            x  :Hex表示で出力。Xは大文字出力。(/Nx)      ||+v124R~
+            z  :SJIS<->EUC<->JIS変換で半角カタカナを全角カタカナにする。(/Nz)||~v116R~||+v124R~
+ 例) xcv /cs2u sjis1 | xcv /u2s >sjis2; xcv /j2s -; xcv /cu2f /YLb ucsbe1 /of1||~v116R~||+v124R~
      xcv /ce2s /yz euc1 sjis3; xcv /u2s /r"/" /mNEC ucsdata sjis1 
      xcv /cm2b ms932 ibm939.txt  /mf:sjisebc.map /F80 /Mseteol /Masceol
          (locale-->ebcdic, output LRECL=80, set ASCII-EOL-ID)
@@ -150,13 +161,13 @@ format:
      xcv /cb2m ebcf1 ascf2 /mf:sjisebc.map /Masceol
          (locale<--ebcdic, input line with ASCII-EOL-ID
 #ifdef W32
-     xcv /cb2m ebcf1 ascf2 /CPEB:37
+     xcv /cb2m ebcf1 ascf2 /mf:mapcv1 /CPEB:37                        ||~v124I~
      xcv /cm2m latin1 latin15 /Mseteol /f:28591 /t:28605
 #else
-     xcv -cb2m ebcf1 ascf2 -CPEB:cp037
+     xcv -cb2m ebcf1 ascf2 -mf:mapcv1 -CPEB:37                        ||~v124I~
      xcv -cm2m latin1 latin15 -Mseteol -f:ISO-8859-1 -t:ISO-8859-15
 #endif
      xcv /cm2m latin1 latin15 /Mseteol /f:28591 /t:28605              ||~v116I~
      xcv /cb2b ebc1   ebc2 /Mf:ebc.map /Mseteol /f:cp930 /t:cp939     ||~v116I~
-     xcv /cf2b utf1 -oebc1 /Mf:xeebc.map /cpeb:cp932                  ||~v116I~
-     xcv -cf2b utf1 -oebc1 -ICU -cpeb:ibm-37,swaplfnl                 ||~v116I~
+     xcv /cf2b utf1 -oebc1 /Mf:xeebc.map /cpeb:cp939                  ||~v124I~
+     xcv /cf2b utf1 -oebc1 /ICU /cpeb:ibm-37,swaplfnl /mf:cfgmap.cv1  ||~v124I~
