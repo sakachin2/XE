@@ -1,4 +1,4 @@
-UTF8 encoding         V130T 2024/06/30
+UTF8 encoding         V130A 2024/06/30
 
 --------------------------------------------------------------------
 gxe-xxx.tar.gz を "tar -zxvf" で解凍し、"./configure && make" する。
