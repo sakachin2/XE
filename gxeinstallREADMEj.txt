@@ -1,4 +1,4 @@
-UTF8 encoding         V130A 2024/06/30
+UTF8 encoding         V130A 2024/12/16
 
 --------------------------------------------------------------------
 gxe-xxx.tar.gz を "tar -zxvf" で解凍し、"./configure && make" する。
@@ -8,21 +8,19 @@ gxe-xxx.tar.gz を "tar -zxvf" で解凍し、"./configure && make" する。
 Automake パッケージ 導入手順。
 --------------------------------------------------------------------
 
-    ディストリビューションによっては導入先フォルダーを変更する必要があるかもしれません。
-    ./configure を実行する前にconfigureを修正してください。
-        html ヘルプは  "packagehelpdir",                現在値は /usr/local/share/gnome/help/gxe
-        icon は        "packagepixmapsdir",             現在値は /usr/local/share/pixmaps/gxe
-        bins は        ./configure --bindir=PATHで指定。現在値は /usr/local/bin
+    導入先フォルダーを変更する場合は ./configure を実行する前にconfigureを修正してください。
+        html ヘルプは  "packagehelpdir",                省略値は /usr/local/share/gnome/help/gxe
+        icon は        "packagepixmapsdir",             省略値は /usr/local/share/pixmaps/gxe
+        bins は        ./configure --bindir=PATHで指定。省略値は /usr/local/bin
 
     (1)tar -zxvf gxe-v.rr.tar.gz    (v.rr : version)
     (2)cd gxe-v.rr
     (3)./configure
     (4)make
     (5)make install (rootで実行、ubuntuでは "sudo make install")
-
-       名前の競合を避けるため次のbinだけが導入されます。これ以外のツールは自分でコピーしてください。
+       次のbinだけが導入されます。これ以外のツールは自分でコピーしてください。
          gxe, xe, xprint, gxp, xfc, xdc
-    (6)gnome-terminal ないし konsole を開いて gxe ないし xe と入力する。
+    (6)gnome-terminal ないし konsole 等の terminal emulator を開いて gxe ないし xe と入力する。
        ヘルプhtmlは立ち上げ後 第2行に "help" ないし "?" を入力するとブラウザーから観ることが出来ます。
     (7)ssh
        リモートでxe起動する場合、ssh(d)の設定をチェック。
@@ -36,11 +34,52 @@ Automake パッケージ 導入手順。
 
        リモートでgxe起動する場合 -X オプションを指定する。
            ssh -X uid@remotehost
+    (8)ショートカットキーの変更。(PF10 等が terminal emulator をパスしてxeに伝わるようにする)
+       例えば Debian jessie 3.10 xfce では
+    	ショートカットキー変更 F1=ヘルプ, F11=全画面, F10=メニュー
+        	xfce4-terminal のメニューで
+            	ヘルプ-->目次("F1" が表示されている)メニュー項目の上で"Del"キーを押す
+            	表示-->全画面表示("F11"が表示されている)メニュー項目上で"Del"を押す
+                編集-->設定(E)-->上級者(V), "メニューショートカットキーを無効にする"をオンにする
 
 --------------------------------------------------------------
 トラブルシューティング
 --------------------------------------------------------------
-  (P) ManjaroXfce 24.0.1                 2024/06/09( gxe v1.30X )
+導入トラブル
+--------------------------------------------------------------
+  (Q) Linux Mint 22                     2024/12/11
+      ./configure
+          -->"FATAL:term.h not found. Install ncurses-devel."
+         (    
+            sudo apt install apt-file
+            sudo apt-file update
+            sudo apt --upgradable
+            sudo apt upgrade
+         )
+         ==>apt-file find term.h | grep curses
+            --> libncurses-dev: /usr/include/ncursesw/term.h
+         ==>sudo apt install libncurses-dev
+
+      ./configure
+          -->cups/cups.h Not Found
+          ==>apt-file find cups/cups.h
+             -->libcups2-dev: /usr/include/cups/cups.h
+          ==>sudo apt install libcups2-dev
+
+      ./configure
+          -->install GTK3 or GTK2
+          ==>apt-file find gtk+-3.0
+             -->libgtk-3-dev: /usr/lib/x86_64-linux-gnu/pkgconfig/gtk+-3.0.pc
+          ==>sudo apt install libgtk-3-dev
+
+      ./configure
+          -->(done)
+      make
+          (done)
+      sudo make install
+          (ls /usr/local/bin -l)
+
+  (P) ManjaroXfce 24.0.1                 2024/06/09( gxe v1.29X )
       ./configure
           "no acceptable C compiler"
               after sudo pacman -Fy
@@ -85,77 +124,7 @@ Automake パッケージ 導入手順。
 
   (M) V129U (--enable-libgnome2=no is now not required)
 
-  (M1) on Debian11
-
-  configure: error: no acceptable C compiler found in $PATH
-
-  ==> apt-get install gcc
-
-  configure: error: "FATAL:term.h not found. Install ncurses-devel."
-  ==> apt-file search /term.h
-      if apt-file not found
-          apt-get install apt-file
-          apt-file update
-      fi
-      apt-get install libncurses-dev
-
-  configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
-  ==> apt-file search cups/cups.h
-      apt-get install libcups2-dev
-
-  configure: error: "FATAL:libglib2 is required if libgnome2 is not installed"
-  ==> apt-file search libglib2
-      apt-get install libglib2.0-dev
-
-  configure: error: install GTK2(>=2.10.0) or GTK3(>=3.4.0) if NOT enable-gxe=no.
-  ==> apt-file search /gtk/gtk.h
-      apt-get install libgtk-3-dev
-
-  (M2) on CentOS Stream 9
-
-  configure: error: no acceptable C compiler found in $PATH
-  ==> yum install gcc
-
-  configure: error: "FATAL:term.h not found. Install ncurses-devel."
-  ==> yum provides */term.h|grep ncurses
-      yum install ncurses-devel
-
-  configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
-  ==> yum provides */cups/cups.h
-      yum install cups-devel
-
-  checking for glib-2.0... no
-  configure: error: "FATAL:libglib2 is required if libgnome2 is not installed"
-  ==> yum provides */gtk.h
-      yum install gtk3-devel
-
-
   (L) v129T
-
-  (L2)./configure でのトラブル。CentOS Stream 9 の場合(2022/12/10)
-
-      configure: error: no acceptable C compiler found in $PATH
-      ==>yum install gcc
-
-      configure: error: "FATAL:term.h not found. Install ncurses-devel."
-      ==>yum provides */term.h|grep curses
-         yum search ncurses-devel
-         yum install ncurses-devel.x86_64
-
-      configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
-      ===yum provides */cups/cups.h|grep devel
-         yum search cups-devel
-         yum install cups-devel.x86_64
-
-      error: install GTK2(>=2.10.0) or GTK3(>=3.4.0) if NOT enable-gxe=no.
-      ==>yum provides  gtk3
-         yum search    gtk3-devel
-         yum install   gtk3-devel.x86_64
-
-      configure: error: !!! libgnome-2.0 installation required, OR specify --enable-libgnome2=no with glib-2.0 gio-2.0 installed.configure: error: !!! libgnome-2.0 installation required, OR specify --enable-libgnome2=no with glib-2.0 gio-2.0 installed.
-      ==>./configure --enable-libgnome2=no
-
-      Now, you can do make.
 
   (L1)./configure でのトラブル。debian11 の場合(2022/12/04)
 
@@ -187,106 +156,40 @@ Automake パッケージ 導入手順。
 
               ===>apt-get install make
 
+  (K) Fedora33                          2020/12/09 
+          missing term.h ==>yum install ncurses-devel
+          missing cups/cups.h ==> yum install cups-devel
+          install GTK2 or GTK3 ==>yum install gtk3-devel
+          install libgnome2 OR --enable-libgnome2=no with glib2.0 installed
+                  ==>./configure --enable-libgnome2=no ==>completed succssfully.
+                  (glib2.0(including gio.h) is installed by dependency of gtk3-devel)
+          Check it that gio.h is refered by "pkg-config --cflags glib-2.0"
+  (J) Manjaro gnome 20.1.2              2020/10/23 
+           C compile not found          ==> pacman -S gcc
+           ncursesw/ncurses.h not found ==> ./configure --enable-ncursesw=no
+           pkg-config not found         ==> pacman -S pkg-config
+           lingnome-2 required          ==> ./configure --enable-libgnome2=no
+           correct make to qmake        ==> packman -S make
 
-  (B1) ./configure エラー
+           console version Backspec dose not word ==>  specify --7 option "xe --7B"
+                    OR on Preference dialog, assign Ctrl-H to backspace, ASCII DEL to Delete key.
 
-    (1) no acceptable C compiler found in $PATH
-        ===> install gcc
-             on debian8.10: apt-get install build-essential
-    (2) crt1.o no such file   (Debian 4.0)
-        (development パッケージのサフィックスはデストリビューションごとに異なります)
-        ===> install libglib2.0-dev
-        ===> install libc6-dev (ubuntu8)
-    (3) "term.h" not found
-        ===> install ncurses-develop. 
-        ncursesw/ncurses.h not found.
-        ===> install ncursesw-develop. 
-             (debian8.10)
-                 apt-get install libncurses5-dev
-                 apt-get install libncursesw5-dev
-    (4) cups/cups.h not found.
-        ===> apt-get install libncursesw5-dev
-        ===> install cups-devel
-        ===> install libgnomecups1.0.dev (ubuntu8)
-        ===> install libcupsys2-dev      (ubuntu9)
-    (5) No package libgnomeui-2.0 found
-        No package gnome-vfs-module-2.0 found
-        No package libgnomeprint-2.2 found
-        ===> install libgnomeui-devel
-             install libgnomeprint-devel
-        ===> install libgnomeui-dev
-             install libgnomeprint2.2-dev  (ubuntu8)
-     OR (gnome2 may obsoleted on the distribution)
-        Use ./configure enable-libgnome2=no (glib2.0-dev install required)
-        In that case, "gio.h" is missing will be shown.
-    (6) pkg-config was not found
-        ===> install pkg-config
-    (7) CHK_INSTALL_GTK3...no and  CHK_INSTALL_GTK2..no
-        ==>apt-file --package-only search gtk+-2.0
-           apt-file --package-only search gtk+-3.0
-           apt-get install libgtk2.0-dev
-             or 
-           apt-get install libgtk-3-dev
-    (8) CHK_EXIST_GTK3_LIBGNOME2... no
-        ===> install libgnome2-dev
-    (9) can not find -lncursesw
-        ===> apt-get install libncursesw5-dev
+  (I) Rspberry PI  2020/05/16
+     configure エミュレーターでテストしました（image:"2020-02-13-raspbian-full" on QEMU3.1.0）
+       ./configure で以下のエラーがありました
+          term.h not found
+          -->#apt-get install libncurses-dev
+          cups/cups.h not found
+          -->#apt-get install libcups2-dev
+          install GTK2 or GTK3
+          -->#apt-get install libgtk-3-dev
+          select libgnome2 or glib-2.0
+          -->#apt-get install glib-2.0
+          ==>./configure 成功
 
-  (B2) makeのエラー。
-
-    (1) "term.h" not found
-        ===> install ncurses-develop. 
-    (2) Cannot find the librarly libssl (On TurbolinuxFUJI trial version)
-        ===> install openssp
-    (3) Cannot find the librarly libpopt.la
-        ===> install popt from ftp site
-    (4) X error'BadDevice invalid or uninitialized device 168  (Ubuntu-7)
-        :        major 145 .. minor 3 resource 0x00
-        Failed to open Device
-        ===> /etc/X11/xorg.conf was changed.
-
-        Following lines are comment out
-
-        ##Section "InputDevice"
-        ##  Driver        "wacom"
-        ##  Identifier    "stylus"
-        ##  Option        "Device"        "/dev/wacom"          # Change to
-        ##                                                      # /dev/input/event
-        ##                                                      # for USB
-        ##  Option        "Type"          "stylus"
-        ##  Option        "ForceDevice"   "ISDV4"               # Tablet PC ONLY
-        ##EndSection
-
-        ##Section "InputDevice"
-        ##  Driver        "wacom"
-        ##  Identifier    "eraser"
-        ##  Option        "Device"        "/dev/wacom"          # Change to
-        ##                                                      # /dev/input/event
-        ##                                                      # for USB
-        ##  Option        "Type"          "eraser"
-        ##  Option        "ForceDevice"   "ISDV4"               # Tablet PC ONLY
-        ##EndSection
-
-        ##Section "InputDevice"
-        ##  Driver        "wacom"
-        ##  Identifier    "cursor"
-        ##  Option        "Device"        "/dev/wacom"          # Change to
-        ##                                                      # /dev/input/event
-        ##                                                      # for USB
-        ##  Option        "Type"          "cursor"
-        ##  Option        "ForceDevice"   "ISDV4"               # Tablet PC ONLY
-        ##EndSection
-
-                And in Section "ServerLayout"
-
-        ##    InputDevice     "stylus" "SendCoreEvents"
-        ##    InputDevice     "cursor" "SendCoreEvents"
-        ##    InputDevice     "eraser" "SendCoreEvents"
-
-    (5) /bin/sh' /usr/bin/esd: not found (Ubuntu-7)
-        ===> install esound
-
-  (B3) execution
+--------------------------------------------------------------
+実行時トラブル
+--------------------------------------------------------------
 
     (1)  WARNING **:Could'nt find pixmap file gxe/wxe.png
         ===> "make install" を root で実行. (A)の導入先フォルダーをチェック。
@@ -366,84 +269,14 @@ Automake パッケージ 導入手順。
         通常DISPLAYはsshが制御するので必要ないはずだが
         リモートにxauth は導入済みか?
 
-(C) FC11.s390x アップグレードトラブルシューティング
+	(18)WARNING **: Couldn't register with accessibility bus: Did not receive a reply. Possible causes include: the remote application did not send a reply, the message bus security policy blocked the reply, the reply timeout expired, or the network connection was broken.
+        -->export NO_AT_BRIDGE=1 で環境変数を設定する
 
- !!! (E)-FC14 の方が新しいのでそちらを見て下さい !!!
-
-    FC11導入済みのDASDイメージ(http://secondary.fedoraproject.org/pub/alt/spins/S390/)
-    を使用し必要なパッケージを導入する。
-            参照url       http://katzkichi-katzkichi.blogspot.com/2010/01/linux.html   (日本語ページ)
-            pkg-download  //s390.koji.fedoraproject.org/koji
-
-    (1) yum -y install libgnomeprint22-devel.s390x ("yum upgrade" のプレテスト)
-          --> UnicodeDecodeError: 'ascii' codec can't decode byte 0xe5 in position 154: ordinal not in range(128)
-              ==> 新規ファイル作成
-                      /usr/lib/python2.6/site-packages/sitecustomize.py
-                         import sys
-                         sys.setdefaultencoding("utf-8")
-          (yum install)
-          --> Destination Host Prohibit
-              ==> firewall 解除
-                      "iptables -F"
-          (yum install)
-          --> ERROR with rpm_check_debug vs depsolve
-              //..koji..から xz 4.999.8-0.7.beta と rpm 4.7.1-2 を探しdebuginfo以外は同じページのたのrpmもダウンロードし
-              導入する。(scp で FC11にUpして,sshで入りrpmする)
-                scp fnm root@192.168.200.3:/root
-                xz-libs:  rpm  -ivh   rpm*.rpm
-                rpm    :  rpm  -Uvh   xz*.rpm
-    (2) yum upgrade
-          --->
-             createrepo-0.9.8-2.fc12.noarch from fedora has depsolving problems
-               --> Missing Dependency: python-deltarpm is needed by package createrepo-0.9.8-2.fc12.noarch (fedora)
-             system-config-network-tui-1.5.99-1.fc12.noarch from fedora has depsolving problems
-               --> Missing Dependency: python-iwlib is needed by package system-config-network-tui-1.5.99-1.fc12.noarch (fedora)
-             Error: Missing Dependency: python-iwlib is needed by package system-config-network-tui-1.5.99-1.fc12.noarch (fedora)
-             Error: Missing Dependency: python-deltarpm is needed by package createrepo-0.9.8-2.fc12.noarch (fedora)
-              You could try using --skip-broken to work around the problem
-              You could try running: package-cleanup --problems
-                                     package-cleanup --dupes
-                                     rpm -Va --nofiles --nodigest
-
-        ===>yum install deltarpm
-        ===>iwlib 導入。 //..koji.. から rpm install
-        ---> libiw, wireless-tools required.
-        ===>yum install wiress-tools
-        (yum upgradeは数時間かかった(core4))
-
-    (3) リスタート
-
-        Hercules コンソールでの kernel 選択 で new(FC12) を選択
-        --->"No root device" でboot出来ず。===>give-up
-        old(FC11)を選択
-        --->CTC エラー
-        ===>/etc/rc.sysinit に 3行(@@@の行)追加 (upgrade前にはあったがupgradeで失われた) 
-                # /bin/bash
-                #
-                # /etc/rc.d/rc.sysinit - run once at boot time
-                #
-                # Taken in part from Miquel van Smoorenburg's bcheckrc.
-                #
-
-                HOSTNAME=`/bin/hostname`
-
-                set -m
-
-                if   -f /etc/sysconfig/network !; then
-                    . /etc/sysconfig/network
-                fi
-                if   -z "$HOSTNAME" -o "$HOSTNAME" = "(none)" !; then
-                    HOSTNAME=localhost
-                fi
-
-            @@@ modprobe ctcm
-            @@@ echo "0.0.0600,0.0.0601" > /sys/bus/ccwgroup/drivers/ctcm/group
-            @@@ echo 1 > /sys/bus/ccwgroup/drivers/ctcm/0.0.0600/online
-        (restart)
-        --->"udevd error geting buffer for inotify"
-        ===>yum -Uvh *udev*145-14* (release-7から更新)
-        --->Completed!   
-
+    (19)Gtk-WARNING **: Calling IsInhibited failed: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.gnome.SessionManager was not provided by any .service files
+        -->無害なので無視する
+--------------------------------------------------------------
+リモートアクセス
+--------------------------------------------------------------
 (D) sshfs の導入
 
    .sshfs をパッケージマネージャを使って導入する。
@@ -458,164 +291,3 @@ Automake パッケージ 導入手順。
      Windows版のDokan sshfs は GUIでドライブＩＤを割り当てるようになっているので。
      "e N:\"のようにアクセスする。
 
-(E) インストールログ：fc14.s390x           2011/11/10
-   00). (Linux)
-        -IPLイメージは "fedora-14-s390x-20100925"
-         (fedora-14-s390x.img はサイズが小さくすぐDiskFullになる) 
-        -Herclese は "hercules-3.07-1.i686.rpm"
-        -"hercles.cnf" の修正
-          0120 3390 image-file-name
-          (000C 3505 files(generic.prm,kernel..) は IPL 120 では使用しない)
-        -hosts登録("/etc/hosts")
-           192.168.200.3 s390x
-        	
-   01). (s390x)
-        #adduser useruser
-        #asswd  useruser
-   02). (s390x)
-        -DNS サーバー修正("/etc/resolv.conf")
-          search example.com
-          nameserver xxx.xxx.xxx.xxx 
-          nameserver yyy.yyy.yyy.yyy    <--if secondary exists
-            (/etc/resolv.conf は IPL で元に戻る
-             固定する場合 /etc/sysconfig/network-scripts/ifcfg-ctc0 を修正
-               DNS1=xxx.xxx.xxx.xxx
-               DNS2=yyy.yyy.yyy.yyy
-            )
-        -sshのXサーバー設定("/etc/ssh/sshd_config")
-          X11Forwarding yes
-   03). (s390x)
-        -yum リポジトリー修正(http://fedoraproject.org/wiki/Architectures/s390xの記述に従う)
-          [fedora]
-          name=Fedora $releasever - $basearch
-          baseurl=http://s390.koji.fedoraproject.org/mash/rawhide/s390x/os/
-          enabled=1
-          gpgcheck=0
-   ==> yum 失敗,ping が "host prohibit"
-   04). (Linux)
-        -iptableの REJECT 指定を除く
-          #iptables -S         ->エントリー番号の確認
-          #iptables -D INPUT n1  (n1 は INPUT チェインのエントリー番号(1から始まる))
-          #iptables -D FORWARD n2  (n2 は FORWARDチェインのエントリー番号)
-          #iptables -S         ->削除の確認
-   05). (Linux)
-        -gxe-vvv-tar.gz を s390 に送る
-		  scp $SRCPATH/gxe-vvv.tar.gz useruser@s390x:gxe-vvv.tar.gz
-   06). (s390x)
-        -tgzを展開しconfigure
-          $tar -zxvf gxe-vvv.tar.gz        （/home/useruserで と仮定）
-          $cd  gxe-vvv
-          $./configure
-   ==> no acceptable C compiler
-        -C の導入
-          #yum install gcc.s390x
-   ==> term.h not found
-        -ncursesの導入
-          #yum install ncurses-devel.s390x
-   ==> yum WARNING: refresh-packagekit" inport failed
-          #yum install PackageKit-yum-plugin.s390x
-   ==> cups/cups.h not found
-        -cupsの導入
-          #yum install cups-devel.s390x
-   ==> no package libgnomeui,gnome-vfs-module,libgnomeprint,libgnomeprintui
-        -それぞれlibを導入
-          #yum install libgnomeui-devel.s390x
-          #yum install libgnomeprintui22-devel.s390x
-          (処理が遅く yum がハングしたら, #yum-complete-transaction)
-   06). (s390x)
-        -make
-   ==> unknown type name ppd_file_t
-        -cups/cups.h が ppd.hを #include してない（Bugか)
-        -gxe's xxecsub2 ：明示的に ppd.h を#include する
-   ==> ld fails dlsym@@GLIBC_2.2...
-        -ld の使用が fc13 から変更になった
-         2.so of "o.o"-->"1.so"-->"2.so" のケースで "2.so" を明示的にlinkしなければならない
-        -gxeの Makefile 修正 (-ldl, -lX11)
-   ==> WARNING:unused but set
-        -gcc4.6 からのオプション(-Wunused-but-set-variable:省略値)
-        -configure.in修正済(gcc のバージョン>=4.6のとき-Wno-unused-but-set を指定
-         必要なら "./configure --enable-unused-but-set=yes" でconfigure してください
-   07). (Linux)
-        -gxeのテスト
-   ==> cannot open display:
-        #yum install xorg-x11-xauth.s390x
-        (linuxでのxhostコマンド s390x での DISPLAY=設定は ssh の場合不要)
-   ==> 日本語が表示されない
-        #yum groupinstall "Japanese Support"
-   ==> GConf WARNING client failed to connect to the D-BUS deaemon
-        #yum install dbus-x11.s390x
-   ==> failed to load module pk-gtk-module
-        #yum install PackageKit-gtk-module.s390x
-   ==> xe: search for gnome-terminal failed
-        #yum install gnome-terminal.s390x
-   ==> IPP request failed with status 1280
-        -libgnomeprint の CUPSポーリングが利用可能なプリンターなしで失敗
-        -これは無視する
-   ==> ポップアップダイアログ:An error occurred while loading or saving configuration information.
-        -ルートユーザーのときに出る、"su" 出はなく "su -"を使う
-   ==> GnomeUI-Warning:While connecting to session manager:None of authentication protocols specified are supported.
-        -ルートユーザーのときに出る、"su" 出はなく "su -"を使う
-   ==> Gtk-Message: Failed to load module "gnomebreakpad"
-        -yum install bug-buddy (/usr/lib64/gtk-2.0/libgnomebreakpad)
-        もし bug-buddy がなければ無視。(バグレポート用)
-
-(F) Ubunto11.10_x64 インストールテスト      2011/11/21
-   make
-   ==> undefined symbol gnome_vfs_mime_get_default...
-        libgnomevfs2-extra をインストール
-   ==> dlopen@@GLIBC_2.1 undefined 
-        もし発生したら MAkefile の LDFLAG を調整してください("-ldl" など)
-   gxe 実行
-   ==> Gtk-WARNING: Funable to locate theme engine in gtk-modules "pixbuf"
-        "aptitude install gtk-engine-pixbuf"
-
-(G) OpenSuse12.1_x64 インストールテスト 2011/11/22
-	cups-devel, libgnomeui-devel, libgnomeprintui-devel を導入
-    (DVD から os を導入後 リポジトリーを更新:"download.opensuse.org/distribution/12.1/repo/oss/suse")
-
-(H) Deb Debian jessie 3.10 xfce インストールテスト 2014/02/14
-    xfce4-terminal
-    	ショートカットキー変更 F1=ヘルプ, F11=全画面, F10=メニュー
-        	xfce4-appearance-settingsを実行、 設定, "メニューのショートカットキーを変更可能にする" をチェック
-        	xfce4-appearance-settingsを実行、 設定, "メニューのショートカットキーを変更可能にする" をチェック
-        	xfce4-terminal のメニューで
-            	ヘルプ-->目次("F1" が表示されている)メニュー項目の上で"Del"キーを押す
-            	表示-->全画面表示("F11"が表示されている)メニュー項目上で"Del"を押す
-                (この操作で ~/.config/xfce4/terminal/accels.scm が作成sれる)
-                編集-->設定(E)-->上級者(V), "メニューショートカットキーを無効にする"をオンにする
-	WARNING **: Couldn't register with accessibility bus: Did not receive a reply. Possible causes include: the remote application did not send a reply, the message bus security policy blocked the reply, the reply timeout expired, or the network connection was broken.
-            -->どこかで export NO_AT_BRIDGE=1 で環境変数を設定する
-
-    Gtk-WARNING **: Calling IsInhibited failed: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.gnome.SessionManager was not provided by any .service files
-            -->無害なので無視する
-(I) Rspberry PI  2020/05/16
-   configure エミュレーターでテストしました（image:"2020-02-13-raspbian-full" on QEMU3.1.0）
-     ./configure で以下のエラーがありました
-        term.h not found
-        -->#apt-get install libncurses-dev
-        cups/cups.h not found
-        -->#apt-get install libcups2-dev
-        install GTK2 or GTK3
-        -->#apt-get install libgtk-3-dev
-        select libgnome2 or glib-2.0
-        -->#apt-get install glib-2.0
-        ==>./configure 成功
-
-(J) Manjaro gnome 20.1.2              2020/10/23 
-         C compile not found          ==> pacman -S gcc
-         ncursesw/ncurses.h not found ==> ./configure --enable-ncursesw=no
-         pkg-config not found         ==> pacman -S pkg-config
-         lingnome-2 required          ==> ./configure --enable-libgnome2=no
-         correct make to qmake        ==> packman -S make
-
-         console version Backspec dose not word ==>  specify --7 option "xe --7B"
-                  OR on Preference dialog, assign Ctrl-H to backspace, ASCII DEL to Delete key.
-
-(K) Fedora33                          2020/12/09 
-		missing term.h ==>yum install ncurses-devel
-		missing cups/cups.h ==> yum install cups-devel
-		install GTK2 or GTK3 ==>yum install gtk3-devel
-		install libgnome2 OR --enable-libgnome2=no with glib2.0 installed
-				==>./configure --enable-libgnome2=no ==>completed succssfully.
-				(glib2.0(including gio.h) is installed by dependency of gtk3-devel)
-		Check it that gio.h is refered by "pkg-config --cflags glib-2.0"
