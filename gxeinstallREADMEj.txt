@@ -1,4 +1,4 @@
-UTF8 encoding         V130A 2024/12/16
+UTF8 encoding         V130A 2024/12/17
 
 --------------------------------------------------------------------
 gxe-xxx.tar.gz を "tar -zxvf" で解凍し、"./configure && make" する。
@@ -47,6 +47,90 @@ Automake パッケージ 導入手順。
 --------------------------------------------------------------
 導入トラブル
 --------------------------------------------------------------
+  (R) Debina 12                         2024/12/17
+      ./configure
+      ==>configure: error: no acceptable C compiler found in $PATH
+      apt-file find bin/gcc
+      ==>gcc: /usr/bin/gcc 
+      sudo apt install gcc
+      ==>configure: error: "FATAL:term.h not found. Install ncurses-devel."
+      apt-file find include/term.h
+      ==>libncurses-dev: /usr/include/term.h
+      sudo apt install libncurses-dev
+      ./configure 
+      ==>configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
+      apt-file find cups/cups.h
+      ==>libcups2-dev: /usr/include/cups/cups.h 
+      sudo apt install libcups2-dev
+      ./configure
+      configure: error: !!! pkg-config was not found, install it or set PATH environment to it !!!
+      apt-file find bin/pkg-config
+      ==>pkgconf: /usr/bin/pkg-config
+      sudo apt install pkgconf
+      ./configure 
+      ==>configure: error: "FATAL:glib.h and gio/gio.h is not found,
+         it is required if libgnome2 is not installed. Install glib2.0-dev"
+      apt-file find gio/gio.h
+      ==>libglib2.0-dev: /usr/include/glib-2.0/gio/gio.h
+      sudo apt install libglib2.0-dev
+      ./configure
+      ==>configure: error: install GTK2(>=2.10.0) or GTK3(>=3.4.0) if NOT enable-gxe=no.
+      apt-file find /libgtk-3.so
+      ==>libgtk-3-0: /usr/lib/x86_64-linux-gnu/libgtk-3.so.0
+         libgtk-3-0: /usr/lib/x86_64-linux-gnu/libgtk-3.so.0.2406.32
+         libgtk-3-dev: /usr/lib/x86_64-linux-gnu/libgtk-3.so
+      sudo apt install libgtk-3-dev
+      ./configure
+      [done]
+      make
+      [done]
+      sudo make install
+      [done]
+      ls /usr/local/bin -la
+      ==>
+      total 33976
+      drwxr-xr-x  2 root root    4096 Dec 17 20:13 .
+      drwxr-xr-x 10 root root    4096 Dec 17 17:29 ..
+      -rwxr-xr-x  1 root root 5617856 Dec 17 20:13 gxe
+      -rwxr-xr-x  1 root root 2154800 Dec 17 20:13 gxp
+      -rwxr-xr-x  1 root root 1750824 Dec 17 20:13 xbc
+      -rwxr-xr-x  1 root root 1784424 Dec 17 20:13 xci
+      -rwxr-xr-x  1 root root 1799664 Dec 17 20:13 xcv
+      -rwxr-xr-x  1 root root 1816800 Dec 17 20:13 xdc
+      -rwxr-xr-x  1 root root 1748128 Dec 17 20:13 xdd
+      -rwxr-xr-x  1 root root 4913280 Dec 17 20:13 xe
+      -rwxr-xr-x  1 sak  sak     1519 Jun 10  2024 xeGetFont.sh
+      -rwxr-xr-x  1 sak  sak     1521 Jun 10  2024 xeGetFont_gnome-terminal.sh
+      -rwxr-xr-x  1 sak  sak     1380 Jun 11  2024 xeGetFont_konsole.sh
+      -rwxr-xr-x  1 sak  sak     1815 Jun 11  2024 xeGetFont_xfce4-terminal.sh
+      -rwxr-xr-x  1 sak  sak     2250 Jun 11  2024 xeGetTerminal.sh
+      -rwxr-xr-x  1 root root 2310080 Dec 17 20:13 xekbchk
+      -rwxr-xr-x  1 root root 1796168 Dec 17 20:13 xfc
+      -rwxr-xr-x  1 root root 1768520 Dec 17 20:13 xff
+      -rwxr-xr-x  1 root root 1771040 Dec 17 20:13 xfg
+      -rwxr-xr-x  1 root root 1741784 Dec 17 20:13 xpe
+      -rwxr-xr-x  1 root root 2004560 Dec 17 20:13 xprint
+      -rwxr-xr-x  1 sak  sak       47 Jun 29 20:00 xprint.sh
+      -rwxr-xr-x  1 root root 1751984 Dec 17 20:13 xts
+      ################
+      xe
+      ==>following error message
+         Checking the font name by "xeGetFont.sh".
+         xeGetFont.sh 2024/06/10
+         Warning! no default profile and no font setting.
+         Error! Font not found. Defult profile=.
+         Terminal font "" was detected
+         Font parm("") is unknown font name.
+
+      gnome-terminal Menu button-->Settings(P)
+      Settings dialog
+          [Font]
+              Character Tab, checkbox Font ON, update Fontface
+          [shortcut]
+              F10: General F10(M)
+              F11: Shortcut fullscreen(F11) disable by Backspace key 
+          close dialog
+
   (Q) Linux Mint 22                     2024/12/11
       ./configure
           -->"FATAL:term.h not found. Install ncurses-devel."
