@@ -1,8 +1,12 @@
-//*CID://+v742R~:                              update#=  496;      //~v743R~//~v742R~
+//*CID://+vbC9R~:                              update#=  520;      //~vbC9R~
 //************************************************************* //~5825I~
 //*uproc3.c                                                        //~v5kkR~
 //* ushellexec,uprocconnect                                        //~v5jaR~
 //*************************************************************    //~v022I~
+//vbC9:250117 (Lnx)handle xterm                                    //~vbC9I~
+//vbC8:250117 (Lnx) add qterminal xeGetFont.sh                     //~vbC8I~
+//v7dW:250116 (XXE)Warning for -e option of gnome-terminal, that will be deprecated in the future//~v7dVI~
+//v7dV:241220 (LNX)ushellexec fail when async for xe, OK for gxe   //~v7dVI~
 //v743:201222 gnome-terminal --disable-factory is not supported    //~v743I~
 //v742:201221 if one is found, no errmsg for other terminal prog   //~v742I~
 //v741:201221 chk terminal prog specified on ini file              //~v741I~
@@ -472,6 +476,7 @@ int ushellexec(int Popt,char *Pfnm)                                //~v6Y1I~
     const char *pcmd;                                              //~v6Y1I~
     int swCmdLine=0;                                               //~v6Y1R~
 //*********************                                            //~v6Y1I~
+    memset(&gerr,0,sizeof(gerr));                                  //~v7dVI~
 //    termid=ukbdl_gettermid();                                    //~v6Y1I~
 //    if ((termid & TERM_IDMASK)==TERM_TTYLCONS)                   //~v6Y1I~
 //    {                                                            //~v6Y1I~
@@ -644,6 +649,7 @@ int ushellexec(int Popt,char *Pfnm)                                //~v6Y1I~
 void asyncCB(GObject *Pobj,GAsyncResult *Presult,gpointer Puserdata)//~v6Y1I~
 {                                                                  //~v6Y1I~
 	GError *gerr;                                                  //~v6Y1I~
+    memset(&gerr,0,sizeof(gerr));                                  //~v7dVI~
 //  gboolean rc;                                                   //~v6Y1R~
 //  rc=g_app_info_launch_default_for_uri_finish(Presult,&gerr); //used in callback//~v6Y1R~
     g_app_info_launch_default_for_uri_finish(Presult,&gerr); //used in callback//~v6Y1I~
@@ -661,9 +667,18 @@ int ushellexecsub(GAppInfo *Papp,char *Pparm)                      //~v6Y1I~
     GList *parms=NULL;                                             //~v6Y1R~
 //  GAsyncResult *result;                                          //~v6Y1R~
     gboolean rc;                                                   //~v6Y1I~
+#ifdef XXE                                                         //~v7dVI~
     int swAsync=1;  //sync failed for html                         //~v6Y1R~
+#else                                                              //~v7dVI~
+#ifndef TEST                                                       //~vbC9R~
+    int swAsync=0;  //async failed for html for xe(not gxe)        //~v7dVI~
+#else                                                              //~vbC9I~
+    int swAsync=1;  //sync failed for html                         //~vbC9I~
+#endif                                                             //~vbC9I~
+#endif                                                             //~v7dVI~
     //*****************                                            //~v6Y1I~
-	UTRACEP("ushellexecsub parm=%s\n",Pparm);                      //~v6Y1R~
+	UTRACEP("ushellexecsub swasync=%d,parm=%s\n",swAsync,Pparm);                      //~v6Y1R~//~vbC9R~
+    memset(&gerr,0,sizeof(gerr));                                  //~v7dVI~
 	if (g_app_info_supports_uris(Papp))                            //~v6Y1I~
     {                                                              //~v6Y1I~
         if (swAsync)                                               //~v6Y1I~
@@ -673,10 +688,15 @@ int ushellexecsub(GAppInfo *Papp,char *Pparm)                      //~v6Y1I~
         }                                                          //~v6Y1I~
         else                                                       //~v6Y1I~
         {                                                          //~v6Y1I~
+//#ifdef TEST                                                      //+vbC9R~
 	    	parms=g_list_append(parms,Pparm);                      //~v6Y1R~
 			rc=g_app_info_launch_uris(Papp,parms,NULL/*context*/,&gerr);//~v6Y1I~
+//#else                                                            //+vbC9R~
+//            rc=g_app_info_launch_default_for_uri(Pparm,NULL/*context*/,&gerr);//+vbC9R~
+//            UTRACED("gerr",&gerr,sizeof(gerr));                  //+vbC9R~
+//#endif                                                           //+vbC9R~
 		}                                                          //~v6Y1I~
-		UTRACEP("ushellexecsub lauch_uri_async\n");                //~v6Y1I~
+		UTRACEP("%s:lauch_uri swAsync=%d,rc=%d\n",UTT,swAsync,rc); //~v742R~
     }                                                              //~v6Y1I~
     else                                                           //~v6Y1I~
     {                                                              //~v6Y1I~
@@ -684,6 +704,7 @@ int ushellexecsub(GAppInfo *Papp,char *Pparm)                      //~v6Y1I~
     	rc=g_app_info_launch(Papp,parms,NULL/*context*/,&gerr);    //~v6Y1I~
     }                                                              //~v6Y1I~
 	UTRACEP("ushellexecsub rc=%d,parm=%s\n",rc,Pparm);             //~v6Y1R~
+	UTRACED("Gerror",&gerr,sizeof(gerr));                          //~v7dVI~
     return rc;                                                     //~v6Y1I~
 }//ushellexecsub                                                   //~v6Y1I~
 #endif  //GLIB_CHECK_VERSION                                       //~v6Y1M~
@@ -717,6 +738,7 @@ int ulnxlgettermpgmopt(int Ptermsimid,char *Ptermsimname,char *Poptprefix)//~v5g
 {                                                                  //~v5gcI~
     char *ppopt,*psim;                                             //~v5gcI~
 //*****************                                                //~v5gcI~
+    UTRACEP("%s:simid=0x%02x\n",UTT,Ptermsimid);                       //~v7dVI~//~vbC8R~
     ppopt="-e";                                                    //~v5gcI~
     switch(Ptermsimid)                                             //~v5gcI~
     {                                                              //~v5gcI~
@@ -746,6 +768,9 @@ int ulnxlgettermpgmopt(int Ptermsimid,char *Ptermsimname,char *Poptprefix)//~v5g
     case TERM_XFCE4TERM:                                           //~v6s2I~
         psim="xfce4-terminal";                                     //~v6s2I~
         break;                                                     //~v6s2I~
+    case TERM_QTERMINAL:                                           //~vbC8I~
+        psim="qterminal";                                          //~vbC8I~
+        break;                                                     //~vbC8I~
     default:                                                       //~v5gcI~
         psim="gnome-terminal";                                     //~v5gcI~
         ppopt="-x";                                                //~v5gcI~
@@ -753,6 +778,7 @@ int ulnxlgettermpgmopt(int Ptermsimid,char *Ptermsimname,char *Poptprefix)//~v5g
     strcpy(Ptermsimname,psim);                                     //~v5gcI~
     if (Poptprefix)                                                //~v5gcI~
 	    strcpy(Poptprefix,ppopt);                                  //~v5gcI~
+    UTRACEP("%s:Ptermsimname=%s\n",UTT,psim);                      //~v7dVI~
     return 0;                                                      //~v5gcI~
 }//ulnxlgettermpgmopt                                              //~v5gcI~
 //**************************************************************** //~v5kkI~
@@ -764,20 +790,24 @@ int ulnxlgetshellpgm(int Popt,char *Pout)                          //~v5kkI~
 {                                                                  //~v5kkI~
 static char *Sforcedefault=0;                                      //~v5kkI~
 //*****************                                                //~v5kkI~
+	UTRACEP("%s:Sforcedefault=%s\n",UTT,Sforcedefault);            //~v7dVI~
     if (Popt & XGSP_SETDEFAULT) //set default                      //~v5kkI~
     {                                                              //~v5kkI~
     	Sforcedefault=Pout;	                                       //~v5kkI~
+		UTRACEP("%s:SETDEFAULT,Sforcedefault=%s\n",UTT,Sforcedefault);//~v7dVI~
         return 0;                                                  //~v5kkI~
     }                                                              //~v5kkI~
     if (Sforcedefault)                                             //~v5kkI~
     {                                                              //~v5kkI~
     	strcpy(Pout,Sforcedefault);                                //~v5kkI~
+		UTRACEP("%s:Sforcedefault already set=%s\n",UTT,Sforcedefault);//~v7dVI~
         return 0;                                                  //~v5kkI~
     }                                                              //~v5kkI~
 	strcpy(Pout,"sh");                                             //~v5kkI~
 	if (!uproc3pgmchk(UP3PC_NOMSG,"dash")) //(K)ubuntu:dash is slink from sh//~v5kkR~
 		if (!uproc3pgmchk(UP3PC_NOMSG,"bash"))	//if bash installed//~v5kkI~
     		strcpy(Pout,"bash");                //replace dash to bash//~v5kkR~
+	UTRACEP("%s:Pout=%s\n",UTT,Pout);                              //~v7dVI~
     return 0;                                                      //~v5kkI~
 }//ulnxlgetshellpgm                                                //~v5kkI~
 //*********************************************************************//~v5kkM~
@@ -790,6 +820,7 @@ static char *Spgmtb[]={                                            //~v5kkR~
 	                 "gnome-terminal",                             //~v5kkR~
                      "konsole",                                    //~v5kkR~
                      "xfce4-terminal",                             //~v6s2I~
+                     "qterminal",                                  //~vbC8I~
                      0};                                           //~v5kkM~
 static char *Sopttb[]={ //option always when no user cmd           //~v5kkR~
                      "",                                           //~v5kkI~
@@ -797,19 +828,24 @@ static char *Sopttb[]={ //option always when no user cmd           //~v5kkR~
   	                 "", //fork syncronouse                        //~v743I~
                      "-ls",               //konsole login session  //~v5kkR~
                      "",                                           //~v6s2I~
+                     "",     //qterminal                           //~vbC8I~
                      0};                                           //~v5kkI~
 static char *Sopttbe[]={      //option when user cmd specified     //~v5kkR~
 	                 "-e",                                         //~v5kkR~
 //                   "--disable-factory -x", //gnome-terminal fork syncronouse//~v743R~
-                     "-e", //gnome-terminal fork syncronouse       //~v743R~
-	                 "-e",                                         //~v5kkR~
+//                   "-e", //gnome-terminal fork syncronouse       //~v743R~//~v7dVR~
+                     "-- bash", //gnome-terminal fork syncronouse  //~v7dVI~
+//	                 "-e",                                         //~v5kkR~//~v7dVR~
+  	                 "-e bash", //konsole                          //~v7dVR~
 	                 "-e",                                         //~v6s2I~
+  	                 "-e bash", //qterminal                        //~vbC8I~
                      0};                  //konsole                //~v5kkR~
 static int   Stermid[]={                                           //~v5kkR~
 	                 TERM_XTERMSIM,                                //~v5kkI~
 	                 TERM_GTERMSIM,                                //~v5kkI~
 	                 TERM_KONSOLE,                                 //~v5kkI~
 	                 TERM_XFCE4TERM,                               //~v6s2I~
+	                 TERM_QTERMINAL,                               //~vbC8I~
                      0};                                           //~v5kkI~
 static int Stermtbidx=-1;	//test only once                       //~v5kkR~
 static char *Sforcedefaults=0,*Sforcedefaultc=0;                   //~v5kkI~
@@ -819,6 +855,7 @@ static char *Sforcedefaults=0,*Sforcedefaultc=0;                   //~v5kkI~
     int jj;                                                        //~v742I~
 #endif                                                             //~v742I~
 //*************************************                            //~v5kkM~
+    UTRACEP("%s:opt=0x%02x,cmd=%s\n",UTT,Popt,Pcmd);               //~v7dVI~
     if (Popt & XGTP_SETDEFAULT) //set default shell                //~v5kkR~
     {                                                              //~v5kkI~
 	    uproc3pgmchkInifile(0,Pout);                               //~v741R~
@@ -826,6 +863,7 @@ static char *Sforcedefaults=0,*Sforcedefaultc=0;                   //~v5kkI~
     		Sforcedefaultc=Pout;                                   //~v5kkI~
         else                                                       //~v5kkI~
 	    	Sforcedefaults=Pout;                                   //~v5kkR~
+	    UTRACEP("%s:SforceDefaults=%s\n",UTT,Sforcedefaults);      //~v7dVI~
         return 0;                                                  //~v5kkI~
     }                                                              //~v5kkI~
   if (Popt & XGTP_GETDEFAULT)	//0:no user cmd                    //~v5kkI~
@@ -907,6 +945,7 @@ static char *Sforcedefaults=0,*Sforcedefaultc=0;                   //~v5kkI~
             strcpy(Pout,Sforcedefaults);                           //~v5kkI~
           else                                                     //~v5kkI~
             sprintf(Pout,"%s %s",Spgmtb[ii],Sopttb[ii]);           //~v5kkR~
+	UTRACEP("%s:Stermid[%d]=0x%08x,cmdstr=%s\n",UTT,ii,Stermid[ii],Pout);//~v7dVR~
     return Stermid[ii];                                            //~v5kkI~
 }//ulnxxgettermpgmopt                                              //~v5kkI~
 //*********************************************************************//~v5kkI~
@@ -918,21 +957,23 @@ int uproc3pgmchk(int Popt,char *Pbinname)                          //~v5kkR~
     int rc,rc2;                                                    //~v5kkR~
     char whichcmd[256];                                            //~v5kkI~
 //*************************************                            //~v5kkI~
+	UTRACEP("%s:opt=0x%02x,Pbinname=%s\n",UTT,Popt,Pbinname);      //~v7dVI~
     sprintf(whichcmd,"which %s >/dev/null 2>&1",Pbinname);         //~v5kkR~
     rc=system(whichcmd);                                           //~v5kkI~
-//  printf("rc=%d for %s\n",rc,whichcmd);                          //~v5kkR~
+    rc2=errno;                                                     //~v7dVI~
+	UTRACEP("%s:rc=%d errno=%d,cmd=%s\n",UTT,rc,rc2,whichcmd);                          //~v5kkR~//~v7dVR~
 	if (!(Popt & UP3PC_NOMSG))                                     //~v5kkI~
     {                                                              //~v5kkI~
         if (rc)                                                    //~v5kkR~
         {                                                          //~v5kkR~
-            rc2=errno;                                             //~v5kkR~
+//          rc2=errno;                                             //~v5kkR~//~v7dVR~
 //          printf("??? xe: serach for %s by \"which\" cmd failed,rc=%d(errno=%d). ???\n",Pbinname,rc,rc2);//~v6s2R~
             printf("??? xe: search for %s by \"which\" cmd failed,rc=%d(errno=%d). ???\n",Pbinname,rc,rc2);//~v6s2I~
         }                                                          //~v5kkR~
         else                                                       //~v5kkR~
 //          printf("    xe: use %s for shell terminal\n",Pbinname);//~v5kkR~//~v742R~
-//          printf("Info:use \"%s\" as terminal program\n",Pbinname);//+v742R~
-            printf("Info:uses \"%s\" as terminal program\n",Pbinname);//+v742I~
+//          printf("Info:use \"%s\" as terminal program\n",Pbinname);//~v742R~
+            printf("Info:uses \"%s\" as terminal program\n",Pbinname);//~v742I~
     }                                                              //~v5kkI~
     return rc;                                                     //~v5kkI~
 }//uproc3pgmchk                                                    //~v5kkI~

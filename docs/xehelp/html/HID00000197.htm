@@ -12,8 +12,9 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> ************************************************************************
-(6).INI ファイル
+2025/01/20
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック BOLD"> ************************************************************************
+<B><B>(6).INI ファイル</B></B>
 ************************************************************************
   - ワークディレクトリーにxe.iniをおいてください。(::xe.ini)
   - 省略値のひな型は "xe -i" で上がった後にINI コマンドで再出力できます．
@@ -29,9 +30,9 @@ a:hover{font-weight:bold;}-->
        構いません.
        また使用する画面のタイプに重複のない場合は 2 機能までは 1 キーに
        重複割り当てできます.
-       例えば F10 は 編集画面では右シフト、DirList画面では<a href="HID00000046.htm">コマンド複写</a>の
+       例えば F10 は 編集画面では右シフト、DirList画面では<B><a href="HID00000046.htm">コマンド複写</a></B>の
        機能が割り当てられています。
-      .使用できるキーと指定方法は <a href="HID00000089.htm">INI ファイルの中</a>を参照して下さい.
+      .使用できるキーと指定方法は <B><a href="HID00000089.htm">INI ファイルの中</a></B>を参照して下さい.
        Shift+Esc など OS/2,Windows が インターセプトしてしまうキーもある
        のでそれらとの重複に注意して下さい．
       .Alt+文字キーで文字キーが (-) (:)などを使う時はキーボードの型の
@@ -48,15 +49,15 @@ a:hover{font-weight:bold;}-->
        その場合 これらのキーを利用する場合は Linux の設定の変更が必要になります
        Shiftキー無し(A+Fn,C+Fn)がショートカットキー設定されている場合
        そちらもソートカットキーを無効にする必要があるかもしれません
-      .<A href="HID00000050.htm">=0.2 画面</A>で割り当てを変更し場合保存時に変更が保存(xe!save!)され次回から有効になりますが
+      .<B><A href="HID00000050.htm">=0.2 画面</A></B>で割り当てを変更し場合保存時に変更が保存(xe!save!)され次回から有効になりますが
        INI ファイルは変更されません
        INI ファイルを使用している場合(::xe.ini ファイルが存在する場合)
        INI ファイルの方が優先されます(INIファイルのその機能の割り当てキーの
        数だけxe!save!の保存を上書きします）
-       INI ファイルを更新するにはリスタート後に <A href="HID00000089.htm">INI コマンド</A> を使用してファイルを更新してください
+       INI ファイルを更新するにはリスタート後に <B><A href="HID00000089.htm">INI コマンド</A></B> を使用してファイルを更新してください
 
    - [OTHER] セクション
-       以下の各種のオプションを設定します，幾つかは <a href="HID00000198.htm">exe パラメータ</a>で
+       以下の各種のオプションを設定します，幾つかは <B><a href="HID00000198.htm">exe パラメータ</a></B>で
        オーバーライドできます.(exe パラメータは "xe  /?" で表示されます)
        形式は    キーワード = 値.
        あるいは  キーワード = 桁数=CID=タイプ.  (CIDリストの場合）
@@ -87,7 +88,7 @@ a:hover{font-weight:bold;}-->
 #ifdef UNX
 #else
        .R-Ctl_ENTER        =0
-          <a href="HID00000002.htm">右 Ctrl キーを実行キーとして使用</a>する(1)か否(0)か,
+          <B><a href="HID00000002.htm">右 Ctrl キーを実行キーとして使用</a></B>する(1)か否(0)か,
           実行キーとするとき [FUNCTION]で特に割当てないとEnterキーは
           改行のみの機能となります.
           (左 Ctrl キーは単独の割り当てはできません)
@@ -101,7 +102,7 @@ a:hover{font-weight:bold;}-->
         Change_ID_Type_ASM =68=&quot;;;&quot;= ASM
         Change_ID_Type_DOC =71=&quot;||&quot;= DOC,ME
         Change_ID_Type_4 ---&gt;Change_ID_Type_9
-          変更タグ(<a href="HID00000027.htm">CID</a>)を設定する桁位置, 2 バイト前置文字, 拡張子"の
+          変更タグ(<B><a href="HID00000027.htm">CID</a></B>)を設定する桁位置, 2 バイト前置文字, 拡張子"の
           リスト.2 バイトまでの後置文字を指定できますがそのときは
           前置文字の位置に"//,??"のように前置文字と後置文字を","で
           連結して指定します.
@@ -114,7 +115,7 @@ a:hover{font-weight:bold;}-->
           ここに指定した文字列がファイルの１行目にある時この文字列の
           後に続く文字列がこのファイルの固定形式の変更タグとなる．
           (")は囲み文字なのでスペースなどを含める場合にのみ必要です
-          <a href="HID00000039.htm">(0)-(E)"CID (Change ID:変更タグ)."</a>を参照
+          <B><a href="HID00000039.htm">(0)-(E)"CID (Change ID:変更タグ)."</a></B>を参照
 
        .Initial_Ins_Mode   =0
           立ち上げ時のモード, 1:INS(挿入) 0:REP(置換)
@@ -140,18 +141,18 @@ a:hover{font-weight:bold;}-->
           Ctl+文字キーに機能の割り当てをしなかった場合で,発生する制御
           文字コード（0x00-0x1f）を文字としてを受付ける(0)か否か(1).
 
-       .<a href="HID00000404.htm">Beep</a>               =1
+       .<B><a href="HID00000404.htm">Beep</a></B>               =1
           Beepがうるさい時は 0 を指定する
 
 #ifdef UTF8SUPP
        .UnicodeTbl        =filename
           コードポイントの印刷可非/DBCSの定義を変更したい時に使用するファイル名を与える。
-          ファイルの記述方法は<A href="HID_UTF8_J.htm">UTF8サポート</A>を参照。
+          ファイルの記述方法は<B><A href="HID_UTF8_J.htm">UTF8サポート</A></B>を参照。
        .UnicodeTbl_Console=filename
           コンソール版用
 #endif
 
-       .<A href="HID_EBC_J.htm">EBCDIC 変換</A>定義ファイル名
+       .<B><A href="HID_EBC_J.htm">EBCDIC 変換</A></B>定義ファイル名
 
           EBCDIC_cfg        =&quot;&quot; #(&quot;::xeebc.map&quot;)# EBCDIC translation config filename
 
@@ -253,7 +254,7 @@ a:hover{font-weight:bold;}-->
           (J)は日本語モード, (E)は英語モード用
           タブ(0x09) とその後のタブによる間隙を表示する文字をヘキサ
           指定する.0x30--&gt;0x39 は指定不可
-          <A href="HID00000121.htm">TAB コマンド</A> でも変更できます(INIファイルは変更せず、TABコマンドを優先)
+          <B><A href="HID00000121.htm">TAB コマンド</A></B> でも変更できます(INIファイルは変更せず、TABコマンドを優先)
 #ifdef AIX
           省略値は  タブ文字    :'^'
                     タブスキップ:','
@@ -305,7 +306,7 @@ a:hover{font-weight:bold;}-->
 #ifdef UNX
         XPrint_Command_LNX =&quot;&quot;
 #endif
-          <a href="HID00000134.htm">XPRint</a> コマンドで使用するコマンド文字列を指定する
+          <B><a href="HID00000134.htm">XPRint</a></B> コマンドで使用するコマンド文字列を指定する
           文字列内に %1--&gt;%9 の指定(PRIntコマンドのオペランドの挿入位置
           の指定）が可能．% が一つも指定されていない時はこのコマンド文字
           列とXPRintコマンドのオペランドを単純連結してコマンドを発行する
@@ -321,7 +322,7 @@ a:hover{font-weight:bold;}-->
 #ifdef UNX
         Print_Command_LNX  =&quot;&quot;
 #endif
-          <a href="HID00000054.htm">ディレクトリー表示画面</a>の<a href="HID00000177.htm">P 行コマンド</a>で使用するコマンド文字列
+          <B><a href="HID00000054.htm">ディレクトリー表示画面</a></B>の<B><a href="HID00000177.htm">P 行コマンド</a></B>で使用するコマンド文字列
           を指定する.文字列内に %1 の指定(ファイル名挿入位置の指定が可能)．
           省略値(&quot;&quot;指定の時)は &quot;XPRINT.EXE&quot; を使用
           &quot;&quot; か XPrint_Command と同じか XPRINT 文字列の指定がある時
@@ -344,7 +345,7 @@ a:hover{font-weight:bold;}-->
 
 #ifdef LNX
        .LNX_Subshell_xe   =&quot;&quot;
-         xe curses版が <A href="HID00000075.htm">&quot;&gt;&quot; コマンド</A>で使用する子プロセスのシェルPGM名.
+         xe curses版が <B><A href="HID00000075.htm">&quot;&gt;&quot; コマンド</A></B>で使用する子プロセスのシェルPGM名.
          省略値は&quot;dash&quot;があれば&quot;bash&quot;,でなければ&quot;sh&quot;.
          (/bin/shが何にslinkしているかCHKして見て下さい。
           RH9,FC5ではbash,Kubuntu6,Ubuntu7ではdashでした)
@@ -352,17 +353,21 @@ a:hover{font-weight:bold;}-->
           DOS（省略形："&gt;"）コマンドあるいはメニューの File-&gt;Term で開く子窓のTerminalプログラムを指定する。
           省略値は次の順にインストール状況を調べ、なければ xterm とする。
           オプションを指定したい場合もここで設定する。例えば "gnome-terminal --maximize".
-              "gnome-terminal",
-              "konsole -ls",
-              "xfce4-terminal",
+         	"gnome-terminal"                         
+         	"konsole -ls"                            
+         	"xfce4-terminal"                         
+         	"qterminal"                              
 
        .LNX_CmdTerm_gxe   =&quot;&quot;
-          =6 画面以外で コマンド文字列指定のDOSコマンド(e.g. "&gt;ps-ef")で開くコマンド毎の
+          =6 画面以外で コマンド文字列指定のDOSコマンド(e.g. "&gt;ps -ef")で開くコマンド毎の
           子窓のTerminalプログラムを指定する。
-          省略値は
-              "gnome-terminal -e",
-              "konsole -e",
-              "xfce4-terminal -e"
+          省略値は次の順に PATH 環境変数を調べ、なければ "xterm" とする。
+          コマンド文字列をファイルパラメータとして受け取れるようにする必要があります
+          現在のところ、それぞれ以下のようになります                   
+         	"gnome-terminal -- bash ",                                 
+         	"konsole -e bash",                                         
+         	"xfce4-terminal -e"                                      
+         	"qterminal -e bash"                                      
 
 #endif
 
@@ -384,6 +389,6 @@ a:hover{font-weight:bold;}-->
         (省略値は 32ビット OS で 100MB, 64ビット OS で 1GB)
             LargeFileSize(MB) =1    #(100)# Size of large file to issue warning when open, 0 means no limit. ||vazd
 
-*** 2022/12/04</SPAN></PRE>
+</SPAN></PRE>
 </BODY>
 </HTML>

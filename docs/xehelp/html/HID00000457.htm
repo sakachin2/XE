@@ -13,13 +13,32 @@ a:hover{font-weight:bold;}
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-**2024/11/30
-<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+2025/01/20
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック BOLD">
 ######################################################################
+  .v130B&lt;--130A:(2025/01/20)
   .v130A&lt;--130 :(2024/11/30)
   .v130 &lt;--129X:(2024/07/05)
 
-*****(130A)*****(2024/11/30)
+*****<B>(130B)</B>*****(2025/01/20)
+
+     1.BUGs
+       -(gxe) sudo のとき再スタートで画面高が縮む
+       -(gxe) "?"(help) コマンドで browser に html ヘルプが表示されない
+       -(gxe) crash することがある
+       -(LNX xe) "!" 行コマンドで html ファイルの browser 表示が効かない
+
+     2.機能追加
+       -(LNX xe)terminal emulator qterminal と xterm をサポート
+        設定されたフォント名を調べて文字の表示幅を判定します
+
+     3.その他
+       -(LNX)linux/s390z との接続テスト
+         Hercules と qemu 上の ubuntu-s390x に install し ssh 接続
+
+     4.ツール。
+
+*****<B>(130A)</B>*****(2024/11/30)
 
      1.BUGs
        -ハードコピー(Alt+z)が印刷不能文字の代替文字で文字化けすることがある
@@ -49,7 +68,7 @@ a:hover{font-weight:bold;}
        -xfc v1.30     (ファイルを比較して不一致部分を表示)
         .(Windows:Bug) 0x1a を ファイル終端とみなしてしまう
 
-*****(130)*****(2024/07/05)
+*****<B>(130)</B>*****(2024/07/05)
 
      1.BUGs
        -(LNX) ./configure が /gth.h Not found で失敗することがある

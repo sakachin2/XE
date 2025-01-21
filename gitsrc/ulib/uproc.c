@@ -1,4 +1,4 @@
-//*CID://+v7deR~:                             update#=  498;       //~v7deR~
+//*CID://+v7deR~:                             update#=  510;       //~v7deR~
 //************************************************************* //~5825I~
 //*uproc.c                                                         //~v5anR~
 //* usystem,uspawnl,uspawnlp,uspawnvp,uexecchk                     //~v065R~
@@ -302,16 +302,24 @@ int ucreateshproc(int Pcol,int Prow)                               //~v57tR~
     char *cmdnm,*cmdstr;                                           //~v57qR~
 //  char sysdir[_MAX_PATH];                                        //~v57qR~
 //****************************                                     //~v57qR~
+    UTRACEP("%s:row=%d,col=%d\n",UTT,Prow,Pcol);                   //~v7deI~
 //  GetSystemDirectory(sysdir,_MAX_PATH);                          //~v57qR~
 //  uerrmsgbox("Sysdir %s ",0,sysdir);                             //~v57qR~
 //  GetWindowsDirectory(sysdir,_MAX_PATH);                         //~v57qR~
 //  uerrmsgbox("Windir %s ",0,sysdir);                             //~v57qR~
 //  uerrmsgbox("PATH=%s",0,getenv("PATH"));                        //~v57qR~
+//    STARTUPINFO stinfo0;                            //TODO TEST  //~v7deR~
+//    GetStartupInfo(&stinfo0);                       //TODO TEST  //~v7deR~
+//    UTRACED("GetStartupInfo",&stinfo0,sizeof(stinfo0)); //TODO TEST//~v7deR~
 	if (Pcol && Prow)                                              //~v57tI~
     {                                                              //~v57tI~
+//#ifndef AAA                                                      //~v7deR~
+//        memcpy(&stinfo,&stinfo0,sizeof(STARTUPINFO));            //~v7deR~
+//#endif                                                           //~v7deR~
     	stinfo.dwXCountChars=Pcol;                                 //~v57tR~
     	stinfo.dwYCountChars=Prow;                                 //~v57tR~
         stinfo.dwFlags|=STARTF_USECOUNTCHARS;                      //~v57tR~
+                                                                   //~v7deI~
     }                                                              //~v57tI~
     cmdnm=NULL;                                                    //~v57qR~
     if (udosiswinnt())                                             //~v57qR~
@@ -319,7 +327,11 @@ int ucreateshproc(int Pcol,int Prow)                               //~v57tR~
     else                                                           //~v57qR~
     	cmdstr="command.com";                                      //~v57qR~
 	                                                               //~v57qR~
+//#ifndef AAA                                                      //~v7deR~
+//    rc=CreateProcessA(cmdnm,                                     //~v7deR~
+//#else                                                            //~v7deR~
     rc=CreateProcess(cmdnm,                                        //~v57qR~
+//#endif                                                           //~v7deR~
                     cmdstr,           //comandline string          //~v57qR~
                     NULL,           //process security             //~v57qR~
                     NULL,           //thread  security             //~v57qR~
@@ -550,7 +562,7 @@ LONGHANDLE uspawnl(int Pmodeflag,char *Ppathname,char *Parg0,...)  //~v6xkI~
     int ii;                                                        //~v6xkI~
     LONGHANDLE rc;                                                 //~v6xkI~
 //*********************                                         //~5A10I~
-	UTRACEP("%s:pathname=%s\n",Ppathname);                         //~v77DI~
+	UTRACEP("%s:pathname=%s,Parg0=%s\n",UTT,Ppathname,Parg0);                         //~v77DI~//+v7deR~
     uprocopt(&Pmodeflag);                                          //~v50HI~
                                                                    //~v50HI~
     va_start(pargn,Parg0);   //argn point Parg1                 //~5A10I~
@@ -603,7 +615,7 @@ LONGHANDLE uspawnlp(int Pmodeflag,char *Ppathname,char *Parg0,...) //~v6xkI~
     int ii;                                                        //~v6xkI~
     LONGHANDLE rc;                                                 //~v6xkI~
 //*********************                                         //~5A10I~
-	UTRACEP("%s:pathname=%s\n",Ppathname);                         //~v77DI~
+	UTRACEP("%s:pathname=%s,Parg0=%s\n",UTT,Ppathname,Parg0);                         //~v77DI~//+v7deR~
 #ifdef ARMXXE                                                      //~v77FI~
 	if (unsupportedFuncArm("spawnlp",Ppathname))                   //~v77FI~
         return -1;                                                 //~v77FI~
@@ -779,7 +791,7 @@ LONGHANDLE uspawnrc(int Pmodeflag,char *Ppathname,LONGHANDLE Prc)  //~v6xkI~
     LONGHANDLE rc;                                                 //~v6xkI~
     UCHAR wkpid1[32],wkpid2[32];                                   //~v6xkI~
 //*********************                                         //~5A10I~
-	UTRACEP("%s:spawnrc pathname=%s,rc=%p\n",UTT,Ppathname,Prc);   //~v77DI~
+	UTRACEP("%s:pathname=%s,rc=%p\n",UTT,Ppathname,Prc);   //~v77DI~//+v7deR~
     if ((rc=Prc)==-1)                                              //~v5bwR~
     {                                                           //~5A10I~
         switch (rc=errno,rc)                                    //~5A10R~
@@ -1485,8 +1497,8 @@ int usystem_redirect(int Popt,char *Pcmd,char ***Pstdo,char ***Pstde,int *Pstdoc
   if (Popt & UPROC_STDE2O)  //redirect stderr to stdout            //~v61pI~
     sprintf(syscmd,"%s >%s 2>&1",Pcmd,tempfnm[0]);                 //~v61pI~
   else                                                             //~v61pI~
-//  sprintf(syscmd,"%s >%s",Pcmd,tempfnm[0]);                      //~v59dI~//+v7deR~
-    sprintf(syscmd,"%s >%s 2>%s",Pcmd,tempfnm[0],tempfnm[1]);      //+v7deI~
+//  sprintf(syscmd,"%s >%s",Pcmd,tempfnm[0]);                      //~v59dI~//~v7deR~
+    sprintf(syscmd,"%s >%s 2>%s",Pcmd,tempfnm[0],tempfnm[1]);      //~v7deI~
 //  stdesw=0;                                                      //~v5anR~
 //  rctr[1]=0;                                                     //~v5anR~
 //  rsz[1]=0;                                                      //~v5anR~
@@ -1529,6 +1541,7 @@ int uspawn_redirect(int Popt,char *Pcmd,char *Pstdinfnm,char ***Pstdo,char ***Ps
 static char Slangenv[32]="LANG=";                                  //~v5anR~
 #endif                                                             //~v5anI~
 //************************                                         //~v5anI~
+	UTRACEP("%s:opt=0x%02x,cmd=%s,stdin=%s\n",UTT,Popt,Pcmd,Pstdinfnm);//+v7deI~
 #ifdef UNX                                                         //~v5anI~
   	if (Popt & UPROC_LANGC)                                        //~v5anI~
     {                                                              //~v5anI~
@@ -1771,6 +1784,7 @@ int uspawnvp_pipe(int Popt,LONGHANDLE *Ppids,char *Ppathname,char **Pargv)//~v6x
     int fdstdesv=-1;                                               //~v5j6I~
     int fdpipe_p2c[2]={-1,-1},fdpipe_c2p[2]={-1,-1};               //~v59jM~
 //****************************                                     //~v59jM~
+	UTRACEP("%s:opt=0x%02x,path=%s\n",UTT,Popt,Ppathname);         //+v7deI~
     fflush(stdout);                                                //~v59jM~
     fflush(stderr);                                                //~v5j6I~
     fflush(stdin);                                                 //~v5ivI~

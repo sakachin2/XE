@@ -1,8 +1,9 @@
-//*CID://+vbAtR~:                             update#=  555;       //~vbAtR~
+//*CID://+vbC0R~:                             update#=  561;       //~vbC0R~
 //************************************************************* //~5428I~
 //* xefunc2.c
 //*        func_char,quit,term,exit,reset,retrieve,help,key,exe    //~v55nR~
 //*************************************************************
+//vbC0:241220 (gxe) add help dir for gxehome( home2gxe is ok because doc have html help)//~vbC0I~
 //vbAt:240704 (Bug)find -cont should be used in exe cmd file. If not save plh pos may cause 0c4//~vbAtI~
 //vc60 2023/08/03 mediaview as openWith                            //~vc60I~
 //vbs7:201028 Debian10 compiler warning -Wformat-overflow          //~vbs7I~
@@ -225,7 +226,7 @@
 #include "xegbl.h"                                                 //~v21iI~
 #include "xedcmd.h"                                                //~v58AI~
 #include "xedcmd2.h"                                               //~v60pI~
-#include "xefcmd2.h"                                               //+vbAtI~
+#include "xefcmd2.h"                                               //~vbAtI~
 #include "xefcmd22.h"                                              //~vbCBI~
 #include "xefcmd24.h"                                              //~v62fI~
 #include "xefcmd4.h"                                               //~v62HI~
@@ -254,6 +255,7 @@
 //#endif                                                           //~vaghR~
 #include "xefsubw.h"                                               //~vavkI~
 //**************************************************
+#define XEHELPURL "https://sakachin2.github.io/XE/xehelp"          //~vbC0I~
 #define EXECMD_IGNORE_ERRID '!'   //ignore rc>=4 for exe cmd       //~v58uI~
 #define EXE_MAXREDIRECTCMD  100                                    //~v77KM~
 #define EXE_REDIRECTLOG  "::#exe"     //exe cmd log                //~v77KR~
@@ -1375,6 +1377,7 @@ int func_help(PUCLIENTWE Ppcw)                                  //~5428I~
 					PACKAGE_HELP_DIR "/" XEHELPDIR,                //~v75TR~
 #endif                                                             //~v75TI~
                     "~/" XEHELPDIR,                                //~v75TI~
+                    "/usr/local/share/help/gxe/" XEHELPDIR,        //~vbC0R~
                     "/usr/local/share/gnome/help/xxe",             //~v71CR~
                     "/usr/local/share/doc/xxe",                    //~v71CR~
                     "/usr/share/doc/xxe",                          //~v71CR~
@@ -1507,14 +1510,17 @@ int func_help(PUCLIENTWE Ppcw)                                  //~5428I~
     if (!tophtml)                                                  //~v71AM~
     {                                                              //~v71AM~
 #ifdef LNX                                                         //~v71CI~
-    	uerrmsg("%s not found. \"%cHD\" cmd-line-parm,Env-Var \"%s\",%s%c%s,%s,%s,%s,%s will be searched.",//~v71CR~
-                "%s が見つかりません。\"%cHD\"コマンドラインパラメータ,\"%s\" 環境変数, %s%c%s,%s,%s,%s,%sを探します",//~v71CR~
+    	uerrmsg("%s not found. \"%cHD\" cmd-line-parm,Env-Var \"%s\",%s%c%s,%s,%s,%s,%s was searched.",//~v71CR~//~vbC0R~
+                "%s が見つかりません。\"%cHD\"コマンドラインパラメータ,\"%s\" 環境変数, %s%c%s,%s,%s,%s,%sを探しました。",//~v71CR~//+vbC0R~
                  htmlnm,CMDFLAG_PREFIX,XEHELPDIR,WORKDIRPATHID,DIR_SEPC,XEHELPDIR,lnxdir[0],lnxdir[1],lnxdir[2],lnxdir[3]);//~v71CR~
 #else                                                              //~v71CI~
-    	uerrmsg("%s not found. \"%cHD\" cmd-line-parm,Env-Var \"%s\" and %s%c%s will be searched.",//~v71AM~
-                "%s が見つかりません。\"%cHD\"コマンドラインパラメータ,\"%s\" 環境変数,%s%c%sを探します",//~v71AM~
+    	uerrmsg("%s not found. \"%cHD\" cmd-line-parm,Env-Var \"%s\" and %s%c%s was searched.",//~v71AM~//~vbC0R~
+                "%s が見つかりません。\"%cHD\"コマンドラインパラメータ,\"%s\" 環境変数,%s%c%sを探しました。",//~v71AM~//+vbC0R~
                  htmlnm,CMDFLAG_PREFIX,XEHELPDIR,WORKDIRPATHID,DIR_SEPC,XEHELPDIR);//~v71AM~
 #endif                                                             //~v71CI~
+    	uerrmsgcat(" check also \"%s\".",                          //+vbC0R~
+    	          " \"%s\" にもあります",                          //+vbC0R~
+                  XEHELPURL);                                      //~vbC0I~
         return 4;                                                  //~v71AM~
     }                                                              //~v71AM~
 #ifdef ARM                                                         //~vc60I~

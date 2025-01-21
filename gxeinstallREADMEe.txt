@@ -1,7 +1,7 @@
-V130A 2024/12/17
+V130B 2025/01/17
 
 open by "tar -zxvf gxe-xxx.tar.gz", then run "./configure && make".
-After successfull compilation, run "make install" to copy bin toで /usr/local/bin.
+After successfull compilation, run "make install" to copy bin to /usr/local/bin.
 
 --------------------------------------------------------------------
 Automake package installation step
@@ -46,6 +46,237 @@ trouble shooting.
 ------------------------------------------------------------------
 Installation trouble.
 --------------------------------------------------------------
+  (S) s390x                             2025/01/15
+      local:ubuntu24.04    remote:ubuntu18.04(s390x) on SDL hercules 4.7
+###
+    (upload xe)
+		src=/home2/Projects/gxe/gxe-1.30.tar.gz
+		dest=10.1.1.2
+		tgt=/home/sak
+		scp $src sak@$dest:$tgt
+
+  		ssh sak@10.1.1.2
+		tar -zxvf gxe-1.30.tar.gz
+		cd gxe-1.30
+		export LANG=C
+###
+    (make)
+        ./configure
+        -->
+            configure: error: no acceptable C compiler found in $PATH
+        ==>
+            sudo apt-get install gcc
+#
+        ./configure
+        -->                                                                         
+            configure: error: "FATAL:term.h not found. Install ncurses-devel."
+        ==>
+            apt search ncurses
+            -->
+                libncursesw5-dev/bionic-updates,bionic-security 6.1-1ubuntu1.18.04.1 s390x
+        ==>
+            sudo apt install libncursesw5-dev
+#
+        ./configure
+        -->                                                                         
+            configure: error: "FATAL:cups/cups.h not found. Install cups-devel."
+        ==>
+            apt search cups
+            -->                                                                         
+                libcups2-dev/bionic-updates,bionic-security 2.2.7-1ubuntu2.10 s390x
+        ==>
+            sudo apt install libcups2-dev
+#
+        ./configure
+        -->                                                                         
+            configure: error: "FATAL:glib.h and gio/gio.h is not found,
+            it is required if libgnome2 is not installed. Install glib2.0-dev"
+        ==>
+            apt search glib2
+            -->                                                                         
+                libglib2.0-dev/bionic-updates,bionic-security 2.56.4-0ubuntu0.18.04.9 s390x
+        ==>
+            sudo apt install libglib2.0-dev
+#
+        ./configure
+        -->                                                                         
+            checking for gtk+-3.0... no
+            checking for gtk+-2.0... no
+            configure: error: install GTK2(>=2.10.0) or GTK3(>=3.4.0) if NOT enable-gxe=no.
+        ==>
+            apt search gtk-3
+            -->                                                                         
+                libgtk-3-dev/bionic-updates 3.22.30-1ubuntu4 s390x
+        ==>
+            sudo apt install libgtk-3-dev
+#
+        ./configure
+        -->                                                                         
+            done
+#
+		make 
+		sudo make install   (to /usr/local/bin as default)
+###
+    (execution)
+		remote 10.1.1.2    ubuntu 18.04-s390x:x11
+		local  192.168.1.7 ubuntu 24.4       :Wayland(Xwayland)
+        (Note) ssh-client's Xwayland of Wayland supports communication with remote ssh-server's x11-client.
+               confirm it on ssh client(ubuntu 24.4)
+			       ps -ef|grep -i xwayland
+                   -->
+			       sak         2845    2435  0 10:53 ?        00:00:01 /usr/bin/Xwayland :0 -rootless -noreset -accessx -core -auth /run/user/1000/.mutter-Xwaylandauth.3F06Z2 -listenfd 4 -listenfd 5 -displayfd 6 -initfd 7 +byteswappedclients
+			       (This line indicate byteswappable by +byteswappedclients)
+#
+    	ssh sak@10.1.1.2
+		xe
+    	-->
+			Unable to init server: could not connect: connection refused
+			Gtk-WARNING **: 18:16:21.700: cannot open display:
+#
+    	ssh -X sak@10.1.1.2
+        (
+            -X:forward x11, -Y:forward x11 trusted
+         OR
+            at local(ssh client)
+                /etc/ssh/ssh_config
+                    ForwardX11   yes       # ssh -X
+                    ForwardX11Trusted yes  # ssh -Y
+        )
+		xe
+    	-->
+			Unable to init server: could not connect: connection refused
+			Gtk-WARNING **: 18:16:21.700: cannot open display:
+#
+		at remote also required to forward x11.
+		sudo nano /etc/ssh/sshd_config
+        	X11Forwarding   yes
+        sudo systemctl restart sshd
+
+    	ssh -X sak@10.1.1.2
+		xe
+    	-->
+			Prohibited client endianess, see the Xserver man page Unable to init server: Could not connect: Connection refused
+			(xe:1020): Gtk-WARNING **: 10:37:12.045: cannot open display: localhost:10.0
+#
+		at ubuntu24
+	    	$ gsettings get org.gnome.mutter.wayland xwayland-allow-byte-swapped-clients
+    		$ gsettings set org.gnome.mutter.wayland xwayland-allow-byte-swapped-clients true
+
+    	ssh -X sak@10.1.1.2
+		xe
+    	-->
+			Prohibited client endianess, see the Xserver man page Unable to init server: Could not connect: Connection refused
+			(xe:1020): Gtk-WARNING **: 10:37:12.045: cannot open display: localhost:10.0
+#
+		at ubuntu24(ssh server)
+    		add or update the following section in xorg.conf or add new xxx.conf file in xorg.conf.d
+    			/etc/X11/xconf.conf  OR /etc/X11/xconf.org.d/endian.conf
+		    		Section "ServerFlags"
+       				Option "AllowSwappedClients" "on"
+    				EndSection
+        	reboot
+        	(
+				ps -ef will show Xwayland option of  "+byteswappedclients"
+        	)
+    	ssh -X sak@10.1.1.2
+		xe
+    	-->OK
+    	(
+     	Note.
+        	1. if using ssh by putty, setting "export DISPLAY=localhost:10.0" may be required.
+            	if yet error messag as following
+					Gtk-WARNING **: 18:16:21.700: cannot open display:
+
+                  echo $DISPLAY
+                    It may be OK if it is set.
+                OR
+				  env|grep SSH
+					SSH_CONNECTION=10.0.2.2 57211 10.0.2.15 22
+					SSH_CLIENT=10.0.2.2 57211 22
+					SSH_TTY=/dev/pts/1
+                  ==> 
+                  	export DISPLAY=10.0.2.2:0.0
+        	2. to pass SSH server's Fontname to remote(X client).
+            	at local
+            		xeGetFont.sh
+                	-->
+						xeGetFont.sh 2024/06/10
+						Info! font[Tlwg Typo 16] is of "gnome-terminal", default profile[b1dcc9dd-5262-4d8d-a863-c897e6d979b9].
+						Tlwg Typo 16
+	        		ssh -t user@host XEFONT=\"Tlwg Typo 16\" bash
+            	at remote (the font may not available in remote.)
+					xe  "-F$XEFONT"
+        	3. Not worry about ambiguous char display width and to wish for quick start of xe.
+            	at remote
+					xe  -Fnone  (Not GUI app bypassing GTK init)
+    	)
+
+###
+		gxe
+    	-->
+			(gxe:1776): IBUS-WARNING **: 11:34:22.173: The owner of /home/sak/.config/ibus/bus is not sak!
+#
+		sudo chown sak:sak .config/ibus/bus
+		gxe
+    	-->
+			Info:uses "gnome-terminal" as terminal program
+			Warning(gxe):No default printer, is cupsd runnung?
+        OK
+###
+		sudo xe
+    	-->
+			xeGetFont.sh 2024/06/10
+			Warning! terminal is other than gnome-terminal, konsole, xfce4-terminal.
+			Warning! assumed "Monospace", specify -Ffontname parameter if it is not valid.
+			Terminal font "Monospace" was detected
+
+			dbind-WARNING **: 11:42:08.346: Couldn't connect to accessibility bus: Failed to connect to socket /run/user/1000/at-spi/bus: No such file or directory
+    	(
+     		Maybe harmfull, ignore dbind-WARNING,
+     		but try this.
+				sudo NO_AT_BRIDGE=1 xe
+    	)
+###
+		sudo gxe
+    	-->
+			dbind-WARNING **: 12:05:44.695: Couldn't connect to accessibility bus: Failed to connect to socket /run/user/1000/at-spi/bus: No such file or directory
+
+			IBUS-WARNING **: 12:05:52.135: The owner of /home/sak/.config/ibus/bus is not root!
+			Info:uses "gnome-terminal" as terminal program
+
+			Warning(gxe):No default printer, is cupsd runnung?
+			Home directory not accessible: Permission denied
+			Home directory not accessible: Permission denied
+			Info:uses "gnome-terminal" as terminal program
+#
+		sudo NO_AT_BRIDGE=1 gxe
+    	-->
+			IBUS-WARNING **: 12:18:31.885: The owner of /home/sak/.config/ibus/bus is not root!
+			Info:uses "gnome-terminal" as terminal program
+
+			Warning(gxe):No default printer, is cupsd runnung?
+			Home directory not accessible: Permission denied
+#
+	GDK_BACKEND=x11 gxe
+    -->
+		Info:uses "gnome-terminal" as terminal program
+		Warning(gxe):No default printer, is cupsd runnung?
+#
+		sudo GDK_BACKEND=x11 gxe
+    	-->
+			dbind-WARNING **: 12:38:06.664: Couldn't connect to accessibility bus: Failed to connect to socket /run/user/1000/at-spi/bus: No such file or directory
+			IBUS-WARNING **: 12:38:09.881: The owner of /home/sak/.config/ibus/bus is not root!
+			Info:uses "gnome-terminal" as terminal program
+			Warning(gxe):No default printer, is cupsd runnung?
+			Home directory not accessible: Permission denied
+#
+		sudo GDK_BACKEND=x11 NO_AT_BRIDGE=1 gxe
+    	-->
+			IBUS-WARNING **: 12:40:44.735: The owner of /home/sak/.config/ibus/bus is not root!
+			Info:uses "gnome-terminal" as terminal program
+			Warning(gxe):No default printer, is cupsd runnung?
+			Home directory not accessible: Permission denied
+        OK
 
   (R) Debina 12                         2024/12/17
       ./configure
@@ -259,8 +490,8 @@ Installation trouble.
                     OR on Preference dialog, assign Ctrl-H to backspace, ASCII DEL to Delete key.
 
   (I) Rspberry PI  2020/05/16
-     configure エミュレーターでテストしました（image:"2020-02-13-raspbian-full" on QEMU3.1.0）
-       ./configure で以下のエラーがありました
+       (configure on Emulator: image:"2020-02-13-raspbian-full" on QEMU3.1.0.)
+       ./configure get some err as followings.
           term.h not found
           -->#apt-get install libncurses-dev
           cups/cups.h not found
@@ -269,7 +500,7 @@ Installation trouble.
           -->#apt-get install libgtk-3-dev
           select libgnome2 or glib-2.0
           -->#apt-get install glib-2.0
-          ==>./configure 成功
+          ==>./configure completed
 --------------------------------------------------------------
 error at execution.
 --------------------------------------------------------------
@@ -358,19 +589,3 @@ error at execution.
     (19)Gtk-WARNING **: Calling IsInhibited failed: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.gnome.SessionManager was not provided by any .service files
         --> Harmless, ignore it.
 
---------------------------------------------------------------
-Remote Access
---------------------------------------------------------------
-(D) sshfs installation
-
-   .install sshfs using package manager
-   .add x permission if missing (chmod +x /usr/bin/fusermount) 
-   .create mount point by 777 permision  (mkdir /mountpoint; chmod 777 /mountpoint)
-   .add fuse group to your userid(reboot required).
-   .chk group of /dev/fuse and change the group if not yet(chgrp fuse /dev/fuse) 
-
-   Usage:
-     sshfs [-o uid=nnn] [-o gid=nnn] user@remotehost:/remotedir /mountpoint
-
-     Dokan sshfs(Windows version sshfs) assigns driveID using GUI window.
-     Access file likeas "e N:\".

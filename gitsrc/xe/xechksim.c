@@ -1,8 +1,9 @@
-//*CID://+vbzwR~:                             update#=  157;       //~vbzwR~
+//*CID://+vbC8R~:                             update#=  158;       //+vbC8R~
 //*************************************************************
 //*xegetmid.c                                                      //~v51aR~
 //*	linux get terminal type                                        //~v51aR~
 //*************************************************************
+//vbC8:250117 (Lnx) add qterminal xeGetFont.sh                     //+vbC8I~
 //vbzw:240306 try get plyph width by pango api                     //~vbzwI~
 //v765:070531 (LNX:BUG)support "Konsole" as one of X-terminal      //~v765I~
 //v51a:030419 (LNX)terminal type get for xe shell                  //~v51aI~
@@ -41,7 +42,8 @@ int main(int argc,char **argp)
         {                                                          //~v51aI~
             printf("%s:%s:print terminal simulator type \n",PGMID,VER);//~v51aI~
 //          printf("       xterm/kterm/gnome-terminal/X-terminol/kon/console\n");//~v765R~
-            printf("       xterm/kterm/gnome-terminal/X-terminol/kon/console/konsole\n");//~v765R~
+//          printf("       xterm/kterm/gnome-terminal/X-terminol/kon/console/konsole\n");//~v765R~//+vbC8R~
+            printf("       xterm/kterm/gnome-terminal/X-terminol/kon/console/konsole/qterminal\n");//+vbC8I~
             return 1;                                              //~v51aR~
         }                                                          //~v51aI~
 	uerrmsg_init("",0,0); 	//no stdout                            //~v51aR~
@@ -79,6 +81,9 @@ int main(int argc,char **argp)
     case TERM_RXVTSIM:                                             //~v51aI~
     	termnm="rxvt";                                             //~v51aI~
         break;                                                     //~v51aI~
+    case TERM_QTERMINAL:                                           //+vbC8I~
+    	termnm="qterminal";                                        //+vbC8I~
+        break;                                                     //+vbC8I~
     default:                                                       //~v51aI~
     	if (termid & TERM_UNDERKON)                                //~v51aI~
 	    	termnm="kon";                                          //~v51aR~
@@ -89,4 +94,4 @@ int main(int argc,char **argp)
     fflush(stdout);                                                //~v51aI~
     return 0;                                                      //~v51aI~
 }//main
-//int uvioGetCursorWidth(int Popt,ULONG Pucs){return 0;}  //avoid link err//+vbzwR~
+//int uvioGetCursorWidth(int Popt,ULONG Pucs){return 0;}  //avoid link err//~vbzwR~

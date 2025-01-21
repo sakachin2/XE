@@ -1,6 +1,6 @@
-UTF8 encodinng ||*CID:||+v130R~:  2024/12/08                update#=  857;||+v130R~
+UTF8 encodinng ||*CID:||+v130R~:                            update#=  861;||+v130R~
 ######################################################################
-[Japanese]    v1.30A (Refer xeREADME_en.txt for English)
+[Japanese]    v1.30B (Refer xeREADME_en.txt for English)  2025/01/20  ||+v130R~
 
 メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。
 ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。
@@ -694,3 +694,20 @@ Android版:Axe は PlayStoreにあります
        -xfc v1.30     (ファイルを比較して不一致部分を表示)
         .(Windows:Bug) 0x1a を ファイル終端とみなしてしまう
 
+######################################################################||~v130I~
+130B:2025/01/20                                                       ||~v130I~
+     1.BUGs                                                           ||~v130I~
+       -(gxe) sudo のとき再スタートで画面高が縮む                     ||~v130I~
+       -(gxe) "?"(help) コマンドで browser に html ヘルプが表示されない||~v130I~
+       -(gxe) crash することがある                                    ||~v130I~
+       -(LNX xe) "!" 行コマンドで html ファイルの browser 表示が効かない||~v130I~
+                                                                      ||~v130I~
+     2.機能追加                                                       ||~v130I~
+       -(LNX xe)terminal emulator qterminal と xterm をサポート       ||~v130I~
+        設定されたフォント名を調べて文字の表示幅を判定します          ||~v130I~
+                                                                      ||~v130I~
+     3.その他                                                         ||~v130I~
+       -(LNX)linux/s390z との接続テスト                               ||~v130I~
+         Hercules と qemu 上の ubuntu-s390x に install し ssh 接続    ||~v130I~
+                                                                      ||~v130I~
+     4.ツール。                                                       ||~v130I~

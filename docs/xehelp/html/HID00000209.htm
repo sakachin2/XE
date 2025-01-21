@@ -12,8 +12,9 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
+2025/01/20
 <SPAN STYLE="color:#000000;font-size:12pt;"> ************************************************************************
-(6).INI file.
+<B><B>(6).INI file.</B></B>
 ************************************************************************
     - Place xe.ini in your working directory. (::xe.ini)
     - The default value template can be re-output by INI command after started by with &quot;xe -i&quot;.     
@@ -358,17 +359,22 @@ a:hover{font-weight:bold;}-->
           terminal program for sub shell opened by DOS (abbreviation is "&gt;") cmd or Menu:File-&gt;Term.
           Default depends terminal emulator installed(check it in the following sequence),
           Specify if option required. e.g. "gnome-terminal --maximize".
-              "gnome-terminal",
-              "konsole -ls",
-              "xfce4-terminal",
+         	"gnome-terminal"                     
+         	"konsole -ls"                        
+         	"xfce4-terminal"                     
+         	"qterminal"                          
               finally use "xterm".
 
        .LNX_CmdTerm_gxe   =&quot;&quot;
           terminal program used by DOS cmd with cmd-string(e.g. "&gt;ls") except on =6 panel.
-          Default is
-          "gnome-terminal -e",
-          "konsole -e",
-          "xfce4-terminal e"
+          The default is to check the PATH env in the following order,
+          and if not found, it accepts "xterm".                       
+          You need to put the command option in order to accept the file containing command-string.
+          Currently, it looks like this:                           
+         	"gnome-terminal -- bash ",                             
+         	"konsole -e bash",                                     
+         	"xfce4-terminal -e"                                    
+         	"qterminal -e bash"                                    
 #endif
 
        .Utility command name.
@@ -389,6 +395,6 @@ a:hover{font-weight:bold;}-->
         (Default is 100MB for 32 bit OS, 1GB for 64 bit OS.)
             LargeFileSize(MB) =1    #(100)# Size of large file to issue warning when open, 0 means no limit. ||vazd
 
-*** 2022/12/04</SPAN></PRE>
+</SPAN></PRE>
 </BODY>
 </HTML>

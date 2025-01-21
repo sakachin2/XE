@@ -1,3 +1,30 @@
+//vbCa:250120 ? cmd,when index.htm not found, show github url
+//            xefunc2.c
+//vbC9:250117 (Lnx)handle xterm
+//            xeGetFont.sh xeGetTerminal.sh xeGetFont_xterm.sh
+//            uproc3.c
+//vbC8:250117 (Lnx) add qterminal xeGetFont.sh
+//            xeGetFont.sh xeGetTerminal.sh xeGetFont_qterminal.sh
+//            uproc3.c ukbdl.c/h xechksim.c
+//vbC7:250115 (Win) DOS CMD row col is not work(row col parm is ignored)
+//            xedcmd2.c
+//vbC6:250111 (LNX:cons)warninf it is on sshd
+//            xe/getfont/xeGetTerminal.sh
+//vbC5:250111 (LNX:cons)add option -Fnone to bypass gtk_init for quick start on ssh remote
+//            xe.c
+//vbC4:250110 (LNX:cons)add trace option to shell(xeGet...)
+//            xe/getfont/ xeGetFont.sh xeGetTerminal.sh xeGetFont_gnome-terminal.sh xeGetFont_konsole.sh xeGetFont_xfce4-terminal.sh
+//vbC3:250108 (gxe)crash at xxemain_setfont(Pstle=8). 8 is maxstyle at xesyn but 4 in gxe(Gsynfontdesc init 4 entry)
+//            xxedef.h
+//vbC2:250108 (gxe)pango_layout_get_direction is from pang1.46, ub18/s390 is 1.42
+//            xxecsub2.c
+//vbC1:241220 (gxe) del dprintf
+//            xefunc2.c
+//vbC0:241220 (gxe) add help dir for gxehome( home2gxe is ok because doc have html help)
+//            xefunc2.c
+//vbBz:241219 (gxe:bug) when sudo panel height shrink; get_window_size is available with gtk_windw_set_default_size to save/restore window size.
+//            gxemfrm.c xxecsub.c/h
+//*v130A *** 2024/11/30 upload 
 //vbBy:241129 Windows:for EOFid(0x1a) dir size or line-ctr(syn color file:no need because simons highlight dose not support 0x1a)
 //            xesub.c ufile5.c/h
 //vbBx:241128 xe help correct

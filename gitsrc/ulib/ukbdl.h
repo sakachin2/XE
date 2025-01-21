@@ -1,8 +1,9 @@
-//*CID://+v6s2R~:                             update#=   78;       //~v6s2R~
+//*CID://+vbC8R~:                             update#=   79;       //+vbC8R~
 //****************************************************************
 //ukbdl.h    (intf between ukbd and ukbdlnxc)                      //~v324R~
 //****************************************************************
-//v6s2:140213 add xfce4-terminal as terminal emulator              //+v6s2R~
+//vbC8:250117 (Lnx) add qterminal xeGetFont.sh                     //+vbC8I~
+//v6s2:140213 add xfce4-terminal as terminal emulator              //~v6s2R~
 //v6qh:131214 change terminal type:SCO Esc string by v6q6 as optional//~v6qhI~
 //v6a0:110520 Android porting(-DARM)                               //~v6a0I~
 //v62i:090905 termid:TELNET for Linux                              //~v62iI~
@@ -116,7 +117,8 @@ int ukbdl_gettermid(void);                                         //~v501I~
 #define    TERM_GTERMSIM 0x0400 //gnome terminal                   //~v57zR~
 #define    TERM_OTHERSIM 0x0800 //other x-terminal                 //~v57zR~
 #define    TERM_KONSOLE  0x0900 //Kubuntu Konsole                  //~v5kkI~
-#define    TERM_XFCE4TERM  0x0b00 //xfce4-terminal                 //+v6s2I~
+#define    TERM_XFCE4TERM  0x0b00 //xfce4-terminal                 //~v6s2I~
+#define    TERM_QTERMINAL  0x0c00 //qterminal                      //+vbC8I~
 #define    TERM_AIXTERMSIM 0x1000 //aixterm                        //~v57ER~
 #define    TERM_DTTERMSIM  0x2000 //dtterm                         //~v57ER~
 #define    TERM_TELNET     0x3000 //through telnet(also for teraterm)//~v587I~

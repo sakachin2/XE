@@ -4,7 +4,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=utf-8">
 <META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
 <META http-equiv="Content-Style-Type" content="text/css">
-<TITLE>DOS/&gt;</TITLE>
+<TITLE>DOS コマンド-J</TITLE>
 <STYLE TYPE="text/css">
 <!--
 a:hover{font-weight:bold;}-->
@@ -12,12 +12,13 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = DOS コマンド
+2025/01/20
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック BOLD">    = <B><B>DOS コマンド</B></B>
 
 #ifdef LNX
-        [ DOS | &gt; ] [コマンド文字列 | sh  [terminal options] ] ]
+        <B>[ DOS | &gt; ] [コマンド文字列 | sh  [terminal-options] ] ]</B>
 #else
-        [ DOS | &gt; ] [コマンド文字列 | CMD [ row [col] ] ]
+        <B>[ DOS | &gt; ] [コマンド文字列 | CMD ]</B>
 #endif
 
             DOS,OS/2 コマンドをコマンド入力行から入力できます
@@ -29,31 +30,55 @@ a:hover{font-weight:bold;}-->
 
 #ifdef LNX
   #ifdef XXE
-            コマンド文字列に sh を指定すると非同期子シェルを起動します。
-            gnome-terminal,konsoleをこの順で探しが見つかればそれを
-            なければxtermを起動します。
-            iniファイルで設定もできます。
-            オペランド無しはまたは sh 以外の場合は同期的に開きます。
-            terminalプログラムの省略値と<A href="HID00000197.htm">iniファイル</A>の設定は同様です。
+            terminal emulator の別窓を開きます。                      ||~v@@1I~
+            コマンド文字列を指定しない場合はそこで 任意のコマンドが入力できます。||~v@@1R~
+            exit で窓は閉じます。                                     ||~v@@1I~
+            コマンド文字列を指定した場合結果が表示され、              ||~v@@1I~
+            Enter キーで別窓は閉じられます。                          ||+v@@1R~
+            terminal emulator は次のものから順にPATHが通っているものが使用されます||~v@@1R~
+	                 "gnome-terminal"                              //~v5kkR~||+v@@1R~
+                     "konsole"                                     //~v5kkR~||+v@@1R~
+                     "xfce4-terminal"                              //~v6s2I~||+v@@1R~
+                     "qterminal"                             //~v6s2I~||+v@@1I~
+            ただし =6 画面でコマンド文字列を指定した場合は別窓は開かず||~v@@1R~
+            結果が =6 画面に追加されます。                            ||~v@@1R~
+            コマンド文字列に sh を指定すると別窓で terminal emulator を開始します。||~v@@1I~
+            terminal emulator は <B><a href="HID00000197.htm">(6)ini ファイル</a></B>で変更できます           ||~v@@1I~
+            "DOS コマンド文字列" の場合は "LNX_CmdTerm_gxe" オプションで||+v@@1R~
+            それ以外は "LNX_ShellTerm_gxe" で指定してください。       ||+v@@1R~
   #else
-            コマンド文字列に sh を指定すると非同期子シェルを起動します。
-            gnome-terminal,xterm などどのTerminalEmulatorかは
-            xe/gxeを起動したときのものと同じです。
+            コマンド文字列を指定しない場合は画面は子プロセスの窓になり||~v@@1I~
+            任意のコマンドが入力できます。exit で窓は閉じます。       ||~v@@1I~
+            コマンド文字列を指定した場合は画面は子プロセスの窓になり  ||~v@@1I~
+            結果が表示され、Enter キーでもとの xe の画面に戻ります。  ||~v@@1I~
+            ただし =6 画面のときは 窓は開かず、結果は =6 画面に追加されます。||~v@@1I~
+                                                                      ||~v@@1I~
+            コマンド文字列に sh を指定すると別窓で terminal emulator を開始します。||~v@@1R~
+            terminal Emulator は xe を起動したときのものと同じです。  ||~v@@1R~
             判定できない場合はgnome-terminalになります。
-            オペランド無しはまたは sh 以外の場合は画面は子プロセスの
-            窓になりなす。
-            オペランド無しの場合シェル窓として使いexitで親に戻りますが、
-            子プロセスのシェルプログラムの省略値はdashがあればbash,
-            dashがなければshです。
-            dashはkubuntuでshのslink先になっており、RH9,FC5では
-            bashがshのslink先になっています。
   #endif
-#else
-            コマンド文字列に CMD を指定すると非同期子シェルを起動します。
-            windows2000では buffersize を 行数、桁数(default=80)で
-            指定できます。
+#else  //W32                                                          ||+v@@1R~
+  #ifdef WXE                                                          ||~v@@1I~
+            DOS窓を別途開きます。                                     ||~v@@1I~
+            コマンド文字列を指定しない場合はそこで 任意のコマンドが入力できます。||~v@@1I~
+            exit で窓は閉じます。                                     ||~v@@1I~
+            コマンド文字列を指定した場合結果が表示され、              ||~v@@1I~
+            Enter キーでもとの 別窓は閉じられます。                   ||~v@@1I~
+            ただし =6 画面でコマンド文字列を指定した場合は            ||~v@@1I~
+            結果が =6 画面に追加され、開いたDOS窓は入力できません、   ||~v@@1I~
+            wxe 終了時に閉じられます。                                ||~v@@1I~
+  #else                                                               ||~v@@1I~
+            コマンド文字列を指定しない場合は画面は子プロセスの窓になり||~v@@1I~
+            任意のコマンドが入力できます。exit で窓は閉じます。       ||~v@@1I~
+            コマンド文字列を指定した場合は画面は子プロセスの窓になり  ||~v@@1I~
+            結果が表示され、Enter キーでもとの xe の画面に戻ります。  ||~v@@1I~
+            ただし =6 画面のときは 窓は開かず、結果は =6 画面に追加されます。||~v@@1I~
+  #endif                                                              ||~v@@1I~
+            コマンド文字列に CMD を指定すると別窓を開きます。         ||+v@@1M~
+            そこで任意のコマンドを入力できます                        ||+v@@1M~
+#endif
             コマンド結果編集画面では &quot;DOS&quot;(&gt;) は省略出来ます.
-            『(5).DOSコマンド』の章を参照
+            『<B><a href="HID00000057.htm">(5).DOSコマンド</a></B>』の章を参照
 #endif
 </SPAN></PRE>
 </BODY>

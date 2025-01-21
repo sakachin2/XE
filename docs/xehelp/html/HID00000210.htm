@@ -12,9 +12,9 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-**2024/11/30
+2025/01/20
 <SPAN STYLE="color:#000000;font-size:12pt;"> ************************************************************************
-(7).<B>Command line parameter</B>.
+<B><B>(7).<B>Command line parameter</B>.</B></B>
 ************************************************************************
 #ifdef UNX
    .format:
@@ -48,13 +48,25 @@ a:hover{font-weight:bold;}-->
                     hosts:hosts filename for xe.
                     Default is -FTP1(hosts="::xehosts", log="::xeftplog").
       -F{fontname[:charset] | @font_param_filename}           
-                   :The font name required for /G option is---             
+                   :The font name required for /G option is
                     when running on Windows Terminal, setting.json is checked,
                     when running on Linux, on gnome-terminal, konsole, etc.,
                     the profile of the Home dir is checked by xeGetFont.sh.
                     But if it fails, specify this option.                  
                     Use font_param_filename when specifying indirectly from a file, use font_param_filename.
-                    See Microsoft's documentation for the appropriate charset for the font.
+
+                    When executing xe on a remote computer using ssh, the font used is that of the local terminal,
+                    so it is advisable to notify the remote computer of the local font.
+                    e.g.                                              
+            		  xeGetFont.sh                                    # shows font used in the local terminal.
+	        		  ssh -t user@host XEFONT=\"Tlwg Typo 16\" bash   # notify it to the remote
+					  xe  "-F$XEFONT"                                 # notify to xe
+                    However, the remote may not have the same font.   
+                    About ssh connection, see gxeinstallREADMEe/gxeinstallREADMEj:paragraph (S) s390x.
+                    For Linux console version, you can use "-Fnone" command line option.
+                    In the language environments where it doesn't matter whether ambiguous characters are DBCS or SBCS,
+                    It starts up faster because it does not check the display width of ambiguous characters in the specified font.
+
                     Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.            
                          /F"\uff2d\uff33 \u660e\u671d".                   
       -G{Y|N}{y|0|1|2}:Specy cell width of unicode defined width is ambiguous.
@@ -154,16 +166,28 @@ a:hover{font-weight:bold;}-->
                                             x=w:output ftplog, x=a:ftplog by append mode.
                     hosts:hosts filename for xe.
                     Default is -FTP1(hosts="::xehosts", log="::xeftplog").
-      /F{fontname[:charset] | @font_param_filename}           
-                   :The font name required for /G option is---             
-                    when running on Windows Terminal, setting.json is checked,
-                    when running on Linux, on gnome-terminal, konsole, etc.,
-                    the profile of the Home dir is checked by xeGetFont.sh.
+      /F{fontname[:charset] | @font_param_filename}            //~1301R~||~v130R~||~v130R~
+                   :The font name required for /G option is             
+                    when running on Windows Terminal, setting.json is checked.
                     But if it fails, specify this option.                  
                     Use font_param_filename when specifying indirectly from a file, use font_param_filename.
-                    See Microsoft's documentation for the appropriate charset for the font.
                     Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.            
                          /F"\uff2d\uff33 \u660e\u671d".                   
+                                                                      
+                   When executing xe on a remote computer using ssh,  
+                   the font used for display is that of the local terminal,
+                   so it is advisable to notify the local font to remote.
+                   e.g.                                               
+            		  xe > tmp                                        
+                      type x1                                         
+            	   It will show local font of terminal emulator.      
+	        		  ssh -t user@host XEFONT=\"Tlwg Typo 16\" bash   
+                   It connect to remote                               
+					  xe  "-F$XEFONT"                                 
+                   Notify font to xe. However, the same font may not be available on the remote.
+                   About ssh connection, see gxeinstallREADMEe:(S) s390x.
+                   For wxe, see the Microsoft documentation for setting the appropriate charset for the selected font.
+
       /G{Y|N}{y|0|1|2}:Specy cell width of unicode defined width is ambiguous.
                         Y:Fit to font width.                                  
                           You can also specify the second option for chars in unfamiliar languages.

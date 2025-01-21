@@ -1,4 +1,4 @@
-UTF8 encoding * CID:||+v@@6R~:  2023/07/31  v129W           update#=  758;||~v130R~||~v@@6R~
+UTF8 encoding * CID:||+v30BR~:  2023/11/30  v130            update#=  764;||~v130R~||+v30BR~
 ************************************************************************
 (Index)
     (0).Introduction.
@@ -152,6 +152,7 @@ UTF8 encoding * CID:||+v@@6R~:  2023/07/31  v129W           update#=  758;||~v13
    to pass environment variable by AcceptEnv and SendEnv statement for LANG LC_*.||~v125R~
    And font installation may be required when corrupted DBCS display like as||~v125R~
    "aptitude install unifont".                                        ||~v125R~
+   About ssh connection troubles, see gxeinstallREADMEe/gxeinstallREADMEj:paragraph (S) s390x.||+v30BR~
 #else
    .Enter command on command prompt screen.
    .Make directory for XE work usage. e.g. md c:\xe.                  ||~v128R~
@@ -958,6 +959,7 @@ UTF8 encoding * CID:||+v@@6R~:  2023/07/31  v129W           update#=  758;||~v13
        It is intended for editing mainframe EBCDIC files downloaded without conversion,
        or for editing/displaying EBCDIC files mounted by NFS with the no conversion option.
        It can also be used if you have access to Linux on IBM Z via sshfs.
+       (About sshfs, see "Remote file access".)                       ||+v30BR~
        The header line displays "=E", and in binary mode, "=e".
        DBCS is not taken into account when opening in binary mode (EB command).
        If there are too many control characters and it is determined to be binary file,
@@ -2411,25 +2413,25 @@ Vertical Hex display(YZ)\x1ebc930 =E(24-10-12 10:56)----------------------------
    .SyntaxHighlight.                                                  ||~v124R~
                                                                       ||~v124R~
     Syntax highlight display text with each color and font style according to the language syntax.||~v124R~
-    xe's syntax-highlight use the function of André Simon's Highlight or GNU source-highlight.   ||~v124R~||~v124R~||~v@@2R~
-    Configuration file is ::xesynw.cfg(Windows) / ::xesynl.cfg(Linux).||~v@@2I~
+    xe's syntax-highlight use the function of André Simon's Highlight or GNU source-highlight.   ||~v124R~||~v124R~||~v130R~
+    Configuration file is ::xesynw.cfg(Windows) / ::xesynl.cfg(Linux).||~v130R~
                                                                       ||~v124R~
-      GNU source-highlight (specified by SHCMD= in the cfg file)||~v124R~||~v@@2R~
-      You need to install source-highlight (Linux version).           ||~v@@4I~
-      For example, in the case of ubuntu, "sudo apt-get install source-highlight".||~v@@4I~
-      --data-dir is /usr/share/source-highlight.                      ||~v@@4I~
-      On Windows, its binary is not maintained and the installation hurdle may be high.||~v@@4I~
-      So the next André Simon's Highlight is easier to use.          ||~v@@4I~
-                                                                      ||~v@@4I~
-      André Simon's Highlight (specified by SHCMDA= in the cfg file)  ||~v124R~||~v125R~||~v@@2R~
-         Install from André Simon's homepage.                         ||~v@@2R~
-         xe use command-line binary, leave GUI version even if its "make" failed.||~v124R~||~v129R~||~v@@2R~
+      GNU source-highlight (specified by SHCMD= in the cfg file)||~v124R~||~v130R~
+      You need to install source-highlight (Linux version).           ||~v130R~
+      For example, in the case of ubuntu, "sudo apt-get install source-highlight".||~v130R~
+      --data-dir is /usr/share/source-highlight.                      ||~v130R~
+      On Windows, its binary is not maintained and the installation hurdle may be high.||~v130R~
+      So the next André Simon's Highlight is easier to use.           ||~v130R~
+                                                                      ||~v130R~
+      André Simon's Highlight (specified by SHCMDA= in the cfg file)  ||~v124R~||~v125R~||~v130R~
+         Install from André Simon's homepage.                         ||~v130R~
+         xe use command-line binary, leave GUI version even if its "make" failed.||~v124R~||~v129R~||~v130R~
                                                                       ||~v125R~
-         For the Windows version, the necessary files for xe have been zipped and placed in the sample directory on GitHub.||~v@@2I~
-         For the Windows version, the Data directory appears to be the default location of the exe.||~v@@2I~
+         For the Windows version, the necessary files for xe have been zipped and placed in the sample directory on GitHub.||~v130R~
+         For the Windows version, the Data directory appears to be the default location of the exe.||~v130R~
                                                                       ||~v124I~
     xe accept outlang:esc format output from highlighter through stdout pipe.||~v124R~
-    Output of type esc contains ANSI ESC sequence codes that specify color and font style information.||~v@@2I~
+    Output of type esc contains ANSI ESC sequence codes that specify color and font style information.||~v130R~
     (xe fail to display color if original source contains esc code)   ||~v124R~
                                                                       ||~v124R~
     (ANSI Esc sequence style code is NORMAL:0, BOLD:1, UNDERLINE:4, BLINK:5, REVERSE:7, INVISIBLE:8. About color code see later.)||~v124R~
@@ -2474,199 +2476,199 @@ Vertical Hex display(YZ)\x1ebc930 =E(24-10-12 10:56)----------------------------
        Put cfg file on work-dir(c:\xe_wd or /home/userID/xe_wdnnnn, nnnn:userIDnumber as default).||~v124R~
        (cfg file name is xesynw.cfg(Windows version) or xesynl.cfg(Linux version)) or xesyna.cfg(Android version)||~v126R~
        See later, (d) for source-highlight configuration,             ||~v124R~
-       (e) for André Simon's Highlighter configuration, (f) ANSI Esc sequence code.||~v124R~||~v@@2R~
-       If you get messages indicating an error in your configuration file, you can fix it and reload it by "SYN RESET".||~v@@5I~
+       (e) for André Simon's Highlighter configuration, (f) ANSI Esc sequence code.||~v124R~||~v130R~
+       If you get messages indicating an error in your configuration file, you can fix it and reload it by "SYN RESET".||~v130R~
                                                                       ||~v124R~
-          SHCMD=     :source-highlight execution command.             ||~v@@5I~
-                      When using a bat file on Windows, use $* to receive parameters from xe.||~v@@5I~
-                      When using a shell on Linux, use $@ to receive parameters from xe.||~v@@5I~
-                      Also, avoid outputting to standard output/standard error,||~v@@5I~
-                      as this will result in an error message such as "Invalid Index file".||~v@@5I~
-          SHCMDA=    :Runs André Simon's Highlight.                   ||~v@@5I~
-                      If the path contains spaces, specify as follows ||~v@@5I~
-                        SHCMDA= '""c:\Program Files\WinHighlight\highlight.exe"" -q --out-format=ansi'||~v@@5I~
-                      When using a bat file on Windows, use $* to receive parameters from xe.||~v@@5I~
-                      When using a shell on Linux, use $@ to receive parameters from xe.||~v@@5I~
-                      Also, avoid outputting to standard output/standard error,||~v@@5I~
-                      as this will result in an error message such as "Invalid Index file".||~v@@5I~
-          ENTER =    :Specify the threshold of number of lines of the file, that will cause Enter key presses to trigger a re-evaluation of syntax.||~v@@5I~
-                      When the file is opened and the number of lines is within the number specified here, Enter key will trigger a re-evaluation of updated lines.||~v@@5I~
-                      It will only be triggered when OPEN=y, or after the file has been opened, when SYN is ON by SYN command (Ctrl+s).||~v@@5I~
-                      "0" means that Enter key is not a triggar,      ||~v@@5I~
-                      "-1" means that Enter key will re-evaluate regardless of the number of lines in the file.||~v@@5I~
-                      The default value is -1.                        ||~v@@5I~
-          OPEN =     :Specifies that syntax highlighting is evaluated at the file is opened or not.||~v@@5I~
-                      "Y": Turns ON for files with the extension specified in the next OPEN_EXT parameter.||~v@@5I~
-                      "N": Turns OFF when the file is opened. Can be turned ON later with the SYN command.||~v@@5I~
-                      "A": Turns ON for all files when the file is opened.||~v@@5I~
-          OPEN_EXT=  :Specifies the list of file extensions to be targeted when OPEN=y is specified.||~v@@5I~
-                      e.g.  OPEN_EXT=c cpp h hpp                      ||~v@@5I~
-          UPDONLY_EXT:Lists the extensions for language types that limit reevaluation by the "SYN ON" (Ctrl+s) to updated lines only.||~v@@5I~
-                      For language types that do not have multi-line syntax such as the /* */ comments in C,||~v@@5I~
-                      only updated lines need to be reevaluated.      ||~v@@5I~
-                      So by specifying this here, the response of the "SYN ON" that reevaluates all lines will be faster.||~v@@5I~
-                      If you mind the Enter key slow response and set "Enter=0", you will use "SYN" to reevaluate.||~v@@5I~
-                      Even the language originally has a multi-line syntax but you want to speed up the "SYN ON" response, use this setting.||~v@@5I~
-                      Even with this setting, you can still reevaluate the entire file with "SYN ALL".||~v@@5I~
-                      If you set UPDONLY_EXT=default, pplied to all files.||~v@@5I~
-                        Example: UPDONLY_EXT=cbl                      ||~v@@5I~
-          PATH_EXT_xxx=:Gives an extension in the directory path name for files that do not have a proper extension.||~v@@5I~
-                        Specify the extension in xxx (up to 7 digits). One path is specified per line.||~v@@5I~
-                        Files in the specified directory will be assumed to have the extension xxx,||~v@@5I~
-                        regardless of their original extension.       ||~v@@5I~
-                        e.g. PATH_EXT_cob=d:\src\cobs PATH_EXT_syslog=d:\logs\windows\actlog||~v@@5I~||~v@@6R~
-          BG=        :Palette number of background color. Check the color of each palette number on the 0.0 screen.||~v@@5I~
-                      Numbers are from "0" to "15" (Windows)/"7" (Linux).||~v@@5R~
-          BG_BROWSE  :Background color palette number in Browse mode.                ||~v@@5I~||~v@@6R~
-                      The default value is the same as BG.            ||~v@@5I~
-          FG=        :Palette number of foreground color.             ||~v@@5I~
-                      Numbers are from "0" to "15".                   ||~v@@5R~
-          BG_EOL=    :Background color palette number for the area after the end of the line.||~v@@5I~
-                      The default value is the same as BG (edit mode) or BG_BROWSE (browse mode).||~v@@5I~
-          BG_TAB=    :Background color palette number for TAB/non-printable characters.||~v@@5I~
-                      The default value is the same as BG (edit mode) or BG_BROWSE (browse mode).||~v@@5I~
-          BG_UPD=    :Background color palette number for unevaluated lines after updated.||~v@@5I~
-                      The default value is 0 (black)                  ||~v@@5I~
-          BG_REVERSE_EDIT=:Background color when inverted for Find command, Cut and Paste, etc. on the Edit panel||~v@@5I~
-                           The default value is 14 (yellow) for Windows, 6 (brown) for the Linux Console version.||~v@@5I~
-          BG_REVERSE_BROWSE=: Background color when inverted for Find command, cut and paste, etc. on the Browse panel||~v@@5I~
-                           The default value is 15 (white) for Windows, 6 (brown) for the Linux Console version.||~v@@5I~
-          CMAP =     :source-highlight outputs the color number in the ANSI ESC sequence||~v@@5I~
-                      according to the configuration definition.      ||~v@@5I~
-                      Specifies this when changing the mapping without making it a xe palette number.||~v@@5I~
-                      André Simon's Highlight does not seem to be able to change the mapping with its configuration definition. (See (e) below)||~v@@5I~
-                      So use CMAP.                                    ||~v@@5I~
-                      Specify as many as necessary, starting with color number "0".||~v@@5I~
-                        e.g.  CMAP =__.04.10.__.01 # Swap red and blue, set green to high intensity. "__" means no change.||~v@@5I~
-          RGBn =     :In the GUI version (wxe, gxe), the palette number color can be set continuous value.||~v@@5I~
-                      n is a palette number from 0 to 15.             ||~v@@5I~
-                        e.g. rgb2=20e030 # Set the RGB values of palette number 2 (green) to R:0x20, G:0xe0, B:0x30.||~v@@5I~
-          ITALIC_ESC=:Informs xe of the ANSI ESC sequence code given to italics in esc.outlang in source-highlight.||~v@@5I~
-                      Specify a value other than "0", "1":bold, or "4":underline.||~v@@5I~
-                      The default value is "5":blink. Change esc.outlang to set the default value to italics.||~v@@5I~
-                      Font style cannot be specified for André Simon's Highlight.||~v@@5I~
-          C_BOLD =   :Font style = 1 (Bold) in the console version. Windows version only.||~v@@5I~
-                      "H": High intensity (default value), "N": Ignored, "R": Inverted.||~v@@5I~
-          C_UNDERLINE=:Treate Font style = 4 (Underline) in the console version.||~v@@5I~
-                       "H": High intensity, "N": Ignored (default value), "R": Inverted.||~v@@5I~
-          C_ITALIC = :Treate Font style = 5 in the console version (or the value specified by ITALIC_ESC if specified).||~v@@5I~
-                      "H": High intensity, "N": Ignored (default value), "R": Inverted.||~v@@5I~
-          G_BOLD =   :Trate Font style = 1 (Bold) in the GUI version (wxe, gxe).||~v@@5I~
-                      "H": High intensity, "Y": Bold, "N": Ignored, "R": Inverted. Default value is "YH".||~v@@5I~
-          G_UNDERLINE=:Treat font style = 4 (Underline) in GUI version (wxe). Not supported in gxe.||~v@@5I~
-                       "H": High intensity, "Y": Underline, "N": Ignored, "R": Inverted. Default value is "Y".||~v@@5I~
-          G_ITALIC = :Treat font style = 5 (or the value specified by ITALIC_ESC) in GUI version (wxe, gxe).||~v@@5I~
-                      "H": High intensity, "Y": Italic, "N": Ignored, "R": Inverted. Default value is "Y".||~v@@5I~
+          SHCMD=     :source-highlight execution command.             ||~v130R~
+                      When using a bat file on Windows, use $* to receive parameters from xe.||~v130R~
+                      When using a shell on Linux, use $@ to receive parameters from xe.||~v130R~
+                      Also, avoid outputting to standard output/standard error,||~v130R~
+                      as this will result in an error message such as "Invalid Index file".||~v130R~
+          SHCMDA=    :Runs André Simon's Highlight.                   ||~v130R~
+                      If the path contains spaces, specify as follows ||~v130R~
+                        SHCMDA= '""c:\Program Files\WinHighlight\highlight.exe"" -q --out-format=ansi'||~v130R~
+                      When using a bat file on Windows, use $* to receive parameters from xe.||~v130R~
+                      When using a shell on Linux, use $@ to receive parameters from xe.||~v130R~
+                      Also, avoid outputting to standard output/standard error,||~v130R~
+                      as this will result in an error message such as "Invalid Index file".||~v130R~
+          ENTER =    :Specify the threshold of number of lines of the file, that will cause Enter key presses to trigger a re-evaluation of syntax.||~v130R~
+                      When the file is opened and the number of lines is within the number specified here, Enter key will trigger a re-evaluation of updated lines.||~v130R~
+                      It will only be triggered when OPEN=y, or after the file has been opened, when SYN is ON by SYN command (Ctrl+s).||~v130R~
+                      "0" means that Enter key is not a triggar,      ||~v130R~
+                      "-1" means that Enter key will re-evaluate regardless of the number of lines in the file.||~v130R~
+                      The default value is -1.                        ||~v130R~
+          OPEN =     :Specifies that syntax highlighting is evaluated at the file is opened or not.||~v130R~
+                      "Y": Turns ON for files with the extension specified in the next OPEN_EXT parameter.||~v130R~
+                      "N": Turns OFF when the file is opened. Can be turned ON later with the SYN command.||~v130R~
+                      "A": Turns ON for all files when the file is opened.||~v130R~
+          OPEN_EXT=  :Specifies the list of file extensions to be targeted when OPEN=y is specified.||~v130R~
+                      e.g.  OPEN_EXT=c cpp h hpp                      ||~v130R~
+          UPDONLY_EXT:Lists the extensions for language types that limit reevaluation by the "SYN ON" (Ctrl+s) to updated lines only.||~v130R~
+                      For language types that do not have multi-line syntax such as the /* */ comments in C,||~v130R~
+                      only updated lines need to be reevaluated.      ||~v130R~
+                      So by specifying this here, the response of the "SYN ON" that reevaluates all lines will be faster.||~v130R~
+                      If you mind the Enter key slow response and set "Enter=0", you will use "SYN" to reevaluate.||~v130R~
+                      Even the language originally has a multi-line syntax but you want to speed up the "SYN ON" response, use this setting.||~v130R~
+                      Even with this setting, you can still reevaluate the entire file with "SYN ALL".||~v130R~
+                      If you set UPDONLY_EXT=default, pplied to all files.||~v130R~
+                        Example: UPDONLY_EXT=cbl                      ||~v130R~
+          PATH_EXT_xxx=:Gives an extension in the directory path name for files that do not have a proper extension.||~v130R~
+                        Specify the extension in xxx (up to 7 digits). One path is specified per line.||~v130R~
+                        Files in the specified directory will be assumed to have the extension xxx,||~v130R~
+                        regardless of their original extension.       ||~v130R~
+                        e.g. PATH_EXT_cob=d:\src\cobs PATH_EXT_syslog=d:\logs\windows\actlog||~v130I~||~v130R~
+          BG=        :Palette number of background color. Check the color of each palette number on the 0.0 screen.||~v130R~
+                      Numbers are from "0" to "15" (Windows)/"7" (Linux).||~v130R~
+          BG_BROWSE  :Background color palette number in Browse mode.                ||~v130I~||~v130R~
+                      The default value is the same as BG.            ||~v130R~
+          FG=        :Palette number of foreground color.             ||~v130R~
+                      Numbers are from "0" to "15".                   ||~v130R~
+          BG_EOL=    :Background color palette number for the area after the end of the line.||~v130R~
+                      The default value is the same as BG (edit mode) or BG_BROWSE (browse mode).||~v130R~
+          BG_TAB=    :Background color palette number for TAB/non-printable characters.||~v130R~
+                      The default value is the same as BG (edit mode) or BG_BROWSE (browse mode).||~v130R~
+          BG_UPD=    :Background color palette number for unevaluated lines after updated.||~v130R~
+                      The default value is 0 (black)                  ||~v130R~
+          BG_REVERSE_EDIT=:Background color when inverted for Find command, Cut and Paste, etc. on the Edit panel||~v130R~
+                           The default value is 14 (yellow) for Windows, 6 (brown) for the Linux Console version.||~v130R~
+          BG_REVERSE_BROWSE=: Background color when inverted for Find command, cut and paste, etc. on the Browse panel||~v130R~
+                           The default value is 15 (white) for Windows, 6 (brown) for the Linux Console version.||~v130R~
+          CMAP =     :source-highlight outputs the color number in the ANSI ESC sequence||~v130R~
+                      according to the configuration definition.      ||~v130R~
+                      Specifies this when changing the mapping without making it a xe palette number.||~v130R~
+                      André Simon's Highlight does not seem to be able to change the mapping with its configuration definition. (See (e) below)||~v130R~
+                      So use CMAP.                                    ||~v130R~
+                      Specify as many as necessary, starting with color number "0".||~v130R~
+                        e.g.  CMAP =__.04.10.__.01 # Swap red and blue, set green to high intensity. "__" means no change.||~v130R~
+          RGBn =     :In the GUI version (wxe, gxe), the palette number color can be set continuous value.||~v130R~
+                      n is a palette number from 0 to 15.             ||~v130R~
+                        e.g. rgb2=20e030 # Set the RGB values of palette number 2 (green) to R:0x20, G:0xe0, B:0x30.||~v130R~
+          ITALIC_ESC=:Informs xe of the ANSI ESC sequence code given to italics in esc.outlang in source-highlight.||~v130R~
+                      Specify a value other than "0", "1":bold, or "4":underline.||~v130R~
+                      The default value is "5":blink. Change esc.outlang to set the default value to italics.||~v130R~
+                      Font style cannot be specified for André Simon's Highlight.||~v130R~
+          C_BOLD =   :Font style = 1 (Bold) in the console version. Windows version only.||~v130R~
+                      "H": High intensity (default value), "N": Ignored, "R": Inverted.||~v130R~
+          C_UNDERLINE=:Treate Font style = 4 (Underline) in the console version.||~v130R~
+                       "H": High intensity, "N": Ignored (default value), "R": Inverted.||~v130R~
+          C_ITALIC = :Treate Font style = 5 in the console version (or the value specified by ITALIC_ESC if specified).||~v130R~
+                      "H": High intensity, "N": Ignored (default value), "R": Inverted.||~v130R~
+          G_BOLD =   :Trate Font style = 1 (Bold) in the GUI version (wxe, gxe).||~v130R~
+                      "H": High intensity, "Y": Bold, "N": Ignored, "R": Inverted. Default value is "YH".||~v130R~
+          G_UNDERLINE=:Treat font style = 4 (Underline) in GUI version (wxe). Not supported in gxe.||~v130R~
+                       "H": High intensity, "Y": Underline, "N": Ignored, "R": Inverted. Default value is "Y".||~v130R~
+          G_ITALIC = :Treat font style = 5 (or the value specified by ITALIC_ESC) in GUI version (wxe, gxe).||~v130R~
+                      "H": High intensity, "Y": Italic, "N": Ignored, "R": Inverted. Default value is "Y".||~v130R~
                                                                       ||~v124R~
     (c)sample cfg file.                                               ||~v124R~||~v124R~
                                                                       ||~v124R~
-    ######################################################################################||~v@@5I~
-    # xesynw.cfg(Win)/xesynl.cfg(Linux)                               ||+v@@6I~
-    # ==syntax highlight configuration==                              ||~v@@5I~
-    #                                                                 ||~v@@5I~
-    ### execution                                                     ||~v@@5I~
-    #                                                                 ||~v@@5I~
-    #  select highight command from SHCMD or SHCMDA                   ||~v@@5I~
-    #     SHCMD=       :Specify source-highlight command              ||~v@@5I~
-    #                   e.g.  SHCMD = "source-highlight"              ||~v@@5I~
-    #     SHCMDA=      :Specify André Simon's Highlight command       ||~v@@5I~
-    #                   e.g.  SHCMDA= '""w:\highlight.dir\hl64.exe"" -q --out-format=ansi'||~v@@5I~
-    #     ENTER =      :File line count at open to re-evaluate updated lines by Enter key when SYN ON..||~v@@5I~
-    #                   0 :Do not re-evaluate by Enter key. -1:No line count limit.(Default)||~v@@5I~
-    ### file type                                                     ||~v@@5I~
-    #     OPEN  =      :SyntaxHighlight mode at opening file.         ||~v@@5I~
-    #                   "Y":SyntaxHighlight mode if the extention is listed by OPEN_EXT||~v@@5I~
-    #                   "N":always No SyntaxHighlight mode at open    ||~v@@5I~
-    #                   "A":always SyntaxHighlight mode at open       ||~v@@5I~
-    #     OPEN_EXT=    :Specify file extension list for the case of OPEN=y.||~v@@5I~||~v@@6R~
-    #                   e.g. OPEN_EXT=c cpp h hpp                      ||~v@@5I~||~v@@6R~
-    #     UPDONLY_EXT  :Lists the extensions for language types that limit reevaluation by the "SYN ON" (Ctrl+s) to updated lines only.||~v@@5I~
-    #                   e.g. UPDONLY_EXT=cob                           ||~v@@5I~||~v@@6R~
-    #     PATH_EXT_xxx=:Gives an extension in the directory path name for files that do not have a proper extension.||~v@@5I~
-    #                   e.g. PATH_EXT_cob=d:\src\cobs                  ||~v@@5I~||~v@@6R~
-    ### color                                                         ||~v@@5I~
-    #     BG=          :Palette number of background color. Check the color of each palette number on the 0.0 screen.||~v@@5I~
-    #                   Numbers are from "0" to "15" (Windows)/"7" (Linux).||~v@@5R~
-    #     BG_BROWSE    :BackGround color palette number for browse panel||~v@@5I~
-    #                   Default is same as BG                         ||~v@@5I~
-    #     FG=          :ForeGround color palette number               ||~v@@5I~
-    #                   Valid value is "0" to "15"                    ||~v@@5I~
-    #     BG_EOL=      :Background color for the right of EndOfLine.  ||~v@@5I~
-    #                   Default is same as BG(Edit) or BG_BROWSE(Browse)||~v@@5I~
-    #     BG_TAB=      :Background color for TAB/UnPrintable Character.||~v@@5I~
-    #                   Default is same as BG(Edit) or BG_BROWSE(Browse)||~v@@5I~
-    #     BG_UPD=      :Background color for updated and not yet re-evaluated line.||~v@@5I~
-    #                   Default:0(black)                              ||~v@@5I~
-    #     BG_REVERSE_EDIT=  :Background color for reverse on edit panel(Find cmd,Cut & Paste)||~v@@5I~
-    #                        Default:14(yellow) except linux console version(6:brown)||~v@@5I~
-    #     BG_REVERSE_BROWSE=:Background color for reverse on browse panel(Find cmd,Cut&Paste)||~v@@5I~
-    #                        Default:15(white) except Linux console version(6:brown)||~v@@5I~
-    #     CMAP  =      :Color palette re-mapping. Remap ANSI color number to xe's palette.||~v@@5I~
-    #                   Specify from color palette number from 0 to max 15 each.||~v@@5I~
-    #                   e.g. CMAP=__.04.10.__.01   # swap Red and Blue and use Intense Green("__" means no change.)||~v@@5I~||~v@@6R~
-    #     RGBn  =      :RGB value for each palette (wxe and gxe only) ||~v@@5I~
-    #                   n:0-->15 (correspond to palette number of xe 0.0 panel)||~v@@5I~
-    #                   e.g. rgb2=20e030   # palette No2(green)'rgb value is R:0x20, G:0xe0, B:0x30.||~v@@5I~||~v@@6R~
-    ### font style                                                    ||~v@@5I~
-    #     ITALIC_ESC = :ANSI esc code for italic.                     ||~v@@5I~
-    #                   Notify value specified on esc.lang file of source-highlight as ANSI font style code:italic.||~v@@5I~
-    #                   Valid value is one digit except reserved "0","1":bold, "4":underline.||~v@@5I~
-    #                   Default is "5":blink. (If you use this default, specify it on esc.outlang).||~v@@5I~||~v@@6R~
-    #     C_BOLD     = :treatment of font style:1(BOLD) for console version xe||~v@@5I~
-    #                   "H":HighIntensity, "N":Ignore, "R":Reverse. Default is "H".||~v@@5I~
-    #     C_UNDERLINE= :treatment of font style:4(UNDERLINE) for console version xe. Not supported for Linux version.||~v@@5I~
-    #                   "H":HighIntensity, "N":Ignore, "R":Reverse.  Default is "N".||~v@@5I~
-    #     C_ITALIC   = :treatment of font style:5(or value of ITALIC_ESC parameter if used) for console version xe||~v@@5I~
-    #                   "H":HighIntensity, "N":Ignore, "R":Reverse.  Default is "N".||~v@@5I~
-    #     G_BOLD     = :treatment of font style:1(BOLD) for GUI version xe(wxe,gxe)||~v@@5I~
-    #                   "H":HighIntensity, "Y":Bold, "R":Reverse, "N":Ignore. Default is "YH".||~v@@5I~
-    #     G_UNDERLINE= :treatment of font style:4(UNDERLINE) for GUI version xe(wxe). Not supported for gxe.||~v@@5I~
-    #                   "H":HighIntensity, "Y":Underline, "R":Reverse, "N":Ignore. Default is "Y".||~v@@5I~
-    #     G_ITALIC   = :treatment of font style:5(or value of ITALIC_ESC parameter if used) for GUI version xe(wxe,gxe)||~v@@5I~
-    #                   "H":HighIntensity, "Y":Italic, "R":Reverse, "N":Ignore. Default is "Y".||~v@@5I~
-    #####################################################################||~v@@5I~
-    ### sample ###########################                            ||~v@@5I~
-    #####################################################################||~v@@5I~
-    #Linux                                                            ||~v@@5I~
-    #SHCMD = "source-highlight"                                       ||~v@@5I~
-    #Windows                                                          ||~v@@5I~
-     SHCMDA= '""w:\highlight-4.4-x64\highlight.exe"" -q --out-format=ansi'||~v@@5I~
-    #ENTER =0                                                         ||~v@@5I~
-     BG    = 7                                                        ||~v@@5I~
-     FG    = 0                                                        ||~v@@5I~
-     BG_EOL= 6                                                        ||~v@@5I~
-     BG_TAB= 10                                                       ||~v@@5I~
-    #BG_UPD= 7                                                        ||~v@@5I~
-    #BG_REVERSE_EDIT=14;                                              ||~v@@5I~
-    #BG_REVERSE_BROWSE=1                                              ||~v@@5I~
-    #CMAP  =__.04.10.__.01.__.14  # swap Red and Blue and Intense Green("__" means no change.)||~v@@5I~
-    #RGB1 = 20e030                                                    ||~v@@5I~
-    #RGB4 = 80f020                                                    ||~v@@5I~
-    #RGB14= f01080                                                    ||~v@@5I~
-    #ITALIC_ESC= 0                                                    ||~v@@5I~
-    #C_BOLD=h                                                         ||~v@@5I~
-    #C_ITALIC=n                                                       ||~v@@5I~
-    #C_UNDERLINE=n                                                    ||~v@@5I~
-    #G_BOLD=y                                                         ||~v@@5I~
-    #G_ITALIC=hy                                                      ||~v@@5I~
-     G_UNDERLINE=h                                                    ||~v@@5I~
-     OPEN  = y                                                        ||~v@@5I~
-     OPEN_EXT= c cpp java                                             ||~v@@5I~
-    #######                                                           ||~v@@5I~
-    PATH_EXT_cob=g:\src\xe\cobs                                       ||~v@@5I~
-    #####################################################################||~v@@5I~
+    ######################################################################################||~v130R~
+    # xesynw.cfg(Win)/xesynl.cfg(Linux)                               ||~v130R~
+    # ==syntax highlight configuration==                              ||~v130R~
+    #                                                                 ||~v130R~
+    ### execution                                                     ||~v130R~
+    #                                                                 ||~v130R~
+    #  select highight command from SHCMD or SHCMDA                   ||~v130R~
+    #     SHCMD=       :Specify source-highlight command              ||~v130R~
+    #                   e.g.  SHCMD = "source-highlight"              ||~v130R~
+    #     SHCMDA=      :Specify André Simon's Highlight command       ||~v130R~
+    #                   e.g.  SHCMDA= '""w:\highlight.dir\hl64.exe"" -q --out-format=ansi'||~v130R~
+    #     ENTER =      :File line count at open to re-evaluate updated lines by Enter key when SYN ON..||~v130R~
+    #                   0 :Do not re-evaluate by Enter key. -1:No line count limit.(Default)||~v130R~
+    ### file type                                                     ||~v130R~
+    #     OPEN  =      :SyntaxHighlight mode at opening file.         ||~v130R~
+    #                   "Y":SyntaxHighlight mode if the extention is listed by OPEN_EXT||~v130R~
+    #                   "N":always No SyntaxHighlight mode at open    ||~v130R~
+    #                   "A":always SyntaxHighlight mode at open       ||~v130R~
+    #     OPEN_EXT=    :Specify file extension list for the case of OPEN=y.||~v130I~||~v130R~
+    #                   e.g. OPEN_EXT=c cpp h hpp                      ||~v130I~||~v130R~
+    #     UPDONLY_EXT  :Lists the extensions for language types that limit reevaluation by the "SYN ON" (Ctrl+s) to updated lines only.||~v130R~
+    #                   e.g. UPDONLY_EXT=cob                           ||~v130I~||~v130R~
+    #     PATH_EXT_xxx=:Gives an extension in the directory path name for files that do not have a proper extension.||~v130R~
+    #                   e.g. PATH_EXT_cob=d:\src\cobs                  ||~v130I~||~v130R~
+    ### color                                                         ||~v130R~
+    #     BG=          :Palette number of background color. Check the color of each palette number on the 0.0 screen.||~v130R~
+    #                   Numbers are from "0" to "15" (Windows)/"7" (Linux).||~v130R~
+    #     BG_BROWSE    :BackGround color palette number for browse panel||~v130R~
+    #                   Default is same as BG                         ||~v130R~
+    #     FG=          :ForeGround color palette number               ||~v130R~
+    #                   Valid value is "0" to "15"                    ||~v130R~
+    #     BG_EOL=      :Background color for the right of EndOfLine.  ||~v130R~
+    #                   Default is same as BG(Edit) or BG_BROWSE(Browse)||~v130R~
+    #     BG_TAB=      :Background color for TAB/UnPrintable Character.||~v130R~
+    #                   Default is same as BG(Edit) or BG_BROWSE(Browse)||~v130R~
+    #     BG_UPD=      :Background color for updated and not yet re-evaluated line.||~v130R~
+    #                   Default:0(black)                              ||~v130R~
+    #     BG_REVERSE_EDIT=  :Background color for reverse on edit panel(Find cmd,Cut & Paste)||~v130R~
+    #                        Default:14(yellow) except linux console version(6:brown)||~v130R~
+    #     BG_REVERSE_BROWSE=:Background color for reverse on browse panel(Find cmd,Cut&Paste)||~v130R~
+    #                        Default:15(white) except Linux console version(6:brown)||~v130R~
+    #     CMAP  =      :Color palette re-mapping. Remap ANSI color number to xe's palette.||~v130R~
+    #                   Specify from color palette number from 0 to max 15 each.||~v130R~
+    #                   e.g. CMAP=__.04.10.__.01   # swap Red and Blue and use Intense Green("__" means no change.)||~v130I~||~v130R~
+    #     RGBn  =      :RGB value for each palette (wxe and gxe only) ||~v130R~
+    #                   n:0-->15 (correspond to palette number of xe 0.0 panel)||~v130R~
+    #                   e.g. rgb2=20e030   # palette No2(green)'rgb value is R:0x20, G:0xe0, B:0x30.||~v130I~||~v130R~
+    ### font style                                                    ||~v130R~
+    #     ITALIC_ESC = :ANSI esc code for italic.                     ||~v130R~
+    #                   Notify value specified on esc.lang file of source-highlight as ANSI font style code:italic.||~v130R~
+    #                   Valid value is one digit except reserved "0","1":bold, "4":underline.||~v130R~
+    #                   Default is "5":blink. (If you use this default, specify it on esc.outlang).||~v130I~||~v130R~
+    #     C_BOLD     = :treatment of font style:1(BOLD) for console version xe||~v130R~
+    #                   "H":HighIntensity, "N":Ignore, "R":Reverse. Default is "H".||~v130R~
+    #     C_UNDERLINE= :treatment of font style:4(UNDERLINE) for console version xe. Not supported for Linux version.||~v130R~
+    #                   "H":HighIntensity, "N":Ignore, "R":Reverse.  Default is "N".||~v130R~
+    #     C_ITALIC   = :treatment of font style:5(or value of ITALIC_ESC parameter if used) for console version xe||~v130R~
+    #                   "H":HighIntensity, "N":Ignore, "R":Reverse.  Default is "N".||~v130R~
+    #     G_BOLD     = :treatment of font style:1(BOLD) for GUI version xe(wxe,gxe)||~v130R~
+    #                   "H":HighIntensity, "Y":Bold, "R":Reverse, "N":Ignore. Default is "YH".||~v130R~
+    #     G_UNDERLINE= :treatment of font style:4(UNDERLINE) for GUI version xe(wxe). Not supported for gxe.||~v130R~
+    #                   "H":HighIntensity, "Y":Underline, "R":Reverse, "N":Ignore. Default is "Y".||~v130R~
+    #     G_ITALIC   = :treatment of font style:5(or value of ITALIC_ESC parameter if used) for GUI version xe(wxe,gxe)||~v130R~
+    #                   "H":HighIntensity, "Y":Italic, "R":Reverse, "N":Ignore. Default is "Y".||~v130R~
+    #####################################################################||~v130R~
+    ### sample ###########################                            ||~v130R~
+    #####################################################################||~v130R~
+    #Linux                                                            ||~v130R~
+    #SHCMD = "source-highlight"                                       ||~v130R~
+    #Windows                                                          ||~v130R~
+     SHCMDA= '""w:\highlight-4.4-x64\highlight.exe"" -q --out-format=ansi'||~v130R~
+    #ENTER =0                                                         ||~v130R~
+     BG    = 7                                                        ||~v130R~
+     FG    = 0                                                        ||~v130R~
+     BG_EOL= 6                                                        ||~v130R~
+     BG_TAB= 10                                                       ||~v130R~
+    #BG_UPD= 7                                                        ||~v130R~
+    #BG_REVERSE_EDIT=14;                                              ||~v130R~
+    #BG_REVERSE_BROWSE=1                                              ||~v130R~
+    #CMAP  =__.04.10.__.01.__.14  # swap Red and Blue and Intense Green("__" means no change.)||~v130R~
+    #RGB1 = 20e030                                                    ||~v130R~
+    #RGB4 = 80f020                                                    ||~v130R~
+    #RGB14= f01080                                                    ||~v130R~
+    #ITALIC_ESC= 0                                                    ||~v130R~
+    #C_BOLD=h                                                         ||~v130R~
+    #C_ITALIC=n                                                       ||~v130R~
+    #C_UNDERLINE=n                                                    ||~v130R~
+    #G_BOLD=y                                                         ||~v130R~
+    #G_ITALIC=hy                                                      ||~v130R~
+     G_UNDERLINE=h                                                    ||~v130R~
+     OPEN  = y                                                        ||~v130R~
+     OPEN_EXT= c cpp java                                             ||~v130R~
+    #######                                                           ||~v130R~
+    PATH_EXT_cob=g:\src\xe\cobs                                       ||~v130R~
+    #####################################################################||~v130R~
                                                                       ||~v124R~
     (d)source-highlight configuration.                                ||~v124R~||~v124R~
                                                                       ||~v124R~
        See source-highlight previously shown about detail information.||~v124R~
        This section is brief description related to xe.               ||~v124R~
-       Source-highlight v3.1.8 also supports COBOL.                   ||~v@@4I~
-       Check lang.map to find the correspondence of file extension and lang.||~v@@4I~
+       Source-highlight v3.1.8 also supports COBOL.                   ||~v130R~
+       Check lang.map to find the correspondence of file extension and lang.||~v130R~
                                                                       ||~v124R~
        .lang.map                                                      ||~v124R~
                                                                       ||~v124R~
-        Each lines are extension = lang-file format to map extension to input file language syntax file.||~v@@4I~
-        Following lines are for the c-like language.                  ||~v@@4I~
+        Each lines are extension = lang-file format to map extension to input file language syntax file.||~v130R~
+        Following lines are for the c-like language.                  ||~v130R~
         ###                                                           ||~v124R~
             cpp = cpp.lang                                            ||~v124R~
             c = cpp.lang                                              ||~v124R~
@@ -2711,7 +2713,7 @@ Vertical Hex display(YZ)\x1ebc930 =E(24-10-12 10:56)----------------------------
                                                                       ||~v124R~
          See later (f) for ANSI definition for color esc code.        ||~v124R~
                                                                       ||~v124R~
-    (e) André Simon's Highlight configuration.                        ||~v124R~||~v@@2R~
+    (e) André Simon's Highlight configuration.                        ||~v124R~||~v130R~
                                                                       ||~v124R~
        .tested using v2.7.                                            ||~v124R~
        .configuration folder is registered at installation.           ||~v124R~
@@ -2768,6 +2770,53 @@ Vertical Hex display(YZ)\x1ebc930 =E(24-10-12 10:56)----------------------------
                                                                       ||~v124I~
 #if defined(W32) || defined(UNX)
    .Remote file access.
+        If you use "sshfs" to mount remote files,                     ||+v30BR~
+        you can access remote more easily than using xehosts as shown below.||+v30BR~
+        However, it seems that development of sshfs has ended.        ||+v30BR~
+        Instead, there is rclone.                                     ||+v30BR~
+	#ifdef W32                                                        ||+v30BR~
+        .sshfs (winget install SSHFS-Win.SSHFS-Win)                   ||+v30BR~
+		  net use Y: \\sshfs\sak@127.0.0.1!2222                       ||+v30BR~
+          xe Y:                                                       ||+v30BR~
+		  net use Y: /delete                                          ||+v30BR~
+        .rclone                                                       ||+v30BR~
+		  setup confi file by "rclone config"                         ||+v30BR~
+		  -->c:\Users\sakStyle\AppData\Roaming\rclone\rclone.conf     ||+v30BR~
+                [ubuntu18]                                            ||+v30BR~
+                type = sftp                                           ||+v30BR~
+                host = 127.0.0.1                                      ||+v30BR~
+                user = sak                                            ||+v30BR~
+                port = 2222                                           ||+v30BR~
+                pass = ....                                           ||+v30BR~
+                                                                      ||+v30BR~
+		  rclone.exe mount ubuntu18:/home/sak Y:                      ||+v30BR~
+		  (Windows では --daemon オプションは無く Ctrl+C unmount されます。xe は別窓で実行)||+v30BR~
+          (On Windows, missing "--daemon" option, Ctrl+C will unmount. Run xe in another terminal window.)||+v30BR~
+          After mounted                                               ||+v30BR~
+		    xe Y:                                                     ||+v30BR~
+    #else  //LNX                                                      ||+v30BR~
+        .sshfs                                                        ||+v30BR~
+          sudo mkdir /remote_local                                    ||+v30BR~
+          chmod 777 /remote_local                                     ||+v30BR~
+      	  sshfs sak@remote:/home/sak /remote_local  #mount            ||+v30BR~
+          xe /remote_local                                            ||+v30BR~
+          fusermount -u /remote_lcal                        #unmount  ||+v30BR~
+        .rclone                                                       ||+v30BR~
+          sudo mkdir /remote_local                                    ||+v30BR~
+          chmod 777 /remote_local                                     ||+v30BR~
+          rclone  mount  ubuntu18:/home/sak /remote_local --daemon    ||+v30BR~
+          xe /remote_local                                            ||+v30BR~
+          umount /remote_local                                        ||+v30BR~
+          config ~/.config/rclone/rclone.conf (cretae by "rclone config") is||+v30BR~
+          as followings.                                              ||+v30BR~
+			[ubuntu18]                                                ||+v30BR~
+				type = sftp                                           ||+v30BR~
+				host = 10.1.1.2                                       ||+v30BR~
+				pass = ....                                           ||+v30BR~
+				shell_type = unix                                     ||+v30BR~
+        After mounted                                                 ||+v30BR~
+		    xe /remote_local                                          ||+v30BR~
+    #endif //LNX                                                      ||+v30BR~
                                                                       ||~v124I~
     #if defined(W32)                                                  ||~v124R~
       .UNC notation is available between Windows for shared files.     ||~v124I~
@@ -2997,6 +3046,7 @@ sample)
        Command-result-output panel is used like as telnet screen logging
        cmd output. It is convenient to collect information from multiple
        remote hosts.
+       e.g.) rsh -l user1 10.1.1.2 ls                                 ||+v30BR~
 
 
 #if defined(W32) || defined(LNX)
@@ -3311,7 +3361,7 @@ sample)
             CHARSET_CFG    :Conversion parameter file when use external converter such as ICU/iconv.||~v124R~
                             (See "EBCDIC translation")                ||~v124R~
                                                                       ||~v124R~
-            e.g. ("#" on the top of line means comment line)          ||~v124R~||~v@@6R~
+            e.g. ("#" on the top of line means comment line)          ||~v124R~||~v130R~
             #####################################################################||~v124I~
             # xe3270.cfg                                              ||~v124I~
             #          Following options may be destination specific by the format of OPT.dest=xxxx.||~v124I~
@@ -6993,7 +7043,7 @@ by screen expansion)
 
         CID [on | off | clear | shift | defon | defoff | top___ | copyon | copyoff | ?]||~v125R~
                     [ [cid-type|prefix[,postfix]] | APPEND ]          ||~v124I~
-                    [.lab1 .lab2]                                     ||~v@@@I~
+                    [.lab1 .lab2]                                     ||~v130R~
 
                     :If operand missing,it is assumed ? is specified.
             on      :Add change id tag to updated line when saved.
@@ -7064,15 +7114,15 @@ by screen expansion)
             (Use quotation for prefix or postfix when it contain
              these char,",",";"," ".)
                                                                       ||~v124I~
-            APPEND/ :Append new CID after the previous CID on the line||~v124I~||~v@@@R~
-            NOAPPEND if new CID is not same as old CID.               ||~v124I~||~v@@@R~
+            APPEND/ :Append new CID after the previous CID on the line||~v124I~||~v130R~
+            NOAPPEND if new CID is not same as old CID.               ||~v124I~||~v130R~
                      If CID type is date, append if date is changed.  ||~v124I~
                      This is effective only if CID position is not fixed by CID header line.||~v124I~
                      Specify with on/off/defon/defoff.                ||~v124I~
                      "(def)off APPEND" resets APPEND status only,     ||~v124I~
                      "(def)off" resets (def)on and APPEND status.     ||~v124I~
                                                                       ||~v124I~
-            lab1 lab2 : Used for clear and shift. Specify the line range by a pair of labels set in the line number field.||~v@@@R~
+            lab1 lab2 : Used for clear and shift. Specify the line range by a pair of labels set in the line number field.||~v130R~
 
    = Combine mode                                                     ||~v129R~
                                                                       ||~v129R~
@@ -7278,7 +7328,7 @@ by screen expansion)
 #endif                                                                ||~v124R~
             u2f/f2u :UCS2<-->UTF8
             b2s/s2b :IBM-EBCDIC<-->SJIS(Japanese DBCS conversion).
-            b2e/e2b :IBM-EBCDIC<-->EUC-JP conversion.                 ||~v@@@I~
+            b2e/e2b :IBM-EBCDIC<-->EUC-JP conversion.                 ||~v130R~
             b2a/a2b :IBM-EBCDIC<-->ASCII SBCS(SO/SI(0x0e/0x0f) is ignored).
             k2L/L2k :HankakuKatakana<-->EnglishLowerCase letter.
                      When EBCDIC-->ASCII translated lowercase letter to
@@ -7344,7 +7394,7 @@ by screen expansion)
                         use with u2s,f2s. default is IBM.
              JIS78     :DBCS conversion by OLD-JIS sequence.
                         default is JIS83(NEW-JIS) sequence.
-             ANK       :replace control char by 'err-rep-char'(e.g. '?' for B2M),||~v@@@R~
+             ANK       :replace control char by 'err-rep-char'(e.g. '?' for B2M),||~v130R~
              \u        :\uxxxx format unicode input conversion(u2s,u2f).
                        :\uxxxx format unicode output conversion(s2u,f2u).
              CRLF      :replace CR,LF by 'err-rep-char'.              ||~v125R~
@@ -7397,9 +7447,9 @@ by screen expansion)
    = DOS command.                                                     
                                                                       
 #ifdef LNX
-        [ DOS | > ]  [dos-command-string | sh  [terminal options] ] ] 
+        [ DOS | > ]  [command-string | sh  [terminal-options] ] ]     ||+v30BR~
 #else
-        [ DOS | > ]  [dos-command-string | CMD [ row [col] ] ]        
+        [ DOS | > ]  [command-string | CMD ]                          ||+v30BR~
 #endif
                                                                       
              You can enter DOS,OS/2 command from command input line.
@@ -7410,27 +7460,53 @@ by screen expansion)
              but command parameter.                                   ||~v124I~
 #ifdef LNX
   #ifdef XXE                                                          
-             Especially,specify sh to open async terminal window.     ||~v124R~
-             Terminal emulator gnome-terminal and konsole is searched 
-             in this sequence. If found select it or else use xterm.  
-             That is customized by ini file.                          
-             If with no operand or operand is "sh",child window is    
-             opened synchronously.                                    
-             Terminal program is determined same way.                 
+             Open a new terminal emulator window.                     ||+v30BR~
+             If you do not specify command-string, you can enter any command there.||+v30BR~
+             "exit" closes the window.                                ||+v30BR~
+             If you specify a command-string, the results are displayed.||+v30BR~
+             Pressing the "Enter" key will close the window.          ||+v30BR~
+             The terminal emulator will be used in the order listed below, based on the PATH.||+v30BR~
+	                 "gnome-terminal"                              //~v5kkR~||+v30BR~
+                     "konsole"                                     //~v5kkR~||+v30BR~
+                     "xfce4-terminal"                              //~v6s2I~||+v30BR~
+                     "qterminal"                             //~v6s2I~||+v30BR~
+             However, if you specify a command string on the =6 screen,||+v30BR~
+             a new window will not open and the results are appendedd to =6 screens.||+v30BR~
+             "DOS sh" will start the terminal emulator in a new window.||+v30BR~
+             The terminal emulator can be changed in the ini file.    ||+v30BR~
+             "LNX_CmdTerm_gxe" option for "DOS command-string" pattern,||+v30BR~
+             in the other cases, specify "LNX_ShellTerm_gxe" option.  ||+v30BR~
   #else                                                               
-             Especially,specify sh to open async terminal window.     ||~v124R~
-             Same emulator is selected as gxe started.
-             If trigger is not terminal,gnome-terminal is selected.   
-             If with no operand or operand is "sh", child window override
-             the current window.                                      
-             With no operand case(back to the parent by exit cmd),    
-             the child shell pgm is set on ini file.                  
-             Default is bash if dash found,else sh.                   
-             Dash is slinked from sh at kubuntu,bash is target on RH9 and FC5.
+             If no command-string is specified, the screen will become the child process's window.||+v30BR~
+             You can enter any command there. "Exit" will close the window.||+v30BR~
+             With command-string, the screen becomes the window for the child process,||+v30BR~
+             command results will be displayed and pressing Enter will back to he original xe panel.||+v30BR~
+             However, if on the =6 screens, no window will open and the results will be appended there.||+v30BR~
+                                                                      ||+v30BR~
+             "DOS sh" will start the terminal emulator in a new window.||+v30BR~
+             The terminal emulator is the same as the one when you start xe.||+v30BR~
+             If it cannot be determined, it will be gnome-terminal.   ||+v30BR~
   #endif                                                              
-#else
-             Especially,specify CMD to create async DOS prompt process,||~v124R~
-             and buffsize(row and col) parm is avail under windows2000.
+#else   //W32                                                         ||+v30BR~
+  #ifdef WXE                                                          ||+v30BR~
+             Open a separate window terminal.                         ||+v30BR~
+             Without command-string, you can enter any command there. ||+v30BR~
+             "exit" closes the window.                                ||+v30BR~
+             With command-string, the results are displayed there.    ||+v30BR~
+             "Enter" key closes the window.                           ||+v30BR~
+             However, on the =6 panel, the result is appended to =6 pane.||+v30BR~
+             The opened window terminal is kept for continued processing,||+v30BR~
+             it is closed at end of wxe.                              ||+v30BR~
+  #else                                                               ||+v30BR~
+             Without command-string, the screen changes to the child process's window.||+v30BR~
+             You can enter any command there. "exit" closes the window.||+v30BR~
+             With command-string, the screen changes to the child process's window||+v30BR~
+             which displays the result of command-string.             ||+v30BR~
+             "Enter" key back to xe panel.                            ||+v30BR~
+             However, on =6 panel, no new window and the results will be appended to =6 panel.||+v30BR~
+  #endif                                                              ||+v30BR~
+             If "DOS CMD" opens a new terminal window,                ||+v30BR~
+             you can enter any command there.                         ||+v30BR~
 #endif
 
              DOS(>) can be omitted on the Command Result Edit screen. ||~v124R~
@@ -7474,7 +7550,7 @@ by screen expansion)
 
         {EDIt | ET | EB | EH | EN | EC(=EL) | ECN(=Ei) | EK | EKN(=EJ) | E8}||~v124R~
             file-name [/P[0|1]] [CAP|NOCAP] [TC|NOTC] [NB] [NONUM] [F{n[-m]|vfmt}]||~127BR~
-            [CPU8|CPLC|CPAS|CPEB[:converter]] [IE] [FNU8|FNLC|FNAS]   ||~v@@@I~
+            [CPU8|CPLC|CPAS|CPEB[:converter]] [IE] [FNU8|FNLC|FNAS]   ||~v130R~
             [/L] [/Ln] [[/O][n[t]]-[m[t]]]
             [/M[r[w]][B|C|H|K][n][o|L][X][width[S]][d]]               ||~v125R~
                                                                       
@@ -7540,12 +7616,12 @@ by screen expansion)
             CPU8: Open as UTF8 file.                                  ||~v125R~
             CPLC: Open as locale code file.                           ||~v125R~
             CPAS: by the LANG environment. Default.                   ||~v125R~
-            CPEB[:converter]: Open as EBCDIC file.                                ||~v125R~||~v@@@R~
-                  converter:EBCDIC codepage such as CP930.            ||~v@@@I~
-                  You can use ICU/iconv converter by EBCDIC cfg file prepared.||~v@@@I~
-                  If you do not use the EBCDIC cfg file, you can specify CP037, CP939, or CP930.||~v@@@I~
-                  If you do not specify this converter option, the converter in the cfg file is used.||~v@@@I~
-                  If no cfg file is prepared, the default is CP930 in Japanese environments, and CP037 otherwise.||~v@@@I~
+            CPEB[:converter]: Open as EBCDIC file.                                ||~v125R~||~v130R~
+                  converter:EBCDIC codepage such as CP930.            ||~v130R~
+                  You can use ICU/iconv converter by EBCDIC cfg file prepared.||~v130R~
+                  If you do not use the EBCDIC cfg file, you can specify CP037, CP939, or CP930.||~v130R~
+                  If you do not specify this converter option, the converter in the cfg file is used.||~v130R~
+                  If no cfg file is prepared, the default is CP930 in Japanese environments, and CP037 otherwise.||~v130R~
                                                                       ||~v125R~
               CPxx option is save to profile.                         ||~v125R~
               No need to specify for the 2nd open.                    ||~v125R~
@@ -7593,8 +7669,8 @@ by screen expansion)
                             but it is new EOL-ID at next open after saved.||~v125R~
                      (Note) "ET" cmd check 0x15 as EOL character for EBCDIC file.||~v125R~
                             On the other hands, /Mt recognize 0x0a and 0x0d0a as EOL character.||~v125R~
-                            If you cannot open the file due to a header error||~v@@@I~
-                            because the file is recorded as variable length mode in the profile, open it with /Mt.||~v@@@I~
+                            If you cannot open the file due to a header error||~v130R~
+                            because the file is recorded as variable length mode in the profile, open it with /Mt.||~v130R~
                                                                       ||~v125R~
               M:Mac  mode  :0x0d   is line delimiter.                 ||~v125R~
               E:EBCDIC mode:0x15   is line delimiter.                 ||~v125R~
@@ -7783,7 +7859,7 @@ by screen expansion)
             FIN     :Case sensitive search
             IFI     :Case Insensitive search
             EXC     :Find string and then exclude the line.
-            IX      :IFInd string and then exclude the line.          ||~v130R~||~v@@1R~
+            IX      :IFInd string and then exclude the line.          ||~v130R~||~v130R~
             FNX     :FINd excluding excluded line.
             INX     :IFInd excluding excluded line.
 
@@ -7955,9 +8031,9 @@ by screen expansion)
             last    :search backward from end of file.
             -cont   :search starts from the succeeded found position just before.||~v130I~||~v130R~
                      When selecting lines in a large file by the Find command in the Exe cmd file,||~v130I~||~v130R~
-                     from a performance consideration,                        //~@@@1I~||~v130I~||~v130R~
-                     when NotFound occurred, the next Find will start not from the first line,//~@@@1I~||~v130I~||~v130R~
-                     but from the last Found line.                            //~@@@1I~||~v130I~||~v130R~
+                     from a performance consideration,                        //~1301I~||~v130I~||~v130R~
+                     when NotFound occurred, the next Find will start not from the first line,//~1301I~||~v130I~||~v130R~
+                     but from the last Found line.                            //~1301I~||~v130I~||~v130R~
                      It will be better on condition that files were sorted.||~v130I~||~v130R~
                      Available only in Exe cmd file.                  ||~v130R~
                      (See html Help for sample usage.)                ||~v130R~
@@ -10395,7 +10471,7 @@ by screen expansion)
                x:hexadecimal, o:octal, d:decimal, u:unsigned decimal,
                z:decimal by zzz,zz9, uz:unsigned decimal by zzz,zz9,
                t:hh:mm:ss.xxx edit fmt,
-               s:translation of UCS-4 unicode and its UCS-2 surrogate.||~v130I~||~v@@1R~
+               s:translation of UCS-4 unicode and its UCS-2 surrogate.||~v130I~||~v130R~
                l(lower L):convert to clock from a word(seconds from 1970)
                or double word(Mainframe TOD. In double word bit 51 is 
                unit of micro second).
@@ -10414,8 +10490,8 @@ by screen expansion)
                XBC 12345678..abcdef0/30a2 ; XBC 3acf19fe/l
                xbc 1234.56*7.89 v2r       ; xbc 123.45/6.789 vr       ||~v129R~
                xbc 200/3.3*35 v2r         ; xbc 1+2+3+4+5+6+7+8+9+10  ||~v129R~
-               xbc 1f468/s  ==> x1f468/s:=d83ddc68                    ||~v130I~||~v@@1R~
-               xbc d83ddc68 ==> xd83ddc68/s:=0001f468                 ||~v130I~||~v@@1R~
+               xbc 1f468/s  ==> x1f468/s:=d83ddc68                    ||~v130I~||~v130R~
+               xbc d83ddc68 ==> xd83ddc68/s:=0001f468                 ||~v130I~||~v130R~
 
         (Command line tool XBC is also packaged in zip file.)
 
@@ -13558,11 +13634,11 @@ by screen expansion)
              in this example, this file is ::cl(command log) and      
              timestamp field is ignored.(ignore up to next "=" if column.1 is "=")||~v125R~
 
-            0055|s file1                                              ||~v@@@R~
-            ##^ |i word1 -m all                                       ||~v@@@R~
-            0057|i word2 -m all                                       ||~v@@@R~
-            ##! |i wodr3 -m all                                       ||~v@@@R~
-            0059|s                                                    ||~v@@@R~
+            0055|s file1                                              ||~v130R~
+            ##^ |i word1 -m all                                       ||~v130R~
+            0057|i word2 -m all                                       ||~v130R~
+            ##! |i wodr3 -m all                                       ||~v130R~
+            0059|s                                                    ||~v130R~
 
 *********************
  (B) Directory List *
@@ -14874,16 +14950,21 @@ by screen expansion)
          terminal program for sub shell opened by DOS (abbreviation is ">") cmd or Menu:File->Term.||~v129R~
          Default depends terminal emulator installed(check it in the following sequence),                 ||~127HR~||~v129R~
          Specify if option required. e.g. "gnome-terminal --maximize".||~v129R~
-         	"gnome-terminal",                       ||~127HI~         ||~v129R~
-         	"konsole -ls",                                            ||~127HR~
-         	"xfce4-terminal",                                         ||~127HI~
+         	"gnome-terminal"                        ||~127HI~         ||~v129R~||+v30BR~
+         	"konsole -ls"                                             ||~127HR~||+v30BR~
+         	"xfce4-terminal"                                          ||~127HI~||+v30BR~
+         	"qterminal"                                               ||+v30BR~
          finally use "xterm".                                                  ||~127HI~||~v129R~
        .LNX_CmdTerm_gxe   =""                                         
          terminal program used by DOS cmd with cmd-string(e.g. ">ls") except on =6 panel.||~127HI~||~v129R~
-         Default is                                                   ||~v129R~
-         	"gnome-terminal -e",                                      ||~v129R~
-         	"konsole -e",                                             ||~v129R~
-         	"xfce4-terminal e"                                        ||~v129R~
+         The default is to check the PATH env in the following order, ||+v30BR~
+         and if not found, it accepts "xterm".                        ||+v30BR~
+         You need to put the command option in order to accept the file containing command-string.||+v30BR~
+         Currently, it looks like this:                               ||+v30BR~
+         	"gnome-terminal -- bash ",                                ||+v30BR~
+         	"konsole -e bash",                                        ||+v30BR~
+         	"xfce4-terminal -e"                                       ||+v30BR~
+         	"qterminal -e bash"                                       ||+v30BR~
 #endif                                                                
                                                                       
        .Utility command name.                                         
@@ -14929,39 +15010,52 @@ by screen expansion)
                     (same as menu option id),                         ||~v124R~
                     or start with "=".                                ||~v124R~
                                                                       ||~v124R~
-      -EBC[=]{KANA_EXT|ENG_EXT|DefaultMap|DefaultMapEuro|cfg=filepath} : Specify conversion table or cfg file.||~v@@@I~
-                    KANA_EXT(=CP930=CP290+CP300)  : Japanese extended, Katakana.||~v@@@I~
-                    ENG_EXT(=CP939=CP1027+CP300)  : Japanese extended, lowercase alphabetic.||~v@@@I~
-                    DefaultMap(=CP037)            : Latin-1, no Kanji.||~v@@@I~
-                    DefaultMapEuro(=CP037+Euro)                       ||~v@@@I~
-                    cfg=filepath : Temporarily change EBCDIC_cfg option in the ini file.||~v@@@I~
-      -FTPx[t][:hosts]:x=0:FTP is not used, x=1:FTP avail(without log)||~v@@@R~
-                                            x=w:output ftplog, x=a:ftplog by append mode.||~v@@@R~
-                    hosts:hosts filename for xe.                      ||~v@@@R~
-                    Default is -FTP1(hosts="::xehosts", log="::xeftplog").||~v@@@R~
-      -F{fontname[:charset] | @font_param_filename}            //~@@@1R~||~v130R~||~v130R~
-                   :The font name required for /G option is---             //~@@@1I~||~v130I~||~v130R~
-                    when running on Windows Terminal, setting.json is checked,//~@@@1I~||~v130I~||~v130R~
+      -EBC[=]{KANA_EXT|ENG_EXT|DefaultMap|DefaultMapEuro|cfg=filepath} : Specify conversion table or cfg file.||~v130R~
+                    KANA_EXT(=CP930=CP290+CP300)  : Japanese extended, Katakana.||~v130R~
+                    ENG_EXT(=CP939=CP1027+CP300)  : Japanese extended, lowercase alphabetic.||~v130R~
+                    DefaultMap(=CP037)            : Latin-1, no Kanji.||~v130R~
+                    DefaultMapEuro(=CP037+Euro)                       ||~v130R~
+                    cfg=filepath : Temporarily change EBCDIC_cfg option in the ini file.||~v130R~
+      -FTPx[t][:hosts]:x=0:FTP is not used, x=1:FTP avail(without log)||~v130R~
+                                            x=w:output ftplog, x=a:ftplog by append mode.||~v130R~
+                    hosts:hosts filename for xe.                      ||~v130R~
+                    Default is -FTP1(hosts="::xehosts", log="::xeftplog").||~v130R~
+      -F{fontname[:charset] | @font_param_filename}            //~1301R~||~v130R~||~v130R~
+                   :The font name required for /G option is             //~1301I~||~v130I~||~v130R~||+v30BR~
+                    when running on Windows Terminal, setting.json is checked,//~1301I~||~v130I~||~v130R~
                     when running on Linux, on gnome-terminal, konsole, etc.,||~v130I~||~v130R~
                     the profile of the Home dir is checked by xeGetFont.sh.||~v130I~||~v130R~
-                    But if it fails, specify this option.                  //~@@@1I~||~v130I~||~v130R~
-                    Use font_param_filename when specifying indirectly from a file, use font_param_filename.//~@@@1I~||~v130I~||~v130R~
-                    See Microsoft's documentation for the appropriate charset for the font.//~@@@1I~||~v130I~||~v130R~
-                    Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.             //~@@@1I~||~v130I~||~v130R~
-                         /F"\uff2d\uff33 \u660e\u671d".                    //~@@@1I~||~v130I~||~v130R~
+                    But if it fails, specify this option.                  //~1301I~||~v130I~||~v130R~
+                    Use font_param_filename when specifying indirectly from a file, use font_param_filename.//~1301I~||~v130I~||~v130R~
+                                                                      ||+v30BR~
+                    When executing xe on a remote computer using ssh, the font used is that of the local terminal,||+v30BR~
+                    so it is advisable to notify the remote computer of the local font.||+v30BR~
+                    e.g.                                              ||+v30BR~
+            		  xeGetFont.sh                                    # shows font used in the local terminal.||+v30BR~
+	        		  ssh -t user@host XEFONT=\"Tlwg Typo 16\" bash   # notify it to the remote||+v30BR~
+					  xe  "-F$XEFONT"                                 # notify to xe||+v30BR~
+                    However, the remote may not have the same font.   ||+v30BR~
+                    About ssh connection, see gxeinstallREADMEe/gxeinstallREADMEj:paragraph (S) s390x.||+v30BR~
+                    For Linux console version, you can use "-Fnone" command line option.||+v30BR~
+                    In the language environments where it doesn't matter whether ambiguous characters are DBCS or SBCS,||+v30BR~
+                    It starts up faster because it does not check the display width of ambiguous characters in the specified font.||+v30BR~
+                                                                      ||+v30BR~
+                    Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.             //~1301I~||~v130I~||~v130R~
+                         /F"\uff2d\uff33 \u660e\u671d".                    //~1301I~||~v130I~||~v130R~
+                                                                      ||+v30BR~
       -G{Y|N}{y|0|1|2}:Specy cell width of unicode defined width is ambiguous.||~v130R~||~v130R~
-                        Y:Fit to font width.                                   //~@@@1I~||~v130I~||~v130R~
+                        Y:Fit to font width.                                   //~1301I~||~v130I~||~v130R~
                           You can also specify the 2nd option for chars in unfamiliar languages.||~v130R~
-                          However, this option takes a cost, the start-up will be slightly slower.//~@@@1I~||~v130I~||~v130R~
+                          However, this option takes a cost, the start-up will be slightly slower.//~1301I~||~v130I~||~v130R~
                           (See html Help for those languages.)        ||~v130R~
-                        N: Specify the display width uniformly using the second option.//~@@@1I~||~v130I~||~v130R~
-                        The default value is /GY2.                             //~@@@1I~||~v130I~||~v130R~
-                        Ex.) /GN2: All ambiguous chars are displayed in two cells.//~@@@1I~||~v130I~||~v130R~
-                             /GYy: All ambiguous chars are adjusted according to the font.//~@@@1I~||~v130I~||~v130R~
-                             /GY0: Unfamiliar languages are displayed as ':;' instead.//~@@@1I~||~v130I~||~v130R~
+                        N: Specify the display width uniformly using the second option.//~1301I~||~v130I~||~v130R~
+                        The default value is /GY2.                             //~1301I~||~v130I~||~v130R~
+                        Ex.) /GN2: All ambiguous chars are displayed in two cells.//~1301I~||~v130I~||~v130R~
+                             /GYy: All ambiguous chars are adjusted according to the font.//~1301I~||~v130I~||~v130R~
+                             /GY0: Unfamiliar languages are displayed as ':;' instead.//~1301I~||~v130I~||~v130R~
                                                                       ||~v130R~
       -h,-?        :Help
-      -HDdirname   :dirname:Directory for help html files.            ||~v@@@I~
+      -HDdirname   :dirname:Directory for help html files.            ||~v130R~
       -hnn         :Screen height.                                    ||~v124R~
                     Use when screen height and screen buffer size is not||~v124R~
                     same on TeraTerm ini file specification.
@@ -15037,38 +15131,50 @@ by screen expansion)
       /E           :Edit mode open(default)
                     Use when edit file name is "0","1","2" or "6"
                     (same as menu option id).
-                    or start with "=".                                ||~v@@@I~
-      /EBC[=]{KANA_EXT|ENG_EXT|DefaultMap|DefaultMapEuro|cfg=filepath} : Specify conversion table or cfg file.||~v@@@I~
-                    KANA_EXT(=CP930=CP290+CP300)  : Japanese extended, Katakana.||~v@@@I~
-                    ENG_EXT(=CP939=CP1027+CP300)  : Japanese extended, lowercase alphabetic.||~v@@@I~
-                    DefaultMap(=CP037)            : Latin-1, no Kanji.||~v@@@I~
-                    DefaultMapEuro(=CP037+Euro)                       ||~v@@@I~
-                    cfg=filepath : Temporarily change EBCDIC_cfg option in the ini file.||~v@@@I~
-      /FTPx[t][:hosts]:x=0:FTP is not used, x=1:FTP avail(without log)  ||~v130R~||~v130R~||~v@@@R~
-                                            x=w:output ftplog, x=a:ftplog by append mode.||~v@@@R~
-                    hosts:hosts filename for xe.                      ||~v@@@R~
-                    Default is -FTP1(hosts="::xehosts", log="::xeftplog").||~v@@@I~
-      /F{fontname[:charset] | @font_param_filename}            //~@@@1R~||~v130R~||~v130R~
-                   :The font name required for /G option is---             //~@@@1I~||~v130I~||~v130R~
-                    when running on Windows Terminal, setting.json is checked,//~@@@1I~||~v130I~||~v130R~
-                    when running on Linux, on gnome-terminal, konsole, etc.,||~v130I~||~v130R~
-                    the profile of the Home dir is checked by xeGetFont.sh.||~v130I~||~v130R~
-                    But if it fails, specify this option.                  //~@@@1I~||~v130I~||~v130R~
-                    Use font_param_filename when specifying indirectly from a file, use font_param_filename.//~@@@1I~||~v130I~||~v130R~
-                    See Microsoft's documentation for the appropriate charset for the font.//~@@@1I~||~v130I~||~v130R~
-                    Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.             //~@@@1I~||~v130I~||~v130R~
-                         /F"\uff2d\uff33 \u660e\u671d".                    //~@@@1I~||~v130I~||~v130R~
+                    or start with "=".                                ||~v130R~
+      /EBC[=]{KANA_EXT|ENG_EXT|DefaultMap|DefaultMapEuro|cfg=filepath} : Specify conversion table or cfg file.||~v130R~
+                    KANA_EXT(=CP930=CP290+CP300)  : Japanese extended, Katakana.||~v130R~
+                    ENG_EXT(=CP939=CP1027+CP300)  : Japanese extended, lowercase alphabetic.||~v130R~
+                    DefaultMap(=CP037)            : Latin-1, no Kanji.||~v130R~
+                    DefaultMapEuro(=CP037+Euro)                       ||~v130R~
+                    cfg=filepath : Temporarily change EBCDIC_cfg option in the ini file.||~v130R~
+      /FTPx[t][:hosts]:x=0:FTP is not used, x=1:FTP avail(without log)  ||~v130R~||~v130R~||~v130R~
+                                            x=w:output ftplog, x=a:ftplog by append mode.||~v130R~
+                    hosts:hosts filename for xe.                      ||~v130R~
+                    Default is -FTP1(hosts="::xehosts", log="::xeftplog").||~v130R~
+      /F{fontname[:charset] | @font_param_filename}            //~1301R~||~v130R~||~v130R~
+                   :The font name required for /G option is               //~1301I~||~v130I~||~v130R~||+v30BR~
+                    when running on Windows Terminal, setting.json is checked.//~1301I~||~v130I~||~v130R~||+v30BR~
+                    But if it fails, specify this option.                  //~1301I~||~v130I~||~v130R~
+                    Use font_param_filename when specifying indirectly from a file, use font_param_filename.//~1301I~||~v130I~||~v130R~
+                    Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.             //~1301I~||~v130I~||~v130R~
+                         /F"\uff2d\uff33 \u660e\u671d".                    //~1301I~||~v130I~||~v130R~
+                                                                      ||+v30BR~
+                   When executing xe on a remote computer using ssh,  ||+v30BR~
+                   the font used for display is that of the local terminal,||+v30BR~
+                   so it is advisable to notify the local font to remote.||+v30BR~
+                   e.g.                                               ||+v30BR~
+            		  xe > tmp                                        ||+v30BR~
+                      type x1                                         ||+v30BR~
+            	   It will show local font of terminal emulator.      ||+v30BR~
+	        		  ssh -t user@host XEFONT=\"Tlwg Typo 16\" bash   ||+v30BR~
+                   It connect to remote                               ||+v30BR~
+					  xe  "-F$XEFONT"                                 ||+v30BR~
+                   Notify font to xe. However, the same font may not be available on the remote.||+v30BR~
+                   About ssh connection, see gxeinstallREADMEe:(S) s390x.||+v30BR~
+                   For wxe, see the Microsoft documentation for setting the appropriate charset for the selected font.||+v30BR~
+                                                                      ||+v30BR~
       /G{Y|N}{y|0|1|2}:Specy cell width of unicode defined width is ambiguous.||~v130R~||~v130R~
-                        Y:Fit to font width.                                   //~@@@1I~||~v130I~||~v130R~
-                          You can also specify the second option for chars in unfamiliar languages.//~@@@1I~||~v130I~||~v130R~
-                          However, this option takes a cost, the start-up will be slightly slower.//~@@@1I~||~v130I~||~v130R~
-                        N: Specify the display width uniformly using the second option.//~@@@1I~||~v130I~||~v130R~
-                        The default value is /GY2.                             //~@@@1I~||~v130I~||~v130R~
-                        Ex.) /GN2: All ambiguous chars are displayed in two cells.//~@@@1I~||~v130I~||~v130R~
-                             /GYy: All ambiguous chars are adjusted according to the font.//~@@@1I~||~v130I~||~v130R~
-                             /GY0: Unfamiliar languages are displayed as ':;' instead.//~@@@1I~||~v130I~||~v130R~
+                        Y:Fit to font width.                                   //~1301I~||~v130I~||~v130R~
+                          You can also specify the second option for chars in unfamiliar languages.//~1301I~||~v130I~||~v130R~
+                          However, this option takes a cost, the start-up will be slightly slower.//~1301I~||~v130I~||~v130R~
+                        N: Specify the display width uniformly using the second option.//~1301I~||~v130I~||~v130R~
+                        The default value is /GY2.                             //~1301I~||~v130I~||~v130R~
+                        Ex.) /GN2: All ambiguous chars are displayed in two cells.//~1301I~||~v130I~||~v130R~
+                             /GYy: All ambiguous chars are adjusted according to the font.//~1301I~||~v130I~||~v130R~
+                             /GY0: Unfamiliar languages are displayed as ':;' instead.//~1301I~||~v130I~||~v130R~
       /H,/?        :Help
-      /HDdirname   :dirname:Directory for help html files.            ||~v@@@I~
+      /HDdirname   :dirname:Directory for help html files.            ||~v130R~
       /Hnn         :Screen height. max is screen buff size.           ||~v124R~
                     Use when screen height and screen buffer size is not||~v124R~
                     same on DOS prompt under Windows 2000.

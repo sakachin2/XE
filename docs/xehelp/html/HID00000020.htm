@@ -12,9 +12,55 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> #if defined(W32) || defined(UNX)
-   .リモートファイルアクセス。
+2025/01/20
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック BOLD"> #if defined(W32) || defined(UNX)
+   .<B><B>リモートファイルアクセス</B></B>
 
+    	リモートファイルを mount する sshfs を使えば以下の xehosts を使うより
+        簡単にリモートにアクセスできます。                            
+        但し sshfs は開発終了になったそうです。代わりには rclone があります。
+	#ifdef W32                                                        
+        sshfs の場合 (winget install SSHFS-Win.SSHFS-Win)             
+		  net use Y: \\sshfs\sak@127.0.0.1!2222                       
+          xe Y:                                                       
+		  net use Y: /delete                                          
+        rclone の場合                                                 
+		  rclone config で設定                                        
+		  -->c:\Users\sakStyle\AppData\Roaming\rclone\rclone.conf     
+                [ubuntu18]                                            
+                type = sftp                                           
+                host = 127.0.0.1                                      
+                user = sak                                            
+                port = 2222                                           
+                pass = ....                                           
+                                                                      
+		  rclone.exe mount ubuntu18:/home/sak Y:                      
+		  (Windows では --daemon オプションは無く Ctrl+C unmount されます。xe は別窓で実行)
+        マウント出来たら                                              
+		  xe Y:                                                       
+    #else  //LNX                                                      
+        sshfs の場合                                                  
+          sudo mkdir /remote_local                                    
+          chmod 777 /remote_local                                     
+      	  sshfs sak@remote:/home/sak /remote_local  #mount            
+          xe /remote_local                                            
+          fusermount -u /remote_lcal                #unmount  
+        rclone の場合                                                 
+          sudo mkdir /remote_local                                    
+          chmod 777 /remote_local                                     
+          rclone  mount  ubuntu18:/home/sak /remote_local --daemon    
+          xe /remote_local                                            
+          umount /remote_local                                        
+        config ファイル ~/.config/rclone/rclone.conf (rclone config で作成) は
+        次のようになっています。                                      
+			[ubuntu18]                                                
+				type = sftp                                           
+				host = 10.1.1.2                                       
+				pass = ....                                           
+				shell_type = unix                                     
+        マウント出来たら                                              
+		  xe /remote_local                                            
+    #endif //LNX                                                      
    #if defined(W32)
 
       .Windows間で共有ファイルをアクセスする場合はUNC表記が利用出来ます。

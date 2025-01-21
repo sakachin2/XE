@@ -1,6 +1,6 @@
-UTF8 encoding ||*CID:||+v130R~:  2024/12/080                update#=  855;||+v130R~
+UTF8 encoding ||*CID:||+v130R~:                             update#=  859;||+v130R~
 ######################################################################
-[English]    v1.30A                                                   ||~v130R~
+[English]    v1.30B   2025/01/20                                      ||+v130R~
 
 An easy-to-use editor for programmers who work on both mainframes (also useful for editing SPF files) and PCs.||~v130I~
 A hybrid of the host's SPF and the convenient key operations of a PC EDITOR.||~v130I~
@@ -699,3 +699,21 @@ How to execute.
        -xfc v1.30     (compare files and show inconsistencies)        ||~v130I~
         .(Windows:Bug) 0x1a is considered as the end of file.         ||~v130I~
                                                                       ||~v130I~
+######################################################################||~v130I~
+130B:2025/01/20                                                       ||~v130I~
+     1.BUGs                                                           ||~v130I~
+       -(gxe) In case of sudo, sreen height shrinks.                  ||~v130I~
+       -(gxe) "?"(help) command misses to show html help in browser.  ||~v130I~
+       -(gxe) Sometimes crashes.                                      ||~v130I~
+       -(LNX xe) "!" line command for .html file failed to pass it to browser.||~v130I~
+                                                                      ||~v130I~
+     2.Additional function.                                           ||~v130I~
+       -(LNX xe)terminal emulator qterminal と xterm をサポート       ||~v130I~
+       -(LNX xe) Support qterminal and xterm as terminal emulators.   ||~v130I~
+        Checks fontface in the configuration file for determinination of character display width.||~v130I~
+                                                                      ||~v130I~
+     3.Miscellaneous.                                                 ||~v130I~
+       -(LNX) Connection test to linux/s390z.                         ||~v130I~
+        Install on ubuntu-s390x on Hercules and qemu and connected via ssh.||~v130I~
+                                                                      ||~v130I~
+     4.Tools                                                          ||~v130I~

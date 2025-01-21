@@ -12,12 +12,14 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-<SPAN STYLE="color:#000000;font-size:12pt;">    = DOS command.
+2025/01/20
+<SPAN STYLE="color:#000000;font-size:12pt;">
+    = <B><B>DOS command</B></B>.
 
 #ifdef LNX
-        [ DOS | &gt; ]  [dos-command-string | sh  [terminal options] ] ]
+        [ DOS | &gt; ]  [dos-command-string | sh  [terminal-options] ] ]
 #else
-        [ DOS | &gt; ]  [dos-command-string | CMD [ row [col] ] ]
+        [ DOS | &gt; ]  [dos-command-string | CMD ]
 #endif
 
              You can enter DOS,OS/2 command from command input line.
@@ -27,28 +29,54 @@ a:hover{font-weight:bold;}-->
              Enclose by double quotation if it is required as not path
              but command parameter.
 #ifdef LNX
-  #ifdef XXE
-             Especially,specify sh to open async terminal window.
-             Terminal emulator gnome-terminal and konsole is searched
-             in this sequence. If found select it or else use xterm.
-             That is customized by <A href="HID00000209.htm">ini file</A>.
-             If with no operand or operand is &quot;sh&quot;,child window is
-             opened synchronously.
-             Terminal program is determined same way.
-  #else
-             Especially,specify sh to open async terminal window.
-             Same emulator is selected as gxe started.
-             If trigger is not terminal,gnome-terminal is selected.
-             If with no operand or operand is &quot;sh&quot;, child window override
-             the current window.
-             With no operand case(back to the parent by exit cmd),
-             the child shell pgm is set on ini file.
-             Default is bash if dash found,else sh.
-             Dash is slinked from sh at kubuntu,bash is target on RH9 and FC5.
-  #endif
-#else
-             Especially,specify CMD to create async DOS prompt process,
-             and buffsize(row and col) parm is avail under windows2000.
+  #ifdef XXE                                                          
+             Open a new terminal emulator window.                     
+             If you do not specify command-string, you can enter any command there.
+             "exit" closes the window.                                
+             If you specify a command-string, the results are displayed.
+             Pressing the "Enter" key will close the window.          
+             The terminal emulator will be used in the order listed below, based on the PATH.
+	                 "gnome-terminal"                             
+                     "konsole"                                    
+                     "xfce4-terminal"                             
+                     "qterminal"                            
+             However, if you specify a command string on the =6 screen,
+             a new window will not open and the results are appendedd to =6 screens.
+             "DOS sh" will start the terminal emulator in a new window.
+             The terminal emulator can be changed in the ini file.    
+             "LNX_CmdTerm_gxe" option for "DOS command-string" pattern,
+             in the other cases, specify "LNX_ShellTerm_gxe" option.  
+  #else                                                               
+             If no command-string is specified, the screen will become the child process's window.
+             You can enter any command there. "Exit" will close the window.
+             With command-string, the screen becomes the window for the child process,
+             command results will be displayed and pressing Enter will back to he original xe panel.
+             However, if on the =6 screens, no window will open and the results will be appended there.
+                                                                      
+             "DOS sh" will start the terminal emulator in a new window.
+             The terminal emulator is the same as the one when you start xe.
+             If it cannot be determined, it will be gnome-terminal. 
+  #endif                                                              
+#else   //W32                                                       
+  #ifdef WXE                                                        
+             Open a separate window terminal.                       
+             Without command-string, you can enter any command there.
+             "exit" closes the window.                               
+             With command-string, the results are displayed there.   
+             "Enter" key closes the window.                          
+             However, on the =6 panel, the result is appended to =6 pane.
+             The opened window terminal is kept for continued processing,
+             it is closed at end of wxe.                             
+  #else                                                              
+             Without command-string, the screen changes to the child process's window.
+             You can enter any command there. "exit" closes the window.
+             With command-string, the screen changes to the child process's window
+             which displays the result of command-string.             
+             "Enter" key back to xe panel.                            
+             However, on =6 panel, no new window and the results will be appended to =6 panel.
+  #endif                                                            
+             If "DOS CMD" opens a new terminal window,              
+             you can enter any command there.                       
 #endif
               DOS(&gt;) can be omitted on the <a href="HID00000253.htm">Command Rresult Edit screen</a>.
              see <a href="HID00000255.htm">(5).DOS command</a>.

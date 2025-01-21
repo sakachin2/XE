@@ -6,7 +6,9 @@
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-<SPAN STYLE="color:#000000;font-size:12pt;">  #if defined(W32) || defined(UNX)
+2025/01/20
+<SPAN STYLE="color:#000000;font-size:12pt;">
+#if defined(W32) || defined(UNX)
 
    .Remote Shell(rsh).
       .<a href="HID00000212.htm">Under permission allowed environmment</a>, <a href="HID00000690.htm">rsh</a> is available for
@@ -14,6 +16,8 @@
        <a href="HID00000253.htm">Command-result-output panel</a> is used like as telnet screen logging
        cmd output. It is convenient to collect information from multiple
        remote hosts.
+
+       e.g.) rsh -l user1 10.1.1.2 ls
 
 #endif
 </SPAN></DIV>

@@ -1,8 +1,9 @@
-//*CID://+vbBxR~:                              update#=  854;      //+vbBxR~
+//*CID://+vbC5R~:                              update#=  866;      //~vbC5R~
 //*************************************************************
 //*XE.c*                                                           //~v641R~
 //*************************************************************
-//vbBx:241128 xe help correct                                      //+vbBxI~
+//vbC5:250111 (LNX:cons)add option -Fnone to bypass gtk_init for quick start on ssh remote//~vbC5I~
+//vbBx:241128 xe help correct                                      //~vbBxI~
 //vbBt:241114 add /ebc;defaultmapeuro                              //~vbBtI~
 //vbBs:241114 del vbB9(process cp931(cp300+cp037)) because m2b from sjis generates 0e0f dbcs word for byte of sjis 1st byte whichi is byte of iso-8859.//~vbBsI~
 //vbBe:241005 assume /ebccfg=no when /ebc:cvtype is specified      //~vbBeI~
@@ -2947,6 +2948,18 @@ void xeSetConsoleFont(char *PfontParm)                             //~vbzrI~
 {                                                                  //~vbzrR~
 	char fpath[_MAX_PATH+1],*pfp;                                  //~vbzrI~
 //*****************                                                //~vbzrI~
+	UTRACEP("%s:PfontParm=%s\n",UTT,PfontParm);                    //~vbC5I~
+#ifdef LNXCON                                                      //~vbC5I~
+	if (!stricmp(PfontParm,"none"))                                //~vbC5R~
+    {                                                              //~vbC5I~
+		UTRACEP("%s:set NOGLYPHCHK\n",UTT);                        //~vbC5I~
+        fprintf(stderr,"option \"-Fnone\" was specified.(will not check about glyph width is SBCS or DBCS for ambiguous chars)\n");//~vbC5R~
+	    Guvio2Stat|=UVIO2S_NOGLYPHCHK; //                0x0800  //no glyph chk for /help option//~vbC5I~
+    	return;                                                    //~vbC5I~
+    }                                                              //~vbC5I~
+    else                                                           //~vbC5I~
+	    Guvio2Stat&=~UVIO2S_NOGLYPHCHK; //                0x0800  //no glyph chk for /help option//~vbC5I~
+#endif	                                                           //~vbC5I~
     if (*PfontParm=='@' && strlen(PfontParm)>3 && !memcmp(PfontParm+1,WORKDIRPATHID,WORKDIRPATHIDLEN))//~vbzrR~
     {                                                              //~vbzrI~
         fpath[0]='@';                                              //~vbzrM~
@@ -3194,10 +3207,10 @@ void help(void)
     HELPMSG "               :hosts: hosts file for xe.\n",         //~v54nR~
             "               :hosts: xe 用のホストファイル。\n",    //~v54nR~
 							FTPHOSTS);                             //~v54nI~
-//    HELPMSG "               :Default is %cF1.(hosts=\"%s\", log=\"%s\").\n",//~v53YR~//+vbBxR~
-//            "               :省略値は %cF1。(hosts=\"%s\", log=\"%s\")。\n",//~v53YR~//+vbBxR~
-    HELPMSG "               :Default is %cFTP1.(hosts=\"%s\", log=\"%s\").\n",//+vbBxI~
-            "               :省略値は %cFTP1。(hosts=\"%s\", log=\"%s\")。\n",//+vbBxI~
+//    HELPMSG "               :Default is %cF1.(hosts=\"%s\", log=\"%s\").\n",//~v53YR~//~vbBxR~
+//            "               :省略値は %cF1。(hosts=\"%s\", log=\"%s\")。\n",//~v53YR~//~vbBxR~
+    HELPMSG "               :Default is %cFTP1.(hosts=\"%s\", log=\"%s\").\n",//~vbBxI~
+            "               :省略値は %cFTP1。(hosts=\"%s\", log=\"%s\")。\n",//~vbBxI~
 			CMDFLAG_PREFIX,FTPHOSTS,FTPLOG);                       //~v53YI~
 #endif                                                             //~v53YM~
 #ifdef WINCON                                                      //~vbzqI~
@@ -3251,6 +3264,12 @@ void help(void)
 //          "               :UTF8コードで指定する場合は プレフ｣ックス '8-' を指定する。\n");//~vbzrI~//~vbzCR~
     HELPMSG "               :font_param_filename is for indirect specification.\n",//~vbzrI~
             "               :ファイルで間接的に指定する場合は font_param_filename を指定。\n");//~vbAnI~
+#ifdef LNXCON                                                      //+vbC5I~
+    HELPMSG "               :use \"-Fnone\" for quick start with no-checking\n",//~vbC5R~
+            "               :\"-Fnone\" を指定すると曖昧文字が SBCS か DBCS かフォントを調べない\n");//~vbC5I~
+    HELPMSG "                ambiguous chars are SBCS or DBCS which depends to font.\n",//~vbC5I~
+            "                ので立ち上がりが早くなります。\n");   //~vbC5I~
+#endif                                                             //+vbC5I~
 //  HELPMSG "               :e.g) -F\"Times Roman 16\", -F@./fontParm.txt.\n",//~vbzrR~//~vbzCR~
 //          "               :例 -F\"ＭＳ 明朝 20\" 、-F@./fontParm.txt。\n");//~vbzrR~//~vbzCR~
     HELPMSG "               :e.g) /F\"Ubuntu Mono\", /F@.\\fontParm.txt.\n",//~vbzCR~

@@ -1,3 +1,4 @@
+//*v130A *** 2024/11/30 upload 
 //vatf:241125 xfc1.30 At windows, As Default, assume both 0d0a and 0a as EOL. by /P detect differrent reverse of Linux
 //            xfc.c
 //vate:241125 xfc1.30 text mode read detect 0x1a as EOF. need open not "r" but "rb"

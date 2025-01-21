@@ -4,7 +4,7 @@
 <META http-equiv="Content-Type" content="text/html; ">
 <META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 6.5.0.0 for Windows">
 <META http-equiv="Content-Style-Type" content="text/css">
-<TITLE>Update in this version</TITLE>
+<TITLE>Update in this version E</TITLE>
 <STYLE TYPE="text/css">
 <!--
 a:hover{font-weight:bold;}
@@ -12,13 +12,33 @@ a:hover{font-weight:bold;}
 </STYLE>
 </HEAD>
 <BODY bgcolor="#FFFFE2">
-<PRE>**2024/11/30
+<PRE>2025/01/20
 <SPAN STYLE="color:#000000;font-size:12pt;">
 ######################################################################
+  .v130B&lt;--130A:(2025/01/20) 
   .v130A&lt;--130 :(2024/11/30) 
   .v130 &lt;--129X:(2024/07/05) 
 
-*****(130A)*****(2024/11/30)
+*****<B>(130B)</B>*****(2025/01/20)
+
+     1.BUGs
+       -(gxe) In case of sudo, sreen height shrinks.
+       -(gxe) "?"(help) command misses to show html help in browser.
+       -(gxe) Sometimes crashes.
+       -(LNX xe) "!" line command for .html file failed to pass it to browser.
+
+     2.Additional function.
+       -(LNX xe)terminal emulator qterminal と xterm をサポート
+       -(LNX xe) Support qterminal and xterm as terminal emulators.
+        Checks fontface in the configuration file for determinination of character display width.
+
+     3.Miscellaneous.
+       -(LNX) Connection test to linux/s390z.
+        Install on ubuntu-s390x on Hercules and qemu and connected via ssh.
+
+     4.Tools
+
+*****<B>(130A)</B>*****(2024/11/30)
 
     1.BUGs
        -Hard copy (Alt+z) may be garbled with substitute characters for unprintable characters.
@@ -48,7 +68,7 @@ a:hover{font-weight:bold;}
        -xfc v1.30     (compare files and show inconsistencies)
         .(Windows:Bug) 0x1a is considered as the end of file.
 
-*****(130)*****(2024/07/05)
+*****<B>(130)</B>*****(2024/07/05)
 
     1.BUGs
        -(Linux) ./configure may fail by "/gth.h Not found".

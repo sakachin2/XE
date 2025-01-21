@@ -1,3 +1,8 @@
+//v7dW:250116 (XXE)Warning for -e option of gnome-terminal, that will be deprecated in the future
+//            uproc3.c
+//v7dV:241220 (LNX)ushellexec fail when async for xe, OK for gxe
+//            uproc3.c
+//*v130A *** 2024/11/30 upload 
 //v7dU:241121 (Bug)xcv crash when /mcp037 is specified because Sebc2asc037 is null
 //            ucvext.h xcv.c
 //v7dT:241120 (Bug)ANK option interfared by SUBCHAR_0a option chk

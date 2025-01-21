@@ -12,9 +12,9 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-**2024/11/30
-<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック"> ************************************************************************
-(7)<B>コマンドライン パラメータ</B>
+2025/01/20
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック BOLD"> ************************************************************************
+<B><B>(7)コマンドライン パラメータ</B></B>
 ************************************************************************
 
 #ifdef UNX
@@ -54,9 +54,23 @@ a:hover{font-weight:bold;}-->
                    Linuxの場合xeGetFont.shでgnome-terminal, konsole などでは
                    Home dir のProfileを調べるが失敗する場合はこのオプションを指定する。
                    ファイルで間接的に指定するときは font_param_filename を使用。
-                   フォントに合った charset は Microsoft の ドキュメント参照。
-                   例) /F"ＭＳ 明朝":128 、/F@.\fontParm.txt。
-                       /F"\uff2d\uff33 \u660e\u671d"。
+                   例) -F"ＭＳ 明朝":128 、-F@.\fontParm.txt。        
+                       -F"\uff2d\uff33 \u660e\u671d"。                
+                                                                      
+                   ssh を使用して remote で xe を起動するケースでは表示は local の terminal の
+                   フォントが使用されるので local のフォントを remote に通知するのが望ましい
+                   例えば                                             
+            		  xeGetFont.sh                                    
+            	   で local の terminal のフォントを調べて            
+	        		  ssh -t user@host XEFONT=\"Tlwg Typo 16\" bash   
+                   などと接続し remote で                             
+					  xe  "-F$XEFONT"                                 
+                   とします。但し remote に同じフォントがないかもしれません。
+                   ssh 接続に関しては <B><a href="HID_INST_J.htm">gxeinstallREADMEj</a></B>:(S) s390x を参照。
+                   Linux コンソール版のではコマンドラインオプションで "-Fnone" が使えます、
+                   曖昧文字が DBCS か SBCS か問題にならない言語環境では
+                   指定のフォントでの曖昧文字の表示幅を調べないので   
+                   立ち上がりが早くなります。                         
     -G{Y|N}{y|0|1|2}
                  :表示幅が曖昧とされるユニコード文字の表示幅を指定する
                     Y:フォントの表示幅に合わせる
@@ -123,7 +137,7 @@ a:hover{font-weight:bold;}-->
   (注)
      コマンドラインパラメータでのオプション変更はこのセッションに限り
 　   有効です.オプション保存ファイル(xe_save_)への保存等は行われません.
-#else
+#else              //W32
  形式
      XE [ 編集ファイル名 | * ] [/オプション /...]
 
@@ -159,9 +173,22 @@ a:hover{font-weight:bold;}-->
                    Linuxの場合xeGetFont.shでgnome-terminal, konsole などでは
                    Home dir のProfileを調べるが失敗する場合はこのオプションを指定する。
                    ファイルで間接的に指定するときは font_param_filename を使用。
-                   フォントに合った charset は Microsoft の ドキュメント参照。
+                   wxe では フォントに合った charset の設定は Microsoft の ドキュメント参照。
                    例) /F"ＭＳ 明朝":128 、/F@.\fontParm.txt。
                        /F"\uff2d\uff33 \u660e\u671d"。
+
+                   ssh を使用して remote で xe を起動するケースでは表示は local の terminal の
+                   フォントが使用されるので local のフォントを remote に通知するのが望ましい
+                   例えば                                             
+            		  xe > tmp                                        
+                      type x1                                         
+            	   で local の のフォントを調べて                     
+	        		  ssh -t user@host XEFONT=\"Tlwg Typo 16\" bash   
+                   などと接続し remote で                             
+					  xe  "-F$XEFONT"                                 
+                   とします。但し remote に同じフォントがないかもしれません。
+                   ssh 接続に関しては <B><a href="HID_INST_J.htm">gxeinstallREADME</a></B>:(S) s390x を参照。
+                   wxe では フォントに合った charset の設定は Microsoft の ドキュメント参照。
     /G{Y|N}{y|0|1|2}
                  :表示幅が曖昧とされるユニコード文字の表示幅を指定する
                     Y:フォントの表示幅に合わせる

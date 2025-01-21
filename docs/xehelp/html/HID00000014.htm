@@ -12,9 +12,10 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">********************
-  (B) セットアップ *
-********************
+2025/01/20
+<SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック BOLD">***********************
+  <B><B>(B) セットアップ</B></B>
+***********************
 #ifdef UNX
   . xe___.tgz を  tarで解凍(___はバージョン)。
     例えば "tar -zxvf xe107.tgz".
@@ -40,6 +41,7 @@ a:hover{font-weight:bold;}-->
     /etc/ssh/sshd_config(リモート側), /etc/ssh/ssh_config(ローカル側)の設定が必要かもしれません
     文字化けする場合 AccetpEnv, SendEnv で LANG, LC_*の環境変数の受け渡しの設定、
     S390側に unifont の導入が必要かもしれません (&quot;aptitude install unifont&quot;)。
+    ssh 接続トラブルに関しては <a href="HID_INST_J.htm">gxeinstallREADMEj</a>:(S) s390x を参照。
 #else
    .コマンドプロンプト画面で操作します.
    .<a href="HID00000038.htm">ワークのディレクトリー</a>を作って下さい,例えば md <a href="file:///c:/xe">c:\xe</a>.
@@ -71,7 +73,7 @@ a:hover{font-weight:bold;}-->
    .rsh の許可設定
       <A href="HID00000681.htm">rsh</A>(リモートシェル)を使用するためにはリモートでの設定が必要です。
       rshサービスの許可とhostid/useridの許可を設定します
-      サービスは/etc/inetd.confのコメントID(#)をはづす。
+      サービスは/etc/inetd.confのコメントID(#)をはずす。
       xinetdが使用されている場合は/etc/xinetd.d/rshをdisable=noに設定する。
       hostid,useridの許可は/etc/hosts.equivあるいは指定するUserIDの
       リモートのホームDirの.rhostsを設定します。
@@ -94,10 +96,6 @@ a:hover{font-weight:bold;}-->
 
 各版には各種コマンドラインツールも含まれています。
 パッケージ内容、変更履歴は<a href="HID00000456.htm">ReadMe</a>を参照してください。
-
-2022/12/04
-
-
 </SPAN></PRE>
 </BODY>
 </HTML>

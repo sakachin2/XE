@@ -1,9 +1,10 @@
-//*CID://+v721R~:                             update#=  232;       //~v720R~//+v721R~
+//*CID://+vbC8R~:                             update#=  234;       //~vbC8R~
 //*************************************************************
 //ukbdl.c    (intf between ukbd and ukbdlnxc)                      //~v57BR~
 //*kbd get for linux console screen
 //*************************************************************
-//v721:201212 (LNX)Drop -Nm option. it may be used for wxe+IME          //~v720I~//+v721R~
+//vbC8:250117 (Lnx) add qterminal xeGetFont.sh                     //~vbC8I~
+//v721:201212 (LNX)Drop -Nm option. it may be used for wxe+IME          //~v720I~//~v721R~
 //v720:201211 (BUG)LNX Console;-Nm option did not work(DBCS chk is done)//~v720I~
 //v702:200615 ARM compiler warning                                 //~v702I~
 //v6Bk:160220 (LNX)compiler warning                                //~v6BkI~
@@ -526,6 +527,7 @@ int ukbdl_gettermid(void)                                          //~v501I~
 #ifdef LNX                                                         //~v587I~
     }//not tty console                                             //~v57EI~
 #endif                                                             //~v57wI~
+    UTRACEP("%s:termid=0x%0x,env=%s\n",UTT,termid,getenv("TERM")); //+vbC8I~
     return termid;                                                 //~v501I~
 }//ukbdl_gettermid                                                 //~v501I~
 //#ifdef LNX                                                       //~v57BR~
@@ -667,6 +669,12 @@ static int Stermid=0;                                              //~v57wI~
                     break;                                         //~v6s2I~
                 }                                                  //~v6s2I~
                 else                                               //~v6s2I~
+                if (pc=strstr(pupsinfo->UPSIcmd,"qterminal"),pc)   //~vbC8I~
+                {                                                  //~vbC8I~
+                    termid=TERM_QTERMINAL;                         //~vbC8I~
+                    break;                                         //~vbC8I~
+                }                                                  //~vbC8I~
+                else                                               //~vbC8I~
                 if (pc=strstr(pupsinfo->UPSIcmd,"kon"),            //~v57BR~
                     (pc && (*(pc+3)==' '||!*(pc+3))))              //~v57BI~
                     konsw=1;                                       //~v57AI~
@@ -756,7 +764,7 @@ int ukbdl_wcinit(int Popt,ULONG Pcodepage,UCHAR *Pcharset)         //~v5n8R~
 		    Swcstat&=~UDCWCIO_KBDUTF8;   //return mbstring         //~v5n8I~
       }                                                            //~v620R~
     }                                                              //~v620R~
-#ifdef AAA                                                         //+v721R~
+#ifdef AAA                                                         //~v721R~
 #ifndef XXE                                                        //~v720I~
     if (Swcstat & UDCWCIO_KBDNOUTF8)                               //~v720I~
     {                                                              //~v720I~
@@ -771,7 +779,7 @@ int ukbdl_wcinit(int Popt,ULONG Pcodepage,UCHAR *Pcharset)         //~v5n8R~
         }                                                          //~v720I~
     }                                                              //~v720I~
 #endif  //!XXE                                                     //~v720I~
-#endif  //AAA                                                      //+v721R~
+#endif  //AAA                                                      //~v721R~
     UTRACEP("kbdl wcinit stat=%x\n",Swcstat);                      //~v5n8R~
 #ifdef XXE                                                         //~v5n8I~
 	xxe_kbdwcinit(0,Swcstat,(ULONG)Sphiconv,Pcharset);		//notify to xxe//~v5n8R~

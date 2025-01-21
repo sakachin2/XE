@@ -1,8 +1,9 @@
-//*CID://+vbApR~:                             update#=  814;       //~vbApR~
+//*CID://+vbC7R~:                             update#=  817;       //~vbC7R~
 //************************************************************* //~v051I~
 //*xedcmd2.c                                                       //~v58JR~
 //* xprint,system,submit,spawn                                     //~v51XR~
 //************************************************************* //~v051I~
+//vbC7:250115 (Win) DOS CMD row col is not work(row col parm is ignored)//~vbC7I~
 //vbAp:240701 (gxe)  hardcopy support                              //~vbApI~
 //vbzP:240412 (LNXCON)support hardcopy function(also change key C+h-->A+@)//~vbzPI~
 //vbzM:240408 (WXE) support hardcopy function                      //~vbzMI~
@@ -426,9 +427,9 @@ int	Scmdbyspawn;                                                   //~vavMI~
 #ifdef WXE                                                         //~vbzMI~
     int SsplitHCV,SsplitHCH,SoptHC;                                //~vbzMR~
 #endif                                                             //~vbzMI~
-#ifdef XXE                                                         //+vbApI~
-    int SsplitHCV,SsplitHCH,SoptHC;                                //+vbApI~
-#endif                                                             //+vbApI~
+#ifdef XXE                                                         //~vbApI~
+    int SsplitHCV,SsplitHCH,SoptHC;                                //~vbApI~
+#endif                                                             //~vbApI~
 //****************************************************************//~v051I~
 //int dcmdsystemcall(PUCLIENTWE Ppcw,char *Pcmd);                  //~v58FR~
 //int dcmdsystemcall(PUCLIENTWE Ppcw,char *Pcmd,int Pflag,char *Pstdofnm,char *Pstdefnm);//~v593R~
@@ -1021,7 +1022,8 @@ int dcmd_system(PUCLIENTWE Ppcw)                                //~v056I~
     if (pc && !stricmp(pc,"?"))                                    //~v50LI~
     {                                                              //~v50LI~
 #ifdef W32                                                         //~v50LI~
-        uerrmsg("{DOS|>} [ ? | cmd-strings | CMD [ row [ col ] ] ]",0);//~v50LI~
+//      uerrmsg("{DOS|>} [ ? | cmd-strings | CMD [ row [ col ] ] ]",0);//~v50LI~//~vbC7R~
+        uerrmsg("{DOS|>} [ ? | cmd-strings | CMD ]",0);            //~vbC7I~
 #else                                                              //~v50LI~
   #ifdef LNX                                                       //~v64zI~
         uerrmsg("{DOS|>} [ ? | cmd-strings | sh [ termnal-options ] ]",0);//~v64zI~
@@ -2762,6 +2764,7 @@ int dcmd_system2(PUCLIENTWE Ppcw)                               //~v061I~
 #else                                                              //~v764M~
 //      printf(pmsg);                                              //~vb3yR~
         printf("%s",pmsg);                                         //~vb3yI~
+        UTRACEP("%s:printf msg=%s\n",UTT,pmsg);                    //+vbC7I~
 #endif                                                             //~v764M~
         uviol_refresh();                                           //~v20HI~
   #endif //!XXE                                                    //~v64fI~
@@ -3446,12 +3449,12 @@ int getHcopy(PUCLIENTWE Ppcw,PUFILEH Ppfh)                         //~vbzJI~
     PULINEH plh;                                                   //~vbzPI~
     int ddlen,lineno=0;                                            //~vbzPR~
 #endif                                                             //~vbzPI~
-#ifdef XXE                                                         //+vbApI~
-    PULINEH plh;                                                   //+vbApI~
-    int ddlen,lineno=0;                                            //+vbApI~
-    UCHAR wkdata[MAXCOLUMN],wkdbcs[MAXCOLUMN];                     //+vbApM~
-	char *pdddata,*pdddbcs;                                        //+vbApM~
-#endif                                                             //+vbApI~
+#ifdef XXE                                                         //~vbApI~
+    PULINEH plh;                                                   //~vbApI~
+    int ddlen,lineno=0;                                            //~vbApI~
+    UCHAR wkdata[MAXCOLUMN],wkdbcs[MAXCOLUMN];                     //~vbApM~
+	char *pdddata,*pdddbcs;                                        //~vbApM~
+#endif                                                             //~vbApI~
 #ifdef LNX                                                         //~vbzPI~
 	#ifdef LNXCON                                                  //~vbzPI~
     	int ucsctr,opt,rc2;                                        //~vbzPI~
@@ -3570,10 +3573,10 @@ int func_scrHcopy(PUCLIENTWE Ppcw)                                 //~vbzJI~
 //    SoptHC=opt;                                                  //~vbzMR~
 //    UTRACEP("%s:opt=0x%04x,splitv=%d,splith=%d\n",UTT,opt,splitV,splitH);//~vbzMR~
 #endif                                                             //~vbzMI~
-#ifdef XXE                                                         //+vbApI~
-    SsplitHCV=Gscrsplitv;                                          //+vbApI~
-    SsplitHCH=Gscrsplith;                                          //+vbApI~
-#endif                                                             //+vbApI~
+#ifdef XXE                                                         //~vbApI~
+    SsplitHCV=Gscrsplitv;                                          //~vbApI~
+    SsplitHCH=Gscrsplith;                                          //~vbApI~
+#endif                                                             //~vbApI~
     filefullpath(fpath,DCMD_HCOPY_TEMPFNM,_MAX_PATH);              //~vbzJI~
     Ppcw->UCWparm=fpath;                                           //~vbzJR~
     editopt|=(FEBFIO_CPU8|FEBFIO_UTF8IE);                          //~vbzJI~
