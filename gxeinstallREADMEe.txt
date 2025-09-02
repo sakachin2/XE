@@ -1,4 +1,4 @@
-V130B 2025/01/17
+V130C 2025/08/25
 
 open by "tar -zxvf gxe-xxx.tar.gz", then run "./configure && make".
 After successfull compilation, run "make install" to copy bin to /usr/local/bin.

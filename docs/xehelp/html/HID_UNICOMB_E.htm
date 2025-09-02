@@ -12,12 +12,17 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;">
+2025/08/25
 
 #if defined(LNX) || defined(W32)
 
           -Unicode Combining Character(Diacritical combining).
 
+#if define(LNX)
              OPT UNICOMB [ COMB | SPLIT | UNPR ] [ SHADOW | ITSELF | PADDING | U-xxxx ]
+#else //Win32
+             OPT UNICOMB [ COMB | SPLIT | UNPR | U-xxxx ]
+#endif
 
                COMB, SPLIT, UNPR : display combined, split and alternate character each.
                Following 3 operand is for Linux Console version only and specify how to write to screen
@@ -38,7 +43,6 @@ a:hover{font-weight:bold;}-->
                Try to switch display mode.
                On Edit/Browse panel, displayed string may shift by cursor position.
               -Linux GUI version(gxe) print combined mode except &quot;Wysiwig&quot; checkbox is ON.
-
 
 #endif
 </SPAN></PRE>

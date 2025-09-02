@@ -12,14 +12,16 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
+2025/08/25
+
 <SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
-
-
-#if define(LNX) || defined(W32)
-
           - ユニコード結合文字表示
 
+#if define(LNX) || defined(W32)
              OPT UNICOMB [ COMB | SPLIT | UNPR ] [ SHADOW | ITSELF | PADDING | U-xxxx ]
+#else //Win32
+             OPT UNICOMB [ COMB | SPLIT | UNPR | U-xxxx ]
+#endif
 
                COMB, SPLIT, UNPR : それぞれ 結合表示、単独表示、代替文字表示に設定します
 
@@ -41,8 +43,6 @@ a:hover{font-weight:bold;}-->
                Edit/Browse 画面ではカーソル位置の結合文字は単独表示するので
                表示位置がカーソル位置によって移動することがあります。
               -LinuxGUI版(gxe)の印刷は Wysiwig チェックボックスがOffなら結合印刷する。
-
-#endif
 
 </SPAN></PRE>
 </BODY>

@@ -12,6 +12,7 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
+2025/08/25
 <SPAN STYLE="color:#000000;font-size:12pt;">    = <B>Search string</B>
 
         {FINd | IFInd | EXClude | IX | FNX | INX}
@@ -96,9 +97,12 @@ a:hover{font-weight:bold;}-->
                      \a (bell=0x07),<B> </B>(BS=0x08),\t (H-tab=0x09)<B>
                    </B>\n (LF=0x0a),\v (V-tab=0x0b), (FF=0x0c)
                      \r (CR=0x0d),\x(even number of hex notation)
-                     ex of hex notation. \x8281 , \x09 , \x0c ,
+                     example of hex notation. \x8281 , \x09 , \x0c.
                      \a or \x0d0a can not be found if it is treated as
                      line terminator at file load.
+                     In text files, character boundary is considered,
+                     but in binary files, boundary is not considered,
+                     so find word may matches to not first byte of the character.
                      It cannot be used with other char like as \aX
                      Tab(x09) is not allowed with others like as \x0920
                      for text file.

@@ -12,7 +12,9 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-<SPAN STYLE="color:#000000;font-size:12pt;">#if defined(W32) || defined(LNX)
+2025/08/25
+
+<SPAN STYLE="color:#000000;font-size:12pt;">
 
    .NLS support.
 
@@ -64,59 +66,33 @@ a:hover{font-weight:bold;}-->
 
       -----------------------------------------------------------------------
 
-      Followings are about Chinese and Korean DBCS support.
+      Followings are how to display Simplified Chinese (GB18030) in Japanese environment.
+        GB18030 4-digit DBCS and EUC 3-byte supplementary Kanji characters are displayed with tab padding characters.
+        The display of padding characters can be toggled on/off with "TAB" command.
+        If IME is not available, you can enter characters in Hex input mode (toggle with C+F11).
 
-      I tested CN and KR. I can only recognize those glyph but can not understand it,
-      especially HUNGL,
-      Please send me experience reports if it seems strange for you.
-      My test environments is WindowsXP Japanese version and Linux FC5.
-      The locale code selected is displayed on the top menu.
-      Code is displayed by width of byte count.
+      For Windows
+        For Console version (xe), set the command prompt properties, e.g. chcp 54936.
+        For the GUI version (wxe), specify code page parameter, wxe /c54936.
+        In Setup dialog, set CharSet to ANSI or select GB2312 from Others.
+        GB18030 is extension of GB2312, but 4-byte DBCS is also supported in GB2312.
+        You may also need to change the FontStyle.
+        For other than GB18030, see "Windows CodePage & Font" below and the command line parameter "-C."
+
       For Linux,
-        4 byte DBCS of GB18030 or SS3-Kanji of EUC is followed by padding char like as tab padding.
-        TAB cmd controls display status of DBCS padding chars also.
-        Printing of padding is controlled by WWScrPrt chkbox on Setup dialog of gxe.
-        To input 3 or 4 byte DBCS using HexInputMode(toggled by C+F11),
-        send twice by 2+1(1+2) or 2+2.(use &quot;x&quot; key to send premature byte).
+        For Console version (xe), specify -Czh_CN.GB18030 command line parameter.
+        If you get the error "setlocale failed," run "locale-gen" once.
+          sudo locale-gen "zh_CN.GB18030"
+        In terminal emulator settings, select a font that can display kanji.
 
-      C/J keyboard setup on WindowsXP Japanese version.
-        Control-panel--&gt;locale and language--&gt;Detail button on language tab
-        Add a language and proper IME.
-        Search Web-document about detail operation.
+        For the GUI version (gxe), specify the -Czh_CN.GB18030.
+        If you get also the error "setlocale failed," run "locale-gen".
+        And also, select a font that can display kanji from the Setup menu by "Font Change" button.
 
-        For wxe, set codepage on Charset of setup dialog.
-        Select &quot;Other&quot; radio button and select codepage from combobox,
-        or enter codepage on textbox referencing wingdi.h.
-        And select Fontstyle.
-        For xe console version, set property of &quot;command prompt&quot;.
-        Click mouse right button on &quot;command prompt&quot; icon(Not left top icon of command prompt screen).
-        Set current codepage on &quot;Option&quot; tab
-        Use chcp cmd if no codepage prepared for the property.
-        When codepage selected, font list may be changed.
-        After codepage was set, IME on Language bar can be selected
-        when focus is set on the command prompt screen.
-
-        Just about IME operation.
-          (To change default: Control panel--&gt;locale and language--&gt;Detail button on language tab--&gt;key setting )
-          LeftAlt+Shift: switch IME on language bar.
-                         mouse is usable for GUI application.
-          Korean MS-IME2002     R-Alt: English/Numeric&lt;--&gt;Hangul  Alt+^: Single &lt;--&gt;Double width English/Numeric letter.
-          CN(Simplified) PinYin Shift: Translation On&lt;--&gt;Off      Shift+Space: Single &lt;--&gt;Double width English/Numeric letter.
-                                Ctrl+Space: English/Numeric&lt;--&gt;IME mode
-          CN(Big5) Phonetic     Same as PinYin.
-
-        Windows CodePage &amp; Font
-                 Charset on Setup dialog      CodePage     CmdPromptFont   IME
-                 Japanese 128                 cp 932       MSGothic        MSIME 2002
-                 hangul   129                 cp 949       GulimChe        MSIME 2002
-                 GB2312   134                 cp 936       NSimSun         PinYin 2002
-                 Big5     136                 cp 950       MingLiU         NewPhonetic
-
-                When ssh from Windows to Linux/390,screen may corrupt by UTF8 char.
-                Use this option like as &quot;xe -cUS-ASCII&quot;.
-                &gt;0x'80' char is displayed by &quot;.&quot;.
+      Windows CodePage & Font
 
            Windows:wingdi.h defines as following
+
                 #define ANSI_CHARSET            0
                 #define DEFAULT_CHARSET         1
                 #define SYMBOL_CHARSET          2
@@ -140,12 +116,7 @@ a:hover{font-weight:bold;}-->
                 #define MAC_CHARSET             77
                 #define BALTIC_CHARSET          186
 
-        Linux(FedoraCore 5)
-          Change selected language(Desktop--&gt;Administration--&gt;Language), then logout/login.
-          Note. If you changed terminal emulator(e.g. gnome-terminal) encoding,
-                Change also locale environment like as &quot;export LANG=xxx&quot;.
-
-      Additional command-line option.
+      command-line parameter.
         -C  : change locale charset.
 
               Windows : Codepage.    ex) -c949  -cGerman_Germany.1252
@@ -153,9 +124,6 @@ a:hover{font-weight:bold;}-->
                 For xe console version, font is determined by &quot;command prompt&quot;'s
                 charset property. You may see strange glyph.
                 For wxe, you have to set also charset on setup dialog.
-
-                When ssh from Windows to Linux/390,screen may corrupt by UTF8 char.
-                Use this option like as &quot;xe -c437&quot;. &gt;0x'80' char will be displayed by &quot;.&quot;.
 
               Linux  :Charset        ex) -cGBK, -ciso88591 -czh_CN.GB18030
                 Available charset is displayed by xcv cmd or &quot;iconv --list&quot;.
@@ -202,13 +170,6 @@ a:hover{font-weight:bold;}-->
               When /Nm is specified, for UTF8 code input to CPLC(non UTF8) file
               set UTF8 code itself if Alt+u ON(indecated by =u=&gt; on command input line),
               set translated locale code if Alt+u OFF(===&gt;) or "?" if translation error occured.
-
-#endif // W32 || LNX
-
-
-
-
-
 
 </SPAN></PRE>
 </BODY>

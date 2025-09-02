@@ -1,0 +1,33 @@
+//*CID://+@@@1R~:                             update#=  276;
+** UTF8 encoding **
+
+//***************************************************************************
+130C:2025/08/25                                                    //~@@@1R~
+     1.BUGs                                                        //~@@@1I~
+       -"cv x2c" may crash when the -H option is specified.        //~@@@1I~
+       -xe may crash when the version mismatch occured on xe!save!.//~@@@1I~
+       -(gxe) When exiting, if the previous operation was Ctrl+H (print screen) or Ctrl+P (print file),//~@@@1I~
+        the session may terminate mid-print and results crash.     //~@@@1I~
+       -The Find command with \x____ option may fail when the line length <=2.//~@@@1I~
+       -"cv x2c" command may hang (when the -H[pre][XXpost] option is specified without [pre]).//~@@@1I~
+       -(Win) The "xfg" command, etc., may hang on =6 panel.       //~@@@1I~
+       -(WinCon) Screen hard copy (Ctrl+h/Alt+z) picks up the lines on the startup screen.//~@@@1I~
+       -(WinCon) When the screen is split vertically, the UTF8 file screen may be corrupted.//~@@@1I~
+       -"xbc" command; DWORD-WORD calculations may be incorrect when WORD<0, or when WORD-DWORD.//~@@@1I~
+                                                                   //~@@@1I~
+     2.Additional function.                                        //~@@@1I~
+       -"XBC"/"TC" command now supports 8-byte hexadecimal notation.//~@@@1I~
+        DWORD output notation is xxxxxxxx..yyyyyyyy, or xxxxxxxxyyyyyyyy by specifying "W".//~@@@1I~
+        Example: xbc 0x2f..0031+0x0331/W --> x2f00000362           //~@@@1I~
+                                                                   //~@@@1I~
+     3.Miscellaneous.                                              //~@@@1I~
+       -On =0.1 panel, saves updates(shortcut key settings) each time to prevent them//~@@@1I~
+        from being lost when multiple sessions are launched simultaneously.//~@@@1I~
+       -(Win) Added processing when exception is invoked.          //~@@@1I~
+        Exception information is output to stdout and ::xewin.dmp.<pid>.//~@@@1I~
+       -(LNX-Console)The display color of the data line corresponding to the cursor position//+@@@1R~
+        in the vertical hexadecimal line can now be set with the /VDc option (default is brown).//~@@@1I~
+                                                                   //~@@@1I~
+     4.Tools                                                       //~@@@1I~
+       -(LNX) Added option (/Yi) to bypass errMsg for invalid filenames.//~@@@1I~
+        xfg v1.22                                                  //~@@@1I~

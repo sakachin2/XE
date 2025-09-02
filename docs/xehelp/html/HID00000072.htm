@@ -12,7 +12,8 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
-2024/11/30
+2025/08/25
+
 <SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = <B>コード変換</B> (ConVersion)
 　　　
         CV   {e2s|s2e|e2e|s2s|s2j|j2s|e2j|j2e} [z] [NX] [.lab1 .lab2]
@@ -21,7 +22,7 @@ a:hover{font-weight:bold;}-->
         CV   {b2s|s2b|b2e|e2b|b2a|a2b} [CRLF|ANK] [CP290|CP1027|KANA-EXT|ENG-EXT]
               [JIS78] [-S[a|d|r|m|s]|-SBCS] ['err-rep-char']
         CV   {K2L|L2K}
-        CV    x2c [EBC] [i[-m[:{n|max|rep}]]] [mult | -Hpre[XXpost]]
+        CV    x2c [EBC] [i[-m[:{n|max|rep}]]] [mult | -H[pre][XXpost]]
                   [CRLF|ANK] [CP290|CP1027|KANA-EXT|ENG-EXT] [JIS78] [-S[bcs|a|d|r]
         CV   {M2B|B2M} [CP290|CP1027|KANA-EXT|ENG-EXT] ['err-rep-char']
         CV   {M2B|B2M|B2F|F2B}     [CPEB:ebcdic-codepage] [-S{a|d|r}]
@@ -61,6 +62,7 @@ a:hover{font-weight:bold;}-->
                      k2L:CP290 による変換をCP1027で変換しなおす。
                      L2k:CP1027による変換をCP290 で変換しなおす。
             x2c     :有効なヘキサ文字列を(スペースは無視)バイトコード変換。
+          		<a href="HID00000072.CV_Sample_X2CJ.htm"><B>(-->例)</B></a>
 
 #if (defined(W32)||defined(LNX))
 

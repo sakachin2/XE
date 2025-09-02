@@ -1,6 +1,6 @@
-UTF8 encoding ||*CID:||+v130R~:                             update#=  859;||+v130R~
+UTF8 encoding ||*CID:||+130CR~:                             update#=  861;||~130CR~
 ######################################################################
-[English]    v1.30B   2025/01/20                                      ||+v130R~
+[English]    v1.30C   2025/08/25                                      ||~130CR~
 
 An easy-to-use editor for programmers who work on both mainframes (also useful for editing SPF files) and PCs.||~v130I~
 A hybrid of the host's SPF and the convenient key operations of a PC EDITOR.||~v130I~
@@ -717,3 +717,34 @@ How to execute.
         Install on ubuntu-s390x on Hercules and qemu and connected via ssh.||~v130I~
                                                                       ||~v130I~
      4.Tools                                                          ||~v130I~
+                                                                      ||~130CI~
+######################################################################||~130CI~
+130C:2025/08/25                                                       ||~130CI~
+     1.BUGs                                                           ||~130CI~
+       -"cv x2c" may crash when the -H option is specified.           ||~130CI~
+       -xe may crash when the version mismatch occured on xe!save!.   ||~130CI~
+       -(gxe) When exiting, if the previous operation was Ctrl+H (print screen) or Ctrl+P (print file),||~130CI~
+        the session may terminate mid-print and results crash.        ||~130CI~
+       -The Find command with \x____ option may fail when the line length <=2.||~130CI~
+       -"cv x2c" command may hang (when the -H[pre][XXpost] option is specified without [pre]).||~130CI~
+       -(Win) The "xfg" command, etc., may hang on =6 panel.          ||~130CI~
+       -(WinCon) Screen hard copy (Ctrl+h/Alt+z) picks up the lines on the startup screen.||~130CI~
+       -(WinCon) When the screen is split vertically, the UTF8 file screen may be corrupted.||~130CI~
+       -"xbc" command; DWORD-WORD calculations may be incorrect when WORD<0, or when WORD-DWORD.||~130CI~
+                                                                      ||~130CI~
+     2.Additional function.                                           ||~130CI~
+       -"XBC"/"TC" command now supports 8-byte hexadecimal notation.  ||~130CI~
+        DWORD output notation is xxxxxxxx..yyyyyyyy, or xxxxxxxxyyyyyyyy by specifying "W".||~130CI~
+        Example: xbc 0x2f..0031+0x0331/W --> x2f00000362              ||~130CI~
+                                                                      ||~130CI~
+     3.Miscellaneous.                                                 ||~130CI~
+       -On =0.1 panel, saves updates(shortcut key settings) each time to prevent them||~130CI~
+        from being lost when multiple sessions are launched simultaneously.||~130CI~
+       -(Win) Added processing when exception is invoked.             ||~130CI~
+        Exception information is output to stdout and ::xewin.dmp.<pid>.||~130CI~
+       -(LNX-Console)The display color of the data line corresponding to the cursor position||+130CI~
+        in the vertical hexadecimal line can now be set with the /VDc option (default is brown).||~130CI~
+                                                                      ||~130CI~
+     4.Tools                                                          ||~130CI~
+       -(LNX) Added option (/Yi) to bypass errMsg for invalid filenames.||~130CI~
+        xfg v1.22                                                     ||~130CI~

@@ -1,6 +1,6 @@
-UTF8 encodinng ||*CID:||+v130R~:                            update#=  861;||+v130R~
+UTF8 encodinng ||*CID:||+130CR~:                            update#=  863;||~130CR~
 ######################################################################
-[Japanese]    v1.30B (Refer xeREADME_en.txt for English)  2025/01/20  ||+v130R~
+[Japanese]    v1.30C (Refer xeREADME_en.txt for English)  2025/08/25  ||~130CR~
 
 メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。
 ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。
@@ -711,3 +711,33 @@ Android版:Axe は PlayStoreにあります
          Hercules と qemu 上の ubuntu-s390x に install し ssh 接続    ||~v130I~
                                                                       ||~v130I~
      4.ツール。                                                       ||~v130I~
+######################################################################||~130CI~
+130C:2025/08/25                                                       ||~130CI~
+     1.BUGs                                                           ||~130CI~
+       -"cv x2c" が -H オプション指定の時 crash することがある        ||~130CI~
+       -xe!save! のバージョンアンマッチのとき crash することがある    ||~130CI~
+       -(gxe)終了時に直前の操作がCtrl+H(画面印刷)やCtrl+P(ファイル印刷)の時||~130CI~
+        印刷途中セッション終了となってcrash することがある            ||~130CI~
+       -行長が2バイトの時 \x____ 指定のFind コマンドが失敗する        ||~130CI~
+       -cv x2c コマンドがハングすることがある(-HpreXXpost オプション指定で pre を欠いたとき)||~130CI~
+                                                                      ||~130CI~
+       -(Win)=6画面で xfg コマンドなどでハングすることがある          ||~130CI~
+       -(WinCon) 画面ハードコピー(Ctrl+h/Alt+z)が起動時の画面の行を拾ってしまう||~130CI~
+       -(WinCon) 画面縦分割の時、UTF8ファイルの画面が壊れる           ||~130CI~
+       -XBC コマンド、DWORD-WORD 計算で WORD<0 のとき、また WORD-DWORDでも誤る||~130CI~
+                                                                      ||~130CI~
+     2.機能追加                                                       ||~130CI~
+       -XBC/TC コマンドで 8バイトのHex表記の演算をサポート            ||~130CI~
+        DWORD 出力表記は xxxxxxxx..yyyyyyyyのほか "W" 指定で xxxxxxxxyyyyyyyy 表記も可能||~130CI~
+        例) xbc 0x2f..0031+0x0331/W --> x2f00000362                   ||~130CI~
+                                                                      ||~130CI~
+     3.その他                                                         ||~130CI~
+       -=0.1 画面(ショートカットキー設定)をその都度保存し複数セッション同時起動で||~130CI~
+        設定が失われないようにする                                    ||~130CI~
+       -(Win)Abend の時 処理追加（例外情報を stdout/UTRACE/::xewin.dmp.<pid>に出力)||~130CI~
+       -(LNX-Console)縦Hex行のカーソル位置に対応するデータ行の表示カラーを /VDc オプションで設定可能(省略地は茶色)||+130CI~
+                                                                      ||~130CI~
+     4.ツール。                                                       ||~130CI~
+       -(LNX)無効なファイル名の errMsg をバイパスするオプション(/Yi)追加||~130CI~
+        xfg v1.22                                                     ||~130CI~
+                                                                      ||~130CI~

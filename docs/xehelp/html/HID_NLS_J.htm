@@ -12,7 +12,7 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
-#if defined(W32) || defined(LNX)
+2025/08/25
 
    .国際化サポート。
 
@@ -68,53 +68,32 @@ a:hover{font-weight:bold;}-->
 
       -----------------------------------------------------------------------
 
-      以下は中国語(簡体/繁体)、韓国語 DBCSサポートの話です。
-
-      CN,KRの入力と表示を確認しましたが私は字を認識することは出来ても理解できません
-      （特にハングル文字）使用経験報告をお待ちしています。
-      テストはWindows版はXP日本語環境でしか出来ていません。
-      Linux版はFC5で言語をスィッチしてテストしました。
-      いまのところUTF8エンコードファイルは扱えません。ロケールコードで解釈します。
-      ロケールコードはトップメニューに表示されています。
-      表示桁数は各国語コードでのバイト数です。
-      Linuxの場合、
-        GB18030の4桁DBCS, EUC の 3バイト補助漢字はタブパディング文字つきになります。
+      以下は日本語環境で簡体中国語（GB18030）を表示する方法です
+        GB18030の4桁DBCS, EUC の 3バイト補助漢字はタブパディング文字つき表示になります。
         パディング文字は TAB コマンドで表示ON/OFF切り替えられます。
-        gxeでパディングの印刷の有無は WWScrPrtチェックボックスに従って制御します。
-        3ないし4バイト文字をHex入力モード(C+F11でトグル)で入力する時は
-        Hex入力モードは2バイトで転送するので２回に分けて入力してください。
-        1バイトを転送するには&quot;x&quot;キーを使用します。
+        IMEが使えない場合はHex入力モード(C+F11でトグル)で入力できます。
 
-      XP日本語環境でC/K入力設定は以下のようにします。
-        コントロールパネル--&gt;地域と言語--&gt;言語タブの詳細ボタン で言語を追加します。
-        IMEも追加してください。詳細は Web をサーチしてください。
-          例えば　http://www2.yamanashi-ken.ac.jp/~yohnishi/pcinfo/windows_tips/international/win-cn-kr.html
+	  Windows の場合
+        コンソール版(xe)はコマンドプロンプトのプロパティを設定します。 chcp 54936。
+        GUI版(wxe) では コードページパラメータを指定します。 wxe /c54936。
+        Setup ダイアログの CharSet で ANSIか Others で GB2312 を設定します。
+        GB18030 は GB2312 の拡張ですが GB2312 で４バイトDBCSもOKです。
+        FontStyleの変更も必要になるかもしれません。
+        GB18030 以外では下記 "Windows CodePage & Font" と
+        コマンドラインパラメータ "-C" を参照
 
-        GUI版(wxe) では Setup ダイアログの CharSet で Other のところでコンボボックスから選択してください。
-        コンボボックスになければテキストボックスに数字を入れてください。(wingdi.hを参照)
-        FontStyleの変更も必要でしょう。
+      Linuxの場合、
+        コンソール版(xe)は -Czh_CN.GB18030 パラメータを指定してください。
+        "setlocale failed" が出る場合は locale-gen してください。
+        sudo locale-gen "zh_CN.GB18030"
+        terminal emulater の設定でフォントも漢字を表示できるものを選んでください
 
-        コンソール版(xe)はコマンドプロンプトのプロパティを設定します。
-        DOS窓左上のアイコンでなくデスクトップのアイコン状態のコマンドプロンプトを右クリック、
-        オプションタブで現在のコードページを設定する。
-        コードページを変更するとフォントも変わると思います。
-        コードページを設定することで言語バーに追加したIMEが選択できるようになる。
-        設定できない場合は CHCP コマンドを使用してください
+        GUI版(gxe)でも -Czh_CN.GB18030 パラメータを指定してください。
+        同様に"setlocale failed" が出る場合は locale-gen してください。
+        また、Setupメニュー、"Font Change"ボタンから漢字を表示できるフォントを
+        選んでください
 
-        IME操作を若干。
-           (コントロールパネル--&gt;地域と言語--&gt;言語タブの詳細ボタン--&gt;キーの設定 で設定変更可能。)
-           省略値は左Alt+Shiftで言語バーのIMEはスイッチする(GUI APPLはマウスで言語バー操作できます)
-           韓国語 MS-IME2002     右Alt: 英数&lt;--&gt;ハングル。 Alt+^: 半角&lt;--&gt;全角英数
-           簡体中国 PinYin       Shift: 変換&lt;--&gt;無変換。   Shift+Space: 半角&lt;--&gt;全角英数
-                                 Ctrl+Space: 英数&lt;--&gt;漢字変換モード。
-           繁体中国 Phonetic     同上
-
-        Windows CodePage &amp; Font
-                 Charset on Setup dialog      CodePage     CmdPromptFont   IME
-                 Japanese 128                 cp 932       MSGothic        MSIME 2002
-                 hangul   129                 cp 949       GulimChe        MSIME 2002
-                 GB2312   134                 cp 936       NSimSun         PinYin 2002
-                 Big5     136                 cp 950       MingLiU         NewPhonetic
+      Windows CodePage & Font
 
            Charsetはwingdi.hに以下の定義があります。
                 #define ANSI_CHARSET            0
@@ -140,17 +119,7 @@ a:hover{font-weight:bold;}-->
                 #define MAC_CHARSET             77
                 #define BALTIC_CHARSET          186
 
-      Linux(FedoraCore5の場合)では以下のようにします。(JP106キーボード)
-        デスクトップ--&gt;管理--&gt;言語 で言語を選択し、ログアウト/ログインします。
-        Korean            : 半角/全角キー:IME 呼び出し
-        Chinese(簡体中文) : 半角/全角キー:IME 呼び出し
-        Chinese(繁体中文) : 半角/全角キー:IME 呼び出し
-
-        尚、ターミナルエミュレータ(gnome-terminal,konsoleなど)で
-        UTF8&lt;--&gt;非UTF8 Encodeingを変更した時は&quot;export LANG=xxxx&quot;で
-        ローケール環境も変更してください。
-
-      コマンドラインパラメータの追加。
+      コマンドラインパラメータ。
         -C   :環境から決定されるもの以外を使用したいとき指定する。
 
               Windosw : Codepage。   ex) -c949  -cGerman_Germany.1252
@@ -159,9 +128,6 @@ a:hover{font-weight:bold;}-->
                 指定変更すると文字が見えなくなるかもしれません。
                 wxeではSetupダイアログでCharsetも合わせる必要があります。
 
-                Windows から Linux/390 に ssh したとき UTF8 文字により
-                画面が乱れます。
-                &quot;xe -cUS-ASCII&quot; とし &gt;0x80 文字を &quot;.&quot; で表示するようにしてください。
 
               Linux  :Charset        ex) -cGBK, -ciso88591 -czh_CN.GB18030
                 利用可能な値はxcv コマンドか iconv --listでListup。
@@ -207,12 +173,6 @@ a:hover{font-weight:bold;}-->
         -Nm  : A+u でUTF8入力モード(コマンド行が =u=&gt; を表示)のとき
                (UTF8エンコーディングでない) ロケールコードファイルに
                UTF8入力をロケールコードマルチバイトに変換せずにUTF8コードをセットする
-
-
-#endif // W32 || LNX
-
-
-
 
 </SPAN></PRE>
 </BODY>

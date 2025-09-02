@@ -1,4 +1,4 @@
-UTF8 encoding * CID:||+v30BR~:  2023/11/30  v130            update#=  764;||~v130R~||+v30BR~
+UTF8 encoding * CID:||+v30CR~:  2025/08/25  v130C            update#=  775;||+v30CR~
 ************************************************************************
 (Index)
     (0).Introduction.
@@ -152,7 +152,7 @@ UTF8 encoding * CID:||+v30BR~:  2023/11/30  v130            update#=  764;||~v13
    to pass environment variable by AcceptEnv and SendEnv statement for LANG LC_*.||~v125R~
    And font installation may be required when corrupted DBCS display like as||~v125R~
    "aptitude install unifont".                                        ||~v125R~
-   About ssh connection troubles, see gxeinstallREADMEe/gxeinstallREADMEj:paragraph (S) s390x.||+v30BR~
+   About ssh connection troubles, see gxeinstallREADMEe/gxeinstallREADMEj:paragraph (S) s390x.||~v30BR~
 #else
    .Enter command on command prompt screen.
    .Make directory for XE work usage. e.g. md c:\xe.                  ||~v128R~
@@ -708,7 +708,6 @@ UTF8 encoding * CID:||+v30BR~:  2023/11/30  v130            update#=  764;||~v13
       or by EH cmd file is displayed as dump format. Hex code is input on||~v124R~
       these mode as binary editor.
                                                                       ||~v124I~
-#if defined(W32) || defined(LNX)                                      ||~v124I~
                                                                       ||~v124I~
    .NLS support.                                                      ||~v124I~
                                                                       ||~v124I~
@@ -760,85 +759,57 @@ UTF8 encoding * CID:||+v30BR~:  2023/11/30  v130            update#=  764;||~v13
                                                                       ||~v125R~
       -----------------------------------------------------------------------||~v124I~
                                                                       ||~v125R~
-      Followings are about Chinese and Korean DBCS support.           ||~v125R~
-                                                                      ||~v125R~
-      I tested CN and KR. I can only recognize those glyph but can not understand it,||~v125R~
-      especially HUNGL,                                                ||~v125R~
-      Please send me experience reports if it seems strange for you.  ||~v124I~
-      My test environments is WindowsXP Japanese version and Linux FC5.||~v124I~
-      The locale code selected is displayed on the top menu.          ||~v124I~
-      Code is displayed by width of byte count.                       ||~v125R~
-      For Linux,                                                      ||~v125R~
-        4 byte DBCS of GB18030 or SS3-Kanji of EUC is followed by padding char like as tab padding.||~v125R~
-        TAB cmd controls display status of DBCS padding chars also.   ||~v125R~
-        Printing of padding is controlled by WWScrPrt chkbox on Setup dialog of gxe.||~v125R~
-        To input 3 or 4 byte DBCS using HexInputMode(toggled by C+F11),||~v125R~
-        send twice by 2+1(1+2) or 2+2.(use "x" key to send premature byte).||~v125R~
+      Followings are how to display Simplified Chinese (GB18030) in Japanese environment.||~v30CR~
+        GB18030 4-digit DBCS and EUC 3-byte supplementary Kanji characters are displayed with tab padding characters.||~v30CI~
+        The display of padding characters can be toggled on/off with "TAB" command.||~v30CI~
+        If IME is not available, you can enter characters in Hex input mode (toggle with C+F11).||~v30CI~
+                                                                      ||~v30CI~
+      For Windows                                                     ||~v30CI~
+        For Console version (xe), set the command prompt properties, e.g. chcp 54936.||~v30CI~
+        For the GUI version (wxe), specify code page parameter, wxe /c54936.||~v30CI~
+        In Setup dialog, set CharSet to ANSI or select GB2312 from Others.||~v30CI~
+        GB18030 is extension of GB2312, but 4-byte DBCS is also supported in GB2312.||~v30CI~
+        You may also need to change the FontStyle.                    ||~v30CI~
+        For other than GB18030, see "Windows CodePage & Font" below and the command line parameter "-C."||~v30CI~
+                                                                      ||~v30CI~
+      For Linux,                                                      ||~v30CI~
+        For Console version (xe), specify -Czh_CN.GB18030 command line parameter.||~v30CI~
+        If you get the error "setlocale failed," run "locale-gen" once.||~v30CI~
+          sudo locale-gen "zh_CN.GB18030"                             ||~v30CI~
+        In terminal emulator settings, select a font that can display kanji.||~v30CI~
+                                                                      ||~v30CI~
+        For the GUI version (gxe), specify the -Czh_CN.GB18030.       ||~v30CI~
+        If you get also the error "setlocale failed," run "locale-gen".||~v30CI~
+        And also, select a font that can display kanji from the Setup menu by "Font Change" button.||~v30CI~
+                                                                      ||~v30CI~
+      Windows CodePage & Font                                         ||~v30CI~
+                                                                      ||~v30CI~
+           Windows:wingdi.h defines as following                      ||~v30CI~
+                                                                      ||~v30CI~
+                #define ANSI_CHARSET            0                     ||~v30CI~
+                #define DEFAULT_CHARSET         1                     ||~v30CI~
+                #define SYMBOL_CHARSET          2                     ||~v30CI~
+                #define SHIFTJIS_CHARSET        128                   ||~v30CI~
+                #define HANGEUL_CHARSET         129                   ||~v30CI~
+                #define HANGUL_CHARSET          129                   ||~v30CI~
+                #define GB2312_CHARSET          134                   ||~v30CI~
+                #define CHINESEBIG5_CHARSET     136                   ||~v30CI~
+                #define OEM_CHARSET             255                   ||~v30CI~
+                                                                      ||~v30CI~
+                #define JOHAB_CHARSET           130                   ||~v30CI~
+                #define HEBREW_CHARSET          177                   ||~v30CI~
+                #define ARABIC_CHARSET          178                   ||~v30CI~
+                #define GREEK_CHARSET           161                   ||~v30CI~
+                #define TURKISH_CHARSET         162                   ||~v30CI~
+                #define VIETNAMESE_CHARSET      163                   ||~v30CI~
+                #define THAI_CHARSET            222                   ||~v30CI~
+                #define EASTEUROPE_CHARSET      238                   ||~v30CI~
+                #define RUSSIAN_CHARSET         204                   ||~v30CI~
+                                                                      ||~v30CI~
+                #define MAC_CHARSET             77                    ||~v30CI~
+                #define BALTIC_CHARSET          186                   ||~v30CI~
                                                                       ||~v124I~
-      C/J keyboard setup on WindowsXP Japanese version.               ||~v124I~
-        Control-panel-->locale and language-->Detail button on language tab||~v124I~
-        Add a language and proper IME.                                ||~v124I~
-        Search Web-document about detail operation.                   ||~v124I~
-                                                                      ||~v124I~
-        For wxe, set codepage on Charset of setup dialog.             ||~v124I~
-        Select "Other" radio button and select codepage from combobox,||~v124I~||~v125R~
-        or enter codepage on textbox referencing wingdi.h.            ||~v125R~
-        And select Fontstyle.                                         ||~v124I~
-                                                                      ||~v125R~
-        For xe console version, set property of "command prompt".      ||~v124I~
-        Click mouse right button on "command prompt" icon(Not left top icon of command prompt screen).||~v124I~
-        Set current codepage on "Option" tab                          ||~v124I~
-        Use chcp cmd if no codepage prepared for the property.        ||~v125R~
-        When codepage selected, font list may be changed.             ||~v124I~
-        After codepage was set, IME on Language bar can be selected   ||~v124I~
-        when focus is set on the command prompt screen.               ||~v124I~
-                                                                      ||~v124I~
-        Just about IME operation.                                     ||~v124I~
-          (To change default: Control panel-->locale and language-->Detail button on language tab-->key setting )||~v124I~
-          LeftAlt+Shift: switch IME on language bar.                  ||~v124I~
-                         mouse is usable for GUI application.         ||~v124I~
-          Korean MS-IME2002     R-Alt: English/Numeric<-->Hangul  Alt+^: Single <-->Double width English/Numeric letter.||~v124I~
-          CN(Simplified) PinYin Shift: Translation On<-->Off      Shift+Space: Single <-->Double width English/Numeric letter.||~v124I~
-                                Ctrl+Space: English/Numeric<-->IME mode||~v124I~
-          CN(Big5) Phonetic     Same as PinYin.                       ||~v124I~
-                                                                      ||~v124I~
-        Windows CodePage & Font                                       ||~v124I~
-                 Charset on Setup dialog      CodePage     CmdPromptFont   IME||~v124I~
-                 Japanese 128                 cp 932       MSGothic        MSIME 2002||~v124I~
-                 hangul   129                 cp 949       GulimChe        MSIME 2002||~v124I~
-                 GB2312   134                 cp 936       NSimSun         PinYin 2002||~v124I~
-                 Big5     136                 cp 950       MingLiU         NewPhonetic||~v124I~
-                                                                      ||~v124I~
-           Windows:wingdi.h defines as following                       ||~v124I~||~v128R~
-                #define ANSI_CHARSET            0                     ||~v124I~
-                #define DEFAULT_CHARSET         1                     ||~v124I~
-                #define SYMBOL_CHARSET          2                     ||~v124I~
-                #define SHIFTJIS_CHARSET        128                   ||~v124I~
-                #define HANGEUL_CHARSET         129                   ||~v124I~
-                #define HANGUL_CHARSET          129                   ||~v124I~
-                #define GB2312_CHARSET          134                   ||~v124I~
-                #define CHINESEBIG5_CHARSET     136                   ||~v124I~
-                #define OEM_CHARSET             255                   ||~v124I~
-                                                                      ||~v124I~
-                #define JOHAB_CHARSET           130                   ||~v124I~
-                #define HEBREW_CHARSET          177                   ||~v124I~
-                #define ARABIC_CHARSET          178                   ||~v124I~
-                #define GREEK_CHARSET           161                   ||~v124I~
-                #define TURKISH_CHARSET         162                   ||~v124I~
-                #define VIETNAMESE_CHARSET      163                   ||~v124I~
-                #define THAI_CHARSET            222                   ||~v124I~
-                #define EASTEUROPE_CHARSET      238                   ||~v124I~
-                #define RUSSIAN_CHARSET         204                   ||~v124I~
-                                                                      ||~v124I~
-                #define MAC_CHARSET             77                    ||~v124I~
-                #define BALTIC_CHARSET          186                   ||~v124I~
-                                                                      ||~v124I~
-        Linux(FedoraCore 5)                                           ||~v124I~
-          Change selected language(Desktop-->Administration-->Language), then logout/login.||~v124I~
-          Note. If you changed terminal emulator(e.g. gnome-terminal) encoding,||~v124I~
-                Change also locale environment like as "export LANG=xxx".||~v124I~
-                                                                      ||~v124I~
-      Additional command-line option.                                   ||~v124I~
+      command-line parameter.                                         ||~v30CR~
         -C  : change locale charset.                                  ||~v124I~||~126DR~
                                                                       ||~v124I~
               Windows : Codepage.    e.g. -c949  -cGerman_Germany.1252 ||~v125R~||~v128R~
@@ -846,9 +817,6 @@ UTF8 encoding * CID:||+v30BR~:  2023/11/30  v130            update#=  764;||~v13
                 For xe console version, font is determined by "command prompt"'s||~v124I~
                 charset property. You may see strange glyph.          ||~v124I~
                 For wxe, you have to set also charset on setup dialog.||~v124I~
-                                                                      ||~v124I~
-                When ssh from Windows to Linux/390,screen may corrupt by UTF8 char.||~v124I~
-                Use this option like as "xe -c437". >0x'80' char will be displayed by ".".||~v125R~
                                                                       ||~v124I~
               Linux  :Charset        e.g. -cGBK, -ciso88591 -czh_CN.GB18030||~v126R~||~v128R~
                 Available charset is displayed by xcv cmd or "iconv --list".||~v124I~
@@ -895,7 +863,6 @@ UTF8 encoding * CID:||+v30BR~:  2023/11/30  v130            update#=  764;||~v13
               set UTF8 code itself if Alt+u ON(indecated by =u=> on command input line),||~v129R~
               set translated locale code if Alt+u OFF(===>) or "?" if translation error occured.||~v129R~
                                                                       ||~v124I~
-#endif // W32 || LNX                                                  ||~v124I~
 
    .Japanese DBCS, Code conversion.
 
@@ -934,8 +901,7 @@ UTF8 encoding * CID:||+v30BR~:  2023/11/30  v130            update#=  764;||~v13
       To display communication log by EBCDIC, for example,              ||~v124R~
       display all dump lines only by cmd "xx;f 0 1 all",               ||~v124R~
       then use "cv x2c ebc 5-80:100 mult nx".                         ||~v124R~
-      Result of conversion of HEX-notation->CHAR(EBCDIC)->ASCII is written||~v124R~
-      to from column 100.                                             ||~v124R~
+      Hex-notation of col 5-80 is converted and inserted into col 100.||~v30CR~
       XCV cmd enclosed is external tool to file encoding translation. ||~v124I~
                                                                       ||~v124R~
                                                                       ||~v124R~
@@ -959,7 +925,7 @@ UTF8 encoding * CID:||+v30BR~:  2023/11/30  v130            update#=  764;||~v13
        It is intended for editing mainframe EBCDIC files downloaded without conversion,
        or for editing/displaying EBCDIC files mounted by NFS with the no conversion option.
        It can also be used if you have access to Linux on IBM Z via sshfs.
-       (About sshfs, see "Remote file access".)                       ||+v30BR~
+       (About sshfs, see "Remote file access".)                       ||~v30BR~
        The header line displays "=E", and in binary mode, "=e".
        DBCS is not taken into account when opening in binary mode (EB command).
        If there are too many control characters and it is determined to be binary file,
@@ -2225,6 +2191,9 @@ Vertical Hex display(YZ)\x1ebc930 =E(24-10-12 10:56)----------------------------
                                                                       ||~v125R~
            -Edit/Browse/Select  [CPU8|CPLC|CPAS] [IE]                 ||~v125R~
               CPU8: Open as UTF8 file.                                ||~v125R~
+                    (Note) Currently (July 2025),                     ||~v30CI~
+                           UCS-4 (unicode > u-ffff) cannot be displayed in Console version if the command prompt is||~v30CI~
+                           Windows Terminal. It is OK on legacy conhost.||~v30CI~
               CPLC: Open as locale code file.                         ||~v125R~
               CPAS: by the LANG environment. Default.                 ||~v125R~
                                                                       ||~v125R~
@@ -2333,7 +2302,8 @@ Vertical Hex display(YZ)\x1ebc930 =E(24-10-12 10:56)----------------------------
               (Note) If the mix is in a path, UTF8 detection may fail.||~v125R~
               		 (Intermediate ASCII code may help as UTF8 encoding separator)||~v125R~
                                                                       ||~v129R~
-           -  OPT UNICOMB [ COMB | SPLIT | UNPR ] [ SHADOW | ITSELF | PADDING | U-xxxx ]||~v125R~
+           -  Linux:    OPT UNICOMB [ COMB | SPLIT | UNPR ] [ SHADOW | ITSELF | PADDING | U-xxxx ]||~v30CI~
+              Windows:  OPT UNICOMB [ COMB | SPLIT | UNPR | U-xxxx ]  ||~v30CR~
                                                                       ||~v125R~
               Set what is sent to screen for combining character.     ||~v125R~
               Alt+":" is also available to switch display mode of combining characters.||~v125R~
@@ -2770,53 +2740,53 @@ Vertical Hex display(YZ)\x1ebc930 =E(24-10-12 10:56)----------------------------
                                                                       ||~v124I~
 #if defined(W32) || defined(UNX)
    .Remote file access.
-        If you use "sshfs" to mount remote files,                     ||+v30BR~
-        you can access remote more easily than using xehosts as shown below.||+v30BR~
-        However, it seems that development of sshfs has ended.        ||+v30BR~
-        Instead, there is rclone.                                     ||+v30BR~
-	#ifdef W32                                                        ||+v30BR~
-        .sshfs (winget install SSHFS-Win.SSHFS-Win)                   ||+v30BR~
-		  net use Y: \\sshfs\sak@127.0.0.1!2222                       ||+v30BR~
-          xe Y:                                                       ||+v30BR~
-		  net use Y: /delete                                          ||+v30BR~
-        .rclone                                                       ||+v30BR~
-		  setup confi file by "rclone config"                         ||+v30BR~
-		  -->c:\Users\sakStyle\AppData\Roaming\rclone\rclone.conf     ||+v30BR~
-                [ubuntu18]                                            ||+v30BR~
-                type = sftp                                           ||+v30BR~
-                host = 127.0.0.1                                      ||+v30BR~
-                user = sak                                            ||+v30BR~
-                port = 2222                                           ||+v30BR~
-                pass = ....                                           ||+v30BR~
-                                                                      ||+v30BR~
-		  rclone.exe mount ubuntu18:/home/sak Y:                      ||+v30BR~
-		  (Windows では --daemon オプションは無く Ctrl+C unmount されます。xe は別窓で実行)||+v30BR~
-          (On Windows, missing "--daemon" option, Ctrl+C will unmount. Run xe in another terminal window.)||+v30BR~
-          After mounted                                               ||+v30BR~
-		    xe Y:                                                     ||+v30BR~
-    #else  //LNX                                                      ||+v30BR~
-        .sshfs                                                        ||+v30BR~
-          sudo mkdir /remote_local                                    ||+v30BR~
-          chmod 777 /remote_local                                     ||+v30BR~
-      	  sshfs sak@remote:/home/sak /remote_local  #mount            ||+v30BR~
-          xe /remote_local                                            ||+v30BR~
-          fusermount -u /remote_lcal                        #unmount  ||+v30BR~
-        .rclone                                                       ||+v30BR~
-          sudo mkdir /remote_local                                    ||+v30BR~
-          chmod 777 /remote_local                                     ||+v30BR~
-          rclone  mount  ubuntu18:/home/sak /remote_local --daemon    ||+v30BR~
-          xe /remote_local                                            ||+v30BR~
-          umount /remote_local                                        ||+v30BR~
-          config ~/.config/rclone/rclone.conf (cretae by "rclone config") is||+v30BR~
-          as followings.                                              ||+v30BR~
-			[ubuntu18]                                                ||+v30BR~
-				type = sftp                                           ||+v30BR~
-				host = 10.1.1.2                                       ||+v30BR~
-				pass = ....                                           ||+v30BR~
-				shell_type = unix                                     ||+v30BR~
-        After mounted                                                 ||+v30BR~
-		    xe /remote_local                                          ||+v30BR~
-    #endif //LNX                                                      ||+v30BR~
+        If you use "sshfs" to mount remote files,                     ||~v30BR~
+        you can access remote more easily than using xehosts as shown below.||~v30BR~
+        However, it seems that development of sshfs has ended.        ||~v30BR~
+        Instead, there is rclone.                                     ||~v30BR~
+	#ifdef W32                                                        ||~v30BR~
+        .sshfs (winget install SSHFS-Win.SSHFS-Win)                   ||~v30BR~
+		  net use Y: \\sshfs\sak@127.0.0.1!2222                       ||~v30BR~
+          xe Y:                                                       ||~v30BR~
+		  net use Y: /delete                                          ||~v30BR~
+        .rclone                                                       ||~v30BR~
+		  setup confi file by "rclone config"                         ||~v30BR~
+		  -->c:\Users\sakStyle\AppData\Roaming\rclone\rclone.conf     ||~v30BR~
+                [ubuntu18]                                            ||~v30BR~
+                type = sftp                                           ||~v30BR~
+                host = 127.0.0.1                                      ||~v30BR~
+                user = sak                                            ||~v30BR~
+                port = 2222                                           ||~v30BR~
+                pass = ....                                           ||~v30BR~
+                                                                      ||~v30BR~
+		  rclone.exe mount ubuntu18:/home/sak Y:                      ||~v30BR~
+		  (Windows では --daemon オプションは無く Ctrl+C unmount されます。xe は別窓で実行)||~v30BR~
+          (On Windows, missing "--daemon" option, Ctrl+C will unmount. Run xe in another terminal window.)||~v30BR~
+          After mounted                                               ||~v30BR~
+		    xe Y:                                                     ||~v30BR~
+    #else  //LNX                                                      ||~v30BR~
+        .sshfs                                                        ||~v30BR~
+          sudo mkdir /remote_local                                    ||~v30BR~
+          chmod 777 /remote_local                                     ||~v30BR~
+      	  sshfs sak@remote:/home/sak /remote_local  #mount            ||~v30BR~
+          xe /remote_local                                            ||~v30BR~
+          fusermount -u /remote_lcal                        #unmount  ||~v30BR~
+        .rclone                                                       ||~v30BR~
+          sudo mkdir /remote_local                                    ||~v30BR~
+          chmod 777 /remote_local                                     ||~v30BR~
+          rclone  mount  ubuntu18:/home/sak /remote_local --daemon    ||~v30BR~
+          xe /remote_local                                            ||~v30BR~
+          umount /remote_local                                        ||~v30BR~
+          config ~/.config/rclone/rclone.conf (cretae by "rclone config") is||~v30BR~
+          as followings.                                              ||~v30BR~
+			[ubuntu18]                                                ||~v30BR~
+				type = sftp                                           ||~v30BR~
+				host = 10.1.1.2                                       ||~v30BR~
+				pass = ....                                           ||~v30BR~
+				shell_type = unix                                     ||~v30BR~
+        After mounted                                                 ||~v30BR~
+		    xe /remote_local                                          ||~v30BR~
+    #endif //LNX                                                      ||~v30BR~
                                                                       ||~v124I~
     #if defined(W32)                                                  ||~v124R~
       .UNC notation is available between Windows for shared files.     ||~v124I~
@@ -3046,7 +3016,7 @@ sample)
        Command-result-output panel is used like as telnet screen logging
        cmd output. It is convenient to collect information from multiple
        remote hosts.
-       e.g.) rsh -l user1 10.1.1.2 ls                                 ||+v30BR~
+       e.g.) rsh -l user1 10.1.1.2 ls                                 ||~v30BR~
 
 
 #if defined(W32) || defined(LNX)
@@ -7296,7 +7266,7 @@ by screen expansion)
         CV   {b2s|s2b|b2e|e2b|b2a|a2b} [CRLF|ANK] [CP290|CP1027|KANA-EXT|ENG-EXT]||~v125R~||~v125R~
               [JIS78] [-S[a|d|r|m|s]|-SBCS] ['err-rep-char']          ||~v125R~
         CV   {K2L|L2K}
-        CV    x2c [EBC] [i[-m[:{n|max|rep}]]] [mult | -Hpre[XXpost]]
+        CV    x2c [EBC] [i[-m[:{n|max|rep}]]] [mult | -H[pre][XXpost]]||~v30CI~
                   [CRLF|ANK] [CP290|CP1027|KANA-EXT|ENG-EXT] [JIS78] [-S[bcs|a|d|r]||~v125R~
         CV   {M2B|B2M} [CP290|CP1027|KANA-EXT|ENG-EXT] ['err-rep-char']||~v125R~
         CV   {M2B|B2M|B2F|F2B}     [CPEB:ebcdic-codepage] [-S{a|d|r}]         ||~v125R~||~126DR~
@@ -7337,7 +7307,107 @@ by screen expansion)
                      k2L:re-conv by CP1027 the result of CP290
                      L2k:re-conv by CP290  the result of CP1027
             x2c     :convert hex notation string to char(ignore space).
+                                                                      ||~v30CI~
+              (e.g.1)                                                 ||~v30CR~
+                   ===>cv x2c -H%                                     
+                   col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9
+                   ****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************
+                   0001|Company=%E6%A5%BD%E5%A4%A9%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97;↵
+                       |466766732432432442432432432432332432432332442432332442432332333↵
+                       |3fd01e9d556515524555514519553582520553583512553583523553583597b↵
+                   ****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************
+                                                                      
+                   1 line converted(25-05-31 05:46)---------------------------------------------------------------
+                   ===>                                               
+                   col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9
+                   ****|*L*t**l*** TOP OF FILE *******Lig:OFF ****************************************************
+                   0001*Company=%E6%A5%BD%E5%A4%A9%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97;讌ｽ螟ｩ繧ｰ繝ｫ繝ｼ繝▪↵
+                       *466766732432432442432432432432332432432332442432332442432332333eabeaae8be8ae8be89↵
+                       *3fd01e9d556515524555514519553582520553583512553583523553583597b65d54932033b33c337↵
+                   ****|*L*t**l*** END OF FILE *******Lig:OFF ****************************************************
+                                                                      
+                   e x:\x1 cpu8                                       
+                                                                      
+                   EDIT---|x:\x1 =U(25-05-31 05:54)---------------------------------------------------------------
+                   ===>                                               
+                   col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9
+                   ****|*U*t**l*** TOP OF FILE *******Lig:OFF, Unicomb: SPLIT ************************************
+                   0001|Company=%E6%A5%BD%E5%A4%A9%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97;楽天グループ↵
+                       |46676673243243244243243243243233243243233244243233244243233233367523b3e3f3d↵
+                       |3fd01e9d556515524555514519553582520553583512553583523553583597b9d99000b0c07↵
+                   ****|*U*t**l*** END OF FILE *******Lig:OFF, Unicomb: SPLIT ************************************
                                                                       ||~v124R~
+              (e.g.2)                                                 ||~v30CI~
+                   ****|*l*t**l*** TOP OF FILE *******Lig:OFF ******************||~v30CI~
+                   0001| abf0        ↵                                ||~v30CI~
+                       |2666322222222↵                                ||~v30CI~
+                       |0126000000000↵                                ||~v30CI~
+                   0002| u-3032      ↵                                ||~v30CI~
+                       |2723333222222↵                                ||~v30CI~
+                       |05d3032000000↵                                ||~v30CI~
+                   0003| 0xaf00RC↵                                    ||~v30CI~
+                       *237663354↵                                    ||~v30CI~
+                       *008160023↵                                    ||~v30CI~
+                   ****|*l*t**l*** END OF FILE *******Lig:OFF ******************||~v30CI~
+                                                                      ||~v30CI~
+                   ===>cv x2c                                         ||~v30CR~
+                                                                      ||~v30CI~
+                   ****|*l*t**l*** TOP OF FILE *******Lig:OFF ******************||~v30CI~
+                   0001* abf0        ｫ▪↵                              ||~v30CI~
+                       *2666322222222af↵                              ||~v30CI~
+                       *0126000000000b0↵                              ||~v30CI~
+                   0002| u-3032      ↵                                ||~v30CI~
+                       |2723333222222↵                                ||~v30CI~
+                       |05d3032000000↵                                ||~v30CI~
+                   0003| 0xaf00RC↵                                    ||~v30CI~
+                       *237663354↵                                    ||~v30CI~
+                       *008160023↵                                    ||~v30CI~
+                   ****|*l*t**l*** END OF FILE *******Lig:OFF ******************||~v30CI~
+                                                                      ||~v30CI~
+                   ===>cv x2c -Hu-                                    ||~v30CR~
+                                                                      ||~v30CI~
+                   ****|*l*t**l*** TOP OF FILE *******Lig:OFF ******************||~v30CI~
+                   0001* abf0        ｫ▪↵                              ||~v30CI~
+                       *2666322222222af↵                              ||~v30CI~
+                       *0126000000000b0↵                              ||~v30CI~
+                   0002* u-3032      02↵                              ||~v30CI~
+                       *272333322222233↵                              ||~v30CI~
+                       *05d303200000002↵                              ||~v30CI~
+                   0003* 0xaf00RC↵                                    ||~v30CI~
+                       *237663354↵                                    ||~v30CI~
+                       *008160023↵                                    ||~v30CI~
+                   ****|*l*t**l*** END OF FILE *******Lig:OFF *******************||~v30CI~
+                                                                      ||~v30CI~
+                   ===>cv x2c -H0xXXRC :20                            ||~v30CR~
+                                                                      ||~v30CI~
+                   col |....+....1....+....2....+....3....+....4....+....5....+..||~v30CI~
+                   ****|*l*t**l*** TOP OF FILE *******Lig:OFF *******************||~v30CI~
+                   0001* abf0        ｫ▪↵                              ||~v30CI~
+                       *2666322222222af↵                              ||~v30CI~
+                       *0126000000000b0↵                              ||~v30CI~
+                   0002* u-3032      02↵                              ||~v30CI~
+                       *272333322222233↵                              ||~v30CI~
+                       *05d303200000002↵                              ||~v30CI~
+                   0003* 0xaf00RC          ｯ▪                         ||~v30CI~
+                       *2376633542222222222a0↵                        ||~v30CI~
+                       *0081600230000000000f0↵                        ||~v30CI~
+                   ****|*l*t**l*** END OF FILE *******Lig:OFF ******************||~v30CI~
+                                                                      ||~v30CI~
+                   ===>cv x2c -HXXRC :18                              ||~v30CI~
+                                                                      ||~v30CI~
+                   col |....+....1....+....2....+....3....+....4....+....5....+..||~v30CI~
+                   ****|*l*t**l*** TOP OF FILE *******Lig:OFF *******************||~v30CI~
+                   0001* abf0        ｫ▪↵                              ||~v30CI~
+                       *2666322222222af↵                              ||~v30CI~
+                       *0126000000000b0↵                              ||~v30CI~
+                   0002* u-3032      02↵                              ||~v30CI~
+                       *272333322222233↵                              ||~v30CI~
+                       *05d303200000002↵                              ||~v30CI~
+                   0003* af00RC          ｯ▪                           ||~v30CI~
+                       *26633542222222222a0↵                          ||~v30CI~
+                       *01600230000000000f0↵                          ||~v30CI~
+                   ****|*l*t**l*** END OF FILE *******Lig:OFF ******************||~v30CI~
+                                                                      ||~v30CI~
 #if (defined(W32)||defined(LNX))                                      ||~v124R~
                                                                       ||~v124R~
             M2B/B2M :translation Local Codepage<->EBCDIC according to a mapfile.||~v124R~||~v125R~
@@ -7447,9 +7517,9 @@ by screen expansion)
    = DOS command.                                                     
                                                                       
 #ifdef LNX
-        [ DOS | > ]  [command-string | sh  [terminal-options] ] ]     ||+v30BR~
+        [ DOS | > ]  [command-string | sh  [terminal-options] ] ]     ||~v30BR~
 #else
-        [ DOS | > ]  [command-string | CMD ]                          ||+v30BR~
+        [ DOS | > ]  [command-string | CMD ]                          ||~v30BR~
 #endif
                                                                       
              You can enter DOS,OS/2 command from command input line.
@@ -7460,53 +7530,53 @@ by screen expansion)
              but command parameter.                                   ||~v124I~
 #ifdef LNX
   #ifdef XXE                                                          
-             Open a new terminal emulator window.                     ||+v30BR~
-             If you do not specify command-string, you can enter any command there.||+v30BR~
-             "exit" closes the window.                                ||+v30BR~
-             If you specify a command-string, the results are displayed.||+v30BR~
-             Pressing the "Enter" key will close the window.          ||+v30BR~
-             The terminal emulator will be used in the order listed below, based on the PATH.||+v30BR~
-	                 "gnome-terminal"                              //~v5kkR~||+v30BR~
-                     "konsole"                                     //~v5kkR~||+v30BR~
-                     "xfce4-terminal"                              //~v6s2I~||+v30BR~
-                     "qterminal"                             //~v6s2I~||+v30BR~
-             However, if you specify a command string on the =6 screen,||+v30BR~
-             a new window will not open and the results are appendedd to =6 screens.||+v30BR~
-             "DOS sh" will start the terminal emulator in a new window.||+v30BR~
-             The terminal emulator can be changed in the ini file.    ||+v30BR~
-             "LNX_CmdTerm_gxe" option for "DOS command-string" pattern,||+v30BR~
-             in the other cases, specify "LNX_ShellTerm_gxe" option.  ||+v30BR~
+             Open a new terminal emulator window.                     ||~v30BR~
+             If you do not specify command-string, you can enter any command there.||~v30BR~
+             "exit" closes the window.                                ||~v30BR~
+             If you specify a command-string, the results are displayed.||~v30BR~
+             Pressing the "Enter" key will close the window.          ||~v30BR~
+             The terminal emulator will be used in the order listed below, based on the PATH.||~v30BR~
+	                 "gnome-terminal"                              //~v5kkR~||~v30BR~
+                     "konsole"                                     //~v5kkR~||~v30BR~
+                     "xfce4-terminal"                              //~v6s2I~||~v30BR~
+                     "qterminal"                             //~v6s2I~||~v30BR~
+             However, if you specify a command string on the =6 screen,||~v30BR~
+             a new window will not open and the results are appendedd to =6 screens.||~v30BR~
+             "DOS sh" will start the terminal emulator in a new window.||~v30BR~
+             The terminal emulator can be changed in the ini file.    ||~v30BR~
+             "LNX_CmdTerm_gxe" option for "DOS command-string" pattern,||~v30BR~
+             in the other cases, specify "LNX_ShellTerm_gxe" option.  ||~v30BR~
   #else                                                               
-             If no command-string is specified, the screen will become the child process's window.||+v30BR~
-             You can enter any command there. "Exit" will close the window.||+v30BR~
-             With command-string, the screen becomes the window for the child process,||+v30BR~
-             command results will be displayed and pressing Enter will back to he original xe panel.||+v30BR~
-             However, if on the =6 screens, no window will open and the results will be appended there.||+v30BR~
-                                                                      ||+v30BR~
-             "DOS sh" will start the terminal emulator in a new window.||+v30BR~
-             The terminal emulator is the same as the one when you start xe.||+v30BR~
-             If it cannot be determined, it will be gnome-terminal.   ||+v30BR~
+             If no command-string is specified, the screen will become the child process's window.||~v30BR~
+             You can enter any command there. "Exit" will close the window.||~v30BR~
+             With command-string, the screen becomes the window for the child process,||~v30BR~
+             command results will be displayed and pressing Enter will back to he original xe panel.||~v30BR~
+             However, if on the =6 screens, no window will open and the results will be appended there.||~v30BR~
+                                                                      ||~v30BR~
+             "DOS sh" will start the terminal emulator in a new window.||~v30BR~
+             The terminal emulator is the same as the one when you start xe.||~v30BR~
+             If it cannot be determined, it will be gnome-terminal.   ||~v30BR~
   #endif                                                              
-#else   //W32                                                         ||+v30BR~
-  #ifdef WXE                                                          ||+v30BR~
-             Open a separate window terminal.                         ||+v30BR~
-             Without command-string, you can enter any command there. ||+v30BR~
-             "exit" closes the window.                                ||+v30BR~
-             With command-string, the results are displayed there.    ||+v30BR~
-             "Enter" key closes the window.                           ||+v30BR~
-             However, on the =6 panel, the result is appended to =6 pane.||+v30BR~
-             The opened window terminal is kept for continued processing,||+v30BR~
-             it is closed at end of wxe.                              ||+v30BR~
-  #else                                                               ||+v30BR~
-             Without command-string, the screen changes to the child process's window.||+v30BR~
-             You can enter any command there. "exit" closes the window.||+v30BR~
-             With command-string, the screen changes to the child process's window||+v30BR~
-             which displays the result of command-string.             ||+v30BR~
-             "Enter" key back to xe panel.                            ||+v30BR~
-             However, on =6 panel, no new window and the results will be appended to =6 panel.||+v30BR~
-  #endif                                                              ||+v30BR~
-             If "DOS CMD" opens a new terminal window,                ||+v30BR~
-             you can enter any command there.                         ||+v30BR~
+#else   //W32                                                         ||~v30BR~
+  #ifdef WXE                                                          ||~v30BR~
+             Open a separate window terminal.                         ||~v30BR~
+             Without command-string, you can enter any command there. ||~v30BR~
+             "exit" closes the window.                                ||~v30BR~
+             With command-string, the results are displayed there.    ||~v30BR~
+             "Enter" key closes the window.                           ||~v30BR~
+             However, on the =6 panel, the result is appended to =6 pane.||~v30BR~
+             The opened window terminal is kept for continued processing,||~v30BR~
+             it is closed at end of wxe.                              ||~v30BR~
+  #else                                                               ||~v30BR~
+             Without command-string, the screen changes to the child process's window.||~v30BR~
+             You can enter any command there. "exit" closes the window.||~v30BR~
+             With command-string, the screen changes to the child process's window||~v30BR~
+             which displays the result of command-string.             ||~v30BR~
+             "Enter" key back to xe panel.                            ||~v30BR~
+             However, on =6 panel, no new window and the results will be appended to =6 panel.||~v30BR~
+  #endif                                                              ||~v30BR~
+             If "DOS CMD" opens a new terminal window,                ||~v30BR~
+             you can enter any command there.                         ||~v30BR~
 #endif
 
              DOS(>) can be omitted on the Command Result Edit screen. ||~v124R~
@@ -7922,9 +7992,12 @@ by screen expansion)
                      \a (bell=0x07),\b (BS=0x08),\t (H-tab=0x09)
                      \n (LF=0x0a),\v (V-tab=0x0b),\f (FF=0x0c)
                      \r (CR=0x0d),\x(even number of hex notation)
-                     ex of hex notation. \x8281 , \x09 , \x0c ,
+                     example of hex notation. \x8281 , \x09 , \x0c.   ||~v30CR~
                      \a or \x0d0a can not be found if it is treated as
                      line terminator at file load.
+                     In text files, character boundary is considered, ||~v30CI~
+                     but in binary files, boundary is not considered, ||~v30CI~
+                     so find word may matches to not first byte of the character.||~v30CI~
                      It cannot be used with other char like as \aX
                      Tab(x09) is not allowed with others like as \x0920
                      for text file.
@@ -8745,7 +8818,11 @@ by screen expansion)
                                                                       ||~v124R~
           -Unicode Combining Character(Diacritical combining).        ||~v125R~
                                                                       ||~v125R~
+#if define(LNX)                                                       ||~v30CI~
              OPT UNICOMB [ COMB | SPLIT | UNPR ] [ SHADOW | ITSELF | PADDING | U-xxxx ]||~v125R~
+#else //Win32                                                         ||~v30CI~
+             OPT UNICOMB [ COMB | SPLIT | UNPR | U-xxxx ]             ||~v30CR~
+#endif                                                                ||~v30CI~
                                                                       ||~v125R~
                COMB, SPLIT, UNPR : display combined, split and alternate character each.||~v125R~
                                                                       ||~v128R~
@@ -9691,7 +9768,14 @@ by screen expansion)
                             timestamp constant is hh:mm:ss.xxx fmt and
                             string constant used for copy(=) or compare(==)
                             should be enclosed by double quotation.
-                        e.g. tc 1-10*=60 tc 1-10+=01:10:29  tc 1-2=10-14=="abcde"||~v128R~
+                        e.g. tc 1-10*=60 tc 1-10+=01:10:29  tc 1-2=10-14=="abcde"||~v30CR~
+                                                                      ||~v30CI~
+                        Hex double-word data can be concatenated with ".." or 9->16 digits pattern,||~v30CI~
+                        but output is displayed as 9->16 digits.      ||~v30CI~
+                        e.g) tc 40-50=x4-15+x18-25                    ||~v30CI~
+                             123456789     11111110              x0134567899||~v30CI~
+                             1..23456789   11111110              x0134567899||~v30CI~
+                                                                      ||~v30CI~
                   fieldno  :1 digit field seqno.Use a-z for over 10.
                             Before use fieldno,fieldno guide line have
                             to be inserted by "TC FMT H" cmd.
@@ -10469,6 +10553,7 @@ by screen expansion)
                or ignored for octal/hex calc.
             -output-type:result display type.
                x:hexadecimal, o:octal, d:decimal, u:unsigned decimal,
+               W:Output double-word hexdecimal numbers in the format, e.g. x1212345678 instead of x12..12345678.||~v30CI~
                z:decimal by zzz,zz9, uz:unsigned decimal by zzz,zz9,
                t:hh:mm:ss.xxx edit fmt,
                s:translation of UCS-4 unicode and its UCS-2 surrogate.||~v130I~||~v130R~
@@ -14950,21 +15035,21 @@ by screen expansion)
          terminal program for sub shell opened by DOS (abbreviation is ">") cmd or Menu:File->Term.||~v129R~
          Default depends terminal emulator installed(check it in the following sequence),                 ||~127HR~||~v129R~
          Specify if option required. e.g. "gnome-terminal --maximize".||~v129R~
-         	"gnome-terminal"                        ||~127HI~         ||~v129R~||+v30BR~
-         	"konsole -ls"                                             ||~127HR~||+v30BR~
-         	"xfce4-terminal"                                          ||~127HI~||+v30BR~
-         	"qterminal"                                               ||+v30BR~
+         	"gnome-terminal"                        ||~127HI~         ||~v129R~||~v30BR~
+         	"konsole -ls"                                             ||~127HR~||~v30BR~
+         	"xfce4-terminal"                                          ||~127HI~||~v30BR~
+         	"qterminal"                                               ||~v30BR~
          finally use "xterm".                                                  ||~127HI~||~v129R~
        .LNX_CmdTerm_gxe   =""                                         
          terminal program used by DOS cmd with cmd-string(e.g. ">ls") except on =6 panel.||~127HI~||~v129R~
-         The default is to check the PATH env in the following order, ||+v30BR~
-         and if not found, it accepts "xterm".                        ||+v30BR~
-         You need to put the command option in order to accept the file containing command-string.||+v30BR~
-         Currently, it looks like this:                               ||+v30BR~
-         	"gnome-terminal -- bash ",                                ||+v30BR~
-         	"konsole -e bash",                                        ||+v30BR~
-         	"xfce4-terminal -e"                                       ||+v30BR~
-         	"qterminal -e bash"                                       ||+v30BR~
+         The default is to check the PATH env in the following order, ||~v30BR~
+         and if not found, it accepts "xterm".                        ||~v30BR~
+         You need to put the command option in order to accept the file containing command-string.||~v30BR~
+         Currently, it looks like this:                               ||~v30BR~
+         	"gnome-terminal -- bash ",                                ||~v30BR~
+         	"konsole -e bash",                                        ||~v30BR~
+         	"xfce4-terminal -e"                                       ||~v30BR~
+         	"qterminal -e bash"                                       ||~v30BR~
 #endif                                                                
                                                                       
        .Utility command name.                                         
@@ -15021,28 +15106,28 @@ by screen expansion)
                     hosts:hosts filename for xe.                      ||~v130R~
                     Default is -FTP1(hosts="::xehosts", log="::xeftplog").||~v130R~
       -F{fontname[:charset] | @font_param_filename}            //~1301R~||~v130R~||~v130R~
-                   :The font name required for /G option is             //~1301I~||~v130I~||~v130R~||+v30BR~
+                   :The font name required for /G option is             //~1301I~||~v130I~||~v130R~||~v30BR~
                     when running on Windows Terminal, setting.json is checked,//~1301I~||~v130I~||~v130R~
                     when running on Linux, on gnome-terminal, konsole, etc.,||~v130I~||~v130R~
                     the profile of the Home dir is checked by xeGetFont.sh.||~v130I~||~v130R~
                     But if it fails, specify this option.                  //~1301I~||~v130I~||~v130R~
                     Use font_param_filename when specifying indirectly from a file, use font_param_filename.//~1301I~||~v130I~||~v130R~
-                                                                      ||+v30BR~
-                    When executing xe on a remote computer using ssh, the font used is that of the local terminal,||+v30BR~
-                    so it is advisable to notify the remote computer of the local font.||+v30BR~
-                    e.g.                                              ||+v30BR~
-            		  xeGetFont.sh                                    # shows font used in the local terminal.||+v30BR~
-	        		  ssh -t user@host XEFONT=\"Tlwg Typo 16\" bash   # notify it to the remote||+v30BR~
-					  xe  "-F$XEFONT"                                 # notify to xe||+v30BR~
-                    However, the remote may not have the same font.   ||+v30BR~
-                    About ssh connection, see gxeinstallREADMEe/gxeinstallREADMEj:paragraph (S) s390x.||+v30BR~
-                    For Linux console version, you can use "-Fnone" command line option.||+v30BR~
-                    In the language environments where it doesn't matter whether ambiguous characters are DBCS or SBCS,||+v30BR~
-                    It starts up faster because it does not check the display width of ambiguous characters in the specified font.||+v30BR~
-                                                                      ||+v30BR~
+                                                                      ||~v30BR~
+                    When executing xe on a remote computer using ssh, the font used is that of the local terminal,||~v30BR~
+                    so it is advisable to notify the remote computer of the local font.||~v30BR~
+                    e.g.                                              ||~v30BR~
+            		  xeGetFont.sh                                    # shows font used in the local terminal.||~v30BR~
+	        		  ssh -t user@host XEFONT=\"Tlwg Typo 16\" bash   # notify it to the remote||~v30BR~
+					  xe  "-F$XEFONT"                                 # notify to xe||~v30BR~
+                    However, the remote may not have the same font.   ||~v30BR~
+                    About ssh connection, see gxeinstallREADMEe/gxeinstallREADMEj:paragraph (S) s390x.||~v30BR~
+                    For Linux console version, you can use "-Fnone" command line option.||~v30BR~
+                    In the language environments where it doesn't matter whether ambiguous characters are DBCS or SBCS,||~v30BR~
+                    It starts up faster because it does not check the display width of ambiguous characters in the specified font.||~v30BR~
+                                                                      ||~v30BR~
                     Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.             //~1301I~||~v130I~||~v130R~
                          /F"\uff2d\uff33 \u660e\u671d".                    //~1301I~||~v130I~||~v130R~
-                                                                      ||+v30BR~
+                                                                      ||~v30BR~
       -G{Y|N}{y|0|1|2}:Specy cell width of unicode defined width is ambiguous.||~v130R~||~v130R~
                         Y:Fit to font width.                                   //~1301I~||~v130I~||~v130R~
                           You can also specify the 2nd option for chars in unfamiliar languages.||~v130R~
@@ -15143,27 +15228,27 @@ by screen expansion)
                     hosts:hosts filename for xe.                      ||~v130R~
                     Default is -FTP1(hosts="::xehosts", log="::xeftplog").||~v130R~
       /F{fontname[:charset] | @font_param_filename}            //~1301R~||~v130R~||~v130R~
-                   :The font name required for /G option is               //~1301I~||~v130I~||~v130R~||+v30BR~
-                    when running on Windows Terminal, setting.json is checked.//~1301I~||~v130I~||~v130R~||+v30BR~
+                   :The font name required for /G option is               //~1301I~||~v130I~||~v130R~||~v30BR~
+                    when running on Windows Terminal, setting.json is checked.//~1301I~||~v130I~||~v130R~||~v30BR~
                     But if it fails, specify this option.                  //~1301I~||~v130I~||~v130R~
                     Use font_param_filename when specifying indirectly from a file, use font_param_filename.//~1301I~||~v130I~||~v130R~
                     Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.             //~1301I~||~v130I~||~v130R~
                          /F"\uff2d\uff33 \u660e\u671d".                    //~1301I~||~v130I~||~v130R~
-                                                                      ||+v30BR~
-                   When executing xe on a remote computer using ssh,  ||+v30BR~
-                   the font used for display is that of the local terminal,||+v30BR~
-                   so it is advisable to notify the local font to remote.||+v30BR~
-                   e.g.                                               ||+v30BR~
-            		  xe > tmp                                        ||+v30BR~
-                      type x1                                         ||+v30BR~
-            	   It will show local font of terminal emulator.      ||+v30BR~
-	        		  ssh -t user@host XEFONT=\"Tlwg Typo 16\" bash   ||+v30BR~
-                   It connect to remote                               ||+v30BR~
-					  xe  "-F$XEFONT"                                 ||+v30BR~
-                   Notify font to xe. However, the same font may not be available on the remote.||+v30BR~
-                   About ssh connection, see gxeinstallREADMEe:(S) s390x.||+v30BR~
-                   For wxe, see the Microsoft documentation for setting the appropriate charset for the selected font.||+v30BR~
-                                                                      ||+v30BR~
+                                                                      ||~v30BR~
+                   When executing xe on a remote computer using ssh,  ||~v30BR~
+                   the font used for display is that of the local terminal,||~v30BR~
+                   so it is advisable to notify the local font to remote.||~v30BR~
+                   e.g.                                               ||~v30BR~
+            		  xe > tmp                                        ||~v30BR~
+                      type x1                                         ||~v30BR~
+            	   It will show local font of terminal emulator.      ||~v30BR~
+	        		  ssh -t user@host XEFONT=\"Tlwg Typo 16\" bash   ||~v30BR~
+                   It connect to remote                               ||~v30BR~
+					  xe  "-F$XEFONT"                                 ||~v30BR~
+                   Notify font to xe. However, the same font may not be available on the remote.||~v30BR~
+                   About ssh connection, see gxeinstallREADMEe:(S) s390x.||~v30BR~
+                   For wxe, see the Microsoft documentation for setting the appropriate charset for the selected font.||~v30BR~
+                                                                      ||~v30BR~
       /G{Y|N}{y|0|1|2}:Specy cell width of unicode defined width is ambiguous.||~v130R~||~v130R~
                         Y:Fit to font width.                                   //~1301I~||~v130I~||~v130R~
                           You can also specify the second option for chars in unfamiliar languages.//~1301I~||~v130I~||~v130R~

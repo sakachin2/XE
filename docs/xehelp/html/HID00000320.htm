@@ -12,6 +12,8 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE>
+2025/08/25
+
 <SPAN STYLE="color:#000000;font-size:12pt;">    = Table Calculation.
 
         TC  expression [options] [NX] [Zero] [.lab1 .lab2] [.lab3 .lab4]
@@ -43,10 +45,20 @@ a:hover{font-weight:bold;}-->
                        hh.mm.ss.
                        If type missing,it is assumed as time when fmt is
                        hh:mm:ss or hh.mm.ss,else it is assumed as decimal.
+                  column1/2:Start/End column of table data on file.
+                            Decimal fraction data is avail for type=t/d.
+                            constant-value is avail for opd2 only.
                             timestamp constant is hh:mm:ss.xxx fmt and
                             string constant used for copy(=) or compare(==)
                             should be enclosed by double quotation.
-                        ex) tc 1-10*=60 tc 1-10+=01:10:29  tc 1-2=10-14==&quot;abcde&quot;
+                        ex) tc 1-10*=60 tc 1-10+=01:10:29  tc 1-2=10-14=="abcde"
+
+                        Hex double-word data can be concatenated with ".." or 9->16 digits pattern,
+                        but output is displayed as 9->16 digits.
+                        e.g) tc 40-50=x4-15+x18-25
+                             123456789     11111110              x0134567899
+                             1..23456789   11111110              x0134567899
+
                   fieldno  :1 digit field seqno.Use a-z for over 10.
                             Before use fieldno,fieldno guide line have
                             to be inserted by &quot;TC FMT H&quot; cmd.

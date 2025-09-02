@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html;>
+<META http-equiv=" Content-Style-Type">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE>V130C-E</TITLE>
+<STYLE TYPE="text/css">
+<!--
+a:hover{font-weight:bold;}-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#FFFFE2">
+<PRE><SPAN STYLE="color:#000000;font-size:font 12pt;">
+
+130C:2025/08/25
+     1.BUGs
+       -"cv x2c" may crash when the -H option is specified.
+       -xe may crash when the version mismatch occured on xe!save!.
+       -(gxe) When exiting, if the previous operation was Ctrl+H (print screen) or Ctrl+P (print file),
+        the session may terminate mid-print and results crash.
+       -The Find command with \x____ option may fail when the line length <=2.
+       -"cv x2c" command may hang (when the -H[pre][XXpost] option is specified without [pre]).
+       -(Win) The "xfg" command, etc., may hang on =6 panel.
+       -(WinCon) Screen hard copy (Ctrl+h/Alt+z) picks up the lines on the startup screen.
+       -(WinCon) When the screen is split vertically, the UTF8 file screen may be corrupted.
+       -"xbc" command; DWORD-WORD calculations may be incorrect when WORD<0, or when WORD-DWORD.
+
+     2.Additional function.
+       -"XBC"/"TC" command now supports 8-byte hexadecimal notation.
+        DWORD output notation is xxxxxxxx..yyyyyyyy, or xxxxxxxxyyyyyyyy by specifying "W".
+        Example: xbc 0x2f..0031+0x0331/W --> x2f00000362
+
+     3.Miscellaneous.
+       -On =0.1 panel, saves updates(shortcut key settings) each time to prevent them
+        from being lost when multiple sessions are launched simultaneously.
+       -(Win) Added processing when exception is invoked.
+        Exception information is output to stdout and ::xewin.dmp.<pid>.
+       -(LNX-Console)The display color of the data line corresponding to the cursor position
+        in the vertical hexadecimal line can now be set with the /VDc option (default is brown).
+
+     4.Tools
+       -(LNX) Added option (/Yi) to bypass errMsg for invalid filenames.
+        xfg v1.22
+
+</SPAN></PRE>
+</BODY>
+</HTML>

@@ -12,6 +12,8 @@ a:hover{font-weight:bold;}-->
 </HEAD>
 <BODY bgcolor="#FFFFE2">
 <PRE><SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">
+2025/08/25
+
 #if defined(W32)||defined(LNX)
 
    .UTF8サポート
@@ -106,6 +108,9 @@ a:hover{font-weight:bold;}-->
 
            -Edit/Browse/Select  [CPU8|CPLC|CPAS] [IE]
               CPU8: UTF8ファイルとして開く
+                    (注) コマンドプロンプトがWindows Terminal では 現在のところ(2025/07)
+                   	     xe コンソール版でUCS-4 (unicode > u-ffff)は表示できません。
+                         旧来の conhost 上では問題ありません。
               CPLC: 各国語ファイルとして開く
               CPAS: 環境変数に従う。(省略値)
 
@@ -218,7 +223,8 @@ a:hover{font-weight:bold;}-->
               但しこの場合UTF8コードロケールコードは間にASCIIコード(0x00&lt;-&gt;0x7f)を
               置かないと境界が区別できません。
 
-           -  <A href="HID_UNICOMB_J.htm">OPT UNICOMB</A> [ COMB | SPLIT | UNPR ] [ SHADOW | ITSELF | PADDING | U-xxxx ]
+           -  Linux:   <A href="HID_UNICOMB_J.htm">OPT UNICOMB</A> [ COMB | SPLIT | UNPR ] [ SHADOW | ITSELF | PADDING | U-xxxx ]
+              Windows: <A href="HID_UNICOMB_J.htm">OPT UNICOMB</A> [ COMB | SPLIT | UNPR | U-xxxx ]
 
               結合文字の表示方法を設定します。
               Alt+&quot;:&quot; キーも COMB--&gt;SPLIT--&gt;UNPR をスイッチするのに使用できます
@@ -275,7 +281,6 @@ a:hover{font-weight:bold;}-->
           .コマンド(=6)画面はCPAS,ショートカットキー編集(=0.1)画面はCPLCです。
 
 #endif
-
 
 </SPAN></PRE>
 </BODY>
