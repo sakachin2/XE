@@ -27,3 +27,7 @@ set VCINCLUDE=%PARSEENV%
 	nmake  "ICUHDIR=%ICUHDIR%" "ULIBHDIR=%ULIBHDIR%" "OBJULIB=%OBJULIB%" "trace=%TRACE%" "w98=vc10" "vc=17c" "x64=yes" "source=no" "debug=%DEBUG%" %* /f user17c.mak
 
 endlocal
+echo ***err***
+type err
+echo ***err0***
+type err0

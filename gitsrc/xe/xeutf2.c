@@ -1,4 +1,4 @@
-//*CID://+vbr4R~:                               update#= 1417;     //~vbr4R~
+//*CID://+vbr4R~:                               update#= 1419;     //~vbr4R~
 //*************************************************************    //~v904I~
 //* xeutf.c                                                        //~v904I~
 //*************************************************************    //~v904I~
@@ -341,6 +341,7 @@ int xeutf_getvhexpos(int Popt,PUCLIENTWE Ppcw,PULINEH Pplh,int Poffs,int *Ppdata
 #endif                                                             //~va3xI~
     	rc=3;                                                      //~va20I~
     *Ppdatapos=pos;                                                //~va20M~
+    UTRACEP("%s:utfddoffs2pos returned rc=%d,out datapos=%d\n",UTT,rc,pos);//~vbr4I~
     return rc;                                                     //~va20I~
 }//xeutf_getvhexpos                                                //~va20I~
 //**************************************************               //~va20I~
@@ -555,7 +556,7 @@ int xeutf_getvhexcsrposdbcs(int Popt,		//lineid type          //~va20R~
 //	UCHAR *pcd;                                                    //~va20I~//~vaa7R~
     int len,/*offs,*/cpos1=-1,cpos2=-1,xpos=-1,rc=0,rc2,fcleft;        //~va20R~//~vaa7R~
 //*****************                                                //~va20I~
-//UTRACEP("filevhexgetcsrpos entry opt=%x,Pleft=%d,pos=%d\n",Popt,Pleft,Ppos);//~va20I~
+UTRACEP("%s:entry opt=%x,Pleft=%d,pos=%d\n",UTT,Popt,Pleft,Ppos);  //+vbr4R~
     pfc=Ppcw->UCWpfc;                                              //~va20I~
     fcleft=pfc->UFCleft;                                           //~va20I~
     if (Ppcharpos1)                                                //~va20I~
@@ -610,7 +611,7 @@ int xeutf_getvhexcsrposdbcs(int Popt,		//lineid type          //~va20R~
 	    *Ppcharpos2=cpos2-fcleft;                                  //~va20R~
     if (Pphexpos)                                                  //~va20I~
 	    *Pphexpos=xpos;                                            //~va20I~
-UTRACEP("xeutf_vhexgetcsrposdbcs cpos1=%d,cpos2=%d,xpos=%d\n",cpos1,cpos2,xpos);//~va20I~
+UTRACEP("%s:cpos1=%d,cpos2=%d,xpos=%d\n",UTT,cpos1,cpos2,xpos);    //~vbr4R~
     return rc;                                                     //~va20I~
 }//xeutf_getvhexcsrposdbcs                                         //~va20R~
 //**************************************************               //~va20I~
@@ -1760,10 +1761,10 @@ int xeutfcvf2ldd(int Popt,PUCLIENTWE Ppcw,UCHAR *Pu8,int Pu8len,   //~va20I~
         return 4;	//buff overflow                                //~va20R~
 	if (rc2 & XEUTFF2LCRC_UTF8ERR)	//f2l failed                   //~va20I~
     	return 1;                                                  //~va20I~
-UTRACED("inp data",Pu8,Pu8len);                        //~va20R~   //+vbr4R~
-UTRACEDIFNZ("outlc",Poutlc,*Ppoutlclen);              //~va20R~    //+vbr4R~
-UTRACEDIFNZ("outdd",Poutdd,*Ppoutddlen);              //~va20R~    //+vbr4R~
-UTRACEDIFNZ("outdbcs",Pdbcs,*Ppoutddlen);             //~va20I~    //+vbr4R~
+UTRACED("inp data",Pu8,Pu8len);                        //~va20R~   //~vbr4R~
+UTRACEDIFNZ("outlc",Poutlc,*Ppoutlclen);              //~va20R~    //~vbr4R~
+UTRACEDIFNZ("outdd",Poutdd,*Ppoutddlen);              //~va20R~    //~vbr4R~
+UTRACEDIFNZ("outdbcs",Pdbcs,*Ppoutddlen);             //~va20I~    //~vbr4R~
     return 0;                                                      //~va20I~
 }//*xeutfcvf2ldd                                                   //~va20I~
 //**************************************************               //~va20I~

@@ -1,7 +1,9 @@
-//*CID://+vbw0R~:                             update#=  335;       //~vbw0R~
+//*CID://+vbD9R~:                             update#=  409;       //+vbD9R~
 //************************************************************
 //* xekbd.c                                                     //~5501R~
 //************************************************************  //~5423I~
+//vbD9:250703 (LNX)compiler warning                                //+vbD9I~
+//vbD2:250624 save funkkey/shortcut cmd to another file for save operation in multiple sessions//~vbD2I~
 //vbw0:221203 (Bug)Shift+ was ignored with Ctrl+/Alt               //~vbw0I~
 //vbvz:221203 (Bug)=0.1;missing set string terminater null         //~vbvzI~
 //vbvv:221203 =0.1 comment for user command, and comment support   //~vbvvI~
@@ -186,9 +188,33 @@
 #ifdef FTPSUPP                                                     //~v78ZI~
 	#include "xetso.h"                                             //~v78ZR~
 #endif                                                             //~v78ZI~
+#include "xesub.h"                                                 //~vbD2I~
+#include "xeini3.h"                                                //~vbD2I~
 //************************************************
 //** define available key conbination for function key
 //************************************************
+#ifdef UNX                                                         //~vbD2I~
+  #ifdef XXE                                                       //~vbD2I~
+	#define INISAVEFILE "xe_saveSC_.xxe"                           //~vbD2I~
+  #else                                                            //~vbD2I~
+	#define INISAVEFILE "xe_saveSC_"                               //~vbD2I~
+  #endif                                                           //~vbD2I~
+#else                                                              //~vbD2I~
+	#define INISAVEFILE "XE!SAVE!SC"                               //~vbD2I~
+#endif                                                             //~vbD2I~
+static UCHAR Scmdfile[]=WORKDIRPATHID INISAVEFILE;                 //~vbD2I~
+                                                                   //~vbD2I~
+#define ALIASCMDFILE_USE       0x01      //use alias cmd file      //~vbD2I~
+#define ALIASCMDFILE_FOUND     0x02      //alias cmd file found    //~vbD2I~
+#define ALIASCMDFILE_GOTTEN    0x04      //valid cmd file          //~vbD2I~
+#define ALIASCMDFILE_UPDATE    0x08      //valid cmd file          //~vbD2I~
+//#ifdef TEST                                                      //~vbD2R~
+static int Sswcmdfile=ALIASCMDFILE_USE;	 //new logic               //~vbD2R~
+//#else                                                            //~vbD2R~
+//static int Sswcmdfile=0;                                         //~vbD2R~
+//#endif                                                           //~vbD2R~
+#define ALIASCMD_MAX 0xffff                                        //~vbD2R~
+                                                                   //~vbD2I~
 #define KTDEF(key)  {KEY_##key,KEY_S_##key,KEY_A_##key,KEY_C_##key}//~V55cR~
 #define KTDEFNFLG(key)  {KEY_##key,KEY_S_##key,KEY_A_##key,KEY_C_##key},{0,0,0,0}//~V55cR~
 #define KTDEFDUP(key,flag)  {KEY_##key,KEY_S_##key,KEY_A_##key,KEY_C_##key},{0,0,0,flag}//~v095R~
@@ -385,6 +411,11 @@ void kbdinit101(void);                                             //~V70mI~
 //#ifdef LNX                                                       //~V69AR~
 //	void kbdcvkeyname2euc(void);                                   //~V69AR~
 //#endif                                                           //~V69AR~
+FILE *openShortcutCmdFile(int Popt,char* Ppopt);                   //~vbD2R~
+#define SCOPEN_CREATE   0x01                                       //~vbD2I~
+#define SCOPEN_FIND     0x02                                       //~vbD2I~
+int kbdwsckt2cmdfile(int Popt,PSCKT Ppsckt);                       //~vbD2R~
+int kbdrsckt2cmdfile(int Popt,char **Pppcmd,int *Ppcmdlen);        //~vbD2I~
 //**************************************************
 //*keyboard init
 //*set typamaticrate and functable call
@@ -590,7 +621,7 @@ int getIndexPFkeyCmd(PKBDKEYINFO Pkeyinf)                          //~vbw0R~
 {                                                                  //~vbw0I~
 	int idx;                                                       //~vbw0I~
 	if (Pkeyinf->fsState & (KBDSTF_RIGHTSHIFT | KBDSTF_LEFTSHIFT))//  0x0003//~vbw0R~
-		idx=(int)SfkctindexShift[Pkeyinf->chScan];                 //+vbw0R~
+		idx=(int)SfkctindexShift[Pkeyinf->chScan];                 //~vbw0R~
     else                                                           //~vbw0I~
 		idx=(int)Sfkctindex[Pkeyinf->chScan];                      //~vbw0R~
     UTRACEP("%s:rc=%d,scan=x%x,fsState=x%x\n",UTT,idx,Pkeyinf->chScan,Pkeyinf->fsState);//~vbw0R~
@@ -655,6 +686,7 @@ int kbdterm(void)                                               //~v01aI~
     {                                                              //~V48fI~
        	if (cmdlen=psckt->SCKTcmdlen,cmdlen)                       //~V48fI~
         {                                                          //~V48fI~
+            UTRACEP("%s:free ii=%d,SCKTcmd=%p\n",UTT,ii,psckt->SCKTcmd);//~vbD2I~
         	ufree(psckt->SCKTcmd);                                 //~V48fI~
         	psckt->SCKTcmd=0;                                      //~V48fI~
             psckt->SCKTcmdlen=0;                                   //~V48fI~
@@ -1243,6 +1275,7 @@ int kbdscedit(PUCLIENTWE Ppcw,char Psckey)                         //~V48fI~
     char parmfnm[_MAX_PATH*2+2];                                   //~vanfI~
     int opt;                                                       //~vanfI~
 //********************                                             //~V48fI~
+    UTRACEP("%s:Psckey=%c\n",UTT,Psckey);                          //~vbD2R~
     if (querymodesw=(Sshortcutstatus & KBD_SC_QUERY),querymodesw)  //~V48fR~
 	    Sshortcutstatus&=~KBD_SC_QUERY; 		//once clear       //~V48fI~
     if (!isalnum(Psckey))                                          //~V48fI~
@@ -1250,8 +1283,10 @@ int kbdscedit(PUCLIENTWE Ppcw,char Psckey)                         //~V48fI~
     	uerrmsg("exit ShortCut key mode",0);                       //~V48fR~
         return -1;                                                 //~V48fR~
     }                                                              //~V48fI~
+    UTRACED("entry Gkbdsckt",Gkbdsckt,sizeof(Gkbdsckt));           //~vbD2I~
     psckt=Gkbdsckt+(Psckey-SCKTTOP);                               //~V48fI~
 	pcmd=psckt->SCKTcmd;                                           //~V48iI~
+    UTRACEP("%s:cmdlen=%d,cmd=%s\n",UTT,psckt->SCKTcmdlen,pcmd);   //~vbD2R~
     if (!(cmdlen=psckt->SCKTcmdlen))                               //~V48fI~
     {                                                              //~V48fI~
 //  	Sshortcutstatus=(KBD_SC_PEND|querymodesw);	//accept retry //~V48fI~//~vbrfR~
@@ -1342,6 +1377,7 @@ int kbdscedit(PUCLIENTWE Ppcw,char Psckey)                         //~V48fI~
         csronthefld(Ppcw,CMDLINENO,0,datalen);                     //~V48fI~
     if (peditcmd)                                                  //~V53GI~
         ufree(peditcmd);                                           //~V53GI~
+    UTRACED("return Gkbdsckt",Gkbdsckt,sizeof(Gkbdsckt));          //~vbD2I~
     return execopt;                                                //~V48fR~
 }//kbdscedit                                                       //~V48fI~
 //**************************************************************** //~v0ihI~
@@ -1955,9 +1991,11 @@ int kbdwfkct(FILE *Pfh)                                            //~v0ijR~
         	pfkct32->FKCT32pft_pcmd=0;  //for read err case        //~va70I~
         	pfkct32->FKCT32pkt=0;                                  //~va70I~
 			memcpy(&(pfkct32->FKCT32funcid),&(pfkct->FKCTfuncid),FKCT32FIDOFFSZ);//~va70I~
+        	UTRACEP("%s:FKCT32 funcid=%d,cmdlen=%d,key=x%04x,shift=x%02x,flag=x%02x\n",UTT,pfkct32->FKCT32funcid,pfkct32->FKCT32cmdlen,pfkct32->FKCT32key,pfkct32->FKCT32shift,pfkct32->FKCT32flag);//~vbD2I~
     	}                                                          //~va70I~
 //      len=fwrite(pfkct320,(UINT)(sizeof(FKCT32)*Sfkctt.FKCTTentno),1,Pfh);//~va70I~//~vb31R~
         len=(UINT)fwrite(pfkct320,(UINT)(sizeof(FKCT32)*Sfkctt.FKCTTentno),1,Pfh);//~vb31I~
+        UTRACEP("%s:written len=%d\n",UTT,len);                    //~vbD2I~
 		ufree(pfkct320);                                           //~va70I~
         pfkct=Sfkctt.FKCTTpfkct;                                   //~va70I~
 #else                                                              //~va70I~
@@ -1979,6 +2017,7 @@ int kbdwfkct(FILE *Pfh)                                            //~v0ijR~
                     memcpy(wkbuff,pc,(UINT)cmdlen);                //~v0ijI~
 //                  len=fwrite(wkbuff,sizeof(wkbuff),1,Pfh);       //~v0ijR~//~vb31R~
                     len=(UINT)fwrite(wkbuff,sizeof(wkbuff),1,Pfh); //~vb31I~
+        			UTRACEP("%s:written len=%d,pc=%s\n",UTT,(int)sizeof(wkbuff),pc);//~vbD2R~
                     if (!len)                                      //~v0ijI~
                         return 16;                                 //~v0ijI~
                 }                                                  //~v0ijI~
@@ -2014,7 +2053,13 @@ int kbdrfkct(FILE *Pfh)                                            //~v0ijR~
 #if defined(ULIB64)||defined(ULIB64X)                              //~vafmI~
     pfkct320=pfkct32=UALLOCC((UINT)(Sfkctt.FKCTTentno),sizeof(FKCT32));    //last is stopper//~va70I~
     UALLOCCHK(pfkct32,UALLOC_FAILED);                              //~va70I~
+#ifdef TEST                                                        //~vbD2R~
+    UINT rctr;                                                     //~vbD2I~
+    rctr=fread(pfkct32,1,(UINT)(sizeof(FKCT32)*Sfkctt.FKCTTentno),Pfh);//~vbD2I~
+    if (rctr!=(UINT)(sizeof(FKCT32)*Sfkctt.FKCTTentno))            //~vbD2I~
+#else                                                              //~vbD2I~
     if (!fread(pfkct32,(UINT)(sizeof(FKCT32)*Sfkctt.FKCTTentno),1,Pfh))//~va70I~
+#endif                                                             //~vbD2I~
 #else                                                              //~va70I~
     if (!fread(pfkct,(UINT)(sizeof(FKCT)*Sfkctt.FKCTTentno),1,Pfh))//~v0ijR~
 #endif                                                             //~va70I~
@@ -2088,12 +2133,34 @@ int kbdwsckt(FILE *Pfh)                                            //~V48fI~
 #endif                                                             //~va70I~
 //*********************************                                //~V48fI~
 //#ifdef ULIB64                                                      //~va70I~//~vafmR~
+    UTRACEP("%s:entry Sswcmdfile=0x%02x\n",UTT,Sswcmdfile);        //~vbD2R~
 #if defined(ULIB64)||defined(ULIB64X)                              //~vafmI~
+    UTRACED("Gkbdsckt",Gkbdsckt,sizeof(Gkbdsckt));                 //~vbD2I~
     for (ii=0,psckt=Gkbdsckt,psckt32=wsckt32;ii<SCKTMAXNO;ii++,psckt++,psckt32++)//~va70I~
     {                                                              //~va70I~
     	memcpy(psckt32,psckt,sizeof(SCKT32));                      //~va70I~
     }                                                              //~va70I~
+	if (Sswcmdfile & ALIASCMDFILE_USE)                             //~vbD2I~
+    {                                                              //~vbD2I~
+        psckt=Gkbdsckt+SCKTALIAS-SCKTTOP;     //for alias cmd entry//~vbD2I~
+        if (!(Sswcmdfile & ALIASCMDFILE_FOUND)                     //~vbD2R~
+        ||   (Sswcmdfile & ALIASCMDFILE_UPDATE)                    //~vbD2R~
+        )                                                          //~vbD2R~
+        {                                                          //~vbD2R~
+            kbdwsckt2cmdfile(0,psckt);                             //~vbD2R~
+        }                                                          //~vbD2R~
+        psckt->SCKTcmdlen=0;               //skip write to !SAVE!  //~vbD2I~
+        if (psckt->SCKTcmd)                                        //~vbD2I~
+        {                                                          //~vbD2I~
+        	UTRACEP("%s:ufree SCKTcmd=%s\n",UTT,psckt->SCKTcmd);   //~vbD2I~
+            ufree(psckt->SCKTcmd);                                 //~vbD2I~
+            psckt->SCKTcmd=0;                                      //~vbD2I~
+        }                                                          //~vbD2I~
+		psckt32=wsckt32+SCKTALIAS-SCKTTOP;     //for alias cmd entry//~vbD2R~
+    	psckt32->SCKT32cmdlen=0;                 //for read !save!,skip alias//~vbD2R~
+    }                                                              //~vbD2I~
     len=(int)fwrite(wsckt32,sizeof(wsckt32),1,Pfh);//ptr tbl       //~va70I~
+    UTRACED("wsckt32",wsckt32,sizeof(wsckt32));                    //~vbD2I~
 #else                                                              //~va70I~
     len=(int)fwrite(&Gkbdsckt,sizeof(Gkbdsckt),1,Pfh);//ptr tbl    //~V48fI~
 #endif                                                             //~va70I~
@@ -2101,12 +2168,14 @@ int kbdwsckt(FILE *Pfh)                                            //~V48fI~
         return 16;                                                 //~V48fI~
     for (ii=0,psckt=Gkbdsckt;ii<SCKTMAXNO;ii++,psckt++)            //~V48fI~
     {                                                              //~V48fI~
+        UTRACEP("%s:shortcut/alias ii=%d,cmdlen=%d\n",UTT,ii,psckt->SCKTcmdlen);//~vbD2R~
        	if (cmdlen=psckt->SCKTcmdlen,cmdlen)                       //~V48fI~
         {                                                          //~V48fI~
           if (ii==SCKTALIAS-SCKTTOP     //for alias cmd entry      //~V67CI~
           &&  cmdlen>sizeof(wkbuff))    //long                     //~V67CI~
           {                                                        //~V67CI~
             len=(int)fwrite(psckt->SCKTcmd,(UINT)(cmdlen+1),1,Pfh);//~V705R~
+        	UTRACEP("%s:alias long len=%d,SCKTcmd=%s\n",UTT,cmdlen+1,psckt->SCKTcmd);//~vbD2R~
           }                                                        //~V67CI~
           else                                                     //~V67CI~
           {                                                        //~V67CI~
@@ -2115,6 +2184,8 @@ int kbdwsckt(FILE *Pfh)                                            //~V48fI~
             memset(wkbuff,0,sizeof(wkbuff));                       //~V48fI~
             memcpy(wkbuff,psckt->SCKTcmd,(UINT)cmdlen);            //~V48fI~
             len=(int)fwrite(wkbuff,sizeof(wkbuff),1,Pfh);          //~V48iR~
+        	UTRACEP("%s:shorcut/alias len=%d,wkbuff=%s\n",UTT,(int)sizeof(wkbuff),wkbuff);//~vbD2R~
+        	UTRACED("shorcut/alias",wkbuff,sizeof(wkbuff));        //~vbD2I~
           }                                                        //~V67CI~
             if (!len)                                              //~V48fI~
                 return 16;                                         //~V48fI~
@@ -2139,11 +2210,23 @@ int kbdrsckt(FILE *Pfh)                                            //~V48fI~
     PSCKT32 psckt32;                                               //~va70I~
     SCKT32 wsckt32[SCKTMAXNO];                                     //~va70I~
 #endif                                                             //~va70I~
+	int cmdlenAlias=0;                                             //~vbD2I~
+	char *pcmdAlias=0;                                             //~vbD2I~
 //*********************************                                //~V48fI~
 //#ifdef ULIB64                                                      //~va70I~//~vafmR~
+    UTRACEP("%s:entry Sswcmdfile=0x%02x\n",UTT,Sswcmdfile);        //~vbD2I~
+	if (Sswcmdfile & ALIASCMDFILE_USE)                             //~vbD2I~
+    {                                                              //~vbD2I~
+        if (openShortcutCmdFile(SCOPEN_FIND,0/*file exist chk*/))   //0:not found//~vbD2R~
+        {                                                          //~vbD2R~
+            Sswcmdfile|=ALIASCMDFILE_FOUND;                        //~vbD2R~
+            UTRACEP("%s:alias cmd file found\n",UTT);              //~vbD2R~
+        }                                                          //~vbD2R~
+    }                                                              //~vbD2I~
 #if defined(ULIB64)||defined(ULIB64X)                              //~vafmI~
     if (!(fread(&wsckt32,sizeof(wsckt32),1,Pfh)))                  //~va70I~
         return 16;                                                 //~va70I~
+    UTRACED("wsckt32",wsckt32,sizeof(wsckt32));                    //~vbD2I~
     for (ii=0,psckt=wsckt,psckt32=wsckt32;ii<SCKTMAXNO;ii++,psckt++,psckt32++)//~va70I~
     {                                                              //~va70I~
     	memcpy(psckt,psckt32,sizeof(SCKT32));                      //~va70I~
@@ -2153,8 +2236,15 @@ int kbdrsckt(FILE *Pfh)                                            //~V48fI~
     if (!(fread(&wsckt,sizeof(wsckt),1,Pfh)))                      //~V48fI~
         return 16;                                                 //~V48fI~
 #endif                                                             //~va70I~
+	if (Sswcmdfile & ALIASCMDFILE_FOUND)                           //~vbD2I~
+    {                                                              //~vbD2I~
+    	int rc2=kbdrsckt2cmdfile(0,&pcmdAlias,&cmdlenAlias);       //~vbD2I~
+        if (!rc2)                                                  //~vbD2I~
+			Sswcmdfile|=ALIASCMDFILE_GOTTEN;                       //~vbD2I~
+	}                                                              //~vbD2I~
     for (ii=0,psckt=wsckt;ii<SCKTMAXNO;ii++,psckt++)               //~V48fI~
     {                                                              //~V48fI~
+    	UTRACEP("%s:ii=%d,cmdlen=%d\n",UTT,ii,psckt->SCKTcmdlen);  //~vbD2R~
        	if (cmdlen=psckt->SCKTcmdlen,cmdlen)                       //~V48fI~
         {                                                          //~V48fI~
           if (ii==SCKTALIAS-SCKTTOP     //for alias cmd entry      //~V67CI~
@@ -2171,6 +2261,7 @@ int kbdrsckt(FILE *Pfh)                                            //~V48fI~
           {                                                        //~V67CI~
         	if (!fread(wkbuff,sizeof(wkbuff),1,Pfh))               //~V48fI~
             	return 16;                                         //~V48fI~
+            UTRACED("wkbuff",wkbuff,sizeof(wkbuff));               //~vbD2I~
             if (cmdlen>sizeof(wkbuff))                             //~V48fI~
             	cmdlen=sizeof(wkbuff);                             //~V48fI~
             pc=UALLOCC(1,(UINT)cmdlen+1);   //last is stopper      //~V48iR~
@@ -2179,9 +2270,22 @@ int kbdrsckt(FILE *Pfh)                                            //~V48fI~
             psckt->SCKTcmdlen=(USHORT)cmdlen;                      //~V48iR~
             memcpy(pc,wkbuff,(UINT)cmdlen);                        //~V48fI~
           }                                                        //~V67CI~
+    		UTRACEP("%s:cmdlen=%d,SCKTcmd=%p=%s\n",UTT,cmdlen,psckt->SCKTcmd,psckt->SCKTcmd);//~vbD2R~
         }                                                          //~V48fI~
     }                                                              //~V48fI~
+    if (Sswcmdfile & ALIASCMDFILE_FOUND)                           //~vbD2I~
+    {                                                              //~vbD2I~
+	    psckt=wsckt+SCKTALIAS-SCKTTOP;     //for alias cmd entry   //~vbD2I~
+        if (psckt->SCKTcmd)                                        //~vbD2I~
+        {                                                          //~vbD2I~
+	    	UTRACEP("%s:ufree alias on SAVE\n",UTT,psckt->SCKTcmd);//~vbD2I~
+        	ufree(psckt->SCKTcmd);                                 //~vbD2I~
+        }                                                          //~vbD2I~
+        psckt->SCKTcmd=pcmdAlias;                                  //~vbD2I~
+        psckt->SCKTcmdlen=(USHORT)cmdlenAlias;                     //~vbD2R~
+    }                                                              //~vbD2I~
     memcpy(Gkbdsckt,wsckt,sizeof(Gkbdsckt));                       //~V48fI~
+    UTRACED("Gkbdsckt",Gkbdsckt,sizeof(Gkbdsckt));                 //~vbD2I~
     filesetupalct();    //setup alias cmd tbl                      //~V67CM~
     return 0;                                                      //~V48fI~
 }//kbdrsckt                                                        //~V48fI~
@@ -2341,3 +2445,139 @@ int xekbdsetSAC(int Popt,int Pshiftid,KEYTBL *Ppkt,char *Pkeyname) //~vb50I~
     return len;                                                    //~vb50M~
 }//xekbdsetSAC                                                     //~vb50I~
 #endif                                                             //~vb50M~
+//************************************************************************//~vbD2I~
+//*open funckey/shortcut cmd save file                             //~vbD2I~
+//************************************************************************//~vbD2I~
+FILE *openShortcutCmdFile(int Popt,char* Ppopt)                    //~vbD2R~
+{                                                                  //~vbD2I~
+    UCHAR fpath[_MAX_PATH];                                        //~vbD2I~
+    FILE *fh;                                                      //~vbD2I~
+//****************************                                     //~vbD2I~
+    UTRACEP("%s:opt=0x%02x,openopt=%s,fnm=%s\n",UTT,Popt,Ppopt,Scmdfile);//~vbD2R~
+    int rc=filefind(Scmdfile,fpath,0,FFNONFMSG);                   //~vbD2I~
+    if (Popt & SCOPEN_FIND)                                        //~vbD2I~
+    {                                                              //~vbD2I~
+    	if (rc)                                                    //~vbD2I~
+    	{                                                          //~vbD2I~
+//      	uerrmsg("shortcut cmd file(%s) not found",0,Scmdfile); //~vbD2I~
+        	UTRACEP("%s:%s not found(rc=%d)\n",UTT,Scmdfile,rc);   //~vbD2I~
+            return 0;                                              //~vbD2I~
+    	}                                                          //~vbD2I~
+        return (FILE*)(-1);                                        //~vbD2I~
+    }                                                              //~vbD2I~
+    if (!(Popt & SCOPEN_CREATE))	//read                         //~vbD2R~
+    {                                                              //~vbD2I~
+        if (rc)                                                    //~vbD2R~
+        {                                                          //~vbD2R~
+        	UTRACEP("%s:%s not found(rc=%d)\n",UTT,Scmdfile,rc);   //~vbD2I~
+            return 0;   //rc=0 not found                           //~vbD2R~
+        }                                                          //~vbD2R~
+    }                                                              //~vbD2I~
+    if (!(fh=fileopen(fpath,Ppopt)))                               //~vbD2I~
+    {                                                              //~vbD2I~
+    	int err=errno;                                             //~vbD2I~
+    	uerrmsg("shortcut cmd file(%s) open %s failed(errno=%d)",0,fpath,Ppopt,err);//~vbD2I~
+    }                                                              //~vbD2I~
+	UTRACEP("%s:opened fh=%p\n",UTT,fh);                           //~vbD2I~
+    return fh;                                                     //~vbD2R~
+}//openShortcutCmdFile                                             //~vbD2I~
+//************************************************************************//~vbD2I~
+//*write alias to alias file                                       //~vbD2R~
+//*rc:writelen                                                     //~vbD2I~
+//************************************************************************//~vbD2I~
+int kbdwsckt2cmdfile(int Popt,PSCKT Ppsckt)                        //~vbD2R~
+{                                                                  //~vbD2I~
+	int rc=0,rclen=0,len;                                          //~vbD2I~
+    UTRACEP("%s:entry\n",UTT);                                     //~vbD2R~
+	FILE *pfh=openShortcutCmdFile(SCOPEN_CREATE,"wb");             //~vbD2R~
+    if (!pfh)                                                      //~vbD2I~
+    	return 0;                                                  //~vbD2R~
+    for (;;)                                                       //~vbD2I~
+    {                                                              //~vbD2I~
+    	rc=iniacronymwrite(pfh);                                   //~vbD2I~
+    	if (rc)                                                    //~vbD2I~
+    		break;                                                 //~vbD2I~
+    	len=Ppsckt->SCKTcmdlen;                                    //~vbD2R~
+    	rclen=(int)fwrite(&len,sizeof(len),1,pfh);                 //~vbD2R~
+		UTRACEP("%s:write SCKTcmdlen=%d,rclen=%d\n",UTT,len,rclen);//~vbD2R~
+        rc=rclen==0;                                               //~vbD2I~
+        if (rc)                                                    //~vbD2I~
+        	break;                                                 //~vbD2I~
+        if (len>0)                                                 //~vbD2I~
+        {                                                          //~vbD2I~
+			UTRACED("write alias cmd",Ppsckt->SCKTcmd,len);        //~vbD2I~
+    		rclen=(int)fwrite(Ppsckt->SCKTcmd,1,(UINT)len,pfh);    //~vbD2R~
+	    	rc=(rclen!=len);                                       //~vbD2I~
+    		if (rc)                                                //~vbD2I~
+    			break;                                             //~vbD2I~
+        }                                                          //~vbD2I~
+    	rc=iniacronymwrite(pfh);                                   //~vbD2I~
+        break;                                                     //~vbD2I~
+    }                                                              //~vbD2I~
+    fclose(pfh);                                                   //~vbD2I~
+    return rclen;                                                  //~vbD2I~
+}                                                                  //~vbD2I~
+//************************************************************************//~vbD2I~
+//*read alias file                                                 //~vbD2I~
+//*rc:rc                                                           //~vbD2I~
+//************************************************************************//~vbD2I~
+int kbdrsckt2cmdfile(int Popt,char **Pppcmd,int *Ppcmdlen)         //~vbD2R~
+{                                                                  //~vbD2I~
+	int rc=0,reclen,cmdlen;                                        //~vbD2R~
+    char *pc=0;                                                    //~vbD2R~
+//*******************************                                  //~vbD2I~
+	UTRACEP("%s\n",UTT);                                           //~vbD2R~
+	FILE *pfh=openShortcutCmdFile(0,"rb");                         //~vbD2R~
+    if (!pfh)                                                      //~vbD2I~
+    	return 4;                                                  //~vbD2I~
+    for (;;)                                                       //~vbD2I~
+    {                                                              //~vbD2I~
+        rc=iniacronymchk(Scmdfile,pfh);  //top acronym             //~vbD2R~
+        if (rc)                                                    //~vbD2I~
+            break;                                                 //~vbD2I~
+//      reclen=fread(&cmdlen,sizeof(cmdlen),1,pfh);                //~vbD2R~//+vbD9R~
+        reclen=(int)fread(&cmdlen,sizeof(cmdlen),1,pfh);           //+vbD9I~
+        rc=reclen==0;                                              //~vbD2R~
+        if (rc)                                                    //~vbD2I~
+        	break;                                                 //~vbD2I~
+		UTRACEP("%s,cmdlen=%d\n",UTT,cmdlen);                      //~vbD2I~
+        if (cmdlen>ALIASCMD_MAX)	// 0xffff                      //~vbD2I~
+        {                                                          //~vbD2I~
+        	rc=4;                                                  //~vbD2I~
+            break;                                                 //~vbD2I~
+        }                                                          //~vbD2I~
+        if (cmdlen)                                                //~vbD2I~
+        {                                                          //~vbD2I~
+            pc=UALLOCC(1,(UINT)cmdlen);   //including last null    //~vbD2R~
+            UALLOCCHK(pc,UALLOC_FAILED);                           //~vbD2R~
+//          reclen=fread(pc,1,(UINT)cmdlen,pfh);                   //~vbD2R~//+vbD9R~
+            reclen=(int)fread(pc,1,(UINT)cmdlen,pfh);              //+vbD9I~
+            UTRACEP("%s:cmdlen=%d,readlen=%d\n",UTT,cmdlen,reclen);//~vbD2R~
+            rc=(reclen!=cmdlen);                                   //~vbD2R~
+            if (rc)                                                //~vbD2R~
+                break;                                             //~vbD2R~
+        }                                                          //~vbD2I~
+        rc=iniacronymchk(Scmdfile,pfh);  //top acronym             //~vbD2I~
+        if (rc)                                                    //~vbD2I~
+            break;                                                 //~vbD2I~
+        *Pppcmd=pc;                                                //~vbD2R~
+        *Ppcmdlen=cmdlen;                                          //~vbD2R~
+        UTRACED("cmd",pc,cmdlen);                                  //~vbD2R~
+        break;                                                     //~vbD2I~
+    }                                                              //~vbD2I~
+    if (rc)                                                        //~vbD2M~
+    {                                                              //~vbD2I~
+        uerrmsg("file(%s) is corrupted.",                          //~vbD2I~
+                "ƒtƒ@ƒCƒ‹(%s) ‚ª‰ó‚ê‚Ä‚¢‚Ü‚·",                     //~vbD2I~
+                    Scmdfile);                                     //~vbD2I~
+    }                                                              //~vbD2I~
+    fclose(pfh);                                                   //~vbD2I~
+    return rc;                                                     //~vbD2R~
+}                                                                  //~vbD2I~
+//**************************************************************** //~vbD2I~
+int kbdupdatesckt(int Popt)                                        //~vbD2I~
+{                                                                  //~vbD2I~
+	Sswcmdfile|=ALIASCMDFILE_UPDATE;                               //~vbD2I~
+	UTRACEP("%s:opt=%02x,Sswcmdfile=0x%02x\n",UTT,Popt,Sswcmdfile);//~vbD2I~
+    return 0;                                                      //~vbD2I~
+}                                                                  //~vbD2I~

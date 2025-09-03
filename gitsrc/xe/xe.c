@@ -1,7 +1,16 @@
-//*CID://+vbC5R~:                              update#=  866;      //~vbC5R~
+//*CID://+vbDtR~:                              update#=  910;      //~vbDtR~
 //*************************************************************
 //*XE.c*                                                           //~v641R~
 //*************************************************************
+//vbDt:250804 (LNX)Test function. Color palette number of Datapos by Vhex Cursor by cmdline option -vdc_//~vbDtI~
+//vbDj:250714 (WinCon) wait by getchar when exception to be attached by visualstudio//~vbDjI~
+//vbDd:250704 compiler err c2059(typedef function). missing *      //~vbDaI~
+//vbDa:250703 (gxe)helpmsg was not controled by scr height.        //~vbD8I~
+//vbD8:250703 (LNX)help msg of linux specific(--h) from xemain help(-h)//~vbD7I~
+//vbD7:250703 issue deleting msg for undel save                    //~vbD6I~
+//vbD6:250702 (WXE)exception handling using DbgHelp API            //~vbD6I~
+//vbD5:250701 (Win)exception handling using DbgHelp API            //~vbD5I~
+//vbD4:250626 (Win)print uerrexit msg                              //~vbD4I~
 //vbC5:250111 (LNX:cons)add option -Fnone to bypass gtk_init for quick start on ssh remote//~vbC5I~
 //vbBx:241128 xe help correct                                      //~vbBxI~
 //vbBt:241114 add /ebc;defaultmapeuro                              //~vbBtI~
@@ -272,6 +281,7 @@
 #else
     #ifdef W32                                                     //~v085I~
         #include <windows.h>                                       //~v085I~
+        #include <conio.h>                                         //~vbDjI~
     #else                                                          //~v085I~
         #define INCL_BASE                                          //~v085R~
         #include <os2.h>                                           //~v085R~
@@ -298,6 +308,9 @@
 #include <utf22.h>   //uvio_w95setbuffmode                         //~va90I~
 #include <uedit.h>   //uvio_w95setbuffmode                         //~vb26I~
 #include <uproc2.h>   //uvio_w95setbuffmode                        //~vb26I~
+#ifdef XXE                                                         //~vbD8I~
+#include <uviol.h>   //uvio_w95setbuffmode                         //~vbD8I~
+#endif                                                             //~vbD8I~
 #ifdef DOS                                                         //~v07wI~
     #ifdef DPMI                 //DPMI version                     //~v095M~
         #include <ueh.h>                                           //~v095M~
@@ -364,7 +377,8 @@
 #define NULLCOMP 256                                            //~v01cI~
 #define UTRACE_FORCE_FNMSUFFIX  "_kbd"                             //~vbkmI~
 //*******************************************************       //~4C19I~
-UEXITFUNC uexitfunc;
+//UEXITFUNC uexitfunc;                                             //~vbDdR~
+void uexitfunc(char * Pmsg,void * Pvoid);                          //~vbDdI~
 //#ifdef DOS                                                       //~v095R~
 #if defined(DOS) && !defined(DPMI)                                 //~v095I~
 #else
@@ -462,11 +476,15 @@ static int Sscrparm[2]={0,0};         //screen height parm         //~v47rI~
 #ifdef WXE                                                         //~v7ahI~
     static int  Shelpsw;                                           //~v7ahI~
 #endif                                                             //~v7ahI~
+#ifdef WIN_EXH                                                     //~vbD5I~
+    static int Sskipuseteh=0;	//win exception handling           //~vbD5I~
+#else                                                              //~vbD5I~
 #ifdef NOTRACE                                                     //~vbzxI~
     static int Sskipuseteh;                                        //~vbq7I~
 #else                                                              //~vbzxI~
     static int Sskipuseteh=1;	//debug version, skip seteh        //~vbzxI~
 #endif                                                             //~vbzxI~
+#endif //!WIN_EXH                                                  //~vbD5I~
 //#ifdef WINCON                                                    //~vbzrR~
 #if defined(WINCON) || defined(LNXCON)                             //~vbzrI~
     static int SswFont;                                            //~vbzqI~
@@ -509,9 +527,11 @@ int main(int parmc,char *parmp[])
     char nullcomp[NULLCOMP];                                       //~v085M~
       #endif                                                       //~v654I~
     #endif                                                         //~v085I~
-  #ifndef WXE                                                      //~v500I~
+  #ifndef WXE                                                      //~vbD6R~
     UEXREGREC uregrec;  /*exception handler unset*/
-  #endif                                                           //~v500I~
+  #else                                                            //~vbD6I~
+    static UEXREGREC uregrec;  /*exception handler unset*/         //~vbD6I~
+  #endif                                                           //~vbD6R~
 #endif
 #ifdef DPMI                 //DPMI version                         //~v095I~
 #else                       //not DPMI                             //~v095I~
@@ -533,12 +553,15 @@ int main(int parmc,char *parmp[])
 #endif                                                             //~v7acI~
     char *errmsg;                                                  //~v79zI~
 //  char wkfname[_MAX_PATH];                                       //~v79zR~
-#ifndef WXE                                                        //~v500I~
+#ifndef WXE                                                        //~vbD6R~
 //  char mapfname[_MAX_PATH];                                      //~vbs7R~
     char mapfname[_MAX_PATH+256];                                  //~vbs7I~
 //  char dumpfname[_MAX_PATH];                                     //~vbs7R~
     char dumpfname[_MAX_PATH+256];                                 //~vbs7I~
-#endif                                                             //~v500I~
+#else                                                              //~vbD6I~
+    static char mapfname[_MAX_PATH+256];                           //~vbD6I~
+    static char dumpfname[_MAX_PATH+256];                          //~vbD6I~
+#endif                                                             //~vbD6R~
 //#ifdef UNX                                                       //~v79zR~
 //    char fpathwk[_MAX_PATH];                                     //~v79zR~
 //#endif                                                           //~v79zR~
@@ -782,7 +805,9 @@ UTRACEP("Gunxflag=%x\n",Gunxflag);                                 //~v79HI~
     #ifdef UNX                                                     //~v61nI~
       uregrec.UERGsys.PPrevSignalHandler=0;     //no handler,back to OS//~v61nI~
     #endif                                                         //~v61nI~
+//#ifdef TEST                                                      //~vbDjR~
     useteh(&uregrec);/*exception handler unset*/                   //~v61nI~
+//#endif                                                           //~vbDjR~
   }                                                                //~vbq7I~
   #endif                                                           //~v61nI~
 #endif	//!WXE                                                     //~v61nI~
@@ -873,6 +898,22 @@ if (Preqtype==WXE_REQ_INIT)                                        //~v501I~
 ////  heapsz=uregrec.UERGheapsize<<16;                             //~v61nR~
 //#endif                                                           //~v61nR~
 //#endif  //!WXE                                                   //~v61nR~
+#ifdef WXE                                                         //~vbD6I~
+#ifdef WIN_EXH                                                     //~vbD6I~
+//*ueh register                                                    //~vbD6I~
+    sprintf(dumpfname,"%s%s%s.dmp",Gworkdir,PGMID,Sostype);        //~vbD6I~
+    uregrec.UERGheapsize=0;//no initial heap size                  //~vbD6I~
+    uregrec.UERGmapfn=mapfname;     //map file name                //~vbD6I~
+    uregrec.UERGdumpfn=dumpfname;       //map file name            //~vbD6I~
+    uregrec.UERGuxfunc=uehexit;                                    //~vbD6I~
+    uregrec.UERGparm=0;     //user parm to exit func               //~vbD6I~
+    UTRACEP("%s:Sskipuseteh=%d\n",UTT,Sskipuseteh);                //~vbD6I~
+  	if (!Sskipuseteh)                                              //~vbD6I~
+  	{                                                              //~vbD6I~
+    	useteh(&uregrec);/*exception handler unset*/               //~vbD6I~
+  	}                                                              //~vbD6I~
+#endif  //WIN_EXH                                                  //~vbD6I~
+#endif  //WXE                                                      //~vbD6I~
                                                                    //~v099I~
 #ifdef DPMI                                                        //~v099I~
     uharderr(0);    //fail if drive notready                       //~v099I~
@@ -915,6 +956,11 @@ if (Preqtype==WXE_REQ_INIT)                                        //~v501I~
 //#ifndef WXE     //at xewxe for WXE                               //~v641R~
 #ifndef WXEXXE     //at xewxe for WXE                              //~v641I~
                                                                    //~v500I~
+#ifdef WIN_EXH	//use exception handler                            //~vbD5I~
+  __try                                                            //~vbD5I~
+  {                                                                //~vbD5I~
+	UTRACEP("%s:try\n",UTT);                                       //~vbD5I~
+#endif                                                             //~vbD5I~
     for (;;)    //until quit
     {
         if (!*Gcmdbuff) //no command pending
@@ -922,6 +968,24 @@ if (Preqtype==WXE_REQ_INIT)                                        //~v501I~
         if (kbdproc()==-1)  //quit
             break;
     }
+#ifdef WIN_EXH	//use exception handler                            //~vbD5I~
+  }                                                                //~vbD5I~
+//__finally                                                        //~vbD5I~
+//{                                                                //~vbD5I~
+//	TRACEP("%s:in finally try1\n",UTT);                            //~vbD5I~
+//}                                                                //~vbD5I~
+  __except                                                         //~vbD5I~
+  (                                                                //~vbD5I~
+  //*filter-expression                                             //~vbD5I~
+  	uehfilter(GetExceptionCode(),GetExceptionInformation())        //~vbD5I~
+  )                                                                //~vbD5I~
+  {                                                                //~vbD5I~
+    //*exception-handler block                                     //~vbD5I~
+    //never reach to this point by filter rc is CONTINUE           //~vbD5I~
+    UTRACEP("%s:excetion block\n",UTT);                            //~vbD5I~
+  }                                                                //~vbD5I~
+  UTRACEP("%s:out of exception block\n",UTT);                      //~vbD5I~
+#endif //WIN_EXH                                                   //~vbD5I~
 #endif //!WXE	                                                   //~v500I~
                                                                    //~v500I~
 //#ifdef WXE                                                       //~v641R~
@@ -945,6 +1009,7 @@ if (Preqtype==WXE_REQ_TERM)                                        //~v500I~
 //          func_ini(0);    //update write                      //~v064R~
     if (UCBITCHK(Gprocstatus,GPROCSINIUPDATE)) //ini status updated//~v0itI~
         func_ini(0);    //update write                             //~v0itI~
+    scrreset();	//for printf at term                               //~vbD7R~
     dlcmdundelterm();   //undelete housekeeping                 //~v05uI~
     dcmdterm(); //clear temporary stdout redirect file          //~v06nI~
     funcsp_term(0);                                                //~vba2I~
@@ -1069,7 +1134,9 @@ if (Preqtype==WXE_REQ_TERM)                                        //~v500I~
     #endif                      //DPMI or not                      //~v095I~
 #else                                                           //~5111I~
   #ifndef WXE                                                      //~v500I~
+//#ifdef TEST                                                      //~vbDjR~
     ureseteh(&uregrec);/*exception handler unset*/              //~5111I~
+//#endif                                                           //~vbDjR~
   #endif //!WXE                                                    //~v500I~
 #endif                                                          //~5111I~
   }                                                                //~vbq7I~
@@ -1155,6 +1222,11 @@ void uexitfunc(char * Pmsg,void * Pvoid)                           //~v07wR~
         #endif                                                     //~v099I~
 #ifdef UNX                                                         //~v69EI~
         printf("uexitfunc:uerrexitmsg:%s\n",ugeterrmsg());         //~v69EI~
+#else                                                              //~vbD4I~
+	#ifdef WINCON                                                  //~vbD4I~
+    	if (Pmsg)                                                  //~vbD4I~
+        	printf("uexitfunc:uerrexitmsg:%s\n",Pmsg);             //~vbD4I~
+    #endif                                                         //~vbD4I~
 #endif                                                             //~v69EI~
         if (Sinitend)   //entered getchar loop                  //~4C27I~
             if (!UCBITCHK(Gopt,GOPTNOABENDIFERREXIT))           //~5430R~
@@ -1163,6 +1235,21 @@ void uexitfunc(char * Pmsg,void * Pvoid)                           //~v07wR~
                 uabend(1,0,0,0);    //_fcloseall at ueh.c       //~v03jR~
             }                                                      //~vbkmI~
     }                                                              //~v099I~
+#ifdef WINCON                                                      //~vbDjI~
+    else                                                           //~vbDjI~
+    {                                                              //~vbDjI~
+    	int ch='n';                                                //~vbDjI~
+    	for (;;)                                                   //~vbDjI~
+        {                                                          //~vbDjI~
+        	printf("Enter \"y\" to terminate xe!!!\n");            //~vbDjI~
+            fflush(stdout);                                        //~vbDjI~
+    		ch=getch();                                            //~vbDjI~
+            if (ch=='y'||ch=='Y')                                  //~vbDjI~
+            	break;                                             //~vbDjI~
+        }                                                          //~vbDjI~
+        printf("Accepted \"%c\"\n",ch);                            //~vbDjR~
+    }                                                              //~vbDjI~
+#endif //WINCON                                                    //~vbDjI~
 #endif                                                          //~5204I~
     return;
 }
@@ -2042,6 +2129,14 @@ int  parmproc0(int Pparmc,char *Pparmp[])                          //~v501R~
 //#endif                                                           //~v79MR~
         {//option                                               //~5429I~
             ch=*(++cptr);                      //first option byte//~5429I~
+#ifdef LNXCON                                                      //~vbD8I~
+            if (ch=='-' && toupper(*(cptr+1)=='H'))                //~vbD8R~
+            {                                                      //~vbD8I~
+				void helpmsg(void);                                //~vbD8I~
+                helpmsg();     //xemainl.c                         //~vbD8I~
+                exit(4);                                           //~vbD8I~
+            }                                                      //~vbD8I~
+#endif                                                             //~vbD8I~
             if (*(++cptr)==':')               // /o:x format    //~5429I~
                 cptr++;                         //skip :        //~5429I~
             switch(toupper(ch))       //option                  //~5429I~
@@ -2561,6 +2656,18 @@ void parmproc(int Pparmc,char *Pparmp[])
             case 'T':                                           //~5430I~
                 Gfiletabskip=numchk(cptr);                      //~5603I~
                 break;                                          //~5430I~
+#ifdef LNXCON                                                      //~vbDtR~
+            case 'V':                                              //~vbDtI~
+                if (ustrstri(cptr,"DC"))   //vdc                   //~vbDtI~
+                {                                                  //~vbDtI~
+					GvhexcsrDataColorPalette=numchk(cptr+2);       //~vbDtR~
+					if (GvhexcsrDataColorPalette<=0 || GvhexcsrDataColorPalette>7)//+vbDtR~
+	                	uerrexit("parm err(%s) vdc value is 1-->7",0,cptr-1);//~vbDtI~
+                }                                                  //~vbDtI~
+                else                                               //~vbDtI~
+                	uerrexit("parm err(%s)",0,cptr-1);             //~vbDtI~
+                break;                                             //~vbDtI~
+#endif                                                             //~vbDtI~
 //**************************                                       //~v47sR~
 //* work dir      /W    already processed at parmproc0             //~v47sR~
 //**************************                                       //~v47sR~
@@ -3054,7 +3161,10 @@ void help(void)
 //*******************
     uerrmsg_init(0,stdout,Suerrmsgopt);//msg to stdout             //~v11ER~
     uerrexit_init(0,stdout,0,0,0);//stdout only,no pathmsg         //~v11ER~
-                                                                //~4C27I~
+#ifdef XXE                                                         //~vbDaR~
+    int scrH=uviolxGetMaxHelpLines();                              //~vbDaR~
+    uerrhelpmsgSetScrHeight(scrH);                                 //~vbDaR~
+#endif                                                             //~vbDaR~
     HELPMSG "format ========: %s [edit-file-name|*] [%coption %c...]\n",//~v21cR~
             " 形式  ========: %s [編集ファイル名|*] [%cオプション %c...]\n",//~v21cR~
 #ifdef WXE                                                         //~vb2VI~
@@ -3264,12 +3374,12 @@ void help(void)
 //          "               :UTF8コードで指定する場合は プレフ｣ックス '8-' を指定する。\n");//~vbzrI~//~vbzCR~
     HELPMSG "               :font_param_filename is for indirect specification.\n",//~vbzrI~
             "               :ファイルで間接的に指定する場合は font_param_filename を指定。\n");//~vbAnI~
-#ifdef LNXCON                                                      //+vbC5I~
+#ifdef LNXCON                                                      //~vbC5I~
     HELPMSG "               :use \"-Fnone\" for quick start with no-checking\n",//~vbC5R~
             "               :\"-Fnone\" を指定すると曖昧文字が SBCS か DBCS かフォントを調べない\n");//~vbC5I~
     HELPMSG "                ambiguous chars are SBCS or DBCS which depends to font.\n",//~vbC5I~
             "                ので立ち上がりが早くなります。\n");   //~vbC5I~
-#endif                                                             //+vbC5I~
+#endif                                                             //~vbC5I~
 //  HELPMSG "               :e.g) -F\"Times Roman 16\", -F@./fontParm.txt.\n",//~vbzrR~//~vbzCR~
 //          "               :例 -F\"ＭＳ 明朝 20\" 、-F@./fontParm.txt。\n");//~vbzrR~//~vbzCR~
     HELPMSG "               :e.g) /F\"Ubuntu Mono\", /F@.\\fontParm.txt.\n",//~vbzCR~
@@ -3338,6 +3448,11 @@ void help(void)
     HELPMSG "  %cH,%c?        :Help\n",                            //~v21cR~
             "  %cH,%c?        :ヘルプ\n",                          //~v21cR~
 			CMDFLAG_PREFIX,CMDFLAG_PREFIX);                        //~v21cI~
+#ifdef LNXCON                                                      //~vbD8R~
+    HELPMSG "  --h          :Help for Linux-Console specific.\n",  //~vbD8R~
+            "  --h          :Linuxコンソ\ール版用固有のヘルプ\n",  //~vbD8R~
+			CMDFLAG_PREFIX,CMDFLAG_PREFIX);                        //~vbD8I~
+#endif                                                             //~vbD8I~
 //#ifdef W32                                                       //~v47rR~
 //#if defined(W32) || defined(AIX)                                 //~v47sR~
 #if defined(W32) || defined(UNX)                                   //~v47sI~
@@ -3397,6 +3512,11 @@ void help(void)
             "  %cUUxxxx      :デバッグ用; xxxx:デバッガーで停止するユニコード。\n",//~vbzjI~
                     CMDFLAG_PREFIX);                               //~vbzjI~
   }                                                                //~vbzjI~
+#ifdef LNXCON                                                      //~vbDtR~
+    HELPMSG "  %cVDCn        :(LNXCON) colorNo(n:1-->7) of cursor pos of utf8 file.\n",//~vbDtR~
+            0,                                                     //~vbDtI~
+                    CMDFLAG_PREFIX);                               //~vbDtI~
+#endif                                                             //~vbDtI~
 #ifdef UNX                                                         //~v21cI~
     HELPMSG "  %cWxxxx       :Work dir name(alternative of export %s=xxxx)\n",//~v21cI~
             "  %cWxxxx       :ワークディレクトリ－名(環境変数設定 export %s=xxxx の代り)\n",//+v21cI~//~v21cR~

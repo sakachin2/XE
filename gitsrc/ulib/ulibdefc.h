@@ -1,8 +1,10 @@
-//*CID://+v7afR:                              update#=  167;       //+v7afR
+//*CID://+vbD6R:                              update#=  169;       //+vbD6R
 //*********************************************************************//~v131I~
 //* define --common to DOS/OS2/WIN95/UNX/LNX                       //~v321R~
 //*********************************************************************//~v131I~
-//v7af:240302 (BUG)#define LNXCON was set for XXE, but not used currentry//+v7afI
+//vbD6:250702 (WXE)exception handling using DbgHelp API            //+vbD6I
+//vbD5:250701 (Win)exception handling using DbgHelp API            //~vbD5I
+//v7af:240302 (BUG)#define LNXCON was set for XXE, but not used currentry//~v7afI
 //vc16 2020/06/15 arm64 is required for play store                 //~vc16I
 //v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~v6L5I
 //v6G3:161212 (Win10) missing error.h , use winerror.h             //~v6BkI
@@ -82,7 +84,13 @@
 #ifdef _M_X64    //vs2010                                          //~v6hhI~
 //*Windows 64bit(ptr is 64bit,long is 32bit)                       //~v6uYI
     #define ULIB64X  //internal use                                //~v6hhI~
+	#ifdef W32                                                         //+vbD5I~//~vbD5I
+		#define WIN_EXH   //windows                                             //+vbD5I~//~vbD5I
+	#endif                                                             //+vbD5I~//~vbD5I
 #endif                                                             //~v6hhI~
+#ifdef WXE                                                         //+vbD6I
+	#define WIN_EXH   //windows                                    //+vbD6I
+#endif                                                             //+vbD6I
 #ifdef DOSDOS                                                      //~v690I~
   	#define UINT4 ULONG     //keep 4 byte                          //~v690I~
   	#define  INT4 LONG     //keep 4 byte                           //~v690I~
@@ -184,7 +192,7 @@ typedef unsigned short WUCS,*PWUCS;                                //~v691I~
     #endif                                                         //~v5g6I~
 	#ifdef LNX           //linux                                   //~v321I~
       #ifdef XXE                                                   //~v65iI~
-      #else                                                        //+v7afI
+      #else                                                        //~v7afI
       	#define LNXCON                                             //~v65iI~
       #endif                                                       //~v65iI~
       #ifdef __s390__                                              //~v5nDR~

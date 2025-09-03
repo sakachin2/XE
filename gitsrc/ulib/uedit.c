@@ -1,4 +1,4 @@
-//*CID://+v79pR~:                             update#=   88;       //~v79pR~
+//*CID://+v7etR~:                             update#=   96;       //~v7etR~
 //*************************************************************
 //*uedit.c                                                         //~v022R~
 //*  unumedit,utimeedit,uitoa10,ucmdparmedit,uwordrep              //~v066R~
@@ -6,6 +6,7 @@
 //*  ugetnumrange2 ugetnumrange3                                   //~v5fxR~
 //*  ux2is                                                         //~v79pI~
 //*************************************************************
+//v7et:250805 TC calc suuports DOWRD hex data                      //~v7etI~
 //v79p:240203 add ux2is(get int[] from hex string 0x__,X___,u___ fmt with any spliter//~v79pI~
 //v771:230323 sys/timeb.h is not found on ARM                      //~v771I~
 //v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //~v711I~
@@ -89,6 +90,7 @@
 #include <ualloc.h>                                             //~5A14I~
 #include <uparse.h>                                                //~v098I~
 #include <ustring.h>                                               //~v6x3I~
+#include <utrace.h>                                                //~v7etI~
 #ifdef UNX                                                         //~v321R~
     #include <ugcclib.h>                                           //~v321I~
 #endif  //!UNX                                                     //~v321R~
@@ -1816,11 +1818,11 @@ int ux2is(int Popt,char *Phex,int Plen,int *Pout,int Pmaxctr,int *Ppchklen)//~v7
             if (lenx%2)                                            //~v79pI~
             {                                                      //~v79pI~
                 wk10[0]='0';                                       //~v79pI~
-                memcpy(wk10+1,pcxs,(size_t)lenx);                  //+v79pR~
+                memcpy(wk10+1,pcxs,(size_t)lenx);                  //~v79pR~
                 lenx++;                                            //~v79pI~
             }                                                      //~v79pI~
             else                                                   //~v79pI~
-                memcpy(wk10,pcxs,(size_t)lenx);                    //+v79pR~
+                memcpy(wk10,pcxs,(size_t)lenx);                    //~v79pR~
             wk10[lenx]=0;                                          //~v79pI~
             if (ux2l(wk10,&ul)) //0:OK                             //~v79pI~
                 break;       //return -1                           //~v79pI~
@@ -1845,3 +1847,62 @@ int ux2is(int Popt,char *Phex,int Plen,int *Pout,int Pmaxctr,int *Ppchklen)//~v7
     }//for                                                         //~v79pI~
     return rc;                                                     //~v79pI~
 }//ux2l                                                            //~v79pI~
+//*************************************************************************//~v7etI~
+//*get long long from hex string(allow oddnumber hex digit)        //~v7etI~
+//*************************************************************************//~v7etI~
+int ugethexll(int Popt,char *Pstr,int Plen,long long *Pll)         //~v7etI~
+{                                                                  //~v7etI~
+	int len=Plen;                                                  //~v7etI~
+    *Pll=0;                                                        //~v7etI~
+    if (!len)                                                      //~v7etI~
+    	len=(int)strlen(Pstr);                                     //~v7etI~
+    if (len>16)                                                    //~v7etI~
+    	return 4;                                                  //~v7etI~
+    char hexstr[32];                                               //~v7etI~
+    char hexbin[32];                                               //~v7etI~
+    memset(hexbin,0,sizeof(hexbin));                               //~v7etI~
+    int hexlen;                                                    //~v7etI~
+    if (len%2)                                                     //~v7etI~
+    {                                                              //~v7etI~
+	    if (len>15)                                                //~v7etI~
+    		return 4;                                              //~v7etI~
+    	hexstr[0]='0';                                             //~v7etI~
+        memcpy(hexstr+1,Pstr,(size_t)len);                         //+v7etR~
+    	hexlen=ugethex(hexstr,hexbin,len+1);                       //~v7etI~
+    }                                                              //~v7etI~
+    else                                                           //~v7etI~
+    {                                                              //~v7etI~
+    	hexlen=ugethex(Pstr,hexbin,len);                           //~v7etI~
+    }                                                              //~v7etI~
+    if (hexlen<=0)                                                 //~v7etI~
+    {                                                              //~v7etI~
+    	UTRACEP("%s:ugethex failed(rc=%d), str=%s\n",UTT,hexlen,Pstr);//~v7etI~
+        return hexlen;                                             //~v7etI~
+    }                                                              //~v7etI~
+    unsigned long long ll=0;                                       //~v7etR~
+    for (int ii=0;ii<hexlen;ii++)                                  //~v7etI~
+    {                                                              //~v7etI~
+    	ll|=(long long)hexbin[ii]<<(7-ii)*8;                       //~v7etI~
+//      printf("ii=%d,hexbin[ii]=%02x,ll=%016llx,hexlen=%d\n",ii,hexbin[ii],ll,hexlen);//~v7etI~
+    }                                                              //~v7etI~
+    ll>>=(8-hexlen)*8;                                             //~v7etI~
+//  printf("return ll=%016llx\n",ll);                              //~v7etI~
+    UTRACEP("%s:str=%s,ll=%016llx\n",UTT,Pstr,ll);                 //~v7etR~
+    *Pll=(long long)ll;                                            //+v7etR~
+    return 0;                                                      //~v7etI~
+}                                                                  //~v7etI~
+//*************************************************************************//~v7etI~
+//*get long*2 from hex string(allow oddnumber hex digit)           //~v7etI~
+//*************************************************************************//~v7etI~
+int ugethex2l(int Popt,char *Pstr,int Plen,long *P2l)              //~v7etI~
+{                                                                  //~v7etI~
+	unsigned long long ll;                                         //~v7etR~
+    int rc=ugethexll(Popt,Pstr,Plen,&ll);                          //~v7etI~
+    if (!rc)                                                       //~v7etI~
+    {                                                              //~v7etI~
+    	P2l[0]=(long)(ll>>4*8);                                    //~v7etI~
+    	P2l[1]=(long)(ll&0xffffffff);                              //~v7etI~
+    }                                                              //~v7etI~
+    UTRACEP("%s:str=%s,ll=%08lx-%08lx\n",UTT,Pstr,P2l[0],P2l[1]);  //~v7etR~
+    return rc;                                                     //~v7etI~
+}                                                                  //~v7etI~

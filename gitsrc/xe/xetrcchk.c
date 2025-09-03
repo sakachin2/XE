@@ -1,4 +1,4 @@
-//CID://+vanfR~:               update#=      3                     //~vanfR~
+//CID://+vanfR~:               update#=      4                     //+vanfR~
 // ******************************************************************
 // * xetrcchk.c                                                    //~v1.0R~
 // *  translate keyin value on xe.trc                              //~v1.0R~
@@ -33,7 +33,7 @@
 #include <ulib.h>                                                  //~v1.0R~
 #include <ukbd.h>                                                  //~v1.0I~
 #include <uedit.h>                                                 //~v1.0I~
-#include <uque.h>                                                  //+vanfI~
+#include <uque.h>                                                  //~vanfI~
 //********************************************************************
 #include "xescr.h"                                                 //~vanfI~
 #include "xekbd.h"                                                 //~v1.0I~

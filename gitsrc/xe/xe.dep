@@ -2403,6 +2403,7 @@ $(OBJDIR)xefile43.obj:xefile43.c  \
                       $(ULIB)udbcschk.h  \
                       $(ULIB)utf22.h  \
                       $(ULIB)ucvebc.h  \
+                      $(ULIB)utrace.h  \
                       xe.h  \
                       xescr.h  \
                       xecsr.h  \
@@ -2625,6 +2626,7 @@ $(OBJDIR)xefunc.obj:xefunc.c  \
                     $(ULIB)ucalc2.h  \
                     $(ULIB)utf.h  \
                     $(ULIB)umiscf.h  \
+                    $(ULIB)uerr.h  \
                     xe.h  \
                     xescr.h  \
                     xekbd.h  \
@@ -2931,6 +2933,8 @@ $(OBJDIR)xekbd.obj:xekbd.c  \
                    xemousel.h  \
                    xedir.h  \
                    xetso.h  \
+                   xesub.h  \
+                   xeini3.h  \
  
 #################
 $(OBJDIR)xelcmd.obj:xelcmd.c  \
@@ -2961,6 +2965,7 @@ $(OBJDIR)xelcmd2.obj:xelcmd2.c  \
                      $(ULIB)uque.h  \
                      $(ULIB)ustring.h  \
                      $(ULIB)ufile.h  \
+                     $(ULIB)ufile5.h  \
                      $(ULIB)utrace.h  \
                      $(ULIB)utf22.h  \
                      $(ULIB)ucvebc.h  \
@@ -3629,6 +3634,15 @@ $(OBJDIR)xetrcchk.obj:xetrcchk.c  \
                       $(ULIB)uque.h  \
                       xescr.h  \
                       xekbd.h  \
+ 
+#################
+$(OBJDIR)xetrckbdchk.obj:xetrckbdchk.c  \
+                         $(ULIB)ulib.h  \
+                         $(ULIB)ukbd.h  \
+                         $(ULIB)uedit.h  \
+                         $(ULIB)uque.h  \
+                         xescr.h  \
+                         xekbd.h  \
  
 #################
 $(OBJDIR)xetso.obj:xetso.c  \

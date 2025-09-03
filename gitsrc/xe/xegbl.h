@@ -1,8 +1,9 @@
-//*CID://+vbB0R~:                             update#=   41;       //+vbB0R~
+//*CID://+vbDtR~:                             update#=   42;       //+vbDtR~
 //*********************************************************************
 //* xegbl.h
 //*********************************************************************
-//vbB0:240731 (Bug) missed to change version 1.29->1.30            //+vbB0I~
+//vbDt:250804 (LNX)Test function. Color palette number of Datapos by Vhex Cursor by cmdline option -vdc_//+vbDtI~
+//vbB0:240731 (Bug) missed to change version 1.29->1.30            //~vbB0I~
 //vbd9:171121*(BUG)Title msg:version 1.28-->1.29                   //~vbd9I~
 //vb00:150309 v1.28 xegbl.h                                        //~vb00I~
 //vaiD:130703 xe version  1.27                                     //~vaiDI~
@@ -43,8 +44,8 @@
 //*v031:950712:new
 //*********************************************************************
 //#define VER   "v1.28"                                              //~v76gR~//~vaiDR~//~vb00R~//~vbd9R~
-//#define VER   "v1.29"                                              //~vbd9I~//+vbB0R~
-#define VER   "v1.30"                                              //+vbB0I~
+//#define VER   "v1.29"                                              //~vbd9I~//~vbB0R~
+#define VER   "v1.30"                                              //~vbB0I~
                                                                    //~v440I~
 #define BINFILE_LINEWIDTH  72//default width for bin file          //~v176I~
 #define BINFILE_HEXLINEWIDTH  20//default width for bin file hex display//~v440R~
@@ -80,6 +81,9 @@ XEGBL_EXT char *Gcomparecmdf;	//diff or xfc                      //~v76gI~
 XEGBL_EXT char *Gcomparecmdd;	//xdc                              //~v76gI~
 XEGBL_EXT char *Ggrepcmd;       //grep                             //~v76gI~
                                                                    //~v20qI~
+#ifdef LNX                                                         //+vbDtI~
+XEGBL_EXT int GvhexcsrDataColorPalette;                            //+vbDtI~
+#endif                                                             //+vbDtI~
 //*******************************************************          //~v19TI~
 void gblinit(void);
                                                                 //~v051I~

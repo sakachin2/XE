@@ -1,9 +1,12 @@
-//CID://+v771R~:              update#=    13                       //+v771R~
+//CID://+v7ewR~:              update#=    20                       //~v7ewR~
 //*************************************************************
 //*xecalc2.c                                                       //~v50gR~
 //* basic calc:double word calc                                    //~v50gR~
 //*************************************************************
-//v771:230323 sys/timeb.h is not found on ARM                      //+v771I~
+//v7ew:250806 Not v7eu, use display format option 'W'              //~v7ewI~
+//vbDu:250805 tc calc support long long by hex notation            //~vbDuI~
+//v7es:250804 ucalc bug; DWORD-WORD if WORD<0                      //~v7esI~
+//v771:230323 sys/timeb.h is not found on ARM                      //~v771I~
 //v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //~v711I~
 //v6xi:150115 conversion warning                                   //~v6xiI~
 //v6xh:150115 (BUG)invalid dword calc;on 64bit linux long/ulong is 64bit,so DWADD dose not overflow//~v6xhI~
@@ -41,9 +44,9 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#ifndef ARM                                                        //+v771I~
+#ifndef ARM                                                        //~v771I~
 #include <sys/timeb.h>
-#endif                                                             //+v771I~
+#endif                                                             //~v771I~
 //*******************************************************
 #include <ulib.h>
 #include <uerr.h>
@@ -52,6 +55,7 @@
 #include <uedit.h>
 #define UFTIME                                                     //~v711I~
 #include <umiscf.h>                                                //~v711I~
+#include <utrace.h>                                                //~vbDuI~
 
 //*******************************************************
 #define WORDSZ   32
@@ -164,10 +168,27 @@ int bc_getxdw(char *Pdata,long *Pvalue)
 {
 	char *pc;
     int len,len2,len3;
+    long dw2[2];                                                   //~vbDuI~
 //****************************************
     pc=strchr(Pdata,'.');
     if (!pc || *(pc+1)!='.') //".." dword id
+    {                                                              //~vbDuI~
+        int rc3=ugethex2l(0,Pdata,0,dw2);                          //~vbDuI~
+        if (rc3<0)                                                 //~vbDuI~
+        	return 8;                                              //~vbDuI~
+        if (rc3==1)	//length err                                   //~vbDuI~
+        	return 4;                                              //~vbDuI~
+        if (dw2[0])                                                //~vbDuI~
+        {                                                          //~vbDuI~
+    		Pvalue[0]=dw2[0];                                      //~vbDuI~
+    		Pvalue[1]=UCALC_DWORDID;                               //~vbDuI~
+    		Pvalue[2]=dw2[1];                                      //~vbDuI~
+    		Pvalue[3]=0;                                           //~vbDuI~
+            UTRACEP("%s:Pdata=%s,return Pvalue=%08lx-%08lx-%08x-%08x\n",UTT,Pdata,Pvalue[0],Pvalue[1],Pvalue[2],Pvalue[3]);//~vbDuI~
+        	return 1;	//dword gotten                             //~vbDuI~
+        }                                                          //~vbDuI~
     	return 0;			//no dword specification               //~v50gR~
+    }                                                              //~vbDuI~
     len=(int)strlen(Pdata);
 //  len2=(int)((ULONG)pc-(ULONG)Pdata);    //before point          //~v6hhR~
     len2=(int)((ULPTR)pc-(ULPTR)Pdata);    //before point          //~v6hhI~
@@ -601,7 +622,13 @@ int bc_dweditnum(int Pfunctype,int Pconvtype,long *Pvalue,UCHAR *Pout)
 //*****************
     if (*(Pvalue+1)>UCALC_DWORDID)	//dword+underpoint             //~v5djR~
     	return bc_dwupeditnum(Pfunctype,Pconvtype,Pvalue,Pout);    //~v5djI~
-    switch(Pconvtype)
+//  switch(Pconvtype)                                              //~v7ewR~
+//  switch(Pconvtype)                                              //~v7ewI~
+    int convt=Pconvtype;                                           //+v7ewR~
+    if (convt=='W')                                                //~v7ewI~
+        if (!(Pvalue[1] & UCALC_DWORDID))                          //~v7ewI~
+            convt='X';                                             //~v7ewI~
+    switch(convt)                                                  //~v7ewI~
     {
     case 'X':     //convert to HEX value
     	if (Pfunctype=='%')
@@ -614,6 +641,14 @@ int bc_dweditnum(int Pfunctype,int Pconvtype,long *Pvalue,UCHAR *Pout)
             sprintf(Pout+len,"..%08lX",Pvalue[2]);                 //~v56wI~
         }                                                          //~v56wI~
     	break;
+    case 'W':     //convert to DWORD hex (not .. fmt)              //~vbDuI~
+        *Pout='x';                                                 //~vbDuI~
+        if (Pvalue[0])                                             //~vbDuI~
+			len=1+ucalc_editevenhex(Pvalue[0],Pout+1);             //~vbDuR~
+        else                                                       //~vbDuI~
+			len=1;                                                 //~vbDuI~
+        sprintf(Pout+len,"%08lX",Pvalue[2]);                       //~vbDuI~
+    	break;                                                     //~vbDuI~
     case 'O':     //convert to OCT value                           //~v56wI~
     	if (Pfunctype=='%')                                        //~v56wI~
     		sprintf(Pout,"o%lo",Pvalue[2]);                        //~v56wI~
@@ -1647,11 +1682,13 @@ int bc_numfmt2dw(int Popt,long *Pnumfmt,long *Pdw)                 //~v5drR~
     }                                                              //~v5drI~
     else                                                           //~v5drI~
     {                                                              //~v5drI~
+#ifdef AAA                                                         //~v7esI~
 //   	if (Popt & CALC_SIGNED && Pnumfmt[0]<0)                    //~v5dtR~
      	if (Pnumfmt[0]<0)                                          //~v5dtI~
 //      	Pdw[0]=ULMINUS;                                        //~v5dyR~
         	Pdw[0]=-1;                                             //~v5dyI~
         else                                                       //~v5drI~
+#endif                                                             //~v7esI~
 	    	Pdw[0]=0;                                              //~v5drR~
     	Pdw[1]=Pnumfmt[0];	//dw low                               //~v5drR~
     }                                                              //~v5drI~

@@ -1,7 +1,8 @@
-//*CID://+vb50R~:                             update#=   35;       //~vb50R~
+//*CID://+vbD2R~:                             update#=   36;       //+vbD2R~
 //*********************************************************************
 //* keyboard sub hdr
 //*********************************************************************
+//vbD2:250624 save funkkey/shortcut cmd to another file for save operation in multiple sessions//+vbD2I~
 //vb50:160827 accept S+A/C+extended key                            //~vb50I~
 //vanf:131209 alias cmd;support addtional parm;%*,%^ for filename,%@ all remaining//~vanfI~
 //vafm:120626 LLP64 changes infile size                            //~vafmI~
@@ -152,12 +153,12 @@ int kbdrsckt(FILE *Pfh);                                           //~v48fI~
 //**************************************************               //~v0ijI~
 void kbdsetfkcmd(void);                                            //~v0ijI~
 //**************************************************               //~v0ijI~
-#ifndef KKK                                                        //+vb50I~
-	int kbdfkctsrch(int Popt,KEYTBL *Ppkt,int Pshift);             //+vb50I~
-    #define KFKCSO_SHIFTAC       0x01 //search S+A,S+C             //+vb50I~
-#else                                                              //+vb50I~
+#ifndef KKK                                                        //~vb50I~
+	int kbdfkctsrch(int Popt,KEYTBL *Ppkt,int Pshift);             //~vb50I~
+    #define KFKCSO_SHIFTAC       0x01 //search S+A,S+C             //~vb50I~
+#else                                                              //~vb50I~
 int kbdfkctsrch(KEYTBL *Ppfkt,int Pshift);                         //~v0ijI~
-#endif                                                             //+vb50I~
+#endif                                                             //~vb50I~
 //**************************************************               //~v55cI~
                                                                    //~v589I~
 //**************************************************               //~v589I~
@@ -177,3 +178,5 @@ int xekbdsetSAC(int Popt,int Pshiftid,KEYTBL *Ppkt,char *Pkeyname);//~vb50I~
 #define XEKBDSACO_NOSTRZ       0x01 //no output strz               //~vb50R~
 #define XEKBDSACO_JP           0x02 //KTnamej                      //~vb50I~
 #endif                                                             //~vb50I~
+//**************************************************************** //+vbD2I~
+int kbdupdatesckt(int Popt);                                       //+vbD2I~

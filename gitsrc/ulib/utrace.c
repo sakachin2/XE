@@ -1,8 +1,8 @@
-//*CID://+v7dLR~:                             update#=    1;       //+v7dLI~
+//*CID://+v7dLR~:                             update#=    3;       //~v7dLI~
 //***********************************************************************//~v026I~
 //* utrace.c                                                       //~v022R~
 //***********************************************************************
-//v7dL:241106 utrace; del space between funcname and lineno(%-12s==>%s)//+v7dLI~
+//v7dL:241106 utrace; del space between funcname and lineno(%-12s==>%s)//~v7dLI~
 //v7bA:240419 (Bug of vbzu)trace off revive by reopen              //~4419I~
 //vbzu:240302 add test option to notrace while mapinit for performance. (del prev option /Yn/Nn to winNT option)//~vbzuI~
 //v77v:230515 ARM;utrace(utrace.xfc) open failed                   //~v77vI~
@@ -393,6 +393,11 @@ void utrace_flush(char *Pcmt)                                      //~v778R~
         UTRACEP("utrace.flush:%s\n",Pcmt);                         //~v778R~
  		fflush(Sfile);                                             //~v778I~
     }                                                              //~v778I~
+	if (Sfile_force)  //file opened                                //+v7dLI~
+    {                                                              //+v7dLI~
+        UTRACEP("utrace_force.flush:%s\n",Pcmt);                   //+v7dLI~
+ 		fflush(Sfile_force);                                       //+v7dLI~
+    }                                                              //+v7dLI~
 }                                                                  //~v778I~
 //****************************************************************//~6203I~
 //* printf format trace                                         //~6203I~
@@ -613,8 +618,8 @@ void utrace (char * Pfile,int Pline,int Ptype,char *Pcomment,void *Paddr,int Ple
 //            (int)tb.millitm,                                     //~v57bR~
 //            comm);                                               //~v57bR~
 //  nextpos=sprintf(dump,"= %s = %-12s-%4d %s:",                   //~v57bR~//~v6ViR~
-//  nextpos=sprintf(dump,"= %s = %-12s-%d %s:",                    //~v6ViI~//+v7dLR~
-    nextpos=sprintf(dump,"= %s = %s-%d %s:",                       //+v7dLI~
+//  nextpos=sprintf(dump,"= %s = %-12s-%d %s:",                    //~v6ViI~//~v7dLR~
+    nextpos=sprintf(dump,"= %s = %s-%d %s:",                       //~v7dLI~
             utracectime(),                                         //~v57bI~
             Pfile+i+1,Pline,                                       //~v57bR~
             comm);                                                 //~v57bI~
@@ -626,8 +631,8 @@ void utrace (char * Pfile,int Pline,int Ptype,char *Pcomment,void *Paddr,int Ple
 //            Pfile+i,Pline,                                       //~v57bR~
 //            reg.h.ch,reg.h.cl,reg.h.dh,reg.h.dl,                 //~v57bR~
 //            comm);                                               //~v57bR~
-//  nextpos=sprintf(dump,"= %s = %-12s-%4d %s:",                   //~v57bR~//+v7dLR~
-    nextpos=sprintf(dump,"= %s = %s-%4d %s:",                      //+v7dLI~
+//  nextpos=sprintf(dump,"= %s = %-12s-%4d %s:",                   //~v57bR~//~v7dLR~
+    nextpos=sprintf(dump,"= %s = %s-%4d %s:",                      //~v7dLI~
     		utracectime(),                                         //~v57bI~
             Pfile+i+1,Pline,                                       //~v57bR~
             comm);                                                 //~v57bI~
@@ -642,8 +647,8 @@ void utrace (char * Pfile,int Pline,int Ptype,char *Pcomment,void *Paddr,int Ple
 //              (int)datetime.wMilliseconds/10,                    //~v57bR~
 //              comm);                                             //~v57bR~
 //      nextpos=sprintf(dump,"= %s = %-12s-%4d %s:",               //~v57bR~//~v6ViR~
-//      nextpos=sprintf(dump,"= %s = %-12s-%d %s:",                //~v6ViI~//+v7dLR~
-        nextpos=sprintf(dump,"= %s = %s-%d %s:",                   //+v7dLI~
+//      nextpos=sprintf(dump,"= %s = %-12s-%d %s:",                //~v6ViI~//~v7dLR~
+        nextpos=sprintf(dump,"= %s = %s-%d %s:",                   //~v7dLI~
                 utracectime(),                                     //~v57bI~
                 Pfile+i+1,Pline,                                   //~v57bR~
                 comm);                                             //~v57bI~
@@ -656,8 +661,8 @@ void utrace (char * Pfile,int Pline,int Ptype,char *Pcomment,void *Paddr,int Ple
 //          datetime.seconds,                                      //~v57bR~
 //          datetime.hundredths,                                   //~v57bR~
 //          comm);                                                 //~v57bR~
-//  nextpos=sprintf(dump,"= %s = %-12s-%4d %s:",                   //~v57bR~//+v7dLR~
-    nextpos=sprintf(dump,"= %s = %s-%4d %s:",                      //+v7dLI~
+//  nextpos=sprintf(dump,"= %s = %-12s-%4d %s:",                   //~v57bR~//~v7dLR~
+    nextpos=sprintf(dump,"= %s = %s-%4d %s:",                      //~v7dLI~
             utracectime(),                                         //~v57bI~
             Pfile+i+1,Pline,                                       //~v57bR~
             comm);                                                 //~v57bI~

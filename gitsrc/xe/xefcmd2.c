@@ -1,9 +1,9 @@
-//*CID://+vbi2R~:                             update#=  685;       //+vbi2R~
+//*CID://+vbi2R~:                             update#=  687;       //~vbi2R~
 //*************************************************************
 //*xefcmd2.c                                                       //~v53FR~
 //*  find/change/exclude                                           //~v11kR~
 //****************************************************************////~v438R~
-//vbi2:180211 (BUG) revRfind with Alt(PSF)/Ctl(PSP) was mixed(But now no effect because no caller)//+vbi2I~
+//vbi2:180211 (BUG) revRfind with Alt(PSF)/Ctl(PSP) was mixed(But now no effect because no caller)//~vbi2I~
 //vb50:160827 accept S+A/C+extended key                            //~vb50I~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
 //vb31:160418 (LNX64)Compiler warning                              //~vb31I~
@@ -634,13 +634,13 @@ int func_rfind_file(PUCLIENTWE Ppcw)
 //****************************************************************
 int func_revrfind_file(PUCLIENTWE Ppcw)
 {
-//*By funct panfnlfind(PAN func) is not called                     //+vbi2I~
+//*By funct panfnlfind(PAN func) is not called                     //~vbi2I~
     if (Ppcw->UCWkeyshift & KBDSTF_CONTROL)                        //~vbCBR~
-//  	return func_findPSF(Ppcw);                                 //~vbCBI~//+vbi2R~
-		return func_findPSP(Ppcw);                                 //+vbi2I~
+//  	return func_findPSF(Ppcw);                                 //~vbCBI~//~vbi2R~
+		return func_findPSP(Ppcw);                                 //~vbi2I~
     if (Ppcw->UCWkeyshift & KBDSTF_ALT)                            //~vbCBR~
-//  	return func_findPSP(Ppcw);                                 //~vbCBI~//+vbi2R~
-    	return func_findPSF(Ppcw);                                 //+vbi2I~
+//  	return func_findPSP(Ppcw);                                 //~vbCBI~//~vbi2R~
+    	return func_findPSF(Ppcw);                                 //~vbi2I~
 	return fcmdrfind(Ppcw,1,CMDFIND);	//reverse direction     //~5302R~
 }//func_revrfind_file                                           //~5106R~
                                                                 //~5106I~
@@ -885,6 +885,7 @@ int fcmdwfparm(FILE *Pfh)                                       //~v064R~
 //	len=fwrite(wkbuff,8,1,Pfh);     //8byte,rsv 4 byte             //~v0a9R~
 //	len=fwrite(wkbuff,sizeof(wkbuff),1,Pfh);     //8byte,rsv 4 byte//~v0a9I~//~vb31R~
   	len=(UINT)fwrite(wkbuff,sizeof(wkbuff),1,Pfh);     //8byte,rsv 4 byte//~vb31I~
+    UTRACED("wfparm",wkbuff,sizeof(wkbuff));                       //~vbi2I~
     if (!len)                                                   //~v064I~
     	return 16;                                              //~v064I~
 //ext data                                                         //~v47BI~
@@ -968,6 +969,7 @@ int fcmdwfparm(FILE *Pfh)                                       //~v064R~
   	len=(UINT)fwrite(&wkextdata,sizeof(wkextdata),1,Pfh);     //8byte,rsv 4 byte//~vb31I~
     if (!len)                                                      //~v47BI~
     	return 16;                                                 //~v47BI~
+    UTRACED("wfparm extdata",&wkextdata,sizeof(wkextdata));        //+vbi2R~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
 //	fcmd_savelcctforerrmsg(FCSCFEMO_CT2INI,0/*type:Ssrch*/,Ssrch,strlen(Ssrch),0/*out:update Ssrch*/,0/*ppcd*/,0/*lenlc*/);//~va50R~//~vb30R~
   	fcmd_savelcctforerrmsg(FCSCFEMO_CT2INI,0/*type:Ssrch*/,Ssrch,(int)strlen(Ssrch),0/*out:update Ssrch*/,0/*ppcd*/,0/*lenlc*/);//~vb30I~
@@ -976,6 +978,7 @@ int fcmdwfparm(FILE *Pfh)                                       //~v064R~
   	len=(UINT)fwrite(Ssrch,MAXCOLUMN,1,Pfh);                       //~vb31I~
     if (!len)                                                   //~v064I~
     	return 16;                                              //~v064I~
+    UTRACED("Ssrch",Ssrch,MAXCOLUMN);                              //~vbi2I~
 //	len=fwrite(Sescsrchchar,sizeof(Sescsrchchar),1,Pfh);           //~v0a9R~
 	memset(wkbuff,0,sizeof(wkbuff));                               //~v0a9I~
     memcpy(wkbuff,Sescsrchchar,sizeof(Sescsrchchar));              //~v0a9I~
@@ -983,6 +986,7 @@ int fcmdwfparm(FILE *Pfh)                                       //~v064R~
   	len=(UINT)fwrite(wkbuff,sizeof(wkbuff),1,Pfh);                 //~vb31I~
     if (!len)                                                      //~v09OI~
     	return 16;                                                 //~v09OI~
+    UTRACED("Sescsrchchar",wkbuff,sizeof(wkbuff));                 //~vbi2I~
 //#ifdef UTF8EBCD   //raw ebcdic file support                      //~va50R~
 //    fcmd_savelcctforerrmsg(FCSCFEMO_CT2INI,SEARCH_CHANGE,Srepword,strlen(Srepword),0/*out:update Ssrch*/,0/*ppcd*/,0/*lenlc*/);//~va50R~
 //#endif //UTF8EBCD raw ebcdic file support                        //~va50R~
@@ -990,6 +994,7 @@ int fcmdwfparm(FILE *Pfh)                                       //~v064R~
   	len=(UINT)fwrite(Srepword,MAXCOLUMN,1,Pfh);                    //~vb31I~
     if (!len)                                                   //~v064I~
     	return 16;                                              //~v064I~
+    UTRACED("Srepword",Srepword,MAXCOLUMN);                        //~vbi2I~
 //	len=fwrite(Sescrepchar,sizeof(Sescrepchar),1,Pfh);             //~v0a9R~
 	memset(wkbuff,0,sizeof(wkbuff));                               //~v0a9I~
     memcpy(wkbuff,Sescrepchar,sizeof(Sescrepchar));                //~v0a9I~
@@ -997,6 +1002,7 @@ int fcmdwfparm(FILE *Pfh)                                       //~v064R~
   	len=(UINT)fwrite(wkbuff,sizeof(wkbuff),1,Pfh);                 //~vb31I~
     if (!len)                                                      //~v09OI~
     	return 16;                                                 //~v09OI~
+    UTRACED("Sescrepchar",wkbuff,sizeof(wkbuff));                  //~vbi2I~
 //  if (Ssrchlen2)                                                 //~v54zR~
     if (Ssrchlen2||Seolsrchsw2)                                    //~v54zI~
     {                                                              //~v43wI~
@@ -1010,6 +1016,7 @@ int fcmdwfparm(FILE *Pfh)                                       //~v064R~
   		len=(UINT)fwrite(wkbuff,sizeof(wkbuff),1,Pfh);             //~vb31I~
     	if (!len)                                                  //~v43wI~
     		return 16;                                             //~v43wI~
+	    UTRACED("Ssrch2",wkbuff,sizeof(wkbuff));                   //~vbi2I~
     }                                                              //~v43wI~
 //  fileclose(fullpath,fh);                                     //~v064R~
 	return 0;                                                   //~5504I~

@@ -1,3 +1,75 @@
+//*v130C *** 2025/08/25 upload 
+//vbDy:250828 put CMD string to kbdtrace
+//            xefunc.c
+//vbDx:250826 cv h2c; allow missing pre of -HpreXXpost
+//            xefcmd5.c
+//vbDw:250825 cv h2c; loop when if missing pre of -HpreXXpost
+//            xefcmd5.c
+//vbDv:250809 find cvmd;not found if lrecl<srch word ucs4 size(3) when search word is \x______ on utf8 file.
+//            xefcmd26 xefcmd23.c/h xefcmd2.h
+//vbDu:250805 tc calc support long long by hex notation
+//            xecalc2.c ucalc2.c xecalc22.c ucalc.h
+//vbDt:250804 (LNX)Test function. Color palette number of Datapos by Vhex Cursor by cmdline option -vdc_
+//            xe.c xegbl.h
+//vbDs:250730 (gxe)vbDp for gxe(split combining,vhex csr data color)
+//            xxescr.c xxecsub.h xxexei.h/c
+//vbDr:250728 (LNXCON)drop vbDo for LNXCON because 06 and 0E is same(limited pallette)
+//            xefile23.c
+//vbDq:250728 (WXE:bug)vhex to data err when xpos split ucs4
+//            wxexei.c
+//vbDp:250726 (WXE)color of combining char split for vhex csr was green.(ignored that xefile23 set)
+//            wxescr.cpp wxecsub.c/h wxeprt.cpp wxemain.h wxexei.c/h
+//vbDo:250726 change csr pos color of dataline corresponding to vhex/hhex pos
+//            xefile23.c
+//vbDn:250719 vhexcsrpos is cleared when screen split
+//            (color of dataline combining char is green corresponding vhex line csr pos when screen split by 2 file panel.
+//            if notified crrectly it have to change to green(fg/bg=A0 by vhexcpos at uviom_wrtW0W) 
+//            xefile23.c
+//vbDm:250719 (wxe)char pos after of cpos have to be written as a single(green if combining). abandoned to same as LNX
+//            wxescr.cpp
+//vbDk:250719 (gxe) show 2byte SCM(309a) as ?? when combine mode and lig on and off.
+//            xefile23.c
+//vbDj:250714 (WinCon) wait by getchar when exception to be attached by visualstudio
+//            xe.c
+//vbDi:250710 opt unicomb help msg "]"-->"}"
+//            xeopt2.c
+//vbDh:250709 (gxe)4byte dbcs padding color was not tab color
+//            xxescr.c
+//vbDg:250706 (wxe)4byte dbcs missing display tab padding
+//            wxecsub.c wxexei.c/h
+//vbDf:250705 (gxe)crash after Ctrl+H(scrprint)/Ctrl+P(fileprint) at exit gxe(print process on going and c.b such as pcw may freed)
+//            gxeview.c xxexei.h
+//vbDe:250705 Rotate cmd; when warning:"dbcs and sbcs mix" was issued. return rc=!. it keep cmd in cmdline. treate it as success.
+//            fcmd6.c
+//vbDd:250704 compiler err c2059(typedef function). missing *
+//            uerr.h/c xe.c utils.c xeacb.c
+//vbDc:250704 compiler warning
+//            xefsubw.h
+//vbDb:250704 display func description(FTnamee/j) to scrtype err
+//            xefunc.c uerr.h
+//vbDa:250703 (gxe)helpmsg was not controled by scr height.
+//            uviolx.c xe.c uviol.h uerr.c/h
+//vbD9:250703 (LNX)compiler warning
+//            xekbd.c
+//vbD8:250703 (LNX)help msg of linux specific(--h) from xemain help(-h)
+//            xe.c
+//vbD7:250703 issue deleting msg for undel save
+//            xedlcmd4.c xe.c
+//vbD6:250702 (WXE)exception handling using DbgHelp API
+//            wxexei.c ulibdefc.h ueh.c xe.c
+//vbD5:250701 (Win)exception handling using DbgHelp API
+//            xe.c ueh.c/h uehmsg.c/h ulibdefc.h
+//vbD4:250626 (Win)print uerrexit msg
+//            xe.c
+//vbD3:250626 ufree err not malloc. cause of version unmatch of xe!save!
+//            xefile7.c
+//vbD2:250624 save funkkey/shortcut cmd to another file for save operation in multiple sessions
+//            xekbd.c/h xeini3.c/h xefile7.c xekbchk.c
+//vbD1:250529 cv x2c -H0xXXy; pre=0 and post=Xy shoud be pre=0x post=y
+//            xefcmd5.c
+//vbD0:250529 cv x2c -H0x crashes when data continued like as 0xa50xa6(a50 treated as odd number)
+//            xefcmd5.c
+//*v130B *** 2025/01/20 upload 
 //vbCa:250120 ? cmd,when index.htm not found, show github url
 //            xefunc2.c
 //vbC9:250117 (Lnx)handle xterm

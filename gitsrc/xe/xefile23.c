@@ -1,8 +1,15 @@
-//*CID://+vbA1R~:                             update#=  703;       //~vbA1R~
+//*CID://+vbDtR~:                             update#=  739;       //~vbDtR~
 //*************************************************************
 //*xefile23.c  *                                                   //~v69DR~
 //* draw(func_draw_file/setlineattr)                               //~v69DI~
 //*************************************************************
+//vbDt:250804 (LNX)Test function. Color palette number of Datapos by Vhex Cursor by cmdline option -vdc_//~vbDtI~
+//vbDr:250728 (LNXCON)drop vbDo for LNXCON because 06 and 0E is same(limited pallette)//~vbDrI~
+//vbDo:250726 change csr pos color of dataline corresponding to vhex/hhex pos
+//vbDn:250719 vhexcsrpos is cleared when screen split              //~vbDnR~
+//            (color of dataline combining char is green corresponding vhex line csr pos when screen split by 2 file panel.//~vbDnR~
+//            if notified crrectly it have to change to green(fg/bg=A0 by vhexcpos at uviom_wrtW0W)//~vbDnR~
+//vbDk:250719 (gxe) show 2byte SCM(309a) as ?? when combine mode and lig on and off.//~vbDkI~
 //vbA1:240528 (gxe:bug) dbcs combining(x309a) split when lig off and split//~vbA1I~
 //vbzV:240422 SCM(Mc) by green attr                                //~vbzVI~
 //vbzS:240418 ligature mode; need redraw also when csr is on lineno to reset back to normal combine mode when csr is back to lineno fld//~vbzSI~
@@ -352,6 +359,10 @@
 //#else                                                            //~v47dR~
 //    #define EOLID  0x1b                                          //~v47dR~
 //#endif                                                           //~v47dR~
+#define DEFAULT_COLOR_EDIT          0x0E   //yellow                //~vbDoI~
+#define DEFAULT_COLOR_BROWSE_BY_HEX 0x06   //brown                 //~vbDoI~
+#define DEFAULT_COLOR_BROWSE        0x07   //white                 //~vbDoI~
+#define DEFAULT_COLOR_EDIT_BY_HEX   0x06   //brown                 //~vbDoI~
 //*************************
 static int Smerginoffs;   	//parm to setline attr                 //~v0buI~
 static int Sbndsoffs1,Sbndsoffs2;   	//parm to setline attr     //~v74EI~
@@ -584,6 +595,14 @@ int func_draw_file(PUCLIENTWE Ppcw)
 		Scolor_lineno=Gattrtbl[COLOR_BLINENO];	//browse fg     //~5430R~
 		Scolor_lineno_r=Gattrtbl[COLOR_BLINENO_R];	//browse fg //~5430R~
 		Shexcsrattr=Gattrtbl[COLOR_ECLIENT];	//edit fg          //~v457R~
+#ifndef LNXCON                                                     //~vbDrI~
+        if (Shexcsrattr==DEFAULT_COLOR_EDIT)    //0x0E             //~vbDoI~
+            Shexcsrattr=DEFAULT_COLOR_BROWSE_BY_HEX;   //0x06      //~vbDoR~
+#else                                                              //~vbDtI~
+        if (Shexcsrattr==DEFAULT_COLOR_EDIT)    //0x0E             //~vbDtI~
+		  if (GvhexcsrDataColorPalette)         //cmdline -vdcn option//~vbDtI~
+            Shexcsrattr=(UCHAR)GvhexcsrDataColorPalette;           //+vbDtR~
+#endif                                                             //~vbDrI~
 #ifdef UTF8UCS2                                                    //~va20I~
 		Shexcsrmarginattrc=Gattrtbl[COLOR_ECLIENT];	//edit fg      //~va20I~
 #endif                                                             //~va20I~
@@ -616,6 +635,15 @@ int func_draw_file(PUCLIENTWE Ppcw)
 			Scolor_lineno_r=Gattrtbl[COLOR_ELINENO_R];	//browse fg   //~v06vR~
         }                                                             //~v06vI~
 		Shexcsrattr=Gattrtbl[COLOR_BCLIENT];	//edit fg          //~v457R~
+#ifndef LNXCON                                                     //~vbDrI~
+        if (Shexcsrattr==DEFAULT_COLOR_BROWSE)    //0x07           //~vbDoI~
+            Shexcsrattr=DEFAULT_COLOR_EDIT_BY_HEX;   //0x06        //~vbDoR~
+#else                                                              //+vbDtI~
+        if (Shexcsrattr==DEFAULT_COLOR_BROWSE)    //0x07           //+vbDtI~
+		  if (GvhexcsrDataColorPalette)         //cmdline -vdcn option//+vbDtI~
+            Shexcsrattr=(UCHAR)GvhexcsrDataColorPalette;           //+vbDtI~
+        UTRACEP("%s:old=COLOR_BROWSE new Shexcsrattr=%02x\n",UTT,Shexcsrattr);//~vbDtI~
+#endif                                                             //~vbDrI~
 #ifdef UTF8UCS2                                                    //~va20I~
     	if (UCBITCHK(pfh->UFHflag3,UFHF3OOMNOPROT)) //not proected mergin//~va20I~
 			Shexcsrmarginattrc=Gattrtbl[COLOR_BCLIENT];	//browse fg//~va20I~
@@ -785,6 +813,8 @@ int func_draw_file(PUCLIENTWE Ppcw)
     vhexplhctr=0;		//for scroll                               //~v60vR~
     vhexplhctrcsr=0;	//for scroll by CSR pos                    //~v60vI~
 #ifdef UTF8UCS2                                                    //~va3sI~
+    int swClearVhexPos=scrgetcw(0/*current active*/)==Ppcw;        //~vbDnR~
+  if (swClearVhexPos)                                              //~vbDnR~
     uviom_notify(UVIOMNO_VHEXCSRPOS,-1,-1);//reset                 //~va3sI~
 #endif                                                             //~va3sI~
 	for (line=0;line<maxline;line++,psd++,plh=UGETQNEXT(plh))   //~5126I~
@@ -1838,6 +1868,7 @@ int filesetvhexcsrattr(int Popt,int Prevcolor,int Pdefcolor,int *Ppvhexattr,int 
     *Ppvhexattr=vhexattr;                                          //~va3XI~
     *Ppvhexrevattr=(revattrbg<<4)|UVIOM_ATTRFG(vhexattr);          //~va3XR~
     *Ppvhexxrevattr=(revattrbg<<4)|defattrfg;                      //~va3XI~
+    UTRACEP("%s:Prev=%02x,Pdef=%02x,*Pvhex=%02x,*PvhexRev=%02x,*Pvhexxrev=%02x\n",UTT,Prevcolor,Pdefcolor,*Ppvhexattr,*Ppvhexrevattr,*Ppvhexxrevattr);//~vbDnR~
     return 0;                                                      //~va3XI~
 }//filesetvhexcsrattr                                              //~va3XI~
 //****************************************************************
@@ -2097,6 +2128,9 @@ void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
             	*paw=Shexcsrmarginattrc;  //vhexmode char line csr attr on margin//~va20I~
           else                                                     //~va20I~
           {                                                        //~va3BI~
+#ifndef TEST                                                       //~vbDnR~
+            	swvhexdatacsr=1;                                   //~vbDnR~
+#endif                                                             //~vbDnR~
             if (ii==Svhexcold1 || ii==Svhexcold2)                  //~va3XI~
 //          	*paw=vhexdcsrattr;      //lineno orbrowsw  color   //~va3XR~//~vb28R~
             	*paw=(USHORT)vhexdcsrattr;      //lineno orbrowsw  color//~vb28I~
@@ -2269,7 +2303,7 @@ void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
                     {                                              //~vbA1I~
 						*paw=tabattr;   		//draw by lineno color//~vb4yR~
 						if (UDBCSCHK_DBCS1STUCS2NWO(*pcd))         //~vbA1I~
-                        	*(paw+1)=tabattr;                      //+vbA1R~
+                        	*(paw+1)=tabattr;                      //~vbA1R~
                     }                                              //~vbA1I~
                   }                                                //~vb4AI~
                 }                                                  //~vb4yR~
@@ -2356,6 +2390,7 @@ void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
 	{
 //  	*pcc++=*pc++;			//copy data                        //~v09RR~
     	*pcc++=*pc;			//copy data                            //~v09RI~
+        UTRACEP("%s:*pc=%02x,*pcd=%02x,*pcc=%02x,*(pcc-1)=%02x,pcc=%p\n",UTT,*pc,*pcd,*pcc,*(pcc-1),pcc);//~vbDrM~
 #ifdef UTF8UCS2                                                    //~va20I~
       if (Svhexcsrsw                                               //~va20I~
 //    &&  (ii==Svhexcold1 || ii==Svhexcold2 || ii==Svhexcolx))     //~va20I~//~va3XR~
@@ -2559,6 +2594,7 @@ void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
                     	*pcd=*wkdddbcs;                            //~vb4yI~
                     	*(pcc-1)=*wkdddata; //USCcell              //~vb4yI~
 		                *pcc++=ATTR_COMBINENP_FG;                  //~vb4yI~
+            	        UTRACEP("%s:combineModeNP pc=%02x,pcd=%02x\n",UTT,*pc,*pcd);//~vbDrI~
                     }                                              //~vb4yI~
                     else                                           //~vb4yI~
 //  				if (!UTF_COMBINEMODE() && !OPT_ISLIGATUREON()) //~vb4AR~
@@ -2572,11 +2608,16 @@ void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
 //            	        UTRACED("pcc-8",pcc-8,16);  //TODO TEST    //~vbA1R~
                     }                                              //~vbzVI~
                     else                                           //~vb4yI~
+                    {                                              //~vbDrI~
                         pcc++;                                     //~vb4yI~
-                    UTRACEP("%s:pc=%02x,pcd=%02x,pcc-1=%02x\n",UTT,*pc,*pcd,*pcc);//~vbzVR~
+                    }                                              //~vbDrI~
+                    UTRACEP("%s:pc=%02x,pcd=%02x,pcc-1=%02x\n",UTT,*pc,*pcd,*(pcc-1));//~vbzVR~//~vbDrR~
                   }//!ligature mode                                //~vb4AI~
                 }                                                  //~vb4yI~
 				else                                               //~v09UR~
+//#ifndef TEST                                                     //~vbDrR~
+//                    UTRACEP("%s:OTHER ii=%d\n",UTT,ii);          //~vbDrR~
+//#endif                                                           //~vbDrR~
 #ifdef SSS   //try for fmt wcwidth!=0  ==>no good effect(eol pos shift 1 col to left)//~vbA1R~
                 if (swutf8file && *pcd && f23_isFormat(0,pc,pcd,width-ii))//Lnx//~vbA1I~
                 {                                                  //~vbA1I~
@@ -2999,7 +3040,7 @@ void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
 }//setlineattr
 //**********************************************************************//~va3mI~
 //*set attr of data csr corresponding vhexcsr                      //~va3mI~
-//*set green attr to left and right char if it is combining char   //~va3mI~
+//*set green attr to right char of cpos if it is combining char   //~va3mI~//~vbDkR~
 //**********************************************************************//~va3mI~
 #ifdef W32                                                         //~va3mI~
 //int setattraroundvhexdataline(int Popt,UCHAR *Pdbcs,USHORT *Pattr,int Ppos1,int Ppos2,int Pwidth,int Pcolor)//~va3mR~//~vbzVR~
@@ -3019,7 +3060,7 @@ int setattraroundvhexdataline(int Popt,UCHAR *Pdata,UCHAR *Pdbcs,UCHAR *Pattr,in
     UCHAR *pca;                                                    //~va3mI~
 #endif                                                             //~va3mI~
 //****************************                                     //~va3mI~
-UTRACEP("setattraroundvhexdataline pos1=%d,pos2=%d,colr=%d\n",Ppos1,Ppos2,Pcolor);//~va3mR~//~va3rR~
+UTRACEP("%s:UTF_COMBINEMODE=%08x,pos1=%d,pos2=%d,Pcolor=%d\n",UTT,UTF_COMBINEMODE(),Ppos1,Ppos2,Pcolor);//~va3mR~//~va3rR~//~vbA1R~//~vbDoR~
 //  if (!UTF_COMBINEMODE() && UVIOM_NONSPACECOMBINEMODE())	//splittable or FC5//~va3rI~//~va3sR~
     if (!UTF_COMBINEMODE()) //already set if split mode            //~va3sI~
     	return 0;                                                  //~va3rI~
@@ -3033,11 +3074,18 @@ UTRACEP("setattraroundvhexdataline pos1=%d,pos2=%d,colr=%d\n",Ppos1,Ppos2,Pcolor
 #ifdef W32                                                         //~va3mI~
 //      *pca=Pcolor;                                               //~va3mR~//~vb28R~
         *pca=(USHORT)Pcolor;                                       //~vb28I~
+		if (UDBCSCHK_DBCS1STUCS2NWO(*pcd))                         //~vbDkI~
+        	if (pos+1<Pwidth)                                      //~vbDkI~
+		        *(pca+attrstep)=(USHORT)Pcolor;                    //~vbDkI~
 #else                                                              //~va3mI~
 //      *(pca+1)=Pcolor;                                           //~va3mR~//~vb28R~
         *(pca+1)=(UCHAR)Pcolor;                                    //~vb28I~
+		if (UDBCSCHK_DBCS1STUCS2NWO(*pcd))                         //~vbDkI~
+        	if (pos+1<Pwidth)                                      //~vbDkI~
+		        *(pca+attrstep+1)=(UCHAR)Pcolor;                   //~vbDkI~
 #endif                                                             //~va3mI~
     }                                                              //~va3mR~
+	UTRACED("Pattr",Pattr,Pwidth*(int)sizeof(*pca)*attrstep);      //~vbA1R~
     return 0;                                                      //~va3mI~
 }//setattraroundvhexdataline                                       //~va3mI~
 #ifdef AAA //no user                                               //~vb4yI~

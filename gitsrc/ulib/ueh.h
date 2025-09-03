@@ -1,8 +1,9 @@
-//*CID://+v6G4R~:                             update#=   12;       //+v6G4R~
+//*CID://+vbD5R~:                             update#=   21;       //~vbD5R~
 //**************************************************************
 //* ueh.h
 //**************************************************************
-//v6G4:161212 (Win10)compile err by v022 was appieared when win10  //+v6G4I~
+//vbD5:250701 (Win)exception handling using DbgHelp API            //~vbD5I~
+//v6G4:161212 (Win10)compile err by v022 was appieared when win10  //~v6G4I~
 //v6F1:160831 W64 try Exception msg                                //~v6F1I~
 //v423:010101 TLinux:another SignalHandler definition insignal.h   //~v423I~
 //v422:010101 TLinux:_fpreg is defined on sigcontext.h,it is duplicated with ueh.h//~v422I~
@@ -82,11 +83,11 @@
 			EXCEPTION_NONCONTINUABLE    /*w95=same      */         //~v022I~
                                                                    //~v022I~
 //OS/2 registration record                                         //~v022I~
-#ifdef W32                                                         //+v6G4I~
-typedef ULONG (*UEXCEPTIONHANDLER)(PEXCEPTIONREPORTRECORD,         //+v6G4I~
-					           	PEXCEPTIONREGISTRATIONRECORD,      //+v6G4I~
-								PCONTEXTRECORD);                   //+v6G4I~
-#else                                                              //+v6G4I~
+#ifdef W32                                                         //~v6G4I~
+typedef ULONG (*UEXCEPTIONHANDLER)(PEXCEPTIONREPORTRECORD,         //~v6G4I~
+					           	PEXCEPTIONREGISTRATIONRECORD,      //~v6G4I~
+								PCONTEXTRECORD);                   //~v6G4I~
+#else                                                              //~v6G4I~
 typedef ULONG (*UEXCEPTIONHANDLER)(PEXCEPTIONREPORTRECORD,         //~v022I~
 					           	PEXCEPTIONREGISTRATIONRECORD,      //~v022I~
 								PCONTEXTRECORD,                    //~v022I~
@@ -318,4 +319,8 @@ typedef UEXREGREC*  PUEXREGREC;
 //************************************
 void useteh(PUEXREGREC);/*exception handler set*/
 void ureseteh(PUEXREGREC);/*exception handler unset*/
-
+#ifdef WIN_EXH                                                     //~vbD5I~
+	int uehfilter(DWORD Pexcode,EXCEPTION_POINTERS *Ppep);         //~vbD5R~
+//  SYMBOL_INFO *getSymbol(DWORD64 Paddr);                         //+vbD5R~
+    void/*SYMBOL_INFO*/*getSymbol(DWORD64 Paddr);                  //+vbD5I~
+#endif                                                             //~vbD5R~

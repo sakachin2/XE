@@ -1,8 +1,11 @@
-//*CID://+v6U0R~:                             update#=   58;       //+v6U0R~
+//*CID://+vbDcR~:                             update#=   65;       //+vbDcR~
 //******************************************************
 //*uerr.h
 //******************************************************
-//v6U0:180305 debug assertion failed Expression:_format_char != '\0' at errmsgedit sprintf; count argment count//+v6U0I~
+//vbDd:250704 compiler err c2059(typedef function). missing *      //+vbDcI~
+//vbDb:250704 display func description(FTnamee/j) to scrtype err   //~vbDbI~
+//vbDa:250703 (gxe)helpmsg was not controled by scr height.        //~vbDaI~
+//v6U0:180305 debug assertion failed Expression:_format_char != '\0' at errmsgedit sprintf; count argment count//~v6U0I~
 //v6T7:180220 stack errmsg to errmsg.<pid> and issue notification at initcomp//~v6T7I~
 //v6H8:170109 (BUG)FTP del dir fail(remains subdir)                //~v6H8I~
 //v6xq:150116 add uapierr1nt                                       //~v6xqI~
@@ -66,9 +69,9 @@
 #define GBL_UERR2_S2UJMSG   0x20        //SJIS Pjmsg was translated to UTF8//~vav0I~
 #define GBL_UERR2_INIT_INPROG           0x0040        //from xe uerrmsg_initstart()//~v6T7R~
 #define GBL_UERR2_INIT_MSGSTACK         0x0080        //uerrmsg called before init comp//~v6T7I~
-#ifdef W32                                                         //+v6U0I~
-#define GBL_UERR2_OUTUTF8               0x0100        //uerrmsg by utf8 encoding//+v6U0I~
-#endif                                                             //+v6U0I~
+#ifdef W32                                                         //~v6U0I~
+#define GBL_UERR2_OUTUTF8               0x0100        //uerrmsg by utf8 encoding//~v6U0I~
+#endif                                                             //~v6U0I~
 //#endif                                                           //~v5n8R~
 #ifdef GBL_UERR                                                    //~v060I~
     unsigned char Guerropt;                                        //~v060I~
@@ -81,12 +84,14 @@
     extern unsigned int  Guerropt2;                                //~v60bR~
 //#endif                                                           //~v5n8R~
 #endif                                                             //~v060I~
+#define UERR_MSG_J() (UCBITCHK(Guerropt,GBL_UERR_DBCSMODE) && !UCBITCHK(Guerropt,GBL_UERR_FORCEENG))//~vbDbI~
 #define UERRSETSNOMSG() ( Guerropt=(char)((Guerropt&~GBL_UERR_NOMSGOUTSV) \
            |((Guerropt&GBL_UERR_NOMSGOUT)<<4)|GBL_UERR_NOMSGOUT) ) //~v062I~
 #define UERRBACKNOMSG() ( Guerropt=(char)((Guerropt&~GBL_UERR_NOMSGOUT) \
            |((Guerropt&GBL_UERR_NOMSGOUTSV)>>4)) )                 //~v062R~
 //******************************************************           //~v060I~
-typedef void (UEXITFUNC)(char *,void *);    //edit msg and exit parm of uerrexit_init//~v062R~
+//typedef void (UEXITFUNC)(char *,void *);    //edit msg and exit parm of uerrexit_init//+vbDcR~
+typedef void (*UEXITFUNC)(char *,void *);    //edit msg and exit parm of uerrexit_init//~vbDbI~
 #ifdef __cplusplus                                                 //~v5c2I~
 	extern "C" {                                                   //~v5c2I~
 #endif                                                             //~v5c2I~
@@ -100,7 +105,8 @@ void ubell(void);
 //   uerrexit(English msg,Japanese msg,... )
 void uerrexit(char *     ,char *      ,... );
 //   uerrexit_init(title ,output handle,exit function,exit func parm);
-void uerrexit_init(char *Ptitle,FILE *Poutput,char *Pmapfile,UEXITFUNC *Pexitfunc,void *Pexitparm);
+//void uerrexit_init(char *Ptitle,FILE *Poutput,char *Pmapfile,UEXITFUNC *Pexitfunc,void *Pexitparm);//+vbDcR~
+void uerrexit_init(char *Ptitle,FILE *Poutput,char *Pmapfile,UEXITFUNC Pexitfunc,void *Pexitparm);//+vbDcI~
 //******************************************************           //~v191I~
 void uerrexit_optinit(int Popt);                                   //~v191R~
 #define UERREXIT_BELL     	0x01                                   //~v191R~
@@ -130,6 +136,7 @@ char *uerrsprintf(char *Pemsg ,char *Pjmsg,... );                  //~v060I~
 #endif                                                             //~v5n8I~
 //******************************************************           //~v060I~
 char *uerrhelpmsg(FILE *Poutf,FILE *Pqueryf,char *Pemsg ,char *Pjmsg,... );//~v060I~
+void  uerrhelpmsgSetScrHeight(int PscrH);                          //~vbDaI~
 //**********************************************************************//~v060I~
 int uerrscrheight(void);                                           //~v060I~
 //******************************************************        //~5B11I~

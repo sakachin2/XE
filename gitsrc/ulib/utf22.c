@@ -1,8 +1,10 @@
-//*CID://+vbArR~:                             update#=  869;       //~vbArR~
+//*CID://+v7egR~:                             update#=  874;       //~v7egR~
 //*********************************************************************//~7712I~
 //utf22.c                                                           //~7716R~//~vbz3R~
 //* utf8 data manipulation:process using chof                      //~7712I~
 //*********************************************************************//~7712I~
+//v7eg:250718 (WINCON) same as v7c2 on LNX.(combining char at next of lineno col was not green in combinemode). not combinable for "*" and "|"(lineno cols boundary)//~v7egI~
+//v7e7:250707 uncoditionally ascii is notcombining for performance //~v7e7I~
 //vbAr:240702 (gxe:Bug)ddstr and u8 string column unmatch by utfcvdd2f for x1b<-->e286bc. Invalid char is show.//~vbArI~
 //v7c7:240624 (W32) treate glyph width=0 for category Cf(Format, 200d:ZWJ etc)//~v7c7I~
 //v7c6:240623 (LNX) category Cf(Format); if wcwidth()==1, cursor move stop and hex part shift 1 column. To avoid it set wcw=0.//~v7c6I~
@@ -291,6 +293,8 @@ int utfucssavemap(int Popt,PSAVESBCSTB Ppsbcstbhdr);               //~v6c7I~
 //ULONG utf22_setunpucsvio(int Popt,ULONG Pucs,int Pdbcsid,int *Prc);//~v6DbR~//~v6T5R~
 #define  UT22SUUVO_OVF            0x01    //dbcsid:OVF             //~v6DbR~
 int utf22_setdbcsspacealt(int Popt,UWUCS Pucs,char *Ppdbcs,int Preslen,int *Ppaltch);//~v6DdR~
+#define SEP_LINENO   '|'                                           //~v7egI~
+#define SEP_LINENO2  '*'    //updateline                           //~v7egI~
 //**************************************************               //~7801M~
 #ifdef UTF8UCS2                                                    //~v640R~
 #ifdef LNX                                                         //~v640M~
@@ -3227,7 +3231,7 @@ WUCS utfdd2u1chsz(int Popt,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen,int *Ppchsz)//~v
     {                                                              //~vbArI~
     	ucs=(WUCS)UTF_GETUCSSBCS(Ppdata,Ppdbcs);                   //~v660R~
 		chklen=1;                                                  //~vbArI~
-        chsz=chklen;                                               //+vbArI~
+        chsz=chklen;                                               //~vbArI~
     }                                                              //~vbArI~
     else                                                           //~v65pI~
     if (UDBCSCHK_DBCS1STUCS2NWP(dbcsid))                           //~v65pI~
@@ -5694,6 +5698,7 @@ int utfddgetcsrposbca(int Popt,char *Pdbcs,int Plen,int Ppos,int *Ppposb,int *Pp
     int len;                                                       //~v650I~
 //**************************                                       //~v650I~
 //get current col                                                  //~v650I~
+UTRACEP("%s:Popt=%04x,Plen=%d,Ppos=%d\n",UTT,Popt,Plen,Ppos);      //+v7egI~
 	if (Ppos>=0 && Ppos<=Plen)                                     //~v650R~
     {                                                              //~v650I~
 		posc=Ppos;                                                 //~v650I~
@@ -5969,7 +5974,7 @@ static int SaltchJ[]={  //base is old ascii by Wiki CP437, and for xe use old Ja
                 else                                               //~v65pI~
                 	*ptb='.';                                      //~v65iI~
             }                                                      //~v65iI~
-        UTRACEP("visible tbl DBCSJ=%d,ii=%x,atch=%x,out=%x\n",UDBCSCHK_ISDBCSJ(),ii,altch,*ptb);//~v65nR~
+        UTRACEP("%s:visible tbl DBCSJ=%d,ii=%x,atch=%x,out=%x\n",UTT,UDBCSCHK_ISDBCSJ(),ii,altch,*ptb);//~vbArR~
         }                                                          //~v65iI~
         UTRACED("visible tbl",alttb,32*8);                         //~v65iR~
         UTRACED("visible tbl tab1",Stabs,sizeof(Stabs));           //~v65nI~
@@ -6035,7 +6040,7 @@ static int SaltchJ[]={  //base is old ascii by Wiki CP437, and for xe use old Ja
     	if (altch>=0x100)                                          //~v65pI~
         	altch='.';                                             //~v65pI~
   }                                                                //~v65pI~
-    UTRACEP("utfgetvisiblealtch opt=%x,inp=%x,out=%x\n",Popt,Pctlchar,altch);//~v65nR~
+    UTRACEP("%s:utfgetvisiblealtch opt=%x,inp=%x,out=%x\n",UTT,Popt,Pctlchar,altch);//~vbArR~
     return altch;                                                  //~v65iI~
 }//utfgetvisiblealtch                                              //~v65iI~
 //**************************************************************** //~v65pI~
@@ -6576,6 +6581,8 @@ int utf_iswidth0(int Popt,int Pdbcsid,ULONG Pucs)                  //~v6VqR~
 	int rc=0,opt,flag;                                             //~v6VqR~
     UCHAR wkdddata[2],wkdddbcs[2];                                 //~v6VqI~
 //**************************                                       //~v6VqI~
+  if (!UTF8ISASCII(Pucs))                                          //~v7e7I~
+  {                                                                //~v7e7I~
 	if (Pucs>=UCS2DDMAP_ENTNO)                                     //~v6VqI~
     {                                                              //~v6VqI~
       	opt=UTFWWO_UTF8UCS2;     //do APICHK                       //~v6VqR~
@@ -6591,6 +6598,7 @@ int utf_iswidth0(int Popt,int Pdbcsid,ULONG Pucs)                  //~v6VqR~
             	rc=UDBCSCHK_ISUCSWIDTH0(*wkdddbcs);                //~v6VqR~
         }                                                          //~v6VqI~
     }                                                              //~v6VqI~
+  }                                                                //~v7e7I~
     UTRACEP("%s:rc=%d,ucs=%04x,dbcsid=0x%x\n",UTT,rc,Pucs,Pdbcsid);//~v6VqR~
     return rc;                                                     //~v6VqI~
 }//utf_iswidth0                                                    //~v6VqR~
@@ -6612,6 +6620,11 @@ int utf_iscombinable(int Popt,ULONG Pucs)                          //~v6VsR~
     	rc=(Popt & UICAO_NOSPACE)==0;  //disallow space as combinable//~v6WuI~
     }                                                              //~v6WuI~
     else                                                           //~v6W8I~
+	if (Pucs==SEP_LINENO || Pucs==SEP_LINENO2)	//lineno cols boundary//~v7egI~
+    {                                                              //~v7egI~
+    	rc=0;                                                      //~v7egI~
+    }                                                              //~v7egI~
+    else                                                           //~v7egI~
 	if (Pucs<0x0100)                                               //~v6VsR~
 //    	rc=iswalpha((wint_t)Pucs);                                 //~v6VsR~//~v79LR~
       	rc=iswcntrl((wint_t)Pucs)==0;                              //~v79LR~
@@ -6656,6 +6669,8 @@ int utf_iscombining(int Popt,int Pdbcsid,int Pucs)                 //~v6WrI~
 //        UTRACEP("%s:rc=0:not combining for ZWJ/ZWNJ ucs=0x%04x\n",UTT,Pucs);//~v7bBI~//~v7bVR~
 //    }                                                              //~v7bBI~//~v7bVR~
 //    else                                                           //~v7bBI~//~v7bVR~
+	if (UTF8ISASCII(Pucs))                                         //~v7e7I~
+    	return rc;                                                 //~v7e7I~
 	if (rc2=utf4_isSpacingCombiningMark(0,(UWUCS)Pucs),rc2)        //~v6X5R~
     {                                                              //~v6WrI~
     //* rc=2:dakuten/handakuten(3099/309a)                         //~v7zVI~

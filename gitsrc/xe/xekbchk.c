@@ -1,8 +1,9 @@
-//*CID://+vbzQR~:                             update#=  540;       //~vbzQR~
+//*CID://+vbD2R~:                             update#=  541;       //+vbD2R~
 //*************************************************************
 //*xekbchk.c                                                       //~0924R~//~van6R~
 //*	kbd scan/char chk                                              //~van6R~
 //*************************************************************
+//vbD2:250624 save funkkey/shortcut cmd to another file for save operation in multiple sessions//+vbD2I~
 //vbzQ:240414 xekbchk; for performance trace off while mapinit     //~vbzQI~
 //vbzJ:240403 appendmode screen print to ::hp by Ctrl+h (hardcopy) //~vbzJI~
 //vbzG:240401 fc39 compile warning                                 //~vbzGI~
@@ -130,7 +131,7 @@
 #ifdef WCSUPP                                                      //~v79zI~
 	#include <ucvucs.h>                                            //~v79zI~
 	#include <ucvext.h>                                            //~v79zI~
-	#include <utf.h>                                               //+vbzQI~
+	#include <utf.h>                                               //~vbzQI~
 	#include <utf22.h>                                             //~va3xI~
 #endif                                                             //~v79zI~
 #ifdef W32                                                         //~va3DI~
@@ -1921,3 +1922,5 @@ UCHAR *inigetfname(UCHAR *Pfname){return " ";}                     //~vbvfI~
 #endif                                                             //~vbzwI~
 //int funcAliasDropComment(char *Pcmd){ return 0;}                 //~vbvoR~
 #endif//UTF8SUPPH                                                  //~va50I~
+int iniacronymwrite(FILE *Pfh){return 0;}                          //+vbD2I~
+int iniacronymchk(char *Pfile,FILE *Pfh){return 0;}                //+vbD2I~

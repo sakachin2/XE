@@ -13,6 +13,7 @@ PGM6=xesyscmd
 PGM7=xe3270
 PGM8=xeacb 
 PGM9=xeshm #~8A10R~
+PGM10=xektrchk
 ### ##########################
 !IF "$(trace)"=="no"
 TRACE=NOTRACE

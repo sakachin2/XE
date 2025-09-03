@@ -78,6 +78,7 @@ EXE5=$(OBJDIR)$(PGM5).exe
 EXE6=$(OBJDIR)$(PGM6).exe
 EXE7=$(OBJDIR)$(PGM7).exe
 EXE8=$(OBJDIR)$(PGM8).exe
+EXE10=$(OBJDIR)$(PGM10).exe
 #COPT8=/DUTF8SUPP
 COPT8=/DUTF8UCS2
 !ENDIF
@@ -89,6 +90,7 @@ MAP5=$(OBJDIR)$(PGM5).map
 MAP6=$(OBJDIR)$(PGM6).map
 MAP7=$(OBJDIR)$(PGM7).map
 MAP8=$(OBJDIR)$(PGM8).map
+MAP10=$(OBJDIR)$(PGM10).map
 #####################################################
 !IF "$(w95)"=="vc"
 VCOUT1=/OUT:$(EXE1)

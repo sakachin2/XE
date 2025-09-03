@@ -1,4 +1,4 @@
-//*CID://+v7bxR~:                             update#=  446;       //~v7bxR~
+//*CID://+v7bxR~:                             update#=  449;       //~v7bxR~
 //*************************************************************
 //v7bx:240418 (LNXCON)try read console by mvinnwstr(read ucs) for alternative of mvin_wchnstr(read cchar_t)//~v7bxI~
 //vbzP:240412 (LNXCON)support hardcopy function(also change key C+h-->A+@)//~vbzPM~
@@ -320,7 +320,7 @@ chtype uviol_cell2attr(USHORT Pcell)                               //~v324I~
       }                                                            //~v5n8I~
     }                                                              //~v5n8I~
 #endif		//LNX                                                  //~v40rI~
-//  UTRACEP("uviol_cell2attr.colorpair cht=%04x,Pcell==%04x\n",cht,Pcell);//~v6EqR~
+    UTRACEP("%s: cht=%04x,Pcell==%04x\n",UTT,cht,Pcell);//~v6EqR~  //+v7bxR~
     return cht;                                                    //~v324I~
 }//uviol_cell2att                                                  //~v324I~
 //#define PAIR2ATTR(cht)                                           //~v324R~
@@ -1265,7 +1265,7 @@ UTRACEP("%s:row=%d,col=%d,Svisibleblink=%d,Svisible_oldrow=%d,Svisible_oldcol=%d
 //      if (Prow!=Svisible_oldrow||Pcol!=Svisible_oldcol)          //~v39rR~
 #endif //CSR_REDRAW		//attr save requred for csr move           //~v50ZI~
             uviol_attrupdate(Prow,Pcol,Sinsertmode,1);//set on     //~v347R~
-UTRACEP("%s:before move row=%d,col=%d\n",UTT,Prow,Pcol);           //+v7bxI~
+UTRACEP("%s:before move row=%d,col=%d\n",UTT,Prow,Pcol);           //~v7bxI~
     move(Prow,Pcol);                                               //~v399M~
     return 0;                                                      //~v324I~
 }//uviosetcurpos
@@ -1502,6 +1502,7 @@ UINT uviogetstate(PVOID Ppreqblk)
 	    if (!can_change_color())                                   //~v342I~
     		return ERROR_VIO_EXTENDED_SG;   //not supported        //~v342I~
 	    Guviol_flag|=UVIOL_CHGCOLOR;                               //~v5nbI~
+        UTRACEP("%s:UVIOL_CHGCOLOR on\n",UTT);                     //~v7bxI~
 		break;                                                     //~v324I~
 	case 1:		//overscan reg set req:not supported               //~v342I~
 		break;                                                     //~v342I~
@@ -2355,7 +2356,7 @@ int uviol_cchar2ucsComb(int Popt,char *Ppdbcs,cchar_t *Ppcchar,int Pctr,UWCHART/
     {                                                              //~vbzPI~
     	attr=pcchar->attr;                                         //~vbzPI~
     	ucs=pcchar->chars[0];                                      //~vbzPI~
-    	UTRACEP("%s:ii=%d,swDummyBase=%d,Gubiomdbcspad=0x%02x,attr=0x%04x,char=0x%04x,0x%04x\n",UTT,ii,swDummyBase,Guviomdbcspad,attr,pcchar->chars[0],pcchar->chars[1]);//~vbzPI~
+    	UTRACEP("%s:ii=%d,swDummyBase=%d,Guviomdbcspad=0x%02x,attr=0x%04x,char=0x%04x,0x%04x\n",UTT,ii,swDummyBase,Guviomdbcspad,attr,pcchar->chars[0],pcchar->chars[1]);//~vbzPI~//~v7bxR~
         if (attr & UVIOMATTR_DBCS2) //    0x01         //1:dbcs1st,2:DBCS2ND//~vbzPI~
         	continue;               //dbcs combine is on dbcs1     //~vbzPI~
         if (swDummyBase==2)                                        //~vbzPR~

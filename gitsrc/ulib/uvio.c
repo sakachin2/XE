@@ -1,6 +1,7 @@
-//*CID://+v7d1R~:                             update#=  415;       //+v7d1R~
+//*CID://+v7eeR~:                             update#=  422;       //~v7eeR~
 //*************************************************************
-//v7d1:240806 (Bug)hardcopy;corrupted char for ucs=FFxx            //+v7d1I~
+//v7ee:250716 (WINCON:Bug) Consider Stoplineoffs if on conhost to read screen for HCopy.//~v7eeI~
+//v7d1:240806 (Bug)hardcopy;corrupted char for ucs=FFxx            //~v7d1I~
 //v7c9:240628 (W32) print fontname selected at termination         //~v7c9I~
 //vbzM:240408 (WXE) support hardcopy function                      //~vbzMI~
 //v7bn:240406 (WINCON)hardcopy;errmsg is not write to buffer,use only readconsole except fffd is detected//~v7bnI~
@@ -734,6 +735,7 @@ UTRACEP("Guviomopt=%x,Snullnasw=%d,Scellnasw=%d,Senglishsw=%d,Sforcentsw=%d,Snts
 						GetLastError());                           //~v252R~
 	        	return rc16=4;                                     //~v252I~
             }                                                      //~v252I~
+            UTRACED("vsbi",&csbi,sizeof(csbi));                    //~v7d1I~
             if (!CloseHandle(temph))                               //~v252I~
 //              printf("uviogetmode:CloseHandle(%08x) failed LastError=%d\n",//~v252I~//~v6L5R~
                 printf("uviogetmode:CloseHandle(%p) failed LastError=%d\n",//~v6L5I~
@@ -753,6 +755,8 @@ UTRACEP("Guviomopt=%x,Snullnasw=%d,Scellnasw=%d,Senglishsw=%d,Sforcentsw=%d,Snts
             wxe_getmaxscrsize(&PvioModeInfo->col,&PvioModeInfo->row);//~v570R~
             buffh=PvioModeInfo->row;                               //~v5fhI~
         #else                                                      //~v570I~
+            UTRACEP("%s:ConsoleScreenBufferInfo size=(%d,%d),csrPos=(%d,%d),attr=%08x,srWindow=(%d,%d-%d,%d),maxsize=(%d,%d)\n",//~v7d1I~
+                UTT,csbi.dwSize.X,csbi.dwSize.Y,csbi.dwCursorPosition.X,csbi.dwCursorPosition.Y,csbi.wAttributes,csbi.srWindow.Left,csbi.srWindow.Top,csbi.srWindow.Right,csbi.srWindow.Bottom,csbi.dwMaximumWindowSize.X,csbi.dwMaximumWindowSize.Y);//~v7d1R~
 //          PvioModeInfo->col=csbi.dwSize.X;                       //~v5bjR~
 //          PvioModeInfo->col=csbi.srWindow.Right-csbi.srWindow.Left+1;//~v5bjR~
             PvioModeInfo->col=csbi.dwSize.X;//should be =buffsz    //~v5bjI~
@@ -855,20 +859,24 @@ int uvio_setinitwindowpos(CONSOLE_SCREEN_BUFFER_INFO *Ppcsbi,int Pwinh)//~v5fhR~
     winbot=Ppcsbi->srWindow.Bottom+1;   //window Bottom line offset in console buff//~v5fhI~
     winh=winbot-wintop; 	//windows height                       //~v5fhR~
     buffh=Ppcsbi->dwSize.Y;	//buffer height                        //~v5fhI~
+    UTRACEP("%s:wintop=%d,winbot=%d,winh=%d,buffh=%d\n",UTT,wintop,winbot,winh,buffh);//~v7d1I~
     if (winh>=buffh)	//windows heigh=buffer height              //~v5fhR~
     	return 0;                                                  //~v5fhI~
     topoffs=Ppcsbi->dwCursorPosition.Y;    //cursor position is window top position//~v5fhI~
     scrollctr=(topoffs+Pwinh)-buffh;                               //~v5fhR~
+    UTRACEP("%s:topoffs=%d,scrollctr=%d\n",UTT,topoffs,scrollctr); //~v7d1I~
 //*                                                                //~v5fhI~
     winrect.Left    =(SHORT)0;                                     //~v5fhR~
     winrect.Right   =(SHORT)Ppcsbi->dwSize.X-1;   //buffer width;  //~v5fhR~
     winrect.Top     =(SHORT)topoffs;                               //~v5fhR~
     winrect.Bottom  =(SHORT)(topoffs+winh-1);                      //~v5fhR~
+    UTRACEP("%s:winrect Top=%d,Bottom=%d,left=%d,right=%d\n",UTT,(int)winrect.Top,(int)winrect.Bottom,(int)winrect.Left,(int)winrect.Right);//~v7d1I~
     if (scrollctr>0)                                               //~v5fhI~
     {                                                              //~v5fhI~
 //scrollup                                                         //~v5fhI~
     	winrect.Bottom	=(SHORT)(buffh-1);//scroll box bottom      //~v5fhR~
     	winrect.Top		=(SHORT)scrollctr;//scroll box top         //~v5fhR~
+	    UTRACEP("%s:scrollctr>0 winrect Top=%d,Bottom=%d\n",UTT,(int)winrect.Top,(int)winrect.Bottom);//~v7d1I~
         coorddest.X     =(SHORT)0;                                 //~v5fhI~
         coorddest.Y     =(SHORT)0;                                 //~v5fhI~
         chi.Char.UnicodeChar=0;                                    //~v5fhI~
@@ -883,10 +891,12 @@ UTRACED("scroll rect",&winrect,8);                                 //~v5fhI~
         topoffs-=scrollctr;                                        //~v5fhI~
     	winrect.Top		=(SHORT)topoffs;//window rect              //~v5fhR~
     	winrect.Bottom	=(SHORT)(topoffs+winh-1);//window rect     //~v5fhR~
+	    UTRACEP("%s:scrollctr>0 adjusted winrect Top=%d,Bottom=%d\n",UTT,(int)winrect.Top,(int)winrect.Bottom);//~v7d1I~
     }                                                              //~v5fhI~
+  int rc2=                                                         //~v7d1I~
     SetConsoleWindowInfo(Shconout,TRUE,&winrect);                  //~v5fhR~
-UTRACEP("scrollctr=%d,topoffs=%d,err=%d\n",scrollctr,topoffs,GetLastError());//~v5fhR~
-UTRACED("setconsolewindowinfo",&winrect,8);                        //~v5fhI~
+UTRACEP("%s:scrollctr=%d,topoffs=%d,rc2=%d,lastError=%d\n",UTT,scrollctr,topoffs,rc2,GetLastError());//~v7d1R~
+UTRACEP("%s:winrect return topoffs=%d,Top=%d,Bottom=%d,left=%d,right=%d\n",UTT,topoffs,(int)winrect.Top,(int)winrect.Bottom,(int)winrect.Left,(int)winrect.Right);//~v7d1I~
     return topoffs;                                                //~v5fhI~
 }//uvio_setinitwindowpos                                           //~v5fhR~
 #endif                                                             //~v5fhI~
@@ -2635,7 +2645,7 @@ int uvioGetCellData(int Popt,int Prow,UWCHART *Ppucs,int *Ppucsctr)//~v7bmI~
 //************************                                         //~v7bmI~
     maxrow=Sscrsize/Sscrwidth;                                     //~v7bmI~
     altchid=DEFAULT_ALTCH;                                         //~v7bmI~
-	UTRACEP("%s:opt=%02x,row=%d,maxrow=%d,scrWidth=%d,dbcsspacealt=%02x\n",UTT,Popt,Prow,maxrow,Sscrwidth);//~v7bmR~
+	UTRACEP("%s:opt=%02x,Stoplineoffs=%d,row=%d,maxrow=%d,scrWidth=%d,dbcsspacealt=%02x\n",UTT,Popt,Stoplineoffs,Prow,maxrow,Sscrwidth);//~v7eeR~
     if (Prow>=maxrow)                                              //~v7bmI~
     {                                                              //~v7bmI~
 		UTRACEP("%s:end of row maxrow=%d\n",UTT,maxrow);           //~v7bmI~
@@ -2647,7 +2657,9 @@ int uvioGetCellData(int Popt,int Prow,UWCHART *Ppucs,int *Ppucsctr)//~v7bmI~
     UTRACED("data",pdata,Sscrwidth);                               //~v7bmI~
     UTRACED("dbcs",pdbcs,Sscrwidth);                               //~v7bmI~
     maskdbcs1=UVIOMATTR_DBCS1<<8;                                  //~v7bmI~
-    rc=uvioReadConsoleOutput(Popt,Prow,Sscrwidth,wkchi,&readucsctr);//~v7bmI~
+//  rc=uvioReadConsoleOutput(Popt,Prow,Sscrwidth,wkchi,&readucsctr);//~v7eeR~
+    int tgtline=Prow+Stoplineoffs;                                 //~v7eeI~
+    rc=uvioReadConsoleOutput(Popt,tgtline,Sscrwidth,wkchi,&readucsctr);//~v7eeI~
     if (rc!=0)	//read faled                                       //~v7bmR~
     {                                                              //~v7bmM~
     	memset(Ppucs,0,Sscrwidth*sizeof(UWCHART));                 //~v7bmM~
@@ -2669,7 +2681,7 @@ int uvioGetCellData(int Popt,int Prow,UWCHART *Ppucs,int *Ppucsctr)//~v7bmI~
         {                                                          //~v7bmI~
 			if (dbcsid==UDBCSCHK_TABCHAR || dbcsid==UDBCSCHK_TABPADCHAR//~v7bmR~
 			||  dbcsid==UDBCSCHK_DBCS1ST || dbcsid==UDBCSCHK_DBCS2ND//~v7bmI~
-//  		||  dbcsid==UDBCSCHK_DBCS1STUCS || dbcsid==UDBCSCHK_DBCS2NDUCS //FF12 is DBCS "2"//+v7d1R~
+//  		||  dbcsid==UDBCSCHK_DBCS1STUCS || dbcsid==UDBCSCHK_DBCS2NDUCS //FF12 is DBCS "2"//~v7d1R~
         	)                                                      //~v7bmR~
             {                                                      //~v7bmR~
                 *pucs++=ucs;                                       //~v7bmR~

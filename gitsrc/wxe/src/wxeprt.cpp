@@ -1,5 +1,6 @@
-//*CID://+vb4iR~: update#=  107;                                   //+vb4iR~
+//*CID://+vbDpR~: update#=  110;                                   //~vbDpR~
 //******************************************************************************//~v003I~
+//vbDp:250726 (WXE)color of combining char split for vhex csr was green.(ignored that xefile23 set)//~vbDpI~
 //vb4i:160805 vb4f for wxe(specify ligature on/off,combine on/of line by line)//~vb4jI~
 //vb2J:160313 (W32) compier warning                                //~vb2JI~
 //vb2H:160307 (W32)UWCHART cut ucs4                                //~vb2HI~
@@ -1271,8 +1272,9 @@ UTRACED("prttextoutw dbcs",Pdbcs,hhexlen);                         //~va80I~
     }                                                              //~va20I~
     else                                                           //~va20I~
     {                                                              //~va20I~
-//  	csubtextoutw(CSTOWO_PRINT,Pdc->m_hDC,xx,Pyy,pc,Pdbcs,reslen,Mdrawcellw);//+vb4iR~
-    	csubtextoutw(CSTOWO_PRINT,0/*lineopt*/,Pdc->m_hDC,xx,Pyy,pc,Pdbcs,reslen,Mdrawcellw);//+vb4iR~
+//  	csubtextoutw(CSTOWO_PRINT,Pdc->m_hDC,xx,Pyy,pc,Pdbcs,reslen,Mdrawcellw);//~vb4iR~
+//  	csubtextoutw(CSTOWO_PRINT,0/*lineopt*/,Pdc->m_hDC,xx,Pyy,pc,Pdbcs,reslen,Mdrawcellw);//~vbDpR~
+    	csubtextoutw(CSTOWO_PRINT,0/*lineopt*/,Pdc->m_hDC,xx,Pyy,pc,Pdbcs,reslen,Mdrawcellw,0/*Popt2*/);//+vbDpR~
     }                                                              //~va20I~
     return 0;                                                      //~va20I~
 }//prttextoutw                                                     //~va20R~

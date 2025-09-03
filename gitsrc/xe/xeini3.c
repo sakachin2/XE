@@ -1,7 +1,8 @@
-//*CID://+vbi3R~:                            update#=  129;        //~vbi3R~
+//*CID://+vbD2R~:                            update#=  131;        //~vbD2R~
 //*************************************************************
 //* xeini3.c
 //*************************************************************
+//vbD2:250624 save funkkey/shortcut cmd to another file for save operation in multiple sessions//~vbD2I~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vb5g:160918 (LNX-CONS:BUG)inigetopt cleared NP char              //~vb5gI~
 //vb5f:160918 (XXE:BUG)inigetopt cleared combine altch initialized by xeopt.h//~vb5fI~
@@ -242,8 +243,8 @@ static UCHAR Slastfflag5=0;   //UFHflag5                           //~v54SR~
 static UCHAR Slastfflag6=0;   //UFHflag6                           //~v54SR~
 static int   Slastfwidth=0;   //UFHflag4                           //~v54SR~
 //*******************************************************       //~6224I~
-int iniacronymwrite(FILE *Pfh);                                 //~6224I~
-int iniacronymchk(char *Pfile,FILE *Pfh);                       //~6224I~
+//int iniacronymwrite(FILE *Pfh);                                  //~vbD2R~
+//int iniacronymchk(char *Pfile,FILE *Pfh);                        //~vbD2R~
 void inisave(void);                                                //~v06HR~
 //****************************************************************
 // inisaveopt
@@ -317,7 +318,7 @@ int inisaveopt(void)
         saveopt.initscroll[3]=(long)Ginitscroll[3];                //~v086R~
         memcpy(saveopt.pallassigntbl,Gpallassigntbl,sizeof(Gpallassigntbl));//~v075R~
         memcpy(saveopt.pallette,Gpallette,16); //color reg assign tbl for pallete no//~v075I~
-        UTRACEP("%s:save Gopt5=0x%02x,&opt3=%p\n",UTT,Gopt5,saveopt.rsv2);//+vbi3R~
+        UTRACEP("%s:save Gopt5=0x%02x,&opt3=%p\n",UTT,Gopt5,saveopt.rsv2);//~vbi3R~
         UTRACED("saveopt",&saveopt,UINISAVESZ);                    //~vbi3I~
         len=fwrite(&saveopt,1,UINISAVESZ,fh);
         if (len!=UINISAVESZ)
@@ -539,7 +540,7 @@ int inigetopt(void)                                                //~v11yR~
 	        Gopt4=(UCHAR)(Gopt4 & ~GOPT4XLINENO);//reset xegbl default setting//~v60kI~
         Gopt4=(UCHAR)(Gopt4 | saveopt.opt4);                       //~v0g1I~
         Gopt5=saveopt.opt5;                                        //~v55jI~
-        UTRACEP("%s:save Gopt5=0x%02x,&opt3=%p\n",UTT,Gopt5,saveopt.rsv2);//+vbi3R~
+        UTRACEP("%s:save Gopt5=0x%02x,&opt3=%p\n",UTT,Gopt5,saveopt.rsv2);//~vbi3R~
         if (saveopt.opt & GOPTRCTLENTER)                           //~v792I~
 			Gotheropt|=GOTHERO_SVOPTRCTL;	//saveopt rctl on      //~v792R~
         Glinenoszb=saveopt.linenoszb;                           //~6224I~
@@ -885,6 +886,7 @@ int iniacronymchk(char *Pfile,FILE *Pfh)                        //~6224I~
 //*********************************                             //~6224I~
     UTRACEP("iniacronymchk pos=%lx\n",ftell(Pfh));                 //~vafsR~
     len=fread(buff,1,sizeof(Sfileid)-1,Pfh);                    //~6224I~
+    UTRACED("iniacronymchk buff",buff,sizeof(Sfileid)-1);          //+vbD2I~
     if (len!=(sizeof(Sfileid)-1)                                //~6224I~
     || memcmp(buff,Sfileid,sizeof(Sfileid)-1))  //invalid       //~6224I~
     {                                                           //~6224I~

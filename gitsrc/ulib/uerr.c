@@ -1,8 +1,11 @@
-//*CID://+v7aeR~:                              update#=  344
+//*CID://+vbDdR~:                              update#=  360       //~vbDdR~
 //*************************************************************
 //*uerrexit/uerrmsg/uerrexit_init/uerrmsg_init/ugeterrmsg**
 //*uerrapi1,uerrapi1x,uerrapi0,uerrapi0x                           //~v040R~
 //*************************************************************
+//vbDd:250704 compiler err c2059(typedef function). missing *      //~vbDdI~
+//vbDa:250703 (gxe)helpmsg was not controled by scr height.        //~vbDaI~
+//v7e2:250626 (Win)flush when abend                                //~v7e2I~
 //v7ae:240302 (BUG)crush when workdir is not exist                 //~v7aeI~
 //v77V:230708 ARM;for xsub select Pjmsg even when wcinit is not called for subthread mode//~v77UI~
 //v77U:230708 ARM;uerrmsg before wcinit set GBL_UERR_DBCSSET and miss to set GBL_ERR_DBCSMODE//~v77UI~
@@ -247,6 +250,9 @@
 	#define MAX_PRINTFW_MSGSZ  4096                                //~vaucI~
 #endif                                                             //~vaucI~
 #define ERRFNM_STACK  "xeerrmsg"                                   //~v6T7R~
+#ifdef XXE                                                         //~vbDaI~
+	int SscrHeightXXE=0;                                           //~vbDaI~
+#endif                                                             //~vbDaI~
 //*******************************************************
 //*errmsg and exit
 //*******************************************************
@@ -282,7 +288,8 @@ static char  Stitle1[MAXTITLE]="";
 static int   Sinit2=0;		//init called sw
 static FILE *Shandle2;
 static char  Stitle2[MAXTITLE]="";
-static UEXITFUNC *Sexitfunc;
+//static UEXITFUNC *Sexitfunc;                                     //+vbDdR~
+static UEXITFUNC Sexitfunc;                                        //+vbDdI~
 static UPOPUPMSG *Supopupmsg;	//upopupmsg func addr           //~5902R~
 static void *Sexitparm;
 static UCHAR Sexitmapfile[_MAX_PATH];                              //~v101R~
@@ -434,7 +441,8 @@ void ubell(void)
 	return;
 }
 //******************************************************
-void uerrexit_init(char *Ptitle,FILE *Poutput,char *Pmapfile,UEXITFUNC *Pexitfunc,void *Pexitparm)
+//void uerrexit_init(char *Ptitle,FILE *Poutput,char *Pmapfile,UEXITFUNC *Pexitfunc,void *Pexitparm)//~vbDdR~
+void uerrexit_init(char *Ptitle,FILE *Poutput,char *Pmapfile,UEXITFUNC Pexitfunc,void *Pexitparm)//~vbDdI~
 {
 //****************************
 #ifdef DOS                                                         //~v022R~
@@ -540,6 +548,11 @@ static char Sentrysw=0;                                            //~v50VR~
 #if defined(WXE)||defined(LNX)  //*W32 console has exception handler, put trace from it//~v6VwR~
     UTRACEPF2("%s:msg=%s\n",UTT,pmsg);                             //~v6VwR~
     utrace_term(0);                                                //~v6VwI~
+#else                                                              //~v7e2R~
+  #ifdef W32   //no exception handler now                          //~v7e2R~
+    UTRACEP("%s:msg=%s\n",UTT,pmsg);                               //~v7e2R~
+	_flushall();                                                   //~v7e2I~
+  #endif                                                           //~v7e2R~
 #endif                                                             //~v6VwI~
 #if defined(XXE) && !defined(ARM)                                  //~v6h2I~
    	wxe_uerrexitmsgbox(pmsg);                                      //~v6h2R~
@@ -1012,13 +1025,20 @@ static int Slastcrlfsw=0;                 //last written crlf      //~v50VR~
     if (!(Guerropt & GBL_UERR_BG))	//fore ground                  //~v060I~
     {                                                              //~v060I~
     	if (!Shlineno)				//first time                   //~v060R~
+      {                                                            //~vbDaI~
+#ifdef XXE                                                         //~vbDaM~
+		if (SscrHeightXXE)                                         //~vbDaI~
+            Shlinemax=SscrHeightXXE-1;                             //~vbDaR~
+        else                                                       //~vbDaI~
+#endif                                                             //~vbDaI~
         {                                                          //~v5kuI~
           if (uprocredirectchk(fileno(stdout))==1)    //stdout redirected//~v5kuI~
             Shlinemax=0x7fff;//no limit                            //~v5kuI~
           else                                                     //~v5kuI~
     	    Shlinemax=uerrscrheight()-1;	//get screen size(-1 for query msg)//~v060R~
         }                                                          //~v5kuI~
-                                                                   //~v060R~
+      }                                                            //~vbDaI~
+        UTRACEP("%s:Shlinemax=%d\n",UTT,Shlinemax);                                                           //~v060R~//~vbDaR~
     	if (Poutf==Pqueryf                                         //~v060R~
         ||  (  (Poutf==stdout   || Poutf==stderr  )                //~v060R~
              &&(Pqueryf==stdout || Pqueryf==stderr) ))             //~v060R~
@@ -1046,7 +1066,7 @@ static int Slastcrlfsw=0;                 //last written crlf      //~v50VR~
                 else                                               //~v5i8I~
     			if (UCBITCHK(Guerropt,GBL_UERR_SJIS2UTF8))	//conv sjis to euc//~v5i8I~
                 {                                                  //~v5i8I~
-                    strcat(breakmsg,"\n");                         //~v5i8I~
+//                  strcat(breakmsg,"\n");                         //~v5i8I~//~vbDaR~
 //  				ucvssjis2utf(0,0,breakmsg,strlen(breakmsg),breakmsgutf8,sizeof(breakmsgutf8),&chklen,&outlen,&errctr);	//sjis-->euc//~v5i8I~//~v6BkR~
     				ucvssjis2utf(0,0,breakmsg,(int)strlen(breakmsg),breakmsgutf8,sizeof(breakmsgutf8),&chklen,&outlen,&errctr);	//sjis-->euc//~v6BkI~
 //                  memcpy(breakmsg,breakmsgutf8,outlen);          //~v5i8I~//~v6BkR~
@@ -2100,7 +2120,7 @@ void uerrmsg_initcomp()                                            //~v6T7I~
 	ULONG pid;                                                     //~v6T7I~
     char fpath[_MAX_PATH];                                         //~v6T7I~
 //******************                                               //~v6T7I~
-    UTRACEP("%s:Sfhstack=%p,Guerropt2=%08x\n",UTT,Sfhstack,Guerropt2);//+v7aeI~
+    UTRACEP("%s:Sfhstack=%p,Guerropt2=%08x\n",UTT,Sfhstack,Guerropt2);//~v7aeI~
     Guerropt2&=(UINT)(~GBL_UERR2_INIT_INPROG); //xe init in progress//~v6T7M~
   if (Sfhstack)                                                    //~v7aeI~
     fclose(Sfhstack);                                              //~v6T7R~
@@ -2119,3 +2139,10 @@ void uerrmsg_initcomp()                                            //~v6T7I~
     }                                                              //~v6T7I~
 #endif                                                             //~v6T7I~
 }                                                                  //~v6T7I~
+#ifdef XXE                                                         //~vbDaI~
+void  uerrhelpmsgSetScrHeight(int PscrH)                           //~vbDaI~
+{                                                                  //~vbDaI~
+	UTRACEP("%s:scrH=%d\n",UTT,PscrH);                             //~vbDaR~
+	SscrHeightXXE=PscrH;                                           //~vbDaI~
+}                                                                  //~vbDaI~
+#endif                                                             //~vbDaI~

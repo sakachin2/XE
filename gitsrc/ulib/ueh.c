@@ -1,5 +1,8 @@
-//CID://+v6VwR~:       update#=  29                                //~v6VwR~
+//CID://+v7ecR~:       update#=  80                                //+v7ecR~
 // *******************************************************************
+//v7ec:250715 call trace_term to close memory trace                //+v7ecI~
+//vbD6:250702 (WXE)exception handling using DbgHelp API            //~vbD6I~
+//vbD5:250701 (Win)exception handling using DbgHelp API            //~vbD5I~
 //v6Vw:180622 write exception msg to UTRACE                        //~v6VwI~
 //v6K2:170311 (Win)take windows process dump when exception(requires regedit setting)//~v6K2I~
 //v6F1:160831 W64 try Exception msg                                //~v6F1I~
@@ -44,14 +47,21 @@
     #include <os2.h>                                               //~v022I~
 #endif                                                             //~v022I~
 #endif                      //DPMI or not                          //~v053I~
-                                                                   //~v022I~
 #include <ulib.h>                                                  //~v022I~
+#ifdef WIN_EXH  //define in ulibdefc.h                             //~vbD5R~
+	#include <dbghelp.h>                                           //~vbD5I~
+#endif                                                             //~vbD5M~
 #include <uerr.h>
 #include <ufuncmap.h>
 #include <ueh.h>
 #include <uehmsg.h>
 #include <uehdump.h>
 #include <utrace.h>                                                //~v167I~
+#include <ualloc.h>                                                //~vbD5I~
+#include <uproc2.h>                                                //~vbD5I~
+#ifdef WXE                                                         //~vbD6I~
+	#include <wxexei.h>                                            //~vbD6I~
+#endif                                                             //~vbD6I~
 //********************************************************************
 
 #define WAIT_TIME   1000      //wait child thread term by milisec
@@ -68,7 +78,23 @@ static PUEXREGREC 	Spurr;       //exception handler sem
 static ULONG 	 	Shmtx;       //exception handler sem 
 #endif                                                             //~v022I~
 #endif                      //DPMI or not                          //~v053I~
+                                                                   //~vbD5I~
+#ifdef WIN_EXH                                                     //~vbD5I~
+	#define MAX_FUNCNAME 256                                       //~vbD5I~
+	static EXCEPTION_RECORD Sexr;                                  //~vbD5I~
+	static CONTEXT Sctxt;                                          //~vbD5I~
+	static EXCEPTION_POINTERS Sei={&Sexr,&Sctxt};                  //~vbD5I~
+	static DWORD Sexcode=0;                                        //~vbD5I~
+#endif //WIN_EXH                                                   //~vbD5I~
+                                                                   //~vbD5I~
 //********************************************************************
+#ifdef WIN_EXH                                                     //~vbD5I~
+ULONG	uexhdlr( int PswFilter,                                    //~vbD5I~
+                    PEXCEPTIONREPORTRECORD pexreprec,     //@@@@   //~vbD5I~
+                      PEXCEPTIONREGISTRATIONRECORD pexregrec,      //~vbD5I~
+                      CONTEXT *pctxrec);                           //~vbD5I~
+int dumpMsg(UCHAR *Pmsg,PUEXREGREC Ppregrec);                      //~vbD5I~
+#else //!WIN_EXH                                                   //~vbD5I~
 #ifdef DPMI					//DPMI version                         //~v053I~
 //  SignalHandler  udpmisigh;                                      //~v053R~
     void udpmisigh(int Psigno);                                    //~v053I~
@@ -88,6 +114,7 @@ static ULONG 	 	Shmtx;       //exception handler sem
 							PVOID);                                //~v022I~
 #endif                                                             //~v022M~
 #endif                      //DPMI or not                          //~v053I~
+#endif //!WIN_EXH           //DPMI or not                          //~vbD5I~
 //************************************************************
 //*
 //*            : useteh                                            //~v5m2R~
@@ -100,6 +127,18 @@ static ULONG 	 	Shmtx;       //exception handler sem
 ///*             set exception handler
 //*
 //************************************************************
+#ifdef WIN_EXH                                                     //~vbD5I~
+void useteh(PUEXREGREC Ppurr)                                      //~vbD5I~
+{                                                                  //~vbD5I~
+	memset(&Ppurr->UERGflag,0,                                     //~vbD5I~
+			(UINT)(UEXREGRECSZ-offsetof(UEXREGREC,UERGflag)));     //~vbD5I~
+    UTRACEP("%s:map=%s,dymp=%s\n",UTT,Ppurr->UERGmapfn,Ppurr->UERGdumpfn);//~vbD5R~
+	Spurr=Ppurr;				//main                             //~vbD5I~
+	Ppurr->UERGflag |= UERGFEHACT; //activ                         //~vbD5I~
+	Ppurr->UERGthreadid=GetCurrentThreadId();                      //~vbD5I~
+}//useteh                                                          //~vbD5I~
+#else //!WIN_EXH                                                   //~vbD5I~
+//************************************************************     //~vbD5I~
 void useteh(PUEXREGREC Ppurr)
 {
 //#ifdef ULIB64X                                                     //~v6hiR~//~v6F1R~
@@ -115,7 +154,6 @@ void useteh(PUEXREGREC Ppurr)
 #endif                                                             //~v022I~
 #endif                      //DPMI or not                          //~v053I~
 //****************************
-
 	memset(&Ppurr->UERGflag,0,
 			(UINT)(UEXREGRECSZ-offsetof(UEXREGREC,UERGflag)));
 
@@ -160,7 +198,7 @@ void useteh(PUEXREGREC Ppurr)
 //#endif  //!ULIB64X                                                 //~v6hiR~//~v6F1R~
 	return;
 }//useteh
-
+#endif //!WIN_EH                                                   //~vbD5I~
 //************************************************************
 //*            : ureseteh                                          //~v304R~
 //* INPUT      :
@@ -280,6 +318,7 @@ void udpmisigh(int Psigno)                                         //~v053I~
 }//udpmisigh                                                       //~v053I~
 #else                       //not DPMI                             //~v053I~
 #ifdef W32  //copy from f:\toolkt21\c\os2h\bsexcpt.h               //~v022I~
+#ifndef WIN_EXH                                                    //~vbD5I~
 /***********************************************************************///~v022I~
 /*                                                                     *///~v022I~
 /*            : uw95exh                                                *///~v304R~
@@ -354,6 +393,7 @@ LONG WINAPI uw95exh(LPEXCEPTION_POINTERS Pw95exptrs)               //~v022I~
     printf("%s:rc=%d\n",UTT,rc);                                   //~v6F1R~
     return rc;                                                     //~v022R~
 }//uw95exh                                                         //~v022I~
+#endif //!WIN_EXH                                                  //~vbD5I~
 #else                                                              //~v022I~
 #endif                                                             //~v022I~
 #endif                      //DPMI or not                          //~v053I~
@@ -388,6 +428,7 @@ void tempdump(int Pdumpno,void *Parea1,int Plen1,void *Parea2,int Plen2)//~v304I
 #endif //!ULIB64X                                                  //~v6hiR~
     return;                                                        //~v304I~
 }                                                                  //~v304I~
+#ifndef WIN_EXH                                                    //~vbD5I~
 #ifndef ULIB64X                                                    //~v6F1R~
 /***********************************************************************/
 /*                                                                     */
@@ -792,7 +833,7 @@ UTRACEP("befoe uehmsg,Spepatbl=%08x\n",Spepatbl);                  //~v6F1I~
      	msgwk=uehmsg(pexreprec,&purr->UERGsys,pctxrec,Spepatbl,exitmsg);//~v6F1I~
                             //abend information msgbox             //~v6F1I~
         if (msgwk)                                                 //~v6VwI~
-	    	UTRACEPF2("%s:%s\n",UTT,msgwk);                        //+v6VwR~
+	    	UTRACEPF2("%s:%s\n",UTT,msgwk);                        //~v6VwR~
 UTRACEP("after uehmsg,Spepatbl=%08x\n",Spepatbl);                  //~v6F1I~
 #ifdef AAA //@@@@test                                              //~v6F1R~
    if (purr->UERGdumpfn)                                           //~v6F1I~
@@ -835,3 +876,342 @@ UTRACEP("before uehdump,Spepatbl=%08x\n",Spepatbl);                //~v6F1I~
                                                                    //~v6F1I~
 }//uexhdlr                                                         //~v6F1I~
 #endif  //ULIB64X                                                  //~v6F1R~
+#endif //!WIN_EXH                                                  //~vbD5I~
+#ifdef WIN_EXH                                                     //~vbD5I~
+//**********************************************************************//~vbD6R~
+//* WIN_EXH ************************************************************//~vbD6I~
+//**********************************************************************//~vbD6I~
+ULONG	uexhdlr( int PswFilter,                                    //~vbD5R~
+                    PEXCEPTIONREPORTRECORD pexreprec,     //@@@@   //~vbD5I~
+                      PEXCEPTIONREGISTRATIONRECORD pexregrec,      //~vbD5I~
+                      CONTEXT *pctxrec)                            //~vbD5I~
+{                                                                  //~vbD5I~
+   PUEXREGREC purr;                                                //~vbD5I~
+   ULONG      exnum; //exception number                            //~vbD5I~
+   APIRET     apiret;//r.c                                         //~vbD5I~
+   UCHAR     *msgwk; //abend msg work area                         //~vbD5I~
+   PVOID     exitmsg; //uerrexit msg                               //~vbD5I~
+   int       len;                                                  //~vbD5I~
+static  PEPATBL  Spepatbl=0;                                       //~vbD5I~
+static  int Sloopentry;                                            //~vbD5I~
+extern int main(int,char*[]);                                      //~vbD5I~
+//********                                                         //~vbD5I~
+	UTRACEP("%s:exhdler Pswfilter=%d\n",UTT,PswFilter);            //~vbD5R~
+   purr=(PUEXREGREC)(void*)pexregrec;                              //~vbD5I~
+   exnum =pexreprec->ExceptionNum; //exception number              //~vbD5I~
+                                                                   //~vbD5I~
+//**********************************************                   //~vbD5I~
+//* ignore gurad page exception                *                   //~vbD5I~
+//**********************************************                   //~vbD5I~
+                                                                   //~vbD5I~
+   if (  exnum==XCPT_GUARD_PAGE_VIOLATION     //just guard page    //~vbD5I~
+      || exnum==XCPT_UNABLE_TO_GROW_STACK     //unable to expand guard page//~vbD5I~
+      )                                                            //~vbD5I~
+     return (XCPT_CONTINUE_SEARCH);     //req system process(stack expand)//~vbD5I~
+                                                                   //~vbD5I~
+//**********************************************                   //~vbD5I~
+   purr->UERGflag |= UERGFENTRY;    //once enterd                  //~vbD5I~
+//**********************************************                   //~vbD5I~
+//* for the case main thread ended without killing sub thread      //~vbD5I~
+//**********************************************                   //~vbD5I~
+	DWORD tid=GetCurrentThreadId();                                //~vbD5I~
+	UTRACEP("%s:exhdler tid=0x%08x,regiterTid=0x%08x\n",UTT,tid,Spurr->UERGthreadid);//~vbD5I~
+   	if (tid!=Spurr->UERGthreadid)                                  //~vbD5I~
+	{                                                              //~vbD5I~
+		UTRACEP("%s:subthread return\n",UTT);                      //~vbD5I~
+     	return (XCPT_CONTINUE_SEARCH);     //req system process(stack expand)//~vbD5I~
+    }                                                              //~vbD5I~
+//**********************************************                   //~vbD5I~
+	if (purr->UERGflag & UERGFEHINP)	 //abend in eh             //~vbD5I~
+    {                                                              //~vbD5I~
+    	UTRACEP("%s:==== ABEND at Exception Handler ====\n",UTT);  //~vbD5I~
+        if (Sloopentry++==0)                                       //~vbD5I~
+        {                                                          //~vbD5I~
+        	msgwk="***ABEND AT Exception Handler***";              //~vbD5I~
+        }                                                          //~vbD5I~
+//  	fcloseall();                                               //~vbD5I~
+       return (XCPT_CONTINUE_SEARCH); //req system process         //~vbD5I~
+    }                                                              //~vbD5I~
+    if (PswFilter)                                                 //~vbD5I~
+    if (++purr->UERGentryctr>MAXEHENTRY)   //loop detection        //~vbD5I~
+    {                                                              //~vbD5I~
+        UTRACEP("%s,return HANDLER by entryCtr=%d \n",UTT,purr->UERGentryctr);//~vbD5I~
+//     	if (purr->UERGentryctr>MAXEHENTRY+1)   //loop detection    //~vbD5I~
+//         	return (XCPT_CONTINUE_SEARCH); //req system process    //~vbD5I~
+//       	msgwk=__uehmsg(pexreprec,&purr->UERGsys,pctxrec,Spepatbl,0);//@@@@//~vbD5I~
+       return (XCPT_CONTINUE_SEARCH); //req system process         //~vbD5I~
+    }                                                              //~vbD5I~
+    if (PswFilter)                                                 //~vbD5I~
+    {                                                              //~vbD5I~
+        UTRACEP("%s:return HANDLER by swFilter rc=%d \n",UTT,EXCEPTION_EXECUTE_HANDLER);//~vbD5I~
+		return XCPT_CONTINUE_STOP;   //   	0x00716668=EXCEPTION_EXECUTE_HANDLER;//~vbD5I~
+    }                                                              //~vbD5I~
+//**********************************************                   //~vbD5I~
+//*msg/dump process start                      *                   //~vbD5I~
+//**********************************************                   //~vbD5I~
+                                                                   //~vbD5I~
+   purr->UERGflag |= UERGFEHINP; //in progress                     //~vbD5I~
+	exitmsg=ugeterrmsg();		//get msg before user exit         //~vbD5I~
+	if (purr->UERGuxfunc)                                          //~vbD5I~
+		purr->UERGuxfunc(0,purr);			//user exit,0:scrreset //~vbD5R~
+//*uerrexit msg save for new uerrmsg on e.h                        //~vbD5I~
+    if (exitmsg)                                                   //~vbD5I~
+    {                                                              //~vbD5I~
+//  	UTRACEPF2("%s:last errmsg=%s\n",UTT,exitmsg);              //~vbD5R~
+    	UTRACEP("%s:last errmsg=%s\n",UTT,exitmsg);                //~vbD5I~
+    	len=(int)strlen(exitmsg)+1;                                //~vbD5I~
+        msgwk=exitmsg;	//save for pvoid* use                      //~vbD5I~
+		exitmsg=HeapAlloc(GetProcessHeap(),                        //~vbD5I~
+							HEAP_ZERO_MEMORY,//flag=clear,return NULL,serialize//~vbD5I~
+	                    	len);        //req len                 //~vbD5I~
+		if (!exitmsg)                                              //~vbD5I~
+        	apiret=GetLastError();                                 //~vbD5I~
+		else                                                       //~vbD5I~
+			apiret=0;                                              //~vbD5I~
+   		if(apiret)                                                 //~vbD5I~
+			exitmsg=0;                                             //~vbD5I~
+		else                                                       //~vbD5I~
+        	memcpy(exitmsg,msgwk,(UINT)len);                       //~vbD5I~
+	}                                                              //~vbD5I~
+                                                                   //~vbD5I~
+                                                                   //~vbD5I~
+//UTRACEP("befoe uehmsg,Spepatbl=%08x\n",Spepatbl);                //~vbD5I~
+     	msgwk=uehmsg(pexreprec,&purr->UERGsys,pctxrec,exitmsg);    //~vbD5R~
+                            //abend information msgbox             //~vbD5I~
+        dumpMsg(msgwk,purr);                                       //~vbD5I~
+#ifdef WXE                                                         //~vbD6M~
+    	wxe_uerrmsgstdo(msgwk);                                    //~vbD6M~
+#endif                                                             //~vbD6M~
+//      if (msgwk)                                                 //~vbD5R~
+//      	UTRACEPF2("%s:%s\n",UTT,msgwk);                        //~vbD5R~
+//UTRACEP("after uehmsg,Spepatbl=%08x\n",Spepatbl);                //~vbD5I~
+//****************************                                     //~vbD5I~
+//* free allocated msg work  *                                     //~vbD5I~
+//****************************                                     //~vbD5I~
+   if(msgwk)//uehabend called                                      //~vbD5I~
+   {                                                               //~vbD5I~
+	apiret=HeapFree(GetProcessHeap(),                              //~vbD5I~
+					0,//flag=serialize                             //~vbD5I~
+                    msgwk);        //req len                       //~vbD5I~
+	if (!apiret)                                                   //~vbD5I~
+    {                                                              //~vbD5I~
+    	apiret=GetLastError();                                     //~vbD5I~
+    	uerrexit("HeapFree failed,rc=%d,addr=%08x",0,apiret,msgwk);//~vbD5I~
+    }                                                              //~vbD5I~
+   }                                                               //~vbD5I~
+//**********************************************                   //~vbD5I~
+//* return(continue termination only)          *                   //~vbD5I~
+//**********************************************                   //~vbD5I~
+	if (purr->UERGuxfunc)                                          //~vbD5I~
+		purr->UERGuxfunc(2,purr);			//user exit            //~vbD5I~
+   purr->UERGflag &=~UERGFEHINP ; //in progress reset              //~vbD5I~
+   pexreprec->fHandlerFlags|=EH_NONCONTINUABLE;//request dont retry//~vbD5I~
+// utrace_term(0);  //before fcloseall,write closed msg to trace file//+v7ecR~
+   utrace_term(0);  //before fcloseall,write closed msg to trace file//+v7ecI~
+// fcloseall();                                                    //~vbD5R~
+   UTRACEP("%s:return rc=%d=SEARCH\n",UTT,XCPT_CONTINUE_SEARCH);   //~vbD5I~
+   return (XCPT_CONTINUE_SEARCH);                                  //~vbD5I~
+}//uexhdlr                                                         //~vbD5R~
+//***********************************************************************//~vbD5I~
+//LONG WINAPI uexhWin(int PswFilter,LPEXCEPTION_POINTERS Pw95exptrs)//~vbD5R~
+LONG WINAPI uexhWin(LPEXCEPTION_POINTERS Pw95exptrs)               //~vbD5I~
+{                                                                  //~vbD5I~
+	PEXCEPTION_RECORD pw95reprec;                                  //~vbD5I~
+	PCONTEXT          pw95ctxrec;                                  //~vbD5I~
+	EXCEPTIONREPORTRECORD exreprec;//os2 format                    //~vbD5I~
+//  CONTEXT ctxrec;                                                //~vbD5I~
+    ULONG rc;                                                      //~vbD5I~
+//********                                                         //~vbD5I~
+    UTRACEP("%s:entry\n",UTT);                                     //~vbD5R~
+ 	pw95reprec=Pw95exptrs->ExceptionRecord;                        //~vbD5I~
+ 	pw95ctxrec=Pw95exptrs->ContextRecord;                          //~vbD5I~
+    UTRACED("ExceptionRecord",pw95reprec,(int)sizeof(EXCEPTION_RECORD));//~vbD5I~
+    UTRACED("ContextRecord",pw95ctxrec,(int)sizeof(CONTEXT));      //~vbD5I~
+//	UTRACEP("ueh:call=%d,code=%08x\n",++callctr,pw95reprec->ExceptionCode);//~vbD5I~
+//report rec setup                                                 //~vbD5I~
+	exreprec.ExceptionNum=pw95reprec->ExceptionCode; /* exception number *///~vbD5I~
+   	exreprec.fHandlerFlags=pw95reprec->ExceptionFlags;             //~vbD5I~
+   	exreprec.NestedExceptionReportRecord=pw95reprec->ExceptionRecord;//~vbD5I~
+   	exreprec.ExceptionAddress=pw95reprec->ExceptionAddress;        //~vbD5I~
+   	int ctr=pw95reprec->NumberParameters; /* Size of Exception Specific Info *///~vbD5I~
+   	exreprec.cParameters=ctr; /* Size of Exception Specific Info *///~vbD5I~
+   	memcpy(exreprec.ExceptionInfo,pw95reprec->ExceptionInformation,sizeof(exreprec.ExceptionInfo[0])*ctr); /* Exception Specfic Info *///~vbD5I~
+//context rec setup                                                //~vbD5I~
+// 	ctxrec.ContextFlags=pw95ctxrec->ContextFlags;                  //~vbD5I~
+//	rc=uexhdlr(PswFilter,&exreprec,&Spurr->UERGsys,pw95ctxrec); //@@@@//~vbD5R~
+  	rc=uexhdlr(1/*PswFilter*/,&exreprec,&Spurr->UERGsys,pw95ctxrec); //@@@@//~vbD5I~
+    UTRACEP("%s:uexhdlr rc=%d\n",UTT,rc);                          //~vbD5I~
+    if (rc==XCPT_CONTINUE_STOP)                                    //~vbD5I~
+    {                                                              //~vbD5I~
+//  	printei(Ppepout);                                          //~vbD5I~
+//      uexhWin(0/*swFilter*/,&Sei);                               //~vbD5I~
+	  	rc=uexhdlr(0/*PswFilter*/,&exreprec,&Spurr->UERGsys,pw95ctxrec); //@@@@//~vbD5I~
+    }                                                              //~vbD5I~
+    UTRACEP_FLUSH("%s:exit rc=%d\n",UTT,rc);                       //~vbD5R~
+    return rc;                                                     //~vbD5I~
+}//uexhWin                                                         //~vbD5I~
+//***************************************                          //~vbD5I~
+int uehfilterfilter(DWORD Pexcode,EXCEPTION_POINTERS *Ppep)        //~vbD5I~
+{                                                                  //~vbD5I~
+    int rc;                                                        //~vbD5I~
+    UCHAR filtererr[1024];                                         //~vbD6I~
+//***********************                                          //~vbD5I~
+ 	UTRACEP_FLUSH("%s:entry\n",UTT);                               //~vbD5R~
+    UTRACED("ExceptionRecord",Ppep->ExceptionRecord,(int)sizeof(EXCEPTION_RECORD));//~vbD5R~
+    UTRACED("Context",Ppep->ContextRecord,(int)sizeof(CONTEXT));   //~vbD5R~
+    DWORD64 exaddr=(DWORD64)Ppep->ExceptionRecord->ExceptionAddress;//~vbD5I~
+	SYMBOL_INFO *psymi=(SYMBOL_INFO*)getSymbol(exaddr);  //abend addr//~vbD5R~
+    UTRACEP("%s:Exception Handling.filter failed at %016llX (0x%08X)\n",UTT,exaddr,Pexcode);//~vbD5I~
+    if (psymi)                                                     //~vbD5I~
+    {                                                              //~vbD5I~
+    	DWORD64 offs64=exaddr-psymi->Address;                      //~vbD5I~
+        UTRACEP("%s:Function = %s [%016llX] + 0x%04llX \n",UTT,psymi->Name,psymi->Address,offs64);//~vbD5I~
+    }                                                              //~vbD5I~
+    else                                                           //~vbD5I~
+    {                                                              //~vbD5I~
+        UTRACEP("%s:Function = Unknown.\n",UTT);                   //~vbD5I~
+    }                                                              //~vbD5I~
+    UTRACEP("%s:Orignal Exception is 0x%08X at %016llX\n",UTT,Sexcode,(DWORD64)Sexr.ExceptionAddress);//~vbD5R~
+    sprintf(filtererr,"Exception Handling.filter failed at %016llX (0x%08X)\n"//~vbD6R~
+    		"Orignal Exception is 0x%08X at %016llX\n",            //~vbD6M~
+    			exaddr,Pexcode,                                    //~vbD6M~
+				Sexcode,(DWORD64)Sexr.ExceptionAddress);           //~vbD6M~
+#ifdef WXE                                                         //~vbD6R~
+    wxe_uerrmsgstdo(filtererr);                                    //~vbD6I~
+#else                                                              //~vbD6I~
+	if (Spurr->UERGuxfunc)                                         //~vbD6R~
+		Spurr->UERGuxfunc(0,Spurr);			//scrreset             //~vbD6R~
+    fflush(stdout);                                                //~vbD6I~
+    printf(filtererr);                                             //~vbD6I~
+    fflush(stdout);                                                //~vbD6I~
+#endif                                                             //~vbD6I~
+  	rc=XCPT_CONTINUE_STOP;      //1:goto exception block and return continue from main filter//~vbD5I~
+//  rc=XCPT_CONTINUE_SEARCH;	//0:pass to OS(prosess exit)       //~vbD5I~
+ 	UTRACEP_FLUSH("%s:exit rc=%d\n",UTT,rc);                       //~vbD5R~
+    return rc;                                                     //~vbD5I~
+}                                                                  //~vbD5I~
+//***********************************************************************//~vbD5I~
+//*from xe.c except exception                                      //~vbD5I~
+//***********************************************************************//~vbD5I~
+int uehfilter(DWORD Pexcode,EXCEPTION_POINTERS *Ppep)              //~vbD5R~
+{                                                                  //~vbD5I~
+	int rc;                                                        //~vbD5I~
+//***********************                                          //~vbD5I~
+ 	UTRACEP_FLUSH("%s:entry Spurr=%p\n",UTT,Spurr);                //~vbD5R~
+	if (!Spurr)                                                    //~vbD6R~
+    {                                                              //~vbD6R~
+	 	UTRACEP_FLUSH("%s:Exception handler not yet registered.\n",UTT);//~vbD6R~
+	    rc=XCPT_CONTINUE_SEARCH;	//pass to OS(prosess exit)     //~vbD6R~
+        return rc;                                                 //~vbD6R~
+    }                                                              //~vbD6R~
+ 	UTRACEP("%s:ecCode=0x%08x,exceptionPointers=%p\n",UTT,Pexcode,Ppep);//~vbD5R~
+    UTRACED("uehfilter exceptionRecord in",Ppep->ExceptionRecord,sizeof(EXCEPTION_RECORD));//~vbD5R~
+    UTRACED("uehfilter context in",Ppep->ContextRecord,sizeof(CONTEXT));//~vbD5I~
+    Sexcode=Pexcode;                                               //~vbD5I~
+    memcpy(Sei.ExceptionRecord,Ppep->ExceptionRecord,sizeof(EXCEPTION_RECORD));//~vbD5R~
+    memcpy(Sei.ContextRecord,Ppep->ContextRecord,sizeof(CONTEXT)); //~vbD5R~
+	__try                                                          //~vbD5I~
+	{                                                              //~vbD5I~
+		UTRACEP("%s:try\n",UTT);                                   //~vbD5I~
+#ifdef TEST                                                        //~vbD6R~
+		UTRACEP("%s:0c4 at filter before uexhWin\n",UTT);          //~vbD5I~
+		char *pc=0;                                                //~vbD5I~
+        *pc='1';                                                   //~vbD5I~
+#endif                                                             //~vbD5I~
+//	  	rc=uexhWin(1/*swFilter*/,&Sei);                            //~vbD5R~
+//  	  	rc=uexhWin(&Sei);                                      //~vbD5I~
+  	  	uexhWin(&Sei);                                             //~vbD5I~
+//   	UTRACEP("%s:uexhWin rc=%d\n",UTT,rc);                      //~vbD5R~
+//        if (rc==XCPT_CONTINUE_STOP)                              //~vbD5R~
+//        {                                                        //~vbD5R~
+////          printei(Ppepout);                                    //~vbD5R~
+//            uexhWin(0/*swFilter*/,&Sei);                         //~vbD5R~
+//        }                                                        //~vbD5R~
+ 	}                                                              //~vbD5I~
+ 	__except                                                       //~vbD5I~
+	(                                                              //~vbD5I~
+    	uehfilterfilter(GetExceptionCode(),GetExceptionInformation())//~vbD5I~
+ 	)                                                              //~vbD5I~
+	{                                                              //~vbD5I~
+        UTRACEP("%s:excetion block ec=0x%08x\n",UTT,Pexcode);      //~vbD5I~
+	}                                                              //~vbD5I~
+    rc=XCPT_CONTINUE_SEARCH;	//pass to OS(prosess exit)         //~vbD5I~
+ 	UTRACEP_FLUSH("%s:exit rc=%d=CONTINUE\n",UTT,rc);              //~vbD5R~
+	return rc;                                                     //~vbD5I~
+}                                                                  //~vbD5I~
+//***********************************************************************//~vbD5I~
+void *getSymbol(DWORD64 Paddr)                                     //~vbD5R~
+{                                                                  //~vbD5I~
+    DWORD64 offs;                                                  //~vbD5I~
+    int err;                                                       //~vbD5I~
+    SYMBOL_INFO *psym64;                                           //~vbD5I~
+//************************************                             //~vbD5I~
+    UTRACEP("%s:addr=%016llX\n",UTT,Paddr);                        //~vbD5I~
+//  int sz=sizeof(IMAGEHLP_SYMBOL64);                              //~vbD5I~
+    int sz=sizeof(SYMBOL_INFO);                                    //~vbD5I~
+    int len=MAX_FUNCNAME*sizeof(((PSYMBOL_INFO)0)->Name)+sz;       //~vbD5I~
+//  IMAGEHLP_SYMBOL64 *psym64=(PIMAGEHLP_SYMBOL64)umalloc((UINT)len);//~vbD5I~
+    psym64=(PSYMBOL_INFO)umalloc((UINT)len);                       //~vbD5I~
+    memset(psym64,0,(UINT)len);                                    //~vbD5I~
+                                                                   //~vbD5I~
+    psym64->SizeOfStruct=sz;                                       //~vbD5I~
+    psym64->MaxNameLen=MAX_FUNCNAME; //not include last null       //~vbD5I~
+                                                                   //~vbD5I~
+    HANDLE hProcess = GetCurrentProcess(); //ffffffffffffffff:current//~vbD5I~
+    UTRACEP("%s:hProcess=%p\n",UTT,hProcess);                      //~vbD5I~
+    // Initialize DbgHelp                                          //~vbD5I~
+    if (!SymInitialize(hProcess, NULL, TRUE))                      //~vbD5I~
+ 	{                                                              //~vbD5I~
+        err=GetLastError();                                        //~vbD5I~
+        UTRACEP("%s:Failed to SymInitialize rc=%d=0x%04x\n",UTT,err,err);//~vbD5I~
+        return 0;                                                  //~vbD5I~
+    }                                                              //~vbD5I~
+//  int rc=SymGetSymFromAddr64(hProcess,Paddr,&offs,psym64);       //~vbD5I~
+    if (!SymFromAddr(hProcess,Paddr,&offs,psym64))                 //~vbD5I~
+    {                                                              //~vbD5I~
+    	err=GetLastError();                                        //~vbD5I~
+        UTRACEP("%s:Failed to SymFromAddr rc=%d=0x%04x\n",UTT,err,err);//~vbD5I~
+        return 0;                                                  //~vbD5I~
+    }                                                              //~vbD5I~
+    SymCleanup(hProcess);                                          //~vbD5I~
+    UTRACEP("%s:exit symbol=%s,FuncAddr=%016llX,Exception=%016llX,Offset=%016llX\n",UTT,psym64->Name,psym64->Address,Paddr,offs);//~vbD5I~
+    return psym64;                                                 //~vbD5I~
+}                                                                  //~vbD5I~
+//***********************************************************************//~vbD5I~
+int dumpMsg(UCHAR *Pmsg,PUEXREGREC Ppregrec)                       //~vbD5I~
+{                                                                  //~vbD5I~
+    UCHAR *pfnm;                                                   //~vbD5R~
+    UCHAR fnmdump[_MAX_PATH];                                      //~vbD5I~
+    FILE *fh;                                                      //~vbD5R~
+    UINT len,rclen;                                                //~vbD5I~
+#define DUMPMSG "\n\n!! Exception Msg was written to %s.\n"        //~vbD6I~
+                                                                   //~vbD6I~
+//*************************                                        //~vbD5I~
+    pfnm=Ppregrec->UERGdumpfn;		//dump filename                //~vbD5I~
+    sprintf(fnmdump,"%s.%d",pfnm,ugetpid());                       //~vbD5I~
+    UTRACEP("%s:regrec=%s,fnm=%s\n",UTT,pfnm,fnmdump);             //~vbD5I~
+    UTRACEP("%s:msg=%s\n",UTT,Pmsg);                               //~vbD5I~
+    fh=fopen(fnmdump,"wb");                                        //~vbD5I~
+    if (!fh)                                                       //~vbD5I~
+    {                                                              //~vbD5I~
+    	UTRACEP("%s:%s open failed,errno=%d\n",UTT,fnmdump,errno); //~vbD5R~
+    	printf("%s open failed,errno=%d\n",fnmdump,errno);         //~vbD5I~
+        return 4;                                                  //~vbD5I~
+    }                                                              //~vbD5I~
+    len=strlen(Pmsg);                                              //~vbD5I~
+	rclen=fwrite(Pmsg,1,len,fh);                                   //~vbD5I~
+    if (rclen!=len)                                                //~vbD5I~
+    {                                                              //~vbD5I~
+    	UTRACEP("%s:fwrite to %s failed,errno=%d,len=%d,rclen=%d\n",UTT,fnmdump,errno,len,rclen);//~vbD5R~
+    	printf("fwrite to %s failed,errno=%d\n",fnmdump,errno);    //~vbD5I~
+        return 4;                                                  //~vbD5I~
+    }                                                              //~vbD5I~
+    fclose(fh);                                                    //~vbD5I~
+    printf(DUMPMSG,fnmdump);                                       //~vbD6R~
+#ifdef WXE                                                         //~vbD6I~
+	sprintf(Pmsg+strlen(Pmsg),DUMPMSG,fnmdump);                    //~vbD6I~
+#endif                                                             //~vbD6I~
+    UTRACEP("%s:exit\n",UTT);                                      //~vbD5I~
+    return 0;                                                      //~vbD5I~
+}                                                                  //~vbD5I~
+#endif  //WIN_EXH                                                  //~vbD5I~

@@ -1,4 +1,4 @@
-//*CID://+vcB1R~:                             update#=  877;       //~vcB1R~
+//*CID://+vbDeR~:                             update#=  880;       //+vbDeR~
 //*************************************************************    
 //*xefcmd6.c*                                                      //~v78rR~
 //**file cmd:PROfile                                               //~v78rI~
@@ -6,6 +6,7 @@
 //**file cmd:Rotate  ROT { R | L | X | Y | RX | LX | RJ | LJ } [NX] [TAIL] [n-m] [.lab1 .lab2]//~v511R~
 //** NX: x,y,rj,lj only                                            //~v511R~
 //*************************************************************    
+//vbDe:250705 Rotate cmd; when warning:"dbcs and sbcs mix" was issued. return rc=!. it keep cmd in cmdline. treate it as success.//~vcDeI~
 //vbB1:240801 (Bug)saved msg for "prof reset" cmd. have to issue "reset".//~vcB1I~
 //vc61 2023/08/04 (Bug) Uri to file path failes when space embedding//~vc61I~
 //vbs6:201026 profile COL cmd for dir, "col on dir" follows dir setting//~vbs6I~
@@ -493,6 +494,7 @@ int fcmdrotatemain(PUCLIENTWE Ppcw,PUFILEH Ppfh,PULINEH Pplhs,PULINEH Pplhe,int 
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
 	int swebcfile;                                                 //~va50I~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50I~
+int swMix=0;                                                       //~vcDeI~
 //*********************************                                
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
 	swebcfile=PFH_ISEBC(Ppfh);                                     //~va50I~
@@ -634,9 +636,10 @@ UTRACEP("fcmdrotate ,mallocsz=%d\n",len+djwklen);                  //~vva1cI~//~
             {                                                      //~v76FI~
 //          	uerrmsg("SBCS and DBCS mixed",                     //~v76FR~
 //              		"SBCS Ç∆ DBCS Ç™ç¨çá");                    //~v76FR~
-            	uerrmsg("Note.SBCS and DBCS mixed(try DBCSAR/DBCSAL option)",//~v76FI~
-                		"íçÅBSBCS Ç∆ DBCS Ç™ç¨çá(DBCSAR/DBCSALÇééÇµÇƒå©Çƒâ∫Ç≥Ç¢)");//~v76FI~
-                rc=1;                                              //~v76FI~
+//            	uerrmsg("Note.SBCS and DBCS mixed(try DBCSAR/DBCSAL option)",//+vbDeR~
+//                		"íçÅBSBCS Ç∆ DBCS Ç™ç¨çá(DBCSAR/DBCSALÇééÇµÇƒå©Çƒâ∫Ç≥Ç¢)");//+vbDeR~
+//              rc=1;                                              //+vbDeR~
+                swMix=1;                                           //~vcDeI~
             }                                                      //~v76FI~
         break;                                                     
     case 3:                                                        
@@ -653,9 +656,14 @@ UTRACEP("fcmdrotate ,mallocsz=%d\n",len+djwklen);                  //~vva1cI~//~
     UPCTRREQ(Ppfh);         //write at save                        
     ufree(pwk);                                                    
     if (!rc)                                                       //~v511I~
+    {                                                              //~vcDeI~
     	uerrmsg("ROT %s Completed",                                //~v511R~
                 "ROT %s äÆóπ",                                     //~v511R~
 				Srottype);                                         //~v511R~
+        if (swMix)                                                 //~vcDeI~
+            uerrmsgcat(";Note.SBCS and DBCS mixed(try DBCSAR/DBCSAL option also.)",//+vbDeR~
+               		   ";SBCS Ç∆ DBCS ÇÃç¨çáÇ≈Ç∑(DBCSAR/DBCSALÇ‡ééÇµÇƒå©Çƒâ∫Ç≥Ç¢)");//+vbDeR~
+    }                                                              //~vcDeI~
 	return rc;                                                     
 }//fcmdrotatemain                                                  
 //**************************************************************** 
@@ -1998,7 +2006,7 @@ int fcmdprofgetprofile(int Popt,PUFILEH Ppfh,long *Ppsetflag)      //~v78rR~
                         }                                          //~va79I~
                         else                                       //~vcB1I~
                         {                                          //~vcB1I~
-                            uerrmsgcat("; %s is registered on profile",0,//+vcB1R~
+                            uerrmsgcat("; %s is registered on profile",0,//~vcB1R~
                                         cvname);                   //~vcB1I~
                         }                                          //~vcB1I~
                     }                                              //~va79M~

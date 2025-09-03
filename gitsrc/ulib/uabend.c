@@ -1,8 +1,8 @@
-//CID://+v6hhR~:          update#=      1 1                        //+v6hhR~
+//CID://+v6hhR~:          update#=      4 1                        //~v6hhR~
 // *******************************************************************
 // * uabend                                                     //~5124R~
 // *******************************************************************//~5124I~
-//v6hh:120623 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  defines ULPTR(unsigned long long)//+v6hhI~
+//v6hh:120623 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  defines ULPTR(unsigned long long)//~v6hhI~
 //v358:000927 LINUX support(use abort for uabend to take core)     //~v358I~
 //v327 000820:LINUX support                                        //~v327I~
 //v059:970201:use unsigned int for UINT                            //~v059I~
@@ -40,6 +40,7 @@
 //*******************************************************       //~5124I~
 #include <ulib.h>                                               //~5124I~
 #include <uabend.h>                                             //~5124I~
+#include <utrace.h>                                                //+v6hhI~
 
 //***************************************************************//~5124R~
 //* uabend                                                      //~5124R~
@@ -63,9 +64,11 @@ void uabend(unsigned int perrno,unsigned long p1,unsigned long p2,unsigned long 
 #else                                                           //~5124I~
     #ifdef W32                                                     //~v022I~
         DWORD   code;                                              //~v022I~
-//  	DWORD	exarg[EXCEPTION_MAXIMUM_PARAMETERS];               //~v022I~//+v6hhR~
-    	ULPTR	exarg[EXCEPTION_MAXIMUM_PARAMETERS];               //+v6hhI~
+//  	DWORD	exarg[EXCEPTION_MAXIMUM_PARAMETERS];               //~v022I~//~v6hhR~
+    	ULPTR	exarg[EXCEPTION_MAXIMUM_PARAMETERS];               //~v6hhI~
 //********************************************                     //~v022I~
+        UTRACEP("%s:errno=%d,p1=%p,p2=%p,p3=%p\n",UTT,perrno,p1,p2,p3);//~v6hhI~
+		_flushall();                                               //~v6hhI~
         code=XCPT_FATAL_EXCEPTION | XCPT_CUSTOMER_CODE;            //~v022I~
        	exarg[0]=perrno;                                           //~v022R~
        	exarg[1]=p1;                                               //~v022I~

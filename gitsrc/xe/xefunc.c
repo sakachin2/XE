@@ -1,8 +1,10 @@
-//*CID://+vby1R~:                             update#=  437;       //+vby1R~
+//*CID://+vbDyR~:                             update#=  446;       //+vbDyR~
 //*************************************************************
 //*xefunc.c
 //************************************************************* //~v020I~
-//vby1:230323 sys/timeb.h is not found on ARM                      //+vby1I~
+//vbDy:250828 put CMD string to kbdtrace                           //+vbDyI~
+//vbDb:250704 display func description(FTnamee/j) to scrtype err   //~vbDbI~
+//vby1:230323 sys/timeb.h is not found on ARM                      //~vby1I~
 //vbvk:221130 0.1 alias cmd; allow line comment starting by #      //~vbvkI~
 //vbvi:221130 (BUG)FTFLINECHSET:x20 is duplicated with DTUDUPACMD  //~vbviI~
 //vbvf:221129 drop japanese comment for =0.2/0.3 when english mode //~vbvfI~
@@ -151,9 +153,9 @@
 #ifdef W32                                                         //~v560I~
 	#include <sys\timeb.h>                                         //~v560I~
 #else                                                              //~vbs1I~
-  #ifndef ARM                                                      //+vby1I~
+  #ifndef ARM                                                      //~vby1I~
     #include <sys/timeb.h>                                         //~vbs1I~
-  #endif                                                           //+vby1I~
+  #endif                                                           //~vby1I~
 #endif                                                             //~v560I~
 //#ifdef XXE                                                         //~v651I~//~vbs1R~
 //    #include <sys/timeb.h>                                         //~v651I~//~vbs1R~
@@ -184,6 +186,7 @@
 #include <utf.h>                                                   //~vawtI~
 #define UFTIME                                                     //~vbs1I~
 #include <umiscf.h>                                                //~vbs1I~
+#include <uerr.h>                                                  //~vbDbI~
                                                                 //~5318I~
 #include "xe.h"
 #include "xescr.h"
@@ -1456,6 +1459,7 @@ static UCHAR Sspecialeditcmd[]=PGMID;                              //~v55cR~
     	return 0;                                                  //~v67DI~
   }                                                                //~v161I~
 	UTRACEP("func_cmd Ppcw=%p\n",Ppcw);                     //~v035R~//~vbi3R~
+	UTRACEPF2("%s:cmd=%s\n",UTT,wkbuff);                           //+vbDyI~
 	UTRACED("func_cmd",wkbuff,(int)cmdlen);                        //~vbi3I~
                                                                 //~v035I~
     if (*wkbuff=='=')           //menu call                     //~5504I~
@@ -1656,6 +1660,12 @@ static UCHAR Sspecialeditcmd[]=PGMID;                              //~v55cR~
 //  	uerrmsg("\"%s\" is not a valid command for this panel",    //~v50mR~
 //  			"\"%s\" ‚Í‚±‚Ì‰æ–Ê‚Å‚ÍŽg—p‚Å‚«‚Ü‚¹‚ñ",             //~v50mR~
 //  			wkbuff);                                           //~v50mR~
+        if (pft)                                                   //~vbDbI~
+        {                                                          //~vbDbI~
+            UTRACEP("%s:Guerropt=%02x\n",UTT,Guerropt);            //~vbDbR~
+        //*Warning:Guerropt is set at first uerrmsg                //~vbDbI~
+            sprintf(wkbuff+strlen(wkbuff),"(%s)",(UERR_MSG_J() ? pft->FTnamej : pft->FTnamee));//~vbDbR~
+        }                                                          //~vbDbI~
         errscrtype(wkbuff);                                        //~v50mI~
 		return funccmderr(Ppcw,4);                              //~5527I~
 	}

@@ -1,4 +1,4 @@
-//*CID://+v7aaR~:                              update#=  828;      //~v7aaR~
+//*CID://+v7aaR~:                              update#=  830;      //~v7aaR~
 //**************************************************
 //*DBCS first byte chk
 //*parm :char to be checked
@@ -228,9 +228,9 @@
 #ifdef WCSUPP                                                      //~v5n8I~
 	#include <ukbd.h>                                              //~v5n8I~
 	#include <uvio.h>                                              //~v5n8I~
-	#include <ucvext.h>                                            //+v7aaI~
+	#include <ucvext.h>                                            //~v7aaI~
 	#include <ucvebc.h>                                            //~v62UR~
-//    #include <ucvext.h>                                            //~v5n8I~//+v7aaR~
+//    #include <ucvext.h>                                            //~v5n8I~//~v7aaR~
 	#include <ucvext2.h>                                           //~v5n8I~
 #endif                                                             //~v5n8I~
 #ifdef UNX                                                         //~v582R~
@@ -2294,6 +2294,7 @@ int usetdbcstblmb(int Popt,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen)   //~v5n8I~
 //  for (ii=0;ii<Plen;ii++,Ppdata++,Ppdbcs++)                      //~v62UR~
     for (reslen=Plen,pc=Ppdata,pcd=Ppdbcs;reslen>0;reslen-=mblen,pc+=mblen,pcd+=mblen)//~v62UR~
     {                                                              //~v5n8I~
+//  	UTRACEP("%s:pc=%p,pcd=%p,reslen=%d\n",UTT,pc,pcd,reslen);  //+v7aaR~
         ch=*pc;                                                    //~v62UR~
         mblen=1;                                                   //~v62UR~
         if (tabkeepsw)                                             //~v62UR~

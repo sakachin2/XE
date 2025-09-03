@@ -1,8 +1,12 @@
-//*CID://+vbBkR~:                             update#=  686;       //~vbBkR~
+//*CID://+vbDwR~:                             update#=  706;       //~vbDwR~
 //*************************************************************
 //*xefcmd5.c*                                                      //~v47AR~
 //**file cmd CV                                                    //~v47AR~
 //*************************************************************
+//vbDx:250826 cv h2c; allow missing pre of -HpreXXpost             //~vbDwI~
+//vbDw:250825 cv h2c; loop when if missing pre of -HpreXXpost      //~vbDwI~
+//vbD1:250529 cv x2c -H0xXXy; pre=0 and post=Xy shoud be pre=0x post=y//~vbD1I~
+//vbD0:250529 cv x2c -H0x crashes when data continued like as 0xa50xa6(a50 treated as odd number)//~vbD0I~
 //vbBk:241103 (BUG)cfg-SUCHAR was not work                         //~vbBkI~
 //vbBh:241009 vbB3 but, revive k2l/l2k even if not round-trip conversion//~vbBhI~
 //vbB3:240815 (Bug)l2k/k2l miss to translate. char such as katakana-so(x75 on cp1027, x90 on cp290. but x90 on cp1027 is unprintable, cannot find reverse char)//~vbB3I~
@@ -408,13 +412,14 @@ static UCHAR *Swordtbl="E2S\0S2E\0Z\0E2E\0S2S\0J2S\0J2E\0S2J\0E2J\0" \
 //                 " [l[-m]][:{n|MAX|REP}] [MULT|-Hpre[XXpost]] [-S[a|d|m|r|s]|-SBCS] [NX] [\"err\"] [-F:CPfrom -T:CPto]",0);//~va5VI~//~va7FR~
 //                 " [l[-m]][:{n|MAX|REP}] [MULT|-Hpre[XXpost]] [-S[a|d|m|r|s]|-SBCS] [NX] [\"err\"] [-F:CPfrom -T:CPto] [%s:cp]",0,//~va7FR~//~va7KR~
 //                 " [l[-m]][:{n|MAX|REP}] [MULT|-Hpre[XXpost]] [-S[a|d|m|r|s]|-SBCS] [NX] [\"err\"] [-F:CPfrom -T:CPto] [%s:cp] [%s]",0,//~va7KR~//~vad1R~
-                   " [l[-m]][:{n|MAX|REP}] [MULT|-Hpre[XXpost]] [-S[a|d|m|r|s]|-SBCS] [NX] [\"err\"] [-F:CPfrom -T:CPto] [%s:cp] [%s] [%s]",0,//~vad1I~
+//                 " [l[-m]][:{n|MAX|REP}] [MULT|-Hpre[XXpost]] [-S[a|d|m|r|s]|-SBCS] [NX] [\"err\"] [-F:CPfrom -T:CPto] [%s:cp] [%s] [%s]",0,//~vbDwR~
+                   " [l[-m]][:{n|MAX|REP}] [MULT|-H[pre][XXpost]] [-S[a|d|m|r|s]|-SBCS] [NX] [\"err\"] [-F:CPfrom -T:CPto] [%s:cp] [%s] [%s]",0,//~vbDwI~
 //                  MODE_EBC);                                	   //~va7FI~//~va7KR~
 //                  MODE_EBC,EBCCMD_OPT_SETCP);                    //~va7KI~//~vad1R~
                       MODE_EBC,EBCCMD_OPT_SETCP,"ICU");            //~vad1I~
 #else                                                              //~va5VI~
         uerrmsg("CV type(chk it by \"CV ?\")[Z][BOM][BE|LE][IBM|NEC][JIS78][CRLF|ANK][EBC][CP290][\\u] ... Hit Esc Key\n" \
-                   " [l[-m]][:{n|MAX|REP}] [MULT|-Hpre[XXpost]] [-S[a|d|m|r|s]|-SBCS] [NX] [\"err\"] [-MF:mapfile] [-F:CPfrom -T:CPto]",0);//~v79sI~
+                   " [l[-m]][:{n|MAX|REP}] [MULT|-Hpre[XXpost]] [-S[a|d|m|r|s]|-SBCS] [NX] [\"err\"] [-MF:mapfile] [-F:CPfrom -T:CPto]",0);
 #endif                                                             //~va5VI~
 #endif                                                             //~v50iI~
         return 0;                                                  //~v20wI~
@@ -430,7 +435,8 @@ static UCHAR *Swordtbl="E2S\0S2E\0Z\0E2E\0S2S\0J2S\0J2E\0S2J\0E2J\0" \
 //      return errnotsupported("CV cmd","UTF8 file");              //~va20I~//~va8mR~
 //      uerrmsg("Apply CV cmd for UTF8 file with opend by CPLC mode.",//~va8mI~//~vaadR~
 //              "UTF8ファイルの変換は CPLC で開いてから実行してください");//~va8mI~//~vaadR~
-        uerrmsg("Apply CV cmd for UTF8 file with opend by CPLC mode and use 'F2x' option.",//~vaadI~
+//      uerrmsg("Apply CV cmd for UTF8 file with opend by CPLC mode and use 'F2x' option.",//~vaadI~//~vbD1R~
+        uerrmsg("For UTF8 file, use 'F2x' after opened with CPLC.",//~vbD1I~
                 "UTF8ファイルの変換は CPLC で開いてから'F2x'を実行してください");//~vaadI~
         return 4;                                                  //~va8mI~
       }                                                            //~vbzvI~
@@ -930,7 +936,7 @@ static UCHAR *Swordtbl="E2S\0S2E\0Z\0E2E\0S2S\0J2S\0J2E\0S2J\0E2J\0" \
             convtype=DBCSCONV_E2A;  //euc -->jis                   //~v79jI~
 			ebcmbsw|=UCEGCOO_CHKDBCS;	//B2M/M2B                  //~v79jI~
             ebcopt|=EBC2ASC_EXT;                                   //~v79jR~
-            ebcopt|=EBC2ASC_EXT_SETSUBCHRC;  //return rc=subchar   //+vbBkR~
+            ebcopt|=EBC2ASC_EXT_SETSUBCHRC;  //return rc=subchar   //~vbBkR~
             ebcopt&=~EBC2ASC_A2E;                                  //~v79jI~
 //          ebcopt|=EBC2ASC_CTL;	//reset by ANK option;CTL is not for external converter(cv=0 and windowsJ)//~va5WR~
 			ebcmbsw|=UCEGCOO_CTL;	//B2M/M2B ,ctl by cfg          //~va5ZI~
@@ -1349,6 +1355,8 @@ int fcmdxnotepchk(UCHAR *Pxnoteparm)                               //~v55KI~
 	pc=ustrstri(Pxnoteparm,"XX");                                  //~v55KR~
     if (pc && *(pc+2))                                             //~v55KR~
     {	                                                           //~v55KI~
+    	if (toupper(*(pc+2)=='X') && *(pc+3))                      //~vbD1I~
+            pc++;                                                  //~vbD1I~
 //      len=(int)((ULONG)pc-(ULONG)Pxnoteparm);                    //~v55KI~//~vafkR~
         len=(int)((ULPTR)pc-(ULPTR)Pxnoteparm);                    //~vafkI~
     	pc+=2;                                                     //~v55KI~
@@ -1362,6 +1370,8 @@ int fcmdxnotepchk(UCHAR *Pxnoteparm)                               //~v55KI~
         return 4;                                                  //~v55KI~
     memcpy(Shexnotationpre,Pxnoteparm,(UINT)len);                  //~v55KI~
     *(Shexnotationpre+len)=0;                                      //~v55KI~
+//    if (!len)                                                    //~vbDwR~
+//        return 4;                                                //~vbDwR~
     return 0;                                                      //~v55KI~
 }//fcmdxnotepchk                                                   //~v55KI~
 #endif                                                             //~v51NI~
@@ -2124,6 +2134,8 @@ int fcmdxnotehexconv(int Popt,PULINEH Pplh,UCHAR *Pdata,int Plen,UCHAR *Ppout,in
 {                                                                  //~v55KI~
 	char *pc,*pc2,*pc3,*pce,*pco;                                  //~v55KR~
     int binlen,reslen,chklen,wordno=0,inplacesw,prelen,postlen,hexlen,len;//~v55KR~
+    char *pc4;                                                     //~vbD0I~
+    int wordlen;                                                   //~vbD0I~
 //*****************************                                    //~v55KI~
     inplacesw=Sotheropt&OOPT_OUTINPLACE;                           //~v55KI~
     prelen=(int)strlen(Shexnotationpre);                           //~v55KI~
@@ -2135,6 +2147,9 @@ int fcmdxnotehexconv(int Popt,PULINEH Pplh,UCHAR *Pdata,int Plen,UCHAR *Ppout,in
     {                                                              //~v55KI~
 //    	reslen=(int)((ULONG)pce-(ULONG)pc);                        //~v55KR~//~vafkR~
     	reslen=(int)((ULPTR)pce-(ULPTR)pc);                        //~vafkI~
+      if (!prelen)	//missing pre	                               //~vbDwI~
+      	pc2=pc+ustrnspn(pc," \t",(UINT)reslen);                    //~vbDwI~
+      else                                                         //~vbDwI~
     	pc2=umemmem(pc,Shexnotationpre,(UINT)reslen,(UINT)prelen); //~v55KR~
         if (pc2)                                                   //~v55KI~
 //        	len=(int)((ULONG)pc2-(ULONG)pc);                       //~v55KI~//~vafkR~
@@ -2154,6 +2169,9 @@ int fcmdxnotehexconv(int Popt,PULINEH Pplh,UCHAR *Pdata,int Plen,UCHAR *Ppout,in
         	break;                                                 //~v55KI~
         pc2+=prelen;                                               //~v55KI~
         reslen-=prelen;                                            //~v55KI~
+        if (reslen<=0)                                             //~vbDwI~
+        	break;                                                 //~vbDwI~
+        pc3=0;	//postfix pos                                      //~vbDwI~
         if (*Shexnotationpost)	//postfix specified                //~v55KR~
         {                                                          //~v55KI~
         	pc3=umemmem(pc2,Shexnotationpost,(UINT)reslen,(UINT)postlen);//~v55KR~
@@ -2171,7 +2189,28 @@ int fcmdxnotehexconv(int Popt,PULINEH Pplh,UCHAR *Pdata,int Plen,UCHAR *Ppout,in
         }                                                          //~v55KI~
         else                                                       //~v55KI~
         	hexlen=reslen;                                         //~v55KI~
+//*continued pre chk                                               //~vbD0I~
+      if (!prelen)	//missing pre                                  //~vbDwR~
+      {                                                            //~vbDwI~
+        if (pc3)	//postfix specified                            //~vbDwI~
+	    	pc4=pc3+postlen;                                       //~vbDwR~
+        else                                                       //~vbDwI~
+	    	pc4=pc2;                                               //~vbDwI~
+	    pc4=ustrnpbrk(pc4," \t",(UINT)PTRDIFF(pce,pc4));  //advance to non space//+vbDwR~
+      }                                                            //~vbDwI~
+      else                                                         //~vbDwI~
+    	pc4=umemmem(pc2,Shexnotationpre,(UINT)reslen,(UINT)prelen);//~vbD0I~
+        if (pc4)                                                   //~vbD0I~
+        {                                                          //~vbD0I~
+        	wordlen=(int)((ULPTR)pc4-(ULPTR)pc2);                  //~vbD0I~
+        	UTRACEP("%s:wordlen=%d,hexlen=%d\n",UTT,wordlen,hexlen);//~vbD0I~
+	        if (wordlen>0 && wordlen<hexlen)                       //~vbD0I~
+            	hexlen=wordlen;                                    //~vbD0I~
+        }                                                          //~vbD0I~
+//*                                                                //~vbD0I~
     	binlen=ugethexdump(0,pc2,pco,hexlen,&chklen);//-binlen:odd numer hex digit//~v55KI~
+        if (binlen<0)                                              //~vbD0I~
+        	binlen=-binlen;	//avoid 0c4                            //~vbD0I~
 	    if (Popt&EBC2ASC_A2E)                                      //~v59sI~
           if (!(Sebcopt & EBC2ASC_DBCS)) //no DBCS consideration   //~v78RI~
           {                                                        //~vbBhI~
@@ -2188,6 +2227,8 @@ int fcmdxnotehexconv(int Popt,PULINEH Pplh,UCHAR *Pdata,int Plen,UCHAR *Ppout,in
         if (chklen)                                                //~v55KI~
 	        wordno++;                                              //~v55KI~
     	pc=pc2;                                                    //~v55KR~
+        if (pc3)                         //postfix found           //~vbDwI~
+            pc=pc3+postlen;//from next of postfix                  //~vbDwR~
     }//loop                                                        //~v55KI~
 //  *Poutlen=(int)((ULONG)pco-(ULONG)Ppout);                       //~v55KR~//~vafkR~
     *Poutlen=(int)((ULPTR)pco-(ULPTR)Ppout);                       //~vafkI~

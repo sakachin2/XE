@@ -1,7 +1,8 @@
-//*CID://+vbAtR~:                             update#=   72;       //~vbAtR~
+//*CID://+vbDvR~:                             update#=   76;       //~vbDvR~
 //****************************************************************
 //*xefcmd2.h
 //****************************************************************//~v064I~
+//vbDv:250809 find cvmd;not found if lrecl<srch word ucs4 size(3) when search word is \x______ on utf8 file.//~vbDvI~
 //vbAt:240704 (Bug)find -cont should be used in exe cmd file. If not save plh pos may cause 0c4//~vbAtI~
 //vbCB:160820 Find cmd;add panel specific option                   //~vbCBI~
 //vaz0:150105 BUG:offset value is long long for fseek error msg    //~vaz0I~
@@ -191,6 +192,9 @@ FCMD2GBL_EXT char  Gsrchwordforini[SAVE_SRCHWORDSZ];   //word get area//~va20R~
 FCMD2GBL_EXT void *GfindcmdSplit[FCMD_SPLIT_INDEX_MAX];//split specific cmd string//~vbCBR~
 FCMD2GBL_EXT int  GfindStat;                                       //~vbAtR~
 #define GFS_EXECMD  0x01                                           //~vbAtI~
+FCMD2GBL_EXT UCHAR GescsrchcharDD[4],GescsrchcharDDdbcs[4];        //~vbDvR~
+FCMD2GBL_EXT UCHAR Gescsrchchar2DD[4],Gescsrchchar2DDdbcs[4];      //~vbDvI~
+FCMD2GBL_EXT int   GescsrchDDlen,Gescsrch2DDlen;                   //+vbDvR~
 //****************************************************************//~5504I~
 int fcmdwfparm(FILE *Pfh);                                      //~v064R~
                                                                 //~v064I~
@@ -218,7 +222,7 @@ int fcmdsrcherr(int Pchangeopt,int Plocatesw,int Psubcmdid,PULINEH Pplh);//~v635
 char *fcmdescsrch(char *Ppc,int Pdirection,int Poffset);           //~v635I~
 //**************************************************************** //~va20I~
 int fcmdrfind(PUCLIENTWE Ppcw,int Preverse,int Pchangeopt);        //~vbCBI~
-//************************************************************************//+vbAtM~
-void setFindStat(int Popt);                                        //+vbAtM~
-#define SFSO_EXECMD_START 0x01                                     //+vbAtM~
-#define SFSO_EXECMD_END   0x02                                     //+vbAtM~
+//************************************************************************//~vbAtM~
+void setFindStat(int Popt);                                        //~vbAtM~
+#define SFSO_EXECMD_START 0x01                                     //~vbAtM~
+#define SFSO_EXECMD_END   0x02                                     //~vbAtM~

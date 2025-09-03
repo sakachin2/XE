@@ -112,7 +112,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>TRACE;_DEBUG;WIN32;W32;WXE;WXE17C;UTF8SUPPH;UTF8UCS2;UTF8EBCD;NOMT_TRACE;VC10EXP;WIN10;_WINDOWS;STRICT;_ATL_ALLOW_CHAR_UNSIGNED</PreprocessorDefinitions>
       <ShowIncludes>false</ShowIncludes>
-      <AdditionalOptions>/J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706  /wd4210 /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131 /wd4267 /wd4366 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706  /wd4210 /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131 /wd4267 /wd4366 /wd5292 /wd5293 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
@@ -164,7 +164,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>TRACE;_DEBUG;WIN64;W32;WXE;WXE17C;UTF8SUPPH;UTF8UCS2;UTF8EBCD;NOMT_TRACE;VC10EXP;WIN10;_WINDOWS;STRICT;_ATL_ALLOW_CHAR_UNSIGNED</PreprocessorDefinitions>
       <ShowIncludes>false</ShowIncludes>
-      <AdditionalOptions>/J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210 /wd4244 /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131 /wd4267 /wd4366 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/J  /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210 /wd4244 /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131 /wd4267 /wd4366 /wd5292 /wd5293 %(AdditionalOptions)</AdditionalOptions>
       <OmitFramePointers>false</OmitFramePointers>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
@@ -177,7 +177,7 @@
       <GenerateMapFile>true</GenerateMapFile>
       <MapFileName>
       </MapFileName>
-      <AdditionalDependencies>Imm32.Lib;Htmlhelp.Lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Imm32.Lib;Htmlhelp.Lib;DbgHelp.Lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(IntDir)$(TargetName)$(TargetExt)</OutputFile>
       <StackCommitSize>
       </StackCommitSize>
@@ -209,7 +209,7 @@
       <DebugInformationFormat>
       </DebugInformationFormat>
       <PreprocessorDefinitions>NOTRACE;WIN32;W32;WXE;WXE17C;UTF8SUPPH;UTF8UCS2;UTF8EBCD;NOMT_TRACE;VC10EXP;WIN10;_WINDOWS;STRICT;_ATL_ALLOW_CHAR_UNSIGNED</PreprocessorDefinitions>
-      <AdditionalOptions>/J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706  /wd4210 /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131 /wd4267 /wd4366 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706  /wd4210 /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131 /wd4267 /wd4366 /wd5292 /wd5293 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <ShowIncludes>false</ShowIncludes>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
@@ -252,7 +252,7 @@
       <DebugInformationFormat>
       </DebugInformationFormat>
       <PreprocessorDefinitions>NOTRACE;WIN64;W32;WXE;WXE17C;UTF8SUPPH;UTF8UCS2;UTF8EBCD;NOMT_TRACE;VC10EXP;WIN10;_WINDOWS;STRICT;_ATL_ALLOW_CHAR_UNSIGNED;NDEBUG</PreprocessorDefinitions>
-      <AdditionalOptions>/J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210  /wd4244 /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131  /wd4267 /wd4366 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210  /wd4244 /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131  /wd4267 /wd4366 /wd5292 /wd5293 %(AdditionalOptions)</AdditionalOptions>
       <OmitFramePointers>false</OmitFramePointers>
       <Optimization>Disabled</Optimization>
       <ObjectFileName>$(IntDir)</ObjectFileName>
@@ -262,7 +262,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
-      <AdditionalDependencies>Htmlhelp.Lib;Imm32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Htmlhelp.Lib;Imm32.Lib;DbgHelp.Lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateMapFile>true</GenerateMapFile>
       <OutputFile>$(IntDir)$(TargetName)$(TargetExt)</OutputFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -461,6 +461,8 @@
     <ClCompile Include="$(SRCULIB)\ufilew.c" />
     <ClCompile Include="$(SRCULIB)\ustrcpy.c" />
     <ClCompile Include="$(SRCXE)\xefsubw.c" />
+    <ClCompile Include="G:\src\ulib\ueh.c" />
+    <ClCompile Include="G:\src\ulib\uehmsg.c" />
     <ClCompile Include="G:\src\xe\xefcmd7.c" />
   </ItemGroup>
   <ItemGroup>

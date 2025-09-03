@@ -1,5 +1,6 @@
-//*CID://+v6T4R~:                             update#=986;         //~v6T4R~
+//*CID://+v7e0R~:                             update#=987;         //+v7e0R~
 //*********************************************************************************
+//v7e0:250613 system() for sush as xfg hungs sume time. manual say reuires flush stream. try _flushall.//+v7e0I~
 //v6T4:180217 f2l option to set dbcs "?" for f2l err               //~v6T4I~
 //v6J1:170206 errmsg loop when UD fmt err(uerrmsg->ufprintf->ufilecvUD2Wnopath->uerrmsg);occued when !UD_MODE()//~v6J1I~
 //v6Hs:170122 (Win)Support maxpath:32767                           //~v6HsI~
@@ -138,6 +139,12 @@ int tryWRmdirForReservedName(UWCH *Pfnmw,int Prc);                 //~v6HsI~
 //******************************************************************//~v6HnI~
 static int SmovefileExflag;                                          //~v6HnI~//~v6HsR~
 static int SswRsvNameTryFailed;                                    //~v6HnI~
+//**************************************************************** //+v7e0I~
+void flushstreamw()                                                //+v7e0I~
+{                                                                  //+v7e0I~
+    UTRACEP("%s",UTT);                                             //+v7e0I~
+	_flushall();                                                   //+v7e0I~
+}                                                                  //+v7e0I~
 //*******************************************************          //~v6uaI~
 //*get file path name length(length containing last '\' from top)  //~v6uaI~
 //*parm 1:filename                                                 //~v6uaI~
@@ -1084,8 +1091,8 @@ int ufilecvU8CT2UD(int Popt,char *Pfnm,char *Pct,int Pctlen,char *Poutbuff,int P
 //************************                                         //~v6u9R~
     UTRACED("inp",Pfnm,strlen(Pfnm));                              //~v6u9R~
     opt=UTFCVO_ERRREP|('?'/*XEUTF_ERRREPCH*/<<8);	//f2l opt      //~v6u9R~
-    if (Popt & UFCVO_ERRREPDBCS)                                   //+v6T4M~
-        opt|=UTFCVO_ERRREPDBCS;                                    //+v6T4M~
+    if (Popt & UFCVO_ERRREPDBCS)                                   //~v6T4M~
+        opt|=UTFCVO_ERRREPDBCS;                                    //~v6T4M~
     swud=0;                                                        //~v6u9R~
 	for (pc=Pfnm,pct=Pct,pco=Poutbuff,reslenct=Pctlen,resleno=Pbuffsz-1;resleno;)//~v6u9R~
     {                                                              //~v6u9R~
@@ -3083,7 +3090,10 @@ int usystemW(int Popt,char *Pcmd)                                  //~v6u9R~
     UTRACED("inp",Pcmd,strlen(Pcmd));                              //~v6u9R~
 	if (!IS_UDMODE()   //even not UD excute fullpathW for intermediate path//~v6u9R~
     ||  !strchr(Pcmd,UD_NOTLC))                                    //~v6u9R~
+    {                                                              //+v7e0I~
+		flushstreamw();                                            //+v7e0I~
     	return system(Pcmd);                                       //~v6u9R~
+    }                                                              //+v7e0I~
     cmdlen=strlen(Pcmd);                                           //~v6u9R~
     cmdsz=ctr2szW(cmdlen+1);                                       //~v6u9R~
     pcmdw=umalloc(cmdsz);                                          //~v6u9R~
@@ -3096,6 +3106,7 @@ int usystemW(int Popt,char *Pcmd)                                  //~v6u9R~
     	return -1;                                                 //~v6u9R~
     }                                                              //~v6u9R~
     UTRACED("cmdw",pcmdw,ctr2szW(ucsctr));                         //~v6u9R~
+	flushstreamw();                                                //+v7e0I~
     rc=_wsystem(pcmdw);                                            //~v6u9R~
     ufree(pcmdw);                                                  //~v6u9R~
 	UTRACEP("%s:rc=%p\n",UTT,rc);                                  //~v6u9R~

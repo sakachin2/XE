@@ -176,6 +176,8 @@
   コンパイル中...
   ustrcpy.c
   xefsubw.c
+  ueh.c
+  uehmsg.c
   xefcmd7.c
   コードを生成中...
   MainFrm.cpp

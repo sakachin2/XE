@@ -1,8 +1,9 @@
-//*CID://+v7deR~:                             update#=  510;       //~v7deR~
+//*CID://+v7e0R~:                             update#=  514;       //~v7e0R~
 //************************************************************* //~5825I~
 //*uproc.c                                                         //~v5anR~
 //* usystem,uspawnl,uspawnlp,uspawnvp,uexecchk                     //~v065R~
 //*************************************************************    //~v022I~
+//v7e0:250613 system() for such as xfg hungs sume time. manual say reuires flush stream. try _flushall.//+v7e0R~
 //v7de:240922 (Win:Bug) display "uconv not found" to stderr. Stderr was not catched on windows.//~v7deI~
 //vc70 2023/08/14 try tool with attr of 110(executable only) to avoid M^X vioration//~vc70I~
 //v77L:230626 ARM;dlclose required each time to clear static valiable//~v77LI~
@@ -244,6 +245,14 @@ int uspawnvp_pipeclose(int *Ppipe_p2c,int *Ppipe_c2p);             //~v59jI~
 	int systemArmProc(char *Pcmd,int *Pretval);                    //~vc70I~
 #endif                                                             //~v77DI~
 #define ERR_ONTHREAD 32767 	//to avoid rc=-1	                   //~v77JR~
+#ifdef W32UNICODE                                                  //~v7e0M~
+//**************************************************************** //~v7e0M~
+void flushstream()                                                 //~v7e0M~
+{                                                                  //~v7e0M~
+    UTRACEP("%s\n",UTT);                                           //+v7e0R~
+	_flushall();                                                   //~v7e0I~
+}                                                                  //~v7e0M~
+#endif                                                             //~v7e0M~
 //**************************************************************** //~v77FI~
 #ifdef ARMXXE                                                      //~v77FI~
 int unsupportedFuncArm(char *Pfunc,char *Pcmd)                     //~v77FR~
@@ -437,6 +446,7 @@ int usystem(char *Pcmd)                                         //~5A10I~
 //        rc=usystemW(0,Pcmd);                                     //~v6upR~
 //    else                                                         //~v6upR~
 //  UTRACEP("%s:call system() Pcmd=%s,envPATH=%s\n",UTT,Pcmd,getenv("PATH"));//~v70cR~
+		flushstream();                                             //~v7e0I~
     	rc=system(Pcmd);                                           //~v6upI~
     UTRACEP("%s:call system() returned rc=%d\n",UTT,rc);           //~v70cI~
     GuprocStat&=~GUPS_SYSTEMCALL;                                  //~v701R~
@@ -562,7 +572,7 @@ LONGHANDLE uspawnl(int Pmodeflag,char *Ppathname,char *Parg0,...)  //~v6xkI~
     int ii;                                                        //~v6xkI~
     LONGHANDLE rc;                                                 //~v6xkI~
 //*********************                                         //~5A10I~
-	UTRACEP("%s:pathname=%s,Parg0=%s\n",UTT,Ppathname,Parg0);                         //~v77DI~//+v7deR~
+	UTRACEP("%s:pathname=%s,Parg0=%s\n",UTT,Ppathname,Parg0);                         //~v77DI~//~v7deR~
     uprocopt(&Pmodeflag);                                          //~v50HI~
                                                                    //~v50HI~
     va_start(pargn,Parg0);   //argn point Parg1                 //~5A10I~
@@ -615,7 +625,7 @@ LONGHANDLE uspawnlp(int Pmodeflag,char *Ppathname,char *Parg0,...) //~v6xkI~
     int ii;                                                        //~v6xkI~
     LONGHANDLE rc;                                                 //~v6xkI~
 //*********************                                         //~5A10I~
-	UTRACEP("%s:pathname=%s,Parg0=%s\n",UTT,Ppathname,Parg0);                         //~v77DI~//+v7deR~
+	UTRACEP("%s:pathname=%s,Parg0=%s\n",UTT,Ppathname,Parg0);                         //~v77DI~//~v7deR~
 #ifdef ARMXXE                                                      //~v77FI~
 	if (unsupportedFuncArm("spawnlp",Ppathname))                   //~v77FI~
         return -1;                                                 //~v77FI~
@@ -791,7 +801,7 @@ LONGHANDLE uspawnrc(int Pmodeflag,char *Ppathname,LONGHANDLE Prc)  //~v6xkI~
     LONGHANDLE rc;                                                 //~v6xkI~
     UCHAR wkpid1[32],wkpid2[32];                                   //~v6xkI~
 //*********************                                         //~5A10I~
-	UTRACEP("%s:pathname=%s,rc=%p\n",UTT,Ppathname,Prc);   //~v77DI~//+v7deR~
+	UTRACEP("%s:pathname=%s,rc=%p\n",UTT,Ppathname,Prc);   //~v77DI~//~v7deR~
     if ((rc=Prc)==-1)                                              //~v5bwR~
     {                                                           //~5A10I~
         switch (rc=errno,rc)                                    //~5A10R~
@@ -1541,7 +1551,7 @@ int uspawn_redirect(int Popt,char *Pcmd,char *Pstdinfnm,char ***Pstdo,char ***Ps
 static char Slangenv[32]="LANG=";                                  //~v5anR~
 #endif                                                             //~v5anI~
 //************************                                         //~v5anI~
-	UTRACEP("%s:opt=0x%02x,cmd=%s,stdin=%s\n",UTT,Popt,Pcmd,Pstdinfnm);//+v7deI~
+	UTRACEP("%s:opt=0x%02x,cmd=%s,stdin=%s\n",UTT,Popt,Pcmd,Pstdinfnm);//~v7deI~
 #ifdef UNX                                                         //~v5anI~
   	if (Popt & UPROC_LANGC)                                        //~v5anI~
     {                                                              //~v5anI~
@@ -1784,7 +1794,7 @@ int uspawnvp_pipe(int Popt,LONGHANDLE *Ppids,char *Ppathname,char **Pargv)//~v6x
     int fdstdesv=-1;                                               //~v5j6I~
     int fdpipe_p2c[2]={-1,-1},fdpipe_c2p[2]={-1,-1};               //~v59jM~
 //****************************                                     //~v59jM~
-	UTRACEP("%s:opt=0x%02x,path=%s\n",UTT,Popt,Ppathname);         //+v7deI~
+	UTRACEP("%s:opt=0x%02x,path=%s\n",UTT,Popt,Ppathname);         //~v7deI~
     fflush(stdout);                                                //~v59jM~
     fflush(stderr);                                                //~v5j6I~
     fflush(stdin);                                                 //~v5ivI~

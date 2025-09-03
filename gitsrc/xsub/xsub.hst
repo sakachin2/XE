@@ -1,3 +1,8 @@
+//*v130C *** 2025/08/25 upload 
+//vau1:250706 uerrmsg_init missing.(No dbcs errmsg)
+//            xff.c v1.9 xds.c v1.12
+//vau0:250706 xfg1.22 add option to skip invalid filename warning
+//            xfg.c
 //*v130A *** 2024/11/30 upload 
 //vatf:241125 xfc1.30 At windows, As Default, assume both 0d0a and 0a as EOL. by /P detect differrent reverse of Linux
 //            xfc.c

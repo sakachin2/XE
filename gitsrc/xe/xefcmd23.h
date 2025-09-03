@@ -1,8 +1,9 @@
-//*CID://+vauFR~:**              update#=    1221                  //+vauFR~
+//*CID://+vbDvR~:**              update#=  122221                  //~vbDvR~
 //**************************************************************** //~v13pI~
 //*xefcmd23.h                                                      //~v13pI~
 //**************************************************************** //~v13pI~
-//vauF:140316 (Win)find on dirlist by ddstrsrch(LNX:vaui)          //+vauFI~
+//vbDv:250809 find cvmd;not found if lrecl<srch word ucs4 size(3) when search word is \x______ on utf8 file.//~vbDvI~
+//vauF:140316 (Win)find on dirlist by ddstrsrch(LNX:vaui)          //~vauFI~
 //vaui:140311 find on dirlist by ddstrsrch                         //~vauiI~
 //va79:100809 cpeb converter parm support                          //~va79I~
 //va5w:100517 panutil:keep utf8 codetype over session              //~va5wI~
@@ -89,6 +90,8 @@ int fcmdcvl2fsrchstr(int Popt,PUCLIENTWE Ppcw,UCHAR *Psrch,int Psrchlen,UCHAR *P
 //**************************************************************** //~va20I~
 //int fcmdsetupddsrch(int Popt,UCHAR *Psrchu8,int Psrchlenu8);       //~va20I~//~va79R~
 int fcmdsetupddsrch(int Popt,int Phandle,UCHAR *Psrchu8,int Psrchlenu8);//~va79I~
+//**************************************************************** //~vbDvI~
+int fcmdsetupddsrchUCS(int Popt);                                  //~vbDvI~
 //**************************************************************** //~va20I~
 int fcmdisddsrch(int Popt,PUCLIENTWE Ppcw,UCHAR **Ppddstr,UCHAR **Ppdddbc);//~va20R~
 //**************************************************************** //~va50I~
@@ -121,6 +124,6 @@ int fcmdcvesc2dd(int Popt,UCHAR *Pescchar,int Plen,UCHAR *Pescdd,UCHAR *Pescdbcs
 	#define  FCBCO_2CT            0x02                             //~va5wI~
 #endif                                                             //~va50I~
 #endif                                                             //~va20R~
-//#ifdef LNX                                                         //~vauiI~//+vauFR~
+//#ifdef LNX                                                         //~vauiI~//~vauFR~
 	char *fcmdddstrsrch_dir(int Popt,UCHAR *Psrchstr,UCHAR *Psrchdbcs,int Psrchstrlen,char *Pdata,char *Pdbcs,int Pddlen,int *Ppoffs);//~vauiR~
-//#endif                                                             //~vauiI~//+vauFR~
+//#endif                                                             //~vauiI~//~vauFR~

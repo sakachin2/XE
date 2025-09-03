@@ -1,9 +1,10 @@
-//*CID://+vbBsR~:                             update#=  496;       //+vbBsR~
+//*CID://+vbDiR~:                             update#=  499;       //~vbDiR~
 //*************************************************************
 //*xeopt2.c                                                        //~7B24R~
 //* Mode                                                           //~v90wR~
 //*************************************************************
-//vbBs:241114 del vbB9(process cp931(cp300+cp037)) because m2b from sjis generates 0e0f dbcs word for byte of sjis 1st byte whichi is byte of iso-8859.//+vbBsI~
+//vbDi:250710 opt unicomb help msg "]"-->"}"                       //~vbDiI~
+//vbBs:241114 del vbB9(process cp931(cp300+cp037)) because m2b from sjis generates 0e0f dbcs word for byte of sjis 1st byte whichi is byte of iso-8859.//~vbBsI~
 //vbBi:241012 (BUG)EBC info,when converter=1, display cvnam=CP930+CP930//~vbBiR~
 //v7dm:241006 delete EBC2ASC_BASE option, then use the value as SBCS037 for CP037 without DBCS//~v7dmI~
 //vbBf:241006 adjust ebc file header line. del "CFG:" when by cmdline /ebc//~vbBfI~
@@ -425,7 +426,8 @@ static UCHAR *Swordtblcomb=OPT_COMBCOMBINE "\0"                    //~va3sR~
 //                XEOPT_DEFAULT_COMBALTCH);                        //~vb4pR~
 #else                                                              //~va3sM~
 //  	uerrmsg("opt %s { %s | %s | %s ]",0,                       //~vb4pR~
-    	uerrmsg("opt %s { %s | %s | %s | U-xxxx]",0,               //~vb4pI~
+//    	uerrmsg("opt %s { %s | %s | %s | U-xxxx]",0,               //~vbDiR~
+      	uerrmsg("opt %s [ %s | %s | %s | U-xxxx]",0,               //+vbDiR~
 			OPTCMD_COMBINE,                                        //~va3sR~
 				OPT_COMBCOMBINE,                                   //~va3sI~
 				OPT_COMBALTCH,                                     //~va3sI~
@@ -1155,9 +1157,9 @@ void displayEbcCfgStatus(PUCLIENTWE Ppcw)                          //~vbB4I~
 //        if (pcfg->UCECflag2 & UCECF2_BASE)                         //~vbB7I~//~v7dmR~
 //            sjisopt=EBCID_BASE;                                    //~vbB7I~//~v7dmR~
 //        else                                                       //~vbB7I~//~v7dmR~
-//        if (pcfg->UCECflag2 & UCECF2_CP931)                        //~vbB9I~//+vbBsR~
-//            sjisopt=EBCID_LATIN;                                   //~vbB9I~//+vbBsR~
-//        else                                                       //~vbB9I~//+vbBsR~
+//        if (pcfg->UCECflag2 & UCECF2_CP931)                        //~vbB9I~//~vbBsR~
+//            sjisopt=EBCID_LATIN;                                   //~vbB9I~//~vbBsR~
+//        else                                                       //~vbB9I~//~vbBsR~
     	if (pcfg->UCECflag & UCECF_CP939) //use internal map       //~vbB4I~
         	sjisopt=EBCID_ENGEXT;                                  //~vbB4I~
     	else                                                       //~vbB4I~

@@ -1,9 +1,10 @@
-//*CID://+vba6R~:                                   update#=  111; //~vb30R~//+vba6R~
+//*CID://+vbDuR~:                                   update#=  112; //+vbDuR~
 //*************************************************************
 //*xecalc2.c
 //* table calc(TC cmd)                                             //~va50R~
 //*************************************************************
-//vba6:170716 (Bug)tc calc err when opdtype=x(requires word clear) //+vba6I~
+//vbDu:250805 tc calc support long long by hex notation            //+vbDuI~
+//vba6:170716 (Bug)tc calc err when opdtype=x(requires word clear) //~vba6I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vaz8:150109 C4244 except ULPTR and ULONG                         //~vaz8I~
 //vafk:120624 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  use ULPTR(unsigned __int64/ULONG)//~vafkI~
@@ -710,7 +711,7 @@ static char *Sopcode="+-*/%=~";                                    //~v535I~
 
 					pc++;
 				}
-                memset(wkl,0,sizeof(wkl));                         //+vba6R~
+                memset(wkl,0,sizeof(wkl));                         //~vba6R~
 //      		if (tc_getlinedata(&gdatatype,pc,(int)strlen(pc),wkl)  //key value//~v57JR~
 #ifdef UTF8UCS2                                                    //~va20R~
 //*!ebc,cmd string                                                 //~va50I~
@@ -934,7 +935,7 @@ static char *Sopcode="+-*/%=~";                                    //~v535I~
       &&  functype!=CALC_COMP    //Not opd3=opd2 operation(no operand1)//~va5cI~
       )                                                            //~va5cI~
       {                                                            //~va5cI~
-        uerrmsg("string constant(\"%s\") is invalid in this case.",0,//~va5cR~
+        uerrmsg("string constant(\"%s\") is invalid in this case(allow by Copy/Compare).",0,//+vbDuR~
                 strconst);                                         //~va5cI~
         return 4;                                                  //~va5cI~
       }                                                            //~va5cI~

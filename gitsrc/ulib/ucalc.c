@@ -1,9 +1,13 @@
-//*CID://+v7asR~:                             update#=  454;       //~v7asR~
+//*CID://+v7ewR~:                             update#=  463;       //~v7ewR~
 //*************************************************************
 //*xecalc.c
 //* basic calc
 //*************************************************************
-//v7as:240317 XBC; support /S translation:ucs4<-->surrogate        //+v7asR~
+//v7ew:250806 Not v7eu, use display format option 'W'              //~v7ewI~
+//v7ev:250805 XBC:bug for xWORD-xDWORD                             //~v7evI~
+//v7eu:250805 XBC suuports DOWRD hex data(not .. fmt)              //~v7euI~
+//v7e3:250702 Compile err E1345(arry[]="abc" is err because array size is isno specified)//~v7e3I~
+//v7as:240317 XBC; support /S translation:ucs4<-->surrogate        //~v7asR~
 //v6L8:170716 (Bug:64)O calc err(addr was set as numvalue)         //~v6L8I~
 //v6L7:170716 X calc err(need work clear)                          //~v6L7I~
 //v6K6:170320 (BUG)calc_time, hh>0x7fff was cut                    //~v6K6I~
@@ -161,7 +165,9 @@ typedef struct _OPDVALUE{                                          //~v6K3I~
 static long Spnumtbl[MAX_POINT_NUM+1]={1,10,100,1000,10000,100000,1000000,
 										10000000,100000000,1000000000};
 //static char Sopcode[]="+-*/%<>|&^!";		                       //~v5e9R~
-static char Sopcode[]="+-*/%<>|&^!?";                              //~v5e9I~
+//static char Sopcode[]="+-*/%<>|&^!?";                            //~v7e3R~
+#define SOPCODE "+-*/%<>|&^!?"                                     //~v7e3I~
+static char Sopcode[sizeof(SOPCODE)]=SOPCODE;                      //~v7e3I~
 static int  Sresultsw=0;                                           //~v57JI~
 //static int  Sdwupsw=GETLD_DWUP;                                  //~v5drR~
 static int Svprec=0,Svround=0;  //output precision and round option//~v5e3R~
@@ -173,6 +179,7 @@ static int Svarno2=-1;			//no of $n= for opd2               //~v5f9I~
 static int Sopdvaluectr;                                           //~v6K3R~
 static OPDVALUE Sopdvalue[MAX_OPDVALUE];                           //~v6K3I~
 static int SovfHH;                                                 //~v6K6I~
+//static int SdwordidSplitCtr;                                     //~v7ewR~
 //*******************************************************
 //int bc_opdchk(UCHAR *Pcmdstr,UCHAR *Poutcmdstr,int *Pfunctype,int *Popdtype,long *Pconstv,long *Pconstv2,char **Pdelmt);//~v5drR~
 int bc_opdchk(UCHAR *Pcmdstr,UCHAR *Poutcmdstr,int *Pfunctype,int *Popdtype,long *Pconstv,long *Pconstv2,char **Pdelmt,int *Ppopt);//~v5drI~
@@ -230,6 +237,7 @@ int ucalc_bcmain(UCHAR *Pcmdstr,UCHAR *Presultstr)                 //~v57JI~
     memset(lvt2,0,sizeof(lvt2));                                   //~v50sI~
 //  rc=bc_opdchk(Pcmdstr,&functype,&convtype,lvt1,lvt2,&pdelmt);   //~v573R~
 //  rc=bc_opdchk(Pcmdstr,outcmdstr,&functype,&convtype,lvt1,lvt2,&pdelmt);//~v5drR~
+//    SdwordidSplitCtr=0;                                          //~v7ewR~
     rc=bc_opdchk(Pcmdstr,outcmdstr,&functype,&convtype,lvt1,lvt2,&pdelmt,&parmopt);//~v5drI~
     if (pdelmt)
         ufree(pdelmt);
@@ -426,7 +434,16 @@ int ucalc_bcmain(UCHAR *Pcmdstr,UCHAR *Presultstr)                 //~v57JI~
   if (functype!='?'                                                //~v5e9I~
   &&  (lvt1[1]>=UCALC_DWORDID || lvt2[1]>=UCALC_DWORDID))          //~v5e9I~
   {                                                                //~v50eI~
-  	if (bc_dweditnum(functype,convtype,lvt1,rval))                 //~v50eR~
+    int rc3;                                                       //~v7euI~
+//   if (bc_dweditnum(functype,convtype,lvt1,rval))                //~v7euR~
+//     if (SdwordidSplitCtr)                                       //~v7ewR~
+//        rc3=bc_dweditnum(functype,convtype,lvt1,rval);           //~v7ewR~
+//     else                                                        //~v7ewR~
+//     if(convtype=='X')                                           //~v7ewR~
+//        rc3=bc_dweditnum(functype,DATATYPE_DWORD,lvt1,rval);     //~v7ewR~
+//     else                                                        //~v7ewR~
+        rc3=bc_dweditnum(functype,convtype,lvt1,rval);             //~v7euI~
+     if (rc3)                                                      //~v7euI~
     	return 4;                                                  //~v50eI~
    if (xresdispsw)  //residual display                             //~v5duI~
     if (functype=='/')  //divide                                   //~v56vI~
@@ -451,6 +468,7 @@ int ucalc_bcmain(UCHAR *Pcmdstr,UCHAR *Presultstr)                 //~v57JI~
     	convtype='D';                                              //~v5e9I~
     switch(convtype)
     {
+    case 'W':     //convert to HEX value(not dword)                //+v7ewI~
     case 'X':     //convert to HEX value
 //        len=sprintf(rval,"x%lX",lvt1[0])-1;                      //~v56vR~
 //        if (len%2)  //odd number with top x                      //~v56vR~
@@ -720,6 +738,7 @@ int bc_opdchk(UCHAR *Pcmdstr,UCHAR *Poutcmdstr,int *Pfunctype,int *Pconvtype,lon
             &&  convtype!='S'   //clock conversion                 //~v7asI~
             &&  convtype!='V'   //Vnn                              //~v5e3I~
             &&  convtype!='R'   //Round option                     //~v5e3I~
+            &&  convtype!='W'   //Round option                     //~v7ewI~
             &&  convtype!='Z')
                 convtype=0;   //reset
             else
@@ -753,6 +772,8 @@ int bc_opdchk(UCHAR *Pcmdstr,UCHAR *Poutcmdstr,int *Pfunctype,int *Pconvtype,lon
 //  if (bc_getvalue(popd1,Pconstv1,&datatype,&datatyped1))         //~v5drR~
     if (bc_getvalue(CALC_DWORDUP,popd1,Pconstv1,&datatype,&datatyped1))//~v5drI~
     	return 4;                                                  //~v314R~
+//    if (strstr(popd1,DWORDID_SPLIT))                             //~v7ewR~
+//        SdwordidSplitCtr++;                                      //~v7ewR~
     Svarno1=Svarno12;	//opd1 varno ,output from bc_getvalue      //~v5f9R~
     if (opdno==1)
     {
@@ -800,6 +821,8 @@ int bc_opdchk(UCHAR *Pcmdstr,UCHAR *Poutcmdstr,int *Pfunctype,int *Pconvtype,lon
 //    	if (bc_getvalue(popd2,Pconstv2,&datatype2,&datatyped2))    //~v5drR~
       	if (bc_getvalue(CALC_DWORDUP,popd2,Pconstv2,&datatype2,&datatyped2))//~v5drI~
     		return 4;                                              //~v314R~
+//        if (strstr(popd2,DWORDID_SPLIT))                         //~v7ewR~
+//            SdwordidSplitCtr++;                                  //~v7ewR~
 	    Svarno2=Svarno12;	//opd1 varno ,output from bc_getvalue  //~v5f9R~
     	delm=pdelmt0->upodelm;
 //      if (delm==' ')                                             //~v5drR~
@@ -916,6 +939,7 @@ int bc_opdchk(UCHAR *Pcmdstr,UCHAR *Poutcmdstr,int *Pfunctype,int *Pconvtype,lon
 //  	parmopt|=CALC_SIGNED;                                      //~v5dtR~
     if ((datatype=='X'||datatype=='O')     //x or o                //~v5dtI~
     &&   !(Pconstv1[1] & UCALC_DWORDID))   //not dword             //~v5dtI~
+      if (!(Pconstv2[1] & UCALC_DWORDID))    //opd 1/2 both x/o-WORD//~v7evR~
     	parmopt|=CALC_IGNOREOVF;           //ignore word overflow  //~v5dtI~
     *Ppparmopt=parmopt;                                            //~v5drR~
     if (Svprec!=-1||Svround)                                       //~v5e3I~
@@ -1537,10 +1561,12 @@ int bc_putwordordword(int Popt,LONG *Pout,LONG *Pnumfmt)           //~v5dsI~
       }                                                            //~v5dtI~
       else                                                         //~v5dtI~
     	if (Popt & CALC_DWORDUP)                                   //~v5dsI~
+    		//[4]                                                  //~v7euI~
 	        memcpy(Pout,Pnumfmt,CALC_LONGNUMFMTSZ);                //~v5dsR~
         else                                                       //~v5dsI~
 			return calcerrwordovf(Popt);                           //~v5dsR~
     else                                                           //~v5dsI~
+    	//[3]                                                      //~v7euI~
 		memcpy(Pout,Pnumfmt,CALC_SHORTNUMFMTSZ);                   //~v5dsR~
     return 0;                                                      //~v5dsI~
 }//bc_putwordordword                                               //~v5dsI~

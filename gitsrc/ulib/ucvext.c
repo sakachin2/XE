@@ -1,5 +1,6 @@
-//*CID://+v7dSR~:                                   update#= 1332; //~v7dSR~
+//*CID://+v7e5R~:                                   update#= 1335; //~v7e5R~
 //***********************************************************************
+//v7e5:250705 xeebc.map: reject SJIS_OPT=ENG/KANA and DBCS_CHARSET was mixed//~v7e5I~
 //v7dS:241115 errmsg for DBCS_CHARSET name if it is not DBCS by icu ebc2ucs1//~v7dSI~
 //vbBt:241114 add /ebc;defaultmapeuro                              //~vbBtI~
 //vbBs:241114 del vbB9(process cp931(cp300+cp037)) because m2b from sjis generates 0e0f dbcs word for byte of sjis 1st byte whichi is byte of iso-8859.//~vbBsI~
@@ -660,6 +661,7 @@ void set_internal_CP037(int Popt,PUCVEXTCFG Ppcfg);
 //#endif                                                           //~v6x5R~
 int ucvext_setlocalconverter(int Popt,PUCVEXTCFG Ppcfg);           //~v6c4I~
 int chkicuversion(char *Ppdllsuffix,size_t Pdllsuffixsz,char *Ppapisuffix,size_t Papisuffixsz);//~v6M4I~
+int errMixedCS();                                                  //~v7e5R~
 //****************************************************************
 //*cfg data err msg
 //****************************************************************
@@ -881,10 +883,16 @@ UTRACEP("%s:OPEN inp=%s,fh=%p,Ppcfg=%p\n",UTT,Pcfgfnm,fh,Ppcfg);                
         	pval2=0;
         UTRACEP("%s:%s pval=%s pval2=%s \n",UTT,ppo,pval,pval2);                        //~vbBcI~//~v7dsR~
         if (!stricmp(ppo,UCVEXTCFGPARM_CSDBCS))
+        {                                                          //~v7e5I~
             UstrncpyZ(Ppcfg->UCECcsnamedbcs,pval,MAX_CSNAMESZ);
+            if (Ppcfg->UCECflag2 & UCECF2_SJISOPT_CP)              //~v7e5I~
+	            return errMixedCS();                               //~v7e5I~
+        }                                                          //~v7e5I~
         else
         if (!stricmp(ppo,UCVEXTCFGPARM_CSSBCS))
         {
+            if (Ppcfg->UCECflag2 & UCECF2_SJISOPT_CP)              //~v7e5I~
+	            return errMixedCS();                               //~v7e5I~
         	if (!stricmp(pval,UCVEXTCFGPARM_CSSBCSDEF)) //default
             {                                                      //~v6hyI~
                 if (*Ppcfg->UCECcsnamesbcs)                         //~v6hyI~//~v6hzR~
@@ -1110,6 +1118,8 @@ UTRACEP("%s:OPEN inp=%s,fh=%p,Ppcfg=%p\n",UTT,Pcfgfnm,fh,Ppcfg);                
 #ifdef UTF8EBCD                                                    //~v660I~
     		if (!stricmp(pval,EBCID_ENGEXT))     //CP939           //~v660R~
             {                                                      //~v7d5I~
+                if (*Ppcfg->UCECcsnamesbcs || *Ppcfg->UCECcsnamedbcs)//+v7e5I~
+					return errMixedCS();                           //+v7e5I~
             	Ppcfg->UCECflag|=UCECF_CP939;	//use internal map//~v660R~//~v66hR~
             	Ppcfg->UCECflag&=~UCECF_CP930;	//use internal map //~v7d5I~
 //          	Ppcfg->UCECflag2&=~(UCECF2_BASE|UCECF2_CP931);	//use internal map //~v7d5R~//~vbB9R~//~v7dmR~
@@ -1120,6 +1130,8 @@ UTRACEP("%s:OPEN inp=%s,fh=%p,Ppcfg=%p\n",UTT,Pcfgfnm,fh,Ppcfg);                
         	else                                                   //~v660I~
     		if (!stricmp(pval,EBCID_KANAEXT))      //CP930         //~v660R~
             {                                                      //~v7d5I~
+                if (*Ppcfg->UCECcsnamesbcs || *Ppcfg->UCECcsnamedbcs)//+v7e5I~
+					return errMixedCS();                           //+v7e5I~
             	Ppcfg->UCECflag|=UCECF_CP930;         //~v660R~    //~v66hR~
             	Ppcfg->UCECflag&=~UCECF_CP939;	//use internal map //~v7d5I~
 //          	Ppcfg->UCECflag2&=~(UCECF2_BASE|UCECF2_CP931);	//use internal map //~v7d5R~//~vbB9R~//~v7dmR~
@@ -3764,9 +3776,9 @@ int ucvext_getcvoption(int Popt,PUCVEXTCFG Pcfg,int *Ppopt)        //~v5mVI~
 	if (!Pcfg)                                                     //~v5mVI~
     	return 0;                                                  //~v5mVI~
     flg=Pcfg->UCECflag;                                            //~v5mVR~
-//  int flg2=Pcfg->UCECflag2;                                          //~v7d5I~//~v7d6R~//+v7dSR~
+//  int flg2=Pcfg->UCECflag2;                                          //~v7d5I~//~v7d6R~//~v7dSR~
     opt=*Ppopt;                                                    //~v5mVI~
-UTRACEP("%s Popt=0x%04x,old *Ppopt=%x,flag=%08x,flag2=0x%04x\n",UTT,Popt,opt,flg,Pcfg->UCECflag2);            //~v5mVI~//~v7d7R~//~vbB9R~//+v7dSR~
+UTRACEP("%s Popt=0x%04x,old *Ppopt=%x,flag=%08x,flag2=0x%04x\n",UTT,Popt,opt,flg,Pcfg->UCECflag2);            //~v5mVI~//~v7d7R~//~vbB9R~//~v7dSR~
 	if (!(Popt & UCEGCOO_IGNIBMNEC))    //set EBC2ASC_DBCS etc     //~v5mWI~
     {                                                              //~v5mWI~
         if (flg & UCECF_IBM)                                       //~v5mWR~
@@ -4746,3 +4758,16 @@ int ucvext_getConverterCfg(int Popt,PUCVEXTCFG Ppcfg)//~v6M5R~     //~v6M4R~
     UTRACEP("%s:exit rc=0\n",UTT);                                 //~v7dgR~
     return 0;                                                      //~v6M5I~
 }//getConverterCfg                                                 //~v6M5I~
+//************************************************************************//~v7e5I~
+//rc=4:err                                                         //~v7e5I~
+//************************************************************************//~v7e5I~
+int errMixedCS()                                                   //~v7e5R~
+{                                                                  //~v7e5I~
+	uerrmsg("%s/%s and %s/%s is mutually exclusive.",              //~v7e5I~
+			"%s/%s Žw’è‚ÌŽž‚Í %s/%s ‚ÍŽw’è‚Å‚«‚Ü‚¹‚ñ",             //~v7e5I~
+			EBCID_KANAEXT,  //      "KANA_EXT"       //CP930=CP290(katakanaExt)+CP300//~v7e5I~
+			EBCID_ENGEXT,   //      "ENG_EXT"        //CP939=CP1027(EnglishExt)+CP300//~v7e5I~
+			UCVEXTCFGPARM_CSDBCS,	//      "DBCS_CHARSET"         //~v7e5I~
+			UCVEXTCFGPARM_CSSBCS);  //    "SBCS_CHARSET"           //~v7e5I~
+    return 4;                                                      //~v7e5I~
+}                                                                  //~v7e5I~

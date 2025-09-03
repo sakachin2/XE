@@ -1,7 +1,8 @@
-//CID://+v6L6R~: update#=     68                                   //~v6L6R~
+//CID://+v7e2R~: update#=     69                                   //+v7e2R~
 //*************************************************************
 //*ualloc/ucalloc/ufree/umalloc16/ucalloc16/ufree16/uallocsz
 //************************************************************* //~5A01R~
+//v7e2:250626 (Win)flush when abend                                //+v7e2I~
 //v6L6:170715 msvs2017 warning                                     //~v6L6I~
 //v6J0:170205 malloc udirlist filename to  allow more large number of fine in the dir//~v6J0I~
 //v6Hu:170126 expand max allocsz for udirlist 16M-->32M            //~v6huI~
@@ -466,7 +467,7 @@ void *umalloc(size_t Psize)
      #if defined(ULIB64)||defined(ULIB64X)                         //~v6hiI~
      {                                                             //~v6hiI~
         Ssizewk=Psize;      //put request size on mtrace           //~v6hiR~
-//      UTRACEP("malloc addr=%p,size=%d\n",pvoid,Psize);           //+v6L6R~
+//      UTRACEP("malloc addr=%p,size=%d\n",pvoid,Psize);           //~v6L6R~
      }                                                             //~v6hiI~
      #else                                                         //~v6hiI~
       #ifdef _DEBUG   //vcc6(wxe) DEBUG version                    //~v5jpI~
@@ -779,8 +780,10 @@ static int Sfreeerr;
             if (!Sfreeerr)                                         //~v136I~
             {                                                      //~v136I~
                 Sfreeerr=1;                                        //~v136I~
-                uerrexit("ufree:%08lX is not malloc area",         //~v136I~
-                                 "ufree:%08lX ‚Í malloc ‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ",//~v136I~
+//              uerrexit("ufree:%08lX is not malloc area",         //+v7e2R~
+//                               "ufree:%08lX ‚Í malloc ‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ",//+v7e2I~
+                uerrexit("ufree:%p is not malloc area",            //+v7e2I~
+                                 "ufree:%p ‚Í malloc ‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ",//+v7e2I~
                                   Paddr);                          //~v136I~
             }                                                      //~v136I~
 	}                                                              //~v136I~

@@ -1,5 +1,6 @@
-//*CID://+v7cbR~:                             update#=  399;       //~v7cbR~
+//*CID://+v7e7R~:                             update#=  400;       //+v7e7R~
 //********************************************************************//~v62XI~//~v7ccR~
+//v7e7:250707 uncoditionally ascii is notcombining for performance //+v7e7I~
 //v7cc:240702 leave 303f(unprintable box mark) width=1 by mkeidth.(drop from ambiguous)//~v7ccI~
 //v7cb:240628 update ambiguous language                            //~v7cbI~
 //v7ba:240325 review definition of ambiguous language ucs4         //~v7b9I~
@@ -765,6 +766,8 @@ int mk_wcwidth(int Popt,UWUCS ucs)                                 //~v6WnI~
   /* test for 8-bit control characters */
   if (ucs == 0)
     return 0;
+  	if (UTF8ISASCII(ucs))                                          //+v7e7I~
+    	return 1;                                                  //+v7e7I~
   if (ucs < 32 || (ucs >= 0x7f && ucs < 0xa0))
     return -1;
 
@@ -1826,16 +1829,16 @@ int mk_wcswidth(const wchar_t *pwcs, size_t n)                     //~7719I~
 //U+1E7E0..U+1E7FF    Ethiopic Extended-B                          //~v7cbI~
 //U+1ED00..U+1ED4F    Ottoman Siyaq Numbers                        //~v7cbI~
                                                                    //~v7cbI~
-    ,{0x10D00, 0x10D3F }  //Hanifi Rohingya                        //+v7cbR~
+    ,{0x10D00, 0x10D3F }  //Hanifi Rohingya                        //~v7cbR~
                                                                    //~v7cbI~
 //U+10E60..U+10E7F  :Rumi Numeral Symbols:Arabic                   //~v6V2I~
     ,{0x10e60, 0x10e7f}                                            //~v7baI~
-    ,{0x10E80, 0x10EBF }  //Yezidi                                 //+v7cbR~
-    ,{0x10EC0, 0x10EFF }  //Arabic Extended-C                      //+v7cbR~
-    ,{0x10F00, 0x10F2F }  //Old Sogdian                            //+v7cbR~
-    ,{0x10F30, 0x10F6F }  //Sogdian                                //+v7cbR~
-    ,{0x10F70, 0x10FAF }  //Old Uyghur                             //+v7cbR~
-    ,{0x10FB0, 0x10FDF }  //Chorasmian                             //+v7cbR~
+    ,{0x10E80, 0x10EBF }  //Yezidi                                 //~v7cbR~
+    ,{0x10EC0, 0x10EFF }  //Arabic Extended-C                      //~v7cbR~
+    ,{0x10F00, 0x10F2F }  //Old Sogdian                            //~v7cbR~
+    ,{0x10F30, 0x10F6F }  //Sogdian                                //~v7cbR~
+    ,{0x10F70, 0x10FAF }  //Old Uyghur                             //~v7cbR~
+    ,{0x10FB0, 0x10FDF }  //Chorasmian                             //~v7cbR~
 ////U+11000..U+1107F  :Brahmi:Brahmi                                 //~v6V2I~//~v7baR~
 //    ,{0x11000, 0x1107f}                                          //~v7baR~
 ////U+11080..U+110CF  :Kaithi:Kaithi                                 //~v6V2I~//~v7baR~
@@ -1878,20 +1881,20 @@ int mk_wcswidth(const wchar_t *pwcs, size_t n)                     //~7719I~
 //U+11700..U+1173F  :Ahom:Ahom                                     //~v6V2I~
 //  ,{0x11700, 0x1173f}                                            //~v7baI~//~v7cbR~
     ,{0x11700, 0x1174f}                                            //~v7cbI~
-    ,{0x11800, 0x1184F }  //Dogra                                  //+v7cbR~
+    ,{0x11800, 0x1184F }  //Dogra                                  //~v7cbR~
 //U+118A0..U+118FF  :Warang Citi:Warang Citi                       //~v6V2I~
     ,{0x118a0, 0x118ff}                                            //~v7baI~
-    ,{0x11900, 0x1195F }  //Dives Akuru                            //+v7cbR~
-    ,{0x119A0, 0x119FF }  //Nandinagari                            //+v7cbR~
+    ,{0x11900, 0x1195F }  //Dives Akuru                            //~v7cbR~
+    ,{0x119A0, 0x119FF }  //Nandinagari                            //~v7cbR~
 ////1 SMP                                                          //~v6V2I~
 ////U+11A00..U+11A4F  :Zanabazar Square:Zanabazar Square             //~v6V2I~//~v7baR~
 //    ,{0x11a00, 0x11a4f}                                          //~v7baR~
 ////U+11A50..U+11AAF  :Soyombo:Soyombo                               //~v6V2I~//~v7baR~
 //    ,{0x11a50, 0x11aaf}                                          //~v7baR~
 //  ,{0x11a00, 0x11aaf}                    @@@@ split               //~v7baI~//~v7cbR~
-    ,{0x11a00, 0x11a4f }  //Zanabazar Square @@@@                  //+v7cbR~
-    ,{0x11A50, 0x11AAF }  //Soyombo          @@@@                  //+v7cbR~
-    ,{0x11AB0, 0x11ABF }  //Unified Canadian Aboriginal Syllabics Extended-A//+v7cbR~
+    ,{0x11a00, 0x11a4f }  //Zanabazar Square @@@@                  //~v7cbR~
+    ,{0x11A50, 0x11AAF }  //Soyombo          @@@@                  //~v7cbR~
+    ,{0x11AB0, 0x11ABF }  //Unified Canadian Aboriginal Syllabics Extended-A//~v7cbR~
 //U+11AC0..U+11AFF  :Pau Cin Hau:Pau Cin Hau                       //~v6V2I~
     ,{0x11ac0, 0x11aff}                                            //~v7baI~
 ////U+11C00..U+11C6F  :Bhaiksuki:Bhaiksuki                           //~v6V2I~//~v7baR~
@@ -1901,10 +1904,10 @@ int mk_wcswidth(const wchar_t *pwcs, size_t n)                     //~7719I~
     ,{0x11c00, 0x11cbf}                                            //~v7baI~
 //U+11D00..U+11D5F  :Masaram Gondi:Masaram Gondi                   //~v6V2I~
     ,{0x11d00, 0x11d5f}                                            //~v7baI~
-    ,{0x11EE0, 0x11EFF }  //Makasar                                //+v7cbR~
-    ,{0x11F00, 0x11F5F }  //Kawi                                   //+v7cbR~
-    ,{0x11FB0, 0x11FBF }  //Lisu Supplement                        //+v7cbR~
-    ,{0x11FC0, 0x11FFF }  //Tamil Supplement                       //+v7cbR~
+    ,{0x11EE0, 0x11EFF }  //Makasar                                //~v7cbR~
+    ,{0x11F00, 0x11F5F }  //Kawi                                   //~v7cbR~
+    ,{0x11FB0, 0x11FBF }  //Lisu Supplement                        //~v7cbR~
+    ,{0x11FC0, 0x11FFF }  //Tamil Supplement                       //~v7cbR~
 ////U+12000..U+123FF  :Cuneiform:Cuneiform                           //~v6V2I~//~v7baR~
 //    ,{0x12000, 0x123ff}                                          //~v7baR~
 ////U+12400..U+1247F  :Cuneiform Numbers and Punctuation:Cuneiform   //~v6V2I~//~v7baR~
@@ -1912,7 +1915,7 @@ int mk_wcswidth(const wchar_t *pwcs, size_t n)                     //~7719I~
 ////U+12480..U+1254F  :Early Dynastic Cuneiform:Cuneiform            //~v6V2I~//~v7baR~
 //    ,{0x12480, 0x1254f}                                          //~v7baR~
     ,{0x12000, 0x1254f}                                            //~v7baI~
-    ,{0x12F90, 0x12FFF }  //Cypro-Minoan                           //+v7cbR~
+    ,{0x12F90, 0x12FFF }  //Cypro-Minoan                           //~v7cbR~
 //U+13000..U+1342F  :Egyptian Hieroglyphs:Egyptian Hieroglyphs     //~v6V2I~
     ,{0x13000, 0x1342f}                                            //~v7baI~
 ////1 SMP                                                          //~v6V2I~
@@ -1928,7 +1931,7 @@ int mk_wcswidth(const wchar_t *pwcs, size_t n)                     //~7719I~
 ////U+16B00..U+16B8F  :Pahawh Hmong:Pahawh Hmong                     //~v6V2I~//~v7baR~
 //    ,{0x16b00, 0x16b8f}                                          //~v7baR~
     ,{0x16ad0, 0x16b8f}                                            //~v7baI~
-    ,{0x16E40, 0x16E9F }  //Medefaidrin                            //+v7cbR~
+    ,{0x16E40, 0x16E9F }  //Medefaidrin                            //~v7cbR~
 //U+16F00..U+16F9F  :Miao:Miao                                     //~v6V2I~
     ,{0x16f00, 0x16f9f}                                            //~v7baI~
 ////U+16FE0..U+16FFF  :Ideographic Symbols and Punctuation:Nushu (1 character), Tangut (1 character)//~v6V2I~//~v7baR~
@@ -1938,8 +1941,8 @@ int mk_wcswidth(const wchar_t *pwcs, size_t n)                     //~7719I~
 ////U+18800..U+18AFF  :Tangut Components:Tangut                      //~v6V2I~//~v7baR~
 //    ,{0x18800, 0x18aff}                                          //~v7baR~
     ,{0x16fe0, 0x18aff}                                            //~v7baI~
-    ,{0x18B00, 0x18CFF }  //Khitan Small Script                    //+v7cbR~
-    ,{0x18D00, 0x18D7F }  //Tangut Supplement                      //+v7cbR~
+    ,{0x18B00, 0x18CFF }  //Khitan Small Script                    //~v7cbR~
+    ,{0x18D00, 0x18D7F }  //Tangut Supplement                      //~v7cbR~
 ////U+1B000..U+1B0FF  :Kana Supplement:Hiragana (255 characters), Katakana (1 character)//~v6V2I~//~v7baR~
 //    ,{0x1b000, 0x1b0ff}                                          //~v7baR~
 //////1 SMP                                                          //~v6V2I~//~v7baR~
@@ -1960,8 +1963,8 @@ int mk_wcswidth(const wchar_t *pwcs, size_t n)                     //~7719I~
 ////U+1D200..U+1D24F  :Ancient Greek Musical Notation:Greek          //~v6V2I~//~v7baR~
 //    ,{0x1D200, 0x1D24F}                                                //~v6V2I~//~v6V8R~//~v7baR~
     ,{0x1D000, 0x1D24F}                                            //~v7baI~
-    ,{0x1D2C0, 0x1D2DF }  //Kaktovik Numerals                      //+v7cbR~
-    ,{0x1D2E0, 0x1D2FF }  //Mayan Numerals                         //+v7cbR~
+    ,{0x1D2C0, 0x1D2DF }  //Kaktovik Numerals                      //~v7cbR~
+    ,{0x1D2E0, 0x1D2FF }  //Mayan Numerals                         //~v7cbR~
 ////U+1D300..U+1D35F  :Tai Xuan Jing Symbols:Common                  //~v6V2I~//~v7baR~
 //    ,{0x1D300, 0x1D35F}                                                //~v6V2I~//~v6V8R~//~v7baR~
 ////U+1D360..U+1D37F  :Counting Rod Numerals:Common                  //~v6V2I~//~v7baR~
@@ -1975,17 +1978,17 @@ int mk_wcswidth(const wchar_t *pwcs, size_t n)                     //~7719I~
     ,{0x1d400, 0x1daaf}                                            //~v7baI~
 //U+1E000..U+1E02F  :Glagolitic Supplement:Glagolitic              //~v6V2I~
     ,{0x1e000, 0x1e02f}                                            //~v7baI~
-    ,{0x1E030, 0x1E08F }  //Cyrillic Extended-D                    //+v7cbR~
-    ,{0x1E100, 0x1E14F }  //Nyiakeng Puachue Hmong                 //+v7cbR~
-    ,{0x1E290, 0x1E2BF }  //Toto                                   //+v7cbR~
-    ,{0x1E2C0, 0x1E2FF }  //Wancho                                 //+v7cbR~
-    ,{0x1E4D0, 0x1E4FF }  //Nag Mundari                            //+v7cbR~
-    ,{0x1E7E0, 0x1E7FF }  //Ethiopic Extended-B                    //+v7cbR~
+    ,{0x1E030, 0x1E08F }  //Cyrillic Extended-D                    //~v7cbR~
+    ,{0x1E100, 0x1E14F }  //Nyiakeng Puachue Hmong                 //~v7cbR~
+    ,{0x1E290, 0x1E2BF }  //Toto                                   //~v7cbR~
+    ,{0x1E2C0, 0x1E2FF }  //Wancho                                 //~v7cbR~
+    ,{0x1E4D0, 0x1E4FF }  //Nag Mundari                            //~v7cbR~
+    ,{0x1E7E0, 0x1E7FF }  //Ethiopic Extended-B                    //~v7cbR~
 //U+1E800..U+1E8DF  :Mende Kikakui:Mende Kikakui                   //~v6V2I~
     ,{0x1e800, 0x1e8df}                                            //~v7baI~
 //U+1E900..U+1E95F  :Adlam:Adlam                                   //~v6V2I~
     ,{0x1e900, 0x1e95f}                                            //~v7baI~
-    ,{0x1ED00, 0x1ED4F }  //Ottoman Siyaq Numbers                  //+v7cbR~
+    ,{0x1ED00, 0x1ED4F }  //Ottoman Siyaq Numbers                  //~v7cbR~
 //U+1EE00..U+1EEFF  :Arabic Mathematical Alphabetic Symbols:Arabic //~v6V2I~
     ,{0x1EE00, 0x1EEFF}                                                //~v6V2I~//~v6V8R~
 ////U+1F000..U+1F02F  :Mahjong Tiles:Common                          //~v6V2I~//~v7baR~
@@ -3025,6 +3028,8 @@ int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
 //     {0x1D172 ,0x1D172 }, //U+1D172     MUSICAL SYMBOL COMBINING FLAG-5     ¡©//~v6VbI~
 //     {0x1D16D ,0x1D172 }, //U+1D16D     MUSICAL SYMBOL COMBINING AUGMENTATION DOT   ¡©//~v6VbI~//~v79JR~
         };                                                         //~v6VbI~
+  	if (UTF8ISASCII(Pucs))                                         //+v7e7I~
+    	return 0;                                                  //+v7e7I~
 #ifndef XXX                                                        //~v6X0I~
 	if ((Popt & UTF4ISCMO_WIDTHPARM) 	//0x0200 		//WIDTHMASK contains width//~v6X0I~
     &&  !(Popt & UTF4ISCMO_WIDTHMASK) 	//0x00ff 		//width if WIDTHPARM on//~v6X0I~
@@ -3268,6 +3273,8 @@ int utf4_isFormat(int Popt,UWUCS Pucs)                             //~v6WiI~
  {0xE0020   ,0xE007f}                                             //~v6WiI~//~v6WmR~
  };                                                                //~v6WiI~
  //************************************                            //~v6WiI~
+  	if (UTF8ISASCII(Pucs))                                         //+v7e7I~
+    	return 0;                                                  //+v7e7I~
   	if (bisearch(Pucs, Suctb_Format,sizeof(Suctb_Format) / sizeof(struct interval) - 1))//~v6WiI~
     {                                                              //~v6WnI~
     	UTRACEP("%s:ucs=%04x Format\n",UTT,Pucs);                    //~v6WiI~//~v6WnI~

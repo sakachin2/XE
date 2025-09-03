@@ -1,9 +1,10 @@
-//*CID://+vbAdR~:                             update#=  849;       //+vbAdR~
+//*CID://+vbDvR~:                             update#=  866;       //~vbDvR~
 //*************************************************************
 //*xefcmd2.c                                                       //~v53FR~
 //*  find/change/exclude                                           //~v11kR~
 //****************************************************************////~v438R~
-//vbAd:240608 lnx: compiler warning; stringop-override for UDDattrflag//+vbAdI~
+//vbDv:250809 find cvmd;not found if lrecl<srch word ucs4 size(3) when search word is \x______ on utf8 file.//~vbDvI~
+//vbAd:240608 lnx: compiler warning; stringop-override for UDDattrflag//~vbAdI~
 //vbr1:200615 ARM compiler warning                                 //~vbr1I~
 //vbc2:170821 add TS   option for find cmd on dirlist              //~vbc2I~
 //vbc1:170820 add ATTR option for find cmd on dirlist              //~vbc1I~
@@ -120,6 +121,8 @@
 //#endif                                                             //~vauiI~//~vauFR~
 static int Sdirattr;                                               //~vbc1I~
 static int Sdirts;                                                 //~vbc2I~
+static UCHAR SescsrchcharDDdbcs[4];                                //~vbDvR~
+static int SescsrchDDlen;                                          //~vbDvI~
 //****************************************************************
 int linesrchstringsub(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw,//~v73dI~
 					int Pchangeopt,int Psubcmdid);                 //~v73dI~
@@ -214,6 +217,7 @@ int linesrchstring(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw,//
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
 	int swebcfile=0;                                               //~va50I~
 #endif //UTF8EBCD raw ebcdic file support                          //~va50I~
+    int swutf8file=0;                                              //~vbDvR~
 //*********************************                                //~v43cI~
 #ifdef UTF8SUPPH                                                   //~va1GR~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
@@ -221,6 +225,10 @@ int linesrchstring(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw,//
     {                                                              //~va50I~
        	pfh=UGETPFHFROMPCW(Ppcw);                                  //~va50I~
         swebcfile=PFH_ISEBC(pfh);                                  //~va50I~
+	    swutf8file=FILEUTF8MODE(pfh);                              //~vbDvI~
+        if (swutf8file)                                            //~vbDvI~
+			if (fcmdsetupddsrchUCS(0))                             //+vbDvR~
+            	return 8;                                          //+vbDvI~
     }                                                              //~va50I~
     else                                                           //~va50I~
     	pfh=0;                                                     //~va50I~
@@ -281,6 +289,18 @@ int linesrchstring(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw,//
 //    if (Ssrchlen2)             //*&                              //~v54zR~
       if (Ssrchlen2||Seolsrchsw2)//*&                              //~v54zI~
       {                                                            //~v43eI~S
+                svsrchlen=Ssrchlen;                                //~vbDvM~
+                svescsrchlen=Sescsrchlen;                          //~vbDvM~
+            if (swutf8file && GescsrchDDlen)                       //~vbDvI~
+            {  //1st word of AND search                            //~vbDvR~
+                memcpy(svescsrchchar,Sescsrchchar,sizeof(svescsrchchar));//~vbDvI~
+                                                                   //~vbDvI~
+                Ssrchlen=(char)GescsrchDDlen;                      //~vbDvR~
+                Sescsrchlen=(char)GescsrchDDlen;                   //~vbDvI~
+                SescsrchDDlen=GescsrchDDlen;  //id of DDsrch       //~vbDvI~
+                memcpy(Sescsrchchar,GescsrchcharDD,(size_t)GescsrchDDlen);//~vbDvR~
+                memcpy(SescsrchcharDDdbcs,GescsrchcharDDdbcs,(size_t)GescsrchDDlen);//~vbDvI~
+            }                                                      //~vbDvI~
             Sdirattr=Sfindopt & FINDOPT_DIRATTR;                   //~vbc1I~
             Sdirts=Sfindopt & FINDOPT_DIRTS;                       //~vbc2I~
       		Sandplh1=0;                                            //~v43eI~
@@ -288,6 +308,12 @@ int linesrchstring(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw,//
             notfound2=0;                                           //~v53FI~
             notfound1=                                             //~v49eI~
             rc=linesrchstringsub(Ppcw,Ppplh,Ppoffset,Plocatesw,Pchangeopt,Psubcmdid);//~v43eI~
+            if (swutf8file && GescsrchDDlen)                       //~vbDvI~
+            {                                                      //~vbDvI~
+                Ssrchlen=svsrchlen;                                //~vbDvR~
+                Sescsrchlen=svescsrchlen;                          //~vbDvI~
+                memcpy(Sescsrchchar,svescsrchchar,sizeof(Sescsrchchar));//~vbDvI~
+            }                                                      //~vbDvI~
             if (rc==UALLOC_FAILED)                                 //~v54BI~
                 return UALLOC_FAILED;                              //~v54BI~
             if (rc==RC_STOP_SRCH)                                  //~v612R~
@@ -314,6 +340,14 @@ int linesrchstring(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw,//
                 Ssrchlen=Ssrchlen2;                                //~v43eI~
                 Sescsrchlen=Sescsrchlen2;                          //~v43eI~
                 Stabsrchsw=Stabsrchsw2;                            //~v43eI~
+                if (swutf8file && Gescsrch2DDlen)                  //~vbDvI~
+                {                                                  //~vbDvI~
+                	Ssrchlen=(char)Gescsrch2DDlen;  //id of DDsrch //~vbDvR~
+                	Sescsrchlen=(char)Gescsrch2DDlen;  //id of DDsrch//~vbDvI~
+                	SescsrchDDlen=Gescsrch2DDlen;  //id of DDsrch  //~vbDvI~
+                	memcpy(Sescsrchchar,Gescsrchchar2DD,(size_t)Gescsrch2DDlen);//~vbDvR~
+                	memcpy(SescsrchcharDDdbcs,Gescsrchchar2DDdbcs,(size_t)Gescsrch2DDlen);//~vbDvI~
+                }                                                  //~vbDvI~
 #ifdef UTF8SUPPH                                                   //~va1GR~
 		        Sutf8echsrchsw=Sothopt & SEARCH_UTF8ECH2; //2nd word is *ec//~va1GR~
 #endif                                                             //~va1GR~
@@ -431,7 +465,25 @@ int linesrchstring(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw,//
       {                                                            //~v54BI~
             Sdirattr=Sfindopt & FINDOPT_DIRATTR;                   //~vbc1I~
             Sdirts=Sfindopt & FINDOPT_DIRTS;                       //~vbc2I~
+                svsrchlen=Ssrchlen;                                //~vbDvM~
+                svescsrchlen=Sescsrchlen;                          //~vbDvM~
+            if (swutf8file && GescsrchDDlen)                       //~vbDvI~
+            {           //not AND search                           //~vbDvR~
+                memcpy(svescsrchchar,Sescsrchchar,sizeof(svescsrchchar));//~vbDvI~
+                                                                   //~vbDvI~
+                Ssrchlen=(char)GescsrchDDlen;                      //~vbDvR~
+                Sescsrchlen=(char)GescsrchDDlen;                   //~vbDvI~
+                SescsrchDDlen=GescsrchDDlen;  //id of DDsrch       //~vbDvI~
+                memcpy(Sescsrchchar,GescsrchcharDD,(size_t)GescsrchDDlen);//~vbDvI~
+                memcpy(SescsrchcharDDdbcs,GescsrchcharDDdbcs,(size_t)GescsrchDDlen);//~vbDvI~
+            }                                                      //~vbDvI~
 		rc=linesrchstringsub(Ppcw,Ppplh,Ppoffset,Plocatesw,Pchangeopt,Psubcmdid);//~v43cI~
+            if (swutf8file && GescsrchDDlen)                       //~vbDvI~
+            {                                                      //~vbDvI~
+                Ssrchlen=svsrchlen;                                //~vbDvR~
+                Sescsrchlen=svescsrchlen;                          //~vbDvI~
+                memcpy(Sescsrchchar,svescsrchchar,sizeof(Sescsrchchar));//~vbDvI~
+            }                                                      //~vbDvI~
         if (rc==UALLOC_FAILED)                                     //~v54BI~
             return UALLOC_FAILED;                                  //~v54BI~
         if (rc==RC_STOP_SRCH)                                      //~v612R~
@@ -1181,6 +1233,9 @@ int linesrchstringsub(PUCLIENTWE Ppcw,PULINEH *Ppplh,int *Ppoffset,int Plocatesw
 							  if (swutf8file)                      //~va20R~
                               {                                    //~va20I~
                   				optdds=FCMDDDSSO_ESC|FCMDDDSSO_PREV;//~va20R~
+                               if (SescsrchDDlen)                  //~vbDvI~
+                  				pc=fcmdddstrsrch(optdds|FCMDDDSSO_DDSTR,plh,Sescsrchchar,SescsrchcharDDdbcs,Sescsrchlen,pc,offset,&ucswordlen);//~vbDvR~
+                               else                                //~vbDvI~
                   				pc=fcmdddstrsrch(optdds,plh,Sescsrchchar,Spdddbcs/*dummy*/,Sescsrchlen,pc,offset,&ucswordlen);//~va20R~
                               }                                    //~va20I~
                               else                                 //~va20R~
@@ -1838,6 +1893,9 @@ UTRACEP("%s:Sddstrlen=%d,Ssrchlen=%d,Sescsrchlen=%d,Sutf8echrchsw=%d\n",UTT,Sdds
 							  if (swutf8file)                      //~va20I~
                               {                                    //~va20I~
                   				optdds=FCMDDDSSO_ESC|FCMDDDSSO_NEXT;//~va20R~
+                               if (SescsrchDDlen)                  //~vbDvI~
+                  				pc=fcmdddstrsrch(optdds|FCMDDDSSO_DDSTR,plh,Sescsrchchar,SescsrchcharDDdbcs,Sescsrchlen,pc,srchlen,&ucswordlen);//~vbDvR~
+                               else                                //~vbDvI~
                   				pc=fcmdddstrsrch(optdds,plh,Sescsrchchar,Spdddbcs/*dummy*/,Sescsrchlen,pc,srchlen,&ucswordlen);//~va20R~
                               }                                    //~va20I~
                               else                                 //~va20R~
@@ -4131,8 +4189,8 @@ int fcmdfind_dirattr(int Popt,int Psubcmdid,PUCLIENTWE Ppcw,PUDIRLH Ppdh,PUDIRLD
     {                                                              //~vbc1I~
     	return 4;	//not found                                    //~vbc1I~
     }                                                              //~vbc1I~
-//  pct++;                                                         //~vbc1R~//+vbAdR~
-	pct=Ppdd->UDDattr+Pexpandlen;                                  //+vbAdI~
+//  pct++;                                                         //~vbc1R~//~vbAdR~
+	pct=Ppdd->UDDattr+Pexpandlen;                                  //~vbAdI~
     for (ii=0,pcs=Psrch,len=(int)strlen(Psrch);ii<len;ii++,pcs++)  //~vbc1R~
     {                                                              //~vbc1I~
                                                                    //~vbc1I~

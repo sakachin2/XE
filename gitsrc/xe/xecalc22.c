@@ -1,8 +1,9 @@
-//*CID://+vba6R~:                                   update#=  121; //~vba6R~
+//*CID://+vbDuR~:                                   update#=  125; //~vbDuR~
 //*************************************************************
 //*xecalc2.c
 //* table calc(TC cmd)                                             //~vba6R~
 //*************************************************************
+//vbDu:250805 tc calc support long long by hex notation            //~vbDuI~
 //vba6:170716 (Bug)tc calc err when opdtype=x(requires word clear) //~vba6I~
 //vba3:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit,size_t:64bit)//~vba3I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
@@ -56,6 +57,7 @@
 #include "xesub2.h"                                                //~va50I~
 //*******************************************************
 static int    Sft2insmode=0;                                       //~v56zI~
+static int    SdwordidSplitCtr;                                    //~vbDuI~
 #ifndef DOSDOS                                                     //~v50EI~
 //****************************************************************
 // 1 table calc
@@ -553,12 +555,12 @@ int tc_ft2count(PUCLIENTWE Ppcw,int Pfunctype,XECALCPARM *Pparm,PULINEH *Plabplh
             rc=0;                                                  //~v53JI~
         }                                                          //~v53JI~
         else                                                       //~v53JI~
-        {                                                          //+vba6I~
-        	memset(lvts,0,sizeof(lvts));                           //+vba6I~
+        {                                                          //~vba6I~
+        	memset(lvts,0,sizeof(lvts));                           //~vba6I~
 //  		rc=tc_getplhdata(sw1st,&datatype2,&plhs,plhs2,poss1,poss2,lvts,Pparm);//~v57JR~
 //  		rc=tc_getplhdata(0,sw1st,&datatype2,&plhs,plhs2,poss1,poss2,lvts,Pparm);//~va2bR~
     		rc=tc_getplhdata(optgpd,sw1st,&datatype2,&plhs,plhs2,poss1,poss2,lvts,Pparm);//~va2bR~
-        }                                                          //+vba6I~
+        }                                                          //~vba6I~
     	if (rc!=0)                                                 //~v53JI~
         {                                                          //~v533I~
         	if (rc==-1)	//eof                                      //~v533I~
@@ -605,12 +607,12 @@ int tc_ft2count(PUCLIENTWE Ppcw,int Pfunctype,XECALCPARM *Pparm,PULINEH *Plabplh
             rc=0;                                                  //~v53JI~
         }                                                          //~v53JI~
         else                                                       //~v53JI~
-        {                                                          //+vba6I~
-        	memset(lvts,0,sizeof(lvts));                           //+vba6I~
+        {                                                          //~vba6I~
+        	memset(lvts,0,sizeof(lvts));                           //~vba6I~
 //  		rc=tc_getplhdata(sw1st,&datatype2,&plhs,plhs2,poss1,poss2,lvts,Pparm);//~v57JR~
 //   		rc=tc_getplhdata(0,sw1st,&datatype2,&plhs,plhs2,poss1,poss2,lvts,Pparm);//~va2bR~
      		rc=tc_getplhdata(optgpd,sw1st,&datatype2,&plhs,plhs2,poss1,poss2,lvts,Pparm);//~va2bR~
-        }                                                          //+vba6I~
+        }                                                          //~vba6I~
 		if (rc!=0)                                                 //~v53JI~
         {                                                          //~v533I~
         	if (rc==-1)	//eof                                      //~v533I~
@@ -870,6 +872,7 @@ int tc_getplhdata(int Popt,int Psw1st,int *Pdatatype,PULINEH *Ppplh,PULINEH Pend
     nxsw=(int)Pparm[PARM_NXSW];                                    //~vaz8I~
     for (;plh;plh=UGETQNEXT(plh))
     {
+        SdwordidSplitCtr=0;                                        //~vbDuI~
         if (plh->ULHtype==ULHTDATA)
         {
             if (!nxsw                                              //~v17fR~
@@ -1150,7 +1153,11 @@ int tc_getlinedata(int Popt,int *Pdatatype,char *Pdata,int Plen,long *Pvalue)//~
         *(numwork+len)=0;	//for getxdw(strz)                     //~v51nR~
 //*confirmed string is ascii at tc_getlinedata                     //~va20R~
         if (bc_getxdw(numwork,Pvalue)==1) //valid dword fmt        //~v51nR~
+        {                                                          //~vbDuI~
+            if (strstr(numwork,DWORDID_SPLIT))                     //~vbDuI~
+                SdwordidSplitCtr++;                                //~vbDuI~
             break;                                                 //~v51nI~
+        }                                                          //~vbDuI~
 //*after ascii chk done                                            //~va20R~
 	    len=unumlen(Pdata,UNUMLEN_HEX,Plen);
 //      if (!len)                                                  //~v475R~
@@ -1401,8 +1408,16 @@ int tc_setlinedata(PUCLIENTWE Ppcw,XECALCPARM *Pparm,PULINEH Pplh,int Pundopsw,i
         else        //not time                                     //~v51mI~
         {                                                          //~v58vI~
     	if (Pvalue[1]>=UCALC_DWORDID)                              //~v57WI~
+        {                                                          //~vbDuI~
 //  		bc_dweditnum('=',Pdatatype,Pvalue,rval);               //~v58vR~
+		  if (SdwordidSplitCtr)                                    //~vbDuI~
     		bc_dweditnum('=',Pdatatype,wklv,rval);                 //~v58vI~
+          else	//not .. formt dword                               //~vbDuI~
+          if (Pdatatype=='X')                                      //+vbDuI~
+    		bc_dweditnum('=',DATATYPE_DWORD/*W*/,wklv,rval);       //~vbDuI~
+          else                                                     //+vbDuI~
+    		bc_dweditnum('=',Pdatatype,wklv,rval);                 //+vbDuI~
+        }                                                          //~vbDuI~
         else                                                       //~v57WI~
         {
 //          lv=Pvalue[0];                                          //~vaz8R~

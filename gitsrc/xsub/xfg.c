@@ -1,7 +1,8 @@
-//*CID://+vas6R~:                             update#=  639;       //~vas6R~
+//*CID://+vau0R~:                             update#=  642;       //~vau0R~
 //***********************************************************
 //* xfg     : grep for binary file                                 //~v118R~
 //***********************************************************
+//vau0:250706 xfg1.21 add option to skip invalid filename warning  //~vau0I~
 //vas6:230709 sjis on help is not printable when /n9               //~vas6I~
 //vas5:230709 do not beep for help                                 //~vas5I~
 //vas3:230630 ARM;closeall for arm subthread execution             //~vas3I~
@@ -81,7 +82,7 @@
 //*        else error                          */
 //**********************************************/
 //***********************************************************
-#define VER "V1.21"  //version                                     //~vad2R~//~vak3R~//+vas6R~
+#define VER "V1.22"  //version                                     //~vau0R~
 #define PGMID   "xfg"                                              //~v1.1R~
 #ifdef DOS                                                         //~v11fI~
 	#define RBUFFSZ 16384                                          //~v11fI~
@@ -427,6 +428,9 @@ int main(int parmc,char *parmp[])
                     case 'C':   //cd for udirlist performance up   //~v124I~
                       	Scdsw=1;                                   //~v124I~
                         break;                                     //~v124I~
+                    case 'I':   //invalid filename                 //~vau0I~
+						Gufile_opt&=~GFILEOPT_NOWILDERRMSG ;  //skip filename invalid warning for wildname//~va77I~//~vau0I~
+                        break;                                     //~vau0I~
 #endif                                                             //~v124I~
 	      			case 'T':   //test option                      //~v122I~
 						Stestsw=1;                                 //~v122I~
@@ -458,6 +462,9 @@ int main(int parmc,char *parmp[])
                     case 'C':   //cd for udirlist performance up   //~v124I~
                       	Scdsw=0;                                   //~v124I~
                         break;                                     //~v124I~
+                    case 'I':   //invalid filename                 //~vau0I~
+						Gufile_opt|=GFILEOPT_NOWILDERRMSG ;  //skip filename invalid warning for wildname//~vau0I~
+                        break;                                     //~vau0I~
 #endif                                                             //~v124I~
 	      			case 'T':   //test option                      //~v122I~
 						Stestsw=0;                                 //~v122I~
@@ -1903,6 +1910,12 @@ void help(void)
 			"               Wilecard can be used.\n",              //~vab0R~
 			"               ワイルドカード指定も可\n");            //~vab0R~
                                                                    //~va9xI~
+#ifdef UNX                                                         //+vau0I~
+	HELPMSG                                                        //+vau0I~
+			"  %cNi         :No warning msg of \"Invalid filename\"\n",//+vau0I~
+			"  %cNi         :警告Msg \"無効なファイル名\"を抑止する。\n",//+vau0I~
+					CMDFLAG_PREFIX);                               //+vau0I~
+#endif                                                             //+vau0I~
 //    uerrmsg("  %cw+string   :additional search string(OR operation)\n",//~va26R~
 //            "  %cw+string   :追加の探索文字列(OR結合)\n",        //~va26R~
 //                        CMDFLAG_PREFIX);                         //~v118R~

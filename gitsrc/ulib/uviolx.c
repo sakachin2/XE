@@ -1,7 +1,8 @@
-//*CID://+v6EtR~:                             update#=  100;       //~v6EtR~
+//*CID://+vbDaR~:                             update#=  106;       //~vbDaR~
 //*************************************************************
 //*uviol for gxe and Axe                                           //~v6ErI~
 //*************************************************************    //~v6ErI~
+//vbDa:250703 (gxe)helpmsg was not controled by scr height.        //~vbDaI~
 //v6Et:160816 (XXE)for xe:vb4A,when Ligature mode display at xxecsub altch of UNICOMB UNPR//~v6EtI~
 //v6Er:160814 (Bug:XXE)UNCOMB UNPR was ignored                     //~v6ErI~
 //v6Eq:160812 lineopt should be cleared by USDFNCELL               //~v6EqI~
@@ -96,6 +97,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#define _XOPEN_SOURCE_EXTENDED		//ncurses define               //~vbDaI~
+#include <ucurses.h>                                               //~vbDaI~
 //*******************************************************
 //*******************************************************
 #include <ulib.h>                                                  //~v022R~
@@ -446,7 +449,7 @@ UINT uvioreadcellstr(PCH pchCellStr,int *Pplen,int Prow,int Pcol)
 //*ret  :rc                                                        //~v042R~
 //*******************************************************          //~v042I~
 //UINT uviowrtcellstr (PCH pchCellStr,int Plen,int Prow,int Pcol)  //~v6EoR~
-UINT uviowrtcellstr (int Popt,PCH pchCellStr,int Plen,int Prow,int Pcol)//~v6EoI~
+UINT uviowrtcellstr(int Popt,PCH pchCellStr,int Plen,int Prow,int Pcol)//~v6EoI~//~vbDaR~
 {
 		int len,reqctr;                                            //~v034R~
         int pos,height;                                            //~v143R~
@@ -485,9 +488,9 @@ UINT uviowrtcellstr (int Popt,PCH pchCellStr,int Plen,int Prow,int Pcol)//~v6EoI
                 pdbcs=Sdbcstbl+pos;//xe's Gscrdbcstbl              //~v6ErR~
                 UTRACED("inp pChCEllStr",pchCellStr,reqctr*2);     //~v6ErM~
                 UTRACED("inp dbcs",pdbcs,reqctr);                  //~v6ErI~
-    		  if (xxe_optligature(XXEIOLO_ISON,0))//ligature mode  //+v6EtR~
-                swcombaltch=0;                                     //+v6EtI~
-              else                                                 //+v6EtI~
+    		  if (xxe_optligature(XXEIOLO_ISON,0))//ligature mode  //~v6EtR~
+                swcombaltch=0;                                     //~v6EtI~
+              else                                                 //~v6EtI~
                 swcombaltch=(UTF_COMBINEMODE_NP()                  //~v6ErR~
  							&& Gutfcombaltch                       //~v6ErR~
 							&& (UTF_UCS2DDSBCS((ULONG)Gutfcombaltch,wkdddata,wkdddbcs)<=1)//~v6ErR~
@@ -501,7 +504,9 @@ UINT uviowrtcellstr (int Popt,PCH pchCellStr,int Plen,int Prow,int Pcol)//~v6EoI
                     	if (UDBCSCHK_ISUCSWIDTH0(*pdbcs))          //~v6ErI~
                         {                                          //~v6ErI~
                         	*(wpch-1)=wkdddata[0];                 //~v6ErR~
+#ifdef TEST                                                        //+vbDaI~
 		                	*(wpat-1)=(WORD)((*(wpat-1)&0xf0)|ATTR_COMBINENP_FG);//@@@@test uviol_repfg?//~v6ErR~
+#endif                                                             //+vbDaI~
                         	UTRACEP("%s:set combinealtch ch=%02x,attr=%02x,olddbcs=%02x,newch=%02x,newat=%02x\n",UTT,*(pchCellStr-2),*(pchCellStr-1),*pdbcs,*(wpch-1),*(wpat-1));//~v6ErR~
                             *pdbcs=wkdddbcs[0];                    //~v6ErI~
                         }                                          //~v6ErI~
@@ -995,3 +1000,13 @@ UINT uviosetstate(PVOID Ppreqblk)
 {
     	return (UINT)wxe_uviosetstate(Ppreqblk);                   //~v570I~
 }//uviosetstate                                                 //~5222R~
+//*******************************************************          //~vbDaI~
+int uviolxGetMaxHelpLines()                                        //~vbDaR~
+{                                                                  //~vbDaI~
+    UTRACEP("%s:entry\n",UTT);                                     //~vbDaI~
+    initscr();                                                     //~vbDaI~
+    int hh=LINES;                                                  //~vbDaI~
+    endwin();                                                      //~vbDaI~
+    UTRACEP("%s:exit hh=%d\n",UTT,hh);                             //~vbDaR~
+    return hh;                                                     //~vbDaR~
+}                                                                  //~vbDaI~

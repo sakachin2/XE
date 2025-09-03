@@ -1,6 +1,7 @@
-//*CID://+vb4uR~:                             update#=  632;       //+vb4uR~
+//*CID://+vbDdR~:                             update#=  633;       //+vbDdR~
 //*************************************************************
-//vb4u:160812 lineopt should be cleared when back to menu from file panel//+vb4uI~
+//vbDd:250704 compiler err c2059(typedef function). missing *      //+vbDdI~
+//vb4u:160812 lineopt should be cleared when back to menu from file panel//~vb4uI~
 //vb4k:160805 vb4f for LNX(specify ligature on/off,combine on/of line by line)//~vb4kI~
 //vb4j:160806 (W32)OPT UNICOMP UNPR was effective only for file contents(chk at tabdisplay)//~vb4jI~
 //vb4f:160802 (ULIB:v6Ei)specify ligature on/off,combine on/of line by line(used for edit/filename  panel)//~vb4fI~
@@ -239,7 +240,8 @@ static  int Stabskipctr=DEFAULT_TAB_SKIP;
       #endif                                                       //~va20I~
     #endif                                                         //~v79zI~
 //*************************************************************
-UEXITFUNC uerrexitcbfunc;                                          //~8216I~
+//UEXITFUNC uerrexitcbfunc;                                        //+vbDdR~
+void uerrexitcbfunc(char * Pmsg,void * Pvoid);                     //+vbDdI~
 void help(void);
 void parmproc(int Pparmc,char *Pparmp[]);
 void fileproc(void);
@@ -1368,8 +1370,8 @@ int browsefile(void)
                     eofrow=ii;
                 }
                 else
-//                  uviowrtncell(" \x07",Sscrwidth,ii,0/*col*/);  //space write//+vb4uR~
-                    uviowrtncell(0/*lineopt*/," \x07",Sscrwidth,ii,0/*col*/);  //space write//+vb4uI~
+//                  uviowrtncell(" \x07",Sscrwidth,ii,0/*col*/);  //space write//~vb4uR~
+                    uviowrtncell(0/*lineopt*/," \x07",Sscrwidth,ii,0/*col*/);  //space write//~vb4uI~
             }
 #ifdef LNX                                                         //~8215I~
     		csrwrite(Scsrposy,Scsrposx);                           //~8215I~
@@ -2038,8 +2040,8 @@ int clearscr(char *Ppcell)
     rc=uviol_clear();
     return rc;
 #else    //!UNX
-//  rc =(int)uviowrtncell(Ppcell,Sscrheight*Sscrwidth,0,0);//len,row,col//+vb4uR~
-    rc =(int)uviowrtncell(0/*lineopt*/,Ppcell,Sscrheight*Sscrwidth,0,0);//len,row,col//+vb4uI~
+//  rc =(int)uviowrtncell(Ppcell,Sscrheight*Sscrwidth,0,0);//len,row,col//~vb4uR~
+    rc =(int)uviowrtncell(0/*lineopt*/,Ppcell,Sscrheight*Sscrwidth,0,0);//len,row,col//~vb4uI~
     return rc;
 #endif //!UNX
 }//clearscr

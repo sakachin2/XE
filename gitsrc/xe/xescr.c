@@ -1,8 +1,8 @@
-//*CID://+vby4R~:                             update#=  447;       //+vby4R~
+//*CID://+vby4R~:                             update#=  449;       //~vby4R~
 //***********************************************************
 //* xescr.c                                                     //~5513I~
 //***********************************************************   //~v016I~
-//vby4:230402 (ARM)shared resource support by //shareName defined by SP(ShortPath) cmd.//+vby4I~
+//vby4:230402 (ARM)shared resource support by //shareName defined by SP(ShortPath) cmd.//~vby4I~
 //vbp3:190709 (WinCons)no ime line needed anymore for screen height//~vbp3I~
 //vbi3:180211 supprt command history list                          //~vbi3I~
 //vbdn:171125 disable filemenu depending curent pcw type           //~vbdnI~
@@ -703,6 +703,7 @@ static	VIOINTENSITY intensbgh={6,2,1};	//backbround highlight
 #endif                                                             //~va20I~
     uviom_setopt2(opt,optch);                                      //~va1cR~
 #endif                                                             //~va1cR~
+    UTRACEP("%s:Gscrwidth=%d,Gscrheight=%d\n",UTT,Gscrwidth,Gscrheight);//+vby4I~
 	return 0;
 }//scrinit
 #ifdef LNX                                                         //~v79TI~
@@ -981,6 +982,7 @@ int scrreset(void)                                              //~4C23R~
 static int Sresetsw=0;                                             //~v45hR~
 static	VIOINTENSITY intensbrink={6,2,0};	//brink             //~4C23I~
 //*********************************                             //~4C23I~
+    UTRACEP("%s:entry\n",UTT);                                     //~vby4I~
 	if (Sresetsw)                                               //~4C23R~
 		return 0;                                               //~4C23I~
 	Sresetsw=1;                                                 //~4C23R~
@@ -1016,6 +1018,7 @@ static	VIOINTENSITY intensbrink={6,2,0};	//brink             //~4C23I~
   #endif //!WXE                                                    //~v500R~
 #endif                                                             //~v0i3I~
 	uviosetmode(0);	//0 mean ufree vio work                     //~v04eI~
+    UTRACEP("%s:exit\n",UTT);                                      //~vby4I~
 	return 0;                                                   //~4C23R~
 }//scrreset                                                     //~4C23I~
                                                                 //~4C23I~
@@ -2846,15 +2849,15 @@ int scrSetUpdateFileMenu(int Popt,PUCLIENTWE Ppcw)                 //~vbdnI~
     return 0;                                                      //~vbdnI~
 }//scrSetUpdateFileMenu                                            //~vbdnR~
 #endif                                                             //~vbdnI~
-#ifdef ARMXXE                                                      //+vby4I~
-//*********************************************************************//+vby4I~
-//*invalidate on java                                              //+vby4I~
-//*********************************************************************//+vby4I~
-void uinvalidateARM()                                              //+vby4I~
-{                                                                  //+vby4I~
-    UTRACEP("xescr.uinvalidateARM");                               //+vby4I~
-    scrdisp();                                                     //+vby4I~
-    wxe_scrdraw();                                                 //+vby4I~
-    UTRACEP("xescr.uinvalidateARM exit");                          //+vby4I~
-}//scrSetUpdateFileMenu                                            //+vby4I~
-#endif                                                             //+vby4I~
+#ifdef ARMXXE                                                      //~vby4I~
+//*********************************************************************//~vby4I~
+//*invalidate on java                                              //~vby4I~
+//*********************************************************************//~vby4I~
+void uinvalidateARM()                                              //~vby4I~
+{                                                                  //~vby4I~
+    UTRACEP("xescr.uinvalidateARM");                               //~vby4I~
+    scrdisp();                                                     //~vby4I~
+    wxe_scrdraw();                                                 //~vby4I~
+    UTRACEP("xescr.uinvalidateARM exit");                          //~vby4I~
+}//scrSetUpdateFileMenu                                            //~vby4I~
+#endif                                                             //~vby4I~

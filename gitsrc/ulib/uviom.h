@@ -1,4 +1,4 @@
-//*CID://+v7c4R~:                             update#=  218;       //~v7c4R~
+//*CID://+v7c4R~:                             update#=  221;       //+v7c4R~
 //******************************************************           //~v5n8I~
 //v7c4:240618 (Bug of v7bW) if rep ZWJ to altch,it becomes next combining base.(display doble "+")//~v7c4I~
 //v7bW:240525 display category Cf by "+" as itself/shadow          //~v7bWI~
@@ -82,7 +82,7 @@
 #define UCS_ZWJ      0x200d                                        //~v7bWI~
 #define UCS_ZWNJ     0x200c                                        //~v7bWI~
 int uviom_getAltFormat(int Popt,int Pucs,int Pdefault);            //~v7bWI~
-#define   UVMGAFO_GETORGUCS     0x01                               //+v7c4I~
+#define   UVMGAFO_GETORGUCS     0x01                               //~v7c4I~
 #define UVIOM_ALTCH_FORMAT '='                                     //~v7bWR~
 #define UVIOM_ALTCH_ZWJ    '+'                                     //~v7bWI~
 #define UVIOM_ALTCH_ZWNJ   '-'                                     //~v7bWI~

@@ -1,8 +1,9 @@
-//CID://+v79pR~:        update#=16                                 //+v79pR~
+//CID://+v7etR~:        update#=17                                 //+v7etR~
 //*******************************************************
 //*uedit.h                                                         //~v57WR~
 //*******************************************************
-//v79p:240203 add ux2is(get int[] from hex string 0x__,X___,u___ fmt with any spliter//+v79pI~
+//v7et:250805 TC calc suuports DOWRD hex data                      //+v7etI~
+//v79p:240203 add ux2is(get int[] from hex string 0x__,X___,u___ fmt with any spliter//~v79pI~
 //v6Z0:200516 uwordrep option alternative parm sign                //~v6Z0I~
 //v6T1:180210 add ueditKMG(edit Kiro,mega,Giga value)              //~v6T1I~
 //v6L5:170715 msvs2017 warning;(Windows:PTR:64bit,ULONG 32bit,HWND:64bit)//~v6L5I~
@@ -118,5 +119,9 @@ char *ueditFILESZ(int Popt,char *Pout,int Pbuffsz,char *Pfmt,FILESZT Psz);//~v6x
 char *ueditLONGHANDLE(int Popt,char *Pout,int Pbuffsz,char *Pfmt,LONGHANDLE Phandle);//~v6xkI~
 //*******************************************************          //~v6T1I~
 char *ueditKMG(int Popt,size_t Psz);                               //~v6T1I~
-//*******************************************************          //+v79pI~
-int ux2is(int Popt,char *Phex,int Plen,int *Pout,int Pmaxctr,int *Ppchklen);//+v79pI~
+//*******************************************************          //~v79pI~
+int ux2is(int Popt,char *Phex,int Plen,int *Pout,int Pmaxctr,int *Ppchklen);//~v79pI~
+//*******************************************************          //+v7etI~
+int ugethexll(int Popt,char *Pstr,int Plen,long long *Pll);        //+v7etI~
+//*******************************************************          //+v7etI~
+int ugethex2l(int Popt,char *Pstr,int Plen,long *P2l);             //+v7etI~

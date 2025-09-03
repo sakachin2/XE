@@ -1,7 +1,8 @@
-//*CID://+v6EmR~:                             update#=   31;       //~v6EmR~
+//*CID://+vbDaR~:                             update#=   33;       //~vbDaR~
 //******************************************************
 // uviol.h                                                         //~v324I~
 //******************************************************           //~v324I~
+//vbDa:250703 (gxe)helpmsg was not controled by scr height.        //~vbDaI~
 //v6Em:160807 (LNX) v6Ei for LNX(specify ligature on/off,combine on/of line by line(used for edit/filename  panel))//~v6EmI~
 //v6D9:160610 (LNX)when combining char exists under combineing mode,//~v6D9I~
 //  		  hdr line filename contains black space after each combining char if ligature off,after string if ligature on.//~v6D9I~
@@ -47,7 +48,7 @@
 #endif                                                             //~v5m7I~
 //******************************************************           //~v6EmI~
 #ifdef LNX                                                         //~v6EmI~
-int  uviol_repfg(int Pcht,int Pfg);                                //+v6EmR~
+int  uviol_repfg(int Pcht,int Pfg);                                //~v6EmR~
 #endif                                                             //~v6EmI~
 //******************************************************           //~v391I~
 int uviol_init(int Popt);                                          //~v342R~
@@ -72,5 +73,7 @@ int uviol_konchk2(void);                                           //~v5n8I~
 #ifndef XXE                                                        //~v5ijR~
 void uviol_acssetup(int Psetsw,int Pentno,UCHAR *Pacstbl);         //~v5ijR~
 int uviol_set_padattrsub(int Popt,int Pcolorno);                   //~v6D9R~
+#else                                                              //+vbDaI~
+int uviolxGetMaxHelpLines();                                       //~vbDaI~
 #endif                                                             //~v5ijR~
 #endif                                                             //~v5ijR~

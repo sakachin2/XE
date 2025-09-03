@@ -38,6 +38,7 @@ EXE5=$(OBJDIR)$(PGM5).exe
 EXE6=$(OBJDIR)$(PGM6).exe
 EXE7=$(OBJDIR)$(PGM7).exe
 EXE8=$(OBJDIR)$(PGM8).exe
+EXE10=$(OBJDIR)$(PGM10).exe
 #COPT8=/DUTF8SUPP
 COPT8=/DUTF8UCS2
 MAP1=$(OBJDIR)$(PGM1)$(OSTYPE).map
@@ -48,6 +49,7 @@ MAP5=$(OBJDIR)$(PGM5).map
 MAP6=$(OBJDIR)$(PGM6).map
 MAP7=$(OBJDIR)$(PGM7).map
 MAP8=$(OBJDIR)$(PGM8).map
+MAP10=$(OBJDIR)$(PGM10).map
 #####################################################
 VCOUT1=/OUT:$(EXE1)
 VCOUT2=/OUT:$(EXE2)
@@ -57,6 +59,7 @@ VCOUT5=/OUT:$(EXE5)
 VCOUT6=/OUT:$(EXE6)
 VCOUT7=/OUT:$(EXE7)
 VCOUT8=/OUT:$(EXE8)
+VCOUT10=/OUT:$(EXE10)
 
 MAPOPT1=/MAP:$(MAP1)
 MAPOPT2=/MAP:$(MAP2)
@@ -66,6 +69,7 @@ MAPOPT5=/MAP:$(MAP5)
 MAPOPT6=/MAP:$(MAP6)
 MAPOPT7=/MAP:$(MAP7)
 MAPOPT8=/MAP:$(MAP8)
+MAPOPT10=/MAP:$(MAP10)
 
 #STCK=""       default 1MB
 STCK=/STACK:4194304
@@ -108,9 +112,11 @@ MTOPT=/MT
 ## x86 VC10
 !		IF "$(debug)"=="yes"
 #VC8OPT=/Zi /D _DEBUG /nologo $(W10OPT) /X $(WARNLVL) /WX- /Od /Oy- /D _WINDOWS /D STRICT /D _CRT_SECURE_NO_DEPRECATE /D VC10EXP  $(MBCS)   /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Gd  /J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210 /wd4210 $(WD4244) /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131 /wd4267 /wd4366 
-VC8OPT=/Zi /D _DEBUG /nologo $(W10OPT) /X $(WARNLVL) /WX- /Od /Oy- /D _WINDOWS /D STRICT /D _CRT_SECURE_NO_DEPRECATE /D VC10EXP  $(MBCS)       /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Gd  /J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210 /wd4210 $(WD4244) /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131 /wd4267 /wd4366 
+#VC8OPT=/Zi /D _DEBUG /nologo $(W10OPT) /X $(WARNLVL) /WX- /Od /Oy- /D _WINDOWS /D STRICT /D _CRT_SECURE_NO_DEPRECATE /D VC10EXP  $(MBCS)       /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Gd  /J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210 /wd4210 $(WD4244) /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131 /wd4267 /wd4366 
+VC8OPT=/Zi /D _DEBUG /nologo $(W10OPT) /X $(WARNLVL) /WX- /Od /Oy- /D _WINDOWS /D STRICT /D _CRT_SECURE_NO_DEPRECATE /D VC10EXP  $(MBCS)       /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Gd  /J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210 /wd4210 $(WD4244) /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131 /wd4267 /wd4366 /wd5292 
 !		ELSE
-VC8OPT=    /D NDEBUG /nologo $(W10OPT) /X $(WARNLVL) /WX- /Od /Oy- /D _WINDOWS /D STRICT /D _CRT_SECURE_NO_DEPRECATE /D VC10EXP  $(MBCS)   /Gm-            /MT  /GS /fp:precise /Zc:wchar_t /Zc:forScope /Gd  /J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210 /wd4210 $(WD4244) /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131 /wd4267 /wd4366 
+#VC8OPT=    /D NDEBUG /nologo $(W10OPT) /X $(WARNLVL) /WX- /Od /Oy- /D _WINDOWS /D STRICT /D _CRT_SECURE_NO_DEPRECATE /D VC10EXP  $(MBCS)   /Gm-            /MT  /GS /fp:precise /Zc:wchar_t /Zc:forScope /Gd  /J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210 /wd4210 $(WD4244) /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131 /wd4267 /wd4366 
+VC8OPT=    /D NDEBUG /nologo $(W10OPT) /X $(WARNLVL) /WX- /Od /Oy- /D _WINDOWS /D STRICT /D _CRT_SECURE_NO_DEPRECATE /D VC10EXP  $(MBCS)   /Gm-            /MT  /GS /fp:precise /Zc:wchar_t /Zc:forScope /Gd  /J /we4700  /w34701 /wd4100 /wd4214 /wd4057 /wd4996 /wd4706 /wd4210 /wd4210 $(WD4244) /wd4055 /wd4152  /wd4996 /wd4245 /wd4127 /wd4131 /wd4267 /wd4366 /wd5292 
 !		ENDIF	
 WINOPT=/DUTF8SUPPH /DUTF8UCS2 /DUTF8EBCD
 .SUFFIXES:
@@ -122,7 +128,7 @@ WINOPT=/DUTF8SUPPH /DUTF8UCS2 /DUTF8EBCD
 ################################
 ##   xe      xedumpp trcchk  mtrchk  kbchk   syscmd  3270    xeacb
 !IF "$(x64)"=="yes"
-ALL: $(EXE1)         $(EXE3) $(EXE4) $(EXE5) $(EXE6) $(EXE7) $(EXE8)
+ALL: $(EXE1)         $(EXE3) $(EXE4) $(EXE5) $(EXE6) $(EXE7) $(EXE8) $(EXE10)
 !ELSE
 ALL: $(EXE1) $(EXE2) $(EXE3) $(EXE4) $(EXE5) $(EXE6) $(EXE7) $(EXE8)
 !ENDIF
@@ -491,6 +497,24 @@ $(EXE8):  \
 $(OBJDIR)$(PGM8).OBJ:$(PGM8).c
 #   $(EXEPATH)cl $(COPT8) /c /W3 /G3 /Gd /J /Od /DW32 /D$(TRACE) $(DEBUG) /I$(INCPATH) /Fr$(TMP) $(OPTASMW) /Fo$@ $(PGM8).c >err0 #~8724R~
 	$(EXEPATH)cl $(COPT8) /c $(WARNLVL) /Gd /J /Od /DW32 $(VC8OPT) $(WINOPT) /D$(TRACE) $(DEBUG) /I$(INCPATH) $(OPTASMW) /Fo$@ $(PGM8).c >err0
+################################
+$(EXE10):  \
+  $(LIBDIR)user.lib \
+  $(OBJDIR)$(PGM10).OBJ \
+  $(MAKEF)
+	echo --link $(EXE10)
+   @REM @<<$(PGM10).@0
+     $(LINKDE) $(VCOUT10) $(MAPOPT10) $(STCK) $(PMVIO) $(BASE) $(CONCAT)
+     $(OBJDIR)$(PGM10).OBJ
+   $(OS2EXE10)
+   $(OS2MAP10)
+   $(LIBDIR)user.lib $(VCLIB)
+   $(OS2ENDM)
+<<KEEP
+
+   $(EXEPATH)link @$(PGM10).@0 >err0
+ @if     exist err0  type err0>>err
+ @if     exist err0  type err0
 #######################################################
 {.}.c{$(OBJDIR)}.obj:
  @echo cpl---$<

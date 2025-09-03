@@ -1,8 +1,9 @@
-//*CID://+vas3R~:                             update#=  171;       //+vas3R~
+//*CID://+vau1R~:                             update#=  174;       //~vau1R~
 //***********************************************************      //~v000I~
 //* XDS  : display directory size                                  //~v000I~
 //***********************************************************      //~v000I~
-//vas3:230630 ARM;closeall for arm subthread execution             //+vas3I~
+//vau1:250706 uerrmsg_init missing.(No dbcs errmsg)                //~vau1I~
+//vas3:230630 ARM;closeall for arm subthread execution             //~vas3I~
 //vae0:170206 xds v1.11 invalid filename fmt msg for unprintable utf8;if not UD_MODE, ufullpath call _fullpath//~vae0I~
 //                      it drops UD_NOTLC. SET_UDMODE is required. //~vae0I~
 //vaa0:160417 Lnx compiler warning                                 //~vaa0I~
@@ -32,7 +33,7 @@
 //xds.c  *v1.1 *000423 v001 modify help msg                        //~v001I~
 //***********************************************************      //~v000I~
                                                                    //~v000I~
-#define VER "V1.11"   //version                                     //~va30R~//~va48R~//~va4rR~//~va71R~//~vaa0R~//~vae0R~
+#define VER "V1.12"   //version                                     //~va30R~//~va48R~//~va4rR~//~va71R~//~vaa0R~//~vae0R~//~vau1R~
 #define PGM "xds"                                                  //~v120R~
                                                                    //~v000I~
 //**********************************************/                  //~v000I~
@@ -77,6 +78,7 @@
 	#include <udos2.h>                                             //~v143I~
 #endif                                                             //~v143I~
 #include <utrace.h>                                                //~va71I~
+#include <udbcschk.h>                                              //+vau1R~
 //*********************************************************************//~v000I~
 #define HELPMSG         uerrhelpmsg(stdout,stderr,                 //~v000I~
 //#define MAXDEPTH        20                                       //~v140R~
@@ -128,6 +130,7 @@ static int  Sslinkdirctr=0;                                        //~v141I~
   #endif                                                           //~v149I~
 #endif                                                             //~v141I~
 static int Susagesw=0;                                             //~v146I~
+static	char Spgmver[18];                                          //~vau1I~
 //************************************                             //~v000I~
 void parmchk(int,char *[]);                                        //~v000I~
 int psizechk(char *Pdir,char *Pfullpath,UDIRLIST *Ppudirlist,      //~v000I~
@@ -157,6 +160,7 @@ int main(int parmc,char *parmp[])                                  //~v000I~
     long dweditwk[3],dweditwk1[4],dweditwk2[4];                    //~va64I~
     char size1[32],size2[32];                                      //~v145M~
 #endif                                                             //~v145M~
+    int opt;                                                       //~vau1I~
 //**********************************                               //~v000I~
 //* main                                                           //~v000I~
 //**********************************                               //~v000I~
@@ -169,6 +173,11 @@ int main(int parmc,char *parmp[])                                  //~v000I~
         ufileisvfat(ISVFAT_FORCE);      //force vfat               //~v000I~
 #endif                      //DPMI or not                          //~v000I~
 //**********************************                               //~v000I~
+	sprintf(Spgmver,"%s:%s:",Spgm,Sver);                           //~vau1R~
+	opt=UDCWCIO_INTERNAL;	//bypass UDBCSCHK_EXPLICIT and utfucsmapinit(0);//~vau1I~
+    udbcschk_wcinit(opt,0);                                        //~va6//~vau1I~
+  	uerrmsg_init(Spgmver,stdout,0);//default color                 //~vau1I~
+	uerrexit_init(Spgmver,stdout,0,0,0);//no mapfile,no exit,no exit parm//~vau1I~
     parmchk(parmc,parmp);                                          //~v000I~
     if (UGETQCTR(&Spfnmstack)>1)                                   //~v143R~
     	Smultifilesw=1;                                            //~v143R~
@@ -325,7 +334,7 @@ int main(int parmc,char *parmp[])                                  //~v000I~
         }                                                          //~v145I~
 #endif                                                             //~v141M~
     printf("%s:%s:==%c== End of process (filemask:%s) ==\n",Spgm,Sver,OSTYPE,Sfilemask);//~v142R~
-	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//+vas3I~
+	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//~vas3I~
     return max(applrc,rc);                                         //~v000R~
 }//end main                                                        //~v000I~
 //**********************************************************************//~v000I~

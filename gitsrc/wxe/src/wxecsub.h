@@ -1,7 +1,8 @@
-//*CID://+vbzMR~:                             update#=  127;       //~vbzMR~
+//*CID://+vbDpR~:                             update#=  137;       //~vbDpR~
 //*********************************************************************//~2818I~
 //* wxecsub.h                                                      //~2818I~
 //*********************************************************************//~2818I~
+//vbDp:250726 (WXE)color of combining char split for vhex csr was green.(ignored that xefile23 set)//~vbDpI~
 //vbzM:240408 (WXE) support hardcopy function                      //~vbzMI~
 //vbzi:240201 (WXE)vbz4 had no effect. Reason is font=System. SelectFont was not done at scrinit.//~vbziI~
 //vbzh:240201 (WXE)try GetCharWidth/GetABCCharWidths(for TrueTypeFont)//~vbzhI~
@@ -39,6 +40,8 @@
 #define INI_FILENAME   "wxew.ini"                                  //~2907R~
 #define INI_ACRNM   INI_FILENAME "----!!\n"                        //~2907R~
                                                                    //~2907I~
+//#define ATTR_RGB_UNIT 255                                        //~vbDpR~
+//#define ATTR_FG2RGB(Pattr) RGB(((Pattr & 0x04)>>2)*ATTR_RGB_UNIT,((Pattr & 0x02)>>1)*ATTR_RGB_UNIT,(Pattr & 0x01)*ATTR_RGB_UNIT)//~vbDpR~
 #ifdef __cplusplus                                                 //~2818I~
 extern  "C"                                                        //~2818I~
 {                                                                  //~2818I~
@@ -104,10 +107,12 @@ extern  "C"                                                        //~2818I~
 int csubgetcsrposbf(int Popt,char *Pdbcs,int Plen,int Ppos,int *Ppposb,int *Pposc,int *Ppposa);//~va30R~
 //int csubtextoutw(int Popt,HDC Phdc,int Px,int Py,char *Pddata,char *Pdbcs,int Plen,int Pcellw);//~va20R~//~vb4iR~
 //int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pddata,char *Pdbcs,int Plen,int Pcellw,int Pfgcolor,int Pbgcolor);//~vb4iR~
-int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pddata,char *Pdbcs,int Plen,int Pcellw);//~vb4iI~
+//int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pddata,char *Pdbcs,int Plen,int Pcellw);//~vbzMR~
+int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pddata,char *Pdbcs,int Plen,int Pcellw,int Popt2);//~vbDpR~
 #define CSTOWO_PRINT        0x01 //write a line at once            //~va20I~
 #define CSTOWO_COMBINECHK   0x02 //chk combine                     //~va30I~
-int csubtextoutwHC(int Popt,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen,WUCS *Ppucs);//+vbzMI~
+#define CSTOWO_CSRPOS       0x04 //cursor position                 //+vbDpR~
+int csubtextoutwHC(int Popt,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen,WUCS *Ppucs);//~vbzMI~
 int csubtextoutw1(int Popt,HDC Phdc,int Pxx,int Pyy,char *Pdata,char *Pdbcs,int Plen);//~va20I~
 int csubchkdd(int Popt,char *Pdbcs,int Plen);                      //~va20I~
 int csubchkddpos(int Popt,UCHAR *Pdbcs,int Plen,int *Pplen);       //~vbzMR~

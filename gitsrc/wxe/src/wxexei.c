@@ -1,7 +1,10 @@
-//*CID://+vbt9R~:                               update#=  546;     //~vbt9R~
+//*CID://+vbDqR~:                              update#=  569;      //~vbDqR~
 //*********************************************************************//~v440I~
 //* wxe interface definition                                       //~v440I~
 //*********************************************************************//~v440I~
+//vbDq:250728 (WXE:bug)vhex to data err when xpos split ucs4       //~vbDqI~
+//vbDg:250706 (wxe)4byte dbcs missing display tab padding          //~vbDgI~
+//vbD6:250702 (WXE)exception handling using DbgHelp API            //~vbD6I~
 //vbt9:201214 WXE help was double line, exceed screen height when /??//~vbt9I~
 //vbt7:201213 (WXE:bug)WM_CHAR receives UTF16,do not chk DBCS. WizKey input is checked as dbcs 1st byte.//~vbt7I~
 //vbj2:180424 popup menu on cmd history list                       //~vbj2I~
@@ -97,6 +100,7 @@
 #include <uwinsub.h>                                               //~v55UI~
 #include <uftp.h>                                                  //~v76nI~
 #include <utf.h>                                                   //~va3hI~
+#include <ueh.h>                                                   //~vbD6I~
                                                                    //~v440I~
 #include "xe.h"                                                    //~v440R~
 #include "xescr.h"                                                 //~v440I~
@@ -222,7 +226,32 @@ int wxe_cmdservercallback(int Popt,void *Pcallbackparm)            //~v55oR~
 //*p2:initreq:arg ctr                                              //~v440I~
 //*p3:initreq:arg ptr list                                         //~v440I~
 //*************************************************************    //~v440I~
+#ifdef WIN_EXH                                                     //~vbD6R~
+int wxe_xecall(int Preqtype,void *Ppwxei,int Pargc,char **Pargv)   //~vbD6I~
+{                                                                  //~vbD6I~
+	int wxe_xecallsub(int Preqtype,void *Ppwxei,int Pargc,char **Pargv);//~vbD6I~
+	int rc=0;                                                      //~vbD6I~
+	__try                                                          //~vbD6I~
+  	{                                                              //~vbD6I~
+		UTRACEP("%s:try\n",UTT);                                   //~vbD6I~
+		rc=wxe_xecallsub(Preqtype,Ppwxei,Pargc,Pargv);             //~vbD6I~
+    }                                                              //~vbD6I~
+  	__except                                                       //~vbD6I~
+  	(                                                              //~vbD6I~
+  	//*filter-expression                                           //~vbD6I~
+  		uehfilter(GetExceptionCode(),GetExceptionInformation())    //~vbD6I~
+  	)                                                              //~vbD6I~
+  	{                                                              //~vbD6I~
+    //*exception-handler block                                     //~vbD6I~
+    //never reach to this point by filter rc is CONTINUE           //~vbD6I~
+    	UTRACEP("%s:excetion block\n",UTT);                        //~vbD6I~
+  	}                                                              //~vbD6I~
+    return rc;                                                     //~vbD6I~
+}                                                                  //~vbD6I~
+int wxe_xecallsub(int Preqtype,void *Ppwxei,int Pargc,char **Pargv)//~vbD6I~
+#else                                                              //~vbD6I~
 int wxe_xecall(int Preqtype,void *Ppwxei,int Pargc,char **Pargv)   //~v440R~
+#endif                                                             //~vbD6R~
 {                                                                  //~v440I~
 	int rc=0;                                                      //~2908R~
     PUCLIENTWE pcw;                                                //~v67GI~
@@ -851,6 +880,7 @@ char *wxe_uerrmsg(char *Pemsg ,char *Pjmsg,... )                   //~v71sI~
  	ULPTR parm[UERRMSG_MAXPARM];                                   //~vafkI~
 	char *pmsg;                                                    //~v71sI~
 //****************************                                     //~v71sI~
+    UTRACEP("%s:emsg=%s\n",UTT,Pemsg);                             //~vbD6I~
 //  parm=(unsigned long**)(ULONG)((&Pjmsg)+1);                     //~v71sI~//~vafkR~
     UGETSTDARG(ULPTR,parm,Pjmsg,UERRMSG_MAXPARM);                  //~vafkI~
 	pmsg=uerrmsg(Pemsg,Pjmsg,parm[0],parm[1],parm[2],parm[3],parm[4],//~v71sI~
@@ -862,6 +892,7 @@ char *wxe_uerrmsg(char *Pemsg ,char *Pjmsg,... )                   //~v71sI~
 int  wxe_uerrmsgstdo(char *Ppmsg)                                  //~v440I~
 {                                                                  //~v440I~
 //***********************                                          //~v440I~
+    UTRACEP("%s:pemsg=%s\n",UTT,Ppmsg);                            //~vbD6I~
 //  if (Sxeinitsw==WXE_REQ_INIT)	//init end                     //~2B30I~//~v7ahR~
     if (Sxeinitsw==WXE_REQ_PREINIT)	//before init end              //~v7ahI~
 		Spwxei->WXEIerrmsg=wxeenqmsg(Ppmsg,Spwxei->WXEIerrmsg);    //~2A07R~
@@ -1586,6 +1617,7 @@ int xxe_chkcsrisfiledataline(int Popt,PUCLIENTWE Ppcw,int Prow,int Pcol,int *Ppi
     int rc=0,rcinfo=0,rrow,rcol;                                   //~va3kR~
     int rc2,pos,offs;                                              //~va3tI~
 //************************                                         //~va3kI~
+    UTRACEP("%s:opt=%04x,row=%d,col=%d\n",UTT,Popt,Prow,Pcol);     //~vbDgR~
     rrow=Prow-Ppcw->UCWorgy;                                       //~va3kI~
     rcol=Pcol-Ppcw->UCWorgx;                                       //~va3kI~
     if (rrow==CMDLINENO)                                           //~va3kI~
@@ -1666,8 +1698,11 @@ int xxe_chkcsrisfiledataline(int Popt,PUCLIENTWE Ppcw,int Prow,int Pcol,int *Ppi
                     if (offs>=0)                                   //~va3tI~
                     {                                              //~va3tI~
                     	rc2=xeutf_getvhexpos(0,Ppcw,plh,offs,&pos,0/*out dbcsid*/);//~va3tR~
-                        if (rc2==2)	//dbcs split                   //~va3tI~
-                        	pos--;                                 //~va3tI~
+//                      if (rc2==2)	//dbcs split                   //~vbDqR~
+//                      	pos--;                                 //~vbDqR~
+                        UTRACEP("%s:pos=%d,left=%d,UCWorgx=%d\n",UTT,pos,pfc->UFCleft,Ppcw->UCWorgx);//~vbDgR~
+					  if (Popt & XXECCPO_NOT_RELATIVE)	//    0x04	//for vsplit, col includes left panel width//+vbDqR~
+                      	pos+=Ppcw->UCWorgx;                        //+vbDqR~
                         pos-=pfc->UFCleft;                         //~va3tI~
                         pos+=Ppcw->UCWlinenosz;                    //~va3tI~
                         pos<<=XXECCPI_VHEXCSRSHIFT;                //~va3tI~
@@ -1690,7 +1725,7 @@ int xxe_chkcsrisfiledataline(int Popt,PUCLIENTWE Ppcw,int Prow,int Pcol,int *Ppi
     	rc=1;                                                      //~va3kI~
     if (Ppinfo)                                                    //~va3kI~
     	*Ppinfo=rcinfo;                                            //~va3kI~
-UTRACEP("csrposchk rc=%d,row=%d,col=%d,info=%x\n",rc,Prow,Pcol,rcinfo);//~va3kI~
+UTRACEP("%s:rc=%d,row=%d,col=%d,info=%x\n",UTT,rc,Prow,Pcol,rcinfo);//~vbDgR~
     return rc;                                                     //~va3kI~
 }//xxe_chkcsrisfiledataline                                        //~va3kI~
 //===============================================================================//~va3kI~
@@ -1701,7 +1736,7 @@ int xxe_chkcsrpos(int Popt,int Prow,int Pcol,int *Ppinfo)          //~va3kI~
     PUCLIENTWE pcw;                                                //~va3kI~
     int rc,rc2,info;                                               //~va3kI~
 //************************                                         //~va3kI~
-UTRACEP("%s:row=%d,col=%d\n",UTT,Prow,Pcol);                       //~vbt9I~
+UTRACEP("%s:Popt=%04x,row=%d,col=%d\n",UTT,Popt,Prow,Pcol);        //~vbDgR~
     scrcpgetpcw(Prow,Pcol,&pcw);                                   //~va3kI~
 	if (Popt & XXECCPO_CSRLINEBREAK)	//should break at csr pos ?//~va3kI~
     {                                                              //~va3kI~
@@ -1716,7 +1751,7 @@ UTRACEP("%s:row=%d,col=%d\n",UTT,Prow,Pcol);                       //~vbt9I~
         	rc=rc2;                                                //~va3kI~
         else                                                       //~va3kI~
         	rc=0;                                                  //~va3kI~
-UTRACEP("chkcsrpos BREAKCHK rc=%d,row=%d,col=%d\n",rc,Prow,Pcol);  //~va3kI~
+UTRACEP("%s:BREAKCHK rc=%d,row=%d,col=%d\n",UTT,rc,Prow,Pcol);     //~vbDgR~
         return rc;                                                 //~va3kI~
     }                                                              //~va3kI~
 	if (Popt & XXECCPO_STRCHK)	//disable ligature ?               //~va3kI~
@@ -1740,7 +1775,7 @@ UTRACEP("chkcsrpos BREAKCHK rc=%d,row=%d,col=%d\n",rc,Prow,Pcol);  //~va3kI~
             rc=0;                                                  //~va3kI~
         if (Ppinfo)                                                //~va3kI~
         	*Ppinfo=info;                                          //~va3kI~
-UTRACEP("chkcsrpos STRCHK rc=%d,row=%d,col=%d\n",rc,Prow,Pcol);    //~va3kI~
+UTRACEP("chkcsrpos STRCHK rc=%d,row=%d,col=%d,info=%04x\n",rc,Prow,Pcol,info);//~vbDgR~
         return rc;                                                 //~va3kI~
     }                                                              //~va3kI~
     return 0;                                                      //~va3kI~
@@ -1755,7 +1790,7 @@ int wxe_optligature(int Popt,int Pvalue)                           //~va3gR~
 //************************                                         //~va3gI~
 	if (Popt & WXEIOLO_ISON)                                       //~va3hR~
     {                                                              //~va3hI~
-		UTRACEP("%s:rc=%d,WXEIstatus=0x%04x\n",UTT,(((Spwxei->WXEIstatus & WXEIS_LIGATURE)!=0)^((Spwxei->WXEIstatus & WXEIS_TEMPLIGATURE)!=0)),Spwxei->WXEIstatus);//+vbt9R~
+		UTRACEP("%s:rc=%d,WXEIstatus=0x%04x\n",UTT,(((Spwxei->WXEIstatus & WXEIS_LIGATURE)!=0)^((Spwxei->WXEIstatus & WXEIS_TEMPLIGATURE)!=0)),Spwxei->WXEIstatus);//~vbt9R~
 	    return (((Spwxei->WXEIstatus & WXEIS_LIGATURE)!=0)^((Spwxei->WXEIstatus & WXEIS_TEMPLIGATURE)!=0));//~va3hI~
     }                                                              //~va3hI~
 	if (Popt & WXEIOLO_CHNGDIALOGOPT)		//dialog option        //~va3gI~
@@ -2027,3 +2062,23 @@ int  wxe_CHLcmd(int Popt,int Pcmd)                                 //~vbj2R~
 	rc=wxe_kbdmsg(stat,(UINT)Pcmd,1/*Prepctr*/,0/*flag*/);         //~vbj2R~
     return rc;                                                     //~vbj2I~
 }//wxe_CHLcmd                                                      //~vbj2R~
+//*************************************************************    //~vbDgI~
+//*get xe global                                                   //~vbDgI~
+//*************************************************************    //~vbDgI~
+int  wxexei_getXeOpt(int Popt)                                     //~vbDgI~
+{                                                                  //~vbDgI~
+	int rc=0;                                                      //~vbDgI~
+    switch(Popt)                                                   //~vbDgI~
+    {                                                              //~vbDgI~
+    case GXEO_TABDISPLAY:      //1                                 //~vbDgI~
+    	rc=(Gopt & GOPTTABDISPLAY);	//       0x10       //tab char display//~vbDgI~
+        break;                                                     //~vbDgI~
+    case GXEO_TABCOLORFG:      //2                                 //~vbDgI~
+    	int fgpal=Gattrtbl[COLOR_ELINENO] & 0x0f/*fg*/;            //~vbDgI~
+        rc=Spwxei->WXEIpalrgb[fgpal];                              //~vbDgR~
+	    UTRACEP("%s:Gattrtbl[COLOR_ELINENO:%d]=%02x,fgpal=%02x,fgcolor=%08x\n",UTT,COLOR_ELINENO,Gattrtbl[COLOR_ELINENO],fgpal,rc);//~vbDgR~
+        break;                                                     //~vbDgI~
+    }                                                              //~vbDgI~
+    UTRACEP("%s:opt=%d,rc=%d\n",UTT,Popt,rc);                      //~vbDgI~
+    return rc;                                                     //~vbDgI~
+}//wxexei_getXeOpt                                                 //~vbDgI~

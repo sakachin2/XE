@@ -1,6 +1,7 @@
-//*CID://+v6K6R~:                             update#=   65;       //+v6K6R~
+//*CID://+vbDuR~:                             update#=   66;       //+vbDuR~
 //*******************************************************
-//v6K6:170320 (BUG)calc_time, hh>0x7fff was cut                    //+v6K6I~
+//vbDu:250805 tc calc support long long by hex notation            //+vbDuI~
+//v6K6:170320 (BUG)calc_time, hh>0x7fff was cut                    //~v6K6I~
 //v6K5:170320 output days when hour>24                             //~v6K5I~
 //v6hh:120623 Compile on VC10x64 (__LP64 is not defined but _M_X64 and _M_AMD64 and long is 4 byte).  defines ULPTR(unsigned long long)//~v6hhI~
 //v69C:110129 xds errmsg "dword and dword"                         //~v69CI~
@@ -22,6 +23,8 @@
 //v314 000513:ucalc from xecalc for XBC cmd.                       //~v314I~
 //v155:000318 numeric calc func(NEW)
 //*******************************************************
+#define DWORDID_SPLIT ".."                                         //+vbDuM~
+#define DATATYPE_DWORD  'W'                                        //+vbDuM~
 #define  MAX_POINT_NUM   9
 #define  ULMINUS        0xffffffff                                 //~v5drR~
 #define  ULMINUSBIT     0x80000000                                 //~v5drR~
@@ -73,7 +76,7 @@ int ucalc_timeedit(int Popt,char *Pout,long *Pvalue);              //~v314R~
 #define  CALC_TIME6     0x0100       //6byte hhmmss.xxx output fmt //~0402I~
 #define  CALC_DAYS      0x0200       //output days when hh>24      //~v6K5I~
 #define  CALC_DAYSONLY  0x0400       //output days only            //~v6K5I~
-#define  CALC_OVFHH     0x0800       //Use SovfHH                  //+v6K6I~
+#define  CALC_OVFHH     0x0800       //Use SovfHH                  //~v6K6I~
 //*******************************************************
 int ucalc_binop(int Popt,int Pope,long *Popd1,long *Popd2);        //~v314R~
 #define CALC_DIV_PRECUP  		0x01	//for div result precision 1 up

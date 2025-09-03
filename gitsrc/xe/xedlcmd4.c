@@ -1,9 +1,10 @@
-//*CID://+vb7fR~:                             update#=  228;       //~vb7fR~
+//*CID://+vbD7R~:                             update#=  235;       //~vbD7R~
 //*************************************************************
 //*xedlcmd4.c
 //* each dir line cmd process
 //* undelete(u)
 //*************************************************************
+//vbD7:250703 issue deleting msg for undel save                    //~vbD7I~
 //vb7f:170109 FTP:not found msg if deleded undelsavefile           //~vb7fI~
 //vb7e:170108 FTP crash by longname                                //~vb7eI~
 //vb7c:170106 longname support; del on root file(xmove to undeldir fails)//~vb7cI~
@@ -363,9 +364,10 @@ int dlcmdundelterm(void)
 //*******************
 //  if (!*Sundeldate)	//no undel prepare                         //~v62kR~
 //  	return 0;                                                  //~v62kR~
-    UTRACEP("%s:entry\n",UTT);                                     //+vb7fI~
+    UTRACEP("%s:entry\n",UTT);                                     //~vb7fI~
   if (*Sundeldate)	//no undel prepare                             //~v62kI~
   {                                                                //~v62kI~
+    printf("\nDeleting files saved for UNDELETE function.\n");     //+vbD7R~
 //free undel prepare list
 	for (ii=0;ii<LASTDRIVE;ii++)
     {

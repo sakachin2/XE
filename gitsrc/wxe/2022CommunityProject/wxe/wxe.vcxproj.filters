@@ -543,6 +543,12 @@
     <ClCompile Include="G:\src\xe\xefcmd7.c">
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="G:\src\ulib\ueh.c">
+      <Filter>Resource Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\src\ulib\uehmsg.c">
+      <Filter>Resource Files\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SRCULIB)\os2.h">

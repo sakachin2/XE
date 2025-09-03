@@ -1,3 +1,80 @@
+//*v130C *** 2025/08/25 upload 
+//v7eB:250827 TRACE;flush required for also kbd trace
+//            utrace.c
+//v7eA:250825 TRACE crash by null parm(TAB on cmd)
+//            uviom.c
+//v7ez:250809 set BG attr for wide sbcs 2nd cell
+//            uvioml.c
+//v7ey:250809 errmsg missing break by color change
+//            uvioml.c
+//v7ex:250807 ZWJ/ZWNJ vhex color is green
+//            uvioml.c
+//v7ew:250806 Not v7eu, use display format option 'W'
+//            ucalc.c ucalc2.c
+//v7ev:250805 XBC:bug for xWORD-xDWORD
+//            ucalc2.c ucalc.c
+//v7eu:250805 XBC suuports DOWRD hex data(not .. fmt)
+//            ucalc.c
+//v7et:250805 TC calc suuports DOWRD hex data
+//            uedit.c/h ucalc2.c
+//v7es:250804 ucalc bug; DWORD-WORD if WORD<0
+//            ucalc2.c
+//v7er:250804 (LNXCON)change padding char of ucs4 to space. It effect to next scm color of vhex csrpos.
+//            uvioml.c
+//v7eq:250802 (BUG:LNX)option padding for SCM was ignored and shown itself
+//            uvioml.c
+//v7ep:250802 v7ej for SCM(attr of data pos by vhex csr)
+//            uvioml.c
+//v7en:250802 (Bug:LNXCON) vhexcorpos show itself when both LIG ON/OFF.
+//            uvioml.c
+//v7em:250729 (Bug:LNXCON) data pos color was not corresponding to vhex line cpos
+//            uvioml.c
+//v7ek:250724 (Bug:WINCON) Noligature+Comninemode;when vsplit screen line disappear on the left panel.
+//            uviom.c
+//v7ej:250722 (WINCON) attr of data line pos by vhex cursor. f23 set white but W0W reset to green
+//            uviom.c
+//v7ei:250721 (LNXCON) ucs4+combining; it was combining to padding char.
+//            uvioml.c
+//v7eh:250717 (LNXCON) show combining char of posa even combining mode like as gxe.
+//            uvioml.c
+//v7eg:250718 (WINCON) same as v7c2 on LNX.(combining char at next of lineno col was not green in combinemode). not combinable for "*" and "|"(lineno cols boundary)
+//            utf22.c
+//v7ef:250717 (WINCON) show combining char of posa even combining mode like as wxe.
+//            uviom.c
+//v7ee:250716 (WINCON:Bug) Consider Stoplineoffs if on conhost to read screen for HCopy.
+//            uvio.c
+//v7ed:250716 (WINCON:Bug of v7bn(V1.30 hcopy)) Stoplineoffs is not 0 on conhost(0  for WinndowsTerminal). it cause 0c4 at uerrmsg if Stoplineoffs is not 0. 
+//            uviom.c
+//v7ec:250715 call trace_term to close memory trace
+//            ueh.c
+//v7eb:250715 (W32)v7e9 has to consider surrogate pair.
+//            uviom.c
+//****:250714 (W32)Windows terminal dose not print sarrogate pair. ConHost can do it.
+//            *******
+//v7ea:250711 (W32)SCM of just before csrposb was not green.
+//            uviom.c
+//v7e9:250711 (W32)SCM of csrposb was not green.
+//            uviom.c
+//v7e8:250711 (W32)SCM split is not green but yellow.(Use 0xa0 as base). Some glyph may override the right character.
+//            uviom.c
+//v7e7:250707 uncoditionally ascii is notcombining for performance 
+//            utf22.c utf4.c
+//v7e6:250707 (WINCON)4byte dbcs background color when revesed by find or Cut&Paste.
+//            uviom.c
+//v7e5:250705 xeebc.map: reject SJIS_OPT=ENG/KANA and DBCS_CHARSET was mixed
+//            ucvext.c
+//v7e4:250702 Compile warning c4389 compared signed and unsigned
+//            uviom.c
+//v7e3:250702 Compile err E1345(arry[]="abc" is err because array size is isno specified)
+//            ucalc.c
+//v7e2:250626 (Win)flush when abend
+//            uabend.c uerr.c ualloc.c
+//v7e1:250613 prevent new warinng by cl /wd5292
+//              ufilew.c(190): warning C5292: '関数': 'UCHAR *' から 'char *' は間接参照で異なります。一方は一意のプレーンな 'char' 型で、もう 一方はそうではありません
+//            user17c.inc
+//v7e0:250613 system() for such as xfg hungs sume time. manual say reuires flush stream. try _flushall.
+//            uproc.c ufilew.c
+//*v130B *** 2025/01/20 upload 
 //v7dW:250116 (XXE)Warning for -e option of gnome-terminal, that will be deprecated in the future
 //            uproc3.c
 //v7dV:241220 (LNX)ushellexec fail when async for xe, OK for gxe

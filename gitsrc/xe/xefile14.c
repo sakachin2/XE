@@ -1,4 +1,4 @@
-//*CID://+vbBuR~:                             update#=  456;       //~vbBuR~
+//*CID://+vbBuR~:                             update#=  457;       //~vbBuR~
 //*************************************************************
 //*xefile14.c*                                                     //~v54dR~
 //* fileload ,filefindopen/filegetline                             //~v54dR~
@@ -456,7 +456,7 @@ static char Stlineno []="*******|";
     int rc_seek=0;                                                 //~vaz1I~
     int rc2;                                                       //~vb7eI~
 //****************************
-    UTRACEP("%s:entry Ppfile=%s\n",UTT,Ppfile);                    //~vbi3I~
+    UTRACEP("%s:entry Ppfile=%s,Pfullpath=%s\n",UTT,Ppfile,Pfullpath);//+vbBuR~
     opt2=Pfkinisw & FLO2_OPT2;                                     //~v76mI~
     Pfkinisw &= FLO2_FKINI;                                        //~v76mI~
 	*Pppfh=pfh=UALLOCC(1,UFILEHSZ);                             //~v04dR~
@@ -1138,10 +1138,10 @@ static char Stlineno []="*******|";
 //    else    //not spf file                                       //~v107R~
 //        filechkbin(pfh);    //chk binary file                    //~v107R~
 	eolchng=0;				//eol may changed at write             //~v47LI~
-    UTRACEP("%s:Seolid=%02x,flag3=%02x,flag11=%02x,flag6=%02x,flag10=%02x,flag13=%02x,flag4=%02x\n",UTT,Seolid,pfh->UFHflag3,pfh->UFHflag11,pfh->UFHflag6,pfh->UFHflag10,pfh->UFHflag13,pfh->UFHflag4);//+vbBuR~
+    UTRACEP("%s:Seolid=%02x,flag3=%02x,flag11=%02x,flag6=%02x,flag10=%02x,flag13=%02x,flag4=%02x\n",UTT,Seolid,pfh->UFHflag3,pfh->UFHflag11,pfh->UFHflag6,pfh->UFHflag10,pfh->UFHflag13,pfh->UFHflag4);//~vbBuR~
    	if (UCBITCHK(pfh->UFHflag11,UFHF11RTEXTEBCZ))            //not write mode specified//~vbBuR~
     {                                                              //~vbBuI~
-	    if (Seolid==(UFGETS_EOLID_EBC|UFGETS_EOLID_EBCZ))//0x18  //eol is 0x15//+vbBuM~
+	    if (Seolid==(UFGETS_EOLID_EBC|UFGETS_EOLID_EBCZ))//0x18  //eol is 0x15//~vbBuM~
         if (!UCBITCHK(pfh->UFHflag10,UFHF10RECORD)) //record mode  //~vbBuI~
         if (!UCBITCHK(pfh->UFHflag13,UFHF13RV)) //recfm=V at read  //~vbBuI~
     	if (!UCBITCHK(pfh->UFHflag4,UFHF4BIN))                     //~vbBuI~

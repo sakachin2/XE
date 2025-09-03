@@ -1,5 +1,7 @@
-//CID://+vbzMR~:       update#=   182                              //~vbzMR~
+//CID://+vbDpR~:       update#=   210                              //~vbDpR~
 //******************************************************************************//~v003I~
+//vbDp:250726 (WXE)color of combining char split for vhex csr was green.(ignored that xefile23 set)//~vbDpI~
+//vbDm:250719 (wxe)char pos after of cpos have to be written as a single(green if combining)//~vbDmI~
 //vbzM:240408 (WXE) support hardcopy function                      //~vbzMI~
 //vbzi:240201 (WXE)vbz4 had no effect. Reason is font=System. SelectFont was not done at scrinit.//~vbziI~
 //vbz4:240120 try vbz3 to WXE                                      //~vbz4I~
@@ -69,7 +71,8 @@
 #include    "uviom.h"                                              //~vbzMI~
 //static int Sswcsrlinedd;                                         //~va3jR~
 //===============================================================================//~v003I~
-//                                                                 //~v003I~
+int getDbcsSize(char *Ppcd,int Plen);                              //~vbDmI~
+//===============================================================================//~vbDpI~
 //===============================================================================//~v003I~
 void  CWxemain::scrinit(void)                                      //~v003R~
 {                                                                  //~v003I~
@@ -270,7 +273,8 @@ void CWxemain::scrupdate(CDC *Ppmemdc,int Pprintsw)                //~2A20R~
 	opt0=0;                                                        //~va3kI~
     if (csrredrawreqcond)                                          //~va3kI~
     {                                                              //~va3kI~
-    	rc2=xxe_chkcsrpos(XXECCPO_CSRLINEBREAK,csrrow,csrcol,&fileinfo);//csr is on text area?//~va3kI~
+//  	rc2=xxe_chkcsrpos(XXECCPO_CSRLINEBREAK,csrrow,csrcol,&fileinfo);//csr is on text area?//+vbDpR~
+     	rc2=xxe_chkcsrpos(XXECCPO_CSRLINEBREAK|XXECCPO_NOT_RELATIVE,csrrow,csrcol,&fileinfo);//csr is on text area?,fileinfo contains not relative csrcol//+vbDpI~
         if (rc2)	//csr is on data or vhex line                  //~va3kI~
         {                                                          //~va3kI~
 	        if (fileinfo & XXECCPI_CPU8)                           //~va3kI~
@@ -523,14 +527,15 @@ int  CWxemain::lineput(int Popt,CDC *Ppmemdc,int Pprintsw,int Prow)//~va3kI~
     int vhexcol;                                                   //~va3tR~
 #endif                                                             //~va20I~
 	int linenofldsz[2];                                            //~vb3pR~
+    int optStrput=0;                                               //~vbDpI~
 //************************************                             //~v003I~
 	pattr=TEXTATTR(Prow,0);                                        //~2901R~
 	pstyle=(char*)TEXTSTYLE(Prow,0);                               //~v780R~
     totlen=Mscrcmaxcol;                                            //~v003I~
-	UTRACEP("lineput row=%d,opt=%x\n",Prow,Popt);                              //~2914I~//~va6uR~
+	UTRACEP("%s:row=%d,opt=%x\n",UTT,Prow,Popt);                              //~2914I~//~vbzMR~
 	UTRACED("line data",TEXTDATA(Prow,0),totlen);                  //~2914I~
-	UTRACED("line dbcs",TEXTDBCS(Prow,0),totlen);                  //~2914I~
-	UTRACED("line attr",TEXTATTR(Prow,0),totlen);                  //~2914I~
+	UTRACED("line dbcs",TEXTDBCS(Prow,0),totlen);                  //~vbDpR~
+	UTRACED("line attr",TEXTATTR(Prow,0),totlen*sizeof(USHORT));   //~vbDpR~
 	UTRACED("line style",pstyle,totlen);                           //~v780I~
     len=0;                                                         //~2901R~
     attr=*pattr;                                                   //~2901I~
@@ -557,26 +562,42 @@ int  CWxemain::lineput(int Popt,CDC *Ppmemdc,int Pprintsw,int Prow)//~va3kI~
       if (Popt & LPO_VHEX)                                         //~va3tR~
       {                                                            //~va3tI~
         vhexcol=LPO_GETVHEXPOS(Popt);                              //~va3tI~
+        UTRACEP("%s:vhexcol=%d\n",UTT,vhexcol);                    //~vbDpI~
 		csubgetcsrposbf(UTFDDGSP_ALSOLOCAL,pdbcs,Mscrcmaxcol,vhexcol,&csrposprev,&csrpos,0/*next*/);//~va3tR~
 	  }                                                            //~va3tI~
       else                                                         //~va3tI~
+      {                                                            //~vbDpI~
+        UTRACEP("%s:WXEIcsrposx=%d\n",UTT,Mwxeintf.WXEIcsrposx);   //~vbDpI~
 		csubgetcsrposbf(UTFDDGSP_ALSOLOCAL,pdbcs,Mscrcmaxcol,Mwxeintf.WXEIcsrposx,&csrposprev,&csrpos,&csrposnext);//~va3kR~
+      }                                                            //~vbDpI~
     }                                                              //~va30I~
 #endif                                                             //~va30I~
   	xxe_getlinenofldsz(0,Prow,linenofldsz);	//-1 if not fileedit line,split lineno fld and filedata for ligature//~vb3pR~
 //  for (col=0;col<totlen;col++,pattr++,len++)                     //~v69SR~
 //  for (col=0;col<totlen;col++,pattr++,pdbcs++)                   //~v780R~
+#ifdef TEST                                                        //~vbDmI~
+	int chszNext=0;                                                //~vbDmR~
+#endif                                                             //~vbDmI~
     for (col=0;col<totlen;col++,pattr++,pdbcs++,pstyle++)          //~v780I~
     {                                                              //~v003I~
         if (inboxsw>=0)	//row is in the cap range                  //~2A05R~
             inboxswn=CAPCHKINBOX(pt1,pt2,Prow,col);                //~2A05R~
         else                                                       //~2A05R~
             inboxswn=-1;                                           //~2A05R~
+#ifdef TEST                                                        //~vbDmI~
+		if (col==csrposnext)	//get char width to write as single//~vbDmI~
+			chszNext=getDbcsSize(pdbcs,totlen-col);                //~vbDmI~
+UTRACEP("%s:chszNext%d\n",UTT,chszNext);                           //~vbDmI~
+#endif                                                             //~vbDmI~
+UTRACEP("%s:col=%d,csrpos=%d,pattr=%p\n",UTT,col,csrpos,pattr);    //~vbDpR~
 //      if (attr!=*pattr || inboxswn!=inboxsw)                     //~v780R~
         if (                                                       //~v780I~
 			attr!=*pattr                                           //~v780I~
 		||  (!Pprintsw && style!=*pstyle)                          //~v780R~
 		||  (col==csrposprev||col==csrpos||col==csrposnext)	//to keep csr position char//~va30R~
+#ifdef TEST                                                        //~vbDmI~
+		||  (col>csrposnext && chszNext>0)                         //~vbDmR~
+#endif                                                             //~vbDmI~
 		|| inboxswn!=inboxsw                                       //~v780I~
         || col==linenofldsz[0] || col==linenofldsz[1]              //~vb3pR~
         )                                                          //~v780I~
@@ -597,11 +618,24 @@ int  CWxemain::lineput(int Popt,CDC *Ppmemdc,int Pprintsw,int Prow)//~va3kI~
 	            nextcolstart=col-1;  //next start col by dbcs 1st  //~v69SR~
             else                                                   //~v69SI~
 	            nextcolstart=col;  //next start col by dbcs 1st    //~v69SI~
+#ifdef TEST                                                        //~vbDmI~
+            if (col>csrposnext)                                    //~vbDmM~
+            {                                                      //~vbDmI~
+                nextcolstart=colstart+chszNext;                    //~vbDmI~
+                UTRACEP("%s:col=%d,nextstart=%d,chszNext=%d,colstart=%d\n",UTT,col,nextcolstart,chszNext,colstart);//~vbDmR~
+            	chszNext=0;                                        //~vbDmM~
+            }                                                      //~vbDmI~
+#endif                                                             //~vbDmI~
             len=nextcolstart-colstart;                             //~v69SI~
-UTRACEP("row=%d,colstart=%d,len=%d,attr=%x,inbox=%d\n",Prow,colstart,len,attr,inboxsw);//~v69SM~
+UTRACEP("%s:row=%d,colstart=%d,len=%d,attr=%02x,inbox=%d\n",UTT,Prow,colstart,len,attr,inboxsw);//~vbDpR~
+			if (colstart==csrpos)	//get char width to write as single//~vbDpI~
+            	optStrput|=STPO_CSRPOS;	// 0x01                    //~vbDpI~
+    	    else                                                   //~vbDpI~
+        	    optStrput&=~STPO_CSRPOS;	// 0x01                //~vbDpI~
           if (len>0)                                               //~v69SI~
 //          strput(Ppmemdc,Pprintsw,Prow,colstart,len,attr,inboxsw);//~v780R~
-            strput(Ppmemdc,Pprintsw,Prow,colstart,len,attr,style,inboxsw);//~v780R~
+//          strput(Ppmemdc,Pprintsw,Prow,colstart,len,attr,style,inboxsw);//~vbDpR~
+            strput(optStrput,Ppmemdc,Pprintsw,Prow,colstart,len,attr,style,inboxsw);//~vbDpI~
         	attr=*pattr;                                           //~v003I~
         	style=*pstyle;                                         //~v780I~
 //          colstart=col;                                          //~v69SR~
@@ -611,9 +645,14 @@ UTRACEP("row=%d,colstart=%d,len=%d,attr=%x,inbox=%d\n",Prow,colstart,len,attr,in
         }                                                          //~v003I~
     }                                                              //~v003I~
     len=totlen-colstart;                                           //~v69SI~
+    if (colstart==csrpos)   //get char width to write as single    //~vbDpI~
+        optStrput|=STPO_CSRPOS; // 0x01                            //~vbDpI~
+    else                                                           //~vbDpI~
+        optStrput&=~STPO_CSRPOS;    // 0x01                        //~vbDpI~
     if (len)                                                       //~2901I~
 // 		strput(Ppmemdc,Pprintsw,Prow,colstart,len,attr,inboxsw);   //~v780R~
-   		strput(Ppmemdc,Pprintsw,Prow,colstart,len,attr,style,inboxsw);//~v780R~
+// 		strput(Ppmemdc,Pprintsw,Prow,colstart,len,attr,style,inboxsw);//~vbDpR~
+   		strput(optStrput,Ppmemdc,Pprintsw,Prow,colstart,len,attr,style,inboxsw);//~vbDpI~
 	if (style!=WXEFONTSTYLE_NORMAL)                                //~v780R~
 	if (style!=WXEFONTSTYLE_NOSYNTAX)   //nosyntax is same as normal//~va77I~
     {                                                              //~va74I~
@@ -628,7 +667,8 @@ UTRACEP("CREATEFONT lineput backto normal style=%d,font=%p\n",style,Mpfont);//~v
 //parm:capsw:-1:no cap line,0:cap line but out of range,1:str in cap range//~2A01I~
 //===============================================================================//~2901I~
 //int  CWxemain::strput(CDC *Ppmemdc,int Pprintsw,int Prow,int Pcol,int Plen,USHORT Pattr,int Pcapsw)//~v780R~
-int  CWxemain::strput(CDC *Ppmemdc,int Pprintsw,int Prow,int Pcol,int Plen,USHORT Pattr,int Pstyle,int Pcapsw)//~v780I~
+//int  CWxemain::strput(CDC *Ppmemdc,int Pprintsw,int Prow,int Pcol,int Plen,USHORT Pattr,int Pstyle,int Pcapsw)//~vbDpR~
+int  CWxemain::strput(int PoptStrput,CDC *Ppmemdc,int Pprintsw,int Prow,int Pcol,int Plen,USHORT Pattr,int Pstyle,int Pcapsw)//~vbDpI~
 {                                                                  //~2901I~
     char   *pdata,*pdbcs;                                          //~2901I~
 //  unsigned    fgcolor,bgcolor;                                   //~vb4iR~
@@ -647,9 +687,12 @@ int  CWxemain::strput(CDC *Ppmemdc,int Pprintsw,int Prow,int Pcol,int Plen,USHOR
     int swlocaleligature=0;                                        //~@@@@R~
     int mblen;                                                     //~vb2KI~
     int lineopt;                                                   //~vb4iR~
+    int opt2=0;                                                    //~vbDpI~
 //************************************                             //~2901I~
 //	rc_ligature=wxe_chkligaturerow(0,NULL,Prow,Pcol,&rrow);        //~vb4iR~
   	lineopt=wxe_getlineopt(0,Prow,Pcol);                           //~vb4iR~
+    if (PoptStrput & STPO_CSRPOS)                                  //~vbDpR~
+    	opt2|=CSTOWO_CSRPOS;                                       //~vbDpR~
     xx=XX(Pcol);                                                   //~2A27M~
     yy=YY(Prow);                                                   //~2A27M~
     cellh=Mcellh;                                                  //~2A27M~
@@ -661,7 +704,7 @@ int  CWxemain::strput(CDC *Ppmemdc,int Pprintsw,int Prow,int Pcol,int Plen,USHOR
     }                                                              //~2A27I~
     else                                                           //~2A27I~
     {                                                              //~2A27M~
-UTRACEP("%s:strput row=%d,col=%d,style=%d,len=%d\n",UTT,Prow,Pcol,Pstyle,Plen);//~v780I~//~vbzMR~
+UTRACEP("%s:strput optStrput=%02x,row=%d,col=%d,style=%d,attr=%04x,len=%d\n",UTT,PoptStrput,Prow,Pcol,Pstyle,Pattr,Plen);//~v780I~//~vbDpR~
 		if (Pstyle==WXEFONTSTYLE_NOSYNTAX) //not syntax highlight part//~v780R~
         {                                                          //~va74I~
 //  		Ppmemdc->SelectObject(Mpfont);                         //~@@@@R~
@@ -745,6 +788,7 @@ UTRACEP("%s:selectfont syntax=%d font=%p\n",Pstyle,Mpfonts[Pstyle]);//~va74I~//~
                                                                    //~2A27R~
         Ppmemdc->SetTextColor(fgcolor);                            //~2A27R~
         Ppmemdc->SetBkColor(bgcolor);                              //~2A27R~
+        UTRACEP("%s:SetTextColor:%08x\n",UTT,fgcolor);             //~vbDpI~
     }                                                              //~2A27M~
     pdata=(char*)TEXTDATA(Prow,Pcol);                              //~2901R~
     pdbcs=(char*)TEXTDBCS(Prow,Pcol);                              //~2901R~
@@ -767,7 +811,8 @@ UTRACEP("%s:selectfont syntax=%d font=%p\n",Pstyle,Mpfonts[Pstyle]);//~va74I~//~
     opt=CSTOWO_COMBINECHK;                                         //~va30I~
 //  	csubtextoutw(opt,Ppmemdc->m_hDC,xx,yy,pdata,pdbcs,Plen,cellw);//~vb4iR~
 //	csubtextoutw(opt,lineopt,Ppmemdc->m_hDC,xx,yy,pdata,pdbcs,Plen,cellw,fgcolor,bgcolor);//~vb4iR~
-  	csubtextoutw(opt,lineopt,Ppmemdc->m_hDC,xx,yy,pdata,pdbcs,Plen,cellw);//~vb4iI~
+//	csubtextoutw(opt,lineopt,Ppmemdc->m_hDC,xx,yy,pdata,pdbcs,Plen,cellw);//~vbDpR~
+  	csubtextoutw(opt,lineopt,Ppmemdc->m_hDC,xx,yy,pdata,pdbcs,Plen,cellw,opt2);//~vbDpR~
   }                                                                //~va20M~
   else                                                             //~va20M~
 #endif                                                             //~va20M~
@@ -1077,7 +1122,7 @@ int CWxemain::updateFileMenu(int Popt)                             //~vbdnI~
 int wxescr_m2u(int Popt,WXEINTF *Ppwxei,int Prow,int Pcol,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen,WUCS *Ppucs,int Pbuffsz,int *Ppucsctr)//~vbzMR~
 {                                                                  //~vbzMI~
 	int rc,ucsctr;                                                 //~vbzMR~
-    int swlocaleligature=0;                                        //+vbzMR~
+    int swlocaleligature=0;                                        //~vbzMR~
     //*****************                                            //~vbzMI~
 	UTRACEP("%s:opt=0x%02x,row=%d,col=%d,len=%d\n",UTT,Popt,Prow,Pcol,Plen);//~vbzMI~
     UTRACED("data",Ppdata,Plen);                                   //~vbzMI~
@@ -1192,3 +1237,17 @@ int wxescr_u2altch(int Popt,WXEINTF *Ppwxei,int Prow,int Pcol,UCHAR *Ppdata,UCHA
     UTRACED("out ucs",Ppucs,ucsctrT*sizeof(WUCS));                 //~vbzMR~
     return rc;                                                     //~vbzMI~
 }                                                                  //~vbzMI~
+//************************************************************     //~vbDmI~
+int getDbcsSize(char *Ppcd,int Plen)                               //~vbDmI~
+{                                                                  //~vbDmI~
+    int len;                                                       //~vbDmI~
+    if (*Ppcd==UDBCSCHK_DBCS1ST)	//cplc                         //~vbDmI~
+    	len=UDBCSCHK_PCD_MBCHSZ(Ppcd,Plen);    //1 if err          //~vbDmR~
+    else					                                       //~vbDmI~
+	if (UDBCSCHK_DBCS1STUCS2NW(*Ppcd) && Plen>1)                   //~vbDmI~
+    	len=2;                                                     //~vbDmI~
+    else                                                           //~vbDmI~
+    	len=1;                                                     //~vbDmI~
+	UTRACEP("%s:rc=%d,Plen=%d,*Ppcd=%02x\n",UTT,len,Plen,*Ppcd);   //~vbDmR~
+    return len;                                                    //~vbDmI~
+}                                                                  //~vbDmI~

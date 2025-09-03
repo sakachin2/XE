@@ -1,7 +1,9 @@
-//*CID://+vbzMR~:                             update#=  413;       //~vbzMR~
+//*CID://+vbDpR~:                             update#=  418;       //+vbDpR~
 //*********************************************************************//~v440I~
 //* wxe interface definition                                       //~v440I~
 //*********************************************************************//~v440I~
+//vbDp:250726 (WXE)color of combining char split for vhex csr was green.(ignored that xefile23 set)//+vbDpI~
+//vbDg:250706 (wxe)4byte dbcs missing display tab padding          //~vbDgI~
 //vbzM:240408 (WXE) support hardcopy function                      //~vbzMI~
 //vbz4:240120 try vbz3 to WXE                                      //~vbz4I~
 //vbj2:180424 popup menu on cmd history list                       //~vbj2I~
@@ -344,6 +346,7 @@ int wxe_dndcopyfile(int Popt,int Pseq,int Ptot,char *Psource,char *Ptarget);//~v
 	int xxe_chkcsrpos(int Popt,int Prow,int Pcol,int *Ppinfo);     //~va3kI~
 	#define XXECCPO_CSRLINEBREAK	0x01	//should break at csr pos ?//~va3kI~
 	#define XXECCPO_STRCHK      	0x02	//should break at csr pos ?//~va3kI~
+	#define XXECCPO_NOT_RELATIVE    0x04	//for vsplit, col includes left panel width//+vbDpI~
                                                                    //~va3kI~
 	#define XXECCPI_CPU8			0x01	//file at csr is cpu8 file//~va3kI~
 	#define XXECCPI_BIN     		0x02	//file is bin file     //~va3kI~
@@ -354,14 +357,18 @@ int wxe_dndcopyfile(int Popt,int Pseq,int Ptot,char *Psource,char *Ptarget);//~v
 	#define XXECCPI_HDRLINE    		0x80	//top/end/xline        //~va6qI~
 	#define XXECCPI_VHEXCSRPOS  	0x20	//set vhexcsr pos      //~va3tR~
 	#define XXECCPI_VHEXCSRSHIFT	   8	//                     //~va3tR~
-	#define XXECCPI_VHEXCSRMASK   0xff00	//vhexcsr pos          //~va3tR~
+//  #define XXECCPI_VHEXCSRMASK   0xff00	//vhexcsr pos          //+vbDpR~
+    #define XXECCPI_VHEXCSRMASK   0xffff00	//vhexcsr pos  over 256//+vbDpI~
 	#define XXECCPI_GETVHEXCSR(inf) (((inf) & XXECCPI_VHEXCSRMASK)>>XXECCPI_VHEXCSRSHIFT)//~va3tR~
 	int xxe_getlinenofldsz(int Popt,int Prow,int *Poutcols);       //~vb3pR~
 	int wxe_chkUpdateFileMenu(int Popt);                           //~vbdnR~
 	void *wxe_isCHLLine(int Popt);                                 //~vbj2R~
 	int  wxe_CHLcmd(int Popt,int Pcmd);                            //~vbj2R~
 	void wxe_mapinit(void);                                        //~vbz4I~
-                                                                   //~va3DI~
+    //**********************************                           //~vbDgI~
+	int  wxexei_getXeOpt(int Popt);                                //~vbDgR~
+    #define GXEO_TABDISPLAY       1    //tab padding ucs           //~vbDgR~
+    #define GXEO_TABCOLORFG       2    //tab padding fg color      //~vbDgI~
 //*****************************************************************//~v440R~
 #ifdef __cplusplus                                                 //~v440I~
 #else                                                              //~v440I~
@@ -406,12 +413,12 @@ int wxe_dndcopyfile(int Popt,int Pseq,int Ptot,char *Psource,char *Ptarget);//~v
     #define WXEHCO_VSPLIT_RIGHT 0x02                               //~vbzMM~
     #define WXEHCO_HSPLIT_UPPER 0x04                               //~vbzMI~
     #define WXEHCO_VSPLIT_LOWER 0x08                               //~vbzMI~
-    #define WXEHCO_PCW1_FILE    0x10                               //+vbzMI~
-    #define WXEHCO_PCW2_FILE    0x20                               //+vbzMI~
-    #define WXEHCO_FILE1_UTF8   0x40                               //+vbzMI~
-    #define WXEHCO_FILE2_UTF8   0x80                               //+vbzMI~
-    #define WXEHCO_DATALINE   0x0100  //may apply lgature          //+vbzMR~
-    #define WXEHCO_LIGATURE   0x0200                               //+vbzMR~
+    #define WXEHCO_PCW1_FILE    0x10                               //~vbzMI~
+    #define WXEHCO_PCW2_FILE    0x20                               //~vbzMI~
+    #define WXEHCO_FILE1_UTF8   0x40                               //~vbzMI~
+    #define WXEHCO_FILE2_UTF8   0x80                               //~vbzMI~
+    #define WXEHCO_DATALINE   0x0100  //may apply lgature          //~vbzMR~
+    #define WXEHCO_LIGATURE   0x0200                               //~vbzMR~
                                                                    //~vbzMI~
 #ifdef __cplusplus                                                 //~v440I~
 }                                                                  //~v440I~

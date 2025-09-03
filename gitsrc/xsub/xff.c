@@ -1,8 +1,9 @@
-//*CID://+vas3R~:                             update#=  502;       //+vas3R~
+//*CID://+vau1R~:                             update#=  506;       //~vau1R~
 //***********************************************************
 //* xff  : find file by timestamp/size top nn entry
 //***********************************************************
-//vas3:230630 ARM;closeall for arm subthread execution             //+vas3I~
+//vau1:250706 uerrmsg_init missing.(No dbcs errmsg)                //~vau1I~
+//vas3:230630 ARM;closeall for arm subthread execution             //~vas3I~
 //vaa2:160424 Lnx64 compiler warning(FDATE/FTIME)                  //~vaa2I~
 //vaa1:160418 Lnx64 compiler warning                               //~vaa1I~
 //vaa0:160417 Lnx compiler warning                                 //~vaa0I~
@@ -41,7 +42,7 @@
 //020704 xff v111 v1.1 not found msg twice;not found msg for root  //~v111I~
 //xff.c  *v1.1 *020704 v101 (!UNX) "*:"(all drive) support at up#230//~v112R~
 //***********************************************************
-#define VER "V1.8"   //version                                     //~vaa0R~
+#define VER "V1.9"   //version                                     //~vaa0R~//~vau1R~
 #define PGM "xff"
 //**********************************************/
 //*parm  : dir name
@@ -183,6 +184,7 @@ static char  *Sfilemask="";                                        //~v128I~
 	static int  Scdsw=0;                                           //~v129R~
   #endif                                                           //~v125I~
 #endif                                                             //~v116I~
+static	char Spgmver[18];                                          //~vau1I~
 //************************************
 void parmchk(int,char *[]);
 int pstatchk(char *Pdir,char *Pfullpath,UDIRLIST *Ppudirlist,
@@ -229,12 +231,18 @@ int main(int parmc,char *parmp[])
     PUDIRLIST pudirlist;                                           //~v127R~
     UCHAR dirpath[_MAX_PATH];                                      //~v100I~
     UCHAR dirmask[_MAX_PATH];                                      //~v127I~
+    int opt=0;                                                     //~vau1I~
 //**********************************
 #ifdef DPMI                                     //DPMI version
     putenv("LFN=Y");                 //need for ufileisvfat
     ufileisvfat(ISVFAT_FORCE);      //force vfat
 #endif                      //DPMI or not
 //**********************************
+	sprintf(Spgmver,"%s:%s:",PGM,VER);                             //+vau1R~
+	opt=UDCWCIO_INTERNAL;	//bypass UDBCSCHK_EXPLICIT and utfucsmapinit(0);//~vau1I~
+    udbcschk_wcinit(opt,0);                                        //~va6//~vau1I~
+  	uerrmsg_init(Spgmver,stdout,0);//default color                 //~vau1I~
+	uerrexit_init(Spgmver,stdout,0,0,0);//no mapfile,no exit,no exit parm//~vau1I~
     parmchk(parmc,parmp);
     if (Stestsw)                                                   //~v126R~//~va77R~
         ualloc_init(UALLOC_TRACE,"xff.mtr");                       //~v126R~//~va77R~
@@ -359,7 +367,7 @@ int main(int parmc,char *parmp[])
 				Spgm,Sver,OSTYPE,CMDFLAG_PREFIX,Sselparm,Sprintctr,Schkctr);//~v118R~
 	if (Stestsw)                                                   //~v116R~
 	    ualloc_chk(UAC_MSG);                                       //~v116R~
-	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//+vas3I~
+	ARMXSUB_CLOSE(PGM);	//close for Arm subthread execution                                          //~v6B1I~//~vas2I~//~vas3I~
     return max(applrc,totrc);
 }//end main
 //**********************************************************************//~va77I~

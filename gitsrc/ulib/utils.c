@@ -1,7 +1,8 @@
-//*CID://+v711R~:                              update#=  241;      //+v711R~
+//*CID://+vbDdR~:                              update#=  242;      //+vbDdR~
 //*************************************************************
 //*uerrexit/uerrmsg/uerrexit_init/uerrmsg_init                     //~v5nnR~
 //*************************************************************
+//vbDd:250704 compiler err c2059(typedef function). missing *      //+vbDdI~
 //v711:201022 ftime deprecated(ftime is obsoleted POSIX2008)       //~v711I~
 //v6G3:161212 (Win10) missing error.h , use winerror.h             //~v6G3I~
 //v6m2:130725 (BUG)EBC2ASC_IBM(x20) and UCVEXTO_TOUTF8 conflict occured//~v6m2I~
@@ -134,7 +135,8 @@ static char  Stitle1[MAXTITLE]="";
 static int   Sinit2=0;		//init called sw
 static FILE *Shandle2;
 static char  Stitle2[MAXTITLE]="";
-static UEXITFUNC *Sexitfunc;
+//static UEXITFUNC *Sexitfunc;                                     //+vbDdR~
+static UEXITFUNC Sexitfunc;                                        //+vbDdI~
 //static UPOPUPMSG *Supopupmsg;   //upopupmsg func addr            //~v5nxR~
 static void *Sexitparm;
 //static UCHAR Sexitmapfile[_MAX_PATH];                              //~v101R~//~v5nxR~
@@ -231,7 +233,8 @@ void ubell(void)
 	return;
 }
 //******************************************************
-void uerrexit_init(char *Ptitle,FILE *Poutput,char *Pmapfile,UEXITFUNC *Pexitfunc,void *Pexitparm)
+//void uerrexit_init(char *Ptitle,FILE *Poutput,char *Pmapfile,UEXITFUNC *Pexitfunc,void *Pexitparm)//+vbDdR~
+void uerrexit_init(char *Ptitle,FILE *Poutput,char *Pmapfile,UEXITFUNC Pexitfunc,void *Pexitparm)//+vbDdI~
 {
 //****************************
     Sinit1=1;		//init called sw

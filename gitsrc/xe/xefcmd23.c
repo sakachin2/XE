@@ -1,9 +1,10 @@
-//*CID://+vbymR~:                                    update#=  113;//+vbymR~
+//*CID://+vbDvR~:                                    update#=  132;//~vbDvR~
 //*************************************************************
 //*xefcmd23.c
 //*  find sub                                                      //~v635R~
 //****************************************************************
-//vbym:230612 ARM;warning by audroidstudio compiler                //+vbymI~
+//vbDv:250809 find cvmd;not found if lrecl<srch word ucs4 size(3) when search word is \x______ on utf8 file.//~vbDvI~
+//vbym:230612 ARM;warning by audroidstudio compiler                //~vbymI~
 //vb31:160418 (LNX64)Compiler warning                              //~vb31I~
 //vb30:160411 (LNX)Compiler warning                                //~vb30I~
 //vb2I:160308 (BUG)xeutfcvdd2lc parm err at fcmdsetupddsrch        //~vb2fI~
@@ -1632,9 +1633,9 @@ int fcmdddstrcmp(int Popt,PULINEH Pplh1,int Ppos1,PULINEH Pplh2,int Ppos2,int Pl
 int fcmdsearchoncmdbuff(int Popt,UCHAR *Psrch,int Psrchlen,UCHAR **Pplc,UCHAR **Ppct,UCHAR **Ppdbcs)//~va20R~//~va5xR~
 {                                                                  //~va20I~
     char *pc,*pct,*pct0,*pce;                                      //~va20R~
-//  char *pcd;                                                     //~va5kI~//+vbymR~
-//  int offs,lclen,utf8chsz,lcchsz,ch,pos=0;                       //~va20R~//+vbymR~
-    int offs,lclen,utf8chsz,lcchsz,ch;                             //+vbymI~
+//  char *pcd;                                                     //~va5kI~//~vbymR~
+//  int offs,lclen,utf8chsz,lcchsz,ch,pos=0;                       //~va20R~//~vbymR~
+    int offs,lclen,utf8chsz,lcchsz,ch;                             //~vbymI~
     ULONG ucs;                                                     //~va5xI~
 //**************************************************               //~va20I~
 //*search on Gcmdbuff                                              //~va20I~
@@ -1649,7 +1650,7 @@ UTRACED("fcmdsearchcmdbuff searchstr",Psrch,Psrchlen);             //~va20R~
     pce=umemmem(Gcmdbuffu8,Psrch,(unsigned)lclen,(unsigned)Psrchlen);//~vb31I~
     if (!pce)                                                      //~va20I~
     	return 0; //not found                                      //~va20I~
-//  pcd=Gcmdbuffdbcs;                                              //~va5kI~//+vbymR~
+//  pcd=Gcmdbuffdbcs;                                              //~va5kI~//~vbymR~
 //step on codetbl for srch string top                              //~va5xI~
     for (pc=Gcmdbuffu8,pct=Gcmdbuffct;pc<pce;pc+=utf8chsz,pct+=lcchsz)//~va20R~
     {                                                              //~va20I~
@@ -1670,8 +1671,8 @@ UTRACED("fcmdsearchcmdbuff searchstr",Psrch,Psrchlen);             //~va20R~
         	utf8chsz=1;                                            //~va20I~
         	lcchsz=1;                                              //~va20I~
         }                                                          //~va20I~
-//      pos+=lcchsz;                                               //~va20I~//+vbymR~
-//      pcd+=lcchsz;                                               //~va5kI~//+vbymR~
+//      pos+=lcchsz;                                               //~va20I~//~vbymR~
+//      pcd+=lcchsz;                                               //~va5kI~//~vbymR~
     }                                                              //~va20I~
 //step on codetbl for srch string end                              //~va5xI~
 //  offs=(int)((ULONG)pct-(ULONG)Gcmdbuffct);                      //~va20R~//~vafkR~
@@ -1696,8 +1697,8 @@ UTRACED("fcmdsearchcmdbuff searchstr",Psrch,Psrchlen);             //~va20R~
         	utf8chsz=1;                                            //~va20I~
         	lcchsz=1;                                              //~va20I~
         }                                                          //~va20I~
-//      pos+=lcchsz;                                               //~va20I~//+vbymR~
-//      pcd+=lcchsz;                                               //~va5kI~//+vbymR~
+//      pos+=lcchsz;                                               //~va20I~//~vbymR~
+//      pcd+=lcchsz;                                               //~va5kI~//~vbymR~
     }                                                              //~va20I~
 //  lclen=(int)((ULONG)pct-(ULONG)pct0);                           //~va20I~//~vafkR~
     lclen=(int)((ULPTR)pct-(ULPTR)pct0);                           //~vafkI~
@@ -2081,6 +2082,96 @@ UTRACED("fcmdsetupddsrch out dbcs",pdddbcs,len);                   //~va20R~
 UTRACEP("fcmdsetupddsrch out handle=%d\n",*phandle);               //~va79I~
     return 1;                                                      //~va20I~
 }//*fcmdsetupddsrch                                                //~va20I~
+//**************************************************               //~vbDvI~
+//ucs2-->ddstr                                                     //~vbDvI~
+//rc ucs len:1-3,err len;0/-1                                      //~vbDvR~
+//**************************************************               //~vbDvI~
+int fcmdEscU2DD(int Popt,UCHAR *Pesc,int Pesclen,UCHAR *Ppdd,UCHAR *Ppdbcs,int *Ppddlen)//~vbDvI~
+{                                                                  //~vbDvI~
+    UCHAR wkucs[4];                                                //~vbDvI~
+    int rc=0,ucs,ddlen;                                            //~vbDvI~
+//**************************************************               //~vbDvI~
+    UTRACED("Pesc",Pesc,Pesclen);                                  //~vbDvI~
+    memset(wkucs,0,sizeof(wkucs));                                 //~vbDvI~
+    if (Pesclen>=4)                                                //~vbDvI~
+        return -1;                                                 //~vbDvI~
+    switch (Pesclen)                                               //~vbDvI~
+    {                                                              //~vbDvI~
+    case 1:                                                        //~vbDvI~
+        wkucs[3]=Pesc[0];                                          //~vbDvI~
+        rc=1;                                                      //~vbDvI~
+        break;                                                     //~vbDvI~
+    case 2:                                                        //~vbDvI~
+        wkucs[2]=Pesc[0];                                          //~vbDvI~
+        wkucs[3]=Pesc[1];                                          //~vbDvI~
+        rc=2;                                                      //~vbDvI~
+        break;                                                     //~vbDvI~
+    case 3:                                                        //~vbDvI~
+        wkucs[1]=Pesc[0];                                          //~vbDvI~
+        wkucs[2]=Pesc[1];                                          //~vbDvI~
+        wkucs[3]=Pesc[2];                                          //~vbDvI~
+        rc=3;                                                      //~vbDvI~
+        break;                                                     //~vbDvI~
+    }                                                              //~vbDvI~
+    if (rc) //1-3                                                  //~vbDvI~
+    {                                                              //~vbDvI~
+        ucs=UBESTR2UL4(wkucs);                                     //~vbDvI~
+        UTF_U2DD1(ucs,Ppdd,Ppdbcs,&ddlen);                         //~vbDvI~
+        UTRACEP("%s:ucs=%06x,dd=%02x%02x,dbcs=%02x%02x\n",UTT,ucs);//~vbDvR~
+        *Ppddlen=ddlen;                                            //~vbDvI~
+    }                                                              //~vbDvI~
+    UTRACEP("%s:rc=%d\n",UTT,rc);                                  //~vbDvR~
+    return rc;                                                     //~vbDvI~
+}                                                                  //~vbDvI~
+//**************************************************               //~vbDvI~
+//!setup ddstring to search in utf8file by ucs by esc string(\x____)//~vbDvI~
+//*for repword, fcmdcvesc2dd setup (Grepworddd,Grepworddbcs,Grepwordlendd)//~vbDvI~
+//**************************************************               //~vbDvI~
+int fcmdsetupddsrchUCS(int Popt)                                   //~vbDvR~
+{                                                                  //~vbDvI~
+    int ddlen,rc=0,rc2;                                            //~vbDvI~
+    UCHAR wkdd[4],wkdbcs[4];                                       //~vbDvI~
+//**************************************************               //~vbDvI~
+    UTRACEP("%s:Sescsrchlen=%d,Sescsrchlen2=%d\n",UTT,Sescsrchlen,Sescsrchlen2);//~vbDvI~
+    GescsrchDDlen=0;                                               //~vbDvR~
+    Gescsrch2DDlen=0;                                              //~vbDvR~
+    if (Sescsrchlen2)                                              //~vbDvR~
+    {                                                              //~vbDvI~
+		UTRACED("Sescsrchchar2",Sescsrchchar2,Sescsrchlen2);       //~vbDvI~
+		rc2=fcmdEscU2DD(0,Sescsrchchar2,Sescsrchlen2,wkdd,wkdbcs,&ddlen);//~vbDvI~
+		if (rc2>0)//UCS TYPE 1-3                                   //~vbDvR~
+        {                                                          //~vbDvI~
+    		memcpy(Gescsrchchar2DD,wkdd,(UINT)ddlen);              //~vbDvR~
+    		memcpy(Gescsrchchar2DDdbcs,wkdbcs,(UINT)ddlen);        //~vbDvR~
+    		Gescsrch2DDlen=ddlen;                                  //~vbDvR~
+			UTRACED("Gescsrch2DD",Gescsrchchar2DD,ddlen);          //~vbDvR~
+			UTRACED("Gescsrch2DDdbcs",Gescsrchchar2DDdbcs,ddlen);  //~vbDvR~
+        }                                                          //~vbDvI~
+        else                                                       //~vbDvI~
+        	rc=4;                                                  //~vbDvI~
+    }                                                              //~vbDvI~
+    if (Sescsrchlen)                                               //~vbDvR~
+    {                                                              //~vbDvI~
+		UTRACED("Sescsrchchar",Sescsrchchar,Sescsrchlen);          //~vbDvI~
+        rc2=fcmdEscU2DD(0,Sescsrchchar,Sescsrchlen,wkdd,wkdbcs,&ddlen);//~vbDvI~
+        if (rc2>0)//UCS TYPE 1-3                                   //~vbDvR~
+        {                                                          //~vbDvR~
+            memcpy(GescsrchcharDD,wkdd,(UINT)ddlen);               //~vbDvR~
+            memcpy(GescsrchcharDDdbcs,wkdbcs,(UINT)ddlen);         //~vbDvR~
+            GescsrchDDlen=ddlen;                                   //~vbDvR~
+            UTRACED("GescsrchDD",GescsrchcharDD,ddlen);            //~vbDvR~
+            UTRACED("GescsrchDbcs",GescsrchcharDDdbcs,ddlen);      //~vbDvR~
+        }                                                          //~vbDvR~
+        else                                                       //~vbDvR~
+            rc=4;                                                  //~vbDvR~
+    }                                                              //~vbDvI~
+    if (rc==4)                                                     //~vbDvI~
+    {                                                              //~vbDvI~
+    	uerrmsg("search on utf8 file, \\x notation have to be single unicode.",//~vbDvR~
+        		"utf8 ファイル上での \\x 指定は単一ユニコード指定のみです");//~vbDvR~
+    }                                                              //~vbDvI~
+    return rc;                                                     //~vbDvI~
+}//*fcmdsetupddsrchUcs                                             //~vbDvI~
 //**************************************************               //~va20I~
 //!setup ddstring to search in utf8file                            //~va20I~
 //*ret  :ddstr len,0 if not utf8 file                              //~va20R~
@@ -2280,6 +2371,7 @@ int fcmdcvesc2dd(int Popt,UCHAR *Pescchar,int Plen,UCHAR *Pescdd,UCHAR *Pescdbcs
     WUCS ucs;                                                      //~va20M~
 #endif                                                             //~vaw4I~
 //*********************************                                //~va20M~
+    UTRACED("Pescchar",Pescchar,Plen);                             //~vbDvI~
 	if (Plen==1)	//\a,\b etc.                                   //~va20M~
     {                                                              //~va20M~
     	*Pescdd=*Pescchar;                                         //~va20M~
@@ -2344,6 +2436,7 @@ int fcmdcvesc2dd(int Popt,UCHAR *Pescchar,int Plen,UCHAR *Pescdd,UCHAR *Pescdbcs
         ddlen=PTRDIFF(pco,Pescdd);                                 //~vb2FR~
     }                                                              //~va20M~
     *Pescddlen=ddlen;                                              //~va20M~
+    UTRACEP("%s:ddlen=%d\n",UTT,ddlen);                            //~vbDvR~
     return 0;                                                      //~va20M~
 }//fcmdcvesc2dd                                                    //~va20M~
 //**************************************************               //~va20M~

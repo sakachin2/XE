@@ -1,5 +1,6 @@
-//*CID://+vbzMR~:                             update#=  271;       //~vbzMR~
+//*CID://+vbDpR~:                             update#=  275;       //~vbDpR~
 //================================================================================//~v510I~
+//vbDp:250726 (WXE)color of combining char split for vhex csr was green.(ignored that xefile23 set)//~vbDpI~
 //vbzM:240408 (WXE) support hardcopy function                      //~vbzMI~
 //vbt1:201210 WXE:when kbd changed to 2nd language DBCS chk should be changed//~vbt1I~
 //vbj4:180425 click on selected line cmd history list-->"s"(set on under)//~vbj4I~
@@ -410,11 +411,14 @@ private :                                                          //~2816I~
 	#define LPO_CSRBREAK     0x01	//strput split at csr pos      //~va3gI~
 	#define LPO_CPU8         0x02	//csr is on CPU8 text          //~va3gI~
 	#define LPO_VHEX         0x04	//data line of vhex line       //~va3tI~
-	#define LPO_VHEXMASK   0xff00 	                               //~va3tI~
+//  #define LPO_VHEXMASK   0xff00 	                               //+vbDpR~
+    #define LPO_VHEXMASK   0xffff00       //over 256               //+vbDpI~
 	#define LPO_VHEXSHIFT       8                                  //~va3tI~
 	#define LPO_GETVHEXPOS(opt) (((opt) & LPO_VHEXMASK)>>LPO_VHEXSHIFT)//~va3tI~
 //  int  strput(CDC *Ppmemdc,int Pprintsw,int Prow,int Pcol,int Plen,USHORT Pattr,int Pcapsw);//~v780R~
-	int  strput(CDC *Ppmemdc,int Pprintsw,int Prow,int Pcol,int Plen,USHORT Pattr,int Pstyle,int Pcapsw);//~v780I~
+//  int  strput(CDC *Ppmemdc,int Pprintsw,int Prow,int Pcol,int Plen,USHORT Pattr,int Pstyle,int Pcapsw);//~vbDpR~
+    int  strput(int PstrputOpt,CDC *Ppmemdc,int Pprintsw,int Prow,int Pcol,int Plen,USHORT Pattr,int Pstyle,int Pcapsw);//~vbDpI~
+#define STPO_CSRPOS      0x01                                      //~vbDpI~
 #ifdef UTF8UCS2                                                    //~va20I~
 	#define  SPO_PRINT         0x01       //printsw                //~va20I~
 	#define  SPO_DDFMT         0x02       //data/dbcs              //~va20I~
