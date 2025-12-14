@@ -1,6 +1,16 @@
-//*CID://+v7eAR~:                            update#= 2826;        //+v7eAR~
+//*CID://+v7fsR~:                            update#= 2939;        //+v7fsR~
 //*************************************************************    //~v6VdR~
-//v7eA:250825 TRACE crash by null parm(TAB on cmd)                 //+v7eAI~
+//v7fs:251203 (WINCON)del v7fs; it show "=" for format even when combine mode//+v7fsI~
+//v7fr:251203 (WINCON)If hcopy contains Format 202e(RtoL),202b(LtoR), remaining string shifts to right.//~v7frI~
+//            exclude Format(except ZWJ) from getcombinctr         //~v7frI~
+//v7fp:251129 (WINCON)combine mode on WindowsTerminal              //~v7fpI~
+//v7fo:251126 (WINCON:BUG)when combinemode, spce line displayed before notcombineble+combining(revailed by v7fn)//~v7foI~
+//v7fm:251119 (WINCON)on WindowsTerminal, combining char is show doubled. try clrarline like as nocombine//~v7fmI~
+//v7fk:251118 (WINCON)on WindowsTerminal, combining char is show doubled. try to write space after it.//~v7fkI~
+//v7fj:251116 (WINCON:bug)(ligOff)unicomb=comb; not green when csr is on combining char//~v7fjI~
+//v7fi:251114 (WINCON:bug)(ligOff)unicomb=comb; dupricate write combining char. It cause on VT,display 4 combining char//~v7fiI~
+//v7f8:251106 show not comb-unp(:) but altch(=/+/-) for w0-format when unicomb=UNP//~v7f8I~
+//v7eA:250825 TRACE crash by null parm(TAB on cmd)                 //~v7eAI~
 //v7ep:250802 v7ej for SCM(attr of data pos by vhex csr)           //~v7epI~
 //v7ek:250724 (Bug:WINCON) Noligature+Comninemode;when vsplit screen line disappear on the left panel.//~v7ekI~
 //v7ej:250722 (WINCON) attr of data line pos by vhex cursor. f23 set white but W0W reset to green//~v7ejI~
@@ -332,9 +342,16 @@ int uviom_iscombining(int Popt,chtype *Ppcht,UCHAR *Ppdbcs,int Plen,WUCS *Ppucs4
 #else //W32                                                        //~v6VgI~
 int uviom_ISUCSWIDTH0W(int Popt,WUCS *Ppucs,UCHAR *Ppdbcs,int Plen);//~v6VgI~
 int uviom_iscombining(int Popt,WUCS *Ppucs,UCHAR *Ppdbcs,int Plen,int *Ppucs4,int *Ppchsz);//~v6WuI~
+#define UVIOMICO_NOFMT 0x01   //exclude format                     //~v7frI~
 int uviom_wrtW0W(int Popt,WUCS *Ppucs,USHORT *Ppattr,int Plen,COORD Ptgtpos,int *Ppwritelen);//~v6VgR~
 int uviom_wrtSCMW(int Popt,int Pprevucs,int Pidx,int Pucs4,WUCS *Ppucs,USHORT *Ppattr,COORD Ptgtpos);//~v6WuI~
 int uviowrtcellW1_cpu8file_NoLigatureCombinedString(int Popt,WUCS *Ppucs,int Pucsctr,USHORT *Ppattr,SMALL_RECT *Ptgtrect);//~v6VgI~
+	#ifndef FFF                                                    //~v7frI~
+		#ifndef WXE                                                //~v7frI~
+			int uvio_getcombinectr(int Popt,WUCS *Ppucs,int Pchwidth,UCHAR *Ppdbcs,int Plen,int *Ppstrucsctr,int *Ppstrwidth);//~v7frI~
+            #define GCCO_NOFMT    0x01  //exclude format except ZWJ(200d)//~v7frI~
+		#endif                                                     //~v7frI~
+	#endif                                                         //~v7frI~
 #endif                                                             //~v6V5I~
 //*********************************************************************//~v5n8I~
 //* get scr info                                                   //~v5n8I~
@@ -359,6 +376,7 @@ void uviom_init(int Popt,ULPTR Phconout,int Pscrwidth,int Pscrsize,int Ptoplineo
 #ifdef W32                                                         //~v5n8I~
     Shconout=(HANDLE)Phconout;                                     //~v5n8R~
     Stoplineoffs=Ptoplineoffs;                                     //~v5n8M~
+    UTRACEP("%s:Stoplineoffs=%d\n",UTT,Stoplineoffs);              //~v7f8I~
 #else                                                              //~v5n8I~
   #ifndef XXE                                                      //~v5n8R~
     pver=curses_version();  //"ncurses 5.5.20051010"               //~v656R~
@@ -404,10 +422,10 @@ int uviom_setopt2(int Popt,unsigned char *Ppdispch)                //~v652I~
 {                                                                  //~v62UR~
     int ch,altch;                                                  //~v65pI~
 //*************************                                        //~v62UR~
-	UTRACEP("%s:opt=%04x,dispch=%p\n",UTT,Popt,Ppdispch);          //+v7eAR~
+	UTRACEP("%s:opt=%04x,dispch=%p\n",UTT,Popt,Ppdispch);          //~v7eAR~
 	if (Popt & UVIOMO2_NOTIFY_DBCSSPACEALT) // 0x0100 //dbcsspacealt was changed//~v6FcI~
     {                                                              //~v6FcI~
-		UTRACEP("%s:dispch=%02x\n",UTT,*Ppdispch);                 //+v7eAI~
+		UTRACEP("%s:dispch=%02x\n",UTT,*Ppdispch);                 //~v7eAI~
     	ch=*Ppdispch;                                              //~v6FcI~
 		Guviomoptstr[3]=(UCHAR)ch;		//padd alt ch              //~v6FcR~
     	if (ch==DEFAULT_ALTCH)                                     //~v6FcI~
@@ -668,7 +686,7 @@ int uvioWriteConsoleOutputW(HANDLE Phandle,PCHAR_INFO Ppchi,COORD Psrcbox,COORD 
                             Psrcbox,                               //~v656I~
                             Psrcpos,                               //~v656I~
                             Ptgtrect);      //target rectangle     //~v656I~
-    UTRACEP("WriteConsoleOutputW rc=%d,written Top=%d,left=%d,bottom=%d,right=%d\n",rc,Ptgtrect->Top,Ptgtrect->Left,Ptgtrect->Bottom,Ptgtrect->Right);//~v656I~//~v6BXR~
+    UTRACEP("%s:WriteConsoleOutputW rc=%d,written Top=%d,left=%d,bottom=%d,right=%d\n",UTT,rc,Ptgtrect->Top,Ptgtrect->Left,Ptgtrect->Bottom,Ptgtrect->Right);//~v656I~//~v7fmR~
     if (!rc)                                                       //~v656R~
         uerrapi0("WriteConsoleOutputW",GetLastError());            //~v656I~
     return rc;                                                     //~v656I~
@@ -872,7 +890,8 @@ int uvioWriteConsoleOutputCharacterWwithAttr(int Popt,WUCS *Ppucs,int Pucsctr,CO
     UTRACED("Pattr",Pattr,Pattrlen*(int)sizeof(USHORT));           //~v6T5I~
     rc=uvioWriteConsoleOutputCharacterW(Shconout,Ppucs,Pucsctr,Ptgtpos,Ppwritelen); //len written//~v6T5I~
     rc+=WriteConsoleOutputAttribute(Shconout,Pattr,Pattrlen,Ptgtpos,Ppwritelen)==0;			//writelen//~v6T5R~
-    UTRACEP("%s:DBCS OutputCharcterW rc=%d\n",UTT,rc);             //~v6T5I~
+    UTRACEP("%s:WriteConsoleOutputAttribute rc=%d,len=%d,pos=X=%d,Y=%d\n",UTT,rc,Pattrlen,(int)Ptgtpos.X,(int)Ptgtpos.Y);//~v7fkR~
+    UTRACED("WriteConsoleOutputAttribute",Pattr,Pattrlen*sizeof(USHORT));//~v7fkI~
     return rc;                                                     //~v6T5I~
 }//uvioWriteConsoleOutputCharacterWwithAttr                        //~v6T5I~
 //*****************************************************************//~v6F7R~
@@ -894,7 +913,8 @@ int uvioWriteConsoleOutputCharacterW1withAttr1(int Popt,HANDLE Phandle,WUCS *Ppu
   {                                                                //~v6FaI~
     rc=uvioWriteConsoleOutputCharacterW(Shconout,Ppucs,Pucsctr,Ptgtpos,Ppwritelen); //len written//~v6FaI~
     rc+=WriteConsoleOutputAttribute(Shconout,Pattr,Pchwidth,Ptgtpos,Ppwritelen)==0;			//writelen//~v6T5I~
-    UTRACEP("%s:DBCS OutputCharcterW rc=%d\n",UTT,rc);             //~v6FaI~
+    UTRACEP("%s:WriteConsoleOutputAttribute rc=%d,len=%d,pos=X=%d,Y=%d\n",UTT,rc,Pchwidth,(int)Ptgtpos.X,(int)Ptgtpos.Y);//~v7fkR~
+    UTRACED("WriteConsoleOutputAttribute",Pattr,Pchwidth*sizeof(USHORT));//~v7fkI~
   }                                                                //~v6FaI~
   else                                                             //~v6FaI~
   {                                                                //~v6FaI~
@@ -942,8 +962,6 @@ int uvioWriteConsoleOutputCharacterW(HANDLE Phandle,PWUCS Ppucs,int Plen,COORD P
 //        UTRACED("Ppucs",Ppucs,ctr2szW(Plen));                    //~v7acR~
 //    }                                                            //~v7acR~
 //#endif                                                           //~v7acR~
-    UTRACEP("%s:posx=%d,posy=%d,ucs[0]=%04x\n",UTT,Ptgtpos.X,Ptgtpos.Y,*Ppucs);//~vbzJR~
-    UTRACED("Ppucs",Ppucs,ctr2szW(Plen));                          //~v6D6R~//~vbzJM~
     rc=WriteConsoleOutputCharacterW(Phandle,                       //~v656I~
                                     	Ppucs,                     //~v656R~
 //                                  	Plen,    //charcnt         //~v656I~//~v6hdR~
@@ -951,6 +969,8 @@ int uvioWriteConsoleOutputCharacterW(HANDLE Phandle,PWUCS Ppucs,int Plen,COORD P
                                     	Ptgtpos, //pos write into  //~v656I~
 //                                  	Ppwritelen);//len written  //~v656R~//~v6hdR~
                                     	&dwlen);//len written      //~v6hdI~
+    UTRACEP("%s:WriteConsoleOutputCharacterW len=%d,posx=%d,posy=%d,ucs[0]=%04x\n",UTT,Plen,Ptgtpos.X,Ptgtpos.Y,*Ppucs);//~v7fkR~
+    UTRACED("WriteConsoleOutputCharacterW Ppucs",Ppucs,ctr2szW(Plen));                          //~v6D6R~//~v7fkM~
     if (!rc)                                                       //~v656I~
     	uerrapi0("WriteConsoleOutputCharacterW",GetLastError());   //~v656I~
 //#ifndef TEST2                                                    //~v7acR~
@@ -983,6 +1003,7 @@ int uvioFillConsoleOutputCharacter(HANDLE Phandle,UCHAR Pchar,int Plen,COORD Ptg
                                     &dwlen);//len written          //~v6hdI~
     if (!rc)  //false                                              //~v656I~
         uerrapi0("FillConsoleOutputCharacter",GetLastError());     //~v656I~
+    UTRACEP("%s:FillConsoleOutputCharacter char=%02x,rc=%d,len=%d,posX=%d,posY=%d\n",UTT,Pchar,rc,Plen,(int)Ptgtpos.X,(int)Ptgtpos.Y);//~v7fkR~
     *Ppwritelen=dwlen;                                             //~v6hdI~
     return rc;                                                     //~v656I~
 }//uvioFillConsoleOutputCharacter                                  //~v656I~
@@ -1002,6 +1023,7 @@ int uvioFillConsoleOutputCharacterW(HANDLE Phandle,WUCS Pchar,int Plen,COORD Ptg
                                     Ptgtpos,     //upper left pos in source buff//~v656I~
 //                                  Ppwritelen);      //source rectangle//~v656I~//~v6hdR~
                                     &dwlen);      //source rectangle//~v6hdI~
+    UTRACEP("%s:FillConsoleOutputCharacterW ucs=%04x,rc=%d,len=%d,posX=%d,posY=%d\n",UTT,Pchar,rc,Plen,(int)Ptgtpos.X,(int)Ptgtpos.Y);//~v7fkR~
     if (!rc)  //false                                              //~v656R~
         uerrapi0("FillConsoleOutputCharacterW",GetLastError());    //~v656I~
     *Ppwritelen=dwlen;                                             //~v6hdI~
@@ -1181,13 +1203,15 @@ int uviom_clearlineW(int Popt,PCHAR_INFO Ppchi,USHORT *Ppattr,int Plen,COORD Ptg
     {                                                              //~v659I~
 //  	rc2=WriteConsoleOutputAttribute(Shconout,Ppattr,Plen,Ptgtpos,&writelen)==0;			//writelen//~v659I~//~v6hdR~
     	rc2=WriteConsoleOutputAttribute(Shconout,Ppattr,(DWORD)Plen,Ptgtpos,&dwlen)==0;			//writelen//~v6hdI~
+	    UTRACEP("%s:WriteConsoleOutputAttribute rc=%d,len=%d,pos=X=%d,Y=%d\n",UTT,rc,Plen,(int)Ptgtpos.X,(int)Ptgtpos.Y);//~v7fkR~
+    	UTRACED("WriteConsoleOutputAttribute",Ppattr,Plen*sizeof(USHORT));//~v7fkR~
         writelen=(int)dwlen;                                       //~v6hdI~
         if (rc2)                                                   //~v659I~
         {                                                          //~v659I~
             uerrapi0("clearline WriteConsoleOutputAttribute",GetLastError());//~v659I~
             rc++;                                                  //~v659I~
         }                                                          //~v659I~
-        UTRACEP("clearline writeattr rc2=%d,row=%d,col=%d,Plen=%d,writelen=%d\n",rc2,Ptgtpos.Y,Ptgtpos.X,Plen,writelen);//~v659R~
+        UTRACEP("%s:writeattr rc2=%d,*attr=%02x,row=%d,col=%d,Plen=%d,writelen=%d\n",UTT,rc2,*Ppattr,Ptgtpos.Y,Ptgtpos.X,Plen,writelen);//~v7fkR~
         UTRACED("clearline writeattr",Ppattr,Plen*sizeof(USHORT)); //~v65aR~
     }                                                              //~v659I~
 	if (Popt & UVIOMCLO_ATTRFILL)                                  //~v65aI~
@@ -1200,14 +1224,61 @@ int uviom_clearlineW(int Popt,PCHAR_INFO Ppchi,USHORT *Ppattr,int Plen,COORD Ptg
             uerrapi0("clear line FillConsoleOutputAttribute",GetLastError());//~v65aI~
             rc++;                                                  //~v65aI~
         }                                                          //~v65aI~
-        UTRACEP("clearline fillattr rc=%d,attr=%x,Plen=%d,writelen=%d\n",rc2,*Ppattr,Plen,writelen);//~v65aR~
+        UTRACEP("%s:fillattr rc=%d,attr=%02x,pos=%d,len=%d,writelen=%d\n",UTT,rc2,*Ppattr,(int)Ptgtpos.X,Plen,writelen);//~v7fkR~
     }                                                              //~v65aI~
 	rc2=uvioFillConsoleOutputCharacterW(Shconout,wucsspace,Plen,Ptgtpos,&writelen)==0;//~v659I~
     if (rc2)                                                       //~v659I~
         rc++;                                                      //~v659I~
-    UTRACEP("clearline fillspace rc2=%d,row=%d,col=%d,Plen=%d,writelen=%d\n",rc2,Ptgtpos.Y,Ptgtpos.X,Plen,writelen);//~v659R~
+    UTRACEP("%s:FillConsoleOutputChar ch=%02x,opt=%02x,rc2=%d,row=%d,col=%d,Plen=%d,writelen=%d\n",UTT,wucsspace,Popt,rc2,Ptgtpos.Y,Ptgtpos.X,Plen,writelen);//~v7fkR~
     return rc;                                                     //~v659I~
 }//uviom_clearlineW                                                //~v659I~
+#ifndef EEE                                                        //~v7fpI~
+int uviom_clearlineW2(int Popt,PCHAR_INFO Ppchi,USHORT *Ppattr,int Plen,COORD Ptgtpos)//~v7fpI~
+{                                                                  //~v7fpI~
+//#define ATTR_PADDING_WINCON   BACKGROUND_INTENSITY     //0x0080 // background color is intensified.//~v7fpR~
+#define ATTR_PADDING_WINCON   COMMON_LVB_UNDERSCORE    //0x8000 // DBCS: Underscore.//~v7fpR~
+    WUCS wucsspace=' ';                                            //~v7fpI~
+    int rc=0,rc2,writelen;                                         //~v7fpI~
+    DWORD dwlen;                                                   //~v7fpI~
+    USHORT attr;                                                   //~v7fpR~
+    USHORT wkAttrPadding[UVIOM_MAXCOL];                            //~v7fpI~
+//********************************                                 //~v7fpI~
+    UTRACEP("%s:writeattr opt=%02x,*attr=%02x,row=%d,col=%d,Plen=%d\n",UTT,Popt,*Ppattr,Ptgtpos.Y,Ptgtpos.X,Plen);//~v7fpI~
+	if (Popt & UVIOMCLO_ATTRSTR)                                   //~v7fpI~
+    {                                                              //~v7fpI~
+    	UTRACED("WriteConsoleOutputAttribute",Ppattr,Plen*sizeof(USHORT));//~v7fpR~
+        for (int ii=0;ii<Plen;ii++)                                //~v7fpI~
+        	wkAttrPadding[ii]=Ppattr[ii]|ATTR_PADDING_WINCON;      //~v7fpR~
+    	UTRACED("WriteConsoleOutputAttribute",wkAttrPadding,Plen*sizeof(USHORT));//~v7fpI~
+    	rc2=WriteConsoleOutputAttribute(Shconout,wkAttrPadding,(DWORD)Plen,Ptgtpos,&dwlen)==0;			//writelen//~v7fpI~
+        writelen=(int)dwlen;                                       //~v7fpI~
+        if (rc2)                                                   //~v7fpI~
+        {                                                          //~v7fpI~
+            uerrapi0("clearline WriteConsoleOutputAttribute",GetLastError());//~v7fpI~
+            rc++;                                                  //~v7fpI~
+        }                                                          //~v7fpI~
+        UTRACEP("%s:ATTRSTR rc=%d,writelen=%d\n",UTT,rc2,writelen);//~v7fpI~
+    }                                                              //~v7fpI~
+	if (Popt & UVIOMCLO_ATTRFILL)                                  //~v7fpI~
+    {                                                              //~v7fpI~
+    	attr=*Ppattr;                                              //~v7fpR~
+        attr|=ATTR_PADDING_WINCON;                                 //~v7fpI~
+        rc2=FillConsoleOutputAttribute(Shconout,attr,(DWORD)Plen,Ptgtpos,&dwlen)==0;     //clear also attr(else remains previous attr after this times 0x1b)//~v7fpR~
+        writelen=(int)dwlen;                                       //~v7fpI~
+        if (rc2)                                                   //~v7fpI~
+        {                                                          //~v7fpI~
+            uerrapi0("clear line FillConsoleOutputAttribute",GetLastError());//~v7fpI~
+            rc++;                                                  //~v7fpI~
+        }                                                          //~v7fpI~
+        UTRACEP("%s:fillattr rc=%d,writelen=%d\n",UTT,rc2,writelen);//~v7fpI~
+    }                                                              //~v7fpI~
+	rc2=uvioFillConsoleOutputCharacterW(Shconout,wucsspace,Plen,Ptgtpos,&writelen)==0;//~v7fpI~
+    if (rc2)                                                       //~v7fpI~
+        rc++;                                                      //~v7fpI~
+    UTRACEP("%s:FillConsoleOutputChar ch=%02x,opt=%02x,rc2=%d,row=%d,col=%d,Plen=%d,writelen=%d\n",UTT,wucsspace,Popt,rc2,Ptgtpos.Y,Ptgtpos.X,Plen,writelen);//~v7fpI~
+    return rc;                                                     //~v7fpI~
+}//uviom_clearlineW                                                //~v7fpI~
+#endif                                                             //~v7fpI~
 //#else   //!BBB                                                   //~v6C8R~
 //int uviom_clearlineW(int Popt,PCHAR_INFO Ppchi,USHORT *Ppattr,int Plen,COORD Ptgtpos)//~v6C8R~
 //{                                                                //~v6C8R~
@@ -2139,6 +2210,7 @@ UTRACEP("%s:Shconout=%p\n",UTT,Shconout);                          //~v700I~
 				utfddgetcsrposbca(0,Ppdbcs-tgtpos.X,Plen+tgtpos.X,Svhexcsrposx,&posbvhex,&poscvhex,0/*after*/);//~v7ejI~
 		        Sposcvhex=poscvhex;                                //~v7ejI~
     		}                                                      //~v7ejI~
+            UTRACEP("%s:Gulibutfmode=%08x\n",UTT,Gulibutfmode);    //~v7f8I~
 		if (COMBINEMODE(Popt))  //combine                          //~v6G0I~
 			rc=uviowrtcellW1_cpu8file_NoLigatureCombine(Popt,pucs0,ucsctr,pdata0,Ppdbcs,pattr0,Plen,Ptgtrect);//~v6G0R~
         else                                                       //~v6G0I~
@@ -2663,8 +2735,8 @@ UINT uviowrtucsstr(WUCS *Ppucs,int Plen,int Prow,int Pcol)         //~v5n8R~
         rc=GetLastError();                                         //~v5n8I~
         uerrapi0("WriteConsoleOutputCharacterW-uviowrtucsstr",rc); //~v5n8R~
     }                                                              //~v5n8I~
-//UTRACEP("uviowrtucsstr  rc=%d,pos x=%d,y=%d\n",rc,coord.X,coord.Y);//~v5n8R~//~v6h7R~
-UTRACED("uviowrtucsstr WriteConsoleOutputCharacterW",Ppucs,Plen*2);//~v5n8R~
+    UTRACEP("%s:WriteConsoleOutputCharacterW len=%d,posx=%d,posy=%d\n",UTT,Plen,coord.X,coord.Y);//~v7fkR~
+    UTRACED("WriteConsoleOutputCharacterW Ppucs",Ppucs,ctr2szW(Plen));//~v7fkI~
     return rc;                                                     //~v5n8M~
 }//uviowrtucsstr                                                   //~v5n8R~
 #ifdef UTF8UCS2 //uvio_m2u not used                                //~v640I~
@@ -2973,6 +3045,20 @@ int uvio_getcombinectr(int Popt,WUCS *Ppucs,int Pchwidth,UCHAR *Ppdbcs,int Plen,
         {                                                          //~v6VgI~
 UTRACEP("%s: chk dbcs=%x\n",UTT,*pcd);                             //~v6VgI~
 //          swcombine=uviom_ISUCSWIDTH0W(0,pucs,pcd,Plen-ii);	//acceptable combine//~v6VgI~//~v6X1R~
+//#ifndef FFF                                                      //+v7fsR~
+#ifdef FFF                                                         //~v7frI~
+          if (Popt & GCCO_NOFMT)//  0x01  //exclude format except ZWJ(200d)//~v7frR~
+          {                                                        //~v7frI~
+          	if (*pucs==ZWJ) //u-200d                               //~v7frI~
+            	swcombine=1;                                       //~v7frI~
+            else                                                   //~v7frI~
+            {                                                      //~v7frI~
+            	int optic=UVIOMICO_NOFMT;// 0x01   //exclude format//~v7frI~
+	            swcombine=uviom_iscombining(optic,pucs,pcd,Plen-ii,0/*Ppucs4*/,&chsz);//~v7frI~
+            }                                                      //~v7frI~
+          }                                                        //~v7frI~
+          else                                                     //~v7frI~
+#endif                                                             //~v7frI~
             swcombine=uviom_iscombining(0,pucs,pcd,Plen-ii,0/*Ppucs4*/,&chsz);//~v6X1R~
             if (!swcombine)   //acceptable combine                 //~v6VgI~
                 break;                                             //~v6VgI~
@@ -3431,7 +3517,7 @@ int uvio_getbufflineopt(int Popt,int Prow,int Plineopt,int Pcol)   //~v6EpI~
     }                                                              //~v6EpI~
 #endif //WXE                                                       //~v6EpI~
     opt=Gw95buffopt[pos] & UVIOO_MASK;                             //~v6EpI~
-    UTRACEP("%s:Popt=%04x,Prow=%d,Pcol=%d,Plineopt=%04x,rrow=%d,pos=%d,rc:opt=%04x,v2nd=%d\n",UTT,Popt,Prow,Pcol,Plineopt,row,pos,opt,swv2nd);//~v6EqR~
+    UTRACEP("%s:Popt=%04x,Prow=%d,Pcol=%d,Plineopt=%04x,rrow=%d,pos=%d,rc:opt=%04x,v2nd=%d\n",UTT,Popt,Prow,Pcol,Plineopt,row,pos,opt,swv2nd);//~v7f8R~
     return opt;                                                    //~v6EiI~
 }//uvio_getbufflineopt                                             //~v6EiI~
 //*******************************************************          //~v6EiI~
@@ -3505,7 +3591,7 @@ int uvio_setbufflineopt(int Popt,int Prow,int Plineopt,int Pcol,int Plen)//~v6Ep
         }                                                          //~v6EpI~
     }                                                              //~v6EpI~
 #endif                                                             //~v6EpI~
-    UTRACEP("%s:Popt=%04x,Prow=%d,Pcol=%d,Plen=%d,Plineopt=%04x,index=%d,lineopt=%04x,swv2nd=%d\n",UTT,Popt,Prow,Pcol,Plen,Plineopt,pos,lineopt,swv2nd);//~v6EqR~
+    UTRACEP("%s:Popt=%04x,Prow=%d,Pcol=%d,Plen=%d,Plineopt=%04x,pos=%d,lineopt=%04x,swv2nd=%d\n",UTT,Popt,Prow,Pcol,Plen,Plineopt,pos,lineopt,swv2nd);//~v7f8R~
     return Plineopt;                                               //~v6EiI~
 }//uvio_setbufflineopt                                             //~v6EiI~
 #endif //defined(W32)||defined(XXE)                                //~v6EoR~
@@ -3574,13 +3660,13 @@ int uvioWriteConsoleOutputCharacterUCS1(HANDLE Phandle,WUCS Pucs,COORD Ptgtpos,i
     if (mblen>0)                                                   //~v6G0I~
     {                                                              //~v6WxI~
 		rc=WriteConsoleOutputCharacter(Phandle,wkmb,mblen,Ptgtpos,Pwrtlen);//~v6G0R~
-	    UTRACED("mb",wkmb,mblen);                                  //~v6WxI~
-    UTRACEP("%s:rc=%d,ucs=%x,tgtpos=(%d,%d),mblen=%d,wrtlen=%d\n",UTT,rc,Pucs,Ptgtpos.X,Ptgtpos.Y,mblen,Pwrtlen?*Pwrtlen:0);//~v6G1R~//~v6WxR~//~v6WyM~
+    	UTRACEP("%s:WriteConsoleOutputCharacter rc=%d,mblen=%d,tgtpos=(%d,%d)\n",UTT,rc,mblen,Ptgtpos.X,Ptgtpos.Y);//~v6G1R~//~v6WxR~//~v7fkR~
+	    UTRACED("mb",wkmb,mblen);                                  //~v7fkM~
     }                                                              //~v6WxI~
     else                                                           //~v6G0I~
     {                                                              //~v6WyI~
 		rc=WriteConsoleOutputCharacterW(Phandle,&Pucs,1,Ptgtpos,Pwrtlen);//~v6G0I~
-    	UTRACEP("%s:rc=%d,ucs=%x,tgtpos=(%d,%d),wrtlen=%d\n",UTT,rc,Pucs,Ptgtpos.X,Ptgtpos.Y,Pwrtlen?*Pwrtlen:0);//~v6WyI~
+	    UTRACEP("%s:WriteConsoleOutputCharacterW ucs=%04x,len=%d,posx=%d,posy=%d\n",UTT,Pucs,1,Ptgtpos.X,Ptgtpos.Y);//~v7fkR~
     }                                                              //~v6WyI~
     return rc;                                                     //~v6G0I~
 }//uvioWriteConsoleOutputCharacterUCS1                             //~v6G0R~
@@ -3600,9 +3686,13 @@ int uviom_displaydbcspadCharacterW(int Popt,COORD Ptgtpos,int Plen)//~v6G0I~
   	WORD attr=(WORD)((Popt & 0xff) | UVIOM_PADATTR);               //~v7e4R~
 	UTRACEP("%s:BG=%04x\n",UTT,attr);                              //~v7e4I~
     rc=FillConsoleOutputAttribute(Shconout,attr,(DWORD)ucsctr,Ptgtpos,&wrtlen)==0;//~v7e4I~
+    UTRACEP("%s:fillattr rc=%d,attr=%02x,pos=%d,len=%d,writelen=%d\n",UTT,rc,attr,(int)Ptgtpos.X,Plen,wrtlen);//~v7fkR~
   }                                                                //~v7e4I~
   else                                                             //~v7e4I~
+  {                                                                //~v7fkI~
     rc=FillConsoleOutputAttribute(Shconout,UVIOM_PADATTR,(DWORD)ucsctr,Ptgtpos,&wrtlen)==0;//~v6G0R~
+    UTRACEP("%s:fillattr rc=%d,attr=%02x,len=%d,posX=%d,posY=%d,wrtlen=%d\n",UTT,rc,UVIOM_PADATTR,ucsctr,(int)Ptgtpos.X,Plen,wrtlen);//~v7fkR~
+  }                                                                //~v7fkI~
 	rc+=uvioWriteConsoleOutputCharacterW(Shconout,wkucs,ucsctr,Ptgtpos,&wrtlen)==0;//~v6G0R~
     UTRACEP("%s:posX=%d,len=%d,rc=%d\n",UTT,Ptgtpos.X,Plen,rc);    //~v6G0I~
     return rc;                                                     //~v6G0I~
@@ -3897,6 +3987,11 @@ int uviowrtcellW1_cpu8file_NoLigatureNoCombine(int Popt,WUCS *Ppucs,int Pucsctr,
     tgtpos.X=Ptgtrect->Left;                                       //~v6G0R~
     tgtpos.Y=Ptgtrect->Top;                                        //~v6G0R~
 //  startTargetPosX=tgtpos.X;                                      //~v7ejR~
+#ifdef EEE                                                         //~v7fpR~
+  if (GutfTestUcs==5)                                              //~v7fpI~
+    uviom_clearlineW2(UVIOMCLO_ATTRSTR,0/*data*/,Ppattr,Plen,tgtpos);//~v7fpM~
+  else                                                             //~v7fpI~
+#endif                                                             //~v7fpM~
     uviom_clearlineW(UVIOMCLO_ATTRSTR,0/*data*/,Ppattr,Plen,tgtpos);//~v6G0R~
     col=0;  //start col                                            //~v6G0R~
     pdata=Ppdata;                                                  //~v6G0R~
@@ -4045,7 +4140,8 @@ int uviowrtcellW1_cpu8file_NoLigatureCombinedString(int Popt,WUCS *Ppucs,int Puc
 	tgtpos.X=Ptgtrect->Left;                                       //~v6G0R~
 	tgtpos.Y=Ptgtrect->Top;                                        //~v6G0R~
     len=Ptgtrect->Right-Ptgtrect->Left+1;                          //~v6G0I~
-UTRACEP("%s:ucsctr=%d,X=%d,Y=%d,Guviomdbcspad=%x\n",UTT,Pucsctr,tgtpos.X,tgtpos.Y,Guviomdbcspad);//~v6G0R~
+UTRACEP("%s:ucsctr=%d,X=%d,Y=%d,len=%d,Guviomdbcspad=%x\n",UTT,Pucsctr,tgtpos.X,tgtpos.Y,len,Guviomdbcspad);//~v7f8R~
+UTRACED("Ppucs",Ppucs,sizeof(WUCS)*Pucsctr);                       //~v7fpR~
 //  ucsctr=min((int)sizeof(wkucs),Pucsctr);                        //~v6G0I~//~v6WxR~
     ucsctr=min((int)(sizeof(wkucs)/sizeof(wkucs[0])),Pucsctr);     //~v6WxI~
 	if (Guviomdbcspad!=' ')                                        //~v6G0I~
@@ -4054,10 +4150,24 @@ UTRACEP("%s:ucsctr=%d,X=%d,Y=%d,Guviomdbcspad=%x\n",UTT,Pucsctr,tgtpos.X,tgtpos.
 //  		wkucs[ii]=Guviomdbcspad;                               //~v6G0R~//~v6X8R~
         memsetW(wkucs,Guviomdbcspad,len);   //for performance      //~v6X8I~
         attr=(*Ppattr & 0xf0)/*bg*/|UVIOM_PADATTR/*fg*/;           //~v6G0I~
+#ifdef EEE                                                         //~v7fpR~
+  	if (GutfTestUcs==5)                                            //~v7fpI~
+    	uviom_clearlineW2(UVIOMCLO_ATTRFILL,0/*data*/,&attr,len,tgtpos);//~v7fpI~
+  	else                                                           //~v7fpI~
+#endif                                                             //~v7fpI~
     	uviom_clearlineW(UVIOMCLO_ATTRFILL,0/*data*/,&attr,len,tgtpos);//~v6G0R~
 		rc+=uvioWriteConsoleOutputCharacterW(Shconout,wkucs,len,tgtpos,&wrtlen)==0;//~v6G0R~
     }                                                              //~v6G0I~
+#ifdef TEST                                                        //~v7fjR~
+	uviom_clearlineW(UVIOMCLO_ATTRSTR,0/*data*/,Ppattr,1,tgtpos);  //~v7fjM~
+#else                                                              //~v7fjM~
+#ifdef EEE                                                         //~v7fpR~
+  if (GutfTestUcs==5)                                              //~v7fpI~
+	uviom_clearlineW2(UVIOMCLO_ATTRSTR,0/*data*/,Ppattr,len,tgtpos);//~v7fpI~
+  else                                                             //~v7fpI~
+#endif                                                             //~v7fpI~
 	uviom_clearlineW(UVIOMCLO_ATTRSTR,0/*data*/,Ppattr,len,tgtpos);//~v6G0R~
+#endif                                                             //~v7fjM~
 //  rc+=uvioWriteConsoleOutputCharacterW(Shconout,Ppucs,ucsctr,tgtpos,&wrtlen)==0;//~v6G0R~//~v6VgM~
     rc+=uvioWriteConsoleOutputCharacterW(Shconout,Ppucs,Pucsctr,tgtpos,&wrtlen)==0;//~v6VgI~
     UTRACEP("%s:return rc=%d,writelen=%d\n",UTT,rc,wrtlen);                           //~v6G0R~//~v6VgR~
@@ -4096,13 +4206,31 @@ int uviowrtcellW1_cpu8file_NoLigatureCombineColSplit(int Popt,WUCS *Ppucs,int Pu
         if (combinecols=uviom_ISUCSWIDTH0W(0,pucs,pdbcs,Pucsctr-ii),combinecols)//start from combining char//~v6VgR~
         {                                                          //~v6G0I~
 	   		UTRACEP("%s:cpos width0 col=%d,combinecols=%d\n",UTT,col,combinecols);            //~v6G0R~//~v6VgR~
+#ifdef AAA                                                         //~v7fjI~
             tgtrect.Left=(SHORT)(left+col);                        //~v6G0R~
             tgtrect.Right=(SHORT)(left+col);                       //~v6G0R~
 //  		rc+=uviowrtcellW1_cpu8file_NoLigatureCombinedString(Popt,pucs,1,Ppattr+col,&tgtrect);//~v6G0I~//~v6VgR~
     		rc+=uviowrtcellW1_cpu8file_NoLigatureCombinedString(Popt,pucs,combinecols,Ppattr+col,&tgtrect);//~v6VgI~
+#else                                                              //~v7fjI~
+    		int ucsctr2=pos-poso;                                  //~v7foI~
+            UTRACEP("%s:before combining ucsctr2=%d,col=%d,colo=%d,pos=%d,poso=%d\n",UTT,ucsctr2,col,colo,pos,poso);//~v7foI~
+            if (poso>=0 && ucsctr2>0)                              //~v7foR~
+            {                                                      //~v7foI~
+            	len=col-colo;                                      //~v7foI~
+                tgtrect.Left=(SHORT)(left+colo);                   //~v7foI~
+                tgtrect.Right=tgtrect.Left+(SHORT)len-1;           //~v7foI~
+                rc+=uviowrtcellW1_cpu8file_NoLigatureNoCombine(Popt,Ppucs+poso,ucsctr2,Ppdata+colo,Ppdbcs+colo,Ppattr+colo,len,&tgtrect);//~v7foR~
+            }                                                      //~v7foI~
+			COORD poscomb;                                         //~v7fjI~
+            poscomb.X=(SHORT)(left+col);                           //~v7fjR~
+            poscomb.Y=(SHORT)tgtrect.Top;                          //~v7fjR~
+            int writelen;                                          //~v7fjI~
+            rc+=uviom_wrtW0W(0,pucs,Ppattr+col,combinecols,poscomb,&writelen);//~v7fjR~
+#endif                                                             //~v7fjI~
 //          chwidth=1;                                             //~v6G0I~//~v6VgR~
             chwidth=combinecols;                                   //~v6VgI~
-            UTRACEP("%s:col=%d,chwidth=%d\n",UTT,col,chwidth);     //~v7efI~
+            UTRACEP("%s:col=%d,chwidth=%d,poso=%d\n",UTT,col,chwidth,poso);//~v7fiR~
+            poso=-1; //next is startof no comnining string(pass to NoligNocomb)//~v7fiI~
         }                                                          //~v6G0I~
         else                                                       //~v6G0I~
         {                                                          //~v6G0I~
@@ -4110,9 +4238,16 @@ int uviowrtcellW1_cpu8file_NoLigatureCombineColSplit(int Popt,WUCS *Ppucs,int Pu
             chwidth=UDBCSCHK_DBCS1STUCS2NWO(*pdbcs)+1;             //~v6G0R~
             UTRACEP("%s:ucs2=%04x,col=%d,chwidth=%d\n",UTT,ucs2,col,chwidth);//~v7efR~
             if (ii+1<Pucsctr)                                      //~v6G0R~
+            {                                                      //~v7frI~
 //              combinectr=uvio_getcombinectr(0,ucs2,chwidth,pdbcs,Pucsctr-ii);//~v6G0R~//~v6VgR~
 //              combinectr=uvio_getcombinectr(0,pucs,chwidth,pdbcs,Pucsctr-ii,&strucsctr,&strwidth);//~v7eaR~
+#ifdef FFF                                                         //~v7frI~
                 combinectr=uvio_getcombinectr(0,pucs,chwidth,pdbcs,Plen-PTRDIFF(pdbcs,Ppdbcs),&strucsctr,&strwidth);//~v7eaI~
+#else                                                              //~v7frI~
+            	int optgcc=GCCO_NOFMT; // 0x01  //exclude format except ZWJ(200d)//~v7frR~
+                combinectr=uvio_getcombinectr(optgcc,pucs,chwidth,pdbcs,Plen-PTRDIFF(pdbcs,Ppdbcs),&strucsctr,&strwidth);//~v7frI~
+#endif                                                             //~v7frI~
+            }                                                      //~v7frI~
             else                                                   //~v6G0R~
                 combinectr=0;                                      //~v6G0R~
             UTRACEP("%s:ucs=%04x,combinectr=%d,pdbcs=%p\n",UTT,ucs2,combinectr,pdbcs);//~v7e4R~
@@ -4208,6 +4343,7 @@ int uviowrtcellW1_cpu8file_NoLigatureCombine(int Popt,WUCS *Ppucs,int Pucsctr,UC
     UCHAR *pdbcs;                                                  //~v6G0I~
     SMALL_RECT tgtrect;                                            //~v6G0I~
     WUCS *pucs;                                                    //~v6G0I~
+	COORD tgtpos;                                                  //~v7fmI~
 //**************************************************               //~v6G0M~
     int startX=Ptgtrect->Left;                                     //~v7ekI~
     xx=Ptgtrect->Left;                                             //~v6G0I~
@@ -4216,6 +4352,19 @@ int uviowrtcellW1_cpu8file_NoLigatureCombine(int Popt,WUCS *Ppucs,int Pucsctr,UC
     UTRACED("Ppucs",Ppucs,Pucsctr*(int)sizeof(WUCS));              //~v7ekI~
     UTRACED("Ppdata",Ppdata,Plen);                                 //~v7ekI~
     UTRACED("Ppdbcs",Ppdbcs,Plen);                                 //~v7ekR~
+    UTRACED("Ppattr",Ppattr,Plen*(int)sizeof(USHORT));             //~v7fmI~
+//if (GutfTestUcs==5)                                              //~v7fmM~
+  if (IS_ON_TERMINAL())                                            //~v7fmI~
+  {                                                                //~v7fmI~
+    tgtpos.X=Ptgtrect->Left;                                       //~v7fmI~
+    tgtpos.Y=Ptgtrect->Top;                                        //~v7fmI~
+#ifdef EEE                                                         //~v7fpR~
+  if (GutfTestUcs==5)                                              //~v7fpI~
+    uviom_clearlineW2(UVIOMCLO_ATTRSTR,0/*data*/,Ppattr,Plen,tgtpos);//~v7fpI~
+  else                                                             //~v7fpI~
+#endif                                                             //~v7fpI~
+    uviom_clearlineW(UVIOMCLO_ATTRSTR,0/*data*/,Ppattr,Plen,tgtpos);//~v7fmI~
+  }                                                                //~v7fmI~
     if (yy==Scsrposy+Stoplineoffs)    //csr line                   //~v6G0R~
     {                                                              //~v6G0I~
         utfddgetcsrposbca(0,Ppdbcs-xx,Plen+xx,Scsrposx,&posb,&posc,&posa);//~v6G0R~
@@ -4815,7 +4964,17 @@ int uviom_iscombining(int Popt,WUCS *Ppucs,UCHAR *Ppdbcs,int Plen,int *Ppucs4,in
     	*Ppucs4=ucs4;                                              //~v6WuR~
     if (Ppchsz)                                                    //~v6WuI~
     	*Ppchsz=chsz;                                              //~v6WuI~
-    UTRACEP("%s:rc=%d,dbcsid=%02x,ucs=%06x,chsz=%d,Plen=%d,\n",UTT,rc,*Ppdbcs,ucs4,chsz,Plen);//~v6WuI~
+#ifndef FFF                                                        //~v7frI~
+    if (rc && Popt & UVIOMICO_NOFMT)// 0x01   //exclude format     //~v7frI~
+    {                                                              //~v7frI~
+		if (utf4_isFormat(0,(UWUCS)ucs4))                          //~v7frI~
+        {                                                          //~v7frI~
+        	rc=0;                                                  //~v7frI~
+		    UTRACEP("%s:reset rc:combining for format char by option\n",UTT);//~v7frI~
+        }                                                          //~v7frI~
+    }                                                              //~v7frI~
+#endif                                                             //~v7frI~
+    UTRACEP("%s:Popt=%02x,rc=%d,dbcsid=%02x,ucs=%06x,chsz=%d,Plen=%d,\n",UTT,Popt,rc,*Ppdbcs,ucs4,chsz,Plen);//~v7frR~
     return rc;                                                     //~v6WuI~
 }//uviom_iscombining                                               //~v6WuI~
 #endif                                                             //~v6WuI~
@@ -4828,18 +4987,34 @@ int uviom_wrtW0W(int Popt,WUCS *Ppucs,USHORT *Ppattr,int Plen,COORD Ptgtpos,int 
 	WUCS ucss[3],*pucs;                                            //~v6VgR~
     int rc=0,writelen,len;                                         //~v6VgR~
     USHORT attr[3],attrnp;                                         //~v6VgI~
+    int ucs4;                                                      //~v7f8I~
+    int altch=0;                                                   //~v7fpI~
 //***********************                                          //~v6VgI~
-	UTRACEP("%s:len=%d,X=%d,Y=%d,Gutfcombaltch=%04x,Sposcvhex=%d,Ppattr=%p,*Ppattr=%04x\n",UTT,Plen,Ptgtpos.X,Ptgtpos.Y,Gutfcombaltch,Sposcvhex,Ppattr,*Ppattr);//~v7ejR~
+	UTRACEP("%s:len=%d,X=%d,Y=%d,*Ppucs=%04x,Gutfcombaltch=%04x,Sposcvhex=%d,Ppattr=%p,*Ppattr=%04x\n",UTT,Plen,Ptgtpos.X,Ptgtpos.Y,*Ppucs,Gutfcombaltch,Sposcvhex,Ppattr,*Ppattr);//~v7fpR~
   if (Sposcvhex==Ptgtpos.X)  //data col by vhex cursor, keep fg=0f(edit)/02(browse)//~v7ejR~
     attrnp=*Ppattr;                                                //~v7ejI~
   else                                                             //~v7ejI~
     attrnp=(*Ppattr & 0xf0)|ATTR_COMBINENP_FG;                     //~v6VgI~
+#ifdef TEST                                                        //~v7fpR~
+  if (GutfTestUcs==5)                                              //~v7fpI~
+   	if (*Ppucs==0x200d)                                            //~v7fpI~
+    	attrnp=0x7a;                                               //~v7fpI~
+#endif                                                             //~v7fpI~
     attr[0]=attrnp;                                                //~v6VgI~
     attr[1]=attrnp;                                                //~v6VgI~
     attr[2]=attrnp;                                                //~v6VgI~
     rc+=WriteConsoleOutputAttribute(Shconout,attr,Plen,Ptgtpos,&writelen)==0;          //writelen//~v6VgI~
-	UTRACED("write attr",attr,Plen);                               //~v6VgR~
-    if (UTF_COMBINEMODE_NP() && Gutfcombaltch)                     //~v6VgI~
+	UTRACEP("%s:WriteConsoleOutputAttribute rc=%d,len=%d,pos=X=%d,Y=%d\n",UTT,rc,Plen,(int)Ptgtpos.X,(int)Ptgtpos.Y);//~v7fkR~
+    UTRACED("WriteConsoleOutputAttribute",attr,Plen*sizeof(USHORT));//~v7fkR~
+	if (Plen==2)                                                   //~v7f8I~
+		ucs4=UTF16_TO_UCS4(*Ppucs,*(Ppucs+1));                     //~v7f8I~
+    else                                                           //~v7f8I~
+    	ucs4=*Ppucs;                                               //~v7f8I~
+	UTRACEP("%s:ucs4=%04x\n",UTT,ucs4);                            //~v7f8I~
+//  if (UTF_COMBINEMODE_NP() && Gutfcombaltch)                     //~v7f8R~
+    if (UTF_COMBINEMODE_NP() && Gutfcombaltch                      //~v7f8I~
+    &&  !utf4_isFormat(0,(UWUCS)ucs4)                              //~v7f8I~
+    )                                                              //~v7f8I~
     {                                                              //~v6VgI~
     	ucss[0]=(WUCS)Gutfcombaltch;                               //~v6VgR~
     	ucss[1]=UVIOM_COMBINE_ALTCH2; // '.' ,not written if Plen==1//~v6VgR~
@@ -4848,12 +5023,13 @@ int uviom_wrtW0W(int Popt,WUCS *Ppucs,USHORT *Ppattr,int Plen,COORD Ptgtpos,int 
     else                                                           //~v6VgI~
     {                                                              //~v6VgI~
 #ifndef SSS                                                        //~v7c4I~
-        int ucs4;                                                  //~v7c4I~
-		if (Plen==2)                                               //~v7c4I~
-			ucs4=UTF16_TO_UCS4(*Ppucs,*(Ppucs+1));                 //~v7c4I~
-        else                                                       //~v7c4I~
-        	ucs4=*Ppucs;                                           //~v7c4I~
-		int altch=uviom_getAltFormat(0,ucs4,0/*Pdefault*/);        //~v7c4I~
+//      int ucs4;                                                  //~v7f8R~
+//		if (Plen==2)                                               //~v7f8R~
+//			ucs4=UTF16_TO_UCS4(*Ppucs,*(Ppucs+1));                 //~v7f8R~
+//      else                                                       //~v7f8R~
+//        	ucs4=*Ppucs;                                           //~v7f8R~
+//  	int altch=uviom_getAltFormat(0,ucs4,0/*Pdefault*/);        //~v7fpR~
+    	altch=uviom_getAltFormat(0,ucs4,0/*Pdefault*/);            //~v7fpI~
      if (altch)                                                    //~v7c4I~
      {                                                             //~v7c4I~
 	    ucss[0]=(WUCS)altch;    //ushort                           //~v7c4R~
@@ -4883,10 +5059,70 @@ int uviom_wrtW0W(int Popt,WUCS *Ppucs,USHORT *Ppattr,int Plen,COORD Ptgtpos,int 
         }                                                          //~v6VgI~
       }                                                            //~v7c4I~
     }                                                              //~v6VgI~
+	UTRACEP("%s:GutfTestUcs=%d,IS_ON_TERMINAL=%d\n",UTT,GutfTestUcs,IS_ON_TERMINAL());//~v7fkM~
+#ifdef EEE                                                         //~v7fkR~
+	if (IS_ON_TERMINAL())                                          //~v7fkM~
+    {                                                              //~v7fkM~
+//  	rc+=WriteConsoleOutputAttribute(Shconout,attr,1,Ptgtpos,&writelen)==0;          //writelen//~v7fkI~
+//  	UTRACEP("%s:write attr for combining for WindowsTerminal rc=%d,posX=%d,writelen=%d,attr=%02x\n",UTT,rc,(int)Ptgtpos.X,writelen,attr[0]);//~v7fkI~
+//  	if (GutfTestUcs==1 || GutfTestUcs==2)                      //~v7fkR~
+//  	{                                                          //~v7fkR~
+			WUCS space[4]={' ',' ',' ',0};                         //~v7fkR~
+            COORD posclear={Ptgtpos.X,Ptgtpos.Y};                  //~v7fkR~
+//  		rc+=uvioWriteConsoleOutputCharacterW(Shconout,space,GutfTestUcs,posclear,&writelen)==0;//~v7fkR~
+    		rc+=uvioWriteConsoleOutputCharacterW(Shconout,space,1          ,posclear,&writelen)==0;//~v7fkR~
+			UTRACEP("%s:write space for WindowsTerminal rc=%d,posX=%d,writelen=%d\n",UTT,rc,(int)Ptgtpos.X,writelen);//~v7fkM~
+//  	}                                                          //~v7fkR~
+    }                                                              //~v7fkM~
+#endif                                                             //~v7fkR~
     pucs=ucss;                                                     //~v6VgI~
 	rc+=uvioWriteConsoleOutputCharacterW(Shconout,pucs,len,Ptgtpos,&writelen)==0;//~v6VgR~
-	UTRACEP("%s:rc=%d,writelen=%d\n",UTT,rc,writelen);             //~v6VgI~
+	UTRACEP("%s:rc=%d,ucs=%04x,pos=%d,writelen=%d\n",UTT,rc,*pucs,(int)Ptgtpos.X,writelen);//~v7fkR~
+#ifdef EEE                                                         //~v7fkR~
+//    if (IS_ON_TERMINAL())                                        //~v7fkR~
+//    {                                                            //~v7fkR~
+//        if (GutfTestUcs==1 || GutfTestUcs==2)                    //~v7fkR~
+//        {                                                        //~v7fkR~
+//        rc+=WriteConsoleOutputAttribute(Shconout,attr,Plen,Ptgtpos,&writelen)==0;          //writelen//~v7fkR~
+//        UTRACEP("%s:write attr=%02x,len=%d,pos=%d,writelen=%d\n",UTT,attrnp,Plen,(int)Ptgtpos.X,writelen);//~v7fkR~
+//        }                                                        //~v7fkR~
+//    }                                                            //~v7fkR~
+#else                                                              //~v7fkI~
+//if (GutfTestUcs<=2 || GutfTestUcs==5)                            //~v7fmR~
+#ifdef EEE                                                         //~v7fpI~
+  if (GutfTestUcs==5)                                              //~v7foI~
+  {                                                                //~v7fpI~
+#ifdef TEST                                                        //~v7fpR~
+   if (altch!=0x02b)                                               //~v7fpR~
+    *attr=0x7a;                                                    //~v7fpI~
+#endif                                                             //~v7fpI~
+    if (IS_ON_TERMINAL())                                          //~v7fkI~
+    {                                                              //~v7fkI~
+        rc+=WriteConsoleOutputAttribute(Shconout,attr,Plen,Ptgtpos,&writelen)==0;          //writelen//~v7fkI~
+		UTRACEP("%s:WriteConsoleOutputAttribute rc=%d,len=%d,pos=X=%d,Y=%d\n",UTT,rc,Plen,(int)Ptgtpos.X,(int)Ptgtpos.Y);//~v7fkR~
+    	UTRACED("WriteConsoleOutputAttribute",attr,Plen*sizeof(USHORT));//~v7fkI~
+    }                                                              //~v7fkI~
+  }                                                                //~v7fpI~
+#endif                                                             //~v7fpI~
+#endif                                                             //~v7fkI~
+#ifdef EEE                                                         //~v7fmI~
+  if (GutfTestUcs==2)                                              //~v7fkI~
+	if (IS_ON_TERMINAL())                                          //~v7fkI~
+    {                                                              //~v7fkI~
+//  	rc+=WriteConsoleOutputAttribute(Shconout,attr,1,Ptgtpos,&writelen)==0;          //writelen//~v7fkI~
+//  	UTRACEP("%s:write attr for combining for WindowsTerminal rc=%d,posX=%d,writelen=%d,attr=%02x\n",UTT,rc,(int)Ptgtpos.X,writelen,attr[0]);//~v7fkI~
+//  	if (GutfTestUcs==1 || GutfTestUcs==2)                      //~v7fkI~
+//  	{                                                          //~v7fkI~
+			WUCS space[8]={' ',' ',' ',' ',0};                     //~v7fkR~
+            COORD posclear={Ptgtpos.X+1,Ptgtpos.Y};                //~v7fkR~
+    		rc+=uvioWriteConsoleOutputCharacterW(Shconout,space,GutfTestUcs,posclear,&writelen)==0;//~v7fkR~
+//  		rc+=uvioWriteConsoleOutputCharacterW(Shconout,space,4          ,posclear,&writelen)==0;//~v7fkR~
+			UTRACEP("%s:write space for WindowsTerminal rc=%d,posX=%d,writelen=%d\n",UTT,rc,(int)Ptgtpos.X,writelen);//~v7fkI~
+//  	}                                                          //~v7fkI~
+    }                                                              //~v7fkI~
+#endif                                                             //~v7fmI~
     *Ppwritelen=writelen;                                          //~v6VgI~
+	UTRACEP("%s:return rc=%d,posX=%d,writelen=%d\n",UTT,rc,(int)Ptgtpos.X,writelen);//~v7fkI~
     return rc;                                                     //~v6VgI~
 }//uviom_wrtW0W                                                    //~v6VgI~
 //***************************************************************************//~v6WuI~
@@ -4914,7 +5150,8 @@ int uviom_wrtSCMW(int Popt,int Pprevucs,int Pidx,int Pucs4,WUCS *Ppucs,USHORT *P
     wkattr[1]=attr;                                                //~v6WuR~
     len=2;                                                         //~v6WuI~
     rc+=WriteConsoleOutputAttribute(Shconout,wkattr,len,Ptgtpos,&writelen)==0;          //writelen//~v6WuI~
-	UTRACED("write attr",wkattr,len*sizeof(wkattr[0]));            //~v7e4R~
+	UTRACEP("%s:WriteConsoleOutputAttribute rc=%d,len=%d,pos=X=%d,Y=%d\n",UTT,rc,len,(int)Ptgtpos.X,(int)Ptgtpos.Y);//~v7fkR~
+    UTRACED("WriteConsoleOutputAttribute",wkattr,len*sizeof(USHORT));//~v7fkI~
 	len=1+UTF_ISUCS4(Pucs4);                                       //~v6WuI~
     if (swnp)                                                      //~v6WuI~
     {                                                              //~v6WuI~

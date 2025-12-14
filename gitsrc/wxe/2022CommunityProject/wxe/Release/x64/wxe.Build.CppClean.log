@@ -159,6 +159,8 @@ w:\msvs2022cprojects\wxe\wxe\release\x64\xescr.obj
 w:\msvs2022cprojects\wxe\wxe\release\x64\xepan3.obj
 w:\msvs2022cprojects\wxe\wxe\release\x64\xepan24.obj
 w:\msvs2022cprojects\wxe\wxe\release\x64\xefcmd7.obj
+w:\msvs2022cprojects\wxe\wxe\release\x64\uehmsg.obj
+w:\msvs2022cprojects\wxe\wxe\release\x64\ueh.obj
 w:\msvs2022cprojects\wxe\wxe\release\x64\xefsubw.obj
 w:\msvs2022cprojects\wxe\wxe\release\x64\ustrcpy.obj
 w:\msvs2022cprojects\wxe\wxe\release\x64\wxeview.obj
@@ -174,8 +176,6 @@ w:\msvs2022cprojects\wxe\wxe\release\x64\wxedlg.obj
 w:\msvs2022cprojects\wxe\wxe\release\x64\wxe.obj
 w:\msvs2022cprojects\wxe\wxe\release\x64\stdafx.obj
 w:\msvs2022cprojects\wxe\wxe\release\x64\mainfrm.obj
-w:\msvs2022cprojects\wxe\wxe\release\x64\uehmsg.obj
-w:\msvs2022cprojects\wxe\wxe\release\x64\ueh.obj
 w:\msvs2022cprojects\wxe\wxe\release\x64\wxe.exe
 w:\msvs2022cprojects\wxe\wxe\release\x64\wxe.map
 w:\msvs2022cprojects\wxe\wxe\release\x64\wxe.res

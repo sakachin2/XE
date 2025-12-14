@@ -1,3 +1,78 @@
+//*v130D *** 2025/12/14 upload 
+//v7g0:251213 (Lnx)compiler warning;process when getfsinfoDF("df -k -l") faled
+//            ufile4.c
+//v7fz:251205 (gxe) hcopy eol option for also gxe
+//            xefunct.c xedcmd2.c xe.c xxescr.c uvio2.c
+//v7fy:251205 (LNXCON) hcopy eol option for LNXCON
+//            uviol.c xefunct.c xedcmd2.c xe.c uvio.h
+//v7fx:251205 (Wxe)addtionally to WINCON, optionally chk EOL for also Wxe.
+//            wxecsub.c/h wxescr.cpp uviom.h xe.c uvio.c xedcmd2.c uvio.h wxexei.h wxexei3.c
+//v7fw:251204 additional case to v7fv;ligon+comb; SCM is yellow
+//            wxecsub.c
+//v7fv:251204 Wxe: split combiningchar is not combinable. 1080(char)-1082(comb)-1067(SCM) whe csr is on 1080, 1082-1067 was shown yellow
+//            utf22.c/h wxecsub.c
+//v7fu:251204 optionally do v7ft; /yh
+//            uvio.c uvio2.h xe.c
+//v7ft:251203 (WINCON)reason of v7fs is that line is written up to screen width. no eol was checked.
+//            uvio.c 
+//v7fs:251203 (WINCON)del v7fs; it show "=" for format even when combine mode
+//            uviom.c
+//v7fr:251203 (WINCON)If hcopy contains Format 202e(RtoL),202b(LtoR), remaining string shifts to right.
+//            exclude Format(except ZWJ) from getcombinctr
+//            uviom.c
+//v7fq:251129 (WINCON)hcopy fo wide sbcs;disappear combining char
+//            uvio.c
+//v7fp:251129 (WINCON)combine mode on WindowsTerminal
+//            uviom.c
+//v7fo:251126 (WINCON:BUG)when combinemode, spce line displayed before notcombineble+combining(revailed by v7fn)
+//            uviom.c
+//v7fn:251126 avoid combin to "+"(altch of zwj)
+//            utf22.c
+//v7fm:251119 (WINCON)on WindowsTerminal, combining char is show doubled. try clrarline like as nocombine
+//            uviom.c
+//v7fk:251118 (WINCON)on WindowsTerminal, combining char is show doubled. try to write space after it.
+//            uviom.c
+//v7fj:251116 (WINCON:bug)(ligOff)unicomb=comb; not green when csr is on combining char
+//            uviom.c
+//v7fi:251114 (WINCON:bug)(ligOff)unicomb=comb; dupricate write combining char. It cause on VT,display 4 combining char
+//            uviom.c
+//v7fh:251113 (WXE)vsplit hcopy; 21b5 is 2cell the right panel shift 1 column to right because wcwidth(21b5) is unmatch 1:wxe and 2:xecon by glyph width.
+//            Chk ambiguous and if not use "_".
+//            utf22.c utf4.c
+//v7fg:251112 (LNXCON)chng altch of 1b 2190(wide left arrow)-->21b5(return mark)
+//            utf22.c
+//v7ff:251111 (LNXCON)did not filled cchar_t combining(up to not 4 but 3)
+//            uvioml.c
+//v7fe:251110 (LNXCON)hcopy;drop inserted padding(if not hardcopy shows duplicated padding)
+//            uvioml.c
+//v7fd:251110 (LNXCON)set "+" for Format even PADDING
+//            uvioml.c
+//v7fc:251109 (WINCON)for v7f9(facename of english and japanese),chk by enumfont
+//            uvio2.c
+//v7fb:251109 (WINCON)warning /Ffontname is not supported on conhost
+//            uvio2.c
+//v7fa:251108 settings.json:name is not font alias but application name("コマンドプロンプト"), del v7f9
+//            uvio2.c
+//v7f9:251107 createFont failed by compareing fontname and facename("MS Gothic" and japanese "MS ゴシック")
+//            uvio2.c
+//v7f8:251106 show not comb-unp(:) but altch(=/+/-) for w0-format when unicomb=UNP
+//            uviom.c wxecsub.c
+//v7f7:251105 (wincon)u200d(glyphw=0 Format) is show by not "+" but space when comb=unp/split
+//            utf3.c
+//v7f6:251009 (gxe)rep combining by altch is already done on f23.setlineattr
+//            uviolx.c
+//v7f5:251008 (LNX)treate ZWJ(u-200d) as combining when ligoff to avoid intermedeate colomn by 200d
+//            uvioml.c utf22.h/c
+//v7f4:251007 (LNX)by v7f1, w0 NoComb(including format)  was not displayed by altchFormat('='). ifndef JJJ
+//            uvioml.c xxecsub2.c xxecsub.h xxecsub2.c xxescr.c
+//v7f3:250926 (LNX bug)for ucs4 of wcwidth=0, set dbcs1 and dbcs2 for utcfwcwidth=2
+//            uvioml.c
+//v7f2:250926 (LNX:Bug)avoid combining by Format char of wcwidth=0, err of rc chk of mk_wcwidth_combining, rc=0 is combining
+//            utf22.c xxescr.c
+//v7f1:250926 (LNX)avoid combining by Format char of wcwidth=0
+//            uvioml.c xxecsub2.c utf22.c
+//v7f0:250923 (LNX)new option of use wcwidth for glyphchk of Ambiguous
+//            utf22.c
 //*v130C *** 2025/08/25 upload 
 //v7eB:250827 TRACE;flush required for also kbd trace
 //            utrace.c

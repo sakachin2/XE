@@ -1,7 +1,9 @@
-//*CID://+vat8R~:                             update#=   47;       //~vat8R~
+//*CID://+vbE4R~:                             update#=   51;       //+vbE4R~
 //******************************************************        //~5B11I~
 //*ufile4.h                                                        //~v050R~
 //******************************************************        //~5B11I~
+//vbE4:250921 (LNX)update UFSINFO(mountpoint) by S+F1(refresh)     //+vbE4I~
+//vbE2:250918 (LNX)dirlist, display free rate for mount point      //~vbE2I~
 //vat8:241025 xdig:support multiple dirmask                        //~vat8I~
 //vat5:241023 xdig:add option to apply dirmask once and all        //~vat5I~
 //v6Vx:180626 (LNX:BUG)trace file is not protected at xe initial clear//~v6VxI~
@@ -57,6 +59,19 @@ typedef  struct _UDISKINFO {                                       //~v083R~
 	#endif                                                         //~v6a0R~
 #endif                                                             //~v348I~
         } UDISKINFO;                                               //~v083R~
+//***                                                              //~vbE2I~
+#ifdef LNX                                                         //~vbE2I~
+typedef struct _UFSINFO {                                          //~vbE2I~
+				char filesystem[64];                               //~vbE2I~
+                char mountpoint[64];                               //~vbE2I~
+                long size;                                         //~vbE2I~
+                long used;                                         //~vbE2I~
+                long avail;                                        //~vbE2I~
+                int  usedRateM10;                                  //~vbE2I~
+                int  availRateM10;                                 //~vbE2I~
+            } UFSINFO,*PUFSINFO;                                   //~vbE2I~
+#define UFSINFOSZ (UINT)sizeof(UFSINFO)                            //~vbE2I~
+#endif                                                             //~vbE2I~
 //**************************************************************** //~v050I~
 char *utempnam(char *Pdir,char *Pprefix,char *Ptempfile);          //~v050I~
 //**************************************************************** //~v5b0I~
@@ -151,4 +166,9 @@ int ufileisntfsMounted(int Popt,char *Pfnm);                       //~v6uVR~
 int ufileisMSMounted(int Popt,char *Pfnm);                         //~v6uVR~
 #endif                                                             //~v6uVI~
 char *multipleMask(char *Pstrs,int *Ppctr);                        //~vat8I~
-int  udirwalkChkMask(int Popt,char *Pname,char *Pmask);            //+vat8R~
+int  udirwalkChkMask(int Popt,char *Pname,char *Pmask);            //~vat8R~
+#ifdef LNX                                                         //~vbE2I~
+UFSINFO* ugetfsinfoDF();                                           //~vbE2I~
+UFSINFO* usrchfsinfoDF(char *Ppath);                               //~vbE2R~
+void urefreshFsinfoDF();                                           //+vbE4I~
+#endif                                                             //~vbE2I~

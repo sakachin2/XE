@@ -1,7 +1,8 @@
-//*CID://+vbDaR~:                             update#=   33;       //~vbDaR~
+//*CID://+vbEgR~:                             update#=   44;       //~vbEgR~
 //******************************************************
 // uviol.h                                                         //~v324I~
 //******************************************************           //~v324I~
+//vbEg:251112 (LNXCON)hcopy;save/get by dd str for utf8(shadow of combining generated double a+x300 and a and a+301)//~vbEgI~
 //vbDa:250703 (gxe)helpmsg was not controled by scr height.        //~vbDaI~
 //v6Em:160807 (LNX) v6Ei for LNX(specify ligature on/off,combine on/of line by line(used for edit/filename  panel))//~v6EmI~
 //v6D9:160610 (LNX)when combining char exists under combineing mode,//~v6D9I~
@@ -32,6 +33,7 @@
 #define UVIOL_KONCHKS  0x01     //konchk started,flag for uerrmsg request konchk//~v50uI~
 #define UVIOL_KONCHKE  0x02     //konchk ended                     //~v50uI~
 #define UVIOL_CHGCOLOR 0x04     //color value changable            //~v5nbI~
+#define UVIOL_DDHCOPY  0x08     //save/get by ddfmt for HCOPY      //~vbEgI~
                                                                    //~v50uI~
 #define NC_MAX_COLOR   8    //curses max color                     //~v391I~
                                                                    //~v5m7I~
@@ -73,7 +75,7 @@ int uviol_konchk2(void);                                           //~v5n8I~
 #ifndef XXE                                                        //~v5ijR~
 void uviol_acssetup(int Psetsw,int Pentno,UCHAR *Pacstbl);         //~v5ijR~
 int uviol_set_padattrsub(int Popt,int Pcolorno);                   //~v6D9R~
-#else                                                              //+vbDaI~
+#else                                                              //~vbDaI~
 int uviolxGetMaxHelpLines();                                       //~vbDaI~
 #endif                                                             //~v5ijR~
 #endif                                                             //~v5ijR~

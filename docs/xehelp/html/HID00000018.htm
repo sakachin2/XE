@@ -15,6 +15,9 @@ a:hover{font-weight:bold;}-->
 <SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    .制御文字入力.
       0x00(Ctrl+2),0x01-0x1f(Ctrl+A-Ctrl+-)を使用します.入力を制限する
       こともできます. .INI ファイル のValid_Ctrl_Charで指定.   <a href="HID00000197.htm">(6)章</a>
+
+      (但し、Linux Console 版では Ctrl+H(0x08) は 無条件で Backspace になり 0x08 は入力できません)
+
       対応する表示文字が無い場合特殊文字で代用表示されます
       どのコードにどの文字を当てるかは同じく Disp_trans_tbl,
       Disp_trans_charで設定します.                             (6)章

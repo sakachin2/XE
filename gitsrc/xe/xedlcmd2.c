@@ -1,4 +1,4 @@
-//*CID://+vbBvR~:                             update#=  260;       //~vbBvR~
+//*CID://+vbE4R~:                             update#=  262;       //~vbE4R~
 //*************************************************************
 //*xedlcmd2.c
 //* each dir line cmd process                                   //~5731R~
@@ -6,6 +6,7 @@
 //* cur dir(.)/expandall(>)/free(f)/view(v)/view edit(w)        //~v04lR~
 //* toggle size display byte count<-->line count                   //~v10rI~
 //*************************************************************
+//vbE4:250921 (LNX)update UFSINFO(mountpoint) by S+F1(refresh)     //~vbE4I~
 //vbBv:241121 S+F1(Dir refresh) dose not clear when file mask specified and it has no members.//~vbBvI~
 //vbq5:200516 (Bug)dir sort /ot is err                             //~vbq5I~
 //vbq1:200418 "-" dlcmd sort option chk more(/ot[ is not err)      //~vbq1I~
@@ -178,6 +179,7 @@
 #include <uque.h>
 #include <ustring.h>
 #include <ufile.h>
+#include <ufile4.h>                                                //+vbE4I~
 #include <uparse.h>                                                //~v10pI~
 #include <uftp.h>                                                  //~v717I~
 #include <u3270.h>                                                 //~v71aI~
@@ -1042,8 +1044,14 @@ int func_dlcmdrefresh(PUCLIENTWE Ppcw)                             //~v152I~
 //****************************                                     //~v152I~
     pfc=Ppcw->UCWpfc;                                              //~v152I~
     pfh=pfc->UFCpfh;                                               //~v152I~
+    UTRACEP("%s:pfhname=%s:\n",UTT,pfh->UFHfilename);              //~vbE4I~
     plh0=UGETQTOP(&pfh->UFHlineque);                               //~v152I~
     levelf=pfh->UFHlevel;                                          //~v152I~
+#ifdef LNX                                                         //~vbE4I~
+#ifndef ARM                                                        //~vbE4I~
+    urefreshFsinfoDF();                                            //~vbE4I~
+#endif                                                             //~vbE4I~
+#endif                                                             //~vbE4I~
 //get lowest level                                                 //~v152I~
     for (plh=plh0,levelmax=levelf;plh;plh=UGETQNEXT(plh))          //~v152R~
     {                                                              //~v152I~
@@ -1399,12 +1407,12 @@ int dlcmdexpand1(PUCLIENTWE Ppcw,PULINEH Pplh,                  //~v04bI~
       }                                                            //~v485I~
       else                                                         //~vbBvI~
       {                                                            //~v57bI~
-      	if (Srefreshsw                                             //+vbBvI~
-      	&&  swFileMask)                                            //+vbBvI~
-      	{                                                          //+vbBvI~
-        	UTRACEP("%s:refresh filemask=%s not found, level clear\n",UTT,filemask);//+vbBvI~
-	        dlcmdlvlclear(Ppcw,pdh,1,0);    //clear all child      //+vbBvI~
-	    }                                                          //+vbBvI~
+      	if (Srefreshsw                                             //~vbBvI~
+      	&&  swFileMask)                                            //~vbBvI~
+      	{                                                          //~vbBvI~
+        	UTRACEP("%s:refresh filemask=%s not found, level clear\n",UTT,filemask);//~vbBvI~
+	        dlcmdlvlclear(Ppcw,pdh,1,0);    //clear all child      //~vbBvI~
+	    }                                                          //~vbBvI~
         dirsetflderr(Ppcw,Pplh,PANL310RENAME);//reverse err fld //~v04bI~
         return 4;                                               //~v04bI~
       }                                                            //~v57bI~

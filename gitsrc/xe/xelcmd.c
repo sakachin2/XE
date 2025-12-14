@@ -1,9 +1,13 @@
-//*CID://+vbBaR~:                             update#=   83;       //+vbBaR~
+//*CID://+vbEqR~:                             update#=  141;       //~vbEqR~
 //*************************************************************
 //*xelcmd.c                                                     //~v03wR~
 //**file line cmd
 //*************************************************************
-//vbBa:240827 lcmd help; add (lower) to "_"                        //+vbBaI~
+//vbEq:251205 locate cmd setall xxx; change to repall and insall   //~vbEqI~
+//vbEj:251119 locate cmd of "l .all xxx"; change add lin to rep line to keep same lineno//~vbEjI~
+//vbEc:251102 locate cmd;  avoid duplicated insert                 //~vbEcI~
+//vbEb:251013 locate cmd;  add "l setall" to insert line of the linelabel.//~vbEbI~
+//vbBa:240827 lcmd help; add (lower) to "_"                        //~vbBaI~
 //vbm3:180715 (Bug)cause of UFHcmdlinectr=0 and ULHFLINECMD:On, savependlcmd was called twice by max() function//~vbm3I~
 //            1st call reduce UFHpendctr,2nd call recognoze new Slcmd new index is completed annd set cmfctr=0//~vbm3I~
 //vbkr:180629 (Bug) Esc*2 clear pend ctr,so occurs "label not found"//~vbkrI~
@@ -111,6 +115,9 @@
 #include <ufile.h>                                              //~5318R~
 #include <uedit.h>                                                 //~v11lI~
 #include <utrace.h>                                              //~v11qR~//~vah0R~
+#include <utf22.h>                                                 //~vbEbI~
+#include <ustring.h>                                               //~vbEjI~
+#include <udbcschk.h>                                              //~vbEqI~
                                                                 //~5318I~
 #include "xe.h"
 #include "xescr.h"
@@ -123,6 +130,7 @@
 #include "xelcmd5.h"                                               //~v0k3I~
 #include "xefunc.h"
 #include "xeerr.h"                                              //~v03wI~
+#include "xeundo.h"                                                //~vbEjI~
 //*******************************************************
 #define MAXREPEAT 9999		//max repeat count                  //~v049I~
 #define REPDELM1   ','      //for bandle.skip                      //~v0i0R~
@@ -1231,10 +1239,174 @@ void lcmdhelp(void)                                                //~v41fI~
 //  uerrmsg("\"abcdfijlmoprsxy<>()[]./+=#\"",0);                   //~v74MR~
 //  uerrmsg("\"abcdfijlmoprsuxy<>()[]./+=#_\"",0);                 //~v75aR~
 //  uerrmsg("\"abcdfijlmoprsuxy<>()[]./+=#_%c%c %s\"",0,           //~v77vR~
-//  uerrmsg("\"abcdfijlmoprsuxy<>()[]./+=#_%c%c %s %s\"",0,        //~v77vI~//+vbBaR~
-    uerrmsg("\"abcdfijlmoprsuxy<>()[]./+=#_(lower)%c%c %s %s\"",0, //+vbBaI~
+//  uerrmsg("\"abcdfijlmoprsuxy<>()[]./+=#_%c%c %s %s\"",0,        //~v77vI~//~vbBaR~
+    uerrmsg("\"abcdfijlmoprsuxy<>()[]./+=#_(lower)%c%c %s %s\"",0, //~vbBaI~
 					ULCCMDTFLOW,ULCCMDTFLOWKW,                     //~v75aR~
 					ULCCMDTFLOWSTRID,                              //~v75bR~
 					ULCCMDTSSTRID);                                //~v75bI~
     return;                                                        //~v41fI~
 }//lcmderr                                                         //~v41fI~
+//*******************************************************          //~vbEjI~
+//ebc file is not supported                                        //~vbEjI~
+//*******************************************************          //~vbEjI~
+int lcmdUpdateLocate(int Popt,PUCLIENTWE Ppcw,PULINEH Pplh,char *Pinsdata,int Pinslen)//~vbEjR~
+{                                                                  //~vbEjI~
+	int addlen,reclen,reclen0;                                     //~vbEjI~
+	UCHAR *pc0,*pcd0;                                              //~vbEjI~
+    UCHAR *pcd,*pc,dbcsid;                                         //~vbEqR~
+    int ii;                                                        //~vbEqI~
+//*****************                                                //~vbEjI~
+    pc0 =Pplh->ULHdata;                                            //~vbEjI~
+    pcd0=Pplh->ULHdbcs;                                            //~vbEjI~
+    reclen0=Pplh->ULHlen;                                          //~vbEjI~
+    UTRACEP("%s:Popt=%02x,inslen=%d,reclen0=\n",UTT,Popt,Pinslen,reclen0);//~vbEqI~
+  if (Popt & LLSO_REP)	//rep mode                                 //~vbEqI~
+  {                                                                //~vbEqI~
+    reclen=max(reclen0,Pinslen);                                   //~vbEqI~
+  	addlen=reclen>reclen0 ? reclen-reclen0 : 0;                    //~vbEqI~
+  }                                                                //~vbEqI~
+  else                                                             //~vbEqI~
+  {                                                                //~vbEqI~
+    addlen=Pinslen;                                                //~vbEjI~
+    reclen=reclen0+addlen;                                         //~vbEjI~
+  }                                                                //~vbEqI~
+    if (undoupdate(Ppcw,Pplh,UUHTREP)==UALLOC_FAILED)              //~vbEjI~
+    	return UALLOC_FAILED;                                      //~vbEjI~
+    if (reclen>Pplh->ULHbufflen)    //expandbuff                   //~vbEjI~
+    {                                                              //~vbEjI~
+        if (fileexpandbuff(Pplh,reclen)==UALLOC_FAILED) //for new word//~vbEjI~
+            return UALLOC_FAILED;                                  //~vbEjI~
+    	pc0 =Pplh->ULHdata;                                        //~vbEjI~
+    	pcd0=Pplh->ULHdbcs;                                        //~vbEjI~
+    }                                                              //~vbEjI~
+  if (Popt & LLSO_REP)	//rep mode                                 //~vbEqI~
+  {                                                                //~vbEqI~
+	memcpy (pc0,Pinsdata,(UINT)Pinslen);                           //~vbEqI~
+  }                                                                //~vbEqI~
+  else                                                             //~vbEqI~
+  {                                                                //~vbEqI~
+    memmove(pc0+addlen,pc0,(UINT)reclen0);//right shift            //~vbEjR~
+	memcpy (pc0,Pinsdata,(UINT)addlen);                            //~vbEjR~
+  }                                                                //~vbEqI~
+    if (pcd0)                                                      //~vbEjI~
+    {                                                              //~vbEjI~
+      if (Popt & LLSO_REP)	//rep mode                             //~vbEqI~
+      {                                                            //~vbEqI~
+		memset(pcd0,0,(UINT)Pinslen);                              //~vbEqI~
+        for (pc=pc0+Pinslen,pcd=pcd0+Pinslen,ii=Pinslen;ii<reclen0;ii++,pc++,pcd++)//~vbEqI~
+        {                                                          //~vbEqI~
+        	dbcsid=*pcd;                                           //~vbEqI~
+            UTRACEP("%s:ii=%d,pc=%02x,pcd=%02x\n",UTT,ii,*pc,*pcd);//+vbEqI~
+			if (UDBCSCHK_DBCSNOT1ST_L(dbcsid)  /*dbcs parts but not top;locale code*///~vbEqI~
+        	||  UDBCSCHK_DBCS2NDUCS2NWPO(dbcsid))                  //~vbEqI~
+            {                                                      //~vbEqI~
+	            UTRACEP("%s:space clear\n",UTT);                   //+vbEqI~
+            	*pc=' '; 	*pcd=0;                                //+vbEqR~
+            }                                                      //~vbEqI~
+            else                                                   //~vbEqI~
+            	break;                                             //~vbEqI~
+        }                                                          //~vbEqI~
+      }                                                            //~vbEqI~
+      else                                                         //~vbEqI~
+      {                                                            //~vbEqI~
+    	memmove(pcd0+addlen,pcd0,(UINT)reclen0);//right shift      //~vbEjR~
+		memset(pcd0,0,(UINT)addlen);                               //~vbEjI~
+      }                                                            //~vbEqI~
+    }                                                              //~vbEjI~
+    Pplh->ULHlen=reclen0+addlen;                                   //~vbEjI~
+    UTRACED("ULHdata",Pplh->ULHdata,reclen);                       //~vbEjR~
+    return 0;                                                      //~vbEjI~
+}                                                                  //~vbEjI~
+//*******************************************************          //~vbEbI~
+//*inser line before labeled line for file panel                   //~vbEbR~
+//*******************************************************          //~vbEbI~
+int lcmdLocateSetall(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh,UCHAR *PstrOption,UCHAR *PstrSetall)//~vbEbR~
+{                                                                  //~vbEbI~
+#define MAX_SETALL  7                                              //~vbEbI~
+    ULCMD   *plcpend,*plcpend0;                                    //~vbEbR~
+//  PULINEH plh,plhprev,plhisrt,plhnext;                           //~vbEjR~
+    PULINEH plh;                                                   //~vbEjI~
+    int rc2,len,inslen;                                            //~vbEbR~
+    int ctrisrt=0,pendctr0,pendctr,ctrlbl=0;                       //~vbEbR~
+	UCHAR insLine[MAX_SETALL+ULHLINENOSZ+4];                       //~vbEbI~
+    int ctrdup=0;                                                  //~vbEcR~
+//*************                                                    //~vbEbI~
+    UTRACEP("%s:Popt=%02x,UFHtype=%02x\n",UTT,Popt,Ppfh->UFHtype); //~vbEqR~
+    plcpend0=Ppfh->UFHpvlcmd;   //pending cmd ULCMD save area      //~vbEbI~
+    pendctr0=Ppfh->UFHpendctr;      //no of pending                //~vbEbI~
+    if (PFH_ISEBC(Ppfh))                                           //~vbEbR~
+        return errnotsupported(PstrOption,"EBCDIC file");          //~vbEbR~
+    len=(int)strlen(PstrSetall);                                   //~vbEbR~
+    if (len<=0 || len>MAX_SETALL)                                  //~vbEbI~
+    {                                                              //~vbEbI~
+        uerrmsg("%s is too long,max is %d",0,                      //~vbEbI~
+        		PstrSetall,MAX_SETALL);                            //~vbEbR~
+        return 4;                                                  //~vbEbI~
+    }                                                              //~vbEbI~
+    if (!utfddisasciistr(0,PstrSetall,0/*Ppdbcs*/,len))            //~vbEbI~
+    {                                                              //~vbEbI~
+        uerrmsg("ASCII only for %s string",0,                      //~vbEbI~
+        		PstrOption);                                       //~vbEbR~
+        return 4;                                                  //~vbEbI~
+    }                                                              //~vbEbI~
+    for (plcpend=plcpend0,pendctr=pendctr0;pendctr;pendctr--,plcpend++)//~vbEbR~
+    {                                                              //~vbEbR~
+        if (plcpend->ULCcmd!=ULCCMDLABEL)                          //~vbEbR~
+        	continue;                                              //~vbEbR~
+    	ctrlbl++;                                                  //~vbEbI~
+        plh=plcpend->ULCplh;                                       //~vbEbR~
+        if (!plh)                                                  //~vbEbR~
+        	continue;                                              //~vbEbI~
+	    UTRACEP("%s:ULHtype=%c,ULHlinenor=%d\n",UTT,plh->ULHtype,plh->ULHlinenor);//~vbEbR~
+//        plhprev=UGETQPREV(plh);                                  //~vbEjR~
+//        plhnext=UGETQNEXT(plh);                                  //~vbEjR~
+		if (plh->ULHtype!=ULHTDATA)                                //~vbEbI~
+        {                                                          //~vbEbI~
+//            if (!plhprev)       //top of line                    //~vbEjR~
+//                plhprev=plh;    //after top of line              //~vbEjR~
+//            else                                                 //~vbEjR~
+//            if (!plhnext)                                        //~vbEjR~
+//                plhprev=UGETQPREV(plh); //before and of line     //~vbEjR~
+//            else                                                 //~vbEjR~
+        		continue;                                          //~vbEbR~
+        }                                                          //~vbEbI~
+	    UTRACEP("%s:ULHlinenor=%d\n",UTT,plh->ULHlinenor);         //~vbEjR~
+//		if (UCBITCHK(plhprev->ULHflag2,(ULHF2SPLIT1|ULHF2SPLIT2))) //~vbEjR~
+  		if (UCBITCHK(plh->ULHflag2,(ULHF2SPLIT1|ULHF2SPLIT2)))     //~vbEjI~
+        	continue;                                              //~vbEbI~
+//      inslen=sprintf(insLine,"%s%-*s",PstrSetall,len,plh->ULHlinecmd);//~vbEbR~//~vbEbR~//~vbEcR~
+//      inslen=sprintf(insLine,"%s%s",PstrSetall,plh->ULHlinecmd); //~vbEjR~
+        inslen=sprintf(insLine,"%s%s ",PstrSetall,plh->ULHlinecmd);//~vbEjI~
+	    UTRACEP("%s:insLine len=%d,line=%s\n",UTT,inslen,insLine); //~vbEbR~
+//      if (UCBITCHK(plhprev->ULHflag6,ULHF6LABELSETALL))          //~vbEjR~
+//      {                                                          //~vbEjR~
+//          if (plhprev->ULHlen==inslen && !memcmp(plhprev->ULHdata,insLine,(UINT)inslen))//~vbEjR~
+            if (plh->ULHlen>=inslen && !memcmp(plh->ULHdata,insLine,(UINT)inslen))//~vbEjR~
+            if (plh->ULHdbcs && (int)umemspnc(plh->ULHdbcs,0,(UINT)inslen)==inslen)//~vbEjR~
+            {                                                      //~vbEcI~
+                ctrdup++;                                          //~vbEcI~
+        		continue;                                          //~vbEcI~
+            }                                                      //~vbEcI~
+//      }                                                          //~vbEjR~
+//        rc2=lcmdisrtwithlen(Ppcw,plhprev,1/*repeat*/,0/*indent opt*/,inslen);   //with indent req//~vbEjR~
+//        if (!rc2)                                                //~vbEjR~
+//        {                                                        //~vbEjR~
+//            plhisrt=UGETQNEXT(plhprev);                          //~vbEjR~
+//            UCBITON(plhisrt->ULHflag6,ULHF6LABELSETALL);         //~vbEjR~
+//            if (UCBITCHK(plh->ULHflag2,ULHF2EXCLUDED))           //~vbEjR~
+//                UCBITON(plhisrt->ULHflag2,ULHF2EXCLUDED);        //~vbEjR~
+//            UTRACEP("%s:isrted ULHtype=%c,ULHlinenor=%d\n",UTT,plhisrt->ULHtype,plhisrt->ULHlinenor);//~vbEjR~
+//            memcpy(plhisrt->ULHdata,insLine,(UINT)inslen);       //~vbEjR~
+////          memset(plhisrt->ULHdbcs,0,inslen);                   //~vbEjR~
+//            ctrisrt++;                                           //~vbEjR~
+//        }                                                        //~vbEjR~
+//      rc2=lcmdUpdateLocate(0,Ppcw,plh,insLine,inslen);           //~vbEqR~
+        rc2=lcmdUpdateLocate(Popt,Ppcw,plh,insLine,inslen);        //~vbEqI~
+        if (!rc2)                                                  //~vbEjI~
+            ctrisrt++;                                             //~vbEjI~
+    }//pend cmd loop                                               //~vbEbR~
+    uerrmsg("%d/%d label lines are inserted by %s option(skipping %d lines duplicated).\n",0,//~vbEcR~
+			ctrisrt,ctrlbl,PstrOption,ctrdup);                     //~vbEcR~
+    UTRACEP("%s:ctrplc=%d,ctrisrt=%d,ctrdup=%d\n",UTT,pendctr0,ctrisrt,ctrdup);//~vbEcR~
+	return 0;                                                      //~vbEbI~
+}                                                                  //~vbEbI~

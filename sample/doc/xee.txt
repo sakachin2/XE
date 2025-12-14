@@ -1,4 +1,4 @@
-UTF8 encoding * CID:||+v30CR~:  2025/08/25  v130C            update#=  775;||+v30CR~
+UTF8 encoding * CID:||+v30DR~:  2025/12/14  v130D            update#=  778;||~v30DR~
 ************************************************************************
 (Index)
     (0).Introduction.
@@ -673,6 +673,9 @@ UTF8 encoding * CID:||+v30CR~:  2025/08/25  v130C            update#=  775;||+v3
       0x00(Ctrl+2), 0x01-0x1f(Ctrl+A-Ctrl+-) is avail for input       
       control char(<0x20).These character input is optionally prohibitted||~v124R~
       by .INI specifiaction (Valid_Ctrl_char)             Chapter-(6) 
+                                                                      ||~v30DI~
+      (In the Linux Console, Ctrl+H(0x08) unconditionally becomes Backspace, so 0x08 cannot be entered.)||~v30DI~
+                                                                      ||~v30DI~
       Those are displayed by special char if there is no corresponding
       char on the codepage. Use of special char is also set by .INI file||~v124R~
       (Disp_trans_tbl,Disp_trans_char)                   Chapter-(6)
@@ -6956,6 +6959,7 @@ by screen expansion)
                      As a result, these code are translated to UTF8 if saved.||~v125R~
                      Error code is not reset is write back as it as.  ||~v125R~
                      e.g. "c *ec * all"                                ||~v125R~||~v128R~
+                     *e/*u etc. which have special meaning in FINd command are treated as character strings||~v30DI~
                                                                       ||~v125R~
             \esc    :same as \esc of FINd cmd.
                      Ctrl char specified on .ini Valid_Ctrl_char
@@ -7949,6 +7953,7 @@ by screen expansion)
                      f * last.  
                      search range is not inherited.
                      No effect for 2nd word of &(AND) search..        ||~v125R~
+                     When searching for the string itself, enclose it in quotes, e.g. f "*u" .||~v30DI~
             *u      :search updated line.
             *e      :search error line.                               ||~v125R~
                      shift err,line cmd err etc.                      ||~v125R~
@@ -8264,6 +8269,15 @@ by screen expansion)
         If cursor is out of file contents area such as cmd line or lineno field,||~v124R~
         search the same word as previously selected.                  ||~v124R~
         This allow to search in the other file in the same session.   ||~v124R~
+                                                                      ||~v30DI~
+   = ScreenHardCopy                                                   ||~v30DI~
+                                                                      ||~v30DI~
+        HCOpy [EOL | NOEOL]                                           ||~v30DI~
+                                                                      ||~v30DI~
+            Specifies whether lines are cut at the End-of-Line(EOL) or at the screen width (NOEOL).||~v30DI~
+            Effective until the end of the session.                   ||~v30DI~
+            You can also specify this option by the command line option /Yh (EOL) (default is /Nh).||~v30DI~
+            This option is intended for the case lines in UTF8 files contain RightToLeft formatting characters.||~v30DI~
 
    = Help
 
@@ -8396,7 +8410,7 @@ by screen expansion)
                                                                       ||~v129R~
    = Locate to the line.
 
-        LOCate  { { [L]line-no | [O]offset } [C] | .label }
+        LOCate  { { [L] line-no | [O] offset } [C] | .label | {insall|repall} xxx}||+v30DI~
 
                (Use this format for Browse/Edit screen)
 
@@ -8406,6 +8420,10 @@ by screen expansion)
                C : lineno/offset of current updated status.
                    if omitted, that of status of at opened.
                .label:search the line with this label.
+                                                                      ||~v30DI~
+               insall|repall xxx : Copies the label command to the top of the text line.||~v30DI~
+               e.g.) If xxx is "ok", then for the line with the label ".a",||~v30DI~
+                     "ok.a" is copied/inserted to the top of that line.||~v30DI~
 
         LOCate  {filename|timestamp|filesize}
 
@@ -15249,12 +15267,22 @@ by screen expansion)
                    About ssh connection, see gxeinstallREADMEe:(S) s390x.||~v30BR~
                    For wxe, see the Microsoft documentation for setting the appropriate charset for the selected font.||~v30BR~
                                                                       ||~v30BR~
-      /G{Y|N}{y|0|1|2}:Specy cell width of unicode defined width is ambiguous.||~v130R~||~v130R~
+#ifdef LNX                                                            ||~v30DI~
+      -G{Y|N|W}{y|0|1|2|w}                                            ||~v30DI~
+#else                                                                 ||~v30DI~
+      /G{Y|N}{y|0|1|2}                                                ||~v30DR~
+#endif                                                                ||~v30DI~
+                   Specy cell width of unicode defined width is ambiguous.||~v30DI~
                         Y:Fit to font width.                                   //~1301I~||~v130I~||~v130R~
                           You can also specify the second option for chars in unfamiliar languages.//~1301I~||~v130I~||~v130R~
                           However, this option takes a cost, the start-up will be slightly slower.//~1301I~||~v130I~||~v130R~
                         N: Specify the display width uniformly using the second option.//~1301I~||~v130I~||~v130R~
+#ifdef LNX                                                            ||~v30DI~
+                        W:API:wcwidth() に従う                        ||~v30DI~
+                        The default value is -GWw.                             //~1301I~||~v30DI~
+#else                                                                 ||~v30DI~
                         The default value is /GY2.                             //~1301I~||~v130I~||~v130R~
+#endif                                                                ||~v30DI~
                         Ex.) /GN2: All ambiguous chars are displayed in two cells.//~1301I~||~v130I~||~v130R~
                              /GYy: All ambiguous chars are adjusted according to the font.//~1301I~||~v130I~||~v130R~
                              /GY0: Unfamiliar languages are displayed as ':;' instead.//~1301I~||~v130I~||~v130R~
@@ -15305,8 +15333,11 @@ by screen expansion)
                     when /Ya is specified.                       
           x=c (/Yc):add change-id-tag to modified lines
           x=d (/Yd):dump when internal error detected
-          x=l (/Yl):LFN usage.(GCC version only)
-          x=n (/Nn):No DBCS input process(WIN version only)
+          x=h (/Nh):(ScreenHardCopyEndOfLine) cut lines by EndOfLine. ||~v30DI~
+          x=m (-Ym):Accept UTF8 byte without translate to locale code.||+v30DI~
+                    When /Nm is specified, for UTF8 code input to CPLC(non UTF8) file||+v30DI~
+                    set UTF8 code itself if Alt+u ON(indecated by =u=&gt; on command input line),||+v30DI~
+                    set translated locale code if Alt+u OFF(===&gt;) or "?" if translation error occured.||+v30DI~
           x=r (/Nr):Use Right-Ctrl key as Execute key
           x=rr(/Nrr):Use Right-Ctrl key as Next line key(effective only when Rctl ON)||~v124R~
           x=t (/Nt):Tab display or not

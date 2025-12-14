@@ -1,8 +1,11 @@
-//*CID://+vbArR~: update#=  409;                                   //+vbArR~
+//*CID://+v7fvR~: update#=  417;                                   //+v7fvR~
 //******************************************************           //~v600I~
 //*utf22.h                                                         //~v640R~
 //******************************************************           //~v600I~
-//vbAr:240702 (gxe:Bug)ddstr and u8 string column unmatch by utfcvdd2f for x1b<-->e286bc. Invalid char is show.//+vbArI~
+//v7fv:251204 Wxe: split combiningchar is not combinable. 1080(char)-1082(comb)-1067(SCM) whe csr is on 1080, 1082-1067 was shown yellow//+v7fvR~
+//vbEe:251109 display "+" for u-200d even when combinemode(uvio_setbufflineopt was not called from setlineattr because tabdisplay return 0)//~vbEeI~
+//v7f5:251008 (LNX)treate ZWJ(u-200d) as combining when ligoff to avoid intermedeate colomn by 200d//~v7f5I~
+//vbAr:240702 (gxe:Bug)ddstr and u8 string column unmatch by utfcvdd2f for x1b<-->e286bc. Invalid char is show.//~vbArI~
 //v7bV:240523 category Cf(Format is wcwidth=0(52 chars) or 1(11 chars) but not combining(ie wcwidth=0 dose not means combining)//~v7BVI~
 //vbzV:240422 SCM(Mc) by green attr                                //~vbzVI~
 //vbzM:240408 (WXE) support hardcopy function                      //~vbzMI~
@@ -343,7 +346,7 @@ int utfcvdd2f(int Popt,UCHAR *Ppdata,int Plen,UCHAR *Ppdbcs,UCHAR *Ppout,int Pbu
 #define  UTFDD2FO_DUPREPCHK        0x0800 //leave split replacement at xe//~v640R~
 #define  UTFDD2FO_NULLALT          0x1000 //rep null by altch;for gxe//~v6p2I~
 #define  UTFDD2FO_OUTSTRZ          0x2000 //append null char       //~v6E9I~
-#define  UTFDD2FO_SETDDDBCSALT     0x4000 //update dddbcs by altch //+vbArI~
+#define  UTFDD2FO_SETDDDBCSALT     0x4000 //update dddbcs by altch //~vbArI~
                                                                    //~v640I~
 #define  UTFDD2FRC_ASCII           0x01	//ascii contained          //~v640I~
 #define  UTFDD2FRC_UCS             0x02	//ucs translated           //~v640R~
@@ -691,6 +694,7 @@ int utf_iswidth0(int Popt,int Pdbcsid,ULONG Pucs);                 //~v6VqR~
 //*******************************************************************//~v6VsI~
 int utf_iscombinable(int Popt,ULONG Pucs);                         //~v6VsR~
 #define UICAO_NOSPACE  0x01   //disallow space as combinable       //~v6WuI~
+#define UICAO_STR_TOP  0x02   //starting char                      //+v7fvR~
 //*******************************************************************//~v6WiI~
 int utf4_isFormat(int Popt,UWUCS Pucs);                            //~v6WiI~
 //*******************************************************************//~v6WrI~
@@ -699,14 +703,19 @@ int utf_iscombining(int Popt,int Pdbcsid,int Pucs);                //~v6WrR~
 #define UICO_RCCOMB2SCM    0x01    //set rc|=COMB2SCM for cmb2scm  //~v6X5R~
 #define UICO_COMBONLY      0x02    //confirm combining, rc=0 for category Cf etc//~v7bVR~
 #define UICO_RCNOCOMB      0x04    //set rc for NOT combining but width=0//~v7bVI~
+#ifndef JJJ                                                        //~v7f5R~
+#define UICO_ZWJASCOMB     0x08  //return true for ZWJ(u-200d)     //~v7f5I~
+#endif                                                             //~v7f5M~
 #define UICRC_SBCS    0x01    //ucs2(1 column)                     //~v6WrR~
 #define UICRC_OVF     0x02    //ucs4(2 column)                     //~v6WrR~
 #define UICRC_SCM     0x04    //SCM 1/2 column                     //~v6WrR~
 #define UICRC_NOCOMB  0x08    //wcwidth=0 but not combining        //~v7bVI~
 //#define UICRC_COMBALL 0x07    //all combining                      //~v6WrI~//~v6X5R~
 #define UICRC_COMB2SCM 0x08   //Mn but SCM for windows angxe       //~v6X5I~
+                                                                   //~v7f5I~
 int utf_iscombiningDD(int Popt,char *Pdddata,char *Pdddbcs,int Plen);//~vbzVI~
 #define UICDO_EXCEPT_SCM    0x01 //exclude SCM                     //~vbzVI~
+#define UICDO_INCLUDE_ALLW0 0x02 //include all width0              //~vbEeI~
 //*******************************************************************//~v6X5I~
 int mk_wcwidth_combining2SCM(int Popt,UWUCS ucs);                  //~v6X5I~
 //*******************************************************************//~v79zI~

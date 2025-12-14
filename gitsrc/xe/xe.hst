@@ -1,4 +1,63 @@
-//*v130C *** 2025/08/25 upload 
+//*v130D *** 2025/12/14 upload ********************************************
+//vbEr:251206 add HCO cmd for hardcopy
+//            HCO EOL|NOEOL|?
+//             xefunct.c xedcmd2.c
+//vbEq:251205 locate cmd setall xxx; change to repall and insall
+//             xefcmd.c xelcmd.c/h
+//vbEp:251204 (W32)bug of vbDp(use split comb colr whe csr pos); it have not to apply csr is on data line split comb char.
+//             wxescr.cpp wxecsub.c/h wxemain.h
+//vbEn:251201 (W32 bug)under combinemode;u-309a(handakuten such as for katakana-Po) is not shown as split mode even when csr is on
+//             set celldraw always if utf8 file contains unicode
+//             xefile23.c xefile6.c/h
+//vbEm:251201 (W32 bug)under splitmode, u-309a(handakuten such as for katakana-Po) is not shown as split mode
+//             tabdisplay returns 0, it means celldraw=0
+//             xefile6.c utf22.c
+//vbEk:251119 locate cmd of "l .all xxx"; change to "l setall xxx"
+//             xefcmd.c
+//vbEj:251119 locate cmd of "l .all xxx"; change add line to rep line to keep same lineno
+//            xefile.c xelcmd.c
+//vbEi:251114 (wxe)wxe replaced combining to ":" at csubtextoutw_ligature; but do it at file23-setlineattr like as gxe(vbEh)
+//            xefile23.c
+//vbEh:251113 (gxe)LIGON+UNPR; hcopy dose not write ":" for combining
+//            xefile23.c
+//vbEg:251112 (LNXCON)hcopy;save/get by dd str for utf8(shadow of combining generated double a+x300 and a and a+301)
+//            uviol.c/h uvio.h uviom.h uvioml.c xedcmd2.c
+//vbEf:251110 (gxe)display "+" for u-200d("-" was displayed)
+//            xxescr.c
+//vbEe:251109 display "+" for u-200d even when combinemode(uvio_setbufflineopt was not called from setlineattr because tabdisplay return 0)
+//            xefile6.c utf22.c/h
+//vbEd:251107 (WXE)hcopy by saving TextOutW to buffer
+//            wxecsub.c/h uvio.c wxexei.h wxexei3.c wxescr.cpp
+//vbEc:251102 locate cmd;  avoid duplicated insert
+//            xelcmd.c xefile.h
+//vbEb:251013 locate cmd;  add "l .all xxx" to insert line of the label lcmd.
+//            xelcmd.c/h xefcmd.c
+//**vbEb:251013 locate cmd; "l  add "change *e xxxx" cmd to update errline by xxxx
+//**            xefcmd25.c xefcmd26.c
+//**vbEa:251011 add "change *e xxxx" cmd to update errline by xxxx
+//**            xefcmd25.c xefcmd26.c
+//**vbE9:251011 locate .label cmd; add next option to search current position
+//**            xelcmd.c/h xefcmd.c
+//vbE8:251011 (LNX)mapinit overflow msg is corrupted. string is EUC, terminal is utf8.
+//            utf22.c
+//vbE7:250923 (LNX)add glyph chk option "w"(/G{Y|N|W}[0|1|2|y|w] to use wcwidth() and default is /GWw.
+//            xe.c uvio2.h/c utf22.c utf4.c utf3.c utf.h
+//vbE6:250922 (gxe)vbDf is not sufficient, crash when multiple print was requested. it is needed to chk request count.
+//                 No need to consider exit by X button, all thread will be killded.
+//            gxeview.c
+//vbE5:250921 (W32)adjust errmsg for S+F6(toggle dirlist size and username)
+//            xedir3.c
+//vbE4:250921 (LNX)update UFSINFO(mountpoint) by S+F1(refresh)
+//            xedlcmd2.c ufile4.c/h
+//vbE3:250919 (LNX)when username display mode,display filesystem name on date/time fld
+//            xedir2.c
+//vbE2:250918 (LNX)dirlist, display free rate for mount point
+//            ufile4.c/h xedir2.c
+//vbE1:250917 dirlist, display large fileszie by unit:M
+//            xedir2.c
+//vbE0:250917 display use% on root/mountpoint line of disrlist
+//            xedir2.c
+//*v130C *** 2025/08/25 upload ********************************************
 //vbDy:250828 put CMD string to kbdtrace
 //            xefunc.c
 //vbDx:250826 cv h2c; allow missing pre of -HpreXXpost

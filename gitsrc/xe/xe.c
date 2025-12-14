@@ -1,7 +1,12 @@
-//*CID://+vbDtR~:                              update#=  910;      //~vbDtR~
+//*CID://+v7fzR~:                              update#=  949;      //~v7fzR~
 //*************************************************************
 //*XE.c*                                                           //~v641R~
 //*************************************************************
+//v7fz:251205 (gxe) hcopy eol option for also gxe                  //~v7fzI~
+//v7fy:251205 (LNXCON) hcopy eol option for LNXCON                 //~v7fyI~
+//v7fx:251205 (Wxe)addtionally to WINCON, optionally chk EOL for also Wxe.//~v7fxI~
+//v7fu:251204 optionally do v7ft;/yh                               //~v7fuI~
+//vbE7:250923 (LNX)add gliph chk option "w"(/G{Y|N|W}[0|1|2|y|w] to use wcwidth() and default is /GWw.//~vbE7I~
 //vbDt:250804 (LNX)Test function. Color palette number of Datapos by Vhex Cursor by cmdline option -vdc_//~vbDtI~
 //vbDj:250714 (WinCon) wait by getchar when exception to be attached by visualstudio//~vbDjI~
 //vbDd:250704 compiler err c2059(typedef function). missing *      //~vbDaI~
@@ -1663,7 +1668,8 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
 	#endif                                                         //~vbz3I~
 #else                                                              //~vbz5I~
 //  #ifdef XXE                                                     //~vbz5I~//~vbzpR~
-		Gulibutfmode|=GULIBUTF_APICHK_CSR; //0x08000000  //Default:utfwcwidth chr cursor step//~vbz5I~
+//		Gulibutfmode|=GULIBUTF_APICHK_CSR; //0x08000000  //Default:utfwcwidth chr cursor step//~vbz5I~//~vbE7R~
+    	Guvio2Stat|=UVIO2S_AMBIG_USEWCW|UVIO2S_AMBIGLANG_USEWCW; //defalt use wcwidth for all ambiguous//~vbE7R~
 //  #endif                                                         //~vbz5I~//~vbzpR~
 #endif                                                             //~vbz3I~
 #ifdef WINCON                                                      //~vbzYR~
@@ -1875,12 +1881,22 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
 //                Guvio2Stat&=~UVIO2S_USEAPI_AMBIGLANG;  //default   //~vbzYI~//~vbzZR~
                 if (toupper(*cptr)=='Y')  //Yv   do glyph chk      //~vbzzR~
 //                {                                                  //~vbzYI~//~vbzZR~
+                {                                                  //~vbE7I~
 					Gulibutfmode|=GULIBUTF_APICHK_CSR; //0x08000000  //utfwcwidth chr cursor step//~vbzzI~
+#ifdef LNX                                                         //~vbE7I~
+			    	Guvio2Stat&=~(UVIO2S_AMBIG_USEWCW|UVIO2S_AMBIGLANG_USEWCW); 	//default: use wcwidth for all ambiguous//~vbE7R~
+#endif                                                             //~vbE7I~
 //                    Gulibutfmode|=GULIBUTFMODE_AMBIGLANG;//default when -GY, apichk for ambiguous by lang//~vbzYI~//~vbzZR~
 //                }                                                  //~vbzYI~//~vbzZR~
+                }                                                  //~vbE7I~
                 else                                               //~vbzzI~
                 if (toupper(*cptr)=='N')  //Nv   //do not glyph chk//~vbzzR~
+                {                                                  //~vbE7I~
                     Gulibutfmode&=~GULIBUTF_APICHK_CSR; //0x08000000  //utfwcwidth chr cursor step//~vbzzI~
+#ifdef LNX                                                         //~vbE7I~
+			    	Guvio2Stat&=~(UVIO2S_AMBIG_USEWCW|UVIO2S_AMBIGLANG_USEWCW); 	//default: use wcwidth for all ambiguous//~vbE7I~
+#endif                                                             //~vbE7I~
+                }                                                  //~vbE7I~
                 else                                               //~vbzzI~
 //                if (toupper(*cptr)=='A')  //Nv   //do not glyph chk//~vbzEI~//~vbzFR~
 //                {                                                  //~vbzEI~//~vbzFR~
@@ -1888,12 +1904,28 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
 //                    Guvio2Stat|=UVIO2S_DRAWTEXTALL; //0x0400  //chk by TextDraw if extent is sbcs//~vbzEI~//~vbzFR~
 //                }                                                  //~vbzEI~//~vbzFR~
 //                else                                               //~vbzEI~//~vbzFR~
+#ifdef LNX                                                         //~vbE7I~
+                if (toupper(*cptr)=='W')                           //~vbE7I~
+                {                                                  //~vbE7I~
+                    Gulibutfmode&=~GULIBUTF_APICHK_CSR; //0x08000000  //utfwcwidth chr cursor step//~vbE7I~
+			    	Guvio2Stat|=(UVIO2S_AMBIG_USEWCW|UVIO2S_AMBIGLANG_USEWCW); 	//default: use wcwidth for all ambiguous//~vbE7I~
+                }                                                  //~vbE7I~
+                else                                               //~vbE7I~
+#endif                                                             //~vbE7I~
                 	swErrGW=1;                                     //~vbzzI~
 //              }                                                    //~vbzYI~//~vbzZR~
                 Gulibutfmode&=~GULIBUTFMODE_AMBIGLANG;//apichk for ambiguous by lang//~vbzzI~
 	            Guvio2Stat&=~(UVIO2S_AMBIG_SBCS|UVIO2S_AMBIG_UNP); //~vbzzR~
+#ifdef LNX                                                         //~vbE7I~
+			    Guvio2Stat&=~UVIO2S_AMBIGLANG_USEWCW; 	//default: use wcwidth for all ambiguous//~vbE7R~
+#endif                                                             //~vbE7I~
                 if (!swErrGW)                                      //~vbzzI~
                 {                                                  //~vbzzI~
+                	if (*(cptr+1) && *(cptr+2))                    //~vbE7I~
+                    {                                              //~vbE7I~
+                        swErrGW=1;                                 //~vbE7I~
+                    }                                              //~vbE7I~
+                    else                                           //~vbE7I~
                 	switch(*(cptr+1))                              //~vbzzI~
                     {                                              //~vbzzI~
                     case 'Y':                                      //~vbzzR~
@@ -1902,9 +1934,17 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
 //                        if (!(Gulibutfmode & GULIBUTF_APICHK_CSR)           //No ambiguous chk,alwas 2 cell//~vbzYR~//~vbzZR~
 //                        &&  !(Guvio2Stat & UVIO2S_USEAPI))         //~vbzYR~//~vbzZR~
                         if (!(Gulibutfmode &GULIBUTF_APICHK_CSR))           //No ambiguous chk,alwas 2 cell//~vbzZI~
+#ifdef LNX                                                         //~vbE7I~
+                        if (!(Guvio2Stat & UVIO2S_AMBIG_USEWCW))   //~vbE7I~
+#endif                                                             //~vbE7I~
                         {                                          //~vbzzI~//~vbzyR~
-                            uerrexit("y of %cG{Y|N}{y|1|2} is valid when %cGY.\n",0,//~vbzzI~//~vbzyR~
-                                    CMDFLAG_PREFIX,CMDFLAG_PREFIX);//~vbzzI~//~vbzyR~
+#ifdef LNX                                                         //~vbE7I~
+                            uerrexit("y of %cG{Y|N|W}{y|1|2|w} is valid when %cG{Y|W}.\n",0,//~vbE7M~
+                                    CMDFLAG_PREFIX,CMDFLAG_PREFIX);//~vbzzI~//~vbzyR~//~vbE7M~
+#else                                                              //~vbE7I~
+                            uerrexit("y of %cG{Y|N}{y|1|2} is valid when %cGY.\n",0,//~vbzzI~//~vbzyR~//~vbE7R~
+                                    CMDFLAG_PREFIX,CMDFLAG_PREFIX);//~vbE7I~
+#endif                                                             //~vbE7I~
                         }                                          //~vbzzI~//~vbzyR~
                         Gulibutfmode|=GULIBUTFMODE_AMBIGLANG;//apichk for ambiguous by lang//~vbzzI~
                     	break;                                     //~vbzzI~
@@ -1917,16 +1957,29 @@ int  parmproc00(int Pparmc,char *Pparmp[])                         //~v79zI~
 //                    case 'A':                                      //~vbzYR~//~vbzZR~
 //                        Guvio2Stat|=UVIO2S_USEAPI_AMBIGLANG;       //~vbzYR~//~vbzZR~
 //                        break;                                     //~vbzYR~//~vbzZR~
+#ifdef LNX                                                         //~vbE7I~
+                    case 'W':              //apply wcwidth()       //~vbE7I~
+                    case 'w':              //apply wcwidth()       //~vbE7I~
+                        Guvio2Stat|=UVIO2S_AMBIGLANG_USEWCW;       //~vbE7R~
+                        break;                                     //~vbE7I~
+#endif                                                             //~vbE7I~
                     case '2':                                      //~vbzzI~
                     	break;                                     //~vbzzI~
-                    default:                                       //~vbzzI~
+//                    default:                                       //~vbzzI~//~vbE7R~
+                    case 0:                                        //~vbE7I~
 					  if (Gulibutfmode & GULIBUTF_APICHK_CSR)      //~vbzZR~
 						Gulibutfmode|=GULIBUTFMODE_AMBIGLANG;//default when -GY, apichk for ambiguous by lang//~vbzZI~
                       else                                         //~vbzZR~
-                      {                                            //~vbAnI~
-                		uerrmsg("Glyph Display Width parm(%s) 2nd option error",0,Pparmp[parmno]);//~vbAnI~
-                        swErrGW=1;                                 //~vbzzI~
-                      }                                            //~vbAnI~
+#ifdef LNX                                                         //~vbE7I~
+                      if (Guvio2Stat & UVIO2S_AMBIG_USEWCW)        //~vbE7I~
+	                  	Guvio2Stat|=UVIO2S_AMBIGLANG_USEWCW;       //~vbE7R~
+#endif                                                             //~vbE7M~
+                    	break;                                     //~vbE7I~
+                      default:                                     //~vbE7I~
+                      {                                            //~vbAnI~//~vbE7R~
+                        uerrmsg("Glyph Display Width parm(%s) 2nd option error",0,Pparmp[parmno]);//~vbAnI~//~vbE7R~
+                        swErrGW=1;                                 //~vbzzI~//~vbE7R~
+                      }                                            //~vbAnI~//~vbE7R~
                 	}                                              //~vbzzI~
                 }                                                  //~vbzzI~
                 if (swErrGW)                                       //~vbzzI~
@@ -2661,7 +2714,7 @@ void parmproc(int Pparmc,char *Pparmp[])
                 if (ustrstri(cptr,"DC"))   //vdc                   //~vbDtI~
                 {                                                  //~vbDtI~
 					GvhexcsrDataColorPalette=numchk(cptr+2);       //~vbDtR~
-					if (GvhexcsrDataColorPalette<=0 || GvhexcsrDataColorPalette>7)//+vbDtR~
+					if (GvhexcsrDataColorPalette<=0 || GvhexcsrDataColorPalette>7)//~vbDtR~
 	                	uerrexit("parm err(%s) vdc value is 1-->7",0,cptr-1);//~vbDtI~
                 }                                                  //~vbDtI~
                 else                                               //~vbDtI~
@@ -2702,6 +2755,13 @@ void parmproc(int Pparmc,char *Pparmp[])
 #endif                                                          //~5430I~
                     case 'E':                                      //~vbq7I~
                         break;                                     //~vbq7I~
+//#ifdef WINCON                                                    //~v7fxR~
+//#ifdef W32                                                         //~v7fxI~//~v7fyR~
+//#ifndef XXE                                                        //~v7fyI~//~v7fzR~
+                    case 'H':  //hardcopy ;chk eol                 //~v7fuM~
+    					Guvio2Stat|=UVIO2S_HCOPY_CHKEOL;//              0x4000  //hcopy cut line by EOL(0x1b)//~v7fuM~
+                        break;                                     //~v7fuM~
+//#endif                                                             //~v7fuM~//~v7fzR~
 #ifdef LNX                                                         //~vad0I~
     #if !defined(XXE) && !defined(ARM)                             //~vad0I~
                     case 'I':  //use ICU as local converetr        //~vad0I~
@@ -2816,6 +2876,13 @@ void parmproc(int Pparmc,char *Pparmp[])
 #endif                                                          //~5430I~
                     case 'E':                                      //~vbq7I~
                         break;                                     //~vbq7I~
+//#ifdef WINCON                                                    //~v7fxR~
+//#ifdef W32                                                         //~v7fxI~//~v7fyR~
+//#ifndef XXE                                                        //~v7fyI~//~v7fzR~
+                    case 'H':  //hardcopy ;chk eol                 //~v7fuM~
+    					Guvio2Stat&=~UVIO2S_HCOPY_CHKEOL;//              0x4000  //hcopy cut line by EOL(0x1b)//~v7fuM~
+                        break;                                     //~v7fuM~
+//#endif                                                             //~v7fuM~//~v7fzR~
 #ifdef LNX                                                         //~vad0I~
     #if !defined(XXE) && !defined(ARM)                             //~vad0I~
                     case 'I':  //use ICU as local converetr        //~vad0I~
@@ -3046,6 +3113,7 @@ void parmproc(int Pparmc,char *Pparmp[])
         uvio_winopt(UVIOWINFORCENT);                               //~v449R~
   #endif //!WXE                                                    //~v500I~
 #endif                                                             //~v0jtI~
+    UTRACEP("%s:Gulibutfmode=%08x,Guvio2Stat=%08x\n",UTT,Gulibutfmode,Guvio2Stat);//~vbE7M~
     return;
 }//parmproc
 //**********************************************************************//~vbzrI~
@@ -3411,28 +3479,49 @@ void help(void)
 //            "               :    %cGY0 馴染みの少ない言語は':;' で代替\x95\\示\n",//~vbzyI~//~vbzZR~
 //            CMDFLAG_PREFIX);                                       //~vbzyI~//~vbzZR~
 //#else                                                              //~vbzyI~//~vbzZR~
+#ifdef LNX                                                         //~vbE7I~
+    HELPMSG "  %cG{Y|N|W}{y|0|1|2|w}:Adjust display width of ambiguous type of Unicode.\n",//~vbE7R~
+            "  %cG{Y|N|W}{y|0|1|2|w}:\x95\\示幅が曖昧とされているユニコード文字の\x95\\示幅の調整。\n",//~vbE7R~
+			CMDFLAG_PREFIX);                                       //~vbE7I~
+#else                                                              //~vbE7I~
     HELPMSG "  %cG{Y|N}{y|0|1|2}:Adjust display width of ambiguous type of Unicode.\n",//~vbzzR~//~vbzYR~
             "  %cG{Y|N}{y|0|1|2}:\x95\\示幅が曖昧とされているユニコード文字の\x95\\示幅の調整。\n",//~vbzzR~//~vbzYR~
 			CMDFLAG_PREFIX);                                       //~vbzzI~
+#endif                                                             //~vbE7I~
+#ifdef LNX                                                         //~vbE7I~
+    HELPMSG "               :N:Use 1 or 2 cell or unprintable('0') for ambiguous.\n",//~vbE7I~
+            "               :N:曖昧なユニコードは１桁又は２桁か印刷不\x94\\扱い('0')とする\n");//~vbE7I~
+#else                                                              //~vbE7I~
     HELPMSG "               :N:Use 1 or 2 cell or unprintable('0') for all ambiguous.\n",//~vbzzR~
 //          "               :N:曖昧なユニコードは一律に１桁又は２桁か印刷不\x94\\扱い('0')とする\n");//~vbzzI~//~vbzzR~//~vbAnR~
             "               :N:曖昧なユニコードは一律１桁又は２桁か印刷不\x94\\扱い('0')とする\n");//~vbAnI~
+#endif                                                             //~vbE7I~
     HELPMSG "               :When %cGY, {y|0|1|2} is separately for unfamiliar languages.\n",//~vbzzR~
             "               :%cGYのときの {y|0|1|2} は別途、馴染みの少ない言語についての指定\n",//~vbzzR~
 			CMDFLAG_PREFIX);                                       //~vbzzI~
     HELPMSG "               :y:Adjust for also unfamiliar languages.\n",//~vbzzR~
             "               :y:馴染みの少ない言語についても調整する。\n");//~vbzzR~
+#ifdef LNX                                                         //~vbE7I~
+    HELPMSG "               :W/w:Apply result of API:wcwidth() for ambiguous.\n",//~vbE7R~
+            "               :W/w:曖昧文字の\x95\\示幅は API:wcwidth() の結果に従う\n");//~vbE7R~
+    HELPMSG "               :Default is %cGWw.\n",                 //~vbE7R~
+            "               :省略値は %cGWw。\n",                  //~vbE7R~
+			CMDFLAG_PREFIX);                                       //~vbE7I~
+#else                                                              //~vbE7I~
     HELPMSG "               :Default is %cGY2.\n",                 //~vbzzR~
             "               :省略値は %cGY2。\n",                  //~vbzzR~
 			CMDFLAG_PREFIX);                                       //~vbzzI~
+#endif                                                             //~vbE7I~
     HELPMSG "               :e.g) %cGN2 use 2 cells for all Ambiguous.\n",//~vbzAI~
             "               :例）%cGN2 全ての曖昧文字は２桁\x95\\示\n",//~vbzAR~
 			CMDFLAG_PREFIX);                                       //~vbzAI~
     HELPMSG "               :     %cGYy Adjust for all Ambiguous by font used.\n",//~vbzAR~
             "               :    %cGYy 全ての曖昧文字をフォントに従い調整する\n",//~vbzAR~
 			CMDFLAG_PREFIX);                                       //~vbzAI~
-    HELPMSG "               :     %cGY0 Display ':;' for unfamiliar languages.\n",//~vbzAI~
-            "               :    %cGY0 馴染みの少ない言語は':;' で代替\x95\\示\n",//~vbzAR~
+//  HELPMSG "               :     %cGY0 Display ':;' for unfamiliar languages.\n",//~vbzAI~//~vbE7R~
+//          "               :    %cGY0 馴染みの少ない言語は':;' で代替\x95\\示\n",//~vbzAR~//~vbE7R~
+    HELPMSG "               :     %cGY0 Display ':;'(unprintable) for unfamiliar languages.\n",//~vbE7I~
+            "               :    %cGY0 馴染みの少ない言語は':;'(印刷不\x94\\)で代替\x95\\示",//~vbE7I~
 			CMDFLAG_PREFIX);                                       //~vbzAI~
 //#endif  //else LNX                                                 //~vbzyI~//~vbzZR~
 //#ifdef WINCON                                                      //~vbzzI~//~vbzAR~
@@ -3558,6 +3647,11 @@ void help(void)
             "      x=e (%cYe):例外ハンドラーを設定する\n",         //~vbq7R~
 			CMDFLAG_PREFIX);                                       //~vbq7I~
   }                                                                //~vbq7I~
+//#ifdef WINCON                                                      //~v7fuI~//~v7fzR~
+    HELPMSG "      x=h (%cNh):ScreenHardcopy: cut lines by EndOfLine.\n",//+v7fzR~
+            "      x=h (%cNh):画面ハードコピー：行は行長でカットする\n",//+v7fzR~
+			CMDFLAG_PREFIX);                                       //~v7fuI~
+//#endif                                                             //~v7fuI~//~v7fzR~
 #ifdef LNX                                                         //~vad0I~
   if (Sdebughelp)                                                  //~vad0I~
   {                                                                //~vad0I~

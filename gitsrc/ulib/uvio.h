@@ -1,6 +1,9 @@
-//*CID://+v7caR~:                             update#=   81;       //+v7caR~
+//*CID://+v7fzR~:                             update#=   86;       //+v7fzR~
 //******************************************************
-//v7ca:240628 (gxe) hardcopy support                               //+v7caI~
+//v7fz:251205 (gxe) hcopy eol option for also gxe                  //~v7fzI~
+//v7fy:251205 (LNXCON) hcopy eol option for LNXCON                 //~vbEgI~
+//vbEg:251112 (LNXCON)hcopy;save/get by dd str for utf8(shadow of combining generated double a+x300 and a and a+301)//~vbEgI~
+//v7ca:240628 (gxe) hardcopy support                               //~v7caI~
 //vbzM:240408 (WXE) support hardcopy function                      //~vbzMI~
 //v7bn:240406 (WINCON)hardcopy;errmsg is not write to buffer,use only readconsole except fffd is detected//~v7bhI~
 //vbzJ:240403 appendmode screen print to ::hp by Ctrl+h (hardcopy) //~vbzJI~
@@ -258,6 +261,10 @@ int isVTmode();                                                    //~v7a6I~
 #ifndef WXEXXE                                                     //~vbzJI~
 //#ifdef WINCON                                                      //~vbzJI~//~v7bhR~
 int uvioGetCellData(int Popt,int Prow,UWCHART *Ppucs,int *Ppucsctr);//~vbzJI~
+#ifdef LNXCON                                                      //~vbEgI~
+//int uvioGetCellDataDD(int Popt,int Prow,char *Pdddata,char *Pdddbcs,int *Pddlen);//~vbEgR~
+int uvioGetCellDataDD(int Popt,int Prow,int PsplitV,char *Pdddata,char *Pdddbcs,int *Pddlen);//~vbEgI~
+#endif                                                             //~vbEgI~
 #ifdef WINCON                                                      //~v7bhI~
 #ifdef DDD                                                         //~v7bhI~
 int uvioSaveCellDataLocalefileW(int Popt,WUCS *Ppucs,int Pucsctr,int Prow,int Pcol);//~vbzJI~
@@ -272,6 +279,7 @@ int uvioSaveCellDataDD(int Popt,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen,WUCS *Ppucs
 #ifdef WXE                                                         //~vbzMM~
 	int uvioGetCellDataWXE(int Popt,int Prow,int PcmaxCol,int PsplitHpos,int PsplitVpos,UCHAR *Ppdddata,UCHAR *Ppdddbcs);//~vbzMR~
 #endif                                                             //~vbzMM~
-#ifdef XXE                                                         //+v7caI~
-	int uvioGetCellDataXXE(int Popt,int Prow,int PcmaxCol,int PsplitHpos,int PsplitVpos,UCHAR *Ppdddata,UCHAR *Ppdddbcs);//+v7caI~
-#endif                                                             //+v7caI~
+#ifdef XXE                                                         //~v7caI~
+//    int uvioGetCellDataXXE(int Popt,int Prow,int PcmaxCol,int PsplitHpos,int PsplitVpos,UCHAR *Ppdddata,UCHAR *Ppdddbcs);//~v7caI~//~v7fzR~
+    int uvioGetCellDataXXE(int Popt,int Prow,int PcmaxCol,int PsplitHpos,int PsplitVpos,UCHAR *Ppdddata,UCHAR *Ppdddbcs,int *Ppddlen);//~v7fzI~
+#endif                                                             //~v7caI~

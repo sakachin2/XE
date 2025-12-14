@@ -69,12 +69,22 @@ a:hover{font-weight:bold;}-->
 
                     Ex.) /F"MS Mincho":128, /F@.\fontParm.txt.            
                          /F"\uff2d\uff33 \u660e\u671d".                   
-      -G{Y|N}{y|0|1|2}:Specy cell width of unicode defined width is ambiguous.
+#ifdef LNX
+      -G{Y|N|W}{y|0|1|2|w}
+#else
+      /G{Y|N}{y|0|1|2}
+#endif
+                       Specy cell width of unicode defined width is ambiguous.
                         Y:Fit to font width.                                  
                           You can also specify the second option for chars in <A href="HID00000210.ambiglangE.htm">unfamiliar languages</A>..
                           However, this option takes a cost, the start-up will be slightly slower.
                         N: Specify the display width uniformly using the second option.
+#ifdef LNX
+                        W:API:wcwidth() に従う
+                        The default value is -GWw.                             //~1301I~
+#else
                         The default value is /GY2.                             
+#endif
                         Ex.) /GN2: All ambiguous chars are displayed in two cells.
                              /GYy: All ambiguous chars are adjusted according to the font.
                              /GY0: Unfamiliar languages are displayed as ':;' instead.
@@ -116,10 +126,13 @@ a:hover{font-weight:bold;}-->
                     when -ya is specified.
           x=c (-yc):add change-id-tag to modified lines
           x=d (-yd):dump when internal error detected
+          x=h (/Nh):(ScreenHardCopyEndOfLine) cut lines by EndOfLine.
           x=m (-Ym):Accept UTF8 byte without translate to locale code.
                     When /Nm is specified, for UTF8 code input to CPLC(non UTF8) file
                     set UTF8 code itself if Alt+u ON(indecated by =u=&gt; on command input line),
                     set translated locale code if Alt+u OFF(===&gt;) or "?" if translation error occured.
+          x=r (/Nr):Use Right-Ctrl key as Execute key
+          x=rr(/Nrr):Use Right-Ctrl key as Next line key(effective only when Rctl ON)
           x=t (-nt):Tab display or not
       -/           :End of parameter(ignore following)
                     Use to cut re-displayed command by history func.

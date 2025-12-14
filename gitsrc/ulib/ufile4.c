@@ -1,8 +1,11 @@
-//*CID://+v7dzR~:                             update#=  342;       //~v7dzR~
+//*CID://+v7g0R~:                             update#=  354;       //~v7g0R~
 //*************************************************************
 //*ufile4.c                                                        //~v083R~
 //*  utempnam udirwalk ugetdiskfree ufileishpfs ufileisvfat ufileisntfs//~v5i0R~
 //*************************************************************
+//v7g0:251213 (Lnx)compiler warning;process when getfsinfoDF("df -k -l") faled//~v7g0I~
+//vbE4:250921 (LNX)update UFSINFO(mountpoint) by S+F1(refresh)     //~vbE4I~
+//vbE2:250918 (LNX)dirlist, display free rate for mount point      //~vbE2I~
 //v7dz:241026 udirwalk multiple rootdir support                    //~v7dzI~
 //vat8:241025 xdig:support multiple dirmask                        //~vat8I~
 //vat5:241023 xdig:add option to apply dirmask once and all        //~vat5I~
@@ -151,6 +154,7 @@
 #ifdef UNX                                                         //~v50GI~
     #include <ufile1l2.h>                                          //~v50GI~
     #include <uunxsub.h>                                           //~v5nhI~
+	#include <uproc.h>                                             //~vbE2I~
 #endif                                                             //~v50GI~
 //**********************************************************************//~v063I~
 #ifdef LNX                                                         //~v5b0I~
@@ -173,9 +177,12 @@ static  int  *Sapplrc;                                             //~v063I~
 static  int  Sstopdepth;                                           //~v063I~
 static  int  Scallctr;                                             //~v063I~
 static  int  Sapplytopmask=0;                                      //~v528I~
-//static  int  SfirstTopmaskLevel;                                   //~vat5I~//+v7dzR~
+//static  int  SfirstTopmaskLevel;                                   //~vat5I~//~v7dzR~
 static  int  Sstartdirlen;                                         //~v6k4I~
 static  char  Sstartdir[_MAX_PATH];                                //~v6k4I~
+#ifdef LNX                                                         //~vbE2I~
+static PUFSINFO Spufsinfo;
+#endif                                                             //~vbE2I~
 //*                                                                //~v063I~
 //int udirwalksub(char *Pdir,PUDIRLIST Ppudirlist);                //~v201R~
 int udirwalksub(char *Pdir,PUDIRLIST Ppudirlist,int Plevel);       //~v201I~
@@ -379,8 +386,8 @@ char *multipleMask(char *Pstrs,int *Ppctr)                         //~vat8M~
         else                                                       //~vat8M~
             pce=pc;                                                //~vat8M~
         len=PTRDIFF(pce,pci);                                      //~vat8M~
-//      memcpy(pco,pci,len);                                       //~vat8M~//+v7dzR~
-        memcpy(pco,pci,(size_t)len);                               //+v7dzI~
+//      memcpy(pco,pci,len);                                       //~vat8M~//~v7dzR~
+        memcpy(pco,pci,(size_t)len);                               //~v7dzI~
         ctr++;                                                     //~vat8M~
         *(pco+len++)=0;                                            //~vat8M~
         pco+=len;                                                  //~vat8M~
@@ -390,8 +397,8 @@ char *multipleMask(char *Pstrs,int *Ppctr)                         //~vat8M~
     }                                                              //~vat8M~
     *pco++=0;                                                      //~vat8M~
     len=PTRDIFF(pco,buff);                                         //~vat8M~
-//  pc=malloc(len);                                                //~vat8M~//+v7dzR~
-    pc=malloc((size_t)len);                                        //+v7dzI~
+//  pc=malloc(len);                                                //~vat8M~//~v7dzR~
+    pc=malloc((size_t)len);                                        //~v7dzI~
     memcpy(pc,buff,(UINT)len);                                     //~vat8M~
     *Ppctr=ctr;                                                    //~vat8M~
     UTRACEP("%s:ctr=%d\n",UTT,ctr);                                //~vat8M~
@@ -1520,6 +1527,7 @@ unsigned int ugetdiskfree(char *Pfname,UDISKINFO *Pudiskinfo)      //~v327I~
 //  Pudiskinfo->bytes_per_sector=sfs.f_bsize;   //block size       //~v327I~//~v6D0R~
     Pudiskinfo->bytes_per_sector=(unsigned)sfs.f_bsize;   //block size//~v6D0I~
     Pudiskinfo->filesystemid=sfs.f_fsid;  		//filesystemid     //~v348I~
+    UTRACED("UDISKINFO",Pudiskinfo,sizeof(UDISKINFO));             //~vbE2I~
     return 0;                                                      //~v327R~
 }//ugetdiskfree                                                    //~v327I~
 #else   //!UNX                                                     //~v327I~
@@ -1931,3 +1939,145 @@ int  udirwalkChkMask(int Popt,char *Pname,char *Pmask)                          
     UTRACEP("%s:rc=%d,Pname=%s\n",UTT,rc,Pname);//~vat5I~          //~vat8M~
     return rc;                                                     //~vat5I~//~vat8M~
 }                                                                  //~vat5I~//~vat8M~
+#ifdef LNX                                                         //~vbE2I~
+//*************************************************************    //~vbE2I~
+UFSINFO* ugetfsinfoDF()                                            //~vbE2I~
+{                                                                  //~vbE2I~
+    int rc,stdoctr,stdectr,opt,fsctr=0;                            //~vbE2I~
+    char **pstde,*pc,**pstdo,**pstdo0,*pcmd;                       //~vbE2I~
+    PUFSINFO pfsinfo,pfsinfo0;                                     //~vbE2I~
+//****************************************                         //~vbE2I~
+    opt=UPROC_LANGC|UPROC_NOMSG;                                   //~vbE2I~
+    pcmd="df -k -l";		//unit:1024 byte, local only           //~vbE2I~
+	rc=usystem_redirect(opt,pcmd,&pstdo0,&pstde,&stdoctr,&stdectr);//~vbE2I~
+    UTRACEP("%s:usystem_redirect rc=%d,cmd=%s\n",UTT,rc,pcmd);     //~vbE2I~
+    if (rc) //failed                                               //~v7g0I~
+    {                                                              //~v7g0I~
+	    UTRACEP("%s:usystem_redirect Failed\n",UTT);               //~v7g0I~
+    	UINT fsisz0=(UINT)((1)*(int)UFSINFOSZ); //last stopper     //~v7g0I~
+    	pfsinfo0=umalloc(fsisz0);                                  //~v7g0I~
+    	memset(pfsinfo0,0,fsisz0);                                 //+v7g0R~
+        return pfsinfo0;                                           //~v7g0I~
+    }                                                              //~v7g0I~
+    fsctr=0;                                                       //~vbE2I~
+    pstdo=pstdo0;                                                  //~vbE2I~
+    for(;;)                                                        //~vbE2I~
+    {                                                              //~vbE2I~
+        if (!pstdo)                                                //~vbE2I~
+            break;                                                 //~vbE2I~
+        pc=*pstdo;                                                 //~vbE2I~
+        if (!pc)                                                   //~vbE2I~
+            break;                                                 //~vbE2I~
+        UTRACEP("%s:stdo=%s\n",UTT,pc);                            //~vbE2I~
+        char *psize=strchr(pc,' ');                                //~vbE2I~
+        if (!psize)                                                //~vbE2I~
+        	break;                                                 //~vbE2I~
+        char *pmount=strchr(psize,' ');                            //~vbE2I~
+        if (pmount)                                                //~vbE2I~
+	        fsctr++;                                               //~vbE2I~
+        pstdo++;                                                   //~vbE2I~
+    }                                                              //~vbE2I~
+    UTRACEP("%s:fsctr=%d\n",UTT,fsctr);                            //~vbE2I~
+    UINT fsisz=(UINT)((fsctr+1)*(int)UFSINFOSZ); //last stopper    //~vbE2I~
+    pfsinfo0=umalloc(fsisz);                                       //~vbE2I~
+    memset(pfsinfo0,0,fsisz);                                      //~vbE2I~
+    pstdo=pstdo0;                                                  //~vbE2I~
+    pfsinfo=pfsinfo0;                                              //~vbE2I~
+    int fsseq=0;                                                   //~vbE2I~
+    for(;;)                                                        //~vbE2I~
+    {                                                              //~vbE2I~
+        if (!pstdo)                                                //~vbE2I~
+            break;                                                 //~vbE2I~
+        pc=*pstdo;                                                 //~vbE2I~
+        if (!pc)                                                   //~vbE2I~
+            break;                                                 //~vbE2I~
+        UTRACEP("%s:stdo=%s\n",UTT,pc);                            //~vbE2I~
+        char *psize2=strchr(pc,' ');                               //~vbE2I~
+        if (!psize2)                                               //~vbE2I~
+            break;                                                 //~vbE2I~
+        char *pmount_s=strchr(psize2,'/');                         //~vbE2I~
+        if (pmount_s)                                              //~vbE2I~
+        {                                                          //~vbE2I~
+            char *psource_s=pc;                                    //~vbE2I~
+            char *psource_e=strchr(psource_s,' ');                 //~vbE2I~
+	        if (!psource_e)                                        //~vbE2I~
+    	        break;                                             //~vbE2I~
+            int source_l=PTRDIFF(psource_e,psource_s);             //~vbE2I~
+            source_l=min(source_l,(int)sizeof(pfsinfo->filesystem)-1);//~vbE2I~
+            char *psize_s=psource_e+strspn(psource_e," ");         //~vbE2I~
+            char *psize_e=strchr(psize_s,' ');                     //~vbE2I~
+	        if (!psize_e)                                          //~vbE2I~
+    	        break;                                             //~vbE2I~
+            char *pused_s=psize_e+strspn(psize_e," ");             //~vbE2I~
+            char *pused_e=strchr(pused_s,' ');                     //~vbE2I~
+	        if (!pused_e)                                          //~vbE2I~
+    	        break;                                             //~vbE2I~
+            char *pavail_s=pused_e+strspn(pused_e," ");            //~vbE2I~
+            char *pavail_e=strchr(pavail_s,' ');                   //~vbE2I~
+	        if (!pavail_e)                                         //~vbE2I~
+    	        break;                                             //~vbE2I~
+            *psize_e=0;                                            //~vbE2I~
+            pfsinfo->size=atol(psize_s);                           //~vbE2I~
+            *pused_e=0;                                            //~vbE2I~
+            pfsinfo->used=atol(pused_s);                           //~vbE2I~
+            *pavail_e=0;                                           //~vbE2I~
+            pfsinfo->avail=atol(pavail_s);                         //~vbE2I~
+//          printf("size=%s,used=%s,avail=%s,mount=%s\n",psize_s,pused_s,pavail_s,pmount_s);//~vbE2I~
+            pfsinfo->availRateM10=(int)(pfsinfo->avail*1000/pfsinfo->size);//~vbE2I~
+            pfsinfo->usedRateM10=(int)(pfsinfo->used*1000/pfsinfo->size);//~vbE2I~
+            memcpy(pfsinfo->filesystem,psource_s,(UINT)source_l);  //~vbE2I~
+            int mount_l=(int)strlen(pmount_s);                     //~vbE2I~
+//          char *pmount_e=memchr(pmount_s,'\n',(UINT)mount_l);    //~vbE2I~
+//          if (pmount_e)                                          //~vbE2I~
+//          	mount_l=PTRDIFF(pmount_e,pmount_e);                //~vbE2I~
+            memcpy(pfsinfo->mountpoint,pmount_s,(UINT)mount_l);    //~vbE2I~
+//	        UTRACEP("%s:seqno=%d,rateM10=%d\n",UTT,fsseq,pfsinfo->usedRateM10);//~vbE2I~
+//	        UTRACED("fsinfo",pfsinfo,UFSINFOSZ);                   //~vbE2I~
+            fsseq++;                                               //~vbE2I~
+            pfsinfo++;                                             //~vbE2I~
+        }                                                          //~vbE2I~
+        pstdo++;                                                   //~vbE2I~
+    }                                                              //~vbE2I~
+	UTRACED("fsinfo all",pfsinfo0,(int)fsisz);                     //~vbE2I~
+    if (pstdo0)                                                    //~vbE2I~
+	    ufree(pstdo0);                                             //~vbE2I~
+    if (pstde)                                                     //~vbE2I~
+	    ufree(pstde);                                              //~vbE2I~
+    return pfsinfo0;                                               //~vbE2I~
+}                                                                  //~vbE2I~
+//*************************************************************    //~vbE2I~
+UFSINFO* usrchfsinfoDF(char *Ppath)                                //~vbE2I~
+{                                                                  //~vbE2I~
+    PUFSINFO pfsinfo,pfsinfoOK;                                    //~vbE2I~
+//****************************************                         //~vbE2I~
+	UTRACEP("%s:path=%s,Spufsinfo=%p\n",UTT,Ppath,Spufsinfo);      //~vbE2R~
+    if (!Spufsinfo)                                                //~vbE2I~
+        Spufsinfo=ugetfsinfoDF();                                  //~vbE2I~
+    pfsinfo=Spufsinfo;                                             //~vbE2M~
+    pfsinfoOK=0;                                                   //~vbE2I~
+    for(;;)                                                        //~vbE2I~
+    {                                                              //~vbE2I~
+        char *pmount=pfsinfo->mountpoint;                          //~vbE2I~
+        char *psource=pfsinfo->filesystem;                         //~vbE2I~
+        if (!*psource)	//stopper                                  //~vbE2I~
+            break;                                                 //~vbE2I~
+//		UTRACEP("%s:mount=%s,filesystem=%s\n",UTT,pmount,psource); //~vbE2I~
+//      printf("used=%d=%d,free=%d,%s\n",(pfsinfo->usedRateM10+9)/10,pfsinfo->usedRateM10,pfsinfo->availRateM10,pfsinfo->mountpoint);//~vbE2I~
+        if (!strcmp(Ppath,pmount))                                 //~vbE2I~
+        {                                                          //~vbE2I~
+//	        UTRACEP("%s:source=%s,usedrateM10=%d\n",UTT,pfsinfo->filesystem,pfsinfo->usedRateM10);//~vbE2I~
+        	pfsinfoOK=pfsinfo;                                     //~vbE2I~
+        	break;                                                 //~vbE2I~
+        }                                                          //~vbE2I~
+        pfsinfo++;                                                 //~vbE2I~
+    }                                                              //~vbE2I~
+	UTRACED("rc fsinfo",pfsinfoOK,UFSINFOSZ);                      //~vbE2I~
+    return pfsinfoOK;                                              //~vbE2I~
+}                                                                  //~vbE2I~
+//*************************************************************    //~vbE4I~
+void urefreshFsinfoDF()                                            //~vbE4I~
+{                                                                  //~vbE4I~
+	UTRACEP("%s:Spufsinfo=%p\n",UTT,Spufsinfo);                    //~vbE4I~
+    Spufsinfo=ugetfsinfoDF();                                      //~vbE4I~
+}                                                                  //~vbE4I~
+#endif                                                             //~vbE2I~

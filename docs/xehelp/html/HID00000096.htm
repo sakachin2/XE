@@ -14,7 +14,7 @@ a:hover{font-weight:bold;}-->
 <PRE>
 <SPAN STYLE="color:#000000;font-size:12pt;font-family:ＭＳ ゴシック">    = 行位置付け
 
-        LOCate  { { [L]行番号 | [O]オフセット } [C] | .label }
+        LOCate  { { [L]行番号 | [O]オフセット } [C] | .label | {insall|repall} xxx}
 
                 (<a href="HID00000053.htm">表示/編集画面</a>ではこちらの形式を使用する)
 
@@ -23,6 +23,9 @@ a:hover{font-weight:bold;}-->
 
                 C : 編集後の現状での位置.指定無は編集前の状態での位置
                 .label: このラベルをつけた行を探す。
+
+                insall|repall xxx : ラベルコマンドをそのテキスト行のトップにコピー。
+                例えば xxx が "ok" のとき ラベル ".a" をセットした行には "ok.a" をその行のトップにコピー/挿入。
 
         LOCate  {ファイル名|タイムスタンプ|ファイルサイズ}
 

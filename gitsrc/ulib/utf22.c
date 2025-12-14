@@ -1,8 +1,21 @@
-//*CID://+v7egR~:                             update#=  874;       //~v7egR~
+//*CID://+v7fvR~:                             update#=  925;       //+v7fvR~
 //*********************************************************************//~7712I~
 //utf22.c                                                           //~7716R~//~vbz3R~
 //* utf8 data manipulation:process using chof                      //~7712I~
 //*********************************************************************//~7712I~
+//v7fv:251204 Wxe: split combiningchar is not combinable. 1080(char)-1082(comb)-1067(SCM) whe csr is on 1080, 1082-1067 was shown yellow//+v7fvI~
+//vbEm:251201 (W32 bug)under splitmode, u-309a(handakuten such as for katakana-Po) is not shown as split mode//~vbEmI~
+//v7fn:251126 avoid combin to "+"(altch of zwj)                    //~v7fnI~
+//v7fh:251113 (WXE)vsplit hcopy; 21b5 is 2cell the right panel shift 1 column to right because wcwidth(21b5) is unmatch 1:wxe and 2:xecon by glyph width.//~v7fhI~
+//            Chk ambiguous and if not use "_".                    //~v7fhI~
+//v7fg:251112 (LNXCON)chng altch of 1b 2190(wide left arrow)-->21b5(return mark)//~v7fgI~
+//vbE8:251011 (LNX)mapinit overflow msg is corrupted. string is EUC, terminal is utf8.//~vbe8I~
+//v7f5:251008 (LNX)treate ZWJ(u-200d) as combining when ligoff to avoid intermedeate colomn by 200d//~v7f5I~
+//v7f4:251007 (LNX)by v7f1, w0 format  was not displayed by altchFormat('='). ifndef JJJ//~v7f4I~
+//v7f1:250926 (LNX)avoid combining by Format char of wcwidth=0     //~v7f1I~
+//v7f2:250926 (LNX:Bug)avoid combining by Format char of wcwidth=0, err of rc chk of mk_wcwidth_combining, rc=0 is combining//~v7f2I~
+//vbE7:250923 (LNX)add gliph chk option "w"(/G{Y|N|W}[0|1|2|y|w] to use wcwidth() and default is /GWw.//~vbE7I~
+//v7f0:250923 (LNX)new option of use wcwidth for glyphchk of Ambiguous//~v7f0I~
 //v7eg:250718 (WINCON) same as v7c2 on LNX.(combining char at next of lineno col was not green in combinemode). not combinable for "*" and "|"(lineno cols boundary)//~v7egI~
 //v7e7:250707 uncoditionally ascii is notcombining for performance //~v7e7I~
 //vbAr:240702 (gxe:Bug)ddstr and u8 string column unmatch by utfcvdd2f for x1b<-->e286bc. Invalid char is show.//~vbArI~
@@ -341,9 +354,11 @@ int utfwwapichkCursorXXE(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag)//~vbz5I~
 #endif //AAA                                                       //~vbzzR~
 #endif  //XXE                                                      //~vbz5I~
 //*******************************************************          //~v7awM~
-int getGlyphWidth(ULONG Pucs,int PwwAmbig)                         //~v7awR~
+//int getGlyphWidth(ULONG Pucs,int PwwAmbig)                         //~v7awR~//~vbE7R~
+int getGlyphWidth(int Pflag,ULONG Pucs,int PwwAmbig)               //~vbE7I~
 {                                                                  //~v7awM~
 	int width;                                                     //~v7awM~
+    UTRACEP("%s:flag=%08x,ucs=0x%04x,PwwAmbig=%d\n",UTT,Pflag,Pucs,PwwAmbig);//~vbE7I~
 	if (PwwAmbig>0)                                                //~v7awI~
     {                                                              //~v7awI~
 		width=PwwAmbig; //width by -G option                       //~v7awI~
@@ -353,13 +368,17 @@ int getGlyphWidth(ULONG Pucs,int PwwAmbig)                         //~v7awR~
     {                                                              //~v7awI~
 #ifdef XXE                                                         //~v7awM~
     	UTRACEP("%s: xxe call get ambig width ucs=0x%04x\n",UTT,Pucs);//~v7awR~
-    	width=xxe_GetCursorWidth(0,Pucs);                          //~v7awR~
+      	width=xxe_GetCursorWidth(0,Pucs);                          //~v7awR~
 #else                                                              //~v7awM~
+	    int opt2=0;                                                //~vbE7I~
+    	if (!(Pflag & UTFWWO_MK_AMBIGUOUS))    //Not ambiguous char//~vbE7M~
+        	opt2|=UVGCWO_NOTAMB;	//   0x40        //glyphchk for not ambiguous//~vbE7M~
     	UTRACEP("%s:lnxcons call get ambig width ucs=0x%04x\n",UTT,Pucs);//~v7awR~
-    	width=uvioGetCursorWidth(0,Pucs);                          //~v7awR~
+//  	width=uvioGetCursorWidth(0,Pucs);                          //~v7awR~//~vbE7R~
+    	width=uvioGetCursorWidth(opt2,Pucs);                       //~vbE7I~
 #endif                                                             //~v7awM~
 	}                                                              //~v7awI~
-    UTRACEP("%s:width=%d,ucs=0x%04x,PwwAmbig=%d\n",UTT,width,Pucs,PwwAmbig);//~v7awR~
+    UTRACEP("%s:width=%d,ucs=0x%04x\n",UTT,width,Pucs);//~v7awR~   //~vbE7R~
 	return width;                                                  //~v7awM~
 }                                                                  //~v7awM~
 //*******************************************************          //~v640M~
@@ -389,16 +408,25 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag/*masked*/,int *Ppwc
 //  wcw=wcwidth((wchar_t)Pucs);   //better to return large va      //~v7agR~//~v7ayI~
     wcw=wcwidth((UWCHART)Pucs);   //better to return large value even displayed 1 cell on english terminal//~v6a0I~//~v7ayI~
 //#ifndef SSS                                                        //~v7bVI~//~v7c6R~
+#ifdef AAA                                                         //~vbE7I~
     if (Popt & UTFWWO_FORMAT)   //wcw>0 and Format                 //~v7bVI~
     {                                                              //~v7bVI~
-        UTRACEP("%s:set wcw=0 for Format=%04x\n",UTT,Pucs);	       //~v7c6R~
+        UTRACEP("%s:set wcw=0 for Format=%04x,wcwidth=%d\n",UTT,Pucs,wcw);	       //~v7c6R~//~vbE7R~
         wcw=0;                                                     //~v7bVI~
     }                                                              //~v7bVI~
+#endif                                                             //~vbE7I~
 //#endif                                                             //~v7bVI~//~v7c6R~
-    wwAmbig=GambigWidth;    //-1,1,2                               //~vbzzR~//~v7ayI~
+    wwAmbig=GambigWidth;    //-1,1,2                               //~vbzzR~//~v7ayI~//~v7f2R~
     if (Ppwcwidth)                                                 //~v640M~//~v7ayI~
         *Ppwcwidth=wcw;                                            //~v640M~//~v7ayI~
     UTRACEP("%s:Popt=0x%04x,entry ucs=0x%04x,Pmkwidth=%d,wcwidth=%d,GambigWidth=%d,flag=0x%04x\n",UTT,Popt,Pucs,Pmkwidth,wcw,wwAmbig,flag);	//@@@@test//~vbzzR~//~v7awR~//~v7ayI~//~v7bfR~
+  if (flag & UTFWWF_USEWCW)                                        //~vbE7M~
+  {                                                                //~vbE7M~
+  	width=wcw;                                                     //~vbE7M~
+    UTRACEP("%s:ucs=%04x,width=%d, width=wcwidth() by UTFWWF_USEWCW\n",UTT,Pucs,width);//~vbE7M~
+  }                                                                //~vbE7M~
+  else                                                             //~vbE7M~
+  {                                                                //~vbE7M~
 //    if (wwAmbig==0    //fixed, to be adjust                        //~v7ayI~//~v7bfR~
 //    &&  (flag & UTFWWO_MK_AMBIGUOUS)    //ambiguous char           //~v7ayI~//~v7bfR~
 //    &&  (Gulibutfmode & GULIBUTF_APICHK_CSR) //0x08000000  //adjust mode(Not /GN)//~v7ayI~//~v7bfR~
@@ -406,16 +434,27 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag/*masked*/,int *Ppwc
     int swCallGlyphChk=0;                                          //~v7bfI~
     if (flag & UTFWWO_MK_AMBIGUOUS)    //ambiguous char            //~v7bfI~
     {                                                              //~v7bfI~
+#ifdef AAA                                                         //~vbE7I~
       	if (wwAmbig==0    //fixed, to be adjust                    //~v7bfI~
 		&& (Gulibutfmode & GULIBUTF_APICHK_CSR) //0x08000000  //adjust mode(Not /GN)//~v7bfI~
         )                                                          //~v7bfI~
+#else                                                              //~vbE7I~
+      	if (wwAmbig==0)    //Not fixed, to be adjust               //~vbE7I~
+#endif                                                             //~vbE7I~
         {                                                          //~v7bfI~
         	swCallGlyphChk=1;                                      //~v7bfI~
-            UTRACEP("%s:Ambiguous char and wwAbig=0(not fixed by /G option) ucs=0x%04x\n",UTT,Pucs);//~v7bfI~
+            UTRACEP("%s:Ambiguous char and wwAmbig=0(not fixed by /G option) ucs=0x%04x\n",UTT,Pucs);//~v7bfI~//~v7egR~
         }                                                          //~v7bfI~
     }                                                              //~v7bfI~
 	else                                                           //~v7bfI~
+    if (Popt & UTFWWO_FORMAT)   //Not ambiguous Format             //~vbE7R~
+    {                                                              //~vbE7I~
+        swCallGlyphChk=3;                                          //~vbE7I~
+        UTRACEP("%s:Not Ambiguous and Format do glyphchk ucs=%04x,wcw=%d\n,",UTT,Pucs,wcw);//~vbE7I~
+    }                                                              //~vbE7I~
+    else	//not ambin and not wcw0 format                        //~vbE7I~
     {                                                              //~v7bfI~
+#ifdef TEST                                                        //~vbE7I~
         if (width<=0)    //not combine                             //~v7bfI~
         	;                                                      //~v7bfI~
         else                                                       //~v7bfI~
@@ -426,8 +465,15 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag/*masked*/,int *Ppwc
         else                                                       //~v7bfI~
         {                                                          //~v7bfI~
         	swCallGlyphChk=2;                                      //~v7bfI~
-            UTRACEP("%s:NOT Ambiguous char and width=1 by MK_WCWIDTH ucs=0x%04x,GambigWidth=%d\n",UTT,Pucs,GambigWidth);//~v7bfI~
+            UTRACEP("%s:NOT Ambiguous char and width=1 by MK_WCWIDTH ucs=0x%04x,wcw=%d,Pmkwidth=%d,GambigWidth=%d\n",UTT,Pucs,wcw,width,GambigWidth);//~v7bfI~//~v7egR~
         }                                                          //~v7bfI~
+#else                                                              //~vbE7I~
+        if (width!=wcw) //Pmkwidth!=wcwidth()                      //~vbE7I~
+        {                                                          //~vbE7I~
+        	swCallGlyphChk=2;                                      //~vbE7I~
+            UTRACEP("%s:NOT Ambiguous char and Pmkwidth!=wcwidth ucs=0x%04x,wcw=%d,Pmkwidth=%d\n",UTT,Pucs,wcw,width);//~vbE7I~
+        }                                                          //~vbE7I~
+#endif                                                             //~vbE7I~
     }                                                              //~v7bfI~
     int gw=0;                                                      //~v7bVI~
     if (wcw<0)                                                     //~v7bfI~
@@ -436,15 +482,19 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag/*masked*/,int *Ppwc
     if (swCallGlyphChk)                                            //~v7bfI~
     {                                                              //~v7ayI~
 //		int gw=getGlyphWidth(Pucs,wwAmbig);                        //~v7ayI~//~v7bVR~
-		gw=getGlyphWidth(Pucs,wwAmbig);                            //~v7bVI~
+//		gw=getGlyphWidth(Pucs,wwAmbig);                            //~v7bVI~//~vbE7R~
+  		gw=getGlyphWidth(flag,Pucs,wwAmbig);                       //~vbE7I~
         if (gw>0)                                                  //~v7ayI~
         {                                                          //~v7ayI~
             wwAmbig=gw;                                            //~v7ayI~
             UTRACEP("%s:Not fix by Ambig, set glyph width ucs=%04x,Pmkwidth=%d,wcwidth=%d,ambigWidth=%d\n",UTT,Pucs,width,wcw,wwAmbig);//~v7ayI~
         }                                                          //~v7ayI~
+        else                                                       //~vbE7I~
+        	width=0;                                               //~vbE7I~
     }                                                              //~v7ayI~
     if (wwAmbig)                                                   //~v7ayI~
         width=wwAmbig;  //-1,1,2                                   //~v7ayI~
+  }//else (flag & UTFWWF_USEWCW)                                   //~vbE7R~
 //  if (wcw>0)                                                     //~v640M~//~vbzzR~//~v7ayI~
 //  if (wcw>0 && wwAmbig>=0)    //and ambig length by -G option not to adjust//~vbzzR~//~v7ayR~
     if (wcw>0 && width>=0) //wcwidth()>0 and wwAmbig>0)            //~v7ayI~
@@ -603,6 +653,7 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag/*masked*/,int *Ppwc
 //                UTRACEP("%s:%04x change width 2 to 1 by wcwidth()\n",UTT,Pucs);//~v7auI~//~v7awR~//~v7ayI~
 //            }                                                      //~v7auI~//~v7awR~//~v7ayI~
 //        }//swAmbigChange=0                                       //~v7awI~//~v7ayR~
+#ifdef AAA                                                         //~vbE7I~
             if (Popt & UTFWWO_FORMAT)   //wcw>0 and Format         //~v7ayI~
             {                                                      //~v7ayI~
 //#ifdef SSS                                                       //~v7bVR~
@@ -614,6 +665,7 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag/*masked*/,int *Ppwc
                 UTRACEP("%s:wcw>0 and FORMAT set width=2 ucs=0x%04x wcwidth()=%d ,mk_wcwidth()=%d,width=%d\n",UTT,Pucs,wcw,Pmkwidth,width);//~v7ayI~//~v7bVR~
 #endif                                                             //~v7bVM~
             }                                                      //~v7ayI~
+#endif //AAA                                                       //~vbE7I~
             if (wcw==1)                                            //~v7ayI~
             {                                                      //~v7ayI~
                 if (width==2)                                      //~v7ayI~
@@ -682,8 +734,9 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag/*masked*/,int *Ppwc
 //            if (gw>0)                                              //~v7awI~//~v7ayR~
 //                width=gw;                                          //~v7awI~//~v7ayR~
 //        }                                                          //~v7awI~//~v7ayR~
-        UTRACEP("%s:%06x unmatch wcwidth()=%d Not Format, mk_wcwidth()=%d,wwAmbig=%d,return width=%d,flag=0x%04x\n",UTT,Pucs,wcw,Pmkwidth,wwAmbig,width,flag);//~v7awR~//~v7ayI~
+        UTRACEP("%s:%04x unmatch wcwidth()=%d Not Format, mk_wcwidth()=%d,wwAmbig=%d,return width=%d,flag=0x%04x\n",UTT,Pucs,wcw,Pmkwidth,wwAmbig,width,flag);//~v7awR~//~v7ayI~//~v7f2R~
       }                                                            //~v6WiI~//~v7ayI~
+#ifdef AAA                                                         //~vbE7I~
       else                                                         //~v79dI~//~v7ayI~
       {                                                            //~v7ahI~//~v7ayI~
       //*FORMAT                                                    //~v7ayI~
@@ -694,6 +747,7 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag/*masked*/,int *Ppwc
 //            width=gw;                                              //~v7awI~//~v7ayR~
         UTRACEP("%s:@@@@FORMAT ucs=0x%04x wcwidth()=%d ,mk_wcwidth()=%d,return width=%d,flag=0x%04x,wwAmbig=%d\n",UTT,Pucs,wcw,Pmkwidth,width,flag,wwAmbig);//~v79dR~//~vbz5R~//~v7auM~//~v7awR~//~v7ayI~
       }                                                            //~v7ahI~//~v7ayI~
+#endif //AAA                                                       //~vbE7I~
 #endif                                                             //~v70iI~//~v7ayI~
     }                                                              //~v6c5I~//~v7ayI~
 //UTRACEP("apichk sizeof uwchart=%d,ucs=%4x,wcwidth=%d,mkw=%d,ret-width=%d,flag=0x%04x->0x%04x\n",sizeof(UWCHART),Pucs,wcw,Pmkwidth,width,*Ppflag,flag);//~v6a0R~//~v6b9R~//~v6c5R~//~v6p2R~//~vbz5R~//~v7ayI~
@@ -1330,7 +1384,7 @@ int utfwwapichk(int Popt,ULONG Pucs,int Pmkwidth,int *Ppflag,int *Ppwcwidth)//~v
         {                                                          //~v6WvI~
 			if (rc2=utf4_isSpacingCombiningMark(UTF4ISCMO_WIDTHPARM|width,(UWUCS)Pucs),rc2)//~v6WvI~
         	{                                                      //~v6WvI~
-				UTRACEP("%s:SCM ucs=%04x,rc2=%d,Pmkwidth=%d,flag=%x\n",UTT,Pucs,Pmkwidth,flag);//~v6WvR~//~v79mR~
+				UTRACEP("%s:SCM ucs=%04x,rc2=%d,Pmkwidth=%d,flag=%x\n",UTT,Pucs,rc2,Pmkwidth,flag);//~v6WvR~//~vbEmR~
           		if (rc2==2)	//combining2scm                        //~v6WvI~
             	{                                                  //~v6WvI~
 					flag|=UTFWWF_COMB2SCM;    //assume combining as spacing combining char//~v6WvI~
@@ -1968,7 +2022,11 @@ UTRACEP("%s:sbcsid ucs=0x%04x,sbcsid=0x%04x,width=%d,flag=0x%04x\n",UTT,ii,sbcsi
 //                                    "注意:u-%06x-->u-%06xのユニコードは２桁\x95\\示になります.(不都合ならiniファイルのUnicodeTblパラメータで調整できます)",//~v740R~//~v7b3R~
 //                    ovfucs,ovfucslast));                           //~v70mI~//~v7b3R~
             printf("%s",uerrsprintf("Note:Unicode u-%06x-->u-%06x occupies 2 columns.(Try to adjust by -G commandline option))\n",//~v7b3I~
+#ifdef LNX                                                         //~vbe8I~
+                    0,                                             //~vbe8I~
+#else                                                              //~vbe8I~
                                     "注意:u-%06x-->u-%06xのユニコードは２桁\x95\\示になります.(-G オプションで調整してみてください)",//~v7b3I~
+#endif                                                             //~vbe8I~
                     ovfucs,ovfucslast));                           //~v7b3I~
           	UTRACEP("%s:@@@@Warn %s\n",UTT,uerrsprintf("Note:Unicode u-%06x-->u-%06x occupies 2 columns.\n",//~vbz4I~//~v7b3R~
           							"注意:u-%06x-->u-%06xのユニコードは２桁\x95\\示になります.",//~vbz4I~//~v7b3R~
@@ -2990,7 +3048,7 @@ int utfcvu2dd1(int Popt,WUCS Pucs,UCHAR *Ppoutdata,UCHAR *Ppoutdbcs,int *Ppoutle
     }                                                              //~v640I~
     if (Ppoutlen)                                                  //~v640I~
 	    *Ppoutlen=outlen;                                          //~v640I~
-UTRACEP("utfcvu2dd1 rc=%d,ucs=%x out data=%x,dbcs=%x,outtlen=%d\n",rc,Pucs,*Ppoutdata,*Ppoutdbcs,outlen);//~v640R~//~v667R~
+UTRACEP("%s: rc=%d,ucs=%x out data=%x,dbcs=%x,outlen=%d\n",UTT,rc,Pucs,*Ppoutdata,*Ppoutdbcs,outlen);//~v640R~//~v667R~//~vbe8R~
     return rc;                                                     //~v640I~
 }//utfcvu2dd1                                                      //~v640R~
 //*******************************************************          //~v640I~
@@ -5698,7 +5756,7 @@ int utfddgetcsrposbca(int Popt,char *Pdbcs,int Plen,int Ppos,int *Ppposb,int *Pp
     int len;                                                       //~v650I~
 //**************************                                       //~v650I~
 //get current col                                                  //~v650I~
-UTRACEP("%s:Popt=%04x,Plen=%d,Ppos=%d\n",UTT,Popt,Plen,Ppos);      //+v7egI~
+UTRACEP("%s:Popt=%04x,Plen=%d,Ppos=%d\n",UTT,Popt,Plen,Ppos);      //~v7egI~
 	if (Ppos>=0 && Ppos<=Plen)                                     //~v650R~
     {                                                              //~v650I~
 		posc=Ppos;                                                 //~v650I~
@@ -5832,7 +5890,11 @@ static int Saltch[]={  //base is old ascii by Wiki CP437, and for xe, old Japane
                     0x2191,0,     //0x18 D arrow up                //~v65pR~
                     0x2193,0,     //0x19 D arrow down              //~v65pR~
                     0x2192,0,     //0x1a D arrow right             //~v65pR~
+#ifdef TEST                                                        //~v7fgR~
                     0x2190,0x21bc,//0x1b D arrow left              //~v65nI~
+#else                                                              //~v7fgR~
+                    0x21b5,0x21bc,//0x1b D arrow left              //~v7fgR~
+#endif                                                             //~v7fgR~
                                   //0x1b XE us for 0x1b,conform SBCS//~v65nI~
                     0x221f,0,     //0x1c D left bottom corner      //~v65iR~
 					0x2194,0,     //0x1d D arrow left+right        //~v65iR~
@@ -5899,7 +5961,8 @@ static int SaltchJ[]={  //base is old ascii by Wiki CP437, and for xe use old Ja
 //                                //0x1a   half arrow right,for XE tab padding(E) char//~v65nR~
 //  				-1    ,0,     //0x1a                           //~v65nR~
     				0x1a  ,0,     //0x1a                           //~v65nR~
-                    0x21b5,0,     //0x1b   XE use ReturnKey glyph  //~v65iR~
+//                  0x21b5,0,     //0x1b   XE use ReturnKey glyph  //~v7fhR~
+                    0x21b5,0x21bc,//0x1b   XE use ReturnKey glyph  //~v7fhR~
 	#ifdef WXE                                                     //~v65nI~
                     0x221f,0,     //0x1c WXE Eng mode              //~v65nI~
     #else                                                          //~v65nI~
@@ -5962,11 +6025,18 @@ static int SaltchJ[]={  //base is old ascii by Wiki CP437, and for xe use old Ja
               *ptb='.';                                            //~v65nI~
             }                                                      //~v65nI~
 //          if (utfwcwidth(0,altch,0/*flag*/)!=1)	//not sbcs     //~v65iR~//~v6B4R~
-            if (utfwcwidth(0,(ULONG)altch,0/*flag*/)!=1)	//not sbcs//~v6B4I~
+//          if (utfwcwidth(0,(ULONG)altch,0/*flag*/)!=1)	//not sbcs//~v7fhR~
+            if (utfwcwidth(0,(ULONG)altch,0/*flag*/)!=1 	//not sbcs//~v7fhI~
+            ||  utf4_isAmbiguous(0,(UWUCS)altch)                   //~v7fhR~
+            )                                                      //~v7fhI~
             {                                                      //~v65iI~
             	altch=*(ptb+1);                                    //~v65iI~
 //          	if (altch && utfwcwidth(0,altch,0/*flag*/)==1)     //~v65iR~//~v6B4R~
-            	if (altch && utfwcwidth(0,(ULONG)altch,0/*flag*/)==1)//~v6B4I~
+//            	if (altch && utfwcwidth(0,(ULONG)altch,0/*flag*/)==1)//~v7fhR~
+              	if (altch                                          //~v7fhI~
+              	&& (utfwcwidth(0,(ULONG)altch,0/*flag*/)==1)       //~v7fhI~
+                &&  utf4_isAmbiguous(0,(UWUCS)altch)==0            //~v7fhR~
+                )                                                  //~v7fhI~
                 	*ptb=altch;                                    //~v65iI~
                 else                                               //~v65iI~
                 if (ii==0x1b)                                      //~v65pR~
@@ -6626,8 +6696,11 @@ int utf_iscombinable(int Popt,ULONG Pucs)                          //~v6VsR~
     }                                                              //~v7egI~
     else                                                           //~v7egI~
 	if (Pucs<0x0100)                                               //~v6VsR~
+    {                                                              //~v7fnI~
 //    	rc=iswalpha((wint_t)Pucs);                                 //~v6VsR~//~v79LR~
-      	rc=iswcntrl((wint_t)Pucs)==0;                              //~v79LR~
+//    	rc=iswcntrl((wint_t)Pucs)==0;                              //~v7fnR~
+      	rc=iswalpha((wint_t)Pucs)!=0 || Pucs==0xA0;                //~v7fnI~
+    }                                                              //~v7fnI~
     else                                                           //~v6VsR~
     {                                                              //~v6VsR~
 #ifdef AAA                                                         //~v79MI~
@@ -6647,13 +6720,22 @@ int utf_iscombinable(int Popt,ULONG Pucs)                          //~v6VsR~
         	rc=0;                                                  //~v79MI~
         else                                                       //~v79MI~
         	rc=1;                                                  //~v79MI~
+        if (rc)                                                    //+v7fvI~
+	        if (Popt && UICAO_STR_TOP)   //starting char of string //+v7fvI~
+    	    	if (!mk_wcwidth_combining((UWUCS)Pucs))	//found on combining tbl//+v7fvI~
+                {                                                  //+v7fvI~
+				    UTRACEP("%s:reset combinable for combining char by option ucs=%04x\n",UTT,Pucs);//+v7fvI~
+		        	rc=0;       //combining at string top is not combinable//+v7fvI~
+                }                                                  //+v7fvI~
 #endif                                                             //~v79MI~
     }                                                              //~v6VsR~
-    UTRACEP("%s:rc=%d,ucs=%04x\n",UTT,rc,Pucs);                    //~v6VsR~
+    UTRACEP("%s:Popt=%02x,rc=%d,ucs=%04x\n",UTT,Popt,rc,Pucs);     //+v7fvR~
     return rc;                                                     //~v6VsR~
 }//utf_iscombinable                                                //~v6VsR~
 //***************************************************************************//~v6WrI~
 //chk combining by ucs                                             //~v6WrI~
+//* combining char is all wcwidth()=0 and not format char ***      //~v7f5I~
+//* there exist w0 char other than format/combining                //~v7f5I~
 //rc=0 for Format                                                  //~v7bVR~
 //rc:0x01:sbcs,0x02:ucs4,0x04:SCM, else 0                          //~v7bBI~
 //rc:0x08:COMB2SCM by Popt & UICO_COMB2SCM_NOSCM                   //~v6X5I~//~v7bVR~
@@ -6688,11 +6770,22 @@ int utf_iscombining(int Popt,int Pdbcsid,int Pucs)                 //~v6WrI~
     }                                                              //~v6WrI~
     else                                                           //~v6WrI~
     {                                                              //~v6WrI~
+#ifndef JJJ                                                        //~v7f5M~
+      if (Popt & UICO_ZWJASCOMB    //ZWJ as combining              //~v7f5I~
+      &&  UTF_ISZWJ(Pucs))                                         //~v7f5I~
+      {                                                            //~v7f5I~
+        UTRACEP("%s:rc=1 for ZWJ(%04x) by option(%02x)\n",UTT,Pucs,Popt);//~v7f5I~
+        rc=1;                                                      //~v7f5I~
+      }                                                            //~v7f5I~
+      else                                                         //~v7f5I~
+#endif                                                             //~v7f5I~
+      {                                                            //~v7f5I~
 		rc=utf_iswidth0(Popt,Pdbcsid,(ULONG)Pucs);                 //~v6WrI~
         if (rc)                                                    //~v7bVI~
         {                                                          //~v7bVI~
 			if (Popt & UICO_COMBONLY)    //confirm defined combining//~v7bVR~
-		    	if (!mk_wcwidth_combining((UWUCS)Pucs))	//width=0          //~v6BjI~//~v7bVI~
+//  	    	if (!mk_wcwidth_combining((UWUCS)Pucs))	//width=0          //~v6BjI~//~v7bVI~//~v7f2R~
+    	    	if (mk_wcwidth_combining((UWUCS)Pucs))	//not found on combining tbl//~v7f2I~
                 {                                                  //~v7bVI~
 					if (Popt & UICO_RCNOCOMB) //      0x04    //set rc for NOT combining but width=0//~v7bVI~
                     {                                              //~v7bVI~
@@ -6706,6 +6799,7 @@ int utf_iscombining(int Popt,int Pdbcsid,int Pucs)                 //~v6WrI~
                     }                                              //~v7bVI~
                 }                                                  //~v7bVI~
         }                                                          //~v7bVI~
+      }                                                            //~v7f5I~
     }                                                              //~v6WrI~
     UTRACEP("%s:opt=%x,rc=%d,rc2=%d,ucs=%06x,dbcsid=0x%x\n",UTT,Popt,rc,rc2,Pucs,Pdbcsid);//~v6WrI~//~v6X5R~
     return rc;                                                     //~v6WrI~
@@ -6715,6 +6809,11 @@ int utf_iscombiningDD(int Popt,char *Pdddata,char *Pdddbcs,int Plen)//~v7zVI~
 {                                                                  //~v7zVI~
 	int opt=0,rc=0;                                                //~v7zVR~
 	UWUCS ucs4=0;                                                  //~v7zVR~
+	if (!*Pdddbcs)                                                 //~vbEmI~
+    {                                                              //~vbEmI~
+    	;                                                          //~vbEmI~
+    }                                                              //~vbEmI~
+    else                                                           //~vbEmI~
 	if (UDBCSCHK_DBCS2NDUCS2NWP(*Pdddbcs))                         //~v7zVI~
     {                                                              //~v7zVI~
     	UTRACEP("%s:rc=0 by dbcsid=%02x is 2nd\n",UTT,*Pdddbcs);    //~v7zVI~//~v7c7R~
@@ -6725,7 +6824,11 @@ int utf_iscombiningDD(int Popt,char *Pdddata,char *Pdddbcs,int Plen)//~v7zVI~
             ucs4=(UWUCS)UTF_GETUCSSBCS(Pdddata,Pdddbcs);           //~v7zVR~
         else                                                       //~v7zVR~
             ucs4=utfdd2u1(opt,Pdddata,Pdddbcs,Plen);               //~v7zVR~
-        rc=utf_iscombining(opt,*Pdddbcs,ucs4);                     //~v7zVR~
+//      rc=utf_iscombining(opt,*Pdddbcs,ucs4);                     //~v7zVR~//~v7f1R~
+		int opt4=UICO_COMBONLY;         //exclude FORMAT           //~v7f1R~
+        if (Popt & UICDO_INCLUDE_ALLW0)	//include all width0       //~vbe8R~
+			opt4=UICO_ZWJASCOMB;    //also ZWJ as combining        //~vbe8R~
+        rc=utf_iscombining(opt4,*Pdddbcs,ucs4);                    //~v7f1I~
         if (Popt & UICDO_EXCEPT_SCM)//    0x01 //exclude SCM       //~v7zVR~
             if (rc & UICRC_SCM)                                    //~v7zVR~
                 rc=0;                                              //~v7zVR~

@@ -1,0 +1,29 @@
+//*CID://+@@@1R~:                             update#=  279;
+** UTF8 encoding **
+//***************************************************************************
+130D:2025/12/14
+     1.BUGs
+       -(gxe) If the previous operation before exiting was Ctrl+H (print screen)
+        or Ctrl+P (print file), the session may crash because printing is in progress.
+       -Correct to display of combining/formatting characters in UTF8 files.
+        Especially in Windows, combining characters are displayed differently
+        between Windows Terminal and Conhost(previous terminal emulator).
+       -Handles /Ffontname both name of English and Regional Language.
+
+     2.Additional function.
+       -(Linux) Added the 'W' option to use the API:wcwidth() to get cell width
+        for characters of ambiguous display widths.
+        Cmd line option:-G{Y|N|W}[0|1|2|y|w], Defaults is /GWw.
+       -Directory List.
+        Displays the free space percentage for the line of drive(Windows) and mount point(Linux).
+        The % is updated by session restart(Windows) or Refresh:Shift+F1(Linux).
+        (Linux) When you switch to Username display mode with Shift+F6,
+        the device name (/dev/sdaa, etc.) is displayed.
+       -LOCate command, additional options.
+        ex) loc {insall|repall} xxx
+        Copies the label from the labeled command line (.yyy) to the current text line.
+        ex)Copy (repall) or insert (insall) the string xxx.yyy to the top of the lines.
+       -new HCOpy command.
+        HCO [EOL]NOEOL]. Command line options is /Yh and /Nh(default).
+        "EOL" cuts lines at the End-Of-Line(line feed code) rather than the screen width.
+        It is for the case text contains RightToLeft formatting characters.

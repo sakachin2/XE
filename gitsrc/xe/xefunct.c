@@ -1,8 +1,11 @@
-//*CID://+vbzRR~:                             update#=  344;       //~vbzRR~
+//*CID://+v7fzR~:                             update#=  349;       //~v7fyR~//+v7fzR~
 //*************************************************************
 //*xefunct.c                                                       //~v663R~
 //* func definition tbl                                         //~5216R~
 //************************************************************* //~v020I~
+//v7fz:251205 (gxe) hcopy eol option for also gxe                  //+v7fzI~
+//v7fy:251205 (LNXCON) hcopy eol option for LNXCON                 //~v7fyI~
+//vbEr:251206 add HCO cmd for hardcopy                             //~vbErI~
 //vbzR:240414 C+h is backspace but use as hcopy                    //~vbzRI~
 //vbzP:240412 (LNXCON)support hardcopy function(also change key C+h-->A+z)//~vbzPI~
 //vbzJ:240403 appendmode screen print to ::hp by Ctrl+h (hardcopy) //~vbvJI~
@@ -1461,14 +1464,19 @@ static FUNCTBL  Sfunctbldefault[]=                              //~5429I~
         FUNCID_SCRHCOPY,                                           //~vbzJR~
         0,0,          //flag,char,                                 //~vbzJR~
 		{func_scrHcopy,func_scrHcopy,func_scrHcopy},               //~vbzJR~
-		"","",                                                     //~vbzJR~
+//#ifdef W32                                                         //~vbErI~//~v7fyR~
+//#ifndef XXE                                                        //~v7fyI~//+v7fzR~
+        "HCO","",                                                  //~vbErM~
+//#else                                                              //~vbErI~//+v7fzR~
+//        "","",                                                     //~vbErR~//+v7fzR~
+//#endif                                                             //~vbErI~//+v7fzR~
 //  	{KEY_C_h,0,0,0},                                           //~vbzPR~
 //    	{KEY_A_z,0,0,0},                                           //~vbzRR~
-#ifdef LNXCON                                                      //+vbzRI~
-    	{KEY_A_z,0,0,0},                                           //+vbzRI~
-#else                                                              //+vbzRI~
+#ifdef LNXCON                                                      //~vbzRI~
+    	{KEY_A_z,0,0,0},                                           //~vbzRI~
+#else                                                              //~vbzRI~
     	{KEY_C_h,KEY_A_z,0,0},                                     //~vbzRR~
-#endif                                                             //+vbzRI~
+#endif                                                             //~vbzRI~
 		{FTCTLC,0,0,0},NULL_LAST	},                             //~vbzJR~
 	{"Short-Cut-Input"    ,"íZèkÉLÅ[ì¸óÕ"    ,                     //~v48fI~
         FUNCID_SHORTCUT,                                           //~v48fI~

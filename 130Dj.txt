@@ -1,0 +1,25 @@
+//*CID://+@@@1R~:                             update#=  286;
+** UTF8 encoding **
+//***************************************************************************
+130D:2025/12/14
+     1.BUGs
+       -(gxe)終了時に直前の操作がCtrl+H(画面印刷)やCtrl+P(ファイル印刷)の時
+        印刷途中セッション終了となってcrash することがある
+       -UTF8ファイルの結合文字/フォーマット文字の表示方法を修正
+        特にWindows では WindowsTerminal と従来の Conhost で 結合文字の表記に違いがでる。
+       -/Ffontname のフォント名は英語名と各国語と両方あるので対応する
+
+     2.機能追加
+       -(Linux)表示幅が曖昧とされる文字について API:wcwidth() に従うオプション 'W' を追加
+        コマンドラインオプション:-G{Y|N|W}[0|1|2|y|w]、 省略値 /GWw とする
+       -ディレクトリーリスト
+        ドライブ(Windows)/マウントポイント(Linux)の行には freeSpace の 割合を表示する
+        割合は Windows:Session Restart, Linux:Refresh(Shift+F1)で更新
+        (Linux) Shift+F6 で UserName 表示モードにしたときは その Device 名(/dev/sdaa等)を表示
+       -LOCate コマンドに追加のオプション
+        例) loc {insall|repall} xxx
+        ラベルコマンド行(.yyy) のラベルをそのテキスト行のトップにコピー。//+@@@1R~
+        例えば 文字列 xxx.yyy をその行の先頭にコピー(repall) あるいは 挿入(insall)
+       -HCOpy コマンド追加。
+        HCO [EOL]NOEOL]。コマンドラインオプションでは /Yh, /Nh(省略値)。
+        "EOL" とすると画面幅でなく改行コードで行をカット、RightToLeft フォーマット文字を含む場合を想定

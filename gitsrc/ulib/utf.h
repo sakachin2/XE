@@ -1,7 +1,8 @@
-//*CID://+v7bBR~:                             update#=  663;       //~v7bBR~
+//*CID://+vbE7R~:                             update#=  670;       //~vbE7R~
 //*********************************************************************//~v600I~
 //* utf8 data manipulation                                         //~v600I~
 //*********************************************************************//~v600I~
+//vbE7:250923 (LNX)add gliph chk option "w"(/G{Y|N|W}[0|1|2|y|w] to use wcwidth() and default is /GWw.//~vbE7I~
 //v7bB:240420 special for zwj(u-200d/zwnj(u-200c) of width=0       //~v7bBI~
 //vbzz:240311 arrange vbz3,vbzp:/Yv and vbzy:YL to /Gv[L]          //~vbzzI~
 //vbzy:240310 /YL, optionally ambiguous chk for language by performance reason.//~vbzyI~
@@ -110,9 +111,9 @@
 //************************************************                 //~v600I~
 #define ZWNJ   0x200c                                              //~v7bBM~
 #define ZWJ    0x200d                                              //~v7bBM~
-#define UTF_ISZWNJ(ucs) (ucs==ZWNJ)                                //+v7bBR~
-#define UTF_ISZWJ(ucs)  (ucs==ZWJ)                                 //+v7bBR~
-#define UTF_ISZWJZWNJ(ucs) (UTF_ISZWNJ(ucs) || UTF_ISZWJ(ucs))     //+v7bBR~
+#define UTF_ISZWNJ(ucs) (ucs==ZWNJ)                                //~v7bBR~
+#define UTF_ISZWJ(ucs)  (ucs==ZWJ)                                 //~v7bBR~
+#define UTF_ISZWJZWNJ(ucs) (UTF_ISZWNJ(ucs) || UTF_ISZWJ(ucs))     //~v7bBR~
 //#ifdef UTF8SUPP                                                    //~v60aI~//~v650R~
 #ifdef UTF8SUPPH                                                   //~v650I~
 #ifdef __cplusplus                                                 //~v60aI~
@@ -694,6 +695,7 @@ int utfwcwidthNoMap(int Popt,ULONG Pucs,int *Ppflag);              //~v6V4I~
 	#define UTFWWO_MK_AMBIGUOUS 0x2000   //by mk_wcwidth() adjustable by wcwidth()//~v6V7I~
 //	#define UTFWWO_MK_COMB      0x4000   //defined as combining char at utf4.c//~v6W9I~//~v6WmR~
 	#define UTFWWO_FORMAT       0x8000   //defined as Format    char at utf4.c//~v6WiI~
+//!!! 0x0fffff is reseved for UTFWWO_                              //+vbE7R~
 #endif                                                             //~v640I~
 #endif                                                             //~v62XI~
 #define UTFWWF_F2C1     0x80   //WideSBCS; font width=2,distance to next column=1//~v62UR~//~v640R~
@@ -708,12 +710,19 @@ int utfwcwidthNoMap(int Popt,ULONG Pucs,int *Ppflag);              //~v6V4I~
 #define UTFWWF_FLAGMASK      0x00ffffcc   //1100.1100              //~v6V7I~
 #define UTFWWF_SCM           0x00001000   //unicode:Spacing Combining Mark//~v6VbI~
 #define UTFWWF_SBCSF         0x00002000   //ignore wcwidth()=2 and force width=1//~v6WkI~
+//!!! UTFWWF_SBCSF is not used and 2000 is used as UTFWWO_MK_AMBIGUOUS 0x2000//+vbE7R~
 #define UTFWWF_COMB          0x00004000   //defined combining char //~v6WmI~
 #define UTFWWF_COMB2SCM      0x00008000   //combining but trate as SCM//~v6XOI~
+//!!! 0x0f.ffff is reseved for UTFWWO_                             //+vbE7R~
+#ifdef LNX                                                         //~vbE7I~
+#define UTFWWF_USEWCW        0x00100000   //ucs of /GW and /G_w    //~vbE7I~
+#endif                                                             //~vbE7I~
 #define UTFWWF_RC_MK_WCWIDTH 0x01000000   //datatype by mk_wcwidth //~v6V7I~
 //#define UTFWWF_RC_MK_COMB    0x02000000   //defied as combining    //~v6W9I~//~v6WmR~
 #define UTFWWF_RC_FORMAT     0x04000000   //category Cf            //~v6WiI~
-#define UTFWWF_RC_AMBIGLANG  0x08000000   //found on ambiguous_langs tbl//~vbzzR~
+//#define UTFWWF_RC_AMBIGLANG  0x08000000   //found on ambiguous_langs tbl//~vbzzR~//~vbE7R~
+#define UTFWWF_RC_AMBIGLANG_N  0x08000000   //found on ambiguous_langs tbl, option is fixed width//~vbE7I~
+#define UTFWWF_RC_AMBIGLANG_Y  0x10000000   //found on ambiguous_langs tbl, option is chk glyph or wcwidth//~vbE7R~
 #define UTFWWF_RC_MASK       0xff000000                            //~v6V7I~
 #define UTFWWF_LENMASK  0x03         //0000.0011                   //~v62UR~
     #endif //COMPCHKXE_NOUTF8                                      //~v5npR~

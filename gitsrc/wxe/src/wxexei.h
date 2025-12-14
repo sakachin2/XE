@@ -1,8 +1,10 @@
-//*CID://+vbDpR~:                             update#=  418;       //+vbDpR~
+//*CID://+v7fxR~:                             update#=  423;       //+v7fxR~
 //*********************************************************************//~v440I~
 //* wxe interface definition                                       //~v440I~
 //*********************************************************************//~v440I~
-//vbDp:250726 (WXE)color of combining char split for vhex csr was green.(ignored that xefile23 set)//+vbDpI~
+//v7fx:251205 (Wxe)addtionally to WINCON, optionally chk EOL for also Wxe.//+v7fxI~
+//vbEd:251107 (WXE)hcopy by saving TextOutW to buffer              //~vbEdI~
+//vbDp:250726 (WXE)color of combining char split for vhex csr was green.(ignored that xefile23 set)//~vbDpI~
 //vbDg:250706 (wxe)4byte dbcs missing display tab padding          //~vbDgI~
 //vbzM:240408 (WXE) support hardcopy function                      //~vbzMI~
 //vbz4:240120 try vbz3 to WXE                                      //~vbz4I~
@@ -346,7 +348,7 @@ int wxe_dndcopyfile(int Popt,int Pseq,int Ptot,char *Psource,char *Ptarget);//~v
 	int xxe_chkcsrpos(int Popt,int Prow,int Pcol,int *Ppinfo);     //~va3kI~
 	#define XXECCPO_CSRLINEBREAK	0x01	//should break at csr pos ?//~va3kI~
 	#define XXECCPO_STRCHK      	0x02	//should break at csr pos ?//~va3kI~
-	#define XXECCPO_NOT_RELATIVE    0x04	//for vsplit, col includes left panel width//+vbDpI~
+	#define XXECCPO_NOT_RELATIVE    0x04	//for vsplit, col includes left panel width//~vbDpI~
                                                                    //~va3kI~
 	#define XXECCPI_CPU8			0x01	//file at csr is cpu8 file//~va3kI~
 	#define XXECCPI_BIN     		0x02	//file is bin file     //~va3kI~
@@ -357,8 +359,8 @@ int wxe_dndcopyfile(int Popt,int Pseq,int Ptot,char *Psource,char *Ptarget);//~v
 	#define XXECCPI_HDRLINE    		0x80	//top/end/xline        //~va6qI~
 	#define XXECCPI_VHEXCSRPOS  	0x20	//set vhexcsr pos      //~va3tR~
 	#define XXECCPI_VHEXCSRSHIFT	   8	//                     //~va3tR~
-//  #define XXECCPI_VHEXCSRMASK   0xff00	//vhexcsr pos          //+vbDpR~
-    #define XXECCPI_VHEXCSRMASK   0xffff00	//vhexcsr pos  over 256//+vbDpI~
+//  #define XXECCPI_VHEXCSRMASK   0xff00	//vhexcsr pos          //~vbDpR~
+    #define XXECCPI_VHEXCSRMASK   0xffff00	//vhexcsr pos  over 256//~vbDpI~
 	#define XXECCPI_GETVHEXCSR(inf) (((inf) & XXECCPI_VHEXCSRMASK)>>XXECCPI_VHEXCSRSHIFT)//~va3tR~
 	int xxe_getlinenofldsz(int Popt,int Prow,int *Poutcols);       //~vb3pR~
 	int wxe_chkUpdateFileMenu(int Popt);                           //~vbdnR~
@@ -406,8 +408,13 @@ int wxe_dndcopyfile(int Popt,int Pseq,int Ptot,char *Psource,char *Ptarget);//~v
 	int wxe_kbdwcinit(int Popt,int Pkbdstat,int Pcodepage);        //~v79zR~
     int wxe_GetCursorWidth(int Popt,ULONG Pucs);                   //~vbz4I~
                                                                    //~vbzMI~
+#ifdef AAA                                                         //~vbEdI~
     int wxe_m2u(int Popt,int Prow,int Pcol,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen,WUCS *Ppucs,int Pbuffsz,int *Ppucsctr);//~vbzMR~
     int wxe_u2altch(int Popt,int Prow,int Pcol,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen,WUCS *Ppucs,int Pbuffsz,int *Ppucsctr);//~vbzMR~
+#else                                                              //~vbEdI~
+//  void wxe_getucsHC(int Popt,int Prow,int Pmaxcol,UWCH **Ppucs,int *Ppucsctr);//+v7fxR~
+	void wxe_getucsHC(int Popt,int Prow,int Pmaxcol,int PsplitVpos,UWCH **Ppucs,int *Ppucsctr);//+v7fxI~
+#endif                                                             //~vbEdI~
 #endif	// .c                                                      //~v440I~
     #define WXEHCO_VSPLIT_LEFT  0x01                               //~vbzMM~
     #define WXEHCO_VSPLIT_RIGHT 0x02                               //~vbzMM~

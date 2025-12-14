@@ -1,6 +1,9 @@
-//*CID://+v7e7R~:                             update#=  400;       //+v7e7R~
+//*CID://+v7fhR~:                             update#=  417;       //~v7fhR~
 //********************************************************************//~v62XI~//~v7ccR~
-//v7e7:250707 uncoditionally ascii is notcombining for performance //+v7e7I~
+//v7fh:251113 (WXE)vsplit hcopy; 21b5 is 2cell the right panel shift 1 column to right because wcwidth(21b5) is unmatch 2:wxe and 1:xecon.//~v7fhI~
+//            Chk ambiguous and if not use "_".                    //~v7fhI~
+//vbE7:250923 (LNX)add gliph chk option "w"(/G{Y|N|W}[0|1|2|y|w] to use wcwidth() and default is /GWw.//~v7E7I~
+//v7e7:250707 uncoditionally ascii is notcombining for performance //~v7e7I~
 //v7cc:240702 leave 303f(unprintable box mark) width=1 by mkeidth.(drop from ambiguous)//~v7ccI~
 //v7cb:240628 update ambiguous language                            //~v7cbI~
 //v7ba:240325 review definition of ambiguous language ucs4         //~v7b9I~
@@ -131,6 +134,9 @@
  */                                                                //~7719I~
                                                                    //~7719I~
 #include <stdio.h>                                                 //~v650I~
+#ifdef LNX                                                         //~v7e7I~
+#define __USE_XOPEN         //for wcwidth                          //~v7e7I~
+#endif                                                             //~v7e7I~
 #include <wchar.h>                                                 //~7719I~
 #ifdef UTF8UCS2                                                    //~v647I~
 //#include <ulibdefc.h>                                              //~v647R~//~v6c5R~
@@ -746,7 +752,11 @@ int mk_wcwidth_combining(UWUCS ucs)                                //~v6BjI~
   	if (bisearch(ucs, combining,                                   //~v650M~
 	       sizeof(combining) / sizeof(struct interval) - 1))       //~v650M~
     {                                                              //~v6WnI~
-        UTRACEP("%s:0x%04x is combining char\n",UTT,ucs);            //~v6WnI~//~v79hR~
+#ifdef LNX                                                         //~v7E7I~
+        UTRACEP("%s:0x%04x is combining char,wcw=%d\n",UTT,ucs,wcwidth(ucs));            //~v6WnI~//~v79hR~//~v7E7R~
+#else                                                              //~v7E7I~
+        UTRACEP("%s:0x%04x is combining char\n",UTT,ucs);          //~v7E7I~
+#endif                                                             //~v7E7I~
     	return 0;                                                  //~v650M~
     }                                                              //~v6WnI~
     return 1;                                                      //~v650M~
@@ -766,8 +776,8 @@ int mk_wcwidth(int Popt,UWUCS ucs)                                 //~v6WnI~
   /* test for 8-bit control characters */
   if (ucs == 0)
     return 0;
-  	if (UTF8ISASCII(ucs))                                          //+v7e7I~
-    	return 1;                                                  //+v7e7I~
+  	if (UTF8ISASCII(ucs))                                          //~v7e7I~
+    	return 1;                                                  //~v7e7I~
   if (ucs < 32 || (ucs >= 0x7f && ucs < 0xa0))
     return -1;
 
@@ -2224,7 +2234,11 @@ int chkAmbiguousLanguage(UWUCS ucs)                                //~v7zyR~
 	       sizeof(Sambiguous_langs_selected) / sizeof(struct interval) - 1))//~v7zyI~
   	{                                                              //~v7zyI~
     	rc=2;                      //found on ambiguous[]                                                   //~v7zyI~//~vbzzR~
+#ifdef LNX                                                         //~v7e7I~
+    	UTRACEP("%s:0x%04x,wcw=%d ambiguous_langs_selected\n",UTT,ucs,wcwidth(ucs));//~v7e7I~
+#else                                                              //~v7e7I~
     	UTRACEP("%s:0x%04x ambiguous_langs_selected\n",UTT,ucs);   //~v7zyI~
+#endif                                                             //~v7e7I~
   	}                                                              //~v7zyI~
     else                                                           //~v7zyI~
     {                                                              //~vbzzI~
@@ -2247,12 +2261,22 @@ int chkAmbiguousLanguage(UWUCS ucs)                                //~v7zyR~
         	if ((Gulibutfmode & GULIBUTFMODE_AMBIGLANG))	//adjust ambiguous lang by /GYy//~vbzzR~
             {                                                      //~vbzzI~
                 rc=2;                                              //~vbzzM~
-            	UTRACEP("%s:0x%04x ambiguous_langs NOT selected ADJUST OPTIONALLY\n",UTT,ucs);            //~v7zyI~//~vbzzR~
+	    		rc|=UTFWWF_RC_AMBIGLANG_Y; //found on ambiguous[], option is chk glyph//~v7E7R~
+#ifdef LNX                                                         //~v7e7I~
+            	UTRACEP("%s:0x%04x,wcw=%d ambiguous_langs not selected ADJUST OPTIONALLY\n",UTT,ucs,wcwidth(ucs));            //~v7zyI~//~vbzzR~//~v7e7R~
+#else                                                              //~v7e7I~
+            	UTRACEP("%s:0x%04x ambiguous_langs not selected ADJUST OPTIONALLY\n",UTT,ucs);//~v7e7I~
+#endif                                                             //~v7e7I~
             }                                                      //~vbzzI~
             else                                                   //~vbzzI~
             {                                                      //~vbzzI~
-	    		rc=2+UTFWWF_RC_AMBIGLANG;   //found on ambiguous[] //~vbzzM~
-	          	UTRACEP("%s:0x%04x ambiguous langs no adjust by /Gy option\n",UTT,ucs);//~vbzzI~
+//	    		rc=2+UTFWWF_RC_AMBIGLANG;   //found on ambiguous[] //~vbzzM~//~v7E7R~
+  	    		rc=2+UTFWWF_RC_AMBIGLANG_N; //found on ambiguous[], option is not chk glyph//~v7E7I~
+#ifdef LNX                                                         //~v7e7I~
+	          	UTRACEP("%s:0x%04x,wcw=%d ambiguous_langs no adjust by /Gy option\n",UTT,ucs,wcwidth(ucs));//~vbzzI~//~v7e7R~
+#else                                                              //~v7e7I~
+	          	UTRACEP("%s:0x%04x ambiguous_langs no adjust by /Gy option\n",UTT,ucs);//~v7e7I~
+#endif                                                             //~v7e7I~
             }                                                      //~vbzzI~
         }                                                          //~vbzzI~
 //            if (UTF_AMBIG2CELLMODE())  //no adjust ambiguous, set width -1/1/2 at utf22 by GN[0|1|2]//~vbzzR~
@@ -2361,7 +2385,11 @@ int mk_wcwidth_cjk(UWUCS ucs)                                      //~v6VbI~
 //        if (!mk_wcwidth_combining(ucs)) //rc=0:combining           //~v6W9R~//~v6WnR~
 ////          return UTFWWF_RC_MK_WCWIDTH|UTFWWF_RC_MK_COMB; //by mk_wcwidth() adjustable by wcwidth() but not for combining//~v6W9R~//~v6WmR~//~v6WnR~
 //            return UTFWWF_RC_MK_WCWIDTH|UTFWWF_COMB; //by mk_wcwidth() adjustable by wcwidth() but not for combining//~v6WmI~//~v6WnR~
-        UTRACEP("%s:rc=0x%0x,ucs=0x%04x ambiguous\n",UTT,rc,ucs);                   //~v6WnI~//~v6X5R~//~v79oR~//~v7zyR~//~vbzzR~
+#ifdef LNX                                                         //~v7e7I~
+        UTRACEP("%s:rc=0x%0x,ucs=0x%08x,wcw=%d ambiguous\n",UTT,rc,ucs,wcwidth(ucs));//~v7e7R~
+#else                                                              //~v7e7I~
+        UTRACEP("%s:rc=0x%0x,ucs=0x%04x ambiguous\n",UTT,rc,ucs);                   //~v6WnI~//~v6X5R~//~v79oR~//~v7zyR~//~vbzzR~//~v7e7R~
+#endif                                                             //~v7e7I~
 //        if (rc<0)                                                 //~v7zyI~//~vbzzR~
 //        {                                                        //~vbzzR~
 //            rc+=3;//-2+3=1:sbcs, -1+3=2:dbcs by /GYx option//~v7zyI~//~vbzzR~
@@ -3028,8 +3056,8 @@ int utf4_isSpacingCombiningMark(int Popt,UWUCS Pucs)               //~v6VbI~
 //     {0x1D172 ,0x1D172 }, //U+1D172     MUSICAL SYMBOL COMBINING FLAG-5     ¡©//~v6VbI~
 //     {0x1D16D ,0x1D172 }, //U+1D16D     MUSICAL SYMBOL COMBINING AUGMENTATION DOT   ¡©//~v6VbI~//~v79JR~
         };                                                         //~v6VbI~
-  	if (UTF8ISASCII(Pucs))                                         //+v7e7I~
-    	return 0;                                                  //+v7e7I~
+  	if (UTF8ISASCII(Pucs))                                         //~v7e7I~
+    	return 0;                                                  //~v7e7I~
 #ifndef XXX                                                        //~v6X0I~
 	if ((Popt & UTF4ISCMO_WIDTHPARM) 	//0x0200 		//WIDTHMASK contains width//~v6X0I~
     &&  !(Popt & UTF4ISCMO_WIDTHMASK) 	//0x00ff 		//width if WIDTHPARM on//~v6X0I~
@@ -3088,6 +3116,13 @@ int utf4_isAmbiguous(int Popt,UWUCS Pucs)                          //~v6VbI~
     	UTRACEP("%s:rc=%d,ucs=0x%04x ambiguous\n",UTT,rc,Pucs);                    //~v6VbR~//~v6WnR~//~v79zR~
     return rc;                                                     //~v6VbI~
 }//utf4_isAmbiguous                                                //~v6VbI~
+#else //!AAA                                                       //~v7fhI~
+int utf4_isAmbiguous(int Popt,UWUCS Pucs)                          //~v7fhI~
+{                                                                  //~v7fhI~
+	int rc=utf4_isAmbiguous_NoCJK(Popt,Pucs);                      //+v7fhR~
+    UTRACEP("%s:Popt=%04x,rc=%d,ucs=%04x\n",UTT,Popt,rc,Pucs);     //+v7fhR~
+    return rc;                                                     //~v7fhI~
+}                                                                  //~v7fhI~
 #endif //AAA                                                       //~v79zR~
 //#ifdef LNX                                                         //~v6WnI~//~v79iR~
 //******************************************************************//~v79fI~
@@ -3238,7 +3273,7 @@ int utf4_isAmbiguousAmbiguous(UWUCS Pucs)                          //~v79vM~
         rc=1;                                                      //~v79vM~//~v79xR~
 //#endif                                                             //~v79vM~//~v79xR~
     if (rc)                                                        //~v79vM~
-    	UTRACEP("%s:rc=%d,ucs=0x%04x ambiguous\n",UTT,rc,Pucs);      //~v79vM~//~v79zR~
+    	UTRACEP("%s:rc=%d,ucs=0x%04x AmbiguousAmbiguous\n",UTT,rc,Pucs);      //~v79vM~//~v79zR~//~v7E7R~
     return rc;                                                     //~v79vM~
 }                                                                  //~v79vM~
 //******************************************************           //~v6WiI~
@@ -3273,11 +3308,15 @@ int utf4_isFormat(int Popt,UWUCS Pucs)                             //~v6WiI~
  {0xE0020   ,0xE007f}                                             //~v6WiI~//~v6WmR~
  };                                                                //~v6WiI~
  //************************************                            //~v6WiI~
-  	if (UTF8ISASCII(Pucs))                                         //+v7e7I~
-    	return 0;                                                  //+v7e7I~
+  	if (UTF8ISASCII(Pucs))                                         //~v7e7I~
+    	return 0;                                                  //~v7e7I~
   	if (bisearch(Pucs, Suctb_Format,sizeof(Suctb_Format) / sizeof(struct interval) - 1))//~v6WiI~
     {                                                              //~v6WnI~
+#ifdef LNX                                                         //~v7E7I~
+    	UTRACEP("%s:ucs=%04x Format wcwidth=%d\n",UTT,Pucs,wcwidth(Pucs));//~v7E7I~
+#else                                                              //~v7E7I~
     	UTRACEP("%s:ucs=%04x Format\n",UTT,Pucs);                    //~v6WiI~//~v6WnI~
+#endif                                                             //~v7E7I~
     	rc=1;                                                      //~v6WiI~
     }                                                              //~v6WnI~
     return rc;                                                     //~v6WiI~

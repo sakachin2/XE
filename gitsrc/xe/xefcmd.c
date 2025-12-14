@@ -1,8 +1,11 @@
-//*CID://+vbydR~:                             update#=  332;       //~vbydR~
+//*CID://+vbEqR~:                             update#=  354;       //~vbEqR~
 //*************************************************************
 //*xefcmd.c*
 //**file cmd Save/Replace/Create/Tab/Copy/Move/Locate/Append       //~v0iaR~
 //*************************************************************
+//vbEq:251205 locate cmd setall xxx; change to repall and insall   //~vbEqI~
+//vbEk:251119 locate cmd of "l .all xxx"; change to "l set xxx"    //~vbEkI~
+//vbEb:251013 locate cmd;  add "l setall" to insert line of the linelabel.//~vbEbI~
 //vbyd:230427 copy into cmd cp option;apply environment(CPU8 for ARM)//~vbydI~
 //vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //vb5b:160913 additional to vb54, DBCS space altch is changable by TAB cmd//~vb5bI~
@@ -217,6 +220,10 @@
 	#include "xeutf.h"                                             //~va00I~
 #endif                                                             //~va00I~
 //*******************************************************
+//#define STRID_LOCATEINS ".all"                                   //~vbEkR~
+//#define STRID_LOCATEINS "setall"                                 //~vbEqR~
+#define STRID_LOCATEINS "insall"                                   //~vbEqI~
+#define STRID_LOCATEREP "repall"                                   //~vbEqI~
 static 	FILE *Scopyhfile;	//copycmd handle
 static 	UCHAR Scopyfilename[_MAX_PATH];	//copycmd handle        //~5122R~
 static  long  Scopylineno;
@@ -1513,7 +1520,7 @@ int fcmdcvf2l(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh,PULINEH Pplh)  //~va00I~
 	int rc=0,rc2;                                                  //~va00I~
 //**************                                                   //~va00I~
 	UTRACEP("%s:opt=0x%x,ScopyOpt=0x%x,FHfilename=%s\n",UTT,Popt,Scopyopt,Ppfh->UFHfilename);//~vbd7R~
-	UTRACEP("%s:UFHflag4=%02x\n",UTT,Ppfh->UFHflag4);              //+vbydI~
+	UTRACEP("%s:UFHflag4=%02x\n",UTT,Ppfh->UFHflag4);              //~vbydI~
   if (Popt & FCCVF2LO_BIN)    //no translation lcmd option         //~va7xR~
     Scopyopt|=FSOC_BIN;                                            //~va7xR~
   else  //not binary mode                                          //~va7xR~
@@ -1769,7 +1776,8 @@ int func_locate_file(PUCLIENTWE Ppcw)                           //~4C29I~
 	long lineno=0,linenowk;                                          //~v116R~//~vafcR~
     int destsw;                                                 //~4C29I~
     int rc=0;                                                   //~v04dI~
-    UCHAR *pc,*pc2;                                                //~v116R~
+//  UCHAR *pc,*pc2;                                                //~vbEbR~
+    UCHAR *pc,*pc2=0;                                              //~vbEbI~
 //  ULONG offs,offsp=0,prevoffs,elinepos;                            //~v11fR~//~vaz0R~
     FILESZT offs,offsp=0,prevoffs,elinepos;                        //~vaz0I~
     int   pos,width,scrollsz;                                      //~v10WR~
@@ -1780,6 +1788,7 @@ int func_locate_file(PUCLIENTWE Ppcw)                           //~4C29I~
     UCHAR labt[2][ULHLINENOSZ+1];                                  //~v69PR~
     PULINEH plht[2];                                               //~v69PI~
     int sortseq[2];                                                //~v69PI~
+    UPODELMTBL *podt;                                              //~vbEbI~
 //*********************************                             //~4C29I~
     pfc=Ppcw->UCWpfc;                                              //~v11aI~
     pfh=pfc->UFCpfh;                                               //~v11aI~
@@ -1790,12 +1799,43 @@ int func_locate_file(PUCLIENTWE Ppcw)                           //~4C29I~
     {                                                              //~v11cI~
 //  	return errmissing();                                       //~v11cR~
 //  	uerrmsg("L [L | O]xxxx [C] ;  L:lineno,O:Offset,C:by Current Update status",0);//~v69PR~
-    	uerrmsg("L { [L|O]xxxx [C] | .label }  ;  L:lineno,O:Offset,C:by Current Update status, .label:you left",0);//~v69PI~
+//  	uerrmsg("L { [L|O]xxxx [C] | .label }  ;  L:lineno,O:Offset,C:by Current Update status, .label:you left",0);//~vbEbR~
+//  	uerrmsg("L { [L|O]xxxx [C] | .label | %s xxx}  ;  L:lineno,O:Offset,C:by Current Update status, .label:to be searched, %s xxx:inseart \"xxx\" before all line-cmd lines.",//~vbEkR~
+//  	        "L { [L|O]xxxx [C] | .label | %s xxx}  ;  L:行番号,O:オフセット,C:変更後の状態での位置, .label:探索するラべル, %s xxx:全行コマンド行の前に \"xxx\" の行を挿入.",//~vbEkR~
+//  	uerrmsg("L { [L|O]xxxx [C] | .label | %s xxx}  ;  L:lineno,O:Offset,C:by Current Update status, .label:to be searched, %s xxx:insert \"xxx\" to all line-cmd lines.",//~vbEqR~
+//  	        "L { [L|O]xxxx [C] | .label | %s xxx}  ;  L:行番号,O:オフセット,C:変更後の状態での位置, .label:探索するラべル, %s xxx:全行コマンドの前に \"xxx\" の行を挿入.",//~vbEqR~
+//  			STRID_LOCATEINS,STRID_LOCATEINS);                  //~vbEqR~
+    	uerrmsg("L { [L|O]xxxx [C] | .label | {%s|%s} xxx}  ;  L:lineno,O:Offset,C:by Current Update status, .label:to be searched, {%s|%s} xxx:set \"xxx\" to all .label lines.",//~vbEqI~
+    	        "L { [L|O]xxxx [C] | .label | {%s|%s} xxx}  ;  L:行番号,O:オフセット,C:変更後の状態での位置, .label:探索するラべル, {%s|%s} xxx:全 .labael 行コマンド行に \"xxx\" をセット.",//~vbEqI~
+    			STRID_LOCATEINS,STRID_LOCATEREP,STRID_LOCATEINS,STRID_LOCATEREP);//~vbEqR~
         return 0;                                                  //~v11cI~
     }                                                              //~v11cI~
     if (opdno>2)                                                   //~v116I~
     	return errtoomany();                                       //~v116I~
     else                                                           //~v116I~
+    {                                                              //~vbEbI~
+        podt=Ppcw->UCWopddelmt;                                    //~vbEbI~
+//      if (!stricmp(pc,STRID_LOCATEINS))                          //~vbEqR~
+        if (!stricmp(pc,STRID_LOCATEINS)                           //~vbEqI~
+        ||  !stricmp(pc,STRID_LOCATEREP))                          //~vbEqI~
+        {                                                          //~vbEbI~
+            if (!podt->upoquate)                                   //~vbEbI~
+            {                                                      //~vbEbR~
+                if (opdno==1)                                      //~vbEbR~
+                {                                                  //~vbEbR~
+//                  uerrmsg("missing string after %s, or enclose by quotation.\n",0,STRID_LOCATEINS);//~vbEkR~
+//                  uerrmsg("missing string after %s.\n",0,STRID_LOCATEINS);//~vbEqR~
+                    uerrmsg("missing string after %s or %s.\n",0,STRID_LOCATEINS,STRID_LOCATEREP);//~vbEqI~
+                    return 4;                                      //~vbEbR~
+                }                                                  //~vbEbR~
+                pc2=pc+strlen(pc)+1;                               //~vbEbR~
+//              return lcmdLocateSetall(0,Ppcw,pfh,STRID_LOCATEINS,pc2);//~vbEqR~
+				int optsetall=0;                                   //~vbEqI~
+		        if (!stricmp(pc,STRID_LOCATEREP))                  //+vbEqR~
+					optsetall|=LLSO_REP;                           //~vbEqI~
+                return lcmdLocateSetall(optsetall,Ppcw,pfh,STRID_LOCATEINS,pc2);//~vbEqI~
+            }                                                      //~vbEbR~
+    	}                                                          //~vbEbI~
       	if (opdno==2)                                              //~v116I~
       	{                                                          //~v116I~
       		pc2=pc+strlen(pc)+1;                                   //~v116I~
@@ -1803,6 +1843,7 @@ int func_locate_file(PUCLIENTWE Ppcw)                           //~4C29I~
         		return errinvalid(pc2);                            //~v116I~
       		cursw=1;                                               //~v116I~
       	}                                                          //~v116I~
+    }                                                              //~vbEbI~
     prefixchr=toupper(*pc);                                        //~v11aI~
     switch(prefixchr)                                              //~v11aI~
     {                                                              //~v11aI~

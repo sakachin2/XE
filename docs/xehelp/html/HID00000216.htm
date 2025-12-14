@@ -15,6 +15,9 @@ a:hover{font-weight:bold;}-->
       0x00(Ctrl+2), 0x01-0x1f(Ctrl+A-Ctrl+-) is avail for input
       control char(&lt;0x20).These character input is optionally prohibitted
       by <A href="HID00000209.htm">.INI</A> specifiaction (Valid_Ctrl_char)             <a href="HID00000209.htm">Chapter-(6)</a>
+
+      (In the Linux Console, Ctrl+H(0x08) unconditionally becomes Backspace, so 0x08 cannot be entered.)
+
       Those are displayed by special char if there is no corresponding
       char on the codepage. Use of special char is also set by .INI file
       (Disp_trans_tbl,Disp_trans_char)                   Chapter-(6)

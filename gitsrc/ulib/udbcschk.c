@@ -1,4 +1,4 @@
-//*CID://+v7aaR~:                              update#=  830;      //~v7aaR~
+//*CID://+v7aaR~:                              update#=  832;      //~v7aaR~
 //**************************************************
 //*DBCS first byte chk
 //*parm :char to be checked
@@ -1765,9 +1765,11 @@ UTRACEP("GetLocaleInfo rc=%d,err=%d,ret=%s\n",rc,GetLastError(),cpgetwk);//~v62y
       cpsys=atoi(cpgetwk);                                         //~v5n8I~
       #ifndef WXE                                                  //~v5n8I~
 		cpcon=(int)GetConsoleCP();                                 //~v5n8I~
+//#ifdef TEST                                                      //+v7aaR~
         if (cpcon==CP_UTF8)  //65001                               //~v6t2R~
 			uerrmsg("Cosole codepage:%d(UTF8) is not supported.(xe is supporting utf8 encoded file)",0,//~v6t2R~
 					 CP_UTF8);                                     //~v6t2I~
+//#endif                                                           //+v7aaR~
                                                                    //~v6t2I~
 	UTRACEP("consoleCP=%d,GetLocaleInfo=%d\n",GetConsoleCP(),cpsys);                      //~v5n8M~//~v62uR~
         if (cpcon!=cpsys)                                          //~v5n8I~
@@ -2294,7 +2296,7 @@ int usetdbcstblmb(int Popt,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen)   //~v5n8I~
 //  for (ii=0;ii<Plen;ii++,Ppdata++,Ppdbcs++)                      //~v62UR~
     for (reslen=Plen,pc=Ppdata,pcd=Ppdbcs;reslen>0;reslen-=mblen,pc+=mblen,pcd+=mblen)//~v62UR~
     {                                                              //~v5n8I~
-//  	UTRACEP("%s:pc=%p,pcd=%p,reslen=%d\n",UTT,pc,pcd,reslen);  //+v7aaR~
+//  	UTRACEP("%s:pc=%p,pcd=%p,reslen=%d\n",UTT,pc,pcd,reslen);  //~v7aaR~
         ch=*pc;                                                    //~v62UR~
         mblen=1;                                                   //~v62UR~
         if (tabkeepsw)                                             //~v62UR~

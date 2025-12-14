@@ -1,5 +1,7 @@
-//*CID://+v7bxR~:                             update#=  449;       //~v7bxR~
+//*CID://+v7fyR~:                             update#=  500;       //~v7fyR~
 //*************************************************************
+//v7fy:251205 (LNXCON) hcopy eol option for LNXCON                 //~v7fyI~
+//vbEg:251112 (LNXCON)hcopy;save/get by dd str for utf8(shadow of combining generated double a+x300 and a and a+301)//~vbEgI~
 //v7bx:240418 (LNXCON)try read console by mvinnwstr(read ucs) for alternative of mvin_wchnstr(read cchar_t)//~v7bxI~
 //vbzP:240412 (LNXCON)support hardcopy function(also change key C+h-->A+@)//~vbzPM~
 //v6Eq:160812 lineopt should be cleared by USDFNCELL               //~v6EqI~
@@ -124,12 +126,14 @@
 #include <ufile4.h>                                                //~v39WI~
 #include <uproc.h>                                                 //~v39WI~
 #include <utf.h>                                                   //~vbzPI~
+#include <uviom.h>                                                 //~vbEgI~
 #ifdef AIX                                                         //~v588I~
 	#include <ukbdaixt.h>                                          //~v588I~
 #endif                                                             //~v588I~
 #ifdef LNX                                                         //~v6a0I~
 	#include <ukbdlnxc.h>                                          //~v6a0I~
 #endif                                                             //~v6a0I~
+#include <utf22.h>                                                 //~vbEgI~
 //*******************************************************
 #define UVIOMATTR_DBCS2        0x02         //also on uviom.c 1:dbcs1st,2:DBCS2ND//~vbzPI~
 //#define CSR_REDRAW		//csr reset not requred after csr move //~v50ZR~
@@ -234,6 +238,7 @@
 static VIOMODEINFO SvioModeInfo;    //save current mode
     static chtype   Sacsmap[256]; //altcharset definition          //~v39AR~
 static int Sheightparm=0,Swidthparm=0;	//user specification       //~v534R~
+static int SescAltch;                                              //~v7fyI~
 //*******************************************************
 int uviol_colorinit(int Pmaxcolor,int Pmaxpair);                   //~v324I~
 void uviol_cleanup(void);
@@ -320,7 +325,7 @@ chtype uviol_cell2attr(USHORT Pcell)                               //~v324I~
       }                                                            //~v5n8I~
     }                                                              //~v5n8I~
 #endif		//LNX                                                  //~v40rI~
-    UTRACEP("%s: cht=%04x,Pcell==%04x\n",UTT,cht,Pcell);//~v6EqR~  //+v7bxR~
+    UTRACEP("%s: cht=%04x,Pcell==%04x\n",UTT,cht,Pcell);//~v6EqR~  //~v7bxR~
     return cht;                                                    //~v324I~
 }//uviol_cell2att                                                  //~v324I~
 //#define PAIR2ATTR(cht)                                           //~v324R~
@@ -636,6 +641,7 @@ int uviol_init(int Popt)                                           //~v342R~
   	    if (Stermid & TERM_UNDERKON) 	//under kon                //~v5n8R~
   			Guviol_flag |= UVIOL_KON;                              //~v5n8R~
     }                                                              //~v5n8I~
+  	Guviol_flag |= UVIOL_DDHCOPY;                                  //~vbEgI~
 #endif                                                             //~v57QI~
     Sscrsize=Sscrwidth*Sscrheight;
 //  Spwkchtype=malloc((Sscrsize+1)*sizeof(chtype)); //read chtype work//~v39cI~//~v6BhR~
@@ -691,6 +697,8 @@ UTRACED("system acsmap",acs_map,128*4);                            //~v5n8R~
         	Sacsmap[ch]=cht;                                       //~v40uR~
     }                                                              //~v40uI~
 #endif                                                             //~v40uI~
+    SescAltch=utfgetvisiblealtch(0,UVIOM_ESC_CHAR);                //~v7fyI~
+UTRACEP("%s:Esc altch=%02x\n",UTT,SescAltch);                      //~v7fyI~
 UTRACED("Sacsmap",Sacsmap,sizeof(Sacsmap));                        //~v5n8I~
     return 0;                                                      //~v324R~
 }//uviol_init
@@ -2399,7 +2407,7 @@ int uvioGetCellData(int Popt,int Prow,UWCHART/*int4*/*Ppucs,int *Ppucsctr)//~vbz
 //************************                                         //~vbzPM~
     maxrow=Sscrsize/Sscrwidth;                                     //~vbzPM~
     pdbcs=Sdbcstbl+Sscrwidth;                                      //~vbzPR~
-	UTRACEP("%s:opt=%02x,row=%d,maxrow=%d,scrWidth=%d,dbcsspacealt=%02x\n",UTT,Popt,Prow,maxrow,Sscrwidth);//~vbzPM~
+	UTRACEP("%s:opt=%02x,row=%d,maxrow=%d,scrWidth=%d\n",UTT,Popt,Prow,maxrow,Sscrwidth);//~vbzPM~//~vbEgR~
     if (Prow>=maxrow)                                              //~vbzPM~
     {                                                              //~vbzPM~
 		UTRACEP("%s:end of row maxrow=%d\n",UTT,maxrow);           //~vbzPM~
@@ -2431,5 +2439,164 @@ int uvioGetCellData(int Popt,int Prow,UWCHART/*int4*/*Ppucs,int *Ppucsctr)//~vbz
     UTRACED("out ucs",Ppucs,ucsctr*(int)sizeof(UWCHART));          //~vbzPR~
     return 0;                                                      //~vbzPM~
 }//uvioGetCellData                                                 //~vbzPM~
+//*************************************************************************//~vbEgI~
+int uviolSaveDD(int Popt,int Prow,int Pcol,chtype *Ppcht,UCHAR *Ppdbcs,int Plen)//~vbEgR~
+{                                                                  //~vbEgI~
+    chtype *pcht;                                                  //~vbEgI~
+    UCHAR *pdbcs;                                                  //~vbEgI~
+//************************                                         //~vbEgI~
+    UTRACEP("%s:row=%d,col=%d,len=%d\n",UTT,Prow,Pcol,Plen);       //~vbEgI~
+    int pos=Prow*Sscrwidth+Pcol;                                   //~vbEgR~
+    pcht=Guvioscrddchtype+pos;                                     //~vbEgR~
+    pdbcs=Guvioscrdddbcs+pos;                                      //~vbEgR~
+    memcpy(pcht,Ppcht,(UINT)(Plen*(int)sizeof(chtype)));           //~vbEgR~
+	memcpy(pdbcs,Ppdbcs,(UINT)Plen);                               //~vbEgI~
+    UTRACED("out chtype",pcht,(int)sizeof(chtype)*Plen);           //~vbEgR~
+    UTRACED("out dddbcs",pdbcs,Plen);                              //~vbEgR~
+    return 0;                                                      //~vbEgI~
+}//uviolSaveDD                                                     //~vbEgR~
+//*************************************************************************//~vbEgI~
+int uviolSavecchar(int Popt,int Prow,int Pcol,cchar_t *Ppcchar,UCHAR *Ppdbcs,int Plen)//~vbEgR~
+{                                                                  //~vbEgI~
+	int ucs,ii;                                                    //~vbEgR~
+    chtype *pcht,*pcht0;                                           //~vbEgR~
+    cchar_t *pcchar;                                               //~vbEgI~
+    UCHAR *pdbcs;                                                  //~vbEgI~
+//************************                                         //~vbEgI~
+    UTRACEP("%s:row=%d,col=%d,len=%d\n",UTT,Prow,Pcol,Plen);       //~vbEgR~
+    UTRACED("cchar",Ppcchar,(int)sizeof(cchar_t)*Plen);            //~vbEgI~
+    UTRACED("dddbcs",Ppdbcs,Plen);                                 //~vbEgR~
+    int pos=Prow*Sscrwidth+Pcol;                                   //~vbEgR~
+    pcht0=Guvioscrddchtype+pos;                                    //~vbEgR~
+    pdbcs=Guvioscrdddbcs+pos;                                      //~vbEgI~
+    for (ii=0,pcht=pcht0,pcchar=Ppcchar;ii<Plen;ii++,pcchar++,pcht++)//~vbEgR~
+    {                                                              //~vbEgI~
+    	ucs=pcchar->chars[0];                                      //~vbEgR~
+    	int attr=(pcchar->attr & (UVIOMATTR_DBCS1|UVIOMATTR_DBCS2))<<UVIOLSID_NOTDDSHIFT;//~vbEgR~
+    	*pcht=(chtype)(ucs | UVIOLSID_NOTDD | attr);               //~vbEgR~
+    }                                                              //~vbEgI~
+	memcpy(pdbcs,Ppdbcs,(UINT)Plen);                               //~vbEgI~
+    UTRACED("chtype",pcht0,(int)sizeof(chtype)*Plen);              //~vbEgI~
+    UTRACED("dddbcs",pdbcs,Plen);                                  //~vbEgI~
+    return 0;                                                      //~vbEgI~
+}//uvioSavecchar                                                   //~vbEgR~
+//*************************************************************************//~vbEgM~
+//*cchar-->DDfmt from mixed u8 and locale                          //~vbEgI~
+//*rc=0:OK ;4:readconsole err, -1 :end of line                     //~vbEgI~
+//*************************************************************************//~vbEgM~
+//int uvioGetCellDataDD(int Popt,int Prow,char *Pdddata,char *Pdddbcs,int *Ppddlen)//~vbEgR~//+v7fyR~
+int uvioGetCellDataDD(int Popt,int Prow,int PsplitV,char *Pdddata,char *Pdddbcs,int *Ppddlen)//+v7fyI~
+{                                                                  //~vbEgM~
+	int maxrow,pos;                                                //~vbEgR~
+    chtype *pcht;                                                  //~vbEgR~
+    int ucs,ddlen,ddlenout=0;                                      //~vbEgR~
+    char *pdbcs,*pdbcs0,*poutdddata,*poutdddbcs;                   //~vbEgR~
+#ifdef TEST                                                        //~vbEgI~
+    int dbcssz;                                                    //~vbEgI~
+    char *pdbcse,*pcd2;                                            //~vbEgI~
+#endif                                                             //~vbEgI~
+//************************                                         //~vbEgM~
+    maxrow=Sscrsize/Sscrwidth;                                     //~vbEgM~
+	UTRACEP("%s:opt=%02x,row=%d,splitV=%d,maxrow=%d,Sscrsize=%d,SscrWidth=%d\n",UTT,Popt,Prow,PsplitV,maxrow,Sscrsize,Sscrwidth);//~vbEgM~//+v7fyR~
+    if (Prow>=maxrow)                                              //~vbEgM~
+    {                                                              //~vbEgM~
+		UTRACEP("%s:end of row maxrow=%d\n",UTT,maxrow);           //~vbEgM~
+    	return -1;                                                 //~vbEgM~
+    }                                                              //~vbEgM~
+    pos=Prow*Sscrwidth;                                            //~vbEgR~
+    pcht=Guvioscrddchtype+pos;                                     //~vbEgR~
+    pdbcs0=Guvioscrdddbcs+pos;                                     //~vbEgR~
+    pdbcs=pdbcs0;                                                  //~vbEgI~
+#ifdef TEST                                                        //~vbEgI~
+    pdbcse=pdbcs0+Sscrwidth;                                       //~vbEgR~
+#endif                                                             //~vbEgI~
+    poutdddata=Pdddata;                                            //~vbEgR~
+    poutdddbcs=Pdddbcs;                                            //~vbEgI~
+    UTRACED("saved pcht",pcht,Sscrwidth*(int)sizeof(chtype));      //~vbEgR~
+    UTRACED("saved pdbcs",pdbcs,Sscrwidth);                        //~vbEgI~
+    for (int ii=0;ii<Sscrwidth;ii++,pdbcs++,pcht++)                //~vbEgI~
+    {                                                              //~vbEgI~
+        ucs=(int)(*pcht);                                          //~vbEgI~
+        UTRACEP("%s:ii=%d,ucs=%04x\n",UTT,ii,ucs);                 //~vbEgI~
+    	int attr=ucs>>UVIOLSID_NOTDDSHIFT;                         //~vbEgR~
+    	int idmask=attr & UVIOLSID_NOTDD0;                         //~vbEgI~
+        ucs&=UVIOLSID_UCSMASK;                                     //~vbEgR~
+    	if (idmask==UVIOLSID_NOTDD0)	//0x7c save data is not utf8 ddfmt//~vbEgR~
+        {                                                          //~vbEgI~
+            if ((*pdbcs==DEFAULT_UNPATTR) //xe:DISPLINEATTRID='l'  //~v7fyI~
+            &&  (ucs==SescAltch)                                   //~v7fyI~
+            &&  (ii>=PsplitV)                                      //+v7fyI~
+            &&  (Guvio2Stat & UVIO2S_HCOPY_CHKEOL) //              0x4000  //hcopy cut line by EOL(0x1b)//~v7fyI~
+            )                                                      //~v7fyI~
+            {                                                      //~v7fyI~
+                UTRACEP("%s:EOL at ii=%d\n",UTT,ii);               //~v7fyI~
+                break;                                             //~v7fyI~
+            }                                                      //~v7fyI~
+            UTRACEP("%s:ucs=%02x,pdbcs=%02x(offs=%d)\n",UTT,ucs,*pdbcs,PTRDIFF(pdbcs,pdbcs0));//~vbEgR~
+            if (UTF8ISASCII(ucs))                                  //~vbEgR~
+            {                                                      //~vbEgI~
+	            *poutdddata=(UCHAR)ucs;                            //~vbEgR~
+	            *poutdddbcs=*pdbcs;                                //~vbEgI~
+                ddlen=1;                                           //~vbEgI~
+            }                                                      //~vbEgI~
+            else                                                   //~vbEgI~
+            {                                                      //~vbEgI~
+        		utfcvu2dd1(0,ucs,poutdddata,poutdddbcs,&ddlen);//rc:3:utf8+dbcs//~vbEgR~
+            }                                                      //~vbEgI~
+            UTRACEP("%s:not ucs line ucs=%04x,outdddata=%02x-%02x,outdddbcs=%02x-%02x,ddlen=%d\n",UTT,ucs,*poutdddata,*(poutdddata+1),*poutdddbcs,*(poutdddbcs+1),ddlen);//~vbEgR~
+	        poutdddata+=ddlen;                                     //~vbEgI~
+	        poutdddbcs+=ddlen;                                     //~vbEgI~
+            ddlenout+=ddlen;                                       //~vbEgI~
+            if (attr & UVIOMATTR_DBCS1)                            //~vbEgM~
+            {                                                      //~vbEgM~
+            	pcht++;	                                           //~vbEgM~
+                ii++;                                              //~vbEgM~
+#ifdef TEST                                                        //~vbEgI~
+                if (*pdbcs==UDBCSCHK_DBCS1ST)                      //~vbEgR~
+                {                                                  //~vbEgR~
+                    for (dbcssz=1,pcd2=pdbcs+1;pcd2<pdbcse;pcd2++) //~vbEgR~
+                    {                                              //~vbEgR~
+            			UTRACEP("%s:after DBCS1ST pcd2=%02x(offs=%d)\n",UTT,*pcd2,PTRDIFF(pcd2,pdbcs0));//~vbEgR~
+                        if (*pcd2==UDBCSCHK_DBCS2ND)               //~vbEgR~
+                        {                                          //~vbEgR~
+                            dbcssz++;                              //~vbEgR~
+                            break;                                 //~vbEgR~
+                        }                                          //~vbEgR~
+                        if (*pcd2==UDBCSCHK_DBCSPAD)               //~vbEgR~
+                        {                                          //~vbEgR~
+                            dbcssz++;                              //~vbEgR~
+                            continue;                              //~vbEgR~
+                        }                                          //~vbEgR~
+                    }                                              //~vbEgR~
+                    pdbcs+=dbcssz;                                 //~vbEgR~
+                }                                                  //~vbEgI~
+#else                                                              //~vbEgR~
+                pdbcs++;    //padding follow ATTR_DBCS2            //~vbEgI~
+#endif                                                             //~vbEgI~
+			} //ATTR_DBCS1                                         //~vbEgR~
+        }                                                          //~vbEgI~
+        else                                                       //~vbEgI~
+        {                                                          //~vbEgI~
+            if ((*pdbcs==DEFAULT_UNPATTR) //xe:DISPLINEATTRID='l'  //~v7fyI~
+            &&  ((*pcht & A_CHARTEXT)==UVIOM_ESC_CHAR)             //~v7fyI~
+            &&  (ii>=PsplitV)                                      //+v7fyI~
+            &&  (Guvio2Stat & UVIO2S_HCOPY_CHKEOL) //              0x4000  //hcopy cut line by EOL(0x1b)//~v7fyI~
+            )                                                      //~v7fyI~
+            {                                                      //~v7fyI~
+                UTRACEP("%s:EOL at ii=%d\n",UTT,ii);               //~v7fyI~
+                break;                                             //~v7fyI~
+            }                                                      //~v7fyI~
+            *poutdddata++=*pcht & A_CHARTEXT;                      //~vbEgI~
+            *poutdddbcs++=*pdbcs;                                  //~vbEgI~
+             ddlenout++;                                           //~vbEgR~
+            UTRACEP("%s:ddline ucs=%04x,outdata=%02x,outdbcs=%02x\n",UTT,ucs,*(poutdddata-1),*(poutdddbcs-1));//~vbEgI~
+        }                                                          //~vbEgI~
+    }                                                              //~vbEgI~
+    *Ppddlen=ddlenout;                                             //~vbEgI~
+    UTRACEP("%s:pos=%d,ddlenout=%d\n",UTT,pos,ddlenout);           //~vbEgR~
+    UTRACED("out dddata",Pdddata,ddlenout);                        //~vbEgR~
+    UTRACED("out dddbcs",Pdddbcs,ddlenout);                        //~vbEgR~
+    return 0;                                                      //~vbEgM~
+}//uvioGetCellDataDD                                               //~vbEgM~
 #else  //!LNXCON                                                   //~vbzPM~
 #endif //!LNXCON                                                   //~vbzPM~

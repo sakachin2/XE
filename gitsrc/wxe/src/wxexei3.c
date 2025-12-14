@@ -1,8 +1,10 @@
-//*CID://+vbAnR~:                               update#=  591;     //~vbAnR~
+//*CID://+v7fxR~:                               update#=  599;     //+v7fxR~
 //*********************************************************************//~v55cI~
 //* wxe interface definition-3                                     //~v55cI~
 //* rctl; menu enability;openwith;at cmd                           //~v55WR~
 //*********************************************************************//~v55cI~
+//v7fx:251205 (Wxe)addtionally to WINCON, optionally chk EOL for also Wxe.//+v7fxI~
+//vbEd:251107 (WXE)hcopy by saving TextOutW to buffer              //~vbEdI~
 //vbAn:240627 for performance bypass glyphchk when help            //~vbAnI~
 //vbzM:240408 (WXE) support hardcopy function                      //~vbzMI~
 //vbz4:240120 try vbz3 to WXE                                      //~vbz4I~
@@ -59,8 +61,8 @@
 #include <uwinsub.h>                                               //~v56bI~
 #include <uftp.h>                                                  //~v68eI~
 #include <utf22.h>                                                 //~vbz4I~
-#include <uvio.h>                                                  //+vbAnI~
-#include <uvio2.h>                                                 //+vbAnI~
+#include <uvio.h>                                                  //~vbAnI~
+#include <uvio2.h>                                                 //~vbAnI~
                                                                    //~v55cI~
 #include "xe.h"                                                    //~v55cI~
 #include "xescr.h"                                                 //~v55cI~
@@ -1158,6 +1160,7 @@ void wxe_mapinit(void)                                             //~vbz4I~
 	UTRACEP("%s\n",UTT);                                           //~vbz4R~
     utfucsmapinitWXE();                                            //~vbz4R~
 }                                                                  //~vbz4I~
+#ifdef AAA                                                         //~vbEdI~
 //*****************************************************************//~vbzMI~
 //*from uvio_m2dd                                                  //~vbzMI~
 //*****************************************************************//~vbzMI~
@@ -1175,3 +1178,13 @@ int wxe_u2altch(int Popt,int Prow,int Pcol,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen,
 	UTRACEP("%s:rc=%d\n",UTT,rc);                                  //~vbzMI~
     return rc;                                                     //~vbzMI~
 }                                                                  //~vbzMI~
+#else                                                              //~vbEdI~
+//*****************************************************************//~vbEdI~
+//void wxe_getucsHC(int Popt,int Prow,int Pmaxcol,UWCH **Ppucs,int *Ppucsctr)//+v7fxR~
+void wxe_getucsHC(int Popt,int Prow,int Pmaxcol,int PsplitVpos,UWCH **Ppucs,int *Ppucsctr)//+v7fxI~
+{                                                                  //~vbEdI~
+	UTRACEP("%s:opt=0x%02x,row=%d.maxcol=%d,vpos=%d\n",UTT,Popt,Prow,Pmaxcol,PsplitVpos);//+v7fxR~
+//  csubGetUcsHC(Popt,Prow,Pmaxcol,Ppucs,Ppucsctr);                //+v7fxR~
+    csubGetUcsHC(Popt,Prow,Pmaxcol,PsplitVpos,Ppucs,Ppucsctr);     //+v7fxI~
+}                                                                  //~vbEdI~
+#endif                                                             //~vbEdI~

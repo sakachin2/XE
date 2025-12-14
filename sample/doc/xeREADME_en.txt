@@ -1,6 +1,6 @@
-UTF8 encoding ||*CID:||+130CR~:                             update#=  861;||~130CR~
+UTF8 encoding ||*CID:||+130DR~:                             update#=  862;||+130DR~
 ######################################################################
-[English]    v1.30C   2025/08/25                                      ||~130CR~
+[English]    v1.30D   2025/12/14                                      ||+130DR~
 
 An easy-to-use editor for programmers who work on both mainframes (also useful for editing SPF files) and PCs.||~v130I~
 A hybrid of the host's SPF and the convenient key operations of a PC EDITOR.||~v130I~
@@ -742,9 +742,37 @@ How to execute.
         from being lost when multiple sessions are launched simultaneously.||~130CI~
        -(Win) Added processing when exception is invoked.             ||~130CI~
         Exception information is output to stdout and ::xewin.dmp.<pid>.||~130CI~
-       -(LNX-Console)The display color of the data line corresponding to the cursor position||+130CI~
+       -(LNX-Console)The display color of the data line corresponding to the cursor position||~130CI~
         in the vertical hexadecimal line can now be set with the /VDc option (default is brown).||~130CI~
                                                                       ||~130CI~
      4.Tools                                                          ||~130CI~
        -(LNX) Added option (/Yi) to bypass errMsg for invalid filenames.||~130CI~
         xfg v1.22                                                     ||~130CI~
+                                                                      ||+130DI~
+######################################################################||+130DI~
+130D:2025/12/14                                                       ||+130DI~
+     1.BUGs                                                           ||+130DI~
+       -(gxe) If the previous operation before exiting was Ctrl+H (print screen)||+130DI~
+        or Ctrl+P (print file), the session may crash because printing is in progress.||+130DI~
+       -Correct to display of combining/formatting characters in UTF8 files.||+130DI~
+        Especially in Windows, combining characters are displayed differently||+130DI~
+        between Windows Terminal and Conhost(previous terminal emulator).||+130DI~
+       -Handles /Ffontname both name of English and Regional Language.||+130DI~
+                                                                      ||+130DI~
+     2.Additional function.                                           ||+130DI~
+       -(Linux) Added the 'W' option to use the API:wcwidth() to get cell width||+130DI~
+        for characters of ambiguous display widths.                   ||+130DI~
+        Cmd line option:-G{Y|N|W}[0|1|2|y|w], Defaults is /GWw.       ||+130DI~
+       -Directory List.                                               ||+130DI~
+        Displays the free space percentage for the line of drive(Windows) and mount point(Linux).||+130DI~
+        The % is updated by session restart(Windows) or Refresh:Shift+F1(Linux).||+130DI~
+        (Linux) When you switch to Username display mode with Shift+F6,||+130DI~
+        the device name (/dev/sdaa, etc.) is displayed.               ||+130DI~
+       -LOCate command, additional options.                           ||+130DI~
+        ex) loc {insall|repall} xxx                                   ||+130DI~
+        Copies the label from the labeled command line (.yyy) to the current text line.||+130DI~
+        ex)Copy (repall) or insert (insall) the string xxx.yyy to the top of the lines.||+130DI~
+       -new HCOpy command.                                            ||+130DI~
+        HCO [EOL]NOEOL]. Command line options is /Yh and /Nh(default).||+130DI~
+        "EOL" cuts lines at the End-Of-Line(line feed code) rather than the screen width.||+130DI~
+        It is for the case text contains RightToLeft formatting characters.||+130DI~

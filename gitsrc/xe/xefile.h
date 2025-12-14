@@ -1,7 +1,9 @@
-//CID://+vbBuR~:                                      Update#=  353//~vbBuR~
+//CID://+vbEjR~:                                      Update#=  356//+vbEjR~
 //****************************************************************
 //xefile.h                                                         //~v10LR~
 //****************************************************************
+//vbEj:251119 locate cmd of "l .all xxx"; change add lin to rep line to keep same lineno//+vbEjI~
+//vbEc:251102 locate cmd;  avoid duplicated insert                 //~vbBuI~
 //vbBu:241119 Edit/Browse /Mz option for ebc file to accept 0x0d15 as EOL//~vbBuI~
 //vby6:230402 (ARM)adjust by4; go around by shortname and change to uri at ulib(ufile1l)//~vby6I~
 //vby4:230402 (ARM)shared resource support by //shareName defined by SP(ShortPath) cmd.//~vby4I~
@@ -229,7 +231,7 @@
 //*v011:950610:reset reverse when double ESC                    //~5610I~
 //****************************************************************//~5610I~
 //#define EOLID2LEN(eolid) ( (eolid)==4 ? 1 : (eolid) )              //~v50tR~//~vbBuR~
-#define EOLID2LEN_NOTZ(eolid) ( (eolid)>2 ? 1 : (eolid) )          //+vbBuR~
+#define EOLID2LEN_NOTZ(eolid) ( (eolid)>2 ? 1 : (eolid) )          //~vbBuR~
 #define EOLID2LEN(eolid) ( (eolid)==UFGETS_EOLID_EBCZ ? 2 : EOLID2LEN_NOTZ(eolid))//~vbBuI~
 #define IS_VHEXMODE(pcw) ( ((pcw)->UCWpfc) ? ( ((PUFILEC)((pcw)->UCWpfc))->UFCflag2 & UFCF2VHEX ) \
 										   :0 )                    //~v60vI~
@@ -373,6 +375,7 @@ typedef struct _ULINEH {
 #define ULHF6EBCDBCSCONCAT1    0x04     //split/tflow join dropped intermediate si//~va8wI~
 #define ULHF6EBCDBCSCONCAT2    0x08     //split/tflow join dropped intermediate so//~va8wI~
 #define ULHF6CHLCPU8CMD        0x10     //CmdHistoryList:utf8 cmd string//~vbi3I~
+//#define ULHF6LABELSETALL       0x20     //line inserted by localte .all//+vbEjR~
                         UCHAR  ULHrsv[1];                          //~va87I~
                         UCHAR  ULHsynflag;     //see xesyn.h for EQU definition//~v780I~
                         int    ULHsynlineno;   //line seqno written to source-highlignt//~v786R~

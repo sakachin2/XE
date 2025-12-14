@@ -1,6 +1,8 @@
-//*CID://+vbAnR~:                             update#=   44;       //+vbAnR~
+//*CID://+v7fuR~:                             update#=   52;       //+v7fuR~
 //******************************************************
-//vbAn:240627 for performance bypass glyphchk when help            //+vbAnI~
+//v7fu:251204 optionally do v7ft                                   //+v7fuI~
+//vbE7:250923 (LNX)add gliph chk option "w"(/G{Y|N|W}[0|1|2|y|w] to use wcwidth() and default is /GWw.//~vbE7I~
+//vbAn:240627 for performance bypass glyphchk when help            //~vbAnI~
 //v7c7:240624 (W32) treate glyph width=0 for category Cf(Format, 200d:ZWJ etc)//~v7c7I~
 //vbzZ:240503 LNX:del vbzY because wcwidth()=1 is same as -G1      //~vbzZI~
 //vbzY:240503 LNX:use wcwidth() for ambiguous when -gN and allow specification to ambig lang//~vbzYI~
@@ -48,7 +50,12 @@
 	#define UVIO2S_DRAWTEXTALL               0x0400  //chk glyph width by TextDraw for not ambiguous//~v7beI~
 //    #define UVIO2S_USEAPI                    0x0800  //chk glyph width by TextDraw for not ambiguous//~vbzYR~//~vbzZR~
 //    #define UVIO2S_USEAPI_AMBIGLANG          0x1000                //~vbzYR~//~vbzZR~
-	#define UVIO2S_NOGLYPHCHK                0x0800  //no glyph chk for /help option//+vbAnI~
+	#define UVIO2S_NOGLYPHCHK                0x0800  //no glyph chk for /help option//~vbAnI~
+#ifdef LNX                                                         //~vbE7I~
+    #define UVIO2S_AMBIG_USEWCW              0x1000                //~vbE7I~
+    #define UVIO2S_AMBIGLANG_USEWCW          0x2000                //~vbE7I~
+#endif                                                             //~vbE7I~
+    #define UVIO2S_HCOPY_CHKEOL              0x4000  //hcopy cut line by EOL(0x1b)//+v7fuR~
 #ifdef LNXCON                                                      //~v7aqI~
     #define LF_FACESIZE 128                                        //~v7aqI~
 #endif                                                             //~v7aqI~
@@ -111,6 +118,9 @@ int uvioGetCursorWidth(int Popt,ULONG Pucs);                       //~v796R~
 #define UVGCWO_FORCE    0x04        //force close                  //~v7b1R~
 #define UVGCWO_NOAMB    0x10        //chk fo non ambiguous char    //~v7b8I~
 #define UVGCWO_RETW0    0x20        //return width=0               //~v7c7I~
+#ifdef LNX                                                         //~vbE7I~
+#define UVGCWO_NOTAMB   0x40        //glyphchk for not ambiguous   //~vbE7I~
+#endif                                                             //~vbE7I~
 //*******************************                                  //~v7a7I~
 //void setConsoleFont(char *Pfontface);                              //~v7a7I~//~vbzqR~
 void setConsoleFont(char *Pfontface);                              //~vbzqR~

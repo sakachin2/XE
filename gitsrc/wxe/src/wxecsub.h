@@ -1,7 +1,10 @@
-//*CID://+vbDpR~:                             update#=  137;       //~vbDpR~
+//*CID://+v7fxR~:                             update#=  151;       //~v7fxR~
 //*********************************************************************//~2818I~
 //* wxecsub.h                                                      //~2818I~
 //*********************************************************************//~2818I~
+//v7fx:251205 (Wxe)addtionally to WINCON, optionally chk EOL for also Wxe.//~v7fxI~
+//vbEp:251204 (W32)bug of vbDp(use split comb colr whe csr pos); it have not to apply csr is on data line split comb char.//~vbEpI~
+//vbEd:251107 (WXE)hcopy by saving TextOutW to buffer              //~vbDpI~
 //vbDp:250726 (WXE)color of combining char split for vhex csr was green.(ignored that xefile23 set)//~vbDpI~
 //vbzM:240408 (WXE) support hardcopy function                      //~vbzMI~
 //vbzi:240201 (WXE)vbz4 had no effect. Reason is font=System. SelectFont was not done at scrinit.//~vbziI~
@@ -53,6 +56,9 @@ extern  "C"                                                        //~2818I~
 	int csubinit2(int Pcellh,int Pcellw);                          //~2901I~
 	void csubinit3(HDC Phdc);                                      //~vbz4I~
 	void csubinit4(HFONT Pfh);                                     //~vbziR~
+	void csubinit5(HDC Phdc);                                      //~vbEdI~
+	void csubStartLine(int Popt,int Prow,int Pscrcmaxcol);         //~vbEdI~
+	void csubSetEOLHC(int Popt,int Prow,int Ppos);                 //~v7fxI~
 //  int uscrresize(int Pwidth,int Pheight);                        //~2A14R~
 	int usetcaret(int Pdbcssw,int Pheightrate,int Pcellw,int Pcellh,int Pfonth);//~2914I~
 	int ushowcaret(void);                                          //~2831I~
@@ -111,7 +117,8 @@ int csubgetcsrposbf(int Popt,char *Pdbcs,int Plen,int Ppos,int *Ppposb,int *Ppos
 int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pddata,char *Pdbcs,int Plen,int Pcellw,int Popt2);//~vbDpR~
 #define CSTOWO_PRINT        0x01 //write a line at once            //~va20I~
 #define CSTOWO_COMBINECHK   0x02 //chk combine                     //~va30I~
-#define CSTOWO_CSRPOS       0x04 //cursor position                 //+vbDpR~
+#define CSTOWO_CSRPOS       0x04 //cursor position                 //~vbDpR~
+#define CSTOWO_CSRPOSBYVHEX 0x08 //data cursor position by vhex csr//~vbEpI~
 int csubtextoutwHC(int Popt,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen,WUCS *Ppucs);//~vbzMI~
 int csubtextoutw1(int Popt,HDC Phdc,int Pxx,int Pyy,char *Pdata,char *Pdbcs,int Plen);//~va20I~
 int csubchkdd(int Popt,char *Pdbcs,int Plen);                      //~va20I~
@@ -135,6 +142,8 @@ int csubtextoutw1_locale(int Popt,HDC Phdc,int Pxx,int Pyy,char *Pdata,int Plen)
 #endif                                                             //~vavzI~
 int csubtextout_locale_ligatureHC(int Popt,WXEINTF *Ppwxei,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen,WUCS *Ppucs,int Pbuffsz,int *Ppucsctr);//~vbzMI~
 int csubGetCursorPos(int Popt,ULONG Pucs);                         //~vbz4I~
+//void csubGetUcsHC(int Popt,int Prow,int Pmaxcol,UWCH **Ppucs,int *Ppucsctr);//+v7fxR~
+void csubGetUcsHC(int Popt,int Prow,int Pmaxcol,int PsplitVpos,UWCH **Ppucs,int *Ppucsctr);//+v7fxI~
 #ifdef __cplusplus                                                 //~2818I~
 }                                                                  //~2818I~
 #endif                                                             //~2818I~

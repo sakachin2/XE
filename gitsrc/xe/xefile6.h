@@ -1,8 +1,10 @@
-//*CID://+vamFR~:                             update#=   45;       //+vamFR~
+//*CID://+vbEnR~:                             update#=   48;       //~vbEnR~
 //****************************************************************
 //xefile6.h
 //****************************************************************
-//vamF:131119 (BUG)"xpr **/***" fails by "input fmt err" for vhex utf,fold at 0x0a for lc file.//+vamFI~
+//vbEn:251201 (W32 bug)under combinemode;u-309a(handakuten such as for katakana-Po) is not shown as split mode even when csr is on//~vbEnI~
+//             set celldraw always if utf8 file contains unicode   //~vbEnI~
+//vamF:131119 (BUG)"xpr **/***" fails by "input fmt err" for vhex utf,fold at 0x0a for lc file.//~vamFI~
 //va81:100920 (WXEXXE)print ebcfile by ucs for alos wxp **/*** option//~va81I~
 //va80:100917 (WXEXXE)print ebcfile by ucs                         //~va80I~
 //va79:100809 cpeb converter parm support                          //~va79I~
@@ -78,6 +80,7 @@ int tabdisplay(UCHAR *Pdata,UCHAR *Pdbcs,int Plen,int Pbinsw);     //~v20UR~
 	#define FILETDO_UTF8        0x0100 //file is cpu8              //~va20R~
 	#define FILETDO_PRINT       0x0200 //tabdisplay for file print //~va20I~
 	#define FILETDO_PRINTGUI    0x0400 //tabdisplay for file print //~va46I~
+	#define FILETDO_NONASCII    0x0800 //return !=0 if detected non asdcii unicode in utf8 file//+vbEnR~
 #endif                                                             //~va20I~
 #endif                                                             //~va20I~
 //**************************************************************** //~v61xI~
@@ -94,8 +97,8 @@ int tabdisplayforxpr(UCHAR *Pdata,UCHAR *Pdbcs,int Plen);          //~v61xI~
 #ifdef UTF8UCS2                                                    //~va20I~
 int tabdisplayforxpru8(int Popt,UCHAR *Pdata,UCHAR *Pdbcs,int Plen);//~va20I~
 #endif                                                             //~va20I~
-//**************************************************************** //+vamFI~
-int tabdisplayforxprrecord(int Popt,PULINEH Pplh,UCHAR *Pdata,UCHAR *Pdbcs,int Plen);//+vamFI~
+//**************************************************************** //~vamFI~
+int tabdisplayforxprrecord(int Popt,PULINEH Pplh,UCHAR *Pdata,UCHAR *Pdbcs,int Plen);//~vamFI~
 //**************************************************************** //~va80I~
 int tabdisplayforxprebcbyucs(int Popt,int Phandle,PULINEH Pplh,UCHAR *Pdata,UCHAR *Pdbcs,int Poffs,int Plen);//~va80R~
                                                                    //~v0avI~

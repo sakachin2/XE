@@ -1,9 +1,11 @@
-//*CID://+v7bbR~:                             update#=  877;       //+v7bbR~
+//*CID://+v7f7R~:                             update#=  897;       //+v7f7R~
 //*********************************************************************//~7712I~
 //utf3.c                                                           //~7817R~
 //* utf8 data manipulation:os library                              //~7712R~
 //*********************************************************************//~7712I~
-//v7bb:240326 It should not use mblen it depends locale, for unicode file it have to depend font.//+v7bbI~
+//v7f7:251105 (wincon)u200d(glyphw=0 Format) is show by not "+" but space when comb=unp/split//~vbf3I~
+//vbE7:250923 (LNX)add gliph chk option "w"(/G{Y|N|W}[0|1|2|y|w] to use wcwidth() and default is /GWw.//~vbE7I~
+//v7bb:240326 It should not use mblen it depends locale, for unicode file it have to depend font.//~v7bbI~
 //v7b2:240320 (Win)force width=1 for 00ad ambiguous and format. LNX set 1 by wcwidth=1//~v7b2I~
 //v7ap:240314 unprintable option of /G  have to apply to ambiguous by lang.//~v7apI~
 //vbzz:240311 arrange vbz3,vbzp:/Yv and vbzy:YL to /Gv[L]          //~vbzzI~
@@ -505,13 +507,13 @@ UTRACEP("wcwidth only width=%d for ucs=%x\n",wcw,Pucs);   //better to return lar
 #else                                                              //~v697I~
 		if (opt & UTFWWO_APICHK)                                   //~v697I~
         {                                                          //~vbzzI~
-//  		len=utfwwapichk(0,Pucs,len,&flag,0/*wcw*/);            //~v697I~//+v7bbR~
-            int optapic=0;                                         //+v7bbI~
-         	if (rc & UTFWWF_RC_MK_WCWIDTH)   //datatype by mk_wcwidth//+v7bbI~
-  				optapic|=UTFWWO_MK_WCWIDTH;                        //+v7bbI~
-	        if (rc & UTFWWF_RC_FORMAT)                             //+v7bbI~
-  				optapic|=UTFWWO_FORMAT;                            //+v7bbI~
-    		len=utfwwapichk(optapic,Pucs,len,&flag,0/*wcw*/);      //+v7bbI~
+//  		len=utfwwapichk(0,Pucs,len,&flag,0/*wcw*/);            //~v697I~//~v7bbR~
+            int optapic=0;                                         //~v7bbI~
+         	if (rc & UTFWWF_RC_MK_WCWIDTH)   //datatype by mk_wcwidth//~v7bbI~
+  				optapic|=UTFWWO_MK_WCWIDTH;                        //~v7bbI~
+	        if (rc & UTFWWF_RC_FORMAT)                             //~v7bbI~
+  				optapic|=UTFWWO_FORMAT;                            //~v7bbI~
+    		len=utfwwapichk(optapic,Pucs,len,&flag,0/*wcw*/);      //~v7bbI~
         }                                                          //~vbzzI~
 #endif                                                             //~v640I~
 #endif                                                             //~v640I~
@@ -3955,18 +3957,52 @@ int chkAmbiguous(int *Pprc,ULONG Pucs)                             //~v7apI~
 {                                                                  //~vbzzI~//~vbzzR~
     int width=0,rc=0;                                           //~vbzzI~//~vbzzR~
     int prc=*Pprc;                                                 //~v7apI~
-    UTRACEP("%s:Pprc=0x%04x,ucs=0x%04x(%s),Guvio2Stat=0x%04x\n",UTT,*Pprc,Pucs,UCV_U2F1(Pucs),Guvio2Stat);//~v7apR~
+    UTRACEP("%s:Pprc=0x%08x,ucs=0x%04x(%s),Guvio2Stat=0x%04x\n",UTT,*Pprc,Pucs,UCV_U2F1(Pucs),Guvio2Stat);//~v7apR~//~vbE7R~
 //    if (Prc & UTFWWO_MK_AMBIGUOUS)                                //~vbzzR~//~vbzzR~//~v7apR~
     if (prc & UTFWWO_MK_AMBIGUOUS)                                 //~v7apI~
     {                                                              //~vbzzI~//~vbzzR~
+        if (prc & UTFWWF_RC_AMBIGLANG_N)   //found on ambiguous_langs[]//~vbE7I~
+        {                                                          //~vbE7I~
+#ifdef LNX                                                         //~vbE7I~
+        	UTRACEP("%s:AMBIGLANG_N ucs=%04x,Guvio2Stat=%08x,wcw=%d\n",UTT,Pucs,Guvio2Stat,wcwidth((UWCHART)Pucs));//~vbE7R~
+#else                                                              //~vbE7I~
+        	UTRACEP("%s:AMBIGLANG_N ucs=%04x,Guvio2Stat=%08x,wcw=%d\n",UTT,Pucs,Guvio2Stat);//~vbE7I~
+#endif                                                             //~vbE7R~
+#ifdef LNX                                                         //~vbE7I~
+            if (Guvio2Stat & UVIO2S_AMBIGLANG_USEWCW)              //~vbE7R~
+            {                                                      //~vbE7I~
+            	prc|=UTFWWF_USEWCW;                                //~vbE7R~
+	        	UTRACEP("%s:AMBIGLANG_N set prc USEWCW,ucs=%04x,wcw=%d\n",UTT,Pucs,wcwidth((UWCHART)Pucs));//~vbE7R~
+            }                                                      //~vbE7I~
+#endif                                                             //~vbE7I~
+	        rc=1;	  //no adjust                                  //~vbE7I~
+        }                                                          //~vbE7I~
+        else                                                       //~vbE7I~
+        if (prc & UTFWWF_RC_AMBIGLANG_Y)   //found on ambiguous_langs[]//~vbE7I~
+        {                                                          //~vbE7I~
+        	UTRACEP("%s:AMBIGLANG_Y ucs=%04x\n",UTT,Pucs);         //~vbE7R~
+        }                                                          //~vbE7I~
+        else                                                       //~vbE7I~
     	if (UTF_AMBIG2CELLMODE())  //no adjust for all ambiguous   //~vbzzR~//~vbzzR~
+        {                                                          //~vbE7I~
+//*  -GN/W                                                         //~vbE7I~
         	rc=1;	  //no adjust                                  //~vbzzI~//~vbzzR~
-        else                                                       //~vbzzI~//~vbzzR~
+        	UTRACEP("%s:AMBIG not APICK_CSR ucs=%04x\n",UTT,Pucs); //~vbE7R~
+#ifdef LNX                                                         //~vbE7I~
+            if (Guvio2Stat & UVIO2S_AMBIG_USEWCW)                  //~vbE7R~
+            {                                                      //~vbE7I~
+            	prc|=UTFWWF_USEWCW;                                //~vbE7R~
+	        	UTRACEP("%s:AMBIG not API_CSR set prc USEWCW,ucs=%04x,wcw=%d\n",UTT,Pucs,wcwidth((UWCHART)Pucs));//~vbE7R~
+            }                                                      //~vbE7I~
+#endif                                                             //~vbE7I~
+        }                                                          //~vbE7I~
+//      else                                                       //~vbzzI~//~vbzzR~//~vbE7R~
 //      if (Prc & UTFWWF_RC_AMBIGLANG)   //found on ambiguous_langs[] under ULIBUTFMODE_AMBIGLANG off(No adjust)//~vbzzR~//~vbzzR~//~v7apR~
-        if (prc & UTFWWF_RC_AMBIGLANG)   //found on ambiguous_langs[] under ULIBUTFMODE_AMBIGLANG off(No adjust)//~v7apI~
+//      if (prc & UTFWWF_RC_AMBIGLANG)   //found on ambiguous_langs[] under ULIBUTFMODE_AMBIGLANG off(No adjust)//~v7apI~//~vbE7R~
 //*RC_AMBINGLANG is ON when ambig by lang is 0/1/2(No adjust:GULIBUTFMODE_AMBIGLANG off); the following chk is just to be sure.//~v7apR~
-        	rc=1;                       //no ajust                 //~vbzzR~//~vbzzR~
+//        	rc=1;                       //no ajust                 //~vbzzR~//~vbzzR~//~vbE7R~
     }                                                              //~vbzzI~//~vbzzR~
+    *Pprc=prc;                                                     //~vbE7I~
     if (rc) //no adjust fix width by /G option                     //~vbzzR~//~vbzzR~
     {                                                              //~vbzzI~//~vbzzR~
         if (Guvio2Stat & UVIO2S_AMBIG_SBCS)   //for all ambiguous, default off(Wide)//~vbzzI~//~vbzzR~
@@ -4001,22 +4037,37 @@ int chkAmbiguous(int *Pprc,ULONG Pucs)                             //~v7apI~
 //    if (Pucs!=0x00ad)                                            //~v7b2R~
 //    {                                                            //~v7b2R~
 //#endif                                                           //~v7b2R~
-    if (!(width==-1 && (prc & UTFWWF_RC_AMBIGLANG)))   //unprintable by ambiguous lang//~v7apR~
+//  if (!(width==-1 && (prc & UTFWWF_RC_AMBIGLANG)))   //unprintable by ambiguous lang//~v7apR~//~vbE7R~
+#ifndef TEST                                                       //~vbE7R~
+    if (!(width==-1 && (prc & UTFWWF_RC_AMBIGLANG_N)))   //unprintable by ambiguous lang//~vbE7I~
+#endif                                                             //~vbE7I~
         if (utf4_isFormat(0,(UWUCS)Pucs))                          //~v7apI~
         {                                                          //~v7apI~
 //            rc&=~UTFWWF_RC_AMBIG_UNP; //0x04000000               //~v7apI~
 #ifdef LNX  //Win missing wcwidth(), so chk glyph width            //~v7apI~
+#ifndef TEST                                                       //~vbE7R~
+            prc|=UTFWWF_RC_FORMAT; //0x04000000                    //~vbE7I~
+    		UTRACEP("%s:LNX Format ucs=%04x,prc=%08x\n",UTT,Pucs,prc);//~vbE7I~
+    		*Pprc=prc;                                             //~vbE7M~
+#else                                                              //~vbE7I~
+            GambigWidth=0;                                         //~vbE7I~
+            prc|=UTFWWO_MK_AMBIGUOUS; //0x2000  //apply /G option by bzzR~//~vbE7I~
+    		UTRACEP("%s:LNX Format ucs=%04x,prc=%08x,wcw=%d TEST AMBIG ON\n",UTT,Pucs,prc,wcwidth((wchar_t)Pucs));//~vbE7R~
+#endif                                                             //~vbE7R~
+#else                                                              //~vbE7I~
+#ifdef TEST                                                        //+v7f7R~
             prc&=~UTFWWO_MK_AMBIGUOUS; //0x2000  //apply /G option by bzzR~//~v7apI~
-#endif                                                             //~v7apI~
+#endif                                                             //+v7f7R~
             prc|=UTFWWF_RC_FORMAT; //0x04000000                    //~v7apI~
     		UTRACEP("%s:reset to GambigWidth=0 by ambiguous lang is Format ucs=0x%04x(%s),GambigWidth=%d\n",UTT,Pucs,UCV_U2F1(Pucs),GambigWidth);//~v7apI~
             GambigWidth=0;                                         //~v7apI~
     		*Pprc=prc;                                             //~v7apI~
+#endif                                                             //~v7apI~//~vbE7M~
         }                                                          //~v7apI~
 //#ifdef W32                                                       //~v7b2R~
 //    }                                                            //~v7b2R~
 //#endif                                                           //~v7b2R~
 //#endif //UUU                                                     //~v7apR~
-    UTRACEP("%s:rc=%d,Pprc=0x%04x,ucs=0x%04x(%s),GambigWidth=%d\n",UTT,rc,*Pprc,Pucs,UCV_U2F1(Pucs),GambigWidth);//~vbzzR~//~vbzzR~//~v7apR~
+    UTRACEP("%s:rc=%d,Pprc=0x%08x,ucs=0x%04x(%s),GambigWidth=%d\n",UTT,rc,*Pprc,Pucs,UCV_U2F1(Pucs),GambigWidth);//~vbzzR~//~vbzzR~//~v7apR~//~vbE7R~
     return rc;                                                     //~vbzzI~//~vbzzR~
 }                                                                  //~vbzzI~//~vbzzR~

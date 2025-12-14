@@ -3,7 +3,8 @@
 //*ustring.c 
 //*  ustrncpyz                                                     //~v111I~
 //*  ustrnpbrk/ustrnstr/ustrnspn                                //~4C21I~
-//*  ustrrspn /ustrrspni /ustrstr  /ustrrstri                      //~v5mpR~
+//*  ustrstri                                                      //+v7c5R~
+//*  ustrrspn /ustrrspni /ustrstr  /ustrrstri                      //+v7c5I~
 //*  ustrnrspn/ustrnrspni/ustrnstri/ustrnrstri				    //~4C21R~
 //*  ustrchr2/ustrnchr2/ustrrchr2/ustrnrchr2                       //~v017I~
 //*  ustrnlen                                                      //~v094R~
@@ -309,7 +310,7 @@ size_t ustrnspnc(char *Pbuff,char Pchr,unsigned int Plen)          //~v7c5R~
 	if (Pchr)                                                      //~v7c5R~
     {                                                              //~v7c5R~
     	char *pc=Pbuff+Plen-1;                                     //~v7c5R~
-    	char sv=*pc;                                               //+v7c5R~
+    	char sv=*pc;                                               //~v7c5R~
     	*pc=0;                                                     //~v7c5R~
         srch[0]=Pchr;                                              //~v7c5R~
         srch[1]=0;                                                 //~v7c5R~

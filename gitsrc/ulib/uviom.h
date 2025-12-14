@@ -1,5 +1,7 @@
-//*CID://+v7c4R~:                             update#=  221;       //+v7c4R~
+//*CID://+v7fxR~:                             update#=  232;       //~v7c4R~//+v7fxR~
 //******************************************************           //~v5n8I~
+//v7fx:251205 (Wxe)addtionally to WINCON, optionally chk EOL for also Wxe.//+v7fxI~
+//vbEg:251112 (LNXCON)hcopy;save/get by dd str for utf8(shadow of combining generated double a+x300 and a and a+301)//~vbEgI~
 //v7c4:240618 (Bug of v7bW) if rep ZWJ to altch,it becomes next combining base.(display doble "+")//~v7c4I~
 //v7bW:240525 display category Cf by "+" as itself/shadow          //~v7bWI~
 //v7bG:240425 split uviom.c to uvioml.c                            //~v7bGR~
@@ -88,6 +90,7 @@ int uviom_getAltFormat(int Popt,int Pucs,int Pdefault);            //~v7bWI~
 #define UVIOM_ALTCH_ZWNJ   '-'                                     //~v7bWI~
 #define UVIOM_COMBINE_ALTCH2 '.'                                   //~v6V5I~
 #define COMBAINE_BASE_SPLIT_ITSELF 0xa0     //u00a0 base for combining char when split itself//~vbzPI~
+#define UVIOM_ESC_CHAR        0x1b        //moved to out of #ifndef __cplusplus//+v7fxI~
 #ifndef UVIOMDEFONLY                                               //~v6EmI~
 #ifndef __cplusplus                                                //~v6EjI~
 #ifdef WCSUPP                                                      //~v5n8I~
@@ -118,6 +121,10 @@ int uviom_getAltFormat(int Popt,int Pucs,int Pdefault);            //~v7bWI~
   #endif                                                           //~v62XI~
 	WUCS    *Guviombuffu;   	//unicode buff                     //~v5n8I~
 	int  *Gw95buffopt;	//ligature option for line by line         //~v6EoI~
+#ifdef LNXCON                                                      //~vbEgI~
+	chtype *Guvioscrddchtype;                                      //~vbEgI~
+	char   *Guvioscrdddbcs;                                        //~vbEgI~
+#endif                                                             //~vbEgI~
 #else                                                              //~v5n8I~
     #define EXT_UVIOM extern                                       //~v7bGR~
     extern int Guviomopt;                                          //~v5n8R~
@@ -134,7 +141,19 @@ int uviom_getAltFormat(int Popt,int Pucs,int Pdefault);            //~v7bWI~
   #endif                                                           //~v62XI~
 	extern WUCS *Guviombuffu;   	//unicode buff                 //~v5n8I~
 	extern int  *Gw95buffopt;	//ligature option for line by line //~v6EoI~
+#ifdef LNXCON                                                      //~vbEgI~
+	extern chtype *Guvioscrddchtype;                               //~vbEgI~
+	extern char   *Guvioscrdddbcs;                                 //~vbEgI~
+#endif                                                             //~vbEgI~
 #endif                                                             //~v5n8I~
+#ifdef LNXCON                                                      //~vbEgM~
+	int uviolSaveDD(int Popt,int Prow,int Pcol,chtype *Ppcht,UCHAR *Ppdbcs,int Plen);//~vbEgR~
+	int uviolSavecchar(int Popt,int Prow,int Pcol,cchar_t *Ppcchar,UCHAR *Ppdbcs,int Plen);//~vbEgR~
+	#define UVIOLSID_NOTDD            0x7c000000	//save data is not utf8 ddfmt//~vbEgR~
+	#define UVIOLSID_NOTDD0           0x7c  //save data is not utf8 ddfmt//~vbEgI~
+	#define UVIOLSID_NOTDDSHIFT       24	//save data is not utf8 ddfmt//~vbEgI~
+	#define UVIOLSID_UCSMASK          0x00ffffff	//save data is not utf8 ddfmt//~vbEgI~
+#endif                                                             //~vbEgM~
 //***************                                                  //~v7bGR~
 #ifdef JJJ                                                         //~v7bGI~
 EXT_UVIOM int Scsrposx,Scsrposy;                                   //~v7bGR~
@@ -174,7 +193,7 @@ EXT_UVIOM int Svhexcsrposx,Svhexcsrposy;                           //~v7bGR~
 	      |  (attr_t)(UVIOM_PADATTR<<8)   /*fg*/         \
           )                                                        //~v658I~
 //for WinCons                                                      //~v65iI~
-#define UVIOM_ESC_CHAR        0x1b                                 //~v65iR~
+//#define UVIOM_ESC_CHAR        0x1b                               //+v7fxR~
 //*******************************************************          //~vbzPI~
 //  void uviom_init(int Popt,ULONG Phconout,int Pscrwidth,int Pscrsize,int Ptoplineoffs);//~v5n8R~//~v6hhR~
     void uviom_init(int Popt,ULPTR Phconout,int Pscrwidth,int Pscrsize,int Ptoplineoffs);//~v6hhI~

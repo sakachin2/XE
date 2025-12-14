@@ -1,7 +1,13 @@
-//*CID://+vbDpR~:                             update#=  644;       //~vbDpR~
+//*CID://+v7fxR~:                             update#=  696;       //~v7fxR~
 //***************************************************************************//~2818I~
 //* c subrtn for wxe                                               //~2818I~
 //***************************************************************************//~2818I~
+//v7fx:251205 (Wxe)addtionally to WINCON, optionally chk EOL for also Wxe.//~v7fxI~
+//v7fw:251204 additional case to v7fv;ligon+comb; SCM is yellow    //~v7fwI~
+//v7fv:251204 Wxe: split combiningchar is not combinable. 1080(char)-1082(comb)-1067(SCM) whe csr is on 1080, 1082-1067 was shown yellow//~v7fvI~
+//vbEp:251204 (W32)bug of vbDp(use split comb colr whe csr pos); it have not to apply csr is on data line split comb char.//~vbEpI~
+//vbEd:251107 (WXE)hcopy by saving TextOutW to buffer              //~vbEdI~
+//v7f8:251106 show not comb-unp(:) but altch(=/+/-) for w0-format when unicomb=UNP//~v7f8I~
 //vbDp:250726 (WXE)color of combining char split for vhex csr was green.(ignored that xefile23 set)//~vbDpI~
 //vbDg:250706 (wxe)4byte dbcs missing display tab padding          //~vbDgI~
 //vbAm:240626 (wxe)if LigOff and combinemode,need write at once when combined by ZWJ .(wincon display mixed figure of emoji evben write split)//~vbAmI~
@@ -131,6 +137,7 @@ static int Sstylectr=0;                                            //~2818I~
 static int Selfmaxctr=0;                                           //~vafhI~
 static HWND  Shwnd;                                                //~2831I~
 static HDC   Shdc;                                                 //~vbz4I~
+static HDC   ShdcTextOut;                                          //~vbEdI~
 static HFONT Shfont;                                               //~vbziI~
 //static HBITMAP Shbm_caret[4];                                    //~2914R~
 static int   Scellh,Scellw;                                        //~2831I~
@@ -138,6 +145,10 @@ static int   Scdbcssw,Scheightrate,Scfonth,Scrow,Sccol;            //~2922R~
 static char  Swdtemp[_MAX_PATH];                                   //~2B30R~
 static int   Ssbcswidth;                                           //~vbz4I~
 static int   SaltchTabPadding;                                     //~vbDgI~
+static UWCH *SbuffHC;                                              //~vbEdI~
+static int  *SposLineHC;                                           //~vbEdI~
+static int  *SposEOLHC;                                            //~v7fxI~
+static HDC   Spmemdc;                                              //~vbEdR~
 //***************************************************************************//~2907I~
 int  iniacrnmchk(FILE *Pfh);                                       //~2907I~
 int  iniacrnmput(FILE *Pfh);                                       //~2907I~
@@ -152,6 +163,8 @@ int csubtextoutWcombining_notcombinemode(int Popt,HDC Phdc,int Pxx,int Pyy,WUCS 
 int csubtextoutw_SCMidx(int Popt,char *Pdata,char *Pdbcs,int Pddlen,WUCS *Ppucs,int Pucsctr,char *Pscmidx);//~vbmdI~
 int csubtextoutw_ligature_SCMidx(int Popt,WUCS *Ppucs,int Pucsctr,char *Pscmidx);//~vbmdR~
 int csubtextoutWcombining_notcombinemodeHC(int Popt,WUCS *Ppucs);  //~vbzMI~
+void wrapTextOutW(HDC Phdc,int Pxx,int Pyy,UWCH *Pucs,int Pucsctr);//~vbEdR~
+void wrapTextOut(HDC Phdc,int Pxx,int Pyy,char *Pdata,int Plen);   //~vbEdI~
 //***************************************************************************//~2831I~
 //init static                                                      //~2831I~
 //***************************************************************************//~2831I~
@@ -170,6 +183,13 @@ int csubinit2(int Pcellh,int Pcellw)                               //~2901I~
     Scellw=Pcellw;                                                 //~2901I~
     SaltchTabPadding=UTF_GETALTCH_SBCS(UDBCSCHK_TABPADCHAR);       //~vbDgR~
     UTRACEP("%s:Pcellh=%d,Pcellw=%d,SaltchTabPadding=%04x\n",UTT,Pcellh,Pcellw,SaltchTabPadding);//~vbDgI~
+    int buffszHC=MAXROW*MAXCOL*sizeof(UWCH);                       //~vbEdR~
+    SbuffHC=malloc(buffszHC);	//hardcopy buff                    //~vbEdI~
+    memset(SbuffHC,0,(size_t)buffszHC);                            //~vbEdR~
+    SposLineHC=malloc(MAXROW*sizeof(int));	//hardcopy buff        //~vbEdI~
+    memset(SposLineHC,0,(size_t)(MAXROW*sizeof(int)));	//hardcopy buff//~vbEdR~
+    SposEOLHC=malloc(MAXROW*sizeof(int));	//hardcopy eol offset  //~v7fxI~
+    memset(SposEOLHC,0xff,(size_t)(MAXROW*sizeof(int)));	//hardcopy buff//~v7fxI~
     return 0;                                                      //~2901I~
 }                                                                  //~2901I~
 //***************************************************************************//~vbzhI~
@@ -229,6 +249,7 @@ int  chkUnicodeGlyph(HDC Phdc)                                     //~vbziI~
 //***************************************************************************//~vbz4I~
 void csubinit3(HDC Phdc)                                           //~vbz4I~
 {                                                                  //~vbz4I~
+    UTRACEP("%s:Phdc=%p\n",UTT,Phdc);                              //~vbEdI~
     Shdc=Phdc;                                                     //~vbz4I~
     csubGetLogfont(Shfont);                                        //~vbziI~
 //  chkUnicodeGlyph(Shdc);  //test                                 //~vbziR~
@@ -242,6 +263,14 @@ void csubinit4(HFONT Pfh)                                          //~vbziR~
     UTRACEP("%s:pfh=%p\n",UTT,Pfh);                                //~vbziR~
     Shfont=Pfh;                                                    //~vbziI~
 }
+//***************************************************************************//~vbEdI~
+//init static,from scrinit after selectFont before xeinitcall      //~vbEdI~
+//***************************************************************************//~vbEdI~
+void csubinit5(HDC Phdc)                                           //~vbEdI~
+{                                                                  //~vbEdI~
+    UTRACEP("%s:Phdc=%p\n",UTT,Phdc);                              //~vbEdI~
+    ShdcTextOut=Phdc;                                              //~vbEdI~
+}                                                                  //~vbEdI~
 //***************************************************************************//~2818I~
 //int CALLBACK effp(LOGFONT *Pelf,TEXTMETRIC *Pntm,DWORD Pft,LPARAM Plp);//~2817R~
 //int (CALLBACK *effp)(const LOGFONT *Pelf,const TEXTMETRIC *Pntm,DWORD Pft,LPARAM Plp);//~2817R~
@@ -1032,6 +1061,7 @@ int csubtextoutw_ligature(int Popt,int Plineopt,HDC Phdc,int Px,int Py,WUCS *Pda
     int optucs4w0o;                                                //~vbmoI~
 //  char wkscmidx[MAXCOL];                                         //~vbmdR~//~vbmfR~
 //  int scmctr;                                                    //~vbmdI~//~vbmfR~
+    int swCombiningTop=0;                                          //~v7fwI~
 //**********************                                           //~va3gI~
     UTRACEP("%s:opt=%x,lineopt=%x,len=%d,xx=%d,yy=%d,ucsctr=%d,dbcslen=%d,cwllw=%d\n",UTT,Popt,Plineopt,Plen,Px,Py,Pucsctr,Plen,Pcellw);//~vb4iR~
     chtypeo=-2;                                                    //~va3gI~
@@ -1063,6 +1093,12 @@ int csubtextoutw_ligature(int Popt,int Plineopt,HDC Phdc,int Px,int Py,WUCS *Pda
         }                                                          //~vb2HI~
         optucs4w0o=optucs4w0;                                      //~vbmoI~
 		optucs4w0=UTF_ISCOMBINING(0/*opt*/,*pdbcs,ucs4);           //~vbmfI~
+        if (!optucs4w0)                                            //~v7fwI~
+        	swCombiningTop=0;                                      //~v7fwI~
+        else                                                       //~v7fwI~
+        	if (!ii)                                               //~v7fwI~
+        		swCombiningTop=1;                                  //~v7fwI~
+        UTRACEP("%s:ii=%d,swCombiningTop=%d,optucs4w0=%d,ucs=%04x\n",UTT,ii,swCombiningTop,optucs4w0,ucs);//~v7fwR~
         dbcsid=*pdbcs;                                             //~va3gI~
 //      dbcssw=UDBCSCHK_DBCS1STUCS2NW(dbcsid);                     //~va3gR~//~vb2HR~
 //      dbcssw=UDBCSCHK_DBCS1STUCS2NWPO(dbcsid);                   //~vb2HI~//~vb3mR~
@@ -1107,7 +1143,8 @@ int csubtextoutw_ligature(int Popt,int Plineopt,HDC Phdc,int Px,int Py,WUCS *Pda
         	if (optucs4w0)	//combine char                         //~vbmfI~
             {                                                      //~va3gI~
 //            	swcombinable=UTF_COMBINABLE(ucs4o)!=0;             //~vbmgI~//~vbmoR~
-              	swcombinable=optucs4w0o || UTF_COMBINABLE(ucs4o)!=0;//~vbmoI~
+//              swcombinable=optucs4w0o || UTF_COMBINABLE(ucs4o)!=0;//~v7fwR~
+              	swcombinable=(optucs4w0o & !swCombiningTop) || UTF_COMBINABLE(ucs4o)!=0;//~v7fwI~
 //      		if (swcombinable && UTF_COMBINEMODE())	           //~vb4iR~
         		if (swcombinable && WXE_COMBINEMODE(Plineopt))   //for also UVIOO_FORCECOMBINE//~vb4iI~
                 {                                                  //~va3gI~
@@ -1116,6 +1153,7 @@ int csubtextoutw_ligature(int Popt,int Plineopt,HDC Phdc,int Px,int Py,WUCS *Pda
             	else                                               //~va3gI~
 //          		chtype=-1;					//single write     //~vb4zR~
             		chtype=-2;					//combining char itself,single write//~vb4zR~
+                UTRACEP("%s:swcombinable=%d,ucs=%04x,ucs4o=%04x,swCombiningTop=%d,optucs4w0o=%d\n",UTT,swcombinable,ucs,ucs4o,swCombiningTop,optucs4w0o);//~v7fwR~
             }                                                      //~va3gI~
         	else                                                   //~va3gI~
             {                                                      //~va3gI~
@@ -1131,15 +1169,16 @@ int csubtextoutw_ligature(int Popt,int Plineopt,HDC Phdc,int Px,int Py,WUCS *Pda
             }                                                      //~va3gI~
           }                                                        //~v6uBI~//~vb2PI~
 //        }                                                        //~va3uR~
-UTRACEP("ligature chtype=%d,old=%d,ucs=%04x,dbcssw=%d,swcombinable=%d\n",chtype,chtypeo,ucs,dbcssw,swcombinable);//~va3uR~
+UTRACEP("%s:ligature chtype=%d,old=%d,ucs=%04x,dbcssw=%d,swcombinable=%d\n",UTT,chtype,chtypeo,ucs,dbcssw,swcombinable);//~v7fvR~
         if (chtype<0||(ligucsctr && chtype!=chtypeo))	//breaker  //~va3gR~
         {                                                          //~va3gI~
             if (ligucsctr)                                         //~va3gI~
             {                                                      //~va3gI~
             	pwkucs=wkligature[chtypeo];                        //~va3gR~
-            	TextOutW(Phdc,xx,Py,pwkucs,ligucsctr);             //~va3gI~
-            	UTRACEP("%s:TextOut ligature group chtype=%d,ucsctr=%d,chsz=%d,xx=%d\n",UTT,chtypeo,ligucsctr,ligchsz,xx);//~va3gI~//~vb4jR~//~vbAmR~
-            	UTRACED("csubtextoutw TextOut ligature group pos",pwkucs,ligucsctr*WUCSSZ);//~va3gI~//~vb2PR~//~vbAmR~
+//            	TextOutW(Phdc,xx,Py,pwkucs,ligucsctr);             //~vbEdR~
+              	wrapTextOutW(Phdc,xx,Py,pwkucs,ligucsctr);         //~vbEdI~
+            	UTRACEP("%s:TextOutW ligature group chtype=%d,ucsctr=%d,chsz=%d,xx=%d\n",UTT,chtypeo,ligucsctr,ligchsz,xx);//~va3gI~//~vb4jR~//~vbEdR~
+            	UTRACED("csubtextoutw TextOutW ligature group pos",pwkucs,ligucsctr*WUCSSZ);//~va3gI~//~vb2PR~//~vbEdR~
                 {                                                  //~vb4jI~
                 	SIZE sz;                                       //~vb4jI~
             		UTRACEP("%s:at breake;GetTextExtentPoint32W cellsz=%d,drawsz=%d\n",UTT,Pcellw*ligchsz,(GetTextExtentPoint32W(Phdc,pwkucs,ligucsctr,&sz)?sz.cy*1000+sz.cx:0));//~vb4jR~
@@ -1153,6 +1192,7 @@ UTRACEP("ligature chtype=%d,old=%d,ucs=%04x,dbcssw=%d,swcombinable=%d\n",chtype,
                 {                                                  //~vb4zR~
 	            	xx+=sz.cx;                                     //~vb4zR~
             		UTRACEP("%s:before combining char under not combinemode cellsz=%d,drawsz=%d,new xx=%d\n",UTT,Pcellw*ligchsz,sz.cx,xx);//~vb4zR~
+            		UTRACED("ExtentPoint32W",pwkucs,ligucsctr*sizeof(*pwkucs));//+v7fxI~
                 }                                                  //~vb4zR~
                 else                                               //~vb4zR~
 	            	xx+=Pcellw*ligchsz;                            //~vb4zR~
@@ -1180,7 +1220,8 @@ UTRACEP("ligature chtype=%d,old=%d,ucs=%04x,dbcssw=%d,swcombinable=%d\n",chtype,
               {                                                    //~vb3xI~
 		        wkucsdbcsspace[0]=(WUCS)UTF_GETALTCH_DBCS();       //~vb3xI~
           	    wkucsdbcsspace[1]=wkucsdbcsspace[0];               //~vb3xI~
-                TextOutW(Phdc,xx,Py,wkucsdbcsspace,2);             //~vb3xI~
+//              TextOutW(Phdc,xx,Py,wkucsdbcsspace,2);             //~vbEdR~
+                wrapTextOutW(Phdc,xx,Py,wkucsdbcsspace,2);         //~vbEdI~
             	UTRACEP("%s:TextOutW dbcsspaceutf8 xx=%d,yy=%d,altch=%02x\n",UTT,xx,Py,wkucsdbcsspace[0]);//~vb3xI~//~vbAmR~
                 {                                                  //~vb4jI~
                 	SIZE sz;                                       //~vb4jI~
@@ -1204,7 +1245,8 @@ UTRACEP("ligature chtype=%d,old=%d,ucs=%04x,dbcssw=%d,swcombinable=%d\n",chtype,
 //             else                                                //~vbmfR~
                {                                                   //~vb4AI~
 //          	TextOutW(Phdc,xx,Py,pucs,1);                       //~va3gR~//~vb2HR~
-            	TextOutW(Phdc,xx,Py,pucs,utf16ctr);                //~vb2HI~
+//            	TextOutW(Phdc,xx,Py,pucs,utf16ctr);                //~vbEdR~
+              	wrapTextOutW(Phdc,xx,Py,pucs,utf16ctr);            //~vbEdI~
             	UTRACEP("%s:TextOutW chtype<0 utf16ctr=%d,xx=%d,ucs=%04x,dbcssz=%d,utf16ctr=%d\n",UTT,utf16ctr,xx,*pucs,dbcssz,utf16ctr);//~vb4jR~//~vbAmR~
             	UTRACED("chtype<0 pucs",pucs,utf16ctr*WUCSSZ);     //~vb4jR~
                 {                                                  //~vb4jI~
@@ -1242,7 +1284,8 @@ UTRACEP("ligature chtype=%d,old=%d,ucs=%04x,dbcssw=%d,swcombinable=%d\n",chtype,
     if (ligucsctr)                                                 //~va3gI~
     {                                                              //~va3gI~
         pwkucs=wkligature[chtypeo];                                //~va3gR~
-        TextOutW(Phdc,xx,Py,pwkucs,ligucsctr);                     //~va3gI~
+//      TextOutW(Phdc,xx,Py,pwkucs,ligucsctr);                     //~vbEdR~
+        wrapTextOutW(Phdc,xx,Py,pwkucs,ligucsctr);                 //~vbEdI~
         UTRACEP("%s:TextOutW ligature group last chtype=%d,ucsctr=%d,chsz=%d,posx=%d\n",UTT,chtypeo,ligucsctr,ligchsz,xx);//~va3gI~//~vb2QR~//~vbAmR~
         UTRACED("csubtextoutw ligature last group",pwkucs,ligucsctr*WUCSSZ);//~va3gI~
         {                                                          //~vb4jI~
@@ -1292,7 +1335,8 @@ int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pdata,char *
   	utfdd2u(opt,Pdata,Pdbcs,Plen,wkucs,sizeof(wkucs),&ucsctr,0/*dbcsctr*/,0/*sbcsctr*/);//~va20R~
 	if (!swscr)//                                                  //~va20R~
     {                                                              //~va20I~
-        TextOutW(Phdc,Px,Py,wkucs,ucsctr);                         //~va20R~
+//      TextOutW(Phdc,Px,Py,wkucs,ucsctr);                         //~vbEdR~
+        wrapTextOutW(Phdc,Px,Py,wkucs,ucsctr);                     //~vbEdI~
         UTRACED("textoutw",wkucs,ucsctr*2);                        //~va20I~
     }                                                              //~va20I~
     else                                                           //~va20I~
@@ -1327,13 +1371,17 @@ int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pdata,char *
             utf162ucs4(U162U4O_UCS1,pucs,ucsctr-ii,&ucs4,(int)sizeof(ucs4),&utf16ctr,0/*outucsctr*/);//~vb2HM~
       		UTRACEP("%s:combined ucs ii=%d,dbcsid=%02x,dbcssw=%d,xx=%d,yy=%d,ucs4=%04x,utf16ctr=%d\n",UTT,ii,dbcsid,dbcssw,xx,Py,ucs4,utf16ctr);//~va30I~//~vb2HR~//~vb2WR~//~vbkhR~//~vbAmR~
             dbcssz=1+dbcssw;                                       //~va30I~
+			int optic=UICAO_NOSPACE;	//disallow space as combinable//~v7fvM~
+            if (ii==0)                                             //~v7fvM~
+				optic|=UICAO_STR_TOP;  //starting char of string   //~v7fvR~
 #ifndef SSS                                                        //~vb3xI~
       		if (*pucs==DBCSSPACE_ALT2   //ffff                     //~vb3xI~
 	  		&&  dbcsid==UDBCSCHK_DBCS1STUCS)	//tabdisplay set ffff/() for dbcsspace//~vb3xI~
       		{                                                      //~vb3xI~
           		wkucsdbcsspace[0]=(WUCS)UTF_GETALTCH_DBCS();       //~vb3xI~
           		wkucsdbcsspace[1]=wkucsdbcsspace[0];               //~vb3xI~
-          		TextOutW(Phdc,xx,Py,wkucsdbcsspace,2);             //~vb3xI~
+//         		TextOutW(Phdc,xx,Py,wkucsdbcsspace,2);             //~vbEdR~
+           		wrapTextOutW(Phdc,xx,Py,wkucsdbcsspace,2);         //~vbEdI~
 		  		UTRACEP("%s:TextOutW dbcsspaceutf8 ucs=%04x-->%04x,dbcsid=%02x,xx=%d,yy=%d\n",UTT,*pucs,wkucsdbcsspace[0],*pdbcs,xx,Py);//~vb3xI~//~vbzcR~//~vbzMR~
 		        wrtctr=1;                                          //~vb3xI~
                 pdbcs+=dbcssz;                                     //~vb3xI~
@@ -1366,7 +1414,8 @@ int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pdata,char *
             &&   (dbcsid2=*(pdbcs+dbcssz),                         //~vbmgI~
             		utf162ucs4(U162U4O_UCS1,pucs+utf16ctr,ucsctr-ii-utf16ctr,&ucs42,(int)sizeof(ucs42),&utf16ctr2,0/*outucsctr*/),//~vbmgI~
 					(w0sz=UTF_ISCOMBINING(0,dbcsid2,ucs42))!=0)//next is combining char//~vbmgI~
-            &&  UTF_COMBINABLE(ucs4)                               //~vbmgI~
+//          &&  UTF_COMBINABLE(ucs4)                               //~v7fvR~
+            &&  utf_iscombinable(optic,ucs4)                       //~v7fvR~
             )                                                      //~vbmgI~
             {                                                      //~va30R~
             	pdbcscombinestart=pdbcs;                           //~vbkhR~
@@ -1431,7 +1480,8 @@ int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pdata,char *
                 }                                                  //~va30R~//~vbAmI~
 #endif                                                             //~vbAmI~
                 pucsw=wkcombine;	                               //~va30M~
-                TextOutW(Phdc,xx,Py,pucsw,wrtctr);                 //~va30I~
+//              TextOutW(Phdc,xx,Py,pucsw,wrtctr);                 //~vbEdR~
+                wrapTextOutW(Phdc,xx,Py,pucsw,wrtctr);             //~vbEdI~
             	UTRACEP("%s:TextOutW combined xx=%d,yy=%d,wrtctr=%d,ucs=0x%04x\n",UTT,xx,Py,wrtctr,*pucsw);//~vbzcR~
             	UTRACED("csubtextoutw combined ucs2",pucsw,wrtctr*WUCSSZ);//~vbzcI~
 //          	xx+=Pcellw*(dbcssw+wrtctr);                        //~va30R~//~vbkhR~
@@ -1473,7 +1523,8 @@ int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pdata,char *
                     wrtctr++;                                      //~vb2HI~
                     pucs++;                                        //~vb2HI~
                 }                                                  //~vb2HI~
-                TextOutW(Phdc,xx,Py,pucsw,wrtctr);                 //~va30I~
+//              TextOutW(Phdc,xx,Py,pucsw,wrtctr);                 //~vbEdR~
+                wrapTextOutW(Phdc,xx,Py,pucsw,wrtctr);             //~vbEdI~
             	UTRACEP("%s:TextOutW not combined ucs x=%d,y=%d\n",UTT,xx,Py);//~vbzcR~
             	UTRACED("csubtextoutw not combined ucs",pucsw,wrtctr*WUCSSZ);//~vbzcI~
             	xx+=Pcellw*dbcssz;                                 //~va30I~
@@ -1502,7 +1553,8 @@ int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pdata,char *
       {                                                            //~vb3xI~
           wkucsdbcsspace[0]=(WUCS)UTF_GETALTCH_DBCS();             //~vb3xR~
           wkucsdbcsspace[1]=wkucsdbcsspace[0];                     //~vb3xR~
-          TextOutW(Phdc,xx,Py,wkucsdbcsspace,2);                   //~vb3xR~
+//        TextOutW(Phdc,xx,Py,wkucsdbcsspace,2);                   //~vbEdR~
+          wrapTextOutW(Phdc,xx,Py,wkucsdbcsspace,2);               //~vbEdI~
 		  UTRACEP("%s:TextOutW dbcsspaceutf8 ucs=%04x-->%04x,dbcsid=%02x,x=%d,y=%d\n",UTT,*pucs,wkucsdbcsspace[0],*pdbcs,xx,Py);//~vb3xR~//~vbzcR~//~vbzMR~
 //        pdbcs++;                                                 //~vb3xR~//~vbmhR~
 //        xx+=Pcellw;                                              //~vb3xI~//~vbmhR~
@@ -1538,7 +1590,8 @@ int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pdata,char *
        }                                                           //~vbzcI~
        else                                                        //~vbkjI~
        {                                                           //~vbkjI~
-        TextOutW(Phdc,xx,Py,pucs,2);                               //~vb2HI~
+//      TextOutW(Phdc,xx,Py,pucs,2);                               //~vbEdR~
+        wrapTextOutW(Phdc,xx,Py,pucs,2);                           //~vbEdI~
   		UTRACEP("%s:TextOutW ucs4 ii=%d,dbcsid=%02x,xx=%d,yy=%d,ucs=%04x-%04x\n",UTT,ii,dbcsid,xx,Py,*pucs,*(pucs+1));//~vb2HI~//~vbmcR~//~vbzMR~
        }                                                           //~vbkjI~
         pucs++;                                                    //~vb2HI~
@@ -1570,7 +1623,8 @@ int csubtextoutw(int Popt,int Plineopt,HDC Phdc,int Px,int Py,char *Pdata,char *
       }                                                            //~vbzcI~
       else                                                         //~vbmfI~
       {                                                            //~vb2HI~
-        TextOutW(Phdc,xx,Py,pucs,1);                               //~va20I~
+//      TextOutW(Phdc,xx,Py,pucs,1);                               //~vbEdR~
+        wrapTextOutW(Phdc,xx,Py,pucs,1);                           //~vbEdI~
   		UTRACEP("%s:TextOutW ucs2 ii=%d,dbcsid=%02x,xx=%d,yy=%d,ucs=%04x\n",UTT,ii,dbcsid,xx,Py,*pucs);//~va20R~//~vbmcR~//~vbzMR~
       }                                                            //~vb2HI~
 //  	if (UDBCSCHK_DBCS1STUCS2NW(dbcsid)                       //~v640R~//~va20R~//~vb2HR~
@@ -1667,7 +1721,7 @@ int csubtextoutwHC(int Popt,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen,WUCS *Ppucs)//~
     UTRACEP("%s:rc=ucsctr=%d\n",UTT,ucsctr);                       //~vbzMR~//~vbzMM~
     UTRACED("out ucs",Ppucs,ucsctr*sizeof(WUCS));                  //~vbzMI~//~vbzMM~
     return ucsctr;                                                 //~vbzMM~//~vbzMM~
-}//csubtextoutw                                                    //~vbzMM~//~vbzMM~
+}//csubtextoutwHC                                                  //~vbzMM~//~v7f8R~
 //**************************************************************** //~va20I~
 //*                                                                //~va20I~
 //**************************************************************** //~va20I~
@@ -1688,9 +1742,11 @@ int csubtextoutw1(int Popt,HDC Phdc,int Pxx,int Pyy,char *Pdata,char *Pdbcs,int 
 #endif                                                             //~vaw1I~
 #ifdef UTF8UTF16                                                   //~vaw1R~
   	UCS4_TO_UTF16(ucs,wucs,&ucsctr);                               //~vaw1R~//~v6unR~
-	TextOutW(Phdc,Pxx,Pyy,wucs,ucsctr);                            //~vaw1R~//~v6unR~
+//	TextOutW(Phdc,Pxx,Pyy,wucs,ucsctr);                            //~vaw1R~//~vbEdR~
+  	wrapTextOutW(Phdc,Pxx,Pyy,wucs,ucsctr);                        //~vbEdI~
 #else                                                              //~v6unI~
-	TextOutW(Phdc,Pxx,Pyy,&ucs,1);                                 //~va20R~
+//	TextOutW(Phdc,Pxx,Pyy,&ucs,1);                                 //~vbEdR~
+  	wrapTextOutW(Phdc,Pxx,Pyy,&ucs,1);                             //~vbEdI~
 #endif                                                             //~vaw1R~//~v6unM~
     return 0;                                                      //~va20I~
 }                                                                  //~va20I~
@@ -1715,7 +1771,8 @@ int csubtextoutw1alt(int Popt,HDC Phdc,int Pxx,int Pyy,WUCS Pucs)  //~va42I~
     ucs=(WUCS)altch;                                               //~va42I~
   }                                                                //~va44I~
   if (Phdc) //write to screen                                      //~va6uI~
-	TextOutW(Phdc,Pxx,Pyy,&ucs,1);                                 //~va42I~
+//	TextOutW(Phdc,Pxx,Pyy,&ucs,1);                                 //~vbEdR~
+  	wrapTextOutW(Phdc,Pxx,Pyy,&ucs,1);                             //~vbEdI~
     UTRACEP("csubtextoutw1alt inp opt=%x,ucs=%x,out ucs=%x\n",Popt,Pucs,ucs);//~va46I~
     return ucs;         //written                                  //~va42R~
 }                                                                  //~va42I~
@@ -1816,7 +1873,10 @@ int  csubtextoutw_locale_ligature(int Popt,HDC Phdc,int Pxx,int Pyy,char *Pdata,
           		ucsalt=csubtextoutw1alt(ucsalt,0/*hdc*/,0/*x*/,0/*y*/,ucs);	//alt ch not written//~va6uR~
           	else                                                   //~va6uM~
           	if (ucs<0x20)                                          //~va6uM~
+            {                                                      //~v7fxI~
 				ucsalt=csubtextoutw1alt(0,0/*hdc*/,0/*x*/,0/*y*/,ucs);//~va6uR~
+                UTRACEP("%s:ucs=%04x<0x20 ucsalt=%04x\n",UTT,ucs,ucsalt);//~v7fxI~
+            }                                                      //~v7fxI~
           	else                                                   //~va6uM~
             {                                                      //~va6uI~
                 ucs=*pdata;                                        //~va6uI~
@@ -1850,14 +1910,17 @@ int  csubtextoutw_locale_ligature(int Popt,HDC Phdc,int Pxx,int Pyy,char *Pdata,
 //  ucsctr=((ULONG)pwkucs-(ULONG)wkucs)/WUCSSZ;                    //~va6uR~//~vafkR~
 //  ucsctr=((ULPTR)pwkucs-(ULPTR)wkucs)/WUCSSZ;                    //~vafkI~//~vb2WR~
     ucsctr=(int)((ULPTR)pwkucs-(ULPTR)wkucs)/WUCSSZ;               //~vb2WI~
-    TextOutW(Phdc,Pxx,Pyy,wkucs,ucsctr);                           //~va6uR~
+//  TextOutW(Phdc,Pxx,Pyy,wkucs,ucsctr);                           //~vbEdR~
+    wrapTextOutW(Phdc,Pxx,Pyy,wkucs,ucsctr);                       //~vbEdI~
     UTRACED("csubtextoutw_locale_ligature ucs",wkucs,ucsctr*WUCSSZ);//~va6uR~
     return 0;                                                      //~va6uM~
 }//csubtextoutw_locale_ligature                                    //~vb2HR~
 //===============================================================================//~vbzMR~//~vbzMM~
 //from wxescr._m2u                                                 //~v7c7R~
 //for hardcopy, output ucs string                                  //~v7c7I~
+//no user                                                          //~v7fxI~
 //===============================================================================//~vbzMR~//~vbzMM~
+#ifdef AAA                                                         //~v7fxI~
 int csubtextout_locale_ligatureHC(int Popt,WXEINTF *Ppwxei,UCHAR *Ppdata,UCHAR *Ppdbcs,int Plen,WUCS *Ppucs,int Pbuffsz,int *Ppucsctr)//~vbzMR~//~vbzMI~
 {                                                                  //~vbzMR~//~vbzMM~
     char *pdata,*pdbcs;                                            //~vbzMR~//~vbzMM~
@@ -2005,6 +2068,7 @@ int csubtextout_locale_ligatureHC(int Popt,WXEINTF *Ppwxei,UCHAR *Ppdata,UCHAR *
     *Ppucsctr=ucsctr;                                              //~vbzMI~//~vbzMM~
     return 0;                                                      //~vbzMR~//~vbzMM~
 }//csubtextout_locale_ligatureHC                                   //~vbzMI~
+#endif //AAA                                                       //~v7fxI~
 //**************************************************************** //~vbDgI~
 //*                                                                //~vbDgI~
 //**************************************************************** //~vbDgI~
@@ -2029,7 +2093,8 @@ void csubtextoutw_TabPadding(HDC Phdc,int Pxx,int Pyy,int PdbcsDisplayCellSize,i
             wkucs[ii]=SaltchTabPadding;                            //~vbDgR~
         }                                                          //~vbDgR~
 		UTRACED("TextOutW",wkucs,sizeof(WUCS)*PpaddingCtr);        //~vbDgR~
-        TextOutW(Phdc,xx,Pyy,wkucs,PpaddingCtr);                   //~vbDgR~
+//      TextOutW(Phdc,xx,Pyy,wkucs,PpaddingCtr);                   //~vbEdR~
+        wrapTextOutW(Phdc,xx,Pyy,wkucs,PpaddingCtr);               //~vbEdI~
                                                                    //~vbDgI~
 	    SetTextColor(Phdc,currentcolor);                           //~vbDgI~
     }                                                              //~vbDgI~
@@ -2049,7 +2114,8 @@ int csubtextoutw1_locale(int Popt,HDC Phdc,int Pxx,int Pyy,char *Pdata,int Plen)
   &&  !(Gulibutfmode & GULIBSETLOCALERR)                           //~vb2TI~
   )                                                                //~vb2TI~
   {                                                                //~vb2QI~
-	TextOut(Phdc,Pxx,Pyy,Pdata,Plen);                              //~va74I~
+//  TextOut(Phdc,Pxx,Pyy,Pdata,Plen);                              //~vbEdR~
+    wrapTextOut(Phdc,Pxx,Pyy,Pdata,Plen);                          //~vbEdI~
 //  UTRACED("NOTRANS TextOut",Pdata,Plen);                         //~vb2QI~//~vbmoR~
   }                                                                //~vb2QI~
   else                                                             //~va74I~
@@ -2093,12 +2159,14 @@ int csubtextoutw1_locale(int Popt,HDC Phdc,int Pxx,int Pyy,char *Pdata,int Plen)
     }                                                              //~va6vI~
     if (swcverr && (Popt & CSTOW1LO_LOCALEIFCVERR))                //~va6vI~
     {                                                              //~vb2QI~
-		TextOut(Phdc,Pxx,Pyy,Pdata,Plen);                          //~va6vI~
+//		TextOut(Phdc,Pxx,Pyy,Pdata,Plen);                          //~vbEdR~
+  		wrapTextOut(Phdc,Pxx,Pyy,Pdata,Plen);                      //~vbEdI~
     	UTRACED("cverr TextOut",Pdata,Plen);                       //~vb2QI~
     }                                                              //~vb2QI~
     else                                                           //~va6vI~
     {                                                              //~vb2QI~
-		TextOutW(Phdc,Pxx,Pyy,wkucs,ctr);                          //~va6vR~
+//		TextOutW(Phdc,Pxx,Pyy,wkucs,ctr);                          //~vbEdR~
+  		wrapTextOutW(Phdc,Pxx,Pyy,wkucs,ctr);                      //~vbEdI~
     	UTRACED("!NOTRANS TextOutW",wkucs,ctr*(int)sizeof(WUCS));                   //~vb2QI~//~vb2TR~
         if (Plen==UDBCSCHK_GB4SZ)                                  //~vbDgI~
         {                                                          //~vbDgI~
@@ -2114,7 +2182,8 @@ int csubtextoutw1_locale(int Popt,HDC Phdc,int Pxx,int Pyy,char *Pdata,int Plen)
 //**************************************************************** //~vavzI~
 int csubtextoutWW(int Popt,HDC Phdc,int Pxx,int Pyy,UWCH *Pucs,int Pucsctr)//~vavzI~
 {                                                                  //~vavzI~
-	TextOutW(Phdc,Pxx,Pyy,Pucs,Pucsctr);                           //~vavzR~
+//	TextOutW(Phdc,Pxx,Pyy,Pucs,Pucsctr);                           //~vbEdR~
+  	wrapTextOutW(Phdc,Pxx,Pyy,Pucs,Pucsctr);                       //~vbEdI~
     return 0;                                                      //~vavzI~
 }                                                                  //~vavzI~
 #endif                                                             //~vavzI~
@@ -2138,7 +2207,8 @@ void textOutSplit(int Popt,HDC Phdc,int Pxx,int Pyy,WUCS *Pucs,int Pucsctr)//~v7
 	int altch=uviom_getAltFormat(0,ucs4,0/*Pdefault*/);            //~v7c4I~
     if (!altch || Pucsctr>utf16ctr) //no alt or multiple ucs       //~v7c4I~
     {                                                              //~v7c4I~
- 	  	TextOutW(Phdc,Pxx,Pyy,Pucs,Pucsctr);                       //~v7c4I~
+// 	  	TextOutW(Phdc,Pxx,Pyy,Pucs,Pucsctr);                       //~vbEdR~
+   	  	wrapTextOutW(Phdc,Pxx,Pyy,Pucs,Pucsctr);                   //~vbEdI~
 	    UTRACEP("%s:ucs=%04x,ucsctr=%d\n",UTT,*Pucs,Pucsctr);      //~v7c4I~
     }                                                              //~v7c4I~
     else                                                           //~v7c4I~
@@ -2146,7 +2216,8 @@ void textOutSplit(int Popt,HDC Phdc,int Pxx,int Pyy,WUCS *Pucs,int Pucsctr)//~v7
         WUCS wkucs[2];                                             //~v7c4I~
 	    wkucs[0]=(WUCS)altch;    //ushort                          //~v7c4I~
     	wkucs[1]=UVIOM_COMBINE_ALTCH2; // '.'   //ucs4 width0 glyph size may be 1//~v7c4I~
-		TextOutW(Phdc,Pxx,Pyy,wkucs,utf16ctr);                     //~v7c4I~
+//		TextOutW(Phdc,Pxx,Pyy,wkucs,utf16ctr);                     //~vbEdR~
+  		wrapTextOutW(Phdc,Pxx,Pyy,wkucs,utf16ctr);                 //~vbEdI~
 	    UTRACEP("%s:ALTCH ucs=%04x,ucsctr=%d\n",UTT,wkucs[0],utf16ctr);//~v7c4I~
      }                                                             //~v7c4I~
 }//textOutFormat(int Popt,HDC Phdc,int Pxx,int Pyy,WUCS *Pucs,int Pucsctr)//~v7c4I~
@@ -2168,23 +2239,29 @@ int csubtextoutWcombining_notcombinemode(int Popt,HDC Phdc,int Pxx,int Pyy,WUCS 
   }                                                                //~vbDpI~
   else                                                             //~vbDpI~
 #endif                                                             //~vbDpM~
-  if (!(Popt2 & CSTOWO_CSRPOS)) 	                               //+vbDpR~
+//if (!(Popt2 & CSTOWO_CSRPOS)) 	                               //~vbEpR~
+  if (!((Popt2 & CSTOWO_CSRPOS) && (Popt2 & CSTOWO_CSRPOSBYVHEX))) //NOT csrpos by vhex//~vbEpR~
   {                                                                //~vbDpI~
     SetTextColor(Phdc,altchcolor);                                 //~vb4AI~
 	UTRACEP("%s:SetTextColor altchcolor RGB=%08x\n",UTT,(UINT)altchcolor);//~vbDpI~
   }                                                                //~vbDpI~
-	if (UTF_COMBINEMODE_NP() && Gutfcombaltch)                     //~vb4AI~
+//  if (UTF_COMBINEMODE_NP() && Gutfcombaltch)                     //~v7f8R~
+    if (UTF_COMBINEMODE_NP() && Gutfcombaltch                      //~v7f8I~
+    &&  !utf4_isFormat(0,*Pucs)                                    //~v7f8R~
+    )                                                              //~v7f8I~
     {                                                              //~vb4AI~
 //    if (Popt & CTOCO_WIDTH0_UCS4)                                //~vbkjI~//~vbmfR~
       if (Popt & (CTOCO_WIDTH0_UCS4|CTOCO_SCM))                    //~vbmfI~
       {                                                            //~vbkjI~
     	wkucs[0]=Gutfcombaltch;                                    //~vbkjI~
     	wkucs[1]=UVIOM_COMBINE_ALTCH2; // '.' ,not written if Plen==1//~vbkjI~
-    	TextOutW(Phdc,Pxx,Pyy,wkucs,2);                            //~vbkjI~
+//    	TextOutW(Phdc,Pxx,Pyy,wkucs,2);                            //~vbEdR~
+      	wrapTextOutW(Phdc,Pxx,Pyy,wkucs,2);                        //~vbEdI~
       }                                                            //~vbkjI~
       else                                                         //~vbkjI~
       {                                                            //~vbkjI~
-    	TextOutW(Phdc,Pxx,Pyy,&Gutfcombaltch,1);                   //~vb4AR~
+//    	TextOutW(Phdc,Pxx,Pyy,&Gutfcombaltch,1);                   //~vbEdR~
+      	wrapTextOutW(Phdc,Pxx,Pyy,&Gutfcombaltch,1);               //~vbEdI~
       }                                                            //~vbkjI~
 	    UTRACEP("%s: UNICOMB UNPR Gutfcombaltch=%04x\n",UTT,Gutfcombaltch);//~vb4AI~
     }                                                              //~vb4AI~
@@ -2510,3 +2587,79 @@ int csubGetCursorPos(int Popt,ULONG Pucs)                          //~vbz4I~
     UTRACEP("%s:opt=0x%04x,ucs=0x%04x (%s),rc=%d sbcsw=%d,wwExt=%d,wwDraw=%d,drawWide=%d\n",UTT,Popt,Pucs,UTF_GETUTF8STR_TRACE(Pucs,wku8,u8len),rc,Ssbcswidth,szlogicalunit.cx,wwDraw,(wwDraw<=Ssbcswidth)? 0 : 1);//~v7b7R~//~v7b8R~
     return rc;                                                     //~vbz4I~
 }                                                                  //~vbz4I~
+//**************************************************************** //~vbEdI~
+void wrapTextOutW(HDC Phdc,int Pxx,int Pyy,UWCH *Pucs,int Pucsctr) //~vbEdR~
+{                                                                  //~vbEdI~
+	int row,col;                                                   //~vbEdI~
+//******************                                               //~vbEdI~
+    row=ROW(Pyy);                                                  //~vbEdR~
+    col=COL(Pxx);                                                  //~vbEdR~
+	UTRACEP("%s:Phdc=%p,xx=%d,yy=%d,ucsctr=%d,row=%d,col=%d\n",UTT,Phdc,Pxx,Pyy,Pucsctr,row,col);//~vbEdR~
+	UTRACED("Pucs",Pucs,Pucsctr*sizeof(UWCH));                     //~vbEdI~
+  	TextOutW(Phdc,Pxx,Pyy,Pucs,Pucsctr);                           //~vbEdI~
+    UWCH *buffHCrow=SbuffHC+row*MAXROW;                            //~vbEdI~
+    col=SposLineHC[row];                                           //~vbEdI~
+    UWCH *buffHC=buffHCrow+col;                                    //~vbEdI~
+    memcpy(buffHC,Pucs,Pucsctr*sizeof(UWCH));                      //~vbEdI~
+    SposLineHC[row]+=Pucsctr;                                      //~vbEdI~
+	UTRACEP("%s:pos=%d,nextpos=%d\n",UTT,col,SposLineHC[row]);     //~vbEdI~
+	UTRACED("buffHCrow",buffHCrow,MAXROW*sizeof(UWCH));            //~vbEdI~
+}                                                                  //~vbEdI~
+//**************************************************************** //~vbEdI~
+void wrapTextOut(HDC Phdc,int Pxx,int Pyy,char *Pdata,int Plen)    //~vbEdI~
+{                                                                  //~vbEdI~
+	int row,col;                                                   //~vbEdR~
+    UWUCS ucs;                                                     //~vbEdR~
+//******************                                               //~vbEdI~
+    row=ROW(Pyy);                                                  //~vbEdR~
+    col=COL(Pxx);                                                  //~vbEdR~
+	UTRACEP("%s:Phdc=%p,ShDC=%p,xx=%d,yy=%d,len=%d,row=%d,col=%d\n",UTT,Phdc,Shdc,Pxx,Pyy,Plen,row,col);//~vbEdR~
+	UTRACED("Pdata",Pdata,Plen);                                   //~vbEdI~
+    if (Phdc!=ShdcTextOut)                                         //~vbEdR~
+    {                                                              //~vbEdR~
+        UTRACEP("%s:Phdc(%p) not wxescr:%p(wxedlg)\n",UTT,Phdc,Shdc);//~vbEdR~
+        return;                                                    //~vbEdR~
+    }                                                              //~vbEdR~
+  	TextOut(Phdc,Pxx,Pyy,Pdata,Plen);                              //~vbEdI~
+    UWCH *buffHCrow=SbuffHC+row*MAXROW;                            //~vbEdI~
+    col=SposLineHC[row];                                           //~vbEdI~
+    UWCH *buffHC=buffHCrow+col;                                    //~vbEdI~
+	udbcschk_mb2ucs1(0,Pdata,Plen,0/*&readlen*/,&ucs);             //~vbEdR~
+    *buffHC=(UWCH)ucs;                                             //~vbEdR~
+    SposLineHC[row]++;                                             //~vbEdI~
+	UTRACEP("%s:pos=%d,nextpos=%d\n",UTT,col,SposLineHC[row]);     //~vbEdI~
+	UTRACED("buffHCrow",buffHCrow,MAXROW*sizeof(UWCH));            //~vbEdI~
+}                                                                  //~vbEdI~
+//**************************************************************** //~vbEdI~
+//void csubGetUcsHC(int Popt,int Prow,int Pmaxcol,UWCH **Ppucs,int *Ppucsctr)//~v7fxR~
+void csubGetUcsHC(int Popt,int Prow,int Pmaxcol,int PsplitVpos,UWCH **Ppucs,int *Ppucsctr)//~v7fxI~
+{                                                                  //~vbEdI~
+//******************                                               //~vbEdI~
+	UTRACEP("%s:opt=%02x,row=%d,maxcol=%d,splitVpos=%d\n",UTT,Popt,Prow,Pmaxcol,PsplitVpos);//~v7fxR~
+    UWCH *buffHCrow=SbuffHC+Prow*MAXROW;                           //~vbEdI~
+    *Ppucs=buffHCrow;                                              //~vbEdI~
+    *Ppucsctr=SposLineHC[Prow];                                    //~vbEdR~
+    int posEOL=SposEOLHC[Prow];                                    //~v7fxR~
+    if (posEOL<PsplitVpos)                                         //~v7fxI~
+    	posEOL=-1;                                                 //~v7fxI~
+    if ((Guvio2Stat & UVIO2S_HCOPY_CHKEOL) //              0x4000  //hcopy cut line by EOL(0x1b)//~v7fxI~
+    &&  posEOL>=0)                                                 //~v7fxI~
+    	*Ppucsctr=posEOL;                                          //~v7fxI~
+	UTRACEP("%s:row=%d,out ucsctr=%d,posEOL=%d\n",UTT,Prow,*Ppucsctr,posEOL);//~v7fxR~
+	UTRACED("buffHCrow",buffHCrow,*Ppucsctr*sizeof(UWCH));         //~v7fxR~
+}                                                                  //~vbEdI~
+//**************************************************************** //~vbEdI~
+void csubStartLine(int Popt,int Prow,int Pscrcmaxcol)              //~vbEdI~
+{                                                                  //~vbEdI~
+//******************                                               //~vbEdI~
+	UTRACEP("%s:opt=%02x,row=%d,cmaxcol=%d\n",UTT,Popt,Prow,Pscrcmaxcol);//~vbEdI~
+    SposLineHC[Prow]=0;                                            //~vbEdR~
+    SposEOLHC[Prow]=-1;                                            //~v7fxI~
+}                                                                  //~vbEdI~
+//**************************************************************** //~v7fxI~
+void csubSetEOLHC(int Popt,int Prow,int Ppos)                      //~v7fxI~
+{                                                                  //~v7fxI~
+//******************                                               //~v7fxI~
+	UTRACEP("%s:opt=%02x,row=%d,pos=%d,ucsctr=%d\n",UTT,Popt,Prow,Ppos,SposLineHC[Prow]);//~v7fxR~
+    SposEOLHC[Prow]=SposLineHC[Prow];                              //~v7fxR~
+}                                                                  //~v7fxI~

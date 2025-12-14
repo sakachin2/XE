@@ -1,6 +1,12 @@
-//CID://+v7d0R~:       update#= 461                                //+v7d0R~
+//CID://+v7fzR~:       update#= 504                                //~v7fzR~
 //*************************************************************
-//v7d0:240801 errmsg by printf missing EOL                         //+v7d0I~
+//v7fz:251205 (gxe) hcopy eol option for also gxe                  //~v7fzI~
+//v7fc:251109 (WINCON)for v7f9(facename of english and japanese),chk by enumfont//~v7fcI~
+//v7fb:251109 (WINCON)warning /Ffontname is not supported on conhost//~v7fbI~
+//v7fa:251108 settings.json:name is not font alias but application name("コマンドプロンプト"), del v7f9//~v7faI~
+//v7f9:251107 createFont failed by compareing fontname and facename("MS Gothic" and japanese "MS ゴシック")//~v7f9I~
+//vbE7:250923 (LNX)add gliph chk option "w"(/G{Y|N|W}[0|1|2|y|w] to use wcwidth() and default is /GWw.//~vbE7I~
+//v7d0:240801 errmsg by printf missing EOL                         //~v7d0I~
 //v7ca:240628 (gxe) hardcopy support                               //~v7caI~
 //v7c9:240628 (W32) print fontname selected at termination         //~v7c9I~
 //vbAn:240627 for performance bypass glyphchk when help            //~vbAnI~
@@ -145,8 +151,12 @@ int getLinuxConsoleFont(int Popt,char *Ppfontface,int Pbuffsz);    //~v7anM~
 	int Sfonterr;                                                  //~v7c0I~
 #else                                                              //~v7agI~
 #ifdef WINCON                                                      //~v7aqI~
-	int getW32ConsoleFont(int Popt,char *Ppfontface,int Pbuffsz,int *Ppsz,wchar_t *PpfaceW,int PbuffszW);//~v7aqR~
+//  int getW32ConsoleFont(int Popt,char *Ppfontface,int Pbuffsz,int *Ppsz,wchar_t *PpfaceW,int PbuffszW);//~v7f9R~
+//  int getW32ConsoleFont(int Popt,char *Ppfontface,int Pbuffsz,int *Ppsz,wchar_t *PpfaceW,int PbuffszW,wchar_t *PpfacenameW,int PbuffszfacenameW);//~v7faR~
+    int getW32ConsoleFont(int Popt,char *Ppfontface,int Pbuffsz,int *Ppsz,wchar_t *PpfaceW,int PbuffszW);//~v7faI~
 	#define GWCFO_MSG 0x01                                         //~v7aqI~
+	int confirmEnumFont(wchar_t *PselectedFacenameW,wchar_t*PconsoleFontW);//~v7fcI~
+    static int SenumCtr,SenumFound;                                //~v7fcI~
 #endif                                                             //~v7aqI~
 //*******************************************************
 #ifdef DOS
@@ -974,6 +984,7 @@ HDC  getDC()                                                       //~v79PI~
     HDC  hdc;                                                      //~v79PI~
     wnd=GetConsoleWindow();                                        //~v79PI~
     hdc=GetDC(wnd);                                                //~v79PI~
+    UTRACEP("%s:hdc=%p\n",UTT,hdc);                                //~v7fcI~
     return hdc;                                                    //~v79PI~
 }                                                                  //~v79PI~
 //******************************************************           //~v79PI~
@@ -1263,6 +1274,7 @@ int uvioChkGlyphInit(int *Ppww,int *Pphh)                          //~v7a7R~
     wchar_t selectedFacenameW[LF_FACESIZE]={0};                    //~v7a7I~
     wchar_t defaultFacenameW[LF_FACESIZE];                         //~v7a7I~
     wchar_t *pnameW;                                               //~v7adI~
+//  wchar_t wcFacename[LF_FACESIZE+1];                             //~v7faR~
     int swTerminal;                                                //~v7a7R~
     int fontH=0,fontW=0;                                           //~v7a7R~
     int charset=0;                                                 //~vbzqI~
@@ -1282,6 +1294,8 @@ int uvioChkGlyphInit(int *Ppww,int *Pphh)                          //~v7a7R~
     swTerminal=chkTerminal();	//1:conhost,0:unknown,2:terminal   //~v7a7I~
     if (swTerminal==1)  //conhost                                  //~v7a7I~
     {                                                              //~v7a7I~
+		char fontparm[LF_FACESIZE]; //                             //~v7fbI~
+		strcpy(fontparm,SconsoleFont);                             //~v7fbI~
 //  	pnameW=uvioGetCurrentFont(Shconout,&fontW,&fontH);         //~v7a7R~//~vbzqR~
     	pnameW=uvioGetCurrentFont(Shconout,&fontW,&fontH,&charset);//~vbzqR~
         UTRACEP("%s:conhost fontW=%d,fontH=%d,charset=%d\n",UTT,fontW,fontH,charset);//~v7arR~
@@ -1291,6 +1305,9 @@ int uvioChkGlyphInit(int *Ppww,int *Pphh)                          //~v7a7R~
         {                                                          //~v7c9I~
         	wcscpy(consoleFontW,pnameW);                           //~v7a7I~
 			uviocvU2L(0,consoleFontW,SconsoleFont,(int)sizeof(SconsoleFont));//~v7c9I~
+	    	if (*fontparm)                                         //~v7fbI~
+	        	uerrmsg("fontname parameter /F%s is not supported on Conhost, use \"%s\".",0,//~v7fbR~
+							fontparm,SconsoleFont);                //~v7fbI~
         }                                                          //~v7c9I~
     }                                                              //~v7a7I~
     else                                                           //~v7arI~
@@ -1301,10 +1318,14 @@ int uvioChkGlyphInit(int *Ppww,int *Pphh)                          //~v7a7R~
 //			if (!UTF_AMBIG2CELLMODE())                             //~v7arI~//~v7bhR~
 //          {                                                      //~v7arI~//~v7bhR~
         		UTRACEP("%s:try to find settings.json\n",UTT);     //~v7arI~
-              	getW32ConsoleFont(GWCFO_MSG,SconsoleFont,(int)sizeof(SconsoleFont),&sz,consoleFontW,sizeof(consoleFontW));//~v7arI~
+//            	getW32ConsoleFont(GWCFO_MSG,SconsoleFont,(int)sizeof(SconsoleFont),&sz,consoleFontW,sizeof(consoleFontW));//~v7f9R~
+//            	getW32ConsoleFont(GWCFO_MSG,SconsoleFont,(int)sizeof(SconsoleFont),&sz,consoleFontW,sizeof(consoleFontW),wcFacename,(int)sizeof(wcFacename));//~v7faR~
+              	getW32ConsoleFont(GWCFO_MSG,SconsoleFont,(int)sizeof(SconsoleFont),&sz,consoleFontW,sizeof(consoleFontW));//~v7faI~
 //          }                                                      //~v7arI~//~v7bhR~
      	}                                                          //~v7arI~
     }                                                              //~v7arI~
+    UTRACED("consoleFontW",consoleFontW,sizeof(consoleFontW));     //~v7faI~
+    UTRACED("SconsoleFont",SconsoleFont,sizeof(SconsoleFont));     //~v7faR~
     if (!*consoleFontW)	//for also windows terminal                //~v7a7I~
     {                                                              //~v7a7I~
 	    if (!SconsoleFont[0])                                      //~v7a7I~
@@ -1334,11 +1355,20 @@ int uvioChkGlyphInit(int *Ppww,int *Pphh)                          //~v7a7R~
     UTRACEP("%s:before createFont charset=%d,ScharsetParm=%d\n",UTT,charset,ScharsetParm);//~vbzqI~
 	if (ScharsetParm>=0)                                           //~vbzqI~
     	charset=ScharsetParm;                                      //~vbzqI~
+#ifdef TEST                                                        //~v7fcR~
+    UTRACEP("TEST before SelectObject");                           //~v7fcI~
+    uvioGetFontInfo(ShconoutTemp,defaultFacenameW,&fontW,&fontH,&charset,mbFacename,wkutf8);//"System"//~v7fcR~
+#endif                                                             //~v7fcI~
 //  fnt=uvioCreateFont(consoleFontW,fontW,fontH);                  //~v7a7R~//~vbzqR~
     fontH=((fontH+1))/2*2;                                         //~v7agI~
     fontW=0;                                                       //~v7agI~
     fnt=uvioCreateFont(consoleFontW,fontW,fontH,charset);          //~vbzqI~
 	fntold=SelectObject(ShconoutTemp,fnt);                         //~v7a7I~
+    UTRACEP("%s:after SelectObject fnt=%p,old=%p\n",UTT,fnt,fntold);//~v7fcI~
+#ifdef TEST                                                        //~v7fcR~
+    UTRACEP("TEST after SelectObject");                            //~v7fcI~
+    uvioGetFontInfo(ShconoutTemp,defaultFacenameW,&fontW,&fontH,&charset,mbFacename,wkutf8);//it may be "System", but call to get width and height//~v7fcI~
+#endif                                                             //~v7fcI~
     if (!fntold)                                                   //~v7a7I~
     {                                                              //~v7a7I~
         UTRACEP("%s:selectObject for font(%p) failed err=%d HDC=%p\n",UTT,fnt,GetLastError(),ShconoutTemp);//~v7a7I~
@@ -1354,7 +1384,13 @@ int uvioChkGlyphInit(int *Ppww,int *Pphh)                          //~v7a7R~
     ScharsetSelected=charsetNew;                                   //~v7c9I~
     UTRACED("selectedFacenameW",selectedFacenameW,sizeof(selectedFacenameW));//~v7a7I~
     UTRACED("consoleFontW",consoleFontW,sizeof(consoleFontW));     //~v7a7I~
-    if (wcscmp(selectedFacenameW,consoleFontW))                    //~v7a7I~
+//  if (wcscmp(selectedFacenameW,consoleFontW))                    //~v7fcI~
+    int swNE=wcscmp(selectedFacenameW,consoleFontW);               //~v7fcI~
+    UTRACEP("%s:wcscmp rc=%d,fontW=%d,fontH=%d\n",UTT,swNE,fontW,fontH);//~v7fcR~
+    if (swNE)                                                      //~v7fcI~
+		swNE=confirmEnumFont(selectedFacenameW,consoleFontW);      //~v7fcR~
+    UTRACEP("%s:EnumFont rc=%d\n",UTT,swNE);                       //~v7fcI~
+    if (swNE)                                                      //~v7fcI~
     {                                                              //~v7a7I~
         UTRACEP("%s:uvioCreateFont failed by invalid facename(%s),charset=%d,charsetNew=%d\n",UTT,SconsoleFont,charset,charsetNew);//~v7a7R~//~v7c9R~
         if (swTerminal==2)                                         //~v7c9R~
@@ -1386,6 +1422,7 @@ int uvioChkGlyphInit(int *Ppww,int *Pphh)                          //~v7a7R~
 //                    charset);                                    //~v7bhR~
 	    	showFontWarning(2,mbFacename,charset); //Win           //~v7bhR~
         }                                                          //~vbzqI~
+      if (!fontW || !fontH)                                        //~v7fcI~
         return 4;                                                  //~v7a7I~
     }                                                              //~v7a7I~
     *Ppww=fontW;                                                   //~v7a7I~
@@ -1395,7 +1432,11 @@ int uvioChkGlyphInit(int *Ppww,int *Pphh)                          //~v7a7R~
     if (wwA==wwW)                                                  //~v7a7I~
     	Guvio2Stat|=UVIO2S_CONSOLE_MONOFONT;                       //~v7a7R~
     else                                                           //~v7a7I~
+    {                                                              //~v7fcI~
+        uerrmsg("Waring:Font \"%s\" is not Mono-space.\n",0,       //~v7fcI~
+					mbFacename);                                   //~v7fcI~
     	Guvio2Stat&=~UVIO2S_CONSOLE_MONOFONT;                      //~v7a7R~
+    }                                                              //~v7fcI~
     UTRACEP("%s:return 0 monofont ? Guvio2Stat=0x%04x,Gulibutfmode=0x%08x\n",UTT,Guvio2Stat,Gulibutfmode);   //~v7a7I~//~v7arR~
     UTRACED("selectedFacenameW",selectedFacenameW,sizeof(selectedFacenameW));//~v7arI~
     return 0;                                                      //~v7a7I~
@@ -1846,8 +1887,16 @@ static	PangoLayout *Splayout;                                          //~4305R~
     }                                                              //~vbAnI~
     if (!(Gulibutfmode & GULIBUTF_APICHK_CSR)) //0x08000000  //utfwcwidth chr cursor step//~v7agI~//~v7awR~//~v7axR~//~v7awR~
     {                                                              //~v7b1I~
+	  if (Popt & (UVGCWO_OPEN|UVGCWO_CLOSE))	                   //~vbE7I~
+		UTRACEP("%s:OPEN/CLOSE under APICHK_CSR off\n",UTT);       //~vbE7I~
+      else                                                         //~vbE7I~
+      if (Popt & UVGCWO_NOTAMB)//x40        //glyphchk for not ambiguous//~vbE7R~
+        SswErr=0;                                                  //~vbE7I~
+      else                                                         //~vbE7I~
+      {                                                            //~vbE7I~
 		UTRACEP("%s:opt=%x,ucs=u-%04x,return -1 by APICHK_CSR off Gulibutfmode=0x%08x\n",UTT,Popt,Pucs,Gulibutfmode);//~v7b1I~//~v7bhR~
         return -1;     //called for not only ambiguous but for category Cf(Format)//~v7awR~//~v7axR~//~v7awR~
+      }                                                            //~vbE7I~
     }                                                              //~v7b1I~
 	if (Popt & UVGCWO_CLOSE) //    0x01        //close consolebuffer handle//~v7agI~
     {                                                              //~v7agI~
@@ -2203,6 +2252,7 @@ int getfaceW(char *Pface,wchar_t *PpfaceW,int PbuffszW,char *PpfaceMB,int Pbuffs
     char wkutf8[LF_FACESIZE*UTF8_MAXCHARSZMAX/*6*/];               //~v7aqI~
     int chklen,outlen,errctr,rc;                                   //~v7aqI~
 //**********************                                           //~v7aqI~
+    UTRACEP("%s:Pface=%s\n",UTT,Pface);                            //~vbE7I~
 	int opt=UCVUCS_ESCUCS|UCVUCS_STRZU8;                          //~v7aqI~//~v7arR~
 	rc=ucvsucs2utf(0,opt,Pface,(int)strlen(Pface),wkutf8,(int)sizeof(wkutf8),&chklen,&outlen,&errctr);//~v7aqI~
     if (!rc)                                                       //~v7aqI~
@@ -2212,10 +2262,14 @@ int getfaceW(char *Pface,wchar_t *PpfaceW,int PbuffszW,char *PpfaceMB,int Pbuffs
 		opt=UTFCVO_STRZ;                                           //~v7aqI~
 		uviocvU2L(opt,PpfaceW,PpfaceMB,PbuffszMB);           //~v7aqI~//~v7arR~
     }                                                              //~v7aqI~
+    UTRACEP("%s:PfaceMB=%s\n",UTT,PpfaceMB);                       //~vbE7R~
+    UTRACED("PpfaceW",PpfaceW,PbuffszW);                           //~vbE7I~
     return rc;                                                     //~v7aqI~
 }                                                                  //~v7aqI~
 //********************************************************         //~v7aqI~
-int getW32ConsoleFont(int Popt,char *Ppface,int Pbuffsz,int *Ppsz,wchar_t *PpfaceW,int PbuffszW)//~v7aqR~
+//int getW32ConsoleFont(int Popt,char *Ppface,int Pbuffsz,int *Ppsz,wchar_t *PpfaceW,int PbuffszW)//~v7f9R~
+//int getW32ConsoleFont(int Popt,char *Ppface,int Pbuffsz,int *Ppsz,wchar_t *PpfaceW,int PbuffszW,wchar_t *PpfacenameW,int PbuffszfacenameW)//~v7faR~
+int getW32ConsoleFont(int Popt,char *Ppface,int Pbuffsz,int *Ppsz,wchar_t *PpfaceW,int PbuffszW)//~v7faI~
 {                                                                  //~v7aqI~
     #define BLOCK1 "\"profiles\""                                  //~v7aqI~
     #define BLOCK2 "\"list\""                                      //~v7aqI~
@@ -2223,6 +2277,7 @@ int getW32ConsoleFont(int Popt,char *Ppface,int Pbuffsz,int *Ppsz,wchar_t *Ppfac
     #define BLOCKEND '}'                                           //~v7aqI~
     #define ITEM1  "\"face\":"                                     //~v7aqI~
     #define ITEM2  "\"size\":"                                     //~v7aqI~
+//  #define ITEM3  "\"name\":"                                     //~v7faR~
     #define MSGSZ   4096                                           //~v7aqI~
                                                                    //~v7aqI~
     int rc,len,sz=0;                                               //~v7aqR~
@@ -2231,6 +2286,8 @@ int getW32ConsoleFont(int Popt,char *Ppface,int Pbuffsz,int *Ppsz,wchar_t *Ppfac
     char buff[1024];                                               //~v7aqI~
     char face[(LF_FACESIZE+1)*6]={0};   //5 for \uxxxx                               //~v7aqR~//~v7arR~
     char faceMB[LF_FACESIZE*UTF8_MAXCHARSZMAX/*6*/]={0};           //~v7aqI~
+//  char faceName[(LF_FACESIZE+1)*6]={0};   //\uxxxx               //~v7faR~
+//  char faceNameMB[LF_FACESIZE*UTF8_MAXCHARSZMAX/*6*/]={0};       //~v7faR~
     FILE *fh;                                                      //~v7aqI~
     char *errmsg,*pce;                                             //~v7aqI~
 //********************************                                 //~v7aqI~
@@ -2321,9 +2378,33 @@ int getW32ConsoleFont(int Popt,char *Ppface,int Pbuffsz,int *Ppsz,wchar_t *Ppfac
             }                                                      //~v7aqI~
             if (*pc==BLOCKEND) //font                              //~v7aqI~
             {                                                      //~v7aqI~
-            	if(swFound==4)                                     //~v7aqI~
-                	break;                                         //~v7aqI~
+//          	if(swFound==4)                                     //~v7f9R~
+            	if(swFound==4 || swFound==5)                       //~v7f9R~
+                {                                                  //~v7f9I~
+//              	break;                                         //~v7f9R~
+//              	swFound=6;  //end of "font" block              //~v7faR~
+//                  continue;                                      //~v7faR~
+                	break;                                         //~v7faI~
+                }                                                  //~v7f9I~
             }                                                      //~v7aqI~
+//          if (strstr(pc,ITEM3)==pc) //"name"                     //~v7faR~
+//          {                                                      //~v7faR~
+//              if (swFound==6)                                    //~v7faR~
+//              {                                                  //~v7faR~
+//              	pc2=pc+sizeof(ITEM3);                          //~v7faR~
+//              	pc2+=strspn(pc2," ");                          //~v7faR~
+//                  UstrncpyZ(faceName,pc2,sizeof(faceName));      //~v7faR~
+//                  pc2=faceName;                                  //~v7faR~
+//                  if (*pc2=='\"')                                //~v7faR~
+//                  {                                              //~v7faR~
+//                  	pc3=strchr(pc2+1,'\"');                    //~v7faR~
+//                      if (pc3)                                   //~v7faR~
+//                      	*pc3=0;                                //~v7faR~
+//                      strcpy(pc2,pc2+1);                         //~v7faR~
+//                  }                                              //~v7faR~
+//                  break;                                         //~v7faR~
+//              }                                                  //~v7faR~
+//          }                                                      //~v7faR~
         }//fgets                                                   //~v7aqI~
         fclose(fh);                                                //~v7bhR~
         if (!face[0])                                              //~v7aqI~
@@ -2353,16 +2434,24 @@ int getW32ConsoleFont(int Popt,char *Ppface,int Pbuffsz,int *Ppsz,wchar_t *Ppfac
     {                                                              //~v7aqI~
 		if (Popt & GWCFO_MSG)                                      //~v7aqM~
         {                                                          //~v7aqI~
-    		pce+=sprintf(pce,"Found font face:%s, size:%d file:%s\n",faceMB,sz,fnm);//~v7aqI~//~v7arR~
+//    		pce+=sprintf(pce,"Found font face:%s, size:%d, file:%s\n",faceMB,sz,fnm);//~v7aqI~//~v7f9R~
+//   		pce+=sprintf(pce,"Found font face:%s, size:%d, faceName=%s; file:%s\n",faceMB,sz,faceName,fnm);//~v7faR~
+      		pce+=sprintf(pce,"Found font face:%s, size:%d, file:%s\n",faceMB,sz,fnm);//~v7faI~
 //  		uerrmsg("Found font face:%s,size:%d from %s\n",0,faceMB,sz,fnm);//TODO test //~v7aqI~//~v7arR~
         }                                                          //~v7aqI~
     	strcpy(Ppface,faceMB);                                     //~v7aqI~
     	if (Ppsz)                                                  //~v7aqM~
     		*Ppsz=sz;                                              //~v7aqM~
+//      if (faceName[0])                                           //~v7faR~
+//      {                                                          //~v7faR~
+//  		int rc2=getfaceW(faceName,PpfacenameW,PbuffszfacenameW,faceNameMB,(int)sizeof(faceNameMB));//~v7faR~
+//          if (rc2)                                               //~v7faR~
+//          	*PpfacenameW=0;                                    //~v7faR~
+//      }                                                          //~v7faR~
     }                                                              //~v7aqI~
 	ufree(errmsg);                                                 //~v7aqI~
     return rc;                                                     //~v7aqI~
-}//getLinuxConsoleFont                                             //~v7aqI~
+}//getW32ConsoleFont                                               //~v7fbR~
 #endif //WINCON                                                    //~v7aqI~
 //**********************************************                   //~v7bhI~
 //*issue err msg when get fontname failed                          //~v7bhI~
@@ -2444,8 +2533,8 @@ int showFontWarning(int Popt/*1:fprintf,0:uerrmsg*/,char *Pmsg,int Pparm)//~v7bh
     {                                                              //~v7bhI~
 //      printf("Trying to get Windows Terminal font from settings.json file. If failed, specify fontname by /F cmdline option!!\n");//~v7bhR~
 //      rc=sprintf(Pmsg,"Trying to get Windows Terminal font from settings.json file. If failed, specify fontname by /F cmdline option!!\n");//~v7bhR~
-//		rc=sprintf(Pmsg,"Checking the font name for Windows Terminal in the settings.json file(%s\\%s).",//~v7bhR~//~v7c9R~//+v7d0R~
-  		rc=sprintf(Pmsg,"Checking the font name for Windows Terminal in the settings.json file(%s\\%s).\n",//+v7d0I~
+//		rc=sprintf(Pmsg,"Checking the font name for Windows Terminal in the settings.json file(%s\\%s).",//~v7bhR~//~v7c9R~//~v7d0R~
+  		rc=sprintf(Pmsg,"Checking the font name for Windows Terminal in the settings.json file(%s\\%s).\n",//~v7d0I~
 			    getenv(TOPDIR),SETTINGFILE);                       //~v7c9I~
     	printf("%s",Pmsg);                                         //~v7bhI~//~v7c9R~
 //settings.jsonファイルの中のWindows Terminal 用のフォント名を調べています//~v7bhI~
@@ -2461,20 +2550,30 @@ int showFontWarning(int Popt/*1:fprintf,0:uerrmsg*/,char *Pmsg,int Pparm)//~v7bh
     {                                                              //~v7bhI~
 //      uerrmsg("Warning:Font name cmdline parameter(/Ffacename[:charset]) is recommended on WindowsTerminal(Not on Conhost). \n"//~v7bhI~
 //              "About charset(0-255), see Microsoft Document about Charset.\n",0);//~v7bhI~
+#ifdef WINCON                                                      //~v7fcI~
+        uerrmsg("Font (%s) charset(%d), settings failed.\n"        //~v7fcI~
+				"Select other font Setting of WindowsTerminal.\n", //~v7fcI~
+				"フォント(%s) charset(%d) の設定に取得に失敗しました。\n"//~v7fcI~
+				"WindowsTerminal の 設定 で、他のフォントを選択してください。\n",//~v7fcI~
+                Pmsg/*mbFacename*/,Pparm/*charset*/);              //~v7fcI~
+#else                                                              //~v7fcI~
         uerrmsg("Font (%s) settings failed.\n"                     //~v7bhI~
 				"It may not be consistent with chrset (%d). Check the /F parameter (/Ffacename[:charset]).\n",//~v7bhR~
 				"フォント(%s)の設定に取得に失敗しました。\n"       //~v7bhI~
 				"chrset(%d) と整合しない可\x94\\性があります。/F パラメータ (/Ffacename[:charset]) を確認してください。\n",//~v7bhR~
                 Pmsg/*mbFacename*/,Pparm/*charset*/);              //~v7bhI~
+#endif                                                             //~v7fcI~
 	}                                                              //~v7bhI~
 #endif                                                             //~v7bhI~
 	return rc;                                                     //~v7bhI~
 }                                                                  //~v7bhI~
 #ifdef XXE                                                         //~v7caI~
 //*************************************************************************//~v7caM~
-int uvioGetCellDataXXE(int Popt,int Prow,int PcmaxCol,int PsplitHpos,int PsplitVpos,UCHAR *Ppdddata,UCHAR *Ppdddbcs)//~v7caR~
+//int uvioGetCellDataXXE(int Popt,int Prow,int PcmaxCol,int PsplitHpos,int PsplitVpos,UCHAR *Ppdddata,UCHAR *Ppdddbcs)//~v7caR~//~v7fzR~
+int uvioGetCellDataXXE(int Popt,int Prow,int PcmaxCol,int PsplitHpos,int PsplitVpos,UCHAR *Ppdddata,UCHAR *Ppdddbcs,int *Ppddlen)//~v7fzI~
 {                                                                  //~v7caM~
     int lenL,lenR,rc2;                                             //~v7caR~
+    int ddlen,ddlenR;                                              //~v7fzI~
 //************************                                         //~v7caM~
 	UTRACEP("%s:opt=%04x,row=%d,PcmaxCol=%d,splitVpos=%d,splitHpos=%d\n",UTT,Popt,Prow,PcmaxCol,PsplitVpos,PsplitHpos);//~v7caR~
     if (PsplitVpos)                                                //~v7caR~
@@ -2485,17 +2584,74 @@ int uvioGetCellDataXXE(int Popt,int Prow,int PcmaxCol,int PsplitHpos,int PsplitV
     {                                                              //~v7caR~
         lenL=PcmaxCol; lenR=0;                                     //~v7caR~
     }                                                              //~v7caR~
-	rc2=xxe_getCellData(Prow,0,lenL,Ppdddata,Ppdddbcs);            //~v7caI~
+//  rc2=xxe_getCellData(Prow,0,lenL,Ppdddata,Ppdddbcs);            //~v7caI~//~v7fzR~
+    rc2=xxe_getCellData(Prow,0,lenL,Ppdddata,Ppdddbcs,&ddlen);     //~v7fzI~
     if (rc2>=0)                                                    //~v7caI~
         if (lenR)                                                  //~v7caR~
         {                                                          //~v7caR~
-            rc2=xxe_getCellData(Prow,PsplitVpos,lenR,Ppdddata+lenL,Ppdddbcs+lenL);//~v7caR~
+//          rc2=xxe_getCellData(Prow,PsplitVpos,lenR,Ppdddata+lenL,Ppdddbcs+lenL);//~v7caR~//~v7fzR~
+            rc2=xxe_getCellData(Prow,PsplitVpos,lenR,Ppdddata+lenL,Ppdddbcs+lenL,&ddlenR);//~v7fzI~
+            ddlen+=ddlenR;                                         //~v7fzI~
         }                                                          //~v7caR~
     if (rc2<0)  //over maxrow                                      //~v7caI~
     {                                                              //~v7caI~
         UTRACEP("%s:end of row\n",UTT);                            //~v7caI~
         return -1;                                                 //~v7caI~
     }                                                              //~v7caI~
+    *Ppddlen=ddlen;                                                //+v7fzR~
+    UTRACEP("%s:ddlen=%d\n",UTT,ddlen);                            //~v7fzR~
     return 0;                                                      //~v7caM~
 }//uvioGetCellDataXXE                                              //~v7caM~
 #endif //XXE                                                       //~v7caR~
+#ifdef WINCON                                                      //~v7fcI~
+//*************************************************************************//~v7fcI~
+//*rc=0:stop enm                                                   //~v7fcI~
+//*************************************************************************//~v7fcI~
+//int CALLBACK effpw(ENUMLOGFONTEXW FAR *elf,NEWTEXTMETRICEX FAR *ntm,DWORD ft/*fonttype*/,LPARAM Ppfacename)//~v7fcR~
+int CALLBACK effpw(CONST LOGFONTW *Pelf,CONST TEXTMETRICW *ntm,DWORD ft/*fonttype*/,LPARAM Ppfacename)//~v7fcR~
+{                                                                  //~v7fcI~
+	int wcctr1,wcctr2;                                             //~v7fcI~
+    WCHAR *pfacename,*pparm;                                       //~v7fcR~
+    ENUMLOGFONTEXW *elf;                                           //~v7fcI~
+//***********************                                          //~v7fcI~
+	elf=(ENUMLOGFONTEXW*)Pelf;                                     //~v7fcI~
+	SenumCtr++;                                                    //~v7fcI~
+    pparm=(WCHAR*)Ppfacename;                                      //~v7fcR~
+    wcctr1=wcslen(pparm);                                          //~v7fcI~
+	UTRACED("parm facename",pparm,wcctr1*sizeof(WCHAR));           //~v7fcR~
+    pfacename=elf->elfLogFont.lfFaceName;                          //~v7fcR~
+    wcctr2=wcslen(pfacename);                                      //~v7fcI~
+	UTRACED("enum facename",pfacename,wcctr2*sizeof(WCHAR));       //~v7fcR~
+    if (wcctr1==wcctr2 && !wcscmp(pfacename,pparm))                //~v7fcR~
+    {                                                              //~v7fcI~
+    	UTRACEP("%s:found Enumctr=%d\n",UTT,SenumCtr);             //~v7fcR~
+        SenumFound=1;                                              //~v7fcI~
+    	return 0;                                                  //~v7fcI~
+    }                                                              //~v7fcI~
+	return 1;                                                      //~v7fcI~
+}                                                                  //~v7fcI~
+//*************************************************************************//~v7fcI~
+int confirmEnumFont(wchar_t *PselectedFacenameW/*HDC:textFace*/,wchar_t*PconsoleFontW/*name on json*/)//~v7fcI~
+{                                                                  //~v7fcI~
+    LOGFONTW lf;                                                   //~v7fcI~
+    HDC hDC;                                                       //~v7fcI~
+//***********************                                          //~v7fcI~
+    UTRACEP("%s:ShconoutTemp=%p,GetDC(NULL)=%p,getDC()=%p\n",UTT,ShconoutTemp,GetDC(NULL),getDC());//~v7fcM~
+    hDC=ShconoutTemp;                                              //~v7fcR~
+    if (hDC==INVALID_HANDLE_VALUE)                                 //~v7fcI~
+    	hDC=GetDC(NULL);                                           //~v7fcI~
+	SenumCtr=0;                                                    //~v7fcR~
+	SenumFound=0;                                                  //~v7fcR~
+    memset(&lf,0,sizeof(lf));                                      //~v7fcI~
+    lf.lfCharSet=DEFAULT_CHARSET;                                  //~v7fcR~
+    UTRACEP("%s:lfCharSet=%d,DEFAULT=%d\n",UTT,lf.lfCharSet,DEFAULT_CHARSET);//~v7fcI~
+    int ctrUCS=wcslen(PconsoleFontW);                              //~v7fcI~
+    UTRACED("PconsoleFontW",PconsoleFontW,ctrUCS*sizeof(wchar_t)); //~v7fcI~
+	memcpy(lf.lfFaceName,PconsoleFontW,(UINT)(ctrUCS*sizeof(wchar_t)));//~v7fcR~
+    int rc=EnumFontFamiliesExW(hDC,(LPLOGFONTW)(&lf),effpw,(LPARAM)PselectedFacenameW,0/*flag*/);//~v7fcR~
+    UTRACEP("%s:EnumFontFamiliesExW rc=%d,SenumFound=%d,ErrNo=%d\n",UTT,rc,SenumFound,GetLastError());//~v7fcR~
+    if (SenumFound)                                                //~v7fcI~
+    	return 0;	//OK                                           //~v7fcI~
+    return 1;                                                      //~v7fcI~
+}                                                                  //~v7fcI~
+#endif //WINCON                                                    //~v7fcI~

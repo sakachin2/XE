@@ -1,8 +1,13 @@
-//*CID://+vbC7R~:                             update#=  817;       //~vbC7R~
+//*CID://+v7fxR~:                             update#=  839;       //~v7fxR~
 //************************************************************* //~v051I~
 //*xedcmd2.c                                                       //~v58JR~
 //* xprint,system,submit,spawn                                     //~v51XR~
 //************************************************************* //~v051I~
+//v7fz:251205 (gxe) hcopy eol option for also gxe                  //~v7fzI~
+//v7fy:251205 (LNXCON) hcopy eol option for LNXCON                 //~vbErI~
+//vbEr:251206 add HCO cmd for hardcopy                             //~vbErI~
+//v7fx:251205 (Wxe)addtionally to WINCON, optionally chk EOL for also Wxe.//~v7fxI~
+//vbEg:251112 (LNXCON)hcopy;save/get by dd str for utf8(shadow of combining generated double a+x300 and a and a+301)//~vbEGI~
 //vbC7:250115 (Win) DOS CMD row col is not work(row col parm is ignored)//~vbC7I~
 //vbAp:240701 (gxe)  hardcopy support                              //~vbApI~
 //vbzP:240412 (LNXCON)support hardcopy function(also change key C+h-->A+@)//~vbzPI~
@@ -427,7 +432,8 @@ int	Scmdbyspawn;                                                   //~vavMI~
 #ifdef WXE                                                         //~vbzMI~
     int SsplitHCV,SsplitHCH,SoptHC;                                //~vbzMR~
 #endif                                                             //~vbzMI~
-#ifdef XXE                                                         //~vbApI~
+//#ifdef XXE                                                         //~vbApI~//~v7fzR~
+#ifdef LNX                                                         //~v7fzR~
     int SsplitHCV,SsplitHCH,SoptHC;                                //~vbApI~
 #endif                                                             //~vbApI~
 //****************************************************************//~v051I~
@@ -2764,7 +2770,7 @@ int dcmd_system2(PUCLIENTWE Ppcw)                               //~v061I~
 #else                                                              //~v764M~
 //      printf(pmsg);                                              //~vb3yR~
         printf("%s",pmsg);                                         //~vb3yI~
-        UTRACEP("%s:printf msg=%s\n",UTT,pmsg);                    //+vbC7I~
+        UTRACEP("%s:printf msg=%s\n",UTT,pmsg);                    //~vbC7I~
 #endif                                                             //~v764M~
         uviol_refresh();                                           //~v20HI~
   #endif //!XXE                                                    //~v64fI~
@@ -3459,6 +3465,7 @@ int getHcopy(PUCLIENTWE Ppcw,PUFILEH Ppfh)                         //~vbzJI~
 	#ifdef LNXCON                                                  //~vbzPI~
     	int ucsctr,opt,rc2;                                        //~vbzPI~
 	    UWCHART wkucs[MAXCOLUMN*2];                                //~vbzPR~
+    	UCHAR wkdata[MAXCOLUMN],wkdbcs[MAXCOLUMN];                 //~vbEGI~
 	    char *pdddata,*pdddbcs;                                    //~vbzPI~
     #endif                                                         //~vbzPI~
 #else                                                              //~vbzPI~
@@ -3480,8 +3487,9 @@ int getHcopy(PUCLIENTWE Ppcw,PUFILEH Ppfh)                         //~vbzJI~
 #ifdef WXE                                                         //~vbzMI~
         if (row>=Gscrheight)                                       //~vbzMI~
             break;                                                 //~vbzMI~
-    	uvioGetCellDataWXE(SoptHC,row,Gscrwidth,SsplitHCH,SsplitHCV,wkdata,wkdbcs);//0:local,1:utf8,4:read err;-1:eol//~vbzMR~
-        ddlen=Gscrwidth;                                           //~vbzMR~
+//  	uvioGetCellDataWXE(SoptHC,row,Gscrwidth,SsplitHCH,SsplitHCV,wkdata,wkdbcs);//0:local,1:utf8,4:read err;-1:eol//~v7fxR~
+//      ddlen=Gscrwidth;                                           //~v7fxR~
+    	ddlen=uvioGetCellDataWXE(SoptHC,row,Gscrwidth,SsplitHCH,SsplitHCV,wkdata,wkdbcs);//0:local,1:utf8,4:read err;-1:eol//~v7fxI~
         pdddata=wkdata;                                            //~vbzMR~
         pdddbcs=wkdbcs;                                            //~vbzMR~
 #else                                                              //~vbzMI~
@@ -3500,12 +3508,25 @@ int getHcopy(PUCLIENTWE Ppcw,PUFILEH Ppfh)                         //~vbzJI~
 #ifdef XXE                                                         //~vbzPI~
         if (row>=Gscrheight)                                       //~vbApI~
             break;                                                 //~vbApI~
-    	uvioGetCellDataXXE(0,row,Gscrwidth,SsplitHCH,SsplitHCV,wkdata,wkdbcs);//~vbApI~
-        ddlen=Gscrwidth;                                           //~vbApI~
+//    	uvioGetCellDataXXE(0,row,Gscrwidth,SsplitHCH,SsplitHCV,wkdata,wkdbcs);//~vbApI~//~v7fzR~
+      	uvioGetCellDataXXE(0,row,Gscrwidth,SsplitHCH,SsplitHCV,wkdata,wkdbcs,&ddlen);//~v7fzI~
+//      ddlen=Gscrwidth;                                           //~vbApI~//~v7fzR~
         pdddata=wkdata;                                            //~vbApI~
         pdddbcs=wkdbcs;                                            //~vbApI~
 #else                                                              //~vbzPI~
 //*LNXCON                                                          //~vbzPI~
+  	  if (Guviol_flag & UVIOL_DDHCOPY)	//always this                                  //~vbEgI~//~vbEGI~
+      {                                                            //~vbEGI~
+//    	rc2=uvioGetCellDataDD(0,row,wkdata,wkdbcs,&ddlen);//0:local,1:utf8,4:read err;-1:eol//~vbEGR~//~v7fyR~
+      	rc2=uvioGetCellDataDD(0,row,SsplitHCV,wkdata,wkdbcs,&ddlen);//0:local,1:utf8,4:read err;-1:eol//~v7fyI~
+        if (rc2==-1)                                               //~vbEGI~
+        	break;                                                 //~vbEGI~
+        if (rc2==4)                                                //~vbEGI~
+        	continue;                                              //~vbEGI~
+        pdddata=wkdata; pdddbcs=wkdbcs;                            //~vbEGR~
+      }                                                            //~vbEGI~
+      else                                                         //~vbEGI~
+      {                                                            //~vbEGI~
     	rc2=uvioGetCellData(0,row,wkucs,&ucsctr);//0:local,1:utf8,4:read err;-1:eol//~vbzPI~
         if (rc2==-1)                                               //~vbzPI~
         	break;                                                 //~vbzPI~
@@ -3514,6 +3535,7 @@ int getHcopy(PUCLIENTWE Ppcw,PUFILEH Ppfh)                         //~vbzJI~
         opt=0;                                                     //~vbzPI~
         if (xeutfcvu2dd(opt,wkucs,ucsctr*(int)sizeof(UWCHART),&pdddata,&pdddbcs,&ddlen))//~vbzPR~
         	rc++;                                                  //~vbzPI~
+      }                                                            //~vbEGI~
 #endif //!XXE                                                      //~vbzPI~
 #endif //!W32                                                      //~vbzPI~
 //#ifndef XXE     //TODO test                                        //~vbzPI~//~vbApR~
@@ -3546,8 +3568,41 @@ int func_scrHcopy(PUCLIENTWE Ppcw)                                 //~vbzJI~
 #endif                                                             //~vbzMR~
     char fpath[_MAX_PATH];                                         //~vbzJI~
     int rc,editopt=0;                                              //~vbzJR~
+    char *pc;                                                      //~v7fxI~
 //*******************                                              //~vbzJI~
     UTRACEP("%s\n",UTT);                                           //~vbzJI~
+//#ifdef W32                                                       //~v7fyR~
+//#ifndef XXE                                                        //~v7fyR~//~v7fzR~
+	if (Ppcw->UCWkeytype==UCWKTCMD	//cmd input                    //~vbErR~
+ 	&&  (pc=Ppcw->UCWparm,pc))				//parm exist           //~vbErR~
+    {                                                              //~vbErR~
+		if (!strcmp(strupr(pc),"EOL"))                             //~vbErR~
+        {                                                          //~vbErI~
+    		Guvio2Stat|=UVIO2S_HCOPY_CHKEOL;                       //~vbErR~
+			uerrmsg("change screen hardcopy option temporally to EOL(cut lines by EnfOfLine).",//~vbErI~
+					"画面ハードコピーオプションを 一時的に EOL（EndOfLineで行をカット) に変更");//~vbErI~
+        }                                                          //~vbErI~
+        else                                                       //~vbErR~
+		if (!strcmp(strupr(pc),"NOEOL"))                           //~vbErR~
+        {                                                          //~vbErI~
+    		Guvio2Stat&=~UVIO2S_HCOPY_CHKEOL;                      //~vbErR~
+			uerrmsg("change screen hardcopy option temporally to NOEOL(No cut lines by EnfOfLine).",//~vbErI~
+					"画面ハードコピーオプションを 一時的に NOEOL（EndOfLineで行をカットしない) に変更");//~vbErI~
+        }                                                          //~vbErI~
+        else                                                       //~v7fzI~
+    	if (!strcmp(strupr(pc),"?"))                               //~vbErI~//~v7fyI~
+        {                                                          //~v7fyI~
+			uerrmsg("current hardcopy option is %s",0,             //~v7fyI~
+    				Guvio2Stat & UVIO2S_HCOPY_CHKEOL ? "EOL" : "NOEOL");//~v7fyI~
+        }                                                          //~v7fyI~
+        else                                                       //~vbErR~
+        {                                                          //~vbErR~
+			uerrmsg("HCO {EOL|NOEOL|?} (change screen hardcopy option temporally).",//~vbErR~//~v7fzR~
+					"HCO {EOL|NOEOL|?} (画面ハードコピーオプションの一時的な変更)");//~vbErR~//~v7fzR~
+        }                                                          //~v7fxI~
+        return 0;                                                  //~vbErI~
+    }                                                              //~v7fxI~
+//#endif                                                             //~vbErI~//~v7fzR~
 #ifdef WXE                                                         //~vbzMI~
     SsplitHCV=Gscrsplitv;                                          //~vbzMI~
     SsplitHCH=Gscrsplith;                                          //~vbzMI~
@@ -3573,7 +3628,8 @@ int func_scrHcopy(PUCLIENTWE Ppcw)                                 //~vbzJI~
 //    SoptHC=opt;                                                  //~vbzMR~
 //    UTRACEP("%s:opt=0x%04x,splitv=%d,splith=%d\n",UTT,opt,splitV,splitH);//~vbzMR~
 #endif                                                             //~vbzMI~
-#ifdef XXE                                                         //~vbApI~
+//#ifdef XXE                                                         //~vbApI~//~v7fyR~
+#ifdef LNX                                                         //~v7fyI~
     SsplitHCV=Gscrsplitv;                                          //~vbApI~
     SsplitHCH=Gscrsplith;                                          //~vbApI~
 #endif                                                             //~vbApI~

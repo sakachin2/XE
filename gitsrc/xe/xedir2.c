@@ -1,8 +1,12 @@
-//*CID://+vby4R~:                             update#=  868;       //~vby4R~
+//*CID://+vbE3R~:                             update#=  919;       //~vbE3R~
 //*************************************************************
 //*xedir.c                                                         //~vbv5R~
 //* draw
 //*************************************************************
+//vbE3:250919 (LNX)when username display mode,display filesystem name on date/time fld//~vbE3I~
+//vbE2:250918 (LNX)dirlist, display free rate for mount point      //~vbE2I~
+//vbE1:250917 dirlist, display large fileszie by unit:M            //~vbE1I~
+//vbE0:250917 display use% on root/mountpoint line of disrlist     //~vbE0I~
 //vby4:230402 (ARM)shared resource support by //shareName defined by SP(ShortPath) cmd.//~vby4I~
 //vby2:230327 (Bug)ARM(maybe also Linux) shows DHname for top entry. it may be by no "."/".." entry on dirlist by permission//~vby2I~
 //vbv5:221120 warning /g/src/xe/xedir2.c:1812:49: warning: ¡Æ%12s¡Ç directive writing between 12 and 15 bytes into a region of size 8 [-Wformat-overflow=]//~vbv5I~
@@ -293,6 +297,8 @@
 	#include "xeopt.h"                                             //~v91gI~//~va00I~
 #endif                                                             //~va00I~
 #include "xefsubw.h"                                               //~vavgI~
+#include "xedlcmd.h"                                               //~vbE2R~
+#include "xedlcmd2.h"                                              //~vbE2I~
 //*******************************************************
 #define FILENAMEPOS   8
 #define UPDATEID      '*'    //update file/line id
@@ -351,6 +357,10 @@ int dirgetmixstropt(int Popt,PULINEH Pplh,char *Pdata);            //~vawpI~
 void dirdisplayhex(int Popt,PUCLIENTWE Ppcw,int Pline,PUSCRD Ppsd);//~vbkfR~
 #define DDHO_LINE       0x00                                       //~vbkfI~
 #define DDHO_LAST       0x01                                       //~vbkfR~
+#ifdef LNX                                                         //~vbE2I~
+void editMountPoint(PUDIRLH Ppdh,PUDIRLD Ppddexpand);              //~vbE2I~
+void editMountPointRoot(PUDIRLH Ppdh,PUDIRLD Ppddexpand);          //~vbE3I~
+#endif                                                             //~vbE2I~
 //****************************************************************
 //!dirregist                                                    //~v04dR~
 //*file clientwe and set field def
@@ -724,7 +734,7 @@ int func_draw_dir(PUCLIENTWE Ppcw)
     				dirsavename(plh,pc+1);                      //~5903I~
 				}                                               //~5903I~
 //    			pdh->UDHtype=UDHTDIREXP;	//initialy mask specified//~v05KR~
-        		UTRACEP("%s:set UDHTPARENT dhname=%s\n",UTT,pdh->UDHname);//+vby4R~
+        		UTRACEP("%s:set UDHTPARENT dhname=%s\n",UTT,pdh->UDHname);//~vby4R~
      			pdh->UDHtype=UDHTPARENT;	//change to path dir//~v05KI~
         	  if (pc)                                              //~v774I~
               {                                                    //~v774I~
@@ -978,7 +988,7 @@ void dirddsetup(PUCLIENTWE Ppcw,PULINEH Pplh,PUPANELL Pppl)        //~v07eR~
     pddexpand=(PUDIRLD)((ULPTR)pdd+(ULPTR)expandlen);//for pont fld after UDDname//~vb2pI~
 //#ifdef LNX                                                         //~vau0I~//~vauER~
     UCBITOFF(pdh->UDHflag4,UDHF4NOTSETDD);	//return flag          //~vau0I~
-	UTRACEP("dirddsetup UDHF4NOTSETDD off,lineno=%d\n",Pplh->ULHlineno);//~vb14R~//~vbv5R~
+	UTRACEP("%s:UDHF4NOTSETDD off,lineno=%s\n",UTT,Pplh->ULHlineno);//~vb14R~//~vbv5R~//~vbE1R~
 //#endif                                                             //~vau0I~//~vauER~
 //#ifdef WXE                                                       //~v621R~
 ////  if (Sresizesw)   //if resized setup all                      //~v621R~
@@ -1119,7 +1129,7 @@ void dirddsetup(PUCLIENTWE Ppcw,PULINEH Pplh,PUPANELL Pppl)        //~v07eR~
 //#endif                                                           //~v621R~
 	if (UCBITCHK(pdh->UDHflag,UDHFDDSETUP))	//already setup     //~5819I~
     {                                                              //~vau0I~
-	    UTRACEP("dirddsetup UDHF4NOTSETDD on,lineno=%s\n",Pplh->ULHlineno);//~vb14R~
+	    UTRACEP("%s:UDHF4NOTSETDD on,lineno=%s\n",UTT,Pplh->ULHlineno);//~vb14R~//~vbE1R~
 //#ifdef LNX                                                         //~vau0I~//~vauER~
         UCBITON(pdh->UDHflag4,UDHF4NOTSETDD);                      //~vau0I~
 //#endif                                                             //~vau0I~//~vauER~
@@ -1746,6 +1756,13 @@ void dirddsetup(PUCLIENTWE Ppcw,PULINEH Pplh,PUPANELL Pppl)        //~v07eR~
 #endif                                                             //~v54eR~
 //      	memcpy(pdd->UDDtime,edittime,sizeof(pdd->UDDtime)); //dont copy last null//~v59TR~
         	memcpy(pddexpand->UDDtime,edittime,sizeof(pdd->UDDtime)); //dont copy last null//~v59TI~
+#ifdef LNX                                                         //~vbE2I~
+#ifndef ARM                                                        //~vbE2I~
+		  if (!FILEISTSO(pfh))                                     //~vbE3R~
+			if (pdh->UDHtype==UDHTPARENT)                          //~vbE2I~
+				editMountPoint(pdh,pddexpand);                     //~vbE2R~
+#endif //!ARM                                                      //~vbE2I~
+#endif //LNX                                                       //~vbE2I~
         }                                                       //~5903I~
         else                    //root dir                         //~v09bI~
         {                                                          //~v7abI~
@@ -1829,6 +1846,7 @@ void dirddsetup(PUCLIENTWE Ppcw,PULINEH Pplh,PUPANELL Pppl)        //~v07eR~
 #else                                                              //~v50HI~
                 if (disktotsz[0]) //dword size                     //~v49hI~
                 {                                                  //~v49hI~
+#ifdef AAA                                                         //~vbE0I~
 	                ucalc_dwdiv(diskfreesz,1024);                  //~v49hI~
                     diskfreesz[2]=diskfreesz[1];                   //~v49hI~
                     diskfreesz[1]=0;        //3 word data for bc_dweditnum//~v49hI~
@@ -1837,11 +1855,19 @@ void dirddsetup(PUCLIENTWE Ppcw,PULINEH Pplh,PUPANELL Pppl)        //~v07eR~
 //TRACED("xedir2 UDDdate dweditnumwk",dweditnumwk,sizeof(dweditnumwk));//~vbv5R~
 //                  sprintf(pddexpand->UDDdate,"%12sK/",dweditnumwk);//~vbv5I~
                     sprintf(dweditnumwk2,"%12sK/",dweditnumwk);//~v59TI~//~vbv5I~
+#else                                                              //~vbE0I~
+					FILESZT by100=(FILESZT)(udiskinfo.avail_clusters*1000);//~vbE0R~
+					int freeRate=(int)(by100/udiskinfo.total_clusters);//~vbE0I~
+    				sprintf(dweditnumwk,"%2d.%d",freeRate/10,freeRate%10);//~vbE0R~
+                    sprintf(dweditnumwk2,"%8s%% free",dweditnumwk);//~vbE0R~
+                    UTRACEP("%s:diskfree avail=%ld,total=%ld,freeRate=%d,editnum=%s\n",UTT,udiskinfo.avail_clusters,udiskinfo.total_clusters,freeRate,dweditnumwk2);//~vbE1R~
+#endif                                                             //~vbE0I~
                     memcpy(pddexpand->UDDdate,dweditnumwk2,14);    //~vbv5I~
                     *(pddexpand->UDDdate+14)=0;                    //~vbv5I~
 	                ucalc_dwdiv(disktotsz,1024);                   //~v49hI~
                     disktotsz[2]=disktotsz[1];                     //~v49hI~
                     disktotsz[1]=0;        //3 word data for bc_dweditnum//~v49hI~
+                    UTRACEP("%s:total=%ld\n",UTT,disktotsz[2]);    //~vbE1R~
     				bc_dweditnum(0/*functype*/,'Z'/*Pconvtype*/,(long*)(void*)disktotsz,dweditnumwk);//~v50HR~
 //                  sprintf(pdd->UDDsize,"%12sK",dweditnumwk);     //~v50bR~
 //                  sprintf(pdd->UDDsize,"%12s",dweditnumwk);      //~v59TR~
@@ -1852,6 +1878,16 @@ void dirddsetup(PUCLIENTWE Ppcw,PULINEH Pplh,PUPANELL Pppl)        //~v07eR~
                     *(pddexpand->UDDsize+12)=0;                    //~vbv5R~
 //                  *(pdd->UDDsize+12)='K';                        //~v59TR~
                     *(pddexpand->UDDsize+12)='K';                  //~v59TI~
+                    if (*pddexpand->UDDsize!=' ');                 //~vbE1I~
+                  	{                                              //~vbE1I~
+                    	long mega=disktotsz[2]/1024;               //~vbE1I~
+                    	disktotsz[2]=mega;                         //~vbE1I~
+	                    disktotsz[1]=0;        //3 word data for bc_dweditnum//~vbE1I~
+    					bc_dweditnum(0/*functype*/,'Z'/*Pconvtype*/,(long*)(void*)disktotsz,dweditnumwk);//~vbE1I~
+                    	sprintf(dweditnumwk2,"%12s",dweditnumwk);  //~vbE1I~
+                    	memcpy(pddexpand->UDDsize,dweditnumwk2,12);//~vbE1I~
+                    	*(pddexpand->UDDsize+12)='M';              //~vbE1I~
+                    }                                              //~vbE1I~
                     *(pddexpand->UDDsize+13)=0;		//cear rightmost screen pos//~v693I~
                 }                                                  //~v49hI~
                 else                                               //~v49hI~
@@ -1861,6 +1897,11 @@ void dirddsetup(PUCLIENTWE Ppcw,PULINEH Pplh,PUPANELL Pppl)        //~v07eR~
 //                  unumedit((ULONG)disktotsz[1],"z,zzz,zzz,zz9",pdd->UDDsize);//~v59TR~
                     unumedit((ULONG)disktotsz[1],"z,zzz,zzz,zz9",pddexpand->UDDsize);//~v59TI~
                 }                                                  //~v49hI~
+#ifdef LNX                                                         //~vbE3I~
+#ifndef ARM                                                        //~vbE3I~
+				editMountPointRoot(pdh,pddexpand);                 //~vbE3I~
+#endif //!ARM                                                      //~vbE3I~
+#endif //LNX                                                       //~vbE3I~
 #endif                                                             //~v50HI~
             }                                                      //~v09bI~
 #ifdef FTPSUPP                                                     //~v541I~
@@ -4363,3 +4404,99 @@ static char    Shexeditwk[HEXEDITLEN+1];                           //~vbkfR~
     }                                                              //~vbkfI~
     return;                                                        //~vbkfI~
 }//dirdisplayhex                                                   //~vbkfI~
+#ifdef LNX                                                         //~vbE2I~
+//*********************************************************        //~vbE2I~
+void editMountPoint(PUDIRLH Ppdh,PUDIRLD Ppddexpand)               //~vbE2R~
+{                                                                  //~vbE2I~
+    UCHAR fpathfnm[_MAX_PATH];                                     //~vbE2R~
+    UCHAR dweditnumwk[16];                                         //~vbE2I~
+    UCHAR dweditnumwk2[20];                                        //~vbE2I~
+    long  disktotsz[3];                                            //~vbE2I~
+//*******************                                              //~vbE2I~
+	UTRACEP("%s:name=%s,Gscrstatus=0x%02x\n",UTT,Ppdh->UDHname,Gscrstatus);//~vbE3R~
+	if (dlcgetfullname(Ppdh,fpathfnm))                             //~vbE2I~
+    	return;                                                    //~vbE2I~
+    PUFSINFO pufsinfo=usrchfsinfoDF(fpathfnm);                     //~vbE2R~
+    if (!pufsinfo)                                                 //~vbE2I~
+    	return;                                                    //~vbE2I~
+  if (UCBITCHK(Gscrstatus,GSCRSDIRUGNAME))  //display uid/uname    //~vbE3R~
+  {//display filesystem on datetime fld                            //~vbE3I~
+    if(UCBITCHK(Gscrstatus,GSCRSDIRUGID))   //by uid               //~vbE3I~
+	    return;                                                    //~vbE3I~
+  	char *fsname=pufsinfo->filesystem;                             //~vbE3I~
+  	char *fsname_s;                                                //~vbE3I~
+//  fsname="/dev/nvme0n1p123"; //test                              //~vbE3R~
+    int fsname_l=(int)strlen(fsname);                              //~vbE3R~
+    int dddatetime_l=PTRDIFF(Ppddexpand->UDDsize,Ppddexpand->UDDdate);//~vbE3I~
+    if (fsname_l>dddatetime_l)                                     //~vbE3I~
+    {                                                              //~vbE3I~
+    	fsname_s=fsname+fsname_l-dddatetime_l;                     //~vbE3R~
+        fsname_l=dddatetime_l;                                     //~vbE3I~
+    }                                                              //~vbE3I~
+    else                                                           //~vbE3I~
+    	fsname_s=fsname;                                           //~vbE3I~
+    memset(Ppddexpand->UDDdate,' ',(UINT)dddatetime_l);            //~vbE3I~
+    memcpy(Ppddexpand->UDDdate,fsname_s,(UINT)fsname_l);           //~vbE3I~
+    return;                                                        //~vbE3I~
+  }                                                                //~vbE3I~
+	long totsize=pufsinfo->size;	//unit K                       //~vbE2I~
+	int freeRate=pufsinfo->availRateM10;                           //~vbE2I~
+//*free rate                                                       //~vbE2I~
+    sprintf(dweditnumwk,"%3d.%d",freeRate/10,freeRate%10);         //~vbE2I~
+    sprintf(dweditnumwk2,"%8s%% free",dweditnumwk);                //~vbE2I~
+    memcpy(Ppddexpand->UDDdate,dweditnumwk2,14);                   //~vbE2I~
+//*size                                                            //~vbE2I~
+    disktotsz[0]=0;                                                //~vbE2I~
+	disktotsz[1]=0;        //3 word data for bc_dweditnum          //~vbE2I~
+    disktotsz[2]=totsize;                                          //~vbE2I~
+    bc_dweditnum(0/*functype*/,'Z'/*Pconvtype*/,disktotsz,dweditnumwk);//~vbE2R~
+    sprintf(dweditnumwk2,"%12s",dweditnumwk);                      //~vbE2I~
+    memcpy(Ppddexpand->UDDsize,dweditnumwk2,12);                   //~vbE2I~
+    *(Ppddexpand->UDDsize+12)='K';                                 //~vbE2R~
+    UTRACEP("%s:size=%s\n",UTT,Ppddexpand->UDDsize);               //~vbE2R~
+    long mega=totsize/1024;                                        //~vbE2I~
+    if (mega/1024)     //giga                                      //~vbE2R~
+    {                                                              //~vbE2I~
+    	disktotsz[0]=0;                                            //~vbE2I~
+	    disktotsz[1]=0;        //3 word data for bc_dweditnum      //~vbE2M~
+        disktotsz[2]=mega;                                         //~vbE2I~
+		UTRACEP("%s:name=%s\n",UTT,Ppdh->UDHname);                 //~vbE2I~
+    	bc_dweditnum(0/*functype*/,'Z'/*Pconvtype*/,disktotsz,dweditnumwk);//~vbE2R~
+        sprintf(dweditnumwk2,"%12s",dweditnumwk);                  //~vbE2I~
+        memcpy(Ppddexpand->UDDsize,dweditnumwk2,12);               //~vbE2I~
+        *(Ppddexpand->UDDsize+12)='M';                             //~vbE2I~
+	    UTRACEP("%s:size=%s\n",UTT,Ppddexpand->UDDsize);           //~vbE2R~
+    }                                                              //~vbE2I~
+    *(Ppddexpand->UDDsize+13)=0;		//cear rightmost screen pos//~vbE2I~
+}                                                                  //~vbE2I~
+//*********************************************************        //~vbE3I~
+void editMountPointRoot(PUDIRLH Ppdh,PUDIRLD Ppddexpand)           //~vbE3I~
+{                                                                  //~vbE3I~
+    UCHAR fpathfnm[_MAX_PATH];                                     //~vbE3I~
+//*******************                                              //~vbE3I~
+	UTRACEP("%s:name=%s,Gscrstatus=0x%02x\n",UTT,Ppdh->UDHname,Gscrstatus);//~vbE3I~
+	if (dlcgetfullname(Ppdh,fpathfnm))                             //~vbE3I~
+    	return;                                                    //~vbE3I~
+    PUFSINFO pufsinfo=usrchfsinfoDF(fpathfnm);                     //~vbE3I~
+    if (!pufsinfo)                                                 //~vbE3I~
+    	return;                                                    //~vbE3I~
+  	if (!UCBITCHK(Gscrstatus,GSCRSDIRUGNAME))  //display uid/uname //~vbE3I~
+	    return;                                                    //~vbE3I~
+    if(UCBITCHK(Gscrstatus,GSCRSDIRUGID))   //by uid               //~vbE3I~
+	    return;                                                    //~vbE3I~
+  	char *fsname=pufsinfo->filesystem;                             //~vbE3I~
+  	char *fsname_s;                                                //~vbE3I~
+//  fsname="/dev/nvme0n1pabc"; //test                              //+vbE3R~
+    int fsname_l=(int)strlen(fsname);                              //~vbE3I~
+    int dddatetime_l=PTRDIFF(Ppddexpand->UDDsize,Ppddexpand->UDDdate);//~vbE3I~
+    if (fsname_l>dddatetime_l)                                     //~vbE3I~
+    {                                                              //~vbE3I~
+    	fsname_s=fsname+fsname_l-dddatetime_l;                     //~vbE3I~
+    	fsname_l=dddatetime_l;                                     //~vbE3I~
+    }                                                              //~vbE3I~
+    else                                                           //~vbE3I~
+    	fsname_s=fsname;                                           //~vbE3I~
+    memset(Ppddexpand->UDDdate,' ',(UINT)dddatetime_l);            //~vbE3I~
+    memcpy(Ppddexpand->UDDdate,fsname_s,(UINT)fsname_l);           //~vbE3I~
+}                                                                  //~vbE3I~
+#endif                                                             //~vbE2I~

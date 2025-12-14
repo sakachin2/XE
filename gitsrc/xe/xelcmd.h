@@ -1,8 +1,10 @@
-//*CID://+vb87R~:                             update#=   29;       //+vb87R~
+//*CID://+vbEqR~:                             update#=   33;       //+vbEqR~
 //****************************************************************
 //xelcmd.h
 //****************************************************************//~v06hI~
-//vb87:170216 inactivate lcmd on excluded line                     //+vb87I~
+//vbEq:251205 locate cmd setall xxx; change to repall and insall   //+vbEqI~
+//vbEb:251013 locate cmd;  add "l setall" to insert line of the linelabel.//~vbEbI~
+//vb87:170216 inactivate lcmd on excluded line                     //~vb87I~
 //va7x:100825 lcmd; no translation option for "=","C","M"          //~va7xI~
 //va07:090628 add copy cid option to Copy lcmd(AI/BI)              //~va07I~
 //v75b:070419 lcmd TS support                                      //~v75bI~
@@ -82,7 +84,7 @@ typedef struct _ULCMD {
 #define ULCF3CNT0       0x80					//keep count 0 as no parm(repeat/bandle/skip)//~v75aI~
 #define ULCF3CID        0x40					//copy cid option for Copy lcmd//~va07I~
 #define ULCF3BIN        0x20					//no translation ooption(binary mode)//~va7xI~
-#define ULCF3PEND_EXC   0x10					//pending by excluded line//+vb87I~
+#define ULCF3PEND_EXC   0x10					//pending by excluded line//~vb87I~
 						UCHAR   ULCrsv[3];                         //~v75aI~
 						int     ULCindex; 		//UFCcmd index
 						int     ULCrepeat;		//repeat count	
@@ -111,3 +113,6 @@ int lcmdreset(PUCLIENTWE Ppcw,PUFILEH Ppfh,int Popt);              //~v69WI~
 int lcmdlinenocomp(const void*,const void*);//sort func            //~v0hxI~
 //*******************************************************          //~v724R~
 int lcmdclearlcmdplc(PULINEH Pplh);                                //~v724R~
+//*******************************************************          //~vbEbI~
+int lcmdLocateSetall(int Popt,PUCLIENTWE Ppcw,PUFILEH Ppfh,UCHAR *Poption,UCHAR *PstrSetall);//~vbEbR~
+#define LLSO_REP   0x01       //repall                             //+vbEqI~

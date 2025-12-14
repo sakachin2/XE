@@ -1,9 +1,10 @@
-//*CID://+vbq5R~:                             update#=  275;       //~vbp1R~//+vbq5R~
+//*CID://+vbE5R~:                             update#=  277;       //~vbE5R~
 //*************************************************************
 //*xedir.c*
 //* execute key,dlcmd cut and paste,pathup,pathdown,linetop,lineend//~v55NR~
 //*************************************************************
-//vbq5:200516 (Bug)dir sort /ot is err                             //+vbq5I~
+//vbE5:250921 (W32)adjust errmsg for S+F6(toggle dirlist size and username)//~vbE5I~
+//vbq5:200516 (Bug)dir sort /ot is err                             //~vbq5I~
 //vbp1:181028 new lineno specification:Select --[n];  select member from last//~vbp1I~
 //vbd7:171119 "SEL all" support on file panel                      //~vbd7I~
 //vb60:161127 select 1st entry when no filename operand (S [-n] n:line number)//~vb60I~
@@ -595,8 +596,10 @@ int func_dlcmduidorsz_dir(PUCLIENTWE Ppcw)                         //~v20fI~
 	pfh=UGETPFHFROMPCW(Ppcw);                                      //~v55hI~
 #ifdef W32                                                         //~v55hM~
     if (!FILEISREMOTE(pfh))                                        //~v55hI~
-    	uerrmsg("This Dir is Local",                               //~v55hI~
-        		"このDirはLocalです");                             //~v55hM~
+//  	uerrmsg("This Dir is Local",                               //~vbE5R~
+//      		"このDirはLocalです");                             //~vbE5R~
+    	uerrmsg("Username is available for Remote file only.",     //+vbE5R~
+        		"ユーザー名表示はリモートファイルにのみ有効です"); //~vbE5I~
     else                                                           //~v55hI~
     	uerrmsg("user/group display mode",                         //~v55hI~
         		"ユーザー/グループ\x95\\示");                      //~v55hI~
@@ -1634,15 +1637,15 @@ int func_sort_dir(PUCLIENTWE Ppcw)                                 //~v57gI~
     }                                                              //~v57gI~
     pc++;                                                          //~v57gI~
     if (*pc=='-')                                                  //~v57gI~
-    {                                                              //+vbq5I~
-        if (sorttype==0)    // "n-"                                //+vbq5I~
-        {                                                          //+vbq5I~
-    		uerrmsg("dirlist sort option err(%s),reverse name is not supported ",0,//+vbq5I~
-        				psortp);                                   //+vbq5I~
-        	return 4;                                              //+vbq5I~
-        }                                                          //+vbq5I~
+    {                                                              //~vbq5I~
+        if (sorttype==0)    // "n-"                                //~vbq5I~
+        {                                                          //~vbq5I~
+    		uerrmsg("dirlist sort option err(%s),reverse name is not supported ",0,//~vbq5I~
+        				psortp);                                   //~vbq5I~
+        	return 4;                                              //~vbq5I~
+        }                                                          //~vbq5I~
         pc++;                                                      //~v57gI~
-    }                                                              //+vbq5I~
+    }                                                              //~vbq5I~
     *(pc+1)=0;                                                     //~v57gI~
     if (sorttype)                                                  //~v57gI~
 	    sprintf(lcmdparm,"/o%s",psortp);                           //~v57gI~

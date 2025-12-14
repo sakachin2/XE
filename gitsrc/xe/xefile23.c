@@ -1,8 +1,11 @@
-//*CID://+vbDtR~:                             update#=  739;       //~vbDtR~
+//*CID://+vbEnR~:                             update#=  747;       //~vbEnR~
 //*************************************************************
 //*xefile23.c  *                                                   //~v69DR~
 //* draw(func_draw_file/setlineattr)                               //~v69DI~
 //*************************************************************
+//vbEn:251201 (W32 bug)under combinemode;u-309a(handakuten such as for katakana-Po) is not shown as split mode even when csr is on//~vbEnI~
+//vbEi:251114 (wxe)wxe replaced combining to ":" at csubtextoutw_ligature; but do it at file23-setlineattr like as gxe(vbEh)//~vbEiI~
+//vbEh:251113 (gxe)LIGON+UNPR; hcopy dose not write ":" for combining//~vbEhI~
 //vbDt:250804 (LNX)Test function. Color palette number of Datapos by Vhex Cursor by cmdline option -vdc_//~vbDtI~
 //vbDr:250728 (LNXCON)drop vbDo for LNXCON because 06 and 0E is same(limited pallette)//~vbDrI~
 //vbDo:250726 change csr pos color of dataline corresponding to vhex/hhex pos
@@ -601,7 +604,7 @@ int func_draw_file(PUCLIENTWE Ppcw)
 #else                                                              //~vbDtI~
         if (Shexcsrattr==DEFAULT_COLOR_EDIT)    //0x0E             //~vbDtI~
 		  if (GvhexcsrDataColorPalette)         //cmdline -vdcn option//~vbDtI~
-            Shexcsrattr=(UCHAR)GvhexcsrDataColorPalette;           //+vbDtR~
+            Shexcsrattr=(UCHAR)GvhexcsrDataColorPalette;           //~vbDtR~
 #endif                                                             //~vbDrI~
 #ifdef UTF8UCS2                                                    //~va20I~
 		Shexcsrmarginattrc=Gattrtbl[COLOR_ECLIENT];	//edit fg      //~va20I~
@@ -638,10 +641,10 @@ int func_draw_file(PUCLIENTWE Ppcw)
 #ifndef LNXCON                                                     //~vbDrI~
         if (Shexcsrattr==DEFAULT_COLOR_BROWSE)    //0x07           //~vbDoI~
             Shexcsrattr=DEFAULT_COLOR_EDIT_BY_HEX;   //0x06        //~vbDoR~
-#else                                                              //+vbDtI~
-        if (Shexcsrattr==DEFAULT_COLOR_BROWSE)    //0x07           //+vbDtI~
-		  if (GvhexcsrDataColorPalette)         //cmdline -vdcn option//+vbDtI~
-            Shexcsrattr=(UCHAR)GvhexcsrDataColorPalette;           //+vbDtI~
+#else                                                              //~vbDtI~
+        if (Shexcsrattr==DEFAULT_COLOR_BROWSE)    //0x07           //~vbDtI~
+		  if (GvhexcsrDataColorPalette)         //cmdline -vdcn option//~vbDtI~
+            Shexcsrattr=(UCHAR)GvhexcsrDataColorPalette;           //~vbDtI~
         UTRACEP("%s:old=COLOR_BROWSE new Shexcsrattr=%02x\n",UTT,Shexcsrattr);//~vbDtI~
 #endif                                                             //~vbDrI~
 #ifdef UTF8UCS2                                                    //~va20I~
@@ -821,6 +824,7 @@ int func_draw_file(PUCLIENTWE Ppcw)
 	{                                                           //~5126I~
 		if (!plh)                                               //~5126I~
 			break;                                              //~5126I~
+    	UTRACEP("%s:line=%d,psd=%p,ULHlineno=%s\n",UTT,line,psd,plh->ULHlineno);//~vbDtM~
 //*redraw start line process                                       //~v0hfM~
         if (plhdrawstart)  //draw start plh                        //~v0hfM~
         {                                                          //~v0hfM~
@@ -947,6 +951,7 @@ int func_draw_file(PUCLIENTWE Ppcw)
                         psd++;                                     //~v60vI~
                         UCBITOFF(psd->USDflag2,USDF2VHEXLINE1);//1st of vhex display line//~v60vR~
                         UCBITON(psd->USDflag2,USDF2VHEXLINE2);//1st of vhex display line//~v60vI~
+                        UTRACEP("%s:VHEXLINE2 on psd=%p,ULHlinenor=%d,ULHlineo=%s,line=%d,swutf8orligaturemode\n",UTT,psd,plh->ULHlinenor,plh->ULHlineno,line,swutf8orligaturemode);//~vbDtI~
                         psd->USDbuffc=plh;                         //~v60vI~
                     }//2 line more space                           //~v60vI~
                     else                                           //~v60vI~
@@ -1353,7 +1358,10 @@ UTRACEP("filedraw row=%d,col=%d,csrcol=%d,line=%d,plhlineno=%d,drawflag=%x\n",Pp
 #ifdef UTF8UCS2                                                    //~va20I~
                 tdopt=UCBITCHK(pfh->UFHflag4,UFHF4BIN);            //~va20I~
                 if (swutf8file)                                    //~va20R~
+                {                                                  //~vbEnI~
 	                tdopt=FILETDO_UTF8;                            //~va20I~
+		            tdopt|=FILETDO_NONASCII;                       //+vbEnR~
+        		}                                                  //~vbEnI~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
                 celldrawsw=tabdisplay(plh,pc,pcd,len,tdopt);       //~va50I~
 #else                                                              //~va50I~
@@ -2058,6 +2066,7 @@ void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
 	Ppsd->USDflag=USDFCELLSTR2;			//cell is attr WORD        //~v08eR~
     if (!vhexpsdid)                                                //~vb4fI~
 		Ppsd->USDuvioo=UVIOO_LIGATURE1|UVIOO_COMBINE|UVIOO_CSRPOSCHK;//~vb4fR~
+    UTRACEP("%s:WIN line=%d,vhexpsdid=%d,USDuvioo=%04x\n",UTT,Pline,vhexpsdid,Ppsd->USDuvioo);//~vbDtI~
 	paw0=paw=(USHORT*)(void*)Ppsd->USDcell;                        //~v08eR~
                                                                    //~v08eI~
 	if (UCBITCHK(Pplh->ULHflag,ULHFLCMDERR)                        //~v0azR~
@@ -2284,9 +2293,9 @@ void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
 //              if (swutf8file && UDBCSCHK_ISUCSWIDTH0(*pcd))      //~vb4yR~//~vbzVR~
                 if (swutf8file && f23_iscombining(0,pc,pcd,width-ii))//Lnx//~vbzVR~
                 {                                                  //~vb4yR~
-#ifdef WXEXXE     //set ATTR_COMBINENP_FG at wxecsub when ligature mode//+//~vb4AR~
-				  if (!OPT_ISLIGATUREON())                         //~vb4AI~
-#endif                                                             //~vb4AI~
+//#ifdef WXEXXE     //set ATTR_COMBINENP_FG at wxecsub when ligature mode//+//~vbEiR~
+//				  if (!OPT_ISLIGATUREON())                         //~vbEiR~
+//#endif                                                           //~vbEiR~
                   {                                                //~vb4AI~
                 	char wkdddata[2],wkdddbcs[2];                  //~vb4yR~
 		        	if (UTF_COMBINEMODE_NP() && Gutfcombaltch      //~vb4yR~
@@ -2367,6 +2376,7 @@ void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
 	Ppsd->USDflag=USDFCELLSTR;	//by cell data
     if (!vhexpsdid)                                                //~vb4fI~
 		Ppsd->USDuvioo=UVIOO_LIGATURE1|UVIOO_COMBINE|UVIOO_CSRPOSCHK;//~vb4fR~
+    UTRACEP("%s:LNX line=%d,vhexpsdid=%d,USDuvioo=%04x\n",UTT,Pline,vhexpsdid,Ppsd->USDuvioo);//~vbDtI~
     pcd=Ppsd->USDdbcs+((ULONG)pc-(ULONG)(Ppsd->USDdata));	//dbcstbl//~v09RR~
     tabattr=(UCHAR)((Scolor_lineno&0x0f)+(wcolor_client&0xf0));    //~v09RR~
 #ifdef UNX                                                         //~v20WI~
@@ -2576,9 +2586,11 @@ void setlineattr(PUCLIENTWE Ppcw,PULINEH Pplh,PUSCRD Ppsd,         //~v09RR~
                 {                                                  //~vb4yI~
                 	char wkdddata[2],wkdddbcs[2];                  //~vb4yI~
 #ifdef XXE                                                         //~vb4AI~
+#ifdef PPP                                                         //~vbEhI~
 				  if (OPT_ISLIGATUREON())                          //~vb4AI~
                   	pcc++;                                         //~vb4AI~
                   else                                             //~vb4AI~
+#endif                                                             //~vbEhI~
 #endif                                                             //~vb4AI~
                   {                                                //~vb4AI~
 #ifdef XXE                                                         //~vb4yM~

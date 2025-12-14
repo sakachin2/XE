@@ -1,7 +1,8 @@
-//*CID://+vbDaR~:                             update#=  106;       //~vbDaR~
+//*CID://+v7f6R~:                             update#=  110;       //~vbDaR~//+v7f6R~
 //*************************************************************
 //*uviol for gxe and Axe                                           //~v6ErI~
 //*************************************************************    //~v6ErI~
+//v7f6:251009 (gxe)rep combining by altch is already done on f23.setlineattr//+v7f6I~
 //vbDa:250703 (gxe)helpmsg was not controled by scr height.        //~vbDaI~
 //v6Et:160816 (XXE)for xe:vb4A,when Ligature mode display at xxecsub altch of UNICOMB UNPR//~v6EtI~
 //v6Er:160814 (Bug:XXE)UNCOMB UNPR was ignored                     //~v6ErI~
@@ -451,9 +452,9 @@ UINT uvioreadcellstr(PCH pchCellStr,int *Pplen,int Prow,int Pcol)
 //UINT uviowrtcellstr (PCH pchCellStr,int Plen,int Prow,int Pcol)  //~v6EoR~
 UINT uviowrtcellstr(int Popt,PCH pchCellStr,int Plen,int Prow,int Pcol)//~v6EoI~//~vbDaR~
 {
-		int len,reqctr;                                            //~v034R~
         int pos,height;                                            //~v143R~
         UINT rc;                                                   //~v034I~
+		int len,reqctr;                                            //~v034R~//~vbDaM~
 		char      *wpch;                                           //~v034I~
 		WORD      *wpat;                                           //~v034I~
         int swcombaltch;                                           //~v6ErI~
@@ -488,6 +489,7 @@ UINT uviowrtcellstr(int Popt,PCH pchCellStr,int Plen,int Prow,int Pcol)//~v6EoI~
                 pdbcs=Sdbcstbl+pos;//xe's Gscrdbcstbl              //~v6ErR~
                 UTRACED("inp pChCEllStr",pchCellStr,reqctr*2);     //~v6ErM~
                 UTRACED("inp dbcs",pdbcs,reqctr);                  //~v6ErI~
+#ifdef KKK                                                         //+v7f6I~
     		  if (xxe_optligature(XXEIOLO_ISON,0))//ligature mode  //~v6EtR~
                 swcombaltch=0;                                     //~v6EtI~
               else                                                 //~v6EtI~
@@ -496,6 +498,9 @@ UINT uviowrtcellstr(int Popt,PCH pchCellStr,int Plen,int Prow,int Pcol)//~v6EoI~
 							&& (UTF_UCS2DDSBCS((ULONG)Gutfcombaltch,wkdddata,wkdddbcs)<=1)//~v6ErR~
                             );                                     //~v6ErI~
                 UTRACEP("%s:swcombaltch=%x,altch=%02x,attrfg=%02x,altch dddata=%02x,dddbcs=%02x\n",UTT,swcombaltch,Gutfcombaltch,ATTR_COMBINENP_FG,*wkdddata,*wkdddbcs);//~v6ErR~
+#else                                                              //+v7f6I~
+                swcombaltch=0;                                     //+v7f6I~
+#endif                                                             //+v7f6I~
             	for (len=0;len<reqctr;len++)  //charstring+attrtbl //~v042I~
                 {                                                  //~v042I~
                 	*wpch++=*pchCellStr++;                         //~v042I~
@@ -504,9 +509,9 @@ UINT uviowrtcellstr(int Popt,PCH pchCellStr,int Plen,int Prow,int Pcol)//~v6EoI~
                     	if (UDBCSCHK_ISUCSWIDTH0(*pdbcs))          //~v6ErI~
                         {                                          //~v6ErI~
                         	*(wpch-1)=wkdddata[0];                 //~v6ErR~
-#ifdef TEST                                                        //+vbDaI~
+#ifdef TEST                                                        //~vbDaI~
 		                	*(wpat-1)=(WORD)((*(wpat-1)&0xf0)|ATTR_COMBINENP_FG);//@@@@test uviol_repfg?//~v6ErR~
-#endif                                                             //+vbDaI~
+#endif                                                             //~vbDaI~
                         	UTRACEP("%s:set combinealtch ch=%02x,attr=%02x,olddbcs=%02x,newch=%02x,newat=%02x\n",UTT,*(pchCellStr-2),*(pchCellStr-1),*pdbcs,*(wpch-1),*(wpat-1));//~v6ErR~
                             *pdbcs=wkdddbcs[0];                    //~v6ErI~
                         }                                          //~v6ErI~

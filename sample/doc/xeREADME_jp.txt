@@ -1,6 +1,6 @@
-UTF8 encodinng ||*CID:||+130CR~:                            update#=  863;||~130CR~
+UTF8 encodinng ||*CID:||+130DR~:                            update#=  865;||~130DR~
 ######################################################################
-[Japanese]    v1.30C (Refer xeREADME_en.txt for English)  2025/08/25  ||~130CR~
+[Japanese]    v1.30D (Refer xeREADME_en.txt for English)  2025/12/14  ||+130DR~
 
 メインフレーム(SPFファイルの編集にも便利) と PC と 両方仕事している人に使い易いエディター。
 ホストのSPFをベースにPCのEDITORの便利なキー操作をハイブリッド。
@@ -735,9 +735,32 @@ Android版:Axe は PlayStoreにあります
        -=0.1 画面(ショートカットキー設定)をその都度保存し複数セッション同時起動で||~130CI~
         設定が失われないようにする                                    ||~130CI~
        -(Win)Abend の時 処理追加（例外情報を stdout/UTRACE/::xewin.dmp.<pid>に出力)||~130CI~
-       -(LNX-Console)縦Hex行のカーソル位置に対応するデータ行の表示カラーを /VDc オプションで設定可能(省略地は茶色)||+130CI~
+       -(LNX-Console)縦Hex行のカーソル位置に対応するデータ行の表示カラーを /VDc オプションで設定可能(省略地は茶色)||~130CI~
                                                                       ||~130CI~
      4.ツール。                                                       ||~130CI~
        -(LNX)無効なファイル名の errMsg をバイパスするオプション(/Yi)追加||~130CI~
         xfg v1.22                                                     ||~130CI~
                                                                       ||~130CI~
+######################################################################||~130DI~
+130D:2025/12/14                                                       ||~130DI~
+     1.BUGs                                                           ||~130DI~
+       -(gxe)終了時に直前の操作がCtrl+H(画面印刷)やCtrl+P(ファイル印刷)の時||~130DI~
+        印刷途中セッション終了となってcrash することがある            ||~130DI~
+       -UTF8ファイルの結合文字/フォーマット文字の表示方法を修正       ||~130DI~
+        特にWindows では WindowsTerminal と従来の Conhost で 結合文字の表記に違いがでる。||~130DI~
+       -/Ffontname のフォント名は英語名と各国語と両方あるので対応する ||~130DI~
+                                                                      ||~130DI~
+     2.機能追加                                                       ||~130DI~
+       -(Linux)表示幅が曖昧とされる文字について API:wcwidth() に従うオプション 'W' を追加||~130DI~
+        コマンドラインオプション:-G{Y|N|W}[0|1|2|y|w]、 省略値 /GWw とする||~130DI~
+       -ディレクトリーリスト                                          ||~130DI~
+        ドライブ(Windows)/マウントポイント(Linux)の行には freeSpace の 割合を表示する||~130DI~
+        割合は Windows:Session Restart, Linux:Refresh(Shift+F1)で更新 ||~130DI~
+        (Linux) Shift+F6 で UserName 表示モードにしたときは その Device 名(/dev/sdaa等)を表示||~130DI~
+       -LOCate コマンドに追加のオプション                             ||~130DI~
+        例) loc {insall|repall} xxx                                   ||~130DI~
+        ラベルコマンド行(.yyy) のラベルをそのテキスト行にコピー。     ||~130DI~
+        例えば 文字列 xxx.yyy をその行の先頭にコピー(repall) あるいは 挿入(insall)||~130DI~
+       -HCOpy コマンド追加。                                          ||~130DI~
+        HCO [EOL]NOEOL]。コマンドラインオプションでは /Yh, /Nh(省略値)。||~130DI~
+        "EOL" とすると画面幅でなく改行コードで行をカット、RightToLeft フォーマット文字を含む場合を想定||~130DI~

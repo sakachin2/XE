@@ -1,8 +1,13 @@
-//*CID://+vbBrR~:                             update#=  501;
+//*CID://+vbEnR~:                             update#=  514;       //~vbEnR~
 //*************************************************************
 //*xefile6.c  *                                                    //~va00R~
 //* tab                                                            //~v0bzR~
 //*************************************************************
+//vbEn:251201 (W32 bug)under combinemode;u-309a(handakuten such as for katakana-Po) is not shown as split mode even when csr is on//~vbEnI~
+//             set celldraw always if utf8 file contains unicode   //~vbEnI~
+//vbEm:251201 (W32 bug)under splitmode, u-309a(handakuten such as for katakana-Po) is not shown as split mode//~vbEmI~
+//             tabdisplay returns 0, it means celldraw=0           //~vbEmI~
+//vbEe:251109 display "+" for u-200d even when combinemode(uvio_setbufflineopt was not called from setlineattr because tabdisplay return 0)//~vbEeI~
 //vbBr:241108 (bug of va6h)copy utf8 file into bin mode ebcfile; execute not f2dd but f2l the dbcstbl 1/2(locale mode) was set//~vbBrI~
 //vbBq:241108 display green when lcmd copy b2m/m2b when cv err     //~vbBqI~
 //vbzV:240422 SCM(Mc) by green attr                                //~vbzVI~
@@ -1509,12 +1514,20 @@ int tabdisplay(UCHAR *Pdata,UCHAR *Pdbcs,int Plen,int Pbinsw)      //~v20UR~
     int optxpr;                                                    //~va47I~
 //    int altch;                                                     //~vb3tR~//~vb3vR~
 //    UWUCS ucssbcs;                                                 //~vb2RI~//~vb2SR~
+	int opticDD=UICDO_INCLUDE_ALLW0;                               //~vbEeR~
+    int swNonAscii=0;                                              //+vbEnR~
 //*****************
 //*unprintable char                                                //~v09UI~
+UTRACEP("%s:Popt=%04x,linenor=%d,len=%d\n",UTT,Pbinsw,Pplh->ULHlinenor,Plen);//~vbEnI~
 UTRACED("tabdisplay plhdata",Pplh->ULHdata,Pplh->ULHlen);          //~va50I~
 UTRACED("tabdisplay plhdbcs",Pplh->ULHdbcs,Pplh->ULHlen);          //~va50I~
 UTRACED("tabdisplay data in",Pdata,Plen);                          //~va46I~
 UTRACED("tabdisplay dbcs in",Pdbcs,Plen);                          //~va46I~
+	if (Pbinsw & FILETDO_NONASCII)                                 //~vbEnR~
+    {                                                              //~vbEnI~
+    	swNonAscii=1;     //chk non ascii unicode                  //~vbEnR~
+	    Pbinsw &=~FILETDO_NONASCII;                                //~vbEnR~
+    }                                                              //~vbEnI~
 #ifdef UTF8UCS2                                                    //~va20R~
 #ifdef UTF8EBCD	  //raw ebcdic file support                        //~va50I~
     tdopt=Pbinsw;                                                  //~va50I~
@@ -1564,7 +1577,8 @@ UTRACED("tabdisplay dbcs in",Pdbcs,Plen);                          //~va46I~
     	if (!UDBCSCHK_ISUCSSBCS(dbcsid))	//not sbcs             //~va20R~
         {                                                          //~va20R~
             if ((Goptopt3 & GOPT3_COMBINENP)                       //~vbzVR~
-            &&  utf_iscombiningDD(0,pc,pcd,reslen) //determined sbcs//~vbzVI~
+//          &&  utf_iscombiningDD(0,pc,pcd,reslen) //determined sbcs//~vbEeR~
+            &&  utf_iscombiningDD(opticDD,pc,pcd,reslen) //determined sbcs//~vbEeR~
             )                                                      //~vbzVI~
             {                                                      //~vbzVI~
                 UCHAR unpaltch;                                    //~vbzVI~
@@ -1637,6 +1651,20 @@ UTRACED("tabdisplay dbcs in",Pdbcs,Plen);                          //~va46I~
 			            rc=1;   //do setlineattr for set green     //~vb3nI~
                     }                                              //~va20R~
                 }                                                  //~va20I~
+            	if (!rc                                            //~vbEmR~
+            	&&  !UTF_COMBINEMODE() //!not NP, so split mode    //~vbEmI~
+	            &&  utf_iscombiningDD(opticDD,pc,pcd,reslen))//determined sbcs//~vbEmM~
+                {                                                  //~vbEmM~
+                	UTRACEP("%s:set rc=1 by Splitmode and combining\n",UTT);//~vbEmM~
+            		rc=1;	//celldraw                             //~vbEmM~
+                }                                                  //~vbEmM~
+            	if (!rc                                            //~vbEnI~
+    			&&  swNonAscii                                     //~vbEnR~
+                )                                                  //~vbEnI~
+                {                                                  //~vbEnI~
+                	UTRACEP("%s:set rc=1 by swNonAscii\n",UTT);    //~vbEnR~
+            		rc=1;	//celldraw                             //~vbEnI~
+                }                                                  //~vbEnI~
         		pc++; 	//skip more 1 byte                         //~va20R~
             	pcd++;                                             //~va20R~
                 reslen--;                                          //~va6sI~
@@ -1773,7 +1801,8 @@ UTRACED("tabdisplay dbcs in",Pdbcs,Plen);                          //~va46I~
 //            else                                                   //~vb2RI~//~vb2SR~
 //          if (UDBCSCHK_ISUCSWIDTH0(dbcsid) && UTF_COMBINEMODE())//display padding//~va30I~//~va3eR~
 //          if (UDBCSCHK_ISUCSWIDTH0(dbcsid)                       //~va3eI~//~vbzVR~
-            if (utf_iscombiningDD(0,pc,pcd,1) //determined sbcs    //~vbzVR~
+//          if (utf_iscombiningDD(0,pc,pcd,1) //determined sbcs    //~vbEeR~
+            if (utf_iscombiningDD(opticDD,pc,pcd,1) //determined sbcs//~vbEeR~
             &&  (UTF_COMBINEMODE()||(Goptopt3 & GOPT3_COMBINENP))   //display unprintable//~va3eR~
             )                                                      //~va3eI~
             {                                                      //~va3eI~

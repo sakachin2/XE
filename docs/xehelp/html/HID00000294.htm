@@ -14,7 +14,7 @@ a:hover{font-weight:bold;}-->
 <PRE>
 <SPAN STYLE="color:#000000;font-size:12pt;">    = Locate to the line.
 
-        LOCate  { { [L]line-no | [O]offset } [C] | .label }
+        LOCate  { { [L] line-no | [O] offset } [C] | .label | {insall|repall} xxx}
 
                (Use this format for <a href="HID00000251.htm">Browse/Edit screen</a>)
 
@@ -24,6 +24,10 @@ a:hover{font-weight:bold;}-->
                C : lineno/offset of current updated status.
                    if omitted, that of status of at opened.
                .label:search the line with this label.
+
+               insall|repall xxx : Copies the label command to the top of the text line.
+               e.g.) If xxx is "ok", then for the line with the label ".a",
+                     "ok.a" is copied/inserted to the top of that line.
 
         LOCate  {filename|timestamp|filesize}
 
