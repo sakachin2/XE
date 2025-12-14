@@ -15,6 +15,8 @@ SPF like Editor xe           2025/12/14 V130D
         .Automatically assigns update tags to changed lines, helping for version control.
         .A rich set of commands convenient for data processing.
 
+    !! See online help : https://sakachin2.github.io/XE/ , click "HOW-TO-USE"
+
     !! THIS IS FREE SOFTWARE AND COMES WITH ABSOLUTELY NO WARRANTY.
 *********************************************************************************************
 (Japanese)                   2025/12/14 V130D
@@ -32,5 +34,7 @@ SPF like Editor xe           2025/12/14 V130D
            ftp,samba,rsh,ssh,fuse
         .変更行に修正タグを自動付与でバージョン管理に寄与。
         .データ処理に便利な豊富なコマンド群。
+
+    !! オンラインヘルプは : https://sakachin2.github.io/XE/ 、"取説" を押してください
 
     !! このソフトの使用により発生したいかなる損害にも責任を負いません
