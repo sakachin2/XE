@@ -1,0 +1,21 @@
+//*CID://+130ER~:                             update#=  240;
+** UTF8 encoding **
+//***************************************************************************
+130E:2026/08/05
+     1.BUGs
+
+     2.Additional function.
+       -XBC/TC command
+         Support for time conversion of millisecond-precision timestamps.
+         e.g.) XBC 19f7bf51717/m; TC 40-60=m10-25
+       -(Win) OneDrive Support
+     4.Tools
+       -xdc
+          Additional options
+            /u2 : Ignore timestamp differences of less than 2 seconds.
+            /uF : Compare timestamps for files only.
+          (Bug) Differences in capitalization in the second byte of 2-byte Kanji characters
+                were not being recognized.
+       -xfg
+          (Bug) the handling of the x5c (\) character in search strings.
+          Apply the /F (include) and /X (exclude) options to all hierarchy levels.

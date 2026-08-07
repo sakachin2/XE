@@ -1,4 +1,4 @@
-UTF8 encoding * CID:||+v30DR~:  2025/12/14  v130D            update#=  778;||~v30DR~
+UTF8 encoding * CID:||+130ER~:  2025/12/14  v130D            update#=  781;||+130ER~
 ************************************************************************
 (Index)
     (0).Introduction.
@@ -4902,7 +4902,7 @@ sample)
       (!:power;<,>:shift,^:X-or).Time data can be calculated.
       XBC support double word(8 byte) or decimal fraction.
       Timestamp(elapsed seconds from 1970) is converted to date and time.
-      Mainframe 8 byte TOD is also converted.
+      It also supports millisecond-level elapsed time on smartphones and 8 byte TOD on mainframes.||+130ER~
 
    .Parenthesis, #if, "/*" comment and XML tag pair search            ||~v129R~
       C has 3 parenthesis notation (,[ and {.
@@ -7300,7 +7300,7 @@ by screen expansion)
                      to the source code.                              ||~v124R~
                                                                       ||~v124R~
 #endif                                                                ||~v124R~
-            u2f/f2u :UCS2<-->UTF8
+            u2f/f2u: UCS2 <--> UTF8. On Windows, this is equivalent to UTF16 <--> UTF8.||+130ER~
             b2s/s2b :IBM-EBCDIC<-->SJIS(Japanese DBCS conversion).
             b2e/e2b :IBM-EBCDIC<-->EUC-JP conversion.                 ||~v130R~
             b2a/a2b :IBM-EBCDIC<-->ASCII SBCS(SO/SI(0x0e/0x0f) is ignored).
@@ -8410,7 +8410,7 @@ by screen expansion)
                                                                       ||~v129R~
    = Locate to the line.
 
-        LOCate  { { [L] line-no | [O] offset } [C] | .label | {insall|repall} xxx}||+v30DI~
+        LOCate  { { [L] line-no | [O] offset } [C] | .label | {insall|repall} xxx}||~v30DI~
 
                (Use this format for Browse/Edit screen)
 
@@ -9774,12 +9774,36 @@ by screen expansion)
 
               opd1/2/3:[type]{column1-column2|constant-value} or [type]:fieldno
                   type:data type.
-                       d(decimal), x(hexadecimal), o(octal), t(time),
-                       z(comma separated decimal string)              
-                       Time should be by the fmt of hhmmss,hh:mm:ss or
-                       hh.mm.ss.
-                       If type missing,it is assumed as time when fmt is
-                       hh:mm:ss or hh.mm.ss,else it is assumed as decimal.
+                       d:decimal, x:hexadecimal, o:octal, t:time      ||+130ER~
+                         Time should be by the fmt of hhmmss,hh:mm:ss or hh.mm.ss.||+130ER~
+                         If type missing,it is assumed as time when fmt is||+130ER~
+                         hh:mm:ss or hh.mm.ss,else it is assumed as decimal.||+130ER~
+                       z:comma separated decimal string               ||+130ER~
+                       L:Timestamp in seconds                         ||+130ER~
+                       M:Timestamp in milliseconds                    ||+130ER~
+                         L/M are used when converting to clock time.  ||+130ER~
+                         Specifying 64-bit mode using ... results will fail.||+130ER~
+                         e.g.)                                        ||+130ER~
+							tc 40-70=m10-25                           ||+130ER~
+                                40-70=l10-25:total 3, err=1, dataovf=0.---------------------------------------||+130ER~
+                                ===>                                  ||+130ER~
+                                col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7...||+130ER~
+                                ****|*L*t**l*** TOP OF FILE *******Lig:OFF ***********************************||+130ER~
+                                0001*           x00..19070051              _||+130ER~
+                                0002*           19070051                                1983/04/23-04:53:53_||+130ER~
+                                0003*           19f7bf51717                         2042/09/18-00:01:03.037_||+130ER~
+                                ****|*L*t**l*** END OF FILE *******Lig:OFF ***********************************||+130ER~
+                                                                      ||+130ER~
+							tc 40-70=m10-25                           ||+130ER~
+                                40-70=m10-25:total 3, err=1, dataovf=0.---------------------------------------||+130ER~
+                                ===>                                  ||+130ER~
+                                col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7...||+130ER~
+                                ****|*L*t**l*** TOP OF FILE *******Lig:OFF ***********************************||+130ER~
+                                0001*           x00..19070051              _||+130ER~
+                                0002*           19070051                            1970/01/06-05:38:09.233_||+130ER~
+                                0003*           19f7bf51717                         2026/07/20-04:58:07.639_||+130ER~
+                                ****|*L*t**l*** END OF FILE *******Lig:OFF ***********************************||+130ER~
+                                                                      ||+130ER~
                   column1/2:Start/End column of table data on file.
                             Decimal fraction data is avail for type=t/d.
                             constant-value is avail for opd2 only.
@@ -9853,7 +9877,8 @@ by screen expansion)
                          To set 0 for true and 1 for false,use FT option.
                       /conv type:O:octal, X:hex, T:Clock, D:decimal,
                                  Z:FMT(comma separated)decimal,       
-                                 U:unsigned D, UZ:unsigned Z, L:TimeStamp-->Clock
+                                 U:unsigned D, UZ:unsigned Z,         ||+130ER~
+                                 L: Timestamp in seconds --> Clock    ||+130ER~
                       FMT:table column alignment by space delimiter.
                           R :Right justified. Default unless attended to fieldNo.
                           L :left  justified.
@@ -10556,7 +10581,10 @@ by screen expansion)
                For double word, concatenate 2 word hex-decimal by ".."||~v124R~
                like as abcded01..23456789.
                Overflow is ignored when Hex/Octal calc,               ||~v126R~
-               specify like as 0x00..12345678*0x100 to get double word result.||~v126R~
+               For Hex or Octal values, word overflows are ignored,   ||+130ER~
+               so you will use double word like `0x00..12345678*0x100`.||+130ER~
+               		xbc     x19070051*1000 ==>     c3593c68           ||+130ER~
+               		xbc x00..19070051*1000 ==>x61..c3593c68           ||+130ER~
             -value3..: up to 10 operators except !,<,>,&,|,^ .        ||~v129R~
              operator has no priority, calculated sequentially left to right.||~v129R~
             -operation:  +,-,*,!,/,%,  <,>,|,&,^.
@@ -10575,11 +10603,15 @@ by screen expansion)
                z:decimal by zzz,zz9, uz:unsigned decimal by zzz,zz9,
                t:hh:mm:ss.xxx edit fmt,
                s:translation of UCS-4 unicode and its UCS-2 surrogate.||~v130I~||~v130R~
+                                                                      ||+130ER~
                l(lower L):convert to clock from a word(seconds from 1970)
                or double word(Mainframe TOD. In double word bit 51 is 
                unit of micro second).
                When mainframe HOST-TOD is before 2000/01/01,
                it is displayed as elapsed second from 1900/01/01.
+                                                                      ||+130ER~
+               M: Convert smartphone timestamp by milliseconds to date and time||+130ER~
+                                                                      ||+130ER~
                If omitted,hexadecimal for decimal,decimal for octal   
                and hexadecimal and number of second for type=t.
                Result of divide for decimal,precision is 1 up.
@@ -10595,6 +10627,8 @@ by screen expansion)
                xbc 200/3.3*35 v2r         ; xbc 1+2+3+4+5+6+7+8+9+10  ||~v129R~
                xbc 1f468/s  ==> x1f468/s:=d83ddc68                    ||~v130I~||~v130R~
                xbc d83ddc68 ==> xd83ddc68/s:=0001f468                 ||~v130I~||~v130R~
+               xbc 19f7bf51717/M ==> 2026/07/20-04:58:27.639          ||+130ER~
+               xbc 19f7bf51717/L ==> 2042/09/18-00:01:03.037          ||+130ER~
 
         (Command line tool XBC is also packaged in zip file.)
 
@@ -15334,10 +15368,10 @@ by screen expansion)
           x=c (/Yc):add change-id-tag to modified lines
           x=d (/Yd):dump when internal error detected
           x=h (/Nh):(ScreenHardCopyEndOfLine) cut lines by EndOfLine. ||~v30DI~
-          x=m (-Ym):Accept UTF8 byte without translate to locale code.||+v30DI~
-                    When /Nm is specified, for UTF8 code input to CPLC(non UTF8) file||+v30DI~
-                    set UTF8 code itself if Alt+u ON(indecated by =u=&gt; on command input line),||+v30DI~
-                    set translated locale code if Alt+u OFF(===&gt;) or "?" if translation error occured.||+v30DI~
+          x=m (-Ym):Accept UTF8 byte without translate to locale code.||~v30DI~
+                    When /Nm is specified, for UTF8 code input to CPLC(non UTF8) file||~v30DI~
+                    set UTF8 code itself if Alt+u ON(indecated by =u=&gt; on command input line),||~v30DI~
+                    set translated locale code if Alt+u OFF(===&gt;) or "?" if translation error occured.||~v30DI~
           x=r (/Nr):Use Right-Ctrl key as Execute key
           x=rr(/Nrr):Use Right-Ctrl key as Next line key(effective only when Rctl ON)||~v124R~
           x=t (/Nt):Tab display or not

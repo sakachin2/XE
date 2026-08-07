@@ -1,6 +1,6 @@
-UTF8 encoding ||*CID:||+130DR~:                             update#=  862;||+130DR~
+UTF8 encoding ||*CID:||+130ER~:                             update#=  865;||+130ER~
 ######################################################################
-[English]    v1.30D   2025/12/14                                      ||+130DR~
+[English]    v1.30E   2026/08/05                                      ||~130DR~
 
 An easy-to-use editor for programmers who work on both mainframes (also useful for editing SPF files) and PCs.||~v130I~
 A hybrid of the host's SPF and the convenient key operations of a PC EDITOR.||~v130I~
@@ -748,31 +748,50 @@ How to execute.
      4.Tools                                                          ||~130CI~
        -(LNX) Added option (/Yi) to bypass errMsg for invalid filenames.||~130CI~
         xfg v1.22                                                     ||~130CI~
-                                                                      ||+130DI~
-######################################################################||+130DI~
-130D:2025/12/14                                                       ||+130DI~
-     1.BUGs                                                           ||+130DI~
-       -(gxe) If the previous operation before exiting was Ctrl+H (print screen)||+130DI~
-        or Ctrl+P (print file), the session may crash because printing is in progress.||+130DI~
-       -Correct to display of combining/formatting characters in UTF8 files.||+130DI~
-        Especially in Windows, combining characters are displayed differently||+130DI~
-        between Windows Terminal and Conhost(previous terminal emulator).||+130DI~
-       -Handles /Ffontname both name of English and Regional Language.||+130DI~
-                                                                      ||+130DI~
-     2.Additional function.                                           ||+130DI~
-       -(Linux) Added the 'W' option to use the API:wcwidth() to get cell width||+130DI~
-        for characters of ambiguous display widths.                   ||+130DI~
-        Cmd line option:-G{Y|N|W}[0|1|2|y|w], Defaults is /GWw.       ||+130DI~
-       -Directory List.                                               ||+130DI~
-        Displays the free space percentage for the line of drive(Windows) and mount point(Linux).||+130DI~
-        The % is updated by session restart(Windows) or Refresh:Shift+F1(Linux).||+130DI~
-        (Linux) When you switch to Username display mode with Shift+F6,||+130DI~
-        the device name (/dev/sdaa, etc.) is displayed.               ||+130DI~
-       -LOCate command, additional options.                           ||+130DI~
-        ex) loc {insall|repall} xxx                                   ||+130DI~
-        Copies the label from the labeled command line (.yyy) to the current text line.||+130DI~
-        ex)Copy (repall) or insert (insall) the string xxx.yyy to the top of the lines.||+130DI~
-       -new HCOpy command.                                            ||+130DI~
-        HCO [EOL]NOEOL]. Command line options is /Yh and /Nh(default).||+130DI~
-        "EOL" cuts lines at the End-Of-Line(line feed code) rather than the screen width.||+130DI~
-        It is for the case text contains RightToLeft formatting characters.||+130DI~
+                                                                      ||~130DI~
+######################################################################||~130DI~
+130D:2025/12/14                                                       ||~130DI~
+     1.BUGs                                                           ||~130DI~
+       -(gxe) If the previous operation before exiting was Ctrl+H (print screen)||~130DI~
+        or Ctrl+P (print file), the session may crash because printing is in progress.||~130DI~
+       -Correct to display of combining/formatting characters in UTF8 files.||~130DI~
+        Especially in Windows, combining characters are displayed differently||~130DI~
+        between Windows Terminal and Conhost(previous terminal emulator).||~130DI~
+       -Handles /Ffontname both name of English and Regional Language.||~130DI~
+                                                                      ||~130DI~
+     2.Additional function.                                           ||~130DI~
+       -(Linux) Added the 'W' option to use the API:wcwidth() to get cell width||~130DI~
+        for characters of ambiguous display widths.                   ||~130DI~
+        Cmd line option:-G{Y|N|W}[0|1|2|y|w], Defaults is /GWw.       ||~130DI~
+       -Directory List.                                               ||~130DI~
+        Displays the free space percentage for the line of drive(Windows) and mount point(Linux).||~130DI~
+        The % is updated by session restart(Windows) or Refresh:Shift+F1(Linux).||~130DI~
+        (Linux) When you switch to Username display mode with Shift+F6,||~130DI~
+        the device name (/dev/sdaa, etc.) is displayed.               ||~130DI~
+       -LOCate command, additional options.                           ||~130DI~
+        ex) loc {insall|repall} xxx                                   ||~130DI~
+        Copies the label from the labeled command line (.yyy) to the current text line.||~130DI~
+        ex)Copy (repall) or insert (insall) the string xxx.yyy to the top of the lines.||~130DI~
+       -new HCOpy command.                                            ||~130DI~
+        HCO [EOL]NOEOL]. Command line options is /Yh and /Nh(default).||~130DI~
+        "EOL" cuts lines at the End-Of-Line(line feed code) rather than the screen width.||~130DI~
+        It is for the case text contains RightToLeft formatting characters.||~130DI~
+######################################################################||+130ER~
+130E:2026/08/05                                                       ||+130ER~
+     1.BUGs                                                           ||+130ER~
+                                                                      ||+130ER~
+     2.Additional function.                                           ||+130ER~
+       -XBC/TC command                                                ||+130ER~
+         Support for time conversion of millisecond-precision timestamps.||+130ER~
+         e.g.) XBC 19f7bf51717/m; TC 40-60=m10-25                     ||+130ER~
+       -(Win) OneDrive Support                                        ||+130ER~
+     4.Tools                                                          ||+130ER~
+       -xdc                                                           ||+130ER~
+          Additional options                                          ||+130ER~
+            /u2 : Ignore timestamp differences of less than 2 seconds.||+130ER~
+            /uF : Compare timestamps for files only.                  ||+130ER~
+          (Bug) Differences in capitalization in the second byte of 2-byte Kanji characters||+130ER~
+                were not being recognized.                            ||+130ER~
+       -xfg                                                           ||+130ER~
+          (Bug) the handling of the x5c (\) character in search strings.||+130ER~
+          Apply the /F (include) and /X (exclude) options to all hierarchy levels.||+130ER~

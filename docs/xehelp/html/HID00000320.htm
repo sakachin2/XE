@@ -39,12 +39,37 @@ a:hover{font-weight:bold;}-->
 
               opd1/2/3:[type]{column1-column2|constant-value} or [type]:fieldno
                   type:data type.
-                       d(decimal), x(hexadecimal), o(octal), t(time),
-                       z(comma separated decimal string)
-                       Time should be by the fmt of hhmmss,hh:mm:ss or
-                       hh.mm.ss.
-                       If type missing,it is assumed as time when fmt is
-                       hh:mm:ss or hh.mm.ss,else it is assumed as decimal.
+                      
+                       d:decimal, x:hexadecimal, o:octal, t:time
+                         Time should be by the fmt of hhmmss,hh:mm:ss or hh.mm.ss.
+                         If type missing,it is assumed as time when fmt is                    
+                         hh:mm:ss or hh.mm.ss,else it is assumed as decimal.
+                       z:comma separated decimal string     
+                       L:Timestamp in seconds
+                       M:Timestamp in milliseconds
+                         L/M are used when converting to clock time.
+                         Specifying 64-bit mode using ... results will fail.
+                         e.g.)
+                           tc 40-70=m10-25
+                             40-70=l10-25:total 3, err=1, dataovf=0.---------------------------------------               
+                             ===&gt;
+                             col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7...
+                             ****|*L*t**l*** TOP OF FILE *******Lig:OFF ***********************************
+                             0001* x00..19070051 _
+                             0002* 19070051 1983/04/23-04:53:53_
+                             0003* 19f7bf51717 2042/09/18-00:01:03.037_
+                             ****|*L*t**l*** END OF FILE *******Lig:OFF ***********************************
+
+                          tc 40-70=m10-25
+                            40-70=m10-25:total 3, err=1, dataovf=0.---------------------------------------
+                            ===&gt;
+                            col |....+....1....+....2....+....3....+....4....+....5....+....6....+....7...
+                            ****|*L*t**l*** TOP OF FILE *******Lig:OFF ***********************************
+                            0001* x00..19070051 _
+                            0002* 19070051 1970/01/06-05:38:09.233_
+                            0003* 19f7bf51717 2026/07/20-04:58:07.639_
+                            ****|*L*t**l*** END OF FILE *******Lig:OFF ***********************************
+
                   column1/2:Start/End column of table data on file.
                             Decimal fraction data is avail for type=t/d.
                             constant-value is avail for opd2 only.
@@ -117,7 +142,8 @@ a:hover{font-weight:bold;}-->
                          To set 0 for true and 1 for false,use FT option.
                       /conv type:O:octal, X:hex, T:Clock, D:decimal,
                                  Z:FMT(comma separated)decimal,
-                                 U:unsigned D, UZ:unsigned Z, L:TimeStamp--&gt;Clock
+                                 U:unsigned D, UZ:unsigned Z,
+                                 L: Timestamp in seconds --&gt; Clock
                       FMT:table column alignment by space delimiter.
                           R :Right justified. Default unless attended to fieldNo.
                           L :left  justified.

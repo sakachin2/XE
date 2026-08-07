@@ -16,11 +16,32 @@ a:hover{font-weight:bold;}
 
 <SPAN STYLE="color:#000000;font-size:12pt;">
 ######################################################################
+  .v130E&lt;--130D:(2026/08/05) 
   .v130D&lt;--130C:(2025/12/14) 
   .v130C&lt;--130B:(2025/08/25) 
   .v130B&lt;--130A:(2025/01/20) 
   .v130A&lt;--130 :(2024/11/30) 
   .v130 &lt;--129X:(2024/07/05) 
+
+*****<B>(130E)</B>*****(2026/08/05)
+
+     1.BUGs
+
+     2.Additional function.
+       -XBC/TC command
+         Support for time conversion of millisecond-precision timestamps.
+         e.g.) XBC 19f7bf51717/m; TC 40-60=m10-25
+       -(Win) OneDrive Support
+     4.Tools
+       -xdc
+          Additional options
+            /u2 : Ignore timestamp differences of less than 2 seconds.
+            /uF : Compare timestamps for files only.
+          (Bug) Differences in capitalization in the second byte of 2-byte Kanji characters
+                were not being recognized.
+       -xfg
+          (Bug) the handling of the x5c (\) character in search strings.
+          Apply the /F (include) and /X (exclude) options to all hierarchy levels.
 
 *****<B>(130D)</B>*****(2025/12/14)
 

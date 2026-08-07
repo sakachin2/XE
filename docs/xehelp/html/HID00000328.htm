@@ -30,7 +30,10 @@ a:hover{font-weight:bold;}-->
                For double word, concatenate 2 word hex-decimal by &quot;..&quot;
                like as abcded01..23456789.
                Overflow is ignored when Hex/Octal calc,
-               specify like as 0x00..12345678*0x100 to get double word result.
+               For Hex or Octal values, word overflows are ignored,
+               so you will use double word like `0x00..12345678*0x100`.
+                 xbc x19070051*1000 ==&gt; c3593c68
+                 xbc x00..19070051*1000 ==&gt;x61..c3593c68
             -value3..: up to 10 operators except !,&lt;,&gt;,&amp;,|,^ .
                operator has no priority, calculated sequentially left to right.
             -operation:  +,-,*,!,/,%,  &lt;,&gt;,|,&amp;,^.
@@ -49,27 +52,32 @@ a:hover{font-weight:bold;}-->
                z:decimal by zzz,zz9, uz:unsigned decimal by zzz,zz9,
                t:hh:mm:ss.xxx edit fmt,
                s:translation of UCS-4 unicode and its UCS-2 surrogate.
+ 
                l(lower L):convert to clock from a word(seconds from 1970)
                or double word(Mainframe TOD. In double word bit 51 is
                unit of micro second).
                When mainframe HOST-TOD is before 2000/01/01,
                it is displayed as elapsed second from 1900/01/01.
+  
+               M: Convert smartphone timestamp by milliseconds to date and time
+
                If omitted,hexadecimal for decimal,decimal for octal
                and hexadecimal and number of second for type=t.
                Result of divide for decimal,precision is 1 up.
                for x or o,residual is displayed.
             -R:leave result string on to the cmd input line to use as
                next XBC cmd input.
-            -Vn[R]:n digit under point, R:round.</SPAN></PRE>
-<PRE>
-<SPAN STYLE="color:#000000;font-size:12pt;">
-          (ex) XBC T010100 ; XBC xfe0100  ; XBC o177 ; XBC e8ff&gt;3
+            -Vn[R]:n digit under point, R:round.
+          (e.g.) 
+               XBC T010100 ; XBC xfe0100  ; XBC o177 ; XBC e8ff&gt;3
                XBC T012159.12+t005212.333 ; XBC xabcdef+1000
                XBC 12345678..abcdef0/30a2 ; XBC 3acf19fe/l
                xbc 1234.56*7.89 v2r ; xbc 123.45/6.789 vr
                xbc 200/3.3*35 v2r ; xbc 1+2+3+4+5+6+7+8+9+10
                xbc 1f468/s  ==> x1f468/s:=d83ddc68
                xbc d83ddc68 ==> xd83ddc68/s:=0001f468
+               xbc 19f7bf51717/M ==&gt; 2026/07/20-04:58:27.639
+               xbc 19f7bf51717/L ==&gt; 2042/09/18-00:01:03.037
 
         (Command line <a href="HID00000473.htm">tool XBC</a> is also packaged in zip file.)
 
